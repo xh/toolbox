@@ -1,0 +1,25 @@
+# IDE Files (mostly)
+###################
+.idea/*
+!/.idea/scopes/
+!/.idea/copyright/
+*.iml
+
+# Compiled source #
+###################
+.gradle/
+build/
+/client-app/build/
+/client-app/node_modules/
+
+# Logs #
+########
+toolbox-logs/
+*.log
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+ehthumbs.db
+Thumbs.db
