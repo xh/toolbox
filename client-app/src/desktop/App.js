@@ -7,9 +7,8 @@
 
 import {Component} from 'react';
 import {elemFactory, hoistComponent, XH} from 'hoist/core';
-import {feedbackDialog, logoutButton, launchAdminButton, refreshButton, resizable, themeToggleButton, toolbar} from 'hoist/cmp';
-import {wait} from 'hoist/promise';
-import {box, hframe, hspacer, vframe} from 'hoist/layout';
+import {feedbackDialog, logoutButton, launchAdminButton, tabContainer, themeToggleButton} from 'hoist/cmp';
+import {vframe, frame} from 'hoist/layout';
 import {button, navbar, navbarGroup, navbarHeading} from 'hoist/kit/blueprint';
 import {Icon} from 'hoist/icon';
 
@@ -34,7 +33,7 @@ export class App extends Component {
             navbarGroup({
                 align: 'left',
                 items: [
-                    Icon.portfolio({size: '2x'}),
+                    Icon.boxfull({size: '2x'}),
                     navbarHeading(XH.appName)
                 ]
             }),
@@ -47,27 +46,21 @@ export class App extends Component {
                     }),
                     themeToggleButton(),
                     launchAdminButton(),
-                    logoutButton(),
-                    refreshButton({
-                        intent: 'success',
-                        onClick: this.onRefreshClick
-                    })
+                    logoutButton()
                 ]
             })
         );
     }
 
     renderBody() {
-        return vframe('Toolbox!');
+        return frame({
+            cls: 'xh-toolbox-app-frame',
+            item: tabContainer({model: XH.appModel.tabs})
+        });
     }
 
     onFeedbackClick = () => {
         this.model.feedbackModel.open();
-    }
-
-    onRefreshClick = () => {
-        // "Fake" a reload here - we know data isn't going to change
-        wait(500).linkTo(XH.appLoadModel);
     }
 
 }
