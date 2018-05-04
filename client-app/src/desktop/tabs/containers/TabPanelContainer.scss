@@ -1,0 +1,15 @@
+.xh-toolbox-tabcontainer-panel {
+  .xh-toolbox-example-container {
+    > .xh-panel {
+      &:not(:first-child) {
+        margin-left: 5px;
+      }
+      border: var(--xh-border-solid);
+    }
+  }
+
+  .xh-tab-pane {
+    background: var(--xh-bg) !important;
+    padding: 5px;
+  }
+}

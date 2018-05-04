@@ -3,12 +3,6 @@
 .xh-toolbox-app-frame {
   > .pt-tabs > div > .pt-tabs.pt-vertical > .pt-tab-list {
     min-width: 165px;
-    background-color: var(--xh-bg-alt);
-    border-right: var(--xh-border-solid);
-  }
-
-  > .pt-tabs > .pt-tab-panel {
-    border-top: var(--xh-border-solid);
   }
 
   .xh-tab-pane {
@@ -16,6 +10,21 @@
     .xh-dark & {
       background-image: svg-url('<svg width="21" height="21"><rect x="0" y="0" width="20" height="20" style="fill: #212121;" /></svg>');
     }
+  }
+}
+
+.pt-tabs {
+  > div > .pt-tabs.pt-vertical > .pt-tab-list {
+    background-color: var(--xh-bg-alt);
+  }
+
+  > .pt-tab-panel {
+    border-top: var(--xh-border-solid);
+  }
+
+  &.pt-vertical > .pt-tab-panel {
+    border-top: none;
+    border-left: var(--xh-border-solid);
   }
 }
 

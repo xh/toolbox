@@ -9,7 +9,7 @@ import {hoistComponent} from 'hoist/core/index';
 import {box, vbox} from 'hoist/layout/index';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {panel} from 'hoist/cmp';
-import './Box.scss';
+import './BoxContainer.scss';
 
 @hoistComponent()
 export class VboxContainerPanel extends Component {
