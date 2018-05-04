@@ -6,22 +6,20 @@
  */
 import {Component} from 'react';
 import {hoistComponent} from 'hoist/core/index';
-import {hbox, vbox, box, h3} from 'hoist/layout/index';
-import {resizable} from 'hoist/cmp/resizable';
+import {hbox, vbox, box} from 'hoist/layout/index';
+import {panel, resizable} from 'hoist/cmp';
 import {wrapperPanel} from '../impl/WrapperPanel';
 
 @hoistComponent()
 export class ResizableContainerPanel extends Component {
     render() {
         return wrapperPanel(
-            vbox({
+            panel({
+                cls: 'xh-toolbox-resizablecontainer-panel',
+                title: 'Resizable Container',
                 width: 500,
                 height: 400,
-                cls: 'xh-toolbox-resizablecontainer-panel',
-                items: [
-                    h3('Resizable Container'),
-                    this.renderExample()
-                ]
+                items: this.renderExample()
             })
         );
     }

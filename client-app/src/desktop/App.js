@@ -33,7 +33,7 @@ export class App extends Component {
             navbarGroup({
                 align: 'left',
                 items: [
-                    Icon.boxfull({size: '2x'}),
+                    Icon.boxFull({size: '2x'}),
                     navbarHeading(XH.appName)
                 ]
             }),

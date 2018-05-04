@@ -6,22 +6,21 @@
  */
 import {Component} from 'react';
 import {hoistComponent} from 'hoist/core/index';
-import {box, vbox, hbox, h3} from 'hoist/layout/index';
+import {box, hbox} from 'hoist/layout/index';
 import {wrapperPanel} from '../impl/WrapperPanel';
+import {panel} from 'hoist/cmp';
 import './Box.scss';
 
 @hoistComponent()
 export class HboxContainerPanel extends Component {
     render() {
         return wrapperPanel(
-            vbox({
+            panel({
+                cls: 'xh-toolbox-hboxcontainer-panel',
+                title: 'HBox Container',
                 width: 500,
                 height: '80%',
-                cls: 'xh-toolbox-hboxcontainer-panel',
-                items: [
-                    h3('Hbox Container'),
-                    this.renderExample()
-                ]
+                item: this.renderExample()
             })
         );
     }
