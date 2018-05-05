@@ -9,6 +9,7 @@ import {TabContainerModel, FeedbackDialogModel} from 'hoist/cmp';
 
 import {HomePanel} from './tabs/home/HomePanel';
 import {LeftRightChooserPanel} from './tabs/components/LeftRightChooserPanel';
+import {LoadMaskPanel} from './tabs/components/LoadMaskPanel';
 import {ToolbarPanel} from './tabs/components/ToolbarPanel';
 import {HboxContainerPanel} from './tabs/containers/HboxContainerPanel';
 import {VboxContainerPanel} from './tabs/containers/VboxContainerPanel';
@@ -16,8 +17,6 @@ import {ResizableContainerPanel} from './tabs/containers/ResizableContainerPanel
 import {TabPanelContainerPanel} from './tabs/containers/TabPanelContainerPanel';
 import {StandardGridPanel} from './tabs/grids/StandardGridPanel';
 import {GroupedGridPanel} from './tabs/grids/GroupedGridPanel';
-import {DateColumnGridPanel} from './tabs/grids/DateColumnGridPanel';
-import {BoolCheckGridPanel} from './tabs/grids/BoolCheckGridPanel';
 import {IconsPanel} from './tabs/icons/IconsPanel';
 
 export class AppModel extends BaseAppModel {
@@ -67,6 +66,7 @@ export class AppModel extends BaseAppModel {
                 forwardTo: 'default.components.leftRightChooser',
                 children: [
                     {name: 'leftRightChooser', path: '/leftRightChooser'},
+                    {name: 'loadMask', path: '/loadMask'},
                     {name: 'toolbar', path: '/toolbar'}
                 ]
             },
@@ -87,9 +87,7 @@ export class AppModel extends BaseAppModel {
                 forwardTo: 'default.grids.standard',
                 children: [
                     {name: 'standard', path: '/standard'},
-                    {name: 'grouped', path: '/grouped'},
-                    {name: 'dateColumn', path: '/dateColumn'},
-                    {name: 'boolCheck', path: '/boolCheck'}
+                    {name: 'grouped', path: '/grouped'}
                 ]
             },
             {
@@ -110,6 +108,7 @@ export class AppModel extends BaseAppModel {
                 orientation: 'v',
                 children: [
                     {id: 'leftRightChooser', component: LeftRightChooserPanel},
+                    {id: 'loadMask', component: LoadMaskPanel},
                     {id: 'toolbar', component: ToolbarPanel}
                 ]
             },
@@ -128,9 +127,7 @@ export class AppModel extends BaseAppModel {
                 orientation: 'v',
                 children: [
                     {id: 'standard', component: StandardGridPanel},
-                    {id: 'grouped', component: GroupedGridPanel},
-                    {id: 'dateColumn', component: DateColumnGridPanel},
-                    {id: 'boolCheck', component: BoolCheckGridPanel}
+                    {id: 'grouped', component: GroupedGridPanel}
                 ]
             },
             {

@@ -1,0 +1,43 @@
+[{
+  "text": "Apple",
+  "description": "An apple",
+  "value": 0
+}, {
+  "text": "Banana",
+  "group": "Tropical",
+  "value": 2,
+  "description": "A Banana"
+}, {
+  "text": "Cherry",
+  "group": "Stone",
+  "value": 3
+}, {
+  "text": "Lime",
+  "group": "Citrus",
+  "value": 4,
+  "description": "A Lime"
+}, {
+  "text": "Mango",
+  "group": "Tropical",
+  "value": 5
+}, {
+  "text": "Orange",
+  "group": "Citrus",
+  "value": 6,
+  "side": "right"
+}, {
+  "text": "Peach",
+  "group": "Stone",
+  "value": 7,
+  "side": "right",
+  "description": "A Peach, and it's locked",
+  "locked": true
+}, {
+  "text": "Pineapple",
+  "group": "Tropical",
+  "value": 8
+}, {
+  "text": "Strawberry",
+  "group": "Berries",
+  "value": 9
+}]
