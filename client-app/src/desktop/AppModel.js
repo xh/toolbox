@@ -17,6 +17,7 @@ import {ResizableContainerPanel} from './tabs/containers/ResizableContainerPanel
 import {TabPanelContainerPanel} from './tabs/containers/TabPanelContainerPanel';
 import {StandardGridPanel} from './tabs/grids/StandardGridPanel';
 import {GroupedGridPanel} from './tabs/grids/GroupedGridPanel';
+import {RestGridPanel} from './tabs/grids/RestGridPanel';
 import {IconsPanel} from './tabs/icons/IconsPanel';
 
 export class AppModel extends BaseAppModel {
@@ -87,7 +88,8 @@ export class AppModel extends BaseAppModel {
                 forwardTo: 'default.grids.standard',
                 children: [
                     {name: 'standard', path: '/standard'},
-                    {name: 'grouped', path: '/grouped'}
+                    {name: 'grouped', path: '/grouped'},
+                    {name: 'rest', path: '/rest'}
                 ]
             },
             {
@@ -127,7 +129,8 @@ export class AppModel extends BaseAppModel {
                 orientation: 'v',
                 children: [
                     {id: 'standard', component: StandardGridPanel},
-                    {id: 'grouped', component: GroupedGridPanel}
+                    {id: 'grouped', component: GroupedGridPanel},
+                    {id: 'rest', component: RestGridPanel}
                 ]
             },
             {
