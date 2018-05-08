@@ -23,13 +23,13 @@ class BootStrap {
     // Implementation
     //------------------------
     private void ensureAdminUserCreated() {
-        def adminUser = User.findByEmail('admin@xh.io')
+        def adminUser = User.findByEmail('toolbox@xh.io')
         if (!adminUser) {
             new User([
-                email: '',
-                firstName: '',
-                lastName: '',
-                password: '',
+                email: 'toolbox@xh.io',
+                firstName: 'Toolbox',
+                lastName: 'Demo',
+                password: 'toolbox',
                 isAdmin: true
             ]).save()
         }

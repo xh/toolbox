@@ -13,6 +13,15 @@ class AuthenticationService extends BaseAuthenticationService  {
     
     private static List<String> resources = getResourcePaths()
 
+    boolean login(HttpServletRequest request, String username, String password) {
+        def user = lookupUser(username, password)
+        if (user) {
+            setUser(request, user)
+            return true
+        }
+        return false
+    }
+
     protected boolean isWhitelist(HttpServletRequest request) {
         return request.requestURI.startsWith('/auth/') || isResource(request) || super.isWhitelist(request)
     }
@@ -20,15 +29,6 @@ class AuthenticationService extends BaseAuthenticationService  {
     protected boolean completeAuthentication(HttpServletRequest request, HttpServletResponse response) {
         // 0) Don't attempt to authorize non-html/whitelisted requests (might handle ajax re-auth at some point)
         if (isAjax(request) || !acceptHtml(request) || isResource(request)) {
-            return true
-        }
-        return false
-    }
-
-    protected boolean login(HttpServletRequest request, String username, String password) {
-        def user = lookupUser(username, password)
-        if (user) {
-            setUser(request, user)
             return true
         }
         return false
