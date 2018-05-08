@@ -6,13 +6,17 @@
  */
 import {Component} from 'react';
 import {hoistComponent} from 'hoist/core';
-import {vframe, filler} from 'hoist/layout';
+import {box, hframe, vframe, filler} from 'hoist/layout';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {toolbar, panel} from 'hoist/cmp';
-import {button} from 'hoist/kit/blueprint';
+import {comboField, toolbar, toolbarSep, panel, ToastManager} from 'hoist/cmp';
+import {button, Position} from 'hoist/kit/blueprint';
+import {Icon} from 'hoist/icon';
+import {ToolbarPanelModel} from './ToolbarPanelModel';
 
 @hoistComponent()
 export class ToolbarPanel extends Component {
+    toolBarModel = new ToolbarPanelModel();
+
     render() {
         return wrapperPanel(
             panel({
@@ -26,27 +30,63 @@ export class ToolbarPanel extends Component {
     }
 
     renderExample() {
+        const model = this.toolBarModel,
+            {options} = model;
+
         return vframe({
             cls: 'xh-toolbox-example-container',
             items: [
                 toolbar(
-                    button('Left Aligned')
+                    button({
+                        icon: Icon.chevronLeft(),
+                        text: 'Left Aligned'
+                    }),
+                    toolbarSep(),
+                    comboField({
+                        options,
+                        model,
+                        field: 'state',
+                        placeholder: 'Select a State...'
+                    }),
+                    button({
+                        text: 'Show Toast',
+                        onClick: () => this.showToast()
+                    }),
                 ),
-                toolbar({
-                    vertical: true,
-                    width: 60,
-                    flex: 1,
-                    items: [
-                        filler(),
-                        button('Mid'),
-                        filler()
-                    ]
-                }),
+                hframe(
+                    toolbar({
+                        vertical: true,
+                        width: 42,
+                        items: [
+                            filler(),
+                            button({icon: Icon.contact()}),
+                            button({icon: Icon.comment()}),
+                            toolbarSep(),
+                            button({icon: Icon.add()}),
+                            button({icon: Icon.delete()}),
+                            toolbarSep(),
+                            button({icon: Icon.gears()}),
+                            filler()
+                        ]
+                    }),
+                    box('Content...')
+                ),
                 toolbar(
                     filler(),
-                    button('Right Aligned')
+                    button({
+                        rightIcon: Icon.chevronRight(),
+                        text: 'Right Aligned'
+                    })
                 ),
             ]
+        });
+    }
+
+    showToast() {
+        ToastManager.show({
+            message: `Selected State: ${this.toolBarModel.state || 'None'}`,
+            position: Position.TOP,
+            intent: 'primary'
         });
     }
 }
