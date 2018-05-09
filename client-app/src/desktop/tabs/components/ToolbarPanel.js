@@ -51,7 +51,7 @@ export class ToolbarPanel extends Component {
                     button({
                         text: 'Show Toast',
                         onClick: () => this.showToast()
-                    }),
+                    })
                 ),
                 hframe(
                     toolbar({
@@ -77,7 +77,7 @@ export class ToolbarPanel extends Component {
                         rightIcon: Icon.chevronRight(),
                         text: 'Right Aligned'
                     })
-                ),
+                )
             ]
         });
     }
