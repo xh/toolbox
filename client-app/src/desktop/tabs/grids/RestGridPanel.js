@@ -10,51 +10,82 @@ import {vframe} from 'hoist/layout';
 import {panel} from 'hoist/cmp';
 import {restGrid, RestGridModel, RestStore} from 'hoist/rest';
 import {boolCheckCol, baseCol} from 'hoist/columns/Core';
-import {dateCol} from 'hoist/columns/DatesTimes';
 import {wrapperPanel} from '../impl/WrapperPanel';
 
 @hoistComponent()
 export class RestGridPanel extends Component {
 
     store = new RestStore({
-        url: '/desktop/tabs/grids/impl/data/companyRegistry',
+        url: 'rest/companyRest',
         fields: [
             {
-                name: 'company',
+                name: 'name',
                 required: true
             },
             {
-                name: 'joined_date',
-                type: 'date',
+                name: 'type',
+                lookupName: 'types',
+                lookupStrict: true,
+                required: true
+            },
+            {
+                name: 'employees',
+                type: 'number',
                 required: true
             },
             {
                 name: 'isActive',
                 type: 'bool',
-                defaultValue: false
+                defaultValue: true
+            },
+            {
+                name: 'cfg',
+                label: 'JSON Config',
+                type: 'json'
+            },
+            {
+                name: 'note'
+            },
+            {
+                name: 'lastUpdated',
+                type: 'date',
+                editable: false
+            },
+            {
+                name: 'lastUpdatedBy',
+                editable: false
             }
         ]
     });
 
     gridModel = new RestGridModel({
         store: this.store,
-        sortBy: 'company',
-        filterFields: ['company'],
-        actionWarning: {
-            edit: 'Are you sure you want to edit? Editing preferences can break running apps!',
-            del: 'Are you sure you want to delete? Deleting preferences can break running apps!'
-        },
+        unit: 'company',
+        filterFields: ['name', 'type', 'note'],
+
+        sortBy: 'name',
         columns: [
-            baseCol({field: 'company'}),
-            dateCol({field: 'joined_date', fixedWidth: 150}),
+            baseCol({field: 'name'}),
+            baseCol({field: 'type'}),
+            baseCol({field: 'employees'}),
             boolCheckCol({field: 'isActive', fixedWidth: 100})
         ],
         editors: [
-            {field: 'company'},
-            {field: 'joined_date'},
-            {field: 'isActive', type: 'boolSelect'}
+            {field: 'name'},
+            {field: 'type'},
+            {field: 'employees'},
+            {field: 'cfg'},
+            {field: 'note', type: 'textarea'},
+            {field: 'isActive', type: 'boolCheck'},
+            {field: 'lastUpdated'},
+            {field: 'lastUpdatedBy'}
         ]
     });
+
+    constructor() {
+        super();
+        this.store.loadAsync();
+    }
 
     render() {
         return wrapperPanel(
