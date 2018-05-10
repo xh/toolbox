@@ -1,7 +1,6 @@
-import ReactDOM from 'react-dom';
-import {appContainer} from 'hoist/app';
-import {app} from '../desktop/App';
+import {XH} from 'hoist/core';
+import {App} from '../desktop/App';
 import {AppModel} from '../desktop/AppModel';
+import '../desktop/App.scss';
 
-const model = new AppModel();
-ReactDOM.render(appContainer(app({model})), document.getElementById('root'));
+XH.renderApp(AppModel, App);

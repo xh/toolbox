@@ -5,14 +5,16 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {hoistComponent} from 'hoist/core';
+import {XH, hoistComponent} from 'hoist/core';
 import {vframe} from 'hoist/layout';
 import {panel} from 'hoist/cmp';
 import {grid, GridModel} from 'hoist/grid';
 import {baseCol} from 'hoist/columns/Core';
 import {LocalStore} from 'hoist/data';
+import {numberRenderer, millionsRenderer} from 'hoist/format';
+import {cloneDeep} from 'lodash';
+
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {tradeVolumeFormatter, profitLossFormatter, profitLossColor} from './impl/Formaters';
 import {companyTrades} from '../../../data';
 
 @hoistComponent()
@@ -23,16 +25,35 @@ export class StandardGridPanel extends Component {
             fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
         }),
         columns: [
-            baseCol({headerName: 'Company', field: 'company'}),
-            baseCol({headerName: 'City', field: 'city'}),
-            baseCol({headerName: 'Trade Volume', field: 'trade_volume', cellRenderer: tradeVolumeFormatter}),
-            baseCol({headerName: 'P&L', field: 'profit_loss', cellRenderer: profitLossFormatter, cellStyle: profitLossColor})
+            baseCol({
+                headerName: 'Company',
+                field: 'company'
+            }),
+            baseCol({
+                headerName: 'City',
+                field: 'city'
+            }),
+            baseCol({
+                headerName: 'Trade Volume',
+                field: 'trade_volume',
+                align: 'right',
+                cellRenderer: millionsRenderer({precision: 1, label: true})
+            }),
+            baseCol({
+                headerName: 'P&L',
+                field: 'profit_loss',
+                align: 'right',
+                cellRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+            })
         ]
     });
 
     constructor() {
         super();
-        this.gridModel.store.loadData(companyTrades);
+
+        const trades = cloneDeep(companyTrades);
+        trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
+        this.gridModel.loadData(trades);
     }
 
     render() {
@@ -55,5 +76,8 @@ export class StandardGridPanel extends Component {
         });
     }
 
+    destroy() {
+        XH.safeDestroy(this.gridModel);
+    }
 
 }

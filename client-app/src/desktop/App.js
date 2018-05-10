@@ -6,7 +6,7 @@
  */
 
 import {Component} from 'react';
-import {elemFactory, hoistComponent, XH} from 'hoist/core';
+import {hoistComponent, XH} from 'hoist/core';
 import {feedbackDialog, logoutButton, launchAdminButton, tabContainer, themeToggleButton} from 'hoist/cmp';
 import {vframe, frame} from 'hoist/layout';
 import {button, navbar, navbarGroup, navbarHeading} from 'hoist/kit/blueprint';
@@ -64,4 +64,3 @@ export class App extends Component {
     }
 
 }
-export const app = elemFactory(App);

@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {hoistComponent} from 'hoist/core';
+import {XH, hoistComponent} from 'hoist/core';
 import {vframe} from 'hoist/layout';
 import {panel} from 'hoist/cmp';
 import {restGrid, RestGridModel, RestStore} from 'hoist/rest';
@@ -15,51 +15,49 @@ import {wrapperPanel} from '../impl/WrapperPanel';
 @hoistComponent()
 export class RestGridPanel extends Component {
 
-    store = new RestStore({
-        url: 'rest/companyRest',
-        fields: [
-            {
-                name: 'name',
-                required: true
-            },
-            {
-                name: 'type',
-                lookupName: 'types',
-                lookupStrict: true,
-                required: true
-            },
-            {
-                name: 'employees',
-                type: 'number',
-                required: true
-            },
-            {
-                name: 'isActive',
-                type: 'bool',
-                defaultValue: true
-            },
-            {
-                name: 'cfg',
-                label: 'JSON Config',
-                type: 'json'
-            },
-            {
-                name: 'note'
-            },
-            {
-                name: 'lastUpdated',
-                type: 'date',
-                editable: false
-            },
-            {
-                name: 'lastUpdatedBy',
-                editable: false
-            }
-        ]
-    });
-
     gridModel = new RestGridModel({
-        store: this.store,
+        store: new RestStore({
+            url: 'rest/companyRest',
+            fields: [
+                {
+                    name: 'name',
+                    required: true
+                },
+                {
+                    name: 'type',
+                    lookupName: 'types',
+                    lookupStrict: true,
+                    required: true
+                },
+                {
+                    name: 'employees',
+                    type: 'number',
+                    required: true
+                },
+                {
+                    name: 'isActive',
+                    type: 'bool',
+                    defaultValue: true
+                },
+                {
+                    name: 'cfg',
+                    label: 'JSON Config',
+                    type: 'json'
+                },
+                {
+                    name: 'note'
+                },
+                {
+                    name: 'lastUpdated',
+                    type: 'date',
+                    editable: false
+                },
+                {
+                    name: 'lastUpdatedBy',
+                    editable: false
+                }
+            ]
+        }),
         unit: 'company',
         filterFields: ['name', 'type', 'note'],
 
@@ -84,7 +82,7 @@ export class RestGridPanel extends Component {
 
     constructor() {
         super();
-        this.store.loadAsync();
+        this.gridModel.loadAsync();
     }
 
     render() {
@@ -106,4 +104,9 @@ export class RestGridPanel extends Component {
             item: restGrid({model})
         });
     }
+
+    destroy() {
+        XH.safeDestroy(this.gridModel);
+    }
+
 }

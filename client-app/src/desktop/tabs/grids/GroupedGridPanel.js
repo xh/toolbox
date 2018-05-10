@@ -11,8 +11,10 @@ import {panel} from 'hoist/cmp';
 import {grid, GridModel} from 'hoist/grid';
 import {baseCol} from 'hoist/columns/Core';
 import {LocalStore} from 'hoist/data';
+import {numberRenderer, millionsRenderer} from 'hoist/format';
+import {cloneDeep} from 'lodash';
+
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {tradeVolumeFormatter, profitLossFormatter, profitLossColor} from './impl/Formaters';
 import {companyTrades} from '../../../data';
 
 @hoistComponent()
@@ -24,16 +26,36 @@ export class GroupedGridPanel extends Component {
         }),
         groupBy: 'city',
         columns: [
-            baseCol({headerName: 'Company', field: 'company'}),
-            baseCol({headerName: 'City', field: 'city', hidden: true}),
-            baseCol({headerName: 'Trade Volume', field: 'trade_volume', cellRenderer: tradeVolumeFormatter}),
-            baseCol({headerName: 'P&L', field: 'profit_loss', cellRenderer: profitLossFormatter, cellStyle: profitLossColor})
+            baseCol({
+                headerName: 'Company',
+                field: 'company'
+            }),
+            baseCol({
+                headerName: 'City',
+                field: 'city',
+                hide: true
+            }),
+            baseCol({
+                headerName: 'Trade Volume',
+                field: 'trade_volume',
+                align: 'right',
+                cellRenderer: millionsRenderer({precision: 1, label: true})
+            }),
+            baseCol({
+                headerName: 'P&L',
+                field: 'profit_loss',
+                align: 'right',
+                cellRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+            })
         ]
     });
 
     constructor() {
         super();
-        this.gridModel.store.loadData(companyTrades);
+
+        const trades = cloneDeep(companyTrades);
+        trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
+        this.gridModel.loadData(trades);
     }
 
     render() {
@@ -52,7 +74,10 @@ export class GroupedGridPanel extends Component {
         const model = this.gridModel;
         return vframe({
             cls: 'xh-toolbox-example-container',
-            item: grid({model, gridOptions: {groupDefaultExpanded: 0}})
+            item: grid({
+                model,
+                gridOptions: {groupDefaultExpanded: 1}
+            })
         });
     }
 
