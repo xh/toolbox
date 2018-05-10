@@ -25,7 +25,7 @@ class Company implements JSONFormat {
     static mapping = {
         cache true
         note type: 'text'
-        cfg type:' text'
+        cfg type: 'text'
     }
 
     static constraints = {
