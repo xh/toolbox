@@ -5,14 +5,14 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {XH, hoistComponent} from 'hoist/core';
+import {XH, HoistComponent} from 'hoist/core';
 import {vframe} from 'hoist/layout';
 import {panel} from 'hoist/cmp';
 import {restGrid, RestGridModel, RestStore} from 'hoist/rest';
 import {boolCheckCol, baseCol} from 'hoist/columns/Core';
 import {wrapperPanel} from '../impl/WrapperPanel';
 
-@hoistComponent()
+@HoistComponent()
 export class RestGridPanel extends Component {
 
     gridModel = new RestGridModel({

@@ -5,9 +5,9 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {hoistComponent} from 'hoist/core/index';
+import {HoistComponent} from 'hoist/core/index';
 
-@hoistComponent()
+@HoistComponent()
 export class HomePanel extends Component {
     render() {
         return null;

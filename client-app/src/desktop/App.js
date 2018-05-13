@@ -6,7 +6,7 @@
  */
 
 import {Component} from 'react';
-import {hoistComponent, XH} from 'hoist/core';
+import {HoistComponent, XH} from 'hoist/core';
 import {feedbackDialog, logoutButton, launchAdminButton, tabContainer, themeToggleButton} from 'hoist/cmp';
 import {vframe, frame} from 'hoist/layout';
 import {button, navbar, navbarGroup, navbarHeading} from 'hoist/kit/blueprint';
@@ -14,7 +14,7 @@ import {Icon} from 'hoist/icon';
 
 import './App.scss';
 
-@hoistComponent()
+@HoistComponent()
 export class App extends Component {
 
     render() {

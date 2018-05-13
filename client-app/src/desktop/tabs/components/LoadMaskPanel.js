@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {hoistComponent} from 'hoist/core';
+import {HoistComponent} from 'hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {computed, observable, setter} from 'hoist/mobx';
 import {vframe} from 'hoist/layout';
@@ -14,7 +14,7 @@ import {button, inputGroup, label, checkbox} from 'hoist/kit/blueprint';
 import {loadMask, panel, toolbar} from 'hoist/cmp';
 import {pluralize} from 'hoist/utils/JsUtils';
 
-@hoistComponent()
+@HoistComponent()
 export class LoadMaskPanel extends Component {
     @observable @setter showMask = false;
     @observable @setter seconds = 2;

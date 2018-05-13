@@ -5,13 +5,13 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {hoistComponent} from 'hoist/core/index';
+import {HoistComponent} from 'hoist/core/index';
 import {hframe, box} from 'hoist/layout';
 import {tabContainer, TabContainerModel, panel} from 'hoist/cmp';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import './TabPanelContainer.scss';
 
-@hoistComponent()
+@HoistComponent()
 export class TabPanelContainerPanel extends Component {
     render() {
         return wrapperPanel(

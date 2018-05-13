@@ -5,13 +5,13 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {XH, hoistComponent} from 'hoist/core';
+import {XH, HoistComponent} from 'hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {vframe} from 'hoist/layout';
 import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel, panel, toolbar} from 'hoist/cmp';
 import data from './impl/LeftRightChooserData';
 
-@hoistComponent()
+@HoistComponent()
 export class LeftRightChooserPanel extends Component {
 
     leftRightChooserModel = new LeftRightChooserModel({

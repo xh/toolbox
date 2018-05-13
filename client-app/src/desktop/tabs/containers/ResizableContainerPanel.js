@@ -5,12 +5,12 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {hoistComponent} from 'hoist/core/index';
+import {HoistComponent} from 'hoist/core/index';
 import {hbox, vbox, box} from 'hoist/layout/index';
 import {panel, resizable} from 'hoist/cmp';
 import {wrapperPanel} from '../impl/WrapperPanel';
 
-@hoistComponent()
+@HoistComponent()
 export class ResizableContainerPanel extends Component {
     render() {
         return wrapperPanel(

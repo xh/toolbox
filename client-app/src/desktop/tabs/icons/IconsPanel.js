@@ -6,7 +6,7 @@
  */
 
 import {Component} from 'react';
-import {hoistComponent} from 'hoist/core/index';
+import {HoistComponent} from 'hoist/core/index';
 import {div, hbox, vbox} from 'hoist/layout';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {panel} from 'hoist/cmp';
@@ -14,7 +14,7 @@ import {Icon} from 'hoist/icon';
 
 import './IconsPanel.scss';
 
-@hoistComponent()
+@HoistComponent()
 export class IconsPanel extends Component {
 
     render() {

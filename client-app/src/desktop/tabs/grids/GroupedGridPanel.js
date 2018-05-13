@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {hoistComponent} from 'hoist/core';
+import {HoistComponent} from 'hoist/core';
 import {vframe} from 'hoist/layout';
 import {panel} from 'hoist/cmp';
 import {grid, GridModel} from 'hoist/grid';
@@ -17,7 +17,7 @@ import {cloneDeep} from 'lodash';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {companyTrades} from '../../../data';
 
-@hoistComponent()
+@HoistComponent()
 export class GroupedGridPanel extends Component {
 
     gridModel = new GridModel({

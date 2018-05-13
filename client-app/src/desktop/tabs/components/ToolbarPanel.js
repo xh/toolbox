@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {hoistComponent} from 'hoist/core';
+import {HoistComponent} from 'hoist/core';
 import {box, hframe, vframe, filler} from 'hoist/layout';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {comboField, toolbar, toolbarSep, panel, ToastManager} from 'hoist/cmp';
@@ -13,7 +13,7 @@ import {button, Position} from 'hoist/kit/blueprint';
 import {Icon} from 'hoist/icon';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
-@hoistComponent()
+@HoistComponent()
 export class ToolbarPanel extends Component {
     toolBarModel = new ToolbarPanelModel();
 

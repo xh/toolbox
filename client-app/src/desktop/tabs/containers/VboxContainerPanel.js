@@ -5,13 +5,13 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {hoistComponent} from 'hoist/core/index';
+import {HoistComponent} from 'hoist/core/index';
 import {box, vbox} from 'hoist/layout/index';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {panel} from 'hoist/cmp';
 import './BoxContainer.scss';
 
-@hoistComponent()
+@HoistComponent()
 export class VboxContainerPanel extends Component {
     render() {
         return wrapperPanel(
