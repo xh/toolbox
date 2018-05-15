@@ -28,6 +28,8 @@ export class AppModel {
     tabs = this.createTabContainer();
     loginMessage = 'User: \'toolbox@xh.io\' / Password: \'toolbox\'';
 
+    get enableLogout() {return true}
+
     async initAsync() {
         XH.track({msg: 'Loaded App'});
     }
