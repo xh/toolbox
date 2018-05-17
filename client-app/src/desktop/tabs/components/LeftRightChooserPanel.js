@@ -28,7 +28,7 @@ export class LeftRightChooserPanel extends Component {
                 width: 600,
                 height: 400,
                 item: this.renderExample(),
-                bottomToolbar: toolbar(
+                bbar: toolbar(
                     leftRightChooserFilter({
                         fields: ['text'],
                         model: this.leftRightChooserModel
