@@ -5,94 +5,115 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from 'hoist/core';
-import {wrapperPanel} from '../impl/WrapperPanel';
-import {computed, observable, setter} from 'hoist/mobx';
-import {vframe} from 'hoist/layout';
-import {delay} from 'lodash';
+import {cloneDeep} from 'lodash';
+import {XH, HoistComponent} from 'hoist/core';
+import {action, observable} from 'hoist/mobx';
+import {vframe, filler} from 'hoist/layout';
+import {panel, toolbar} from 'hoist/cmp';
+import {grid, GridModel} from 'hoist/grid';
+import {baseCol} from 'hoist/columns/Core';
+import {LocalStore} from 'hoist/data';
+import {numberRenderer, millionsRenderer} from 'hoist/format';
 import {button, inputGroup, label, checkbox} from 'hoist/kit/blueprint';
-import {loadMask, panel, toolbar} from 'hoist/cmp';
-import {pluralize} from 'hoist/utils/JsUtils';
+
+import {wrapperPanel} from '../impl/WrapperPanel';
+import {companyTrades} from '../../../data';
 
 @HoistComponent()
-export class LoadMaskPanel extends Component {
-    @observable @setter showMask = false;
-    @observable @setter seconds = 2;
-    @observable @setter maskText = '';
-    @observable @setter isViewport = false;
+export class MaskPanel extends Component {
 
-    @computed
-    get text() {
-        if (this.showMask) {
-            return `Loading in ${this.seconds} ${pluralize('second', this.seconds)}...
-                Viewport is ${this.isViewport ? '' : 'not '} covered`;
-        } else {
-            return 'Content...';
-        }
+    @observable isDisabled = false;
+    @observable seconds = 2;
+
+    gridModel = new GridModel({
+        store: new LocalStore({
+            fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
+        }),
+        columns: [
+            baseCol({
+                headerName: 'Company',
+                field: 'company'
+            }),
+            baseCol({
+                headerName: 'City',
+                field: 'city'
+            }),
+            baseCol({
+                headerName: 'Trade Volume',
+                field: 'trade_volume',
+                align: 'right',
+                cellRenderer: millionsRenderer({precision: 1, label: true})
+            }),
+            baseCol({
+                headerName: 'P&L',
+                field: 'profit_loss',
+                align: 'right',
+                cellRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+            })
+        ]
+    });
+
+    constructor() {
+        super();
+
+        const trades = cloneDeep(companyTrades);
+        trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
+        this.gridModel.loadData(trades.reverse());
     }
 
     render() {
         return wrapperPanel(
             panel({
-                cls: 'xh-toolbox-loadmask-panel',
-                title: 'LoadMask Component',
+                cls: 'xh-toolbox-standardgrid-panel',
+                title: 'Standard Grid',
                 width: 600,
-                height: 200,
+                height: 400,
                 item: this.renderExample(),
                 bbar: toolbar({
                     alignItems: 'baseline',
                     items: [
-                        label('Loading Seconds:'),
+                        label('Disable Seconds:'),
                         inputGroup({
                             value: this.seconds,
                             style: {width: '50px'},
                             onChange: (value) => this.updateSeconds(value)
                         }),
-                        label('Mask Text: '),
-                        inputGroup({
-                            value: this.maskText,
-                            style: {width: '100px'},
-                            onChange: (value) => this.updateMaskText(value)
-                        }),
-                        label('viewport'),
-                        checkbox({
-                            value: this.isViewport,
-                            onChange: (value) => this.updateIsViewport(value)
-                        }),
-                        button({text: 'Show Loader', onClick: () => this.enableMask(), disabled: this.showMask})
+                        filler(),
+                        button({text: 'Disable Panel', onClick: this.disablePanel})
                     ]
-                })
+                }),
+                masked: this.isDisabled
             })
         );
     }
 
     renderExample() {
+        const model = this.gridModel;
         return vframe({
             cls: 'xh-toolbox-example-container',
-            items: [
-                this.text,
-                loadMask({ isDisplayed: this.showMask, text: this.maskText, inline: !this.isViewport})
-            ]
+            item: grid({model})
         });
     }
 
-    enableMask() {
-        this.setShowMask(true);
-
-        delay(() => {
-            this.setShowMask(false);
-        }, this.seconds * 1000);
-    }
-
+    @action
     updateSeconds(e) {
-        this.setSeconds(e.target.value);
+        this.seconds = e.target.value;
     }
 
-    updateMaskText(e) {
-        this.setMaskText(e.target.value);
+    @action
+    disablePanel = () => {
+        this.isDisabled = true;
+        setTimeout(this.enablePanel, this.seconds * 1000);
     }
 
-    updateIsViewport(e) {
-        this.setIsViewport(e.target.checked);
+    @action
+    enablePanel = () => {
+        this.isDisabled = false;
     }
+
+    // ???
+    destroy() {
+        XH.safeDestroy(this.gridModel);
+    }
+
 }

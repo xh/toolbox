@@ -9,7 +9,6 @@ import {HoistComponent} from 'hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {computed, observable, setter} from 'hoist/mobx';
 import {vframe} from 'hoist/layout';
-import {delay} from 'lodash';
 import {button, inputGroup, label, checkbox} from 'hoist/kit/blueprint';
 import {loadMask, panel, toolbar} from 'hoist/cmp';
 import {pluralize} from 'hoist/utils/JsUtils';
@@ -17,7 +16,7 @@ import {pluralize} from 'hoist/utils/JsUtils';
 @HoistComponent()
 export class LoadMaskPanel extends Component {
     @observable @setter showMask = false;
-    @observable @setter seconds = 2;
+    @observable @setter seconds = 5;
     @observable @setter maskText = '';
     @observable @setter isViewport = false;
 
@@ -39,7 +38,7 @@ export class LoadMaskPanel extends Component {
                 width: 600,
                 height: 200,
                 item: this.renderExample(),
-                bottomToolbar: toolbar({
+                bbar: toolbar({
                     alignItems: 'baseline',
                     items: [
                         label('Loading Seconds:'),
@@ -79,7 +78,7 @@ export class LoadMaskPanel extends Component {
     enableMask() {
         this.setShowMask(true);
 
-        delay(() => {
+        setTimeout(() => {
             this.setShowMask(false);
         }, this.seconds * 1000);
     }
