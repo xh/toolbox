@@ -14,7 +14,7 @@ import {grid, GridModel} from 'hoist/grid';
 import {baseCol} from 'hoist/columns/Core';
 import {LocalStore} from 'hoist/data';
 import {numberRenderer, millionsRenderer} from 'hoist/format';
-import {button, inputGroup, label, checkbox} from 'hoist/kit/blueprint';
+import {button, inputGroup, label} from 'hoist/kit/blueprint';
 
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {companyTrades} from '../../../data';
