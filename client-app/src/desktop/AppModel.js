@@ -6,7 +6,8 @@
  */
 import {XH} from 'hoist/core';
 import {HoistAppModel} from 'hoist/app';
-import {TabContainerModel, FeedbackDialogModel} from 'hoist/cmp';
+import {TabContainerModel} from 'hoist/cmp/tab';
+import {FeedbackDialogModel} from 'hoist/cmp/feedback';
 
 import {HomePanel} from './tabs/home/HomePanel';
 import {LeftRightChooserPanel} from './tabs/components/LeftRightChooserPanel';

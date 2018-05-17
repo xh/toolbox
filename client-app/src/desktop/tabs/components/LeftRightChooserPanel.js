@@ -7,8 +7,10 @@
 import {Component} from 'react';
 import {XH, HoistComponent} from 'hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {vframe} from 'hoist/layout';
-import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel, panel, toolbar} from 'hoist/cmp';
+import {vframe} from 'hoist/cmp/layout';
+import {panel} from 'hoist/cmp/panel';
+import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from 'hoist/cmp/leftRightChooser';
+import {toolbar} from 'hoist/cmp/toolbar';
 import data from './impl/LeftRightChooserData';
 
 @HoistComponent()
@@ -28,7 +30,7 @@ export class LeftRightChooserPanel extends Component {
                 width: 600,
                 height: 400,
                 item: this.renderExample(),
-                bottomToolbar: toolbar(
+                bbar: toolbar(
                     leftRightChooserFilter({
                         fields: ['text'],
                         model: this.leftRightChooserModel
