@@ -111,7 +111,6 @@ export class MaskPanel extends Component {
         this.isDisabled = false;
     }
 
-    // ???
     destroy() {
         XH.safeDestroy(this.gridModel);
     }
