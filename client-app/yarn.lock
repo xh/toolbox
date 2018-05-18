@@ -126,25 +126,25 @@
   version "0.1.7"
   resolved "https://repo.xh.io/repository/npm-public/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.1.7.tgz#4336c4b06d0b5608ff1215464b66fcf9f4795284"
 
-"@fortawesome/fontawesome-pro-light@~5.0.10":
+"@fortawesome/fontawesome-pro-light@~5.0.13":
   version "5.0.13"
   resolved "https://repo.xh.io/repository/npm-public/@fortawesome/fontawesome-pro-light/-/fontawesome-pro-light-5.0.13.tgz#d233f91dffeb945a93b5723c3a7cabb63d24ca98"
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.1.7"
 
-"@fortawesome/fontawesome-pro-regular@~5.0.10":
+"@fortawesome/fontawesome-pro-regular@~5.0.13":
   version "5.0.13"
   resolved "https://repo.xh.io/repository/npm-public/@fortawesome/fontawesome-pro-regular/-/fontawesome-pro-regular-5.0.13.tgz#1a953a3826185d0446921ec59c89056f0564404e"
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.1.7"
 
-"@fortawesome/fontawesome-pro-solid@~5.0.10":
+"@fortawesome/fontawesome-pro-solid@~5.0.13":
   version "5.0.13"
   resolved "https://repo.xh.io/repository/npm-public/@fortawesome/fontawesome-pro-solid/-/fontawesome-pro-solid-5.0.13.tgz#f78c90c16033af861e2717dde32f94defcc528b9"
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.1.7"
 
-"@fortawesome/fontawesome@~1.1.5":
+"@fortawesome/fontawesome@~1.1.8":
   version "1.1.8"
   resolved "https://repo.xh.io/repository/npm-public/@fortawesome/fontawesome/-/fontawesome-1.1.8.tgz#75fe66a60f95508160bb16bd781ad7d89b280f5b"
   dependencies:
@@ -201,18 +201,18 @@
     webpack-bundle-analyzer "~2.11.1"
     webpack-dev-server "~2.11.2"
 
-"@xh/hoist@^1.0.0-SNAPSHOT":
-  version "1.0.1"
-  resolved "https://repo.xh.io/repository/npm-hosted/@xh/hoist/-/hoist-1.0.1.tgz#f00e3d66c418f6c1e93da9750f25e352ce723647"
+"@xh/hoist@^2.0.0-SNAPSHOT":
+  version "2.0.0-SNAPSHOT.1526566379507"
+  resolved "https://repo.xh.io/repository/npm-public/@xh/hoist/-/hoist-2.0.0-SNAPSHOT.1526566379507.tgz#eaf7ebc9c99d340317ca0eec849e27caeb4e6977"
   dependencies:
     "@blueprintjs/core" "~2.3.0"
     "@blueprintjs/datetime" "~2.0.2"
     "@blueprintjs/icons" "~2.2.0"
     "@blueprintjs/select" "~2.0.0"
-    "@fortawesome/fontawesome" "~1.1.5"
-    "@fortawesome/fontawesome-pro-light" "~5.0.10"
-    "@fortawesome/fontawesome-pro-regular" "~5.0.10"
-    "@fortawesome/fontawesome-pro-solid" "~5.0.10"
+    "@fortawesome/fontawesome" "~1.1.8"
+    "@fortawesome/fontawesome-pro-light" "~5.0.13"
+    "@fortawesome/fontawesome-pro-regular" "~5.0.13"
+    "@fortawesome/fontawesome-pro-solid" "~5.0.13"
     "@fortawesome/react-fontawesome" "~0.0.18"
     ag-grid "~17.1.0"
     ag-grid-enterprise "~17.1.0"
