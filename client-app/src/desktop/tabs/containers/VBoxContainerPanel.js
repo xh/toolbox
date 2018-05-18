@@ -11,7 +11,7 @@ import {wrapperPanel} from '../impl/WrapperPanel';
 import './BoxContainer.scss';
 
 @HoistComponent()
-export class VboxContainerPanel extends Component {
+export class VBoxContainerPanel extends Component {
     render() {
         return wrapperPanel(
             panel({

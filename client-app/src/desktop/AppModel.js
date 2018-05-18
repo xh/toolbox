@@ -13,8 +13,8 @@ import {HomePanel} from './tabs/home/HomePanel';
 import {LeftRightChooserPanel} from './tabs/components/LeftRightChooserPanel';
 import {LoadMaskPanel} from './tabs/components/LoadMaskPanel';
 import {ToolbarPanel} from './tabs/components/ToolbarPanel';
-import {HboxContainerPanel} from './tabs/containers/HboxContainerPanel';
-import {VboxContainerPanel} from './tabs/containers/VboxContainerPanel';
+import {HBoxContainerPanel} from './tabs/containers/HBoxContainerPanel';
+import {VBoxContainerPanel} from './tabs/containers/VBoxContainerPanel';
 import {ResizableContainerPanel} from './tabs/containers/ResizableContainerPanel';
 import {TabPanelContainerPanel} from './tabs/containers/TabPanelContainerPanel';
 import {StandardGridPanel} from './tabs/grids/StandardGridPanel';
@@ -124,8 +124,8 @@ export class AppModel {
                 id: 'containers',
                 orientation: 'v',
                 children: [
-                    {id: 'hbox', component: HboxContainerPanel},
-                    {id: 'vbox', component: VboxContainerPanel},
+                    {id: 'hbox', name: 'HBox', component: HBoxContainerPanel},
+                    {id: 'vbox', name: 'VBox', component: VBoxContainerPanel},
                     {id: 'resizable', component: ResizableContainerPanel},
                     {id: 'tabPanel', component: TabPanelContainerPanel}
                 ]
