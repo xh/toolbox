@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {XH, HoistComponent} from 'hoist/core';
+import {HoistComponent} from 'hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {panel, vframe} from 'hoist/cmp/layout';
 import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from 'hoist/cmp/leftrightchooser';

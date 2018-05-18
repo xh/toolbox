@@ -5,9 +5,12 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {XH, HoistComponent} from 'hoist/core';
-import {panel, vframe} from 'hoist/cmp/layout';
-import {grid, GridModel} from 'hoist/cmp/grid';
+import {HoistComponent} from 'hoist/core';
+import {panel} from 'hoist/cmp/layout';
+import {grid, GridModel, colChooserButton} from 'hoist/cmp/grid';
+import {storeFilterField, storeCountLabel} from 'hoist/cmp/store';
+import {toolbar} from 'hoist/cmp/toolbar';
+import {Icon} from 'hoist/icon';
 import {baseCol} from 'hoist/columns/Core';
 import {LocalStore} from 'hoist/data';
 import {numberRenderer, millionsRenderer} from 'hoist/format';
@@ -23,6 +26,7 @@ export class StandardGridPanel extends Component {
         store: new LocalStore({
             fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
         }),
+        enableColChooser: true,
         columns: [
             baseCol({
                 headerName: 'Company',
@@ -36,12 +40,14 @@ export class StandardGridPanel extends Component {
                 headerName: 'Trade Volume',
                 field: 'trade_volume',
                 align: 'right',
+                description: 'Total dollar value of all executed trades.',
                 cellRenderer: millionsRenderer({precision: 1, label: true})
             }),
             baseCol({
                 headerName: 'P&L',
                 field: 'profit_loss',
                 align: 'right',
+                description: 'The amount of money made or lost!',
                 cellRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
             })
         ]
@@ -56,23 +62,31 @@ export class StandardGridPanel extends Component {
     }
 
     render() {
+        const {model} = this,
+            store = model.store;
+
         return wrapperPanel(
             panel({
-                cls: 'xh-toolbox-standardgrid-panel',
+                cls: 'xh-toolbox-standardgrid-panel xh-toolbox-example-container',
                 title: 'Standard Grid',
+                icon: Icon.grid(),
                 width: 600,
                 height: 400,
-                item: this.renderExample()
+                item: grid({model}),
+                bbar: toolbar(
+                    storeCountLabel({
+                        store,
+                        units: 'companies',
+                        flex: 1
+                    }),
+                    storeFilterField({
+                        store,
+                        fields: ['company', 'city']
+                    }),
+                    colChooserButton({gridModel: model})
+                )
             })
         );
-    }
-
-    renderExample() {
-        const model = this.model;
-        return vframe({
-            cls: 'xh-toolbox-example-container',
-            item: grid({model})
-        });
     }
 
 }

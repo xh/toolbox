@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {XH, HoistComponent} from 'hoist/core';
+import {HoistComponent} from 'hoist/core';
 import {panel, vframe} from 'hoist/cmp/layout';
 import {restGrid, RestGridModel, RestStore} from 'hoist/cmp/rest';
 import {boolCheckCol, baseCol} from 'hoist/columns/Core';

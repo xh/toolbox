@@ -151,8 +151,8 @@
     "@fortawesome/fontawesome-common-types" "^0.1.7"
 
 "@fortawesome/react-fontawesome@~0.0.18":
-  version "0.0.19"
-  resolved "https://repo.xh.io/repository/npm-public/@fortawesome/react-fontawesome/-/react-fontawesome-0.0.19.tgz#9c90c1aac0984687fffbea44aa4ad817c6f4356e"
+  version "0.0.20"
+  resolved "https://repo.xh.io/repository/npm-public/@fortawesome/react-fontawesome/-/react-fontawesome-0.0.20.tgz#5ec711f3a032c13643e454b360112b6346a276d6"
   dependencies:
     humps "^2.0.1"
     prop-types "^15.5.7"
@@ -202,8 +202,8 @@
     webpack-dev-server "~2.11.2"
 
 "@xh/hoist@^2.0.0-SNAPSHOT":
-  version "2.0.0-SNAPSHOT.1526566379507"
-  resolved "https://repo.xh.io/repository/npm-public/@xh/hoist/-/hoist-2.0.0-SNAPSHOT.1526566379507.tgz#eaf7ebc9c99d340317ca0eec849e27caeb4e6977"
+  version "2.0.0-SNAPSHOT.1526687768672"
+  resolved "https://repo.xh.io/repository/npm-hosted/@xh/hoist/-/hoist-2.0.0-SNAPSHOT.1526687768672.tgz#08f2b747de6aada03cc4b16f6463ad0b96378616"
   dependencies:
     "@blueprintjs/core" "~2.3.0"
     "@blueprintjs/datetime" "~2.0.2"
