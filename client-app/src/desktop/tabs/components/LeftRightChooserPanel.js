@@ -9,7 +9,7 @@ import {XH, HoistComponent} from 'hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {vframe} from 'hoist/cmp/layout';
 import {panel} from 'hoist/cmp/panel';
-import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from 'hoist/cmp/leftRightChooser';
+import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from 'hoist/cmp/leftrightchooser';
 import {toolbar} from 'hoist/cmp/toolbar';
 import data from './impl/LeftRightChooserData';
 
