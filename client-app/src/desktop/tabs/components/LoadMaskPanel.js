@@ -5,14 +5,20 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
+import {observable, setter} from 'hoist/mobx';
 import {button, inputGroup, label, checkbox} from 'hoist/kit/blueprint';
+import {cloneDeep} from 'lodash';
 import {HoistComponent} from 'hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {computed, observable, setter} from 'hoist/mobx';
 import {panel, vframe} from 'hoist/cmp/layout';
+import {grid, GridModel} from 'hoist/cmp/grid';
+import {baseCol} from 'hoist/columns/Core';
+import {LocalStore} from 'hoist/data';
 import {loadMask} from 'hoist/cmp/mask';
 import {toolbar} from 'hoist/cmp/toolbar';
-import {pluralize} from 'hoist/utils/JsUtils';
+import {numberRenderer, millionsRenderer} from 'hoist/format';
+
+import {companyTrades} from '../../../data';
 
 @HoistComponent()
 export class LoadMaskPanel extends Component {
@@ -21,15 +27,33 @@ export class LoadMaskPanel extends Component {
     @observable @setter maskText = '';
     @observable @setter isViewport = false;
 
-    @computed
-    get text() {
-        if (this.showMask) {
-            return `Loading in ${this.seconds} ${pluralize('second', this.seconds)}...
-                Viewport is ${this.isViewport ? '' : 'not '} covered`;
-        } else {
-            return 'Content...';
-        }
-    }
+    gridModel = new GridModel({
+        store: new LocalStore({
+            fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
+        }),
+        columns: [
+            baseCol({
+                headerName: 'Company',
+                field: 'company'
+            }),
+            baseCol({
+                headerName: 'City',
+                field: 'city'
+            }),
+            baseCol({
+                headerName: 'Trade Volume',
+                field: 'trade_volume',
+                align: 'right',
+                cellRenderer: millionsRenderer({precision: 1, label: true})
+            }),
+            baseCol({
+                headerName: 'P&L',
+                field: 'profit_loss',
+                align: 'right',
+                cellRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+            })
+        ]
+    });
 
     render() {
         return wrapperPanel(
@@ -37,7 +61,7 @@ export class LoadMaskPanel extends Component {
                 cls: 'xh-toolbox-loadmask-panel',
                 title: 'LoadMask Component',
                 width: 600,
-                height: 200,
+                height: 400,
                 item: this.renderExample(),
                 bbar: toolbar({
                     alignItems: 'baseline',
@@ -59,7 +83,7 @@ export class LoadMaskPanel extends Component {
                             value: this.isViewport,
                             onChange: (value) => this.updateIsViewport(value)
                         }),
-                        button({text: 'Show Loader', onClick: () => this.enableMask(), disabled: this.showMask})
+                        button({text: 'Load', onClick: this.enableMask, disabled: this.showMask})
                     ]
                 })
             })
@@ -67,19 +91,24 @@ export class LoadMaskPanel extends Component {
     }
 
     renderExample() {
+        const model = this.gridModel;
         return vframe({
             cls: 'xh-toolbox-example-container',
             items: [
-                this.text,
+                grid({model}),
                 loadMask({ isDisplayed: this.showMask, text: this.maskText, inline: !this.isViewport})
             ]
         });
     }
 
-    enableMask() {
+    enableMask = () => {
         this.setShowMask(true);
+        if (!this.isViewport) this.gridModel.loadData([]);
 
         setTimeout(() => {
+            const trades = cloneDeep(companyTrades);
+            trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
+            if (!this.isViewport) this.gridModel.loadData(trades.reverse());
             this.setShowMask(false);
         }, this.seconds * 1000);
     }
