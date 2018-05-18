@@ -5,9 +5,9 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from 'hoist/core/index';
-import {hframe, box} from 'hoist/layout';
-import {tabContainer, TabContainerModel, panel} from 'hoist/cmp';
+import {HoistComponent} from 'hoist/core';
+import {box, hframe, panel} from 'hoist/cmp/layout';
+import {tabContainer, TabContainerModel} from 'hoist/cmp/tab';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import './TabPanelContainer.scss';
 

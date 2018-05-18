@@ -5,10 +5,9 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from 'hoist/core/index';
-import {box, hbox} from 'hoist/layout/index';
+import {HoistComponent} from 'hoist/core';
+import {box, hbox, panel} from 'hoist/cmp/layout';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {panel} from 'hoist/cmp';
 import './BoxContainer.scss';
 
 @HoistComponent()

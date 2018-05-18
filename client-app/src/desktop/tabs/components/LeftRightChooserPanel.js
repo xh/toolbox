@@ -7,8 +7,9 @@
 import {Component} from 'react';
 import {XH, HoistComponent} from 'hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {vframe} from 'hoist/layout';
-import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel, panel, toolbar} from 'hoist/cmp';
+import {panel, vframe} from 'hoist/cmp/layout';
+import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from 'hoist/cmp/leftrightchooser';
+import {toolbar} from 'hoist/cmp/toolbar';
 import data from './impl/LeftRightChooserData';
 
 @HoistComponent()

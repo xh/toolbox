@@ -7,9 +7,8 @@
 
 import {Component} from 'react';
 import {HoistComponent} from 'hoist/core/index';
-import {div, hbox, vbox} from 'hoist/layout';
+import {div, hbox, panel, vbox} from 'hoist/cmp/layout';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {panel} from 'hoist/cmp';
 import {Icon} from 'hoist/icon';
 
 import './IconsPanel.scss';
