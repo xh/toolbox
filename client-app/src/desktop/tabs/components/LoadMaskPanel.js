@@ -10,9 +10,8 @@ import {HoistComponent} from 'hoist/core';
 import {delay} from 'lodash';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {computed, observable, setter} from 'hoist/mobx';
-import {vframe} from 'hoist/cmp/layout';
+import {panel, vframe} from 'hoist/cmp/layout';
 import {loadMask} from 'hoist/cmp/mask';
-import {panel} from 'hoist/cmp/panel';
 import {toolbar} from 'hoist/cmp/toolbar';
 import {pluralize} from 'hoist/utils/JsUtils';
 

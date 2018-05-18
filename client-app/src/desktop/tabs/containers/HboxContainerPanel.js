@@ -6,8 +6,7 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from 'hoist/core';
-import {box, hbox} from 'hoist/cmp/layout';
-import {panel} from 'hoist/cmp/panel';
+import {box, hbox, panel} from 'hoist/cmp/layout';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import './BoxContainer.scss';
 

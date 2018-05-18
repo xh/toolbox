@@ -6,8 +6,7 @@
  */
 import {Component} from 'react';
 import {XH, HoistComponent} from 'hoist/core';
-import {vframe} from 'hoist/cmp/layout';
-import {panel} from 'hoist/cmp/panel';
+import {panel, vframe} from 'hoist/cmp/layout';
 import {restGrid, RestGridModel, RestStore} from 'hoist/cmp/rest';
 import {boolCheckCol, baseCol} from 'hoist/columns/Core';
 import {wrapperPanel} from '../impl/WrapperPanel';

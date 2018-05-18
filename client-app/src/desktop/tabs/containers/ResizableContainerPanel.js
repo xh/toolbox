@@ -6,9 +6,7 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from 'hoist/core';
-import {hbox, vbox, box} from 'hoist/cmp/layout';
-import {panel} from 'hoist/cmp/panel';
-import {resizable} from 'hoist/cmp/resizable';
+import {box, hbox, vbox, panel, resizable} from 'hoist/cmp/layout';
 import {wrapperPanel} from '../impl/WrapperPanel';
 
 @HoistComponent()

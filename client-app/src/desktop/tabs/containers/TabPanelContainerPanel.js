@@ -6,9 +6,8 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from 'hoist/core';
-import {hframe, box} from 'hoist/cmp/layout';
+import {box, hframe, panel} from 'hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from 'hoist/cmp/tab';
-import {panel} from 'hoist/cmp/panel';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import './TabPanelContainer.scss';
 
