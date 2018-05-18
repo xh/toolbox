@@ -117,9 +117,9 @@ export class AppModel {
                 id: 'components',
                 orientation: 'v',
                 children: [
-                    {id: 'leftRightChooser', component: LeftRightChooserPanel},
-                    {id: 'maskPanel', component: MaskPanel},
-                    {id: 'loadMask', component: LoadMaskPanel},
+                    {id: 'leftRightChooser', name: 'LeftRightChooser', component: LeftRightChooserPanel},
+                    {id: 'maskPanel', name: 'Mask', component: MaskPanel},
+                    {id: 'loadMask', name: 'LoadMask', component: LoadMaskPanel},
                     {id: 'toolbar', component: ToolbarPanel}
                 ]
             },
@@ -130,7 +130,7 @@ export class AppModel {
                     {id: 'hbox', name: 'HBox', component: HBoxContainerPanel},
                     {id: 'vbox', name: 'VBox', component: VBoxContainerPanel},
                     {id: 'resizable', component: ResizableContainerPanel},
-                    {id: 'tabPanel', component: TabPanelContainerPanel}
+                    {id: 'tabPanel', name: 'TabPanel', component: TabPanelContainerPanel}
                 ]
             },
             {

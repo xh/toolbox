@@ -66,7 +66,7 @@ export class MaskPanel extends Component {
         return wrapperPanel(
             panel({
                 cls: 'xh-toolbox-standardgrid-panel',
-                title: 'Mask Panel',
+                title: 'Mask Component',
                 width: 600,
                 height: 400,
                 item: this.renderExample(),
