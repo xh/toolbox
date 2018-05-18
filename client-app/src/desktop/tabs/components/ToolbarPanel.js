@@ -6,8 +6,8 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from 'hoist/core';
-import {box, hframe, vframe, filler} from 'hoist/cmp/layout';
 import {wrapperPanel} from '../impl/WrapperPanel';
+import {box, hframe, vframe, filler} from 'hoist/cmp/layout';
 import {comboField} from 'hoist/cmp/form';
 import {toolbar, toolbarSep} from 'hoist/cmp/toolbar';
 import {panel} from 'hoist/cmp/panel';
