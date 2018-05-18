@@ -15,7 +15,7 @@ import data from './impl/LeftRightChooserData';
 @HoistComponent()
 export class LeftRightChooserPanel extends Component {
 
-    leftRightChooserModel = new LeftRightChooserModel({
+    localModel = new LeftRightChooserModel({
         data,
         ungroupedName: 'Others',
         leftGroupingEnabled: false
@@ -32,7 +32,7 @@ export class LeftRightChooserPanel extends Component {
                 bbar: toolbar(
                     leftRightChooserFilter({
                         fields: ['text'],
-                        model: this.leftRightChooserModel
+                        model: this.model
                     })
                 )
             })
@@ -42,12 +42,8 @@ export class LeftRightChooserPanel extends Component {
     renderExample() {
         return vframe({
             cls: 'xh-toolbox-example-container',
-            item: leftRightChooser({model: this.leftRightChooserModel})
+            item: leftRightChooser({model: this.model})
         });
-    }
-
-    destroy() {
-        XH.safeDestroy(this.leftRightChooserModel);
     }
 
 }

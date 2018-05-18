@@ -5,24 +5,31 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {XH, HoistComponent} from 'hoist/core';
-import {panel, vframe} from 'hoist/cmp/layout';
+import {cloneDeep} from 'lodash';
+import {HoistComponent} from 'hoist/core';
+import {observable, setter} from 'hoist/mobx';
+import {vframe, filler, panel} from 'hoist/cmp/layout';
+import {toolbar} from 'hoist/cmp/toolbar';
 import {grid, GridModel} from 'hoist/cmp/grid';
 import {baseCol} from 'hoist/columns/Core';
 import {LocalStore} from 'hoist/data';
 import {numberRenderer, millionsRenderer} from 'hoist/format';
-import {cloneDeep} from 'lodash';
+import {button, inputGroup, label} from 'hoist/kit/blueprint';
 
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {companyTrades} from '../../../data';
 
 @HoistComponent()
-export class StandardGridPanel extends Component {
+export class MaskPanel extends Component {
+
+    @observable @setter isDisabled = false;
+    @observable @setter seconds = 5;
 
     localModel = new GridModel({
         store: new LocalStore({
             fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
         }),
+        emptyText: '',
         columns: [
             baseCol({
                 headerName: 'Company',
@@ -52,17 +59,31 @@ export class StandardGridPanel extends Component {
 
         const trades = cloneDeep(companyTrades);
         trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
-        this.model.loadData(trades);
+        this.model.loadData(trades.reverse());
     }
 
     render() {
         return wrapperPanel(
             panel({
                 cls: 'xh-toolbox-standardgrid-panel',
-                title: 'Standard Grid',
+                title: 'Mask Panel',
                 width: 600,
                 height: 400,
-                item: this.renderExample()
+                item: this.renderExample(),
+                bbar: toolbar({
+                    alignItems: 'baseline',
+                    items: [
+                        label('Disable Seconds:'),
+                        inputGroup({
+                            value: this.seconds,
+                            style: {width: '50px'},
+                            onChange: this.updateSeconds
+                        }),
+                        filler(),
+                        button({text: 'Disable Panel', onClick: this.disablePanel})
+                    ]
+                }),
+                masked: this.isDisabled
             })
         );
     }
@@ -73,6 +94,19 @@ export class StandardGridPanel extends Component {
             cls: 'xh-toolbox-example-container',
             item: grid({model})
         });
+    }
+
+    updateSeconds = (e) => {
+        this.setSeconds(e.target.value);
+    }
+
+    disablePanel = () => {
+        this.setIsDisabled(true);
+        setTimeout(this.enablePanel, this.seconds * 1000);
+    }
+
+    enablePanel = () => {
+        this.setIsDisabled(false);
     }
 
 }

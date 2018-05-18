@@ -11,6 +11,7 @@ import {FeedbackDialogModel} from 'hoist/cmp/feedback';
 
 import {HomePanel} from './tabs/home/HomePanel';
 import {LeftRightChooserPanel} from './tabs/components/LeftRightChooserPanel';
+import {MaskPanel} from './tabs/components/MaskPanel';
 import {LoadMaskPanel} from './tabs/components/LoadMaskPanel';
 import {ToolbarPanel} from './tabs/components/ToolbarPanel';
 import {HBoxContainerPanel} from './tabs/containers/HBoxContainerPanel';
@@ -73,6 +74,7 @@ export class AppModel {
                 forwardTo: 'default.components.leftRightChooser',
                 children: [
                     {name: 'leftRightChooser', path: '/leftRightChooser'},
+                    {name: 'maskPanel', path: '/mask'},
                     {name: 'loadMask', path: '/loadMask'},
                     {name: 'toolbar', path: '/toolbar'}
                 ]
@@ -116,6 +118,7 @@ export class AppModel {
                 orientation: 'v',
                 children: [
                     {id: 'leftRightChooser', component: LeftRightChooserPanel},
+                    {id: 'maskPanel', component: MaskPanel},
                     {id: 'loadMask', component: LoadMaskPanel},
                     {id: 'toolbar', component: ToolbarPanel}
                 ]
