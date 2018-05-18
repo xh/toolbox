@@ -10,12 +10,12 @@ import {button, inputGroup, label, checkbox} from 'hoist/kit/blueprint';
 import {cloneDeep} from 'lodash';
 import {HoistComponent} from 'hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {panel, vframe} from 'hoist/cmp/layout';
+import {filler, panel, vframe} from 'hoist/cmp/layout';
 import {grid, GridModel} from 'hoist/cmp/grid';
-import {baseCol} from 'hoist/columns/Core';
-import {LocalStore} from 'hoist/data';
 import {loadMask} from 'hoist/cmp/mask';
 import {toolbar} from 'hoist/cmp/toolbar';
+import {baseCol} from 'hoist/columns/Core';
+import {LocalStore} from 'hoist/data';
 import {numberRenderer, millionsRenderer} from 'hoist/format';
 
 import {companyTrades} from '../../../data';
@@ -27,7 +27,7 @@ export class LoadMaskPanel extends Component {
     @observable @setter maskText = '';
     @observable @setter isViewport = false;
 
-    gridModel = new GridModel({
+    localModel = new GridModel({
         store: new LocalStore({
             fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
         }),
@@ -66,23 +66,24 @@ export class LoadMaskPanel extends Component {
                 bbar: toolbar({
                     alignItems: 'baseline',
                     items: [
-                        label('Loading Seconds:'),
+                        label('Load Seconds:'),
                         inputGroup({
                             value: this.seconds,
                             style: {width: '50px'},
-                            onChange: (value) => this.updateSeconds(value)
+                            onChange: this.updateSeconds
                         }),
                         label('Mask Text: '),
                         inputGroup({
                             value: this.maskText,
                             style: {width: '100px'},
-                            onChange: (value) => this.updateMaskText(value)
+                            onChange: this.updateMaskText
                         }),
                         label('viewport'),
                         checkbox({
                             value: this.isViewport,
-                            onChange: (value) => this.updateIsViewport(value)
+                            onChange: this.updateIsViewport
                         }),
+                        filler(),
                         button({text: 'Load', onClick: this.enableMask, disabled: this.showMask})
                     ]
                 })
@@ -91,7 +92,7 @@ export class LoadMaskPanel extends Component {
     }
 
     renderExample() {
-        const model = this.gridModel;
+        const model = this.model;
         return vframe({
             cls: 'xh-toolbox-example-container',
             items: [
@@ -103,25 +104,29 @@ export class LoadMaskPanel extends Component {
 
     enableMask = () => {
         this.setShowMask(true);
-        if (!this.isViewport) this.gridModel.loadData([]);
+        if (!this.isViewport) this.model.loadData([]);
 
         setTimeout(() => {
-            const trades = cloneDeep(companyTrades);
-            trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
-            if (!this.isViewport) this.gridModel.loadData(trades.reverse());
-            this.setShowMask(false);
+            this.finishLoad();
         }, this.seconds * 1000);
     }
 
-    updateSeconds(e) {
+    finishLoad() {
+        const trades = cloneDeep(companyTrades);
+        trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
+        if (!this.isViewport) this.model.loadData(trades.reverse());
+        this.setShowMask(false);
+    }
+
+    updateSeconds = (e) => {
         this.setSeconds(e.target.value);
     }
 
-    updateMaskText(e) {
+    updateMaskText = (e) => {
         this.setMaskText(e.target.value);
     }
 
-    updateIsViewport(e) {
+    updateIsViewport = (e) => {
         this.setIsViewport(e.target.checked);
     }
 }

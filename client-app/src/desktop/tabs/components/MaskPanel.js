@@ -6,8 +6,8 @@
  */
 import {Component} from 'react';
 import {cloneDeep} from 'lodash';
-import {XH, HoistComponent} from 'hoist/core';
-import {action, observable} from 'hoist/mobx';
+import {HoistComponent} from 'hoist/core';
+import {observable, setter} from 'hoist/mobx';
 import {vframe, filler, panel} from 'hoist/cmp/layout';
 import {toolbar} from 'hoist/cmp/toolbar';
 import {grid, GridModel} from 'hoist/cmp/grid';
@@ -22,13 +22,14 @@ import {companyTrades} from '../../../data';
 @HoistComponent()
 export class MaskPanel extends Component {
 
-    @observable isDisabled = false;
-    @observable seconds = 2;
+    @observable @setter isDisabled = false;
+    @observable @setter seconds = 5;
 
-    gridModel = new GridModel({
+    localModel = new GridModel({
         store: new LocalStore({
             fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
         }),
+        emptyText: '',
         columns: [
             baseCol({
                 headerName: 'Company',
@@ -58,7 +59,7 @@ export class MaskPanel extends Component {
 
         const trades = cloneDeep(companyTrades);
         trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
-        this.gridModel.loadData(trades.reverse());
+        this.model.loadData(trades.reverse());
     }
 
     render() {
@@ -76,7 +77,7 @@ export class MaskPanel extends Component {
                         inputGroup({
                             value: this.seconds,
                             style: {width: '50px'},
-                            onChange: (value) => this.updateSeconds(value)
+                            onChange: this.updateSeconds
                         }),
                         filler(),
                         button({text: 'Disable Panel', onClick: this.disablePanel})
@@ -88,31 +89,24 @@ export class MaskPanel extends Component {
     }
 
     renderExample() {
-        const model = this.gridModel;
+        const model = this.model;
         return vframe({
             cls: 'xh-toolbox-example-container',
             item: grid({model})
         });
     }
 
-    @action
-    updateSeconds(e) {
-        this.seconds = e.target.value;
+    updateSeconds = (e) => {
+        this.setSeconds(e.target.value);
     }
 
-    @action
     disablePanel = () => {
-        this.isDisabled = true;
+        this.setIsDisabled(true);
         setTimeout(this.enablePanel, this.seconds * 1000);
     }
 
-    @action
     enablePanel = () => {
-        this.isDisabled = false;
-    }
-
-    destroy() {
-        XH.safeDestroy(this.gridModel);
+        this.setIsDisabled(false);
     }
 
 }

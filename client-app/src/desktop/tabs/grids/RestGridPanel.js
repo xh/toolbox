@@ -14,7 +14,7 @@ import {wrapperPanel} from '../impl/WrapperPanel';
 @HoistComponent()
 export class RestGridPanel extends Component {
 
-    gridModel = new RestGridModel({
+    localModel = new RestGridModel({
         store: new RestStore({
             url: 'rest/companyRest',
             fields: [
@@ -30,6 +30,7 @@ export class RestGridPanel extends Component {
                 },
                 {
                     name: 'employees',
+                    label: 'Employees (No.)',
                     type: 'number',
                     required: true
                 },
@@ -81,7 +82,7 @@ export class RestGridPanel extends Component {
 
     constructor() {
         super();
-        this.gridModel.loadAsync();
+        this.model.loadAsync();
     }
 
     render() {
@@ -97,15 +98,11 @@ export class RestGridPanel extends Component {
     }
 
     renderExample() {
-        const model = this.gridModel;
+        const model = this.model;
         return vframe({
             cls: 'xh-toolbox-example-container',
             item: restGrid({model})
         });
-    }
-
-    destroy() {
-        XH.safeDestroy(this.gridModel);
     }
 
 }

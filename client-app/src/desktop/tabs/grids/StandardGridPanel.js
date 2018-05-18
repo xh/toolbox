@@ -19,7 +19,7 @@ import {companyTrades} from '../../../data';
 @HoistComponent()
 export class StandardGridPanel extends Component {
 
-    gridModel = new GridModel({
+    localModel = new GridModel({
         store: new LocalStore({
             fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
         }),
@@ -52,7 +52,7 @@ export class StandardGridPanel extends Component {
 
         const trades = cloneDeep(companyTrades);
         trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
-        this.gridModel.loadData(trades);
+        this.model.loadData(trades);
     }
 
     render() {
@@ -68,15 +68,11 @@ export class StandardGridPanel extends Component {
     }
 
     renderExample() {
-        const model = this.gridModel;
+        const model = this.model;
         return vframe({
             cls: 'xh-toolbox-example-container',
             item: grid({model})
         });
-    }
-
-    destroy() {
-        XH.safeDestroy(this.gridModel);
     }
 
 }
