@@ -7,7 +7,7 @@
     "build": "webpack --env.prodBuild",
     "buildAndAnalyze": "webpack --env.prodBuild --env.analyzeBundles",
     "lint": "eslint lint .",
-    "refreshHoist": "rm -rf node_modules/@xh/hoist && yarn upgrade @xh/hoist && yarn install --check-files",
+    "refreshHoist": "rimraf -rf node_modules/@xh/hoist && yarn upgrade @xh/hoist && yarn install --check-files",
     "start": "webpack-dev-server",
     "startAndAnalyze": "webpack-dev-server --env.analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && webpack-dev-server --env.inlineHoist"
@@ -21,6 +21,7 @@
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "~2.0.0"
+    "@xh/hoist-dev-utils": "~2.0.0",
+    "rimraf": "^2.6.2"
   }
 }
