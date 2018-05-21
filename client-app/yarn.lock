@@ -169,9 +169,9 @@
     eslint "~4.19.1"
     eslint-plugin-react "~7.7.0"
 
-"@xh/hoist-dev-utils@~2.0.0":
-  version "2.0.0"
-  resolved "https://repo.xh.io/repository/npm-hosted/@xh/hoist-dev-utils/-/hoist-dev-utils-2.0.0.tgz#9ddcd2db88b556ccf8e71d32dff2a625c1ac3704"
+"@xh/hoist-dev-utils@~2.1.0":
+  version "2.1.0"
+  resolved "https://repo.xh.io/repository/npm-public/@xh/hoist-dev-utils/-/hoist-dev-utils-2.1.0.tgz#f6ef24fe4c715e3bc0a1a5d21a8f89f24a441d84"
   dependencies:
     "@xh/eslint-config" "~0.2.0"
     autoprefixer "~8.5.0"
@@ -192,6 +192,7 @@
     node-sass "~4.9.0"
     postcss-flexbugs-fixes "~3.3.0"
     postcss-loader "~2.1.3"
+    rimraf "~2.6.2"
     sass-loader "~6.0.7"
     sass-material-colors "^0.0.5"
     style-loader "~0.21.0"
@@ -202,8 +203,8 @@
     webpack-dev-server "~2.11.2"
 
 "@xh/hoist@^3.0.0-SNAPSHOT":
-  version "3.0.0-SNAPSHOT.1526923742379"
-  resolved "https://repo.xh.io/repository/npm-public/@xh/hoist/-/hoist-3.0.0-SNAPSHOT.1526923742379.tgz#a654d0c3b652290a4ab942b7eb51ade0007e3916"
+  version "3.0.0-SNAPSHOT.1526933775121"
+  resolved "https://repo.xh.io/repository/npm-public/@xh/hoist/-/hoist-3.0.0-SNAPSHOT.1526933775121.tgz#be48e5801b15a63c429c8f1d3c264251a397972d"
   dependencies:
     "@blueprintjs/core" "~2.3.0"
     "@blueprintjs/datetime" "~2.0.2"
@@ -6136,7 +6137,7 @@ right-align@^0.1.1:
   dependencies:
     align-text "^0.1.1"
 
-rimraf@2, rimraf@^2.2.8, rimraf@^2.5.4, rimraf@^2.6.1, rimraf@^2.6.2:
+rimraf@2, rimraf@^2.2.8, rimraf@^2.5.4, rimraf@^2.6.1, rimraf@^2.6.2, rimraf@~2.6.2:
   version "2.6.2"
   resolved "https://repo.xh.io/repository/npm-public/rimraf/-/rimraf-2.6.2.tgz#2ed8150d24a16ea8651e6d6ef0f47c4158ce7a36"
   dependencies:
