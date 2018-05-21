@@ -6,14 +6,15 @@
  */
 import {Component} from 'react';
 import {observable, setter} from '@xh/hoist/mobx';
-import {button, inputGroup, label, checkbox} from '@xh/hoist/kit/blueprint';
+import {button} from '@xh/hoist/kit/blueprint';
 import {cloneDeep} from 'lodash';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {filler, panel, vframe} from '@xh/hoist/cmp/layout';
+import {box, filler, panel, vframe} from '@xh/hoist/cmp/layout';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
+import {numberField, textField, checkField} from '@xh/hoist/cmp/form';
 import {loadMask} from '@xh/hoist/cmp/mask';
-import {toolbar} from '@xh/hoist/cmp/toolbar';
+import {toolbar, toolbarSep} from '@xh/hoist/cmp/toolbar';
 import {baseCol} from '@xh/hoist/columns/Core';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
@@ -64,24 +65,31 @@ export class LoadMaskPanel extends Component {
                 height: 400,
                 item: this.renderExample(),
                 bbar: toolbar({
-                    alignItems: 'baseline',
                     items: [
-                        label('Load Seconds:'),
-                        inputGroup({
+                        box('Show for'),
+                        numberField({
+                            min: 0,
+                            width: 50,
                             value: this.seconds,
-                            style: {width: '50px'},
-                            onChange: this.updateSeconds
+                            onCommit: this.setSeconds
                         }),
-                        label('Mask Text: '),
-                        inputGroup({
+                        box('seconds'),
+                        toolbarSep(),
+                        box('Text:'),
+                        textField({
+                            width: 100,
                             value: this.maskText,
-                            style: {width: '100px'},
-                            onChange: this.updateMaskText
+                            onCommit: this.setMaskText
                         }),
-                        label('viewport'),
-                        checkbox({
+                        toolbarSep(),
+                        // TODO - not setting / taking value as expected here
+                        checkField({
+                            text: 'On viewport',
                             value: this.isViewport,
-                            onChange: this.updateIsViewport
+                            onCommit: (v) => {
+                                console.log('setting', v);
+                                this.setIsViewport(v);
+                            }
                         }),
                         filler(),
                         button({text: 'Load', onClick: this.enableMask, disabled: this.showMask})
@@ -97,7 +105,11 @@ export class LoadMaskPanel extends Component {
             cls: 'xh-toolbox-example-container',
             items: [
                 grid({model}),
-                loadMask({ isDisplayed: this.showMask, text: this.maskText, inline: !this.isViewport})
+                loadMask({
+                    isDisplayed: this.showMask,
+                    text: this.maskText,
+                    inline: !this.isViewport
+                })
             ]
         });
     }
@@ -118,15 +130,4 @@ export class LoadMaskPanel extends Component {
         this.setShowMask(false);
     }
 
-    updateSeconds = (e) => {
-        this.setSeconds(e.target.value);
-    }
-
-    updateMaskText = (e) => {
-        this.setMaskText(e.target.value);
-    }
-
-    updateIsViewport = (e) => {
-        this.setIsViewport(e.target.checked);
-    }
 }

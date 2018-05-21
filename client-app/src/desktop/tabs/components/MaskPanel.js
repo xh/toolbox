@@ -8,13 +8,14 @@ import {Component} from 'react';
 import {cloneDeep} from 'lodash';
 import {HoistComponent} from '@xh/hoist/core';
 import {observable, setter} from '@xh/hoist/mobx';
-import {vframe, filler, panel} from '@xh/hoist/cmp/layout';
+import {box, vframe, filler, panel} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
+import {numberField} from '@xh/hoist/cmp/form';
 import {baseCol} from '@xh/hoist/columns/Core';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
-import {button, inputGroup, label} from '@xh/hoist/kit/blueprint';
+import {button} from '@xh/hoist/kit/blueprint';
 
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {companyTrades} from '../../../data';
@@ -71,14 +72,15 @@ export class MaskPanel extends Component {
                 height: 400,
                 item: this.renderExample(),
                 bbar: toolbar({
-                    alignItems: 'baseline',
                     items: [
-                        label('Disable Seconds:'),
-                        inputGroup({
+                        box('Disable for'),
+                        numberField({
+                            min: 0,
+                            width: 50,
                             value: this.seconds,
-                            style: {width: '50px'},
-                            onChange: this.updateSeconds
+                            onCommit: this.updateSeconds
                         }),
+                        box('seconds'),
                         filler(),
                         button({text: 'Disable Panel', onClick: this.disablePanel})
                     ]
@@ -96,8 +98,8 @@ export class MaskPanel extends Component {
         });
     }
 
-    updateSeconds = (e) => {
-        this.setSeconds(e.target.value);
+    updateSeconds = (v) => {
+        this.setSeconds(v);
     }
 
     disablePanel = () => {
