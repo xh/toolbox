@@ -4,8 +4,8 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {HoistModel} from 'hoist/core';
-import {setter, observable} from 'hoist/mobx';
+import {HoistModel} from '@xh/hoist/core';
+import {setter, observable} from '@xh/hoist/mobx';
 import {usStates} from '../../../data';
 
 @HoistModel()

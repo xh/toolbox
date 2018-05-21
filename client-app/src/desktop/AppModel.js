@@ -4,10 +4,10 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {XH} from 'hoist/core';
-import {HoistAppModel} from 'hoist/app';
-import {TabContainerModel} from 'hoist/cmp/tab';
-import {FeedbackDialogModel} from 'hoist/cmp/feedback';
+import {XH} from '@xh/hoist/core';
+import {HoistAppModel} from '@xh/hoist/app';
+import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import {FeedbackDialogModel} from '@xh/hoist/cmp/feedback';
 
 import {HomePanel} from './tabs/home/HomePanel';
 import {LeftRightChooserPanel} from './tabs/components/LeftRightChooserPanel';

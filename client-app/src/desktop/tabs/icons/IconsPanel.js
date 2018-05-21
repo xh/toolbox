@@ -6,10 +6,10 @@
  */
 
 import {Component} from 'react';
-import {HoistComponent} from 'hoist/core/index';
-import {div, hbox, panel, vbox} from 'hoist/cmp/layout';
+import {HoistComponent} from '@xh/hoist/core/index';
+import {div, hbox, panel, vbox} from '@xh/hoist/cmp/layout';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {Icon} from 'hoist/icon';
+import {Icon} from '@xh/hoist/icon';
 
 import './IconsPanel.scss';
 

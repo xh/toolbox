@@ -5,18 +5,18 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {observable, setter} from 'hoist/mobx';
-import {button, inputGroup, label, checkbox} from 'hoist/kit/blueprint';
+import {observable, setter} from '@xh/hoist/mobx';
+import {button, inputGroup, label, checkbox} from '@xh/hoist/kit/blueprint';
 import {cloneDeep} from 'lodash';
-import {HoistComponent} from 'hoist/core';
+import {HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {filler, panel, vframe} from 'hoist/cmp/layout';
-import {grid, GridModel} from 'hoist/cmp/grid';
-import {loadMask} from 'hoist/cmp/mask';
-import {toolbar} from 'hoist/cmp/toolbar';
-import {baseCol} from 'hoist/columns/Core';
-import {LocalStore} from 'hoist/data';
-import {numberRenderer, millionsRenderer} from 'hoist/format';
+import {filler, panel, vframe} from '@xh/hoist/cmp/layout';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
+import {loadMask} from '@xh/hoist/cmp/mask';
+import {toolbar} from '@xh/hoist/cmp/toolbar';
+import {baseCol} from '@xh/hoist/columns/Core';
+import {LocalStore} from '@xh/hoist/data';
+import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 
 import {companyTrades} from '../../../data';
 

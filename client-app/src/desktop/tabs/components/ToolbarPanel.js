@@ -5,14 +5,14 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from 'hoist/core';
+import {HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {box, filler, hframe, panel, vframe} from 'hoist/cmp/layout';
-import {comboField} from 'hoist/cmp/form';
-import {toolbar, toolbarSep} from 'hoist/cmp/toolbar';
-import {ToastManager} from 'hoist/toast';
-import {button, Position} from 'hoist/kit/blueprint';
-import {Icon} from 'hoist/icon';
+import {box, filler, hframe, panel, vframe} from '@xh/hoist/cmp/layout';
+import {comboField} from '@xh/hoist/cmp/form';
+import {toolbar, toolbarSep} from '@xh/hoist/cmp/toolbar';
+import {ToastManager} from '@xh/hoist/toast';
+import {button, Position} from '@xh/hoist/kit/blueprint';
+import {Icon} from '@xh/hoist/icon';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
 @HoistComponent()

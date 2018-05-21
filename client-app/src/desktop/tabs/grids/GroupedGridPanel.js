@@ -5,12 +5,12 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from 'hoist/core';
-import {panel, vframe} from 'hoist/cmp/layout';
-import {grid, GridModel} from 'hoist/cmp/grid';
-import {baseCol} from 'hoist/columns/Core';
-import {LocalStore} from 'hoist/data';
-import {numberRenderer, millionsRenderer} from 'hoist/format';
+import {HoistComponent} from '@xh/hoist/core';
+import {panel, vframe} from '@xh/hoist/cmp/layout';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
+import {baseCol} from '@xh/hoist/columns/Core';
+import {LocalStore} from '@xh/hoist/data';
+import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {cloneDeep} from 'lodash';
 
 import {wrapperPanel} from '../impl/WrapperPanel';

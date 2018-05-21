@@ -6,8 +6,8 @@
  */
 
 import {Component} from 'react';
-import {elemFactory} from 'hoist/core';
-import {div} from 'hoist/cmp/layout';
+import {elemFactory} from '@xh/hoist/core';
+import {div} from '@xh/hoist/cmp/layout';
 
 class WrapperPanel extends Component {
     render() {

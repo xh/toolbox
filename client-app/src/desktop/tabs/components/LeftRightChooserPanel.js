@@ -5,11 +5,11 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from 'hoist/core';
+import {HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {panel, vframe} from 'hoist/cmp/layout';
-import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from 'hoist/cmp/leftrightchooser';
-import {toolbar} from 'hoist/cmp/toolbar';
+import {panel, vframe} from '@xh/hoist/cmp/layout';
+import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@xh/hoist/cmp/leftrightchooser';
+import {toolbar} from '@xh/hoist/cmp/toolbar';
 import data from './impl/LeftRightChooserData';
 
 @HoistComponent()

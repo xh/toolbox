@@ -1,4 +1,4 @@
-import {AppModel as HoistAdminAppModel} from 'hoist/admin';
+import {AppModel as HoistAdminAppModel} from '@xh/hoist/admin';
 
 export class AppModel extends HoistAdminAppModel {
 
