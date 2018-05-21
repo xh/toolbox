@@ -1,6 +1,6 @@
 {
   "name": "toolbox",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
@@ -21,6 +21,6 @@
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "~2.1.0"
+    "@xh/hoist-dev-utils": "~2.1.1"
   }
 }
