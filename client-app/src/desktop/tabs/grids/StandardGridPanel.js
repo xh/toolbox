@@ -40,14 +40,15 @@ export class StandardGridPanel extends Component {
                 headerName: 'Trade Volume',
                 field: 'trade_volume',
                 align: 'right',
-                description: 'Total dollar value of all executed trades.',
+                chooserDescription: 'Total dollar value of all executed trades.',
                 cellRenderer: millionsRenderer({precision: 1, label: true})
             }),
             baseCol({
                 headerName: 'P&L',
                 field: 'profit_loss',
                 align: 'right',
-                description: 'The amount of money made or lost!',
+                chooserName: 'Profit & Loss',
+                chooserDescription: 'The amount of money made ... or lost!',
                 cellRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
             })
         ]
