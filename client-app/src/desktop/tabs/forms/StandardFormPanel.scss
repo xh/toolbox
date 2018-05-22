@@ -1,0 +1,18 @@
+.xh-toolbox-example-container {
+  .xh-panel {
+    &:not(:first-child) {
+      margin-top: 5px;
+    }
+    .xh-panel-body {
+      padding: 5px;
+      > div {
+        padding: 5px;
+        align-items: center;
+        justify-content: flex-end;
+        .pt-label {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+}
