@@ -27,18 +27,18 @@ import {IconsPanel} from './tabs/icons/IconsPanel';
 @HoistAppModel
 export class AppModel {
 
+    feedbackModel = new FeedbackDialogModel();
+    tabs = this.createTabContainer();
+    loginMessage = "User: 'toolbox@xh.io' / Password: 'toolbox'";
+
+    get enableLogout() {return true}
+
     checkAccess(user) {
         const role = 'APP_READER',
             hasAccess = user.hasRole(role),
             message = hasAccess ? '' : `Role "${role}" is required to use this application.`;
         return {hasAccess, message};
     }
-
-    feedbackModel = new FeedbackDialogModel();
-    tabs = this.createTabContainer();
-    loginMessage = 'User: \'toolbox@xh.io\' / Password: \'toolbox\'';
-
-    get enableLogout() {return true}
 
     async initAsync() {
         XH.track({msg: 'Loaded App'});
