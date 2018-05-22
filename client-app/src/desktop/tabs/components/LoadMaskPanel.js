@@ -28,6 +28,8 @@ export class LoadMaskPanel extends Component {
     @observable @setter maskText = '';
     @observable @setter isViewport = false;
 
+    minSeconds = 1;
+
     localModel = new GridModel({
         store: new LocalStore({
             fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
@@ -56,6 +58,10 @@ export class LoadMaskPanel extends Component {
         ]
     });
 
+    get maskingDisabled() {
+        return this.showMask || this.seconds < this.minSeconds;
+    }
+
     render() {
         return wrapperPanel(
             panel({
@@ -68,7 +74,7 @@ export class LoadMaskPanel extends Component {
                     items: [
                         box('Show for'),
                         numberField({
-                            min: 0,
+                            min: this.minSeconds,
                             width: 50,
                             value: this.seconds,
                             onCommit: this.setSeconds
@@ -90,7 +96,7 @@ export class LoadMaskPanel extends Component {
                             }
                         }),
                         filler(),
-                        button({text: 'Load', onClick: this.enableMask, disabled: this.showMask})
+                        button({text: 'Load', onClick: this.enableMask, disabled: this.maskingDisabled})
                     ]
                 })
             })

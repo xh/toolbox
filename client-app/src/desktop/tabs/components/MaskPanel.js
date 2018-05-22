@@ -26,6 +26,8 @@ export class MaskPanel extends Component {
     @observable @setter isDisabled = false;
     @observable @setter seconds = 5;
 
+    minSeconds = 1;
+
     localModel = new GridModel({
         store: new LocalStore({
             fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
@@ -63,6 +65,10 @@ export class MaskPanel extends Component {
         this.model.loadData(trades.reverse());
     }
 
+    get maskingDisabled() {
+        return this.seconds < this.minSeconds;
+    }
+
     render() {
         return wrapperPanel(
             panel({
@@ -75,14 +81,14 @@ export class MaskPanel extends Component {
                     items: [
                         box('Disable for'),
                         numberField({
-                            min: 0,
+                            min: 1,
                             width: 50,
                             value: this.seconds,
                             onCommit: this.updateSeconds
                         }),
                         box('seconds'),
                         filler(),
-                        button({text: 'Disable Panel', onClick: this.disablePanel})
+                        button({text: 'Disable Panel', onClick: this.disablePanel, disabled: this.maskingDisabled})
                     ]
                 }),
                 masked: this.isDisabled
