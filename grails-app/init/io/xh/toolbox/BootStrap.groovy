@@ -14,6 +14,7 @@ class BootStrap {
         def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
         BaseService.parallelInit(services)
         ensureAdminUserCreated()
+        ensureNoRoleUserCreated()
     }
 
     def destroy = {}
@@ -31,6 +32,19 @@ class BootStrap {
                 lastName: 'Demo',
                 password: 'toolbox',
                 isAdmin: true
+            ]).save()
+        }
+    }
+
+    private void ensureNoRoleUserCreated() {
+        def reader = User.findByEmail('norole@xh.io')
+        if (!reader) {
+            new User([
+                    email: 'norole@xh.io',
+                    firstName: 'No',
+                    lastName: 'Role',
+                    password: 'norole',
+                    isAdmin: false
             ]).save()
         }
     }
