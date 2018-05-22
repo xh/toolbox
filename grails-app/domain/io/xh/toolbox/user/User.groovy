@@ -53,8 +53,12 @@ class User implements HoistUser {
     // Implementation
     //---------------------
     private hasKey(String key) {
-        def config = Utils.configService.getJSONArray(key, new JSONArray())
-        return config.contains(username)
+        try {
+            def config = Utils.configService.getJSONArray(key, new JSONArray())
+            return config.contains(username)
+        } catch(e) {
+            return  false;
+        }
     }
 
     def beforeInsert() {
