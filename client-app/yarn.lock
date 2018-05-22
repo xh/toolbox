@@ -169,9 +169,9 @@
     eslint "~4.19.1"
     eslint-plugin-react "~7.7.0"
 
-"@xh/hoist-dev-utils@~2.1.0":
-  version "2.1.0"
-  resolved "https://repo.xh.io/repository/npm-public/@xh/hoist-dev-utils/-/hoist-dev-utils-2.1.0.tgz#f6ef24fe4c715e3bc0a1a5d21a8f89f24a441d84"
+"@xh/hoist-dev-utils@~2.1.1":
+  version "2.1.1"
+  resolved "https://repo.xh.io/repository/npm-hosted/@xh/hoist-dev-utils/-/hoist-dev-utils-2.1.1.tgz#983793fe10701d631576c7f8b3226d29e0845861"
   dependencies:
     "@xh/eslint-config" "~0.2.0"
     autoprefixer "~8.5.0"
@@ -203,8 +203,8 @@
     webpack-dev-server "~2.11.2"
 
 "@xh/hoist@^3.0.0-SNAPSHOT":
-  version "3.0.0-SNAPSHOT.1526933775121"
-  resolved "https://repo.xh.io/repository/npm-public/@xh/hoist/-/hoist-3.0.0-SNAPSHOT.1526933775121.tgz#be48e5801b15a63c429c8f1d3c264251a397972d"
+  version "3.0.0-SNAPSHOT.1527028837599"
+  resolved "https://repo.xh.io/repository/npm-hosted/@xh/hoist/-/hoist-3.0.0-SNAPSHOT.1527028837599.tgz#2f3e5396b22ef196d6ae6faa513ed0c716fb3d96"
   dependencies:
     "@blueprintjs/core" "~2.3.0"
     "@blueprintjs/datetime" "~2.0.2"
