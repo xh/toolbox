@@ -56,8 +56,8 @@ class User implements HoistUser {
         try {
             def config = Utils.configService.getJSONArray(key, new JSONArray())
             return config.contains(username)
-        } catch(e) {
-            return  false;
+        } catch(ignored) {
+            return false
         }
     }
 
