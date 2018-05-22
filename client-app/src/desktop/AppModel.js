@@ -18,6 +18,7 @@ import {HBoxContainerPanel} from './tabs/containers/HBoxContainerPanel';
 import {VBoxContainerPanel} from './tabs/containers/VBoxContainerPanel';
 import {ResizableContainerPanel} from './tabs/containers/ResizableContainerPanel';
 import {TabPanelContainerPanel} from './tabs/containers/TabPanelContainerPanel';
+import {StandardFormPanel} from './tabs/forms/StandardFormPanel';
 import {StandardGridPanel} from './tabs/grids/StandardGridPanel';
 import {GroupedGridPanel} from './tabs/grids/GroupedGridPanel';
 import {RestGridPanel} from './tabs/grids/RestGridPanel';
@@ -98,6 +99,14 @@ export class AppModel {
                 ]
             },
             {
+                name: 'forms',
+                path: '/forms',
+                forwardTo: 'default.forms.standard',
+                children: [
+                    {name: 'standard', path: '/standard'}
+                ]
+            },
+            {
                 name: 'grids',
                 path: '/grids',
                 forwardTo: 'default.grids.standard',
@@ -138,6 +147,13 @@ export class AppModel {
                     {id: 'vbox', name: 'VBox', component: VBoxContainerPanel},
                     {id: 'resizable', component: ResizableContainerPanel},
                     {id: 'tabPanel', name: 'TabPanel', component: TabPanelContainerPanel}
+                ]
+            },
+            {
+                id: 'forms',
+                orientation: 'v',
+                children: [
+                    {id: 'standard', component: StandardFormPanel}
                 ]
             },
             {
