@@ -82,12 +82,10 @@ export class LoadMaskPanel extends Component {
                             onCommit: this.setMaskText
                         }),
                         toolbarSep(),
-                        // TODO - not setting / taking value as expected here
                         checkField({
                             text: 'On viewport',
                             value: this.isViewport,
                             onCommit: (v) => {
-                                console.log('setting', v);
                                 this.setIsViewport(v);
                             }
                         }),
