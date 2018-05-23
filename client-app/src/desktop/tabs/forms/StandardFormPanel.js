@@ -4,9 +4,9 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {hbox, panel, vbox, vframe, filler} from '@xh/hoist/cmp/layout';
+import {box, hbox, panel, vbox, vframe, filler} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
 import {button} from '@xh/hoist/kit/blueprint';
 import {textField, numberField, label, checkField, comboField} from '@xh/hoist/cmp/form';
@@ -16,7 +16,7 @@ import './StandardFormPanel.scss';
 
 @HoistComponent()
 export class StandardFormPanel extends Component {
-    formModel = new StandardFormPanelModel();
+    localModel = new StandardFormPanelModel();
 
     render() {
         return wrapperPanel(
@@ -27,7 +27,7 @@ export class StandardFormPanel extends Component {
                 item: this.renderExample(),
                 bbar: toolbar(
                     filler(),
-                    button({text: 'Submit'})
+                    button({text: 'Submit', disabled: !this.model.isValid})
                 )
             })
         );
@@ -46,6 +46,7 @@ export class StandardFormPanel extends Component {
     }
 
     getLoginInfo() {
+        const model = this.model;
         return panel({
             title: 'Credentials',
             flex: 0,
@@ -53,17 +54,17 @@ export class StandardFormPanel extends Component {
                 cls: 'xh-panel-body',
                 items: [
                     hbox(
-                        label('User: '),
-                        textField({placeholder: 'User ID'})
+                        label(this.renderLabel('User: ')),
+                        textField({model, field: 'user', placeholder: 'User ID'})
                     ),
                     hbox(
-                        label({flex: 1, item: 'Password: '}),
-                        textField({placeholder: 'Password', type: 'password'})
+                        label(this.renderLabel('Password: ')),
+                        textField({model, field: 'password', placeholder: 'Password', type: 'password'})
 
                     ),
                     hbox(
-                        label({flex: 1, item: 'Verify: '}),
-                        textField({placeholder: 'Password', type: 'password'})
+                        label(this.renderLabel('Verify: ')),
+                        textField({model, field: 'verify', placeholder: 'Password', type: 'password'})
                     )
                 ]
             })
@@ -71,8 +72,8 @@ export class StandardFormPanel extends Component {
     }
 
     getContactInfo() {
-        const model = this.formModel,
-            {options} = model;
+        const model = this.model,
+            {red, green, blue, profileColor, options} = this.model;
 
         return panel({
             title: 'User Info',
@@ -81,27 +82,53 @@ export class StandardFormPanel extends Component {
                 cls: 'xh-panel-body',
                 items: [
                     hbox(
-                        label('First Name: '),
-                        textField({placeholder: 'First Name'})
+                        label(this.renderLabel('Profile Color: ')),
+                        numberField({
+                            model,
+                            field: 'red',
+                            width: 50,
+                            value: red,
+                            min: 0,
+                            max: 255
+                        }),
+                        numberField({
+                            model,
+                            field: 'green',
+                            width: 50,
+                            value: green,
+                            min: 0,
+                            max: 255
+                        }),
+                        numberField({
+                            model,
+                            field: 'blue',
+                            width: 50,
+                            value: blue,
+                            min: 0,
+                            max: 255
+                        }),
+                        box({
+                            style: {
+                                backgroundColor: profileColor
+                            },
+                            width: 30,
+                            height: 30
+                        })
                     ),
                     hbox(
-                        label('Last Name: '),
-                        textField({placeholder: 'Last Name'})
+                        label(this.renderLabel('Age: ')),
+                        numberField({model, field: 'age', width: 50, min: 0})
                     ),
                     hbox(
-                        label('Age: '),
-                        numberField({width: 50})
+                        label(this.renderLabel('E-Mail: ')),
+                        textField({model, field: 'email', placeholder: 'name@domain.com'})
                     ),
                     hbox(
-                        label('E-Mail: '),
-                        textField({placeholder: 'name@domain.com'})
+                        label(this.renderLabel('Company: ')),
+                        textField({model, field: 'company'})
                     ),
                     hbox(
-                        label('Company: '),
-                        textField({placeholder: ''})
-                    ),
-                    hbox(
-                        label('State: '),
+                        label(this.renderLabel('State: ')),
                         comboField({
                             options,
                             model,
@@ -110,11 +137,19 @@ export class StandardFormPanel extends Component {
                         }),
                     ),
                     hbox(
-                        label('Active: '),
-                        checkField(),
+                        label(this.renderLabel('Active: ')),
+                        checkField({model, field: 'active'})
                     )
                 ]
             })
         });
+    }
+
+    renderLabel(text) {
+        const isValid = this.model.isFieldValid(text),
+            width = 90;
+        const item = <span>{text}<span style={{color: 'red'}}>{!isValid ? '*' : ''}</span> </span>;
+
+        return {item, width};
     }
 }
