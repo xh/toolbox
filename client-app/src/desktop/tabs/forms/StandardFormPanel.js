@@ -4,7 +4,7 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {box, hbox, panel, vbox, vframe, filler} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
@@ -54,16 +54,16 @@ export class StandardFormPanel extends Component {
                 cls: 'xh-panel-body',
                 items: [
                     hbox(
-                        label({item: 'User: ', width: 80}),
+                        label(this.renderLabel('User: ')),
                         textField({model, field: 'user', placeholder: 'User ID'})
                     ),
                     hbox(
-                        label({item: 'Password: ', width: 80}),
+                        label(this.renderLabel('Password: ')),
                         textField({model, field: 'password', placeholder: 'Password', type: 'password'})
 
                     ),
                     hbox(
-                        label({item: 'Verify: ', width: 80}),
+                        label(this.renderLabel('Verify: ')),
                         textField({model, field: 'verify', placeholder: 'Password', type: 'password'})
                     )
                 ]
@@ -82,7 +82,7 @@ export class StandardFormPanel extends Component {
                 cls: 'xh-panel-body',
                 items: [
                     hbox(
-                        label({item: 'Profile Color: ', width: 80}),
+                        label(this.renderLabel('Profile Color: ')),
                         numberField({
                             model,
                             field: 'red',
@@ -116,19 +116,19 @@ export class StandardFormPanel extends Component {
                         })
                     ),
                     hbox(
-                        label({item: 'Age: ', width: 80}),
+                        label(this.renderLabel('Age: ')),
                         numberField({model, field: 'age', width: 50, min: 0})
                     ),
                     hbox(
-                        label({item: 'E-Mail:', width: 80}),
+                        label(this.renderLabel('E-Mail: ')),
                         textField({model, field: 'email', placeholder: 'name@domain.com'})
                     ),
                     hbox(
-                        label({item: 'Company: ', width: 80}),
+                        label(this.renderLabel('Company: ')),
                         textField({model, field: 'company'})
                     ),
                     hbox(
-                        label({item: 'State: ', width: 80}),
+                        label(this.renderLabel('State: ')),
                         comboField({
                             options,
                             model,
@@ -137,11 +137,19 @@ export class StandardFormPanel extends Component {
                         }),
                     ),
                     hbox(
-                        label({item: 'Active: ', width: 80}),
+                        label(this.renderLabel('Active: ')),
                         checkField({model, field: 'active'})
                     )
                 ]
             })
         });
+    }
+
+    renderLabel(text) {
+        const isValid = this.model.isFieldValid(text),
+            width = 90;
+        const item = <span>{text}<span style={{color: 'red'}}>{!isValid ? '*' : ''}</span> </span>;
+
+        return {item, width};
     }
 }

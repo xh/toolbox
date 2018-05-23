@@ -26,7 +26,18 @@ export class StandardFormPanelModel {
 
     @computed
     get isValid() {
-        if ([this.red, this.blue, this.green].some(it => !inRange(it, 0, 255))) {
+        this.validateColors();
+    }
+
+    isFieldValid(label) {
+        if (label == 'Profile Color: ') {
+            return this.validateColors();
+        }
+        return true;
+    }
+
+    validateColors() {
+        if ([this.red, this.blue, this.green].some(it => !inRange(it, 0, 256))) {
             return false;
         }
         return true;
