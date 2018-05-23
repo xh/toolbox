@@ -37,8 +37,8 @@ class BootStrap {
     }
 
     private void ensureNoRoleUserCreated() {
-        def reader = User.findByEmail('norole@xh.io')
-        if (!reader) {
+        def user = User.findByEmail('norole@xh.io')
+        if (!user) {
             new User([
                     email: 'norole@xh.io',
                     firstName: 'No',
