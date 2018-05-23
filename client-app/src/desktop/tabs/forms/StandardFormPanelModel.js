@@ -1,3 +1,4 @@
+import {inRange} from 'lodash';
 import {HoistModel} from '@xh/hoist/core';
 import {computed, setter, observable} from '@xh/hoist/mobx';
 import {usStates} from '../../../data';
@@ -21,6 +22,14 @@ export class StandardFormPanelModel {
     @computed
     get profileColor() {
         return `rgb(${this.red}, ${this.green}, ${this.blue})`;
+    }
+
+    @computed
+    get isValid() {
+        if ([this.red, this.blue, this.green].some(it => !inRange(it, 0, 255))) {
+            return false;
+        }
+        return true;
     }
 
     getRandomFrom(min, max) {

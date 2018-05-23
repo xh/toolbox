@@ -16,7 +16,7 @@ import './StandardFormPanel.scss';
 
 @HoistComponent()
 export class StandardFormPanel extends Component {
-    formModel = new StandardFormPanelModel();
+    localModel = new StandardFormPanelModel();
 
     render() {
         return wrapperPanel(
@@ -27,7 +27,7 @@ export class StandardFormPanel extends Component {
                 item: this.renderExample(),
                 bbar: toolbar(
                     filler(),
-                    button({text: 'Submit'})
+                    button({text: 'Submit', disabled: !this.model.isValid})
                 )
             })
         );
@@ -46,7 +46,7 @@ export class StandardFormPanel extends Component {
     }
 
     getLoginInfo() {
-        const model = this.formModel;
+        const model = this.model;
         return panel({
             title: 'Credentials',
             flex: 0,
@@ -72,8 +72,8 @@ export class StandardFormPanel extends Component {
     }
 
     getContactInfo() {
-        const model = this.formModel,
-            {red, green, blue, profileColor, options} = model;
+        const model = this.model,
+            {red, green, blue, profileColor, options} = this.model;
 
         return panel({
             title: 'User Info',
@@ -89,7 +89,7 @@ export class StandardFormPanel extends Component {
                             width: 50,
                             value: red,
                             min: 0,
-                            max: 255,
+                            max: 255
                         }),
                         numberField({
                             model,
