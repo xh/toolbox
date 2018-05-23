@@ -6,7 +6,7 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {hbox, panel, vbox, vframe, filler} from '@xh/hoist/cmp/layout';
+import {box, hbox, panel, vbox, vframe, filler} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
 import {button} from '@xh/hoist/kit/blueprint';
 import {textField, numberField, label, checkField, comboField} from '@xh/hoist/cmp/form';
@@ -46,6 +46,7 @@ export class StandardFormPanel extends Component {
     }
 
     getLoginInfo() {
+        const model = this.formModel;
         return panel({
             title: 'Credentials',
             flex: 0,
@@ -53,17 +54,17 @@ export class StandardFormPanel extends Component {
                 cls: 'xh-panel-body',
                 items: [
                     hbox(
-                        label('User: '),
-                        textField({placeholder: 'User ID'})
+                        label({item: 'User: ', width: 80}),
+                        textField({model, field: 'user', placeholder: 'User ID'})
                     ),
                     hbox(
-                        label({flex: 1, item: 'Password: '}),
-                        textField({placeholder: 'Password', type: 'password'})
+                        label({item: 'Password: ', width: 80}),
+                        textField({model, field: 'password', placeholder: 'Password', type: 'password'})
 
                     ),
                     hbox(
-                        label({flex: 1, item: 'Verify: '}),
-                        textField({placeholder: 'Password', type: 'password'})
+                        label({item: 'Verify: ', width: 80}),
+                        textField({model, field: 'verify', placeholder: 'Password', type: 'password'})
                     )
                 ]
             })
@@ -72,7 +73,7 @@ export class StandardFormPanel extends Component {
 
     getContactInfo() {
         const model = this.formModel,
-            {options} = model;
+            {red, green, blue, profileColor, options} = model;
 
         return panel({
             title: 'User Info',
@@ -81,24 +82,50 @@ export class StandardFormPanel extends Component {
                 cls: 'xh-panel-body',
                 items: [
                     hbox(
-                        label({item: 'First Name: ', width: 80}),
-                        textField({placeholder: 'First Name'})
-                    ),
-                    hbox(
-                        label({item: 'Last Name: ', width: 80}),
-                        textField({placeholder: 'Last Name'})
+                        label({item: 'Profile Color: ', width: 80}),
+                        numberField({
+                            model,
+                            field: 'red',
+                            width: 50,
+                            value: red,
+                            min: 0,
+                            max: 255,
+                        }),
+                        numberField({
+                            model,
+                            field: 'green',
+                            width: 50,
+                            value: green,
+                            min: 0,
+                            max: 255
+                        }),
+                        numberField({
+                            model,
+                            field: 'blue',
+                            width: 50,
+                            value: blue,
+                            min: 0,
+                            max: 255
+                        }),
+                        box({
+                            style: {
+                                backgroundColor: profileColor
+                            },
+                            width: 30,
+                            height: 30
+                        })
                     ),
                     hbox(
                         label({item: 'Age: ', width: 80}),
-                        numberField({width: 50})
+                        numberField({model, field: 'age', width: 50, min: 0})
                     ),
                     hbox(
                         label({item: 'E-Mail:', width: 80}),
-                        textField({placeholder: 'name@domain.com'})
+                        textField({model, field: 'email', placeholder: 'name@domain.com'})
                     ),
                     hbox(
                         label({item: 'Company: ', width: 80}),
-                        textField({placeholder: ''})
+                        textField({model, field: 'company'})
                     ),
                     hbox(
                         label({item: 'State: ', width: 80}),
@@ -111,7 +138,7 @@ export class StandardFormPanel extends Component {
                     ),
                     hbox(
                         label({item: 'Active: ', width: 80}),
-                        checkField(),
+                        checkField({model, field: 'active'})
                     )
                 ]
             })

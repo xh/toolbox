@@ -10,6 +10,9 @@
         align-items: center;
         .pt-label {
           margin-right: 5px;
+          ~ div {
+            padding-right: 5px;
+          }
         }
       }
     }
