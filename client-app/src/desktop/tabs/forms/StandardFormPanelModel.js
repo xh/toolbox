@@ -26,12 +26,14 @@ export class StandardFormPanelModel {
 
     @computed
     get isValid() {
-        this.validateColors();
+        return this.validateColors() && this.validateEmail();
     }
 
     isFieldValid(label) {
-        if (label == 'Profile Color: ') {
+        if (label.startsWith('Profile')) {
             return this.validateColors();
+        } else if (label.startsWith('E-Mail')) {
+            return this.validateEmail();
         }
         return true;
     }
@@ -41,6 +43,12 @@ export class StandardFormPanelModel {
             return false;
         }
         return true;
+    }
+
+    validateEmail() {
+        const email = this.email,
+            reg = /\S+@\S+\.\S+/;
+        return email == null || reg.test(email);
     }
 
     getRandomFrom(min, max) {
