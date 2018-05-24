@@ -8,9 +8,11 @@
       > div {
         padding: 5px;
         align-items: center;
-        justify-content: flex-end;
         .pt-label {
           margin-right: 5px;
+          ~ div {
+            padding-right: 5px;
+          }
         }
       }
     }

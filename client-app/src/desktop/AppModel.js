@@ -10,6 +10,7 @@ import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {FeedbackDialogModel} from '@xh/hoist/cmp/feedback';
 
 import {HomePanel} from './tabs/home/HomePanel';
+import {CandleChartPanel} from './tabs/charts/CandleChartPanel';
 import {LeftRightChooserPanel} from './tabs/components/LeftRightChooserPanel';
 import {MaskPanel} from './tabs/components/MaskPanel';
 import {LoadMaskPanel} from './tabs/components/LoadMaskPanel';
@@ -77,6 +78,14 @@ export class AppModel {
                 path: '/home'
             },
             {
+                name: 'charts',
+                path: '/charts',
+                forwardTo: 'default.charts.candle',
+                children: [
+                    {name: 'candle', path: '/candle'}
+                ]
+            },
+            {
                 name: 'components',
                 path: '/components',
                 forwardTo: 'default.components.leftRightChooser',
@@ -128,6 +137,13 @@ export class AppModel {
             {
                 id: 'home',
                 component: HomePanel
+            },
+            {
+                id: 'charts',
+                orientation: 'v',
+                children: [
+                    {id: 'candle', component: CandleChartPanel}
+                ]
             },
             {
                 id: 'components',
