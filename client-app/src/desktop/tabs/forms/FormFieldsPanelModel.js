@@ -4,7 +4,7 @@ import {computed, setter, observable} from '@xh/hoist/mobx';
 import {usStates} from '../../../data';
 
 @HoistModel()
-export class StandardFormPanelModel {
+export class FormFieldsPanelModel {
     @setter @observable state = null;
     @setter @observable user = null;
     @setter @observable password = null;
@@ -53,6 +53,11 @@ export class StandardFormPanelModel {
 
     getRandomFrom(min, max) {
         return parseInt(Math.random() * (max - min) + min, 10);
+    }
+
+    getDisplayValue(v) {
+        if (v == null || v == '') return '\u00a0';
+        else return v.toString();
     }
 
 }

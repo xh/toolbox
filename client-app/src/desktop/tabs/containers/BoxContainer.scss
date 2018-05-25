@@ -1,6 +1,5 @@
 .xh-toolbox-example-container {
   > div {
-    border: var(--xh-border-solid);
     .xh-toolbox-hboxcontainer-panel &:not(:first-child) {
       margin-left: 5px;
     }
