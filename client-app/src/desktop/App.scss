@@ -46,3 +46,9 @@
     padding: 5px;
   }
 }
+
+.xh-toolbox-example-container {
+  > div {
+    border: var(--xh-border-solid);
+  }
+}

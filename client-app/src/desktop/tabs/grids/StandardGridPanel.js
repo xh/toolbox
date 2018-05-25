@@ -11,7 +11,7 @@ import {grid, GridModel, colChooserButton} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/cmp/store';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {baseCol} from '@xh/hoist/columns/Core';
+import {baseCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {cloneDeep} from 'lodash';

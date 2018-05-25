@@ -6,24 +6,24 @@
  */
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {box, hbox, panel, vbox, vframe, filler} from '@xh/hoist/cmp/layout';
+import {box, hbox, panel, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
 import {button} from '@xh/hoist/kit/blueprint';
 import {textField, numberField, label, checkField, comboField} from '@xh/hoist/cmp/form';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {StandardFormPanelModel} from './StandardFormPanelModel';
-import './StandardFormPanel.scss';
+import {FormFieldsPanelModel} from './FormFieldsPanelModel';
+import './FormFieldsPanel.scss';
 
 @HoistComponent()
-export class StandardFormPanel extends Component {
-    localModel = new StandardFormPanelModel();
+export class FormFieldsPanel extends Component {
+    localModel = new FormFieldsPanelModel();
 
     render() {
         return wrapperPanel(
             panel({
-                cls: 'xh-toolbox-standardform-panel',
-                title: 'Standard Form',
-                width: 335,
+                cls: 'xh-toolbox-formfields-panel',
+                title: 'Form Fields',
+                width: 600,
                 item: this.renderExample(),
                 bbar: toolbar(
                     filler(),
@@ -34,13 +34,18 @@ export class StandardFormPanel extends Component {
     }
 
     renderExample() {
-        return vframe({
+        return hframe({
             cls: 'xh-toolbox-example-container',
-            flex: 1,
-            padding: 10,
             items: [
-                this.getLoginInfo(),
-                this.getContactInfo()
+                vbox({
+                    flex: 2,
+                    marginRight: 5,
+                    items: [
+                        this.getLoginInfo(),
+                        this.getContactInfo()
+                    ]
+                }),
+                this.getRawValueInfo()
             ]
         });
     }
@@ -49,7 +54,6 @@ export class StandardFormPanel extends Component {
         const model = this.model;
         return panel({
             title: 'Credentials',
-            flex: 0,
             item: vbox({
                 cls: 'xh-panel-body',
                 items: [
@@ -60,7 +64,6 @@ export class StandardFormPanel extends Component {
                     hbox(
                         label(this.renderLabel('Password: ')),
                         textField({model, field: 'password', placeholder: 'Password', type: 'password'})
-
                     ),
                     hbox(
                         label(this.renderLabel('Verify: ')),
@@ -77,7 +80,6 @@ export class StandardFormPanel extends Component {
 
         return panel({
             title: 'User Info',
-            flex: 0,
             item: vbox({
                 cls: 'xh-panel-body',
                 items: [
@@ -89,7 +91,8 @@ export class StandardFormPanel extends Component {
                             width: 50,
                             value: red,
                             min: 0,
-                            max: 255
+                            max: 255,
+                            commitOnChange: true
                         }),
                         numberField({
                             model,
@@ -97,7 +100,8 @@ export class StandardFormPanel extends Component {
                             width: 50,
                             value: green,
                             min: 0,
-                            max: 255
+                            max: 255,
+                            commitOnChange: true
                         }),
                         numberField({
                             model,
@@ -105,7 +109,8 @@ export class StandardFormPanel extends Component {
                             width: 50,
                             value: blue,
                             min: 0,
-                            max: 255
+                            max: 255,
+                            commitOnChange: true
                         }),
                         box({
                             style: {
@@ -144,6 +149,57 @@ export class StandardFormPanel extends Component {
             })
         });
     }
+
+    getRawValueInfo() {
+        const {user, password, verify, red, green, blue, age, email, company, state, active, getDisplayValue} = this.model;
+        return panel({
+            title: 'Current Values',
+            width: 270,
+            cls: 'rawvalues',
+            item: vbox({
+                cls: 'xh-panel-body',
+                items: [
+                    hbox(
+                        label('User:'),
+                        label(getDisplayValue(user)),
+                    ),
+                    hbox(
+                        label('Password:'),
+                        label(getDisplayValue(password)),
+                    ),
+                    hbox(
+                        label('Verify:'),
+                        label(getDisplayValue(verify)),
+                    ),
+                    hbox(
+                        label('Profile Color:'),
+                        label(`rgb(${getDisplayValue(red)}, ${getDisplayValue(green)}, ${getDisplayValue(blue)})`),
+                    ),
+                    hbox(
+                        label('Age:'),
+                        label(`${getDisplayValue(age)}`),
+                    ),
+                    hbox(
+                        label('E-Mail:'),
+                        label(getDisplayValue(email)),
+                    ),
+                    hbox(
+                        label('Company:'),
+                        label(getDisplayValue(company)),
+                    ),
+                    hbox(
+                        label('State:'),
+                        label(getDisplayValue(state)),
+                    ),
+                    hbox(
+                        label('Active:'),
+                        label(getDisplayValue(active)),
+                    )
+                ]
+            })
+        });
+    }
+
 
     renderLabel(text) {
         const isValid = this.model.isFieldValid(text),
