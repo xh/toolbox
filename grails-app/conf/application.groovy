@@ -1,25 +1,17 @@
 hoistDefaults()
 
-grails.project.groupId = 'io.xh.toolbox'
-grails.app.context = '/'
+// See also runtime.groovy for additional instance-specific configuration
 
-environments {
-    production {
-        grails.serverURL = 'https://toolbox.xh.io'
-    }
+grails {
+    project.groupId = 'io.xh.toolbox'
+    app.context = '/'
+    resources.pattern = '/**'
 }
-
 
 hoist {
     supportedEnvironments = ['Development']
 }
 
-grails.resources.pattern = '/**'
-
-
-//---------------------
-// Datasource
-//----------------------
 dataSource {
     dbCreate = "update"
     url = "jdbc:h2:mem:testDb;MVCC=TRUE"
@@ -31,10 +23,6 @@ dataSource {
 //------------------------------------------------------------
 // Hoist defaults -- Do Not typically Modify after this line
 //-------------------------------------------------------------
-private boolean isProduction() {
-    return System.getProperty('io.xh.hoist.environment') == 'Production'
-}
-
 private void hoistDefaults() {
 
     grails {
