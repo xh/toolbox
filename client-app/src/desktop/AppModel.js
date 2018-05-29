@@ -10,7 +10,8 @@ import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {FeedbackDialogModel} from '@xh/hoist/cmp/feedback';
 
 import {HomePanel} from './tabs/home/HomePanel';
-import {CandleChartPanel} from './tabs/charts/CandleChartPanel';
+import {OLHCChartPanel} from './tabs/charts/OLHCChartPanel';
+import {LineChartPanel} from './tabs/charts/LineChartPanel';
 import {LeftRightChooserPanel} from './tabs/components/LeftRightChooserPanel';
 import {MaskPanel} from './tabs/components/MaskPanel';
 import {LoadMaskPanel} from './tabs/components/LoadMaskPanel';
@@ -80,9 +81,10 @@ export class AppModel {
             {
                 name: 'charts',
                 path: '/charts',
-                forwardTo: 'default.charts.candle',
+                forwardTo: 'default.charts.olhc',
                 children: [
-                    {name: 'candle', path: '/candle'}
+                    {name: 'olhc', path: '/olhc'},
+                    {name: 'line', path: '/line'}
                 ]
             },
             {
@@ -138,7 +140,8 @@ export class AppModel {
                 id: 'charts',
                 orientation: 'v',
                 children: [
-                    {id: 'candle', component: CandleChartPanel}
+                    {id: 'olhc', name: 'OLHC', component: OLHCChartPanel},
+                    {id: 'line', component: LineChartPanel}
                 ]
             },
             {
