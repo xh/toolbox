@@ -15,6 +15,7 @@ import {LeftRightChooserPanel} from './tabs/components/LeftRightChooserPanel';
 import {MaskPanel} from './tabs/components/MaskPanel';
 import {LoadMaskPanel} from './tabs/components/LoadMaskPanel';
 import {ToolbarPanel} from './tabs/components/ToolbarPanel';
+import {MessagesPanel} from './tabs/components/MessagesPanel';
 import {HBoxContainerPanel} from './tabs/containers/HBoxContainerPanel';
 import {VBoxContainerPanel} from './tabs/containers/VBoxContainerPanel';
 import {ResizableContainerPanel} from './tabs/containers/ResizableContainerPanel';
@@ -93,7 +94,8 @@ export class AppModel {
                     {name: 'leftRightChooser', path: '/leftRightChooser'},
                     {name: 'maskPanel', path: '/mask'},
                     {name: 'loadMask', path: '/loadMask'},
-                    {name: 'toolbar', path: '/toolbar'}
+                    {name: 'toolbar', path: '/toolbar'},
+                    {name: 'messages', path: '/messages'}
                 ]
             },
             {
@@ -148,7 +150,8 @@ export class AppModel {
                     {id: 'leftRightChooser', name: 'LeftRightChooser', component: LeftRightChooserPanel},
                     {id: 'maskPanel', name: 'Mask', component: MaskPanel},
                     {id: 'loadMask', name: 'LoadMask', component: LoadMaskPanel},
-                    {id: 'toolbar', component: ToolbarPanel}
+                    {id: 'toolbar', component: ToolbarPanel},
+                    {id: 'messages', component: MessagesPanel}
                 ]
             },
             {
