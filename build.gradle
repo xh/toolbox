@@ -12,8 +12,10 @@ buildscript {
     }
 }
 
-
-def appVersion = hasProperty('xhAppVersion') ? xhAppVersion : '1.0-SNAPSHOT',
+// Custom props sourced from gradle.properties
+def appCode = xhAppCode,
+    appName = xhAppName,
+    appVersion = xhAppVersion,
     appBuild = hasProperty('xhAppBuild') ? xhAppBuild : 'UNKNOWN'
 
 version appVersion
@@ -102,15 +104,13 @@ publishing {
     publications {
         appWar(MavenPublication) {
             from components.java
+            artifactId appCode
             artifact war
 
             repositories {
                 maven {
-                    if (version.endsWith("-SNAPSHOT")) {
-                        url "https://repo.xh.io/content/repositories/snapshots/"
-                    } else {
-                        url "https://repo.xh.io/content/repositories/releases/"
-                    }
+                    def repoEndpoint = version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'
+                    url "https://repo.xh.io/content/repositories/$repoEndpoint/"
                     credentials {
                         username xhRepoDeployUser
                         password xhRepoDeployPassword
@@ -128,6 +128,22 @@ bootRun {
 }
 
 
+//--------------------------------------------------
+// Extensions to build.info (Hoist-Core requirement)
+//--------------------------------------------------
+buildProperties.doLast {
+    File grailsBuildInfoFile = it.outputs.files.files.find { it.name == 'grails.build.info' }
+    if(!grailsBuildInfoFile) return
+
+    Properties properties = new Properties()
+    grailsBuildInfoFile.withInputStream {properties.load(it)}
+    properties.setProperty('info.xh.appCode', appCode)
+    properties.setProperty('info.xh.appName', appName)
+    properties.setProperty('info.xh.appBuild', appBuild)
+    grailsBuildInfoFile.withOutputStream {properties.store(it, null)}
+}
+
+
 //----------------------------
 // Custom Tasks
 //----------------------------
@@ -136,6 +152,6 @@ task publishApp(dependsOn: "publishAppWarPublicationToMavenRepository") {
     description 'Publishes an app build to ExHI maven repo.'
 
     doLast {
-        println "$name $version published to repo.xh.io!"
+        println "$appCode $version published to repo.xh.io!"
     }
 }

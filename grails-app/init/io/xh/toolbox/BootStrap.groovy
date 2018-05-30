@@ -5,6 +5,7 @@ import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
 
 import static io.xh.hoist.util.Utils.appEnvironment
+import static io.xh.hoist.util.Utils.appName
 import static io.xh.hoist.util.Utils.appVersion
 
 class BootStrap {
@@ -58,7 +59,7 @@ class BootStrap {
    \\ \\_\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\   /\\_\\/\\_\\ 
     \\/_/   \\/_____/   \\/_____/   \\/_____/   \\/_____/   \\/_____/   \\/_/\\/_/ 
 \n                                                                           
-         v${appVersion} - ${appEnvironment}
+         ${appName} v${appVersion} - ${appEnvironment}
 \n
         """)
     }
