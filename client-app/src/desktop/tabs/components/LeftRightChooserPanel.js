@@ -42,8 +42,7 @@ export class LeftRightChooserPanel extends Component {
     renderExample() {
         return vframe({
             cls: 'xh-toolbox-example-container',
-            item: leftRightChooser({model: this.model})
+            item: leftRightChooser({model: this.model, flex: 1})
         });
     }
-
 }
