@@ -15,7 +15,7 @@ import Facebook from '../../../data/rest/charts/facebookPricing';
 import Yahoo from '../../../data/rest/charts/yahooPricing';
 
 @HoistModel()
-export class CandleChartModel {
+export class OLHCChartModel {
     @setter @observable currentCompany = 'Amazon';
     companyMap = {Amazon, Facebook, Yahoo};
     chartModel = new ChartModel({config: this.getChartModelCfg()});

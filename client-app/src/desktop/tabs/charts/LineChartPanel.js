@@ -12,21 +12,21 @@ import {comboField, label} from '@xh/hoist/cmp/form';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
 import {chart} from '@xh/hoist/cmp/chart';
 import {loadMask} from '@xh/hoist/cmp/mask';
-import {CandleChartModel} from './CandleChartModel';
+import {LineChartModel} from './LineChartModel';
 
 @HoistComponent()
-export class CandleChartPanel extends Component {
-    localModel = new CandleChartModel();
+export class LineChartPanel extends Component {
+    localModel = new LineChartModel();
 
     render() {
         const model = this.model,
             {companyMap} = model;
         return wrapperPanel(
             panel({
-                cls: 'xh-toolbox-candlechart-panel',
-                title: 'Candle Chart',
-                width: 600,
-                height: 400,
+                cls: 'xh-toolbox-linechart-panel',
+                title: 'Line Chart',
+                width: 800,
+                height: 600,
                 item: this.renderExample(),
                 tbar: toolbar(
                     label('Company: '),
