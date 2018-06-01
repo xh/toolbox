@@ -10,20 +10,27 @@ import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {FeedbackDialogModel} from '@xh/hoist/cmp/feedback';
 
 import {HomePanel} from './tabs/home/HomePanel';
+
 import {OLHCChartPanel} from './tabs/charts/OLHCChartPanel';
 import {LineChartPanel} from './tabs/charts/LineChartPanel';
+
+import {DataViewPanel} from './tabs/components/DataViewPanel';
 import {LeftRightChooserPanel} from './tabs/components/LeftRightChooserPanel';
 import {MaskPanel} from './tabs/components/MaskPanel';
 import {LoadMaskPanel} from './tabs/components/LoadMaskPanel';
 import {ToolbarPanel} from './tabs/components/ToolbarPanel';
+
 import {HBoxContainerPanel} from './tabs/containers/HBoxContainerPanel';
 import {VBoxContainerPanel} from './tabs/containers/VBoxContainerPanel';
 import {ResizableContainerPanel} from './tabs/containers/ResizableContainerPanel';
 import {TabPanelContainerPanel} from './tabs/containers/TabPanelContainerPanel';
+
 import {FormFieldsPanel} from './tabs/forms/FormFieldsPanel';
+
 import {StandardGridPanel} from './tabs/grids/StandardGridPanel';
 import {GroupedGridPanel} from './tabs/grids/GroupedGridPanel';
 import {RestGridPanel} from './tabs/grids/RestGridPanel';
+
 import {IconsPanel} from './tabs/icons/IconsPanel';
 
 @HoistAppModel
@@ -90,8 +97,9 @@ export class AppModel {
             {
                 name: 'components',
                 path: '/components',
-                forwardTo: 'default.components.leftRightChooser',
+                forwardTo: 'default.components.dataview',
                 children: [
+                    {name: 'dataview', path: '/dataview'},
                     {name: 'leftRightChooser', path: '/leftRightChooser'},
                     {name: 'maskPanel', path: '/mask'},
                     {name: 'loadMask', path: '/loadMask'},
@@ -148,6 +156,7 @@ export class AppModel {
                 id: 'components',
                 orientation: 'v',
                 children: [
+                    {id: 'dataview', name: 'DataView', component: DataViewPanel},
                     {id: 'leftRightChooser', name: 'LeftRightChooser', component: LeftRightChooserPanel},
                     {id: 'maskPanel', name: 'Mask', component: MaskPanel},
                     {id: 'loadMask', name: 'LoadMask', component: LoadMaskPanel},
