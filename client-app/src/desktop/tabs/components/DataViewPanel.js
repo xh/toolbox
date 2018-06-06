@@ -26,8 +26,8 @@ export class DataViewPanel extends Component {
     });
 
     render() {
-        return wrapperPanel(
-            panel({
+        return wrapperPanel({
+            item: panel({
                 cls: 'xh-toolbox-dataview-panel',
                 title: 'DataView Component',
                 width: 600,
@@ -37,7 +37,7 @@ export class DataViewPanel extends Component {
                     button({text: 'Load', onClick: this.loadData})
                 )
             })
-        );
+        });
     }
 
     renderExample() {
