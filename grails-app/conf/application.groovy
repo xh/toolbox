@@ -9,7 +9,7 @@ grails {
 }
 
 hoist {
-    supportedEnvironments = ['Development']
+
 }
 
 dataSource {
