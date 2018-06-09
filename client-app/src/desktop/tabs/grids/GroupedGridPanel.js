@@ -60,7 +60,7 @@ export class GroupedGridPanel extends Component {
     render() {
         return wrapperPanel(
             panel({
-                cls: 'xh-toolbox-standardgrid-panel',
+                cls: 'xh-toolbox-groupedgrid-panel',
                 title: 'Grouped Grid (City)',
                 width: 600,
                 height: 400,

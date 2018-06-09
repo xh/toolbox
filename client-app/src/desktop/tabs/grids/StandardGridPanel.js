@@ -6,7 +6,7 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/cmp/layout';
+import {panel, vframe} from '@xh/hoist/cmp/layout';
 import {grid, GridModel, colChooserButton} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/cmp/store';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
@@ -68,12 +68,12 @@ export class StandardGridPanel extends Component {
 
         return wrapperPanel(
             panel({
-                cls: 'xh-toolbox-standardgrid-panel xh-toolbox-example-container',
+                cls: 'xh-toolbox-standardgrid-panel',
                 title: 'Standard Grid',
-                icon: Icon.grid(),
                 width: 600,
                 height: 400,
-                item: grid({model}),
+                item: this.renderExample(),
+                icon: Icon.grid(),
                 bbar: toolbar(
                     storeCountLabel({
                         store,
@@ -88,6 +88,14 @@ export class StandardGridPanel extends Component {
                 )
             })
         );
+    }
+
+    renderExample() {
+        const model = this.model;
+        return vframe({
+            cls: 'xh-toolbox-example-container',
+            item: grid({model}),
+        });
     }
 
 }
