@@ -2,22 +2,26 @@ import {inRange} from 'lodash';
 import {HoistModel} from '@xh/hoist/core';
 import {computed, setter, observable} from '@xh/hoist/mobx';
 import {usStates} from '../../../data';
+import {movies} from '../../../data';
 
 @HoistModel()
 export class FormFieldsPanelModel {
+    @setter @observable active = null;
+    @setter @observable age = null;
+    @setter @observable company = null;
+    @setter @observable email = null;
+    @setter @observable movie = null;
+    @setter @observable password = null;
     @setter @observable state = null;
     @setter @observable user = null;
-    @setter @observable password = null;
     @setter @observable verify = null;
+
     @setter @observable red = this.getRandomFrom(0, 255);
     @setter @observable green = this.getRandomFrom(0, 255);
     @setter @observable blue = this.getRandomFrom(0, 255);
-    @setter @observable age = null;
-    @setter @observable email = null;
-    @setter @observable company = null;
-    @setter @observable active = null;
 
-    options = usStates;
+    usStates = usStates;
+    movies = movies;
 
     @computed
     get profileColor() {

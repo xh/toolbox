@@ -9,7 +9,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {box, hbox, panel, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
 import {button} from '@xh/hoist/kit/blueprint';
-import {textField, numberField, label, checkField, comboField} from '@xh/hoist/cmp/form';
+import {checkField, comboField, label, numberField, selectField, textField} from '@xh/hoist/cmp/form';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {FormFieldsPanelModel} from './FormFieldsPanelModel';
 import './FormFieldsPanel.scss';
@@ -76,7 +76,7 @@ export class FormFieldsPanel extends Component {
 
     getContactInfo() {
         const model = this.model,
-            {red, green, blue, profileColor, options} = this.model;
+            {red, green, blue, movies, profileColor, usStates} = this.model;
 
         return panel({
             title: 'User Info',
@@ -134,11 +134,20 @@ export class FormFieldsPanel extends Component {
                     ),
                     hbox(
                         label(this.renderLabel('State: ')),
-                        comboField({
-                            options,
+                        selectField({
+                            options: usStates,
                             model,
                             field: 'state',
                             placeholder: 'Select a State...'
+                        }),
+                    ),
+                    hbox(
+                        label(this.renderLabel('Favorite Movie: ')),
+                        comboField({
+                            options: movies,
+                            model,
+                            field: 'movie',
+                            placeholder: 'Search...'
                         }),
                     ),
                     hbox(
@@ -151,7 +160,7 @@ export class FormFieldsPanel extends Component {
     }
 
     getRawValueInfo() {
-        const {user, password, verify, red, green, blue, age, email, company, state, active, getDisplayValue} = this.model;
+        const {active, age, company, email, getDisplayValue, movie, password, state, user, verify, red, green, blue} = this.model;
         return panel({
             title: 'Current Values',
             width: 270,
@@ -192,6 +201,10 @@ export class FormFieldsPanel extends Component {
                         label(getDisplayValue(state)),
                     ),
                     hbox(
+                        label('Favorite Movie:'),
+                        label(getDisplayValue(movie)),
+                    ),
+                    hbox(
                         label('Active:'),
                         label(getDisplayValue(active)),
                     )
@@ -203,7 +216,7 @@ export class FormFieldsPanel extends Component {
 
     renderLabel(text) {
         const isValid = this.model.isFieldValid(text),
-            width = 90;
+            width = 110;
         const item = <span>{text}<span style={{color: 'red'}}>{!isValid ? '*' : ''}</span> </span>;
 
         return {item, width};
