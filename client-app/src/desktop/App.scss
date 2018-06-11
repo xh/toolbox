@@ -1,7 +1,7 @@
 @import './helpers';
 
 .xh-toolbox-app-frame {
-  > .pt-tabs > div > .pt-tabs.pt-vertical > .pt-tab-list {
+  > .xh-tab-container > .xh-tab-panel > .xh-tab-container > .pt-tabs.pt-vertical > .pt-tab-list {
     min-width: 165px;
   }
 
@@ -13,16 +13,16 @@
   }
 }
 
-.pt-tabs {
-  > div > .pt-tabs.pt-vertical > .pt-tab-list {
+.xh-tab-container {
+  > .xh-tab-panel > .xh-tab-container > .pt-tabs.pt-vertical > .pt-tab-list {
     background-color: var(--xh-bg-alt);
   }
 
-  > .pt-tab-panel {
+  > .xh-tab-panel {
     border-top: var(--xh-border-solid);
   }
 
-  &.pt-vertical > .pt-tab-panel {
+  > .pt-tabs.pt-vertical ~ .xh-tab-panel {
     border-top: none;
     border-left: var(--xh-border-solid);
   }
