@@ -17,25 +17,25 @@ import './TabPanelContainer.scss';
 export class TabPanelContainerPanel extends Component {
     topModel = new TabContainerModel({
         id: 'horizontal-top',
-        tabPosition: 'top',
+        switcherPosition: 'top',
         children: this.createStandard()
     });
 
     bottomModel = new TabContainerModel({
         id: 'horizontal-bottom',
-        tabPosition: 'bottom',
+        switcherPosition: 'bottom',
         children: this.createStandard()
     });
 
     leftModel = new TabContainerModel({
         id: 'vertical-left',
-        tabPosition: 'left',
+        switcherPosition: 'left',
         children: this.createStandard()
     });
 
     rightModel = new TabContainerModel({
         id: 'vertical-right',
-        tabPosition: 'right',
+        switcherPosition: 'right',
         children: this.createStandard()
     });
 
@@ -46,7 +46,7 @@ export class TabPanelContainerPanel extends Component {
 
     detachedModel = new TabContainerModel({
         id: 'detached',
-        tabPosition: 'none',
+        switcherPosition: 'none',
         children: this.createStandard()
     });
 
@@ -133,7 +133,7 @@ export class TabPanelContainerPanel extends Component {
         return [
             {
                 id: 'foo',
-                tabPosition: 'left',
+                switcherPosition: 'left',
                 children: [
                     {id: 'Child 1', component: class extends Component { render() { return box('Foo - Child 1')}}},
                     {id: 'Child 2', component: class extends Component { render() { return box('Foo - Child 2')}}}
@@ -141,7 +141,7 @@ export class TabPanelContainerPanel extends Component {
             },
             {
                 id: 'bar',
-                tabPosition: 'left',
+                switcherPosition: 'left',
                 children: [
                     {id: 'Child 1', component: class extends Component { render() { return box('Bar - Child 1')}}},
                     {id: 'Child 2', component: class extends Component { render() { return box('Bar - Child 2')}}}
@@ -149,7 +149,7 @@ export class TabPanelContainerPanel extends Component {
             },
             {
                 id: 'baz',
-                tabPosition: 'left',
+                switcherPosition: 'left',
                 children: [
                     {id: 'Child 1', component: class extends Component { render() { return box('Baz - Child 1')}}},
                     {id: 'Child 2', component: class extends Component { render() { return box('Baz - Child 2')}}}
