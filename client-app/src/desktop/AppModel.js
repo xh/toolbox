@@ -146,7 +146,7 @@ export class AppModel {
             },
             {
                 id: 'charts',
-                orientation: 'v',
+                tabPosition: 'left',
                 children: [
                     {id: 'olhc', name: 'OLHC', component: OLHCChartPanel},
                     {id: 'line', component: LineChartPanel}
@@ -154,7 +154,7 @@ export class AppModel {
             },
             {
                 id: 'components',
-                orientation: 'v',
+                tabPosition: 'left',
                 children: [
                     {id: 'dataview', name: 'DataView', component: DataViewPanel},
                     {id: 'leftRightChooser', name: 'LeftRightChooser', component: LeftRightChooserPanel},
@@ -165,7 +165,7 @@ export class AppModel {
             },
             {
                 id: 'containers',
-                orientation: 'v',
+                tabPosition: 'left',
                 children: [
                     {id: 'hbox', name: 'HBox', component: HBoxContainerPanel},
                     {id: 'vbox', name: 'VBox', component: VBoxContainerPanel},
@@ -179,7 +179,7 @@ export class AppModel {
             },
             {
                 id: 'grids',
-                orientation: 'v',
+                tabPosition: 'left',
                 children: [
                     {id: 'standard', component: StandardGridPanel},
                     {id: 'grouped', component: GroupedGridPanel},

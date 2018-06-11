@@ -1,7 +1,7 @@
 @import './helpers';
 
 .xh-toolbox-app-frame {
-  > .xh-tab-container > .xh-tab-panel > .xh-tab-container > .pt-tabs.pt-vertical > .pt-tab-list {
+  > .xh-tab-container > .xh-tab-panel > .xh-tab-container > .xh-tab-switcher-left > .pt-tab-list {
     min-width: 165px;
   }
 
@@ -18,12 +18,19 @@
     background-color: var(--xh-bg-alt);
   }
 
-  > .xh-tab-panel {
+  .xh-tab-switcher-top {
+    border-bottom: var(--xh-border-solid);
+  }
+
+  .xh-tab-switcher-bottom {
     border-top: var(--xh-border-solid);
   }
 
-  > .pt-tabs.pt-vertical ~ .xh-tab-panel {
-    border-top: none;
+  .xh-tab-switcher-left {
+    border-right: var(--xh-border-solid);
+  }
+
+  .xh-tab-switcher-right {
     border-left: var(--xh-border-solid);
   }
 }
