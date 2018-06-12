@@ -99,4 +99,4 @@ export const movies = [
     { title: 'Snatch', year: 2000 },
     { title: '3 Idiots', year: 2009 },
     { title: 'Monty Python and the Holy Grail', year: 1975 }
-].map((movie, idx) => ({label: `${movie.title} (${movie.year})`, value: idx}));
+].map(movie => ({label: `${movie.title} (${movie.year})`, value: movie.title}));
