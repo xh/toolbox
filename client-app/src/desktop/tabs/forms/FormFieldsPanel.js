@@ -73,7 +73,6 @@ export class FormFieldsPanel extends Component {
                         label(this.renderLabel('Profile Completion: ')),
                         sliderField({model,
                             field: 'profileCompletion',
-                            style: {padding: '0 15px'},
                             min: 0,
                             max: 100,
                             labelStepSize: 25,
@@ -167,7 +166,7 @@ export class FormFieldsPanel extends Component {
                             max: 150000,
                             labelStepSize: 25000,
                             stepSize: 1000,
-                            style: {padding: '0 20px'},
+                            paddingRight: 20,
                             labelRenderer: val => `$${val / 1000}k`
                         })
                     ),
