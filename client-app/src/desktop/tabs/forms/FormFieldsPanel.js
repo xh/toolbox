@@ -9,7 +9,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {box, hbox, panel, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
 import {button} from '@xh/hoist/kit/blueprint';
-import {checkField, comboField, label, numberField, selectField, sliderField, textField} from '@xh/hoist/cmp/form';
+import {checkField, comboField, label, numberField, selectField, sliderField, switchField, textField} from '@xh/hoist/cmp/form';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {FormFieldsPanelModel} from './FormFieldsPanelModel';
 import './FormFieldsPanel.scss';
@@ -172,7 +172,12 @@ export class FormFieldsPanel extends Component {
                     ),
                     hbox(
                         label(this.renderLabel('Active: ')),
-                        checkField({model, field: 'active'})
+                        checkField({model, field: 'active'}),
+                        label({
+                            style: {paddingRight: '10px'},
+                            item: 'or'
+                        }),
+                        switchField({model, field: 'active'}),
                     )
                 ]
             })
