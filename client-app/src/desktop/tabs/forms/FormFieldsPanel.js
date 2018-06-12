@@ -9,7 +9,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {box, hbox, panel, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
 import {button} from '@xh/hoist/kit/blueprint';
-import {checkField, comboField, label, numberField, selectField, textField} from '@xh/hoist/cmp/form';
+import {checkField, comboField, label, numberField, selectField, sliderField, textField} from '@xh/hoist/cmp/form';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {FormFieldsPanelModel} from './FormFieldsPanelModel';
 import './FormFieldsPanel.scss';
@@ -68,6 +68,18 @@ export class FormFieldsPanel extends Component {
                     hbox(
                         label(this.renderLabel('Verify: ')),
                         textField({model, field: 'verify', placeholder: 'Password', type: 'password'})
+                    ),
+                    vbox(
+                        label(this.renderLabel('Profile Completion: ')),
+                        sliderField({model,
+                            field: 'profileCompletion',
+                            style: {padding: '0 15px'},
+                            min: 0,
+                            max: 100,
+                            labelStepSize: 25,
+                            stepSize: 1,
+                            labelRenderer: val => `${val}%`
+                        })
                     )
                 ]
             })
@@ -113,11 +125,7 @@ export class FormFieldsPanel extends Component {
                             commitOnChange: true
                         }),
                         box({
-                            style: {
-                                backgroundColor: profileColor
-                            },
-                            width: 30,
-                            height: 30
+                            style: {backgroundColor: profileColor}, width: 30, height: 30
                         })
                     ),
                     hbox(
@@ -149,6 +157,19 @@ export class FormFieldsPanel extends Component {
                             field: 'movie',
                             placeholder: 'Search...'
                         }),
+                    ),
+                    vbox(
+                        label(this.renderLabel('Preferred Salary Range: ')),
+                        sliderField({
+                            model,
+                            field: 'salaryRange',
+                            min: 50000,
+                            max: 150000,
+                            labelStepSize: 25000,
+                            stepSize: 1000,
+                            style: {padding: '0 20px'},
+                            labelRenderer: val => `$${val / 1000}k`
+                        })
                     ),
                     hbox(
                         label(this.renderLabel('Active: ')),

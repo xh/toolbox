@@ -12,6 +12,8 @@ export class FormFieldsPanelModel {
     @setter @observable email = null;
     @setter @observable movie = null;
     @setter @observable password = null;
+    @setter @observable profileCompletion = this.getRandomFrom(0, 100);
+    @setter @observable salaryRange = [this.getRandomFrom(50, 70), this.getRandomFrom(110, 150)].map(val => val * 1000);
     @setter @observable state = null;
     @setter @observable user = null;
     @setter @observable verify = null;
