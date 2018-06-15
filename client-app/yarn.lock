@@ -47,10 +47,10 @@
     js-tokens "^3.0.0"
 
 "@babel/runtime@^7.0.0-beta.44":
-  version "7.0.0-beta.49"
-  resolved "https://repo.xh.io/repository/npm-public/@babel/runtime/-/runtime-7.0.0-beta.49.tgz#03b3bf07eb982072c8e851dd2ddd5110282e61bf"
+  version "7.0.0-beta.51"
+  resolved "https://repo.xh.io/repository/npm-public/@babel/runtime/-/runtime-7.0.0-beta.51.tgz#48b8ed18307034c6620f643514650ca2ccc0165a"
   dependencies:
-    core-js "^2.5.6"
+    core-js "^2.5.7"
     regenerator-runtime "^0.11.1"
 
 "@babel/template@7.0.0-beta.44":
@@ -203,8 +203,8 @@
     webpack-dev-server "~2.11.2"
 
 "@xh/hoist@^6.0.0-SNAPSHOT":
-  version "6.0.0-SNAPSHOT.1528300513875"
-  resolved "https://repo.xh.io/repository/npm-public/@xh/hoist/-/hoist-6.0.0-SNAPSHOT.1528300513875.tgz#0cd508788781e60f86bad08543bc522234d05fb7"
+  version "6.0.0"
+  resolved "https://repo.xh.io/repository/npm-public/@xh/hoist/-/hoist-6.0.0.tgz#bddc6c3629e0ca773ef0ac1949d3111a91f958ee"
   dependencies:
     "@blueprintjs/core" "~2.3.0"
     "@blueprintjs/datetime" "~2.0.2"
@@ -1622,8 +1622,8 @@ class-utils@^0.3.5:
     static-extend "^0.1.1"
 
 classnames@^2.2:
-  version "2.2.5"
-  resolved "https://repo.xh.io/repository/npm-public/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
+  version "2.2.6"
+  resolved "https://repo.xh.io/repository/npm-public/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
 
 clean-css@4.1.x:
   version "4.1.11"
@@ -1863,7 +1863,7 @@ core-js@^1.0.0:
   version "1.2.7"
   resolved "https://repo.xh.io/repository/npm-public/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
 
-core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.6:
+core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.7:
   version "2.5.7"
   resolved "https://repo.xh.io/repository/npm-public/core-js/-/core-js-2.5.7.tgz#f972608ff0cead68b841a16a932d0b183791814e"
 
@@ -2851,8 +2851,8 @@ faye-websocket@~0.11.0:
     websocket-driver ">=0.5.1"
 
 fbjs@^0.8.16:
-  version "0.8.16"
-  resolved "https://repo.xh.io/repository/npm-public/fbjs/-/fbjs-0.8.16.tgz#5e67432f550dc41b572bf55847b8aca64e5337db"
+  version "0.8.17"
+  resolved "https://repo.xh.io/repository/npm-public/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
   dependencies:
     core-js "^1.0.0"
     isomorphic-fetch "^2.1.1"
@@ -2860,7 +2860,7 @@ fbjs@^0.8.16:
     object-assign "^4.1.0"
     promise "^7.1.1"
     setimmediate "^1.0.5"
-    ua-parser-js "^0.7.9"
+    ua-parser-js "^0.7.18"
 
 fd-slicer@~1.0.1:
   version "1.0.1"
@@ -3402,8 +3402,8 @@ hoek@2.x.x:
   resolved "https://repo.xh.io/repository/npm-public/hoek/-/hoek-2.16.3.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
 
 hoist-non-react-statics@^2.5.0:
-  version "2.5.0"
-  resolved "https://repo.xh.io/repository/npm-public/hoist-non-react-statics/-/hoist-non-react-statics-2.5.0.tgz#d2ca2dfc19c5a91c5a6615ce8e564ef0347e2a40"
+  version "2.5.4"
+  resolved "https://repo.xh.io/repository/npm-public/hoist-non-react-statics/-/hoist-non-react-statics-2.5.4.tgz#fc3b1ac05d2ae3abedec84eba846511b0d4fcc4f"
 
 home-or-tmp@^2.0.0:
   version "2.0.0"
@@ -4552,8 +4552,8 @@ mobx@~4.2.0:
   resolved "https://repo.xh.io/repository/npm-public/mobx/-/mobx-4.2.1.tgz#dd4190daf1b43d41a3a228585253f9970b0a27dd"
 
 moment@~2.22.1:
-  version "2.22.1"
-  resolved "https://repo.xh.io/repository/npm-public/moment/-/moment-2.22.1.tgz#529a2e9bf973f259c9643d237fda84de3a26e8ad"
+  version "2.22.2"
+  resolved "https://repo.xh.io/repository/npm-public/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
 
 move-concurrently@^1.0.1:
   version "1.0.1"
@@ -6884,7 +6884,7 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://repo.xh.io/repository/npm-public/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-ua-parser-js@^0.7.9:
+ua-parser-js@^0.7.18:
   version "0.7.18"
   resolved "https://repo.xh.io/repository/npm-public/ua-parser-js/-/ua-parser-js-0.7.18.tgz#a7bfd92f56edfb117083b69e31d2aa8882d4b1ed"
 

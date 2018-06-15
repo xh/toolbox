@@ -94,7 +94,7 @@ export class StandardGridPanel extends Component {
         const model = this.model;
         return vframe({
             cls: 'xh-toolbox-example-container',
-            item: grid({model}),
+            item: grid({model})
         });
     }
 

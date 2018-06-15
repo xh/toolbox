@@ -1,6 +1,4 @@
 import {XH} from '@xh/hoist/core';
 import {App} from '../desktop/App';
-import {AppModel} from '../desktop/AppModel';
-import '../desktop/App.scss';
 
-XH.renderApp(AppModel, App);
+XH.renderApp(App);
