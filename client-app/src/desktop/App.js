@@ -72,7 +72,7 @@ class AppClass {
         return new TabContainerModel({
             id: 'default',
             useRoutes: true,
-            orientation: 'h',
+            switcherPosition: 'none',
             children: this.createTabs()
         });
     }
