@@ -6,13 +6,13 @@
  */
 
 import {Component} from 'react';
-import {button, navbar, navbarGroup, navbarHeading} from '@xh/hoist/kit/blueprint';
+import {button} from '@xh/hoist/kit/blueprint';
 import {HoistComponent, XH} from '@xh/hoist/core';
-import {tabContainer} from '@xh/hoist/cmp/tab';
-import {logoutButton, launchAdminButton, themeToggleButton} from '@xh/hoist/cmp/button';
+import {tabContainer, tabSwitcher} from '@xh/hoist/cmp/tab';
 import {feedbackDialog} from '@xh/hoist/cmp/feedback';
 import {vframe, frame} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
+import {appBar} from '@xh/hoist/cmp/appbar';
 
 import './App.scss';
 
@@ -31,27 +31,19 @@ export class AppComponent extends Component {
     // Implementation
     //------------------
     renderNavBar() {
-        return navbar(
-            navbarGroup({
-                align: 'left',
-                items: [
-                    Icon.boxFull({size: '2x'}),
-                    navbarHeading(XH.appName)
-                ]
-            }),
-            navbarGroup({
-                align: 'right',
-                items: [
-                    button({
-                        icon: Icon.comment(),
-                        onClick: this.onFeedbackClick
-                    }),
-                    themeToggleButton(),
-                    launchAdminButton(),
-                    logoutButton()
-                ]
-            })
-        );
+        return appBar({
+            icon: Icon.boxFull({size: '2x'}),
+            leftItems: [
+                tabSwitcher({model: XH.app.tabs})
+            ],
+            rightItems: [
+                button({
+                    icon: Icon.comment(),
+                    onClick: this.onFeedbackClick
+                })
+            ],
+            hideRefreshButton: true
+        });
     }
 
     renderBody() {
