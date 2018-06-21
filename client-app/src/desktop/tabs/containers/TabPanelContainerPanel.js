@@ -17,25 +17,21 @@ import './TabPanelContainer.scss';
 export class TabPanelContainerPanel extends Component {
     topModel = new TabContainerModel({
         id: 'horizontal-top',
-        switcherPosition: 'top',
         children: this.createStandard()
     });
 
     bottomModel = new TabContainerModel({
         id: 'horizontal-bottom',
-        switcherPosition: 'bottom',
         children: this.createStandard()
     });
 
     leftModel = new TabContainerModel({
         id: 'vertical-left',
-        switcherPosition: 'left',
         children: this.createStandard()
     });
 
     rightModel = new TabContainerModel({
         id: 'vertical-right',
-        switcherPosition: 'right',
         children: this.createStandard()
     });
 
@@ -46,7 +42,6 @@ export class TabPanelContainerPanel extends Component {
 
     detachedModel = new TabContainerModel({
         id: 'detached',
-        switcherPosition: 'none',
         children: this.createStandard()
     });
 
@@ -70,22 +65,22 @@ export class TabPanelContainerPanel extends Component {
                 panel({
                     title: 'Horizontal - Top',
                     flex: 1,
-                    item: tabContainer({model: this.topModel})
+                    item: tabContainer({model: this.topModel, switcherPosition: 'top'})
                 }),
                 panel({
                     title: 'Horizontal - Bottom',
                     flex: 1,
-                    item: tabContainer({model: this.bottomModel})
+                    item: tabContainer({model: this.bottomModel, switcherPosition: 'bottom'})
                 }),
                 panel({
                     title: 'Vertical - Left',
                     flex: 1,
-                    item: tabContainer({model: this.leftModel})
+                    item: tabContainer({model: this.leftModel, switcherPosition: 'left'})
                 }),
                 panel({
                     title: 'Vertical - Right',
                     flex: 1,
-                    item: tabContainer({model: this.rightModel})
+                    item: tabContainer({model: this.rightModel, switcherPosition: 'right'})
                 }),
                 panel({
                     title: 'Nested',
@@ -103,7 +98,7 @@ export class TabPanelContainerPanel extends Component {
                             }
                         }))
                     ),
-                    item: tabContainer({model: this.detachedModel})
+                    item: tabContainer({model: this.detachedModel, switcherPosition: 'none'})
                 })
             ]
         });
@@ -133,7 +128,9 @@ export class TabPanelContainerPanel extends Component {
         return [
             {
                 id: 'foo',
-                switcherPosition: 'left',
+                componentProps: {
+                    switcherPosition: 'left'
+                },
                 children: [
                     {id: 'Child 1', component: class extends Component { render() { return box('Foo - Child 1')}}},
                     {id: 'Child 2', component: class extends Component { render() { return box('Foo - Child 2')}}}
@@ -141,7 +138,9 @@ export class TabPanelContainerPanel extends Component {
             },
             {
                 id: 'bar',
-                switcherPosition: 'left',
+                componentProps: {
+                    switcherPosition: 'left'
+                },
                 children: [
                     {id: 'Child 1', component: class extends Component { render() { return box('Bar - Child 1')}}},
                     {id: 'Child 2', component: class extends Component { render() { return box('Bar - Child 2')}}}
@@ -149,7 +148,9 @@ export class TabPanelContainerPanel extends Component {
             },
             {
                 id: 'baz',
-                switcherPosition: 'left',
+                componentProps: {
+                    switcherPosition: 'left'
+                },
                 children: [
                     {id: 'Child 1', component: class extends Component { render() { return box('Baz - Child 1')}}},
                     {id: 'Child 2', component: class extends Component { render() { return box('Baz - Child 2')}}}

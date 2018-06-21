@@ -72,7 +72,6 @@ class AppClass {
         return new TabContainerModel({
             id: 'default',
             useRoutes: true,
-            switcherPosition: 'none',
             children: this.createTabs()
         });
     }
@@ -147,7 +146,9 @@ class AppClass {
             },
             {
                 id: 'charts',
-                switcherPosition: 'left',
+                componentProps: {
+                    switcherPosition: 'left'
+                },
                 children: [
                     {id: 'olhc', name: 'OLHC', component: OLHCChartPanel},
                     {id: 'line', component: LineChartPanel}
@@ -155,7 +156,9 @@ class AppClass {
             },
             {
                 id: 'components',
-                switcherPosition: 'left',
+                componentProps: {
+                    switcherPosition: 'left'
+                },
                 children: [
                     {id: 'dataview', name: 'DataView', component: DataViewPanel},
                     {id: 'leftRightChooser', name: 'LeftRightChooser', component: LeftRightChooserPanel},
@@ -166,7 +169,9 @@ class AppClass {
             },
             {
                 id: 'containers',
-                switcherPosition: 'left',
+                componentProps: {
+                    switcherPosition: 'left'
+                },
                 children: [
                     {id: 'hbox', name: 'HBox', component: HBoxContainerPanel},
                     {id: 'vbox', name: 'VBox', component: VBoxContainerPanel},
@@ -180,7 +185,9 @@ class AppClass {
             },
             {
                 id: 'grids',
-                switcherPosition: 'left',
+                componentProps: {
+                    switcherPosition: 'left'
+                },
                 children: [
                     {id: 'standard', component: StandardGridPanel},
                     {id: 'grouped', component: GroupedGridPanel},

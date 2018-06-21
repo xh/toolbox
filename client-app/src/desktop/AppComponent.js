@@ -49,7 +49,7 @@ export class AppComponent extends Component {
     renderBody() {
         return frame({
             cls: 'xh-toolbox-app-frame',
-            item: tabContainer({model: XH.app.tabs})
+            item: tabContainer({model: XH.app.tabs, switcherPosition: 'none'})
         });
     }
 
