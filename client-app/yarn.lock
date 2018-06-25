@@ -211,8 +211,8 @@
     webpack-dev-server "~2.11.2"
 
 "@xh/hoist@^8.0.0-SNAPSHOT":
-  version "8.0.0-SNAPSHOT.1529694606731"
-  resolved "https://repo.xh.io/repository/npm-hosted/@xh/hoist/-/hoist-8.0.0-SNAPSHOT.1529694606731.tgz#f5139b7ab066d4f0e83aece057e6292ccdfb5068"
+  version "8.0.0-SNAPSHOT.1529950358390"
+  resolved "https://repo.xh.io/repository/npm-public/@xh/hoist/-/hoist-8.0.0-SNAPSHOT.1529950358390.tgz#81691e5d5d1f870c546c2d005a0df994bc78d078"
   dependencies:
     "@blueprintjs/core" "~2.3.0"
     "@blueprintjs/datetime" "~2.0.2"
@@ -237,7 +237,7 @@
     moment "~2.22.1"
     numeral "~2.0.6"
     onsenui "~2.10.1"
-    prop-types "~15.6.1"
+    prop-types "~15.6.2"
     react-onsenui "~1.11.0"
     react-transition-group "~2.3.1"
     router5 "~5.8.3"
@@ -5583,7 +5583,7 @@ prop-types@15.6.0:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-prop-types@^15.5.7, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@~15.6.1, prop-types@~15.6.2:
+prop-types@^15.5.7, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@~15.6.2:
   version "15.6.2"
   resolved "https://repo.xh.io/repository/npm-public/prop-types/-/prop-types-15.6.2.tgz#05d5ca77b4453e985d60fc7ff8c859094a497102"
   dependencies:
