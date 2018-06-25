@@ -6,7 +6,6 @@
  */
 import {XH, HoistApp} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {FeedbackDialogModel} from '@xh/hoist/cmp/feedback';
 
 import {AppComponent} from './AppComponent';
 import {HomePanel} from './tabs/home/HomePanel';
@@ -35,7 +34,6 @@ import {IconsPanel} from './tabs/icons/IconsPanel';
 @HoistApp
 class AppClass {
 
-    feedbackModel = new FeedbackDialogModel();
     tabs = this.createTabContainer();
     loginMessage = "User: 'toolbox@xh.io' / Password: 'toolbox'";
 
@@ -195,7 +193,7 @@ class AppClass {
     }
 
     destroy() {
-        XH.safeDestroy(this.feedbackModel, this.tabs);
+        XH.safeDestroy(this.tabs);
     }
 }
 export const App = new AppClass();

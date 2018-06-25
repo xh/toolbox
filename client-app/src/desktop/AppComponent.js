@@ -6,10 +6,8 @@
  */
 
 import {Component} from 'react';
-import {button} from '@xh/hoist/kit/blueprint';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {tabContainer, tabSwitcher} from '@xh/hoist/cmp/tab';
-import {feedbackDialog} from '@xh/hoist/cmp/feedback';
 import {vframe, frame} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {appBar} from '@xh/hoist/cmp/appbar';
@@ -22,8 +20,7 @@ export class AppComponent extends Component {
     render() {
         return vframe(
             this.renderNavBar(),
-            this.renderBody(),
-            feedbackDialog({model: this.model.feedbackModel})
+            this.renderBody()
         );
     }
 
@@ -36,12 +33,6 @@ export class AppComponent extends Component {
             leftItems: [
                 tabSwitcher({model: XH.app.tabs})
             ],
-            rightItems: [
-                button({
-                    icon: Icon.comment(),
-                    onClick: this.onFeedbackClick
-                })
-            ],
             hideRefreshButton: true
         });
     }
@@ -51,10 +42,6 @@ export class AppComponent extends Component {
             cls: 'xh-toolbox-app-frame',
             item: tabContainer({model: XH.app.tabs})
         });
-    }
-
-    onFeedbackClick = () => {
-        this.model.feedbackModel.open();
     }
 
 }
