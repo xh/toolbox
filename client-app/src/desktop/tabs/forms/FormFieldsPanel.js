@@ -8,7 +8,7 @@ import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {box, hbox, panel, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
-import {button} from '@xh/hoist/kit/blueprint';
+import {button} from '@xh/hoist/cmp/button';
 import {checkField, comboField, label, numberField, selectField, sliderField, switchField, textField} from '@xh/hoist/cmp/form';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {FormFieldsPanelModel} from './FormFieldsPanelModel';
