@@ -9,7 +9,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {box, hframe, panel} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
-import {button} from '@xh/hoist/kit/blueprint';
+import {button} from '@xh/hoist/cmp/button';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import './TabPanelContainer.scss';
 

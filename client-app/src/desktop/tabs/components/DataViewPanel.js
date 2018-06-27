@@ -8,7 +8,7 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {panel, vframe} from '@xh/hoist/cmp/layout';
-import {button} from '@xh/hoist/kit/blueprint';
+import {button} from '@xh/hoist/cmp/button';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
 import {dataView, DataViewModel} from '@xh/hoist/cmp/dataview';
 import {LocalStore} from '@xh/hoist/data';
