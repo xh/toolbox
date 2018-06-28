@@ -211,8 +211,8 @@
     webpack-dev-server "~2.11.2"
 
 "@xh/hoist@^8.0.0-SNAPSHOT":
-  version "8.0.0-SNAPSHOT.1529950358390"
-  resolved "https://repo.xh.io/repository/npm-public/@xh/hoist/-/hoist-8.0.0-SNAPSHOT.1529950358390.tgz#81691e5d5d1f870c546c2d005a0df994bc78d078"
+  version "8.0.0-SNAPSHOT.1530147320590"
+  resolved "https://repo.xh.io/repository/npm-public/@xh/hoist/-/hoist-8.0.0-SNAPSHOT.1530147320590.tgz#195429cfeb067d19433cf4d80d0b7a4168e05bff"
   dependencies:
     "@blueprintjs/core" "~2.3.0"
     "@blueprintjs/datetime" "~2.0.2"
@@ -3396,8 +3396,8 @@ he@1.1.x:
   resolved "https://repo.xh.io/repository/npm-public/he/-/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
 
 highcharts@~6.1.0:
-  version "6.1.0"
-  resolved "https://repo.xh.io/repository/npm-public/highcharts/-/highcharts-6.1.0.tgz#115a6ee10ad36a53d9913f1030c6d46da16c7cb5"
+  version "6.1.1"
+  resolved "https://repo.xh.io/repository/npm-public/highcharts/-/highcharts-6.1.1.tgz#49dc34f5e963744ecd7eb87603b6cdaf8304c13a"
 
 hmac-drbg@^1.0.0:
   version "1.0.1"
