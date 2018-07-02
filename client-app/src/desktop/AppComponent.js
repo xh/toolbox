@@ -6,7 +6,7 @@
  */
 
 import {Component} from 'react';
-import {HoistComponent, XH} from '@xh/hoist/core';
+import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer, tabSwitcher} from '@xh/hoist/cmp/tab';
 import {vframe, frame} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
@@ -31,7 +31,7 @@ export class AppComponent extends Component {
         return appBar({
             icon: Icon.boxFull({size: '2x'}),
             leftItems: [
-                tabSwitcher({model: XH.app.tabs})
+                tabSwitcher({model: this.model.tabModel})
             ],
             hideRefreshButton: true
         });
@@ -40,7 +40,10 @@ export class AppComponent extends Component {
     renderBody() {
         return frame({
             cls: 'xh-toolbox-app-frame',
-            item: tabContainer({model: XH.app.tabs, switcherPosition: 'none'})
+            item: tabContainer({
+                model: this.model.tabModel,
+                switcherPosition: 'none'
+            })
         });
     }
 
