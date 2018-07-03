@@ -10,7 +10,9 @@ import {wrapperPanel} from '../impl/WrapperPanel';
 import {panel, vframe} from '@xh/hoist/cmp/layout';
 import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@xh/hoist/cmp/leftrightchooser';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
+import {switchField} from '@xh/hoist/cmp/form';
 import data from './impl/LeftRightChooserData';
+import {setter, observable} from '@xh/hoist/mobx';
 
 @HoistComponent()
 export class LeftRightChooserPanel extends Component {
@@ -20,6 +22,8 @@ export class LeftRightChooserPanel extends Component {
         ungroupedName: 'Others',
         leftGroupingEnabled: false
     });
+
+    @setter @observable anyMatch = false;
 
     render() {
         return wrapperPanel(
@@ -32,7 +36,13 @@ export class LeftRightChooserPanel extends Component {
                 bbar: toolbar(
                     leftRightChooserFilter({
                         fields: ['text'],
-                        model: this.model
+                        model: this.model,
+                        anyMatch: this.anyMatch
+                    }),
+                    switchField({
+                        value: this.anyMatch,
+                        onCommit: (val) => this.setAnyMatch(val),
+                        text: 'AnyMatch filter'
                     })
                 )
             })
