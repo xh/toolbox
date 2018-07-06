@@ -16,6 +16,7 @@ import {RestGridPanel} from './RestGridPanel';
 export class GridsTab extends Component {
 
     localModel = new TabContainerModel({
+        route: 'default.grids',
         panes: [
             {id: 'standard', content: StandardGridPanel},
             {id: 'grouped', content: GroupedGridPanel},

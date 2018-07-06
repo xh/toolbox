@@ -15,6 +15,7 @@ import {LineChartPanel} from './LineChartPanel';
 export class ChartsTab extends Component {
 
     localModel = new TabContainerModel({
+        route: 'default.charts',
         panes: [
             {id: 'olhc', name: 'OLHC', content: OLHCChartPanel},
             {id: 'line', content: LineChartPanel}

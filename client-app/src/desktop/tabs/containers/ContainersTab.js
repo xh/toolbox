@@ -17,6 +17,7 @@ import {TabPanelContainerPanel} from './TabPanelContainerPanel';
 export class ContainersTab extends Component {
 
     localModel = new TabContainerModel({
+        route: 'default.containers',
         panes: [
             {id: 'hbox', name: 'HBox', content: HBoxContainerPanel},
             {id: 'vbox', name: 'VBox', content: VBoxContainerPanel},

@@ -14,6 +14,7 @@ import {FormFieldsPanel} from './FormFieldsPanel';
 export class FormsTab extends Component {
 
     localModel = new TabContainerModel({
+        route: 'default.forms',
         panes: [
             {id: 'fields',  content: FormFieldsPanel}
         ]

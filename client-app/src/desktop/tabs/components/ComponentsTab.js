@@ -18,6 +18,7 @@ import {ToolbarPanel} from './ToolbarPanel';
 export class ComponentsTab extends Component {
 
     localModel = new TabContainerModel({
+        route: 'default.components',
         panes: [
             {id: 'dataview', name: 'DataView', content: DataViewPanel},
             {id: 'leftRightChooser', name: 'LeftRightChooser', content: LeftRightChooserPanel},
