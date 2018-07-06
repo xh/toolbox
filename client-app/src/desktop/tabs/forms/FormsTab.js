@@ -18,6 +18,10 @@ export class FormsTab extends Component {
             {id: 'fields',  content: FormFieldsPanel}
         ]
     });
+    
+    async loadAsync() {
+        this.model.requestRefresh()
+    }
 
     render() {
         return tabContainer({model: this.model, switcherPosition: 'left'});

@@ -24,6 +24,10 @@ export class ContainersTab extends Component {
             {id: 'tabPanel', name: 'TabPanel', content: TabPanelContainerPanel}
         ]
     });
+    
+    async loadAsync() {
+        this.model.requestRefresh()
+    }
 
     render() {
         return tabContainer({model: this.model, switcherPosition: 'left'});

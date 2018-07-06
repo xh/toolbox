@@ -20,6 +20,10 @@ export class ChartsTab extends Component {
             {id: 'line', content: LineChartPanel}
         ]
     });
+    
+    async loadAsync() {
+        this.model.requestRefresh()
+    }
 
     render() {
         return tabContainer({model: this.model, switcherPosition: 'left'});

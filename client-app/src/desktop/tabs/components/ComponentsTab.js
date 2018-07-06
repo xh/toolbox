@@ -26,6 +26,10 @@ export class ComponentsTab extends Component {
             {id: 'toolbar', content: ToolbarPanel}
         ]
     });
+    
+    async loadAsync() {
+        this.model.requestRefresh()
+    }
 
     render() {
         return tabContainer({model: this.model, switcherPosition: 'left'});
