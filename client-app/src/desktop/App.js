@@ -8,33 +8,19 @@ import {XH, HoistApp} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 
 import {AppComponent} from './AppComponent';
-import {HomePanel} from './tabs/home/HomePanel';
-import {OLHCChartPanel} from './tabs/charts/OLHCChartPanel';
-import {LineChartPanel} from './tabs/charts/LineChartPanel';
 
-import {DataViewPanel} from './tabs/components/DataViewPanel';
-import {LeftRightChooserPanel} from './tabs/components/LeftRightChooserPanel';
-import {MaskPanel} from './tabs/components/MaskPanel';
-import {LoadMaskPanel} from './tabs/components/LoadMaskPanel';
-import {ToolbarPanel} from './tabs/components/ToolbarPanel';
-
-import {HBoxContainerPanel} from './tabs/containers/HBoxContainerPanel';
-import {VBoxContainerPanel} from './tabs/containers/VBoxContainerPanel';
-import {ResizableContainerPanel} from './tabs/containers/ResizableContainerPanel';
-import {TabPanelContainerPanel} from './tabs/containers/TabPanelContainerPanel';
-
-import {FormFieldsPanel} from './tabs/forms/FormFieldsPanel';
-
-import {StandardGridPanel} from './tabs/grids/StandardGridPanel';
-import {GroupedGridPanel} from './tabs/grids/GroupedGridPanel';
-import {RestGridPanel} from './tabs/grids/RestGridPanel';
-
-import {IconsPanel} from './tabs/icons/IconsPanel';
+import {HomeTab} from './tabs/home/HomeTab';
+import {ChartsTab} from './tabs/charts/ChartsTab';
+import {ComponentsTab} from './tabs/components/ComponentsTab';
+import {ContainersTab} from './tabs/containers/ContainersTab';
+import {FormsTab} from './tabs/forms/FormsTab';
+import {GridsTab} from './tabs/grids/GridsTab';
+import {IconsTab} from './tabs/icons/IconsTab';
 
 @HoistApp
 class AppClass {
 
-    tabs = this.createTabContainer();
+    tabModel = this.createTabModel();
     loginMessage = "User: 'toolbox@xh.io' / Password: 'toolbox'";
 
     get enableLogout() {return true}
@@ -66,12 +52,18 @@ class AppClass {
     //------------------------
     // Implementation
     //------------------------
-    createTabContainer() {
+    createTabModel() {
         return new TabContainerModel({
-            id: 'default',
-            useRoutes: true,
-            switcherPosition: 'none',
-            children: this.createTabs()
+            route: 'default',
+            tabs: [
+                {id: 'home', content: HomeTab},
+                {id: 'charts', content: ChartsTab},
+                {id: 'components', content: ComponentsTab},
+                {id: 'containers', content: ContainersTab},
+                {id: 'forms', content: FormsTab},
+                {id: 'grids', content: GridsTab},
+                {id: 'icons', content: IconsTab}
+            ]
         });
     }
 
@@ -133,61 +125,6 @@ class AppClass {
             {
                 name: 'icons',
                 path: '/icons'
-            }
-        ];
-    }
-
-    createTabs() {
-        return [
-            {
-                id: 'home',
-                component: HomePanel
-            },
-            {
-                id: 'charts',
-                switcherPosition: 'left',
-                children: [
-                    {id: 'olhc', name: 'OLHC', component: OLHCChartPanel},
-                    {id: 'line', component: LineChartPanel}
-                ]
-            },
-            {
-                id: 'components',
-                switcherPosition: 'left',
-                children: [
-                    {id: 'dataview', name: 'DataView', component: DataViewPanel},
-                    {id: 'leftRightChooser', name: 'LeftRightChooser', component: LeftRightChooserPanel},
-                    {id: 'maskPanel', name: 'Mask', component: MaskPanel},
-                    {id: 'loadMask', name: 'LoadMask', component: LoadMaskPanel},
-                    {id: 'toolbar', component: ToolbarPanel}
-                ]
-            },
-            {
-                id: 'containers',
-                switcherPosition: 'left',
-                children: [
-                    {id: 'hbox', name: 'HBox', component: HBoxContainerPanel},
-                    {id: 'vbox', name: 'VBox', component: VBoxContainerPanel},
-                    {id: 'resizable', component: ResizableContainerPanel},
-                    {id: 'tabPanel', name: 'TabPanel', component: TabPanelContainerPanel}
-                ]
-            },
-            {
-                id: 'forms',
-                component: FormFieldsPanel
-            },
-            {
-                id: 'grids',
-                switcherPosition: 'left',
-                children: [
-                    {id: 'standard', component: StandardGridPanel},
-                    {id: 'grouped', component: GroupedGridPanel},
-                    {id: 'rest', component: RestGridPanel}
-                ]
-            },
-            {
-                id: 'icons',
-                component: IconsPanel
             }
         ];
     }

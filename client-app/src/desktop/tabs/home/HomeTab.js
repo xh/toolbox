@@ -8,7 +8,7 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 
 @HoistComponent()
-export class HomePanel extends Component {
+export class HomeTab extends Component {
     render() {
         return null;
     }

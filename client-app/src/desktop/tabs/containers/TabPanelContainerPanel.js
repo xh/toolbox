@@ -6,7 +6,7 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {box, hframe, panel} from '@xh/hoist/cmp/layout';
+import {hframe, panel} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {toolbar} from '@xh/hoist/cmp/toolbar';
 import {button} from '@xh/hoist/cmp/button';
@@ -15,41 +15,12 @@ import './TabPanelContainer.scss';
 
 @HoistComponent()
 export class TabPanelContainerPanel extends Component {
-    topModel = new TabContainerModel({
-        id: 'horizontal-top',
-        switcherPosition: 'top',
-        children: this.createStandard()
-    });
-
-    bottomModel = new TabContainerModel({
-        id: 'horizontal-bottom',
-        switcherPosition: 'bottom',
-        children: this.createStandard()
-    });
-
-    leftModel = new TabContainerModel({
-        id: 'vertical-left',
-        switcherPosition: 'left',
-        children: this.createStandard()
-    });
-
-    rightModel = new TabContainerModel({
-        id: 'vertical-right',
-        switcherPosition: 'right',
-        children: this.createStandard()
-    });
-
-    nModel = new TabContainerModel({
-        id: 'nested',
-        children: this.createNested()
-    });
-
-    detachedModel = new TabContainerModel({
-        id: 'detached',
-        switcherPosition: 'none',
-        children: this.createStandard()
-    });
-
+    topModel =  this.createStandard()
+    bottomModel = this.createStandard()
+    leftModel =  this.createStandard()
+    rightModel =  this.createStandard()
+    detachedModel = this.createStandard()
+    nestedModel = this.createNested()
 
     render() {
         return wrapperPanel(
@@ -64,98 +35,78 @@ export class TabPanelContainerPanel extends Component {
     }
 
     renderExample() {
+        const {detachedModel, topModel, bottomModel, leftModel, rightModel, nestedModel} = this;
         return hframe({
             cls: 'xh-toolbox-example-container',
             items: [
                 panel({
                     title: 'Horizontal - Top',
                     flex: 1,
-                    item: tabContainer({model: this.topModel})
+                    item: tabContainer({model: topModel, switcherPosition: 'top'})
                 }),
                 panel({
                     title: 'Horizontal - Bottom',
                     flex: 1,
-                    item: tabContainer({model: this.bottomModel})
+                    item: tabContainer({model: bottomModel, switcherPosition: 'bottom'})
                 }),
                 panel({
                     title: 'Vertical - Left',
                     flex: 1,
-                    item: tabContainer({model: this.leftModel})
+                    item: tabContainer({model: leftModel, switcherPosition: 'left'})
                 }),
                 panel({
                     title: 'Vertical - Right',
                     flex: 1,
-                    item: tabContainer({model: this.rightModel})
+                    item: tabContainer({model: rightModel, switcherPosition: 'right'})
                 }),
                 panel({
                     title: 'Nested',
                     flex: 1,
-                    item: tabContainer({model: this.nModel})
+                    item: tabContainer({model: nestedModel})
                 }),
                 panel({
-                    title: 'Detached Switcher',
+                    title: 'Custom Switcher',
                     tbar: toolbar(
-                        this.detachedModel.children.map(childModel => button({
-                            intent: this.detachedModel.selectedId === childModel.id ? 'primary' : 'default',
+                        detachedModel.tabs.map(childModel => button({
+                            intent: childModel.isActive ? 'primary' : 'default',
                             text: childModel.name,
                             onClick: () => {
-                                this.detachedModel.setSelectedId(childModel.id);
+                                detachedModel.setActiveTabId(childModel.id);
                             }
                         }))
                     ),
-                    item: tabContainer({model: this.detachedModel})
+                    item: tabContainer({model: detachedModel, switcherPosition: 'none'})
                 })
             ]
         });
     }
 
-    createStandard() {
-        return [
-            {
-                id: 'foo',
-                name: 'Foo',
-                component: class extends Component { render() {return 'Foo'}}
-            },
-            {
-                id: 'bar',
-                name: 'Bar',
-                component: class extends Component { render() {return 'Bar'}}
-            },
-            {
-                id: 'baz',
-                name: 'Baz',
-                component: class extends Component { render() {return 'Baz'}}
-            }
-        ];
+    createStandard(parent = null) {
+        return new TabContainerModel({
+            tabs: [
+                {id: 'foo', content: () => parent ? parent + ' Foo' : 'Foo'},
+                {id: 'bar', content: () => parent ? parent + ' Bar' : 'Bar'},
+                {id: 'baz', content: () => parent ? parent + ' Baz' : 'Baz'}
+            ]
+        });
     }
 
     createNested() {
-        return [
-            {
-                id: 'foo',
-                switcherPosition: 'left',
-                children: [
-                    {id: 'Child 1', component: class extends Component { render() { return box('Foo - Child 1')}}},
-                    {id: 'Child 2', component: class extends Component { render() { return box('Foo - Child 2')}}}
-                ]
-            },
-            {
-                id: 'bar',
-                switcherPosition: 'left',
-                children: [
-                    {id: 'Child 1', component: class extends Component { render() { return box('Bar - Child 1')}}},
-                    {id: 'Child 2', component: class extends Component { render() { return box('Bar - Child 2')}}}
-                ]
-            },
-            {
-                id: 'baz',
-                switcherPosition: 'left',
-                children: [
-                    {id: 'Child 1', component: class extends Component { render() { return box('Baz - Child 1')}}},
-                    {id: 'Child 2', component: class extends Component { render() { return box('Baz - Child 2')}}}
-                ]
-            }
-        ];
+        return new TabContainerModel({
+            tabs: [
+                {
+                    id: 'apples',
+                    content: () => tabContainer({model: this.createStandard('Apples'), switcherPosition: 'left'})
+                },
+                {
+                    id: 'oranges',
+                    content: () => tabContainer({model: this.createStandard('Oranges'), switcherPosition: 'left'})
+                },
+                {
+                    id: 'bananas',
+                    content: () => tabContainer({model: this.createStandard('Bananas'), switcherPosition: 'left'})
+                }
+            ]
+        });
     }
-
 }
