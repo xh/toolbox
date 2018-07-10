@@ -19,11 +19,11 @@ export class ComponentsTab extends Component {
 
     localModel = new TabContainerModel({
         route: 'default.components',
-        panes: [
-            {id: 'dataview', name: 'DataView', content: DataViewPanel},
-            {id: 'leftRightChooser', name: 'LeftRightChooser', content: LeftRightChooserPanel},
-            {id: 'maskPanel', name: 'Mask', content: MaskPanel},
-            {id: 'loadMask', name: 'LoadMask', content: LoadMaskPanel},
+        tabs: [
+            {id: 'dataview', title: 'DataView', content: DataViewPanel},
+            {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
+            {id: 'maskPanel', title: 'Mask', content: MaskPanel},
+            {id: 'loadMask', title: 'LoadMask', content: LoadMaskPanel},
             {id: 'toolbar', content: ToolbarPanel}
         ]
     });

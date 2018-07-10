@@ -65,13 +65,13 @@ export class TabPanelContainerPanel extends Component {
                     item: tabContainer({model: nestedModel})
                 }),
                 panel({
-                    title: 'Detached Switcher',
+                    title: 'Custom Switcher',
                     tbar: toolbar(
-                        detachedModel.panes.map(childModel => button({
-                            intent: detachedModel.activePaneId === childModel.id ? 'primary' : 'default',
+                        detachedModel.tabs.map(childModel => button({
+                            intent: childModel.isActive ? 'primary' : 'default',
                             text: childModel.name,
                             onClick: () => {
-                                detachedModel.setActivePaneId(childModel.id);
+                                detachedModel.setActiveTabId(childModel.id);
                             }
                         }))
                     ),
@@ -83,7 +83,7 @@ export class TabPanelContainerPanel extends Component {
 
     createStandard(parent = null) {
         return new TabContainerModel({
-            panes: [
+            tabs: [
                 {id: 'foo', content: () => parent ? parent + ' Foo' : 'Foo'},
                 {id: 'bar', content: () => parent ? parent + ' Bar' : 'Bar'},
                 {id: 'baz', content: () => parent ? parent + ' Baz' : 'Baz'}
@@ -93,7 +93,7 @@ export class TabPanelContainerPanel extends Component {
 
     createNested() {
         return new TabContainerModel({
-            panes: [
+            tabs: [
                 {
                     id: 'apples',
                     content: () => tabContainer({model: this.createStandard('Apples'), switcherPosition: 'left'})

@@ -17,7 +17,7 @@ export class GridsTab extends Component {
 
     localModel = new TabContainerModel({
         route: 'default.grids',
-        panes: [
+        tabs: [
             {id: 'standard', content: StandardGridPanel},
             {id: 'grouped', content: GroupedGridPanel},
             {id: 'rest', content: RestGridPanel}

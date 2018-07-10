@@ -16,8 +16,8 @@ export class ChartsTab extends Component {
 
     localModel = new TabContainerModel({
         route: 'default.charts',
-        panes: [
-            {id: 'olhc', name: 'OLHC', content: OLHCChartPanel},
+        tabs: [
+            {id: 'olhc', title: 'OLHC', content: OLHCChartPanel},
             {id: 'line', content: LineChartPanel}
         ]
     });

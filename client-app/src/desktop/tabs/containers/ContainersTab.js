@@ -18,11 +18,11 @@ export class ContainersTab extends Component {
 
     localModel = new TabContainerModel({
         route: 'default.containers',
-        panes: [
-            {id: 'hbox', name: 'HBox', content: HBoxContainerPanel},
-            {id: 'vbox', name: 'VBox', content: VBoxContainerPanel},
+        tabs: [
+            {id: 'hbox', title: 'HBox', content: HBoxContainerPanel},
+            {id: 'vbox', title: 'VBox', content: VBoxContainerPanel},
             {id: 'resizable', content: ResizableContainerPanel},
-            {id: 'tabPanel', name: 'TabPanel', content: TabPanelContainerPanel}
+            {id: 'tabPanel', title: 'TabPanel', content: TabPanelContainerPanel}
         ]
     });
     

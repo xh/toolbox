@@ -55,7 +55,7 @@ class AppClass {
     createTabModel() {
         return new TabContainerModel({
             route: 'default',
-            panes: [
+            tabs: [
                 {id: 'home', content: HomeTab},
                 {id: 'charts', content: ChartsTab},
                 {id: 'components', content: ComponentsTab},

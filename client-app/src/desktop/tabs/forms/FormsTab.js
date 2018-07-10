@@ -15,8 +15,8 @@ export class FormsTab extends Component {
 
     localModel = new TabContainerModel({
         route: 'default.forms',
-        panes: [
-            {id: 'fields',  content: FormFieldsPanel}
+        tabs: [
+            {id: 'fields', content: FormFieldsPanel}
         ]
     });
     
