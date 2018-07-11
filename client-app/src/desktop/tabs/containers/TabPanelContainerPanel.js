@@ -6,10 +6,10 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {hframe, panel} from '@xh/hoist/cmp/layout';
-import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
-import {toolbar} from '@xh/hoist/cmp/toolbar';
-import {button} from '@xh/hoist/cmp/button';
+import {hframe, panel} from '@xh/hoist/layout';
+import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import './TabPanelContainer.scss';
 

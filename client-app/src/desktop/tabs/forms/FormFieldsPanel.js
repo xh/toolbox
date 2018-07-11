@@ -6,10 +6,11 @@
  */
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {box, hbox, panel, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
-import {toolbar} from '@xh/hoist/cmp/toolbar';
-import {button} from '@xh/hoist/cmp/button';
-import {checkField, comboField, label, numberField, selectField, sliderField, switchField, textField} from '@xh/hoist/cmp/form';
+import {box, hbox, vbox, hframe, filler} from '@xh/hoist/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {checkField, comboField, label, numberField, selectField, sliderField, switchField, textField} from '@xh/hoist/desktop/cmp/form';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {FormFieldsPanelModel} from './FormFieldsPanelModel';
 import './FormFieldsPanel.scss';

@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
-import {vbox, box} from '@xh/hoist/cmp/layout';
+import {vbox, box} from '@xh/hoist/layout';
 import {Icon} from '@xh/hoist/icon';
 
 @HoistComponent()

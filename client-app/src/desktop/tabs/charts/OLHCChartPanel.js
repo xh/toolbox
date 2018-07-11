@@ -7,11 +7,12 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {vframe, panel} from '@xh/hoist/cmp/layout';
-import {comboField, label} from '@xh/hoist/cmp/form';
-import {toolbar} from '@xh/hoist/cmp/toolbar';
-import {chart} from '@xh/hoist/cmp/chart';
-import {loadMask} from '@xh/hoist/cmp/mask';
+import {vframe} from '@xh/hoist/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {comboField, label} from '@xh/hoist/desktop/cmp/form';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {chart} from '@xh/hoist/desktop/cmp/chart';
+import {loadMask} from '@xh/hoist/desktop/cmp/mask';
 import {OLHCChartModel} from './OLHCChartModel';
 
 @HoistComponent()

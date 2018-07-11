@@ -7,6 +7,7 @@
 import {XH, HoistApp} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 
+import {AppContainer} from '@xh/hoist/desktop/AppContainer';
 import {AppComponent} from './AppComponent';
 
 import {HomeTab} from './tabs/home/HomeTab';
@@ -25,6 +26,7 @@ class AppClass {
 
     get enableLogout() {return true}
     get componentClass() {return AppComponent}
+    get containerClass() {return AppContainer}
 
 
     checkAccess(user) {

@@ -6,16 +6,17 @@
  */
 import {Component} from 'react';
 import {cloneDeep} from 'lodash';
-import {inputGroup, label} from '@xh/hoist/kit/blueprint';
+import {inputGroup, label} from '@xh/hoist/desktop/blueprint';
 import {HoistComponent} from '@xh/hoist/core';
 import {observable, setter} from '@xh/hoist/mobx';
-import {vframe, filler, panel} from '@xh/hoist/cmp/layout';
-import {toolbar} from '@xh/hoist/cmp/toolbar';
-import {grid, GridModel} from '@xh/hoist/cmp/grid';
+import {vframe, filler} from '@xh/hoist/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {grid, GridModel} from '@xh/hoist/desktop/cmp/grid';
 import {baseCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
-import {button} from '@xh/hoist/cmp/button';
+import {button} from '@xh/hoist/desktop/cmp/button';
 
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {companyTrades} from '../../../data';

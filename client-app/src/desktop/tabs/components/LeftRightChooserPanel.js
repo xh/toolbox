@@ -7,10 +7,11 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {panel, vframe} from '@xh/hoist/cmp/layout';
-import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@xh/hoist/cmp/leftrightchooser';
-import {toolbar} from '@xh/hoist/cmp/toolbar';
-import {switchField} from '@xh/hoist/cmp/form';
+import {vframe} from '@xh/hoist/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@xh/hoist/desktop/cmp/leftrightchooser';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {switchField} from '@xh/hoist/desktop/cmp/form';
 import data from './impl/LeftRightChooserData';
 import {setter, observable} from '@xh/hoist/mobx';
 
