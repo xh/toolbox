@@ -7,10 +7,10 @@
 
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {tabContainer, tabSwitcher} from '@xh/hoist/cmp/tab';
-import {vframe, frame} from '@xh/hoist/cmp/layout';
+import {tabContainer, tabSwitcher} from '@xh/hoist/desktop/cmp/tab';
+import {vframe, frame} from '@xh/hoist/layout';
 import {Icon} from '@xh/hoist/icon';
-import {appBar} from '@xh/hoist/cmp/appbar';
+import {appBar} from '@xh/hoist/desktop/cmp/appbar';
 
 import './App.scss';
 

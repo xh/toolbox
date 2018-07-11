@@ -6,7 +6,7 @@
  */
 import {Component} from 'react';
 import {observable, setter} from '@xh/hoist/mobx';
-import {inputGroup, label, checkbox} from '@xh/hoist/dekstop/blueprint';
+import {inputGroup, label, checkbox} from '@xh/hoist/desktop/blueprint';
 import {cloneDeep} from 'lodash';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
