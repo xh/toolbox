@@ -69,7 +69,7 @@ export class TabPanelContainerPanel extends Component {
                     tbar: toolbar(
                         detachedModel.tabs.map(childModel => button({
                             intent: childModel.isActive ? 'primary' : 'default',
-                            text: childModel.name,
+                            text: childModel.title,
                             onClick: () => {
                                 detachedModel.setActiveTabId(childModel.id);
                             }
