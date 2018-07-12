@@ -7,10 +7,11 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {panel, vframe} from '@xh/hoist/cmp/layout';
-import {button} from '@xh/hoist/cmp/button';
-import {toolbar} from '@xh/hoist/cmp/toolbar';
-import {dataView, DataViewModel} from '@xh/hoist/cmp/dataview';
+import {vframe} from '@xh/hoist/cmp/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
 import {LocalStore} from '@xh/hoist/data';
 import {dataViewItem} from './impl/DataViewItem';
 import './DataViewItem.scss';

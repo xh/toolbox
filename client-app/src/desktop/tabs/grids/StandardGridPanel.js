@@ -6,10 +6,11 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {panel, vframe} from '@xh/hoist/cmp/layout';
-import {grid, GridModel, colChooserButton} from '@xh/hoist/cmp/grid';
-import {storeFilterField, storeCountLabel} from '@xh/hoist/cmp/store';
-import {toolbar} from '@xh/hoist/cmp/toolbar';
+import {vframe} from '@xh/hoist/cmp/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
+import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {baseCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';

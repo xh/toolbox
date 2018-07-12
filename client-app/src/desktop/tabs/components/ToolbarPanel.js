@@ -8,11 +8,12 @@ import {Component} from 'react';
 import {Position} from '@xh/hoist/kit/blueprint';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {box, filler, hframe, panel, vframe} from '@xh/hoist/cmp/layout';
-import {comboField} from '@xh/hoist/cmp/form';
-import {toolbar, toolbarSep} from '@xh/hoist/cmp/toolbar';
+import {box, filler, hframe, vframe} from '@xh/hoist/cmp/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {comboField} from '@xh/hoist/desktop/cmp/form';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {ToastManager} from '@xh/hoist/toast';
-import {button} from '@xh/hoist/cmp/button';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
