@@ -6,10 +6,10 @@
  */
 import {Component} from 'react';
 import {cloneDeep} from 'lodash';
-import {inputGroup, label} from '@xh/hoist/desktop/blueprint';
+import {inputGroup, label} from '@xh/hoist/kit/blueprint';
 import {HoistComponent} from '@xh/hoist/core';
 import {observable, setter} from '@xh/hoist/mobx';
-import {vframe, filler} from '@xh/hoist/layout';
+import {vframe, filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {grid, GridModel} from '@xh/hoist/desktop/cmp/grid';

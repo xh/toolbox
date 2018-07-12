@@ -6,7 +6,7 @@
  */
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {box, hbox, vbox, hframe, filler} from '@xh/hoist/layout';
+import {box, hbox, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';

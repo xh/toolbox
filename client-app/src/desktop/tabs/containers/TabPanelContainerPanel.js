@@ -6,7 +6,7 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {hframe} from '@xh/hoist/layout';
+import {hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';

@@ -6,11 +6,11 @@
  */
 import {Component} from 'react';
 import {observable, setter} from '@xh/hoist/mobx';
-import {inputGroup, label, checkbox} from '@xh/hoist/desktop/blueprint';
+import {inputGroup, label, checkbox} from '@xh/hoist/kit/blueprint';
 import {cloneDeep} from 'lodash';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {filler, vframe} from '@xh/hoist/layout';
+import {filler, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {grid, GridModel} from '@xh/hoist/desktop/cmp/grid';
 import {loadMask} from '@xh/hoist/desktop/cmp/mask';

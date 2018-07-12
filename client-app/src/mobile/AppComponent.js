@@ -7,7 +7,7 @@
 
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {frame} from '@xh/hoist/layout';
+import {frame} from '@xh/hoist/cmp/layout';
 
 @HoistComponent()
 export class AppComponent extends Component {

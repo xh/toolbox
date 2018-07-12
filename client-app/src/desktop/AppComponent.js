@@ -8,7 +8,7 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer, tabSwitcher} from '@xh/hoist/desktop/cmp/tab';
-import {vframe, frame} from '@xh/hoist/layout';
+import {vframe, frame} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {appBar} from '@xh/hoist/desktop/cmp/appbar';
 

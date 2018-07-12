@@ -5,10 +5,10 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {Position} from '@xh/hoist/desktop/blueprint';
+import {Position} from '@xh/hoist/kit/blueprint';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
-import {box, filler, hframe, vframe} from '@xh/hoist/layout';
+import {box, filler, hframe, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {comboField} from '@xh/hoist/desktop/cmp/form';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
