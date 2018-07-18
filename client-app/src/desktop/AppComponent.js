@@ -11,10 +11,12 @@ import {tabContainer, tabSwitcher} from '@xh/hoist/desktop/cmp/tab';
 import {vframe, frame} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {appBar} from '@xh/hoist/desktop/cmp/appbar';
+import {ContextMenuSupport, ContextMenuItem} from '@xh/hoist/desktop/cmp/contextmenu';
 
 import './App.scss';
 
 @HoistComponent()
+@ContextMenuSupport
 export class AppComponent extends Component {
 
     render() {
@@ -22,6 +24,11 @@ export class AppComponent extends Component {
             this.renderNavBar(),
             this.renderBody()
         );
+    }
+
+    getContextMenuItems() {
+        const Item = ContextMenuItem;
+        return [Item.reloadApp(), Item.about(), Item.logout()];
     }
 
     //------------------
