@@ -6,8 +6,9 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {panel, vframe} from '@xh/hoist/cmp/layout';
-import {grid, GridModel} from '@xh/hoist/cmp/grid';
+import {vframe} from '@xh/hoist/cmp/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {grid, GridModel} from '@xh/hoist/desktop/cmp/grid';
 import {baseCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
@@ -60,7 +61,7 @@ export class GroupedGridPanel extends Component {
     render() {
         return wrapperPanel(
             panel({
-                cls: 'xh-toolbox-standardgrid-panel',
+                cls: 'xh-toolbox-groupedgrid-panel',
                 title: 'Grouped Grid (City)',
                 width: 600,
                 height: 400,

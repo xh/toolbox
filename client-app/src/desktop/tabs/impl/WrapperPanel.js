@@ -7,13 +7,23 @@
 
 import {Component} from 'react';
 import {elemFactory} from '@xh/hoist/core';
-import {div} from '@xh/hoist/cmp/layout';
+import {div, box} from '@xh/hoist/cmp/layout';
 
 class WrapperPanel extends Component {
+
+
     render() {
+        const {description, children, ...rest} = this.props,
+            width = (children.props.layoutConfig && parseInt(children.props.layoutConfig.width) || 100);
+
         return div({
             cls: 'xh-toolbox-wrapper-panel',
-            ...this.props
+            items: [children, description ? box({
+                cls: 'xh-toolbox-wrapper-description',
+                item: description,
+                width
+            }) : null],
+            ...rest
         });
     }
 }

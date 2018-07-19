@@ -8,10 +8,6 @@ grails {
     resources.pattern = '/**'
 }
 
-hoist {
-    supportedEnvironments = ['Development']
-}
-
 dataSource {
     dbCreate = "update"
     url = "jdbc:h2:mem:testDb;MVCC=TRUE"

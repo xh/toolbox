@@ -7,14 +7,15 @@
 
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
-import {div, hbox, panel, vbox} from '@xh/hoist/cmp/layout';
+import {div, hbox, vbox} from '@xh/hoist/cmp/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {Icon} from '@xh/hoist/icon';
 
-import './IconsPanel.scss';
+import './IconsTab.scss';
 
 @HoistComponent()
-export class IconsPanel extends Component {
+export class IconsTab extends Component {
 
     render() {
         return wrapperPanel(

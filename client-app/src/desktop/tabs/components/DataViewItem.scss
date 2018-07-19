@@ -1,0 +1,32 @@
+.xh-toolbox-dataview-panel {
+  .dataview-item {
+    .ag-react-container {
+      height: 100%;
+      width: 100%;
+      > div {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        height: 100%;
+      }
+    }
+
+    .dataview-item-name {
+      min-width: 100%;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .dataview-item-name {
+      min-width: 100%;
+      font-size: 18px;
+    }
+
+    svg {
+      position: absolute;
+      right: 10px;
+      top: 15px;
+    }
+  }
+}

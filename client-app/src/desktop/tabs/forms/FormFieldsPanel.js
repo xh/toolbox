@@ -6,10 +6,11 @@
  */
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {box, hbox, panel, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
-import {toolbar} from '@xh/hoist/cmp/toolbar';
-import {button} from '@xh/hoist/kit/blueprint';
-import {textField, numberField, label, checkField, comboField} from '@xh/hoist/cmp/form';
+import {box, hbox, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {checkField, comboField, label, numberField, selectField, sliderField, switchField, textField} from '@xh/hoist/desktop/cmp/form';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {FormFieldsPanelModel} from './FormFieldsPanelModel';
 import './FormFieldsPanel.scss';
@@ -68,6 +69,17 @@ export class FormFieldsPanel extends Component {
                     hbox(
                         label(this.renderLabel('Verify: ')),
                         textField({model, field: 'verify', placeholder: 'Password', type: 'password'})
+                    ),
+                    vbox(
+                        label(this.renderLabel('Profile Completion: ')),
+                        sliderField({model,
+                            field: 'profileCompletion',
+                            min: 0,
+                            max: 100,
+                            labelStepSize: 25,
+                            stepSize: 1,
+                            labelRenderer: val => `${val}%`
+                        })
                     )
                 ]
             })
@@ -76,7 +88,7 @@ export class FormFieldsPanel extends Component {
 
     getContactInfo() {
         const model = this.model,
-            {red, green, blue, profileColor, options} = this.model;
+            {red, green, blue, movies, profileColor, usStates} = this.model;
 
         return panel({
             title: 'User Info',
@@ -113,11 +125,7 @@ export class FormFieldsPanel extends Component {
                             commitOnChange: true
                         }),
                         box({
-                            style: {
-                                backgroundColor: profileColor
-                            },
-                            width: 30,
-                            height: 30
+                            style: {backgroundColor: profileColor}, width: 30, height: 30
                         })
                     ),
                     hbox(
@@ -134,16 +142,43 @@ export class FormFieldsPanel extends Component {
                     ),
                     hbox(
                         label(this.renderLabel('State: ')),
-                        comboField({
-                            options,
+                        selectField({
+                            options: usStates,
                             model,
                             field: 'state',
                             placeholder: 'Select a State...'
                         }),
                     ),
                     hbox(
+                        label(this.renderLabel('Favorite Movie: ')),
+                        comboField({
+                            options: movies,
+                            model,
+                            field: 'movie',
+                            placeholder: 'Search...'
+                        }),
+                    ),
+                    vbox(
+                        label(this.renderLabel('Preferred Salary Range: ')),
+                        sliderField({
+                            model,
+                            field: 'salaryRange',
+                            min: 50000,
+                            max: 150000,
+                            labelStepSize: 25000,
+                            stepSize: 1000,
+                            paddingRight: 20,
+                            labelRenderer: val => `$${val / 1000}k`
+                        })
+                    ),
+                    hbox(
                         label(this.renderLabel('Active: ')),
-                        checkField({model, field: 'active'})
+                        checkField({model, field: 'active'}),
+                        label({
+                            style: {paddingRight: '10px'},
+                            item: 'or'
+                        }),
+                        switchField({model, field: 'active'}),
                     )
                 ]
             })
@@ -151,7 +186,7 @@ export class FormFieldsPanel extends Component {
     }
 
     getRawValueInfo() {
-        const {user, password, verify, red, green, blue, age, email, company, state, active, getDisplayValue} = this.model;
+        const {active, age, company, email, getDisplayValue, movie, password, state, user, verify, red, green, blue} = this.model;
         return panel({
             title: 'Current Values',
             width: 270,
@@ -192,6 +227,10 @@ export class FormFieldsPanel extends Component {
                         label(getDisplayValue(state)),
                     ),
                     hbox(
+                        label('Favorite Movie:'),
+                        label(getDisplayValue(movie)),
+                    ),
+                    hbox(
                         label('Active:'),
                         label(getDisplayValue(active)),
                     )
@@ -203,7 +242,7 @@ export class FormFieldsPanel extends Component {
 
     renderLabel(text) {
         const isValid = this.model.isFieldValid(text),
-            width = 90;
+            width = 110;
         const item = <span>{text}<span style={{color: 'red'}}>{!isValid ? '*' : ''}</span> </span>;
 
         return {item, width};

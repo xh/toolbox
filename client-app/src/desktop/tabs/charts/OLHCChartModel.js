@@ -6,7 +6,7 @@
  */
 
 import {HoistModel} from '@xh/hoist/core';
-import {ChartModel} from '@xh/hoist/cmp/chart';
+import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
 import {setter, observable} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
 import moment from 'moment';
