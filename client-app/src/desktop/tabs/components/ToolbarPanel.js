@@ -12,7 +12,6 @@ import {box, filler, hframe, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {comboField} from '@xh/hoist/desktop/cmp/form';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {ToastManager} from '@xh/hoist/toast';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
@@ -87,7 +86,7 @@ export class ToolbarPanel extends Component {
     }
 
     showToast() {
-        ToastManager.show({
+        XH.toast({
             message: `Selected State: ${this.toolBarModel.state || 'None'}`,
             position: Position.TOP,
             intent: 'primary'

@@ -6,7 +6,7 @@
  */
 import {XH, HoistApp} from '@xh/hoist/core';
 
-import {AppContainer} from '@xh/hoist/mobile/AppContainer';
+import {AppContainer} from '@xh/hoist/mobile/appcontainer';
 import {AppComponent} from './AppComponent';
 
 @HoistApp
