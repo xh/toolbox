@@ -7,7 +7,7 @@
 import {XH, HoistApp} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
-import {AppContainer} from '@xh/hoist/desktop/AppContainer';
+import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 import {AppComponent} from './AppComponent';
 
 import {HomeTab} from './tabs/home/HomeTab';
