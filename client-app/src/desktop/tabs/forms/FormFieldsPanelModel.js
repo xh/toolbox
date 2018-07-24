@@ -17,6 +17,7 @@ export class FormFieldsPanelModel {
     @setter @observable state = null;
     @setter @observable user = null;
     @setter @observable verify = null;
+    @setter @observable startDate = null;
 
     @setter @observable red = this.getRandomFrom(0, 255);
     @setter @observable green = this.getRandomFrom(0, 255);
