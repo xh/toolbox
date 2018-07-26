@@ -28,6 +28,7 @@ export class StandardGridPanel extends Component {
             fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
         }),
         enableColChooser: true,
+        selModel: 'multiple',
         columns: [
             baseCol({
                 headerName: 'Company',

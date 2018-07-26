@@ -10,10 +10,11 @@ import {box, hbox, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {checkField, comboField, label, numberField, selectField, sliderField, switchField, textField} from '@xh/hoist/desktop/cmp/form';
+import {checkField, comboField, label, numberField, selectField, sliderField, switchField, textField, dayField} from '@xh/hoist/desktop/cmp/form';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {FormFieldsPanelModel} from './FormFieldsPanelModel';
 import './FormFieldsPanel.scss';
+import {Icon} from '@xh/hoist/icon/Icon';
 
 @HoistComponent()
 export class FormFieldsPanel extends Component {
@@ -24,7 +25,7 @@ export class FormFieldsPanel extends Component {
             panel({
                 cls: 'xh-toolbox-formfields-panel',
                 title: 'Form Fields',
-                width: 600,
+                width: 620,
                 item: this.renderExample(),
                 bbar: toolbar(
                     filler(),
@@ -134,7 +135,17 @@ export class FormFieldsPanel extends Component {
                     ),
                     hbox(
                         label(this.renderLabel('E-Mail: ')),
-                        textField({model, field: 'email', placeholder: 'name@domain.com'})
+                        textField({
+                            model,
+                            field: 'email',
+                            placeholder: 'name@domain.com',
+                            leftIcon: Icon.mail(),
+                            rightElement: button({
+                                icon: Icon.cross(),
+                                cls: 'pt-minimal',
+                                onClick: () => model.setEmail(null)
+                            })
+                        })
                     ),
                     hbox(
                         label(this.renderLabel('Company: ')),
@@ -169,6 +180,19 @@ export class FormFieldsPanel extends Component {
                             stepSize: 1000,
                             paddingRight: 20,
                             labelRenderer: val => `$${val / 1000}k`
+                        })
+                    ),
+                    hbox(
+                        label(this.renderLabel('Start Date')),
+                        dayField({
+                            model,
+                            field: 'startDate',
+                            leftIcon: Icon.calendar(),
+                            rightElement: button({
+                                icon: Icon.cross(),
+                                cls: 'pt-minimal',
+                                onClick: () => model.setStartDate(null)
+                            })
                         })
                     ),
                     hbox(
