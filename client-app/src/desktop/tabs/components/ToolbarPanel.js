@@ -6,7 +6,7 @@
  */
 import {Component} from 'react';
 import {Position} from '@xh/hoist/kit/blueprint';
-import {HoistComponent} from '@xh/hoist/core';
+import {XH, HoistComponent} from '@xh/hoist/core';
 import {wrapperPanel} from '../impl/WrapperPanel';
 import {box, filler, hframe, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
