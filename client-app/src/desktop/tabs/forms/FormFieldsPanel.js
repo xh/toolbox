@@ -5,6 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import React, {Component} from 'react';
+import moment from 'moment';
 import {HoistComponent} from '@xh/hoist/core';
 import {box, hbox, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -15,6 +16,7 @@ import {wrapperPanel} from '../impl/WrapperPanel';
 import {FormFieldsPanelModel} from './FormFieldsPanelModel';
 import './FormFieldsPanel.scss';
 import {Icon} from '@xh/hoist/icon/Icon';
+import {fmtDate} from '@xh/hoist/format';
 
 @HoistComponent()
 export class FormFieldsPanel extends Component {
@@ -187,12 +189,10 @@ export class FormFieldsPanel extends Component {
                         dayField({
                             model,
                             field: 'startDate',
-                            leftIcon: Icon.calendar(),
-                            rightElement: button({
-                                icon: Icon.cross(),
-                                cls: 'pt-minimal',
-                                onClick: () => model.setStartDate(null)
-                            })
+                            minDate: moment(new Date())
+                                .subtract(2, 'years')
+                                .toDate(),
+                            maxDate: new Date()
                         })
                     ),
                     hbox(
@@ -210,7 +210,7 @@ export class FormFieldsPanel extends Component {
     }
 
     getRawValueInfo() {
-        const {active, age, company, email, getDisplayValue, movie, password, state, user, verify, red, green, blue} = this.model;
+        const {active, age, company, email, getDisplayValue, movie, password, startDate, state, user, verify, red, green, blue} = this.model;
         return panel({
             title: 'Current Values',
             width: 270,
@@ -253,6 +253,10 @@ export class FormFieldsPanel extends Component {
                     hbox(
                         label('Favorite Movie:'),
                         label(getDisplayValue(movie)),
+                    ),
+                    hbox(
+                        label('Start Date:'),
+                        label(getDisplayValue(fmtDate(startDate))),
                     ),
                     hbox(
                         label('Active:'),
