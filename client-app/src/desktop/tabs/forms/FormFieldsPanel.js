@@ -189,6 +189,7 @@ export class FormFieldsPanel extends Component {
                         dayField({
                             model,
                             field: 'startDate',
+                            commitOnChange: true,
                             minDate: moment(new Date())
                                 .subtract(2, 'years')
                                 .toDate(),
