@@ -6,17 +6,28 @@
  */
 import React, {Component} from 'react';
 import moment from 'moment';
-import {HoistComponent} from '@xh/hoist/core';
-import {box, hbox, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
+import {HoistComponent, XH} from '@xh/hoist/core';
+import {box, filler, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {checkField, comboField, label, numberField, selectField, sliderField, switchField, textField, dayField} from '@xh/hoist/desktop/cmp/form';
-import {wrapperPanel} from '../impl/WrapperPanel';
-import {FormFieldsPanelModel} from './FormFieldsPanelModel';
-import './FormFieldsPanel.scss';
+import {
+    checkField,
+    comboField,
+    dayField,
+    label,
+    numberField,
+    selectField,
+    sliderField,
+    switchField,
+    textField
+} from '@xh/hoist/desktop/cmp/form';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {fmtDate} from '@xh/hoist/format';
+
+import {FormFieldsPanelModel} from './FormFieldsPanelModel';
+import {wrapperPanel} from '../impl/WrapperPanel';
+import './FormFieldsPanel.scss';
 
 @HoistComponent()
 export class FormFieldsPanel extends Component {
@@ -31,7 +42,12 @@ export class FormFieldsPanel extends Component {
                 item: this.renderExample(),
                 bbar: toolbar(
                     filler(),
-                    button({text: 'Submit', disabled: !this.model.isValid})
+                    button({
+                        text: 'Save',
+                        icon: Icon.check({cls: 'xh-green'}),
+                        disabled: !this.model.isValid,
+                        onClick: this.onFormSubmit
+                    })
                 )
             })
         );
@@ -141,10 +157,11 @@ export class FormFieldsPanel extends Component {
                             model,
                             field: 'email',
                             placeholder: 'name@domain.com',
+                            commitOnChange: true,
                             leftIcon: Icon.mail(),
                             rightElement: button({
                                 icon: Icon.cross(),
-                                cls: 'pt-minimal',
+                                minimal: true,
                                 onClick: () => model.setEmail(null)
                             })
                         })
@@ -268,12 +285,15 @@ export class FormFieldsPanel extends Component {
         });
     }
 
-
     renderLabel(text) {
         const isValid = this.model.isFieldValid(text),
             width = 110;
         const item = <span>{text}<span style={{color: 'red'}}>{!isValid ? '*' : ''}</span> </span>;
 
         return {item, width};
+    }
+
+    onFormSubmit = () => {
+        XH.toast({message: 'You clicked the Save button...'});
     }
 }
