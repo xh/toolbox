@@ -144,7 +144,7 @@ export class FormFieldsPanel extends Component {
                             leftIcon: Icon.mail(),
                             rightElement: button({
                                 icon: Icon.cross(),
-                                cls: 'pt-minimal',
+                                cls: 'bp3-minimal',
                                 onClick: () => model.setEmail(null)
                             })
                         })

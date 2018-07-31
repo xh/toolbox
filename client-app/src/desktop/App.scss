@@ -1,7 +1,7 @@
 @import './helpers';
 
 .xh-toolbox-app-frame {
-  > .xh-tab-container > .xh-tab-panel > .xh-tab-container > .xh-tab-switcher-left > .pt-tab-list {
+  > .xh-tab-container > .xh-tab-panel > .xh-tab-container > .xh-tab-switcher-left > .bp3-tab-list {
     min-width: 165px;
   }
 
@@ -14,7 +14,7 @@
 }
 
 .xh-tab-container {
-  > .xh-tab-panel > .xh-tab-container > .pt-tabs.pt-vertical > .pt-tab-list {
+  > .xh-tab-panel > .xh-tab-container > .bp3-tabs.bp3-vertical > .bp3-tab-list {
     background-color: var(--xh-bg-alt);
   }
 
