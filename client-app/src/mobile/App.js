@@ -11,7 +11,9 @@ import {Icon} from '@xh/hoist/icon';
 
 import {AppContainer} from '@xh/hoist/mobile/appcontainer';
 import {AppComponent} from './AppComponent';
+
 import {homePage} from './home/HomePage';
+import {gridPage} from './grids/GridPage';
 import {iconPage} from './icons/IconPage';
 
 @HoistApp
@@ -36,6 +38,11 @@ class AppClass {
     constructor() {
         this.appMenuModel = new AppMenuModel({
             itemModels: [
+                {
+                    icon: Icon.grid({prefix: 'fal'}),
+                    text: 'Grids',
+                    action: () => this.navigate('Grids', gridPage)
+                },
                 {
                     icon: Icon.edit(),
                     text: 'Icons',
