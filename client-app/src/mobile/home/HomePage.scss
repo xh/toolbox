@@ -1,0 +1,24 @@
+.home-page .page__content {
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21"><rect x="0" y="0" width="20" height="20" style="fill: #F5F5F5;" /></svg>') !important;
+  .xh-dark & {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21"><rect x="0" y="0" width="20" height="20" style="fill: #212121;" /></svg>') !important;
+  }
+
+  .summary-card {
+    margin: var(--xh-pad-double-px);
+    padding: var(--xh-pad-px);
+    background: var(--xh-bg);
+    border: var(--xh-border-solid);
+    border-radius: var(--xh-border-radius-px);
+    box-shadow: 0 1px 12px rgba(0, 0, 0, 0.2);
+
+    &__title {
+      font-size: 17px;
+    }
+
+    &__body {
+      padding: var(--xh-pad-px) 0;
+      line-height: 1.5;
+    }
+  }
+}
