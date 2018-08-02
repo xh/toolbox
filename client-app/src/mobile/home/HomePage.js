@@ -15,6 +15,7 @@ import {Icon} from '@xh/hoist/icon';
 import './HomePage.scss';
 import {App} from '../App';
 import {gridPage} from '../grids/GridPage';
+import {containersPage} from '../containers/ContainersPage';
 import {iconPage} from '../icons/IconPage';
 
 @HoistComponent()
@@ -29,6 +30,12 @@ export class HomePage extends Component {
                     icon: Icon.grid({prefix: 'fal'}),
                     summary: 'Show a collection of data bound to a store. Can specify 2 columns: leftColumn and rightColumn.',
                     pageFactory: gridPage
+                }),
+                this.renderSummaryCard({
+                    title: 'Containers',
+                    icon: Icon.box(),
+                    summary: 'Layout children in Tabs, or flexed horizontally or vertically.',
+                    pageFactory: containersPage
                 }),
                 this.renderSummaryCard({
                     title: 'Icons',

@@ -1,0 +1,19 @@
+.toolbox-description {
+  padding: var(--xh-title-pad-px);
+  background-color: var(--xh-bg-alt);
+  border-bottom: var(--xh-border-solid);
+}
+
+.toolbox-containers-page .page__content {
+  display: flex;
+  flex-direction: column;
+
+  & > .xh-hbox, & > .xh-vbox {
+    flex: 1;
+  }
+
+  .toolbox-containers-box {
+    border: var(--xh-border-solid);
+    font-family: var(--xh-font-family-mono);
+  }
+}
