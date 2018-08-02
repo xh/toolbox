@@ -12,7 +12,7 @@ import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {switchField} from '@xh/hoist/desktop/cmp/form';
 import data from './impl/LeftRightChooserData';
-import {setter, observable} from '@xh/hoist/mobx';
+import {observable, runInAction} from '@xh/hoist/mobx';
 
 @HoistComponent()
 export class LeftRightChooserPanel extends Component {
@@ -23,7 +23,7 @@ export class LeftRightChooserPanel extends Component {
         rightGroupingEnabled: false
     });
 
-    @setter @observable anyMatch = false;
+    @observable anyMatch = false;
 
     render() {
         return wrapper({
@@ -50,7 +50,9 @@ export class LeftRightChooserPanel extends Component {
                     }),
                     switchField({
                         value: this.anyMatch,
-                        onCommit: (val) => this.setAnyMatch(val),
+                        onCommit: (val) => {
+                            runInAction(() => this.anyMatch = val);
+                        },
                         text: 'match anywhere in the string'
                     })
                 )

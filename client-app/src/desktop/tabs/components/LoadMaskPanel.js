@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {observable, setter} from '@xh/hoist/mobx';
+import {observable, runInAction} from '@xh/hoist/mobx';
 import {cloneDeep} from 'lodash';
 import {HoistComponent} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
@@ -25,10 +25,10 @@ import {companyTrades} from '../../../data';
 
 @HoistComponent()
 export class LoadMaskPanel extends Component {
-    @observable @setter showMask = false;
-    @observable @setter seconds = 3;
-    @observable @setter maskText = '';
-    @observable @setter maskViewport = false;
+    @observable showMask = false;
+    @observable seconds = 3;
+    @observable maskText = '';
+    @observable maskViewport = false;
 
     localModel = new GridModel({
         store: new LocalStore({
@@ -120,7 +120,7 @@ export class LoadMaskPanel extends Component {
     }
 
     enableMask = () => {
-        this.setShowMask(true);
+        runInAction(() => this.showMask = true);
 
         if (!this.maskViewport) {
             this.model.loadData([]);
@@ -133,18 +133,18 @@ export class LoadMaskPanel extends Component {
         const trades = cloneDeep(companyTrades);
         trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
         if (!this.maskViewport) this.model.loadData(trades.reverse());
-        this.setShowMask(false);
+        runInAction(() => this.showMask = false);
     }
 
     updateSeconds = (val) => {
-        this.setSeconds(val);
+        runInAction(() => this.seconds = val);
     }
 
     updateMaskText = (val) => {
-        this.setMaskText(val);
+        runInAction(() => this.maskText = val);
     }
 
     updateMaskViewport = (val) => {
-        this.setMaskViewport(val);
+        runInAction(() => this.maskViewport = val);
     }
 }
