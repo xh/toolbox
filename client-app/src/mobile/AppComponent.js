@@ -12,6 +12,8 @@ import {page} from '@xh/hoist/mobile/cmp/page';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
 import {navigator} from '@xh/hoist/mobile/cmp/navigator';
 
+import './App.scss';
+
 @HoistComponent()
 export class AppComponent extends Component {
 
