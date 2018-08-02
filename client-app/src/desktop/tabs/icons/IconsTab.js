@@ -9,7 +9,7 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {div, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapperPanel} from '../impl/WrapperPanel';
+import {wrapper} from '../impl/Wrapper';
 import {Icon} from '@xh/hoist/icon';
 
 import './IconsTab.scss';
@@ -18,12 +18,12 @@ import './IconsTab.scss';
 export class IconsTab extends Component {
 
     render() {
-        return wrapperPanel(
+        return wrapper(
             panel({
                 title: 'Available Icons',
                 width: 500,
                 height: '80%',
-                cls: 'xh-toolbox-icons-panel',
+                cls: 'toolbox-icons-panel',
                 item: this.renderExample()
             })
         );
@@ -34,7 +34,7 @@ export class IconsTab extends Component {
             row = icon => hbox({cls: 'row', items: [div(icon.name), ...this.renderIconTiles(icon)]});
 
         return vbox({
-            cls: 'xh-toolbox-example-container',
+            cls: 'toolbox-example-container',
             items: [
                 header('name', 'regular', 'solid', 'light'),
                 vbox({

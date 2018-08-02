@@ -8,11 +8,11 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
-import {DataViewPanel} from './DataViewPanel';
 import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {MaskPanel} from './MaskPanel';
 import {LoadMaskPanel} from './LoadMaskPanel';
 import {ToolbarPanel} from './ToolbarPanel';
+import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 
 @HoistComponent()
 export class ComponentsTab extends Component {
@@ -20,11 +20,11 @@ export class ComponentsTab extends Component {
     localModel = new TabContainerModel({
         route: 'default.components',
         tabs: [
-            {id: 'dataview', title: 'DataView', content: DataViewPanel},
+            {id: 'toolbar', content: ToolbarPanel},
             {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
             {id: 'maskPanel', title: 'Mask', content: MaskPanel},
             {id: 'loadMask', title: 'LoadMask', content: LoadMaskPanel},
-            {id: 'toolbar', content: ToolbarPanel}
+            {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel}
         ]
     });
     
@@ -33,6 +33,10 @@ export class ComponentsTab extends Component {
     }
 
     render() {
-        return tabContainer({model: this.model, switcherPosition: 'left'});
+        return tabContainer({
+            model: this.model,
+            switcherPosition: 'left',
+            cls: 'toolbox-tab'
+        });
     }
 }

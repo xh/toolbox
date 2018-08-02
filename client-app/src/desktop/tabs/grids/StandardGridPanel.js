@@ -17,7 +17,7 @@ import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {cloneDeep} from 'lodash';
 
-import {wrapperPanel} from '../impl/WrapperPanel';
+import {wrapper} from '../impl/Wrapper';
 import {companyTrades} from '../../../data';
 
 @HoistComponent()
@@ -28,6 +28,7 @@ export class StandardGridPanel extends Component {
             fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
         }),
         enableColChooser: true,
+        selModel: 'multiple',
         columns: [
             baseCol({
                 headerName: 'Company',
@@ -67,9 +68,9 @@ export class StandardGridPanel extends Component {
         const {model} = this,
             store = model.store;
 
-        return wrapperPanel(
+        return wrapper(
             panel({
-                cls: 'xh-toolbox-standardgrid-panel',
+                cls: 'toolbox-standardgrid-panel',
                 title: 'Standard Grid',
                 width: 600,
                 height: 400,
@@ -94,7 +95,7 @@ export class StandardGridPanel extends Component {
     renderExample() {
         const model = this.model;
         return vframe({
-            cls: 'xh-toolbox-example-container',
+            cls: 'toolbox-example-container',
             item: grid({model})
         });
     }

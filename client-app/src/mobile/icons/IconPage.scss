@@ -1,0 +1,30 @@
+.icon-page {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th {
+      width: 25%;
+      padding: var(--xh-pad-half-px);
+      text-transform: uppercase;
+      background-color: var(--xh-grid-header-bg);
+      border-bottom: var(--xh-border-solid);
+    }
+
+    tr {
+      background-color: var(--xh-grid-bg);
+
+      &:nth-child(odd) {
+        background-color: var(--xh-grid-bg-odd);
+      }
+
+      td {
+        padding: var(--xh-pad-px);
+
+        &:not(:first-child) {
+          text-align: center;
+        }
+      }
+    }
+  }
+}

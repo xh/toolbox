@@ -6,15 +6,16 @@
  */
 import {Component} from 'react';
 import {observable, setter} from '@xh/hoist/mobx';
-import {inputGroup, label, checkbox} from '@xh/hoist/kit/blueprint';
 import {cloneDeep} from 'lodash';
 import {HoistComponent} from '@xh/hoist/core';
-import {wrapperPanel} from '../impl/WrapperPanel';
-import {filler, vframe} from '@xh/hoist/cmp/layout';
+import {wait} from '@xh/hoist/promise';
+import {wrapper} from '../impl/Wrapper';
+import {box, filler} from '@xh/hoist/cmp/layout';
+import {numberField, textField, switchField} from '@xh/hoist/desktop/cmp/form';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {grid, GridModel} from '@xh/hoist/desktop/cmp/grid';
 import {loadMask} from '@xh/hoist/desktop/cmp/mask';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {baseCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
@@ -25,9 +26,9 @@ import {companyTrades} from '../../../data';
 @HoistComponent()
 export class LoadMaskPanel extends Component {
     @observable @setter showMask = false;
-    @observable @setter seconds = 5;
+    @observable @setter seconds = 3;
     @observable @setter maskText = '';
-    @observable @setter isViewport = false;
+    @observable @setter maskViewport = false;
 
     localModel = new GridModel({
         store: new LocalStore({
@@ -58,77 +59,92 @@ export class LoadMaskPanel extends Component {
     });
 
     render() {
-        return wrapperPanel(
-            panel({
-                cls: 'xh-toolbox-loadmask-panel',
-                title: 'LoadMask Component',
+        const {showMask, maskText, maskViewport, seconds} = this;
+
+        return wrapper({
+            description: `
+                LoadMask adds a spinner to the default mask component. It can also display optional
+                text, and can be placed over the entire viewport with inline:false.
+            `,
+            item: panel({
+                title: 'Components > LoadMask',
                 width: 600,
                 height: 400,
-                item: this.renderExample(),
+                items: [
+                    grid({
+                        model: this.model,
+                        flex: 1
+                    }),
+                    loadMask({
+                        isDisplayed: showMask,
+                        text: maskText,
+                        inline: !maskViewport
+                    })
+                ],
                 bbar: toolbar({
-                    alignItems: 'baseline',
                     items: [
-                        label('Load Seconds:'),
-                        inputGroup({
-                            value: this.seconds,
-                            style: {width: '50px'},
+                        box('Mask for'),
+                        numberField({
+                            value: seconds,
+                            width: 40,
+                            min: 0,
+                            max: 10,
                             onChange: this.updateSeconds
                         }),
-                        label('Mask Text: '),
-                        inputGroup({
-                            value: this.maskText,
-                            style: {width: '100px'},
+                        box('secs with'),
+                        textField({
+                            width: 120,
+                            placeholder: 'optional text',
+                            value: maskText,
                             onChange: this.updateMaskText
                         }),
-                        label('viewport'),
-                        checkbox({
-                            value: this.isViewport,
-                            onChange: this.updateIsViewport
+                        switchField({
+                            value: maskViewport,
+                            onChange: this.updateMaskViewport
+                        }),
+                        box({
+                            cls: 'xh-no-pad',
+                            item: 'on viewport'
                         }),
                         filler(),
-                        button({text: 'Load', onClick: this.enableMask, disabled: this.showMask})
+                        button({
+                            text: 'Load w/Mask',
+                            intent: 'primary',
+                            disabled: showMask,
+                            onClick: this.enableMask
+                        })
                     ]
                 })
             })
-        );
-    }
-
-    renderExample() {
-        const model = this.model;
-        return vframe({
-            cls: 'xh-toolbox-example-container',
-            items: [
-                grid({model}),
-                loadMask({ isDisplayed: this.showMask, text: this.maskText, inline: !this.isViewport})
-            ]
         });
     }
 
     enableMask = () => {
         this.setShowMask(true);
-        if (!this.isViewport) this.model.loadData([]);
 
-        setTimeout(() => {
-            this.finishLoad();
-        }, this.seconds * 1000);
+        if (!this.maskViewport) {
+            this.model.loadData([]);
+        }
+
+        wait(this.seconds * 1000).then(() => this.finishLoad());
     }
 
     finishLoad() {
         const trades = cloneDeep(companyTrades);
         trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
-        if (!this.isViewport) this.model.loadData(trades.reverse());
+        if (!this.maskViewport) this.model.loadData(trades.reverse());
         this.setShowMask(false);
     }
 
-    updateSeconds = (e) => {
-        this.setSeconds(e.target.value);
+    updateSeconds = (val) => {
+        this.setSeconds(val);
     }
 
-    updateMaskText = (e) => {
-        this.setMaskText(e.target.value);
+    updateMaskText = (val) => {
+        this.setMaskText(val);
     }
 
-    updateIsViewport = (e) => {
-        this.setIsViewport(e.target.checked);
+    updateMaskViewport = (val) => {
+        this.setMaskViewport(val);
     }
 }

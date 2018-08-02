@@ -10,7 +10,7 @@ import {vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {restGrid, RestGridModel, RestStore} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, baseCol} from '@xh/hoist/columns';
-import {wrapperPanel} from '../impl/WrapperPanel';
+import {wrapper} from '../impl/Wrapper';
 
 @HoistComponent()
 export class RestGridPanel extends Component {
@@ -87,9 +87,9 @@ export class RestGridPanel extends Component {
     }
 
     render() {
-        return wrapperPanel(
+        return wrapper(
             panel({
-                cls: 'xh-toolbox-restgrid-panel',
+                cls: 'toolbox-restgrid-panel',
                 title: 'Rest Grid',
                 width: 600,
                 height: 400,
@@ -101,7 +101,7 @@ export class RestGridPanel extends Component {
     renderExample() {
         const model = this.model;
         return vframe({
-            cls: 'xh-toolbox-example-container',
+            cls: 'toolbox-example-container',
             item: restGrid({model})
         });
     }

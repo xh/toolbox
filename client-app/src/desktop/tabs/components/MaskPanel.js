@@ -6,10 +6,11 @@
  */
 import {Component} from 'react';
 import {cloneDeep} from 'lodash';
-import {inputGroup, label} from '@xh/hoist/kit/blueprint';
 import {HoistComponent} from '@xh/hoist/core';
+import {wait} from '@xh/hoist/promise';
 import {observable, setter} from '@xh/hoist/mobx';
-import {vframe, filler} from '@xh/hoist/cmp/layout';
+import {box, filler} from '@xh/hoist/cmp/layout';
+import {numberField, textField} from '@xh/hoist/desktop/cmp/form';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {grid, GridModel} from '@xh/hoist/desktop/cmp/grid';
@@ -18,14 +19,15 @@ import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {button} from '@xh/hoist/desktop/cmp/button';
 
-import {wrapperPanel} from '../impl/WrapperPanel';
+import {wrapper} from '../impl/Wrapper';
 import {companyTrades} from '../../../data';
 
 @HoistComponent()
 export class MaskPanel extends Component {
 
-    @observable @setter isDisabled = false;
-    @observable @setter seconds = 5;
+    @observable @setter isMasked = false;
+    @observable @setter seconds = 3;
+    @observable @setter maskText = '';
 
     localModel = new GridModel({
         store: new LocalStore({
@@ -65,50 +67,67 @@ export class MaskPanel extends Component {
     }
 
     render() {
-        return wrapperPanel(
-            panel({
-                cls: 'xh-toolbox-standardgrid-panel',
-                title: 'Mask Component',
+        const {maskText, isMasked} = this;
+
+        return wrapper({
+            description: `
+                Masks provide a semi-opaque overlay to disable interaction with a component.
+                The most convenient way to display a mask is via the masked property of Panel.
+            `,
+            item: panel({
+                title: 'Components > Mask',
                 width: 600,
                 height: 400,
-                item: this.renderExample(),
+                item: grid({
+                    model: this.model,
+                    flex: 1
+                }),
                 bbar: toolbar({
-                    alignItems: 'baseline',
                     items: [
-                        label('Disable Seconds:'),
-                        inputGroup({
+                        box('Mask for'),
+                        numberField({
                             value: this.seconds,
-                            style: {width: '50px'},
+                            width: 40,
+                            min: 0,
+                            max: 10,
                             onChange: this.updateSeconds
                         }),
+                        box('secs with'),
+                        textField({
+                            width: 120,
+                            placeholder: 'optional text',
+                            value: maskText,
+                            onChange: this.updateMaskText
+                        }),
                         filler(),
-                        button({text: 'Disable Panel', onClick: this.disablePanel})
+                        button({
+                            text: 'Show Mask',
+                            intent: 'primary',
+                            onClick: this.maskPanel
+                        })
                     ]
                 }),
-                masked: this.isDisabled
+                maskText: maskText,
+                masked: isMasked
             })
-        );
-    }
-
-    renderExample() {
-        const model = this.model;
-        return vframe({
-            cls: 'xh-toolbox-example-container',
-            item: grid({model})
         });
     }
 
-    updateSeconds = (e) => {
-        this.setSeconds(e.target.value);
+    updateSeconds = (v) => {
+        this.setSeconds(v);
     }
 
-    disablePanel = () => {
-        this.setIsDisabled(true);
-        setTimeout(this.enablePanel, this.seconds * 1000);
+    updateMaskText = (v) => {
+        this.setMaskText(v);
     }
 
-    enablePanel = () => {
-        this.setIsDisabled(false);
+    maskPanel = () => {
+        this.setIsMasked(true);
+        wait(this.seconds * 1000).then(() => this.unmaskPanel());
+    }
+
+    unmaskPanel = () => {
+        this.setIsMasked(false);
     }
 
 }

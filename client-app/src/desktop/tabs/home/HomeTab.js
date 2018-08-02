@@ -6,10 +6,11 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
+import {wrapper} from '../impl/Wrapper'
 
 @HoistComponent()
 export class HomeTab extends Component {
     render() {
-        return null;
+        return wrapper('Hello');
     }
 }

@@ -5,14 +5,28 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
-import {box, hbox, vbox, hframe, filler} from '@xh/hoist/cmp/layout';
+import moment from 'moment';
+import {HoistComponent, XH} from '@xh/hoist/core';
+import {box, filler, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {checkField, comboField, label, numberField, selectField, sliderField, switchField, textField} from '@xh/hoist/desktop/cmp/form';
-import {wrapperPanel} from '../impl/WrapperPanel';
+import {
+    checkField,
+    comboField,
+    dayField,
+    label,
+    numberField,
+    selectField,
+    sliderField,
+    switchField,
+    textField
+} from '@xh/hoist/desktop/cmp/form';
+import {Icon} from '@xh/hoist/icon/Icon';
+import {fmtDate} from '@xh/hoist/format';
+
 import {FormFieldsPanelModel} from './FormFieldsPanelModel';
+import {wrapper} from '../impl/Wrapper';
 import './FormFieldsPanel.scss';
 
 @HoistComponent()
@@ -20,15 +34,20 @@ export class FormFieldsPanel extends Component {
     localModel = new FormFieldsPanelModel();
 
     render() {
-        return wrapperPanel(
+        return wrapper(
             panel({
-                cls: 'xh-toolbox-formfields-panel',
+                cls: 'toolbox-formfields-panel',
                 title: 'Form Fields',
-                width: 600,
+                width: 620,
                 item: this.renderExample(),
                 bbar: toolbar(
                     filler(),
-                    button({text: 'Submit', disabled: !this.model.isValid})
+                    button({
+                        text: 'Save',
+                        icon: Icon.check({cls: 'xh-green'}),
+                        disabled: !this.model.isValid,
+                        onClick: this.onFormSubmit
+                    })
                 )
             })
         );
@@ -36,7 +55,7 @@ export class FormFieldsPanel extends Component {
 
     renderExample() {
         return hframe({
-            cls: 'xh-toolbox-example-container',
+            cls: 'toolbox-example-container',
             items: [
                 vbox({
                     flex: 2,
@@ -123,7 +142,18 @@ export class FormFieldsPanel extends Component {
                     ),
                     hbox(
                         label(this.renderLabel('E-Mail: ')),
-                        textField({model, field: 'email', placeholder: 'name@domain.com'})
+                        textField({
+                            model,
+                            field: 'email',
+                            placeholder: 'name@domain.com',
+                            commitOnChange: true,
+                            leftIcon: Icon.mail(),
+                            rightElement: button({
+                                icon: Icon.cross(),
+                                minimal: true,
+                                onClick: () => model.setEmail(null)
+                            })
+                        })
                     ),
                     hbox(
                         label(this.renderLabel('State: ')),
@@ -176,6 +206,18 @@ export class FormFieldsPanel extends Component {
                             stepSize: 1000,
                             paddingRight: 20,
                             labelRenderer: val => `$${val / 1000}k`
+                        })
+                    ),
+                    hbox(
+                        label(this.renderLabel('Start Date')),
+                        dayField({
+                            model,
+                            field: 'startDate',
+                            commitOnChange: true,
+                            minDate: moment(new Date())
+                                .subtract(2, 'years')
+                                .toDate(),
+                            maxDate: new Date()
                         })
                     ),
                     hbox(
@@ -246,6 +288,10 @@ export class FormFieldsPanel extends Component {
                         label(getDisplayValue(salaryRange))
                     ),
                     hbox(
+                        label('Start Date:'),
+                        label(getDisplayValue(fmtDate(startDate))),
+                    ),
+                    hbox(
                         label('Active:'),
                         label(getDisplayValue(active))
                     )
@@ -254,12 +300,15 @@ export class FormFieldsPanel extends Component {
         });
     }
 
-
     renderLabel(text) {
         const isValid = this.model.isFieldValid(text),
             width = 110;
         const item = <span>{text}<span style={{color: 'red'}}>{!isValid ? '*' : ''}</span> </span>;
 
         return {item, width};
+    }
+
+    onFormSubmit = () => {
+        XH.toast({message: 'You clicked the Save button...'});
     }
 }

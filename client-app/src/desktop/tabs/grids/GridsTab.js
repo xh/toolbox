@@ -11,6 +11,7 @@ import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {StandardGridPanel} from './StandardGridPanel';
 import {GroupedGridPanel} from './GroupedGridPanel';
 import {RestGridPanel} from './RestGridPanel';
+import {DataViewPanel} from './DataViewPanel';
 
 @HoistComponent()
 export class GridsTab extends Component {
@@ -20,7 +21,8 @@ export class GridsTab extends Component {
         tabs: [
             {id: 'standard', content: StandardGridPanel},
             {id: 'grouped', content: GroupedGridPanel},
-            {id: 'rest', content: RestGridPanel}
+            {id: 'rest', content: RestGridPanel},
+            {id: 'dataview', title: 'DataView', content: DataViewPanel}
         ]
     });
 
@@ -29,6 +31,10 @@ export class GridsTab extends Component {
     }
     
     render() {
-        return tabContainer({model: this.model, switcherPosition: 'left'});
+        return tabContainer({
+            model: this.model,
+            switcherPosition: 'left',
+            cls: 'toolbox-tab'
+        });
     }
 }

@@ -5,16 +5,15 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {Position} from '@xh/hoist/kit/blueprint';
-import {HoistComponent} from '@xh/hoist/core';
-import {wrapperPanel} from '../impl/WrapperPanel';
-import {box, filler, hframe, vframe} from '@xh/hoist/cmp/layout';
+import {XH, HoistComponent} from '@xh/hoist/core';
+import {wrapper} from '../impl/Wrapper';
+import {filler, frame, hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {comboField} from '@xh/hoist/desktop/cmp/form';
+import {comboField, switchField} from '@xh/hoist/desktop/cmp/form';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {ToastManager} from '@xh/hoist/toast';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
+import {usStates} from '../../../data';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
 @HoistComponent()
@@ -22,75 +21,98 @@ export class ToolbarPanel extends Component {
     toolBarModel = new ToolbarPanelModel();
 
     render() {
-        return wrapperPanel(
-            panel({
-                cls: 'xh-toolbox-toolbar-panel',
-                title: 'Toolbar Component',
-                width: 500,
+        const model = this.toolBarModel;
+
+        return wrapper({
+            description: `
+                Toolbars (in case you have never seen one) are horizontal or vertical containers 
+                with distinct styling and managed spacing between items. Support for top and bottom
+                toolbars is built into Panel via its tbar/bbar props, but they can be used on their
+                own and can be displayed in a vertical configuration as well. 
+            `,
+            item: panel({
+                title: 'Components > Toolbars',
                 height: 400,
-                item: this.renderExample()
-            })
-        );
-    }
-
-    renderExample() {
-        const model = this.toolBarModel,
-            {options} = model;
-
-        return vframe({
-            cls: 'xh-toolbox-example-container',
-            items: [
-                toolbar(
+                width: 600,
+                tbar: toolbar(
                     button({
-                        icon: Icon.chevronLeft(),
-                        text: 'Left Aligned'
+                        icon: Icon.add(),
+                        text: 'New',
+                        intent: 'success'
                     }),
                     toolbarSep(),
+                    button({
+                        icon: Icon.edit(),
+                        text: 'Edit',
+                        intent: 'primary'
+                    }),
+                    filler(),
+                    'Danger mode',
+                    switchField({
+                        model,
+                        field: 'enableTerminate'
+                    }),
+                    button({
+                        icon: Icon.skull(),
+                        text: 'Terminate',
+                        intent: 'danger',
+                        disabled: !model.enableTerminate
+                    })
+                ),
+                items: [
+                    hframe(
+                        toolbar({
+                            vertical: true,
+                            width: 42,
+                            items: [
+                                filler(),
+                                button({icon: Icon.contact()}),
+                                button({icon: Icon.comment()}),
+                                toolbarSep(),
+                                button({icon: Icon.add()}),
+                                button({icon: Icon.delete()}),
+                                toolbarSep(),
+                                button({icon: Icon.gears()}),
+                                filler()
+                            ]
+                        }),
+                        frame({
+                            padding: 10,
+                            item: 'Help, I am surrounded by toolbars!'
+                        }),
+                        toolbar({
+                            vertical: true,
+                            width: 42,
+                            items: [
+                                button({icon: Icon.contact()})
+                            ]
+                        })
+                    )
+                ],
+                bbar: toolbar(
+                    filler(),
                     comboField({
-                        options,
+                        options: usStates,
                         model,
                         field: 'state',
                         placeholder: 'Select a State...'
                     }),
                     button({
                         text: 'Show Toast',
-                        onClick: () => this.showToast()
-                    })
-                ),
-                hframe(
-                    toolbar({
-                        vertical: true,
-                        width: 42,
-                        items: [
-                            filler(),
-                            button({icon: Icon.contact()}),
-                            button({icon: Icon.comment()}),
-                            toolbarSep(),
-                            button({icon: Icon.add()}),
-                            button({icon: Icon.delete()}),
-                            toolbarSep(),
-                            button({icon: Icon.gears()}),
-                            filler()
-                        ]
-                    }),
-                    box('Content...')
-                ),
-                toolbar(
-                    filler(),
-                    button({
-                        rightIcon: Icon.chevronRight(),
-                        text: 'Right Aligned'
+                        onClick: this.showToast
                     })
                 )
-            ]
+            })
         });
     }
 
-    showToast() {
-        ToastManager.show({
-            message: `Selected State: ${this.toolBarModel.state || 'None'}`,
-            position: Position.TOP,
-            intent: 'primary'
+    toggleTermination = () => {
+
+    }
+
+    showToast = () => {
+        XH.toast({
+            message: `Currently selected State: ${this.toolBarModel.state || 'None'}`
         });
     }
 }

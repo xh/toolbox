@@ -6,7 +6,7 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {wrapperPanel} from '../impl/WrapperPanel';
+import {wrapper} from '../impl/Wrapper';
 import {vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {comboField, label} from '@xh/hoist/desktop/cmp/form';
@@ -22,9 +22,9 @@ export class OLHCChartPanel extends Component {
     render() {
         const model = this.model,
             {companyMap} = model;
-        return wrapperPanel(
+        return wrapper(
             panel({
-                cls: 'xh-toolbox-olhcchart-panel',
+                cls: 'toolbox-olhcchart-panel',
                 title: 'OLHC Chart',
                 width: 800,
                 height: 600,
@@ -46,7 +46,7 @@ export class OLHCChartPanel extends Component {
             {chartModel} = model;
 
         return vframe({
-            cls: 'xh-toolbox-example-container',
+            cls: 'toolbox-example-container',
             items: [
                 chart({model: chartModel}),
                 loadMask({isOpen: false})
