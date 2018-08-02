@@ -7,14 +7,25 @@
 
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {frame} from '@xh/hoist/cmp/layout';
+import {vframe} from '@xh/hoist/cmp/layout';
+import {page} from '@xh/hoist/mobile/cmp/page';
+import {appBar} from '@xh/hoist/mobile/cmp/header';
+import {navigator} from '@xh/hoist/mobile/cmp/navigator';
 
 @HoistComponent()
 export class AppComponent extends Component {
 
     render() {
-        return frame(
-            'Welcome to the Mobile Toolbox! -- Coming Soon!'
+        const {appMenuModel, navigatorModel} = this.model;
+        return vframe(
+            page({
+                renderToolbar: () => appBar({
+                    appMenuModel,
+                    navigatorModel,
+                    hideRefreshButton: true
+                }),
+                item: navigator({model: navigatorModel})
+            })
         );
     }
 }
