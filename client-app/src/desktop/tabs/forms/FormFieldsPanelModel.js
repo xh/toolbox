@@ -71,7 +71,8 @@ export class FormFieldsPanelModel {
             return v.join('-');
         }
 
-        return v.toString();
+        const val = v.toString();
+        return val.length > 20 ? val.substring(0, 18) + '...' : val;
     }
 
 

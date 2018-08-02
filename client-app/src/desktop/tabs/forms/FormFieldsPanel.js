@@ -167,20 +167,6 @@ export class FormFieldsPanel extends Component {
                         })
                     ),
                     hbox(
-                        label(this.renderLabel('Start Date')),
-                        dayField({
-                            model,
-                            field: 'startDate',
-                            commitOnChange: true,
-                            minDate: moment(new Date())
-                                .subtract(2, 'years')
-                                .toDate(),
-                            maxDate: moment(new Date())
-                                .add(2, 'months')
-                                .toDate()
-                        })
-                    ),
-                    hbox(
                         label(this.renderLabel('Company: ')),
                         queryComboField({
                             queryFn: model.queryCompanies,
@@ -233,6 +219,20 @@ export class FormFieldsPanel extends Component {
                         })
                     ),
                     hbox(
+                        label(this.renderLabel('Start Date')),
+                        dayField({
+                            model,
+                            field: 'startDate',
+                            commitOnChange: true,
+                            minDate: moment(new Date())
+                                .subtract(2, 'years')
+                                .toDate(),
+                            maxDate: moment(new Date())
+                                .add(2, 'months')
+                                .toDate()
+                        })
+                    ),
+                    hbox(
                         label(this.renderLabel('Active: ')),
                         checkField({model, field: 'active'}),
                         label({
@@ -247,7 +247,26 @@ export class FormFieldsPanel extends Component {
     }
 
     getRawValueInfo() {
-        const {active, age, email, getDisplayValue, movie, password, startDate, state, size, user, verify, red, green, blue, travelDistance, salaryRange} = this.model;
+        const {
+            active,
+            age,
+            company,
+            email,
+            movie,
+            password,
+            startDate,
+            state,
+            size,
+            user,
+            verify,
+            red,
+            green,
+            blue,
+            travelDistance,
+            salaryRange,
+            getDisplayValue
+        } = this.model;
+
         return panel({
             title: 'Current Values',
             width: 270,
@@ -282,6 +301,10 @@ export class FormFieldsPanel extends Component {
                     hbox(
                         label('State:'),
                         label(getDisplayValue(state))
+                    ),
+                    hbox(
+                        label('Company:'),
+                        label(getDisplayValue(company))
                     ),
                     hbox(
                         label('Favorite Movie:'),
