@@ -8,7 +8,7 @@ import {Component} from 'react';
 import {cloneDeep} from 'lodash';
 import {HoistComponent} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
-import {observable, setter} from '@xh/hoist/mobx';
+import {observable, action, runInAction} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {numberField, textField} from '@xh/hoist/desktop/cmp/form';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -25,9 +25,9 @@ import {companyTrades} from '../../../data';
 @HoistComponent()
 export class MaskPanel extends Component {
 
-    @observable @setter isMasked = false;
-    @observable @setter seconds = 3;
-    @observable @setter maskText = '';
+    @observable isMasked = false;
+    @observable seconds = 3;
+    @observable maskText = '';
 
     localModel = new GridModel({
         store: new LocalStore({
@@ -86,18 +86,18 @@ export class MaskPanel extends Component {
                     items: [
                         box('Mask for'),
                         numberField({
-                            value: this.seconds,
+                            model: this,
+                            field: 'seconds',
                             width: 40,
                             min: 0,
-                            max: 10,
-                            onChange: this.updateSeconds
+                            max: 10
                         }),
                         box('secs with'),
                         textField({
+                            model: this,
+                            field: 'maskText',
                             width: 120,
-                            placeholder: 'optional text',
-                            value: maskText,
-                            onChange: this.updateMaskText
+                            placeholder: 'optional text'
                         }),
                         filler(),
                         button({
@@ -113,21 +113,23 @@ export class MaskPanel extends Component {
         });
     }
 
-    updateSeconds = (v) => {
-        this.setSeconds(v);
+    @action
+    setSeconds(seconds) {
+        this.seconds = seconds;
     }
 
-    updateMaskText = (v) => {
-        this.setMaskText(v);
+    @action
+    setMaskText(maskText) {
+        this.maskText = maskText;
     }
 
     maskPanel = () => {
-        this.setIsMasked(true);
+        runInAction(() => this.isMasked = true);
         wait(this.seconds * 1000).then(() => this.unmaskPanel());
     }
 
     unmaskPanel = () => {
-        this.setIsMasked(false);
+        runInAction(() => this.isMasked = false);
     }
 
 }

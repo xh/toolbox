@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {observable, setter} from '@xh/hoist/mobx';
+import {observable, action, runInAction} from '@xh/hoist/mobx';
 import {cloneDeep} from 'lodash';
 import {HoistComponent} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
@@ -15,7 +15,7 @@ import {numberField, textField, switchField} from '@xh/hoist/desktop/cmp/form';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {grid, GridModel} from '@xh/hoist/desktop/cmp/grid';
 import {loadMask} from '@xh/hoist/desktop/cmp/mask';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {baseCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
@@ -25,10 +25,10 @@ import {companyTrades} from '../../../data';
 
 @HoistComponent()
 export class LoadMaskPanel extends Component {
-    @observable @setter showMask = false;
-    @observable @setter seconds = 3;
-    @observable @setter maskText = '';
-    @observable @setter maskViewport = false;
+    @observable showMask = false;
+    @observable seconds = 3;
+    @observable maskText = '';
+    @observable maskViewport = false;
 
     localModel = new GridModel({
         store: new LocalStore({
@@ -59,7 +59,7 @@ export class LoadMaskPanel extends Component {
     });
 
     render() {
-        const {showMask, maskText, maskViewport, seconds} = this;
+        const {showMask, maskText, maskViewport} = this;
 
         return wrapper({
             description: `
@@ -85,22 +85,22 @@ export class LoadMaskPanel extends Component {
                     items: [
                         box('Mask for'),
                         numberField({
-                            value: seconds,
+                            model: this,
+                            field: 'seconds',
                             width: 40,
                             min: 0,
-                            max: 10,
-                            onChange: this.updateSeconds
+                            max: 10
                         }),
                         box('secs with'),
                         textField({
+                            model: this,
+                            field: 'maskText',
                             width: 120,
-                            placeholder: 'optional text',
-                            value: maskText,
-                            onChange: this.updateMaskText
+                            placeholder: 'optional text'
                         }),
                         switchField({
-                            value: maskViewport,
-                            onChange: this.updateMaskViewport
+                            model: this,
+                            field: 'maskViewport'
                         }),
                         box({
                             cls: 'xh-no-pad',
@@ -120,7 +120,7 @@ export class LoadMaskPanel extends Component {
     }
 
     enableMask = () => {
-        this.setShowMask(true);
+        runInAction(() => this.showMask = true);
 
         if (!this.maskViewport) {
             this.model.loadData([]);
@@ -133,18 +133,22 @@ export class LoadMaskPanel extends Component {
         const trades = cloneDeep(companyTrades);
         trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
         if (!this.maskViewport) this.model.loadData(trades.reverse());
-        this.setShowMask(false);
+        runInAction(() => this.showMask = false);
     }
 
-    updateSeconds = (val) => {
-        this.setSeconds(val);
+    @action
+    setSeconds(seconds) {
+        this.seconds = seconds;
     }
 
-    updateMaskText = (val) => {
-        this.setMaskText(val);
+    @action
+    setMaskText(maskText) {
+        this.maskText = maskText;
     }
 
-    updateMaskViewport = (val) => {
-        this.setMaskViewport(val);
+    @action
+    setMaskViewport(maskViewport) {
+        this.maskViewport = maskViewport;
     }
+
 }
