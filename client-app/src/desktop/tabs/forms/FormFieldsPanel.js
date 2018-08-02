@@ -69,17 +69,6 @@ export class FormFieldsPanel extends Component {
                     hbox(
                         label(this.renderLabel('Verify: ')),
                         textField({model, field: 'verify', placeholder: 'Password', type: 'password'})
-                    ),
-                    vbox(
-                        label(this.renderLabel('Profile Completion: ')),
-                        sliderField({model,
-                            field: 'profileCompletion',
-                            min: 0,
-                            max: 100,
-                            labelStepSize: 25,
-                            stepSize: 1,
-                            labelRenderer: val => `${val}%`
-                        })
                     )
                 ]
             })
@@ -137,17 +126,14 @@ export class FormFieldsPanel extends Component {
                         textField({model, field: 'email', placeholder: 'name@domain.com'})
                     ),
                     hbox(
-                        label(this.renderLabel('Company: ')),
-                        textField({model, field: 'company'})
-                    ),
-                    hbox(
                         label(this.renderLabel('State: ')),
-                        selectField({
+                        comboField({
                             options: usStates,
                             model,
                             field: 'state',
-                            placeholder: 'Select a State...'
-                        }),
+                            placeholder: 'Select a State...',
+                            requireSelection: true
+                        })
                     ),
                     hbox(
                         label(this.renderLabel('Favorite Movie: ')),
@@ -156,7 +142,28 @@ export class FormFieldsPanel extends Component {
                             model,
                             field: 'movie',
                             placeholder: 'Search...'
-                        }),
+                        })
+                    ),
+                    hbox(
+                        label(this.renderLabel('T-Shirt Size: ')),
+                        selectField({
+                            options: ['S', 'M', 'L', 'XL', 'XXL'],
+                            model,
+                            field: 'size',
+                            placeholder: 'Select a size...'
+                        })
+                    ),
+                    vbox(
+                        label(this.renderLabel('Willing to travel: ')),
+                        sliderField({
+                            model,
+                            field: 'travelDistance',
+                            min: 0,
+                            max: 100,
+                            labelStepSize: 25,
+                            stepSize: 1,
+                            labelRenderer: val => `${val}m`
+                        })
                     ),
                     vbox(
                         label(this.renderLabel('Preferred Salary Range: ')),
@@ -186,7 +193,7 @@ export class FormFieldsPanel extends Component {
     }
 
     getRawValueInfo() {
-        const {active, age, company, email, getDisplayValue, movie, password, state, user, verify, red, green, blue} = this.model;
+        const {active, age, email, getDisplayValue, movie, password, state, size, user, verify, red, green, blue, travelDistance, salaryRange} = this.model;
         return panel({
             title: 'Current Values',
             width: 270,
@@ -196,43 +203,51 @@ export class FormFieldsPanel extends Component {
                 items: [
                     hbox(
                         label('User:'),
-                        label(getDisplayValue(user)),
+                        label(getDisplayValue(user))
                     ),
                     hbox(
                         label('Password:'),
-                        label(getDisplayValue(password)),
+                        label(getDisplayValue(password))
                     ),
                     hbox(
                         label('Verify:'),
-                        label(getDisplayValue(verify)),
+                        label(getDisplayValue(verify))
                     ),
                     hbox(
                         label('Profile Color:'),
-                        label(`rgb(${getDisplayValue(red)}, ${getDisplayValue(green)}, ${getDisplayValue(blue)})`),
+                        label(`rgb(${getDisplayValue(red)}, ${getDisplayValue(green)}, ${getDisplayValue(blue)})`)
                     ),
                     hbox(
                         label('Age:'),
-                        label(`${getDisplayValue(age)}`),
+                        label(`${getDisplayValue(age)}`)
                     ),
                     hbox(
                         label('E-Mail:'),
-                        label(getDisplayValue(email)),
-                    ),
-                    hbox(
-                        label('Company:'),
-                        label(getDisplayValue(company)),
+                        label(getDisplayValue(email))
                     ),
                     hbox(
                         label('State:'),
-                        label(getDisplayValue(state)),
+                        label(getDisplayValue(state))
                     ),
                     hbox(
                         label('Favorite Movie:'),
-                        label(getDisplayValue(movie)),
+                        label(getDisplayValue(movie))
+                    ),
+                    hbox(
+                        label('Shirt Size:'),
+                        label(getDisplayValue(size))
+                    ),
+                    hbox(
+                        label('Max Travel:'),
+                        label(getDisplayValue(travelDistance))
+                    ),
+                    hbox(
+                        label('Salary Range:'),
+                        label(getDisplayValue(salaryRange))
                     ),
                     hbox(
                         label('Active:'),
-                        label(getDisplayValue(active)),
+                        label(getDisplayValue(active))
                     )
                 ]
             })

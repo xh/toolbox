@@ -8,11 +8,11 @@ import {movies} from '../../../data';
 export class FormFieldsPanelModel {
     @setter @observable active = null;
     @setter @observable age = null;
-    @setter @observable company = null;
+    @setter @observable size = null;
     @setter @observable email = null;
     @setter @observable movie = null;
     @setter @observable password = null;
-    @setter @observable profileCompletion = this.getRandomFrom(0, 100);
+    @setter @observable travelDistance = this.getRandomFrom(0, 100);
     @setter @observable salaryRange = [this.getRandomFrom(50, 70), this.getRandomFrom(110, 150)].map(val => val * 1000);
     @setter @observable state = null;
     @setter @observable user = null;
@@ -61,9 +61,15 @@ export class FormFieldsPanelModel {
         return parseInt(Math.random() * (max - min) + min, 10);
     }
 
-    getDisplayValue(v) {
+    getDisplayValue = (v) => {
         if (v == null || v == '') return '\u00a0';
-        else return v.toString();
+
+        if (v == this.salaryRange) {
+            v = v.map(it => `${it / 1000}k`)
+            return v.join('-');
+        }
+
+        return v.toString();
     }
 
 }
