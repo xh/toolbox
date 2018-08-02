@@ -5,11 +5,20 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {HoistModel} from '@xh/hoist/core';
-import {setter, observable} from '@xh/hoist/mobx';
-import {usStates} from '../../../data';
+import {action, observable} from '@xh/hoist/mobx';
 
 @HoistModel()
 export class ToolbarPanelModel {
-    @setter @observable state = null;
-    options = usStates;
+    @observable state = null;
+    @observable enableTerminate = false;
+
+    @action
+    setState(val) {
+        this.state = val;
+    }
+
+    @action
+    setEnableTerminate(val) {
+        this.enableTerminate = val;
+    }
 }

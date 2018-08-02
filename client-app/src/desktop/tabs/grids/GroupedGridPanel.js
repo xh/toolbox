@@ -14,7 +14,7 @@ import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {cloneDeep} from 'lodash';
 
-import {wrapperPanel} from '../impl/WrapperPanel';
+import {wrapper} from '../impl/Wrapper';
 import {companyTrades} from '../../../data';
 
 @HoistComponent()
@@ -59,9 +59,9 @@ export class GroupedGridPanel extends Component {
     }
 
     render() {
-        return wrapperPanel(
+        return wrapper(
             panel({
-                cls: 'xh-toolbox-groupedgrid-panel',
+                cls: 'toolbox-groupedgrid-panel',
                 title: 'Grouped Grid (City)',
                 width: 600,
                 height: 400,
@@ -73,7 +73,7 @@ export class GroupedGridPanel extends Component {
     renderExample() {
         const model = this.gridModel;
         return vframe({
-            cls: 'xh-toolbox-example-container',
+            cls: 'toolbox-example-container',
             item: grid({
                 model,
                 gridOptions: {groupDefaultExpanded: 1}

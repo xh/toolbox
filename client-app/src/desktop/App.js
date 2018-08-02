@@ -10,7 +10,6 @@ import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 import {AppComponent} from './AppComponent';
 
-import {HomeTab} from './tabs/home/HomeTab';
 import {ChartsTab} from './tabs/charts/ChartsTab';
 import {ComponentsTab} from './tabs/components/ComponentsTab';
 import {ContainersTab} from './tabs/containers/ContainersTab';
@@ -58,12 +57,11 @@ class AppClass {
         return new TabContainerModel({
             route: 'default',
             tabs: [
-                {id: 'home', content: HomeTab},
-                {id: 'charts', content: ChartsTab},
-                {id: 'components', content: ComponentsTab},
                 {id: 'containers', content: ContainersTab},
-                {id: 'forms', content: FormsTab},
+                {id: 'components', content: ComponentsTab},
                 {id: 'grids', content: GridsTab},
+                {id: 'forms', content: FormsTab},
+                {id: 'charts', content: ChartsTab},
                 {id: 'icons', content: IconsTab}
             ]
         });
@@ -90,13 +88,13 @@ class AppClass {
             {
                 name: 'components',
                 path: '/components',
-                forwardTo: 'default.components.dataview',
+                forwardTo: 'default.components.leftRightChooser',
                 children: [
-                    {name: 'dataview', path: '/dataview'},
                     {name: 'leftRightChooser', path: '/leftRightChooser'},
                     {name: 'maskPanel', path: '/mask'},
                     {name: 'loadMask', path: '/loadMask'},
-                    {name: 'toolbar', path: '/toolbar'}
+                    {name: 'toolbar', path: '/toolbar'},
+                    {name: 'timestamp', path: '/timestamp'}
                 ]
             },
             {
@@ -121,7 +119,8 @@ class AppClass {
                 children: [
                     {name: 'standard', path: '/standard'},
                     {name: 'grouped', path: '/grouped'},
-                    {name: 'rest', path: '/rest'}
+                    {name: 'rest', path: '/rest'},
+                    {name: 'dataview', path: '/dataview'}
                 ]
             },
             {

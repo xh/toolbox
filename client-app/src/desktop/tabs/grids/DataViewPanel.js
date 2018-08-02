@@ -5,15 +5,15 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
-import {wrapperPanel} from '../impl/WrapperPanel';
-import {vframe} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
-import {LocalStore} from '@xh/hoist/data';
-import {dataViewItem} from './impl/DataViewItem';
+import {HoistComponent} from '@xh/hoist/core/index';
+import {wrapper} from '../impl/Wrapper';
+import {vframe} from '@xh/hoist/cmp/layout/index';
+import {panel} from '@xh/hoist/desktop/cmp/panel/index';
+import {button} from '@xh/hoist/desktop/cmp/button/index';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar/index';
+import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview/index';
+import {LocalStore} from '@xh/hoist/data/index';
+import {dataViewItem} from '../components/impl/DataViewItem';
 import './DataViewItem.scss';
 
 @HoistComponent()
@@ -27,9 +27,9 @@ export class DataViewPanel extends Component {
     });
 
     render() {
-        return wrapperPanel({
+        return wrapper({
             item: panel({
-                cls: 'xh-toolbox-dataview-panel',
+                cls: 'toolbox-dataview-panel',
                 title: 'DataView Component',
                 width: 600,
                 height: 400,
@@ -45,7 +45,7 @@ export class DataViewPanel extends Component {
         const {model} = this;
 
         return vframe({
-            cls: 'xh-toolbox-example-container',
+            cls: 'toolbox-example-container',
             item: dataView({
                 model,
                 rowCls: 'dataview-item',

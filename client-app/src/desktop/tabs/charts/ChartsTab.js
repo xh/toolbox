@@ -27,6 +27,10 @@ export class ChartsTab extends Component {
     }
 
     render() {
-        return tabContainer({model: this.model, switcherPosition: 'left'});
+        return tabContainer({
+            model: this.model,
+            switcherPosition: 'left',
+            cls: 'toolbox-tab'
+        });
     }
 }

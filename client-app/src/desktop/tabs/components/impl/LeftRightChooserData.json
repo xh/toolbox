@@ -1,43 +1,57 @@
-[{
-  "text": "Apple",
-  "description": "An apple",
-  "value": 0
-}, {
-  "text": "Banana",
-  "group": "Tropical",
-  "value": 2,
-  "description": "A Banana"
-}, {
-  "text": "Cherry",
-  "group": "Stone",
-  "value": 3
-}, {
-  "text": "Lime",
-  "group": "Citrus",
-  "value": 4,
-  "description": "A Lime"
-}, {
-  "text": "Mango",
-  "group": "Tropical",
-  "value": 5
-}, {
-  "text": "Orange",
-  "group": "Citrus",
-  "value": 6,
-  "side": "right"
-}, {
-  "text": "Peach",
-  "group": "Stone",
-  "value": 7,
-  "side": "right",
-  "description": "A Peach, and it's locked",
-  "locked": true
-}, {
-  "text": "Pineapple",
-  "group": "Tropical",
-  "value": 8
-}, {
-  "text": "Strawberry",
-  "group": "Berries",
-  "value": 9
-}]
+[
+  {
+    "text": "Apple",
+    "group": "Tree",
+    "description": "Apples are round fruits, typically red or green. They grow on trees.",
+    "value": 0
+  },
+  {
+    "text": "Banana",
+    "group": "Tropical",
+    "value": 2,
+    "description": "Bananas are yellow fruits, with a distinctive shape. Typically peeled before eating."
+  },
+  {
+    "text": "Cherry",
+    "group": "Tree",
+    "value": 3
+  },
+  {
+    "text": "Lime",
+    "group": "Citrus",
+    "value": 4,
+    "description": "Like a lemon, except smaller, greener, and more useful when making margaritas.",
+    "side": "right"
+  },
+  {
+    "text": "Mango",
+    "group": "Tropical",
+    "value": 5
+  },
+  {
+    "text": "Orange",
+    "group": "Citrus",
+    "value": 6,
+    "side": "right",
+    "description": "Note this entry is locked and cannot be moved.",
+    "locked": true
+  },
+  {
+    "text": "Blueberry",
+    "group": "Berries",
+    "value": 7,
+    "description": "Small blue fruits - especially small if you live in Maine."
+  },
+  {
+    "text": "Pineapple",
+    "group": "Tropical",
+    "description": "Spiky, rather scary fruits, pineapples are nevertheless popular and delicious.",
+    "side": "right",
+    "value": 8
+  },
+  {
+    "text": "Strawberry",
+    "group": "Berries",
+    "value": 9
+  }
+]

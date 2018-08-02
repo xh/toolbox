@@ -26,7 +26,7 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import {fmtDate} from '@xh/hoist/format';
 
 import {FormFieldsPanelModel} from './FormFieldsPanelModel';
-import {wrapperPanel} from '../impl/WrapperPanel';
+import {wrapper} from '../impl/Wrapper';
 import './FormFieldsPanel.scss';
 
 @HoistComponent()
@@ -34,9 +34,9 @@ export class FormFieldsPanel extends Component {
     localModel = new FormFieldsPanelModel();
 
     render() {
-        return wrapperPanel(
+        return wrapper(
             panel({
-                cls: 'xh-toolbox-formfields-panel',
+                cls: 'toolbox-formfields-panel',
                 title: 'Form Fields',
                 width: 620,
                 item: this.renderExample(),
@@ -55,7 +55,7 @@ export class FormFieldsPanel extends Component {
 
     renderExample() {
         return hframe({
-            cls: 'xh-toolbox-example-container',
+            cls: 'toolbox-example-container',
             items: [
                 vbox({
                     flex: 2,

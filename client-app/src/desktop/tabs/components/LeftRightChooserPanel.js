@@ -6,8 +6,7 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {wrapperPanel} from '../impl/WrapperPanel';
-import {vframe} from '@xh/hoist/cmp/layout';
+import {wrapper} from '../impl/Wrapper';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@xh/hoist/desktop/cmp/leftrightchooser';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -21,19 +20,28 @@ export class LeftRightChooserPanel extends Component {
     localModel = new LeftRightChooserModel({
         data,
         ungroupedName: 'Others',
-        leftGroupingEnabled: false
+        rightGroupingEnabled: false
     });
 
     @setter @observable anyMatch = false;
 
     render() {
-        return wrapperPanel(
-            panel({
-                cls: 'xh-toolbox-leftrightchooser-panel',
-                title: 'LeftRightChooser Component',
+        return wrapper({
+            description: `
+                LeftRightChooser splits a list of items into generic "left" and "right" sides,
+                with controls for the user to move items between the two. This can be used to e.g.
+                create a selected subset from a pool of items - see the grid column chooser for 
+                such an example. Items can provide optional descriptions and groups, and can be 
+                locked to prevent them from being moved.
+            `,
+            item: panel({
+                title: 'Components > LeftRightChooser',
                 width: 600,
                 height: 400,
-                item: this.renderExample(),
+                item: leftRightChooser({
+                    model: this.model,
+                    flex: 1
+                }),
                 bbar: toolbar(
                     leftRightChooserFilter({
                         fields: ['text'],
@@ -43,17 +51,11 @@ export class LeftRightChooserPanel extends Component {
                     switchField({
                         value: this.anyMatch,
                         onCommit: (val) => this.setAnyMatch(val),
-                        text: 'AnyMatch filter'
+                        text: 'match anywhere in the string'
                     })
                 )
             })
-        );
-    }
-
-    renderExample() {
-        return vframe({
-            cls: 'xh-toolbox-example-container',
-            item: leftRightChooser({model: this.model, flex: 1})
         });
     }
+
 }

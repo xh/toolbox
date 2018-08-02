@@ -7,41 +7,37 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {box, vbox} from '@xh/hoist/cmp/layout';
+import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapperPanel} from '../impl/WrapperPanel';
-import './BoxContainer.scss';
+import {wrapper} from '../impl/Wrapper';
 
 @HoistComponent()
 export class VBoxContainerPanel extends Component {
     render() {
-        return wrapperPanel(
-            panel({
-                cls: 'xh-toolbox-vboxcontainer-panel',
-                title: 'VBox Container',
-                width: 500,
-                height: '80%',
-                item: this.renderExample()
+        return wrapper({
+            description: `
+                A vbox lays out its children vertically, rendering a box with flexDirection 
+                set to column.
+            `,
+            item: panel({
+                title: 'Containers > VBox',
+                icon: Icon.box(),
+                height: 400,
+                width: 600,
+                item: vbox({
+                    itemSpec: {
+                        factory: box,
+                        padding: 10,
+                        height: 300,
+                        cls: 'toolbox-containers-box'
+                    },
+                    items: [
+                        {flex: 1, item: 'flex: 1'},
+                        {height: 100, item: 'height: 100'},
+                        {flex: 2, item: 'flex: 2'}
+                    ]
+                })
             })
-        );
-    }
-
-    renderExample() {
-        return vbox({
-            cls: 'xh-toolbox-example-container',
-            flex: 1,
-            items: [
-                box({
-                    flex: 1,
-                    item: 'flex: 1'
-                }),
-                box({
-                    height: 50,
-                    item: 'height: 50'
-                }),
-                box({
-                    flex: 2,
-                    item: 'flex: 2'
-                })]
         });
     }
 }
