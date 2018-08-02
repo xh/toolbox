@@ -18,31 +18,28 @@ import './IconsTab.scss';
 export class IconsTab extends Component {
 
     render() {
+        const header = (...labels) => hbox({
+                cls: 'toolbox-icons-panel__header',
+                items: labels.map(label => div(label))
+            }),
+            row = icon => hbox({cls: 'row', items: [div(icon.name), ...this.renderIconTiles(icon)]});
+
         return wrapper(
             panel({
                 title: 'Available Icons',
+                icon: Icon.thumbsUp(),
                 width: 500,
-                height: '80%',
+                height: '90%',
                 cls: 'toolbox-icons-panel',
-                item: this.renderExample()
+                item: [
+                    header('name', 'regular', 'solid', 'light'),
+                    vbox({
+                        overflow: 'auto',
+                        items: this.getAllIcons().map(icon => row(icon))
+                    })
+                ]
             })
         );
-    }
-
-    renderExample() {
-        const header = (...labels) => hbox({ cls: 'header', items: labels.map(label => div(label))}),
-            row = icon => hbox({cls: 'row', items: [div(icon.name), ...this.renderIconTiles(icon)]});
-
-        return vbox({
-            cls: 'toolbox-example-container',
-            items: [
-                header('name', 'regular', 'solid', 'light'),
-                vbox({
-                    overflow: 'auto',
-                    items: this.getAllIcons().map(icon => row(icon))
-                })
-            ]
-        });
     }
 
     getAllIcons() {
