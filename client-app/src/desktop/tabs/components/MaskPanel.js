@@ -8,7 +8,7 @@ import {Component} from 'react';
 import {cloneDeep} from 'lodash';
 import {HoistComponent} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
-import {observable, runInAction} from '@xh/hoist/mobx';
+import {observable, action, runInAction} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {numberField, textField} from '@xh/hoist/desktop/cmp/form';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -86,18 +86,18 @@ export class MaskPanel extends Component {
                     items: [
                         box('Mask for'),
                         numberField({
-                            value: this.seconds,
+                            model: this,
+                            field: 'seconds',
                             width: 40,
                             min: 0,
-                            max: 10,
-                            onChange: this.updateSeconds
+                            max: 10
                         }),
                         box('secs with'),
                         textField({
+                            model: this,
+                            field: 'maskText',
                             width: 120,
-                            placeholder: 'optional text',
-                            value: maskText,
-                            onChange: this.updateMaskText
+                            placeholder: 'optional text'
                         }),
                         filler(),
                         button({
@@ -113,12 +113,14 @@ export class MaskPanel extends Component {
         });
     }
 
-    updateSeconds = (val) => {
-        runInAction(() => this.seconds = val);
+    @action
+    setSeconds(seconds) {
+        this.seconds = seconds;
     }
 
-    updateMaskText = (val) => {
-        runInAction(() => this.maskText = val);
+    @action
+    setMaskText(maskText) {
+        this.maskText = maskText;
     }
 
     maskPanel = () => {

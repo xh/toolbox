@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {observable, runInAction} from '@xh/hoist/mobx';
+import {observable, action, runInAction} from '@xh/hoist/mobx';
 import {cloneDeep} from 'lodash';
 import {HoistComponent} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
@@ -59,7 +59,7 @@ export class LoadMaskPanel extends Component {
     });
 
     render() {
-        const {showMask, maskText, maskViewport, seconds} = this;
+        const {showMask, maskText, maskViewport} = this;
 
         return wrapper({
             description: `
@@ -85,22 +85,22 @@ export class LoadMaskPanel extends Component {
                     items: [
                         box('Mask for'),
                         numberField({
-                            value: seconds,
+                            model: this,
+                            field: 'seconds',
                             width: 40,
                             min: 0,
-                            max: 10,
-                            onChange: this.updateSeconds
+                            max: 10
                         }),
                         box('secs with'),
                         textField({
+                            model: this,
+                            field: 'maskText',
                             width: 120,
-                            placeholder: 'optional text',
-                            value: maskText,
-                            onChange: this.updateMaskText
+                            placeholder: 'optional text'
                         }),
                         switchField({
-                            value: maskViewport,
-                            onChange: this.updateMaskViewport
+                            model: this,
+                            field: 'maskViewport'
                         }),
                         box({
                             cls: 'xh-no-pad',
@@ -136,15 +136,19 @@ export class LoadMaskPanel extends Component {
         runInAction(() => this.showMask = false);
     }
 
-    updateSeconds = (val) => {
-        runInAction(() => this.seconds = val);
+    @action
+    setSeconds(seconds) {
+        this.seconds = seconds;
     }
 
-    updateMaskText = (val) => {
-        runInAction(() => this.maskText = val);
+    @action
+    setMaskText(maskText) {
+        this.maskText = maskText;
     }
 
-    updateMaskViewport = (val) => {
-        runInAction(() => this.maskViewport = val);
+    @action
+    setMaskViewport(maskViewport) {
+        this.maskViewport = maskViewport;
     }
+
 }
