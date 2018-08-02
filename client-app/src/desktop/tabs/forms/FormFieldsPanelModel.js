@@ -7,9 +7,9 @@ import {companies, movies, usStates} from '../../../data';
 export class FormFieldsPanelModel {
     @setter @observable active = null;
     @setter @observable age = null;
+    @setter @observable company = null;
     @setter @observable size = null;
     @setter @observable email = null;
-    @setter @observable company = null;
     @setter @observable movie = null;
     @setter @observable password = null;
     @setter @observable travelDistance = this.getRandomFrom(0, 100);
