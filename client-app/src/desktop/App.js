@@ -88,12 +88,12 @@ class AppClass {
             {
                 name: 'components',
                 path: '/components',
-                forwardTo: 'default.components.leftRightChooser',
+                forwardTo: 'default.components.toolbar',
                 children: [
+                    {name: 'toolbar', path: '/toolbar'},
                     {name: 'leftRightChooser', path: '/leftRightChooser'},
                     {name: 'maskPanel', path: '/mask'},
                     {name: 'loadMask', path: '/loadMask'},
-                    {name: 'toolbar', path: '/toolbar'},
                     {name: 'timestamp', path: '/timestamp'}
                 ]
             },
