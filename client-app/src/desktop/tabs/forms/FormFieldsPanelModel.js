@@ -1,8 +1,7 @@
 import {inRange} from 'lodash';
 import {HoistModel} from '@xh/hoist/core';
 import {computed, setter, observable} from '@xh/hoist/mobx';
-import {usStates} from '../../../data';
-import {movies} from '../../../data';
+import {companies, movies, usStates} from '../../../data';
 
 @HoistModel()
 export class FormFieldsPanelModel {
@@ -10,6 +9,7 @@ export class FormFieldsPanelModel {
     @setter @observable age = null;
     @setter @observable size = null;
     @setter @observable email = null;
+    @setter @observable company = null;
     @setter @observable movie = null;
     @setter @observable password = null;
     @setter @observable travelDistance = this.getRandomFrom(0, 100);
@@ -25,6 +25,7 @@ export class FormFieldsPanelModel {
 
     usStates = usStates;
     movies = movies;
+    companies = companies;
 
     @computed
     get profileColor() {
@@ -72,5 +73,19 @@ export class FormFieldsPanelModel {
 
         return v.toString();
     }
+
+
+    queryCompanies(value) {
+        if (!value) return Promise.resolve([]);
+
+        // could also be a server side fetch passed the query value
+        const opts = companies.map(it => {
+            if (it.company.startsWith(value.toUpperCase())) return it.company;
+            if (it.sector && it.sector.startsWith(value.toLowerCase())) return it.company;
+        }).filter(it => !!it).sort();
+
+        return Promise.resolve(opts);
+    }
+
 
 }

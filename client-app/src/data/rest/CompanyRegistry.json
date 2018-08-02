@@ -1,101 +1,3119 @@
-[{
-    "id": 1,
-    "company": "Boehm-Upton",
-    "joined_date": "1/3/2018",
-    "isActive": true
-}, {
-    "id": 2,
-    "company": "Welch-Wuckert",
-    "joined_date": "7/14/2017",
-    "isActive": false
-}, {
-    "id": 3,
-    "company": "Lemke-Kunze",
-    "joined_date": "12/17/2017",
-    "isActive": true
-}, {
-    "id": 4,
-    "company": "Olson Inc",
-    "joined_date": "6/16/2017",
-    "isActive": true
-}, {
-    "id": 5,
-    "company": "Boyle-Towne",
-    "joined_date": "5/10/2017",
-    "isActive": true
-}, {
-    "id": 6,
-    "company": "Kris-Predovic",
-    "joined_date": "8/4/2017",
-    "isActive": true
-}, {
-    "id": 7,
-    "company": "Zulauf LLC",
-    "joined_date": "12/23/2017",
-    "isActive": false
-}, {
-    "id": 8,
-    "company": "Torp, McClure and Wuckert",
-    "joined_date": "10/24/2017",
-    "isActive": true
-}, {
-    "id": 9,
-    "company": "Schowalter, Effertz and O'Reilly",
-    "joined_date": "2/14/2018",
-    "isActive": true
-}, {
-    "id": 10,
-    "company": "Welch, Doyle and Denesik",
-    "joined_date": "8/11/2017",
-    "isActive": false
-}, {
-    "id": 11,
-    "company": "Hintz and Sons",
-    "joined_date": "3/8/2018",
-    "isActive": false
-}, {
-    "id": 12,
-    "company": "Witting-Auer",
-    "joined_date": "7/2/2017",
-    "isActive": false
-}, {
-    "id": 13,
-    "company": "Reinger, Cummerata and Hermiston",
-    "joined_date": "3/10/2018",
-    "isActive": false
-}, {
-    "id": 14,
-    "company": "Friesen Inc",
-    "joined_date": "7/21/2017",
-    "isActive": true
-}, {
-    "id": 15,
-    "company": "Eichmann LLC",
-    "joined_date": "9/9/2017",
-    "isActive": true
-}, {
-    "id": 16,
-    "company": "Funk, O'Conner and Langosh",
-    "joined_date": "2/20/2018",
-    "isActive": true
-}, {
-    "id": 17,
-    "company": "Satterfield, Pouros and Kuhn",
-    "joined_date": "7/24/2017",
-    "isActive": false
-}, {
-    "id": 18,
-    "company": "Green and Sons",
-    "joined_date": "10/31/2017",
-    "isActive": false
-}, {
-    "id": 19,
-    "company": "Murray, Medhurst and Donnelly",
-    "joined_date": "12/17/2017",
-    "isActive": true
-}, {
-    "id": 20,
-    "company": "McKenzie, Skiles and Schowalter",
-    "joined_date": "4/13/2018",
-    "isActive": true
-}]
+[
+    {
+        "company": "WRAPTURE",
+        "sector": "materials"
+    },
+    {
+        "company": "MIXERS",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "MOTOVATE",
+        "sector": "healthcare"
+    },
+    {
+        "company": "PAWNAGRA",
+        "sector": "materials"
+    },
+    {
+        "company": "PYRAMIS",
+        "sector": "healthcare"
+    },
+    {
+        "company": "COMTRAIL",
+        "sector": "real estate"
+    },
+    {
+        "company": "QUILM",
+        "sector": "energy"
+    },
+    {
+        "company": "GYNKO",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "NEUROCELL",
+        "sector": "utilities"
+    },
+    {
+        "company": "SQUISH",
+        "sector": "healthcare"
+    },
+    {
+        "company": "BULLJUICE",
+        "sector": "real estate"
+    },
+    {
+        "company": "EVEREST",
+        "sector": "real estate"
+    },
+    {
+        "company": "FURNIGEER",
+        "sector": "financial"
+    },
+    {
+        "company": "NSPIRE",
+        "sector": "financial"
+    },
+    {
+        "company": "PODUNK",
+        "sector": "financial"
+    },
+    {
+        "company": "TECHMANIA",
+        "sector": "industrial"
+    },
+    {
+        "company": "ARCTIQ",
+        "sector": "technology"
+    },
+    {
+        "company": "MUSANPOLY",
+        "sector": "telecom"
+    },
+    {
+        "company": "AMTAP",
+        "sector": "energy"
+    },
+    {
+        "company": "POOCHIES",
+        "sector": "healthcare"
+    },
+    {
+        "company": "COSMETEX",
+        "sector": "healthcare"
+    },
+    {
+        "company": "DIGIGENE",
+        "sector": "energy"
+    },
+    {
+        "company": "ZOID",
+        "sector": "materials"
+    },
+    {
+        "company": "INEAR",
+        "sector": "telecom"
+    },
+    {
+        "company": "ORGANICA",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ROCKABYE",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "DATAGEN",
+        "sector": "financial"
+    },
+    {
+        "company": "BRAINCLIP",
+        "sector": "technology"
+    },
+    {
+        "company": "GEOLOGIX",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "GOGOL",
+        "sector": "industrial"
+    },
+    {
+        "company": "EXIAND",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "SEALOUD",
+        "sector": "utilities"
+    },
+    {
+        "company": "COMCUR",
+        "sector": "industrial"
+    },
+    {
+        "company": "BLEEKO",
+        "sector": "energy"
+    },
+    {
+        "company": "MAKINGWAY",
+        "sector": "healthcare"
+    },
+    {
+        "company": "JETSILK",
+        "sector": "utilities"
+    },
+    {
+        "company": "MAGNAFONE",
+        "sector": "utilities"
+    },
+    {
+        "company": "COMVERGES",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "PLASMOSIS",
+        "sector": "industrial"
+    },
+    {
+        "company": "CINASTER",
+        "sector": "financial"
+    },
+    {
+        "company": "GEEKOLOGY",
+        "sector": "real estate"
+    },
+    {
+        "company": "BRAINQUIL",
+        "sector": "techology"
+    },
+    {
+        "company": "SHOPABOUT",
+        "sector": "real estate"
+    },
+    {
+        "company": "AUSTEX",
+        "sector": "industrial"
+    },
+    {
+        "company": "METROZ",
+        "sector": "energy"
+    },
+    {
+        "company": "QUILK",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "SENMEI",
+        "sector": "energy"
+    },
+    {
+        "company": "CODACT",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ZENSOR",
+        "sector": "materials"
+    },
+    {
+        "company": "SKINSERVE",
+        "sector": "telecom"
+    },
+    {
+        "company": "DIGIAL",
+        "sector": "telecom"
+    },
+    {
+        "company": "ZILIDIUM",
+        "sector": "financial"
+    },
+    {
+        "company": "BLEENDOT",
+        "sector": "healthcare"
+    },
+    {
+        "company": "QUORDATE",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ZENTIME",
+        "sector": "healthcare"
+    },
+    {
+        "company": "GLOBOIL",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ANACHO",
+        "sector": "energy"
+    },
+    {
+        "company": "ZYTREX",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ZOLAREX",
+        "sector": "materials"
+    },
+    {
+        "company": "OVERPLEX",
+        "sector": "materials"
+    },
+    {
+        "company": "GEOFARM",
+        "sector": "industrial"
+    },
+    {
+        "company": "ASSITIA",
+        "sector": "real estate"
+    },
+    {
+        "company": "STUCCO",
+        "sector": "healthcare"
+    },
+    {
+        "company": "CYCLONICA",
+        "sector": "healthcare"
+    },
+    {
+        "company": "ORONOKO",
+        "sector": "healthcare"
+    },
+    {
+        "company": "INTERFIND",
+        "sector": "financial"
+    },
+    {
+        "company": "ROUGHIES",
+        "sector": "utilities"
+    },
+    {
+        "company": "OBLIQ",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "DAIDO",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "AEORA",
+        "sector": "telecom"
+    },
+    {
+        "company": "ZOMBOID",
+        "sector": "medical"
+    },
+    {
+        "company": "GEOSTELE",
+        "sector": "medical"
+    },
+    {
+        "company": "PHOLIO",
+        "sector": "financial"
+    },
+    {
+        "company": "EZENTIA",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ASSISTIA",
+        "sector": "telecom"
+    },
+    {
+        "company": "SKYBOLD",
+        "sector": "healthcare"
+    },
+    {
+        "company": "STEELFAB",
+        "sector": "industrial"
+    },
+    {
+        "company": "TELEPARK",
+        "sector": "financial"
+    },
+    {
+        "company": "ZAGGLE",
+        "sector": "utilities"
+    },
+    {
+        "company": "GOLISTIC",
+        "sector": "financial"
+    },
+    {
+        "company": "QUINEX",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "DOGSPA",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ZAPPIX",
+        "sector": "utilities"
+    },
+    {
+        "company": "CENTICE",
+        "sector": "industrial"
+    },
+    {
+        "company": "EXTRAWEAR",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "XEREX",
+        "sector": "healthcare"
+    },
+    {
+        "company": "CAXT",
+        "sector": "telecom"
+    },
+    {
+        "company": "COMCUBINE",
+        "sector": "utilities"
+    },
+    {
+        "company": "TECHTRIX",
+        "sector": "healthcare"
+    },
+    {
+        "company": "CONCILITY",
+        "sector": "technology"
+    },
+    {
+        "company": "FUTURIZE",
+        "sector": "financial"
+    },
+    {
+        "company": "COSMOSIS",
+        "sector": "real estate"
+    },
+    {
+        "company": "BUZZOPIA",
+        "sector": "industrial"
+    },
+    {
+        "company": "XOGGLE",
+        "sector": "financial"
+    },
+    {
+        "company": "SAVVY",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "UNCORP",
+        "sector": "energy"
+    },
+    {
+        "company": "TERASCAPE",
+        "sector": "telecom"
+    },
+    {
+        "company": "ZANITY",
+        "sector": "industrial"
+    },
+    {
+        "company": "ELPRO",
+        "sector": "real estate"
+    },
+    {
+        "company": "PLASTO",
+        "sector": "energy"
+    },
+    {
+        "company": "BOVIS",
+        "sector": "financial"
+    },
+    {
+        "company": "AMTAS",
+        "sector": "financial"
+    },
+    {
+        "company": "RECOGNIA",
+        "sector": "real estate"
+    },
+    {
+        "company": "KAGGLE",
+        "sector": "real estate"
+    },
+    {
+        "company": "TWIGGERY",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ISOTRONIC",
+        "sector": "materials"
+    },
+    {
+        "company": "GEEKULAR",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "RODEMCO",
+        "sector": "materials"
+    },
+    {
+        "company": "NORSUL",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "MARTGO",
+        "sector": "telecom"
+    },
+    {
+        "company": "ZBOO",
+        "sector": "technology"
+    },
+    {
+        "company": "ECLIPTO",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "QUALITEX",
+        "sector": "energy"
+    },
+    {
+        "company": "VALPREAL",
+        "sector": "materials"
+    },
+    {
+        "company": "LYRICHORD",
+        "sector": "materials"
+    },
+    {
+        "company": "ENDIPINE",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "BALUBA",
+        "sector": "healthcare"
+    },
+    {
+        "company": "REALMO",
+        "sector": "materials"
+    },
+    {
+        "company": "OPTIQUE",
+        "sector": "real estate"
+    },
+    {
+        "company": "XIXAN",
+        "sector": "financial"
+    },
+    {
+        "company": "NITRACYR",
+        "sector": "energy"
+    },
+    {
+        "company": "MUSIX",
+        "sector": "materials"
+    },
+    {
+        "company": "GROK",
+        "sector": "telecom"
+    },
+    {
+        "company": "EQUICOM",
+        "sector": "energy"
+    },
+    {
+        "company": "VURBO",
+        "sector": "financial"
+    },
+    {
+        "company": "OBONES",
+        "sector": "financial"
+    },
+    {
+        "company": "ZAJ",
+        "sector": "technology"
+    },
+    {
+        "company": "TSUNAMIA",
+        "sector": "real estate"
+    },
+    {
+        "company": "PHEAST",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ZORROMOP",
+        "sector": "technology"
+    },
+    {
+        "company": "SHADEASE",
+        "sector": "technology"
+    },
+    {
+        "company": "IRACK",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ZEPITOPE",
+        "sector": "telecom"
+    },
+    {
+        "company": "XYLAR",
+        "sector": "telecom"
+    },
+    {
+        "company": "VERAQ",
+        "sector": "energy"
+    },
+    {
+        "company": "EXOVENT",
+        "sector": "telecom"
+    },
+    {
+        "company": "VISUALIX",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ELITA",
+        "sector": "energy"
+    },
+    {
+        "company": "CUIZINE",
+        "sector": "technology"
+    },
+    {
+        "company": "HOTCAKES",
+        "sector": "financial"
+    },
+    {
+        "company": "SNIPS",
+        "sector": "real estate"
+    },
+    {
+        "company": "UBERLUX",
+        "sector": "financial"
+    },
+    {
+        "company": "MULTIFLEX",
+        "sector": "industrial"
+    },
+    {
+        "company": "TETAK",
+        "sector": "utilities"
+    },
+    {
+        "company": "KONNECT",
+        "sector": "utilities"
+    },
+    {
+        "company": "ENQUILITY",
+        "sector": "technology"
+    },
+    {
+        "company": "REALYSIS",
+        "sector": "materials"
+    },
+    {
+        "company": "ILLUMITY",
+        "sector": "healthcare"
+    },
+    {
+        "company": "VIAGREAT",
+        "sector": "energy"
+    },
+    {
+        "company": "PROSURE",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "KEENGEN",
+        "sector": "financial"
+    },
+    {
+        "company": "GUSHKOOL",
+        "sector": "utilities"
+    },
+    {
+        "company": "AQUAZURE",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "SULTRAX",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "RADIANTIX",
+        "sector": "energy"
+    },
+    {
+        "company": "BUZZNESS",
+        "sector": "telecom"
+    },
+    {
+        "company": "ULTRASURE",
+        "sector": "energy"
+    },
+    {
+        "company": "STREZZO",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "QNEKT",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "SLAX",
+        "sector": "financial"
+    },
+    {
+        "company": "COLUMELLA",
+        "sector": "healthcare"
+    },
+    {
+        "company": "DOGNOST",
+        "sector": "real estate"
+    },
+    {
+        "company": "OULU",
+        "sector": "technology"
+    },
+    {
+        "company": "EQUITOX",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "INSOURCE",
+        "sector": "energy"
+    },
+    {
+        "company": "EXERTA",
+        "sector": "healthcare"
+    },
+    {
+        "company": "DUOFLEX",
+        "sector": "healthcare"
+    },
+    {
+        "company": "FLOTONIC",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "NIQUENT",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ORBALIX",
+        "sector": "telecom"
+    },
+    {
+        "company": "CYTREK",
+        "sector": "materials"
+    },
+    {
+        "company": "CORIANDER",
+        "sector": "energy"
+    },
+    {
+        "company": "STELAECOR",
+        "sector": "financial"
+    },
+    {
+        "company": "NIKUDA",
+        "sector": "healthcare"
+    },
+    {
+        "company": "ACCUSAGE",
+        "sector": "healthcare"
+    },
+    {
+        "company": "MAROPTIC",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "MAGNEMO"
+    },
+    {
+        "company": "BITREX",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "CYTREX",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "SNORUS",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "FANFARE",
+        "sector": "utilities"
+    },
+    {
+        "company": "ROOFORIA",
+        "sector": "telecom"
+    },
+    {
+        "company": "SKYPLEX",
+        "sector": "real estate"
+    },
+    {
+        "company": "PROXSOFT",
+        "sector": "utilities"
+    },
+    {
+        "company": "POLARAX",
+        "sector": "industrial"
+    },
+    {
+        "company": "SECURIA",
+        "sector": "telecom"
+    },
+    {
+        "company": "EXOSPACE",
+        "sector": "utilities"
+    },
+    {
+        "company": "FUTURIS",
+        "sector": "materials"
+    },
+    {
+        "company": "WAAB",
+        "sector": "real estate"
+    },
+    {
+        "company": "QUINTITY",
+        "sector": "telecom"
+    },
+    {
+        "company": "JAMNATION"
+    },
+    {
+        "company": "BUGSALL",
+        "sector": "healthcare"
+    },
+    {
+        "company": "GRONK",
+        "sector": "real estate"
+    },
+    {
+        "company": "COMBOT",
+        "sector": "utilities"
+    },
+    {
+        "company": "GENMY",
+        "sector": "healthcare"
+    },
+    {
+        "company": "VERTIDE",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "EXOPLODE",
+        "sector": "healthcare"
+    },
+    {
+        "company": "XERONK"
+    },
+    {
+        "company": "NORALEX",
+        "sector": "industrial"
+    },
+    {
+        "company": "VERBUS",
+        "sector": "materials"
+    },
+    {
+        "company": "COREPAN",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "CORPORANA",
+        "sector": "materials"
+    },
+    {
+        "company": "MAINELAND",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ATOMICA",
+        "sector": "technology"
+    },
+    {
+        "company": "CANDECOR",
+        "sector": "energy"
+    },
+    {
+        "company": "FRENEX",
+        "sector": "utilities"
+    },
+    {
+        "company": "ZILENCIO",
+        "sector": "real estate"
+    },
+    {
+        "company": "ENOMEN",
+        "sector": "healthcare"
+    },
+    {
+        "company": "ZIORE",
+        "sector": "materials"
+    },
+    {
+        "company": "HOMETOWN",
+        "sector": "telecom"
+    },
+    {
+        "company": "SILODYNE",
+        "sector": "utilities"
+    },
+    {
+        "company": "EMTRAK",
+        "sector": "technology"
+    },
+    {
+        "company": "ZUVY",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "QUANTALIA",
+        "sector": "energy"
+    },
+    {
+        "company": "CODAX",
+        "sector": "technology"
+    },
+    {
+        "company": "MEDESIGN",
+        "sector": "energy"
+    },
+    {
+        "company": "GEEKETRON",
+        "sector": "industrial"
+    },
+    {
+        "company": "COMBOGENE",
+        "sector": "financial"
+    },
+    {
+        "company": "KINETICA",
+        "sector": "telecom"
+    },
+    {
+        "company": "KEEG",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ECOLIGHT",
+        "sector": "energy"
+    },
+    {
+        "company": "MEDICROIX",
+        "sector": "industrial"
+    },
+    {
+        "company": "ZILLANET",
+        "sector": "materials"
+    },
+    {
+        "company": "EMERGENT",
+        "sector": "industrial"
+    },
+    {
+        "company": "PROTODYNE",
+        "sector": "real estate"
+    },
+    {
+        "company": "ARCHITAX",
+        "sector": "financial"
+    },
+    {
+        "company": "SIGNIDYNE",
+        "sector": "industrial"
+    },
+    {
+        "company": "QUIZKA",
+        "sector": "healthcare"
+    },
+    {
+        "company": "FARMEX",
+        "sector": "healthcare"
+    },
+    {
+        "company": "PROSELY",
+        "sector": "utilities"
+    },
+    {
+        "company": "MOREGANIC",
+        "sector": "industrial"
+    },
+    {
+        "company": "GINKLE",
+        "sector": "real estate"
+    },
+    {
+        "company": "XELEGYL",
+        "sector": "technology"
+    },
+    {
+        "company": "UTARIAN",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "HYPLEX",
+        "sector": "materials"
+    },
+    {
+        "company": "GEEKY",
+        "sector": "telecom"
+    },
+    {
+        "company": "THREDZ",
+        "sector": "healthcare"
+    },
+    {
+        "company": "ZILLADYNE",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "PORTICO",
+        "sector": "financial"
+    },
+    {
+        "company": "GRAINSPOT",
+        "sector": "technology"
+    },
+    {
+        "company": "ESCHOIR",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "OVATION",
+        "sector": "technology"
+    },
+    {
+        "company": "NETERIA",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ANIXANG",
+        "sector": "industrial"
+    },
+    {
+        "company": "ORBEAN",
+        "sector": "healthcare"
+    },
+    {
+        "company": "VENOFLEX"
+    },
+    {
+        "company": "GEEKOL",
+        "sector": "utilities"
+    },
+    {
+        "company": "UPDAT",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "BUNGA",
+        "sector": "financial"
+    },
+    {
+        "company": "SNOWPOKE",
+        "sector": "financial"
+    },
+    {
+        "company": "CORECOM",
+        "sector": "industrial"
+    },
+    {
+        "company": "SLOGANAUT",
+        "sector": "industrial"
+    },
+    {
+        "company": "ZENSUS",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ZEAM",
+        "sector": "energy"
+    },
+    {
+        "company": "QUONK",
+        "sector": "financial"
+    },
+    {
+        "company": "ISOTERNIA",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "SEQUITUR",
+        "sector": "industrial"
+    },
+    {
+        "company": "PROGENEX",
+        "sector": "technology"
+    },
+    {
+        "company": "DANCITY",
+        "sector": "real estate"
+    },
+    {
+        "company": "MAXEMIA",
+        "sector": "energy"
+    },
+    {
+        "company": "HIVEDOM"
+    },
+    {
+        "company": "AUTOGRATE",
+        "sector": "healthcare"
+    },
+    {
+        "company": "GINK",
+        "sector": "financial"
+    },
+    {
+        "company": "INSURON",
+        "sector": "materials"
+    },
+    {
+        "company": "UNISURE",
+        "sector": "industrial"
+    },
+    {
+        "company": "PLEXIA",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "VETRON",
+        "sector": "utilities"
+    },
+    {
+        "company": "PRISMATIC",
+        "sector": "energy"
+    },
+    {
+        "company": "SINGAVERA",
+        "sector": "materials"
+    },
+    {
+        "company": "GINKOGENE",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "BESTO",
+        "sector": "technology"
+    },
+    {
+        "company": "VINCH",
+        "sector": "utilities"
+    },
+    {
+        "company": "TALKOLA",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "GENEKOM",
+        "sector": "healthcare"
+    },
+    {
+        "company": "XIIX",
+        "sector": "telecom"
+    },
+    {
+        "company": "KINETICUT",
+        "sector": "energy"
+    },
+    {
+        "company": "BICOL",
+        "sector": "utilities"
+    },
+    {
+        "company": "IPLAX",
+        "sector": "technology"
+    },
+    {
+        "company": "NURPLEX",
+        "sector": "real estate"
+    },
+    {
+        "company": "MEDCOM",
+        "sector": "telecom"
+    },
+    {
+        "company": "KINDALOO",
+        "sector": "financial"
+    },
+    {
+        "company": "KLUGGER",
+        "sector": "industrial"
+    },
+    {
+        "company": "COMVENE",
+        "sector": "materials"
+    },
+    {
+        "company": "QUALITERN",
+        "sector": "materials"
+    },
+    {
+        "company": "ZYTREK",
+        "sector": "energy"
+    },
+    {
+        "company": "REPETWIRE",
+        "sector": "industrial"
+    },
+    {
+        "company": "RECRISYS",
+        "sector": "energy"
+    },
+    {
+        "company": "CEMENTION"
+    },
+    {
+        "company": "ZIPAK",
+        "sector": "industrial"
+    },
+    {
+        "company": "DOGNOSIS",
+        "sector": "healthcare"
+    },
+    {
+        "company": "HOUSEDOWN"
+    },
+    {
+        "company": "MONDICIL",
+        "sector": "healthcare"
+    },
+    {
+        "company": "CENTREGY",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "GOKO",
+        "sector": "technology"
+    },
+    {
+        "company": "OATFARM",
+        "sector": "industrial"
+    },
+    {
+        "company": "TEMORAK",
+        "sector": "telecom"
+    },
+    {
+        "company": "TRANSLINK",
+        "sector": "telecom"
+    },
+    {
+        "company": "MICROLUXE",
+        "sector": "utilities"
+    },
+    {
+        "company": "FRANSCENE",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ETERNIS",
+        "sector": "technology"
+    },
+    {
+        "company": "EZENT",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "REMOLD",
+        "sector": "technology"
+    },
+    {
+        "company": "AVENETRO",
+        "sector": "technology"
+    },
+    {
+        "company": "XYMONK",
+        "sector": "technology"
+    },
+    {
+        "company": "PARAGONIA",
+        "sector": "real estate"
+    },
+    {
+        "company": "ORBIFLEX",
+        "sector": "technology"
+    },
+    {
+        "company": "ZEDALIS",
+        "sector": "telecom"
+    },
+    {
+        "company": "COMTOUR",
+        "sector": "materials"
+    },
+    {
+        "company": "DECRATEX"
+    },
+    {
+        "company": "GALLAXIA",
+        "sector": "industrial"
+    },
+    {
+        "company": "EXOSTREAM",
+        "sector": "financial"
+    },
+    {
+        "company": "FORTEAN"
+    },
+    {
+        "company": "BIZMATIC",
+        "sector": "industrial"
+    },
+    {
+        "company": "OTHERWAY",
+        "sector": "materials"
+    },
+    {
+        "company": "COLAIRE",
+        "sector": "energy"
+    },
+    {
+        "company": "ZOLAVO",
+        "sector": "industrial"
+    },
+    {
+        "company": "TALAE",
+        "sector": "utilities"
+    },
+    {
+        "company": "KYAGURU",
+        "sector": "telecom"
+    },
+    {
+        "company": "KANGLE",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ANIVET",
+        "sector": "materials"
+    },
+    {
+        "company": "FLYBOYZ",
+        "sector": "industrial"
+    },
+    {
+        "company": "ACRUEX",
+        "sector": "financial"
+    },
+    {
+        "company": "EMOLTRA",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "SLAMBDA",
+        "sector": "real estate"
+    },
+    {
+        "company": "CONJURICA",
+        "sector": "utilities"
+    },
+    {
+        "company": "ESSENSIA",
+        "sector": "utilities"
+    },
+    {
+        "company": "ZENCO"
+    },
+    {
+        "company": "COMTREK",
+        "sector": "financial"
+    },
+    {
+        "company": "ZIALACTIC",
+        "sector": "financial"
+    },
+    {
+        "company": "VIDTO",
+        "sector": "industrial"
+    },
+    {
+        "company": "EPLODE",
+        "sector": "utilities"
+    },
+    {
+        "company": "MOBILDATA",
+        "sector": "materials"
+    },
+    {
+        "company": "AQUAFIRE",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ZOLARITY",
+        "sector": "financial"
+    },
+    {
+        "company": "EGYPTO",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "BULLZONE",
+        "sector": "financial"
+    },
+    {
+        "company": "ORBAXTER",
+        "sector": "real estate"
+    },
+    {
+        "company": "EARGO",
+        "sector": "industrial"
+    },
+    {
+        "company": "COMVOY",
+        "sector": "real estate"
+    },
+    {
+        "company": "HYDROCOM",
+        "sector": "real estate"
+    },
+    {
+        "company": "IMKAN",
+        "sector": "telecom"
+    },
+    {
+        "company": "PORTICA",
+        "sector": "materials"
+    },
+    {
+        "company": "RONELON",
+        "sector": "utilities"
+    },
+    {
+        "company": "TRASOLA",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "TUBESYS",
+        "sector": "real estate"
+    },
+    {
+        "company": "INSURITY",
+        "sector": "energy"
+    },
+    {
+        "company": "PARLEYNET",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "COMDOM",
+        "sector": "materials"
+    },
+    {
+        "company": "SOPRANO",
+        "sector": "materials"
+    },
+    {
+        "company": "INQUALA",
+        "sector": "utilities"
+    },
+    {
+        "company": "TELLIFLY",
+        "sector": "technology"
+    },
+    {
+        "company": "COASH"
+    },
+    {
+        "company": "ICOLOGY",
+        "sector": "utilities"
+    },
+    {
+        "company": "ISOLOGIA",
+        "sector": "real estate"
+    },
+    {
+        "company": "LYRIA",
+        "sector": "technology"
+    },
+    {
+        "company": "INSECTUS",
+        "sector": "technology"
+    },
+    {
+        "company": "ROTODYNE",
+        "sector": "telecom"
+    },
+    {
+        "company": "XANIDE",
+        "sector": "financial"
+    },
+    {
+        "company": "LUDAK",
+        "sector": "materials"
+    },
+    {
+        "company": "ZINCA",
+        "sector": "materials"
+    },
+    {
+        "company": "COMVEYOR",
+        "sector": "healthcare"
+    },
+    {
+        "company": "HAIRPORT",
+        "sector": "materials"
+    },
+    {
+        "company": "GEEKMOSIS",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "BITENDREX",
+        "sector": "energy"
+    },
+    {
+        "company": "ECLIPSENT",
+        "sector": "financial"
+    },
+    {
+        "company": "ZOINAGE",
+        "sector": "telecom"
+    },
+    {
+        "company": "FLUMBO"
+    },
+    {
+        "company": "XSPORTS",
+        "sector": "technology"
+    },
+    {
+        "company": "ENERSOL",
+        "sector": "energy"
+    },
+    {
+        "company": "TOYLETRY",
+        "sector": "real estate"
+    },
+    {
+        "company": "GRACKER",
+        "sector": "industrial"
+    },
+    {
+        "company": "DATAGENE",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "PHOTOBIN",
+        "sector": "energy"
+    },
+    {
+        "company": "RONBERT",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "LUNCHPAD",
+        "sector": "financial"
+    },
+    {
+        "company": "INSURESYS",
+        "sector": "utilities"
+    },
+    {
+        "company": "OCEANICA",
+        "sector": "real estate"
+    },
+    {
+        "company": "OPTICON",
+        "sector": "energy"
+    },
+    {
+        "company": "PLAYCE",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "TROPOLIS"
+    },
+    {
+        "company": "TURNABOUT",
+        "sector": "healthcare"
+    },
+    {
+        "company": "INSURETY",
+        "sector": "healthcare"
+    },
+    {
+        "company": "DIGIGEN",
+        "sector": "real estate"
+    },
+    {
+        "company": "NIPAZ"
+    },
+    {
+        "company": "FITCORE"
+    },
+    {
+        "company": "VIRXO",
+        "sector": "industrial"
+    },
+    {
+        "company": "STROZEN",
+        "sector": "technology"
+    },
+    {
+        "company": "NURALI",
+        "sector": "financial"
+    },
+    {
+        "company": "XYQAG"
+    },
+    {
+        "company": "RODEOLOGY",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "NETUR",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ONTAGENE",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "CRUSTATIA",
+        "sector": "healthcare"
+    },
+    {
+        "company": "NUTRALAB",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "SONGBIRD",
+        "sector": "healthcare"
+    },
+    {
+        "company": "INCUBUS",
+        "sector": "utilities"
+    },
+    {
+        "company": "PASTURIA",
+        "sector": "healthcare"
+    },
+    {
+        "company": "ISOSURE",
+        "sector": "utilities"
+    },
+    {
+        "company": "QUILTIGEN",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "APPLIDECK",
+        "sector": "energy"
+    },
+    {
+        "company": "CHORIZON",
+        "sector": "healthcare"
+    },
+    {
+        "company": "SUREMAX",
+        "sector": "telecom"
+    },
+    {
+        "company": "ISOLOGIX",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "MAXIMIND",
+        "sector": "real estate"
+    },
+    {
+        "company": "SURETECH",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "SENSATE",
+        "sector": "real estate"
+    },
+    {
+        "company": "OPTYK",
+        "sector": "telecom"
+    },
+    {
+        "company": "LETPRO",
+        "sector": "materials"
+    },
+    {
+        "company": "EXTRAGENE",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ORBIXTAR",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "GAPTEC"
+    },
+    {
+        "company": "KIDGREASE"
+    },
+    {
+        "company": "KIGGLE",
+        "sector": "utilities"
+    },
+    {
+        "company": "ISOTRACK",
+        "sector": "energy"
+    },
+    {
+        "company": "CONFERIA",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "GEEKOLA",
+        "sector": "healthcare"
+    },
+    {
+        "company": "IDEALIS",
+        "sector": "industrial"
+    },
+    {
+        "company": "EBIDCO",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ANDRYX",
+        "sector": "industrial"
+    },
+    {
+        "company": "ENDIPIN",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ZEROLOGY",
+        "sector": "technology"
+    },
+    {
+        "company": "ZOSIS",
+        "sector": "industrial"
+    },
+    {
+        "company": "CEDWARD",
+        "sector": "financial"
+    },
+    {
+        "company": "DIGIRANG",
+        "sector": "financial"
+    },
+    {
+        "company": "EDECINE",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "PULZE",
+        "sector": "real estate"
+    },
+    {
+        "company": "SURELOGIC",
+        "sector": "real estate"
+    },
+    {
+        "company": "COMVEY",
+        "sector": "telecom"
+    },
+    {
+        "company": "XLEEN",
+        "sector": "financial"
+    },
+    {
+        "company": "CEPRENE"
+    },
+    {
+        "company": "ZOLAR",
+        "sector": "materials"
+    },
+    {
+        "company": "NAVIR",
+        "sector": "financial"
+    },
+    {
+        "company": "RAMEON",
+        "sector": "financial"
+    },
+    {
+        "company": "PHUEL",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "PROVIDCO",
+        "sector": "healthcare"
+    },
+    {
+        "company": "QUONATA",
+        "sector": "financial"
+    },
+    {
+        "company": "GREEKER",
+        "sector": "utilities"
+    },
+    {
+        "company": "JOVIOLD",
+        "sector": "industrial"
+    },
+    {
+        "company": "WEBIOTIC",
+        "sector": "telecom"
+    },
+    {
+        "company": "MATRIXITY",
+        "sector": "materials"
+    },
+    {
+        "company": "GEOFORM",
+        "sector": "utilities"
+    },
+    {
+        "company": "OPTICOM",
+        "sector": "technology"
+    },
+    {
+        "company": "AMRIL",
+        "sector": "telecom"
+    },
+    {
+        "company": "TROPOLI",
+        "sector": "financial"
+    },
+    {
+        "company": "MEDIOT",
+        "sector": "healthcare"
+    },
+    {
+        "company": "EXTRAGEN",
+        "sector": "real estate"
+    },
+    {
+        "company": "APEX",
+        "sector": "energy"
+    },
+    {
+        "company": "IDETICA",
+        "sector": "utilities"
+    },
+    {
+        "company": "BEDLAM"
+    },
+    {
+        "company": "CORMORAN"
+    },
+    {
+        "company": "ARTIQ",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "COMTEXT",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ZIGGLES"
+    },
+    {
+        "company": "INDEXIA",
+        "sector": "materials"
+    },
+    {
+        "company": "NIMON",
+        "sector": "financial"
+    },
+    {
+        "company": "ECRATER",
+        "sector": "materials"
+    },
+    {
+        "company": "TETRATREX",
+        "sector": "energy"
+    },
+    {
+        "company": "SPLINX",
+        "sector": "materials"
+    },
+    {
+        "company": "CHILLIUM",
+        "sector": "industrial"
+    },
+    {
+        "company": "SENMAO",
+        "sector": "energy"
+    },
+    {
+        "company": "SCENTRIC",
+        "sector": "real estate"
+    },
+    {
+        "company": "DREAMIA",
+        "sector": "industrial"
+    },
+    {
+        "company": "ACIUM",
+        "sector": "utilities"
+    },
+    {
+        "company": "CIPROMOX",
+        "sector": "real estate"
+    },
+    {
+        "company": "FURNITECH"
+    },
+    {
+        "company": "MANGLO",
+        "sector": "financial"
+    },
+    {
+        "company": "LUXURIA",
+        "sector": "utilities"
+    },
+    {
+        "company": "OHMNET",
+        "sector": "utilities"
+    },
+    {
+        "company": "SOLAREN",
+        "sector": "industrial"
+    },
+    {
+        "company": "OZEAN",
+        "sector": "industrial"
+    },
+    {
+        "company": "OLYMPIX",
+        "sector": "energy"
+    },
+    {
+        "company": "IMANT",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ZYPLE",
+        "sector": "energy"
+    },
+    {
+        "company": "ZILCH",
+        "sector": "utilities"
+    },
+    {
+        "company": "SCENTY",
+        "sector": "financial"
+    },
+    {
+        "company": "AUSTECH",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ZENSURE",
+        "sector": "real estate"
+    },
+    {
+        "company": "EXOSIS",
+        "sector": "energy"
+    },
+    {
+        "company": "SYNKGEN"
+    },
+    {
+        "company": "VIRVA",
+        "sector": "telecom"
+    },
+    {
+        "company": "UNI",
+        "sector": "real estate"
+    },
+    {
+        "company": "QOT",
+        "sector": "healthcare"
+    },
+    {
+        "company": "KENEGY",
+        "sector": "real estate"
+    },
+    {
+        "company": "SATIANCE",
+        "sector": "technology"
+    },
+    {
+        "company": "MAGNEATO",
+        "sector": "utilities"
+    },
+    {
+        "company": "QUIZMO",
+        "sector": "telecom"
+    },
+    {
+        "company": "SENTIA",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ISODRIVE",
+        "sector": "financial"
+    },
+    {
+        "company": "QUAILCOM",
+        "sector": "materials"
+    },
+    {
+        "company": "NEXGENE",
+        "sector": "materials"
+    },
+    {
+        "company": "EMPIRICA",
+        "sector": "real estate"
+    },
+    {
+        "company": "TINGLES",
+        "sector": "real estate"
+    },
+    {
+        "company": "BUZZMAKER",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "INVENTURE",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "DARWINIUM",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "VORTEXACO",
+        "sector": "real estate"
+    },
+    {
+        "company": "KONGLE",
+        "sector": "energy"
+    },
+    {
+        "company": "DELPHIDE",
+        "sector": "technology"
+    },
+    {
+        "company": "CENTREXIN",
+        "sector": "telecom"
+    },
+    {
+        "company": "SONIQUE",
+        "sector": "materials"
+    },
+    {
+        "company": "ZILLATIDE",
+        "sector": "financial"
+    },
+    {
+        "company": "ATGEN",
+        "sector": "materials"
+    },
+    {
+        "company": "PLUTORQUE",
+        "sector": "financial"
+    },
+    {
+        "company": "MICRONAUT",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "MANTRO",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "RAMJOB",
+        "sector": "energy"
+    },
+    {
+        "company": "GEEKUS"
+    },
+    {
+        "company": "POLARIUM",
+        "sector": "financial"
+    },
+    {
+        "company": "HONOTRON",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "GAZAK",
+        "sector": "materials"
+    },
+    {
+        "company": "PLASMOX",
+        "sector": "energy"
+    },
+    {
+        "company": "LOTRON"
+    },
+    {
+        "company": "BITTOR",
+        "sector": "energy"
+    },
+    {
+        "company": "GEEKNET",
+        "sector": "utilities"
+    },
+    {
+        "company": "AQUASURE",
+        "sector": "industrial"
+    },
+    {
+        "company": "FREAKIN",
+        "sector": "energy"
+    },
+    {
+        "company": "ACCUFARM",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "DIGINETIC",
+        "sector": "telecom"
+    },
+    {
+        "company": "ECRAZE",
+        "sector": "energy"
+    },
+    {
+        "company": "SLUMBERIA",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "KOG",
+        "sector": "energy"
+    },
+    {
+        "company": "FISHLAND",
+        "sector": "financial"
+    },
+    {
+        "company": "DEEPENDS",
+        "sector": "utilities"
+    },
+    {
+        "company": "CONFRENZY",
+        "sector": "energy"
+    },
+    {
+        "company": "EVENTIX",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "LIQUIDOC",
+        "sector": "real estate"
+    },
+    {
+        "company": "XUMONK",
+        "sector": "real estate"
+    },
+    {
+        "company": "VISALIA",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "SONGLINES",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "VICON",
+        "sector": "utilities"
+    },
+    {
+        "company": "ENJOLA",
+        "sector": "energy"
+    },
+    {
+        "company": "GEOFORMA",
+        "sector": "industrial"
+    },
+    {
+        "company": "PIGZART",
+        "sector": "healthcare"
+    },
+    {
+        "company": "RENOVIZE",
+        "sector": "real estate"
+    },
+    {
+        "company": "POLARIA",
+        "sector": "industrial"
+    },
+    {
+        "company": "CENTURIA",
+        "sector": "materials"
+    },
+    {
+        "company": "SULTRAXIN",
+        "sector": "materials"
+    },
+    {
+        "company": "FOSSIEL",
+        "sector": "financial"
+    },
+    {
+        "company": "VOIPA",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "TRIPSCH",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "BIOSPAN",
+        "sector": "industrial"
+    },
+    {
+        "company": "NETBOOK",
+        "sector": "energy"
+    },
+    {
+        "company": "EARTHMARK"
+    },
+    {
+        "company": "ZANILLA",
+        "sector": "materials"
+    },
+    {
+        "company": "GOLOGY",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ISOLOGICS",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "VIOCULAR",
+        "sector": "technology"
+    },
+    {
+        "company": "MAZUDA",
+        "sector": "technology"
+    },
+    {
+        "company": "TERSANKI",
+        "sector": "financial"
+    },
+    {
+        "company": "VALREDA",
+        "sector": "technology"
+    },
+    {
+        "company": "EMTRAC",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "SIGNITY",
+        "sector": "telecom"
+    },
+    {
+        "company": "FURNAFIX"
+    },
+    {
+        "company": "BOLAX",
+        "sector": "real estate"
+    },
+    {
+        "company": "SUSTENZA",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "PLASMOS",
+        "sector": "materials"
+    },
+    {
+        "company": "FLUM",
+        "sector": "utilities"
+    },
+    {
+        "company": "MENBRAIN",
+        "sector": "utilities"
+    },
+    {
+        "company": "EXOTERIC",
+        "sector": "real estate"
+    },
+    {
+        "company": "TROLLERY",
+        "sector": "industrial"
+    },
+    {
+        "company": "PYRAMI",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "OPPORTECH",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "GENMEX"
+    },
+    {
+        "company": "COMSTAR"
+    },
+    {
+        "company": "MARVANE",
+        "sector": "telecom"
+    },
+    {
+        "company": "ISOPOP",
+        "sector": "healthcare"
+    },
+    {
+        "company": "ZILODYNE",
+        "sector": "utilities"
+    },
+    {
+        "company": "TASMANIA",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "SYBIXTEX",
+        "sector": "healthcare"
+    },
+    {
+        "company": "VERTON",
+        "sector": "financial"
+    },
+    {
+        "company": "CABLAM",
+        "sector": "telecom"
+    },
+    {
+        "company": "ROBOID",
+        "sector": "energy"
+    },
+    {
+        "company": "SPRINGBEE",
+        "sector": "industrial"
+    },
+    {
+        "company": "INTERGEEK",
+        "sector": "financial"
+    },
+    {
+        "company": "EXOBLUE",
+        "sector": "utilities"
+    },
+    {
+        "company": "HATOLOGY",
+        "sector": "financial"
+    },
+    {
+        "company": "KRAG",
+        "sector": "healthcare"
+    },
+    {
+        "company": "UNIWORLD",
+        "sector": "healthcare"
+    },
+    {
+        "company": "ISOSPHERE",
+        "sector": "healthcare"
+    },
+    {
+        "company": "TURNLING"
+    },
+    {
+        "company": "ROCKLOGIC",
+        "sector": "technology"
+    },
+    {
+        "company": "ELEMANTRA",
+        "sector": "industrial"
+    },
+    {
+        "company": "NIXELT",
+        "sector": "industrial"
+    },
+    {
+        "company": "BLANET",
+        "sector": "telecom"
+    },
+    {
+        "company": "MUSAPHICS",
+        "sector": "financial"
+    },
+    {
+        "company": "KEGULAR",
+        "sector": "healthcare"
+    },
+    {
+        "company": "INTERLOO",
+        "sector": "utilities"
+    },
+    {
+        "company": "UXMOX",
+        "sector": "financial"
+    },
+    {
+        "company": "JASPER",
+        "sector": "technology"
+    },
+    {
+        "company": "GLASSTEP",
+        "sector": "industrial"
+    },
+    {
+        "company": "PYRAMIA",
+        "sector": "technology"
+    },
+    {
+        "company": "FILODYNE",
+        "sector": "healthcare"
+    },
+    {
+        "company": "GLUID",
+        "sector": "telecom"
+    },
+    {
+        "company": "IZZBY",
+        "sector": "energy"
+    },
+    {
+        "company": "DIGIFAD",
+        "sector": "telecom"
+    },
+    {
+        "company": "RODEOCEAN",
+        "sector": "financial"
+    },
+    {
+        "company": "VANTAGE",
+        "sector": "real estate"
+    },
+    {
+        "company": "BISBA",
+        "sector": "real estate"
+    },
+    {
+        "company": "OTHERSIDE"
+    },
+    {
+        "company": "PRINTSPAN",
+        "sector": "technology"
+    },
+    {
+        "company": "ENORMO",
+        "sector": "real estate"
+    },
+    {
+        "company": "ISOPLEX",
+        "sector": "industrial"
+    },
+    {
+        "company": "BLURRYBUS",
+        "sector": "materials"
+    },
+    {
+        "company": "APEXTRI",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ENTHAZE",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "BYTREX",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "CALCULA",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "BILLMED",
+        "sector": "financial"
+    },
+    {
+        "company": "COFINE",
+        "sector": "utilities"
+    },
+    {
+        "company": "GADTRON",
+        "sector": "utilities"
+    },
+    {
+        "company": "RODEOMAD",
+        "sector": "technology"
+    },
+    {
+        "company": "ZOUNDS"
+    },
+    {
+        "company": "UPLINX",
+        "sector": "financial"
+    },
+    {
+        "company": "PARCOE",
+        "sector": "utilities"
+    },
+    {
+        "company": "SPORTAN",
+        "sector": "energy"
+    },
+    {
+        "company": "FLEETMIX",
+        "sector": "materials"
+    },
+    {
+        "company": "MEDMEX",
+        "sector": "healthcare"
+    },
+    {
+        "company": "ZANYMAX",
+        "sector": "technology"
+    },
+    {
+        "company": "QUILCH",
+        "sector": "healthcare"
+    },
+    {
+        "company": "KONGENE",
+        "sector": "energy"
+    },
+    {
+        "company": "YOGASM",
+        "sector": "real estate"
+    },
+    {
+        "company": "VIASIA",
+        "sector": "healthcare"
+    },
+    {
+        "company": "REVERSUS"
+    },
+    {
+        "company": "INTRADISK",
+        "sector": "financial"
+    },
+    {
+        "company": "LIQUICOM",
+        "sector": "healthcare"
+    },
+    {
+        "company": "HOMELUX",
+        "sector": "industrial"
+    },
+    {
+        "company": "EXODOC",
+        "sector": "materials"
+    },
+    {
+        "company": "COMBOGEN",
+        "sector": "materials"
+    },
+    {
+        "company": "ZILLIDIUM",
+        "sector": "industrial"
+    },
+    {
+        "company": "NETPLODE",
+        "sector": "real estate"
+    },
+    {
+        "company": "DYMI",
+        "sector": "healthcare"
+    },
+    {
+        "company": "QIAO",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "GLUKGLUK",
+        "sector": "materials"
+    },
+    {
+        "company": "NETROPIC",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "GYNK",
+        "sector": "technology"
+    },
+    {
+        "company": "ZYTRAX",
+        "sector": "utilities"
+    },
+    {
+        "company": "NAMEGEN",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ZAYA",
+        "sector": "energy"
+    },
+    {
+        "company": "BIOHAB",
+        "sector": "healthcare"
+    },
+    {
+        "company": "CUBIX",
+        "sector": "utilities"
+    },
+    {
+        "company": "ADORNICA",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "OMATOM"
+    },
+    {
+        "company": "TUBALUM"
+    },
+    {
+        "company": "BEADZZA",
+        "sector": "industrial"
+    },
+    {
+        "company": "EURON",
+        "sector": "utilities"
+    },
+    {
+        "company": "ASIMILINE",
+        "sector": "healthcare"
+    },
+    {
+        "company": "DRAGBOT",
+        "sector": "materials"
+    },
+    {
+        "company": "OLUCORE",
+        "sector": "technology"
+    },
+    {
+        "company": "EARBANG",
+        "sector": "financial"
+    },
+    {
+        "company": "PORTALINE",
+        "sector": "industrial"
+    },
+    {
+        "company": "ZOGAK",
+        "sector": "materials"
+    },
+    {
+        "company": "PYRAMAX",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ZIDOX",
+        "sector": "healthcare"
+    },
+    {
+        "company": "BOSTONIC",
+        "sector": "industrial"
+    },
+    {
+        "company": "AQUASSEUR",
+        "sector": "telecom"
+    },
+    {
+        "company": "MANUFACT",
+        "sector": "real estate"
+    },
+    {
+        "company": "ANIMALIA",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "TYPHONICA",
+        "sector": "energy"
+    },
+    {
+        "company": "GEEKFARM",
+        "sector": "industrial"
+    },
+    {
+        "company": "TRIBALOG",
+        "sector": "materials"
+    },
+    {
+        "company": "COGNICODE",
+        "sector": "technology"
+    },
+    {
+        "company": "PERMADYNE",
+        "sector": "utilities"
+    },
+    {
+        "company": "VITRICOMP",
+        "sector": "materials"
+    },
+    {
+        "company": "ENTROPIX",
+        "sector": "technology"
+    },
+    {
+        "company": "ACRODANCE",
+        "sector": "energy"
+    },
+    {
+        "company": "CALCU",
+        "sector": "energy"
+    },
+    {
+        "company": "NAXDIS",
+        "sector": "materials"
+    },
+    {
+        "company": "COMVEX",
+        "sector": "technology"
+    },
+    {
+        "company": "ZENTIX",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "JUNIPOOR",
+        "sector": "materials"
+    },
+    {
+        "company": "FIREWAX",
+        "sector": "financial"
+    },
+    {
+        "company": "ZORK",
+        "sector": "energy"
+    },
+    {
+        "company": "UNQ",
+        "sector": "industrial"
+    },
+    {
+        "company": "NORALI",
+        "sector": "healthcare"
+    },
+    {
+        "company": "ECSTASIA",
+        "sector": "financial"
+    },
+    {
+        "company": "EARTHWAX",
+        "sector": "financial"
+    },
+    {
+        "company": "FLEXIGEN"
+    },
+    {
+        "company": "DIGIPRINT",
+        "sector": "energy"
+    },
+    {
+        "company": "XTH",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "OVIUM",
+        "sector": "financial"
+    },
+    {
+        "company": "ZAPHIRE",
+        "sector": "healthcare"
+    },
+    {
+        "company": "SYNTAC",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "AVIT",
+        "sector": "real estate"
+    },
+    {
+        "company": "ESCENTA",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "NETAGY",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "COMTRACT",
+        "sector": "telecom"
+    },
+    {
+        "company": "DADABASE"
+    },
+    {
+        "company": "ROCKYARD",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "JUMPSTACK",
+        "sector": "materials"
+    },
+    {
+        "company": "EXOSWITCH"
+    },
+    {
+        "company": "PETIGEMS",
+        "sector": "energy"
+    },
+    {
+        "company": "ECOSYS",
+        "sector": "real estate"
+    },
+    {
+        "company": "ZENTURY",
+        "sector": "materials"
+    },
+    {
+        "company": "LIMAGE",
+        "sector": "materials"
+    },
+    {
+        "company": "TELEQUIET",
+        "sector": "real estate"
+    },
+    {
+        "company": "MITROC",
+        "sector": "healthcare"
+    },
+    {
+        "company": "BEZAL",
+        "sector": "healthcare"
+    },
+    {
+        "company": "FUTURITY",
+        "sector": "technology"
+    },
+    {
+        "company": "YURTURE",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ZENTILITY",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "FIBEROX",
+        "sector": "materials"
+    },
+    {
+        "company": "EYEWAX",
+        "sector": "financial"
+    },
+    {
+        "company": "BUZZWORKS",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "ENTALITY",
+        "sector": "financial"
+    },
+    {
+        "company": "PROFLEX",
+        "sector": "industrial"
+    },
+    {
+        "company": "AQUACINE",
+        "sector": "utilities"
+    },
+    {
+        "company": "WATERBABY",
+        "sector": "financial"
+    },
+    {
+        "company": "QUOTEZART",
+        "sector": "technology"
+    },
+    {
+        "company": "PHORMULA",
+        "sector": "materials"
+    },
+    {
+        "company": "NORSUP",
+        "sector": "technology"
+    },
+    {
+        "company": "ACCUPHARM",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "NETILITY",
+        "sector": "utilities"
+    },
+    {
+        "company": "TECHADE"
+    },
+    {
+        "company": "COWTOWN",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "MARKETOID",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "COMSTRUCT",
+        "sector": "materials"
+    },
+    {
+        "company": "QABOOS",
+        "sector": "industrial"
+    },
+    {
+        "company": "ISOSWITCH",
+        "sector": "real estate"
+    },
+    {
+        "company": "IMAGINART",
+        "sector": "industrial"
+    },
+    {
+        "company": "ACCEL",
+        "sector": "technology"
+    },
+    {
+        "company": "SHEPARD",
+        "sector": "healthcare"
+    },
+    {
+        "company": "VOLAX",
+        "sector": "utilities"
+    },
+    {
+        "company": "BOINK",
+        "sector": "telecom"
+    },
+    {
+        "company": "KYAGORO"
+    },
+    {
+        "company": "RUBADUB",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "EYERIS",
+        "sector": "real estate"
+    },
+    {
+        "company": "EXOSPEED",
+        "sector": "energy"
+    },
+    {
+        "company": "KOOGLE",
+        "sector": "energy"
+    },
+    {
+        "company": "ZILLAR",
+        "sector": "healthcare"
+    },
+    {
+        "company": "KIDSTOCK",
+        "sector": "financial"
+    },
+    {
+        "company": "URBANSHEE",
+        "sector": "healthcare"
+    },
+    {
+        "company": "PUSHCART",
+        "sector": "financial"
+    },
+    {
+        "company": "EARTHPLEX",
+        "sector": "technology"
+    },
+    {
+        "company": "SPHERIX",
+        "sector": "technology"
+    },
+    {
+        "company": "MEDIFAX"
+    },
+    {
+        "company": "ENTROFLEX",
+        "sector": "telecom"
+    },
+    {
+        "company": "VIAGRAND",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "FUELWORKS",
+        "sector": "telecom"
+    },
+    {
+        "company": "EARTHPURE",
+        "sector": "healthcare"
+    },
+    {
+        "company": "SOLGAN",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "QIMONK",
+        "sector": "telecom"
+    },
+    {
+        "company": "LOCAZONE"
+    },
+    {
+        "company": "DOGTOWN",
+        "sector": "telecom"
+    },
+    {
+        "company": "COMTOURS",
+        "sector": "real estate"
+    },
+    {
+        "company": "CINESANCT",
+        "sector": "energy"
+    },
+    {
+        "company": "GONKLE",
+        "sector": "financial"
+    },
+    {
+        "company": "ISONUS",
+        "sector": "real estate"
+    },
+    {
+        "company": "DEVILTOE"
+    },
+    {
+        "company": "EXTRO",
+        "sector": "real estate"
+    },
+    {
+        "company": "IMAGEFLOW",
+        "sector": "financial"
+    },
+    {
+        "company": "MAGNINA"
+    },
+    {
+        "company": "SULFAX",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "BOILICON",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "MAGMINA",
+        "sector": "energy"
+    },
+    {
+        "company": "KATAKANA",
+        "sector": "financial"
+    },
+    {
+        "company": "MEGALL",
+        "sector": "telecom"
+    },
+    {
+        "company": "ZILLA"
+    },
+    {
+        "company": "NETPLAX",
+        "sector": "energy"
+    },
+    {
+        "company": "IDEGO",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "ZENTRY",
+        "sector": "utilities"
+    },
+    {
+        "company": "UNIA",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "VELOS",
+        "sector": "financial"
+    },
+    {
+        "company": "ZOXY",
+        "sector": "telecom"
+    },
+    {
+        "company": "GLEAMINK",
+        "sector": "industrial"
+    },
+    {
+        "company": "ENVIRE",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "APEXIA",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "MYOPIUM",
+        "sector": "financial"
+    },
+    {
+        "company": "ACLIMA",
+        "sector": "technology"
+    },
+    {
+        "company": "OCTOCORE",
+        "sector": "technology"
+    },
+    {
+        "company": "PHARMEX",
+        "sector": "materials"
+    },
+    {
+        "company": "EWAVES"
+    },
+    {
+        "company": "BLUEGRAIN",
+        "sector": "utilities"
+    },
+    {
+        "company": "STRALOY",
+        "sector": "telecom"
+    },
+    {
+        "company": "IMPERIUM",
+        "sector": "materials"
+    },
+    {
+        "company": "INJOY",
+        "sector": "technology"
+    },
+    {
+        "company": "ORBOID",
+        "sector": "healthcare"
+    },
+    {
+        "company": "HAWKSTER",
+        "sector": "technology"
+    },
+    {
+        "company": "NEPTIDE",
+        "sector": "financial"
+    },
+    {
+        "company": "FROSNEX",
+        "sector": "real estate"
+    },
+    {
+        "company": "KROG",
+        "sector": "utilities"
+    },
+    {
+        "company": "PAPRICUT",
+        "sector": "telecom"
+    },
+    {
+        "company": "RETROTEX",
+        "sector": "consumer staples"
+    },
+    {
+        "company": "GEEKWAGON",
+        "sector": "energy"
+    },
+    {
+        "company": "ARTWORLDS",
+        "sector": "materials"
+    },
+    {
+        "company": "COMVEYER",
+        "sector": "energy"
+    },
+    {
+        "company": "ISOLOGICA",
+        "sector": "real estate"
+    },
+    {
+        "company": "ZENTHALL",
+        "sector": "technology"
+    },
+    {
+        "company": "SPEEDBOLT",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "PANZENT",
+        "sector": "healthcare"
+    },
+    {
+        "company": "LUMBREX",
+        "sector": "consumer discretionary"
+    },
+    {
+        "company": "VORATAK",
+        "sector": "healthcare"
+    }
+]
