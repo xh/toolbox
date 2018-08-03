@@ -9,7 +9,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {box, hbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {resizable} from '@xh/hoist/desktop/cmp/resizable';
-import {wrapper} from '../impl/Wrapper';
+import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent()
 export class ResizableContainerPanel extends Component {
@@ -22,7 +22,7 @@ export class ResizableContainerPanel extends Component {
             item: panel({
                 title: 'Containers > Resizable',
                 height: 400,
-                width: 600,
+                width: 700,
                 items: [
                     hbox({
                         flex: 1,

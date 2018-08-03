@@ -1,4 +1,4 @@
-@import '../../helpers';
+@import '../helpers';
 
 .toolbox-wrapper {
   display: flex;
@@ -19,5 +19,20 @@
     padding: var(--xh-title-pad-px);
     border-radius: var(--xh-border-radius-px);
     flex: none;
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    code {
+      font-family: var(--xh-font-family-mono);
+      font-size: 0.9em;
+      background-color: #d1e5f2;
+      padding: 2px;
+
+      .xh-dark & {
+        background-color: #212121;
+      }
+    }
   }
 }

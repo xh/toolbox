@@ -26,7 +26,7 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import {fmtDate} from '@xh/hoist/format';
 
 import {FormFieldsPanelModel} from './FormFieldsPanelModel';
-import {wrapper} from '../impl/Wrapper';
+import {wrapper} from '../../common/Wrapper';
 import './FormFieldsPanel.scss';
 
 @HoistComponent()

@@ -4,26 +4,26 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {box, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../impl/Wrapper';
+import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent()
 export class VBoxContainerPanel extends Component {
     render() {
         return wrapper({
-            description: `
-                A vbox lays out its children vertically, rendering a box with flexDirection 
-                set to column.
-            `,
+            description: <p>
+                A VBox lays out its children vertically, rendering a Box
+                with <code>flexDirection:column</code>.
+            </p>,
             item: panel({
                 title: 'Containers > VBox',
                 icon: Icon.box(),
                 height: 400,
-                width: 600,
+                width: 700,
                 item: vbox({
                     itemSpec: {
                         factory: box,

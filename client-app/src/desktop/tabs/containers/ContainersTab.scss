@@ -3,6 +3,12 @@
   font-family: var(--xh-font-family-mono);
 }
 
-.toolbox-containers-tabs .xh-tab-panel {
-  padding: var(--xh-pad-px);
+.toolbox-containers-tabs {
+  .xh-tab-panel {
+    padding: var(--xh-pad-px);
+  }
+
+  .child-tabcontainer {
+    border: var(--xh-border-solid);
+  }
 }

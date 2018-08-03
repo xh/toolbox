@@ -4,26 +4,26 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {box, hbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../impl/Wrapper';
+import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent()
 export class HBoxContainerPanel extends Component {
     render() {
         return wrapper({
-            description: `
-                An hbox lays out its children horizontally, rendering a box with flexDirection 
-                set to row.
-            `,
+            description: <p>
+                An HBox lays out its children horizontally, rendering a Box
+                with <code>flexDirection:row</code>.
+            </p>,
             item: panel({
                 title: 'Containers > HBox',
                 icon: Icon.box(),
                 height: 400,
-                width: 600,
+                width: 700,
                 item: hbox({
                     itemSpec: {
                         factory: box,

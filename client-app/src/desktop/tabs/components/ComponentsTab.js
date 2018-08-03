@@ -22,7 +22,7 @@ export class ComponentsTab extends Component {
         tabs: [
             {id: 'toolbar', content: ToolbarPanel},
             {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
-            {id: 'maskPanel', title: 'Mask', content: MaskPanel},
+            {id: 'showMask', title: 'Mask', content: MaskPanel},
             {id: 'loadMask', title: 'LoadMask', content: LoadMaskPanel},
             {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel}
         ]

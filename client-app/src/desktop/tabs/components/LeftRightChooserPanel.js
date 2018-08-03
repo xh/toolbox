@@ -4,9 +4,9 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {wrapper} from '../impl/Wrapper';
+import {wrapper} from '../../common/Wrapper';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@xh/hoist/desktop/cmp/leftrightchooser';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -27,16 +27,21 @@ export class LeftRightChooserPanel extends Component {
 
     render() {
         return wrapper({
-            description: `
-                LeftRightChooser splits a list of items into generic "left" and "right" sides,
-                with controls for the user to move items between the two. This can be used to e.g.
-                create a selected subset from a pool of items - see the grid column chooser for 
-                such an example. Items can provide optional descriptions and groups, and can be 
-                locked to prevent them from being moved.
-            `,
+            description: [
+                <p>
+                    LeftRightChooser splits a list of items into generic "left" and "right" sides,
+                    with controls for the user to move items between the two. This can be used to e.g.
+                    create a selected subset from a pool of items - see the grid column chooser for
+                    such an example.
+                </p>,
+                <p>
+                    Items can provide optional descriptions and groups, and can be marked
+                    with <code>locked:true</code> to prevent them from being moved from one side to another.
+                </p>
+            ],
             item: panel({
                 title: 'Components > LeftRightChooser',
-                width: 600,
+                width: 700,
                 height: 400,
                 item: leftRightChooser({
                     model: this.model,

@@ -13,7 +13,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../impl/Wrapper';
+import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent()
 export class RelativeTimestampPanel extends Component {
@@ -32,7 +32,7 @@ export class RelativeTimestampPanel extends Component {
             item: panel({
                 title: 'Components > Relative Timestamp',
                 icon: Icon.clock(),
-                width: 600,
+                width: 700,
                 items: [
                     box({
                         margin: 10,

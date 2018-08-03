@@ -5,7 +5,6 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {cloneDeep} from 'lodash';
 import {HoistComponent} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {observable, action, runInAction} from '@xh/hoist/mobx';
@@ -13,61 +12,18 @@ import {box, filler} from '@xh/hoist/cmp/layout';
 import {numberField, textField} from '@xh/hoist/desktop/cmp/form';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {grid, GridModel} from '@xh/hoist/desktop/cmp/grid';
-import {baseCol} from '@xh/hoist/columns';
-import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {button} from '@xh/hoist/desktop/cmp/button';
-
-import {wrapper} from '../impl/Wrapper';
-import {companyTrades} from '../../../data';
+import {sampleGrid, wrapper} from '../../common';
 
 @HoistComponent()
 export class MaskPanel extends Component {
 
-    @observable isMasked = false;
+    @observable maskIsShown = false;
     @observable seconds = 3;
     @observable maskText = '';
 
-    localModel = new GridModel({
-        store: new LocalStore({
-            fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
-        }),
-        emptyText: '',
-        columns: [
-            baseCol({
-                headerName: 'Company',
-                field: 'company'
-            }),
-            baseCol({
-                headerName: 'City',
-                field: 'city'
-            }),
-            baseCol({
-                headerName: 'Trade Volume',
-                field: 'trade_volume',
-                align: 'right',
-                cellRenderer: millionsRenderer({precision: 1, label: true})
-            }),
-            baseCol({
-                headerName: 'P&L',
-                field: 'profit_loss',
-                align: 'right',
-                cellRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
-            })
-        ]
-    });
-
-    constructor() {
-        super();
-
-        const trades = cloneDeep(companyTrades);
-        trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
-        this.model.loadData(trades.reverse());
-    }
-
     render() {
-        const {maskText, isMasked} = this;
+        const {maskText, maskIsShown} = this;
 
         return wrapper({
             description: `
@@ -76,12 +32,9 @@ export class MaskPanel extends Component {
             `,
             item: panel({
                 title: 'Components > Mask',
-                width: 600,
+                width: 700,
                 height: 400,
-                item: grid({
-                    model: this.model,
-                    flex: 1
-                }),
+                item: sampleGrid({omitToolbar: true}),
                 bbar: toolbar({
                     items: [
                         box('Mask for'),
@@ -103,12 +56,12 @@ export class MaskPanel extends Component {
                         button({
                             text: 'Show Mask',
                             intent: 'primary',
-                            onClick: this.maskPanel
+                            onClick: this.showMask
                         })
                     ]
                 }),
                 maskText: maskText,
-                masked: isMasked
+                masked: maskIsShown
             })
         });
     }
@@ -123,13 +76,13 @@ export class MaskPanel extends Component {
         this.maskText = maskText;
     }
 
-    maskPanel = () => {
-        runInAction(() => this.isMasked = true);
-        wait(this.seconds * 1000).then(() => this.unmaskPanel());
+    showMask = () => {
+        runInAction(() => this.maskIsShown = true);
+        wait(this.seconds * 1000).then(() => this.hideMask());
     }
 
-    unmaskPanel = () => {
-        runInAction(() => this.isMasked = false);
+    hideMask = () => {
+        runInAction(() => this.maskIsShown = false);
     }
 
 }

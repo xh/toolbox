@@ -6,7 +6,7 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
-import {wrapper} from '../impl/Wrapper';
+import {wrapper} from '../../common/Wrapper';
 import {vframe} from '@xh/hoist/cmp/layout/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel/index';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
@@ -31,7 +31,7 @@ export class DataViewPanel extends Component {
             item: panel({
                 cls: 'toolbox-dataview-panel',
                 title: 'DataView Component',
-                width: 600,
+                width: 700,
                 height: 400,
                 item: this.renderExample(),
                 bbar: toolbar(

@@ -6,80 +6,24 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {grid, GridModel} from '@xh/hoist/desktop/cmp/grid';
-import {baseCol} from '@xh/hoist/columns';
-import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
-import {cloneDeep} from 'lodash';
+import {Icon} from '@xh/hoist/icon';
 
-import {wrapper} from '../impl/Wrapper';
-import {companyTrades} from '../../../data';
+import {wrapper, sampleGrid} from '../../common';
 
 @HoistComponent()
 export class GroupedGridPanel extends Component {
 
-    gridModel = new GridModel({
-        store: new LocalStore({
-            fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
-        }),
-        groupBy: 'city',
-        columns: [
-            baseCol({
-                headerName: 'Company',
-                field: 'company'
-            }),
-            baseCol({
-                headerName: 'City',
-                field: 'city',
-                hide: true
-            }),
-            baseCol({
-                headerName: 'Trade Volume',
-                field: 'trade_volume',
-                align: 'right',
-                cellRenderer: millionsRenderer({precision: 1, label: true})
-            }),
-            baseCol({
-                headerName: 'P&L',
-                field: 'profit_loss',
-                align: 'right',
-                cellRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
-            })
-        ]
-    });
-
-    constructor() {
-        super();
-
-        const trades = cloneDeep(companyTrades);
-        trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
-        this.gridModel.loadData(trades);
-    }
-
     render() {
         return wrapper(
             panel({
-                cls: 'toolbox-groupedgrid-panel',
-                title: 'Grouped Grid (City)',
-                width: 600,
+                title: 'Grids > Grouped',
+                icon: Icon.grid(),
+                width: 700,
                 height: 400,
-                item: this.renderExample()
+                item: sampleGrid({groupBy: 'city'})
             })
         );
     }
-
-    renderExample() {
-        const model = this.gridModel;
-        return vframe({
-            cls: 'toolbox-example-container',
-            item: grid({
-                model,
-                gridOptions: {groupDefaultExpanded: 1}
-            })
-        });
-    }
-
 
 }

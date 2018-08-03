@@ -4,79 +4,41 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
-import {observable, action, runInAction} from '@xh/hoist/mobx';
-import {cloneDeep} from 'lodash';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
-import {wrapper} from '../impl/Wrapper';
+import {observable, action, runInAction} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {numberField, textField, switchField} from '@xh/hoist/desktop/cmp/form';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {grid, GridModel} from '@xh/hoist/desktop/cmp/grid';
 import {loadMask} from '@xh/hoist/desktop/cmp/mask';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {baseCol} from '@xh/hoist/columns';
-import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
-
-import {companyTrades} from '../../../data';
+import {wrapper, sampleGrid} from '../../common';
 
 @HoistComponent()
 export class LoadMaskPanel extends Component {
-    @observable showMask = false;
+    @observable maskIsShown = false;
     @observable seconds = 3;
     @observable maskText = '';
     @observable maskViewport = false;
 
-    localModel = new GridModel({
-        store: new LocalStore({
-            fields: ['id', 'company', 'city', 'trade_volume', 'profit_loss']
-        }),
-        columns: [
-            baseCol({
-                headerName: 'Company',
-                field: 'company'
-            }),
-            baseCol({
-                headerName: 'City',
-                field: 'city'
-            }),
-            baseCol({
-                headerName: 'Trade Volume',
-                field: 'trade_volume',
-                align: 'right',
-                cellRenderer: millionsRenderer({precision: 1, label: true})
-            }),
-            baseCol({
-                headerName: 'P&L',
-                field: 'profit_loss',
-                align: 'right',
-                cellRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
-            })
-        ]
-    });
-
     render() {
-        const {showMask, maskText, maskViewport} = this;
+        const {maskText, maskViewport, maskIsShown} = this;
 
         return wrapper({
-            description: `
+            description: <p>
                 LoadMask adds a spinner to the default mask component. It can also display optional
-                text, and can be placed over the entire viewport with inline:false.
-            `,
+                text, and can be placed over the entire viewport with <code>inline:false</code>.
+            </p>,
             item: panel({
                 title: 'Components > LoadMask',
-                width: 600,
+                width: 700,
                 height: 400,
                 items: [
-                    grid({
-                        model: this.model,
-                        flex: 1
-                    }),
+                    sampleGrid({omitToolbar: true}),
                     loadMask({
-                        isDisplayed: showMask,
+                        isDisplayed: maskIsShown,
                         text: maskText,
                         inline: !maskViewport
                     })
@@ -108,10 +70,10 @@ export class LoadMaskPanel extends Component {
                         }),
                         filler(),
                         button({
-                            text: 'Load w/Mask',
+                            text: 'Show Mask',
                             intent: 'primary',
-                            disabled: showMask,
-                            onClick: this.enableMask
+                            disabled: maskIsShown,
+                            onClick: this.showMask
                         })
                     ]
                 })
@@ -119,21 +81,13 @@ export class LoadMaskPanel extends Component {
         });
     }
 
-    enableMask = () => {
-        runInAction(() => this.showMask = true);
-
-        if (!this.maskViewport) {
-            this.model.loadData([]);
-        }
-
-        wait(this.seconds * 1000).then(() => this.finishLoad());
+    showMask = () => {
+        runInAction(() => this.maskIsShown = true);
+        wait(this.seconds * 1000).then(() => this.hideMask());
     }
 
-    finishLoad() {
-        const trades = cloneDeep(companyTrades);
-        trades.forEach(it => it.trade_volume = it.trade_volume * 1000000);
-        if (!this.maskViewport) this.model.loadData(trades.reverse());
-        runInAction(() => this.showMask = false);
+    hideMask = () => {
+        runInAction(() => this.maskIsShown = false);
     }
 
     @action

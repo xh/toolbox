@@ -6,11 +6,11 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
 import {restGrid, RestGridModel, RestStore} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, baseCol} from '@xh/hoist/columns';
-import {wrapper} from '../impl/Wrapper';
+import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent()
 export class RestGridPanel extends Component {
@@ -31,7 +31,7 @@ export class RestGridPanel extends Component {
                 },
                 {
                     name: 'employees',
-                    label: 'Employees (No.)',
+                    label: 'Employee Count',
                     type: 'number',
                     required: true
                 },
@@ -61,7 +61,6 @@ export class RestGridPanel extends Component {
         }),
         unit: 'company',
         filterFields: ['name', 'type', 'note'],
-
         sortBy: 'name',
         columns: [
             baseCol({field: 'name'}),
@@ -87,23 +86,17 @@ export class RestGridPanel extends Component {
     }
 
     render() {
+        const {model} = this;
+
         return wrapper(
             panel({
-                cls: 'toolbox-restgrid-panel',
-                title: 'Rest Grid',
-                width: 600,
+                title: 'Grids > REST Editor',
+                icon: Icon.edit(),
+                width: 700,
                 height: 400,
-                item: this.renderExample()
+                item: restGrid({model})
             })
         );
-    }
-
-    renderExample() {
-        const model = this.model;
-        return vframe({
-            cls: 'toolbox-example-container',
-            item: restGrid({model})
-        });
     }
 
 }

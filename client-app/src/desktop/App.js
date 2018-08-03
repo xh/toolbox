@@ -58,9 +58,9 @@ class AppClass {
             route: 'default',
             tabs: [
                 {id: 'containers', content: ContainersTab},
-                {id: 'components', content: ComponentsTab},
                 {id: 'grids', content: GridsTab},
                 {id: 'forms', content: FormsTab},
+                {id: 'components', title: 'Other Components', content: ComponentsTab},
                 {id: 'charts', content: ChartsTab},
                 {id: 'icons', content: IconsTab}
             ]
@@ -92,7 +92,7 @@ class AppClass {
                 children: [
                     {name: 'toolbar', path: '/toolbar'},
                     {name: 'leftRightChooser', path: '/leftRightChooser'},
-                    {name: 'maskPanel', path: '/mask'},
+                    {name: 'showMask', path: '/mask'},
                     {name: 'loadMask', path: '/loadMask'},
                     {name: 'timestamp', path: '/timestamp'}
                 ]

@@ -22,7 +22,7 @@ class Wrapper extends Component {
                 panel({
                     cls: 'toolbox-wrapper-description',
                     item: description,
-                    width: 600,
+                    width: 700,
                     marginBottom: 10,
                     omit: !description
                 }),

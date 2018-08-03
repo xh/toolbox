@@ -6,7 +6,7 @@
  */
 import {Component} from 'react';
 import {XH, HoistComponent} from '@xh/hoist/core';
-import {wrapper} from '../impl/Wrapper';
+import {wrapper} from '../../common/Wrapper';
 import {filler, frame, hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {comboField, switchField} from '@xh/hoist/desktop/cmp/form';
@@ -33,7 +33,7 @@ export class ToolbarPanel extends Component {
             item: panel({
                 title: 'Components > Toolbars',
                 height: 400,
-                width: 600,
+                width: 700,
                 tbar: toolbar(
                     button({
                         icon: Icon.add(),

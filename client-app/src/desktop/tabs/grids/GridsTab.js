@@ -21,7 +21,7 @@ export class GridsTab extends Component {
         tabs: [
             {id: 'standard', content: StandardGridPanel},
             {id: 'grouped', content: GroupedGridPanel},
-            {id: 'rest', content: RestGridPanel},
+            {id: 'rest', title: 'REST Editor', content: RestGridPanel},
             {id: 'dataview', title: 'DataView', content: DataViewPanel}
         ]
     });

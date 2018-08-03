@@ -9,7 +9,7 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {div, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../impl/Wrapper';
+import {wrapper} from '../../common/Wrapper';
 import {Icon} from '@xh/hoist/icon';
 
 import './IconsTab.scss';
