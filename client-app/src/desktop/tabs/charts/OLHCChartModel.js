@@ -10,9 +10,9 @@ import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
 import {observable, action} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
 import moment from 'moment';
-import Amazon from '../../../data/rest/charts/amazonPricing';
-import Facebook from '../../../data/rest/charts/facebookPricing';
-import Yahoo from '../../../data/rest/charts/yahooPricing';
+import Amazon from '../../../core/data/rest/charts/amazonPricing';
+import Facebook from '../../../core/data/rest/charts/facebookPricing';
+import Yahoo from '../../../core/data/rest/charts/yahooPricing';
 
 @HoistModel()
 export class OLHCChartModel {

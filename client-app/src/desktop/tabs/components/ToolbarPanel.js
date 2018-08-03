@@ -13,7 +13,7 @@ import {comboField, switchField} from '@xh/hoist/desktop/cmp/form';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-import {usStates} from '../../../data';
+import {usStates} from '../../../core/data';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
 @HoistComponent()

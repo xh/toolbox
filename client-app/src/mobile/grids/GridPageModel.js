@@ -12,7 +12,7 @@ import {LocalStore} from '@xh/hoist/data';
 import {baseCol} from '@xh/hoist/columns/Core';
 import {numberRenderer} from '@xh/hoist/format';
 
-import {companyTrades} from '../../data';
+import {companyTrades} from '../../core/data';
 
 @HoistModel()
 export class GridPageModel {

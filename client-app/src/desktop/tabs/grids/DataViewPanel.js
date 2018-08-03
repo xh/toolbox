@@ -4,66 +4,88 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core/index';
+import React, {Component} from 'react';
+import {HoistComponent} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
+import {filler} from '@xh/hoist/cmp/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
+import {LocalStore} from '@xh/hoist/data';
+
+import {App} from '../../App';
 import {wrapper} from '../../common/Wrapper';
-import {vframe} from '@xh/hoist/cmp/layout/index';
-import {panel} from '@xh/hoist/desktop/cmp/panel/index';
-import {button} from '@xh/hoist/desktop/cmp/button/index';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar/index';
-import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview/index';
-import {LocalStore} from '@xh/hoist/data/index';
-import {dataViewItem} from '../components/impl/DataViewItem';
+import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
 
 @HoistComponent()
 export class DataViewPanel extends Component {
+
     localModel = new DataViewModel({
-        emptyText: 'No Data Loaded',
         store: new LocalStore({
-            fields: ['id', 'name', 'value', 'status']
+            fields: ['id', 'name', 'city', 'value']
         }),
         itemFactory: dataViewItem
     });
 
     render() {
+        const {model} = this;
+
         return wrapper({
+            description: [
+                <p>
+                    The DataView component leverages an underlying Grid / GridModel instance to
+                    display individual component "cards" for each rendered item.
+                </p>
+            ],
             item: panel({
                 cls: 'toolbox-dataview-panel',
-                title: 'DataView Component',
+                title: 'Grids > DataView',
+                icon: Icon.addressCard(),
                 width: 700,
                 height: 400,
-                item: this.renderExample(),
-                bbar: toolbar(
-                    button({text: 'Load', onClick: this.loadData})
-                )
+                item: dataView({
+                    model,
+                    rowCls: 'dataview-item',
+                    itemHeight: 70
+                }),
+                bbar: toolbar({
+                    items: [
+                        storeFilterField({
+                            store: model.store,
+                            fields: ['name', 'city']
+                        }),
+                        filler(),
+                        button({
+                            text: 'Reload Data',
+                            icon: Icon.refresh(),
+                            onClick: this.loadData
+                        })
+                    ]
+                })
             })
         });
     }
 
-    renderExample() {
-        const {model} = this;
-
-        return vframe({
-            cls: 'toolbox-example-container',
-            item: dataView({
-                model,
-                rowCls: 'dataview-item',
-                itemHeight: 75
-            })
-        });
+    componentDidMount() {
+        this.loadData();
     }
 
     loadData = () => {
         const {store} = this.model,
-            companies = ['Google', 'Amazon', 'Facebook', 'Yahoo'],
-            min = 0, max = 100;
+            companies = App.tradeService.randomCompanies,
+            min = -1000,
+            max = 1000;
 
-        store.loadData(companies.map((company, idx) => ({
-            id: idx,
-            name: company,
-            value: (Math.random() * (max - min) + min).toFixed(2),
-            status: Math.round(Math.random()) ? 'success' : 'error'
-        })));
+        store.loadData(companies.map(it => {
+            const randVal = Math.random() * (max - min) + min;
+            return {
+                name: it.name,
+                city: it.city,
+                value: randVal
+            };
+        }));
     }
 }

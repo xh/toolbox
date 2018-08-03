@@ -4,12 +4,13 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {restGrid, RestGridModel, RestStore} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, baseCol} from '@xh/hoist/columns';
+import {numberRenderer} from '@xh/hoist/format';
 import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent()
@@ -31,12 +32,13 @@ export class RestGridPanel extends Component {
                 },
                 {
                     name: 'employees',
-                    label: 'Employee Count',
+                    label: 'Employees (#)',
                     type: 'number',
                     required: true
                 },
                 {
                     name: 'isActive',
+                    label: 'Active?',
                     type: 'bool',
                     defaultValue: true
                 },
@@ -63,21 +65,38 @@ export class RestGridPanel extends Component {
         filterFields: ['name', 'type', 'note'],
         sortBy: 'name',
         columns: [
-            baseCol({field: 'name'}),
-            baseCol({field: 'type'}),
-            baseCol({field: 'employees'}),
-            boolCheckCol({field: 'isActive', fixedWidth: 100})
+            baseCol({
+                field: 'name',
+                flex: 1
+            }),
+            baseCol({
+                field: 'type',
+                fixedWidth: 180
+            }),
+            baseCol({
+                field: 'employees',
+                headerName: 'Employees',
+                align: 'right',
+                fixedWidth: 120,
+                cellRenderer: numberRenderer({precision: 0})
+            }),
+            boolCheckCol({
+                field: 'isActive',
+                headerName: 'Active?',
+                fixedWidth: 100
+            })
         ],
         editors: [
             {field: 'name'},
             {field: 'type'},
             {field: 'employees'},
-            {field: 'cfg'},
             {field: 'note', type: 'textarea'},
             {field: 'isActive', type: 'boolCheck'},
+            {field: 'cfg'},
             {field: 'lastUpdated'},
             {field: 'lastUpdatedBy'}
-        ]
+        ],
+        emptyText: 'No companies found - try adding one...'
     });
 
     constructor() {
@@ -88,15 +107,27 @@ export class RestGridPanel extends Component {
     render() {
         const {model} = this;
 
-        return wrapper(
-            panel({
+        return wrapper({
+            description: [
+                <p>
+                    RestGrid and its associated components provide a quick way to implement basic CRUD
+                    functionality for domain objects managed by the Hoist Grails server.
+                </p>,
+                <p>
+                    Use the toolbar buttons or double-click a record to display its associated add/edit
+                    form, including type-specific editor fields. These grids are especially useful
+                    when building lookup tables of simple objects and are used throughout
+                    the <a href={'/admin'} target={'_blank'}>Hoist Admin Console</a>.
+                </p>
+            ],
+            item: panel({
                 title: 'Grids > REST Editor',
                 icon: Icon.edit(),
                 width: 700,
                 height: 400,
                 item: restGrid({model})
             })
-        );
+        });
     }
 
 }

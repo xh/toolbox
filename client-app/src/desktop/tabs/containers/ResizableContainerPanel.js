@@ -6,6 +6,7 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
 import {box, hbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {resizable} from '@xh/hoist/desktop/cmp/resizable';
@@ -21,6 +22,7 @@ export class ResizableContainerPanel extends Component {
             `,
             item: panel({
                 title: 'Containers > Resizable',
+                icon: Icon.arrowToRight(),
                 height: 400,
                 width: 700,
                 items: [

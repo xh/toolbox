@@ -4,10 +4,11 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {XH, HoistApp} from '@xh/hoist/core';
+import {XH, HoistApp, initServicesAsync} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
-
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
+
+import {TradeService} from '../core/svc/TradeService';
 import {AppComponent} from './AppComponent';
 
 import {ChartsTab} from './tabs/charts/ChartsTab';
@@ -22,6 +23,7 @@ class AppClass {
 
     tabModel = this.createTabModel();
     loginMessage = "User: 'toolbox@xh.io' / Password: 'toolbox'";
+    tradeService = new TradeService();
 
     get enableLogout() {return true}
     get componentClass() {return AppComponent}
@@ -36,7 +38,11 @@ class AppClass {
     }
 
     async initAsync() {
-        XH.track({msg: 'Loaded App'});
+        return initServicesAsync(
+            this.tradeService
+        ).then(() => {
+            XH.track({msg: 'Loaded App'});
+        });
     }
 
     getRoutes() {

@@ -1,8 +1,8 @@
 import {inRange} from 'lodash';
 import {HoistModel} from '@xh/hoist/core';
 import {observable, computed, action} from '@xh/hoist/mobx';
-import {usStates} from '../../../data';
-import {movies} from '../../../data';
+import {usStates} from '../../../core/data';
+import {movies} from '../../../core/data';
 
 @HoistModel()
 export class FormFieldsPanelModel {

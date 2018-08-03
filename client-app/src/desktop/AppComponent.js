@@ -37,6 +37,7 @@ export class AppComponent extends Component {
     renderNavBar() {
         return appBar({
             icon: Icon.boxFull({size: '2x'}),
+            title: 'Hoist React Toolbox',
             leftItems: [
                 tabSwitcher({model: this.model.tabModel})
             ],
