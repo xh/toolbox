@@ -93,7 +93,7 @@ class SampleGrid extends Component {
 
         return panel({
             className: this.getClassName(),
-            ...this.layoutProps(),
+            ...this.getLayoutProps(),
             item: grid({model}),
             bbar: toolbar({
                 omit: this.props.omitToolbar,
