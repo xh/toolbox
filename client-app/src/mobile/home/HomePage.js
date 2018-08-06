@@ -14,6 +14,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {App} from '../App';
 import {gridPage} from '../grids/GridPage';
+import {formPage} from '../form/FormPage';
 import {containersPage} from '../containers/ContainersPage';
 import {popupsPage} from '../popups/PopupsPage';
 import {iconPage} from '../icons/IconPage';
@@ -32,6 +33,12 @@ export class HomePage extends Component {
                     pageFactory: gridPage
                 }),
                 this.renderSummaryCard({
+                    title: 'Form',
+                    icon: Icon.edit(),
+                    summary: 'Form fields can be bound to a model.',
+                    pageFactory: formPage
+                }),
+                this.renderSummaryCard({
                     title: 'Containers',
                     icon: Icon.box(),
                     summary: 'Layout children in Tabs, or flexed horizontally or vertically.',
@@ -45,7 +52,7 @@ export class HomePage extends Component {
                 }),
                 this.renderSummaryCard({
                     title: 'Icons',
-                    icon: Icon.edit(),
+                    icon: Icon.rocket(),
                     summary: 'A collection of FontAwesome SVG icons, available in 3 variants.',
                     pageFactory: iconPage
                 })

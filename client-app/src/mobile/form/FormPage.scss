@@ -1,0 +1,42 @@
+.form-page {
+  .form-field-container {
+    margin: 0 0 var(--xh-pad-px);
+    display: flex;
+    flex-direction: column;
+
+    .xh-field-label {
+      margin-bottom: var(--xh-pad-half-px);
+    }
+
+    .xh-field {
+      margin: 0;
+      border: var(--xh-border-solid);
+      border-radius: var(--xh-border-radius-px);
+    }
+
+    textarea {
+      height: 120px;
+    }
+
+    &:last-of-type {
+      margin: 0;
+    }
+  }
+
+  .form-field-result {
+    margin-bottom: var(--xh-pad-px);
+
+    .xh-field-label {
+      margin-bottom: var(--xh-pad-half-px);
+    }
+
+    div:not(.xh-field-label) {
+      font-size: 14px;
+      min-height: 16px;
+    }
+
+    &:last-of-type {
+      margin: 0;
+    }
+  }
+}
