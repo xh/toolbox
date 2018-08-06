@@ -12,10 +12,10 @@ import {page} from '@xh/hoist/mobile/cmp/page';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
-import './HomePage.scss';
 import {App} from '../App';
 import {gridPage} from '../grids/GridPage';
 import {containersPage} from '../containers/ContainersPage';
+import {popupsPage} from '../popups/PopupsPage';
 import {iconPage} from '../icons/IconPage';
 
 @HoistComponent()
@@ -23,7 +23,7 @@ export class HomePage extends Component {
 
     render() {
         return page({
-            cls: 'home-page',
+            cls: 'toolbox-page',
             items: [
                 this.renderSummaryCard({
                     title: 'Grids',
@@ -38,6 +38,12 @@ export class HomePage extends Component {
                     pageFactory: containersPage
                 }),
                 this.renderSummaryCard({
+                    title: 'Popups',
+                    icon: Icon.comment(),
+                    summary: 'Dialogs and Toasts.',
+                    pageFactory: popupsPage
+                }),
+                this.renderSummaryCard({
                     title: 'Icons',
                     icon: Icon.edit(),
                     summary: 'A collection of FontAwesome SVG icons, available in 3 variants.',
@@ -49,10 +55,10 @@ export class HomePage extends Component {
 
     renderSummaryCard({title, icon, summary, pageFactory}) {
         return div({
-            cls: 'summary-card',
+            cls: 'toolbox-card',
             items: [
-                div({cls: 'summary-card__title', item: title}),
-                div({cls: 'summary-card__body', item: summary}),
+                div({cls: 'toolbox-card__title', item: title}),
+                div({cls: 'toolbox-card__body', item: summary}),
                 button({
                     icon: icon,
                     text: `Go to ${title}`,
