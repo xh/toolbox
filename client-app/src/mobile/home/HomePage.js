@@ -23,7 +23,7 @@ export class HomePage extends Component {
 
     render() {
         return page({
-            cls: 'home-page',
+            className: 'home-page',
             items: [
                 this.renderSummaryCard({
                     title: 'Grids',
@@ -49,10 +49,10 @@ export class HomePage extends Component {
 
     renderSummaryCard({title, icon, summary, pageFactory}) {
         return div({
-            cls: 'summary-card',
+            className: 'summary-card',
             items: [
-                div({cls: 'summary-card__title', item: title}),
-                div({cls: 'summary-card__body', item: summary}),
+                div({className: 'summary-card__title', item: title}),
+                div({className: 'summary-card__body', item: summary}),
                 button({
                     icon: icon,
                     text: `Go to ${title}`,

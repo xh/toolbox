@@ -41,7 +41,7 @@ export class DataViewPanel extends Component {
                 </p>
             ],
             item: panel({
-                cls: 'toolbox-dataview-panel',
+                className: 'toolbox-dataview-panel',
                 title: 'Grids > DataView',
                 icon: Icon.addressCard(),
                 width: 700,

@@ -47,7 +47,7 @@ export class AppComponent extends Component {
 
     renderBody() {
         return frame({
-            cls: 'toolbox-app-frame',
+            className: 'toolbox-app-frame',
             item: tabContainer({
                 model: this.model.tabModel,
                 switcherPosition: 'none'

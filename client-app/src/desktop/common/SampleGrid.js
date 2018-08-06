@@ -89,11 +89,11 @@ class SampleGrid extends Component {
 
     render() {
         const {model} = this,
-            store = model.store;
+            {store} = model;
 
         return panel({
-            cls: this.getClassNames(),
-            layoutConfig: this.layoutConfig,
+            className: this.getClassName(),
+            ...this.layoutProps(),
             item: grid({model}),
             bbar: toolbar({
                 omit: this.props.omitToolbar,

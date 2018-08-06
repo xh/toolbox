@@ -35,7 +35,7 @@ export class TabPanelContainerPanel extends Component {
             item: panel({
                 title: 'Containers > Tabs',
                 icon: Icon.tab(),
-                cls: 'toolbox-containers-tabs',
+                className: 'toolbox-containers-tabs',
                 width: 700,
                 height: 400,
                 item: tabContainer({model: topModel})
@@ -63,7 +63,7 @@ export class TabPanelContainerPanel extends Component {
                     title: 'Bottom Tabs',
                     content: () => {
                         return tabContainer({
-                            cls: 'child-tabcontainer',
+                            className: 'child-tabcontainer',
                             model: this.createContainerModel(),
                             switcherPosition: 'bottom'
                         });
@@ -74,7 +74,7 @@ export class TabPanelContainerPanel extends Component {
                     title: 'Left Tabs',
                     content: () => {
                         return tabContainer({
-                            cls: 'child-tabcontainer',
+                            className: 'child-tabcontainer',
                             model: this.createContainerModel(),
                             switcherPosition: 'left'
                         });
@@ -85,7 +85,7 @@ export class TabPanelContainerPanel extends Component {
                     title: 'Right Tabs',
                     content: () => {
                         return tabContainer({
-                            cls: 'child-tabcontainer',
+                            className: 'child-tabcontainer',
                             model: this.createContainerModel(),
                             switcherPosition: 'right'
                         });
@@ -96,7 +96,7 @@ export class TabPanelContainerPanel extends Component {
                     title: 'Custom Switcher',
                     content: () => {
                         return panel({
-                            cls: 'child-tabcontainer',
+                            className: 'child-tabcontainer',
                             tbar: toolbar(
                                 detachedModel.tabs.map(childModel => button({
                                     intent: childModel.isActive ? 'primary' : 'default',

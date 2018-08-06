@@ -17,10 +17,10 @@ class Wrapper extends Component {
         const {description, children, ...rest} = this.props;
 
         return box({
-            cls: 'toolbox-wrapper',
+            className: 'toolbox-wrapper',
             items: [
                 panel({
-                    cls: 'toolbox-wrapper-description',
+                    className: 'toolbox-wrapper-description',
                     item: description,
                     width: 700,
                     marginBottom: 10,

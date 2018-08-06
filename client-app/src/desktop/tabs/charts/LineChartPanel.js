@@ -24,7 +24,7 @@ export class LineChartPanel extends Component {
             {companyMap} = model;
         return wrapper(
             panel({
-                cls: 'toolbox-linechart-panel',
+                className: 'toolbox-linechart-panel',
                 title: 'Line Chart',
                 width: 800,
                 height: 600,
@@ -46,7 +46,7 @@ export class LineChartPanel extends Component {
             {chartModel} = model;
 
         return vframe({
-            cls: 'toolbox-example-container',
+            className: 'toolbox-example-container',
             items: [
                 chart({model: chartModel}),
                 loadMask({isOpen: false})

@@ -36,7 +36,7 @@ export class FormFieldsPanel extends Component {
     render() {
         return wrapper(
             panel({
-                cls: 'toolbox-formfields-panel',
+                className: 'toolbox-formfields-panel',
                 title: 'Form Fields',
                 width: 620,
                 item: this.renderExample(),
@@ -44,7 +44,7 @@ export class FormFieldsPanel extends Component {
                     filler(),
                     button({
                         text: 'Save',
-                        icon: Icon.check({cls: 'xh-green'}),
+                        icon: Icon.check({className: 'xh-green'}),
                         disabled: !this.model.isValid,
                         onClick: this.onFormSubmit
                     })
@@ -55,7 +55,7 @@ export class FormFieldsPanel extends Component {
 
     renderExample() {
         return hframe({
-            cls: 'toolbox-example-container',
+            className: 'toolbox-example-container',
             items: [
                 vbox({
                     flex: 2,
@@ -75,7 +75,7 @@ export class FormFieldsPanel extends Component {
         return panel({
             title: 'Credentials',
             item: vbox({
-                cls: 'xh-panel-body',
+                className: 'xh-panel-body',
                 items: [
                     hbox(
                         label(this.renderLabel('User: ')),
@@ -112,7 +112,7 @@ export class FormFieldsPanel extends Component {
         return panel({
             title: 'User Info',
             item: vbox({
-                cls: 'xh-panel-body',
+                className: 'xh-panel-body',
                 items: [
                     hbox(
                         label(this.renderLabel('Profile Color: ')),
@@ -232,9 +232,9 @@ export class FormFieldsPanel extends Component {
         return panel({
             title: 'Current Values',
             width: 270,
-            cls: 'rawvalues',
+            className: 'rawvalues',
             item: vbox({
-                cls: 'xh-panel-body',
+                className: 'xh-panel-body',
                 items: [
                     hbox(
                         label('User:'),

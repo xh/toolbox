@@ -24,20 +24,21 @@ export class HBoxContainerPanel extends Component {
                 icon: Icon.box(),
                 height: 400,
                 width: 700,
-                item: hbox({
-                    itemSpec: {
-                        factory: box,
-                        padding: 10,
-                        cls: 'toolbox-containers-box'
-                    },
-                    items: [
-                        {flex: 1, item: 'flex: 1'},
-                        {width: 100, item: 'width: 100'},
-                        {flex: 2, item: 'flex: 2'}
-                    ]
-                })
+                item: hbox(
+                    this.renderBox({flex: 1, item: 'flex: 1'}),
+                    this.renderBox({width: 100, item: 'width: 100'}),
+                    this.renderBox({flex: 2, item: 'flex: 2'})
+                )
             })
+
         });
     }
 
+    renderBox(args) {
+        return box({
+            padding: 10,
+            className: 'toolbox-containers-box',
+            ...args
+        });
+    }
 }

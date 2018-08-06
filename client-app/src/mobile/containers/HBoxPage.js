@@ -15,10 +15,10 @@ export class HBoxPage extends Component {
 
     render() {
         return page({
-            cls: 'toolbox-containers-page',
+            className: 'toolbox-containers-page',
             items: [
                 div({
-                    cls: 'toolbox-description',
+                    className: 'toolbox-description',
                     item: `
                         An hbox lays out its children horizontally, rendering a box with flexDirection 
                         set to row.
@@ -28,7 +28,7 @@ export class HBoxPage extends Component {
                     itemSpec: {
                         factory: box,
                         padding: 10,
-                        cls: 'toolbox-containers-box'
+                        className: 'toolbox-containers-box'
                     },
                     items: [
                         {flex: 1, item: 'flex: 1'},

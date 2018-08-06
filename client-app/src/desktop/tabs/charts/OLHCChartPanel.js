@@ -24,7 +24,7 @@ export class OLHCChartPanel extends Component {
             {companyMap} = model;
         return wrapper(
             panel({
-                cls: 'toolbox-olhcchart-panel',
+                className: 'toolbox-olhcchart-panel',
                 title: 'OLHC Chart',
                 width: 800,
                 height: 600,
@@ -46,7 +46,7 @@ export class OLHCChartPanel extends Component {
             {chartModel} = model;
 
         return vframe({
-            cls: 'toolbox-example-container',
+            className: 'toolbox-example-container',
             items: [
                 chart({model: chartModel}),
                 loadMask({isOpen: false})

@@ -34,7 +34,7 @@ export class GridsTab extends Component {
         return tabContainer({
             model: this.model,
             switcherPosition: 'left',
-            cls: 'toolbox-tab'
+            className: 'toolbox-tab'
         });
     }
 }
