@@ -24,22 +24,22 @@ export class HBoxPage extends Component {
                         set to row.
                     `
                 }),
-                hbox({
-                    itemSpec: {
-                        factory: box,
-                        padding: 10,
-                        className: 'toolbox-containers-box'
-                    },
-                    items: [
-                        {flex: 1, item: 'flex: 1'},
-                        {width: 80, item: 'width: 80'},
-                        {flex: 2, item: 'flex: 2'}
-                    ]
-                })
+                hbox(
+                    this.renderBox({flex: 1, item: 'flex: 1'}),
+                    this.renderBox({width: 80, item: 'width: 80'}),
+                    this.renderBox({flex: 2, item: 'flex: 2'})
+                )
             ]
         });
     }
 
-}
 
+    renderBox(params) {
+        return box({
+            padding: 10,
+            className: 'toolbox-containers-box',
+            ...params
+        });
+    }
+}
 export const hBoxPage = elemFactory(HBoxPage);
