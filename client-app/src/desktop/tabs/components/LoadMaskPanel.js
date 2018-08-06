@@ -65,7 +65,7 @@ export class LoadMaskPanel extends Component {
                             field: 'maskViewport'
                         }),
                         box({
-                            cls: 'xh-no-pad',
+                            className: 'xh-no-pad',
                             item: 'on viewport'
                         }),
                         filler(),

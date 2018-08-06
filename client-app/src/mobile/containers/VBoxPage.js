@@ -15,31 +15,31 @@ export class VBoxPage extends Component {
 
     render() {
         return page({
-            cls: 'toolbox-containers-page',
+            className: 'toolbox-containers-page',
             items: [
                 div({
-                    cls: 'toolbox-description',
+                    className: 'toolbox-description',
                     item: `
                         A vbox lays out its children vertically, rendering a box with flexDirection 
                         set to column.
                     `
                 }),
-                vbox({
-                    itemSpec: {
-                        factory: box,
-                        padding: 10,
-                        cls: 'toolbox-containers-box'
-                    },
-                    items: [
-                        {flex: 1, item: 'flex: 1'},
-                        {height: 80, item: 'height: 80'},
-                        {flex: 2, item: 'flex: 2'}
-                    ]
-                })
+                vbox(
+                    this.renderBox({flex: 1, item: 'flex: 1'}),
+                    this.renderBox({height: 80, item: 'height: 80'}),
+                    this.renderBox({flex: 2, item: 'flex: 2'})
+                )
             ]
         });
     }
 
+    renderBox(args) {
+        return box({
+            padding: 10,
+            className: 'toolbox-containers-box',
+            ...args
+        });
+    }
 }
 
 export const vBoxPage = elemFactory(VBoxPage);

@@ -19,10 +19,10 @@ export class IconsTab extends Component {
 
     render() {
         const header = (...labels) => hbox({
-                cls: 'toolbox-icons-panel__header',
+                className: 'toolbox-icons-panel__header',
                 items: labels.map(label => div(label))
             }),
-            row = icon => hbox({cls: 'row', items: [div(icon.name), ...this.renderIconTiles(icon)]});
+            row = icon => hbox({className: 'row', items: [div(icon.name), ...this.renderIconTiles(icon)]});
 
         return wrapper(
             panel({
@@ -30,7 +30,7 @@ export class IconsTab extends Component {
                 icon: Icon.thumbsUp(),
                 width: 500,
                 height: '90%',
-                cls: 'toolbox-icons-panel',
+                className: 'toolbox-icons-panel',
                 item: [
                     header('name', 'regular', 'solid', 'light'),
                     vbox({

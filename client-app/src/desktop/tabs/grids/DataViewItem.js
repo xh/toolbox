@@ -14,15 +14,15 @@ class DataViewItem extends Component {
 
         return vbox(
             box({
-                cls: 'dataview-item--name',
+                className: 'dataview-item--name',
                 item: name
             }),
             box({
-                cls: 'dataview-item--city',
+                className: 'dataview-item--city',
                 item: city
             }),
             box({
-                cls: 'dataview-item--value',
+                className: 'dataview-item--value',
                 item: fmtNumber(value, {
                     asElement: true,
                     withSignGlyph: true,
@@ -30,7 +30,7 @@ class DataViewItem extends Component {
                     precision: 2
                 })
             }),
-            loser ? Icon.skull({size: '3x', cls: 'xh-red'}) : Icon.rocket({size: '3x', cls: 'xh-green'})
+            loser ? Icon.skull({size: '3x', className: 'xh-red'}) : Icon.rocket({size: '3x', className: 'xh-green'})
         );
     }
 }

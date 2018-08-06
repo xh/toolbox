@@ -18,7 +18,7 @@ export class IconPage extends Component {
 
     render() {
         return page({
-            cls: 'icon-page',
+            className: 'icon-page',
             item: table(
                 tbody({
                     items: [

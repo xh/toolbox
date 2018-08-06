@@ -24,7 +24,7 @@ export class HomePage extends Component {
 
     render() {
         return page({
-            cls: 'toolbox-page',
+            className: 'toolbox-page',
             items: [
                 this.renderSummaryCard({
                     title: 'Grids',
@@ -62,10 +62,10 @@ export class HomePage extends Component {
 
     renderSummaryCard({title, icon, summary, pageFactory}) {
         return div({
-            cls: 'toolbox-card',
+            className: 'toolbox-card',
             items: [
-                div({cls: 'toolbox-card__title', item: title}),
-                div({cls: 'toolbox-card__body', item: summary}),
+                div({className: 'toolbox-card__title', item: title}),
+                div({className: 'toolbox-card__body', item: summary}),
                 button({
                     icon: icon,
                     text: `Go to ${title}`,

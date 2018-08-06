@@ -24,20 +24,21 @@ export class VBoxContainerPanel extends Component {
                 icon: Icon.box(),
                 height: 400,
                 width: 700,
-                item: vbox({
-                    itemSpec: {
-                        factory: box,
-                        padding: 10,
-                        height: 300,
-                        cls: 'toolbox-containers-box'
-                    },
-                    items: [
-                        {flex: 1, item: 'flex: 1'},
-                        {height: 100, item: 'height: 100'},
-                        {flex: 2, item: 'flex: 2'}
-                    ]
-                })
+                item: vbox(
+                    this.renderBox({flex: 1, item: 'flex: 1'}),
+                    this.renderBox({height: 100, item: 'height: 100'}),
+                    this.renderBox({flex: 2, item: 'flex: 2'})
+                )
             })
+        });
+    }
+
+    renderBox(args) {
+        return box({
+            padding: 10,
+            height: 300,
+            className: 'toolbox-containers-box',
+            ...args
         });
     }
 }
