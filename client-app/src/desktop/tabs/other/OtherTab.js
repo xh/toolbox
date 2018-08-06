@@ -11,19 +11,17 @@ import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {MaskPanel} from './MaskPanel';
 import {LoadMaskPanel} from './LoadMaskPanel';
-import {ToolbarPanel} from './ToolbarPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 
 @HoistComponent()
-export class ComponentsTab extends Component {
+export class OtherTab extends Component {
 
     localModel = new TabContainerModel({
-        route: 'default.components',
+        route: 'default.other',
         tabs: [
-            {id: 'toolbar', content: ToolbarPanel},
-            {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
-            {id: 'showMask', title: 'Mask', content: MaskPanel},
+            {id: 'mask', title: 'Mask', content: MaskPanel},
             {id: 'loadMask', title: 'LoadMask', content: LoadMaskPanel},
+            {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
             {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel}
         ]
     });

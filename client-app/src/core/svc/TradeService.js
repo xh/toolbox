@@ -1,20 +1,14 @@
 import {HoistService} from '@xh/hoist/core';
 import {start} from '@xh/hoist/promise';
-import {computed, observable, runInAction} from '@xh/hoist/mobx';
+import {observable, runInAction} from '@xh/hoist/mobx';
 import {companyTrades} from '../data/';
-import {cloneDeep, shuffle, take} from 'lodash';
+import {cloneDeep} from 'lodash';
 
 @HoistService()
 export class TradeService {
 
     @observable.ref
     allTrades = [];
-
-    @computed
-    get randomCompanies() {
-        const companyData = this.allTrades.map(it => ({name: it.company, city: it.city}));
-        return take(shuffle(companyData), 100);
-    }
 
     initAsync() {
         return start(() => {

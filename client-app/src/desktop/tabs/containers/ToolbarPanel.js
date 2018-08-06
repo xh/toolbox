@@ -5,15 +5,15 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {XH, HoistComponent} from '@xh/hoist/core';
+import {XH, HoistComponent} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
-import {filler, frame, hframe} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {comboField, switchField} from '@xh/hoist/desktop/cmp/form';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {Icon} from '@xh/hoist/icon';
-import {usStates} from '../../../core/data';
+import {filler, frame, hframe} from '@xh/hoist/cmp/layout/index';
+import {panel} from '@xh/hoist/desktop/cmp/panel/index';
+import {comboField, switchField} from '@xh/hoist/desktop/cmp/form/index';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar/index';
+import {button} from '@xh/hoist/desktop/cmp/button/index';
+import {Icon} from '@xh/hoist/icon/index';
+import {usStates} from '../../../core/data/index';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
 @HoistComponent()
@@ -31,7 +31,7 @@ export class ToolbarPanel extends Component {
                 own and can be displayed in a vertical configuration as well. 
             `,
             item: panel({
-                title: 'Components > Toolbars',
+                title: 'Containers > Toolbar',
                 height: 400,
                 width: 700,
                 tbar: toolbar(

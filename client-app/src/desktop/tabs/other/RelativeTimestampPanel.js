@@ -30,7 +30,7 @@ export class RelativeTimestampPanel extends Component {
                 in a friendly and readable manner. 
             `,
             item: panel({
-                title: 'Components > Relative Timestamp',
+                title: 'Other > Relative Timestamp',
                 icon: Icon.clock(),
                 width: 700,
                 items: [

@@ -12,6 +12,7 @@ import {HBoxContainerPanel} from './HBoxContainerPanel';
 import {VBoxContainerPanel} from './VBoxContainerPanel';
 import {ResizableContainerPanel} from './ResizableContainerPanel';
 import {TabPanelContainerPanel} from './TabPanelContainerPanel';
+import {ToolbarPanel} from './ToolbarPanel';
 
 import './ContainersTab.scss';
 
@@ -24,13 +25,10 @@ export class ContainersTab extends Component {
             {id: 'hbox', title: 'HBox', content: HBoxContainerPanel},
             {id: 'vbox', title: 'VBox', content: VBoxContainerPanel},
             {id: 'tabPanel', title: 'TabContainer', content: TabPanelContainerPanel},
-            {id: 'resizable', content: ResizableContainerPanel}
+            {id: 'resizable', content: ResizableContainerPanel},
+            {id: 'toolbar', content: ToolbarPanel}
         ]
     });
-    
-    async loadAsync() {
-        this.model.requestRefresh();
-    }
 
     render() {
         return tabContainer({

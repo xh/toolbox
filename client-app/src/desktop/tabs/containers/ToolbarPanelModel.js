@@ -4,8 +4,8 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {HoistModel} from '@xh/hoist/core';
-import {action, observable} from '@xh/hoist/mobx';
+import {HoistModel} from '@xh/hoist/core/index';
+import {action, observable} from '@xh/hoist/mobx/index';
 
 @HoistModel()
 export class ToolbarPanelModel {
@@ -13,12 +13,8 @@ export class ToolbarPanelModel {
     @observable enableTerminate = false;
 
     @action
-    setState(val) {
-        this.state = val;
-    }
+    setState(val) {this.state = val}
 
     @action
-    setEnableTerminate(val) {
-        this.enableTerminate = val;
-    }
+    setEnableTerminate(val) {this.enableTerminate = val}
 }

@@ -24,11 +24,14 @@ export class VBoxContainerPanel extends Component {
                 icon: Icon.box(),
                 height: 400,
                 width: 700,
-                item: vbox(
-                    this.renderBox({flex: 1, item: 'flex: 1'}),
-                    this.renderBox({height: 100, item: 'height: 100'}),
-                    this.renderBox({flex: 2, item: 'flex: 2'})
-                )
+                item: vbox({
+                    flex: 1,
+                    items: [
+                        this.renderBox({flex: 1, item: 'flex: 1'}),
+                        this.renderBox({height: 100, item: 'height: 100'}),
+                        this.renderBox({flex: 2, item: 'flex: 2'})
+                    ]
+                })
             })
         });
     }

@@ -31,7 +31,7 @@ export class MaskPanel extends Component {
                 The most convenient way to display a mask is via the masked property of Panel.
             `,
             item: panel({
-                title: 'Components > Mask',
+                title: 'Other > Mask',
                 width: 700,
                 height: 400,
                 item: sampleGrid({omitToolbar: true}),
@@ -78,11 +78,7 @@ export class MaskPanel extends Component {
 
     showMask = () => {
         runInAction(() => this.maskIsShown = true);
-        wait(this.seconds * 1000).then(() => this.hideMask());
-    }
-
-    hideMask = () => {
-        runInAction(() => this.maskIsShown = false);
+        wait(this.seconds * 1000).thenInAction(() => this.maskIsShown = false);
     }
 
 }

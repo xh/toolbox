@@ -32,7 +32,7 @@ export class LoadMaskPanel extends Component {
                 text, and can be placed over the entire viewport with <code>inline:false</code>.
             </p>,
             item: panel({
-                title: 'Components > LoadMask',
+                title: 'Other > LoadMask',
                 width: 700,
                 height: 400,
                 items: [
@@ -83,11 +83,7 @@ export class LoadMaskPanel extends Component {
 
     showMask = () => {
         runInAction(() => this.maskIsShown = true);
-        wait(this.seconds * 1000).then(() => this.hideMask());
-    }
-
-    hideMask = () => {
-        runInAction(() => this.maskIsShown = false);
+        wait(this.seconds * 1000).thenAction(() => this.maskIsShown = false);
     }
 
     @action

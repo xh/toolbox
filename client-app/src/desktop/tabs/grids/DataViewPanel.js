@@ -75,7 +75,7 @@ export class DataViewPanel extends Component {
 
     loadData = () => {
         const {store} = this.model,
-            companies = App.tradeService.randomCompanies,
+            companies = App.companyService.randomCompanies,
             min = -1000,
             max = 1000;
 

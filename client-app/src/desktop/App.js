@@ -8,11 +8,12 @@ import {XH, HoistApp, initServicesAsync} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
+import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
 import {AppComponent} from './AppComponent';
 
 import {ChartsTab} from './tabs/charts/ChartsTab';
-import {ComponentsTab} from './tabs/components/ComponentsTab';
+import {OtherTab} from './tabs/other/OtherTab';
 import {ContainersTab} from './tabs/containers/ContainersTab';
 import {FormsTab} from './tabs/forms/FormsTab';
 import {GridsTab} from './tabs/grids/GridsTab';
@@ -23,6 +24,8 @@ class AppClass {
 
     tabModel = this.createTabModel();
     loginMessage = "User: 'toolbox@xh.io' / Password: 'toolbox'";
+
+    companyService = new CompanyService();
     tradeService = new TradeService();
 
     get enableLogout() {return true}
@@ -39,6 +42,7 @@ class AppClass {
 
     async initAsync() {
         return initServicesAsync(
+            this.companyService,
             this.tradeService
         ).then(() => {
             XH.track({msg: 'Loaded App'});
@@ -66,9 +70,9 @@ class AppClass {
                 {id: 'containers', content: ContainersTab},
                 {id: 'grids', content: GridsTab},
                 {id: 'forms', content: FormsTab},
-                {id: 'components', title: 'Other Components', content: ComponentsTab},
                 {id: 'charts', content: ChartsTab},
-                {id: 'icons', content: IconsTab}
+                {id: 'icons', content: IconsTab},
+                {id: 'other', content: OtherTab}
             ]
         });
     }
@@ -92,18 +96,6 @@ class AppClass {
                 ]
             },
             {
-                name: 'components',
-                path: '/components',
-                forwardTo: 'default.components.toolbar',
-                children: [
-                    {name: 'toolbar', path: '/toolbar'},
-                    {name: 'leftRightChooser', path: '/leftRightChooser'},
-                    {name: 'showMask', path: '/mask'},
-                    {name: 'loadMask', path: '/loadMask'},
-                    {name: 'timestamp', path: '/timestamp'}
-                ]
-            },
-            {
                 name: 'containers',
                 path: '/containers',
                 forwardTo: 'default.containers.hbox',
@@ -111,7 +103,8 @@ class AppClass {
                     {name: 'hbox', path: '/hbox'},
                     {name: 'vbox', path: '/vbox'},
                     {name: 'resizable', path: '/resizable'},
-                    {name: 'tabPanel', path: '/tabPanel'}
+                    {name: 'tabPanel', path: '/tabPanel'},
+                    {name: 'toolbar', path: '/toolbar'}
                 ]
             },
             {
@@ -132,6 +125,17 @@ class AppClass {
             {
                 name: 'icons',
                 path: '/icons'
+            },
+            {
+                name: 'other',
+                path: '/other',
+                forwardTo: 'default.other.mask',
+                children: [
+                    {name: 'mask', path: '/mask'},
+                    {name: 'loadMask', path: '/loadMask'},
+                    {name: 'leftRightChooser', path: '/leftRightChooser'},
+                    {name: 'timestamp', path: '/timestamp'}
+                ]
             }
         ];
     }

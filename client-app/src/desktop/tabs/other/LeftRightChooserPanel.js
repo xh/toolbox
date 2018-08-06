@@ -40,7 +40,7 @@ export class LeftRightChooserPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Components > LeftRightChooser',
+                title: 'Other > LeftRightChooser',
                 width: 700,
                 height: 400,
                 item: leftRightChooser({

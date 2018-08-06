@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {div, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -18,28 +18,43 @@ import './IconsTab.scss';
 export class IconsTab extends Component {
 
     render() {
-        const header = (...labels) => hbox({
-                className: 'toolbox-icons-panel__header',
-                items: labels.map(label => div(label))
-            }),
-            row = icon => hbox({className: 'row', items: [div(icon.name), ...this.renderIconTiles(icon)]});
+        const row = icon => <tr key={icon.name}>
+            <th>{icon.name}</th>
+            <td>{icon.regular}</td>
+            <td>{icon.solid}</td>
+            <td>{icon.light}</td>
+        </tr>;
 
-        return wrapper(
-            panel({
-                title: 'Available Icons',
+        return wrapper({
+            description: [
+                <p>
+                    Hoist includes the latest version of the
+                    ubiquitous <a href={'https://fontawesome.com/icons'} target={'_blank'}>Font Awesome</a> library
+                    and its companion project, react-fontawesome. Hoist exports an <code>Icon</code> constant
+                    to expose a preselected set of icons as element factories. This ensures that many
+                    of the most common glyphs are built-in (while also mapping icons to several
+                    concepts particular to finance and trading).
+                </p>,
+                <p>
+                    Apps are not limited to the set of FA icons imported by the framework.
+                    Developers can use any icon from the library, as long as they import those
+                    glyphs directly to include them in the bundled output.
+                </p>
+            ],
+            item: panel({
+                title: 'Icons (regular, solid, and light variants)',
                 icon: Icon.thumbsUp(),
-                width: 500,
-                height: '90%',
                 className: 'toolbox-icons-panel',
+                width: 700,
                 item: [
-                    header('name', 'regular', 'solid', 'light'),
-                    vbox({
-                        overflow: 'auto',
-                        items: this.getAllIcons().map(icon => row(icon))
-                    })
+                    <table>
+                        <tbody>
+                            {this.getAllIcons().map(icon => row(icon))}
+                        </tbody>
+                    </table>
                 ]
             })
-        );
+        });
     }
 
     getAllIcons() {
@@ -51,11 +66,4 @@ export class IconsTab extends Component {
         }));
     }
 
-    renderIconTiles(icon) {
-        return [
-            div(icon.regular),
-            div(icon.solid),
-            div(icon.light)
-        ];
-    }
 }
