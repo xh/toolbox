@@ -17,7 +17,7 @@ export class PopupsPage extends Component {
 
     render() {
         return page({
-            cls: 'toolbox-page',
+            className: 'toolbox-page',
             items: [
                 this.renderCard('Alert', () => {
                     XH.alert({
@@ -52,9 +52,9 @@ export class PopupsPage extends Component {
 
     renderCard(title, onClick) {
         return div({
-            cls: 'toolbox-card',
+            className: 'toolbox-card',
             items: [
-                div({cls: 'toolbox-card__title', item: title}),
+                div({className: 'toolbox-card__title', item: title}),
                 button({
                     text: `Show ${title}`,
                     onClick: onClick

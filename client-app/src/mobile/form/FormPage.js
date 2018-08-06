@@ -21,10 +21,10 @@ export class FormPage extends Component {
     render() {
         const {model} = this;
         return page({
-            cls: 'toolbox-page form-page',
+            className: 'toolbox-page form-page',
             items: [
                 div({
-                    cls: 'toolbox-card',
+                    className: 'toolbox-card',
                     items: [
                         this.renderField('Name:', textField, {
                             model,
@@ -42,7 +42,7 @@ export class FormPage extends Component {
                     ]
                 }),
                 div({
-                    cls: 'toolbox-card',
+                    className: 'toolbox-card',
                     items: [
                         this.renderResult('Name:', 'name'),
                         this.renderResult('Favourite Movie:', 'movie'),
@@ -55,7 +55,7 @@ export class FormPage extends Component {
 
     renderField(labelText, factory, props) {
         return div({
-            cls: 'form-field-container',
+            className: 'form-field-container',
             items: [
                 label(labelText),
                 factory(props)
@@ -67,7 +67,7 @@ export class FormPage extends Component {
         const value = this.model[field];
 
         return div({
-            cls: 'form-field-result',
+            className: 'form-field-result',
             items: [
                 label(labelText),
                 div(value)
