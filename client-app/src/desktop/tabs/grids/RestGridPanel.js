@@ -67,23 +67,23 @@ export class RestGridPanel extends Component {
         columns: [
             baseCol({
                 field: 'name',
-                flex: 1
+                flex: true
             }),
             baseCol({
                 field: 'type',
-                fixedWidth: 180
+                width: 180
             }),
             baseCol({
                 field: 'employees',
                 headerName: 'Employees',
                 align: 'right',
-                fixedWidth: 120,
-                cellRenderer: numberRenderer({precision: 0})
+                width: 120,
+                renderer: numberRenderer({precision: 0})
             }),
             boolCheckCol({
                 field: 'isActive',
                 headerName: 'Active?',
-                fixedWidth: 100
+                width: 100
             })
         ],
         editors: [

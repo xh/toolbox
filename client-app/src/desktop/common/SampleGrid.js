@@ -14,7 +14,7 @@ import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {baseCol, boolCheckCol} from '@xh/hoist/columns';
+import {baseCol, boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {App} from '../App';
@@ -53,29 +53,28 @@ class SampleGrid extends Component {
                 field: 'active'
             }),
             baseCol({
-                headerName: 'Company',
                 field: 'company',
-                flex: 1
+                width: 200
             }),
             baseCol({
-                headerName: 'City',
                 field: 'city',
-                fixedWidth: 150
+                width: 150
             }),
             baseCol({
                 headerName: 'Trade Volume',
                 field: 'trade_volume',
                 align: 'right',
-                fixedWidth: 130,
-                cellRenderer: millionsRenderer({precision: 1, label: true})
+                width: 130,
+                renderer: millionsRenderer({precision: 1, label: true})
             }),
             baseCol({
                 headerName: 'P&L',
                 field: 'profit_loss',
                 align: 'right',
-                fixedWidth: 130,
-                cellRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
-            })
+                width: 130,
+                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+            }),
+            emptyFlexCol()
         ]
     });
 
