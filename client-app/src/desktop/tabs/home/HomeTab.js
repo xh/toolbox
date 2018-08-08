@@ -15,6 +15,8 @@ import './HomeTab.scss';
 @HoistComponent()
 export class HomeTab extends Component {
     render() {
+        const link = (txt, url) => <a href={url} target="_blank">{txt}</a>;
+
         return wrapper(
             panel({
                 width: 700,
@@ -25,20 +27,19 @@ export class HomeTab extends Component {
                     <div className="toolbox-welcome">
                         <p>
                             Toolbox provides an inventory and examples of key components,
-                            code, and UI patterns available
-                            in <a href="https://github.com/exhi/hoist-react/" target="_blank">Hoist React</a>,
-                            a library created by <a href="https://xh.io" target="_blank"> Extremely
-                            Heavy Industries</a> for building and operating enterprise web applications.
+                            code, and UI patterns available in {link('Hoist React', 'https://github.com/exhi/hoist-react/')},
+                            a library created by {link('Extremely Heavy Industries', 'https://xh.io')} for
+                            building and operating enterprise web applications.
                         </p>
                         <p>
                             Navigate using the tabs above to explore the available components. The Toolbox
-                            app itself is written using Hoist React, and its <a href="https://github.com/exhi/toolbox">source
-                            code</a> is available on Github for review.
+                            app itself is written using Hoist React, and its {link('source code', 'https://github.com/exhi/toolbox')} is
+                            available on Github for review.
                         </p>
                         <div className="toolbox-welcome__logo">
                             <img src={logo} alt="xh.io + Hoist"/>
                             <p>
-                                Please do not hesitate to <a href="https://xh.io/contact/">contact us</a> with
+                                Please do not hesitate to {link('contact us', 'https://xh.io/contact/')} with
                                 any questions or for more information.
                             </p>
                         </div>
