@@ -9,6 +9,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {jsonField} from '@xh/hoist/desktop/cmp/form';
+import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common';
 
 import './JsxPanel.scss';
@@ -39,12 +40,14 @@ export class JsxPanel extends Component {
                     panel({
                         flex: 1,
                         className: 'toolbox-jsx-example',
-                        title: 'Using ElemFactory',
+                        icon: Icon.factory({prefix: 'fas', size: 'lg'}),
+                        title: 'Using Factories',
                         item: this.renderCode(this.getElemExample(), 'text/javascript')
                     }),
                     panel({
                         flex: 1,
                         className: 'toolbox-jsx-example',
+                        icon: Icon.code({size: 'lg'}),
                         title: 'Using JSX',
                         item: this.renderCode(this.getJsxExample(), 'text/typescript-jsx')
                     })
