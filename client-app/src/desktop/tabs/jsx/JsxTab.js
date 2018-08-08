@@ -30,7 +30,7 @@ export class JsxTab extends Component {
                     Hoist encourages the use of its elemFactory() method to create and export
                     factory methods for custom components. These methods take a configuration
                     object where properties and child elements are specified without any wrapping
-                    braces or additional syntax required, but with several customized conveniences.
+                    braces or additional syntax required.
                 </p>
             ],
             item: hframe({
@@ -118,17 +118,19 @@ render() {
                         <Toolbar>
                             {
                                 buttonCfgs.map(props => {
-                                    return <Button {...props} />
+                                    return <Button {...props} />;
                                 })
                             }
-                            <DeleteButton
-                                omit={!XH.getUser().isHoistAdmin}
-                                onClick={
-                                    () => {
-                                        this.doDelete();
-                                    }
-                                }
-                            />
+                            {
+                                XH.getUser().isHoistAdmin && 
+                                    <DeleteButton
+                                        onClick={
+                                            () => {
+                                                this.doDelete();
+                                            }
+                                        }
+                                    />
+                            }
                             <Filler />
                             <StoreFilterField
                                 store={files.store}
