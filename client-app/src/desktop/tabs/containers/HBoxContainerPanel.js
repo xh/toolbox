@@ -36,7 +36,6 @@ export class HBoxContainerPanel extends Component {
 
     renderBox(args) {
         return box({
-            padding: 10,
             className: 'toolbox-containers-box',
             ...args
         });
