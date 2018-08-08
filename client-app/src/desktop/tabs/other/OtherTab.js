@@ -24,7 +24,7 @@ export class OtherTab extends Component {
             {id: 'loadMask', title: 'LoadMask', content: LoadMaskPanel},
             {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
             {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
-            {id: 'jsx', title: 'JS vs. JSX', content: JsxPanel}
+            {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel}
         ]
     });
     
