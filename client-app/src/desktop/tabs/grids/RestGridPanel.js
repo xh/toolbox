@@ -9,7 +9,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {restGrid, RestGridModel, RestStore} from '@xh/hoist/desktop/cmp/rest';
-import {boolCheckCol, baseCol} from '@xh/hoist/columns';
+import {boolCheckCol} from '@xh/hoist/columns';
 import {numberRenderer} from '@xh/hoist/format';
 import {wrapper} from '../../common/Wrapper';
 
@@ -65,26 +65,27 @@ export class RestGridPanel extends Component {
         filterFields: ['name', 'type', 'note'],
         sortBy: 'name',
         columns: [
-            baseCol({
+            {
                 field: 'name',
                 flex: true
-            }),
-            baseCol({
+            },
+            {
                 field: 'type',
                 width: 180
-            }),
-            baseCol({
+            },
+            {
                 field: 'employees',
                 headerName: 'Employees',
                 align: 'right',
                 width: 120,
                 renderer: numberRenderer({precision: 0})
-            }),
-            boolCheckCol({
+            },
+            {
                 field: 'isActive',
+                ...boolCheckCol,
                 headerName: 'Active?',
                 width: 100
-            })
+            }
         ],
         editors: [
             {field: 'name'},

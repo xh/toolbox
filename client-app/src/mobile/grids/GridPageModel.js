@@ -23,20 +23,20 @@ export class GridPageModel {
         store: new LocalStore({
             fields: ['company', 'profit_loss']
         }),
-        leftColumn: baseCol({
+        leftColumn: {
             headerName: 'Company',
             field: 'company'
-        }),
-        rightColumn: baseCol({
+        },
+        rightColumn: {
             headerName: 'P&L',
             field: 'profit_loss',
-            valueFormatter: numberRenderer({
+            renderer: numberRenderer({
                 precision: 0,
                 ledger: true,
                 colorSpec: true,
                 asElement: true
             })
-        })
+        }
     });
 
     constructor() {
