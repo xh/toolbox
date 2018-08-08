@@ -9,6 +9,7 @@
 ###################
 .gradle/
 build/
+out/
 /client-app/build/
 /client-app/node_modules/
 
