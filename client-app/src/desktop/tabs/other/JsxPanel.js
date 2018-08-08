@@ -11,10 +11,10 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {jsonField} from '@xh/hoist/desktop/cmp/form';
 import {wrapper} from '../../common';
 
-import './JsxTab.scss';
+import './JsxPanel.scss';
 
 @HoistComponent()
-export class JsxTab extends Component {
+export class JsxPanel extends Component {
 
     render() {
         return wrapper({

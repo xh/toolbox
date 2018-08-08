@@ -18,7 +18,6 @@ import {FormsTab} from './tabs/forms/FormsTab';
 import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
 import {IconsTab} from './tabs/icons/IconsTab';
-import {JsxTab} from './tabs/jsx/JsxTab';
 import {OtherTab} from './tabs/other/OtherTab';
 
 @HoistApp
@@ -102,10 +101,6 @@ class AppClass {
                         path: '/icons'
                     },
                     {
-                        name: 'jsx',
-                        path: '/jsx'
-                    },
-                    {
                         name: 'other',
                         path: '/other',
                         forwardTo: 'default.other.mask',
@@ -113,7 +108,8 @@ class AppClass {
                             {name: 'mask', path: '/mask'},
                             {name: 'loadMask', path: '/loadMask'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
-                            {name: 'timestamp', path: '/timestamp'}
+                            {name: 'timestamp', path: '/timestamp'},
+                            {name: 'jsx', path: '/jsx'}
                         ]
                     }
                 ]
@@ -131,7 +127,6 @@ class AppClass {
                 {id: 'forms', content: FormsTab},
                 {id: 'charts', content: ChartsTab},
                 {id: 'icons', content: IconsTab},
-                {id: 'jsx', content: JsxTab},
                 {id: 'other', content: OtherTab}
             ]
         });
