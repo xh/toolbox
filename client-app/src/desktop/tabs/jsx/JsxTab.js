@@ -65,57 +65,84 @@ export class JsxTab extends Component {
 
     getElemExample() {
         return `
-hframe({
-    className: 'xh-log-viewer',
-    items: [
-        resizable({
-            side: 'right',
-            contentSize: 250,
-            isOpen: true,
-            item: panel({
-                item: grid({model: files}),
-                bbar: toolbar(
-                    deleteButton({
-                        omit: !XH.getUser().isHoistAdmin
-                    }),
-                    filler(),
-                    storeFilterField({store: files.store, fields: ['filename']})
-                 )
-            })
-        }),
-        logViewer({model}),
-        loadMask({model: loadModel})
-    ]
-});
+render() {
+    return hframe({
+        ...this.props,
+        className: 'xh-log-viewer',
+        items: [
+            resizable({
+                side: 'right',
+                contentSize: 250,
+                isOpen: true,
+                item: panel({
+                    item: grid({model: files}),
+                    bbar: toolbar(
+                        ...buttonCfgs.map(props => button(props)),
+                        deleteButton({
+                            omit: !XH.getUser().isHoistAdmin,
+                            onClick: () => {
+                                this.doDelete();
+                            }
+                        }),
+                        filler(),
+                        storeFilterField({
+                            store: files.store,
+                            fields: ['filename']
+                        })
+                     )
+                })
+            }),
+            logViewer({model}),
+            loadMask({model: loadModel})
+        ]
+    });
+}
         `;
     }
 
     getJsxExample() {
         return `
-<HFrame className="xh-log-viewer">
-    <Resizable
-        side="right"
-        contentSize={250}
-        isOpen
-    >
-        <Panel
-            bbar={
-                <Toolbar>
-                    <DeleteButton
-                        omit={!XH.getUser().isHoistAdmin}
-                    />
-                    <Filler />
-                    <StoreFilterField
-                        store={files.store}
-                        fields={['filename']}
-                    />
-                </Toolbar>
-            }
+render() {
+    return (
+        <HFrame
+            {...this.props}
+            className="xh-log-viewer"
         >
-            <Grid model={files} />
-        </Panel>
-    </Resizable>
-</HFrame>
+            <Resizable
+                side="right"
+                contentSize={250}
+                isOpen
+            >
+                <Panel
+                    bbar={
+                        <Toolbar>
+                            {
+                                buttonCfgs.map(props => {
+                                    return <Button {...props} />
+                                })
+                            }
+                            <DeleteButton
+                                omit={!XH.getUser().isHoistAdmin}
+                                onClick={
+                                    () => {
+                                        this.doDelete();
+                                    }
+                                }
+                            />
+                            <Filler />
+                            <StoreFilterField
+                                store={files.store}
+                                fields={['filename']}
+                            />
+                        </Toolbar>
+                    }
+                >
+                    <Grid model={files} />
+                </Panel>
+            </Resizable>
+        </HFrame>
+    );
+}
         `;
     }
 
