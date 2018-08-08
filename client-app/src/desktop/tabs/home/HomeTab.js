@@ -24,14 +24,14 @@ export class HomeTab extends Component {
                 item: [
                     <div className="toolbox-welcome">
                         <p>
-                            Toolbox provides an inventory and demonstration of key components,
+                            Toolbox provides an inventory and examples of key components,
                             code, and UI patterns available
                             in <a href="https://github.com/exhi/hoist-react/" target="_blank">Hoist React</a>,
                             a library created by <a href="https://xh.io" target="_blank"> Extremely
                             Heavy Industries</a> for building and operating enterprise web applications.
                         </p>
                         <p>
-                            Navigate using the tabs above to explore the available examples. The Toolbox
+                            Navigate using the tabs above to explore the available components. The Toolbox
                             app itself is written using Hoist React, and its <a href="https://github.com/exhi/toolbox">source
                             code</a> is available on Github for review.
                         </p>
