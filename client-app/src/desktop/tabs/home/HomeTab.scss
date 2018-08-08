@@ -1,0 +1,12 @@
+.toolbox-welcome {
+  padding: var(--xh-pad-double-px);
+  font-size: var(--xh-font-size-large-px);
+  text-align: justify;
+
+  &__logo {
+    text-align: center;
+    img {
+      width: 600px;
+    }
+  }
+}

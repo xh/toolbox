@@ -28,7 +28,7 @@ export class IconsTab extends Component {
             description: [
                 <p>
                     Hoist includes the latest version of the
-                    ubiquitous <a href={'https://fontawesome.com/icons'} target={'_blank'}>Font Awesome</a> library
+                    ubiquitous <a href="https://fontawesome.com/icons" target="_blank">Font Awesome</a> library
                     and its companion project, react-fontawesome. Hoist exports an <code>Icon</code> constant
                     to expose a preselected set of icons as element factories. This ensures that many
                     of the most common glyphs are built-in (while also mapping icons to several

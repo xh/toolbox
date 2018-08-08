@@ -117,7 +117,7 @@ export class RestGridPanel extends Component {
                     Use the toolbar buttons or double-click a record to display its associated add/edit
                     form, including type-specific editor fields. These grids are especially useful
                     when building lookup tables of simple objects and are used throughout
-                    the <a href={'/admin'} target={'_blank'}>Hoist Admin Console</a>.
+                    the <a href="/admin" target="_blank">Hoist Admin Console</a>.
                 </p>
             ],
             item: panel({
