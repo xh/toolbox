@@ -142,6 +142,8 @@ render() {
                     <Grid model={files} />
                 </Panel>
             </Resizable>
+            <LogViewer model={model} />
+            <LoadMask model={loadModel} />
         </HFrame>
     );
 }
