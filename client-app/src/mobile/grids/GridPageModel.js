@@ -9,7 +9,6 @@ import {XH, HoistModel} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/mobile/cmp/grid';
 import {LastPromiseModel} from '@xh/hoist/promise';
 import {LocalStore} from '@xh/hoist/data';
-import {baseCol} from '@xh/hoist/columns/Core';
 import {numberRenderer} from '@xh/hoist/format';
 
 import {companyTrades} from '../../core/data';
@@ -30,7 +29,7 @@ export class GridPageModel {
         rightColumn: {
             headerName: 'P&L',
             field: 'profit_loss',
-            renderer: numberRenderer({
+            valueFormatter: numberRenderer({
                 precision: 0,
                 ledger: true,
                 colorSpec: true,
