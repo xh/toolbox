@@ -28,7 +28,7 @@ export class VBoxContainerPanel extends Component {
                     flex: 1,
                     items: [
                         this.renderBox({flex: 1, item: 'flex: 1'}),
-                        this.renderBox({height: 100, item: 'height: 100'}),
+                        this.renderBox({height: 50, item: 'height: 50'}),
                         this.renderBox({flex: 2, item: 'flex: 2'})
                     ]
                 })
@@ -38,8 +38,6 @@ export class VBoxContainerPanel extends Component {
 
     renderBox(args) {
         return box({
-            padding: 10,
-            height: 300,
             className: 'toolbox-containers-box',
             ...args
         });
