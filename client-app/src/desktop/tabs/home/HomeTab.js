@@ -5,11 +5,12 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
 import logo from '../../../core/img/xhio+hoist.png';
+import logoDark from '../../../core/img/xhio+hoist-dark.png';
 import './HomeTab.scss';
 
 @HoistComponent()
@@ -37,7 +38,7 @@ export class HomeTab extends Component {
                             available on Github for review.
                         </p>
                         <div className="toolbox-welcome__logo">
-                            <img src={logo} alt="xh.io + Hoist"/>
+                            <img src={XH.darkTheme ? logoDark : logo} alt="xh.io + Hoist"/>
                             <p>
                                 Please do not hesitate to {link('contact us', 'https://xh.io/contact/')} with
                                 any questions or for more information.
