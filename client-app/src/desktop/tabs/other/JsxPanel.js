@@ -23,15 +23,20 @@ export class JsxPanel extends Component {
                 <p>
                     JSX is the XML-like extension to Javascript typically used to specify
                     and configure React components. While most React guides and examples on the web
-                    will use JSX, Hoist React provides an alternative syntax that looks and works
-                    more like "native" Javascript, while preserving several key advantages of
-                    JSX when it comes to clearly defining a component hierarchy.
+                    will use JSX, Hoist React provides an alternative native Javascript syntax based
+                    on a factory pattern.
                 </p>,
                 <p>
-                    Hoist encourages the use of its elemFactory() method to create and export
+                    Hoist encourages the use of its <code>elemFactory()</code> method to create and export
                     factory methods for custom components. These methods take a configuration
                     object where properties and child elements are specified without any wrapping
                     braces or additional syntax required.
+                </p>,
+                <p>
+                    We believe that the factory approach excels for declarative specification
+                    of code-heavy element trees.  For element trees with a significant amount of
+                    hypertext, JSX might be a better choice. Both can be used interchangably, even within
+                    the same render method.
                 </p>
             ],
             item: hframe({
