@@ -66,7 +66,7 @@ export class RestGridPanel extends Component {
         columns: [
             {
                 field: 'name',
-                width: 250,
+                width: 250
             },
             {
                 field: 'type',
@@ -83,9 +83,8 @@ export class RestGridPanel extends Component {
                 ...boolCheckCol,
                 headerName: 'Active?',
                 width: 100
-            }, {
-                ...emptyFlexCol
-            }
+            },
+            {...emptyFlexCol}
         ],
         editors: [
             {field: 'name'},
