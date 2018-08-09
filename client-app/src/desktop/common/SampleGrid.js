@@ -14,7 +14,7 @@ import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {baseCol, boolCheckCol} from '@xh/hoist/columns';
+import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {App} from '../App';
@@ -47,35 +47,35 @@ class SampleGrid extends Component {
             });
         },
         columns: [
-            boolCheckCol({
+            {
+                field: 'active',
+                ...boolCheckCol,
                 headerName: '',
-                colChooserName: 'Active Status',
-                field: 'active'
-            }),
-            baseCol({
-                headerName: 'Company',
+                colChooserName: 'Active Status'
+            },
+            {
                 field: 'company',
-                flex: 1
-            }),
-            baseCol({
-                headerName: 'City',
+                width: 200
+            },
+            {
                 field: 'city',
-                fixedWidth: 150
-            }),
-            baseCol({
+                width: 150
+            },
+            {
                 headerName: 'Trade Volume',
                 field: 'trade_volume',
                 align: 'right',
-                fixedWidth: 130,
-                cellRenderer: millionsRenderer({precision: 1, label: true})
-            }),
-            baseCol({
+                width: 130,
+                renderer: millionsRenderer({precision: 1, label: true})
+            },
+            {
                 headerName: 'P&L',
                 field: 'profit_loss',
                 align: 'right',
-                fixedWidth: 130,
-                cellRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
-            })
+                width: 130,
+                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+            },
+            {...emptyFlexCol}
         ]
     });
 

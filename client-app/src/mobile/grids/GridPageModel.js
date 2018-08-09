@@ -9,7 +9,6 @@ import {XH, HoistModel} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/mobile/cmp/grid';
 import {LastPromiseModel} from '@xh/hoist/promise';
 import {LocalStore} from '@xh/hoist/data';
-import {baseCol} from '@xh/hoist/columns/Core';
 import {numberRenderer} from '@xh/hoist/format';
 
 import {companyTrades} from '../../core/data';
@@ -23,11 +22,11 @@ export class GridPageModel {
         store: new LocalStore({
             fields: ['company', 'profit_loss']
         }),
-        leftColumn: baseCol({
+        leftColumn: {
             headerName: 'Company',
             field: 'company'
-        }),
-        rightColumn: baseCol({
+        },
+        rightColumn: {
             headerName: 'P&L',
             field: 'profit_loss',
             valueFormatter: numberRenderer({
@@ -36,7 +35,7 @@ export class GridPageModel {
                 colorSpec: true,
                 asElement: true
             })
-        })
+        }
     });
 
     constructor() {
