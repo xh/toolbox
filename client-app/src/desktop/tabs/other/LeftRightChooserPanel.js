@@ -20,7 +20,8 @@ export class LeftRightChooserPanel extends Component {
     localModel = new LeftRightChooserModel({
         data,
         ungroupedName: 'Others',
-        rightGroupingEnabled: false
+        rightGroupingEnabled: false,
+        leftGroupingExpanded: false
     });
 
     @observable anyMatch = false;
