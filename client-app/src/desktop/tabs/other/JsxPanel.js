@@ -78,11 +78,7 @@ render() {
         ...this.props,
         className: 'xh-log-viewer',
         items: [
-            resizable({
-                side: 'right',
-                contentSize: 250,
-                isOpen: true,
-                item: panel({
+            panel({
                     item: grid({model: files}),
                     bbar: toolbar(
                         ...buttonCfgs.map(props => button(props)),
@@ -99,7 +95,6 @@ render() {
                         })
                      )
                 })
-            }),
             logViewer({model}),
             loadMask({model: loadModel})
         ]
@@ -116,40 +111,34 @@ render() {
             {...this.props}
             className="xh-log-viewer"
         >
-            <Resizable
-                side="right"
-                contentSize={250}
-                isOpen
-            >
-                <Panel
-                    bbar={
-                        <Toolbar>
-                            {
-                                buttonCfgs.map(props => {
-                                    return <Button {...props} />;
-                                })
-                            }
-                            {
-                                XH.getUser().isHoistAdmin && 
-                                    <DeleteButton
-                                        onClick={
-                                            () => {
-                                                this.doDelete();
-                                            }
+            <Panel
+                bbar={
+                    <Toolbar>
+                        {
+                            buttonCfgs.map(props => {
+                                return <Button {...props} />;
+                            })
+                        }
+                        {
+                            XH.getUser().isHoistAdmin && 
+                                <DeleteButton
+                                    onClick={
+                                        () => {
+                                            this.doDelete();
                                         }
-                                    />
-                            }
-                            <Filler />
-                            <StoreFilterField
-                                store={files.store}
-                                fields={['filename']}
-                            />
-                        </Toolbar>
-                    }
-                >
-                    <Grid model={files} />
-                </Panel>
-            </Resizable>
+                                    }
+                                />
+                        }
+                        <Filler />
+                        <StoreFilterField
+                            store={files.store}
+                            fields={['filename']}
+                        />
+                    </Toolbar>
+                }
+            >
+                <Grid model={files} />
+            </Panel>
             <LogViewer model={model} />
             <LoadMask model={loadModel} />
         </HFrame>

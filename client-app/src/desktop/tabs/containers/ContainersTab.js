@@ -10,7 +10,7 @@ import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
 import {HBoxContainerPanel} from './HBoxContainerPanel';
 import {VBoxContainerPanel} from './VBoxContainerPanel';
-import {ResizableContainerPanel} from './ResizableContainerPanel';
+import {PanelContainerPanel} from './PanelContainerPanel';
 import {TabPanelContainerPanel} from './TabPanelContainerPanel';
 import {ToolbarPanel} from './ToolbarPanel';
 
@@ -25,7 +25,7 @@ export class ContainersTab extends Component {
             {id: 'hbox', title: 'HBox', content: HBoxContainerPanel},
             {id: 'vbox', title: 'VBox', content: VBoxContainerPanel},
             {id: 'tabPanel', title: 'TabContainer', content: TabPanelContainerPanel},
-            {id: 'resizable', content: ResizableContainerPanel},
+            {id: 'panel', content: PanelContainerPanel},
             {id: 'toolbar', content: ToolbarPanel}
         ]
     });
