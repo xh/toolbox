@@ -78,7 +78,7 @@ export class MaskPanel extends Component {
 
     showMask = () => {
         runInAction(() => this.maskIsShown = true);
-        wait(this.seconds * 1000).thenInAction(() => this.maskIsShown = false);
+        wait(this.seconds * 1000).thenAction(() => this.maskIsShown = false);
     }
 
 }
