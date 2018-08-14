@@ -51,7 +51,7 @@ class SampleGrid extends Component {
                 field: 'active',
                 ...boolCheckCol,
                 headerName: '',
-                colChooserName: 'Active Status'
+                chooserName: 'Active Status'
             },
             {
                 field: 'company',
