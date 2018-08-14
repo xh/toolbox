@@ -8,20 +8,32 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, hbox} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {resizable} from '@xh/hoist/desktop/cmp/resizable';
+import {panel, PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent()
-export class ResizableContainerPanel extends Component {
+export class PanelContainerPanel extends Component {
+
+    leftSizingModel = new PanelSizingModel({
+        defaultSize: 125,
+        side: 'left'
+    });
+
+    bottomSizingModel = new PanelSizingModel({
+        defaultSize: 100,
+        side: 'bottom'
+    });
+
     render() {
         return wrapper({
             description: `
-                A resizable provides support for collapsing and drag-and-drop resizing of its 
-                child components, including support for saving user state in a preference.
+                Panels provides support for a number of important and frequent layout tasks.  They include a header bar
+                with a standard icon, title, and header items.  They also provide support for toolbars.  Finally they
+                can support collapsing and drag-and-drop resizing, and include support for automatically saving this
+                state in a preference.
             `,
             item: panel({
-                title: 'Containers > Resizable',
+                title: 'Containers > Panel',
                 icon: Icon.arrowToRight(),
                 height: 400,
                 width: 700,
@@ -29,10 +41,8 @@ export class ResizableContainerPanel extends Component {
                     hbox({
                         flex: 1,
                         items: [
-                            resizable({
-                                side: 'right',
-                                contentSize: 125,
-                                isOpen: true,
+                            panel({
+                                sizingModel: this.leftSizingModel,
                                 item: box({
                                     padding: 10,
                                     item: 'Collapsible Left'
@@ -44,10 +54,8 @@ export class ResizableContainerPanel extends Component {
                             })
                         ]
                     }),
-                    resizable({
-                        side: 'top',
-                        contentSize: 100,
-                        isOpen: true,
+                    panel({
+                        sizingModel: this.bottomSizingModel,
                         item: box({
                             padding: 10,
                             item: 'Collapsible Bottom'

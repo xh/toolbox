@@ -67,7 +67,7 @@ class AppClass {
                         children: [
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
-                            {name: 'resizable', path: '/resizable'},
+                            {name: 'panel', path: '/panel'},
                             {name: 'tabPanel', path: '/tabPanel'},
                             {name: 'toolbar', path: '/toolbar'}
                         ]
