@@ -31,8 +31,9 @@ export class LoadMaskPanel extends Component {
 
         return wrapper({
             description: <p>
-                LoadMask adds a spinner to the default mask component. It can also display optional
-                text, and can be placed over the entire viewport with <code>inline:false</code>.
+                LoadMask adds a spinner to the default mask component. It can display optional
+                text or dymanically relay messages from a linked PromiseModel. It can also be
+                placed over the entire viewport with <code>inline:false</code>.
             </p>,
             item: panel({
                 title: 'Other > LoadMask',
