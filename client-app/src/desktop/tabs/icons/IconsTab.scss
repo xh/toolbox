@@ -2,9 +2,12 @@
   height: calc(100% - 200px);
   overflow: auto;
 
+  .toolbox-icons-table-scroller {
+    overflow-y: scroll;
+  }
+
   table {
     width: 100%;
-    height: 100%;
     border-collapse: collapse;
 
     tbody {

@@ -24,6 +24,8 @@ export class IconsTab extends Component {
             <td>{icon.light}</td>
         </tr>;
 
+        console.log(this.getAllIcons().map(icon => row(icon)));
+
         return wrapper({
             description: [
                 <p>
@@ -46,11 +48,13 @@ export class IconsTab extends Component {
                 className: 'toolbox-icons-panel',
                 width: 700,
                 item: [
-                    <table>
-                        <tbody>
-                            {this.getAllIcons().map(icon => row(icon))}
-                        </tbody>
-                    </table>
+                    <div className="toolbox-icons-table-scroller">
+                        <table>
+                            <tbody>
+                                {this.getAllIcons().map(icon => row(icon))}
+                            </tbody>
+                        </table>
+                    </div>
                 ]
             })
         });
