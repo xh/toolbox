@@ -24,8 +24,6 @@ export class IconsTab extends Component {
             <td>{icon.light}</td>
         </tr>;
 
-        console.log(this.getAllIcons().map(icon => row(icon)));
-
         return wrapper({
             description: [
                 <p>
