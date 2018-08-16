@@ -7,8 +7,10 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {box, hbox} from '@xh/hoist/cmp/layout';
+import {box, hbox, filler} from '@xh/hoist/cmp/layout';
 import {panel, PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar/index';
+import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent()
@@ -19,10 +21,23 @@ export class PanelContainerPanel extends Component {
         side: 'left'
     });
 
+    rightSizingModel = new PanelSizingModel({
+        defaultSize: 125,
+        side: 'right'
+    });
+
     bottomSizingModel = new PanelSizingModel({
-        defaultSize: 100,
+        defaultSize: 130,
         side: 'bottom'
     });
+
+    get allExpanded() {
+        return !this.leftSizingModel.collapsed && !this.rightSizingModel.collapsed && !this.bottomSizingModel.collapsed;
+    }
+
+    get allCollapsed() {
+        return this.leftSizingModel.collapsed && this.rightSizingModel.collapsed && this.bottomSizingModel.collapsed;
+    }
 
     render() {
         return wrapper({
@@ -35,26 +50,52 @@ export class PanelContainerPanel extends Component {
             item: panel({
                 title: 'Containers > Panel',
                 icon: Icon.arrowToRight(),
-                height: 400,
+                height: 450,
                 width: 700,
                 items: [
                     hbox({
                         flex: 1,
                         items: [
                             panel({
+                                title: 'Left Panel',
+                                icon: Icon.chevronLeft(),
                                 sizingModel: this.leftSizingModel,
                                 item: box({
                                     padding: 10,
                                     item: 'Collapsible Left'
                                 })
                             }),
-                            box({
-                                padding: 10,
-                                item: 'Main Content Area'
+                            panel({
+                                item: box({
+                                    padding: 10,
+                                    item: 'Main Content Area'
+                                }),
+                                tbar: toolbar(
+                                    filler(),
+                                    button({
+                                        text: 'Expand All',
+                                        disabled: this.allExpanded,
+                                        onClick: () => this.setCollapsedAll(false)
+                                    }),
+                                    button({
+                                        text: 'Collapse All',
+                                        disabled: this.allCollapsed,
+                                        onClick: () => this.setCollapsedAll(true)
+                                    })
+                                )
+                            }),
+                            panel({
+                                sizingModel: this.rightSizingModel,
+                                item: box({
+                                    padding: 10,
+                                    item: 'Collapsible Right'
+                                })
                             })
                         ]
                     }),
                     panel({
+                        title: 'Bottom Panel',
+                        icon: Icon.chevronDown(),
                         sizingModel: this.bottomSizingModel,
                         item: box({
                             padding: 10,
@@ -65,4 +106,11 @@ export class PanelContainerPanel extends Component {
             })
         });
     }
+
+    setCollapsedAll(collapsed) {
+        this.leftSizingModel.setCollapsed(collapsed);
+        this.rightSizingModel.setCollapsed(collapsed);
+        this.bottomSizingModel.setCollapsed(collapsed);
+    }
+
 }
