@@ -7,7 +7,7 @@
 
 import {XH, HoistModel} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/mobile/cmp/grid';
-import {LastPromiseModel} from '@xh/hoist/promise';
+import {PendingTaskModel} from '@xh/hoist/promise';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 
@@ -16,7 +16,7 @@ import {companyTrades} from '../../core/data';
 @HoistModel()
 export class GridPageModel {
 
-    loadModel = new LastPromiseModel();
+    loadModel = new PendingTaskModel();
 
     gridModel = new GridModel({
         store: new LocalStore({
