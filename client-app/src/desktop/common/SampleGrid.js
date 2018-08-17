@@ -12,7 +12,7 @@ import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {exportButton} from '@xh/hoist/desktop/cmp/button';
+import {button, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
@@ -107,6 +107,11 @@ class SampleGrid extends Component {
                         units: 'companies'
                     }),
                     filler(),
+                    button({
+                        icon: Icon.grid(),
+                        text: model.compact ? 'Standard' : 'Compact',
+                        onClick: () => model.setCompact(!model.compact)
+                    }),
                     colChooserButton({gridModel: model}),
                     exportButton({model, exportType: 'excel'})
                 ]
