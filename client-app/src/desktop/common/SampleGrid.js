@@ -6,13 +6,15 @@
  */
 import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
-import {filler} from '@xh/hoist/cmp/layout';
+import {box, filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton} from '@xh/hoist/desktop/cmp/button';
+import {switchField} from '@xh/hoist/desktop/cmp/form';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
@@ -107,6 +109,12 @@ class SampleGrid extends Component {
                         units: 'companies'
                     }),
                     filler(),
+                    box('Compact mode:'),
+                    switchField({
+                        field: 'compact',
+                        model
+                    }),
+                    toolbarSep(),
                     colChooserButton({gridModel: model}),
                     exportButton({model, exportType: 'excel'})
                 ]
