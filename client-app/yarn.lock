@@ -237,8 +237,8 @@
     webpack-dev-server "~2.11.2"
 
 "@xh/hoist@^12.0.0-SNAPSHOT":
-  version "12.0.0-SNAPSHOT.1534419667327"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-12.0.0-SNAPSHOT.1534419667327.tgz#11f87151652925037f4d6ee9813997c8d66388fc"
+  version "12.0.0-SNAPSHOT.1534521523285"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-12.0.0-SNAPSHOT.1534521523285.tgz#d16de2951e7ca53430ffa74c7ef1723a19661943"
   dependencies:
     "@blueprintjs/core" "~3.0.1"
     "@blueprintjs/datetime" "~3.0.0"
