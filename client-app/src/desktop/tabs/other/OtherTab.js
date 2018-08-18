@@ -10,7 +10,6 @@ import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
 import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {MaskPanel} from './MaskPanel';
-import {LoadMaskPanel} from './LoadMaskPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {JsxPanel} from './JsxPanel';
 
@@ -21,7 +20,6 @@ export class OtherTab extends Component {
         route: 'default.other',
         tabs: [
             {id: 'mask', title: 'Mask', content: MaskPanel},
-            {id: 'loadMask', title: 'LoadMask', content: LoadMaskPanel},
             {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
             {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
             {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel}

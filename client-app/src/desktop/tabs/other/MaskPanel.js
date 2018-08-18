@@ -7,23 +7,37 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
-import {observable, action, runInAction} from '@xh/hoist/mobx';
+import {observable, action} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
-import {numberField, textField} from '@xh/hoist/desktop/cmp/form';
+import {numberField, textField, switchField} from '@xh/hoist/desktop/cmp/form';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {SECONDS} from '@xh/hoist/utils/datetime';
+import {mask} from '@xh/hoist/desktop/cmp/mask';
+
 import {sampleGrid, wrapper} from '../../common';
+
 
 @HoistComponent()
 export class MaskPanel extends Component {
 
-    @observable maskIsShown = false;
     @observable seconds = 3;
-    @observable maskText = '';
+    @action     setSeconds(v) {this.seconds = v}
+
+    @observable message = '';
+    @action     setMessage(v) {this.message = v}
+
+    @observable inline = false;
+    @action     setInline(v) {this.inline = v}
+
+    @observable spinner = false;
+    @action     setSpinner(v) {this.spinner = v}
+
+    maskModel = new PendingTaskModel();
 
     render() {
-        const {maskText, maskIsShown} = this;
 
         return wrapper({
             description: `
@@ -48,10 +62,20 @@ export class MaskPanel extends Component {
                         box('secs with'),
                         textField({
                             model: this,
-                            field: 'maskText',
+                            field: 'message',
                             width: 120,
                             placeholder: 'optional text'
                         }),
+                        switchField({
+                            model: this,
+                            field: 'inline'
+                        }),
+                        box({className: 'xh-no-pad', item: 'inline'}),
+                        switchField({
+                            model: this,
+                            field: 'spinner'
+                        }),
+                        box({className: 'xh-no-pad', item: 'with spinner'}),
                         filler(),
                         button({
                             text: 'Show Mask',
@@ -60,25 +84,28 @@ export class MaskPanel extends Component {
                         })
                     ]
                 }),
-                maskText: maskText,
-                masked: maskIsShown
+                mask: mask({
+                    spinner: this.spinner,
+                    inline: this.inline,
+                    model: this.maskModel
+                })
             })
         });
     }
 
-    @action
-    setSeconds(seconds) {
-        this.seconds = seconds;
-    }
-
-    @action
-    setMaskText(maskText) {
-        this.maskText = maskText;
-    }
-
     showMask = () => {
-        runInAction(() => this.maskIsShown = true);
-        wait(this.seconds * 1000).thenAction(() => this.maskIsShown = false);
+        this.showMaskSequenceAsync().linkTo(this.maskModel);
     }
 
+    @action
+    async showMaskSequenceAsync() {
+        const {maskModel, message, seconds} = this,
+            interval = seconds / 3 * SECONDS;
+        if (message) maskModel.setMessage(message);
+        await wait(interval);
+        if (message) maskModel.setMessage(message + ' - Still Loading...');
+        await wait(interval);
+        if (message) maskModel.setMessage(message + ' - Almost Finished...');
+        await wait(interval);
+    }
 }

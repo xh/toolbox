@@ -7,7 +7,7 @@
 
 import {XH, HoistModel} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/mobile/cmp/grid';
-import {PendingTaskModel} from '@xh/hoist/promise';
+import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 
