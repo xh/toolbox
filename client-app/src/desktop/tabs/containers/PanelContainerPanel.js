@@ -50,7 +50,7 @@ export class PanelContainerPanel extends Component {
             `,
             item: panel({
                 title: 'Containers > Panel',
-                icon: Icon.arrowToRight(),
+                icon: Icon.window(),
                 height: 450,
                 width: 700,
                 items: [
