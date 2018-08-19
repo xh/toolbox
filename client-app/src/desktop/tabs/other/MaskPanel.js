@@ -29,10 +29,10 @@ export class MaskPanel extends Component {
     @observable message = '';
     @action     setMessage(v) {this.message = v}
 
-    @observable inline = false;
+    @observable inline = true;
     @action     setInline(v) {this.inline = v}
 
-    @observable spinner = false;
+    @observable spinner = true;
     @action     setSpinner(v) {this.spinner = v}
 
     maskModel = new PendingTaskModel();
