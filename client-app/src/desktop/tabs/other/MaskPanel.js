@@ -4,9 +4,10 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
+import {Icon} from '@xh/hoist/icon';
 import {observable, action} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {numberField, textField, switchField} from '@xh/hoist/desktop/cmp/form';
@@ -23,7 +24,7 @@ import {sampleGrid, wrapper} from '../../common';
 @HoistComponent()
 export class MaskPanel extends Component {
 
-    @observable seconds = 3;
+    @observable seconds = 6;
     @action     setSeconds(v) {this.seconds = v}
 
     @observable message = '';
@@ -40,12 +41,26 @@ export class MaskPanel extends Component {
     render() {
 
         return wrapper({
-            description: `
-                Masks provide a semi-opaque overlay to disable interaction with a component.
-                The most convenient way to display a mask is via the masked property of Panel.
-            `,
+            description: [
+                <p>
+                    Masks provide a semi-opaque overlay to disable interaction with a component. They
+                    are typically configured with a <code>PendingTaskModel</code>, which is a general
+                    model class used to track the status of one or more asynchronous Promises. In
+                    controlled mode, the model will reactively show/hide a bound mask while a linked
+                    promise is pending.
+                </p>,
+                <p>
+                    A convenient way to display a mask is via the <code>mask</code> property of Panel.
+                    This prop can accept a fully configured mask element or simply <code>true</code>
+                    to show a default mask. Either will be shown over the parent Panel.
+                </p>,
+                <p>
+                    A mask configured with <code>inline: false</code> will mask the entire Viewport.
+                </p>
+            ],
             item: panel({
                 title: 'Other > Mask',
+                icon: Icon.eyeSlash(),
                 width: 700,
                 height: 400,
                 item: sampleGrid({omitToolbar: true}),
