@@ -5,12 +5,13 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, hbox, filler} from '@xh/hoist/cmp/layout';
 import {panel, PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar/index';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
+import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent()
@@ -42,14 +43,14 @@ export class PanelContainerPanel extends Component {
     render() {
         return wrapper({
             description: `
-                Panels provides support for a number of important and frequent layout tasks.  They include a header bar
-                with a standard icon, title, and header items.  They also provide support for toolbars.  Finally they
-                can support collapsing and drag-and-drop resizing, and include support for automatically saving this
-                state in a preference.
+                Panels support a number of important and frequent layout tasks. They include a header 
+                bar with a standard icon, title, and header items. They accept props to create docked
+                top and and bottom toolbars. Finally they support collapsing and drag-and-drop resizing, 
+                optionally saving their sizing state in a per-user preference.
             `,
             item: panel({
                 title: 'Containers > Panel',
-                icon: Icon.arrowToRight(),
+                icon: Icon.window(),
                 height: 450,
                 width: 700,
                 items: [
@@ -100,7 +101,20 @@ export class PanelContainerPanel extends Component {
                         item: box({
                             padding: 10,
                             item: 'Collapsible Bottom'
-                        })
+                        }),
+                        headerItems: [
+                            box('Rendered '),
+                            relativeTimestamp({
+                                timestamp: Date.now(),
+                                marginLeft: 4
+                            }),
+                            button({
+                                icon: Icon.gear(),
+                                minimal: true,
+                                large: true,
+                                onClick: () => XH.toast({message: 'You clicked a Panel headerItem'})
+                            })
+                        ]
                     })
                 ]
             })

@@ -24,8 +24,8 @@ export class ContainersTab extends Component {
         tabs: [
             {id: 'hbox', title: 'HBox', content: HBoxContainerPanel},
             {id: 'vbox', title: 'VBox', content: VBoxContainerPanel},
-            {id: 'tabPanel', title: 'TabContainer', content: TabPanelContainerPanel},
             {id: 'panel', content: PanelContainerPanel},
+            {id: 'tabPanel', title: 'TabContainer', content: TabPanelContainerPanel},
             {id: 'toolbar', content: ToolbarPanel}
         ]
     });
