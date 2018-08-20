@@ -12,7 +12,6 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {comboField, label} from '@xh/hoist/desktop/cmp/form';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
-import {loadMask} from '@xh/hoist/desktop/cmp/mask';
 import {LineChartModel} from './LineChartModel';
 
 @HoistComponent()
@@ -42,15 +41,9 @@ export class LineChartPanel extends Component {
     }
 
     renderExample() {
-        const model = this.model,
-            {chartModel} = model;
-
         return vframe({
             className: 'toolbox-example-container',
-            items: [
-                chart({model: chartModel}),
-                loadMask({isOpen: false})
-            ]
+            item: chart({model: this.model.chartModel})
         });
     }
 }

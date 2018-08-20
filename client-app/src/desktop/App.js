@@ -106,7 +106,6 @@ class AppClass {
                         forwardTo: 'default.other.mask',
                         children: [
                             {name: 'mask', path: '/mask'},
-                            {name: 'loadMask', path: '/loadMask'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'timestamp', path: '/timestamp'},
                             {name: 'jsx', path: '/jsx'}

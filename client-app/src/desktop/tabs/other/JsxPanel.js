@@ -96,7 +96,7 @@ render() {
                      )
                 })
             logViewer({model}),
-            loadMask({model: loadModel})
+            mask({model: loadModel})
         ]
     });
 }
@@ -140,7 +140,7 @@ render() {
                 <Grid model={files} />
             </Panel>
             <LogViewer model={model} />
-            <LoadMask model={loadModel} />
+            <Mask model={loadModel} />
         </HFrame>
     );
 }

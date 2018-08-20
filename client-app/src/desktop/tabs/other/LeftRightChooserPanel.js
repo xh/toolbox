@@ -7,12 +7,13 @@
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common/Wrapper';
+import {observable, runInAction} from '@xh/hoist/mobx';
+import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@xh/hoist/desktop/cmp/leftrightchooser';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {switchField} from '@xh/hoist/desktop/cmp/form';
 import data from './impl/LeftRightChooserData';
-import {observable, runInAction} from '@xh/hoist/mobx';
 
 @HoistComponent()
 export class LeftRightChooserPanel extends Component {
@@ -41,6 +42,7 @@ export class LeftRightChooserPanel extends Component {
             ],
             item: panel({
                 title: 'Other > LeftRightChooser',
+                icon: Icon.arrowsLeftRight(),
                 width: 700,
                 height: 400,
                 item: leftRightChooser({
