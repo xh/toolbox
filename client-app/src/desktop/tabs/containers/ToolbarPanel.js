@@ -51,13 +51,11 @@ export class ToolbarPanel extends Component {
                         position: 'bottom-left',
                         minimal: true,
                         target: button({icon: Icon.chevronDown()}),
-                        content: menu({
-                            items: [
-                                menuItem({text: 'Menu Item'}),
-                                menuItem({text: 'Menu Item 2'}),
-                                menuItem({text: 'Menu Item 3'})
-                            ]
-                        })
+                        content: menu(
+                            menuItem({text: 'Menu Item'}),
+                            menuItem({text: 'Menu Item 2'}),
+                            menuItem({text: 'Menu Item 3'})
+                        )
                     }),
                     filler(),
                     'Danger mode',
