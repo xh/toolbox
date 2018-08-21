@@ -54,8 +54,8 @@ export class ToolbarPanel extends Component {
                         content: menu({
                             items: [
                                 menuItem({text: 'Menu Item'}),
-                                menuItem({text: 'Menu Item 3', items: [menuItem({text: 'Sub item'})]}),
-                                menuItem({text: 'Menu Item 2'})
+                                menuItem({text: 'Menu Item 2'}),
+                                menuItem({text: 'Menu Item 3'})
                             ]
                         })
                     }),
