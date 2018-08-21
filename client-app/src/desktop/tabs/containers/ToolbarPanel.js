@@ -85,24 +85,7 @@ export class ToolbarPanel extends Component {
                                 button({icon: Icon.add()}),
                                 button({icon: Icon.delete()}),
                                 toolbarSep(),
-                                popover({
-                                    position: 'right',
-                                    target: button({icon: Icon.gears()}),
-                                    content: menu({
-                                        items: [
-                                            menuItem({text: 'Setting'}),
-                                            menuItem({text: 'Another Setting'}),
-                                            menuItem({
-                                                text: 'Sub Settings',
-                                                active: false,
-                                                items: [
-                                                    menuItem({text: 'Subsetting'}),
-                                                    menuItem({text: 'Another Subsetting'})
-                                                ]
-                                            })
-                                        ]
-                                    })
-                                }),
+                                button({icon: Icon.gears()}),
                                 filler()
                             ]
                         }),
