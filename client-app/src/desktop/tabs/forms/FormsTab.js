@@ -32,7 +32,7 @@ import {usStates, movies} from '../../../core/data';
 import {wrapper} from '../../common';
 import {FormsTabModel} from './FormsTabModel';
 import {App} from '../../App';
-import {validationErrors} from '@xh/hoist/desktop/cmp/validation';
+import {validationErrors} from '@xh/hoist/cmp/validation';
 
 import './FormsTab.scss';
 

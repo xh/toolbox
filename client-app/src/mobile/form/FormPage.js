@@ -8,8 +8,11 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
+import {validationErrors} from '@xh/hoist/cmp/validation';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {label, textField, selectField, textAreaField} from '@xh/hoist/mobile/cmp/form';
+import {button} from '@xh/hoist/mobile/cmp/button';
+import {searchField} from '@xh/hoist/mobile/cmp/form';
 
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
@@ -19,7 +22,8 @@ export class FormPage extends Component {
     localModel = new FormPageModel();
 
     render() {
-        const {model} = this;
+        const {model} = this,
+            {validationModel} = model;
         return page({
             className: 'toolbox-page form-page',
             items: [
@@ -28,16 +32,31 @@ export class FormPage extends Component {
                     items: [
                         this.renderField('Name:', textField, {
                             model,
-                            field: 'name'
+                            field: 'name',
+                            validationModel
                         }),
                         this.renderField('Favourite Movie:', selectField, {
                             model,
                             options: model.movies,
-                            field: 'movie'
+                            field: 'movie',
+                            validationModel
                         }),
                         this.renderField('Notes:', textAreaField, {
                             model,
-                            field: 'notes'
+                            field: 'notes',
+                            validationModel
+                        }),
+                        this.renderField('Search: ', searchField, {
+                            model,
+                            field: 'searchQuery',
+                            validationModel
+                        }),
+                        validationErrors({
+                            model: validationModel
+                        }),
+                        button({
+                            text: 'Validate',
+                            onClick: () => validationModel.validateAsync()
                         })
                     ]
                 }),

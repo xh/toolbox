@@ -12,6 +12,20 @@
       margin: 0;
       border: var(--xh-border-solid);
       border-radius: var(--xh-border-radius-px);
+
+      &.xh-field-invalid {
+        &.xh-textarea-field, &.xh-text-field, &.xh-search-field {
+          border: 1px solid var(--xh-form-field-invalid-border-color);
+        }
+      }
+    }
+
+    ons-search-input {
+      height: 30px;
+    }
+
+    ons-input {
+      height: 30px;
     }
 
     textarea {
