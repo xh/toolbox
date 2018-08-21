@@ -5,6 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
+import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {XH, HoistComponent} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
 import {filler, frame, hframe} from '@xh/hoist/cmp/layout/index';
@@ -46,6 +47,18 @@ export class ToolbarPanel extends Component {
                         text: 'Edit',
                         intent: 'primary'
                     }),
+                    popover({
+                        position: 'bottom-left',
+                        minimal: true,
+                        target: button({icon: Icon.chevronDown()}),
+                        content: menu({
+                            items: [
+                                menuItem({text: 'Menu Item'}),
+                                menuItem({text: 'Menu Item 3', items: [menuItem({text: 'Sub item'})]}),
+                                menuItem({text: 'Menu Item 2'})
+                            ]
+                        })
+                    }),
                     filler(),
                     'Danger mode',
                     switchField({
@@ -72,7 +85,24 @@ export class ToolbarPanel extends Component {
                                 button({icon: Icon.add()}),
                                 button({icon: Icon.delete()}),
                                 toolbarSep(),
-                                button({icon: Icon.gears()}),
+                                popover({
+                                    position: 'right',
+                                    target: button({icon: Icon.gears()}),
+                                    content: menu({
+                                        items: [
+                                            menuItem({text: 'Setting'}),
+                                            menuItem({text: 'Another Setting'}),
+                                            menuItem({
+                                                text: 'Sub Settings',
+                                                active: false,
+                                                items: [
+                                                    menuItem({text: 'Subsetting'}),
+                                                    menuItem({text: 'Another Subsetting'})
+                                                ]
+                                            })
+                                        ]
+                                    })
+                                }),
                                 filler()
                             ]
                         }),
