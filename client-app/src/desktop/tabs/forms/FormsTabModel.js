@@ -1,9 +1,58 @@
-import {HoistModel} from '@xh/hoist/core';
+import {HoistModel, ValidationModel} from '@xh/hoist/core';
 import {observable, action} from '@xh/hoist/mobx';
 import {random} from 'lodash';
+import moment from 'moment';
 
 @HoistModel()
 export class FormsTabModel {
+    validationModel = new ValidationModel({
+        constraints: {
+            text1: {
+                presence: {
+                    allowEmpty: false,
+                    message: 'is required'
+                }
+            },
+            text2: {
+                email: {
+                    message: '^The email address entered is not a valid email address!'
+                }
+            },
+            text3: {
+                presence: true
+            },
+            text4: {
+                presence: true
+            },
+            text5: {
+                presence: true
+            },
+            number1: {
+                presence: true
+            },
+            number2: {
+                presence: true
+            },
+            option1: {
+                presence: true
+            },
+            option2: {
+                presence: true
+            },
+            option3: {
+                presence: true
+            },
+            date1: {
+                datetime: {
+                    dateOnly: true,
+                    earliest: moment().subtract(1, 'week').startOf('day').toDate()
+                }
+            },
+            bool1: true
+        },
+        model: this
+    });
+
     // TextField / TextArea
     @observable text1 = null;
     @observable text2 = null;
@@ -30,7 +79,6 @@ export class FormsTabModel {
     @observable date1 = new Date();
     @observable bool1 = false;
     @observable bool2 = false;
-
 
     @action setText1(v) {this.text1 = v}
     @action setText2(v) {this.text2 = v}
