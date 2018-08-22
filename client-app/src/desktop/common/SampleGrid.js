@@ -49,33 +49,82 @@ class SampleGrid extends Component {
             });
         },
         columns: [
+        //     {
+        //         field: 'active',
+        //         ...boolCheckCol,
+        //         headerName: '',
+        //         chooserName: 'Active Status'
+        //     },
+        //     {
+        //         field: 'company',
+        //         width: 200
+        //     },
+        //     {
+        //         field: 'city',
+        //         width: 150
+        //     },
+        //     {
+        //         headerName: 'Trade Volume',
+        //         field: 'trade_volume',
+        //         align: 'right',
+        //         width: 130,
+        //         renderer: millionsRenderer({precision: 1, label: true})
+        //     },
+        //     {
+        //         headerName: 'P&L',
+        //         field: 'profit_loss',
+        //         align: 'right',
+        //         width: 130,
+        //         renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+        //     },
+        //     {...emptyFlexCol},
+        // ]
             {
-                field: 'active',
-                ...boolCheckCol,
-                headerName: '',
-                chooserName: 'Active Status'
+                headerName: 'Demographics',
+                children: [
+                    {
+                        field: 'active',
+                        ...boolCheckCol,
+                        headerName: '',
+                        chooserName: 'Active Status',
+                        // A group can have children initially hidden. If you want to show or hide children,
+                        // set columnGroupShow to either 'open' or 'closed' to one or more of the children.
+                        // When a children set has columnGroupShow set, it behaves in the following way:
+                        // open: The child is only shown when the group is open.
+                        // closed: The child is only shown when the group is closed.
+                        // everything else: Any other value, including null and undefined, the child is always shown.
+                        // Do we want/need to support this?
+                        // columnGroupShow: 'open'
+                    },
+                    {
+                        field: 'company',
+                        width: 200,
+                        // columnGroupShow: 'closed'
+                    },
+                    {
+                        field: 'city',
+                        width: 150
+                    }
+                ]
             },
             {
-                field: 'company',
-                width: 200
-            },
-            {
-                field: 'city',
-                width: 150
-            },
-            {
-                headerName: 'Trade Volume',
-                field: 'trade_volume',
-                align: 'right',
-                width: 130,
-                renderer: millionsRenderer({precision: 1, label: true})
-            },
-            {
-                headerName: 'P&L',
-                field: 'profit_loss',
-                align: 'right',
-                width: 130,
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+                headerName: 'Data',
+                children: [
+                    {
+                        headerName: 'Trade Volume',
+                        field: 'trade_volume',
+                        align: 'right',
+                        width: 130,
+                        renderer: millionsRenderer({precision: 1, label: true})
+                    },
+                    {
+                        headerName: 'P&L',
+                        field: 'profit_loss',
+                        align: 'right',
+                        width: 130,
+                        renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+                    }
+                ]
             },
             {...emptyFlexCol}
         ]
