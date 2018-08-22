@@ -50,7 +50,10 @@ export class ToolbarPanel extends Component {
                     popover({
                         position: 'bottom-left',
                         minimal: true,
-                        target: button({icon: Icon.chevronDown()}),
+                        target: button({
+                            icon: Icon.chevronDown(),
+                            text: 'Menu Button'
+                        }),
                         content: menu(
                             menuItem({text: 'Menu Item'}),
                             menuItem({text: 'Menu Item 2'}),
@@ -67,7 +70,8 @@ export class ToolbarPanel extends Component {
                         icon: Icon.skull(),
                         text: 'Terminate',
                         intent: 'danger',
-                        disabled: !model.enableTerminate
+                        disabled: !model.enableTerminate,
+                        onClick: this.onTerminateClick
                     })
                 ),
                 items: [
@@ -110,18 +114,18 @@ export class ToolbarPanel extends Component {
                     }),
                     button({
                         text: 'Show Toast',
-                        onClick: this.showToast
+                        onClick: this.onShowToastClick
                     })
                 )
             })
         });
     }
 
-    toggleTermination = () => {
-
+    onTerminateClick = () => {
+        XH.toast({message: 'Game over!', icon: Icon.skull(), intent: 'danger'});
     }
 
-    showToast = () => {
+    onShowToastClick = () => {
         XH.toast({
             message: `Currently selected State: ${this.toolBarModel.state || 'None'}`
         });
