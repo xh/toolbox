@@ -7,20 +7,15 @@ import {cloneDeep} from 'lodash';
 @HoistService()
 export class TradeService {
 
-    @observable.ref
-    allTrades = [];
+    generateTrades() {
+        const trades = cloneDeep(companyTrades);
 
-    initAsync() {
-        return start(() => {
-            const trades = cloneDeep(companyTrades);
-
-            trades.forEach(it => {
-                it.trade_volume = it.trade_volume * 1000000;
-                it.active = it.trade_volume % 6 == 0;
-            });
-
-            runInAction(() => this.allTrades = trades);
+        trades.forEach(it => {
+            it.profit_loss = Math.round(it.profit_loss * Math.random())
+            it.trade_volume = it.trade_volume * 1000000;
+            it.active = it.trade_volume % 6 == 0;
         });
+        return trades;
     }
 
 }
