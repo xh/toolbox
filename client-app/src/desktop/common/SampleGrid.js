@@ -6,24 +6,29 @@
  */
 import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
+import {wait} from '@xh/hoist/promise';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {exportButton} from '@xh/hoist/desktop/cmp/button';
+import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchField} from '@xh/hoist/desktop/cmp/form';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
+import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {App} from '../App';
 
 @HoistComponent()
 @LayoutSupport
 class SampleGrid extends Component {
+
+    loadModel = new PendingTaskModel();
 
     localModel = new GridModel({
         store: new LocalStore({
@@ -77,16 +82,15 @@ class SampleGrid extends Component {
                 width: 130,
                 renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
             },
+            
             {...emptyFlexCol}
         ]
     });
 
     constructor(props) {
         super(props);
-
-        const {model} = this;
-        model.setGroupBy(this.props.groupBy);
-        model.loadData(App.tradeService.allTrades);
+        this.model.setGroupBy(this.props.groupBy);
+        this.loadAsync();
     }
 
     render() {
@@ -97,6 +101,7 @@ class SampleGrid extends Component {
             className: this.getClassName(),
             ...this.getLayoutProps(),
             item: grid({model}),
+            mask: mask({spinner: true, model: this.loadModel}),
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
@@ -116,7 +121,8 @@ class SampleGrid extends Component {
                     }),
                     toolbarSep(),
                     colChooserButton({gridModel: model}),
-                    exportButton({model, exportType: 'excel'})
+                    exportButton({model, exportType: 'excel'}),
+                    refreshButton({model: this})
                 ]
             })
         });
@@ -125,6 +131,12 @@ class SampleGrid extends Component {
     //------------------------
     // Implementation
     //------------------------
+    loadAsync() {
+        wait(250)
+            .then(() => this.model.loadData(App.tradeService.generateTrades()))
+            .linkTo(this.loadModel);
+    }
+
     showRecToast(rec) {
         XH.alert({
             title: rec.company,
