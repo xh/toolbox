@@ -1,101 +1,93 @@
-import {HoistModel, ValidationModel} from '@xh/hoist/core';
-import {observable, action} from '@xh/hoist/mobx';
+import {HoistModel} from '@xh/hoist/core';
+import {bindable} from '@xh/hoist/mobx';
+import {ValidationModel, required, date, length, number} from '@xh/hoist/validation';
 import {random} from 'lodash';
 import moment from 'moment';
 
 @HoistModel()
 export class FormsTabModel {
-    validationModel = new ValidationModel({
-        constraints: {
-            text1: {
-                presence: {
-                    allowEmpty: false,
-                    message: 'is required'
-                }
-            },
-            text2: {
-                email: {
-                    message: '^The email address entered is not a valid email address!'
-                }
-            },
-            text3: {
-                presence: true
-            },
-            text4: {
-                presence: true
-            },
-            text5: {
-                presence: true
-            },
-            number1: {
-                presence: true
-            },
-            number2: {
-                presence: true
-            },
-            option1: {
-                presence: true
-            },
-            option2: {
-                presence: true
-            },
-            option3: {
-                presence: true
-            },
-            date1: {
-                datetime: {
-                    dateOnly: true,
-                    earliest: moment().subtract(1, 'week').startOf('day').toDate()
-                }
-            },
-            bool1: true
-        },
-        model: this
-    });
 
     // TextField / TextArea
-    @observable text1 = null;
-    @observable text2 = null;
-    @observable text3 = null;
-    @observable text4 = null;
-    @observable text5 = null;
+    @bindable text1 = null;
+    @bindable text2 = null;
+    @bindable text3 = null;
+    @bindable text4 = null;
+    @bindable text5 = null;
 
     // NumberField / Single-val Slider
-    @observable number1 = null;
-    @observable number2 = null;
-    @observable number3 = random(0, 100);
-    @observable number4 = null;
+    @bindable number1 = null;
+    @bindable number2 = null;
+    @bindable number3 = random(0, 100);
+    @bindable number4 = null;
 
     // Multi-val Slider
-    @observable range1 = [random(50000, 70000), random(110000, 150000)];
+    @bindable range1 = [random(50000, 70000), random(110000, 150000)];
 
     // Dropdowns
-    @observable option1 = null;
-    @observable option2 = null;
-    @observable option3 = null;
-    @observable option4 = null;
+    @bindable option1 = null;
+    @bindable option2 = null;
+    @bindable option3 = null;
+    @bindable option4 = null;
 
     // Others
-    @observable date1 = new Date();
-    @observable bool1 = false;
-    @observable bool2 = false;
+    @bindable date1 = new Date();
+    @bindable bool1 = false;
+    @bindable bool2 = false;
 
-    @action setText1(v) {this.text1 = v}
-    @action setText2(v) {this.text2 = v}
-    @action setText3(v) {this.text3 = v}
-    @action setText4(v) {this.text4 = v}
-    @action setText5(v) {this.text5 = v}
-    @action setNumber1(v) {this.number1 = v}
-    @action setNumber2(v) {this.number2 = v}
-    @action setNumber3(v) {this.number3 = v}
-    @action setNumber4(v) {this.number4 = v}
-    @action setOption1(v) {this.option1 = v}
-    @action setOption2(v) {this.option2 = v}
-    @action setOption3(v) {this.option3 = v}
-    @action setOption4(v) {this.option4 = v}
-    @action setRange1(v) {this.range1 = v}
-    @action setDate1(v) {this.date1 = v}
-    @action setBool1(v) {this.bool1 = v}
-    @action setBool2(v) {this.bool2 = v}
+    displayNames = {
+        text1: 'Text 1',
+        number2: 'Number 2',
+        email: 'Email',
+        startDate: 'Start Date',
 
+    };
+
+    validationModel = new ValidationModel({
+        rules: [
+            {
+                field: 'text1',
+                checks: [required, length({max: 10})]
+            },
+            {
+                field: 'number1',
+                checks: [required, length({max: 10})]
+            {
+                field: 'number2',
+                checks: length({min: 10})
+            },
+            {
+                field: 'email',
+                checks: [
+                    required,
+                    ({value}) => {
+                        return wait(100).then(() => {
+                            if !(value.includes('@') && value.includes('.')) {
+                                return 'Backend says this is not a valid email';
+                            }
+                        });
+                    }
+                ]
+            },
+            {
+                field: 'startDate',
+                checks: [
+                    required,
+                    date({min: moment().subtract(1, 'week').startOf('day').toDate()})
+                ]
+            },
+            {
+                field: 'endDate',
+                checks: [
+                    required,
+                    date({min: moment().add(1, 'week').startOf('day').toDate()})
+                ]
+            },
+            {
+                field: 'endDate'
+                when: (v, {startDate, endDate}) => startDate && endDate
+                checks: (v, {startDate, endDate}) => endDate < (startDate) ? 'End Date must be after startDate' : null
+            }
+        ],
+        model: this
+    }
 }
