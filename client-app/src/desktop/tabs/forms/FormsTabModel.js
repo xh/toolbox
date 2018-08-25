@@ -1,6 +1,6 @@
-import {HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
-import {ValidationModel, required, date, length, number} from '@xh/hoist/validation';
+import {HoistModel, field} from '@xh/hoist/core';
+import {ValidationModel, required, isDate, isLength, isNumber} from '@xh/hoist/validation';
+import {wait} from '@xh/hoist/promise';
 import {random} from 'lodash';
 import moment from 'moment';
 
@@ -8,60 +8,53 @@ import moment from 'moment';
 export class FormsTabModel {
 
     // TextField / TextArea
-    @bindable text1 = null;
-    @bindable text2 = null;
-    @bindable text3 = null;
-    @bindable text4 = null;
-    @bindable text5 = null;
+    @field() text1 = null;
+    @field() text2 = null;
+    @field() text3 = null;
+    @field() text4 = null;
+    @field('Email') text5 = null;
 
     // NumberField / Single-val Slider
-    @bindable number1 = null;
-    @bindable number2 = null;
-    @bindable number3 = random(0, 100);
-    @bindable number4 = null;
+    @field() number1 = null;
+    @field() number2 = null;
+    @field() number3 = random(0, 100);
+    @field() number4 = null;
 
     // Multi-val Slider
-    @bindable range1 = [random(50000, 70000), random(110000, 150000)];
+    @field('Price Range') range1 = [random(50000, 70000), random(110000, 150000)];
 
     // Dropdowns
-    @bindable option1 = null;
-    @bindable option2 = null;
-    @bindable option3 = null;
-    @bindable option4 = null;
+    @field() option1 = null;
+    @field() option2 = null;
+    @field() option3 = null;
+    @field() option4 = null;
 
     // Others
-    @bindable date1 = new Date();
-    @bindable bool1 = false;
-    @bindable bool2 = false;
-
-    displayNames = {
-        text1: 'Text 1',
-        number2: 'Number 2',
-        email: 'Email',
-        startDate: 'Start Date',
-
-    };
+    @field() date1 = new Date();
+    @field() bool1 = false;
+    @field() bool2 = false;
 
     validationModel = new ValidationModel({
         rules: [
             {
                 field: 'text1',
-                checks: [required, length({max: 10})]
+                checks: [required, isLength({max: 10})]
             },
             {
                 field: 'number1',
-                checks: [required, length({max: 10})]
-            {
-                field: 'number2',
-                checks: length({min: 10})
+                checks: [required, isLength({max: 10})]
             },
             {
-                field: 'email',
+                field: 'number2',
+                checks: isNumber({min: 10})
+            },
+            {
+                field: 'text5',
                 checks: [
                     required,
                     ({value}) => {
                         return wait(100).then(() => {
-                            if !(value.includes('@') && value.includes('.')) {
+                            if (!value.includes('@') || !value.includes('.')) {
                                 return 'Backend says this is not a valid email';
                             }
                         });
@@ -72,22 +65,22 @@ export class FormsTabModel {
                 field: 'startDate',
                 checks: [
                     required,
-                    date({min: moment().subtract(1, 'week').startOf('day').toDate()})
+                    isDate({min: moment().subtract(1, 'week').startOf('day').toDate()})
                 ]
             },
             {
                 field: 'endDate',
                 checks: [
                     required,
-                    date({min: moment().add(1, 'week').startOf('day').toDate()})
+                    isDate({min: moment().add(1, 'week').startOf('day').toDate()})
                 ]
             },
             {
-                field: 'endDate'
-                when: (v, {startDate, endDate}) => startDate && endDate
-                checks: (v, {startDate, endDate}) => endDate < (startDate) ? 'End Date must be after startDate' : null
+                field: 'endDate',
+                when: (v, {startDate, endDate}) => startDate && endDate,
+                checks: (v, {startDate, endDate}) => endDate < startDate ? 'End Date must be after startDate' : null
             }
         ],
         model: this
-    }
+    });
 }

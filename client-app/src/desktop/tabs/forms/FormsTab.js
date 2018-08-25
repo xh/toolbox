@@ -7,10 +7,9 @@
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {hframe, vframe, filler, hbox} from '@xh/hoist/cmp/layout';
+import {hframe, vframe, box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {capitalize} from 'lodash';
 import moment from 'moment';
 import {fmtDate, fmtThousands} from '@xh/hoist/format';
 import {formGroup} from '@xh/hoist/kit/blueprint';
@@ -207,20 +206,11 @@ export class FormsTab extends Component {
                             })
                         ]
                     }),
-                    hbox({
+                    box({
                         className: 'toolbox-forms-validation__panel',
-                        items: [
-                            validationErrors({
-                                model: this.model.validationModel
-                            }),
-                            filler(),
-                            button({
-                                text: 'Validate',
-                                intent: 'primary',
-                                onClick: () => this.model.validationModel.validateAsync(this.model)
-                            })
-
-                        ]
+                        item: validationErrors({
+                            model: this.model.validationModel
+                        })
                     })
                 )
             })
@@ -228,16 +218,15 @@ export class FormsTab extends Component {
     }
 
     row = ({label, field, item, info, fmtVal}) => {
-        const {model} = this,
-            {validationModel} = model;
+        const {model} = this;
 
         let displayVal = model[field];
         if (fmtVal) displayVal = fmtVal(displayVal);
 
         return formGroup({
-            label: label || capitalize(field),
+            label: model[field + 'FieldName'],
             labelInfo: `${displayVal}`,
-            item: React.cloneElement(item, {model, field, validationModel}),
+            item: React.cloneElement(item, {model, field}),
             helperText: info
         });
     };
