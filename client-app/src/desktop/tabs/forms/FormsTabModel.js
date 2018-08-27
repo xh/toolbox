@@ -1,18 +1,18 @@
-import {HoistModel, field} from '@xh/hoist/core';
-import {ValidationSupport, required, dateIs, lengthIs, numberIs} from '@xh/hoist/validation';
+import {HoistModel} from '@xh/hoist/core';
+import {FormSupport, field, required, dateIs, lengthIs, numberIs} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
 import {random, isNil} from 'lodash';
 import moment from 'moment';
 
 @HoistModel()
-@ValidationSupport
+@FormSupport
 export class FormsTabModel {
 
     // TextField / TextArea
     @field(lengthIs({max: 20}))
     text1 = null;
 
-    @field('Email', [
+    @field('Email',
         required,
         ({value}) => {
             if (isNil(value)) return;
@@ -21,7 +21,7 @@ export class FormsTabModel {
                     return 'Backend says this is not a valid email';
                 }
             });
-        }]
+        }
     )
     text2 = null;
 
@@ -35,7 +35,7 @@ export class FormsTabModel {
     text5 = null;
 
     // NumberField / Single-val Slider
-    @field([required, numberIs({max: 10})])
+    @field(required, numberIs({max: 10}))
     number1 = null;
 
     @field()
@@ -78,10 +78,10 @@ export class FormsTabModel {
     bool2 = false;
 
     constructor() {
+        window.sniff = this;
         this.validationModel.addRules('endDate', {
             when: (v, {startDate, endDate}) => startDate && endDate,
             check: (v, {startDate, endDate}) => endDate < startDate ? 'End Date must be after startDate' : null
         });
     }
-
 }

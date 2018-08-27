@@ -1,9 +1,9 @@
-import {HoistModel, field} from '@xh/hoist/core';
-import {ValidationSupport, required, lengthIs} from '@xh/hoist/validation';
+import {HoistModel} from '@xh/hoist/core';
+import {FormSupport, field, required, lengthIs} from '@xh/hoist/cmp/form';
 import {movies} from '../../core/data';
 
 @HoistModel()
-@ValidationSupport
+@FormSupport
 export class FormPageModel {
 
     @field(required, lengthIs({min: 8}))
