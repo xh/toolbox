@@ -8,10 +8,9 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
-import {validationErrors} from '@xh/hoist/cmp/validation';
+import {validationErrors} from '@xh/hoist/cmp/form';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {label, textField, selectField, textAreaField} from '@xh/hoist/mobile/cmp/form';
-import {button} from '@xh/hoist/mobile/cmp/button';
 import {searchField} from '@xh/hoist/mobile/cmp/form';
 
 import './FormPage.scss';
@@ -53,10 +52,6 @@ export class FormPage extends Component {
                         }),
                         validationErrors({
                             model: validationModel
-                        }),
-                        button({
-                            text: 'Validate',
-                            onClick: () => validationModel.validateAsync()
                         })
                     ]
                 }),

@@ -7,7 +7,7 @@
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {hframe, vframe, box} from '@xh/hoist/cmp/layout';
+import {hframe, vframe, box, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import moment from 'moment';
@@ -26,12 +26,12 @@ import {
     queryComboField,
     jsonField
 } from '@xh/hoist/desktop/cmp/form';
+import {validationErrors} from '@xh/hoist/cmp/form';
 
 import {usStates, movies} from '../../../core/data';
 import {wrapper} from '../../common';
 import {FormsTabModel} from './FormsTabModel';
 import {App} from '../../App';
-import {validationErrors} from '@xh/hoist/cmp/validation';
 
 import './FormsTab.scss';
 
@@ -60,10 +60,6 @@ export class FormsTab extends Component {
                                         label: 'TextField',
                                         field: 'text1',
                                         item: textField()
-                                    }),
-                                    validationErrors({
-                                        model: this.model.validationModel,
-                                        fields: 'text1'
                                     }),
                                     row({
                                         label: 'TextField',
@@ -183,7 +179,18 @@ export class FormsTab extends Component {
                                     }),
                                     row({
                                         label: 'DayField',
-                                        field: 'date1',
+                                        field: 'startDate',
+                                        info: 'minDate, maxDate',
+                                        fmtVal: v => fmtDate(v),
+                                        item: dayField({
+                                            commitOnChange: true,
+                                            minDate: moment().subtract(2, 'weeks').toDate(),
+                                            maxDate: new Date()
+                                        })
+                                    }),
+                                    row({
+                                        label: 'DayField',
+                                        field: 'endDate',
                                         info: 'minDate, maxDate',
                                         fmtVal: v => fmtDate(v),
                                         item: dayField({
@@ -224,9 +231,15 @@ export class FormsTab extends Component {
         if (fmtVal) displayVal = fmtVal(displayVal);
 
         return formGroup({
-            label: model[field + 'FieldName'],
+            label,
             labelInfo: `${displayVal}`,
-            item: React.cloneElement(item, {model, field}),
+            item: vbox(
+                React.cloneElement(item, {model, field}),
+                validationErrors({
+                    model: model.validationModel,
+                    fields: field
+                })
+            ),
             helperText: info
         });
     };
