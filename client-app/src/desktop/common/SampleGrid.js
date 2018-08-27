@@ -80,7 +80,13 @@ class SampleGrid extends Component {
         //     {...emptyFlexCol},
         // ]
             {
+                colId: 'city2',
+                field: 'city',
+                width: 150
+            },
+            {
                 headerName: 'Demographics',
+                groupId: 'DEMOHAHAHAHAAH',
                 children: [
                     {
                         field: 'active',
@@ -97,12 +103,26 @@ class SampleGrid extends Component {
                         // columnGroupShow: 'open'
                     },
                     {
-                        field: 'company',
-                        width: 200,
-                        // columnGroupShow: 'closed'
+                        headerName: 'Company',
+                        width: 400,
+                        children: [
+                            {
+                                field: 'city',
+                                colID: 'CompanyCity',
+                                headerName: 'Company Loc',
+                                width: 200
+                            }
+                        ]
                     },
                     {
                         field: 'city',
+                        colId: 'City3',
+                        width: 150,
+                        hide: true
+                    },
+                    {
+                        field: 'city',
+                        colId: 'City1',
                         width: 150
                     }
                 ]
