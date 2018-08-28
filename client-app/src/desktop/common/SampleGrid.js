@@ -116,7 +116,23 @@ class SampleGrid extends Component {
                                 colID: 'CompanyCity',
                                 headerName: 'Company Loc',
                                 width: 200
-                            }
+                            },
+                            {
+                                field: 'active',
+                                ...boolCheckCol,
+                                colId: 'LALA',
+                                headerName: 'Client',
+                                chooserName: 'Status',
+                                width: 80
+                                // A group can have children initially hidden. If you want to show or hide children,
+                                // set columnGroupShow to either 'open' or 'closed' to one or more of the children.
+                                // When a children set has columnGroupShow set, it behaves in the following way:
+                                // open: The child is only shown when the group is open.
+                                // closed: The child is only shown when the group is closed.
+                                // everything else: Any other value, including null and undefined, the child is always shown.
+                                // Do we want/need to support this?
+                                // columnGroupShow: 'open'
+                            },
                         ]
                     },
                     {
@@ -151,7 +167,6 @@ class SampleGrid extends Component {
                     }
                 ]
             },
-
             {...emptyFlexCol}
         ]
     });
