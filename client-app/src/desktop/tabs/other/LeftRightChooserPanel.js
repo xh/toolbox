@@ -60,7 +60,7 @@ export class LeftRightChooserPanel extends Component {
                         onCommit: (val) => {
                             runInAction(() => this.anyMatch = val);
                         },
-                        text: 'match anywhere in the string'
+                        label: 'match anywhere in the string'
                     })
                 )
             })
