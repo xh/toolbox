@@ -83,14 +83,14 @@ export class MaskPanel extends Component {
                         }),
                         switchField({
                             model: this,
-                            field: 'inline'
+                            field: 'inline',
+                            label: 'inline'
                         }),
-                        box({className: 'xh-no-pad', item: 'inline'}),
                         switchField({
                             model: this,
-                            field: 'spinner'
+                            field: 'spinner',
+                            label: 'with spinner'
                         }),
-                        box({className: 'xh-no-pad', item: 'with spinner'}),
                         filler(),
                         button({
                             text: 'Show Mask',
