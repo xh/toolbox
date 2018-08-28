@@ -91,7 +91,7 @@ class SampleGrid extends Component {
             },
             {
                 headerName: 'Demographics',
-                groupId: 'DEMOHAHAHAHAAH',
+                groupId: 'DEMO',
                 children: [
                     {
                         field: 'active',
@@ -151,7 +151,7 @@ class SampleGrid extends Component {
                     }
                 ]
             },
-            
+
             {...emptyFlexCol}
         ]
     });
@@ -184,10 +184,10 @@ class SampleGrid extends Component {
                     }),
                     filler(),
                     box('Compact mode:'),
-                    switchField({
-                        field: 'compact',
-                        model
-                    }),
+                    // switchField({
+                    //     field: 'compact',
+                    //     model
+                    // }),
                     toolbarSep(),
                     colChooserButton({gridModel: model}),
                     exportButton({model, exportType: 'excel'}),
