@@ -33,7 +33,7 @@ class SampleColumnGroupsGrid extends Component {
     localModel = new GridModel({
         stateModel: 'toolboxGroupGrid',
         store: new LocalStore({
-            fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
+            fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss', 'client', 'headquarters', 'employees']
         }),
         sortBy: [{colId: 'company', sort: 'asc'}],
         emptyText: 'No records found...',
@@ -56,11 +56,6 @@ class SampleColumnGroupsGrid extends Component {
         },
         columns: [
             {
-                colId: 'city2',
-                field: 'city',
-                width: 150
-            },
-            {
                 headerName: 'Demographics',
                 groupId: 'DEMO',
                 children: [
@@ -69,14 +64,6 @@ class SampleColumnGroupsGrid extends Component {
                         ...boolCheckCol,
                         headerName: '',
                         chooserName: 'Active Status',
-                        // A group can have children initially hidden. If you want to show or hide children,
-                        // set columnGroupShow to either 'open' or 'closed' to one or more of the children.
-                        // When a children set has columnGroupShow set, it behaves in the following way:
-                        // open: The child is only shown when the group is open.
-                        // closed: The child is only shown when the group is closed.
-                        // everything else: Any other value, including null and undefined, the child is always shown.
-                        // Do we want/need to support this?
-                        // columnGroupShow: 'open'
                     },
                     {
                         headerName: 'Company',
@@ -84,38 +71,32 @@ class SampleColumnGroupsGrid extends Component {
                         children: [
                             {
                                 field: 'city',
-                                colID: 'CompanyCity',
-                                headerName: 'Company Loc',
-                                width: 200
+                                colID: 'Storefront',
+                                headerName: 'Storefront Loc',
+                                width: 150
                             },
                             {
-                                field: 'active',
-                                ...boolCheckCol,
-                                colId: 'client',
-                                headerName: 'Client',
-                                chooserName: 'Status',
-                                width: 80
-                                // A group can have children initially hidden. If you want to show or hide children,
-                                // set columnGroupShow to either 'open' or 'closed' to one or more of the children.
-                                // When a children set has columnGroupShow set, it behaves in the following way:
-                                // open: The child is only shown when the group is open.
-                                // closed: The child is only shown when the group is closed.
-                                // everything else: Any other value, including null and undefined, the child is always shown.
-                                // Do we want/need to support this?
-                                // columnGroupShow: 'open'
+                                field: 'headquarters',
+                                width: 150
                             },
+                            {
+                                field: 'employees',
+                                width: 150
+                            }
+
                         ]
+                    },
+                    {
+                        field: 'client',
+                        ...boolCheckCol,
+                        chooserName: 'Client',
+                        width: 80
                     },
                     {
                         field: 'city',
                         colId: 'City3',
                         width: 150,
                         hide: true
-                    },
-                    {
-                        field: 'city',
-                        colId: 'City1',
-                        width: 150
                     }
                 ]
             },
