@@ -221,9 +221,9 @@
     webpack-bundle-analyzer "~2.12.0"
     webpack-dev-server "~2.11.2"
 
-"@xh/hoist@^13.0.0-SNAPSHOT":
-  version "13.0.0-SNAPSHOT.1535474837276"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-13.0.0-SNAPSHOT.1535474837276.tgz#160941b5d8938f811ec7bf29b9fcae6cd48a1b15"
+"@xh/hoist@12.1.2":
+  version "12.1.2"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-12.1.2.tgz#8107e9166ad5a49cce78e4b88a27064c160592b4"
   dependencies:
     "@blueprintjs/core" "~3.4.0"
     "@blueprintjs/datetime" "~3.1.0"
