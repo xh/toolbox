@@ -8,7 +8,6 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
-import {validationErrors} from '@xh/hoist/cmp/form';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {label, textField, selectField, textAreaField} from '@xh/hoist/mobile/cmp/form';
 import {searchField} from '@xh/hoist/mobile/cmp/form';
@@ -21,8 +20,7 @@ export class FormPage extends Component {
     localModel = new FormPageModel();
 
     render() {
-        const {model} = this,
-            {validationModel} = model;
+        const {model} = this;
         return page({
             className: 'toolbox-page form-page',
             items: [
@@ -32,26 +30,19 @@ export class FormPage extends Component {
                         this.renderField('Name:', textField, {
                             model,
                             field: 'name',
-                            validationModel
                         }),
                         this.renderField('Favourite Movie:', selectField, {
                             model,
                             options: model.movies,
                             field: 'movie',
-                            validationModel
                         }),
                         this.renderField('Notes:', textAreaField, {
                             model,
-                            field: 'notes',
-                            validationModel
+                            field: 'notes'
                         }),
                         this.renderField('Search: ', searchField, {
                             model,
-                            field: 'searchQuery',
-                            validationModel
-                        }),
-                        validationErrors({
-                            model: validationModel
+                            field: 'searchQuery'
                         })
                     ]
                 }),
