@@ -26,11 +26,12 @@ import {App} from '../App';
 
 @HoistComponent()
 @LayoutSupport
-class SampleGrid extends Component {
+class SampleColumnGroupsGrid extends Component {
 
     loadModel = new PendingTaskModel();
 
     localModel = new GridModel({
+        stateModel: 'toolboxGroupGrid',
         store: new LocalStore({
             fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
         }),
@@ -55,34 +56,88 @@ class SampleGrid extends Component {
         },
         columns: [
             {
-                field: 'active',
-                ...boolCheckCol,
-                headerName: '',
-                chooserName: 'Active Status'
-            },
-            {
-                field: 'company',
-                width: 200
-            },
-            {
+                colId: 'city2',
                 field: 'city',
                 width: 150
             },
             {
-                headerName: 'Trade Volume',
-                field: 'trade_volume',
-                align: 'right',
-                width: 130,
-                renderer: millionsRenderer({precision: 1, label: true})
+                headerName: 'Demographics',
+                groupId: 'DEMO',
+                children: [
+                    {
+                        field: 'active',
+                        ...boolCheckCol,
+                        headerName: '',
+                        chooserName: 'Active Status',
+                        // A group can have children initially hidden. If you want to show or hide children,
+                        // set columnGroupShow to either 'open' or 'closed' to one or more of the children.
+                        // When a children set has columnGroupShow set, it behaves in the following way:
+                        // open: The child is only shown when the group is open.
+                        // closed: The child is only shown when the group is closed.
+                        // everything else: Any other value, including null and undefined, the child is always shown.
+                        // Do we want/need to support this?
+                        // columnGroupShow: 'open'
+                    },
+                    {
+                        headerName: 'Company',
+                        width: 400,
+                        children: [
+                            {
+                                field: 'city',
+                                colID: 'CompanyCity',
+                                headerName: 'Company Loc',
+                                width: 200
+                            },
+                            {
+                                field: 'active',
+                                ...boolCheckCol,
+                                colId: 'client',
+                                headerName: 'Client',
+                                chooserName: 'Status',
+                                width: 80
+                                // A group can have children initially hidden. If you want to show or hide children,
+                                // set columnGroupShow to either 'open' or 'closed' to one or more of the children.
+                                // When a children set has columnGroupShow set, it behaves in the following way:
+                                // open: The child is only shown when the group is open.
+                                // closed: The child is only shown when the group is closed.
+                                // everything else: Any other value, including null and undefined, the child is always shown.
+                                // Do we want/need to support this?
+                                // columnGroupShow: 'open'
+                            },
+                        ]
+                    },
+                    {
+                        field: 'city',
+                        colId: 'City3',
+                        width: 150,
+                        hide: true
+                    },
+                    {
+                        field: 'city',
+                        colId: 'City1',
+                        width: 150
+                    }
+                ]
             },
             {
-                headerName: 'P&L',
-                field: 'profit_loss',
-                align: 'right',
-                width: 130,
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+                headerName: 'Data',
+                children: [
+                    {
+                        headerName: 'Trade Volume',
+                        field: 'trade_volume',
+                        align: 'right',
+                        width: 130,
+                        renderer: millionsRenderer({precision: 1, label: true})
+                    },
+                    {
+                        headerName: 'P&L',
+                        field: 'profit_loss',
+                        align: 'right',
+                        width: 130,
+                        renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+                    }
+                ]
             },
-
             {...emptyFlexCol}
         ]
     });
@@ -147,4 +202,4 @@ class SampleGrid extends Component {
     }
 
 }
-export const sampleGrid = elemFactory(SampleGrid);
+export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
