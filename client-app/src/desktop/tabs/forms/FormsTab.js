@@ -19,6 +19,7 @@ import {
     dayField,
     textField,
     textAreaField,
+    multiSelectField,
     numberField,
     sliderField,
     selectField,
@@ -153,6 +154,14 @@ export class FormsTab extends Component {
                                     label: 'SelectField',
                                     field: 'option1',
                                     item: selectField({
+                                        options: usStates,
+                                        placeholder: 'Select a state...'
+                                    })
+                                }),
+                                row({
+                                    label: 'MultiSelectField',
+                                    field: 'option5',
+                                    item: multiSelectField({
                                         options: usStates,
                                         placeholder: 'Select a state...'
                                     })

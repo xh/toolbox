@@ -26,6 +26,9 @@ export class FormsTabModel {
     @bindable option3 = null;
     @bindable option4 = null;
 
+    // Multiselect
+    @bindable option5 = null;
+
     // Others
     @bindable date1 = new Date();
     @bindable bool1 = false;
