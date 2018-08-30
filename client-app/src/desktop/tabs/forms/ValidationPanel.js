@@ -7,7 +7,7 @@
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {vbox, hbox, filler} from '@xh/hoist/cmp/layout';
+import {vbox, hbox, filler, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import moment from 'moment';
@@ -84,13 +84,13 @@ export class ValidationPanel extends Component {
                         ),
                         hbox(
                             button({
-                                text: 'Cancel',
-                                onClick: this.onCancelClick
+                                text: 'Reset',
+                                onClick: this.onResetClick,
                             }),
                             button({
                                 text: 'Add User', 
                                 onClick: this.onSubmitClick,
-                                disabled: model.validationModel.validState
+                                disabled: !model.validationModel.isValid
                             }),
                             filler()
                         )
@@ -102,8 +102,20 @@ export class ValidationPanel extends Component {
     }
 
     row = (ctl) => {
+        const {model} = this,
+            field = ctl.props.field,
+            fieldName = model.getFieldName(field),
+            validator = model.getValidator(field),
+            notValid = validator && validator.isNotValid;
+
         return formGroup({
-            item: ctl
+            label: fieldName,
+            item: ctl,
+            helperText:
+                span({
+                    className: 'toolbox-validation-panel__panel',
+                    items: notValid ? validator.errors[0] : ''
+                })
         });
     };
 
