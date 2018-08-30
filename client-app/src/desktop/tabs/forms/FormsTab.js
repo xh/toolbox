@@ -162,6 +162,7 @@ export class FormsTab extends Component {
                                     label: 'MultiSelectField',
                                     field: 'option5',
                                     item: multiSelectField({
+                                        className: 'toolbox-multiselect',
                                         options: usStates,
                                         placeholder: 'Select a state...'
                                     })
