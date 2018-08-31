@@ -80,7 +80,7 @@ class SampleGrid extends Component {
                 field: 'profit_loss',
                 align: 'right',
                 width: 130,
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true, tipFn: true})
             },
             
             {...emptyFlexCol}
