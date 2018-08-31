@@ -1,17 +1,15 @@
 import {HoistModel} from '@xh/hoist/core';
 import {FieldSupport, field, required, dateIs, lengthIs, numberIs} from '@xh/hoist/field';
 import {wait} from '@xh/hoist/promise';
-import {random, isNil} from 'lodash';
+import {isNil} from 'lodash';
 import moment from 'moment';
-
-import {action} from '@xh/hoist/mobx';
 
 @HoistModel()
 @FieldSupport
 export class ValidationPanelModel {
 
     // TextField / TextArea
-    @field(required, lengthIs({max: 20}))
+    @field(required, lengthIs({max: 5}))
     firstName;
 
     @field(required, lengthIs({max: 20}))
@@ -39,21 +37,13 @@ export class ValidationPanelModel {
     endDate;
 
     constructor() {
-        window.mod = this;
-        this.validationModel.addRules('endDate', {
-            when: (v, {startDate, endDate}) => startDate && endDate,
-            check: (v, {startDate, endDate}) => endDate < startDate ? 'Termination Date must be after Hire Date' : null
+        window.sniff = this;
+        this.getField('endDate').addRules({
+            when: ({value}, {startDate}) => startDate && value,
+            check: ({value, displayName}, {startDate}) => value < startDate ? `${displayName} must be after Start Date` : null
         });
-        this.reset()
-    }
 
-    @action
-    reset() {
-        this.firstName = null;
-        this.lastName = null;
-        this.email = null;
-        this.startDate = new Date();
-        this.endDate = new Date();
-        this.validationModel.reset();
+        this.initFields({});
+
     }
 }

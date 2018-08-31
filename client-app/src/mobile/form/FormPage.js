@@ -29,12 +29,12 @@ export class FormPage extends Component {
                     items: [
                         this.renderField('Name:', textField, {
                             model,
-                            field: 'name',
+                            field: 'name'
                         }),
                         this.renderField('Favourite Movie:', selectField, {
                             model,
                             options: model.movies,
-                            field: 'movie',
+                            field: 'movie'
                         }),
                         this.renderField('Notes:', textAreaField, {
                             model,

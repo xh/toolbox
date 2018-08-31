@@ -4,13 +4,12 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {Component} from 'react';
+import {XH, HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {vbox, hbox, filler, span} from '@xh/hoist/cmp/layout';
+import {vbox, hbox, filler, div} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import moment from 'moment';
 import {formGroup} from '@xh/hoist/kit/blueprint';
 import {
     dayField,
@@ -85,12 +84,16 @@ export class ValidationPanel extends Component {
                         hbox(
                             button({
                                 text: 'Reset',
-                                onClick: this.onResetClick,
+                                onClick: this.onResetClick
+                            }),
+                            button({
+                                text: 'Validate',
+                                onClick: this.onValidateClick,
                             }),
                             button({
                                 text: 'Add User', 
                                 onClick: this.onSubmitClick,
-                                disabled: !model.validationModel.isValid
+                                disabled: !model.isValid
                             }),
                             filler()
                         )
@@ -103,28 +106,31 @@ export class ValidationPanel extends Component {
 
     row = (ctl) => {
         const {model} = this,
-            field = ctl.props.field,
-            fieldName = model.getFieldName(field),
-            validator = model.getValidator(field),
-            notValid = validator && validator.isNotValid;
+            fieldName = ctl.props.field,
+            field = model.getField(fieldName),
+            notValid = field && field.isNotValid;
 
         return formGroup({
-            label: fieldName,
+            label: field.displayName,
             item: ctl,
             helperText:
-                span({
-                    className: 'toolbox-validation-panel__panel',
-                    items: notValid ? validator.errors[0] : ''
+                div({
+                    style: {color: 'red', height: '15px'},
+                    items: notValid ? field.errors[0] : ''
                 })
         });
     };
 
     onSubmitClick = () => {
         XH.toast({message: 'User Successfully submitted'});
-        this.model.reset();
+        this.model.resetFields();
     }
 
-    onCancelClick = () => {
-        this.model.reset();
+    onResetClick = () => {
+        this.model.resetFields();
+    }
+
+    onValidateClick = () => {
+        this.model.validateAsync();
     }
 }
