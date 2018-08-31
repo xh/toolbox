@@ -42,9 +42,6 @@ export class ValidationPanelModel {
     endDate;
 
     constructor() {
-
-        window.sniff = this;
-
         this.getField('endDate').addRules({
             when: ({value}, {startDate}) => startDate && value,
             check: ({value, displayName}, {startDate}) => value < startDate ? `${displayName} must be after Start Date` : null
