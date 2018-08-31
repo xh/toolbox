@@ -1,5 +1,5 @@
 import {HoistModel} from '@xh/hoist/core';
-import {FieldSupport, field, required, dateIs, lengthIs, numberIs, notBlank} from '@xh/hoist/field';
+import {FieldSupport, field, required, dateIs, lengthIs, notBlank} from '@xh/hoist/field';
 import {wait} from '@xh/hoist/promise';
 import {isNil} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';

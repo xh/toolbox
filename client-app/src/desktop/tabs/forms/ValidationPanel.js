@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {XH, HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {vbox, hframe, hbox, filler, div, span, hspacer} from '@xh/hoist/cmp/layout';
+import {vbox, hframe, hbox,  div, span, hspacer} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -43,10 +43,10 @@ export class ValidationPanel extends Component {
                 icon: Icon.edit(),
                 width: '90%',
                 height: '90%',
-                mask: mask(model: validateButtonTask),
+                mask: mask({model: this.validateButtonTask}),
                 item: panel({
                     className: 'toolbox-validation-panel__panel',
-                    items:hframe(
+                    items: hframe(
                         vbox({
                             width: 300,
                             items: [
@@ -122,7 +122,7 @@ export class ValidationPanel extends Component {
                         }),
                         button({
                             text: 'Validate',
-                            onClick: this.onValidateClick,
+                            onClick: this.onValidateClick
                         }),
                         button({
                             text: 'Add User',
@@ -143,9 +143,9 @@ export class ValidationPanel extends Component {
             isRequired = field && field.isRequired,
             isPending = field && field.isValidationPending;
 
-        const label = field.isRequired ?
+        const label = isRequired ?
             div(field.displayName, span(' (*)')) :
-            div(field.displayName)
+            div(field.displayName);
 
         return formGroup({
             label,
@@ -180,13 +180,13 @@ export class ValidationPanel extends Component {
 
     onValidateClick = async () => {
         const {model} = this;
-        await this.model.validateAsync().linkTo(this.validateButtonTask);
+        await model.validateAsync().linkTo(this.validateButtonTask);
 
         if (this.model.isValid) {
             XH.toast({message: 'Form is valid'});
         } else {
-            const errCount = this.model.fields.filter(f => f.isNotValid).length;
-            XH.toast({message: `Form is not valid.  ${errCount} fields are still invalid!`});
+            const errCount = model.fields.filter(f => f.isNotValid).length;
+            XH.toast({message: `Form is not valid. ${errCount} fields are still invalid!`});
         }
     }
 }
