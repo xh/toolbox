@@ -10,16 +10,17 @@ import moment from 'moment';
 export class ValidationPanelModel {
 
     // TextField / TextArea
-    @field(required, notBlank, lengthIs({max: 20}))
+    @field('Employee First Name', required, notBlank, lengthIs({max: 20}))
     firstName;
 
-    @field(required, lengthIs({max: 20}))
+    @field('Employee Last Name', required, lengthIs({max: 20}))
     lastName;
+
 
     @field(required,
         ({value}) => {
             if (isNil(value)) return;
-            return wait(5 * SECONDS).then(() => {
+            return wait(2 * SECONDS).then(() => {
                 if ((!value.includes('@') || !value.includes('.'))) {
                     return 'Backend says this is not a valid email';
                 }
@@ -28,22 +29,38 @@ export class ValidationPanelModel {
     )
     email;
 
-    @field(required, numberIs({min: 10}))
+    @field('Manager')
+    isManager;
+
+    @field()
     yearsExperience;
 
     @field('Hire Date', required, dateIs({min: moment().startOf('day').toDate()}))
     startDate;
 
-    @field('Termination Date')
+    @field('Completion Date')
     endDate;
 
     constructor() {
+
+        window.sniff = this;
+
         this.getField('endDate').addRules({
             when: ({value}, {startDate}) => startDate && value,
             check: ({value, displayName}, {startDate}) => value < startDate ? `${displayName} must be after Start Date` : null
         });
 
-        this.initFields({});
+        this.getField('yearsExperience').addRules({
+            when: (f, {isManager}) => isManager,
+            check: [
+                required,
+                ({value}) => isNil(value) || value < 10 ?  'Managerial Positions require at least 10 years of experience' : null
+            ]
+        });
 
+        this.initFields({
+            isManager: false,
+            startDate: moment().toDate()
+        });
     }
 }

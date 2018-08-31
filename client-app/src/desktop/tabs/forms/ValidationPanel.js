@@ -7,14 +7,17 @@
 import {Component} from 'react';
 import {XH, HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {vbox, hbox, filler, div, span, hspacer} from '@xh/hoist/cmp/layout';
+import {vbox, hframe, hbox, filler, div, span, hspacer} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formGroup} from '@xh/hoist/kit/blueprint';
+import {mask} from '@xh/hoist/desktop/cmp/mask';
+import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {
     dayField,
     textField,
-    numberField
+    numberField,
+    checkField
 } from '@xh/hoist/desktop/cmp/form';
 
 import {wrapper} from '../../common';
@@ -27,6 +30,8 @@ export class ValidationPanel extends Component {
 
     localModel = new ValidationPanelModel();
 
+    validateButtonTask = new PendingTaskModel();
+
     render() {
         const {model, row} = this;
 
@@ -37,67 +42,93 @@ export class ValidationPanel extends Component {
                 icon: Icon.edit(),
                 width: '90%',
                 height: '90%',
+                mask: mask(model: validateButtonTask),
                 item: panel({
                     className: 'toolbox-validation-panel__panel',
-                    items: vbox(
-                        row(
-                            textField({field: 'firstName', model})
-                        ),
-                        row(
-                            textField({field: 'lastName', model})
-                        ),
-                        row(
-                            textField({
-                                field: 'email',
-                                model,
-                                placeholder: 'user@company.com',
-                                leftIcon: Icon.mail(),
-                                rightElement: button({
-                                    icon: Icon.cross(),
-                                    minimal: true,
-                                    onClick: () => model.setText2(null)
-                                })
-                            })
-                        ),
-                        row(
-                            numberField({
-                                field: 'yearsExperience',
-                                model
-                            })
-                        ),
-                        row(
-                            dayField({
-                                field: 'startDate',
-                                model,
-                                commitOnChange: true,
-                                minDate: new Date()
-                            })
-                        ),
-                        row(
-                            dayField({
-                                field: 'endDate',
-                                model,
-                                commitOnChange: true,
-                                minDate: new Date()
-                            })
-                        ),
-                        hbox(
-                            button({
-                                text: 'Reset',
-                                onClick: this.onResetClick
-                            }),
-                            button({
-                                text: 'Validate',
-                                onClick: this.onValidateClick,
-                            }),
-                            button({
-                                text: 'Add User', 
-                                onClick: this.onSubmitClick,
-                                disabled: !model.isValid
-                            }),
-                            filler()
-                        )
-
+                    items:hframe(
+                        vbox({
+                            width: 400,
+                            items: [
+                                row(
+                                    textField({field: 'firstName', model})
+                                ),
+                                row(
+                                    textField({field: 'lastName', model})
+                                ),
+                                row(
+                                    textField({
+                                        field: 'email',
+                                        model,
+                                        placeholder: 'user@company.com',
+                                        leftIcon: Icon.mail(),
+                                        rightElement: button({
+                                            icon: Icon.cross(),
+                                            minimal: true,
+                                            onClick: () => model.setEmail(null)
+                                        })
+                                    })
+                                )
+                            ]
+                        }),
+                        hspacer(30),
+                        vbox({
+                            items: [
+                                hbox(
+                                    row(
+                                        checkField({
+                                            field: 'isManager',
+                                            model,
+                                            width: 200
+                                        })
+                                    ),
+                                    hspacer(30),
+                                    row(
+                                        numberField({
+                                            field: 'yearsExperience',
+                                            model,
+                                            width: 200
+                                        })
+                                    )
+                                ),
+                                hbox(
+                                    row(
+                                        dayField({
+                                            field: 'startDate',
+                                            model,
+                                            width: 200,
+                                            commitOnChange: true,
+                                            minDate: new Date()
+                                        })
+                                    ),
+                                    hspacer(30),
+                                    row(
+                                        dayField({
+                                            field: 'endDate',
+                                            model,
+                                            width: 200,
+                                            commitOnChange: true,
+                                            minDate: new Date()
+                                        })
+                                    )
+                                )
+                            ]
+                        })
+                    ),
+                    bbar: hbox(
+                        button({
+                            text: 'Reset',
+                            onClick: this.onResetClick
+                        }),
+                        button({
+                            text: 'Validate',
+                            onClick: this.onValidateClick,
+                        }),
+                        button({
+                            text: 'Add User',
+                            onClick: this.onSubmitClick,
+                            disabled: !model.isValid
+                        }),
+                        filler()
                     )
                 })
             })
@@ -120,7 +151,7 @@ export class ValidationPanel extends Component {
             label,
             item: ctl,
             helperText: hbox({
-                height: 15,
+                height: 25,
                 items: [
                     span({
                         style: {color: 'red'},
@@ -137,7 +168,9 @@ export class ValidationPanel extends Component {
     };
 
     onSubmitClick = () => {
-        XH.toast({message: 'User Successfully submitted'});
+        if (this.model.isValid) {
+            XH.toast({message: 'User Successfully submitted'});
+        }
         this.model.resetFields();
     }
 
@@ -145,7 +178,15 @@ export class ValidationPanel extends Component {
         this.model.resetFields();
     }
 
-    onValidateClick = () => {
-        this.model.validateAsync();
+    onValidateClick = async () => {
+        const {model} = this;
+        await this.model.validateAsync().linkTo(this.validateButtonTask);
+
+        if (this.model.isValid) {
+            XH.toast({message: 'Form is valid'});
+        } else {
+            const errCount = this.model.fields.filter(f => f.isNotValid).length;
+            XH.toast({message: `Form is not valid.  ${errCount} fields are still invalid!`});
+        }
     }
 }
