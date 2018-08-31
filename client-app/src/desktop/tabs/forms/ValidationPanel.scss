@@ -9,5 +9,13 @@
     button {
       height: 30px;
     }
+
+    .bp3-form-group {
+      .bp3-form-helper-text {
+        font-size: var(--xh-font-size-small-px);
+      }
+    }
   }
+
+
 }

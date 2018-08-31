@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {XH, HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {vbox, hbox, filler, div} from '@xh/hoist/cmp/layout';
+import {vbox, hbox, filler, div, span, hspacer} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formGroup} from '@xh/hoist/kit/blueprint';
@@ -108,16 +108,31 @@ export class ValidationPanel extends Component {
         const {model} = this,
             fieldName = ctl.props.field,
             field = model.getField(fieldName),
-            notValid = field && field.isNotValid;
+            notValid = field && field.isNotValid,
+            isRequired = field && field.isRequired,
+            isPending = field && field.isValidationPending;
+
+        const label = field.isRequired ?
+            div(field.displayName, span(' (*)')) :
+            div(field.displayName)
 
         return formGroup({
-            label: field.displayName,
+            label,
             item: ctl,
-            helperText:
-                div({
-                    style: {color: 'red', height: '15px'},
-                    items: notValid ? field.errors[0] : ''
-                })
+            helperText: hbox({
+                height: 15,
+                items: [
+                    span({
+                        style: {color: 'red'},
+                        item: notValid ? field.errors[0] : ''
+                    }),
+                    hspacer(5),
+                    span({
+                        omit: !isPending,
+                        item: 'Checking ...'
+                    })
+                ]
+            })
         });
     };
 

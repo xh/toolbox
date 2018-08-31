@@ -1,7 +1,8 @@
 import {HoistModel} from '@xh/hoist/core';
-import {FieldSupport, field, required, dateIs, lengthIs, numberIs} from '@xh/hoist/field';
+import {FieldSupport, field, required, dateIs, lengthIs, numberIs, notBlank} from '@xh/hoist/field';
 import {wait} from '@xh/hoist/promise';
 import {isNil} from 'lodash';
+import {SECONDS} from '@xh/hoist/utils/datetime';
 import moment from 'moment';
 
 @HoistModel()
@@ -9,7 +10,7 @@ import moment from 'moment';
 export class ValidationPanelModel {
 
     // TextField / TextArea
-    @field(required, lengthIs({max: 5}))
+    @field(required, notBlank, lengthIs({max: 20}))
     firstName;
 
     @field(required, lengthIs({max: 20}))
@@ -18,7 +19,7 @@ export class ValidationPanelModel {
     @field(required,
         ({value}) => {
             if (isNil(value)) return;
-            return wait(100).then(() => {
+            return wait(5 * SECONDS).then(() => {
                 if ((!value.includes('@') || !value.includes('.'))) {
                     return 'Backend says this is not a valid email';
                 }
@@ -37,7 +38,6 @@ export class ValidationPanelModel {
     endDate;
 
     constructor() {
-        window.sniff = this;
         this.getField('endDate').addRules({
             when: ({value}, {startDate}) => startDate && value,
             check: ({value, displayName}, {startDate}) => value < startDate ? `${displayName} must be after Start Date` : null
