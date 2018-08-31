@@ -34,7 +34,7 @@ export class ValidationPanel extends Component {
     validateButtonTask = new PendingTaskModel();
 
     render() {
-        const {model, row} = this;
+        const {model, fieldDisplay} = this;
 
         return wrapper({
             item: panel({
@@ -50,13 +50,13 @@ export class ValidationPanel extends Component {
                         vbox({
                             width: 300,
                             items: [
-                                row(
+                                fieldDisplay(
                                     textField({field: 'firstName', model})
                                 ),
-                                row(
+                                fieldDisplay(
                                     textField({field: 'lastName', model})
                                 ),
-                                row(
+                                fieldDisplay(
                                     textField({
                                         field: 'email',
                                         model,
@@ -75,7 +75,7 @@ export class ValidationPanel extends Component {
                         vbox({
                             items: [
                                 hbox(
-                                    row(
+                                    fieldDisplay(
                                         dayField({
                                             field: 'startDate',
                                             model,
@@ -85,7 +85,7 @@ export class ValidationPanel extends Component {
                                         })
                                     ),
                                     hspacer(30),
-                                    row(
+                                    fieldDisplay(
                                         dayField({
                                             field: 'endDate',
                                             model,
@@ -96,7 +96,7 @@ export class ValidationPanel extends Component {
                                     )
                                 ),
                                 hbox(
-                                    row(
+                                    fieldDisplay(
                                         checkField({
                                             field: 'isManager',
                                             model,
@@ -104,7 +104,7 @@ export class ValidationPanel extends Component {
                                         })
                                     ),
                                     hspacer(30),
-                                    row(
+                                    fieldDisplay(
                                         numberField({
                                             field: 'yearsExperience',
                                             model,
@@ -118,14 +118,17 @@ export class ValidationPanel extends Component {
                     bbar: toolbar(
                         button({
                             text: 'Reset',
+                            icon: Icon.undo(),
                             onClick: this.onResetClick
                         }),
                         button({
                             text: 'Validate',
+                            icon: Icon.check(),
                             onClick: this.onValidateClick
                         }),
                         button({
-                            text: 'Add User',
+                            text: 'Submit',
+                            icon: Icon.add(),
                             onClick: this.onSubmitClick,
                             disabled: !model.isValid
                         })
@@ -135,7 +138,7 @@ export class ValidationPanel extends Component {
         });
     }
 
-    row = (ctl) => {
+    fieldDisplay = (ctl) => {
         const {model} = this,
             fieldName = ctl.props.field,
             field = model.getField(fieldName),
