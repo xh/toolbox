@@ -10,10 +10,10 @@ import moment from 'moment';
 export class ValidationPanelModel {
 
     // TextField / TextArea
-    @field('Employee First Name', required, notBlank, lengthIs({max: 20}))
+    @field(required, notBlank, lengthIs({max: 20}))
     firstName;
 
-    @field('Employee Last Name', required, lengthIs({max: 20}))
+    @field(required, lengthIs({max: 20}))
     lastName;
 
 
@@ -22,7 +22,7 @@ export class ValidationPanelModel {
             if (isNil(value)) return;
             return wait(2 * SECONDS).then(() => {
                 if ((!value.includes('@') || !value.includes('.'))) {
-                    return 'Backend says this is not a valid email';
+                    return 'Server report this is not a valid email.';
                 }
             });
         }

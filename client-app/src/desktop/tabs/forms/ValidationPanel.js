@@ -9,6 +9,7 @@ import {XH, HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {vbox, hframe, hbox, filler, div, span, hspacer} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formGroup} from '@xh/hoist/kit/blueprint';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
@@ -47,7 +48,7 @@ export class ValidationPanel extends Component {
                     className: 'toolbox-validation-panel__panel',
                     items:hframe(
                         vbox({
-                            width: 400,
+                            width: 300,
                             items: [
                                 row(
                                     textField({field: 'firstName', model})
@@ -75,23 +76,6 @@ export class ValidationPanel extends Component {
                             items: [
                                 hbox(
                                     row(
-                                        checkField({
-                                            field: 'isManager',
-                                            model,
-                                            width: 200
-                                        })
-                                    ),
-                                    hspacer(30),
-                                    row(
-                                        numberField({
-                                            field: 'yearsExperience',
-                                            model,
-                                            width: 200
-                                        })
-                                    )
-                                ),
-                                hbox(
-                                    row(
                                         dayField({
                                             field: 'startDate',
                                             model,
@@ -110,11 +94,28 @@ export class ValidationPanel extends Component {
                                             minDate: new Date()
                                         })
                                     )
+                                ),
+                                hbox(
+                                    row(
+                                        checkField({
+                                            field: 'isManager',
+                                            model,
+                                            width: 200
+                                        })
+                                    ),
+                                    hspacer(30),
+                                    row(
+                                        numberField({
+                                            field: 'yearsExperience',
+                                            model,
+                                            width: 50
+                                        })
+                                    )
                                 )
                             ]
                         })
                     ),
-                    bbar: hbox(
+                    bbar: toolbar(
                         button({
                             text: 'Reset',
                             onClick: this.onResetClick
@@ -127,8 +128,7 @@ export class ValidationPanel extends Component {
                             text: 'Add User',
                             onClick: this.onSubmitClick,
                             disabled: !model.isValid
-                        }),
-                        filler()
+                        })
                     )
                 })
             })
@@ -151,7 +151,7 @@ export class ValidationPanel extends Component {
             label,
             item: ctl,
             helperText: hbox({
-                height: 25,
+                height: 15,
                 items: [
                     span({
                         style: {color: 'red'},
