@@ -61,10 +61,11 @@ export class ToolbarPanel extends Component {
                         )
                     }),
                     filler(),
-                    'Danger mode',
                     switchField({
                         model,
-                        field: 'enableTerminate'
+                        field: 'enableTerminate',
+                        label: 'Danger mode',
+                        alignIndicator: 'right'
                     }),
                     button({
                         icon: Icon.skull(),
