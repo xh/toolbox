@@ -1,5 +1,5 @@
 import {HoistModel} from '@xh/hoist/core';
-import {FieldSupport, field, required, dateIs, lengthIs, notBlank} from '@xh/hoist/field';
+import {dateIs, field, FieldSupport, lengthIs, notBlank, numberIs, required} from '@xh/hoist/field';
 import {wait} from '@xh/hoist/promise';
 import {isNil} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';
@@ -22,7 +22,7 @@ export class ValidationPanelModel {
             if (isNil(value)) return;
             return wait(2 * SECONDS).then(() => {
                 if ((!value.includes('@') || !value.includes('.'))) {
-                    return 'Server report this is not a valid email.';
+                    return 'Invalid email (validated async).';
                 }
             });
         }
@@ -32,7 +32,7 @@ export class ValidationPanelModel {
     @field('Manager')
     isManager;
 
-    @field()
+    @field(numberIs({min: 0, max: 99}))
     yearsExperience;
 
     @field('Hire Date', required, dateIs({min: moment().startOf('day').toDate()}))
