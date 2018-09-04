@@ -1,28 +1,26 @@
 import {HoistModel} from '@xh/hoist/core';
-import {observable, action} from '@xh/hoist/mobx';
+import {FieldSupport, field, required, lengthIs} from '@xh/hoist/field';
 import {movies} from '../../core/data';
 
 @HoistModel()
+@FieldSupport
 export class FormPageModel {
-    @observable name = null;
-    @observable movie = null;
-    @observable notes = null;
+
+    @field(required, lengthIs({min: 8}))
+    name = null;
+
+    @field(required)
+    movie = null;
+
+    @field()
+    notes = null;
+
+    @field()
+    searchQuery = null;
 
     movies = movies;
 
-    @action
-    setName(name) {
-        this.name = name;
+    constructor() {
+        this.initFields({});
     }
-
-    @action
-    setMovie(movie) {
-        this.movie = movie;
-    }
-
-    @action
-    setNotes(notes) {
-        this.notes = notes;
-    }
-
 }
