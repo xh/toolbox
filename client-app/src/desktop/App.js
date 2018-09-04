@@ -19,6 +19,8 @@ import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
 import {IconsTab} from './tabs/icons/IconsTab';
 import {OtherTab} from './tabs/other/OtherTab';
+import {NewsTab} from "./tabs/news/NewsTab";
+import {FeaturesTab} from "./tabs/news/FeaturesTab";
 
 @HoistApp
 class AppClass {
@@ -110,6 +112,14 @@ class AppClass {
                             {name: 'timestamp', path: '/timestamp'},
                             {name: 'jsx', path: '/jsx'}
                         ]
+                    },
+                    {
+                        name: 'features',
+                        path: '/features',
+                        forwardTo: 'default.features.news',
+                        children: [
+                            {name: 'news', path: '/news'}
+                        ]
                     }
                 ]
             }
@@ -126,7 +136,8 @@ class AppClass {
                 {id: 'forms', content: FormsTab},
                 {id: 'charts', content: ChartsTab},
                 {id: 'icons', content: IconsTab},
-                {id: 'other', content: OtherTab}
+                {id: 'other', content: OtherTab},
+                {id: 'features', content: FeaturesTab}
             ]
         });
     }
