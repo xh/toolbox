@@ -42,6 +42,11 @@ export class ValidationPanelModel {
     endDate;
 
     constructor() {
+        this.initFields({
+            isManager: false,
+            startDate: moment().toDate()
+        });
+
         this.getField('endDate').addRules({
             when: ({value}, {startDate}) => startDate && value,
             check: ({value, displayName}, {startDate}) => value < startDate ? `${displayName} must be after Start Date` : null
@@ -51,13 +56,8 @@ export class ValidationPanelModel {
             when: (f, {isManager}) => isManager,
             check: [
                 required,
-                ({value}) => isNil(value) || value < 10 ?  'Managerial Positions require at least 10 years of experience' : null
+                ({value}) => isNil(value) || value < 10 ?  'Managerial positions require at least 10 years of experience' : null
             ]
-        });
-
-        this.initFields({
-            isManager: false,
-            startDate: moment().toDate()
         });
     }
 }

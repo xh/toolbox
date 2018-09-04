@@ -5,21 +5,16 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {XH, HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {vbox, hframe, hbox,  div, span, hspacer} from '@xh/hoist/cmp/layout';
+import {box, div, filler, hbox, hframe, hspacer, span, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formGroup} from '@xh/hoist/kit/blueprint';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {
-    dayField,
-    textField,
-    numberField,
-    checkField
-} from '@xh/hoist/desktop/cmp/form';
+import {checkField, dayField, numberField, textField} from '@xh/hoist/desktop/cmp/form';
 
 import {wrapper} from '../../common';
 import {ValidationPanelModel} from './ValidationPanelModel';
@@ -46,7 +41,7 @@ export class ValidationPanel extends Component {
                 mask: mask({model: this.validateButtonTask}),
                 item: panel({
                     className: 'toolbox-validation-panel__panel',
-                    items: hframe(
+                    item: hframe(
                         vbox({
                             width: 300,
                             items: [
@@ -68,7 +63,8 @@ export class ValidationPanel extends Component {
                                             onClick: () => model.setEmail(null)
                                         })
                                     })
-                                )
+                                ),
+                                box('* indicates a required field')
                             ]
                         }),
                         hspacer(30),
@@ -114,26 +110,29 @@ export class ValidationPanel extends Component {
                                 )
                             ]
                         })
-                    ),
-                    bbar: toolbar(
-                        button({
-                            text: 'Reset',
-                            icon: Icon.undo(),
-                            onClick: this.onResetClick
-                        }),
-                        button({
-                            text: 'Validate',
-                            icon: Icon.check(),
-                            onClick: this.onValidateClick
-                        }),
-                        button({
-                            text: 'Submit',
-                            icon: Icon.add(),
-                            onClick: this.onSubmitClick,
-                            disabled: !model.isValid
-                        })
                     )
-                })
+                }),
+                bbar: toolbar(
+                    button({
+                        text: 'Reset',
+                        icon: Icon.undo(),
+                        onClick: this.onResetClick
+                    }),
+                    button({
+                        text: 'Validate',
+                        icon: Icon.check(),
+                        intent: 'primary',
+                        onClick: this.onValidateClick
+                    }),
+                    filler(),
+                    button({
+                        text: 'Submit',
+                        icon: Icon.add(),
+                        intent: 'success',
+                        onClick: this.onSubmitClick,
+                        disabled: !model.isValid
+                    })
+                )
             })
         });
     }
@@ -147,7 +146,7 @@ export class ValidationPanel extends Component {
             isPending = field && field.isValidationPending;
 
         const label = isRequired ?
-            div(field.displayName, span(' (*)')) :
+            div(field.displayName, span(' *')) :
             div(field.displayName);
 
         return formGroup({
@@ -172,7 +171,7 @@ export class ValidationPanel extends Component {
 
     onSubmitClick = () => {
         if (this.model.isValid) {
-            XH.toast({message: 'User Successfully submitted'});
+            XH.toast({message: 'User successfully submitted.'});
         }
         this.model.resetFields();
     }
@@ -189,7 +188,11 @@ export class ValidationPanel extends Component {
             XH.toast({message: 'Form is valid'});
         } else {
             const errCount = model.fields.filter(f => f.isNotValid).length;
-            XH.toast({message: `Form is not valid. ${errCount} fields are still invalid!`});
+            XH.toast({
+                icon: Icon.warning(),
+                intent: 'danger',
+                message: `Form is not valid. ${errCount} fields are still invalid!`
+            });
         }
     }
 }
