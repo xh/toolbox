@@ -19,4 +19,8 @@ export class FormPageModel {
     searchQuery = null;
 
     movies = movies;
+
+    constructor() {
+        this.initFields({});
+    }
 }
