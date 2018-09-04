@@ -76,7 +76,7 @@ export class FormsTab extends Component {
                                 row({
                                     label: 'TextField',
                                     field: 'text3',
-                                    info: 'type:password, commitOnChange',
+                                    info: 'type:password, commitOnChange, selectOnFocus',
                                     item: textField({
                                         type: 'password',
                                         commitOnChange: true,
@@ -86,6 +86,7 @@ export class FormsTab extends Component {
                                 row({
                                     label: 'TextArea',
                                     field: 'text4',
+                                    info: 'selectOnFocus',
                                     item: textAreaField({
                                         width: '100%',
                                         selectOnFocus: true
@@ -112,7 +113,7 @@ export class FormsTab extends Component {
                                 row({
                                     label: 'NumberField',
                                     field: 'number2',
-                                    info: 'enableShorthandUnits, displayWithCommas',
+                                    info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
                                     item: numberField({
                                         enableShorthandUnits: true,
                                         displayWithCommas: true,
