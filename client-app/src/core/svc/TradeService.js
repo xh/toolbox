@@ -3,7 +3,7 @@ import {HoistService} from '@xh/hoist/core';
 import {companyTrades} from '../data/';
 import {cloneDeep} from 'lodash';
 
-@HoistService()
+@HoistService
 export class TradeService {
 
     generateTrades() {

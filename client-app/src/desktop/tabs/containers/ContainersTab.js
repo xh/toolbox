@@ -16,7 +16,7 @@ import {ToolbarPanel} from './ToolbarPanel';
 
 import './ContainersTab.scss';
 
-@HoistComponent()
+@HoistComponent
 export class ContainersTab extends Component {
 
     localModel = new TabContainerModel({

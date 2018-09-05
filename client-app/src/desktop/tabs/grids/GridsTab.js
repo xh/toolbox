@@ -14,7 +14,7 @@ import {ColumnGroupsGridPanel} from './ColumnGroupsGridPanel';
 import {RestGridPanel} from './RestGridPanel';
 import {DataViewPanel} from './DataViewPanel';
 
-@HoistComponent()
+@HoistComponent
 export class GridsTab extends Component {
 
     localModel = new TabContainerModel({

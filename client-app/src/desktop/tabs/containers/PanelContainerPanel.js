@@ -14,7 +14,7 @@ import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {wrapper} from '../../common/Wrapper';
 
-@HoistComponent()
+@HoistComponent
 export class PanelContainerPanel extends Component {
 
     leftSizingModel = new PanelSizingModel({

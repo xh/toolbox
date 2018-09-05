@@ -24,7 +24,7 @@ import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {App} from '../App';
 
-@HoistComponent()
+@HoistComponent
 @LayoutSupport
 class SampleGrid extends Component {
 
@@ -62,7 +62,8 @@ class SampleGrid extends Component {
             },
             {
                 field: 'company',
-                width: 200
+                width: 200,
+                tooltip: true
             },
             {
                 field: 'city',
@@ -73,14 +74,23 @@ class SampleGrid extends Component {
                 field: 'trade_volume',
                 align: 'right',
                 width: 130,
-                renderer: millionsRenderer({precision: 1, label: true})
+                renderer: millionsRenderer({
+                    precision: 1,
+                    label: true,
+                    tooltip: true
+                })
             },
             {
                 headerName: 'P&L',
                 field: 'profit_loss',
                 align: 'right',
                 width: 130,
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+                renderer: numberRenderer({
+                    precision: 0,
+                    ledger: true,
+                    colorSpec: true,
+                    tooltip: true
+                })
             },
 
             {...emptyFlexCol}

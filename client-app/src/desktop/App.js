@@ -86,7 +86,12 @@ class AppClass {
                     },
                     {
                         name: 'forms',
-                        path: '/forms'
+                        path: '/forms',
+                        forwardTo: 'default.forms.controls',
+                        children: [
+                            {name: 'controls', path: '/controls'},
+                            {name: 'validation', path: '/validation'}
+                        ]
                     },
                     {
                         name: 'charts',
