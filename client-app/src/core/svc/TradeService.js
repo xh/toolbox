@@ -15,7 +15,7 @@ export class TradeService {
             it.active = it.trade_volume % 6 == 0;
             it.client =  it.trade_volume % 4 == 0;
             it.headquarters = trades[random(20)].city;
-            it.employees = random(500);
+            it.employees = random(10, 500);
         });
         return trades;
     }
