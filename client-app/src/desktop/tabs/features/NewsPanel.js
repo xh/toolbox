@@ -9,7 +9,6 @@ import React, {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
-import {NewsPanelModel} from "./NewsPanelModel";
 import {box, filler, vbox} from "@xh/hoist/cmp/layout";
 import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
 import {LocalStore} from "@xh/hoist/data";
