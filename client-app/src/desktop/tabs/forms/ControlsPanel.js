@@ -15,19 +15,20 @@ import {fmtDate, fmtThousands} from '@xh/hoist/format';
 import {formGroup} from '@xh/hoist/kit/blueprint';
 import {
     checkField,
-    dayField,
-    textField,
-    textAreaField,
-    numberField,
-    sliderField,
-    selectField,
-    switchField,
     comboField,
+    dayField,
+    jsonField,
+    multiSelectField,
+    numberField,
     queryComboField,
-    jsonField
+    selectField,
+    sliderField,
+    switchField,
+    textAreaField,
+    textField
 } from '@xh/hoist/desktop/cmp/form';
 
-import {usStates, movies} from '../../../core/data';
+import {movies, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import {ControlsPanelModel} from './ControlsPanelModel';
 import {App} from '../../App';
@@ -144,6 +145,16 @@ export class ControlsPanel extends Component {
                                                 labelCls: null
                                             })}`
                                         })
+                                    }),
+                                    row({
+                                        label: 'CheckField',
+                                        field: 'bool1',
+                                        item: checkField()
+                                    }),
+                                    row({
+                                        label: 'SwitchField',
+                                        field: 'bool2',
+                                        item: switchField()
                                     })
                                 ]
                             }),
@@ -176,6 +187,14 @@ export class ControlsPanel extends Component {
                                         })
                                     }),
                                     row({
+                                        label: 'MultiSelectField',
+                                        field: 'option5',
+                                        item: multiSelectField({
+                                            options: usStates,
+                                            placeholder: 'Select state(s)...'
+                                        })
+                                    }),
+                                    row({
                                         label: 'DayField',
                                         field: 'startDate',
                                         info: 'minDate, maxDate',
@@ -196,16 +215,6 @@ export class ControlsPanel extends Component {
                                             minDate: moment().subtract(2, 'weeks').toDate(),
                                             maxDate: new Date()
                                         })
-                                    }),
-                                    row({
-                                        label: 'CheckField',
-                                        field: 'bool1',
-                                        item: checkField()
-                                    }),
-                                    row({
-                                        label: 'SwitchField',
-                                        field: 'bool2',
-                                        item: switchField()
                                     })
                                 ]
                             })
