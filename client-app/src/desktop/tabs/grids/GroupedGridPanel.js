@@ -11,7 +11,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {wrapper, sampleGrid} from '../../common';
 
-@HoistComponent()
+@HoistComponent
 export class GroupedGridPanel extends Component {
 
     render() {

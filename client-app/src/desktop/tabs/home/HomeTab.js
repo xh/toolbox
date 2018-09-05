@@ -13,7 +13,7 @@ import logo from '../../../core/img/xhio+hoist.png';
 import logoDark from '../../../core/img/xhio+hoist-dark.png';
 import './HomeTab.scss';
 
-@HoistComponent()
+@HoistComponent
 export class HomeTab extends Component {
     render() {
         const link = (txt, url) => <a href={url} target="_blank">{txt}</a>;

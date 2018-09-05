@@ -12,7 +12,7 @@ import {page} from '@xh/hoist/mobile/cmp/page';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
-@HoistComponent()
+@HoistComponent
 export class PopupsPage extends Component {
 
     render() {

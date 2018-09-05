@@ -2,7 +2,7 @@ import {HoistModel} from '@xh/hoist/core';
 import {FieldSupport, field, required, lengthIs} from '@xh/hoist/field';
 import {movies} from '../../core/data';
 
-@HoistModel()
+@HoistModel
 @FieldSupport
 export class FormPageModel {
 

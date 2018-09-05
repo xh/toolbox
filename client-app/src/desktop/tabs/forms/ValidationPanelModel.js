@@ -5,7 +5,7 @@ import {isNil} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import moment from 'moment';
 
-@HoistModel()
+@HoistModel
 @FieldSupport
 export class ValidationPanelModel {
 

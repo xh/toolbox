@@ -15,7 +15,7 @@ import {searchField} from '@xh/hoist/mobile/cmp/form';
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 
-@HoistComponent()
+@HoistComponent
 export class FormPage extends Component {
     localModel = new FormPageModel();
 

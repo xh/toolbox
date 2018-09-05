@@ -12,7 +12,7 @@ import {ControlsPanel} from './ControlsPanel';
 import {ValidationPanel} from './ValidationPanel';
 
 
-@HoistComponent()
+@HoistComponent
 export class FormsTab extends Component {
 
     localModel = new TabContainerModel({

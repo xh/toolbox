@@ -7,7 +7,7 @@
 import {HoistModel} from '@xh/hoist/core/index';
 import {action, observable} from '@xh/hoist/mobx/index';
 
-@HoistModel()
+@HoistModel
 export class ToolbarPanelModel {
     @observable state = null;
     @observable enableTerminate = false;

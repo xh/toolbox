@@ -4,7 +4,7 @@ import {computed, observable, runInAction} from '@xh/hoist/mobx';
 import {companyTrades} from '../data/';
 import {shuffle, take, uniqBy} from 'lodash';
 
-@HoistService()
+@HoistService
 export class CompanyService {
 
     @observable.ref

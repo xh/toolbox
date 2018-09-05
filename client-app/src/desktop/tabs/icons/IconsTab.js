@@ -13,7 +13,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import './IconsTab.scss';
 
-@HoistComponent()
+@HoistComponent
 export class IconsTab extends Component {
 
     render() {

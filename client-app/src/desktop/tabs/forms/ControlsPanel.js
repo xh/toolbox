@@ -33,7 +33,7 @@ import {ControlsPanelModel} from './ControlsPanelModel';
 import {App} from '../../App';
 import './ControlsPanel.scss';
 
-@HoistComponent()
+@HoistComponent
 export class ControlsPanel extends Component {
 
     localModel = new ControlsPanelModel();
