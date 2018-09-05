@@ -1,6 +1,14 @@
-.toolbox-forms-tab {
+.toolbox-controls-panel {
   &__panel {
     margin: var(--xh-pad-px);
+  }
+
+  .toolbox-controls-panel__panel {
+    padding: var(--xh-pad-px);
+
+    button {
+      height: 30px;
+    }
   }
 
   .bp3-form-group {
