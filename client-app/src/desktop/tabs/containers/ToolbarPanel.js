@@ -17,7 +17,7 @@ import {Icon} from '@xh/hoist/icon/index';
 import {usStates} from '../../../core/data/index';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
-@HoistComponent()
+@HoistComponent
 export class ToolbarPanel extends Component {
     toolBarModel = new ToolbarPanelModel();
 

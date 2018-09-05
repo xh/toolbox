@@ -11,7 +11,7 @@ import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {OLHCChartPanel} from './OLHCChartPanel';
 import {LineChartPanel} from './LineChartPanel';
 
-@HoistComponent()
+@HoistComponent
 export class ChartsTab extends Component {
 
     localModel = new TabContainerModel({

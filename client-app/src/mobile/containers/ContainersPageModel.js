@@ -11,7 +11,7 @@ import {TabContainerModel} from '@xh/hoist/mobile/cmp/tab';
 import {hBoxPage} from './HBoxPage';
 import {vBoxPage} from './VBoxPage';
 
-@HoistModel()
+@HoistModel
 export class ContainersPageModel {
 
     tabContainerModel = new TabContainerModel({
