@@ -10,7 +10,7 @@ import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {div, vbox, box} from '@xh/hoist/cmp/layout';
 
-@HoistComponent()
+@HoistComponent
 export class VBoxPage extends Component {
 
     render() {

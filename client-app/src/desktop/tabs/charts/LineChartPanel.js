@@ -14,7 +14,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
 import {LineChartModel} from './LineChartModel';
 
-@HoistComponent()
+@HoistComponent
 export class LineChartPanel extends Component {
     localModel = new LineChartModel();
 

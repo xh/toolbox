@@ -15,7 +15,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
 
-@HoistComponent()
+@HoistComponent
 export class RelativeTimestampPanel extends Component {
 
     @observable

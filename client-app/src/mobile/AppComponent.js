@@ -14,7 +14,7 @@ import {navigator} from '@xh/hoist/mobile/cmp/navigator';
 
 import './App.scss';
 
-@HoistComponent()
+@HoistComponent
 export class AppComponent extends Component {
 
     render() {

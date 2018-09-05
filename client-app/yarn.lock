@@ -78,7 +78,7 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@blueprintjs/core@^3.1.0", "@blueprintjs/core@~3.4.0":
+"@blueprintjs/core@^3.0.0", "@blueprintjs/core@^3.1.0", "@blueprintjs/core@~3.4.0":
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.4.0.tgz#cf5a61fb8288d8a58b892c7005d999c944d30521"
   dependencies:
@@ -109,11 +109,11 @@
     classnames "^2.2"
     tslib "^1.9.0"
 
-"@blueprintjs/select@~3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/select/-/select-3.1.0.tgz#5ec50aa31cc852ff90fd1d3666c00b6c32c408ba"
+"@blueprintjs/select@~3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/select/-/select-3.0.0.tgz#736051be2b65d93a62927e403d13cd16beb3b73f"
   dependencies:
-    "@blueprintjs/core" "^3.1.0"
+    "@blueprintjs/core" "^3.0.0"
     classnames "^2.2"
     tslib "^1.9.0"
 
@@ -222,13 +222,13 @@
     webpack-dev-server "~2.11.2"
 
 "@xh/hoist@^13.0.0-SNAPSHOT":
-  version "13.0.0-SNAPSHOT.1535466222268"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-13.0.0-SNAPSHOT.1535466222268.tgz#ddc0a8f6232935bc0fd9e54d881590bfaabf319b"
+  version "13.0.0-SNAPSHOT.1535564257034"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-13.0.0-SNAPSHOT.1535564257034.tgz#c4744a73ec99186515f94d123c062bd13b10c63e"
   dependencies:
     "@blueprintjs/core" "~3.4.0"
     "@blueprintjs/datetime" "~3.1.0"
     "@blueprintjs/icons" "~3.1.0"
-    "@blueprintjs/select" "~3.1.0"
+    "@blueprintjs/select" "~3.0.0"
     "@fortawesome/fontawesome-pro" "~5.3.0"
     "@fortawesome/fontawesome-svg-core" "~1.2.3"
     "@fortawesome/pro-light-svg-icons" "~5.3.0"

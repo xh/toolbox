@@ -12,7 +12,7 @@ import {restGrid, RestGridModel, RestStore} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/columns';
 import {wrapper} from '../../common/Wrapper';
 
-@HoistComponent()
+@HoistComponent
 export class RestGridPanel extends Component {
 
     localModel = new RestGridModel({

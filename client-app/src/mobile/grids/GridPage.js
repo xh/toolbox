@@ -12,7 +12,7 @@ import {grid} from '@xh/hoist/mobile/cmp/grid';
 
 import {GridPageModel} from './GridPageModel';
 
-@HoistComponent()
+@HoistComponent
 export class GridPage extends Component {
     localModel = new GridPageModel();
 
