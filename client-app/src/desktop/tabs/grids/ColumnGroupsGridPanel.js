@@ -11,7 +11,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {wrapper, sampleColumnGroupsGrid} from '../../common';
 
-@HoistComponent()
+@HoistComponent
 export class ColumnGroupsGridPanel extends Component {
 
     render() {
@@ -30,9 +30,9 @@ export class ColumnGroupsGridPanel extends Component {
 
             ],
             item: panel({
-                title: 'Grids > Standard',
+                title: 'Grids > Grouped Columns',
                 icon: Icon.grid(),
-                width: 900,
+                width: 990,
                 height: 400,
                 item: sampleColumnGroupsGrid()
             })

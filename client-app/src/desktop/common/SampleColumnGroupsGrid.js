@@ -24,7 +24,7 @@ import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {App} from '../App';
 
-@HoistComponent()
+@HoistComponent
 @LayoutSupport
 class SampleColumnGroupsGrid extends Component {
 
@@ -67,23 +67,27 @@ class SampleColumnGroupsGrid extends Component {
                     },
                     {
                         headerName: 'Company',
-                        width: 400,
                         children: [
                             {
+                                field: 'company',
+                                colId: 'companyName',
+                                width: 180
+                            },
+                            {
                                 field: 'city',
-                                colID: 'Storefront',
+                                colId: 'Storefront',
                                 headerName: 'Storefront Loc',
-                                width: 150
+                                width: 140
                             },
                             {
                                 field: 'headquarters',
-                                width: 150
+                                width: 140
                             },
                             {
                                 field: 'employees',
-                                width: 150
+                                align: 'right',
+                                width: 110
                             }
-
                         ]
                     },
                     {
@@ -91,12 +95,6 @@ class SampleColumnGroupsGrid extends Component {
                         ...boolCheckCol,
                         chooserName: 'Client',
                         width: 80
-                    },
-                    {
-                        field: 'city',
-                        colId: 'City3',
-                        width: 150,
-                        hide: true
                     }
                 ]
             },
@@ -156,8 +154,6 @@ class SampleColumnGroupsGrid extends Component {
                         model
                     }),
                     toolbarSep(),
-                    colChooserButton({gridModel: model}),
-                    exportButton({model, exportType: 'excel'}),
                     refreshButton({model: this})
                 ]
             })
