@@ -9,11 +9,11 @@ import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
-import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
+import {grid, GridModel} from '@xh/hoist/desktop/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchField} from '@xh/hoist/desktop/cmp/form';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -63,7 +63,7 @@ class SampleColumnGroupsGrid extends Component {
                         field: 'active',
                         ...boolCheckCol,
                         headerName: '',
-                        chooserName: 'Active Status',
+                        chooserName: 'Active Status'
                     },
                     {
                         headerName: 'Company',
