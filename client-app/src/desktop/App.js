@@ -19,8 +19,8 @@ import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
 import {IconsTab} from './tabs/icons/IconsTab';
 import {OtherTab} from './tabs/other/OtherTab';
-import {NewsTab} from "./tabs/news/NewsTab";
-import {FeaturesTab} from "./tabs/news/FeaturesTab";
+import {NewsPanel} from "./tabs/features/NewsPanel";
+import {FeaturesTab} from "./tabs/features/FeaturesTab";
 
 @HoistApp
 class AppClass {
