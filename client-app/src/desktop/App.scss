@@ -11,12 +11,6 @@ body {
 }
 
 .toolbox-multiselect {
-  max-width: 220px;
-  min-height: 60px;
-
-  // Stops tags rendered in a tall field from aligning to the center. Do we want to enforce this in hoist?
-  .bp3-tag-input-values {
-    align-self: auto;
-  }
-
+  max-width: 240px;
+  max-height: 60px;
 }
