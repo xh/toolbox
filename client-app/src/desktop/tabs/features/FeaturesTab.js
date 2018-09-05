@@ -10,7 +10,7 @@ import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
 import {NewsPanel} from './NewsPanel';
 
-@HoistComponent()
+@HoistComponent
 export class FeaturesTab extends Component {
 
     localModel = new TabContainerModel({

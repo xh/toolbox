@@ -1,0 +1,52 @@
+.toolbox-news-panel {
+
+  .news-item {
+    height: 100px;
+
+    &--title {
+      font-size: var(--xh-font-size-large-px);
+      font-weight: bold;
+    }
+
+    &--text {
+      display: inline-block;
+      opacity: 0.8;
+      font-size: var(--xh-font-size-small-px);
+      margin-bottom: 4px;
+
+
+
+    }
+
+    p, span {
+      /* BOTH of the following are required for text-overflow */
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .overflow-ellipsis {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+
+
+
+
+    &--img {
+      display: block;
+      margin: 10px 10px;
+      justify-content: center;
+      img {
+        max-width: 90%;
+        max-height: 80px;
+      }
+    }
+
+
+  }
+
+
+
+}
+

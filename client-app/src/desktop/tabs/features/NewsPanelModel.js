@@ -8,7 +8,7 @@
 import {XH, HoistModel} from '@xh/hoist/core';
 import {action, observable, computed} from '@xh/hoist/mobx';
 
-@HoistModel()
+@HoistModel
 export class NewsPanelModel {
 
     @observable.ref results = [];
