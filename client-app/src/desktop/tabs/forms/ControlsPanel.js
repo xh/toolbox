@@ -191,6 +191,7 @@ export class ControlsPanel extends Component {
                                         field: 'option5',
                                         item: multiSelectField({
                                             options: usStates,
+                                            className: 'toolbox-multiselect',
                                             placeholder: 'Select state(s)...'
                                         })
                                     }),
