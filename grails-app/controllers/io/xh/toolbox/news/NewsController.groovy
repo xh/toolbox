@@ -9,7 +9,6 @@ class NewsController extends BaseController {
     def newsService
 
     def index() {
-        log.info('hello')
         def items = newsService.newsItems
         renderJSON(items)
     }

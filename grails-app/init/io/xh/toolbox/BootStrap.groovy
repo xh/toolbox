@@ -12,10 +12,12 @@ class BootStrap {
 
     def init = {servletContext ->
         logStartupMsg()
+        ensureRequiredConfigsCreated()
         def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
         BaseService.parallelInit(services)
         ensureAdminUserCreated()
         ensureNoRoleUserCreated()
+
     }
 
     def destroy = {}
@@ -48,6 +50,28 @@ class BootStrap {
                     isAdmin: false
             ]).save()
         }
+    }
+    private void ensureRequiredConfigsCreated() {
+        Utils.configService.ensureRequiredConfigsCreated([
+                newsApiKey : [
+                        valueType   : 'string',
+                        defaultValue: '917b84920ec24d7198fd712e2e22b48a',
+                        groupName   : 'news',
+                        note        : 'Key used to access News API'
+                ],
+                newsSources: [
+                        valueType   : 'json',
+                        defaultValue: [
+                                        "bloomberg": "Bloomberg",
+                                        "cnbc"     : "CNBC",
+                                        "fortune"  : "Fortune",
+                                        "reuters"  : "Reuters"
+                                    ],
+                        groupName   : 'news',
+                        note        : 'Default news sources pulled from the News API'
+                ]
+        ])
+        log.info("News sources configured")
     }
 
     private void logStartupMsg() {
