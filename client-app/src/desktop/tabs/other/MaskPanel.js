@@ -21,7 +21,7 @@ import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {sampleGrid, wrapper} from '../../common';
 
 
-@HoistComponent()
+@HoistComponent
 export class MaskPanel extends Component {
 
     @observable seconds = 6;

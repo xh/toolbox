@@ -21,7 +21,7 @@ import {ValidationPanelModel} from './ValidationPanelModel';
 
 import './ValidationPanel.scss';
 
-@HoistComponent()
+@HoistComponent
 export class ValidationPanel extends Component {
 
     localModel = new ValidationPanelModel();

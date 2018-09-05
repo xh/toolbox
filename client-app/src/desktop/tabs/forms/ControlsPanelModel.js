@@ -2,7 +2,7 @@ import {HoistModel} from '@xh/hoist/core';
 import {FieldSupport, field} from '@xh/hoist/field';
 import {random} from 'lodash';
 
-@HoistModel()
+@HoistModel
 @FieldSupport
 export class ControlsPanelModel {
 

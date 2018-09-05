@@ -11,7 +11,7 @@ import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
 
-@HoistComponent()
+@HoistComponent
 export class VBoxContainerPanel extends Component {
     render() {
         return wrapper({

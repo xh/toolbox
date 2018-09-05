@@ -12,7 +12,7 @@ import {tabContainer} from '@xh/hoist/mobile/cmp/tab';
 
 import {ContainersPageModel} from './ContainersPageModel';
 
-@HoistComponent()
+@HoistComponent
 export class ContainersPage extends Component {
     localModel = new ContainersPageModel();
 
