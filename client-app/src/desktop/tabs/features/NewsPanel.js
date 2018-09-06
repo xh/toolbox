@@ -9,7 +9,7 @@ import React, {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
-import {box, filler, vbox, div} from "@xh/hoist/cmp/layout";
+import {filler} from "@xh/hoist/cmp/layout";
 import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
 import {LocalStore} from "@xh/hoist/data";
 import {newsPanelItem} from "./NewsPanelItem";
@@ -27,7 +27,7 @@ export class NewsPanel extends Component {
 
     localModel = new DataViewModel({
         store: new LocalStore({
-            fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author']
+            fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published']
         }),
         itemFactory: newsPanelItem
     });
@@ -44,7 +44,8 @@ export class NewsPanel extends Component {
                 item: dataView({
                     model,
                     rowCls: 'news-item',
-                    itemHeight: 100
+                    itemHeight: 120,
+                    onRowDoubleClicked: this.onRowDoubleClicked
                 }),
                 bbar: toolbar({
                     items: [
@@ -83,12 +84,13 @@ export class NewsPanel extends Component {
 
     completeLoad(success, vals) {
         const {store} = this.model;
+        const today = (new Date()).getDate();
         if (success) {
             store.loadData(Object.values(vals).map((s) => {
                     return {
                         title: s.title,
                         source: s.source,
-                        published: s.published,
+                        published: s.published ? this.dateFormatter(s.published, today) : null,
                         text: s.text,
                         url: s.url,
                         imageUrl: s.imageUrl,
@@ -96,9 +98,24 @@ export class NewsPanel extends Component {
                     }
                 })
             )
+        } else {
+            store.loadData([])
+        }
+    };
+
+    onRowDoubleClicked = (e) => {
+        if (e.data.url) window.open(e.data.url, '_blank')
+    };
+
+    dateFormatter = (d, today) => {
+        const date = new Date(d);
+        const locale = "en-us";
+        if (date.getDate() === today) {
+            return date.toLocaleTimeString(locale, {hour: '2-digit', minute:'2-digit'})
+        } else {
+            const day = date.getDate();
+            const month = date.toLocaleDateString(locale, {month: "short"});
+            return day + ' ' + month
         }
     }
-
-
-
 }

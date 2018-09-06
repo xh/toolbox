@@ -1,10 +1,7 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory, XH} from '@xh/hoist/core/index';
 import {hbox, vbox, box} from '@xh/hoist/cmp/layout/index';
-import {fmtNumber} from "@xh/hoist/format";
-import {Icon} from "@xh/hoist/icon";
-import logoDark from "../../../core/img/xhio+hoist-dark.png";
-import logo from "../../../core/img/xhio+hoist.png";
+import stockPhoto from "../../../core/img/stock-news.png";
 import React from "react";
 
 @HoistComponent
@@ -15,43 +12,51 @@ class NewsPanelItem extends Component {
             {title, url, text, imageUrl, published, source, author} = request;
 
         return hbox(
-                vbox({
-                    flex: 5,
-                    items: [
-                        box({
-                            className: 'news-item--title',
-                            item: [
-                                <span className="overflow-ellipsis">{title}</span>
-                            ]
-                        }),
-                        box({
-                            className: 'news-item--text',
-                            item: [
-                                <p className="overflow-ellipsis">{text}</p>
+            vbox({
+                flex: 4,
+                items: [
+                    box({
+                        className: 'news-item--text',
+                        item: [
+                            <span>{source} | {published}</span>
+                        ]
+                    }),
+                    box({
+                        className: 'news-item--title',
+                        item: [
+                            <span className="overflow-ellipsis">{title}</span>
+                        ]
+                    }),
+                    box({
+                        className: 'news-item--text',
+                        item: [
+                            <span className="overflow-ellipsis">{text}</span>
 
-                            ]
-                        }),
-                        box({
-                            className: 'news-item--text',
-                            item: [
-                                <p>{author} | {source}</p>
-                            ]
-                        })
-                    ]
-                }),
-
-                box({
-                    flex: 1,
-                    className: 'news-item--img',
-                    item: [
-                            <img src={imageUrl ? imageUrl : null} alt="Story image"/>
+                        ]
+                    }),
+                    box({
+                        className: 'news-item--text',
+                        item: [
+                            <span>{author}</span>
                         ]
                     })
-                );
-    }
+                ]
+            }),
+            vbox({
+                flex: 2,
+                className: 'news-item--img',
+                item: [
+                    box({
+                        className: 'img-container',
+                        item: [
+                            <img src={imageUrl ? imageUrl : stockPhoto} alt="Story image"/>
 
-    onClick (url) {
-        window.open(url, "_blank")
+                        ]
+                    })
+                ]
+
+            })
+        );
     }
 }
 
