@@ -78,6 +78,7 @@ class AppClass {
                         forwardTo: 'default.grids.standard',
                         children: [
                             {name: 'standard', path: '/standard'},
+                            {name: 'tree', path: '/tree'},
                             {name: 'grouped', path: '/grouped'},
                             {name: 'rest', path: '/rest'},
                             {name: 'dataview', path: '/dataview'}
