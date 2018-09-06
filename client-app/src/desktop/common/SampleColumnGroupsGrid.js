@@ -26,13 +26,14 @@ import {App} from '../App';
 
 @HoistComponent
 @LayoutSupport
-class SampleGrid extends Component {
+class SampleColumnGroupsGrid extends Component {
 
     loadModel = new PendingTaskModel();
 
     localModel = new GridModel({
+        stateModel: 'toolboxGroupGrid',
         store: new LocalStore({
-            fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
+            fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss', 'client', 'headquarters', 'employees']
         }),
         sortBy: [{colId: 'company', sort: 'asc'}],
         emptyText: 'No records found...',
@@ -55,44 +56,67 @@ class SampleGrid extends Component {
         },
         columns: [
             {
-                field: 'active',
-                ...boolCheckCol,
-                headerName: '',
-                chooserName: 'Active Status'
+                headerName: 'Demographics',
+                groupId: 'DEMO',
+                children: [
+                    {
+                        field: 'active',
+                        ...boolCheckCol,
+                        headerName: '',
+                        chooserName: 'Active Status'
+                    },
+                    {
+                        headerName: 'Company',
+                        children: [
+                            {
+                                field: 'company',
+                                colId: 'companyName',
+                                width: 180
+                            },
+                            {
+                                field: 'city',
+                                colId: 'Storefront',
+                                headerName: 'Storefront Loc',
+                                width: 140
+                            },
+                            {
+                                field: 'headquarters',
+                                width: 140
+                            },
+                            {
+                                field: 'employees',
+                                align: 'right',
+                                width: 110
+                            }
+                        ]
+                    },
+                    {
+                        field: 'client',
+                        ...boolCheckCol,
+                        chooserName: 'Client',
+                        width: 80
+                    }
+                ]
             },
             {
-                field: 'company',
-                width: 200,
-                tooltip: true
+                headerName: 'Data',
+                children: [
+                    {
+                        headerName: 'Trade Volume',
+                        field: 'trade_volume',
+                        align: 'right',
+                        width: 130,
+                        renderer: millionsRenderer({precision: 1, label: true})
+                    },
+                    {
+                        headerName: 'P&L',
+                        field: 'profit_loss',
+                        align: 'right',
+                        width: 130,
+                        renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+                    }
+                ]
             },
-            {
-                field: 'city',
-                width: 150
-            },
-            {
-                headerName: 'Trade Volume',
-                field: 'trade_volume',
-                align: 'right',
-                width: 130,
-                renderer: millionsRenderer({
-                    precision: 1,
-                    label: true,
-                    tooltip: true
-                })
-            },
-            {
-                headerName: 'P&L',
-                field: 'profit_loss',
-                align: 'right',
-                width: 130,
-                renderer: numberRenderer({
-                    precision: 0,
-                    ledger: true,
-                    colorSpec: true,
-                    tooltip: true
-                })
-            },
-
             {...emptyFlexCol}
         ]
     });
@@ -157,4 +181,4 @@ class SampleGrid extends Component {
     }
 
 }
-export const sampleGrid = elemFactory(SampleGrid);
+export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
