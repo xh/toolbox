@@ -16,6 +16,7 @@ import {
     selectField,
     textAreaField
 } from "@xh/hoist/desktop/cmp/form";
+import {button} from "@xh/hoist/desktop/cmp/button"
 
 import {formGroup} from "@xh/hoist/kit/blueprint";
 import {FormatsTabModel} from './FormatsTabModel';
@@ -47,7 +48,8 @@ export class FormatsTab extends Component {
         };
         const formattedNumbers = sampleNumbers.map(
             (num, index) =>
-                        <tr>
+                        <tr key={`num-${index}`}>
+                            <td>{index + 1}.</td>
                             <td align="right">
                                 {sampleNumbers[index]}
                             </td>
@@ -70,7 +72,8 @@ export class FormatsTab extends Component {
                                     panel({
                                         className: 'toolbox-formats-tab__panel',
                                         width: '50%',
-                                        item: row({
+                                        items: [
+                                            row({
                                             label: 'Test Numbers',
                                             field: 'testnumbers',
                                             item: textAreaField({
@@ -80,7 +83,12 @@ export class FormatsTab extends Component {
                                             }),
                                             display: false,
                                             info: 'Comma Separated List'
-                                        })
+                                            }),
+                                            button({
+                                                text: 'Run Test'
+                                            })
+                                            ]
+
                                     }),
                                     panel({
                                         className: 'toolbox-formats-tab__panel',
@@ -136,15 +144,21 @@ export class FormatsTab extends Component {
                                 item: [
 
                                         <table>
-                                            <tr>
-                                                <th>
-                                                    Input
-                                                </th>
-                                                <th>
-                                                    Output
-                                                </th>
-                                            </tr>
-                                            {formattedNumbers}
+
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>
+                                                        Input
+                                                    </th>
+                                                    <th>
+                                                        Output
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {formattedNumbers}
+                                            </tbody>
                                         </table>
 
                                 ]
