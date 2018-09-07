@@ -86,8 +86,10 @@ export class ControlsPanel extends Component {
                                     row({
                                         label: 'TextArea',
                                         field: 'text4',
+                                        info: 'selectOnFocus',
                                         item: textAreaField({
-                                            width: '100%'
+                                            width: '100%',
+                                            selectOnFocus: true
                                         })
                                     }),
                                     row({
@@ -111,10 +113,11 @@ export class ControlsPanel extends Component {
                                     row({
                                         label: 'NumberField',
                                         field: 'number2',
-                                        info: 'enableShorthandUnits, displayWithCommas',
+                                        info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
                                         item: numberField({
                                             enableShorthandUnits: true,
-                                            displayWithCommas: true
+                                            displayWithCommas: true,
+                                            selectOnFocus: true
                                         })
                                     }),
                                     row({
