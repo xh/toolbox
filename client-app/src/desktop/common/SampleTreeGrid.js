@@ -30,6 +30,7 @@ class SampleTreeGrid extends Component {
     loadModel = new PendingTaskModel();
 
     localModel = new GridModel({
+        treeMode: true,
         store: new LocalStore({
             fields: ['id', 'name', 'pnl']
         }),
@@ -54,9 +55,10 @@ class SampleTreeGrid extends Component {
         },
         columns: [
             {
-                field: 'name',
+                headerName: 'Name',
                 width: 200,
-                tooltip: true
+                field: 'name',
+                isTreeColumn: true
             },
             {
                 headerName: 'P&L',
@@ -94,7 +96,7 @@ class SampleTreeGrid extends Component {
                 items: [
                     storeFilterField({
                         store,
-                        fields: ['company', 'city']
+                        fields: ['name']
                     }),
                     storeCountLabel({
                         store,
