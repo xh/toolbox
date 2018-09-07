@@ -14,7 +14,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
 import {OLHCChartModel} from './OLHCChartModel';
 
-@HoistComponent()
+@HoistComponent
 export class OLHCChartPanel extends Component {
     localModel = new OLHCChartModel();
 

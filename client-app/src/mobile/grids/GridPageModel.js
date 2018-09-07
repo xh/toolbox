@@ -13,7 +13,7 @@ import {numberRenderer} from '@xh/hoist/format';
 
 import {companyTrades} from '../../core/data';
 
-@HoistModel()
+@HoistModel
 export class GridPageModel {
 
     loadModel = new PendingTaskModel();

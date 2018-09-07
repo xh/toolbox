@@ -24,7 +24,7 @@ import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {App} from '../App';
 
-@HoistComponent()
+@HoistComponent
 @LayoutSupport
 class SampleGrid extends Component {
 
@@ -54,6 +54,11 @@ class SampleGrid extends Component {
             });
         },
         columns: [
+            {
+                field: 'id',
+                headerName: 'ID',
+                hide: true
+            },
             {
                 field: 'active',
                 ...boolCheckCol,

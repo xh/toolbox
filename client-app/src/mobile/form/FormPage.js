@@ -10,11 +10,12 @@ import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {label, textField, selectField, textAreaField} from '@xh/hoist/mobile/cmp/form';
+import {searchField} from '@xh/hoist/mobile/cmp/form';
 
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 
-@HoistComponent()
+@HoistComponent
 export class FormPage extends Component {
     localModel = new FormPageModel();
 
@@ -38,6 +39,10 @@ export class FormPage extends Component {
                         this.renderField('Notes:', textAreaField, {
                             model,
                             field: 'notes'
+                        }),
+                        this.renderField('Search: ', searchField, {
+                            model,
+                            field: 'searchQuery'
                         })
                     ]
                 }),

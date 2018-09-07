@@ -14,7 +14,7 @@ import {wrapper} from '../../common';
 
 import './JsxPanel.scss';
 
-@HoistComponent()
+@HoistComponent
 export class JsxPanel extends Component {
 
     render() {
