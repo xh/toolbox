@@ -76,10 +76,11 @@ export class ControlsPanel extends Component {
                                     row({
                                         label: 'TextField',
                                         field: 'text3',
-                                        info: 'type:password, commitOnChange',
+                                        info: 'type:password, commitOnChange, selectOnFocus',
                                         item: textField({
                                             type: 'password',
-                                            commitOnChange: true
+                                            commitOnChange: true,
+                                            selectOnFocus: true
                                         })
                                     }),
                                     row({
