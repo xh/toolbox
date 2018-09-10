@@ -12,51 +12,28 @@ class NewsPanelItem extends Component {
             {title, url, text, imageUrl, published, source, author} = request;
 
         return hbox(
-            vbox({
+            box({
                 flex: 4,
-                items: [
-                    box({
-                        className: 'news-item--text',
-                        item: [
-                            <span>{source} | {published}</span>
-                        ]
-                    }),
-                    box({
-                        className: 'news-item--title',
-                        item: [
-                            <span className="overflow-ellipsis">{title}</span>
-                        ]
-                    }),
-                    box({
-                        className: 'news-item--text',
-                        item: [
-                            <span className="overflow-ellipsis">{text}</span>
-
-                        ]
-                    }),
-                    box({
-                        className: 'news-item--text',
-                        item: [
-                            <span>{author}</span>
-                        ]
-                    })
+                className: "text-container",
+                item: [
+                        <div>
+                            <p className="news-item--text">{source} | {published}</p>
+                            <p className="news-item--title overflow-ellipsis">{title}</p>
+                            <p className="news-item--text overflow-ellipsis">{text}</p>
+                            <p className="news-item--text">{author}</p>
+                        </div>
                 ]
             }),
-            vbox({
+            box({
                 flex: 2,
-                className: 'news-item--img',
+                className: 'img-container',
                 item: [
-                    box({
-                        className: 'img-container',
-                        item: [
+                        <div className="news-item--img">
                             <img src={imageUrl ? imageUrl : stockPhoto} alt="Story image"/>
-
-                        ]
-                    })
+                        </div>
                 ]
-
             })
-        );
+        )
     }
 }
 

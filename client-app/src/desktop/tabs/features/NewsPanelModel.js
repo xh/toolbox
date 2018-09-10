@@ -6,28 +6,31 @@
  */
 
 import {XH, HoistModel} from '@xh/hoist/core';
-import {action, observable, computed} from '@xh/hoist/mobx';
+import {action, observable, bindable} from '@xh/hoist/mobx';
+import {DataViewModel} from "@xh/hoist/desktop/cmp/dataview";
+import {LocalStore} from "@xh/hoist/data";
+import {newsPanelItem} from "./NewsPanelItem";
 
 @HoistModel
 export class NewsPanelModel {
 
-    @observable.ref results = [];
-
-    async loadAsync() {
-        // if (!this.view.isDisplayed) return;
-
-        return XH
-            .fetchJson({url: 'news'})
-            .then(rows => {
-                this.completeLoad(true, rows);
-            }).catch(e => {
-                this.completeLoad(false, e);
-                XH.handleException(e);
-            });
-    }
+    @observable sourceOptions = null;
+    @bindable sourceSelected = null;
+    @observable lastRefresh = null;
+    @observable viewModel = new DataViewModel({
+                                    store: new LocalStore({
+                                        fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published']
+                                    }),
+                                    itemFactory: newsPanelItem
+                                });
+    @action
+    updateSourceOptions = () => {
+        this.sourceOptions = [...new Set (this.viewModel.store.records.map(story => story.source))]
+    };
 
     @action
-    completeLoad(success, vals) {
-        this.results = success ? Object.values(vals) : [];
+    refreshTimestamp = () => {
+        this.lastRefresh = new Date()
     }
+
 }

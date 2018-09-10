@@ -10,31 +10,29 @@ import {HoistComponent, XH} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
 import {filler} from "@xh/hoist/cmp/layout";
-import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
-import {LocalStore} from "@xh/hoist/data";
-import {newsPanelItem} from "./NewsPanelItem";
+import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {Icon} from "@xh/hoist/icon";
 import {toolbar} from "@xh/hoist/desktop/cmp/toolbar";
 import {storeFilterField} from "@xh/hoist/desktop/cmp/store";
+import {multiSelectField} from "@xh/hoist/desktop/cmp/form";
 import {button} from "@xh/hoist/desktop/cmp/button";
 import './NewsPanelItem.scss';
-
+import {NewsPanelModel} from "./NewsPanelModel";
+import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
+import {relativeTimestamp} from "@xh/hoist/cmp/relativetimestamp"
+import {fmtCompactDate} from "@xh/hoist/format"
 
 
 
 @HoistComponent
 export class NewsPanel extends Component {
 
-    localModel = new DataViewModel({
-        store: new LocalStore({
-            fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published']
-        }),
-        itemFactory: newsPanelItem
-    });
+    localModel = new NewsPanelModel();
 
 
     render() {
-        const {model} = this;
+        const {viewModel} = this.model;
+
         return wrapper({
             item: panel({
                 className: 'toolbox-news-panel',
@@ -42,17 +40,37 @@ export class NewsPanel extends Component {
                 width: '75%',
                 height: '90%',
                 item: dataView({
-                    model,
+                    model: viewModel,
                     rowCls: 'news-item',
                     itemHeight: 120,
                     onRowDoubleClicked: this.onRowDoubleClicked
+                }),
+                tbar: toolbar({
+                    items: [
+                        filler(),
+                        storeCountLabel({
+                            store: viewModel.store,
+                            unit: 'stories'
+                        }),
+                        relativeTimestamp({
+                            timestamp: this.model.lastRefresh
+                        })
+                    ]
                 }),
                 bbar: toolbar({
                     items: [
                         storeFilterField({
                             placeholder: 'Filter by title or content...',
-                            store: model.store,
+                            store: viewModel.store,
                             fields: ['title']
+                        }),
+                        multiSelectField({
+                            placeholder: "Filter sources...",
+                            options: this.model.sourceOptions,
+                            commitOnChange: true,
+                            onCommit: this.onCommit,
+                            model: this.model,
+                            field: 'sourceSelected'
                         }),
                         filler(),
                         button({
@@ -83,21 +101,23 @@ export class NewsPanel extends Component {
     };
 
     completeLoad(success, vals) {
-        const {store} = this.model;
+        const {store} = this.model.viewModel;
         const today = (new Date()).getDate();
         if (success) {
             store.loadData(Object.values(vals).map((s) => {
                     return {
                         title: s.title,
                         source: s.source,
-                        published: s.published ? this.dateFormatter(s.published, today) : null,
+                        published: s.published ? fmtCompactDate(s.published) : null,
                         text: s.text,
                         url: s.url,
                         imageUrl: s.imageUrl,
                         author: s.author
                     }
                 })
-            )
+            );
+            this.model.updateSourceOptions();
+            this.model.refreshTimestamp()
         } else {
             store.loadData([])
         }
@@ -107,15 +127,13 @@ export class NewsPanel extends Component {
         if (e.data.url) window.open(e.data.url, '_blank')
     };
 
-    dateFormatter = (d, today) => {
-        const date = new Date(d);
-        const locale = "en-us";
-        if (date.getDate() === today) {
-            return date.toLocaleTimeString(locale, {hour: '2-digit', minute:'2-digit'})
-        } else {
-            const day = date.getDate();
-            const month = date.toLocaleDateString(locale, {month: "short"});
-            return day + ' ' + month
+    onCommit = () => {
+        const {store} = this.model.viewModel;
+        const {sourceSelected} = this.model;
+        let filter = null;
+        if (sourceSelected) {
+            filter = (rec) => sourceSelected.includes(rec.source)
         }
+        store.setFilter(filter);
     }
 }
