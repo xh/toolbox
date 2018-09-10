@@ -167,7 +167,7 @@ class SampleColumnGroupsGrid extends Component {
                     }),
                     storeCountLabel({
                         store,
-                        units: 'companies'
+                        unit: 'salesperson'
                     }),
                     filler(),
                     box('Compact mode:'),

@@ -125,7 +125,7 @@ class SampleGrid extends Component {
                     }),
                     storeCountLabel({
                         store,
-                        units: 'companies'
+                        unit: 'companies'
                     }),
                     filler(),
                     box('Compact mode:'),
