@@ -10,6 +10,7 @@ import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
+import {SalesService} from '../core/svc/SalesService';
 
 import {AppComponent} from './AppComponent';
 import {ChartsTab} from './tabs/charts/ChartsTab';
@@ -28,6 +29,7 @@ class AppClass {
 
     companyService = new CompanyService();
     tradeService = new TradeService();
+    salesService = new SalesService();
 
     get enableLogout() {return true}
     get componentClass() {return AppComponent}

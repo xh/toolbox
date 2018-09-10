@@ -19,7 +19,7 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
+import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {App} from '../App';
@@ -33,9 +33,9 @@ class SampleColumnGroupsGrid extends Component {
     localModel = new GridModel({
         stateModel: 'toolboxGroupGrid',
         store: new LocalStore({
-            fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss', 'client', 'headquarters', 'employees']
+            fields: ['firstName', 'lastName', 'city', 'state', 'salary', 'projectedUnitsSold', 'projectedGross', 'actualUnitsSold', 'actualGross', 'retain']
         }),
-        sortBy: [{colId: 'company', sort: 'asc'}],
+        sortBy: [{colId: 'lastName', sort: 'asc'}],
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
@@ -60,62 +60,85 @@ class SampleColumnGroupsGrid extends Component {
                 groupId: 'DEMO',
                 children: [
                     {
-                        field: 'active',
-                        ...boolCheckCol,
-                        headerName: '',
-                        chooserName: 'Active Status'
+                        field: 'firstName',
+                        headerName: 'First',
+                        width: 100,
+                        chooserName: 'First Name'
                     },
                     {
-                        headerName: 'Company',
-                        children: [
-                            {
-                                field: 'company',
-                                colId: 'companyName',
-                                width: 180
-                            },
-                            {
-                                field: 'city',
-                                colId: 'Storefront',
-                                headerName: 'Storefront Loc',
-                                width: 140
-                            },
-                            {
-                                field: 'headquarters',
-                                width: 140
-                            },
-                            {
-                                field: 'employees',
-                                align: 'right',
-                                width: 110
-                            }
-                        ]
+                        field: 'lastName',
+                        headerName: 'Last',
+                        width: 100,
+                        chooserName: 'Last Name'
                     },
                     {
-                        field: 'client',
-                        ...boolCheckCol,
-                        chooserName: 'Client',
-                        width: 80
+                        field: 'city',
+                        width: 120
+                    },
+                    {
+                        field: 'state',
+                        width: 120
                     }
                 ]
             },
             {
-                headerName: 'Data',
+                field: 'salary',
+                width: 90,
+                renderer: numberRenderer({precision: 0})
+            },
+            {
+                headerName: 'Sales',
                 children: [
                     {
-                        headerName: 'Trade Volume',
-                        field: 'trade_volume',
-                        align: 'right',
-                        width: 130,
-                        renderer: millionsRenderer({precision: 1, label: true})
+                        headerName: 'Projected',
+                        children: [
+                            {
+                                field: 'projectedUnitsSold',
+                                headerName: 'Units',
+                                align: 'right',
+                                width: 70,
+                                chooserName: 'Projected Units',
+                                exportName: 'Projected Units'
+                            },
+                            {
+                                field: 'projectedGross',
+                                headerName: 'Gross',
+                                align: 'right',
+                                width: 100,
+                                renderer: numberRenderer({precision: 0}),
+                                chooserName: 'Projected Gross',
+                                exportName: 'Projected Gross'
+                            }
+                        ]
                     },
                     {
-                        headerName: 'P&L',
-                        field: 'profit_loss',
-                        align: 'right',
-                        width: 130,
-                        renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+                        headerName: 'Actual',
+                        children: [
+                            {
+                                field: 'actualUnitsSold',
+                                headerName: 'Units',
+                                align: 'right',
+                                width: 70,
+                                chooserName: 'Actual Units',
+                                exportName: 'Actual Units'
+                            },
+                            {
+                                field: 'actualGross',
+                                headerName: 'Gross',
+                                align: 'right',
+                                width: 110,
+                                renderer: numberRenderer({formatPattern: '0.00'}),
+                                chooserName: 'Actual Gross',
+                                exportName: 'Actual Gross'
+                            }
+                        ]
                     }
                 ]
+            },
+            {
+                field: 'retain',
+                ...boolCheckCol,
+                width: 70
             },
             {...emptyFlexCol}
         ]
@@ -167,14 +190,14 @@ class SampleColumnGroupsGrid extends Component {
     //------------------------
     loadAsync() {
         wait(250)
-            .then(() => this.model.loadData(App.tradeService.generateTrades()))
+            .then(() => this.model.loadData(App.salesService.generateSales()))
             .linkTo(this.loadModel);
     }
 
     showRecToast(rec) {
         XH.alert({
-            title: rec.company,
-            message: `You asked to see details for ${rec.company}. They are based in ${rec.city}.`,
+            title: `${rec.firstName} ${rec.lastName}`,
+            message: `You asked to see details for ${rec.firstName}. They sold ${rec.actualUnitsSold} last year.`,
             confirmText: 'Close',
             confirmIntent: 'primary'
         });
