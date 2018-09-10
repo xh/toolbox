@@ -163,7 +163,7 @@ class SampleColumnGroupsGrid extends Component {
                 items: [
                     storeFilterField({
                         store,
-                        fields: ['company', 'city']
+                        fields: ['firstName', 'lastName', 'city', 'state']
                     }),
                     storeCountLabel({
                         store,
