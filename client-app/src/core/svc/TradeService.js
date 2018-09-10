@@ -1,4 +1,3 @@
-import {random} from 'lodash';
 import {HoistService} from '@xh/hoist/core';
 import {companyTrades} from '../data/';
 import {cloneDeep} from 'lodash';
