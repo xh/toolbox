@@ -55,6 +55,11 @@ class SampleGrid extends Component {
         },
         columns: [
             {
+                field: 'id',
+                headerName: 'ID',
+                hide: true
+            },
+            {
                 field: 'active',
                 ...boolCheckCol,
                 headerName: '',
