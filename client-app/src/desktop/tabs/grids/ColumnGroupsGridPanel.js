@@ -27,7 +27,6 @@ export class ColumnGroupsGridPanel extends Component {
                 <p>
                     This grid also demonstrates persistent grid state using the browser's local storage.
                 </p>
-
             ],
             item: panel({
                 title: 'Grids > Grouped Columns',

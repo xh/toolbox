@@ -97,7 +97,6 @@ class SampleGrid extends Component {
                     tooltip: true
                 })
             },
-
             {...emptyFlexCol}
         ]
     });
