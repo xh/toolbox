@@ -1,9 +1,21 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, computed} from '@xh/hoist/mobx';
+import {fmtCompact} from "@xh/hoist/format/FormatNumber";
+import React from "react";
+import {capitalize, toLower} from 'lodash';
 
-@HoistModel()
+@HoistModel
 export class FormatsTabModel {
-    @bindable testnumbers = "123456,\n" +
+
+    SCALE_OPTIONS = [
+        'None',
+        'Auto',
+        'Thousands',
+        'Millions',
+        'Billions'
+    ];
+
+    @bindable testNumbers = "123456,\n" +
                             "123450,\n" +
                             "123400.1,\n" +
                             "12456.12,\n" +
@@ -19,10 +31,37 @@ export class FormatsTabModel {
                             "1.224123";
 
     @bindable precision = 2;
-    @bindable decimaltolerance = 2;
-    @bindable zeropad = 0;
+    @bindable decimalTolerance = 2;
+    @bindable zeroPad = 0;
+    @bindable label = 'Auto';
 
-    @bindable label = 'Default';
+    @computed get fOptions() {
+        return {
+            asElement: true,
+            label: this.label === 'Default' ? null : toLower(this.label),
+            precision: this.precision,
+            zeroPad: this.zeroPad,
+            decimalTolerance: this.decimalTolerance
+        }
+    }
+
+    @computed get formattedNumbers() {
+        const sampleNumbers = this.testNumbers.split(",").map(v => parseFloat(v.trim()))
+        return sampleNumbers.map(
+            (num, index) =>
+                <tr key={`num-${index}`}>
+                    <td>{index + 1}.</td>
+                    <td align="right">
+                        {sampleNumbers[index]}
+                    </td>
+                    <td align="right">
+                        {fmtCompact(num, this.fOptions)}
+                    </td>
+                </tr>
+        );
+    }
+
+
 
 
 

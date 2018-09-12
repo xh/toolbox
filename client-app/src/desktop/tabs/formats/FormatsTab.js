@@ -24,40 +24,12 @@ import {capitalize, toLower} from 'lodash';
 import './FormatsTab.scss';
 
 
-@HoistComponent()
+@HoistComponent
 export class FormatsTab extends Component {
     localModel = new FormatsTabModel();
     render() {
         const {model, row} = this;
 
-        const scaleOptions = [
-            'Default',
-            'None',
-            'Thousands',
-            'Millions',
-            'Billions'
-        ];
-
-        const sampleNumbers = this.localModel.testnumbers.split(",").map(v => parseFloat(v.trim()));
-        const fOptions = {
-            asElement: true,
-            label: this.localModel.label === 'Default' ? null : toLower(this.localModel.label),
-            precision: this.localModel.precision,
-            zeroPad: this.localModel.zeropad,
-            decimalTolerance: this.localModel.decimaltolerance
-        };
-        const formattedNumbers = sampleNumbers.map(
-            (num, index) =>
-                        <tr key={`num-${index}`}>
-                            <td>{index + 1}.</td>
-                            <td align="right">
-                                {sampleNumbers[index]}
-                            </td>
-                            <td align="right">
-                                {fmtCompact(num, fOptions)}
-                            </td>
-                        </tr>
-        );
         return wrapper({
             item:
                 panel({
@@ -75,7 +47,7 @@ export class FormatsTab extends Component {
                                         items: [
                                             row({
                                             label: 'Test Numbers',
-                                            field: 'testnumbers',
+                                            field: 'testNumbers',
                                             item: textAreaField({
                                                 style: {
                                                     height: '400px'
@@ -88,7 +60,6 @@ export class FormatsTab extends Component {
                                                 text: 'Run Test'
                                             })
                                             ]
-
                                     }),
                                     panel({
                                         className: 'toolbox-formats-tab__panel',
@@ -106,7 +77,7 @@ export class FormatsTab extends Component {
                                             }),
                                             row({
                                                 label: 'Decimal Tolerance',
-                                                field: 'decimaltolerance',
+                                                field: 'decimalTolerance',
                                                 item: numberField({
                                                     style: {
                                                         width: '50%'
@@ -116,7 +87,7 @@ export class FormatsTab extends Component {
                                             }),
                                             row({
                                                 label: 'Zero Pad',
-                                                field: 'zeropad',
+                                                field: 'zeroPad',
                                                 item: numberField({
                                                     style: {
                                                         width: '50%'
@@ -125,10 +96,10 @@ export class FormatsTab extends Component {
                                                 info: 'Zero padding applied where possible'
                                             }),
                                             row({
-                                                label: 'Label',
+                                                label: 'Units',
                                                 field: 'label',
                                                 item: selectField({
-                                                    options: scaleOptions,
+                                                    options: model.SCALE_OPTIONS,
                                                     placeholder: 'Select label...'
                                                 }),
                                                 info: 'Default: Apply scale to each number based on its size'
@@ -157,7 +128,7 @@ export class FormatsTab extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {formattedNumbers}
+                                                {model.formattedNumbers}
                                             </tbody>
                                         </table>
 
