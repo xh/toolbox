@@ -28,6 +28,8 @@ export class ControlsPanelModel {
     @field() option3
     @field() option4
     @field() option5
+    @field() option6 // name this it's getting confusing
+    @field() option7
 
     // Others
     @field() startDate;
@@ -43,5 +45,18 @@ export class ControlsPanelModel {
             startDate: new Date(),
             endDate: new Date()
         });
+    }
+
+    getFoodItems() {
+        switch (this.option6) {
+            case 'breakfast':
+                return ['pancakes', 'waffles', 'toast', 'bacon', 'sausage'];
+            case 'lunch':
+                return ['soup', 'salad', 'sandwich', 'protein shake'];
+            case 'dinner':
+                return ['roast chicken', 'steak', 'pasta'];
+            default:
+                return ['Please select meal to populate...'];
+        }
     }
 }

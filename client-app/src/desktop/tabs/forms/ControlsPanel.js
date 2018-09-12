@@ -40,7 +40,7 @@ export class ControlsPanel extends Component {
     localModel = new ControlsPanelModel();
 
     render() {
-        const {model, row} = this;
+        const {model, row, testRow} = this;
 
         return wrapper({
             item: panel({
@@ -185,6 +185,24 @@ export class ControlsPanel extends Component {
                                             placeholder: 'Select state(s)...'
                                         })
                                     }),
+                                    testRow({
+                                        label: 'Dynamic Options',
+                                        info: 'Custom/async search (name/city)',
+                                        displayField: 'option7',
+                                        model: mo
+                                        items: [
+                                            selectField({
+                                                options: ['Breakfast', 'Lunch', 'Dinner'],
+                                                placeholder: 'Select Meal...',
+                                                field: 'option6'
+                                            }),
+                                            multiSelectField({
+                                                options: model.getFoodItems(),
+                                                field: 'option7',
+                                                placeholder: 'Select items...'
+                                            })
+                                        ]
+                                    }),
                                     row({
                                         label: 'DayField',
                                         field: 'startDate',
@@ -235,7 +253,22 @@ export class ControlsPanel extends Component {
         return formGroup({
             label,
             labelInfo: `${displayVal}`,
-            item: React.cloneElement(item, {model, field}),
+            item: React.cloneElement(item, {model, field}), // why?
+            helperText: info
+        });
+    };
+
+    // kinda hate this, big basically repeated helper just to put in formGroup?
+    testRow = ({label, displayField, items, info, fmtVal}) => {
+        const {model} = this;
+        ;
+        let displayVal = model[displayField];
+        if (fmtVal) displayVal = fmtVal(displayVal);
+
+        return formGroup({
+            label,
+            labelInfo: `${displayVal}`,
+            items: items.map(it => React.cloneElement(it, {field: it.props.field, model})),
             helperText: info
         });
     };
@@ -245,4 +278,5 @@ export class ControlsPanel extends Component {
             return hits.map(it => `${it.name} (${it.city})`);
         });
     }
+
 }
