@@ -14,7 +14,7 @@ import Amazon from '../../../core/data/rest/charts/amazonPricing';
 import Facebook from '../../../core/data/rest/charts/facebookPricing';
 import Yahoo from '../../../core/data/rest/charts/yahooPricing';
 
-@HoistModel()
+@HoistModel
 export class LineChartModel {
     @observable currentCompany = 'Amazon';
     companyMap = {Amazon, Facebook, Yahoo};

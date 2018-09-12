@@ -13,7 +13,7 @@ import {MaskPanel} from './MaskPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {JsxPanel} from './JsxPanel';
 
-@HoistComponent()
+@HoistComponent
 export class OtherTab extends Component {
 
     localModel = new TabContainerModel({

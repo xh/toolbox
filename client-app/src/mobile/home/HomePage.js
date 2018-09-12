@@ -19,7 +19,7 @@ import {containersPage} from '../containers/ContainersPage';
 import {popupsPage} from '../popups/PopupsPage';
 import {iconPage} from '../icons/IconPage';
 
-@HoistComponent()
+@HoistComponent
 export class HomePage extends Component {
 
     render() {

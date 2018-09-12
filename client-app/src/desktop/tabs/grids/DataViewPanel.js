@@ -20,7 +20,7 @@ import {wrapper} from '../../common/Wrapper';
 import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
 
-@HoistComponent()
+@HoistComponent
 export class DataViewPanel extends Component {
 
     localModel = new DataViewModel({

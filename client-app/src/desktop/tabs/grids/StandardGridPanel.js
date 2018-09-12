@@ -11,7 +11,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {wrapper, sampleGrid} from '../../common';
 
-@HoistComponent()
+@HoistComponent
 export class StandardGridPanel extends Component {
 
     render() {
@@ -31,7 +31,7 @@ export class StandardGridPanel extends Component {
             item: panel({
                 title: 'Grids > Standard',
                 icon: Icon.grid(),
-                width: 700,
+                width: 900,
                 height: 400,
                 item: sampleGrid()
             })

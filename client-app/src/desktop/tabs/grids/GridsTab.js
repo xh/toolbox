@@ -10,17 +10,19 @@ import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
 import {StandardGridPanel} from './StandardGridPanel';
 import {GroupedGridPanel} from './GroupedGridPanel';
+import {ColumnGroupsGridPanel} from './ColumnGroupsGridPanel';
 import {RestGridPanel} from './RestGridPanel';
 import {DataViewPanel} from './DataViewPanel';
 
-@HoistComponent()
+@HoistComponent
 export class GridsTab extends Component {
 
     localModel = new TabContainerModel({
         route: 'default.grids',
         tabs: [
             {id: 'standard', content: StandardGridPanel},
-            {id: 'grouped', content: GroupedGridPanel},
+            {id: 'columnGroups', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
+            {id: 'grouped', title: 'Grouped Rows', content: GroupedGridPanel},
             {id: 'rest', title: 'REST Editor', content: RestGridPanel},
             {id: 'dataview', title: 'DataView', content: DataViewPanel}
         ]
