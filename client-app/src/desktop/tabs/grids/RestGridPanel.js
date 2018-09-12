@@ -10,6 +10,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {restGrid, RestGridModel, RestStore} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/columns';
+import {actionsCol} from '@xh/hoist/desktop/columns';
 import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent
@@ -64,6 +65,19 @@ export class RestGridPanel extends Component {
         filterFields: ['name', 'type', 'note'],
         sortBy: 'name',
         columns: [
+            {
+                ...actionsCol,
+                rendererParams: {
+                    actions: [
+                        {
+                            icon: Icon.delete(),
+                            action: (params) => console.log('Delete Clicked!', params),
+                            data: 'Here is some user data!',
+                            intent: 'danger'
+                        }
+                    ]
+                }
+            },
             {
                 field: 'name',
                 width: 250
