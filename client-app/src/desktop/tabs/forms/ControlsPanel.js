@@ -4,7 +4,7 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import React, {Component} from 'react';
+import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {hframe, vframe} from '@xh/hoist/cmp/layout';
@@ -12,8 +12,8 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import moment from 'moment';
 import {fmtDate, fmtThousands} from '@xh/hoist/format';
-import {formGroup} from '@xh/hoist/kit/blueprint';
 import {
+    formField,
     checkInput,
     dayInput,
     textInput,
@@ -121,7 +121,6 @@ export class ControlsPanel extends Component {
                                         field: 'number3',
                                         info: 'custom labelRenderer',
                                         item: sliderInput({
-                                            model,
                                             min: 0,
                                             max: 100,
                                             labelStepSize: 25,
@@ -222,10 +221,12 @@ export class ControlsPanel extends Component {
         let displayVal = model[field];
         if (fmtVal) displayVal = fmtVal(displayVal);
 
-        return formGroup({
+        return formField({
+            item,
             label,
+            field,
+            model,
             labelInfo: `${displayVal}`,
-            item: React.cloneElement(item, {model, field}),
             helperText: info
         });
     };

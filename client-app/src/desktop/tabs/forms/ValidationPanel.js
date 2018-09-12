@@ -7,14 +7,13 @@
 import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {box, div, filler, hbox, hframe, hspacer, span, vbox} from '@xh/hoist/cmp/layout';
+import {box, filler, hbox, hframe, hspacer, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {formGroup} from '@xh/hoist/kit/blueprint';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {checkInput, dayInput, numberInput, textInput} from '@xh/hoist/desktop/cmp/form';
+import {formField, checkInput, dayInput, numberInput, textInput} from '@xh/hoist/desktop/cmp/form';
 
 import {wrapper} from '../../common';
 import {ValidationPanelModel} from './ValidationPanelModel';
@@ -29,7 +28,7 @@ export class ValidationPanel extends Component {
     validateButtonTask = new PendingTaskModel();
 
     render() {
-        const {model, fieldDisplay} = this;
+        const {model} = this;
 
         return wrapper({
             item: panel({
@@ -45,16 +44,20 @@ export class ValidationPanel extends Component {
                         vbox({
                             width: 300,
                             items: [
-                                fieldDisplay(
-                                    textInput({field: 'firstName', model})
-                                ),
-                                fieldDisplay(
-                                    textInput({field: 'lastName', model})
-                                ),
-                                fieldDisplay(
-                                    textInput({
-                                        field: 'email',
-                                        model,
+                                formField({
+                                    model,
+                                    field: 'firstName',
+                                    item: textInput()
+                                }),
+                                formField({
+                                    model,
+                                    field: 'lastName',
+                                    item: textInput()
+                                }),
+                                formField({
+                                    model,
+                                    field: 'email',
+                                    item: textInput({
                                         placeholder: 'user@company.com',
                                         leftIcon: Icon.mail(),
                                         rightElement: button({
@@ -63,7 +66,7 @@ export class ValidationPanel extends Component {
                                             onClick: () => model.setEmail(null)
                                         })
                                     })
-                                ),
+                                }),
                                 box('* indicates a required field')
                             ]
                         }),
@@ -71,42 +74,38 @@ export class ValidationPanel extends Component {
                         vbox({
                             items: [
                                 hbox(
-                                    fieldDisplay(
-                                        dayInput({
-                                            field: 'startDate',
-                                            model,
+                                    formField({
+                                        model,
+                                        field: 'startDate',
+                                        item: dayInput({
                                             width: 200,
                                             commitOnChange: true,
                                             minDate: new Date()
                                         })
-                                    ),
+                                    }),
                                     hspacer(30),
-                                    fieldDisplay(
-                                        dayInput({
-                                            field: 'endDate',
-                                            model,
+                                    formField({
+                                        model,
+                                        field: 'endDate',
+                                        item: dayInput({
                                             width: 200,
                                             commitOnChange: true,
                                             minDate: new Date()
                                         })
-                                    )
+                                    })
                                 ),
                                 hbox(
-                                    fieldDisplay(
-                                        checkInput({
-                                            field: 'isManager',
-                                            model,
-                                            width: 200
-                                        })
-                                    ),
+                                    formField({
+                                        model,
+                                        field: 'isManager',
+                                        item: checkInput({width: 200})
+                                    }),
                                     hspacer(30),
-                                    fieldDisplay(
-                                        numberInput({
-                                            field: 'yearsExperience',
-                                            model,
-                                            width: 50
-                                        })
-                                    )
+                                    formField({
+                                        model,
+                                        field: 'yearsExperience',
+                                        item: numberInput({width: 50})
+                                    })
                                 )
                             ]
                         })
@@ -136,38 +135,6 @@ export class ValidationPanel extends Component {
             })
         });
     }
-
-    fieldDisplay = (ctl) => {
-        const {model} = this,
-            fieldName = ctl.props.field,
-            field = model.getField(fieldName),
-            notValid = field && field.isNotValid,
-            isRequired = field && field.isRequired,
-            isPending = field && field.isValidationPending;
-
-        const label = isRequired ?
-            div(field.displayName, span(' *')) :
-            div(field.displayName);
-
-        return formGroup({
-            label,
-            item: ctl,
-            helperText: hbox({
-                height: 15,
-                items: [
-                    span({
-                        style: {color: 'red'},
-                        item: notValid ? field.errors[0] : ''
-                    }),
-                    hspacer(5),
-                    span({
-                        omit: !isPending,
-                        item: 'Checking ...'
-                    })
-                ]
-            })
-        });
-    };
 
     onSubmitClick = () => {
         if (this.model.isValid) {
