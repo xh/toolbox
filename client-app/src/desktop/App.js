@@ -11,6 +11,7 @@ import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
 import {NewsService} from "../core/svc/NewsService";
+import {SalesService} from '../core/svc/SalesService';
 
 import {AppComponent} from './AppComponent';
 import {ChartsTab} from './tabs/charts/ChartsTab';
@@ -31,6 +32,8 @@ class AppClass {
     companyService = new CompanyService();
     tradeService = new TradeService();
     newsService = new NewsService();
+    salesService = new SalesService();
+
 
     get enableLogout() {return true}
     get componentClass() {return AppComponent}
@@ -82,6 +85,7 @@ class AppClass {
                         forwardTo: 'default.grids.standard',
                         children: [
                             {name: 'standard', path: '/standard'},
+                            {name: 'columnGroups', path: '/columnGroups'},
                             {name: 'grouped', path: '/grouped'},
                             {name: 'rest', path: '/rest'},
                             {name: 'dataview', path: '/dataview'}

@@ -72,7 +72,8 @@ class SampleGrid extends Component {
             },
             {
                 field: 'city',
-                width: 150
+                width: 150,
+                tooltip: (value, data, meta) => `${data.company} is located in ${data.city}`
             },
             {
                 headerName: 'Trade Volume',
@@ -97,7 +98,6 @@ class SampleGrid extends Component {
                     tooltip: true
                 })
             },
-            
             {...emptyFlexCol}
         ]
     });
@@ -126,7 +126,7 @@ class SampleGrid extends Component {
                     }),
                     storeCountLabel({
                         store,
-                        units: 'companies'
+                        unit: 'companies'
                     }),
                     filler(),
                     box('Compact mode:'),
