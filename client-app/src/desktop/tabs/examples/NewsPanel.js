@@ -89,7 +89,7 @@ export class NewsPanel extends Component {
         })
     }
 
-    componentDidMount() {
+    loadAsync() {
         this.model.loadAsync();
     }
 
