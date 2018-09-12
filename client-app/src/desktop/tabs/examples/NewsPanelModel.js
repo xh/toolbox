@@ -7,12 +7,11 @@
 
 import {XH, HoistModel} from '@xh/hoist/core';
 import {action, observable, bindable} from '@xh/hoist/mobx';
-import {escapeRegExp, uniq} from 'lodash';
-import {DataViewModel} from "@xh/hoist/desktop/cmp/dataview";
-import {LocalStore} from "@xh/hoist/data";
-import {newsPanelItem} from "./NewsPanelItem";
-import {fmtCompactDate} from "@xh/hoist/format";
-import {App} from '../../App';
+import {uniq} from 'lodash';
+import {DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
+import {LocalStore} from '@xh/hoist/data';
+import {newsPanelItem} from './NewsPanelItem';
+import {fmtCompactDate} from '@xh/hoist/format';
 
 
 @HoistModel
@@ -67,7 +66,7 @@ export class NewsPanelModel {
                 url: s.url,
                 imageUrl: s.imageUrl,
                 author: s.author
-            }
+            };
         }));
         this.sourceOptions = uniq(store.records.map(story => story.source));
         this.lastRefresh = new Date();

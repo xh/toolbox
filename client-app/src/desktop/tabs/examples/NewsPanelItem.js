@@ -9,31 +9,31 @@ class NewsPanelItem extends Component {
 
     render() {
         const request = this.props.record,
-            {title, url, text, imageUrl, published, source, author} = request;
+            {title, text, imageUrl, published, source, author} = request;
 
         return hbox(
             box({
                 flex: 4,
                 className: 'text-container',
                 item: [
-                        <div>
-                            <p className='news-item--text'>{source} | {published}</p>
-                            <p className='news-item--title overflow-ellipsis'>{title}</p>
-                            <p className='news-item--text overflow-ellipsis'>{text}</p>
-                            <p className='news-item--text'>{author}</p>
-                        </div>
+                    <div>
+                        <p className='news-item--text'>{source} | {published}</p>
+                        <p className='news-item--title overflow-ellipsis'>{title}</p>
+                        <p className='news-item--text overflow-ellipsis'>{text}</p>
+                        <p className='news-item--text'>{author}</p>
+                    </div>
                 ]
             }),
             box({
                 flex: 2,
                 className: 'img-container',
                 item: [
-                        <div className='news-item--img'>
-                            <img src={imageUrl ? imageUrl : stockPhoto} alt='Story image'/>
-                        </div>
+                    <div className='news-item--img'>
+                        <img src={imageUrl ? imageUrl : stockPhoto} alt='Story image'/>
+                    </div>
                 ]
             })
-        )
+        );
     }
 }
 

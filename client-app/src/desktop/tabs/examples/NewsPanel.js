@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 
-import React, {Component} from 'react';
+import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {NewsPanelModel} from './NewsPanelModel';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
@@ -15,15 +15,11 @@ import {filler, span} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {multiSelectField} from '@xh/hoist/desktop/cmp/form';
-import {storeFilterField} from '@xh/hoist/desktop/cmp/store'
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp'
+import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import './NewsPanelItem.scss';
-
-
-
-
 
 @HoistComponent
 export class NewsPanel extends Component {
@@ -86,7 +82,7 @@ export class NewsPanel extends Component {
                     ]
                 })
             })
-        })
+        });
     }
 
     loadAsync() {
@@ -98,10 +94,10 @@ export class NewsPanel extends Component {
     };
 
     onRowDoubleClicked = (e) => {
-        if (e.data.url) window.open(e.data.url, '_blank')
+        if (e.data.url) window.open(e.data.url, '_blank');
     };
 
     onFilterChange = (f) => {
-        this.model.setTextFilter(f)
-    }
+        this.model.setTextFilter(f);
+    };
 }
