@@ -21,6 +21,7 @@ import {
     numberField,
     sliderField,
     selectField,
+    multiSelectField,
     switchField,
     comboField,
     queryComboField,
@@ -177,6 +178,15 @@ export class ControlsPanel extends Component {
                                         item: queryComboField({
                                             queryFn: this.queryCompaniesAsync,
                                             placeholder: 'Search companies...'
+                                        })
+                                    }),
+                                    row({
+                                        label: 'MultiSelectField',
+                                        field: 'option5',
+                                        item: multiSelectField({
+                                            options: usStates,
+                                            className: 'toolbox-multiselect',
+                                            placeholder: 'Select state(s)...'
                                         })
                                     }),
                                     row({
