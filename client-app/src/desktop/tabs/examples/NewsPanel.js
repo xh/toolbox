@@ -69,10 +69,10 @@ export class NewsPanel extends Component {
                         storeFilterField({
                             onFilterChange: this.onFilterChange,
                             fields: model.SEARCH_FIELDS,
-                            placeholder: 'Select by title'
+                            placeholder: 'Filter by title...'
                         }),
                         multiSelectField({
-                            placeholder: 'Filter sources...',
+                            placeholder: 'Filter by source...',
                             options: model.sourceOptions,
                             commitOnChange: true,
                             model,

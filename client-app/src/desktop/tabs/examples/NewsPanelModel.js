@@ -46,11 +46,10 @@ export class NewsPanelModel {
     }
 
     loadAsync()  {
-        return App.newsService.initAsync()
-                .then(stories => {
-                    this.completeLoad(stories);
-                    })
-                .catchDefault();
+        return XH
+            .fetchJson({url: 'news'})
+            .then(stories => this.completeLoad(stories))
+            .catchDefault();
     }
 
     //------------------------

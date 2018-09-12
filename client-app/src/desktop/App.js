@@ -10,8 +10,6 @@ import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
-import {NewsService} from "../core/svc/NewsService";
-
 import {AppComponent} from './AppComponent';
 import {ChartsTab} from './tabs/charts/ChartsTab';
 import {ContainersTab} from './tabs/containers/ContainersTab';
@@ -30,7 +28,6 @@ class AppClass {
 
     companyService = new CompanyService();
     tradeService = new TradeService();
-    newsService = new NewsService();
 
     get enableLogout() {return true}
     get componentClass() {return AppComponent}
@@ -46,8 +43,7 @@ class AppClass {
     async initAsync() {
         return initServicesAsync(
             this.companyService,
-            this.tradeService,
-            this.newsService
+            this.tradeService
         ).then(() => {
             XH.track({msg: 'Loaded App'});
         });

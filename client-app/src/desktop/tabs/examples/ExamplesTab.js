@@ -14,7 +14,7 @@ import {NewsPanel} from './NewsPanel';
 export class ExamplesTab extends Component {
 
     localModel = new TabContainerModel({
-        route: 'default.features',
+        route: 'default.examples',
         tabs: [
             {id: 'news', content: NewsPanel}
         ]
