@@ -11,7 +11,6 @@ class DataViewItem extends Component {
         const request = this.props.record,
             {name, city, value} = request,
             loser = value < 0;
-
         return vbox(
             box({
                 className: 'dataview-item--name',
