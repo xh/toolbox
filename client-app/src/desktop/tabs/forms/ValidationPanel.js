@@ -14,7 +14,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {formGroup} from '@xh/hoist/kit/blueprint';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {checkField, dayField, numberField, textField} from '@xh/hoist/desktop/cmp/form';
+import {checkInput, dayInput, numberInput, textInput} from '@xh/hoist/desktop/cmp/form';
 
 import {wrapper} from '../../common';
 import {ValidationPanelModel} from './ValidationPanelModel';
@@ -46,13 +46,13 @@ export class ValidationPanel extends Component {
                             width: 300,
                             items: [
                                 fieldDisplay(
-                                    textField({field: 'firstName', model})
+                                    textInput({field: 'firstName', model})
                                 ),
                                 fieldDisplay(
-                                    textField({field: 'lastName', model})
+                                    textInput({field: 'lastName', model})
                                 ),
                                 fieldDisplay(
-                                    textField({
+                                    textInput({
                                         field: 'email',
                                         model,
                                         placeholder: 'user@company.com',
@@ -72,7 +72,7 @@ export class ValidationPanel extends Component {
                             items: [
                                 hbox(
                                     fieldDisplay(
-                                        dayField({
+                                        dayInput({
                                             field: 'startDate',
                                             model,
                                             width: 200,
@@ -82,7 +82,7 @@ export class ValidationPanel extends Component {
                                     ),
                                     hspacer(30),
                                     fieldDisplay(
-                                        dayField({
+                                        dayInput({
                                             field: 'endDate',
                                             model,
                                             width: 200,
@@ -93,7 +93,7 @@ export class ValidationPanel extends Component {
                                 ),
                                 hbox(
                                     fieldDisplay(
-                                        checkField({
+                                        checkInput({
                                             field: 'isManager',
                                             model,
                                             width: 200
@@ -101,7 +101,7 @@ export class ValidationPanel extends Component {
                                     ),
                                     hspacer(30),
                                     fieldDisplay(
-                                        numberField({
+                                        numberInput({
                                             field: 'yearsExperience',
                                             model,
                                             width: 50

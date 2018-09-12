@@ -6,14 +6,14 @@ import {random} from 'lodash';
 @FieldSupport
 export class ControlsPanelModel {
 
-    // TextField / TextArea
+    // TextInput / TextArea
     @field() text1
     @field() text2
     @field() text3
     @field() text4
     @field() text5
 
-    // NumberField / Single-val Slider
+    // NumberInput / Single-val Slider
     @field() number1
     @field() number2
     @field() number3

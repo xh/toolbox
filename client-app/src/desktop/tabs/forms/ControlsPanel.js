@@ -14,17 +14,17 @@ import moment from 'moment';
 import {fmtDate, fmtThousands} from '@xh/hoist/format';
 import {formGroup} from '@xh/hoist/kit/blueprint';
 import {
-    checkField,
-    dayField,
-    textField,
-    textAreaField,
-    numberField,
-    sliderField,
-    selectField,
-    switchField,
-    comboField,
-    queryComboField,
-    jsonField
+    checkInput,
+    dayInput,
+    textInput,
+    textAreaInput,
+    numberInput,
+    sliderInput,
+    selectInput,
+    switchInput,
+    comboInput,
+    queryComboInput,
+    jsonInput
 } from '@xh/hoist/desktop/cmp/form';
 
 import {usStates, movies} from '../../../core/data';
@@ -55,15 +55,15 @@ export class ControlsPanel extends Component {
                                 className: 'toolbox-controls-panel__panel',
                                 items: [
                                     row({
-                                        label: 'TextField',
+                                        label: 'TextInput',
                                         field: 'text1',
-                                        item: textField()
+                                        item: textInput()
                                     }),
                                     row({
-                                        label: 'TextField',
+                                        label: 'TextInput',
                                         field: 'text2',
                                         info: 'placeholder, leftIcon, and rightElement',
-                                        item: textField({
+                                        item: textInput({
                                             placeholder: 'user@company.com',
                                             leftIcon: Icon.mail(),
                                             rightElement: button({
@@ -74,10 +74,10 @@ export class ControlsPanel extends Component {
                                         })
                                     }),
                                     row({
-                                        label: 'TextField',
+                                        label: 'TextInput',
                                         field: 'text3',
                                         info: 'type:password, commitOnChange',
-                                        item: textField({
+                                        item: textInput({
                                             type: 'password',
                                             commitOnChange: true
                                         })
@@ -85,14 +85,14 @@ export class ControlsPanel extends Component {
                                     row({
                                         label: 'TextArea',
                                         field: 'text4',
-                                        item: textAreaField({
+                                        item: textAreaInput({
                                             width: '100%'
                                         })
                                     }),
                                     row({
-                                        label: 'JSONField',
+                                        label: 'JSONInput',
                                         field: 'text5',
-                                        item: jsonField({
+                                        item: jsonInput({
                                             width: 300,
                                             height: 100
                                         })
@@ -103,24 +103,24 @@ export class ControlsPanel extends Component {
                                 className: 'toolbox-forms-tab__panel',
                                 items: [
                                     row({
-                                        label: 'NumberField',
+                                        label: 'NumberInput',
                                         field: 'number1',
-                                        item: numberField()
+                                        item: numberInput()
                                     }),
                                     row({
-                                        label: 'NumberField',
+                                        label: 'NumberInput',
                                         field: 'number2',
                                         info: 'enableShorthandUnits, displayWithCommas',
-                                        item: numberField({
+                                        item: numberInput({
                                             enableShorthandUnits: true,
                                             displayWithCommas: true
                                         })
                                     }),
                                     row({
-                                        label: 'SliderField',
+                                        label: 'SliderInput',
                                         field: 'number3',
                                         info: 'custom labelRenderer',
-                                        item: sliderField({
+                                        item: sliderInput({
                                             model,
                                             min: 0,
                                             max: 100,
@@ -130,10 +130,10 @@ export class ControlsPanel extends Component {
                                         })
                                     }),
                                     row({
-                                        label: 'SliderField',
+                                        label: 'SliderInput',
                                         field: 'range1',
                                         info: 'multi-value, custom labelRenderer',
-                                        item: sliderField({
+                                        item: sliderInput({
                                             min: 50000,
                                             max: 150000,
                                             labelStepSize: 25000,
@@ -151,61 +151,61 @@ export class ControlsPanel extends Component {
                                 className: 'toolbox-forms-tab__panel',
                                 items: [
                                     row({
-                                        label: 'SelectField',
+                                        label: 'SelectInput',
                                         field: 'option1',
-                                        item: selectField({
+                                        item: selectInput({
                                             options: usStates,
                                             placeholder: 'Select a state...'
                                         })
                                     }),
                                     row({
-                                        label: 'ComboField',
+                                        label: 'ComboInput',
                                         field: 'option2',
-                                        item: comboField({
+                                        item: comboInput({
                                             options: movies,
                                             placeholder: 'Search movies...'
                                         })
                                     }),
                                     row({
-                                        label: 'QueryComboField',
+                                        label: 'QueryComboInput',
                                         field: 'option3',
                                         info: 'Custom/async search (name/city)',
-                                        item: queryComboField({
+                                        item: queryComboInput({
                                             queryFn: this.queryCompaniesAsync,
                                             placeholder: 'Search companies...'
                                         })
                                     }),
                                     row({
-                                        label: 'DayField',
+                                        label: 'DayInput',
                                         field: 'startDate',
                                         info: 'minDate, maxDate',
                                         fmtVal: v => fmtDate(v),
-                                        item: dayField({
+                                        item: dayInput({
                                             commitOnChange: true,
                                             minDate: moment().subtract(2, 'weeks').toDate(),
                                             maxDate: new Date()
                                         })
                                     }),
                                     row({
-                                        label: 'DayField',
+                                        label: 'DayInput',
                                         field: 'endDate',
                                         info: 'minDate, maxDate',
                                         fmtVal: v => fmtDate(v),
-                                        item: dayField({
+                                        item: dayInput({
                                             commitOnChange: true,
                                             minDate: moment().subtract(2, 'weeks').toDate(),
                                             maxDate: new Date()
                                         })
                                     }),
                                     row({
-                                        label: 'CheckField',
+                                        label: 'CheckInput',
                                         field: 'bool1',
-                                        item: checkField()
+                                        item: checkInput()
                                     }),
                                     row({
-                                        label: 'SwitchField',
+                                        label: 'SwitchInput',
                                         field: 'bool2',
-                                        item: switchField()
+                                        item: switchInput()
                                     })
                                 ]
                             })
