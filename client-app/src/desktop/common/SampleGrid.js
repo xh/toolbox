@@ -72,7 +72,8 @@ class SampleGrid extends Component {
             },
             {
                 field: 'city',
-                width: 150
+                width: 150,
+                tooltip: (value, data, meta) => `${data.company} is located in ${data.city}`
             },
             {
                 headerName: 'Trade Volume',

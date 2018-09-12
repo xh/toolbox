@@ -20,6 +20,7 @@ import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
 import {IconsTab} from './tabs/icons/IconsTab';
 import {OtherTab} from './tabs/other/OtherTab';
+import {ExamplesTab} from './tabs/examples/ExamplesTab';
 
 @HoistApp
 class AppClass {
@@ -30,6 +31,7 @@ class AppClass {
     companyService = new CompanyService();
     tradeService = new TradeService();
     salesService = new SalesService();
+
 
     get enableLogout() {return true}
     get componentClass() {return AppComponent}
@@ -118,6 +120,14 @@ class AppClass {
                             {name: 'timestamp', path: '/timestamp'},
                             {name: 'jsx', path: '/jsx'}
                         ]
+                    },
+                    {
+                        name: 'examples',
+                        path: '/examples',
+                        forwardTo: 'default.examples.news',
+                        children: [
+                            {name: 'news', path: '/news'}
+                        ]
                     }
                 ]
             }
@@ -134,7 +144,8 @@ class AppClass {
                 {id: 'forms', content: FormsTab},
                 {id: 'charts', content: ChartsTab},
                 {id: 'icons', content: IconsTab},
-                {id: 'other', content: OtherTab}
+                {id: 'other', content: OtherTab},
+                {id: 'examples', content: ExamplesTab}
             ]
         });
     }

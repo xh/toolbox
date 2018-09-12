@@ -21,6 +21,7 @@ import {
     numberInput,
     sliderInput,
     selectInput,
+    multiSelectInput,
     switchInput,
     comboInput,
     queryComboInput,
@@ -76,17 +77,20 @@ export class ControlsPanel extends Component {
                                     row({
                                         label: 'TextInput',
                                         field: 'text3',
-                                        info: 'type:password, commitOnChange',
+                                        info: 'type:password, commitOnChange, selectOnFocus',
                                         item: textInput({
                                             type: 'password',
-                                            commitOnChange: true
+                                            commitOnChange: true,
+                                            selectOnFocus: true
                                         })
                                     }),
                                     row({
                                         label: 'TextArea',
                                         field: 'text4',
+                                        info: 'selectOnFocus',
                                         item: textAreaInput({
-                                            width: '100%'
+                                            width: '100%',
+                                            selectOnFocus: true
                                         })
                                     }),
                                     row({
@@ -110,10 +114,11 @@ export class ControlsPanel extends Component {
                                     row({
                                         label: 'NumberInput',
                                         field: 'number2',
-                                        info: 'enableShorthandUnits, displayWithCommas',
+                                        info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
                                         item: numberInput({
                                             enableShorthandUnits: true,
-                                            displayWithCommas: true
+                                            displayWithCommas: true,
+                                            selectOnFocus: true
                                         })
                                     }),
                                     row({
@@ -172,6 +177,15 @@ export class ControlsPanel extends Component {
                                         item: queryComboInput({
                                             queryFn: this.queryCompaniesAsync,
                                             placeholder: 'Search companies...'
+                                        })
+                                    }),
+                                    row({
+                                        label: 'MultiSelectInput',
+                                        field: 'option5',
+                                        item: multiSelectInput({
+                                            options: usStates,
+                                            className: 'toolbox-multiselect',
+                                            placeholder: 'Select state(s)...'
                                         })
                                     }),
                                     row({
