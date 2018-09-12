@@ -76,17 +76,20 @@ export class ControlsPanel extends Component {
                                     row({
                                         label: 'TextField',
                                         field: 'text3',
-                                        info: 'type:password, commitOnChange',
+                                        info: 'type:password, commitOnChange, selectOnFocus',
                                         item: textField({
                                             type: 'password',
-                                            commitOnChange: true
+                                            commitOnChange: true,
+                                            selectOnFocus: true
                                         })
                                     }),
                                     row({
                                         label: 'TextArea',
                                         field: 'text4',
+                                        info: 'selectOnFocus',
                                         item: textAreaField({
-                                            width: '100%'
+                                            width: '100%',
+                                            selectOnFocus: true
                                         })
                                     }),
                                     row({
@@ -110,10 +113,11 @@ export class ControlsPanel extends Component {
                                     row({
                                         label: 'NumberField',
                                         field: 'number2',
-                                        info: 'enableShorthandUnits, displayWithCommas',
+                                        info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
                                         item: numberField({
                                             enableShorthandUnits: true,
-                                            displayWithCommas: true
+                                            displayWithCommas: true,
+                                            selectOnFocus: true
                                         })
                                     }),
                                     row({
