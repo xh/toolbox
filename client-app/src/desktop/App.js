@@ -10,6 +10,7 @@ import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
+import {NewsService} from "../core/svc/NewsService";
 
 import {AppComponent} from './AppComponent';
 import {ChartsTab} from './tabs/charts/ChartsTab';
@@ -19,8 +20,7 @@ import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
 import {IconsTab} from './tabs/icons/IconsTab';
 import {OtherTab} from './tabs/other/OtherTab';
-import {NewsPanel} from "./tabs/features/NewsPanel";
-import {FeaturesTab} from "./tabs/features/FeaturesTab";
+import {ExamplesTab} from "./tabs/examples/ExamplesTab";
 
 @HoistApp
 class AppClass {
@@ -30,6 +30,7 @@ class AppClass {
 
     companyService = new CompanyService();
     tradeService = new TradeService();
+    newsService = new NewsService();
 
     get enableLogout() {return true}
     get componentClass() {return AppComponent}
@@ -45,7 +46,8 @@ class AppClass {
     async initAsync() {
         return initServicesAsync(
             this.companyService,
-            this.tradeService
+            this.tradeService,
+            this.newsService
         ).then(() => {
             XH.track({msg: 'Loaded App'});
         });
@@ -119,9 +121,9 @@ class AppClass {
                         ]
                     },
                     {
-                        name: 'features',
-                        path: '/features',
-                        forwardTo: 'default.features.news',
+                        name: 'examples',
+                        path: '/examples',
+                        forwardTo: 'default.examples.news',
                         children: [
                             {name: 'news', path: '/news'}
                         ]
@@ -142,7 +144,7 @@ class AppClass {
                 {id: 'charts', content: ChartsTab},
                 {id: 'icons', content: IconsTab},
                 {id: 'other', content: OtherTab},
-                {id: 'features', content: FeaturesTab}
+                {id: 'examples', content: ExamplesTab}
             ]
         });
     }

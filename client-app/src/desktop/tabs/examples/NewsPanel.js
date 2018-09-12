@@ -7,19 +7,20 @@
 
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
-import {NewsPanelModel} from "./NewsPanelModel";
+import {NewsPanelModel} from './NewsPanelModel';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
-import {filler, span} from "@xh/hoist/cmp/layout";
-import {Icon} from "@xh/hoist/icon";
-import {toolbar} from "@xh/hoist/desktop/cmp/toolbar";
-import {multiSelectField} from "@xh/hoist/desktop/cmp/form";
-import {storeFilterField} from "@xh/hoist/desktop/cmp/store"
-import {button} from "@xh/hoist/desktop/cmp/button";
+import {filler, span} from '@xh/hoist/cmp/layout';
+import {Icon} from '@xh/hoist/icon';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {multiSelectField} from '@xh/hoist/desktop/cmp/form';
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store'
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {relativeTimestamp} from "@xh/hoist/cmp/relativetimestamp"
+import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp'
 import './NewsPanelItem.scss';
+
 
 
 
@@ -55,7 +56,7 @@ export class NewsPanel extends Component {
                         }),
                         filler(),
                         span({
-                            item: "Last updated:"
+                            item: 'Last updated:'
                         }),
                         relativeTimestamp({
                             timestamp: model.lastRefresh
@@ -68,10 +69,10 @@ export class NewsPanel extends Component {
                         storeFilterField({
                             onFilterChange: this.onFilterChange,
                             fields: model.SEARCH_FIELDS,
-                            placeholder: "Select by title"
+                            placeholder: 'Select by title'
                         }),
                         multiSelectField({
-                            placeholder: "Filter sources...",
+                            placeholder: 'Filter sources...',
                             options: model.sourceOptions,
                             commitOnChange: true,
                             model,
@@ -89,11 +90,11 @@ export class NewsPanel extends Component {
     }
 
     componentDidMount() {
-        this.model.loadData();
+        this.model.loadAsync();
     }
 
     onRefreshClick = () => {
-        this.model.loadData();
+        this.model.loadAsync();
     };
 
     onRowDoubleClicked = (e) => {

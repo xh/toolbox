@@ -1,25 +1,26 @@
 package io.xh.toolbox.App
 
 import io.xh.hoist.json.JSON
-import io.xh.toolbox.BaseService
+
 import io.xh.toolbox.NewsItem
 import org.grails.web.json.JSONArray
-import org.grails.web.json.JSONObject
+
 
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 
-class NewsService extends BaseService {
+
+class NewsService extends io.xh.hoist.BaseService {
 
     public List<NewsItem> _newsItems
 
-    static clearCachesConfigs = ['newsSources', 'newsApiKey']
+    static clearCachesConfigs = ['newsSources', 'newsApiKey', 'newsRefreshMins']
     def configService
 
     void init() {
-        log.info('news service initialized')
         createTimer(
                 runFn: this.&loadAllNews,
-                interval: 10 * MINUTES
+                interval: configService.getInt('newsRefreshMins'),
+                intervalUnits: MINUTES
         )
         super.init()
     }
@@ -40,7 +41,7 @@ class NewsService extends BaseService {
     // Implementation
     //------------------------
     private void loadAllNews() {
-        def sources = configService.getJSONObject('newsSources', new JSONObject())
+        def sources = configService.getJSONObject('newsSources')
 
         withShortInfo("Loading news from ${sources.size()} configured sources") {
             def items = []

@@ -55,23 +55,24 @@ class BootStrap {
         Utils.configService.ensureRequiredConfigsCreated([
                 newsApiKey : [
                         valueType   : 'string',
-                        defaultValue: '917b84920ec24d7198fd712e2e22b48a',
-                        groupName   : 'news',
-                        note        : 'Key used to access News API'
+                        defaultValue: 'ab052127f3e349d38db094eade1d96d8',
+                        groupName   : 'news'
                 ],
                 newsSources: [
                         valueType   : 'json',
                         defaultValue: [
-                                        "bloomberg": "Bloomberg",
                                         "cnbc"     : "CNBC",
                                         "fortune"  : "Fortune",
                                         "reuters"  : "Reuters"
                                     ],
-                        groupName   : 'news',
-                        note        : 'Default news sources pulled from the News API'
+                        groupName   : 'news'
+                ],
+                newsRefreshMins : [
+                        valueType: 'int',
+                        defaultValue: 20,
+                        groupName: 'news'
                 ]
         ])
-        log.info("News sources configured")
     }
 
     private void logStartupMsg() {

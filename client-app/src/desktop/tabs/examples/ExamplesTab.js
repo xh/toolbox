@@ -11,7 +11,7 @@ import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {NewsPanel} from './NewsPanel';
 
 @HoistComponent
-export class FeaturesTab extends Component {
+export class ExamplesTab extends Component {
 
     localModel = new TabContainerModel({
         route: 'default.features',

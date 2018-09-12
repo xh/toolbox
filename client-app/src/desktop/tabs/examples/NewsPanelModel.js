@@ -12,6 +12,8 @@ import {DataViewModel} from "@xh/hoist/desktop/cmp/dataview";
 import {LocalStore} from "@xh/hoist/data";
 import {newsPanelItem} from "./NewsPanelItem";
 import {fmtCompactDate} from "@xh/hoist/format";
+import {App} from '../../App';
+
 
 @HoistModel
 export class NewsPanelModel {
@@ -43,27 +45,17 @@ export class NewsPanelModel {
         });
     }
 
-    @action
-    filterData() {
-        const filter = (rec) => {
-            const {textFilter, sourceFilter} = this,
-                searchMatch = !textFilter || textFilter(rec),
-                sourceMatch = !sourceFilter || sourceFilter.includes(rec.source);
-
-            return sourceMatch && searchMatch;
-        };
-
-        this.viewModel.store.setFilter(filter);
+    loadAsync()  {
+        return App.newsService.initAsync()
+                .then(stories => {
+                    this.completeLoad(stories);
+                    })
+                .catchDefault();
     }
 
-    loadData()  {
-        return XH
-            .fetchJson({url: 'news'})
-            .then(stories => {
-                this.completeLoad(stories);
-            }).catchDefault();
-    }
-
+    //------------------------
+    // Implementation
+    //------------------------
     @action
     completeLoad(stories) {
         const {store} = this.viewModel;
@@ -80,6 +72,19 @@ export class NewsPanelModel {
         }));
         this.sourceOptions = uniq(store.records.map(story => story.source));
         this.lastRefresh = new Date();
+    }
+
+    @action
+    filterData() {
+        const filter = (rec) => {
+            const {textFilter, sourceFilter} = this,
+                searchMatch = !textFilter || textFilter(rec),
+                sourceMatch = !sourceFilter || sourceFilter.includes(rec.source);
+
+            return sourceMatch && searchMatch;
+        };
+
+        this.viewModel.store.setFilter(filter);
     }
 
     destroy() {

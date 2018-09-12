@@ -7,20 +7,14 @@
 import {XH, HoistService} from '@xh/hoist/core';
 
 /**
- * Provides basic information related to the authenticated user, including application roles.
- * This service loads its data from Hoist Core's server-side identity service.
- *
- * Also provides support for recognizing impersonation and distinguishing between the apparent and
- * actual underlying user.
+ * Provides a list of news stories with details including headline, text, source, timestamp, and url.
+ * This service loads its data from Toolbox's server-side news service, which makes the external API call to newsapi.org.
  */
-@HoistService()
+@HoistService
 export class NewsService {
 
-
-
     async initAsync() {
-        const data = await XH.fetchJson({url: 'news'});
-        return data
+        return await XH.fetchJson({url: 'news'});
     }
 
 }
