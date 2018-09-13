@@ -15,7 +15,7 @@ import {fmtDate, fmtThousands} from '@xh/hoist/format';
 import {
     formField,
     checkBox,
-    dayInput,
+    dateInput,
     textInput,
     textAreaInput,
     numberInput,
@@ -189,22 +189,22 @@ export class ControlsPanel extends Component {
                                         })
                                     }),
                                     row({
-                                        label: 'DayInput',
+                                        label: 'DateInput',
                                         field: 'startDate',
                                         info: 'minDate, maxDate',
                                         fmtVal: v => fmtDate(v),
-                                        item: dayInput({
+                                        item: dateInput({
                                             commitOnChange: true,
                                             minDate: moment().subtract(2, 'weeks').toDate(),
                                             maxDate: new Date()
                                         })
                                     }),
                                     row({
-                                        label: 'DayInput',
+                                        label: 'DateInput',
                                         field: 'endDate',
                                         info: 'minDate, maxDate',
                                         fmtVal: v => fmtDate(v),
-                                        item: dayInput({
+                                        item: dateInput({
                                             commitOnChange: true,
                                             minDate: moment().subtract(2, 'weeks').toDate(),
                                             maxDate: new Date()

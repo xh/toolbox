@@ -13,7 +13,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {formField, checkBox, dayInput, numberInput, textInput} from '@xh/hoist/desktop/cmp/form';
+import {formField, checkBox, dateInput, numberInput, textInput} from '@xh/hoist/desktop/cmp/form';
 
 import {wrapper} from '../../common';
 import {ValidationPanelModel} from './ValidationPanelModel';
@@ -77,7 +77,7 @@ export class ValidationPanel extends Component {
                                     formField({
                                         model,
                                         field: 'startDate',
-                                        item: dayInput({
+                                        item: dateInput({
                                             width: 200,
                                             commitOnChange: true,
                                             minDate: new Date()
@@ -87,7 +87,7 @@ export class ValidationPanel extends Component {
                                     formField({
                                         model,
                                         field: 'endDate',
-                                        item: dayInput({
+                                        item: dateInput({
                                             width: 200,
                                             commitOnChange: true,
                                             minDate: new Date()
