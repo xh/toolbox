@@ -14,17 +14,17 @@ import moment from 'moment';
 import {fmtDate, fmtThousands} from '@xh/hoist/format';
 import {
     formField,
-    checkInput,
+    checkBox,
     dayInput,
     textInput,
     textAreaInput,
     numberInput,
-    sliderInput,
-    selectInput,
-    multiSelectInput,
+    slider,
+    selectBox,
+    multiSelectBox,
     switchInput,
-    comboInput,
-    queryComboInput,
+    comboBox,
+    queryComboBox,
     jsonInput
 } from '@xh/hoist/desktop/cmp/form';
 
@@ -122,10 +122,10 @@ export class ControlsPanel extends Component {
                                         })
                                     }),
                                     row({
-                                        label: 'SliderInput',
+                                        label: 'Slider',
                                         field: 'number3',
                                         info: 'custom labelRenderer',
-                                        item: sliderInput({
+                                        item: slider({
                                             min: 0,
                                             max: 100,
                                             labelStepSize: 25,
@@ -134,10 +134,10 @@ export class ControlsPanel extends Component {
                                         })
                                     }),
                                     row({
-                                        label: 'SliderInput',
+                                        label: 'Slider',
                                         field: 'range1',
                                         info: 'multi-value, custom labelRenderer',
-                                        item: sliderInput({
+                                        item: slider({
                                             min: 50000,
                                             max: 150000,
                                             labelStepSize: 25000,
@@ -155,34 +155,34 @@ export class ControlsPanel extends Component {
                                 className: 'toolbox-controls-panel__panel',
                                 items: [
                                     row({
-                                        label: 'SelectInput',
+                                        label: 'SelectBox',
                                         field: 'option1',
-                                        item: selectInput({
+                                        item: selectBox({
                                             options: usStates,
                                             placeholder: 'Select a state...'
                                         })
                                     }),
                                     row({
-                                        label: 'ComboInput',
+                                        label: 'ComboBox',
                                         field: 'option2',
-                                        item: comboInput({
+                                        item: comboBox({
                                             options: movies,
                                             placeholder: 'Search movies...'
                                         })
                                     }),
                                     row({
-                                        label: 'QueryComboInput',
+                                        label: 'QueryComboBox',
                                         field: 'option3',
                                         info: 'Custom/async search (name/city)',
-                                        item: queryComboInput({
+                                        item: queryComboBox({
                                             queryFn: this.queryCompaniesAsync,
                                             placeholder: 'Search companies...'
                                         })
                                     }),
                                     row({
-                                        label: 'MultiSelectInput',
+                                        label: 'MultiSelectBox',
                                         field: 'option5',
-                                        item: multiSelectInput({
+                                        item: multiSelectBox({
                                             options: usStates,
                                             className: 'toolbox-multiselect',
                                             placeholder: 'Select state(s)...'
@@ -211,9 +211,9 @@ export class ControlsPanel extends Component {
                                         })
                                     }),
                                     row({
-                                        label: 'CheckInput',
+                                        label: 'CheckBox',
                                         field: 'bool1',
-                                        item: checkInput()
+                                        item: checkBox()
                                     }),
                                     row({
                                         label: 'SwitchInput',

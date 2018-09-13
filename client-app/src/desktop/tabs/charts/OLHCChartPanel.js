@@ -9,7 +9,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common/Wrapper';
 import {vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {comboInput, label} from '@xh/hoist/desktop/cmp/form';
+import {comboBox, label} from '@xh/hoist/desktop/cmp/form';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
 import {OLHCChartModel} from './OLHCChartModel';
@@ -30,7 +30,7 @@ export class OLHCChartPanel extends Component {
                 item: this.renderExample(),
                 tbar: toolbar(
                     label('Company: '),
-                    comboInput({
+                    comboBox({
                         model,
                         options: Object.keys(companyMap),
                         field: 'currentCompany'
