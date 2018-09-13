@@ -15,13 +15,11 @@ import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/form';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {App} from '../App';
 
 @HoistComponent
@@ -116,7 +114,7 @@ class SampleGrid extends Component {
             className: this.getClassName(),
             ...this.getLayoutProps(),
             item: grid({model}),
-            mask: mask({spinner: true, model: this.loadModel}),
+            mask: this.loadModel,
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
