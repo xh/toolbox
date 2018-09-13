@@ -9,7 +9,6 @@
     table {
       padding: 5px 10px;
       font-size: larger;
-
     }
 
     th, td {
@@ -17,26 +16,56 @@
     }
   }
 
+  .bp3-form-content {
+    display: flex;
+  }
 
+  .xh-number-field {
+    flex: 0 0 125px;
+  }
+
+  .bp3-input-group {
+    width: 40%;
+  }
+
+  .xh-select-field {
+    flex: 0 0 125px;
+    button {
+      width: 125px;
+      font-size: var(--xh-font-size-small-px);
+    }
+  }
 
   .bp3-form-group {
     margin: 0;
     padding: 10px 20px;
-    flex: none;
-
-    &:nth-child(odd) {
-      background-color: var(--xh-grid-bg-odd);
-    }
+    float: right;
+    
 
     .bp3-label {
       font-size: var(--xh-font-size-large-px);
       margin-bottom: 2px;
 
-
+      .bp3-text-muted {
+        visibility: hidden;
+        font-size: var(--xh-font-size-small-px);
+        font-family: var(--xh-font-family-mono);
+        background-color: var(--xh-bg-alt);
+        border: var(--xh-border-solid);
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        float: right;
+        padding: 2px 4px;
+      }
     }
 
     .bp3-form-helper-text {
       font-size: var(--xh-font-size-small-px);
+      margin-left: 20px;
     }
   }
 }
+
+
