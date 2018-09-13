@@ -157,7 +157,7 @@ class SampleColumnGroupsGrid extends Component {
             className: this.getClassName(),
             ...this.getLayoutProps(),
             item: grid({model}),
-            mask: mask({spinner: true, model: this.loadModel}),
+            mask: this.loadModel,
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
