@@ -9,7 +9,7 @@ import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
-import {label, textInput, selectBox, textAreaInput, searchInput} from '@xh/hoist/mobile/cmp/form';
+import {label, textInput, select, textArea, searchInput} from '@xh/hoist/mobile/cmp/form';
 
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
@@ -30,12 +30,12 @@ export class FormPage extends Component {
                             model,
                             field: 'name'
                         }),
-                        this.renderField('Favourite Movie:', selectBox, {
+                        this.renderField('Favourite Movie:', select, {
                             model,
                             options: model.movies,
                             field: 'movie'
                         }),
-                        this.renderField('Notes:', textAreaInput, {
+                        this.renderField('Notes:', textArea, {
                             model,
                             field: 'notes'
                         }),

@@ -17,11 +17,11 @@ import {
     checkBox,
     dateInput,
     textInput,
-    textAreaInput,
+    textArea,
     numberInput,
     slider,
-    selectBox,
-    multiSelectBox,
+    select,
+    multiSelect,
     switchInput,
     comboBox,
     queryComboBox,
@@ -88,7 +88,7 @@ export class ControlsPanel extends Component {
                                         label: 'TextArea',
                                         field: 'text4',
                                         info: 'selectOnFocus',
-                                        item: textAreaInput({
+                                        item: textArea({
                                             width: '100%',
                                             selectOnFocus: true
                                         })
@@ -155,9 +155,9 @@ export class ControlsPanel extends Component {
                                 className: 'toolbox-controls-panel__panel',
                                 items: [
                                     row({
-                                        label: 'SelectBox',
+                                        label: 'Select',
                                         field: 'option1',
-                                        item: selectBox({
+                                        item: select({
                                             options: usStates,
                                             placeholder: 'Select a state...'
                                         })
@@ -180,9 +180,9 @@ export class ControlsPanel extends Component {
                                         })
                                     }),
                                     row({
-                                        label: 'MultiSelectBox',
+                                        label: 'MultiSelect',
                                         field: 'option5',
-                                        item: multiSelectBox({
+                                        item: multiSelect({
                                             options: usStates,
                                             className: 'toolbox-multiselect',
                                             placeholder: 'Select state(s)...'
