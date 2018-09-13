@@ -94,19 +94,17 @@ export class ValidationPanel extends Component {
                                         })
                                     })
                                 ),
-                                hbox(
-                                    formField({
-                                        model,
-                                        field: 'isManager',
-                                        item: checkBox({width: 200})
-                                    }),
-                                    hspacer(30),
-                                    formField({
-                                        model,
-                                        field: 'yearsExperience',
-                                        item: numberInput({width: 50})
-                                    })
-                                )
+                                formField({
+                                    model,
+                                    field: 'isManager',
+                                    inline: true,
+                                    item: checkBox({width: 200})
+                                }),
+                                formField({
+                                    model,
+                                    field: 'yearsExperience',
+                                    item: numberInput({width: 50})
+                                })
                             ]
                         })
                     )
