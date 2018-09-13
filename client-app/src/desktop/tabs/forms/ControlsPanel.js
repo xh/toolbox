@@ -104,7 +104,7 @@ export class ControlsPanel extends Component {
                                 ]
                             }),
                             panel({
-                                className: 'toolbox-forms-tab__panel',
+                                className: 'toolbox-controls-panel__panel',
                                 items: [
                                     row({
                                         label: 'NumberInput',
@@ -152,7 +152,7 @@ export class ControlsPanel extends Component {
                                 ]
                             }),
                             panel({
-                                className: 'toolbox-forms-tab__panel',
+                                className: 'toolbox-controls-panel__panel',
                                 items: [
                                     row({
                                         label: 'SelectInput',
