@@ -20,7 +20,7 @@ import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
 import {IconsTab} from './tabs/icons/IconsTab';
 import {OtherTab} from './tabs/other/OtherTab';
-import {FormatsTab} from "./tabs/formats/FormatsTab";
+import {FormatsTab} from './tabs/formats/FormatsTab';
 
 @HoistApp
 class AppClass {

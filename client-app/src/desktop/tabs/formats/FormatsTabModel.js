@@ -1,8 +1,8 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable, computed} from '@xh/hoist/mobx';
-import {fmtNumber} from "@xh/hoist/format/FormatNumber";
-import React from "react";
-import {capitalize, toLower} from 'lodash';
+import {bindable, computed, autorun} from '@xh/hoist/mobx';
+import {fmtNumber} from '@xh/hoist/format/FormatNumber';
+import React from 'react';
+import {toLower} from 'lodash';
 
 @HoistModel
 export class FormatsTabModel {
@@ -15,13 +15,17 @@ export class FormatsTabModel {
         'Billions'
     ];
 
-    @bindable testNumbers = "123456\n123450\n123400.1\n12456.12\n12345600\n12345000\n123456789.12\n" +
-                            "123450000\n100000001\n0.25\n101\n920120.21343\n1.224123";
+    @bindable testNumbers = '123456\n123450\n123400.1\n12456.12\n12345600\n12345000\n123456789.12\n' +
+                            '123450000\n100000001\n0.25\n101\n920120.21343\n1.224123';
 
     @bindable precision = 2;
     @bindable decimalTolerance = 2;
     @bindable zeroPad = 0;
     @bindable units = 'Auto';
+
+    constructor() {
+        autorun(() => console.log(this.testNumbers))
+    }
 
     @computed
     get fOptions() {
@@ -32,17 +36,17 @@ export class FormatsTabModel {
             precision: this.precision,
             zeroPad: this.zeroPad,
             decimalTolerance: this.decimalTolerance
-        }
+        };
     }
 
     @computed
     get sampleNumbers() {
-        return this.testNumbers.split("\n").map(v => parseFloat(v.trim()))
+        return this.testNumbers.trim().split('\n').map(v => parseFloat(v.trim())).filter(v => v);
     }
 
     @computed
     get formattedNumbers() {
-        const sampleNumbers = this.testNumbers.split("\n").map(v => parseFloat(v.trim()))
+        const sampleNumbers = this.sampleNumbers;
         return sampleNumbers.map(
             (num, index) =>
                 <tr key={`num-${index}`}>
@@ -57,8 +61,9 @@ export class FormatsTabModel {
         );
     }
 
-
-
-
+    @computed
+    get textAreaRows() {
+        return this.testNumbers.split(/\r\n|\r|\n/).length
+    }
 
 }

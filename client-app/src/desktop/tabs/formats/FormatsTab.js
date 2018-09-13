@@ -9,17 +9,15 @@ import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
-import {fmtCompact} from '@xh/hoist/format/FormatNumber';
-import {hframe} from "@xh/hoist/cmp/layout";
+import {hframe} from '@xh/hoist/cmp/layout';
 import {
     numberField,
     selectField,
     textAreaField
-} from "@xh/hoist/desktop/cmp/form";
+} from '@xh/hoist/desktop/cmp/form';
 
-import {formGroup} from "@xh/hoist/kit/blueprint";
+import {formGroup} from '@xh/hoist/kit/blueprint';
 import {FormatsTabModel} from './FormatsTabModel';
-import {capitalize, toLower} from 'lodash';
 import './FormatsTab.scss';
 
 
@@ -49,8 +47,10 @@ export class FormatsTab extends Component {
                                         item: textAreaField({
                                             style: {
                                                 textAlign: 'right',
-                                                height: '300px'
-                                            }
+                                                fontSize: 'larger'
+                                            },
+                                            commitOnChange: true,
+                                            rows: model.textAreaRows
                                         }),
                                         info: 'Enter one number per line'
                                     })
@@ -107,22 +107,20 @@ export class FormatsTab extends Component {
                                 title: 'Results',
                                 flex: 1,
                                 item: [
-
                                     <table>
-
                                         <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>
-                                                Input
-                                            </th>
-                                            <th>
-                                                Output
-                                            </th>
-                                        </tr>
+                                            <tr>
+                                                <th></th>
+                                                <th>
+                                                    Input
+                                                </th>
+                                                <th>
+                                                    Output
+                                                </th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        {model.formattedNumbers}
+                                            {model.formattedNumbers}
                                         </tbody>
                                     </table>
                                 ]
@@ -144,7 +142,6 @@ export class FormatsTab extends Component {
         formProps.labelInfo = model[field];
 
         return formGroup(formProps);
-    }
-
+    };
 
 }

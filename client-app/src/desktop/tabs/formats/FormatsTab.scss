@@ -32,15 +32,18 @@
     flex: 0 0 125px;
     button {
       width: 125px;
-      font-size: var(--xh-font-size-small-px);
+      font-size: var(--xh-font-size-md-px);
     }
+  }
+
+  .xh-textarea-field {
   }
 
   .bp3-form-group {
     margin: 0;
     padding: 10px 20px;
     float: right;
-    
+
 
     .bp3-label {
       font-size: var(--xh-font-size-large-px);
