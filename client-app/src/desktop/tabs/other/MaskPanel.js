@@ -116,7 +116,7 @@ export class MaskPanel extends Component {
     async showMaskSequenceAsync() {
         const {maskModel, message, seconds} = this,
             interval = seconds / 3 * SECONDS;
-        if (message) maskModel.setMessage(message);
+        maskModel.setMessage(message);
         await wait(interval);
         if (message) maskModel.setMessage(message + ' - Still Loading...');
         await wait(interval);
