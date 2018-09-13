@@ -4,7 +4,7 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import React, {Component} from 'react';
+import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {hframe, vframe} from '@xh/hoist/cmp/layout';
@@ -12,20 +12,20 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import moment from 'moment';
 import {fmtDate, fmtThousands} from '@xh/hoist/format';
-import {formGroup} from '@xh/hoist/kit/blueprint';
 import {
-    checkField,
-    dayField,
-    textField,
-    textAreaField,
-    numberField,
-    sliderField,
-    selectField,
-    multiSelectField,
-    switchField,
-    comboField,
-    queryComboField,
-    jsonField
+    formField,
+    checkBox,
+    dateInput,
+    textInput,
+    textArea,
+    numberInput,
+    slider,
+    select,
+    multiSelect,
+    switchInput,
+    comboBox,
+    queryComboBox,
+    jsonInput
 } from '@xh/hoist/desktop/cmp/form';
 
 import {usStates, movies} from '../../../core/data';
@@ -56,15 +56,15 @@ export class ControlsPanel extends Component {
                                 className: 'toolbox-controls-panel__panel',
                                 items: [
                                     row({
-                                        label: 'TextField',
+                                        label: 'TextInput',
                                         field: 'text1',
-                                        item: textField()
+                                        item: textInput()
                                     }),
                                     row({
-                                        label: 'TextField',
+                                        label: 'TextInput',
                                         field: 'text2',
                                         info: 'placeholder, leftIcon, and rightElement',
-                                        item: textField({
+                                        item: textInput({
                                             placeholder: 'user@company.com',
                                             leftIcon: Icon.mail(),
                                             rightElement: button({
@@ -75,10 +75,10 @@ export class ControlsPanel extends Component {
                                         })
                                     }),
                                     row({
-                                        label: 'TextField',
+                                        label: 'TextInput',
                                         field: 'text3',
                                         info: 'type:password, commitOnChange, selectOnFocus',
-                                        item: textField({
+                                        item: textInput({
                                             type: 'password',
                                             commitOnChange: true,
                                             selectOnFocus: true
@@ -88,15 +88,15 @@ export class ControlsPanel extends Component {
                                         label: 'TextArea',
                                         field: 'text4',
                                         info: 'selectOnFocus',
-                                        item: textAreaField({
+                                        item: textArea({
                                             width: '100%',
                                             selectOnFocus: true
                                         })
                                     }),
                                     row({
-                                        label: 'JSONField',
+                                        label: 'JSONInput',
                                         field: 'text5',
-                                        item: jsonField({
+                                        item: jsonInput({
                                             width: 300,
                                             height: 100
                                         })
@@ -107,26 +107,25 @@ export class ControlsPanel extends Component {
                                 className: 'toolbox-controls-panel__panel',
                                 items: [
                                     row({
-                                        label: 'NumberField',
+                                        label: 'NumberInput',
                                         field: 'number1',
-                                        item: numberField()
+                                        item: numberInput()
                                     }),
                                     row({
-                                        label: 'NumberField',
+                                        label: 'NumberInput',
                                         field: 'number2',
                                         info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
-                                        item: numberField({
+                                        item: numberInput({
                                             enableShorthandUnits: true,
                                             displayWithCommas: true,
                                             selectOnFocus: true
                                         })
                                     }),
                                     row({
-                                        label: 'SliderField',
+                                        label: 'Slider',
                                         field: 'number3',
                                         info: 'custom labelRenderer',
-                                        item: sliderField({
-                                            model,
+                                        item: slider({
                                             min: 0,
                                             max: 100,
                                             labelStepSize: 25,
@@ -135,10 +134,10 @@ export class ControlsPanel extends Component {
                                         })
                                     }),
                                     row({
-                                        label: 'SliderField',
+                                        label: 'Slider',
                                         field: 'range1',
                                         info: 'multi-value, custom labelRenderer',
-                                        item: sliderField({
+                                        item: slider({
                                             min: 50000,
                                             max: 150000,
                                             labelStepSize: 25000,
@@ -156,70 +155,70 @@ export class ControlsPanel extends Component {
                                 className: 'toolbox-controls-panel__panel',
                                 items: [
                                     row({
-                                        label: 'SelectField',
+                                        label: 'Select',
                                         field: 'option1',
-                                        item: selectField({
+                                        item: select({
                                             options: usStates,
                                             placeholder: 'Select a state...'
                                         })
                                     }),
                                     row({
-                                        label: 'ComboField',
+                                        label: 'ComboBox',
                                         field: 'option2',
-                                        item: comboField({
+                                        item: comboBox({
                                             options: movies,
                                             placeholder: 'Search movies...'
                                         })
                                     }),
                                     row({
-                                        label: 'QueryComboField',
+                                        label: 'QueryComboBox',
                                         field: 'option3',
                                         info: 'Custom/async search (name/city)',
-                                        item: queryComboField({
+                                        item: queryComboBox({
                                             queryFn: this.queryCompaniesAsync,
                                             placeholder: 'Search companies...'
                                         })
                                     }),
                                     row({
-                                        label: 'MultiSelectField',
+                                        label: 'MultiSelect',
                                         field: 'option5',
-                                        item: multiSelectField({
+                                        item: multiSelect({
                                             options: usStates,
                                             className: 'toolbox-multiselect',
                                             placeholder: 'Select state(s)...'
                                         })
                                     }),
                                     row({
-                                        label: 'DayField',
+                                        label: 'DateInput',
                                         field: 'startDate',
                                         info: 'minDate, maxDate',
                                         fmtVal: v => fmtDate(v),
-                                        item: dayField({
+                                        item: dateInput({
                                             commitOnChange: true,
                                             minDate: moment().subtract(2, 'weeks').toDate(),
                                             maxDate: new Date()
                                         })
                                     }),
                                     row({
-                                        label: 'DayField',
+                                        label: 'DateInput',
                                         field: 'endDate',
                                         info: 'minDate, maxDate',
                                         fmtVal: v => fmtDate(v),
-                                        item: dayField({
+                                        item: dateInput({
                                             commitOnChange: true,
                                             minDate: moment().subtract(2, 'weeks').toDate(),
                                             maxDate: new Date()
                                         })
                                     }),
                                     row({
-                                        label: 'CheckField',
+                                        label: 'CheckBox',
                                         field: 'bool1',
-                                        item: checkField()
+                                        item: checkBox()
                                     }),
                                     row({
-                                        label: 'SwitchField',
+                                        label: 'SwitchInput',
                                         field: 'bool2',
-                                        item: switchField()
+                                        item: switchInput()
                                     })
                                 ]
                             })
@@ -236,10 +235,12 @@ export class ControlsPanel extends Component {
         let displayVal = model[field];
         if (fmtVal) displayVal = fmtVal(displayVal);
 
-        return formGroup({
+        return formField({
+            item,
             label,
+            field,
+            model,
             labelInfo: `${displayVal}`,
-            item: React.cloneElement(item, {model, field}),
             helperText: info
         });
     };

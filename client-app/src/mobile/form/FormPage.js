@@ -9,8 +9,7 @@ import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
-import {label, textField, selectField, textAreaField} from '@xh/hoist/mobile/cmp/form';
-import {searchField} from '@xh/hoist/mobile/cmp/form';
+import {label, textInput, select, textArea, searchInput} from '@xh/hoist/mobile/cmp/form';
 
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
@@ -27,20 +26,20 @@ export class FormPage extends Component {
                 div({
                     className: 'toolbox-card',
                     items: [
-                        this.renderField('Name:', textField, {
+                        this.renderField('Name:', textInput, {
                             model,
                             field: 'name'
                         }),
-                        this.renderField('Favourite Movie:', selectField, {
+                        this.renderField('Favourite Movie:', select, {
                             model,
                             options: model.movies,
                             field: 'movie'
                         }),
-                        this.renderField('Notes:', textAreaField, {
+                        this.renderField('Notes:', textArea, {
                             model,
                             field: 'notes'
                         }),
-                        this.renderField('Search: ', searchField, {
+                        this.renderField('Search: ', searchInput, {
                             model,
                             field: 'searchQuery'
                         })
