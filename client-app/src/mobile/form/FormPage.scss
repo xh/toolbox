@@ -4,17 +4,17 @@
     display: flex;
     flex-direction: column;
 
-    .xh-field-label {
+    .xh-input-label {
       margin-bottom: var(--xh-pad-half-px);
     }
 
-    .xh-field {
+    .xh-input {
       margin: 0;
       border: var(--xh-border-solid);
       border-radius: var(--xh-border-radius-px);
 
-      &.xh-field-invalid {
-        &.xh-textarea-field, &.xh-text-field, &.xh-search-field {
+      &.xh-input-invalid {
+        &.xh-textarea, &.xh-text-input, &.xh-search-input {
           border: 1px solid var(--xh-form-field-invalid-border-color);
         }
       }
@@ -40,11 +40,11 @@
   .form-field-result {
     margin-bottom: var(--xh-pad-px);
 
-    .xh-field-label {
+    .xh-input-label {
       margin-bottom: var(--xh-pad-half-px);
     }
 
-    div:not(.xh-field-label) {
+    div:not(.xh-input-label) {
       font-size: 14px;
       min-height: 16px;
     }
