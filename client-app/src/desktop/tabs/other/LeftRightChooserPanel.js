@@ -12,7 +12,7 @@ import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@xh/hoist/desktop/cmp/leftrightchooser';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {switchField} from '@xh/hoist/desktop/cmp/form';
+import {switchInput} from '@xh/hoist/desktop/cmp/form';
 import data from './impl/LeftRightChooserData';
 
 @HoistComponent
@@ -55,7 +55,7 @@ export class LeftRightChooserPanel extends Component {
                         model: this.model,
                         anyMatch: this.anyMatch
                     }),
-                    switchField({
+                    switchInput({
                         value: this.anyMatch,
                         onCommit: (val) => {
                             runInAction(() => this.anyMatch = val);

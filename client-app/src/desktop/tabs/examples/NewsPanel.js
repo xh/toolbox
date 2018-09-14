@@ -14,7 +14,7 @@ import {wrapper} from '../../common/Wrapper';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {multiSelectField} from '@xh/hoist/desktop/cmp/form';
+import {multiSelect} from '@xh/hoist/desktop/cmp/form';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
@@ -67,7 +67,7 @@ export class NewsPanel extends Component {
                             fields: model.SEARCH_FIELDS,
                             placeholder: 'Filter by title...'
                         }),
-                        multiSelectField({
+                        multiSelect({
                             placeholder: 'Filter by source...',
                             options: model.sourceOptions,
                             commitOnChange: true,
@@ -86,7 +86,7 @@ export class NewsPanel extends Component {
     }
 
     loadAsync() {
-        this.model.loadAsync();
+        return this.model.loadAsync();
     }
 
     onRefreshClick = () => {

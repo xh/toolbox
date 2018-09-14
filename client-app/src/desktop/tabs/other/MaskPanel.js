@@ -10,7 +10,7 @@ import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {observable, action} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
-import {numberField, textField, switchField} from '@xh/hoist/desktop/cmp/form';
+import {numberInput, textInput, switchInput} from '@xh/hoist/desktop/cmp/form';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -67,7 +67,7 @@ export class MaskPanel extends Component {
                 bbar: toolbar({
                     items: [
                         box('Mask for'),
-                        numberField({
+                        numberInput({
                             model: this,
                             field: 'seconds',
                             width: 40,
@@ -75,18 +75,18 @@ export class MaskPanel extends Component {
                             max: 10
                         }),
                         box('secs with'),
-                        textField({
+                        textInput({
                             model: this,
                             field: 'message',
                             width: 120,
                             placeholder: 'optional text'
                         }),
-                        switchField({
+                        switchInput({
                             model: this,
                             field: 'inline',
                             label: 'inline'
                         }),
-                        switchField({
+                        switchInput({
                             model: this,
                             field: 'spinner',
                             label: 'with spinner'
@@ -116,7 +116,7 @@ export class MaskPanel extends Component {
     async showMaskSequenceAsync() {
         const {maskModel, message, seconds} = this,
             interval = seconds / 3 * SECONDS;
-        if (message) maskModel.setMessage(message);
+        maskModel.setMessage(message);
         await wait(interval);
         if (message) maskModel.setMessage(message + ' - Still Loading...');
         await wait(interval);

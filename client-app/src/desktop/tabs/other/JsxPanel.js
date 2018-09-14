@@ -8,7 +8,7 @@ import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {jsonField} from '@xh/hoist/desktop/cmp/form';
+import {jsonInput} from '@xh/hoist/desktop/cmp/form';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common';
 
@@ -65,7 +65,7 @@ export class JsxPanel extends Component {
     // Implementation
     //------------------------
     renderCode(value, mode) {
-        return jsonField({
+        return jsonInput({
             editorProps: {mode, readOnly: true},
             value: value.trim()
         });
