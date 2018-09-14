@@ -30,8 +30,7 @@ export class ControlsPanelModel {
     @field() option5
 
     // Others
-    @field() startDate;
-    @field() endDate;
+    @field() date1;
     @field() bool1;
     @field() bool2;
 
@@ -40,8 +39,7 @@ export class ControlsPanelModel {
         this.initFields({
             number3: random(0, 100),
             range1: [random(50000, 70000), random(110000, 150000)],
-            startDate: new Date(),
-            endDate: new Date()
+            date1: new Date()
         });
     }
 }
