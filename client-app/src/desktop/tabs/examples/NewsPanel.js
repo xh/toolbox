@@ -86,7 +86,7 @@ export class NewsPanel extends Component {
     }
 
     loadAsync() {
-        this.model.loadAsync();
+        return this.model.loadAsync();
     }
 
     onRefreshClick = () => {
