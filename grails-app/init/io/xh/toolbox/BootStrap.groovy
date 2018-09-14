@@ -17,6 +17,7 @@ class BootStrap {
         BaseService.parallelInit(services)
         ensureAdminUserCreated()
         ensureNoRoleUserCreated()
+        ensureInactiveUserCreated()
 
     }
 
@@ -51,6 +52,22 @@ class BootStrap {
             ]).save()
         }
     }
+
+
+    private void ensureInactiveUserCreated() {
+        def user = User.findByEmail('inactive@xh.io')
+        if (!user) {
+            new User([
+                    email: 'inactive@xh.io',
+                    firstName: 'Not',
+                    lastName: 'Active',
+                    password: 'password',
+                    isAdmin: false,
+                    enabled: false
+            ]).save()
+        }
+    }
+
     private void ensureRequiredConfigsCreated() {
         Utils.configService.ensureRequiredConfigsCreated([
                 newsApiKey : [
