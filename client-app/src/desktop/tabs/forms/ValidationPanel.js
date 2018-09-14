@@ -38,9 +38,9 @@ export class ValidationPanel extends Component {
                 width: '90%',
                 height: '90%',
                 mask: mask({model: this.validateButtonTask}),
-                item: panel({
-                    className: 'toolbox-validation-panel__panel',
-                    item: hframe(
+                item: hframe({
+                    className: 'toolbox-validation-panel__content',
+                    items: [
                         vbox({
                             width: 300,
                             marginRight: 30,
@@ -114,7 +114,7 @@ export class ValidationPanel extends Component {
                                 })
                             ]
                         })
-                    )
+                    ]
                 }),
                 bbar: toolbar(
                     button({
