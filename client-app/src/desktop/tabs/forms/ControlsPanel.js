@@ -79,7 +79,6 @@ export class ControlsPanel extends Component {
                                     info: 'type:password, commitOnChange, selectOnFocus',
                                     item: textInput({
                                         type: 'password',
-                                        autoComplete: 'new-password',
                                         commitOnChange: true,
                                         selectOnFocus: true
                                     })
