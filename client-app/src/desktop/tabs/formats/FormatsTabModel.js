@@ -1,5 +1,5 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable, computed, autorun} from '@xh/hoist/mobx';
+import {bindable, computed} from '@xh/hoist/mobx';
 import {fmtNumber} from '@xh/hoist/format/FormatNumber';
 import React from 'react';
 import {toLower} from 'lodash';
@@ -22,10 +22,6 @@ export class FormatsTabModel {
     @bindable decimalTolerance = 2;
     @bindable zeroPad = 0;
     @bindable units = 'Auto';
-
-    constructor() {
-        autorun(() => console.log(this.testNumbers))
-    }
 
     @computed
     get fOptions() {
