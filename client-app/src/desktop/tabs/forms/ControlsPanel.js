@@ -168,8 +168,7 @@ export class ControlsPanel extends Component {
                                         field: 'option2',
                                         item: comboField({
                                             options: movies,
-                                            placeholder: 'Search movies...'
-                                            ,
+                                            placeholder: 'Search movies...',
                                             requireSelection: true
                                         })
                                     }),
