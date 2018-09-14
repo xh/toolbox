@@ -222,10 +222,8 @@ export class ControlsPanel extends Component {
         let displayVal = model[field];
         if (displayVal == null) {
             displayVal = 'null';
-        } else if (fmtVal) {
-            displayVal = fmtVal(displayVal);
         } else {
-            displayVal = displayVal.toString();
+            displayVal = fmtVal ? fmtVal(displayVal) : displayVal.toString();
             if (displayVal.trim() === '') {
                 displayVal = displayVal.length ? '[Blank String]' : '[Empty String]';
             }
