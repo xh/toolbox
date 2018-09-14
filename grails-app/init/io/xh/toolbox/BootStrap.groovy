@@ -56,7 +56,7 @@ class BootStrap {
                 newsApiKey : [
                         valueType   : 'string',
                         defaultValue: 'ab052127f3e349d38db094eade1d96d8',
-                        groupName   : 'news'
+                        groupName   : 'News'
                 ],
                 newsSources: [
                         valueType   : 'json',
@@ -65,12 +65,12 @@ class BootStrap {
                                         "fortune"  : "Fortune",
                                         "reuters"  : "Reuters"
                                     ],
-                        groupName   : 'news'
+                        groupName   : 'News'
                 ],
                 newsRefreshMins : [
                         valueType: 'int',
-                        defaultValue: 20,
-                        groupName: 'news'
+                        defaultValue: 60,
+                        groupName: 'News'
                 ]
         ])
     }
