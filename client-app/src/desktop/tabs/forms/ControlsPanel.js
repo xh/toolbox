@@ -166,7 +166,8 @@ export class ControlsPanel extends Component {
                                     field: 'option2',
                                     item: comboBox({
                                         options: movies,
-                                        placeholder: 'Search movies...'
+                                        placeholder: 'Search movies...',
+                                        requireSelection: true
                                     })
                                 }),
                                 row({
