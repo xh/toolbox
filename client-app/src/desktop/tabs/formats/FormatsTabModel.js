@@ -31,8 +31,7 @@ export class FormatsTabModel {
     get fOptions() {
         return {
             asElement: true,
-            asCompact: true,
-            units: this.units === 'Auto' ? null : toLower(this.units),
+            units: toLower(this.units),
             precision: this.precision,
             zeroPad: this.zeroPad,
             decimalTolerance: this.decimalTolerance
