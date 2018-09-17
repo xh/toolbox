@@ -196,6 +196,7 @@ export class ControlsPanel extends Component {
                                         commitOnChange: true,
                                         timePrecision: 'second',
                                         timePickerProps: {useAmPm: true},
+                                        formatString: 'YYYY-MM-DD h:mma',
                                         minDate: moment().subtract(2, 'weeks').toDate(),
                                         maxDate: new Date()
                                     })
