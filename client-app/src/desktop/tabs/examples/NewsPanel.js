@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {NewsPanelModel} from './NewsPanelModel';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
@@ -32,6 +32,16 @@ export class NewsPanel extends Component {
             {viewModel} = model;
 
         return wrapper({
+            description: [
+                <p>
+                    This example demonstrates Hoist support for loading and caching data on the server from a <a href="https://newsapi.org/" target="_blank">Remote API</a>.
+                    Refresh rate, news sources, and API key can be modified in the Admin Config tab.
+                </p>,
+                <p>
+                    On the client side, we use a <a href="../grids/dataview" target="_blank">DataView</a> grid
+                    to support custom filtering logic and rich component rendering.
+                </p>
+            ],
             item: panel({
                 className: 'toolbox-news-panel',
                 title: 'News Feed',
