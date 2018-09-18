@@ -28,6 +28,7 @@ export class ControlsPanelModel {
     @field() option3
     @field() option4
     @field() option5
+    @field() option6
 
     // Others
     @field() date1;

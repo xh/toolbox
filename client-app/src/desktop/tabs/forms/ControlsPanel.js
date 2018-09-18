@@ -19,6 +19,7 @@ import {
     textInput,
     textArea,
     numberInput,
+    radioInput,
     slider,
     select,
     multiSelect,
@@ -202,6 +203,17 @@ export class ControlsPanel extends Component {
                                     label: 'CheckBox',
                                     field: 'bool1',
                                     item: checkBox()
+                                }),
+                                row({
+                                    label: 'RadioInput',
+                                    field: 'option6',
+                                    info: 'No soup for you',
+                                    item: radioInput({
+                                        label: 'Lunch',
+                                        align: 'right',
+                                        inline: true, // .bp3-control.bp3-inline margin-right def in our kit file is not good for this.
+                                        options: [{label: 'Soup', value: 'Soup', disabled: true}, 'Salad', 'Sandwich']
+                                    })
                                 }),
                                 row({
                                     label: 'SwitchInput',
