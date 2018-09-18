@@ -3,25 +3,31 @@ package io.xh.toolbox
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.MonitorResult
 
+import java.util.concurrent.TimeUnit
+
 import static io.xh.hoist.monitor.MonitorStatus.OK
-import static io.xh.hoist.monitor.MonitorStatus.WARN
 import static io.xh.hoist.monitor.MonitorStatus.FAIL
 
 
 class MonitorDefinitionService extends BaseService {
 
-    def foo(MonitorResult result) {
-        result.metric = 25
-        result.status = OK
+    def newsService
+
+    def newsStories(MonitorResult result) {
+        result.metric = newsService.countStories()
     }
 
-    def bar(MonitorResult result) {
-        result.metric = 50
-        result.status = FAIL
+    def lastUpdate(MonitorResult result) {
+        Date now = new Date()
+        long diffMs = Math.abs(now.getTime() - newsService.getLastTimestamp().getTime())
+        long diffHours = TimeUnit.HOURS.convert(diffMs, TimeUnit.MILLISECONDS)
+        result.metric = diffHours
     }
 
-    def sniff(MonitorResult result) {
-        result.metric = 13
-        result.status = WARN
+    def sourcesLoaded(MonitorResult result) {
+        result.metric = newsService.countSourcesLoaded()
+        result.status = newsService.sourcesLoaded() ? OK : FAIL
     }
+
+
 }
