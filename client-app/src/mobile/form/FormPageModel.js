@@ -13,6 +13,9 @@ export class FormPageModel {
     movie = null;
 
     @field()
+    salary = null;
+
+    @field()
     notes = null;
 
     @field()
