@@ -3,6 +3,7 @@ package io.xh.toolbox
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
+import io.xh.hoist.monitor.Monitor
 
 import static io.xh.hoist.util.Utils.appEnvironment
 import static io.xh.hoist.util.Utils.appName
@@ -13,12 +14,12 @@ class BootStrap {
     def init = {servletContext ->
         logStartupMsg()
         ensureRequiredConfigsCreated()
+        ensureMonitorsCreated()
         def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
         BaseService.parallelInit(services)
         ensureAdminUserCreated()
         ensureNoRoleUserCreated()
         ensureInactiveUserCreated()
-
     }
 
     def destroy = {}
@@ -90,6 +91,31 @@ class BootStrap {
                         groupName: 'News'
                 ]
         ])
+    }
+
+    private void ensureMonitorsCreated() {
+        new Monitor(
+                code: 'newsStories',
+                name: 'Cached Stories',
+                metricType: 'Floor',
+                metricUnit: 'stories',
+                active: true
+        ).save()
+        new Monitor(
+                code: 'lastUpdate',
+                name: 'Most Recent Story',
+                metricType: 'Ceil',
+                metricUnit: 'hours since last story',
+                warnThreshold: 12,
+                active: true
+        ).save()
+        new Monitor(
+                code: 'sourcesLoaded',
+                name: 'All Sources Loaded',
+                metricType: 'None',
+                metricUnit: 'sources',
+                active: true
+        ).save()
     }
 
     private void logStartupMsg() {
