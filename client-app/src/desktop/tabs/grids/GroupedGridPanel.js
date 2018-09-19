@@ -23,7 +23,7 @@ export class GroupedGridPanel extends Component {
             item: panel({
                 title: 'Grids > Grouped Rows',
                 icon: Icon.grid(),
-                width: 700,
+                width: 900,
                 height: 400,
                 item: sampleGrid({groupBy: 'city'})
             })
