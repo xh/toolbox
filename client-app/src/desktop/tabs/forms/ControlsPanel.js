@@ -158,7 +158,8 @@ export class ControlsPanel extends Component {
                                     field: 'option1',
                                     item: select({
                                         options: usStates,
-                                        placeholder: 'Select a state...'
+                                        placeholder: 'Select a state...',
+                                        icon: Icon.location()
                                     })
                                 }),
                                 row({
