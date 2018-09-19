@@ -11,7 +11,7 @@ import {hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import moment from 'moment';
-import {fmtDate, fmtThousands} from '@xh/hoist/format';
+import {fmtDateTime, fmtThousands} from '@xh/hoist/format';
 import {
     formField,
     checkBox,
@@ -190,10 +190,13 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'DateInput',
                                     field: 'date1',
-                                    info: 'minDate, maxDate',
-                                    fmtVal: v => fmtDate(v),
+                                    info: 'minDate, maxDate, timePicker',
+                                    fmtVal: v => fmtDateTime(v),
                                     item: dateInput({
                                         commitOnChange: true,
+                                        timePrecision: 'second',
+                                        timePickerProps: {useAmPm: true},
+                                        formatString: 'YYYY-MM-DD h:mma',
                                         minDate: moment().subtract(2, 'weeks').toDate(),
                                         maxDate: new Date()
                                     })
