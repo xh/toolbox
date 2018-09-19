@@ -13,6 +13,7 @@ import {GroupedGridPanel} from './GroupedGridPanel';
 import {ColumnGroupsGridPanel} from './ColumnGroupsGridPanel';
 import {RestGridPanel} from './RestGridPanel';
 import {DataViewPanel} from './DataViewPanel';
+import {TreeGridPanel} from './TreeGridPanel';
 
 @HoistComponent
 export class GridsTab extends Component {
