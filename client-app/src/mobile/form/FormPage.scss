@@ -1,32 +1,14 @@
 .form-page {
-  .form-field-container {
+  .xh-form-field {
     margin: 0 0 var(--xh-pad-px);
-    display: flex;
-    flex-direction: column;
-
-    .xh-input {
-      margin: 0;
-      border: var(--xh-border-solid);
-      border-radius: var(--xh-border-radius-px);
-
-      &.xh-input-invalid {
-        &.xh-textarea, &.xh-text-input, &.xh-search-input {
-          border: 1px solid var(--xh-form-field-invalid-border-color);
-        }
-      }
-    }
-
-    .xh-input-label {
-      border: none;
-    }
-
-    textarea {
-      height: 120px;
-    }
 
     &:last-of-type {
       margin: 0;
     }
+  }
+
+  textarea {
+    height: 120px;
   }
 
   .form-field-result {

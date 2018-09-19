@@ -18,7 +18,7 @@ export class FormPageModel {
     @field()
     notes = null;
 
-    @field()
+    @field('Search')
     searchQuery = null;
 
     movies = movies;
