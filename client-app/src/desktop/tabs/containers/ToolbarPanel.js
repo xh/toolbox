@@ -10,7 +10,7 @@ import {XH, HoistComponent} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
 import {filler, frame, hframe} from '@xh/hoist/cmp/layout/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel/index';
-import {comboField, switchField} from '@xh/hoist/desktop/cmp/form/index';
+import {comboBox, switchInput} from '@xh/hoist/desktop/cmp/form/index';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar/index';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {Icon} from '@xh/hoist/icon/index';
@@ -61,7 +61,7 @@ export class ToolbarPanel extends Component {
                         )
                     }),
                     filler(),
-                    switchField({
+                    switchInput({
                         model,
                         field: 'enableTerminate',
                         label: 'Danger mode',
@@ -107,7 +107,7 @@ export class ToolbarPanel extends Component {
                 ],
                 bbar: toolbar(
                     filler(),
-                    comboField({
+                    comboBox({
                         options: usStates,
                         model,
                         field: 'state',

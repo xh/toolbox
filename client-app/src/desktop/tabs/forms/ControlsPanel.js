@@ -4,27 +4,28 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import React, {Component} from 'react';
+import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {hframe, vframe} from '@xh/hoist/cmp/layout';
+import {hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import moment from 'moment';
 import {fmtDate, fmtThousands} from '@xh/hoist/format';
-import {formGroup} from '@xh/hoist/kit/blueprint';
 import {
-    checkField,
-    dayField,
-    textField,
-    textAreaField,
-    numberField,
-    sliderField,
-    selectField,
-    switchField,
-    comboField,
-    queryComboField,
-    jsonField
+    formField,
+    checkBox,
+    dateInput,
+    textInput,
+    textArea,
+    numberInput,
+    slider,
+    select,
+    multiSelect,
+    switchInput,
+    comboBox,
+    queryComboBox,
+    jsonInput
 } from '@xh/hoist/desktop/cmp/form';
 
 import {usStates, movies} from '../../../core/data';
@@ -48,170 +49,169 @@ export class ControlsPanel extends Component {
                 icon: Icon.edit(),
                 width: '90%',
                 height: '90%',
-                item: vframe(
-                    hframe({
-                        items: [
-                            panel({
-                                className: 'toolbox-controls-panel__panel',
-                                items: [
-                                    row({
-                                        label: 'TextField',
-                                        field: 'text1',
-                                        item: textField()
-                                    }),
-                                    row({
-                                        label: 'TextField',
-                                        field: 'text2',
-                                        info: 'placeholder, leftIcon, and rightElement',
-                                        item: textField({
-                                            placeholder: 'user@company.com',
-                                            leftIcon: Icon.mail(),
-                                            rightElement: button({
-                                                icon: Icon.cross(),
-                                                minimal: true,
-                                                onClick: () => model.setText2(null)
-                                            })
-                                        })
-                                    }),
-                                    row({
-                                        label: 'TextField',
-                                        field: 'text3',
-                                        info: 'type:password, commitOnChange',
-                                        item: textField({
-                                            type: 'password',
-                                            commitOnChange: true
-                                        })
-                                    }),
-                                    row({
-                                        label: 'TextArea',
-                                        field: 'text4',
-                                        item: textAreaField({
-                                            width: '100%'
-                                        })
-                                    }),
-                                    row({
-                                        label: 'JSONField',
-                                        field: 'text5',
-                                        item: jsonField({
-                                            width: 300,
-                                            height: 100
+                item: hframe({
+                    items: [
+                        panel({
+                            className: 'toolbox-controls-panel__column',
+                            items: [
+                                row({
+                                    label: 'TextInput',
+                                    field: 'text1',
+                                    item: textInput()
+                                }),
+                                row({
+                                    label: 'TextInput',
+                                    field: 'text2',
+                                    info: 'placeholder, leftIcon, and rightElement',
+                                    item: textInput({
+                                        placeholder: 'user@company.com',
+                                        leftIcon: Icon.mail(),
+                                        rightElement: button({
+                                            icon: Icon.cross(),
+                                            minimal: true,
+                                            onClick: () => model.setText2(null)
                                         })
                                     })
-                                ]
-                            }),
-                            panel({
-                                className: 'toolbox-forms-tab__panel',
-                                items: [
-                                    row({
-                                        label: 'NumberField',
-                                        field: 'number1',
-                                        item: numberField()
-                                    }),
-                                    row({
-                                        label: 'NumberField',
-                                        field: 'number2',
-                                        info: 'enableShorthandUnits, displayWithCommas',
-                                        item: numberField({
-                                            enableShorthandUnits: true,
-                                            displayWithCommas: true
-                                        })
-                                    }),
-                                    row({
-                                        label: 'SliderField',
-                                        field: 'number3',
-                                        info: 'custom labelRenderer',
-                                        item: sliderField({
-                                            model,
-                                            min: 0,
-                                            max: 100,
-                                            labelStepSize: 25,
-                                            stepSize: 1,
-                                            labelRenderer: val => `${val}%`
-                                        })
-                                    }),
-                                    row({
-                                        label: 'SliderField',
-                                        field: 'range1',
-                                        info: 'multi-value, custom labelRenderer',
-                                        item: sliderField({
-                                            min: 50000,
-                                            max: 150000,
-                                            labelStepSize: 25000,
-                                            stepSize: 1000,
-                                            labelRenderer: v => `$${fmtThousands(v, {
-                                                label: true,
-                                                precision: 0,
-                                                labelCls: null
-                                            })}`
-                                        })
+                                }),
+                                row({
+                                    label: 'TextInput',
+                                    field: 'text3',
+                                    info: 'type:password, commitOnChange, selectOnFocus',
+                                    item: textInput({
+                                        type: 'password',
+                                        commitOnChange: true,
+                                        selectOnFocus: true
                                     })
-                                ]
-                            }),
-                            panel({
-                                className: 'toolbox-forms-tab__panel',
-                                items: [
-                                    row({
-                                        label: 'SelectField',
-                                        field: 'option1',
-                                        item: selectField({
-                                            options: usStates,
-                                            placeholder: 'Select a state...'
-                                        })
-                                    }),
-                                    row({
-                                        label: 'ComboField',
-                                        field: 'option2',
-                                        item: comboField({
-                                            options: movies,
-                                            placeholder: 'Search movies...'
-                                        })
-                                    }),
-                                    row({
-                                        label: 'QueryComboField',
-                                        field: 'option3',
-                                        info: 'Custom/async search (name/city)',
-                                        item: queryComboField({
-                                            queryFn: this.queryCompaniesAsync,
-                                            placeholder: 'Search companies...'
-                                        })
-                                    }),
-                                    row({
-                                        label: 'DayField',
-                                        field: 'startDate',
-                                        info: 'minDate, maxDate',
-                                        fmtVal: v => fmtDate(v),
-                                        item: dayField({
-                                            commitOnChange: true,
-                                            minDate: moment().subtract(2, 'weeks').toDate(),
-                                            maxDate: new Date()
-                                        })
-                                    }),
-                                    row({
-                                        label: 'DayField',
-                                        field: 'endDate',
-                                        info: 'minDate, maxDate',
-                                        fmtVal: v => fmtDate(v),
-                                        item: dayField({
-                                            commitOnChange: true,
-                                            minDate: moment().subtract(2, 'weeks').toDate(),
-                                            maxDate: new Date()
-                                        })
-                                    }),
-                                    row({
-                                        label: 'CheckField',
-                                        field: 'bool1',
-                                        item: checkField()
-                                    }),
-                                    row({
-                                        label: 'SwitchField',
-                                        field: 'bool2',
-                                        item: switchField()
+                                }),
+                                row({
+                                    label: 'TextArea',
+                                    field: 'text4',
+                                    info: 'selectOnFocus',
+                                    item: textArea({
+                                        width: '100%',
+                                        selectOnFocus: true
                                     })
-                                ]
-                            })
-                        ]
-                    })
-                )
+                                }),
+                                row({
+                                    label: 'JSONInput',
+                                    field: 'text5',
+                                    item: jsonInput({
+                                        width: 300,
+                                        height: 100
+                                    })
+                                })
+                            ]
+                        }),
+                        panel({
+                            className: 'toolbox-controls-panel__column',
+                            items: [
+                                row({
+                                    label: 'NumberInput',
+                                    field: 'number1',
+                                    item: numberInput()
+                                }),
+                                row({
+                                    label: 'NumberInput',
+                                    field: 'number2',
+                                    info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
+                                    item: numberInput({
+                                        enableShorthandUnits: true,
+                                        displayWithCommas: true,
+                                        selectOnFocus: true
+                                    })
+                                }),
+                                row({
+                                    label: 'Slider',
+                                    field: 'number3',
+                                    info: 'custom labelRenderer',
+                                    item: slider({
+                                        min: 0,
+                                        max: 100,
+                                        labelStepSize: 25,
+                                        stepSize: 1,
+                                        labelRenderer: val => `${val}%`
+                                    })
+                                }),
+                                row({
+                                    label: 'Slider',
+                                    field: 'range1',
+                                    info: 'multi-value, custom labelRenderer',
+                                    item: slider({
+                                        min: 50000,
+                                        max: 150000,
+                                        labelStepSize: 25000,
+                                        stepSize: 1000,
+                                        labelRenderer: v => `$${fmtThousands(v, {
+                                            label: true,
+                                            precision: 0,
+                                            labelCls: null
+                                        })}`
+                                    })
+                                })
+                            ]
+                        }),
+                        panel({
+                            className: 'toolbox-controls-panel__column',
+                            items: [
+                                row({
+                                    label: 'Select',
+                                    field: 'option1',
+                                    item: select({
+                                        options: usStates,
+                                        placeholder: 'Select a state...'
+                                    })
+                                }),
+                                row({
+                                    label: 'ComboBox',
+                                    field: 'option2',
+                                    item: comboBox({
+                                        options: movies,
+                                        placeholder: 'Search movies...'
+                                    })
+                                }),
+                                row({
+                                    label: 'QueryComboBox',
+                                    field: 'option3',
+                                    info: 'Custom/async search (name/city)',
+                                    item: queryComboBox({
+                                        queryFn: this.queryCompaniesAsync,
+                                        placeholder: 'Search companies...'
+                                    })
+                                }),
+                                row({
+                                    label: 'MultiSelect',
+                                    field: 'option5',
+                                    item: multiSelect({
+                                        options: usStates,
+                                        className: 'toolbox-multiselect',
+                                        placeholder: 'Select state(s)...'
+                                    })
+                                }),
+                                row({
+                                    label: 'DateInput',
+                                    field: 'date1',
+                                    info: 'minDate, maxDate',
+                                    fmtVal: v => fmtDate(v),
+                                    item: dateInput({
+                                        commitOnChange: true,
+                                        minDate: moment().subtract(2, 'weeks').toDate(),
+                                        maxDate: new Date()
+                                    })
+                                }),
+                                row({
+                                    label: 'CheckBox',
+                                    field: 'bool1',
+                                    item: checkBox()
+                                }),
+                                row({
+                                    label: 'SwitchInput',
+                                    field: 'bool2',
+                                    item: switchInput()
+                                })
+                            ]
+                        })
+                    ]
+                })
             })
         });
     }
@@ -220,12 +220,21 @@ export class ControlsPanel extends Component {
         const {model} = this;
 
         let displayVal = model[field];
-        if (fmtVal) displayVal = fmtVal(displayVal);
+        if (displayVal == null) {
+            displayVal = 'null';
+        } else {
+            displayVal = fmtVal ? fmtVal(displayVal) : displayVal.toString();
+            if (displayVal.trim() === '') {
+                displayVal = displayVal.length ? '[Blank String]' : '[Empty String]';
+            }
+        }
 
-        return formGroup({
+        return formField({
+            item,
             label,
+            field,
+            model,
             labelInfo: `${displayVal}`,
-            item: React.cloneElement(item, {model, field}),
             helperText: info
         });
     };

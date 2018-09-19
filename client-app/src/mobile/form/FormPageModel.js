@@ -13,9 +13,12 @@ export class FormPageModel {
     movie = null;
 
     @field()
-    notes = null;
+    salary = null;
 
     @field()
+    notes = null;
+
+    @field('Search')
     searchQuery = null;
 
     movies = movies;

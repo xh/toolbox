@@ -38,7 +38,7 @@ export class ValidationPanelModel {
     @field('Hire Date', required, dateIs({min: moment().startOf('day').toDate()}))
     startDate;
 
-    @field('Completion Date')
+    @field('End Date')
     endDate;
 
     constructor() {
@@ -49,14 +49,14 @@ export class ValidationPanelModel {
 
         this.getField('endDate').addRules({
             when: ({value}, {startDate}) => startDate && value,
-            check: ({value, displayName}, {startDate}) => value < startDate ? `${displayName} must be after Start Date` : null
+            check: ({value, displayName}, {startDate}) => value < startDate ? `${displayName} must be after start date.` : null
         });
 
         this.getField('yearsExperience').addRules({
             when: (f, {isManager}) => isManager,
             check: [
                 required,
-                ({value}) => isNil(value) || value < 10 ?  'Managerial positions require at least 10 years of experience' : null
+                ({value}) => isNil(value) || value < 10 ?  'Managerial positions require at least 10 years of experience.' : null
             ]
         });
     }
