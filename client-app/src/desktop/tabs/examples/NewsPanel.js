@@ -51,11 +51,9 @@ export class NewsPanel extends Component {
                             onClick: this.onRefreshClick
                         }),
                         filler(),
-                        span({
-                            item: 'Last updated:'
-                        }),
                         relativeTimestamp({
-                            timestamp: model.lastRefresh
+                            timestamp: model.lastRefresh,
+                            options: {prefixText: 'Last Updated: '}
                         })
 
                     ]
