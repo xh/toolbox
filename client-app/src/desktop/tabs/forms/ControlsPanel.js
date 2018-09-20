@@ -25,7 +25,8 @@ import {
     switchInput,
     comboBox,
     queryComboBox,
-    jsonInput
+    jsonInput,
+    buttonGroupInput
 } from '@xh/hoist/desktop/cmp/form';
 
 import {usStates, movies} from '../../../core/data';
@@ -208,6 +209,25 @@ export class ControlsPanel extends Component {
                                     label: 'SwitchInput',
                                     field: 'bool2',
                                     item: switchInput()
+                                }),
+                                row({
+                                    label: 'ButtonGroupInput',
+                                    field: 'buttonGroup1',
+                                    item: buttonGroupInput(
+                                        button({
+                                            text: 'Button 1',
+                                            value: 'button1'
+                                        }),
+                                        button({
+                                            text: 'Button 2',
+                                            value: 'button2'
+                                        }),
+                                        button({
+                                            icon: Icon.check(),
+                                            value: 'button3',
+                                            intent: 'success'
+                                        })
+                                    )
                                 })
                             ]
                         })
