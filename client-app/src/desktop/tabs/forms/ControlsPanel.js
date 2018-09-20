@@ -148,7 +148,18 @@ export class ControlsPanel extends Component {
                                             labelCls: null
                                         })}`
                                     })
-                                })
+                                }),
+                                row({
+                                    label: 'DateInput',
+                                    field: 'date1',
+                                    info: 'minDate, maxDate',
+                                    fmtVal: v => fmtDate(v),
+                                    item: dateInput({
+                                        commitOnChange: true,
+                                        minDate: moment().subtract(2, 'weeks').toDate(),
+                                        maxDate: new Date()
+                                    })
+                                }),
                             ]
                         }),
                         panel({
@@ -190,17 +201,6 @@ export class ControlsPanel extends Component {
                                     })
                                 }),
                                 row({
-                                    label: 'DateInput',
-                                    field: 'date1',
-                                    info: 'minDate, maxDate',
-                                    fmtVal: v => fmtDate(v),
-                                    item: dateInput({
-                                        commitOnChange: true,
-                                        minDate: moment().subtract(2, 'weeks').toDate(),
-                                        maxDate: new Date()
-                                    })
-                                }),
-                                row({
                                     label: 'CheckBox',
                                     field: 'bool1',
                                     item: checkBox()
@@ -215,17 +215,19 @@ export class ControlsPanel extends Component {
                                     field: 'buttonGroup1',
                                     item: buttonGroupInput(
                                         button({
+                                            icon: Icon.chartLine(),
                                             text: 'Button 1',
                                             value: 'button1'
                                         }),
                                         button({
+                                            icon: Icon.gear(),
                                             text: 'Button 2',
                                             value: 'button2'
                                         }),
                                         button({
-                                            icon: Icon.check(),
-                                            value: 'button3',
-                                            intent: 'success'
+                                            icon: Icon.skull(),
+                                            text: 'Button 3',
+                                            value: 'button3'
                                         })
                                     )
                                 })
