@@ -25,7 +25,8 @@ import {
     switchInput,
     comboBox,
     queryComboBox,
-    jsonInput
+    jsonInput,
+    buttonGroupInput
 } from '@xh/hoist/desktop/cmp/form';
 
 import {usStates, movies} from '../../../core/data';
@@ -147,7 +148,18 @@ export class ControlsPanel extends Component {
                                             labelCls: null
                                         })}`
                                     })
-                                })
+                                }),
+                                row({
+                                    label: 'DateInput',
+                                    field: 'date1',
+                                    info: 'minDate, maxDate',
+                                    fmtVal: v => fmtDate(v),
+                                    item: dateInput({
+                                        commitOnChange: true,
+                                        minDate: moment().subtract(2, 'weeks').toDate(),
+                                        maxDate: new Date()
+                                    })
+                                }),
                             ]
                         }),
                         panel({
@@ -189,17 +201,6 @@ export class ControlsPanel extends Component {
                                     })
                                 }),
                                 row({
-                                    label: 'DateInput',
-                                    field: 'date1',
-                                    info: 'minDate, maxDate',
-                                    fmtVal: v => fmtDate(v),
-                                    item: dateInput({
-                                        commitOnChange: true,
-                                        minDate: moment().subtract(2, 'weeks').toDate(),
-                                        maxDate: new Date()
-                                    })
-                                }),
-                                row({
                                     label: 'CheckBox',
                                     field: 'bool1',
                                     item: checkBox()
@@ -208,6 +209,27 @@ export class ControlsPanel extends Component {
                                     label: 'SwitchInput',
                                     field: 'bool2',
                                     item: switchInput()
+                                }),
+                                row({
+                                    label: 'ButtonGroupInput',
+                                    field: 'buttonGroup1',
+                                    item: buttonGroupInput(
+                                        button({
+                                            icon: Icon.chartLine(),
+                                            text: 'Button 1',
+                                            value: 'button1'
+                                        }),
+                                        button({
+                                            icon: Icon.gear(),
+                                            text: 'Button 2',
+                                            value: 'button2'
+                                        }),
+                                        button({
+                                            icon: Icon.skull(),
+                                            text: 'Button 3',
+                                            value: 'button3'
+                                        })
+                                    )
                                 })
                             ]
                         })
