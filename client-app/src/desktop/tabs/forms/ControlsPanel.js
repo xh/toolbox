@@ -159,7 +159,7 @@ export class ControlsPanel extends Component {
                                         minDate: moment().subtract(2, 'weeks').toDate(),
                                         maxDate: new Date()
                                     })
-                                }),
+                                })
                             ]
                         }),
                         panel({
