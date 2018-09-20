@@ -14,12 +14,13 @@ import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {switchInput} from '@xh/hoist/desktop/cmp/form';
+import {switchInput, select} from '@xh/hoist/desktop/cmp/form';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {observable, action} from '@xh/hoist/mobx';
 import {App} from '../App';
 
 @HoistComponent
@@ -100,9 +101,10 @@ class SampleGrid extends Component {
         ]
     });
 
+    @observable groupBy = false;
+
     constructor(props) {
         super(props);
-        this.model.setGroupBy(this.props.groupBy);
         this.loadAsync();
     }
 
@@ -127,6 +129,16 @@ class SampleGrid extends Component {
                         unit: 'companies'
                     }),
                     filler(),
+                    box('Group by:'),
+                    select({
+                        options: [
+                            {value: 'active', label: 'Active'},
+                            {value: 'city', label: 'City'},
+                            {value: false, label: 'None'}
+                        ],
+                        model: this,
+                        field: 'groupBy'
+                    }),
                     box('Compact mode:'),
                     switchInput({
                         field: 'compact',
@@ -159,5 +171,12 @@ class SampleGrid extends Component {
         });
     }
 
+    @action
+    setGroupBy(groupBy) {
+        this.groupBy = groupBy;
+        this.model.setGroupBy(groupBy);
+    }
+
 }
+
 export const sampleGrid = elemFactory(SampleGrid);
