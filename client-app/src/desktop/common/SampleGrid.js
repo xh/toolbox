@@ -101,11 +101,10 @@ class SampleGrid extends Component {
         ]
     });
 
-    @observable groupBy;
+    @observable groupBy = false;
 
     constructor(props) {
         super(props);
-        this.setGroupBy(this.props.groupBy);
         this.loadAsync();
     }
 
