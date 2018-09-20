@@ -21,8 +21,8 @@ export class GridsTab extends Component {
         route: 'default.grids',
         tabs: [
             {id: 'standard', content: StandardGridPanel},
-            {id: 'columnGroups', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
-            {id: 'grouped', title: 'Grouped Rows', content: GroupedGridPanel},
+            {id: 'groupedRows', title: 'Grouped Rows', content: GroupedGridPanel},
+            {id: 'groupedCols', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
             {id: 'rest', title: 'REST Editor', content: RestGridPanel},
             {id: 'dataview', title: 'DataView', content: DataViewPanel}
         ]

@@ -7,20 +7,20 @@ import {random} from 'lodash';
 export class ControlsPanelModel {
 
     // TextInput / TextArea
-    @field() text1
-    @field() text2
-    @field() text3
-    @field() text4
-    @field() text5
+    @field() text1;
+    @field() text2;
+    @field() text3;
+    @field() text4;
+    @field() text5;
 
     // NumberInput / Single-val Slider
-    @field() number1
-    @field() number2
-    @field() number3
-    @field() number4
+    @field() number1;
+    @field() number2;
+    @field() number3;
+    @field() number4;
 
     // Multi-val Slider
-    @field() range1
+    @field() range1;
 
     // Dropdowns
     @field() option1
@@ -34,13 +34,15 @@ export class ControlsPanelModel {
     @field() date1;
     @field() bool1;
     @field() bool2;
+    @field() buttonGroup1;
 
 
     constructor() {
         this.initFields({
             number3: random(0, 100),
             range1: [random(50000, 70000), random(110000, 150000)],
-            date1: new Date()
+            date1: new Date(),
+            buttonGroup1: 'button2'
         });
     }
 }
