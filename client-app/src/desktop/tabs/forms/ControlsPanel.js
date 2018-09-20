@@ -211,7 +211,7 @@ export class ControlsPanel extends Component {
                                     item: radioInput({
                                         label: 'Lunch',
                                         align: 'right',
-                                        inline: true, // .bp3-control.bp3-inline margin-right def in our kit file is not good for this.
+                                        inline: true,
                                         options: [{label: 'Soup', value: 'Soup', disabled: true}, 'Salad', 'Sandwich']
                                     })
                                 }),
