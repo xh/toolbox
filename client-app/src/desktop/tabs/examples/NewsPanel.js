@@ -11,7 +11,7 @@ import {NewsPanelModel} from './NewsPanelModel';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
-import {filler, span} from '@xh/hoist/cmp/layout';
+import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {multiSelect} from '@xh/hoist/desktop/cmp/form';
@@ -53,7 +53,7 @@ export class NewsPanel extends Component {
                         filler(),
                         relativeTimestamp({
                             timestamp: model.lastRefresh,
-                            options: {prefixText: 'Last Updated: '}
+                            options: {prefix: 'Last updated: ', prefixMargin: 15}
                         })
 
                     ]
