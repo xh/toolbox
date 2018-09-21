@@ -59,22 +59,19 @@ class NewsService extends io.xh.hoist.BaseService {
     }
 
     private Date getLastTimestamp() {
+        if (!_newsItems) return null
         return _newsItems.sort{-it.published.time}.get(0).published
     }
 
     private boolean sourcesLoaded() {
-        int sourcesCount = configService.getJSONObject('newsSources').size()
-        int loadedSourcesCount = countSourcesLoaded()
-        return Objects.equals(loadedSourcesCount, sourcesCount)
+        def sourcesCount = configService.getJSONObject('newsSources').size(),
+            loadedSourcesCount = countSourcesLoaded()
+
+        return loadedSourcesCount == sourcesCount
     }
 
     private int countSourcesLoaded() {
-         HashSet uniqSources = new HashSet()
-        _newsItems.forEach { it ->
-            uniqSources.add(it.source)
-        }
-        int loadedSourcesCount = uniqSources.size()
-        return loadedSourcesCount
+        return _newsItems.collect{it.source}.unique().size()
     }
 
     private List<NewsItem> loadNewsForSource(String sourceCode, String sourceDisplayName) {

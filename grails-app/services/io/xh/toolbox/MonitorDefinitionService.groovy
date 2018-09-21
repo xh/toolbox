@@ -3,11 +3,10 @@ package io.xh.toolbox
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.MonitorResult
 
-import java.util.concurrent.TimeUnit
-
 import static io.xh.hoist.monitor.MonitorStatus.OK
 import static io.xh.hoist.monitor.MonitorStatus.FAIL
-
+import static io.xh.hoist.util.DateTimeUtils.HOURS
+import static java.lang.System.currentTimeMillis
 
 class MonitorDefinitionService extends BaseService {
 
@@ -18,9 +17,10 @@ class MonitorDefinitionService extends BaseService {
     }
 
     def lastUpdate(MonitorResult result) {
-        Date now = new Date()
-        long diffMs = Math.abs(now.getTime() - newsService.getLastTimestamp().getTime())
-        long diffHours = TimeUnit.HOURS.convert(diffMs, TimeUnit.MILLISECONDS)
+        def now = currentTimeMillis()
+        long diffMs = now - newsService.lastTimestamp.time
+        System.out.println(diffMs)
+        long diffHours = Math.floor(diffMs/HOURS)
         result.metric = diffHours
     }
 
@@ -28,6 +28,4 @@ class MonitorDefinitionService extends BaseService {
         result.metric = newsService.countSourcesLoaded()
         result.status = newsService.sourcesLoaded() ? OK : FAIL
     }
-
-
 }

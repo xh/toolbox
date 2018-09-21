@@ -98,6 +98,7 @@ class BootStrap {
                 code: 'newsStories',
                 name: 'Cached Stories',
                 metricType: 'Floor',
+                failThreshold: 0,
                 metricUnit: 'stories',
                 active: true
         ).save()
