@@ -211,10 +211,9 @@ export class ControlsPanel extends Component {
                                     field: 'option6',
                                     info: 'No soup for you',
                                     item: radioInput({
-                                        label: 'Lunch',
-                                        align: 'right',
+                                        alignIndicator: 'right',
                                         inline: true,
-                                        options: [{label: 'Soup', value: 'Soup', disabled: true}, 'Salad', 'Sandwich']
+                                        options: [{label: 'Soup', value: 'Soup', disabled: true}, 'Steak', 'Chicken']
                                     })
                                 }),
                                 row({
