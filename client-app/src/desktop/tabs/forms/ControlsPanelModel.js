@@ -42,6 +42,8 @@ export class ControlsPanelModel {
             range1: [random(50000, 70000), random(110000, 150000)],
             date1: new Date(),
             buttonGroup1: 'button2'
+            // ,
+            // number2: 100000.1234
         });
     }
 }
