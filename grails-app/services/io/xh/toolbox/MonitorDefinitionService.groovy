@@ -17,10 +17,9 @@ class MonitorDefinitionService extends BaseService {
     }
 
     def lastUpdate(MonitorResult result) {
-        def now = currentTimeMillis()
-        long diffMs = now - newsService.lastTimestamp.time
-        System.out.println(diffMs)
-        long diffHours = Math.floor(diffMs/HOURS)
+        def now = currentTimeMillis(),
+            diffMs = now - newsService.lastTimestamp.time,
+            diffHours = Math.floor(diffMs/HOURS)
         result.metric = diffHours
     }
 
