@@ -118,8 +118,7 @@ export class ControlsPanel extends Component {
                                     item: numberInput({
                                         enableShorthandUnits: true,
                                         displayWithCommas: true,
-                                        selectOnFocus: true,
-                                        commitOnChange: true
+                                        selectOnFocus: true
                                     })
                                 }),
                                 row({
