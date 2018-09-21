@@ -186,7 +186,7 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'QueryComboBox',
                                     field: 'option3',
-                                    info: 'Custom/async search (name/city)',
+                                    info: 'custom/async search (name/city)',
                                     item: queryComboBox({
                                         queryFn: this.queryCompaniesAsync,
                                         placeholder: 'Search companies...'
@@ -205,16 +205,6 @@ export class ControlsPanel extends Component {
                                     label: 'CheckBox',
                                     field: 'bool1',
                                     item: checkBox()
-                                }),
-                                row({
-                                    label: 'RadioInput',
-                                    field: 'option6',
-                                    info: 'No soup for you',
-                                    item: radioInput({
-                                        alignIndicator: 'right',
-                                        inline: true,
-                                        options: [{label: 'Soup', value: 'Soup', disabled: true}, 'Steak', 'Chicken']
-                                    })
                                 }),
                                 row({
                                     label: 'SwitchInput',
@@ -241,6 +231,16 @@ export class ControlsPanel extends Component {
                                             value: 'button3'
                                         })
                                     )
+                                }),
+                                row({
+                                    label: 'RadioInput',
+                                    field: 'option6',
+                                    info: 'disabled option',
+                                    item: radioInput({
+                                        alignIndicator: 'right',
+                                        inline: true,
+                                        options: ['Steak', 'Chicken', {label: 'Fish', value: 'Soup', disabled: true}]
+                                    })
                                 })
                             ]
                         })
