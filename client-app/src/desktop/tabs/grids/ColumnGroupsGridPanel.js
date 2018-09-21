@@ -18,11 +18,15 @@ export class ColumnGroupsGridPanel extends Component {
         return wrapper({
             description: [
                 <p>
-                    Hoist React grids support column grouping as described in the ag-grid
-                    <a href="https://www.ag-grid.com/javascript-grid-column-properties/#columns-and-column-groups" target="_blank">
-                    documentation</a> with a few important wrinkles. Column groups must be explicitly define with either
-                    a unique headerName or groupId. Also column groups in Hoist React are 'sealed'. This means that
-                    columns maybe reordered within the group in which they are defined but not broken out of them.
+                    Hoist React grids support column grouping as described in
+                    the <a href="https://www.ag-grid.com/javascript-grid-column-properties/#columns-and-column-groups" target="_blank">
+                    ag-Grid documentation</a>.
+                </p>,
+                <p>
+                    Note that column group configurations must be provided either a <code>headerName</code>
+                    or <code>groupId</code> property, which must be unique within the GridMModel. Column
+                    groups in Hoist React are also 'sealed', meaning that columns may be reordered <em>within</em> the
+                    group in which they are defined but not broken out from them.
                 </p>,
                 <p>
                     This grid also demonstrates persistent grid state using the browser's local storage.
@@ -30,8 +34,8 @@ export class ColumnGroupsGridPanel extends Component {
             ],
             item: panel({
                 title: 'Grids > Grouped Columns',
-                icon: Icon.grid(),
-                width: 990,
+                icon: Icon.gridPanel(),
+                width: 900,
                 height: 400,
                 item: sampleColumnGroupsGrid()
             })

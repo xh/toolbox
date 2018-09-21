@@ -1,21 +1,7 @@
 .toolbox-validation-panel {
-  &__panel {
+  &__content {
+    border: var(--xh-border-solid);
     margin: var(--xh-pad-px);
-  }
-
-  .toolbox-validation-panel__panel {
     padding: var(--xh-pad-px);
-
-    button {
-      height: 30px;
-    }
-
-    .bp3-form-group {
-      .bp3-form-helper-text {
-        font-size: var(--xh-font-size-small-px);
-      }
-    }
   }
-
-
 }

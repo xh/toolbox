@@ -19,13 +19,15 @@ import {
     textInput,
     textArea,
     numberInput,
+    radioInput,
     slider,
     select,
     multiSelect,
     switchInput,
     comboBox,
     queryComboBox,
-    jsonInput
+    jsonInput,
+    buttonGroupInput
 } from '@xh/hoist/desktop/cmp/form';
 
 import {usStates, movies} from '../../../core/data';
@@ -147,6 +149,17 @@ export class ControlsPanel extends Component {
                                             labelCls: null
                                         })}`
                                     })
+                                }),
+                                row({
+                                    label: 'DateInput',
+                                    field: 'date1',
+                                    info: 'minDate, maxDate',
+                                    fmtVal: v => fmtDate(v),
+                                    item: dateInput({
+                                        commitOnChange: true,
+                                        minDate: moment().subtract(2, 'weeks').toDate(),
+                                        maxDate: new Date()
+                                    })
                                 })
                             ]
                         }),
@@ -158,7 +171,8 @@ export class ControlsPanel extends Component {
                                     field: 'option1',
                                     item: select({
                                         options: usStates,
-                                        placeholder: 'Select a state...'
+                                        placeholder: 'Select a state...',
+                                        icon: Icon.location()
                                     })
                                 }),
                                 row({
@@ -172,7 +186,7 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'QueryComboBox',
                                     field: 'option3',
-                                    info: 'Custom/async search (name/city)',
+                                    info: 'custom/async search (name/city)',
                                     item: comboBox({
                                         queryFn: this.queryCompaniesAsync,
                                         placeholder: 'Search companies...'
@@ -207,6 +221,37 @@ export class ControlsPanel extends Component {
                                     label: 'SwitchInput',
                                     field: 'bool2',
                                     item: switchInput()
+                                }),
+                                row({
+                                    label: 'ButtonGroupInput',
+                                    field: 'buttonGroup1',
+                                    item: buttonGroupInput(
+                                        button({
+                                            icon: Icon.chartLine(),
+                                            text: 'Button 1',
+                                            value: 'button1'
+                                        }),
+                                        button({
+                                            icon: Icon.gear(),
+                                            text: 'Button 2',
+                                            value: 'button2'
+                                        }),
+                                        button({
+                                            icon: Icon.skull(),
+                                            text: 'Button 3',
+                                            value: 'button3'
+                                        })
+                                    )
+                                }),
+                                row({
+                                    label: 'RadioInput',
+                                    field: 'option6',
+                                    info: 'disabled option',
+                                    item: radioInput({
+                                        alignIndicator: 'right',
+                                        inline: true,
+                                        options: ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]
+                                    })
                                 })
                             ]
                         })

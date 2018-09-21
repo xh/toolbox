@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {box, filler, hbox, hframe, hspacer, vbox} from '@xh/hoist/cmp/layout';
+import {filler, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -38,11 +38,12 @@ export class ValidationPanel extends Component {
                 width: '90%',
                 height: '90%',
                 mask: mask({model: this.validateButtonTask}),
-                item: panel({
-                    className: 'toolbox-validation-panel__panel',
-                    item: hframe(
+                item: hframe({
+                    className: 'toolbox-validation-panel__content',
+                    items: [
                         vbox({
                             width: 300,
+                            marginRight: 30,
                             items: [
                                 formField({
                                     model,
@@ -66,48 +67,54 @@ export class ValidationPanel extends Component {
                                             onClick: () => model.setEmail(null)
                                         })
                                     })
-                                }),
-                                box('* indicates a required field')
+                                })
                             ]
                         }),
-                        hspacer(30),
                         vbox({
                             items: [
-                                hbox(
-                                    formField({
-                                        model,
-                                        field: 'startDate',
-                                        item: dateInput({
-                                            width: 200,
-                                            commitOnChange: true,
-                                            minDate: new Date()
+                                hbox({
+                                    alignItems: 'center',
+                                    items: [
+                                        formField({
+                                            model,
+                                            field: 'startDate',
+                                            item: dateInput({
+                                                width: 120,
+                                                commitOnChange: true,
+                                                minDate: new Date()
+                                            })
+                                        }),
+                                        Icon.chevronRight({
+                                            style: {margin: '0 4px'}
+                                        }),
+                                        formField({
+                                            model,
+                                            field: 'endDate',
+                                            item: dateInput({
+                                                width: 120,
+                                                commitOnChange: true,
+                                                minDate: new Date()
+                                            })
                                         })
-                                    }),
-                                    hspacer(30),
-                                    formField({
-                                        model,
-                                        field: 'endDate',
-                                        item: dateInput({
-                                            width: 200,
-                                            commitOnChange: true,
-                                            minDate: new Date()
-                                        })
-                                    })
-                                ),
-                                formField({
-                                    model,
-                                    field: 'isManager',
-                                    inline: true,
-                                    item: checkBox({width: 200})
+                                    ]
                                 }),
                                 formField({
                                     model,
                                     field: 'yearsExperience',
                                     item: numberInput({width: 50})
+                                }),
+                                formField({
+                                    model,
+                                    label: 'Employment Role',
+                                    field: 'isManager',
+                                    item: checkBox({
+                                        width: 200,
+                                        label: 'manager'
+                                    })
                                 })
                             ]
                         })
-                    )
+                    ]
                 }),
                 bbar: toolbar(
                     button({
