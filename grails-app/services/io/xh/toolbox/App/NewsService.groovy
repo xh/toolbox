@@ -54,6 +54,26 @@ class NewsService extends io.xh.hoist.BaseService {
         }
     }
 
+    private int countStories() {
+        return _newsItems.size()
+    }
+
+    private Date getLastTimestamp() {
+        if (!_newsItems) return null
+        return _newsItems.sort{-it.published.time}.get(0).published
+    }
+
+    private boolean sourcesLoaded() {
+        def sourcesCount = configService.getJSONObject('newsSources').size(),
+            loadedSourcesCount = countSourcesLoaded()
+
+        return loadedSourcesCount == sourcesCount
+    }
+
+    private int countSourcesLoaded() {
+        return _newsItems.collect{it.source}.unique().size()
+    }
+
     private List<NewsItem> loadNewsForSource(String sourceCode, String sourceDisplayName) {
         def apiKey = configService.getString('newsApiKey'),
             url = new URL("https://newsapi.org/v1/articles?source=${sourceCode}&apiKey=${apiKey}"),
