@@ -78,9 +78,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@blueprintjs/core@^3.0.0", "@blueprintjs/core@^3.6.0", "@blueprintjs/core@~3.6.0":
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.6.0.tgz#a03da3a3de9986250b3b7da926aa659308d56b22"
+"@blueprintjs/core@^3.0.0", "@blueprintjs/core@^3.6.0", "@blueprintjs/core@~3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.6.1.tgz#d168423b1c38964e50c2cc8aef4cba8076bfe01a"
   dependencies:
     "@blueprintjs/icons" "^3.0.0"
     "@types/dom4" "^2.0.0"
@@ -174,7 +174,7 @@
 
 "@types/q@^0.0.32":
   version "0.0.32"
-  resolved "https://registry.yarnpkg.com/@types/q/-/q-0.0.32.tgz#bd284e57c84f1325da702babfc82a5328190c0c5"
+  resolved "http://registry.npmjs.org/@types/q/-/q-0.0.32.tgz#bd284e57c84f1325da702babfc82a5328190c0c5"
 
 "@types/selenium-webdriver@^3.0.0":
   version "3.0.10"
@@ -222,10 +222,10 @@
     webpack-dev-server "~2.11.2"
 
 "@xh/hoist@^13.0.0-SNAPSHOT":
-  version "13.0.0-SNAPSHOT.1536888095453"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-13.0.0-SNAPSHOT.1536888095453.tgz#f169e8ed598c72c519e9e5164cd79e35b0f630ea"
+  version "13.0.1"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-13.0.1.tgz#45baa499885fc8aa34891e59429dedb414037e22"
   dependencies:
-    "@blueprintjs/core" "~3.6.0"
+    "@blueprintjs/core" "~3.6.1"
     "@blueprintjs/datetime" "~3.2.0"
     "@blueprintjs/select" "~3.0.0"
     "@fortawesome/fontawesome-pro" "~5.3.1"
@@ -1752,8 +1752,8 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
 codemirror@~5.40.0:
-  version "5.40.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.40.0.tgz#2f5ed47366e514f41349ba0fe34daaa39be4e257"
+  version "5.40.2"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.40.2.tgz#f4a41fee2d84e679543591b3680af259d903330b"
 
 collection-visit@^1.0.0:
   version "1.0.0"
@@ -1806,9 +1806,15 @@ colors@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.1.2.tgz#168a4701756b6a7f51a12ce0c97bfa28c084ed63"
 
-combined-stream@1.0.6, combined-stream@~1.0.5, combined-stream@~1.0.6:
+combined-stream@1.0.6, combined-stream@~1.0.5:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/combined-stream/-/combined-stream-1.0.6.tgz#723e7df6e801ac5613113a7e445a9b69cb632818"
+  dependencies:
+    delayed-stream "~1.0.0"
+
+combined-stream@~1.0.6:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/combined-stream/-/combined-stream-1.0.7.tgz#2d1d24317afb8abe95d6d2c0b07b57813539d828"
   dependencies:
     delayed-stream "~1.0.0"
 
@@ -4802,8 +4808,8 @@ mobx-react@~5.2.8:
     react-lifecycles-compat "^3.0.2"
 
 mobx@~5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/mobx/-/mobx-5.1.1.tgz#b8579ea7e7fbb07b79d56a71c3191287afc45f93"
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-5.1.2.tgz#5a3a0bc381ba155901e33eabe492c3c7482e8b35"
 
 moment@~2.22.1:
   version "2.22.2"

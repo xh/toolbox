@@ -173,7 +173,7 @@ export class ControlsPanel extends Component {
                                     label: 'QueryComboBox',
                                     field: 'option3',
                                     info: 'Custom/async search (name/city)',
-                                    item: queryComboBox({
+                                    item: comboBox({
                                         queryFn: this.queryCompaniesAsync,
                                         placeholder: 'Search companies...'
                                     })
