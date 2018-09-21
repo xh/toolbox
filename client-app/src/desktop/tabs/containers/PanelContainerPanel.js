@@ -104,7 +104,7 @@ export class PanelContainerPanel extends Component {
                         }),
                         headerItems: [
                             relativeTimestamp({
-                                options: {prefix: 'Rendered', prefixMargin: 5},
+                                options: {prefix: 'Rendered'},
                                 timestamp: Date.now(),
                                 marginLeft: 4
                             }),

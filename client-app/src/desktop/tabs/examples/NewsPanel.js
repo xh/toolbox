@@ -53,7 +53,7 @@ export class NewsPanel extends Component {
                         filler(),
                         relativeTimestamp({
                             timestamp: model.lastRefresh,
-                            options: {prefix: 'Last updated: ', prefixMargin: 15}
+                            options: {prefix: 'Last Updated:'}
                         })
 
                     ]

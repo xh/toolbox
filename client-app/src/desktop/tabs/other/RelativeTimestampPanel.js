@@ -37,9 +37,9 @@ export class RelativeTimestampPanel extends Component {
                     box({
                         margin: 10,
                         item: relativeTimestamp({
-                                timestamp: this.timestamp,
-                                options: {allowFuture: true, prefixText: 'Latest timestamp:'},
-                                marginLeft: 10
+                            timestamp: this.timestamp,
+                            options: {allowFuture: true, prefix: 'Latest timestamp:'},
+                            marginLeft: 10
                         })
                     }),
                     box({
