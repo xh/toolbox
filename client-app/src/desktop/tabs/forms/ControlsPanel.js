@@ -239,7 +239,7 @@ export class ControlsPanel extends Component {
                                     item: radioInput({
                                         alignIndicator: 'right',
                                         inline: true,
-                                        options: ['Steak', 'Chicken', {label: 'Fish', value: 'Soup', disabled: true}]
+                                        options: ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]
                                     })
                                 })
                             ]
