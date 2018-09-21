@@ -88,14 +88,6 @@ class BootStrap {
                         valueType: 'int',
                         defaultValue: 60,
                         groupName: 'News'
-                ],
-                xhTrackingConfig: [
-                        valueType: 'json',
-                        defaultValue: [
-                                "trackTabs": true
-                        ],
-                        groupName: 'xh.io',
-                        clientVisible: true
                 ]
         ])
     }
