@@ -14,14 +14,13 @@ import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {switchField} from '@xh/hoist/desktop/cmp/form';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {switchInput, select} from '@xh/hoist/desktop/cmp/form';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {mask} from '@xh/hoist/desktop/cmp/mask';
+import {observable, action} from '@xh/hoist/mobx';
 import {App} from '../App';
 
 @HoistComponent
@@ -72,7 +71,8 @@ class SampleGrid extends Component {
             },
             {
                 field: 'city',
-                width: 150
+                width: 150,
+                tooltip: (value, data, meta) => `${data.company} is located in ${data.city}`
             },
             {
                 headerName: 'Trade Volume',
@@ -101,9 +101,10 @@ class SampleGrid extends Component {
         ]
     });
 
+    @observable groupBy = false;
+
     constructor(props) {
         super(props);
-        this.model.setGroupBy(this.props.groupBy);
         this.loadAsync();
     }
 
@@ -115,7 +116,7 @@ class SampleGrid extends Component {
             className: this.getClassName(),
             ...this.getLayoutProps(),
             item: grid({model}),
-            mask: mask({spinner: true, model: this.loadModel}),
+            mask: this.loadModel,
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
@@ -128,8 +129,18 @@ class SampleGrid extends Component {
                         unit: 'companies'
                     }),
                     filler(),
+                    box('Group by:'),
+                    select({
+                        options: [
+                            {value: 'active', label: 'Active'},
+                            {value: 'city', label: 'City'},
+                            {value: false, label: 'None'}
+                        ],
+                        model: this,
+                        field: 'groupBy'
+                    }),
                     box('Compact mode:'),
-                    switchField({
+                    switchInput({
                         field: 'compact',
                         model
                     }),
@@ -160,5 +171,12 @@ class SampleGrid extends Component {
         });
     }
 
+    @action
+    setGroupBy(groupBy) {
+        this.groupBy = groupBy;
+        this.model.setGroupBy(groupBy);
+    }
+
 }
+
 export const sampleGrid = elemFactory(SampleGrid);

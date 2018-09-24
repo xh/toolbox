@@ -8,28 +8,22 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
-import {StandardGridPanel} from './StandardGridPanel';
-import {ColumnGroupsGridPanel} from './ColumnGroupsGridPanel';
-import {RestGridPanel} from './RestGridPanel';
-import {DataViewPanel} from './DataViewPanel';
+import {NewsPanel} from './NewsPanel';
 
 @HoistComponent
-export class GridsTab extends Component {
+export class ExamplesTab extends Component {
 
     localModel = new TabContainerModel({
-        route: 'default.grids',
+        route: 'default.examples',
         tabs: [
-            {id: 'standard', content: StandardGridPanel},
-            {id: 'groupedCols', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
-            {id: 'rest', title: 'REST Editor', content: RestGridPanel},
-            {id: 'dataview', title: 'DataView', content: DataViewPanel}
+            {id: 'news', content: NewsPanel}
         ]
     });
 
     async loadAsync() {
         this.model.requestRefresh();
     }
-    
+
     render() {
         return tabContainer({
             model: this.model,

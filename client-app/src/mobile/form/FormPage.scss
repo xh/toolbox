@@ -1,50 +1,24 @@
 .form-page {
-  .form-field-container {
+  .xh-form-field {
     margin: 0 0 var(--xh-pad-px);
-    display: flex;
-    flex-direction: column;
-
-    .xh-field-label {
-      margin-bottom: var(--xh-pad-half-px);
-    }
-
-    .xh-field {
-      margin: 0;
-      border: var(--xh-border-solid);
-      border-radius: var(--xh-border-radius-px);
-
-      &.xh-field-invalid {
-        &.xh-textarea-field, &.xh-text-field, &.xh-search-field {
-          border: 1px solid var(--xh-form-field-invalid-border-color);
-        }
-      }
-    }
-
-    ons-search-input {
-      height: 30px;
-    }
-
-    ons-input {
-      height: 30px;
-    }
-
-    textarea {
-      height: 120px;
-    }
 
     &:last-of-type {
       margin: 0;
     }
   }
 
+  textarea {
+    height: 120px;
+  }
+
   .form-field-result {
     margin-bottom: var(--xh-pad-px);
 
-    .xh-field-label {
+    .xh-input-label {
       margin-bottom: var(--xh-pad-half-px);
     }
 
-    div:not(.xh-field-label) {
+    div:not(.xh-input-label) {
       font-size: 14px;
       min-height: 16px;
     }

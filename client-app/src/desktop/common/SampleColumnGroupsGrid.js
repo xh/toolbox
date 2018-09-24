@@ -14,14 +14,12 @@ import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {switchField} from '@xh/hoist/desktop/cmp/form';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {switchInput} from '@xh/hoist/desktop/cmp/form';
+import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {App} from '../App';
 
 @HoistComponent
@@ -72,10 +70,6 @@ class SampleColumnGroupsGrid extends Component {
                         chooserName: 'Last Name'
                     },
                     {
-                        field: 'city',
-                        width: 120
-                    },
-                    {
                         field: 'state',
                         width: 120
                     }
@@ -84,6 +78,7 @@ class SampleColumnGroupsGrid extends Component {
             {
                 field: 'salary',
                 width: 90,
+                align: 'right',
                 renderer: numberRenderer({precision: 0})
             },
             {
@@ -127,7 +122,7 @@ class SampleColumnGroupsGrid extends Component {
                                 headerName: 'Gross',
                                 align: 'right',
                                 width: 110,
-                                renderer: numberRenderer({formatPattern: '0.00'}),
+                                renderer: numberRenderer({precision: 0}),
                                 chooserName: 'Actual Gross',
                                 exportName: 'Actual Gross'
                             }
@@ -157,7 +152,7 @@ class SampleColumnGroupsGrid extends Component {
             className: this.getClassName(),
             ...this.getLayoutProps(),
             item: grid({model}),
-            mask: mask({spinner: true, model: this.loadModel}),
+            mask: this.loadModel,
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
@@ -171,7 +166,7 @@ class SampleColumnGroupsGrid extends Component {
                     }),
                     filler(),
                     box('Compact mode:'),
-                    switchField({
+                    switchInput({
                         field: 'compact',
                         model
                     }),
