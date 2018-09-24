@@ -1,5 +1,5 @@
 import {HoistModel} from '@xh/hoist/core';
-import {dateIs, field, FieldSupport, lengthIs, notBlank, numberIs, required} from '@xh/hoist/field';
+import {dateIs, field, FieldSupport, lengthIs, numberIs, required} from '@xh/hoist/field';
 import {wait} from '@xh/hoist/promise';
 import {isNil} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';
@@ -10,12 +10,11 @@ import moment from 'moment';
 export class ValidationPanelModel {
 
     // TextField / TextArea
-    @field(required, notBlank, lengthIs({max: 20}))
+    @field(required, lengthIs({max: 20}))
     firstName;
 
     @field(required, lengthIs({max: 20}))
     lastName;
-
 
     @field(required,
         ({value}) => {

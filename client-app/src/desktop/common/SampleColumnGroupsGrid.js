@@ -70,10 +70,6 @@ class SampleColumnGroupsGrid extends Component {
                         chooserName: 'Last Name'
                     },
                     {
-                        field: 'city',
-                        width: 120
-                    },
-                    {
                         field: 'state',
                         width: 120
                     }
@@ -82,6 +78,7 @@ class SampleColumnGroupsGrid extends Component {
             {
                 field: 'salary',
                 width: 90,
+                align: 'right',
                 renderer: numberRenderer({precision: 0})
             },
             {
@@ -125,7 +122,7 @@ class SampleColumnGroupsGrid extends Component {
                                 headerName: 'Gross',
                                 align: 'right',
                                 width: 110,
-                                renderer: numberRenderer({formatPattern: '0.00'}),
+                                renderer: numberRenderer({precision: 0}),
                                 chooserName: 'Actual Gross',
                                 exportName: 'Actual Gross'
                             }

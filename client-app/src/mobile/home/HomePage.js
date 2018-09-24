@@ -28,7 +28,7 @@ export class HomePage extends Component {
             items: [
                 this.renderSummaryCard({
                     title: 'Grids',
-                    icon: Icon.grid({prefix: 'fal'}),
+                    icon: Icon.gridPanel(),
                     summary: 'Show a collection of data bound to a store. Can specify 2 columns: leftColumn and rightColumn.',
                     pageFactory: gridPage
                 }),
