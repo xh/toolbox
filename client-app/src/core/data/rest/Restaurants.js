@@ -36,7 +36,7 @@ export const restaurants = [
     { name: 'Maaemo', location: 'Norway'},
     { name: 'Reale', location: 'Italy'},
     { name: 'Restaurant Tim Raue', location: 'Germany'},
-    { name: 'Lyle\’s', location: 'England'},
+    { name: 'Lyle’s', location: 'England'},
     { name: 'Astrid y Gaston', location: 'Peru'},
     { name: 'Septime', location: 'France'},
     { name: 'Nihonryori RyuGin', location: 'Japan'},
