@@ -41,13 +41,6 @@ class SampleTreeGrid extends Component {
         contextMenuFn: () => {
             return new StoreContextMenu({
                 items: [
-                    {
-                        text: 'View Details',
-                        icon: Icon.search(),
-                        recordsRequired: 1,
-                        action: (item, rec) => this.showRecToast(rec)
-                    },
-                    '-',
                     ...GridModel.defaultContextMenuTokens
                 ],
                 gridModel: this.model
@@ -123,15 +116,6 @@ class SampleTreeGrid extends Component {
         wait(250)
             .then(() => this.model.loadData(this.sampleData()))
             .linkTo(this.loadModel);
-    }
-
-    showRecToast(rec) {
-        XH.alert({
-            title: rec.company,
-            message: `You asked to see details for ${rec.company}. They are based in ${rec.city}.`,
-            confirmText: 'Close',
-            confirmIntent: 'primary'
-        });
     }
 
     sampleData() {
