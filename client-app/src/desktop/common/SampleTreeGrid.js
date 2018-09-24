@@ -78,7 +78,6 @@ class SampleTreeGrid extends Component {
 
     constructor(props) {
         super(props);
-        this.model.setGroupBy(this.props.groupBy);
         this.loadAsync();
     }
 
