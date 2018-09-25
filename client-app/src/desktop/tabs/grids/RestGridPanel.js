@@ -96,7 +96,8 @@ export class RestGridPanel extends Component {
             {field: 'lastUpdated'},
             {field: 'lastUpdatedBy'}
         ],
-        emptyText: 'No companies found - try adding one...'
+        emptyText: 'No companies found - try adding one...',
+        actionColEnabled: true
     });
 
     constructor() {

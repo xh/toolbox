@@ -21,8 +21,8 @@ import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {observable, action} from '@xh/hoist/mobx';
-import {actionsCol} from '@xh/hoist/desktop/columns';
-import {RecordAction} from '@xh/hoist/desktop/cmp/store';
+import {actionCol} from '@xh/hoist/desktop/columns';
+import {RecordAction} from '@xh/hoist/cmp/record';
 
 import {App} from '../App';
 
@@ -65,7 +65,7 @@ class SampleGrid extends Component {
                 hide: true
             },
             {
-                ...actionsCol,
+                ...actionCol,
                 actions: [
                     this.viewDetailsAction
                 ]
