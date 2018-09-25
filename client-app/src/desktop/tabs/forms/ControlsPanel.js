@@ -30,7 +30,7 @@ import {
     buttonGroupInput
 } from '@xh/hoist/desktop/cmp/form';
 
-import {usStates, movies} from '../../../core/data';
+import {usStates, restaurants} from '../../../core/data';
 import {wrapper} from '../../common';
 import {ControlsPanelModel} from './ControlsPanelModel';
 import {App} from '../../App';
@@ -179,8 +179,8 @@ export class ControlsPanel extends Component {
                                     label: 'ComboBox',
                                     field: 'option2',
                                     item: comboBox({
-                                        options: movies,
-                                        placeholder: 'Search movies...'
+                                        options: restaurants,
+                                        placeholder: 'Search restaurants...'
                                     })
                                 }),
                                 row({
