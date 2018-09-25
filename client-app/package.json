@@ -7,7 +7,7 @@
     "buildAndAnalyze": "webpack --env.prodBuild --env.analyzeBundles",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "eslint lint .",
-    "refreshHoist": "rimraf -rf node_modules/@xh/hoist && yarn upgrade @xh/hoist && yarn install --check-files",
+    "refreshHoist": "yarn install",
     "start": "webpack-dev-server",
     "startOnDevice": "webpack-dev-server --env.devHost=$(hostname)",
     "startAndAnalyze": "webpack-dev-server --env.analyzeBundles",
