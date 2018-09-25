@@ -221,7 +221,7 @@
     webpack-bundle-analyzer "~2.12.0"
     webpack-dev-server "~2.11.2"
 
-"@xh/hoist@next":
+"@xh/hoist@^14.0.0-SNAPSHOT":
   version "14.0.0-SNAPSHOT.1537882351056"
   resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-14.0.0-SNAPSHOT.1537882351056.tgz#577cc26849b4d470e1f41bbed41803e10fe689ca"
   dependencies:
