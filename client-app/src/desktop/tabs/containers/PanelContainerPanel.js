@@ -103,8 +103,8 @@ export class PanelContainerPanel extends Component {
                             item: 'Collapsible Bottom'
                         }),
                         headerItems: [
-                            box('Rendered '),
                             relativeTimestamp({
+                                options: {prefix: 'Rendered'},
                                 timestamp: Date.now(),
                                 marginLeft: 4
                             }),

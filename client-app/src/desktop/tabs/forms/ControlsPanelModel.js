@@ -23,11 +23,12 @@ export class ControlsPanelModel {
     @field() range1;
 
     // Dropdowns
-    @field() option1;
-    @field() option2;
-    @field() option3;
-    @field() option4;
-    @field() option5;
+    @field() option1
+    @field() option2
+    @field() option3
+    @field() option4
+    @field() option5
+    @field() option6
 
     // Others
     @field() date1;

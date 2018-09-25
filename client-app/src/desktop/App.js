@@ -32,6 +32,9 @@ class AppClass {
     tradeService = new TradeService();
     salesService = new SalesService();
 
+    constructor() {
+        this.addReaction(this.trackTabReaction());
+    }
 
     get enableLogout() {return true}
     get componentClass() {return AppComponent}
@@ -82,6 +85,7 @@ class AppClass {
                         forwardTo: 'default.grids.standard',
                         children: [
                             {name: 'standard', path: '/standard'},
+                            {name: 'tree', path: '/tree'},
                             {name: 'groupedRows', path: '/groupedRows'},
                             {name: 'groupedCols', path: '/groupedCols'},
                             {name: 'rest', path: '/rest'},
@@ -149,5 +153,21 @@ class AppClass {
             ]
         });
     }
+
+    trackTabReaction() {
+        return {
+            track: () => this.tabModel.activeTab,
+            run: (activeTab) => {
+                XH.track({
+                    msg: `Viewed ${activeTab.title}`,
+                    data: {
+                        id: activeTab.id
+                    },
+                    category: 'Tab'
+                });
+            }
+        };
+    }
+
 }
 export const App = new AppClass();
