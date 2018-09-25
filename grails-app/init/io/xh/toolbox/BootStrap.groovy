@@ -4,6 +4,8 @@ import io.xh.hoist.util.Utils
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.Monitor
+import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
+
 
 import static io.xh.hoist.util.Utils.appEnvironment
 import static io.xh.hoist.util.Utils.appName
@@ -29,14 +31,36 @@ class BootStrap {
     // Implementation
     //------------------------
     private void ensureAdminUserCreated() {
-        def adminUser = User.findByEmail('toolbox@xh.io')
-        if (!adminUser) {
+
+        def adminUsername = getInstanceConfig('adminUsername')
+        def adminPassword = getInstanceConfig('adminPassword')
+
+        if (adminUsername && adminPassword) {
+            def adminUser = User.findByEmail(adminUsername)
+            if (!adminUser) {
+                new User([
+                        email: adminUsername,
+                        firstName: 'Toolbox',
+                        lastName: 'Admin',
+                        password: adminPassword,
+                        isAdmin: true
+                ]).save()
+            }
+            createDemoUser(isAdmin: false)
+        } else {
+            createDemoUser(isAdmin: true)
+        }
+    }
+
+    private void createDemoUser(Map opts) {
+        def demoUser = User.findByEmail('toolbox@xh.io')
+        if (!demoUser) {
             new User([
-                email: 'toolbox@xh.io',
-                firstName: 'Toolbox',
-                lastName: 'Demo',
-                password: 'toolbox',
-                isAdmin: true
+                    email: 'toolbox@xh.io',
+                    firstName: 'Toolbox',
+                    lastName: 'Demo',
+                    password: 'toolbox',
+                    isAdmin: opts.isAdmin
             ]).save()
         }
     }
@@ -79,10 +103,10 @@ class BootStrap {
                 newsSources: [
                         valueType   : 'json',
                         defaultValue: [
-                                        "cnbc"     : "CNBC",
-                                        "fortune"  : "Fortune",
-                                        "reuters"  : "Reuters"
-                                    ],
+                                "cnbc"     : "CNBC",
+                                "fortune"  : "Fortune",
+                                "reuters"  : "Reuters"
+                        ],
                         groupName   : 'News'
                 ],
                 newsRefreshMins : [
