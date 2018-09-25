@@ -22,6 +22,8 @@ import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {observable, action} from '@xh/hoist/mobx';
 import {actionsCol} from '@xh/hoist/desktop/columns';
+import {RecordAction} from '@xh/hoist/desktop/cmp/store';
+
 import {App} from '../App';
 
 @HoistComponent
@@ -30,13 +32,13 @@ class SampleGrid extends Component {
 
     loadModel = new PendingTaskModel();
 
-    viewDetailsAction = {
+    viewDetailsAction = new RecordAction({
         text: 'View Details',
         icon: Icon.search(),
         tooltip: 'View Company Details',
         recordsRequired: 1,
         actionFn: (item, rec) => this.showRecToast(rec)
-    };
+    });
 
     localModel = new GridModel({
         store: new LocalStore({
@@ -49,7 +51,7 @@ class SampleGrid extends Component {
         contextMenuFn: () => {
             return new StoreContextMenu({
                 items: [
-                    {...this.viewDetailsAction},
+                    this.viewDetailsAction,
                     '-',
                     ...GridModel.defaultContextMenuTokens
                 ],
@@ -64,14 +66,9 @@ class SampleGrid extends Component {
             },
             {
                 ...actionsCol,
-                rendererParams: {
-                    actions: [
-                        {
-                            ...this.viewDetailsAction,
-                            text: null
-                        }
-                    ]
-                }
+                actions: [
+                    this.viewDetailsAction
+                ]
             },
             {
                 field: 'active',
