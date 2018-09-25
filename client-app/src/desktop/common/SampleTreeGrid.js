@@ -58,6 +58,9 @@ class SampleTreeGrid extends Component {
                 field: 'pnl',
                 align: 'right',
                 width: 130,
+                agOptions: {
+                    aggFunc: 'sum'
+                },
                 renderer: numberRenderer({
                     precision: 0,
                     ledger: true,
@@ -122,43 +125,43 @@ class SampleTreeGrid extends Component {
         return [
             {
                 name: 'Market Hawk',
-                pnl: 50000,
+                id: '1',
                 children: [
                     {
                         name: 'Equity',
-                        pnl: 10000,
+                        id: '1a',
                         children: [
-                            {name: 'goog', pnl: 15000},
-                            {name: 'msft', pnl: -5000}
+                            {id: '1a1', name: 'goog', pnl: 15000},
+                            {id: '1a2', name: 'msft', pnl: -5000}
                         ]
                     },
                     {
                         name: 'Currency',
-                        pnl: 40000,
+                        id: '1b',
                         children: [
-                            {name: 'yen', pnl: 20000},
-                            {name: 'eur', pnl: 20000}
+                            {id: '1b1', name: 'yen', pnl: 20000},
+                            {id: '1b2', name: 'eur', pnl: 20000}
                         ]
                     }]
             },
             {
                 name: 'Icy Hot',
-                pnl: -80000,
+                id: '2',
                 children: [
                     {
                         name: 'Equity',
-                        pnl: -100000,
+                        id: '2a',
                         children: [
-                            {name: 'tsla', pnl: -150000},
-                            {name: 'amzn', pnl: 50000}
+                            {id: '2a1', name: 'tsla', pnl: -150000},
+                            {id: '2a2', name: 'amzn', pnl: 50000}
                         ]
                     },
                     {
                         name: 'Currency',
-                        pnl: 20000,
+                        id: '2b',
                         children: [
-                            {name: 'gbp', pnl: 10000},
-                            {name: 'peso', pnl: 10000}
+                            {id: '2b1', name: 'gbp', pnl: 10000},
+                            {id: '2b2', name: 'peso', pnl: 10000}
                         ]
                     }]
             }];

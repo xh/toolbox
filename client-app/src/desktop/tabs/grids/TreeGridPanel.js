@@ -18,7 +18,13 @@ export class TreeGridPanel extends Component {
         return wrapper({
             description: [
                 <p>
-                  TreeGrid
+                    The standard hoist grid component supports the display of hierarchical data in Tree form, using the
+                    underly ag-Grid support.
+                </p>,
+                <p>
+                    Applications need to simply provide standard record data with children nodes containing their
+                    sub-records.  Data aggregations may be provided to the grid, or computed within the grid via standard
+                    ag-Grid mechanisms.
                 </p>
             ],
             item: panel({
