@@ -9,30 +9,24 @@ import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 
-import {wrapper, sampleTreeGrid} from '../../common';
+import {wrapper, sampleTreeWithCheckBoxGrid} from '../../common';
 
 @HoistComponent
-export class TreeGridPanel extends Component {
+export class TreeGridWithCheckboxPanel extends Component {
 
     render() {
         return wrapper({
             description: [
                 <p>
-                    The standard hoist grid component supports the display of hierarchical data in Tree form, using the
-                    underlying ag-Grid support.
-                </p>,
-                <p>
-                    Applications need to simply provide standard record data with children nodes containing their
-                    sub-records.  Data aggregations may be provided to the grid, or computed within the grid via standard
-                    ag-Grid mechanisms.
+                    This example is a copy of the Tree sample, but adds a React checkbox component to every node via the treeColumn's "innerRendererFramework" property.
                 </p>
             ],
             item: panel({
-                title: 'Grids > Tree',
+                title: 'Grids > Tree with Checkbox',
                 icon: Icon.grid(),
                 width: 700,
                 height: 400,
-                item: sampleTreeGrid()
+                item: sampleTreeWithCheckBoxGrid()
             })
         });
     }
