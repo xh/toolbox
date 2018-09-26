@@ -213,17 +213,6 @@ export class ControlsPanel extends Component {
                                     })
                                 }),
                                 row({
-                                    label: 'DateInput',
-                                    field: 'date1',
-                                    info: 'minDate, maxDate',
-                                    fmtVal: v => fmtDate(v),
-                                    item: dateInput({
-                                        commitOnChange: true,
-                                        minDate: moment().subtract(2, 'weeks').toDate(),
-                                        maxDate: new Date()
-                                    })
-                                }),
-                                row({
                                     label: 'CheckBox',
                                     field: 'bool1',
                                     item: checkBox()
