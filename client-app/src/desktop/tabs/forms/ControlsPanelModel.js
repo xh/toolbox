@@ -1,5 +1,7 @@
 import {HoistModel} from '@xh/hoist/core';
 import {FieldSupport, field} from '@xh/hoist/field';
+import {action} from '@xh/hoist/mobx';
+
 import {random} from 'lodash';
 
 @HoistModel
@@ -35,6 +37,11 @@ export class ControlsPanelModel {
     @field() bool1;
     @field() bool2;
     @field() buttonGroup1;
+
+    @action
+    clearTagInput () {
+        this.option4 = null;
+    }
 
 
     constructor() {

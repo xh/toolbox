@@ -27,7 +27,8 @@ import {
     comboBox,
     queryComboBox,
     jsonInput,
-    buttonGroupInput
+    buttonGroupInput,
+    tagInput
 } from '@xh/hoist/desktop/cmp/form';
 
 import {usStates, movies} from '../../../core/data';
@@ -202,6 +203,20 @@ export class ControlsPanel extends Component {
                                     })
                                 }),
                                 row({
+                                    label: 'Tag Input',
+                                    field: 'option4',
+                                    item: tagInput({
+                                        placeholder: 'Enter tags...',
+                                        commitOnChange: true,
+                                        rightElement: button({
+                                            icon: Icon.x(),
+                                            minimal: true,
+                                            onClick: this.onTagInputClear
+                                        }),
+                                    addOnBlur: true
+                                    })
+                                }),
+                                row({
                                     label: 'CheckBox',
                                     field: 'bool1',
                                     item: checkBox()
@@ -272,6 +287,10 @@ export class ControlsPanel extends Component {
             helperText: info
         });
     };
+
+    onTagInputClear = () => {
+        this.localModel.clearTagInput()
+    }
 
     queryCompaniesAsync(query) {
         return App.companyService.queryAsync(query).then(hits => {
