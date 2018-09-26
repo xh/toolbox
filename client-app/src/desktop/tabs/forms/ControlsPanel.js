@@ -169,7 +169,7 @@ export class ControlsPanel extends Component {
                                     item: dateInput({
                                         commitOnChange: true,
                                         timePrecision: 'minute',
-                                        timePickerProps: {useAmPm: true},
+                                        timePickerProps: {useAmPm: true}
                                     })
                                 })
                             ]
