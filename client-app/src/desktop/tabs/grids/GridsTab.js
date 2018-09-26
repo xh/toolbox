@@ -12,6 +12,7 @@ import {StandardGridPanel} from './StandardGridPanel';
 import {ColumnGroupsGridPanel} from './ColumnGroupsGridPanel';
 import {RestGridPanel} from './RestGridPanel';
 import {DataViewPanel} from './DataViewPanel';
+import {TreeGridPanel} from './TreeGridPanel';
 
 @HoistComponent
 export class GridsTab extends Component {
@@ -20,6 +21,7 @@ export class GridsTab extends Component {
         route: 'default.grids',
         tabs: [
             {id: 'standard', content: StandardGridPanel},
+            {id: 'tree', content: TreeGridPanel},
             {id: 'groupedCols', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
             {id: 'rest', title: 'REST Editor', content: RestGridPanel},
             {id: 'dataview', title: 'DataView', content: DataViewPanel}

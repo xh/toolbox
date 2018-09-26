@@ -1,5 +1,6 @@
 import {HoistModel} from '@xh/hoist/core';
 import {FieldSupport, field} from '@xh/hoist/field';
+import moment from 'moment';
 import {random} from 'lodash';
 
 @HoistModel
@@ -32,16 +33,17 @@ export class ControlsPanelModel {
 
     // Others
     @field() date1;
+    @field() date2;
     @field() bool1;
     @field() bool2;
     @field() buttonGroup1;
-
-
+    
     constructor() {
         this.initFields({
             number3: random(0, 100),
             range1: [random(50000, 70000), random(110000, 150000)],
-            date1: new Date(),
+            date1: moment().startOf('day').toDate(),
+            date2: moment().startOf('hour').toDate(),
             buttonGroup1: 'button2'
         });
     }
