@@ -9,7 +9,8 @@ import {XH, HoistModel} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/mobile/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer} from '@xh/hoist/format';
+import {emptyFlexCol} from '@xh/hoist/columns';
+import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
 
 import {companyTrades} from '../../core/data';
 
@@ -20,22 +21,34 @@ export class GridPageModel {
 
     gridModel = new GridModel({
         store: new LocalStore({
-            fields: ['company', 'profit_loss']
+            fields: ['company', 'city', 'trade_volume', 'profit_loss']
         }),
-        leftColumn: {
-            headerName: 'Company',
-            field: 'company'
-        },
-        rightColumn: {
-            headerName: 'P&L',
-            field: 'profit_loss',
-            valueFormatter: numberRenderer({
-                precision: 0,
-                ledger: true,
-                colorSpec: true,
-                asElement: true
-            })
-        }
+        columns: [
+            {
+                field: 'company',
+                width: 150,
+                agOptions: {pinned: true}
+            },
+            {
+                field: 'city',
+                width: 120
+            },
+            {
+                headerName: 'Volume',
+                field: 'trade_volume',
+                width: 100,
+                align: 'right',
+                renderer: millionsRenderer({precision: 1, label: true})
+            },
+            {
+                headerName: 'P&L',
+                field: 'profit_loss',
+                width: 100,
+                align: 'right',
+                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+            },
+            {...emptyFlexCol}
+        ]
     });
 
     constructor() {
