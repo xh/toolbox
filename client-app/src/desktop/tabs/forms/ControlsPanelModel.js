@@ -41,7 +41,6 @@ export class ControlsPanelModel {
 
     @action
     clearTagInput() {
-        console.log(this.option4);
         this.text5 = null;
     }
 
