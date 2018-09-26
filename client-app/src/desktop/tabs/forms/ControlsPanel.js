@@ -25,7 +25,6 @@ import {
     multiSelect,
     switchInput,
     comboBox,
-    queryComboBox,
     jsonInput,
     buttonGroupInput
 } from '@xh/hoist/desktop/cmp/form';
