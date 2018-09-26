@@ -40,7 +40,7 @@ export class ControlsPanelModel {
     @field() buttonGroup1;
 
     @action
-    clearTagInput () {
+    clearTagInput() {
         console.log(this.option4);
         this.text5 = null;
     }

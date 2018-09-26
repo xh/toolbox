@@ -98,6 +98,7 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'Tag Input',
                                     field: 'text5',
+
                                     item: tagInput({
                                         placeholder: 'Enter tags...',
                                         commitOnChange: true,
@@ -106,7 +107,8 @@ export class ControlsPanel extends Component {
                                             minimal: true,
                                             onClick: this.onTagInputClear
                                         }),
-                                        separator: ' '
+                                        separator: ' ',
+                                        addOnBlur: true
                                     })
                                 }),
                                 row({
@@ -289,7 +291,7 @@ export class ControlsPanel extends Component {
     };
 
     onTagInputClear = () => {
-        this.localModel.clearTagInput()
+        this.localModel.clearTagInput();
     }
 
     queryCompaniesAsync(query) {
