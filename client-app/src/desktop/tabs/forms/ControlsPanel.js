@@ -96,8 +96,22 @@ export class ControlsPanel extends Component {
                                     })
                                 }),
                                 row({
-                                    label: 'JSONInput',
+                                    label: 'Tag Input',
                                     field: 'text5',
+                                    item: tagInput({
+                                        placeholder: 'Enter tags...',
+                                        commitOnChange: true,
+                                        rightElement: button({
+                                            icon: Icon.x(),
+                                            minimal: true,
+                                            onClick: this.onTagInputClear
+                                        }),
+                                        separator: ' '
+                                    })
+                                }),
+                                row({
+                                    label: 'JSONInput',
+                                    field: 'text6',
                                     item: jsonInput({
                                         width: 300,
                                         height: 100
@@ -195,25 +209,11 @@ export class ControlsPanel extends Component {
                                 }),
                                 row({
                                     label: 'MultiSelect',
-                                    field: 'option5',
+                                    field: 'option4',
                                     item: multiSelect({
                                         options: usStates,
                                         className: 'toolbox-multiselect',
                                         placeholder: 'Select state(s)...'
-                                    })
-                                }),
-                                row({
-                                    label: 'Tag Input',
-                                    field: 'option4',
-                                    item: tagInput({
-                                        placeholder: 'Enter tags...',
-                                        commitOnChange: true,
-                                        rightElement: button({
-                                            icon: Icon.x(),
-                                            minimal: true,
-                                            onClick: this.onTagInputClear
-                                        }),
-                                    addOnBlur: true
                                     })
                                 }),
                                 row({
@@ -249,7 +249,7 @@ export class ControlsPanel extends Component {
                                 }),
                                 row({
                                     label: 'RadioInput',
-                                    field: 'option6',
+                                    field: 'option5',
                                     info: 'disabled option',
                                     item: radioInput({
                                         alignIndicator: 'right',

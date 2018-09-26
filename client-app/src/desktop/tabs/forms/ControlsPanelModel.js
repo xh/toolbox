@@ -14,6 +14,7 @@ export class ControlsPanelModel {
     @field() text3;
     @field() text4;
     @field() text5;
+    @field() text6;
 
     // NumberInput / Single-val Slider
     @field() number1;
@@ -25,12 +26,12 @@ export class ControlsPanelModel {
     @field() range1;
 
     // Dropdowns
-    @field() option1
-    @field() option2
-    @field() option3
-    @field() option4
-    @field() option5
-    @field() option6
+    @field() option1;
+    @field() option2;
+    @field() option3;
+    @field() option4;
+    @field() option5;
+    @field() option6;
 
     // Others
     @field() date1;
@@ -40,7 +41,8 @@ export class ControlsPanelModel {
 
     @action
     clearTagInput () {
-        this.option4 = null;
+        console.log(this.option4);
+        this.text5 = null;
     }
 
 
