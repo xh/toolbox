@@ -10,7 +10,6 @@ import {wait} from '@xh/hoist/promise';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/form';
@@ -20,7 +19,7 @@ import {emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {mask} from '@xh/hoist/desktop/cmp/mask';
+
 
 import {sampleTreeData} from './SampleTreeData';
 
@@ -39,14 +38,6 @@ class SampleTreeGrid extends Component {
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
-        contextMenuFn: () => {
-            return new StoreContextMenu({
-                items: [
-                    ...GridModel.defaultContextMenuTokens
-                ],
-                gridModel: this.model
-            });
-        },
         columns: [
             {
                 headerName: 'Name',
@@ -86,7 +77,7 @@ class SampleTreeGrid extends Component {
             className: this.getClassName(),
             ...this.getLayoutProps(),
             item: grid({model}),
-            mask: mask({spinner: true, model: this.loadModel}),
+            mask: this.loadModel,
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
