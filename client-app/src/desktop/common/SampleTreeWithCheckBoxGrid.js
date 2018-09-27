@@ -65,11 +65,12 @@ class SampleTreeWithCheckBoxGrid extends Component {
                                 }
 
                                 render() {
+                                    const rec = this.props.data;
                                     return checkBox({
-                                        label: this.props.data.name,
-                                        checked: this.props.data.enabled,
-                                        indeterminate: this.props.data.indeterminate,
-                                        onChange: () => me.toggleNode(this.props.data)
+                                        label: rec.name,
+                                        checked: rec.enabled,
+                                        indeterminate: rec.indeterminate,
+                                        onChange: () => me.toggleNode(rec)
                                     });
 
                                 }
