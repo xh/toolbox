@@ -20,6 +20,7 @@ class BootStrap {
         def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
         BaseService.parallelInit(services)
         ensureAdminUserCreated()
+        ensureDemoUserCreated()
         ensureNoRoleUserCreated()
         ensureInactiveUserCreated()
     }
@@ -35,24 +36,23 @@ class BootStrap {
         def adminUsername = getInstanceConfig('adminUsername')
         def adminPassword = getInstanceConfig('adminPassword')
 
-        if (adminUsername && adminPassword) {
-            def adminUser = User.findByEmail(adminUsername)
-            if (!adminUser) {
-                new User([
-                        email: adminUsername,
-                        firstName: 'Toolbox',
-                        lastName: 'Admin',
-                        password: adminPassword,
-                        isAdmin: true
-                ]).save()
-            }
-            createDemoUser(isAdmin: false)
-        } else {
-            createDemoUser(isAdmin: true)
+        if (!adminUsername || !adminPassword) {
+            log.warn("Test admin creds not available. To provide admin access specify credentials in the instanceConfigFile")
+            return
+        }
+        def adminUser = User.findByEmail(adminUsername)
+        if (!adminUser) {
+            new User([
+                    email: adminUsername,
+                    firstName: 'Toolbox',
+                    lastName: 'Admin',
+                    password: adminPassword,
+                    isAdmin: true
+            ]).save()
         }
     }
 
-    private void createDemoUser(Map opts) {
+    private void ensureDemoUserCreated() {
         def demoUser = User.findByEmail('toolbox@xh.io')
         if (!demoUser) {
             new User([
@@ -60,7 +60,7 @@ class BootStrap {
                     firstName: 'Toolbox',
                     lastName: 'Demo',
                     password: 'toolbox',
-                    isAdmin: opts.isAdmin
+                    isAdmin: false
             ]).save()
         }
     }
