@@ -19,10 +19,7 @@ class BootStrap {
         ensureMonitorsCreated()
         def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
         BaseService.parallelInit(services)
-        ensureAdminUserCreated()
-        ensureDemoUserCreated()
-        ensureNoRoleUserCreated()
-        ensureInactiveUserCreated()
+        ensureUsersCreated()
     }
 
     def destroy = {}
@@ -31,83 +28,74 @@ class BootStrap {
     //------------------------
     // Implementation
     //------------------------
-    private void ensureAdminUserCreated() {
+    private void ensureUsersCreated() {
+        String adminUsername = getInstanceConfig('adminUsername')
+        String adminPassword = getInstanceConfig('adminPassword')
 
-        def adminUsername = getInstanceConfig('adminUsername')
-        def adminPassword = getInstanceConfig('adminPassword')
+        if (adminUsername && adminPassword) {
+            createUserIfNeeded(
+                email: adminUsername,
+                firstName: 'Toolbox',
+                lastName: 'Admin',
+                password: adminPassword
+            )
+        } else {
+            log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
+        }
 
-        if (!adminUsername || !adminPassword) {
-            log.warn("Test admin creds not available. To provide admin access specify credentials in the instanceConfigFile")
-            return
-        }
-        def adminUser = User.findByEmail(adminUsername)
-        if (!adminUser) {
-            new User([
-                    email: adminUsername,
-                    firstName: 'Toolbox',
-                    lastName: 'Admin',
-                    password: adminPassword,
-                    isAdmin: true
-            ]).save()
-        }
+        createUserIfNeeded(
+            email: 'toolbox@xh.io',
+            firstName: 'Toolbox',
+            lastName: 'Demo',
+            password: 'toolbox'
+        )
+
+        createUserIfNeeded(
+            email: 'norole@xh.io',
+            firstName: 'No',
+            lastName: 'Role',
+            password: 'password'
+        )
+
+        createUserIfNeeded(
+            email: 'inactive@xh.io',
+            firstName: 'Not',
+            lastName: 'Active',
+            password: 'password',
+            enabled: false
+        )
     }
 
-    private void ensureDemoUserCreated() {
-        def demoUser = User.findByEmail('toolbox@xh.io')
-        if (!demoUser) {
-            new User([
-                    email: 'toolbox@xh.io',
-                    firstName: 'Toolbox',
-                    lastName: 'Demo',
-                    password: 'toolbox',
-                    isAdmin: false
-            ]).save()
-        }
-    }
-
-    private void ensureNoRoleUserCreated() {
-        def user = User.findByEmail('norole@xh.io')
-        if (!user) {
-            new User([
-                    email: 'norole@xh.io',
-                    firstName: 'No',
-                    lastName: 'Role',
-                    password: 'norole',
-                    isAdmin: false
-            ]).save()
-        }
-    }
-
-
-    private void ensureInactiveUserCreated() {
-        def user = User.findByEmail('inactive@xh.io')
-        if (!user) {
-            new User([
-                    email: 'inactive@xh.io',
-                    firstName: 'Not',
-                    lastName: 'Active',
-                    password: 'password',
-                    isAdmin: false,
-                    enabled: false
-            ]).save()
-        }
+    private void createUserIfNeeded(Map data) {
+        def user = User.findByEmail(data.email)
+        if (!user) new User(data).save()
     }
 
     private void ensureRequiredConfigsCreated() {
+        def adminUsername = getInstanceConfig('adminUsername')
+
         Utils.configService.ensureRequiredConfigsCreated([
+                roles: [
+                    valueType: 'json',
+                    defaultValue: [
+                        APP_READER: ['toolbox@xh.io', 'inactive@xh.io', adminUsername].findAll{it},
+                        HOIST_ADMIN: [adminUsername].findAll{it}
+                    ],
+                    groupName: 'Permissions'
+                ],
                 newsApiKey : [
-                        valueType   : 'string',
+                        valueType: 'string',
                         defaultValue: 'ab052127f3e349d38db094eade1d96d8',
-                        groupName   : 'News'
+                        groupName: 'News'
                 ],
                 newsSources: [
-                        valueType   : 'json',
+                        valueType: 'json',
                         defaultValue: [
                                 "cnbc"     : "CNBC",
                                 "fortune"  : "Fortune",
                                 "reuters"  : "Reuters"
                         ],
-                        groupName   : 'News'
+                        groupName: 'News'
                 ],
                 newsRefreshMins : [
                         valueType: 'int',
@@ -118,29 +106,34 @@ class BootStrap {
     }
 
     private void ensureMonitorsCreated() {
-        new Monitor(
+        createMonitorIfNeeded(
                 code: 'newsStories',
                 name: 'Cached Stories',
                 metricType: 'Floor',
                 failThreshold: 0,
                 metricUnit: 'stories',
                 active: true
-        ).save()
-        new Monitor(
+        )
+        createMonitorIfNeeded(
                 code: 'lastUpdate',
                 name: 'Most Recent Story',
                 metricType: 'Ceil',
                 metricUnit: 'hours since last story',
                 warnThreshold: 12,
                 active: true
-        ).save()
-        new Monitor(
+        )
+        createMonitorIfNeeded(
                 code: 'sourcesLoaded',
                 name: 'All Sources Loaded',
                 metricType: 'None',
                 metricUnit: 'sources',
                 active: true
-        ).save()
+        )
+    }
+
+    private void createMonitorIfNeeded(Map data) {
+        def monitor = Monitor.findByCode(data.code)
+        if (!monitor) new Monitor(data).save()
     }
 
     private void logStartupMsg() {
