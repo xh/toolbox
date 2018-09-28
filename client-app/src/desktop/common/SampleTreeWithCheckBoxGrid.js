@@ -150,11 +150,14 @@ class SampleTreeWithCheckBoxGrid extends Component {
     }
 
     toggleNode(rec) {
-        rec.indeterminate = false;
-        rec.enabled = !rec.enabled;
-        this.setChildren(rec, rec.enabled);
-        this.updateParents(rec);
-        this.model.store.noteDataUpdated();
+        const store = this.model.store,
+            realRec = store.getById(rec.id);
+
+        realRec.indeterminate = false;
+        realRec.enabled = !realRec.enabled;
+        this.setChildren(realRec, realRec.enabled);
+        this.updateParents(realRec);
+        store.noteDataUpdated();
     }
 
     setChildren(rec, enabled) {
