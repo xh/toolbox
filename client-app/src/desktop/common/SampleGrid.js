@@ -17,12 +17,11 @@ import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput, select} from '@xh/hoist/desktop/cmp/form';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
-import {LocalStore} from '@xh/hoist/data';
+import {LocalStore, RecordAction} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {observable, action} from '@xh/hoist/mobx';
 import {actionCol} from '@xh/hoist/desktop/columns';
-import {RecordAction} from '@xh/hoist/cmp/record';
 
 import {App} from '../App';
 
@@ -35,9 +34,16 @@ class SampleGrid extends Component {
     viewDetailsAction = new RecordAction({
         text: 'View Details',
         icon: Icon.search(),
-        tooltip: 'View Company Details',
-        recordsRequired: 1,
-        actionFn: (item, rec) => this.showRecToast(rec)
+        tooltip: 'View details on the selected company',
+        actionFn: (action, rec) => this.showInfoToast(rec)
+    });
+
+    terminateAction = new RecordAction({
+        text: 'Terminate',
+        icon: Icon.skull(),
+        intent: 'danger',
+        tooltip: 'Terminate this company.',
+        actionFn: (action, rec) => this.showTerminateToast(rec)
     });
 
     localModel = new GridModel({
@@ -52,6 +58,7 @@ class SampleGrid extends Component {
             return new StoreContextMenu({
                 items: [
                     this.viewDetailsAction,
+                    this.terminateAction,
                     '-',
                     ...GridModel.defaultContextMenuTokens
                 ],
@@ -66,15 +73,11 @@ class SampleGrid extends Component {
             },
             {
                 ...actionCol,
+                width: 74,
                 actions: [
-                    this.viewDetailsAction
+                    this.viewDetailsAction,
+                    this.terminateAction
                 ]
-            },
-            {
-                field: 'active',
-                ...boolCheckCol,
-                headerName: '',
-                chooserName: 'Active Status'
             },
             {
                 field: 'company',
@@ -84,7 +87,7 @@ class SampleGrid extends Component {
             {
                 field: 'city',
                 width: 150,
-                tooltip: (value, data, meta) => `${data.company} is located in ${data.city}`
+                tooltip: (val, rec) => `${rec.company} is located in ${val}`
             },
             {
                 headerName: 'Trade Volume',
@@ -108,6 +111,13 @@ class SampleGrid extends Component {
                     colorSpec: true,
                     tooltip: true
                 })
+            },
+            {
+                field: 'active',
+                ...boolCheckCol,
+                headerName: '',
+                chooserName: 'Active Status',
+                tooltip: (active, rec) => active ? `${rec.company} is active` : ''
             },
             {...emptyFlexCol}
         ]
@@ -174,12 +184,19 @@ class SampleGrid extends Component {
             .linkTo(this.loadModel);
     }
 
-    showRecToast(rec) {
-        XH.alert({
-            title: rec.company,
-            message: `You asked to see details for ${rec.company}. They are based in ${rec.city}.`,
-            confirmText: 'Close',
-            confirmIntent: 'primary'
+    showInfoToast(rec) {
+        XH.toast({
+            message: `You asked for ${rec.company} details. They are based in ${rec.city}.`,
+            icon: Icon.info(),
+            intent: 'primary'
+        });
+    }
+
+    showTerminateToast(rec) {
+        XH.toast({
+            message: `You asked to terminate ${rec.company}. Sorry, ${rec.company}!`,
+            icon: Icon.skull(),
+            intent: 'danger'
         });
     }
 
