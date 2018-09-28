@@ -2,7 +2,6 @@ package io.xh.toolbox.user
 
 import io.xh.hoist.user.HoistUser
 import io.xh.hoist.util.Utils
-import org.grails.web.json.JSONArray
 import org.jasypt.util.password.BasicPasswordEncryptor
 
 
@@ -15,8 +14,6 @@ class User implements HoistUser {
     String email
     String password
     boolean enabled = true
-    boolean isAdmin = false
-    // need contact prop?
 
     static constraints = {
         email email: true, blank: false, unique: true, validator: {
@@ -43,8 +40,13 @@ class User implements HoistUser {
     String getDisplayName() {firstName + ' ' + lastName}
 
     Set<String> getRoles()  {
-        Set ret = isAdmin ? ['HOIST_ADMIN', 'APP_READER'] : []
-        if (hasKey('roleReader')) ret << 'APP_READER'
+        def configRoles = Utils.configService.getJSONObject('roles'),
+            ret = []
+
+        configRoles.each{role, roleUsers ->
+            if (roleUsers.contains(username)) ret << role
+        }
+
         return ret
     }
 
@@ -52,15 +54,6 @@ class User implements HoistUser {
     //---------------------
     // Implementation
     //---------------------
-    private hasKey(String key) {
-        try {
-            def config = Utils.configService.getJSONArray(key, new JSONArray())
-            return config.contains(username)
-        } catch(ignored) {
-            return false
-        }
-    }
-
     def beforeInsert() {
         encodePassword()
     }
@@ -80,7 +73,6 @@ class User implements HoistUser {
                 id: id,
                 firstName: firstName,
                 lastName: lastName,
-                isAdmin: isAdmin,
                 password: '**********'
         ]
     }
