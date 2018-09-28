@@ -9,7 +9,7 @@
     "lint": "eslint lint .",
     "refreshHoist": "rimraf -rf node_modules/@xh/hoist && yarn upgrade @xh/hoist && yarn install --check-files",
     "start": "webpack-dev-server",
-    "startOnDevice": "webpack-dev-server --env.devHost=$(hostname)",
+    "startOnDevice": "webpack-dev-server --env.inlineHoist --env.devHost=$(hostname)",
     "startAndAnalyze": "webpack-dev-server --env.analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && webpack-dev-server --env.inlineHoist"
   },
