@@ -74,6 +74,7 @@ class SampleGrid extends Component {
             {
                 ...actionCol,
                 width: calcActionColWidth(2),
+                actionsShowOnHoverOnly: true,
                 actions: [
                     this.viewDetailsAction,
                     this.terminateAction
