@@ -8,7 +8,9 @@ export  const sampleTreeData = [
                 id: '1a',
                 children: [
                     {id: '1a1', name: 'goog', pnl: 15000},
-                    {id: '1a2', name: 'msft', pnl: -5000}
+                    {id: '1a2', name: 'goog1', pnl: 15000},
+                    {id: '1a3', name: 'goog2', pnl: 15000},
+                    {id: '1a4', name: 'msft', pnl: -5000}
                 ]
             },
             {
