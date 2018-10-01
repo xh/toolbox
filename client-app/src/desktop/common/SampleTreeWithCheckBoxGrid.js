@@ -53,7 +53,7 @@ class SampleTreeWithCheckBoxGrid extends Component {
                 headerName: 'Name',
                 width: 200,
                 field: 'name',
-                ...this.createCustomTreeColumn(),
+                ...this.createCustomTreeColumn()
             },
             {
                 headerName: 'P&L',
