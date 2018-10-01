@@ -50,6 +50,7 @@ class SampleTreeGrid extends Component {
                 field: 'pnl',
                 align: 'right',
                 width: 130,
+                absSort: true,
                 agOptions: {
                     aggFunc: 'sum'
                 },

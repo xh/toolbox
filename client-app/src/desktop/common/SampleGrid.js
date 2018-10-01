@@ -90,6 +90,7 @@ class SampleGrid extends Component {
                 field: 'profit_loss',
                 align: 'right',
                 width: 130,
+                absSort: true,
                 renderer: numberRenderer({
                     precision: 0,
                     ledger: true,
