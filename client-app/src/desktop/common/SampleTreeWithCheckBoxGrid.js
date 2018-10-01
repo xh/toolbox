@@ -53,33 +53,7 @@ class SampleTreeWithCheckBoxGrid extends Component {
                 headerName: 'Name',
                 width: 200,
                 field: 'name',
-                isTreeColumn: true,
-                agOptions: {
-                    cellRendererParams: {
-                        suppressCount: true,
-                        innerRendererFramework: ((me) => {
-                            return class extends Component {
-                                constructor(props) {
-                                    super(props);
-                                    props.reactContainer.style = 'display: inherit';
-                                }
-
-                                render() {
-                                    const rec = this.props.data;
-                                    return checkBox({
-                                        label: rec.name,
-                                        checked: rec.enabled,
-                                        indeterminate: rec.indeterminate,
-                                        onChange: () => me.toggleNode(rec)
-                                    });
-
-                                }
-
-                                refresh() {return false}
-                            };
-                        })(this)
-                    }
-                }
+                ...this.createCustomTreeColumn(),
             },
             {
                 headerName: 'P&L',
@@ -149,8 +123,40 @@ class SampleTreeWithCheckBoxGrid extends Component {
             .linkTo(this.loadModel);
     }
 
+
+    createCustomTreeColumn() {
+        const me = this;
+        return {
+            isTreeColumn: true,
+            agOptions: {
+                cellRendererParams: {
+                    suppressCount: true,
+                    innerRendererFramework:
+                        class extends Component {
+                            constructor(props) {
+                                super(props);
+                                props.reactContainer.style = 'display: inherit';
+                            }
+
+                            render() {
+                                const rec = this.props.data;
+                                return checkBox({
+                                    label: rec.name,
+                                    checked: rec.enabled,
+                                    indeterminate: rec.indeterminate,
+                                    onChange: () => me.toggleNode(rec)
+                                });
+                            }
+
+                            refresh() {return false}
+                        }
+                }
+            }
+        };
+    }
+
     toggleNode(rec) {
-        const store = this.model.store,
+        const {store} = this.model,
             realRec = store.getById(rec.id);
 
         realRec.indeterminate = false;
@@ -178,10 +184,10 @@ class SampleTreeWithCheckBoxGrid extends Component {
             allDisabled = isAllDisabled(parent),
             indeterminate = !allEnabled && !allDisabled;
 
-        rec.parent.indeterminate = indeterminate;
-        rec.parent.enabled = allEnabled;
+        parent.indeterminate = indeterminate;
+        parent.enabled = allEnabled;
 
-        this.updateParents(rec.parent);
+        this.updateParents(parent);
     }
 }
 export const sampleTreeWithCheckBoxGrid = elemFactory(SampleTreeWithCheckBoxGrid);

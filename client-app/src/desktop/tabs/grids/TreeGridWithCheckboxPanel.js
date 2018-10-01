@@ -18,11 +18,11 @@ export class TreeGridWithCheckboxPanel extends Component {
         return wrapper({
             description: [
                 <p>
-                    This example is a copy of the Tree sample, but adds a React checkbox component to every node via the treeColumn's "innerRendererFramework" property.
+                    This example is a copy of the Tree sample, but adds a checkbox component to every node via the treeColumn's "innerRendererFramework" property.
                 </p>
             ],
             item: panel({
-                title: 'Grids > Tree with Checkbox',
+                title: 'Grids > Tree w/CheckBox',
                 icon: Icon.grid(),
                 width: 700,
                 height: 400,

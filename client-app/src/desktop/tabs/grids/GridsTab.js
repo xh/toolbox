@@ -23,7 +23,7 @@ export class GridsTab extends Component {
         tabs: [
             {id: 'standard', content: StandardGridPanel},
             {id: 'tree', content: TreeGridPanel},
-            {id: 'treeWithCheckBox', content: TreeGridWithCheckboxPanel},
+            {id: 'treeWithCheckBox', title: 'Tree w/CheckBox', content: TreeGridWithCheckboxPanel},
             {id: 'groupedCols', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
             {id: 'rest', title: 'REST Editor', content: RestGridPanel},
             {id: 'dataview', title: 'DataView', content: DataViewPanel}
