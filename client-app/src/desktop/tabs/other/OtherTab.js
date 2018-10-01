@@ -12,6 +12,7 @@ import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {MaskPanel} from './MaskPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {JsxPanel} from './JsxPanel';
+import {ModalMessagesPanel} from './ModalMessagesPanel';
 
 @HoistComponent
 export class OtherTab extends Component {
@@ -22,7 +23,8 @@ export class OtherTab extends Component {
             {id: 'mask', title: 'Mask', content: MaskPanel},
             {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
             {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
-            {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel}
+            {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel},
+            {id: 'modals', title: 'Modal Messages', content: ModalMessagesPanel}
         ]
     });
     

@@ -122,7 +122,8 @@ class AppClass {
                             {name: 'mask', path: '/mask'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'timestamp', path: '/timestamp'},
-                            {name: 'jsx', path: '/jsx'}
+                            {name: 'jsx', path: '/jsx'},
+                            {name: 'modals', path: '/modals'}
                         ]
                     },
                     {

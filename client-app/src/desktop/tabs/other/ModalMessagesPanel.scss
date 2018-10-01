@@ -1,0 +1,36 @@
+.toolbox-modals-panel {
+  .xh-hbox {
+    justify-content: space-evenly;
+    .xh-form-field {
+      flex: 1;
+    }
+  }
+    .xh-form-field {
+      margin: 0;
+      padding: var(--xh-pad-px);
+      flex: none;
+
+      .bp3-label {
+        font-size: var(--xh-font-size-large-px);
+        margin-bottom: 2px;
+
+        .bp3-text-muted {
+          font-size: var(--xh-font-size-small-px);
+          font-family: var(--xh-font-family-mono);
+          background-color: var(--xh-bg-alt);
+          border: var(--xh-border-solid);
+          max-width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          float: right;
+          padding: 2px 4px;
+        }
+      }
+
+      .bp3-form-helper-text {
+        font-size: var(--xh-font-size-small-px);
+      }
+
+    }
+  }
