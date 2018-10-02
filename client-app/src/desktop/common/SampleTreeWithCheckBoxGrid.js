@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
-import {box, filler} from '@xh/hoist/cmp/layout';
+import {box, filler, fragment} from '@xh/hoist/cmp/layout';
 import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
@@ -140,12 +140,14 @@ class SampleTreeWithCheckBoxGrid extends Component {
 
                             render() {
                                 const rec = this.props.data;
-                                return checkBox({
-                                    label: rec.name,
-                                    checked: rec.enabled,
-                                    indeterminate: rec.indeterminate,
-                                    onChange: () => me.toggleNode(rec)
-                                });
+                                return fragment(
+                                    checkBox({
+                                        checked: rec.enabled,
+                                        indeterminate: rec.indeterminate,
+                                        onChange: () => me.toggleNode(rec)
+                                    }),
+                                    rec.name
+                                );
                             }
 
                             refresh() {return false}
