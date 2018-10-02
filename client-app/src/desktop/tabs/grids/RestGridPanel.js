@@ -8,9 +8,10 @@ import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {restGrid, RestGridModel, RestStore} from '@xh/hoist/desktop/cmp/rest';
+import {restGrid, RestGridModel, RestStore, restGridEditAction, restGridDeleteAction} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/columns';
 import {wrapper} from '../../common/Wrapper';
+import {actionCol} from '@xh/hoist/desktop/columns';
 
 @HoistComponent
 export class RestGridPanel extends Component {
@@ -64,6 +65,14 @@ export class RestGridPanel extends Component {
         filterFields: ['name', 'type', 'note'],
         sortBy: 'name',
         columns: [
+            {
+                ...actionCol,
+                width: 78,
+                actions: [
+                    restGridEditAction,
+                    restGridDeleteAction
+                ]
+            },
             {
                 field: 'name',
                 width: 250
