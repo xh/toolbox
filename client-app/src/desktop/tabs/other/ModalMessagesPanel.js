@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, XH} from '@xh/hoist/core';
 import {vframe, hbox, vspacer} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
@@ -51,7 +51,7 @@ export class ModalMessagesPanel extends Component {
                         icon: Icon.refresh(),
                         minimal: true,
                         large: true,
-                        onClick: () => model.clear()
+                        onClick: () => XH.reloadApp()
                     })
                 ],
                 item: vframe({
@@ -124,7 +124,10 @@ export class ModalMessagesPanel extends Component {
                                 }),
                                 button({
                                     text: 'Copy code to clipboard',
-                                    onClick: () => navigator.clipboard.writeText(fnString)
+                                    onClick: () => {
+                                        navigator.clipboard.writeText(fnString);
+                                        XH.toast({message: 'Copied code to clipboard'});
+                                    }
                                 })
                             ]
                         })

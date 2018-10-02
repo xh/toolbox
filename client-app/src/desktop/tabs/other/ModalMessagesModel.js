@@ -14,7 +14,7 @@ export class ModalMessagesModel {
 
     DEFAULT_MESSAGES = {
         'message': 'This is an XH Message',
-        'alert': 'Heads Up! This is an XH Alert!',
+        'alert': 'Heads Up! This is an XH Alert.',
         'confirm': 'Are you sure you want to keep learning about XH modals?'
     };
 
