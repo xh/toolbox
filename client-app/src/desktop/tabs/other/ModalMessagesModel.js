@@ -6,7 +6,7 @@
  */
 
 import {XH, HoistModel} from '@xh/hoist/core';
-import {action, observable, bindable} from '@xh/hoist/mobx';
+import {action, computed, bindable} from '@xh/hoist/mobx';
 
 
 @HoistModel
@@ -26,6 +26,7 @@ export class ModalMessagesModel {
         {value: 'danger', label: 'Danger'}
     ];
 
+
     @bindable modalType = 'message';
     @bindable message = 'This is a sample XH message.';
     @bindable title;
@@ -37,6 +38,35 @@ export class ModalMessagesModel {
 
     @action changeMessage() {
         this.message = this.DEFAULT_MESSAGES[this.modalType]
+    }
+
+    @computed
+    get fnString() {
+        const opts = {
+            message: this.message,
+            title: this.title,
+            icon: this.icon,
+            confirmText: this.confirmText,
+            cancelText: this.cancelText,
+            confirmIntent: this.confirmIntent,
+            cancelIntent: this.cancelIntent
+        };
+        return `XH.${this.modalType}(${JSON.stringify(opts)})`;
+    }
+
+    @computed
+    get modalInfo() {
+        switch(this.modalType) {
+            case 'message':
+                return "Show a modal message dialog";
+            case 'alert':
+                return 'Show a modal dialog with default \'OK\' button';
+            case 'confirm':
+                return 'Show a modal dialog with default \'OK\'/\'Cancel\' buttons';
+            default:
+                console.log("BEEE");
+                return ''
+        }
     }
 
 
@@ -58,9 +88,10 @@ export class ModalMessagesModel {
             cancelIntent: this.cancelIntent
         };
         const fnString = `XH.${this.modalType}(${JSON.stringify(opts)})`;
-        console.log(fnString);
         eval(fnString)
     }
+
+
 
     //------------------------
     // Implementation

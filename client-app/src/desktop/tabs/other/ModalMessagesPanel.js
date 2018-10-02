@@ -9,8 +9,8 @@ import {HoistComponent} from '@xh/hoist/core';
 import {vframe, hbox, vspacer} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
-import {observable} from 'mobx';
 import {startCase} from 'lodash'
+import {Icon} from '@xh/hoist/icon';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {ModalMessagesModel} from './ModalMessagesModel';
 import {
@@ -38,7 +38,7 @@ export class ModalMessagesPanel extends Component {
     localModel = new ModalMessagesModel();
 
     render() {
-        const {modalType, confirmText, cancelText, INTENT_OPTIONS} = this.localModel,
+        const {modalType, confirmText, cancelText, fnString, modalInfo, INTENT_OPTIONS} = this.localModel,
             {localModel: model, textField} = this;
         return wrapper({
             item: panel({
@@ -46,6 +46,14 @@ export class ModalMessagesPanel extends Component {
                 height: 700,
                 width: 700,
                 className: 'toolbox-modals-panel',
+                headerItems: [
+                    button({
+                        icon: Icon.refresh(),
+                        minimal: true,
+                        large: true,
+                        onClick: () => model.clear()
+                    })
+                ],
                 item: vframe({
                     items: [
                         formField({
@@ -60,6 +68,7 @@ export class ModalMessagesPanel extends Component {
                             }),
                             label: 'Modal Type',
                             field: 'modalType',
+                            labelInfo: modalInfo,
                             model
                         }),
                         textField({
@@ -90,7 +99,7 @@ export class ModalMessagesPanel extends Component {
                                     }),
                                     label: 'Confirm Intent',
                                     field: 'confirmIntent',
-                                    labelInfo: 'Blueprint Intent for confirm button',
+                                    labelInfo: 'Blueprint button intent',
                                     disabled: !confirmText,
                                     model
                                 }),
@@ -100,7 +109,7 @@ export class ModalMessagesPanel extends Component {
                                     }),
                                     label: 'Cancel Intent',
                                     field: 'cancelIntent',
-                                    labelInfo: 'Blueprint Intent for cancel button',
+                                    labelInfo: 'Blueprint button intent',
                                     disabled: !cancelText,
                                     model
                                 })
@@ -114,7 +123,8 @@ export class ModalMessagesPanel extends Component {
                                     onClick: () => model.doAction()
                                 }),
                                 button({
-                                    text: 'Copy code to clipboard'
+                                    text: 'Copy code to clipboard',
+                                    onClick: () => navigator.clipboard.writeText(fnString)
                                 })
                             ]
                         })
@@ -127,7 +137,6 @@ export class ModalMessagesPanel extends Component {
     textField = ({field, info}) => {
         const {localModel: model} = this;
         const label = startCase(field);
-        console.log(info);
         return formField({
             item: textInput(),
             label: label,
