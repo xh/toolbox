@@ -123,7 +123,8 @@ class AppClass {
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'timestamp', path: '/timestamp'},
                             {name: 'jsx', path: '/jsx'},
-                            {name: 'modals', path: '/modals'}
+                            {name: 'modals', path: '/modals'},
+                            {name: 'toast', path: '/toast'}
                         ]
                     },
                     {

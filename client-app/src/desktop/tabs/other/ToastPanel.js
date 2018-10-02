@@ -12,26 +12,34 @@ import {wrapper} from '../../common';
 import {startCase} from 'lodash'
 import {Icon} from '@xh/hoist/icon';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {ModalMessagesModel} from './ModalMessagesModel';
+import {ToastModel} from './ToastModel';
 import {
     formField,
+    numberInput,
     textInput,
-    radioInput,
     select
 } from '@xh/hoist/desktop/cmp/form';
 import './ModalMessagesPanel.scss';
 
+/*
+bject} config - options for toast instance.
+* @param {string} config.message - the message to show in the toast.
+* @param {element} [config.icon] - icon to be displayed
+* @param {number} [config.timeout] - time in milliseconds to display the toast.
+* @param {string} [config.intent] - The Blueprint intent (desktop only)
+* @param {Object} [config.position] - Position in
+  */
 @HoistComponent
-export class ModalMessagesPanel extends Component {
+export class ToastPanel extends Component {
 
-    localModel = new ModalMessagesModel();
+    localModel = new ToastModel();
 
     render() {
-        const {modalType, confirmText, cancelText, fnString, modalInfo, INTENT_OPTIONS} = this.localModel,
-            {localModel: model, textField} = this;
+        const {modalType, fnString, INTENT_OPTIONS} = this.localModel,
+            {localModel: model, numberField} = this;
         return wrapper({
             item: panel({
-                title: `XH.${modalType}()`,
+                title: `XH.toast`,
                 height: 700,
                 width: 700,
                 className: 'toolbox-modals-panel',
@@ -46,37 +54,21 @@ export class ModalMessagesPanel extends Component {
                 item: vframe({
                     items: [
                         formField({
-                            item: radioInput({
-                                alignIndicator: 'right',
-                                inline: true,
-                                options: [
-                                    {value: 'message', label: 'Message'},
-                                    {value: 'alert', label: 'Alert'},
-                                    {value: 'confirm', label: 'Confirm'}
-                                ]
-                            }),
-                            label: 'Modal Type',
-                            field: 'modalType',
-                            labelInfo: modalInfo,
-                            model
-                        }),
-                        textField({
-                            field: 'title',
-                            info: 'Title of the message box'
-                        }),
-                        textField({
+                            item: textInput(),
+                            label: 'Message',
                             field: 'message',
-                            info: 'Message text to be displayed'
+                            labelInfo: 'Message text to be displayed',
+                            model
                         }),
                         hbox({
                             items: [
-                                textField({
-                                    field: 'confirmText',
-                                    info: 'Text for confirm button'
+                                numberField({
+                                    field: 'timeout',
+                                    info: 'Display time (ms)'
                                 }),
-                                textField({
-                                    field: 'cancelText',
-                                    info: 'Text for cancel button'
+                                numberField({
+                                    field: 'position',
+                                    info: 'Blueprint position'
                                 })
                             ]
                         }),
@@ -86,20 +78,9 @@ export class ModalMessagesPanel extends Component {
                                     item: select({
                                         options: INTENT_OPTIONS
                                     }),
-                                    label: 'Confirm Intent',
-                                    field: 'confirmIntent',
+                                    label: 'Intent',
+                                    field: 'intent',
                                     labelInfo: 'Blueprint button intent',
-                                    disabled: !confirmText,
-                                    model
-                                }),
-                                formField({
-                                    item: select({
-                                        options: INTENT_OPTIONS
-                                    }),
-                                    label: 'Cancel Intent',
-                                    field: 'cancelIntent',
-                                    labelInfo: 'Blueprint button intent',
-                                    disabled: !cancelText,
                                     model
                                 })
                             ]
@@ -126,11 +107,11 @@ export class ModalMessagesPanel extends Component {
         })
     }
 
-    textField = ({field, info}) => {
+    numberField = ({field, info}) => {
         const {localModel: model} = this;
         const label = startCase(field);
         return formField({
-            item: textInput(),
+            item: numberInput(),
             label: label,
             field: field,
             labelInfo: info,

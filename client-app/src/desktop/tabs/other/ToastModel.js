@@ -10,13 +10,8 @@ import {action, computed, bindable} from '@xh/hoist/mobx';
 
 
 @HoistModel
-export class ModalMessagesModel {
+export class ToastModel {
 
-    DEFAULT_MESSAGES = {
-        'message': 'This is an XH Message',
-        'alert': 'Heads Up! This is an XH Alert.',
-        'confirm': 'Are you sure you want to keep learning about XH modals?'
-    };
 
     INTENT_OPTIONS = [
         {value: null, label: 'None'},
@@ -26,32 +21,23 @@ export class ModalMessagesModel {
         {value: 'danger', label: 'Danger'}
     ];
 
-
-    @bindable modalType = 'message';
-    @bindable message = 'This is a sample XH message.';
-    @bindable title;
+    @bindable message = 'This is an XH toast.';
     @bindable icon;
-    @bindable confirmText;
-    @bindable cancelText;
-    @bindable confirmIntent;
-    @bindable cancelIntent;
+    @bindable timeout;
+    @bindable intent;
+    @bindable position;
 
-    @action changeMessage() {
-        this.message = this.DEFAULT_MESSAGES[this.modalType]
-    }
 
     @computed
     get fnString() {
         const opts = {
             message: this.message,
-            title: this.title,
+            timeout: this.timeout,
             icon: this.icon,
-            confirmText: this.confirmText,
-            cancelText: this.cancelText,
-            confirmIntent: this.confirmIntent,
-            cancelIntent: this.cancelIntent
+            intent: this.intent,
+            position: this.position
         };
-        return `XH.${this.modalType}(${JSON.stringify(opts)})`;
+        return `XH.toast(${JSON.stringify(opts)})`;
     }
 
     @computed
@@ -76,4 +62,26 @@ export class ModalMessagesModel {
             run: () => this.changeMessage()
         });
     }
+
+    doAction() {
+        const opts = {
+            message: this.message,
+            title: this.title,
+            icon: this.icon,
+            confirmText: this.confirmText,
+            cancelText: this.cancelText,
+            confirmIntent: this.confirmIntent,
+            cancelIntent: this.cancelIntent
+        };
+        const fnString = `XH.${this.modalType}(${JSON.stringify(opts)})`;
+        eval(fnString)
+    }
+
+
+
+    //------------------------
+    // Implementation
+    //------------------------
+
+
 }
