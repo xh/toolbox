@@ -124,7 +124,8 @@ class AppClass {
                             {name: 'timestamp', path: '/timestamp'},
                             {name: 'jsx', path: '/jsx'},
                             {name: 'modals', path: '/modals'},
-                            {name: 'toast', path: '/toast'}
+                            {name: 'toast', path: '/toast'},
+                            {name: 'misc', path: '/misc'}
                         ]
                     },
                     {

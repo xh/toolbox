@@ -64,7 +64,6 @@ export class ModalMessagesModel {
             case 'confirm':
                 return 'Show a modal dialog with default \'OK\'/\'Cancel\' buttons';
             default:
-                console.log("BEEE");
                 return ''
         }
     }
