@@ -8,7 +8,7 @@ import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {restGrid, RestGridModel, RestStore, restGridEditAction, restGridDeleteAction} from '@xh/hoist/desktop/cmp/rest';
+import {restGrid, RestGridModel, RestStore, restGridAddAction, restGridEditAction, restGridViewAction, restGridDeleteAction} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/columns';
 import {wrapper} from '../../common/Wrapper';
 import {actionCol} from '@xh/hoist/desktop/columns';
@@ -106,7 +106,12 @@ export class RestGridPanel extends Component {
             {field: 'lastUpdatedBy'}
         ],
         emptyText: 'No companies found - try adding one...',
-        actionColEnabled: true
+        contextMenuActions: [
+            restGridAddAction,
+            restGridEditAction,
+            restGridViewAction,
+            restGridDeleteAction
+        ]
     });
 
     constructor() {
