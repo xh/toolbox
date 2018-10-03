@@ -6,69 +6,78 @@
  */
 import React, {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
-import {vframe, hbox, vspacer, hframe, box} from '@xh/hoist/cmp/layout';
-import {panel, PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
+import {vspacer, hframe, box} from '@xh/hoist/cmp/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
-import {startCase} from 'lodash'
 import {Icon} from '@xh/hoist/icon';
+import {div, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar/index';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar/index';
 import {ToastModel} from './ToastModel';
 import {
     formField,
     numberInput,
     textInput,
     textArea,
+    label,
     select,
     jsonInput
 } from '@xh/hoist/desktop/cmp/form';
-import './ModalMessagesPanel.scss';
+import './ToastPanel.scss';
 
 @HoistComponent
 export class ToastPanel extends Component {
 
     localModel = new ToastModel();
 
-    rightSizingModel = new PanelSizingModel({
-        defaultSize: 125,
-        side: 'right'
-    });
-
     render() {
         const {position, fnString, INTENT_OPTIONS, SIDE, ALIGNMENT, POSITION_MODE} = this.localModel,
             {localModel: model} = this;
         return wrapper({
             item: panel({
-                title: `XH.toast`,
-                height: 700,
+                title: `Toast`,
+                height: 500,
                 width: '80%',
-                className: 'toolbox-modals-panel',
-                headerItems: [
-                    button({
-                        icon: Icon.refresh(),
-                        minimal: true,
-                        large: true,
-                        onClick: () => model.onResetClick()
-                    })
-                ],
+                className: 'toolbox-toast-panel',
                 item: hframe(
-                    vframe({
-                        items: [
+                    panel({
+                        tbar: toolbar(
                             button({
-                                text: 'Display modal',
+                                text: 'Run',
+                                icon: Icon.play(),
                                 onClick: () => eval(fnString)
                             }),
                             button({
-                                text: 'Copy code to clipboard',
+                                text: 'Copy',
+                                icon: Icon.copy(),
                                 onClick: () => {
                                     navigator.clipboard.writeText(fnString);
-                                    XH.toast({message: 'Copied code to clipboard'});
+                                    XH.toast({
+                                        "message":"Copied code to clipboard",
+                                        "intent":"success"});
                                 }
                             }),
+                            button({
+                                text: 'Reset',
+                                icon: Icon.refresh(),
+                                onClick: () => {
+                                    model.onResetClick();
+                                    XH.toast({
+                                        message: 'Reset Toast Params',
+                                        intent: 'success'
+                                    })
+                                }
+                            })
+                        ),
+                        items: [
                             box({
                                 item: jsonInput({
                                     value: fnString,
-                                    ref: React.createRef(model.taCmp)
+                                    editorProps: {
+                                        lineWrapping: true,
+                                        mode: 'text/javascript',
+                                        readOnly: true
+                                    }
                                 })
                             })
                         ]
@@ -77,37 +86,94 @@ export class ToastPanel extends Component {
                         vertical: true,
                         width: 300,
                         items: [
-                            textArea({
-                                field: 'message',
-                                commitOnChange: true,
-                                model
+                            vspacer(40),
+                            div({
+                                className: 'toolbox-toast-panel__row',
+                                items: [
+                                    span({
+                                        className: 'above-label',
+                                        item: 'Message'
+                                    }),
+                                    textArea({
+                                        field: 'message',
+                                        width: '100%',
+                                        style: {
+                                            whiteSpace: 'normal'
+                                        },
+                                        commitOnChange: true,
+                                        model
+                                    })
+                                ]
                             }),
-                            numberInput({
-                                field: 'timeout',
-                                commitOnChange: true,
-                                model
+                            div({
+                                className: 'toolbox-toast-panel__row',
+                                items: [
+                                    span('Timeout (ms)'),
+                                    numberInput({
+                                        field: 'timeout',
+                                        commitOnChange: true,
+                                        model
+                                    }),
+                                ]
                             }),
-                            select({
-                                options: INTENT_OPTIONS,
-                                field: 'intent',
-                                model
+                            div({
+                                className: 'toolbox-toast-panel__row',
+                                items: [
+                                    span('Intent'),
+                                    select({
+                                        options: INTENT_OPTIONS,
+                                        field: 'intent',
+                                        model
+                                    })
+                                ]
                             }),
-                            select({
-                                options: POSITION_MODE,
-                                field: 'position',
-                                model
+                            span({
+                                className: 'options-divider',
+                                item: 'Position'
                             }),
-                            select({
-                                options: SIDE,
-                                field: 'side',
-                                disabled: !!position,
-                                model
+                            div({
+                                className: 'toolbox-toast-panel__row',
+                                items: [
+                                    span({
+                                        item: 'Mode',
+                                        className: 'indent-label'
+                                    }),
+                                    select({
+                                        options: POSITION_MODE,
+                                        field: 'position',
+                                        model
+                                    })
+                                ]
                             }),
-                            select({
-                                options: ALIGNMENT,
-                                field: 'alignment',
-                                disabled: !!position,
-                                model
+                            div({
+                                className: 'toolbox-toast-panel__row',
+                                items: [
+                                    span({
+                                        item: 'Side',
+                                        className: 'indent-label'
+                                    }),
+                                    select({
+                                        options: SIDE,
+                                        field: 'side',
+                                        disabled: !!position,
+                                        model
+                                    })
+                                ]
+                            }),
+                            div({
+                                className: 'toolbox-toast-panel__row',
+                                items: [
+                                    span({
+                                        item: 'Alignment',
+                                        className: 'indent-label'
+                                    }),
+                                    select({
+                                        options: ALIGNMENT,
+                                        field: 'alignment',
+                                        disabled: !!position,
+                                        model
+                                    })
+                                ]
                             })
                         ]
                     })
@@ -116,10 +182,4 @@ export class ToastPanel extends Component {
         })
     }
 
-    renderCode(value) {
-        return jsonInput({
-            editorProps: {mode: 'text/javascript', readOnly: true},
-            value: value
-        })
-    }
 }

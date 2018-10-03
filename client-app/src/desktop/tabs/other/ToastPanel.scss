@@ -1,7 +1,7 @@
-.toolbox-modal-panel {
+.toolbox-toast-panel {
   .xh-toolbar--vertical {
 
-    .toolbox-modal-panel__row {
+    .toolbox-toast-panel__row {
       width: 90%;
       display: flex;
       flex-flow: row wrap;
@@ -19,21 +19,17 @@
         margin-left: 10px;
       }
 
-      .xh-text-input {
-        input {
-          width: 100px;
-        }
-      }
+
       .xh-select {
         button {
           width: 100px;
         }
       }
-
-      textarea {
-        width: 200px;
+      .xh-number-input {
+        input {
+          width: 100px;
+        }
       }
-
     }
     .options-divider {
       font-size: var(--xh-font-size-md-px);

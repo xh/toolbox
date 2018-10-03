@@ -7,8 +7,10 @@
 
 import {XH, HoistModel} from '@xh/hoist/core';
 import {action, computed, bindable} from '@xh/hoist/mobx';
+import {field, FieldSupport, lengthIs, required} from '@xh/hoist/field';
 
 
+@FieldSupport
 @HoistModel
 export class ModalMessagesModel {
 
@@ -27,14 +29,40 @@ export class ModalMessagesModel {
     ];
 
 
-    @bindable modalType = 'message';
-    @bindable message = 'This is a sample XH message.';
-    @bindable title;
-    @bindable icon;
-    @bindable confirmText;
-    @bindable cancelText;
-    @bindable confirmIntent;
-    @bindable cancelIntent;
+    @field('Type')
+    modalType;
+    @field('Message')
+    message;
+    @field('Title')
+    title;
+    @field('Confirm Text')
+    confirmText;
+    @field('Cancel Text')
+    cancelText;
+    @field('Confirm Intent')
+    confirmIntent;
+    @field('Cancel Intent')
+    cancelIntent;
+
+    constructor() {
+        this.initFields({
+            modalType: 'message',
+            message: 'This is an XH Message Dialog',
+            title: null,
+            confirmText: null,
+            cancelText: null,
+            confirmIntent: null,
+            cancelIntent: null
+        });
+        this.addReaction({
+            track: () => [this.modalType],
+            run: () => this.changeMessage()
+        });
+        this.addReaction({
+            track: () => [this.fnString],
+            run: () => this.changeMessage()
+        });
+    }
 
     @action changeMessage() {
         this.message = this.DEFAULT_MESSAGES[this.modalType]
@@ -42,17 +70,29 @@ export class ModalMessagesModel {
 
     @computed
     get fnString() {
-        const opts = {
-            message: this.message,
-            title: this.title,
-            icon: this.icon,
-            confirmText: this.confirmText,
-            cancelText: this.cancelText,
-            confirmIntent: this.confirmIntent,
-            cancelIntent: this.cancelIntent
-        };
-        return `XH.${this.modalType}(${JSON.stringify(opts)})`;
+        const {modalType, message, title, confirmText, cancelText, confirmIntent, cancelIntent} = this;
+        const opts = {};
+        Object.assign(
+            opts,
+            {message},
+            title ? {title} : null,
+            confirmText ? {confirmText} : null,
+            cancelText ? {cancelText} : null,
+            confirmIntent ? {confirmIntent} : null,
+            cancelIntent ? {cancelIntent} : null
+        );
+        return `XH.${modalType}(${JSON.stringify(opts)})`;
     }
+
+
+    // fmtFn(str) {
+    //     str = str.replace(/'/g, "");
+    //     str = str.replace(/\"/g, "");
+    //     str = str.replace(/,/,"',");
+    //     str = str.replace(/:/,":'");
+    //     str = str.replace(/}/,"'}");
+    //     return str
+    // }
 
     @computed
     get modalInfo() {
@@ -69,10 +109,5 @@ export class ModalMessagesModel {
     }
 
 
-    constructor() {
-        this.addReaction({
-            track: () => [this.modalType],
-            run: () => this.changeMessage()
-        });
-    }
+
 }

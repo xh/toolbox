@@ -11,6 +11,8 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {formGroup} from '@xh/hoist/kit/blueprint';
 import {wrapper} from '../../common';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {code} from '@xh/hoist/cmp/layout';
+
 import {
     textInput
 } from '@xh/hoist/desktop/cmp/form';
@@ -29,50 +31,27 @@ export class MiscPanel extends Component {
                 item: vframe({
                     width: '90%',
                     items: [
-                        formGroup({
-                            item: button({
-                                    text: 'Feedback dialog',
-                                    onClick: () => XH.showFeedbackDialog()
-                                }),
-                            helperText: 'XH.showFeedbackDialog()',
+                        button({
+                            text: 'Feedback dialog',
+                            onClick: () => XH.showFeedbackDialog()
                         }),
-                        formGroup({
-                            item: button({
-                                text: 'Show app details',
-                                onClick: () => XH.showAboutDialog()
-                            }),
-                            helperText: 'XH.showFeedbackDialog()',
+                        code('XH.showFeedbackDialog()'),
+                        button({
+                            text: 'Feedback dialog',
+                            onClick: () => XH.showAboutDialog()
                         }),
-                        formGroup({
-                            item: button({
-                                text: 'Show user info',
-                                onClick: () => XH.showAboutDialog()
-                            }),
-                            helperText: 'XH.showFeedbackDialog()',
+                        code('XH.showAboutDialog()'),
+                        button({
+                            text: 'Feedback dialog',
+                            onClick: () => XH.toggleTheme()
                         }),
-                        formGroup({
-                            item: button({
-                                text: 'Toggle dark theme',
-                                onClick: () => XH.toggleTheme()
-                            }),
-                            helperText: 'XH.showFeedbackDialog()',
-                        }),
+                        code('XH.toggleTheme()')
                     ]
                 })
             })
         })
     }
 
-    textField = ({field, info}) => {
-        const {localModel: model} = this;
-        const label = startCase(field);
-        return formField({
-            item: textInput(),
-            label: label,
-            field: field,
-            labelInfo: info,
-            model
-        })
-    }
+
 
 }
