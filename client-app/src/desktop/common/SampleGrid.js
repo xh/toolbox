@@ -17,10 +17,12 @@ import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput, select} from '@xh/hoist/desktop/cmp/form';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
-import {LocalStore} from '@xh/hoist/data';
+import {LocalStore, RecordAction} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {observable, action} from '@xh/hoist/mobx';
+import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/columns';
+
 import {App} from '../App';
 
 @HoistComponent
@@ -28,6 +30,21 @@ import {App} from '../App';
 class SampleGrid extends Component {
 
     loadModel = new PendingTaskModel();
+
+    viewDetailsAction = new RecordAction({
+        text: 'View Details',
+        icon: Icon.search(),
+        tooltip: 'View details on the selected company',
+        actionFn: (action, rec) => this.showInfoToast(rec)
+    });
+
+    terminateAction = new RecordAction({
+        text: 'Terminate',
+        icon: Icon.skull(),
+        intent: 'danger',
+        tooltip: 'Terminate this company.',
+        actionFn: (action, rec) => this.showTerminateToast(rec)
+    });
 
     localModel = new GridModel({
         store: new LocalStore({
@@ -40,12 +57,8 @@ class SampleGrid extends Component {
         contextMenuFn: () => {
             return new StoreContextMenu({
                 items: [
-                    {
-                        text: 'View Details',
-                        icon: Icon.search(),
-                        recordsRequired: 1,
-                        action: (item, rec) => this.showRecToast(rec)
-                    },
+                    this.viewDetailsAction,
+                    this.terminateAction,
                     '-',
                     ...GridModel.defaultContextMenuTokens
                 ],
@@ -59,10 +72,13 @@ class SampleGrid extends Component {
                 hide: true
             },
             {
-                field: 'active',
-                ...boolCheckCol,
-                headerName: '',
-                chooserName: 'Active Status'
+                ...actionCol,
+                width: calcActionColWidth(2),
+                actionsShowOnHoverOnly: true,
+                actions: [
+                    this.viewDetailsAction,
+                    this.terminateAction
+                ]
             },
             {
                 field: 'company',
@@ -72,7 +88,7 @@ class SampleGrid extends Component {
             {
                 field: 'city',
                 width: 150,
-                tooltip: (value, data, meta) => `${data.company} is located in ${data.city}`
+                tooltip: (val, rec) => `${rec.company} is located in ${val}`
             },
             {
                 headerName: 'Trade Volume',
@@ -97,6 +113,13 @@ class SampleGrid extends Component {
                     colorSpec: true,
                     tooltip: true
                 })
+            },
+            {
+                field: 'active',
+                ...boolCheckCol,
+                headerName: '',
+                chooserName: 'Active Status',
+                tooltip: (active, rec) => active ? `${rec.company} is active` : ''
             },
             {...emptyFlexCol}
         ]
@@ -163,12 +186,19 @@ class SampleGrid extends Component {
             .linkTo(this.loadModel);
     }
 
-    showRecToast(rec) {
-        XH.alert({
-            title: rec.company,
-            message: `You asked to see details for ${rec.company}. They are based in ${rec.city}.`,
-            confirmText: 'Close',
-            confirmIntent: 'primary'
+    showInfoToast(rec) {
+        XH.toast({
+            message: `You asked for ${rec.company} details. They are based in ${rec.city}.`,
+            icon: Icon.info(),
+            intent: 'primary'
+        });
+    }
+
+    showTerminateToast(rec) {
+        XH.toast({
+            message: `You asked to terminate ${rec.company}. Sorry, ${rec.company}!`,
+            icon: Icon.skull(),
+            intent: 'danger'
         });
     }
 
