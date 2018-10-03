@@ -27,7 +27,7 @@ export class DataViewPanel extends Component {
         store: new LocalStore({
             fields: ['id', 'name', 'city', 'value']
         }),
-        itemFactory: dataViewItem
+        itemRenderer: (v, {record}) => dataViewItem({record})
     });
 
     render() {
