@@ -70,7 +70,7 @@ export class ModalMessagesPanel extends Component {
                         items: [
                             box({
                                 item: jsonInput({
-                                    value: model.fmtFn(fnString),
+                                    value: fnString,
                                     editorProps: {
                                         lineWrapping: true,
                                         mode: 'text/javascript',
