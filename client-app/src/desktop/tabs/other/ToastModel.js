@@ -6,18 +6,12 @@
  */
 
 import {HoistModel} from '@xh/hoist/core';
-import {computed, bindable} from '@xh/hoist/mobx';
-import {toUpper, toLower} from 'lodash';
-import { Position } from "@blueprintjs/core";
+import {computed} from '@xh/hoist/mobx';
+import { Position } from '@blueprintjs/core';
 import {withDefault} from '@xh/hoist/utils/js';
 import {field, FieldSupport, lengthIs, required} from '@xh/hoist/field';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {
-    jsonInput,
-    textArea
-} from '@xh/hoist/desktop/cmp/form';
-
-
+import {textArea} from '@xh/hoist/desktop/cmp/form';
 
 @FieldSupport
 @HoistModel
@@ -36,18 +30,18 @@ export class ToastModel {
         {value: null, label: 'Empty'},
         {value: 'LEFT', label: 'Left'},
         {value: 'RIGHT', label: 'Right'}
-        ];
+    ];
     ALIGNMENT = [
         {value: null, label: 'Empty'},
         {value: 'TOP', label: 'Top'},
         {value: 'BOTTOM', label: 'Bottom'}
-        ];
+    ];
     POSITION_MODE = [
         {value: null, label: 'Manual'},
         {value: 'auto', label: 'Auto'},
         {value: 'auto-start', label: 'Auto-start'},
         {value: 'auto-end', label: 'Auto-end'}
-        ];
+    ];
 
 
     @field(required, lengthIs({max: 100}))
@@ -103,7 +97,7 @@ export class ToastModel {
             const positionKey = (side && alignment) ?`${side}_${alignment}` : side || alignment;
             return Position[positionKey];
         } else {
-            return withDefault(position)
+            return withDefault(position);
         }
     }
 

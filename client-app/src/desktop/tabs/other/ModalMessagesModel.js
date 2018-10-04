@@ -5,9 +5,9 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 
-import {XH, HoistModel} from '@xh/hoist/core';
-import {action, computed, bindable} from '@xh/hoist/mobx';
-import {field, FieldSupport, lengthIs, required} from '@xh/hoist/field';
+import {HoistModel} from '@xh/hoist/core';
+import {action, computed} from '@xh/hoist/mobx';
+import {field, FieldSupport} from '@xh/hoist/field';
 
 
 @FieldSupport
@@ -65,7 +65,7 @@ export class ModalMessagesModel {
     }
 
     @action changeMessage() {
-        this.message = this.DEFAULT_MESSAGES[this.modalType]
+        this.message = this.DEFAULT_MESSAGES[this.modalType];
     }
 
     @computed
@@ -96,18 +96,15 @@ export class ModalMessagesModel {
 
     @computed
     get modalInfo() {
-        switch(this.modalType) {
+        switch (this.modalType) {
             case 'message':
-                return "Show a modal message dialog";
+                return 'Show a modal message dialog';
             case 'alert':
                 return 'Show a modal dialog with default \'OK\' button';
             case 'confirm':
                 return 'Show a modal dialog with default \'OK\'/\'Cancel\' buttons';
             default:
-                return ''
+                return '';
         }
     }
-
-
-
 }

@@ -4,7 +4,7 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import React, {Component} from 'react';
+import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {vspacer, hframe, box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -33,7 +33,7 @@ export class ModalMessagesPanel extends Component {
             {localModel: model} = this;
         return wrapper({
             item: panel({
-                title: `Modal Messages`,
+                title: 'Modal Messages',
                 height: 500,
                 width: '80%',
                 className: 'toolbox-modal-panel',
@@ -51,8 +51,8 @@ export class ModalMessagesPanel extends Component {
                                 onClick: () => {
                                     navigator.clipboard.writeText(fnString);
                                     XH.toast({
-                                        "message":"Copied code to clipboard",
-                                        "intent":"success"});
+                                        message: 'Copied code to clipboard',
+                                        intent: 'success'});
                                 }
                             }),
                             button({
@@ -63,7 +63,7 @@ export class ModalMessagesPanel extends Component {
                                     XH.toast({
                                         message: 'Reset Modal Params',
                                         intent: 'success'
-                                    })
+                                    });
                                 }
                             })
                         ),
@@ -96,7 +96,7 @@ export class ModalMessagesPanel extends Component {
                                         {value: 'confirm', label: 'Confirm'}
                                     ],
                                     model
-                                }),
+                                })
                             }),
                             vspacer(20),
                             div({
@@ -201,7 +201,7 @@ export class ModalMessagesPanel extends Component {
                     })
                 )
             })
-        })
+        });
     }
 
 }

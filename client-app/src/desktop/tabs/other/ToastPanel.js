@@ -4,7 +4,7 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import React, {Component} from 'react';
+import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {vspacer, hframe, box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -15,11 +15,8 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar/index';
 import {ToastModel} from './ToastModel';
 import {
-    formField,
     numberInput,
-    textInput,
     textArea,
-    label,
     select,
     jsonInput
 } from '@xh/hoist/desktop/cmp/form';
@@ -35,7 +32,7 @@ export class ToastPanel extends Component {
             {localModel: model} = this;
         return wrapper({
             item: panel({
-                title: `Toast`,
+                title: 'Toast',
                 height: 500,
                 width: '80%',
                 className: 'toolbox-toast-panel',
@@ -53,8 +50,8 @@ export class ToastPanel extends Component {
                                 onClick: () => {
                                     navigator.clipboard.writeText(fnString);
                                     XH.toast({
-                                        "message":"Copied code to clipboard",
-                                        "intent":"success"});
+                                        message: 'Copied code to clipboard',
+                                        intent: 'success'});
                                 }
                             }),
                             button({
@@ -65,7 +62,7 @@ export class ToastPanel extends Component {
                                     XH.toast({
                                         message: 'Reset Toast Params',
                                         intent: 'success'
-                                    })
+                                    });
                                 }
                             })
                         ),
@@ -113,7 +110,7 @@ export class ToastPanel extends Component {
                                         field: 'timeout',
                                         commitOnChange: true,
                                         model
-                                    }),
+                                    })
                                 ]
                             }),
                             div({
@@ -179,7 +176,7 @@ export class ToastPanel extends Component {
                     })
                 )
             })
-        })
+        });
     }
 
 }

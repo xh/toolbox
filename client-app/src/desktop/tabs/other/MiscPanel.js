@@ -4,18 +4,15 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import React, {Component} from 'react';
+import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {formGroup} from '@xh/hoist/kit/blueprint';
 import {wrapper} from '../../common';
+
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {code} from '@xh/hoist/cmp/layout';
 
-import {
-    textInput
-} from '@xh/hoist/desktop/cmp/form';
 import './MiscPanel.scss';
 
 @HoistComponent
@@ -24,7 +21,7 @@ export class MiscPanel extends Component {
     render() {
         return wrapper({
             item: panel({
-                title: `Other XH actions`,
+                title: 'Other XH actions',
                 height: 400,
                 width: 700,
                 className: 'toolbox-misc-panel',
@@ -49,9 +46,7 @@ export class MiscPanel extends Component {
                     ]
                 })
             })
-        })
+        });
     }
-
-
 
 }

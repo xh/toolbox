@@ -14,7 +14,7 @@ import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {JsxPanel} from './JsxPanel';
 import {ModalMessagesPanel} from './ModalMessagesPanel';
 import {ToastPanel} from './ToastPanel';
-import {MiscPanel} from './MiscPanel'
+import {MiscPanel} from './MiscPanel';
 
 @HoistComponent
 export class OtherTab extends Component {
