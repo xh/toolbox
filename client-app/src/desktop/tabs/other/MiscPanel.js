@@ -34,7 +34,7 @@ export class MiscPanel extends Component {
                     items: [
                         tbody(
                             tr(
-                                th('Description'),th('Code'),th(''),th('')
+                                th('Description'), th('Code'), th(''), th('')
                             ),
                             tr(
                                 td('User feedback'),

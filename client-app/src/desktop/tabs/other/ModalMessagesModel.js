@@ -98,7 +98,7 @@ export class ModalMessagesModel {
         this.resetFields();
     }
 
-    /// IMPLEMENTATION ///
+    // IMPLEMENTATION //
 
     fmtFn(str) {
         str = str

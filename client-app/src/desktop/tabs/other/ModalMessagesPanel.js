@@ -216,11 +216,11 @@ export class ModalMessagesPanel extends Component {
         const modalType = this.localModel.modalType, btn = buttonType;
         switch (modalType) {
             case 'alert':
-                return btn === 'Confirm' ? 'OK' : ''
+                return btn === 'Confirm' ? 'OK' : '';
             case 'confirm':
-                return btn === 'Confirm' ? 'OK' : 'Cancel'
+                return btn === 'Confirm' ? 'OK' : 'Cancel';
             default:
-                return ''
+                return '';
         }
     }
 
