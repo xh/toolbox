@@ -17,7 +17,7 @@ export class ModalMessagesModel {
     DEFAULT_MESSAGES = {
         'message': 'This is an XH Message',
         'alert': 'Heads Up! This is an XH Alert.',
-        'confirm': 'Are you sure you want to keep learning about XH modals?'
+        'confirm': 'Is this an XH Confirm?'
     };
 
     INTENT_OPTIONS = [
@@ -47,7 +47,7 @@ export class ModalMessagesModel {
     constructor() {
         this.initFields({
             modalType: 'message',
-            message: 'This is an XH Message Dialog',
+            message: 'This is an XH Message',
             title: null,
             confirmText: null,
             cancelText: null,
@@ -56,10 +56,6 @@ export class ModalMessagesModel {
         });
         this.addReaction({
             track: () => [this.modalType],
-            run: () => this.changeMessage()
-        });
-        this.addReaction({
-            track: () => [this.fnString],
             run: () => this.changeMessage()
         });
     }
@@ -81,18 +77,8 @@ export class ModalMessagesModel {
             confirmIntent ? {confirmIntent} : null,
             cancelIntent ? {cancelIntent} : null
         );
-        return `XH.${modalType}(${JSON.stringify(opts)})`;
+        return this.fmtFn(`XH.${modalType}(${JSON.stringify(opts)})`);
     }
-
-
-    // fmtFn(str) {
-    //     str = str.replace(/'/g, "");
-    //     str = str.replace(/\"/g, "");
-    //     str = str.replace(/,/,"',");
-    //     str = str.replace(/:/,":'");
-    //     str = str.replace(/}/,"'}");
-    //     return str
-    // }
 
     @computed
     get modalInfo() {
@@ -106,5 +92,23 @@ export class ModalMessagesModel {
             default:
                 return '';
         }
+    }
+
+    onResetClick() {
+        this.resetFields();
+    }
+
+    /// IMPLEMENTATION ///
+
+    fmtFn(str) {
+        str = str
+            .replace(/\({/, '({\n\t')
+            .replace(/'/g, '')
+            .replace(/"/g, '')
+            .replace(/,/g, "',\n\t")
+            .replace(/:/g, ":'")
+            .replace(/}/g, "'}")
+            .replace(/}\)(?!.*}\))/, '\n})');
+        return str;
     }
 }

@@ -11,7 +11,6 @@ import { Position } from '@blueprintjs/core';
 import {withDefault} from '@xh/hoist/utils/js';
 import {field, FieldSupport, lengthIs, required} from '@xh/hoist/field';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {textArea} from '@xh/hoist/desktop/cmp/form';
 
 @FieldSupport
 @HoistModel
@@ -83,12 +82,8 @@ export class ToastModel {
             intent ? {intent} : null,
             position ? {position} : null
         );
-        return `XH.toast(${JSON.stringify(opts)})`;
+        return this.fmtFn(`XH.toast(${JSON.stringify(opts)})`);
     }
-
-    taCmp = textArea({
-        value: this.fnString
-    })
 
     bpPosition(position) {
         if (!position) {
@@ -103,5 +98,20 @@ export class ToastModel {
 
     onResetClick() {
         this.resetFields();
+    }
+
+
+    // IMPLEMENTATION //
+
+    fmtFn(str) {
+        str = str
+            .replace(/\({/, '({\n\t')
+            .replace(/'/g, '')
+            .replace(/"/g, '')
+            .replace(/,/g, "',\n\t")
+            .replace(/:/g, ":'")
+            .replace(/}/g, "'}")
+            .replace(/}\)(?!.*}\))/, '\n})');
+        return str;
     }
 }

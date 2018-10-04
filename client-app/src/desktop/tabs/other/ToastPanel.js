@@ -73,7 +73,7 @@ export class ToastPanel extends Component {
                                     editorProps: {
                                         lineWrapping: true,
                                         mode: 'text/javascript',
-                                        readOnly: true
+                                        readOnly: 'nocursor'
                                     }
                                 })
                             })
@@ -81,19 +81,22 @@ export class ToastPanel extends Component {
                     }),
                     toolbar({
                         vertical: true,
-                        width: 300,
+                        width: '50%',
                         items: [
-                            vspacer(40),
+                            vspacer(20),
+                            span({
+                                className: 'options-divider',
+                                item: 'Inputs'
+                            }),
                             div({
                                 className: 'toolbox-toast-panel__row',
                                 items: [
                                     span({
-                                        className: 'above-label',
+                                        className: 'indent-label',
                                         item: 'Message'
                                     }),
                                     textArea({
                                         field: 'message',
-                                        width: '100%',
                                         style: {
                                             whiteSpace: 'normal'
                                         },
@@ -105,7 +108,10 @@ export class ToastPanel extends Component {
                             div({
                                 className: 'toolbox-toast-panel__row',
                                 items: [
-                                    span('Timeout (ms)'),
+                                    span({
+                                        item: 'Timeout (ms)',
+                                        className: 'indent-label'
+                                    }),
                                     numberInput({
                                         field: 'timeout',
                                         commitOnChange: true,
@@ -116,7 +122,10 @@ export class ToastPanel extends Component {
                             div({
                                 className: 'toolbox-toast-panel__row',
                                 items: [
-                                    span('Intent'),
+                                    span({
+                                        item: 'Intent',
+                                        className: 'indent-label'
+                                    }),
                                     select({
                                         options: INTENT_OPTIONS,
                                         field: 'intent',

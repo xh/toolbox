@@ -74,7 +74,7 @@ export class ModalMessagesPanel extends Component {
                                     editorProps: {
                                         lineWrapping: true,
                                         mode: 'text/javascript',
-                                        readOnly: true
+                                        readOnly: 'nocursor'
                                     }
                                 })
                             })
@@ -82,9 +82,9 @@ export class ModalMessagesPanel extends Component {
                     }),
                     toolbar({
                         vertical: true,
-                        width: 400,
+                        width: '50%',
                         items: [
-                            vspacer(5),
+                            vspacer(20),
                             div({
                                 item: radioInput({
                                     field: 'modalType',
@@ -98,17 +98,22 @@ export class ModalMessagesPanel extends Component {
                                     model
                                 })
                             }),
-                            vspacer(20),
+                            span({
+                                className: 'options-divider',
+                                item: 'Text'
+                            }),
                             div({
                                 className: 'toolbox-modal-panel__row',
                                 items: [
                                     span({
-                                        item: 'Message'
+                                        className: 'indent-label',
+                                        item: 'Body'
                                     }),
                                     textArea({
                                         field: 'message',
                                         style: {
-                                            whiteSpace: 'normal'
+                                            whiteSpace: 'normal',
+                                            width: '50%'
                                         },
                                         commitOnChange: true,
                                         model
@@ -119,6 +124,7 @@ export class ModalMessagesPanel extends Component {
                                 className: 'toolbox-modal-panel__row',
                                 items: [
                                     span({
+                                        className: 'indent-label',
                                         item: 'Title'
                                     }),
                                     textInput({
@@ -142,6 +148,7 @@ export class ModalMessagesPanel extends Component {
                                     }),
                                     textInput({
                                         field: 'confirmText',
+                                        placeholder: this.setPlaceholder('Confirm'),
                                         width: '100%',
                                         commitOnChange: true,
                                         model
@@ -176,6 +183,7 @@ export class ModalMessagesPanel extends Component {
                                     }),
                                     textInput({
                                         field: 'cancelText',
+                                        placeholder: this.setPlaceholder('Cancel'),
                                         width: '100%',
                                         commitOnChange: true,
                                         model
@@ -202,6 +210,18 @@ export class ModalMessagesPanel extends Component {
                 )
             })
         });
+    }
+
+    setPlaceholder(buttonType) {
+        const modalType = this.localModel.modalType, btn = buttonType;
+        switch (modalType) {
+            case 'alert':
+                return btn === 'Confirm' ? 'OK' : ''
+            case 'confirm':
+                return btn === 'Confirm' ? 'OK' : 'Cancel'
+            default:
+                return ''
+        }
     }
 
 }
