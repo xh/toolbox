@@ -86,6 +86,7 @@ class AppClass {
                         children: [
                             {name: 'standard', path: '/standard'},
                             {name: 'tree', path: '/tree'},
+                            {name: 'treeWithCheckBox', path: '/treeWithCheckBox'},
                             {name: 'groupedRows', path: '/groupedRows'},
                             {name: 'groupedCols', path: '/groupedCols'},
                             {name: 'rest', path: '/rest'},

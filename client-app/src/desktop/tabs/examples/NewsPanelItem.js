@@ -8,8 +8,7 @@ import React from 'react';
 class NewsPanelItem extends Component {
 
     render() {
-        const request = this.props.record,
-            {title, text, imageUrl, published, source, author} = request;
+        const {title, text, imageUrl, published, source, author} = this.props.record;
 
         return hbox(
             box({
