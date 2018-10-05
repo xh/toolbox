@@ -8,8 +8,7 @@ import {fmtNumber} from '@xh/hoist/format';
 class DataViewItem extends Component {
 
     render() {
-        const request = this.props.record,
-            {name, city, value} = request,
+        const {name, city, value} = this.props.record,
             loser = value < 0;
         return vbox(
             box({

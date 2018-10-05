@@ -10,7 +10,6 @@ import {wait} from '@xh/hoist/promise';
 import {box, filler, fragment} from '@xh/hoist/cmp/layout';
 import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {checkBox, switchInput} from '@xh/hoist/desktop/cmp/form';
@@ -40,14 +39,6 @@ class SampleTreeWithCheckBoxGrid extends Component {
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
-        contextMenuFn: () => {
-            return new StoreContextMenu({
-                items: [
-                    ...GridModel.defaultContextMenuTokens
-                ],
-                gridModel: this.model
-            });
-        },
         columns: [
             {
                 headerName: 'Name',

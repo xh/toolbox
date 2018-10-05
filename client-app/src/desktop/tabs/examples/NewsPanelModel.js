@@ -23,7 +23,7 @@ export class NewsPanelModel {
         store: new LocalStore({
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published']
         }),
-        itemFactory: newsPanelItem
+        itemRenderer: (v, {record}) => newsPanelItem({record})
     });
 
     @observable.ref sourceOptions = [];
