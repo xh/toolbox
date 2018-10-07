@@ -5,13 +5,13 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent, XH} from '@xh/hoist/core';
-import {vspacer, hframe, box} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../common';
-import {Icon} from '@xh/hoist/icon';
-import {div, span} from '@xh/hoist/cmp/layout';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {HoistComponent, XH} from '@xh/hoist/core/index';
+import {vspacer, hframe, box} from '@xh/hoist/cmp/layout/index';
+import {panel} from '@xh/hoist/desktop/cmp/panel/index';
+import {wrapper} from '../../../common/index';
+import {Icon} from '@xh/hoist/icon/index';
+import {div, span} from '@xh/hoist/cmp/layout/index';
+import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar/index';
 import {ModalMessagesModel} from './ModalMessagesModel';
 import {
@@ -20,7 +20,7 @@ import {
     textArea,
     select,
     jsonInput
-} from '@xh/hoist/desktop/cmp/form';
+} from '@xh/hoist/desktop/cmp/form/index';
 import './ModalMessagesPanel.scss';
 
 @HoistComponent

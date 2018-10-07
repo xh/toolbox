@@ -5,12 +5,12 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 
-import {HoistModel} from '@xh/hoist/core';
-import {computed} from '@xh/hoist/mobx';
+import {HoistModel} from '@xh/hoist/core/index';
+import {computed} from '@xh/hoist/mobx/index';
 import { Position } from '@blueprintjs/core';
-import {withDefault} from '@xh/hoist/utils/js';
-import {field, FieldSupport, lengthIs, required} from '@xh/hoist/field';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {withDefault} from '@xh/hoist/utils/js/index';
+import {field, FieldSupport, lengthIs, required} from '@xh/hoist/field/index';
+import {PendingTaskModel} from '@xh/hoist/utils/async/index';
 
 @FieldSupport
 @HoistModel

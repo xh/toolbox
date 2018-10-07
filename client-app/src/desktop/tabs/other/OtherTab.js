@@ -12,9 +12,10 @@ import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {MaskPanel} from './MaskPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {JsxPanel} from './JsxPanel';
-import {ModalMessagesPanel} from './ModalMessagesPanel';
-import {ToastPanel} from './ToastPanel';
+import {ModalMessagesPanel} from './forms/ModalMessagesPanel';
+import {ToastPanel} from './forms/ToastPanel';
 import {MiscPanel} from './MiscPanel';
+import {ExceptionsPanel} from './ExceptionsPanel';
 
 @HoistComponent
 export class OtherTab extends Component {
@@ -26,6 +27,7 @@ export class OtherTab extends Component {
             {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
             {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
             {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel},
+            {id: 'exceptions', title: 'Exceptions', content: ExceptionsPanel},
             {id: 'modals', title: 'Modal Messages', content: ModalMessagesPanel},
             {id: 'toast', title: 'Toast', content: ToastPanel},
             {id: 'misc', title: 'Misc', content: MiscPanel}

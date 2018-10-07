@@ -5,9 +5,9 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 
-import {HoistModel} from '@xh/hoist/core';
-import {action, computed} from '@xh/hoist/mobx';
-import {field, FieldSupport} from '@xh/hoist/field';
+import {HoistModel} from '@xh/hoist/core/index';
+import {action, computed} from '@xh/hoist/mobx/index';
+import {field, FieldSupport} from '@xh/hoist/field/index';
 
 
 @FieldSupport
