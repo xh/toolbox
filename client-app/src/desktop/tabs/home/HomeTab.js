@@ -40,7 +40,7 @@ export class HomeTab extends Component {
                         <div className="toolbox-welcome__logo">
                             <img src={XH.darkTheme ? logoDark : logo} alt="xh.io + Hoist"/>
                             <p>
-                                Please do not hesitate to {link('contact us', 'https://xh.io/contact/')} with
+                                Please {link('contact us', 'https://xh.io/contact/')} with
                                 questions or for more information.
                             </p>
                         </div>
