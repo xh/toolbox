@@ -9,12 +9,12 @@
     "lint": "eslint lint .",
     "refreshHoist": "rimraf -rf node_modules/@xh/hoist && yarn upgrade @xh/hoist && yarn install --check-files",
     "start": "webpack-dev-server",
-    "startOnDevice": "webpack-dev-server --env.devHost=$(hostname)",
+    "startOnDevice": "webpack-dev-server --env.inlineHoist --env.devHost=$(hostname)",
     "startAndAnalyze": "webpack-dev-server --env.analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && webpack-dev-server --env.inlineHoist"
   },
   "dependencies": {
-    "@xh/hoist": "^14.0.0-SNAPSHOT",
+    "@xh/hoist": "^15.0.0-SNAPSHOT",
     "babel-runtime": "~6.26.0",
     "prop-types": "~15.6.2",
     "react": "~16.5.2",
@@ -22,6 +22,6 @@
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "~2.2.3"
+    "@xh/hoist-dev-utils": "~2.3.0"
   }
 }
