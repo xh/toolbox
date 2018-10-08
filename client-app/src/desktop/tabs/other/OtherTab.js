@@ -14,8 +14,9 @@ import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {JsxPanel} from './JsxPanel';
 import {ModalMessagesPanel} from './forms/ModalMessagesPanel';
 import {ToastPanel} from './forms/ToastPanel';
-import {MiscPanel} from './MiscPanel';
-import {ExceptionsPanel} from './ExceptionsPanel';
+import {MiscPanel} from './demo/MiscPanel';
+import {ExceptionsPanel} from './demo/ExceptionsPanel';
+import {MessagesPanel} from './demo/MessagesPanel';
 
 @HoistComponent
 export class OtherTab extends Component {
@@ -28,6 +29,7 @@ export class OtherTab extends Component {
             {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
             {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel},
             {id: 'exceptions', title: 'Exceptions', content: ExceptionsPanel},
+            {id: 'messages', title: 'Messages/Toasts', content: MessagesPanel},
             {id: 'modals', title: 'Modal Messages', content: ModalMessagesPanel},
             {id: 'toast', title: 'Toast', content: ToastPanel},
             {id: 'misc', title: 'Misc', content: MiscPanel}

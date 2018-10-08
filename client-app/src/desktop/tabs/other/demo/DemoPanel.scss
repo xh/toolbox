@@ -1,0 +1,38 @@
+.toolbox-demo-panel {
+
+  height: calc(100% - 200px);
+  overflow: auto;
+
+  .demo-table-scroller {
+    overflow-y: scroll;
+  }
+
+  table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    display: table;
+    overflow: auto;
+    thead {
+      background-color: var(--xh-grid-header-bg);
+      color: var(--xh-grid-header-text-color);
+    }
+    th, td {
+      text-align: left;
+      padding: 6px;
+    }
+
+    tbody {
+      tr {
+        &:nth-child(even) {
+          background-color: var(--xh-grid-bg-odd);
+        }
+
+        &:hover {
+          background-color: var(--xh-grid-bg-highlight);
+        }
+      }
+    }
+  }
+
+}
