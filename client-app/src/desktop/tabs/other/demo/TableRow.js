@@ -6,24 +6,23 @@ export const tableRow = ({xhCode, description, onClick}) => {
     if (!onClick && xhCode) onClick = () => eval(xhCode);
     return (
         tr({
-                className: 'demo-row',
-                items: [
-                    td({
-                        item: button({
-                            icon: Icon.play(),
-                            onClick: onClick
-                        })
-                    }),
-                    td({
-                        item: code(xhCode),
-                        className: 'text-cell'
-                    }),
-                    td({
-                        item: description,
-                        className: 'text-cell'
+            className: 'demo-row',
+            items: [
+                td({
+                    item: button({
+                        icon: Icon.play(),
+                        onClick: onClick
                     })
-                ]
-            }
-        )
-    )
+                }),
+                td({
+                    item: code(xhCode),
+                    className: 'text-cell'
+                }),
+                td({
+                    item: description,
+                    className: 'text-cell'
+                })
+            ]
+        })
+    );
 };

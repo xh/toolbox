@@ -4,7 +4,7 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel/index';
 import {wrapper} from '../../../common/index';
@@ -16,6 +16,15 @@ import {tableRow} from './TableRow';
 export class ExceptionsPanel extends Component {
     render() {
         return wrapper({
+            description: [
+                <p>
+                    Promise.catchDefault() and XH.handleException() can receive an options object.
+                    When included in this object, the below values control user alerts and logging.
+                    Click the button next to each option to see how it changes the handler's behavior.
+                </p>,
+                <p>For more information, please see the <a target="#" href="https://github.com/exhi/hoist-react/blob/develop/core/ExceptionHandler.js">ExceptionHandler</a> class.
+                </p>
+            ],
             item: panel({
                 title: 'Exceptions',
                 height: '75%',
@@ -30,47 +39,47 @@ export class ExceptionsPanel extends Component {
                                 thead(tr(th(''), th('Code'), th('Description'))),
                                 tbody(
                                     tableRow({
-                                        xhCode: `{message: 'That's a mistake!', title: 'XH Error Title'}`,
-                                        description: `XH.message(): Modal dialog with no default button text`,
-                                        onClick: () => this.onClick({message: 'Stop doing that!', title: 'XH Error Title'})
+                                        xhCode: '{message: \'That\'s a mistake!\', title: \'XH Error Title\'}',
+                                        description: 'Override the default error message and add a title to the modal dialog',
+                                        onClick: () => this.onClick({message: 'That\'s a mistake!', title: 'XH Error Title'})
                                     }),
                                     tableRow({
-                                        xhCode: `{logOnServer: false}`,
-                                        description: ``,
+                                        xhCode: '{logOnServer: false}',
+                                        description: 'Don\'t send the exception to the server to be stored in DB. See' +
+                                        ' /admin/activity/clientErrors',
                                         onClick: () => this.onClick({logOnServer: false})
                                     }),
                                     tableRow({
-                                        xhCode: `{showAlert: false}`,
-                                        description: ``,
+                                        xhCode: '{showAlert: false}',
+                                        description: 'Don\'t display an alert dialog to the user',
                                         onClick: () => this.onClick({showAlert: false})
                                     }),
                                     tableRow({
-                                        xhCode: `{showAsError: false}`,
-                                        description: ``,
+                                        xhCode: '{showAsError: false}',
+                                        description: 'Don\'t display to the user as an error.',
                                         onClick: () => this.onClick({showAsError: false})
                                     }),
                                     tableRow({
-                                        xhCode: `{requireReload: true}`,
-                                        description: ``,
+                                        xhCode: '{requireReload: true}',
+                                        description: 'Force the user to refresh app in order to dismiss the modal',
                                         onClick: () => this.onClick({requireReload: true})
                                     }),
                                     tableRow({
-                                        xhCode: `{hideParams: ['password']}`,
-                                        description: ``,
+                                        xhCode: '{hideParams: [\'password\']}',
+                                        description: 'Hide the password param from the exception log and alert',
                                         onClick: () => this.onClick({hideParams: ['password']})
                                     }),
                                     tableRow({
-                                        xhCode: `{alertKey: 'test'}`,
-                                        description: ``,
+                                        xhCode: '{alertKey: \'test\'}',
+                                        description: 'Allow only one dialog to be created with this key. Avoid repeated failure causing a stack of popups.',
                                         onClick: () => this.repeatException({alertKey: 'test'})
                                     })
                                 )
                             ]
                         })
                     })
-
             })
-        })
+        });
     }
 
     onClick = async (opts) => {
@@ -82,7 +91,7 @@ export class ExceptionsPanel extends Component {
 
     repeatException = (opts) => {
         XH.handleException('Test', opts);
-        setTimeout(() => XH.handleException('Other', opts), 3000);
+        setTimeout(() => XH.handleException('Other', opts), 1000);
     }
 
 }

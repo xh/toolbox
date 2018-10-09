@@ -12,8 +12,6 @@ import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {MaskPanel} from './MaskPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {JsxPanel} from './JsxPanel';
-import {ModalMessagesPanel} from './forms/ModalMessagesPanel';
-import {ToastPanel} from './forms/ToastPanel';
 import {MiscPanel} from './demo/MiscPanel';
 import {ExceptionsPanel} from './demo/ExceptionsPanel';
 import {MessagesPanel} from './demo/MessagesPanel';
@@ -30,8 +28,6 @@ export class OtherTab extends Component {
             {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel},
             {id: 'exceptions', title: 'Exceptions', content: ExceptionsPanel},
             {id: 'messages', title: 'Messages/Toasts', content: MessagesPanel},
-            {id: 'modals', title: 'Modal Messages', content: ModalMessagesPanel},
-            {id: 'toast', title: 'Toast', content: ToastPanel},
             {id: 'misc', title: 'Misc', content: MiscPanel}
         ]
     });
