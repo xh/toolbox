@@ -107,23 +107,24 @@ class BootStrap {
 
     private void ensureMonitorsCreated() {
         createMonitorIfNeeded(
-                code: 'newsStories',
-                name: 'Cached Stories',
+                code: 'newsStoryCount',
+                name: 'Loaded Stories',
                 metricType: 'Floor',
                 failThreshold: 0,
                 metricUnit: 'stories',
                 active: true
         )
         createMonitorIfNeeded(
-                code: 'lastUpdate',
+                code: 'lastUpdateAgeMins',
                 name: 'Most Recent Story',
                 metricType: 'Ceil',
-                metricUnit: 'hours since last story',
-                warnThreshold: 12,
+                metricUnit: 'minutes since last story',
+                warnThreshold: 60,
+                failThreshold: 360,
                 active: true
         )
         createMonitorIfNeeded(
-                code: 'sourcesLoaded',
+                code: 'loadedSourcesCount',
                 name: 'All Sources Loaded',
                 metricType: 'None',
                 metricUnit: 'sources',
