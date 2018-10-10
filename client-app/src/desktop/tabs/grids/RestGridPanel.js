@@ -8,10 +8,10 @@ import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {restGrid, RestGridModel, RestStore, restGridAddAction, restGridEditAction, restGridViewAction, restGridDeleteAction} from '@xh/hoist/desktop/cmp/rest';
+import {restGrid, RestGridModel, RestStore, addAction, editAction, viewAction, deleteAction} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/columns';
 import {wrapper} from '../../common/Wrapper';
-import {actionCol} from '@xh/hoist/desktop/columns';
+import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/columns';
 
 @HoistComponent
 export class RestGridPanel extends Component {
@@ -67,10 +67,10 @@ export class RestGridPanel extends Component {
         columns: [
             {
                 ...actionCol,
-                width: 78,
+                width: calcActionColWidth(2),
                 actions: [
-                    restGridEditAction,
-                    restGridDeleteAction
+                    editAction,
+                    deleteAction
                 ]
             },
             {
@@ -107,10 +107,10 @@ export class RestGridPanel extends Component {
         ],
         emptyText: 'No companies found - try adding one...',
         contextMenuActions: [
-            restGridAddAction,
-            restGridEditAction,
-            restGridViewAction,
-            restGridDeleteAction
+            addAction,
+            editAction,
+            viewAction,
+            deleteAction
         ]
     });
 
