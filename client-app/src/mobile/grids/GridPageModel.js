@@ -20,6 +20,7 @@ export class GridPageModel {
     loadModel = new PendingTaskModel();
 
     gridModel = new GridModel({
+        stateModel: 'toolboxSampleGrid',
         store: new LocalStore({
             fields: ['company', 'city', 'trade_volume', 'profit_loss']
         }),
