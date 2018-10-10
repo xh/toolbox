@@ -5,6 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
+import {isEmpty} from 'lodash';
 import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {box, filler} from '@xh/hoist/cmp/layout';
@@ -165,6 +166,11 @@ class SampleColumnGroupsGrid extends Component {
                         unit: 'salesperson'
                     }),
                     filler(),
+                    box('Group rows:'),
+                    switchInput({
+                        value: !isEmpty(model.groupBy),
+                        onChange: (groupRows) => model.setGroupBy(groupRows ? ['state'] : null)
+                    }),
                     box('Compact mode:'),
                     switchInput({
                         field: 'compact',
