@@ -27,7 +27,7 @@ export class GridPageModel {
             {
                 field: 'company',
                 width: 150,
-                agOptions: {pinned: true}
+                pinned: true
             },
             {
                 field: 'city',
@@ -45,6 +45,7 @@ export class GridPageModel {
                 field: 'profit_loss',
                 width: 100,
                 align: 'right',
+                absSort: true,
                 renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
             },
             {...emptyFlexCol}
