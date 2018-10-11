@@ -6,11 +6,10 @@
  */
 
 import {XH, HoistModel} from '@xh/hoist/core';
-import {GridModel, multiFieldRenderer} from '@xh/hoist/mobile/cmp/grid';
+import {GridModel} from '@xh/hoist/mobile/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
-import {emptyFlexCol} from '@xh/hoist/columns';
-import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
 
 import {companyTrades} from '../../core/data';
 
@@ -42,12 +41,12 @@ export class GridPageModel {
                 width: 120,
                 align: 'right',
                 absSort: true,
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true}),
                 multiFieldRendererCfg: {
+                    renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}),
                     fields: [{
                         label: 'Volume',
                         field: 'trade_volume',
-                        renderer: millionsRenderer({precision: 1, label: true})
+                        renderer: thousandsRenderer({precision: 1, label: true, asElement: true})
                     }]
                 }
             }
