@@ -6,7 +6,7 @@
  */
 
 import {XH, HoistModel} from '@xh/hoist/core';
-import {GridModel} from '@xh/hoist/mobile/cmp/grid';
+import {GridModel, multiFieldRenderer} from '@xh/hoist/mobile/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
 import {emptyFlexCol} from '@xh/hoist/columns';
@@ -21,35 +21,36 @@ export class GridPageModel {
 
     gridModel = new GridModel({
         stateModel: 'toolboxSampleGrid',
+        sortBy: ['profit_loss|desc|abs'],
         store: new LocalStore({
             fields: ['company', 'city', 'trade_volume', 'profit_loss']
         }),
         columns: [
             {
                 field: 'company',
-                width: 150,
-                pinned: true
-            },
-            {
-                field: 'city',
-                width: 120
-            },
-            {
-                headerName: 'Volume',
-                field: 'trade_volume',
-                width: 100,
-                align: 'right',
-                renderer: millionsRenderer({precision: 1, label: true})
+                flex: true,
+                multiFieldRendererCfg: {
+                    fields: [{
+                        label: 'City',
+                        field: 'city'
+                    }]
+                }
             },
             {
                 headerName: 'P&L',
                 field: 'profit_loss',
-                width: 100,
+                width: 120,
                 align: 'right',
                 absSort: true,
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
-            },
-            {...emptyFlexCol}
+                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true}),
+                multiFieldRendererCfg: {
+                    fields: [{
+                        label: 'Volume',
+                        field: 'trade_volume',
+                        renderer: millionsRenderer({precision: 1, label: true})
+                    }]
+                }
+            }
         ]
     });
 
