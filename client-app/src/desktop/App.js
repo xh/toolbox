@@ -20,6 +20,7 @@ import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
 import {IconsTab} from './tabs/icons/IconsTab';
 import {OtherTab} from './tabs/other/OtherTab';
+import {ExamplesTab} from './tabs/examples/ExamplesTab';
 import {FormatsTab} from './tabs/formats/FormatsTab';
 
 @HoistApp
@@ -31,6 +32,10 @@ class AppClass {
     companyService = new CompanyService();
     tradeService = new TradeService();
     salesService = new SalesService();
+
+    constructor() {
+        this.addReaction(this.trackTabReaction());
+    }
 
     get enableLogout() {return true}
     get componentClass() {return AppComponent}
@@ -81,8 +86,10 @@ class AppClass {
                         forwardTo: 'default.grids.standard',
                         children: [
                             {name: 'standard', path: '/standard'},
-                            {name: 'columnGroups', path: '/columnGroups'},
-                            {name: 'grouped', path: '/grouped'},
+                            {name: 'tree', path: '/tree'},
+                            {name: 'treeWithCheckBox', path: '/treeWithCheckBox'},
+                            {name: 'groupedRows', path: '/groupedRows'},
+                            {name: 'groupedCols', path: '/groupedCols'},
                             {name: 'rest', path: '/rest'},
                             {name: 'dataview', path: '/dataview'}
                         ]
@@ -121,6 +128,14 @@ class AppClass {
                         ]
                     },
                     {
+                        name: 'examples',
+                        path: '/examples',
+                        forwardTo: 'default.examples.news',
+                        children: [
+                            {name: 'news', path: '/news'}
+                        ]
+                    },
+                    {
                         name: 'formats',
                         path: '/formats'
                     }
@@ -140,9 +155,27 @@ class AppClass {
                 {id: 'charts', content: ChartsTab},
                 {id: 'icons', content: IconsTab},
                 {id: 'other', content: OtherTab},
+                {id: 'examples', content: ExamplesTab}
+                {id: 'other', content: OtherTab},
                 {id: 'formats', content: FormatsTab}
             ]
         });
     }
+
+    trackTabReaction() {
+        return {
+            track: () => this.tabModel.activeTab,
+            run: (activeTab) => {
+                XH.track({
+                    msg: `Viewed ${activeTab.title}`,
+                    data: {
+                        id: activeTab.id
+                    },
+                    category: 'Tab'
+                });
+            }
+        };
+    }
+
 }
 export const App = new AppClass();

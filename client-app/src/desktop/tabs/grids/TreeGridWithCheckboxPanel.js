@@ -9,25 +9,25 @@ import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 
-import {wrapper, sampleGrid} from '../../common';
+import {wrapper, sampleTreeWithCheckBoxGrid} from '../../common';
 
 @HoistComponent
-export class GroupedGridPanel extends Component {
+export class TreeGridWithCheckboxPanel extends Component {
 
     render() {
         return wrapper({
-            description: <p>
-                Grid rows can easily be grouped by setting the <code>groupBy</code> property on
-                their GridModel.
-            </p>,
+            description: [
+                <p>
+                    This example is a copy of the Tree sample, but adds a checkbox component to every node via the treeColumn's "innerRendererFramework" property.
+                </p>
+            ],
             item: panel({
-                title: 'Grids > Grouped Rows',
+                title: 'Grids > Tree w/CheckBox',
                 icon: Icon.grid(),
                 width: 700,
                 height: 400,
-                item: sampleGrid({groupBy: 'city'})
+                item: sampleTreeWithCheckBoxGrid()
             })
         });
     }
-
 }

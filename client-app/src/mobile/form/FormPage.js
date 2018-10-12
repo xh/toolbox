@@ -9,8 +9,7 @@ import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
-import {label, textField, selectField, textAreaField} from '@xh/hoist/mobile/cmp/form';
-import {searchField} from '@xh/hoist/mobile/cmp/form';
+import {formField, label, textInput, numberInput, select, textArea, searchInput} from '@xh/hoist/mobile/cmp/form';
 
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
@@ -27,22 +26,33 @@ export class FormPage extends Component {
                 div({
                     className: 'toolbox-card',
                     items: [
-                        this.renderField('Name:', textField, {
+                        formField({
                             model,
-                            field: 'name'
+                            field: 'name',
+                            item: textInput()
                         }),
-                        this.renderField('Favourite Movie:', selectField, {
+                        formField({
                             model,
-                            options: model.movies,
-                            field: 'movie'
+                            field: 'movie',
+                            item: select({options: model.movies})
                         }),
-                        this.renderField('Notes:', textAreaField, {
+                        formField({
                             model,
-                            field: 'notes'
+                            field: 'salary',
+                            item: numberInput({
+                                enableShorthandUnits: true,
+                                displayWithCommas: true
+                            })
                         }),
-                        this.renderField('Search: ', searchField, {
+                        formField({
                             model,
-                            field: 'searchQuery'
+                            field: 'notes',
+                            item: textArea()
+                        }),
+                        formField({
+                            model,
+                            field: 'searchQuery',
+                            item: searchInput()
                         })
                     ]
                 }),
@@ -50,20 +60,12 @@ export class FormPage extends Component {
                     className: 'toolbox-card',
                     items: [
                         this.renderResult('Name:', 'name'),
-                        this.renderResult('Favourite Movie:', 'movie'),
-                        this.renderResult('Notes:', 'notes')
+                        this.renderResult('Movie:', 'movie'),
+                        this.renderResult('Salary:', 'salary'),
+                        this.renderResult('Notes:', 'notes'),
+                        this.renderResult('Search:', 'searchQuery')
                     ]
                 })
-            ]
-        });
-    }
-
-    renderField(labelText, factory, props) {
-        return div({
-            className: 'form-field-container',
-            items: [
-                label(labelText),
-                factory(props)
             ]
         });
     }

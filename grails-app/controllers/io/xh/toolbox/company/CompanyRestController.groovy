@@ -11,7 +11,7 @@ import io.xh.hoist.RestController
 import io.xh.hoist.security.Access
 import org.grails.web.json.JSONObject
 
-@Access(['HOIST_ADMIN'])
+@Access(['APP_READER'])
 class CompanyRestController extends RestController {
 
     static restTarget = Company
