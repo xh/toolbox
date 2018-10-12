@@ -1,4 +1,4 @@
-import {tr, td, code} from '@xh/hoist/cmp/layout/index';
+import {tr, td, code, pre} from '@xh/hoist/cmp/layout/index';
 import {Icon} from '@xh/hoist/icon/index';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
 
@@ -15,7 +15,7 @@ export const tableRow = ({xhCode, description, onClick}) => {
                     })
                 }),
                 td({
-                    item: code(xhCode),
+                    item: pre(xhCode),
                     className: 'text-cell'
                 }),
                 td({

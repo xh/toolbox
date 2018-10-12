@@ -26,7 +26,7 @@ export class OtherTab extends Component {
             {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
             {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
             {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel},
-            {id: 'exceptions', title: 'Exceptions', content: ExceptionsPanel},
+            {id: 'exceptions', title: 'Exception Handling', content: ExceptionsPanel},
             {id: 'messages', title: 'Messages/Toasts', content: MessagesPanel},
             {id: 'misc', title: 'Misc', content: MiscPanel}
         ]

@@ -16,10 +16,6 @@ import React from 'react';
 @HoistComponent
 export class MiscPanel extends Component {
 
-    FEEDBACK = 'XH.showFeedbackDialog()';
-    ABOUT = 'XH.showAboutDialog()';
-    TOGGLE = 'XH.toggleTheme()';
-
     render() {
         return wrapper({
             description: [
@@ -27,12 +23,12 @@ export class MiscPanel extends Component {
                     Hoist provides access to its built in services and information about the app.
                 </p>,
                 <p>
-                    For more information, please see <a target="#" href="https://github.com/exhi/hoist-react/blob/develop/core/XH.js">XHClass</a>.
+                    For more information, please see <a target="#" href="https://github.com/exhi/hoist-react/blob/develop/core/XH.js">XH</a>.
                 </p>
             ],
             item: panel({
-                title: 'Other XH actions',
-                height: 300,
+                title: 'Misc',
+                height: 500,
                 width: 700,
                 className: 'toolbox-demo-panel',
                 item: table({
