@@ -14,7 +14,7 @@
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && webpack-dev-server --env.inlineHoist"
   },
   "dependencies": {
-    "@xh/hoist": "15.1.0",
+    "@xh/hoist": "^16.0.0-SNAPSHOT",
     "prop-types": "~15.6.2",
     "react": "~16.5.2",
     "react-dom": "~16.5.2",
