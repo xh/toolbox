@@ -39,26 +39,26 @@ export function demoPanel(options) {
     }
 
     return wrapper({
-            description,
-            item: panel({
-                title,
-                height,
-                width,
-                className: 'toolbox-demo-panel',
-                item:
-                    div({
-                        className: 'demo-table-scroller',
-                        item: table({
-                            className: 'xh-table',
-                            items: [
-                                thead(tr(th(''), th('Code'), th('Description'))),
-                                tbody(
-                                    rows.map(row => row.type === 'tr' ? row : tableRow(row))
-                                )
-                            ]
-                        })
+        description,
+        item: panel({
+            title,
+            height,
+            width,
+            className: 'toolbox-demo-panel',
+            item:
+                div({
+                    className: 'demo-table-scroller',
+                    item: table({
+                        className: 'xh-table',
+                        items: [
+                            thead(tr(th(''), th('Code'), th('Description'))),
+                            tbody(
+                                rows.map(row => row.type === 'tr' ? row : tableRow(row))
+                            )
+                        ]
                     })
-            })
-    })
+                })
+        })
+    });
 }
 

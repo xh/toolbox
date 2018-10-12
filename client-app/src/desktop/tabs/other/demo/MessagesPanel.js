@@ -37,7 +37,7 @@ export class MessagesPanel extends Component {
                     description: 'Text defined for both confirm and cancel buttons. ' +
                         'The cancel button receives a callback which accesses the app\'s router via XH.navigate().'
                 },
-                tr(th(''), th('XH.alert()'), th(`Modal dialog with default text 'OK' on confirm button.`)),
+                tr(th(''), th('XH.alert()'), th('Modal dialog with default text \'OK\' on confirm button.')),
                 {
                     xhCode: `XH.alert({\n\tmessage: 'This is a simple XH Alert.'\n})`,
                     description: 'No optional parameters set'
@@ -62,9 +62,9 @@ export class MessagesPanel extends Component {
                 },
                 {
                     xhCode: `XH.toast({\n\tmessage:'This is a less simple XH toast',\n\ttimeout:'5000',\n\tintent:'warning',\n\tposition:'auto'\n})`,
-                    description: `Disappears after 5 seconds. Receives two Blueprint props: 'intent' and 'position'`
+                    description: 'Disappears after 5 seconds. Receives two Blueprint props: \'intent\' and \'position\''
                 }
             ]
-        })
+        });
     }
 }

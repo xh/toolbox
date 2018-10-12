@@ -5,8 +5,8 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import React, {Component} from 'react';
-import {HoistComponent, XH} from '@xh/hoist/core/index';
-import {demoPanel, tableRow} from './DemoPanel';
+import {HoistComponent} from '@xh/hoist/core/index';
+import {demoPanel} from './DemoPanel';
 
 
 @HoistComponent
@@ -31,7 +31,7 @@ export class ExceptionsPanel extends Component {
             width: '90%',
             rows: [
                 {
-                    xhCode:`XH.handleException('Error', {\n\tmessage: 'Stop doing that!', \n\ttitle: 'I am an XH Error Message'\n})`,
+                    xhCode: `XH.handleException('Error', {\n\tmessage: 'Stop doing that!', \n\ttitle: 'I am an XH Error Message'\n})`,
                     description: 'Override the default error message and add a title to the modal dialog'
                 },
                 {
@@ -49,9 +49,9 @@ export class ExceptionsPanel extends Component {
                 },
                 {
                     xhCode: `XH.handleException('Error', {\n\trequireReload: true\n})`,
-                    description: 'Force the user to refresh app in order to dismiss the modal',
+                    description: 'Force the user to refresh app in order to dismiss the modal'
                 }
             ]
-        })
+        });
     }
 }
