@@ -11,9 +11,9 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
 import {hframe} from '@xh/hoist/cmp/layout';
 import {
-    numberField,
-    selectField,
-    textAreaField
+    numberInput,
+    switchInput,
+    textArea
 } from '@xh/hoist/desktop/cmp/form';
 
 import {formGroup} from '@xh/hoist/kit/blueprint';
@@ -44,13 +44,13 @@ export class FormatsTab extends Component {
                                     row({
                                         field: 'testNumbers',
                                         className: 'formats-text-area-input',
-                                        item: textAreaField({
+                                        item: textArea({
                                             style: {
                                                 textAlign: 'right',
-                                                fontSize: 'larger'
+                                                fontSize: 'larger',
+                                                height: model.textAreaRows * 15
                                             },
-                                            commitOnChange: true,
-                                            rows: model.textAreaRows
+                                            commitOnChange: true
                                         }),
                                         info: 'Enter one number per line'
                                     })
@@ -62,43 +62,28 @@ export class FormatsTab extends Component {
                                 flex: 1,
                                 items: [
                                     row({
-                                        label: 'Precision',
-                                        field: 'precision',
-                                        item: numberField({
+                                        label: 'Precision - auto',
+                                        field: 'precisionAuto',
+                                        item: switchInput(),
+                                        info: 'If "auto", heuristic based auto-rounding will occur.'
+                                    }),
+                                    row({
+                                        label: 'Precision - numerical',
+                                        field: 'precisionNumber',
+                                        item: numberInput({
                                             min: 0,
-                                            max: 4,
-                                            selectOnFocus: true
+                                            max: 12,
+                                            selectOnFocus: true,
+                                            disabled: model.precisionAuto
                                         }),
                                         info: 'Max digits to the right of decimal place'
                                     }),
-                                    row({
-                                        label: 'Decimal Tolerance',
-                                        field: 'decimalTolerance',
-                                        item: numberField({
-                                            value: model.decimalTolerance,
-                                            selectOnFocus: true
-                                        }),
-                                        info: 'Number of decimal places tolerated before downsizing units. Should be less than or equal to precision'
-                                    }),
+
                                     row({
                                         label: 'Zero Pad',
                                         field: 'zeroPad',
-                                        item: numberField({
-                                            stepSize: 1,
-                                            min: 0,
-                                            max: 10,
-                                            selectOnFocus: true
-                                        }),
+                                        item: switchInput(),
                                         info: 'Zero padding applied where possible'
-                                    }),
-                                    row({
-                                        label: 'Units',
-                                        field: 'units',
-                                        item: selectField({
-                                            options: model.UNIT_OPTIONS,
-                                            placeholder: 'Select label...'
-                                        }),
-                                        info: 'Auto: Apply scale to each number based on its size'
                                     })
                                 ]
                             }),

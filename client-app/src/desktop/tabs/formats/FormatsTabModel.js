@@ -7,30 +7,20 @@ import {toLower} from 'lodash';
 @HoistModel
 export class FormatsTabModel {
 
-    UNIT_OPTIONS = [
-        'None',
-        'Auto',
-        'Thousands',
-        'Millions',
-        'Billions'
-    ];
-
     @bindable testNumbers = '123456\n123450\n123400.1\n12456.12\n12345600\n12345000\n123456789.12\n' +
                             '123450000\n100000001\n0.25\n101\n920120.21343\n1.224123';
 
-    @bindable precision = 2;
-    @bindable decimalTolerance = 2;
-    @bindable zeroPad = 0;
-    @bindable units = 'Auto';
+    @bindable precisionAuto = false;
+    @bindable precisionNumber = 2;
+    @bindable zeroPad = true;
 
     @computed
     get fOptions() {
         return {
             asElement: true,
             units: toLower(this.units),
-            precision: this.precision,
-            zeroPad: this.zeroPad,
-            decimalTolerance: this.decimalTolerance
+            precision: this.precisionAuto ? 'auto' : this.precisionNumber,
+            zeroPad: this.zeroPad
         };
     }
 
@@ -58,7 +48,7 @@ export class FormatsTabModel {
 
     @computed
     get textAreaRows() {
-        return this.testNumbers.split(/\r\n|\r|\n/).length
+        return this.testNumbers.split(/(\r\n|\r|\n)/).length;
     }
 
 }

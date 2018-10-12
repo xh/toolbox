@@ -117,6 +117,10 @@ class AppClass {
                         path: '/icons'
                     },
                     {
+                        name: 'formats',
+                        path: '/formats'
+                    },
+                    {
                         name: 'other',
                         path: '/other',
                         forwardTo: 'default.other.mask',
@@ -134,10 +138,6 @@ class AppClass {
                         children: [
                             {name: 'news', path: '/news'}
                         ]
-                    },
-                    {
-                        name: 'formats',
-                        path: '/formats'
                     }
                 ]
             }
@@ -154,10 +154,9 @@ class AppClass {
                 {id: 'forms', content: FormsTab},
                 {id: 'charts', content: ChartsTab},
                 {id: 'icons', content: IconsTab},
+                {id: 'formats', content: FormatsTab},
                 {id: 'other', content: OtherTab},
                 {id: 'examples', content: ExamplesTab}
-                {id: 'other', content: OtherTab},
-                {id: 'formats', content: FormatsTab}
             ]
         });
     }
