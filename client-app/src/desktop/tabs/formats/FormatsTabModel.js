@@ -8,7 +8,7 @@ import {toLower} from 'lodash';
 export class FormatsTabModel {
 
     @bindable testNumbers = '123456\n123450\n123400.1\n12456.12\n12345600\n12345000\n123456789.12\n' +
-                            '123450000\n100000001\n0.25\n101\n920120.21343\n1.224123';
+                            '123450000\n100000001\n0.25\n101\n920120.21343\n1.224123\n0.123456e-12\n123456e14';
 
     @bindable precisionAuto = false;
     @bindable precisionNumber = 2;
