@@ -11,7 +11,6 @@ import {Icon} from '@xh/hoist/icon';
 import {restGrid, RestGridModel, RestStore, addAction, editAction, viewAction, deleteAction} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/columns';
 import {wrapper} from '../../common/Wrapper';
-import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/columns';
 
 @HoistComponent
 export class RestGridPanel extends Component {
@@ -66,14 +65,6 @@ export class RestGridPanel extends Component {
         sortBy: 'name',
         columns: [
             {
-                ...actionCol,
-                width: calcActionColWidth(2),
-                actions: [
-                    editAction,
-                    deleteAction
-                ]
-            },
-            {
                 field: 'name',
                 width: 250
             },
@@ -106,7 +97,7 @@ export class RestGridPanel extends Component {
             {field: 'lastUpdatedBy'}
         ],
         emptyText: 'No companies found - try adding one...',
-        contextMenuActions: [
+        menuActions: [
             addAction,
             editAction,
             viewAction,
