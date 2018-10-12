@@ -45,8 +45,7 @@ export class ExceptionsPanel extends Component {
                 },
                 {
                     xhCode: `XH.handleException('Error', {\n\tshowAsError: false\n})`,
-                    description: 'Don\'t display to the user as an error.',
-                    onClick: () => this.onClick({showAsError: false})
+                    description: 'Don\'t display to the user as an error.'
                 },
                 {
                     xhCode: `XH.handleException('Error', {\n\trequireReload: true\n})`,

@@ -39,7 +39,7 @@ export class MessagesPanel extends Component {
                 },
                 tr(th(''), th('XH.alert()'), th(`Modal dialog with default text 'OK' on confirm button.`)),
                 {
-                    xhCode: `XH.alert({\n\tmessage: 'This is an XH Alert.'\n})`,
+                    xhCode: `XH.alert({\n\tmessage: 'This is a simple XH Alert.'\n})`,
                     description: 'No optional parameters set'
                 },
                 {

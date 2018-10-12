@@ -16,21 +16,34 @@
     thead {
       background-color: var(--xh-grid-header-bg);
       color: var(--xh-grid-header-text-color);
+      th {
+        padding: 10px 5px;
+        text-align: left;
+      }
     }
-    th, td {
-      text-align: left;
-      padding: 6px;
-    }
-
     tbody {
+      td {
+        padding: 5px;
+      }
+      th {
+        opacity: 0.7;
+        font-weight: normal;
+        background-color: var(--xh-title-bg);
+        color: var(--xh-title-text-color);
+        text-align: left;
+        padding: 7px 5px;
+      }
 
       tr {
-        &:nth-child(even) {
-          background-color: var(--xh-grid-bg-odd);
-        }
-
+        border-top: 1px solid var(--xh-grid-border-color);
         &:hover {
-          background-color: var(--xh-grid-bg-highlight);
+          td {
+            background-color: var(--xh-grid-bg-highlight);
+          }
+        }
+        td:first-child {
+          padding: 5px 10px;
+          margin: 1em 0;
         }
       }
     }
