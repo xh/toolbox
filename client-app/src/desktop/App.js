@@ -129,9 +129,10 @@ class AppClass {
                     {
                         name: 'examples',
                         path: '/examples',
-                        forwardTo: 'default.examples.news',
+                        forwardTo: 'default.examples.positions',
                         children: [
-                            {name: 'news', path: '/news'}
+                            {name: 'news', path: '/news'},
+                            {name: 'positions', path: '/positions'}
                         ]
                     }
                 ]
