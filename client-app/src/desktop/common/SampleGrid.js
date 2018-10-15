@@ -17,7 +17,7 @@ import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput, select} from '@xh/hoist/desktop/cmp/form';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
-import {LocalStore, RecordAction} from '@xh/hoist/data';
+import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {observable, action} from '@xh/hoist/mobx';
@@ -31,21 +31,21 @@ class SampleGrid extends Component {
 
     loadModel = new PendingTaskModel();
 
-    viewDetailsAction = new RecordAction({
+    viewDetailsAction = {
         text: 'View Details',
         icon: Icon.search(),
         tooltip: 'View details on the selected company',
         actionFn: ({record}) => this.showInfoToast(record)
-    });
+    };
 
-    terminateAction = new RecordAction({
+    terminateAction = {
         text: 'Terminate',
         icon: Icon.skull(),
         intent: 'danger',
         tooltip: 'Terminate this company.',
         actionFn: ({record}) => this.showTerminateToast(record),
         confirm: 'Are you sure you want to terminate this company?'
-    });
+    };
 
     localModel = new GridModel({
         store: new LocalStore({
