@@ -1,18 +1,36 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable, computed} from '@xh/hoist/mobx';
-import {fmtNumber} from '@xh/hoist/format/FormatNumber';
+import {action, bindable, computed, observable} from '@xh/hoist/mobx';
+import * as formatNumber from '@xh/hoist/format/FormatNumber';
 import React from 'react';
-import {toLower} from 'lodash';
+import {clone, toLower} from 'lodash';
 
 @HoistModel
 export class FormatsTabModel {
 
-    @bindable testNumbers = '123456\n123450\n123400.1\n12456.12\n12345600\n12345000\n123456789.12\n' +
-                            '123450000\n100000001\n0.25\n101\n920120.21343\n1.224123\n0.123456e-12\n123456e14';
+    @bindable testNumbers = `123456
+123450
+123400.1
+12456.12
+12345600
+12345000
+123456789.12
+1234567890.12
+123450000
+100000001
+0.25
+101
+920120.21343
+1.224123
+1.23456e-12
+123456e14`;
 
     @bindable precisionAuto = false;
+    @observable precisionAutoDisabled = false;
+    @observable precisionNumericalDisabled = false;
     @bindable precisionNumber = 2;
     @bindable zeroPad = true;
+    @observable zeroPadDisabled = false;
+    @bindable presetFunction = 'fmtNumber';
 
     @computed
     get fOptions() {
@@ -31,7 +49,11 @@ export class FormatsTabModel {
 
     @computed
     get formattedNumbers() {
-        const sampleNumbers = this.sampleNumbers;
+        const {sampleNumbers, presetFunction, fOptions} = this,
+            customFormatOptions = presetFunction == 'fmtNumber' ? clone(fOptions) : {};
+
+        console.log(customFormatOptions)
+
         return sampleNumbers.map(
             (num, index) =>
                 <tr key={`num-${index}`}>
@@ -40,7 +62,7 @@ export class FormatsTabModel {
                         {sampleNumbers[index]}
                     </td>
                     <td align="right">
-                        {fmtNumber(num, this.fOptions)}
+                        {formatNumber[presetFunction](num, customFormatOptions)}
                     </td>
                 </tr>
         );
@@ -49,6 +71,18 @@ export class FormatsTabModel {
     @computed
     get textAreaRows() {
         return this.testNumbers.split(/(\r\n|\r|\n)/).length;
+    }
+
+    //-----------------------------
+    // Implementation
+    //-----------------------------
+    @action
+    handlePresetFunctionChange(val) {
+        const disabled = val != 'fmtNumber';
+
+        this.precisionAutoDisabled =
+            this.precisionNumericalDisabled =
+                this.zeroPadDisabled = disabled;
     }
 
 }

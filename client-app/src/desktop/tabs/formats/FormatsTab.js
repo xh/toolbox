@@ -11,7 +11,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
 import {hframe} from '@xh/hoist/cmp/layout';
 import {
-    numberInput,
+    numberInput, radioInput,
     switchInput,
     textArea
 } from '@xh/hoist/desktop/cmp/form';
@@ -48,7 +48,7 @@ export class FormatsTab extends Component {
                                             style: {
                                                 textAlign: 'right',
                                                 fontSize: 'larger',
-                                                height: model.textAreaRows * 15
+                                                height: model.textAreaRows * 12
                                             },
                                             commitOnChange: true
                                         }),
@@ -64,7 +64,9 @@ export class FormatsTab extends Component {
                                     row({
                                         label: 'Precision - auto',
                                         field: 'precisionAuto',
-                                        item: switchInput(),
+                                        item: switchInput({
+                                            disabled: model.precisionAutoDisabled
+                                        }),
                                         info: 'If "auto", heuristic based auto-rounding will occur.'
                                     }),
                                     row({
@@ -74,7 +76,7 @@ export class FormatsTab extends Component {
                                             min: 0,
                                             max: 12,
                                             selectOnFocus: true,
-                                            disabled: model.precisionAuto
+                                            disabled: model.precisionAuto || model.precisionNumericalDisabled
                                         }),
                                         info: 'Max digits to the right of decimal place'
                                     }),
@@ -82,8 +84,27 @@ export class FormatsTab extends Component {
                                     row({
                                         label: 'Zero Pad',
                                         field: 'zeroPad',
-                                        item: switchInput(),
+                                        item: switchInput({
+                                            disabled: model.zeroPadDisabled
+                                        }),
                                         info: 'Zero padding applied where possible'
+                                    }),
+                                    row({
+                                        label: 'Pre-set Functions',
+                                        field: 'presetFunction',
+                                        item: radioInput({
+                                            alignIndicator: 'right',
+                                            onChange: (val) => model.handlePresetFunctionChange(val),
+                                            options: [
+                                                {value: 'fmtNumber', label: 'No Preset (use fmtNumber)', defaultChecked: true},
+                                                'fmtThousands',
+                                                'fmtMillions',
+                                                'fmtBillions',
+                                                'fmtQuantity',
+                                                'fmtPrice',
+                                                'fmtPercent'
+                                            ]
+                                        })
                                     })
                                 ]
                             }),
