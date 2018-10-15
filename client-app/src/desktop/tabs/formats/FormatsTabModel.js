@@ -1,13 +1,18 @@
+import React from 'react';
+import {clone, toLower} from 'lodash';
+
 import {HoistModel} from '@xh/hoist/core';
 import {action, bindable, computed, observable} from '@xh/hoist/mobx';
 import * as formatNumber from '@xh/hoist/format/FormatNumber';
-import React from 'react';
-import {clone, toLower} from 'lodash';
 
 @HoistModel
 export class FormatsTabModel {
 
-    @bindable testNumbers = `123456
+    @bindable testNumbers = `-1842343
+0.25
+50
+101
+123456
 123450
 123400.1
 12456.12
@@ -17,8 +22,6 @@ export class FormatsTabModel {
 1234567890.12
 123450000
 100000001
-0.25
-101
 920120.21343
 1.224123
 1.23456e-12
@@ -50,9 +53,11 @@ export class FormatsTabModel {
     @computed
     get formattedNumbers() {
         const {sampleNumbers, presetFunction, fOptions} = this,
-            customFormatOptions = presetFunction == 'fmtNumber' ? clone(fOptions) : {};
-
-        console.log(customFormatOptions)
+            customFormatOptions = presetFunction == 'fmtNumber' ?
+                clone(fOptions) :
+                {
+                    asElement: true
+                };
 
         return sampleNumbers.map(
             (num, index) =>
