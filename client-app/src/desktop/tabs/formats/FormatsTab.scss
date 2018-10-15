@@ -14,6 +14,13 @@
     th, td {
       border-bottom: 1px solid #ddd;
     }
+
+    &__card {
+      display: flex;
+      flex-direction: column;
+      margin: 0px 22px 8px 22px;
+      padding: 0px 8px 8px 0px;
+    }
   }
 
   .bp3-form-content {

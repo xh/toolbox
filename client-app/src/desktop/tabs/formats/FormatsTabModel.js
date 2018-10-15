@@ -27,11 +27,15 @@ export class FormatsTabModel {
 1.23456e-12
 123456e14`;
 
-    @bindable presetFunction = 'fmtNumber';
-    @observable singleOptionsDisabled = false;
+    @bindable presetFunction = 'fmtThousands';
+    @observable singleOptionsDisabled = true;
 
     @bindable precisionAuto = false;
     @bindable precisionNumber = 2;
+    @computed get precision() {
+        return this.precisionAuto ? 'auto' : this.precisionNumber;
+    }
+
     @bindable zeroPad = true;
     @bindable ledger = true;
     @bindable forceLedgerAlign = true;
@@ -45,7 +49,7 @@ export class FormatsTabModel {
         return {
             asElement: true,
             units: toLower(this.units),
-            precision: this.precisionAuto ? 'auto' : this.precisionNumber,
+            precision: this.precision,
             zeroPad: this.zeroPad,
             ledger: this.ledger,
             forceLedgerAlign: this.forceLedgerAlign,
