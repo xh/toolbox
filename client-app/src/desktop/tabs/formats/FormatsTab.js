@@ -30,7 +30,7 @@ export class FormatsTab extends Component {
         return wrapper({
             item:
                 panel({
-                    title: 'Compact Number Formatter',
+                    title: 'Number Format Tester',
                     className: 'toolbox-formats-tab',
                     width: '90%',
                     height: '90%',
