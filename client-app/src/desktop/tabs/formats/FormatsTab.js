@@ -13,7 +13,7 @@ import {hframe} from '@xh/hoist/cmp/layout';
 import {
     numberInput, radioInput,
     switchInput,
-    textArea
+    textArea, textInput
 } from '@xh/hoist/desktop/cmp/form';
 
 import {formGroup} from '@xh/hoist/kit/blueprint';
@@ -62,34 +62,6 @@ export class FormatsTab extends Component {
                                 flex: 1,
                                 items: [
                                     row({
-                                        label: 'Precision - auto',
-                                        field: 'precisionAuto',
-                                        item: switchInput({
-                                            disabled: model.precisionAutoDisabled
-                                        }),
-                                        info: 'If "auto", heuristic based auto-rounding will occur.'
-                                    }),
-                                    row({
-                                        label: 'Precision - numerical',
-                                        field: 'precisionNumber',
-                                        item: numberInput({
-                                            min: 0,
-                                            max: 12,
-                                            selectOnFocus: true,
-                                            disabled: model.precisionAuto || model.precisionNumericalDisabled
-                                        }),
-                                        info: 'Max digits to the right of decimal place'
-                                    }),
-
-                                    row({
-                                        label: 'Zero Pad',
-                                        field: 'zeroPad',
-                                        item: switchInput({
-                                            disabled: model.zeroPadDisabled
-                                        }),
-                                        info: 'Zero padding applied where possible'
-                                    }),
-                                    row({
                                         label: 'Pre-set Functions',
                                         field: 'presetFunction',
                                         item: radioInput({
@@ -105,6 +77,84 @@ export class FormatsTab extends Component {
                                                 'fmtPercent'
                                             ]
                                         })
+                                    }),
+                                    row({
+                                        label: 'Precision - auto',
+                                        field: 'precisionAuto',
+                                        item: switchInput({
+                                            disabled: model.singleOptionsDisabled
+                                        }),
+                                        info: '"precision" config applied with "auto".  "auto" enables heuristic based auto-rounding.'
+                                    }),
+                                    row({
+                                        label: 'Precision - numerical',
+                                        field: 'precisionNumber',
+                                        item: numberInput({
+                                            min: 0,
+                                            max: 12,
+                                            selectOnFocus: true,
+                                            commitOnChange: true,
+                                            disabled: model.precisionAuto || model.singleOptionsDisabled
+                                        }),
+                                        info: '"precision" config applied with a digit that specifies max digits to the right of decimal place.'
+                                    }),
+
+                                    row({
+                                        label: 'Zero Pad',
+                                        field: 'zeroPad',
+                                        item: switchInput({
+                                            disabled: model.singleOptionsDisabled
+                                        }),
+                                        info: '"zeroPad" config applied where possible.'
+                                    }),
+                                    row({
+                                        label: 'Ledger',
+                                        field: 'ledger',
+                                        item: switchInput({
+                                            disabled: model.singleOptionsDisabled
+                                        }),
+                                        info: '"ledger" config applied.'
+                                    }),
+                                    row({
+                                        label: 'Force Ledger Align',
+                                        field: 'forceLedgerAlign',
+                                        item: switchInput({
+                                            disabled: model.singleOptionsDisabled
+                                        }),
+                                        info: '"forceLedgerAlign" config applied.'
+                                    }),
+                                    row({
+                                        label: 'With Plus Sign',
+                                        field: 'withPlusSign',
+                                        item: switchInput({
+                                            disabled: model.singleOptionsDisabled
+                                        }),
+                                        info: '"withPlusSign" config applied.'
+                                    }),
+                                    row({
+                                        label: 'With Sign Glyph',
+                                        field: 'withSignGlyph',
+                                        item: switchInput({
+                                            disabled: model.singleOptionsDisabled
+                                        }),
+                                        info: '"withSignGlyph" config applied.'
+                                    }),
+                                    row({
+                                        label: 'Color Spec',
+                                        field: 'colorSpec',
+                                        item: switchInput({
+                                            disabled: model.singleOptionsDisabled
+                                        }),
+                                        info: '"colorSpec" config applied.'
+                                    }),
+                                    row({
+                                        label: 'Label',
+                                        field: 'label',
+                                        item: textInput({
+                                            disabled: model.singleOptionsDisabled,
+                                            commitOnChange: true
+                                        }),
+                                        info: '"label" config applied.'
                                     })
                                 ]
                             }),

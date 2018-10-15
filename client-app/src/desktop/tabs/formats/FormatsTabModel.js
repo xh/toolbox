@@ -27,13 +27,18 @@ export class FormatsTabModel {
 1.23456e-12
 123456e14`;
 
+    @bindable presetFunction = 'fmtNumber';
+    @observable singleOptionsDisabled = false;
+
     @bindable precisionAuto = false;
-    @observable precisionAutoDisabled = false;
-    @observable precisionNumericalDisabled = false;
     @bindable precisionNumber = 2;
     @bindable zeroPad = true;
-    @observable zeroPadDisabled = false;
-    @bindable presetFunction = 'fmtNumber';
+    @bindable ledger = true;
+    @bindable forceLedgerAlign = true;
+    @bindable withPlusSign = false;
+    @bindable withSignGlyph = false;
+    @bindable colorSpec = true;
+    @bindable label = '';
 
     @computed
     get fOptions() {
@@ -41,7 +46,13 @@ export class FormatsTabModel {
             asElement: true,
             units: toLower(this.units),
             precision: this.precisionAuto ? 'auto' : this.precisionNumber,
-            zeroPad: this.zeroPad
+            zeroPad: this.zeroPad,
+            ledger: this.ledger,
+            forceLedgerAlign: this.forceLedgerAlign,
+            withPlusSign: this.withPlusSign,
+            withSignGlyph: this.withSignGlyph,
+            colorSpec: this.colorSpec,
+            label: this.label
         };
     }
 
@@ -83,11 +94,7 @@ export class FormatsTabModel {
     //-----------------------------
     @action
     handlePresetFunctionChange(val) {
-        const disabled = val != 'fmtNumber';
-
-        this.precisionAutoDisabled =
-            this.precisionNumericalDisabled =
-                this.zeroPadDisabled = disabled;
+        this.singleOptionsDisabled = val != 'fmtNumber';
     }
 
 }
