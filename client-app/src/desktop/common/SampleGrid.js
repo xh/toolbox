@@ -50,7 +50,7 @@ class SampleGrid extends Component {
         store: new LocalStore({
             fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
         }),
-        sortBy: [{colId: 'company', sort: 'asc'}],
+        sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
