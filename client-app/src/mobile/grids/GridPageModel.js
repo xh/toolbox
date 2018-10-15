@@ -9,8 +9,7 @@ import {XH, HoistModel} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/mobile/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
-import {emptyFlexCol} from '@xh/hoist/columns';
-import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
 
 import {companyTrades} from '../../core/data';
 
@@ -20,34 +19,37 @@ export class GridPageModel {
     loadModel = new PendingTaskModel();
 
     gridModel = new GridModel({
+        stateModel: 'toolboxSampleGrid',
+        sortBy: ['profit_loss|desc|abs'],
         store: new LocalStore({
             fields: ['company', 'city', 'trade_volume', 'profit_loss']
         }),
         columns: [
             {
                 field: 'company',
-                width: 150,
-                agOptions: {pinned: true}
-            },
-            {
-                field: 'city',
-                width: 120
-            },
-            {
-                headerName: 'Volume',
-                field: 'trade_volume',
-                width: 100,
-                align: 'right',
-                renderer: millionsRenderer({precision: 1, label: true})
+                flex: true,
+                multiFieldRendererCfg: {
+                    fields: [{
+                        label: 'City',
+                        field: 'city'
+                    }]
+                }
             },
             {
                 headerName: 'P&L',
                 field: 'profit_loss',
-                width: 100,
+                width: 120,
                 align: 'right',
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
-            },
-            {...emptyFlexCol}
+                absSort: true,
+                multiFieldRendererCfg: {
+                    renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}),
+                    fields: [{
+                        label: 'Volume',
+                        field: 'trade_volume',
+                        renderer: thousandsRenderer({precision: 1, label: true, asElement: true})
+                    }]
+                }
+            }
         ]
     });
 

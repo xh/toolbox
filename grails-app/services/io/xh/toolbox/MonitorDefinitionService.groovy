@@ -5,26 +5,25 @@ import io.xh.hoist.monitor.MonitorResult
 
 import static io.xh.hoist.monitor.MonitorStatus.OK
 import static io.xh.hoist.monitor.MonitorStatus.FAIL
-import static io.xh.hoist.util.DateTimeUtils.HOURS
+import static io.xh.hoist.util.DateTimeUtils.MINUTES
 import static java.lang.System.currentTimeMillis
 
 class MonitorDefinitionService extends BaseService {
 
     def newsService
 
-    def newsStories(MonitorResult result) {
-        result.metric = newsService.countStories()
+    def newsStoryCount(MonitorResult result) {
+        result.metric = newsService.itemCount
     }
 
-    def lastUpdate(MonitorResult result) {
-        def now = currentTimeMillis(),
-            diffMs = now - newsService.lastTimestamp.time,
-            diffHours = Math.floor(diffMs/HOURS)
+    def lastUpdateAgeMins(MonitorResult result) {
+        def diffMs = currentTimeMillis() - newsService.lastTimestamp.time,
+            diffHours = Math.floor(diffMs / MINUTES)
         result.metric = diffHours
     }
 
-    def sourcesLoaded(MonitorResult result) {
-        result.metric = newsService.countSourcesLoaded()
-        result.status = newsService.sourcesLoaded() ? OK : FAIL
+    def loadedSourcesCount(MonitorResult result) {
+        result.metric = newsService.loadedSourcesCount
+        result.status = newsService.allSourcesLoaded ? OK : FAIL
     }
 }
