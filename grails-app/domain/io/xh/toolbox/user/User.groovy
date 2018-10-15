@@ -1,7 +1,6 @@
 package io.xh.toolbox.user
 
 import io.xh.hoist.user.HoistUser
-import io.xh.hoist.util.Utils
 import org.jasypt.util.password.BasicPasswordEncryptor
 
 
@@ -38,17 +37,6 @@ class User implements HoistUser {
     String getUsername()    {email}
     String getEmail()       {email}
     String getDisplayName() {firstName + ' ' + lastName}
-
-    Set<String> getRoles()  {
-        def configRoles = Utils.configService.getJSONObject('roles'),
-            ret = []
-
-        configRoles.each{role, roleUsers ->
-            if (roleUsers.contains(username)) ret << role
-        }
-
-        return ret
-    }
 
 
     //---------------------

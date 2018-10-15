@@ -1,11 +1,9 @@
-package io.xh.toolbox.App
+package io.xh.toolbox.app
 
 import io.xh.hoist.BaseService
 import io.xh.hoist.json.JSON
-
 import io.xh.toolbox.NewsItem
 import org.grails.web.json.JSONArray
-
 
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 
