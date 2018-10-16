@@ -34,7 +34,7 @@ class SampleTreeGrid extends Component {
         store: new LocalStore({
             fields: ['id', 'name', 'pnl']
         }),
-        sortBy: [{colId: 'name', sort: 'asc'}],
+        sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,

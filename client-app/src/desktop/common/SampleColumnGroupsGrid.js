@@ -45,7 +45,7 @@ class SampleColumnGroupsGrid extends Component {
                         text: 'View Details',
                         icon: Icon.search(),
                         recordsRequired: 1,
-                        actionFn: (item, rec) => this.showRecToast(rec)
+                        actionFn: ({record}) => this.showRecToast(record)
                     },
                     '-',
                     ...GridModel.defaultContextMenuTokens
