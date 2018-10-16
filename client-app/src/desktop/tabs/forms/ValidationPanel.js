@@ -80,8 +80,7 @@ export class ValidationPanel extends Component {
                                             field: 'startDate',
                                             item: dateInput({
                                                 width: 120,
-                                                commitOnChange: true,
-                                                minDate: new Date()
+                                                commitOnChange: true
                                             })
                                         }),
                                         Icon.chevronRight({
@@ -92,8 +91,7 @@ export class ValidationPanel extends Component {
                                             field: 'endDate',
                                             item: dateInput({
                                                 width: 120,
-                                                commitOnChange: true,
-                                                minDate: new Date()
+                                                commitOnChange: true
                                             })
                                         })
                                     ]
