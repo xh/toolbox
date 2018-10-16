@@ -1,6 +1,7 @@
 import {action, observable} from '@xh/hoist/mobx';
 import {HoistModel} from '@xh/hoist/core';
 import faker from 'faker';
+import moment from 'moment';
 
 @HoistModel
 export class PortfolioDataGenerator {
@@ -9,17 +10,15 @@ export class PortfolioDataGenerator {
     strategies = ['US Tech Long/Short', 'US Healthcare Long/Short', 'EU Long/Short', 'BRIC', 'Africa'];
     numOrders = 50;
 
-    @observable.ref
-    portfolio = [];
+    @observable.ref portfolio = [];
+    @observable.ref selectedOrders = [];
+    @observable.ref selectedLineData = [];
 
     orders = [];
-
-    @observable.ref
-    selectedOrders = [
-    ];
+    marketData = [];
 
     constructor() {
-        this.generateEmptyPortfolio();
+        this.generatePortfolio();
         for (let x = 0; x < this.numOrders; x++) {
             const order = this.generateOrder();
             this.updatePortfolioWithOrder(order);
@@ -28,7 +27,7 @@ export class PortfolioDataGenerator {
         this.loadAsync();
     }
 
-    generateEmptyPortfolio() {
+    generatePortfolio() {
         let a = 0;
         this.models.forEach(model => {
             a++;
@@ -46,17 +45,42 @@ export class PortfolioDataGenerator {
                     children: []
                 };
                 for (let x = 1; x < Math.floor(Math.random() * 6) + 2; x++) {
+                    const symbol = this.generateSymbol();
                     strategyLevel.children.push({
                         id: a + '-' + b + '-' + x,
-                        name: this.generateSymbol(),
+                        name: symbol,
                         volume: 0,
                         pnl:  0
                     });
+                    this.marketData.push([symbol, this.generateMarketData()]);
                 }
                 modelLevel.children.push(strategyLevel);
             });
             this.portfolio.push(modelLevel);
         });
+        console.log('marketData', this.marketData);
+    }
+
+    generateMarketData() {
+        const startDate = moment('2018-10-01', 'YYYY-MM-DD');
+        const todayDate = moment();
+        const numDays = todayDate.diff(startDate, 'days');
+        const ret = [];
+        for (let x = 0; x < numDays; x++) {
+            const valueDate = startDate.add(1, 'd');
+            const low = Math.random() * 100;
+            const high = (Math.random() * 5) + low;
+            if (valueDate.day() !== 0 && valueDate.day() !== 6) {
+                ret.push({
+                    valueDate: valueDate.format('YYYYMMDD'),
+                    high: high.toFixed(2),
+                    low: low.toFixed(2),
+                    open: ((Math.random() * (high - low)) + low).toFixed(2),
+                    close: ((Math.random() * (high - low)) + low).toFixed(2)
+                });
+            }
+        }
+        return ret;
     }
 
     generateOrder() {
@@ -147,16 +171,21 @@ export class PortfolioDataGenerator {
     }
 
     loadAsync() {
-        setInterval(() => {
-            console.log('new order received');
-            const order = this.generateOrder();
-            this.updatePortfolioWithOrder(order);
-        }, 1000);
+        // setInterval(() => {
+        //     console.log('new order received');
+        //     const order = this.generateOrder();
+        //     this.updatePortfolioWithOrder(order);
+        // }, 1000);
     }
 
     @action
     updateSelectedOrders(orders) {
         this.selectedOrders = [...orders];
+    }
+
+    @action
+    updateSelectedLineData(data) {
+        this.selectedLineData = [...data];
     }
 
     @action

@@ -13,6 +13,8 @@ import {strategyGrid} from './PortfolioStrategyGrid';
 import {ordersGrid} from './PortfolioOrdersGrid';
 import {hbox} from '@xh/hoist/cmp/layout';
 import {PortfolioDataGenerator} from './PortfolioDataGenerator';
+import {portfolioLineChartPanel} from './PortfolioLineChartPanel';
+import {portfolioOLHCChartPanel} from "./PortfolioOLHCChartPanel";
 
 @HoistComponent
 export class PortfolioPanel extends Component {
@@ -21,14 +23,6 @@ export class PortfolioPanel extends Component {
 
     render() {
         return wrapper({
-            description: [
-                <p>
-                    This is a new Positions app that I'm building. More exciting, fun, and descriptive language to follow.
-                </p>,
-                <p>
-                    Stay tuned, funky bunch!
-                </p>
-            ],
             item: panel({
                 title: 'Positions',
                 icon: Icon.window(),
@@ -41,15 +35,34 @@ export class PortfolioPanel extends Component {
                                 title: 'Strategies',
                                 icon: Icon.gridPanel(),
                                 width: 600,
-                                height: 400,
+                                height: 300,
                                 item: strategyGrid(this.portfolioData)
                             }),
                             panel({
                                 title: 'Orders',
                                 icon: Icon.gridPanel(),
                                 width: 900,
-                                height: 400,
+                                height: 300,
                                 item: ordersGrid(this.portfolioData)
+                            })
+                        ]
+                    }),
+                    hbox({
+                        flex: 1,
+                        items: [
+                            panel({
+                                title: 'Strategies',
+                                icon: Icon.gridPanel(),
+                                width: 750,
+                                height: 400,
+                                item: portfolioLineChartPanel(this.portfolioData)
+                            }),
+                            panel({
+                                title: 'Orders',
+                                icon: Icon.gridPanel(),
+                                width: 750,
+                                height: 400,
+                                item: portfolioOLHCChartPanel(this.portfolioData)
                             })
                         ]
                     })

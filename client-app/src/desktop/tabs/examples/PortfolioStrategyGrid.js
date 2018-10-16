@@ -101,29 +101,6 @@ class StrategyGrid extends Component {
                 }
             }),
             mask: this.loadModel
-            // bbar: toolbar({
-            //     omit: this.props.omitToolbar,
-            //     items: [
-            //         storeFilterField({
-            //             store,
-            //             fields: ['name']
-            //         }),
-            //         storeCountLabel({
-            //             store,
-            //             units: 'companies'
-            //         }),
-            //         filler(),
-            //         box('Compact mode:'),
-            //         switchInput({
-            //             field: 'compact',
-            //             model
-            //         }),
-            //         toolbarSep(),
-            //         colChooserButton({gridModel: model}),
-            //         exportButton({model, exportType: 'excel'}),
-            //         refreshButton({model: this})
-            //     ]
-            // })
         });
     }
 
