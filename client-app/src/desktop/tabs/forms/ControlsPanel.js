@@ -25,7 +25,6 @@ import {
     multiSelect,
     switchInput,
     comboBox,
-    queryComboBox,
     jsonInput,
     buttonGroupInput
 } from '@xh/hoist/desktop/cmp/form';
@@ -198,7 +197,7 @@ export class ControlsPanel extends Component {
                                     label: 'QueryComboBox',
                                     field: 'option3',
                                     info: 'custom/async search (name/city)',
-                                    item: queryComboBox({
+                                    item: comboBox({
                                         queryFn: this.queryCompaniesAsync,
                                         placeholder: 'Search companies...'
                                     })
