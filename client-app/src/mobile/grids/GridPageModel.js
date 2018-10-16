@@ -24,16 +24,22 @@ export class GridPageModel {
         store: new LocalStore({
             fields: ['company', 'city', 'trade_volume', 'profit_loss']
         }),
+        subFields: [
+            {
+                label: 'City',
+                field: 'city'
+            },
+            {
+                label: 'Volume',
+                field: 'trade_volume',
+                renderer: thousandsRenderer({precision: 1, label: true, asElement: true})
+            }
+        ],
         columns: [
             {
                 field: 'company',
                 flex: true,
-                multiFieldRendererCfg: {
-                    fields: [{
-                        label: 'City',
-                        field: 'city'
-                    }]
-                }
+                subFields: ['city']
             },
             {
                 headerName: 'P&L',
@@ -41,14 +47,8 @@ export class GridPageModel {
                 width: 120,
                 align: 'right',
                 absSort: true,
-                multiFieldRendererCfg: {
-                    renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}),
-                    fields: [{
-                        label: 'Volume',
-                        field: 'trade_volume',
-                        renderer: thousandsRenderer({precision: 1, label: true, asElement: true})
-                    }]
-                }
+                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}),
+                subFields: ['trade_volume']
             }
         ]
     });
