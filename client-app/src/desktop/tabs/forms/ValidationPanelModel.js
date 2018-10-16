@@ -37,7 +37,7 @@ export class ValidationPanelModel {
     @field('Hire Date', required, dateIs({max: 'now'}))
     startDate;
 
-    @field('End Date', required, dateIs({min: 'now'}))
+    @field('End Date', required, dateIs({min: 'today'}))
     endDate;
 
     constructor() {
