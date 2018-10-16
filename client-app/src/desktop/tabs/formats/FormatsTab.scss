@@ -3,21 +3,23 @@
     margin: var(--xh-pad-px);
     display: flex;
 
-    tr {
-      text-align: right;
-    }
     table {
       padding: 5px 10px;
       font-size: larger;
     }
-
-    th, td {
-      border-bottom: 1px solid #ddd;
+    tr {
+      text-align: right;
+      background-color: var(--xh-grid-bg);
+      &:nth-child(odd) {
+        td {
+          background-color: var(--xh-grid-bg-odd);
+        }
+      }
     }
-    td:nth-child(2) {
+    td.inputColumn {
       width: 40%;
     }
-    td:first-child {
+    td.indexColumn {
       width: 24px;
     }
 

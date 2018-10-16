@@ -12,10 +12,10 @@ import {wrapper} from '../../common/Wrapper';
 import {hframe} from '@xh/hoist/cmp/layout';
 import {
     numberInput, radioInput,
-    switchInput, textInput
+    switchInput, TextInput, textInput
 } from '@xh/hoist/desktop/cmp/form';
 
-import {card, formGroup} from '@xh/hoist/kit/blueprint';
+import {card, formGroup, FormGroup} from '@xh/hoist/kit/blueprint';
 import {FormatsTabModel} from './FormatsTabModel';
 import './FormatsTab.scss';
 
@@ -172,6 +172,29 @@ export class FormatsTab extends Component {
                                         </thead>
                                         <tbody>
                                             {model.formattedNumbers}
+                                            <tr key={'num-from-user'}>
+                                                <td colSpan={2}
+                                                    align="right"
+                                                >
+                                                    <FormGroup
+                                                        label="Try your own:"
+                                                        inline={true}
+                                                        width="90%"
+                                                    >
+                                                        <TextInput
+                                                            model={model}
+                                                            field="numberFromUser"
+                                                            commitOnChange={true}
+                                                            selectOnFocus={true}
+
+                                                            style={{textAlign: 'right'}}
+                                                        />
+                                                    </FormGroup>
+                                                </td>
+                                                <td align="right">
+                                                    {model.formattedUserInput}
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 ]

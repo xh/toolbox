@@ -4,7 +4,6 @@ import {clone, toLower} from 'lodash';
 import {HoistModel} from '@xh/hoist/core';
 import {action, bindable, computed, observable} from '@xh/hoist/mobx';
 import * as formatNumber from '@xh/hoist/format/FormatNumber';
-import {NumberInput, TextInput} from '@xh/hoist/desktop/cmp/form';
 
 @HoistModel
 export class FormatsTabModel {
@@ -67,17 +66,13 @@ export class FormatsTabModel {
 
     @computed
     get formattedNumbers() {
-        const {numberFromUser, testNumbers, presetFunction, fOptions} = this,
-            customFormatOptions = presetFunction == 'fmtNumber' ?
-                clone(fOptions) :
-                {
-                    asElement: true
-                },
+        const {testNumbers, presetFunction} = this,
+            customFormatOptions = this.getFormatOptions(),
             rows = testNumbers.map(
                 (num, index) =>
                     <tr key={`num-${index}`}>
-                        <td>{index + 1}.</td>
-                        <td align="right">
+                        <td className="indexColumn">{index + 1}.</td>
+                        <td align="right" className="inputColumn">
                             {num}
                         </td>
                         <td align="right">
@@ -86,24 +81,20 @@ export class FormatsTabModel {
                     </tr>
             );
 
-        rows.push(<tr key={'num-from-user'}>
-            <td>{rows.length + 1}.</td>
-            <td align="right">
-                <TextInput
-                    model={this}
-                    field="numberFromUser"
-                    commitOnChange={true}
-                    selectOnFocus={true}
-                    width="90%"
-                    style={{textAlign: 'right'}}
-                />
-            </td>
-            <td align="right">
-                {this.formatUserInput(numberFromUser, presetFunction, customFormatOptions)}
-            </td>
-        </tr>);
-
         return rows;
+    }
+
+    // handle user typing in scientific notation:
+    // for example: 1.89e   - if not caught will cause numbro exception to be thrown
+    @computed
+    get formattedUserInput() {
+        const {numberFromUser, presetFunction} = this;
+
+        try {
+            return formatNumber[presetFunction](Number(numberFromUser), this.getFormatOptions());
+        } catch (e) {
+            return '';
+        }
     }
 
     //-----------------------------
@@ -114,14 +105,14 @@ export class FormatsTabModel {
         this.singleOptionsDisabled = val != 'fmtNumber';
     }
 
-    // handle user typing in scientific notation:
-    // for example: 1.89e   - if not caught will cause numbro exception to be thrown
-    formatUserInput(val, func, options) {
-        try{
-            return formatNumber[func](Number(val), options);
-        } catch(e) {
-            return '';
-        }
+
+    getFormatOptions() {
+        const {presetFunction, fOptions} = this;
+        return presetFunction == 'fmtNumber' ?
+            clone(fOptions) :
+            {
+                asElement: true
+            };
     }
 
 }
