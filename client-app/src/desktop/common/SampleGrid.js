@@ -35,7 +35,7 @@ class SampleGrid extends Component {
         text: 'View Details',
         icon: Icon.search(),
         tooltip: 'View details on the selected company',
-        actionFn: (action, rec) => this.showInfoToast(rec)
+        actionFn: ({record}) => this.showInfoToast(record)
     };
 
     terminateAction = {
@@ -43,14 +43,15 @@ class SampleGrid extends Component {
         icon: Icon.skull(),
         intent: 'danger',
         tooltip: 'Terminate this company.',
-        actionFn: (action, rec) => this.showTerminateToast(rec)
+        actionFn: ({record}) => this.showTerminateToast(record),
+        confirm: 'Are you sure you want to terminate this company?'
     };
 
     localModel = new GridModel({
         store: new LocalStore({
             fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
         }),
-        sortBy: [{colId: 'company', sort: 'asc'}],
+        sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
