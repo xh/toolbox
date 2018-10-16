@@ -34,7 +34,7 @@ export class ValidationPanelModel {
     @field(numberIs({min: 0, max: 99}))
     yearsExperience;
 
-    @field('Hire Date', required, dateIs({max: 'now'}))
+    @field('Hire Date', required, dateIs({max: 'today'}))
     startDate;
 
     @field('End Date', required, dateIs({min: 'today'}))
