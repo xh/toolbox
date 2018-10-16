@@ -12,8 +12,7 @@ import {wrapper} from '../../common/Wrapper';
 import {hframe} from '@xh/hoist/cmp/layout';
 import {
     numberInput, radioInput,
-    switchInput,
-    textArea, textInput
+    switchInput, textInput
 } from '@xh/hoist/desktop/cmp/form';
 
 import {card, formGroup} from '@xh/hoist/kit/blueprint';
@@ -36,26 +35,6 @@ export class FormatsTab extends Component {
                     height: '90%',
                     item: hframe({
                         items: [
-                            panel({
-                                title: 'Input',
-                                className: 'toolbox-formats-tab__panel',
-                                flex: 1,
-                                item: [
-                                    row({
-                                        field: 'testNumbers',
-                                        className: 'formats-text-area-input',
-                                        item: textArea({
-                                            style: {
-                                                textAlign: 'right',
-                                                fontSize: 'larger',
-                                                height: model.textAreaRows * 12
-                                            },
-                                            commitOnChange: true
-                                        }),
-                                        info: 'Enter one number per line'
-                                    })
-                                ]
-                            }),
                             panel({
                                 title: 'Parameters',
                                 className: 'toolbox-formats-tab__panel',
@@ -105,6 +84,7 @@ export class FormatsTab extends Component {
                                                 item: numberInput({
                                                     min: 0,
                                                     max: 12,
+                                                    width: 36,
                                                     selectOnFocus: true,
                                                     commitOnChange: true,
                                                     disabled: model.precisionAuto || model.singleOptionsDisabled

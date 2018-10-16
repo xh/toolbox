@@ -14,6 +14,12 @@
     th, td {
       border-bottom: 1px solid #ddd;
     }
+    td:nth-child(2) {
+      width: 40%;
+    }
+    td:first-child {
+      width: 24px;
+    }
 
     &__card {
       display: flex;
@@ -29,10 +35,6 @@
 
   .xh-number-field {
     flex: 0 0 125px;
-  }
-
-  .bp3-input-group {
-    width: 40%;
   }
 
   .xh-select-field {
