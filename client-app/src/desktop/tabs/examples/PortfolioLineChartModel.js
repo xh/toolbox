@@ -25,7 +25,7 @@ export class PortfolioLineChartModel {
     }
 
     @action
-    setCurrentCompanyas(currentCompany) {
+    setCurrentCompany(currentCompany) {
         this.currentCompany = currentCompany;
     }
 

@@ -9,19 +9,18 @@ import {HoistComponent} from '@xh/hoist/core/index';
 import {wrapper} from '../../common';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {strategyGrid} from './PortfolioStrategyGrid';
-import {ordersGrid} from './PortfolioOrdersGrid';
 import {hbox} from '@xh/hoist/cmp/layout';
-import {PortfolioDataGenerator} from './PortfolioDataGenerator';
-import {portfolioLineChartPanel} from './PortfolioLineChartPanel';
-import {portfolioOLHCChartPanel} from "./PortfolioOLHCChartPanel";
+import {PortfolioPanelModel} from './PortfolioPanelModel';
+import {grid} from '@xh/hoist/desktop/cmp/grid';
 
 @HoistComponent
 export class PortfolioPanel extends Component {
 
-    portfolioData = new PortfolioDataGenerator();
+    localModel = new PortfolioPanelModel();
 
     render() {
+        const {model} = this;
+
         return wrapper({
             item: panel({
                 title: 'Positions',
@@ -36,36 +35,37 @@ export class PortfolioPanel extends Component {
                                 icon: Icon.gridPanel(),
                                 width: 600,
                                 height: 300,
-                                item: strategyGrid(this.portfolioData)
+                                item: grid({model: model.strategyGridModel}),
+                                mask: model.loadModel
                             }),
                             panel({
                                 title: 'Orders',
                                 icon: Icon.gridPanel(),
                                 width: 900,
                                 height: 300,
-                                item: ordersGrid(this.portfolioData)
-                            })
-                        ]
-                    }),
-                    hbox({
-                        flex: 1,
-                        items: [
-                            panel({
-                                title: 'Strategies',
-                                icon: Icon.gridPanel(),
-                                width: 750,
-                                height: 400,
-                                item: portfolioLineChartPanel(this.portfolioData)
-                            }),
-                            panel({
-                                title: 'Orders',
-                                icon: Icon.gridPanel(),
-                                width: 750,
-                                height: 400,
-                                item: portfolioOLHCChartPanel(this.portfolioData)
+                                item: grid({model: model.ordersGridModel})
                             })
                         ]
                     })
+                    // hbox({
+                    //     flex: 1,
+                    //     items: [
+                    //         panel({
+                    //             title: 'Strategies',
+                    //             icon: Icon.gridPanel(),
+                    //             width: 750,
+                    //             height: 400,
+                    //             item: portfolioLineChartPanel()
+                    //         }),
+                    //         panel({
+                    //             title: 'Orders',
+                    //             icon: Icon.gridPanel(),
+                    //             width: 750,
+                    //             height: 400,
+                    //             item: portfolioOLHCChartPanel()
+                    //         })
+                    //     ]
+                    // })
                 ]
             })
         });
