@@ -118,7 +118,12 @@ class AppClass {
                     },
                     {
                         name: 'formats',
-                        path: '/formats'
+                        path: '/formats',
+                        forwardTo: 'default.formats.number',
+                        children: [
+                            {name: 'number', path: '/number'},
+                            {name: 'date', path: '/date'}
+                        ]
                     },
                     {
                         name: 'other',

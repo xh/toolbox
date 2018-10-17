@@ -6,7 +6,7 @@ import {action, bindable, computed, observable} from '@xh/hoist/mobx';
 import * as formatNumber from '@xh/hoist/format/FormatNumber';
 
 @HoistModel
-export class FormatsTabModel {
+export class NumberFormatsPanelModel {
 
     @bindable testNumbers = [
         '-1842343',
@@ -67,7 +67,6 @@ export class FormatsTabModel {
     @computed
     get formattedNumbers() {
         const {testNumbers, presetFunction} = this,
-            customFormatOptions = this.getFormatOptions(),
             rows = testNumbers.map(
                 (num, index) =>
                     <tr key={`num-${index}`}>
@@ -76,7 +75,7 @@ export class FormatsTabModel {
                             {num}
                         </td>
                         <td align="right">
-                            {formatNumber[presetFunction](Number(num), customFormatOptions)}
+                            {formatNumber[presetFunction](Number(num), this.getFormatOptions())}
                         </td>
                     </tr>
             );
