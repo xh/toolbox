@@ -43,7 +43,7 @@ class SampleGrid extends Component {
         icon: Icon.skull(),
         intent: 'danger',
         tooltip: 'Terminate this company.',
-        actionFn: ({record}) => this.showTerminateToast(record),
+        actionFn: ({record}) => this.showTerminateToast(record)
     };
 
     localModel = new GridModel({
