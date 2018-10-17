@@ -1,19 +1,10 @@
 hoistDefaults()
 
 // See also runtime.groovy for additional instance-specific configuration
-
 grails {
     project.groupId = 'io.xh.toolbox'
     app.context = '/'
     resources.pattern = '/**'
-}
-
-dataSource {
-    dbCreate = "update"
-    url = "jdbc:h2:mem:testDb;MVCC=TRUE"
-    driverClassName = "org.h2.Driver"
-    username = "sa"
-    password = ""
 }
 
 //------------------------------------------------------------
@@ -24,13 +15,13 @@ private void hoistDefaults() {
     grails {
         cors.enabled = true
         spring {
-            transactionManagement.proxies = false    // use @Transaction for services
+            transactionManagement.proxies = false // use @Transaction for services
             groovy.template.'check-template-location' = false
             bean.packages = []
         }
 
         endpoints {
-            enabled = false    // selectively enable these, after lockdown
+            enabled = false
         }
 
         mime {
@@ -57,12 +48,12 @@ private void hoistDefaults() {
         views.gsp.encoding = 'UTF-8'
 
         urlmapping.cache.maxsize = 1000
-        controllers.defaultScope = 'singleton'          // 'prototype' (default), recommended for closure actions,
-        // 'singleton is recommended for method actions
+        // 'singleton' recommended for method actions, 'prototype' (default) for closure actions.
+        controllers.defaultScope = 'singleton'
         converters.encoding = 'UTF-8'
         enable.native2ascii = true
         web.disable.multipart = false
-        exceptionresolver.params.exclude = ['password']
+        exceptionresolver.params.exclude = ['password', 'pin']
 
         gorm {
             failOnError = true
