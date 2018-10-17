@@ -146,8 +146,7 @@ class SampleColumnGroupsGrid extends Component {
     }
 
     render() {
-        const {model} = this,
-            {store} = model;
+        const {model} = this;
 
         return panel({
             className: this.getClassName(),
@@ -157,12 +156,9 @@ class SampleColumnGroupsGrid extends Component {
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
-                    storeFilterField({
-                        store,
-                        fields: ['firstName', 'lastName', 'city', 'state']
-                    }),
+                    storeFilterField({gridModel: model}),
                     storeCountLabel({
-                        store,
+                        gridModel: model,
                         unit: 'salesperson'
                     }),
                     filler(),

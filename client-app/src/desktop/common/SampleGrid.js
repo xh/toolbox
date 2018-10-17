@@ -133,8 +133,7 @@ class SampleGrid extends Component {
     }
 
     render() {
-        const {model} = this,
-            {store} = model;
+        const {model} = this;
 
         return panel({
             className: this.getClassName(),
@@ -144,12 +143,9 @@ class SampleGrid extends Component {
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
-                    storeFilterField({
-                        store,
-                        fields: ['company', 'city']
-                    }),
+                    storeFilterField({gridModel: model}),
                     storeCountLabel({
-                        store,
+                        gridModel: model,
                         unit: 'companies'
                     }),
                     filler(),
