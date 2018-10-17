@@ -25,7 +25,6 @@ import {
     multiSelect,
     switchInput,
     comboBox,
-    queryComboBox,
     jsonInput,
     buttonGroupInput
 } from '@xh/hoist/desktop/cmp/form';
@@ -59,14 +58,18 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'TextInput',
                                     field: 'text1',
-                                    item: textInput()
+                                    info: 'autoFocus',
+                                    item: textInput({
+                                        autoFocus: true
+                                    })
                                 }),
                                 row({
                                     label: 'TextInput',
                                     field: 'text2',
-                                    info: 'placeholder, leftIcon, and rightElement',
+                                    info: 'placeholder, leftIcon, rightElement',
                                     item: textInput({
                                         placeholder: 'user@company.com',
+                                        round: true,
                                         leftIcon: Icon.mail(),
                                         rightElement: button({
                                             icon: Icon.cross(),
@@ -88,9 +91,10 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'TextArea',
                                     field: 'text4',
-                                    info: 'selectOnFocus',
+                                    info: 'fill, placeholder, selectOnFocus',
                                     item: textArea({
-                                        width: '100%',
+                                        fill: true,
+                                        placeholder: 'Tell us your thoughts...',
                                         selectOnFocus: true
                                     })
                                 }),
@@ -110,7 +114,14 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'NumberInput',
                                     field: 'number1',
-                                    item: numberInput()
+                                    info: 'buttons, stepSizes',
+                                    item: numberInput({
+                                        buttonPosition: 'right',
+                                        fill: true,
+                                        stepSize: 1000,
+                                        majorStepSize: 100000,
+                                        minorStepSize: 100
+                                    })
                                 }),
                                 row({
                                     label: 'NumberInput',
@@ -125,19 +136,18 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'Slider',
                                     field: 'number3',
-                                    info: 'custom labelRenderer',
+                                    info: 'max, min, stepSizes',
                                     item: slider({
-                                        min: 0,
                                         max: 100,
+                                        min: 0,
                                         labelStepSize: 25,
-                                        stepSize: 1,
-                                        labelRenderer: val => `${val}%`
+                                        stepSize: 1
                                     })
                                 }),
                                 row({
                                     label: 'Slider',
                                     field: 'range1',
-                                    info: 'multi-value, custom labelRenderer',
+                                    info: 'multi-value, labelRenderer',
                                     item: slider({
                                         min: 50000,
                                         max: 150000,
@@ -157,6 +167,8 @@ export class ControlsPanel extends Component {
                                     fmtVal: v => fmtDateTime(v),
                                     item: dateInput({
                                         commitOnChange: true,
+                                        width: 130,
+                                        leftIcon: Icon.calendar(),
                                         minDate: moment().subtract(2, 'weeks').toDate(),
                                         maxDate: moment().add(2, 'weeks').toDate()
                                     })
@@ -195,10 +207,10 @@ export class ControlsPanel extends Component {
                                     })
                                 }),
                                 row({
-                                    label: 'QueryComboBox',
+                                    label: 'ComboBox',
                                     field: 'option3',
                                     info: 'custom/async search (name/city)',
-                                    item: queryComboBox({
+                                    item: comboBox({
                                         queryFn: this.queryCompaniesAsync,
                                         placeholder: 'Search companies...'
                                     })
@@ -215,12 +227,17 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'CheckBox',
                                     field: 'bool1',
-                                    item: checkBox()
+                                    item: checkBox({
+                                        label: 'enabled'
+                                    })
                                 }),
                                 row({
                                     label: 'SwitchInput',
                                     field: 'bool2',
-                                    item: switchInput()
+                                    item: switchInput({
+                                        label: 'Enabled:',
+                                        labelAlign: 'left'
+                                    })
                                 }),
                                 row({
                                     label: 'ButtonGroupInput',
@@ -246,9 +263,8 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'RadioInput',
                                     field: 'option6',
-                                    info: 'disabled option',
+                                    info: 'inline, disabled option',
                                     item: radioInput({
-                                        alignIndicator: 'right',
                                         inline: true,
                                         options: ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]
                                     })
