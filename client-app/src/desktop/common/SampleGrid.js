@@ -44,7 +44,6 @@ class SampleGrid extends Component {
         intent: 'danger',
         tooltip: 'Terminate this company.',
         actionFn: ({record}) => this.showTerminateToast(record),
-        confirm: 'Are you sure you want to terminate this company?'
     };
 
     localModel = new GridModel({
