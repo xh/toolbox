@@ -9,7 +9,7 @@ import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
-import {hframe} from '@xh/hoist/cmp/layout';
+import {code, hframe} from '@xh/hoist/cmp/layout';
 import {
     radioInput,
     switchInput,
@@ -55,7 +55,7 @@ export class DateFormatsPanel extends Component {
                                             onChange: (val) => model.handlePresetFunctionChange(val),
                                             inline: true,
                                             options: [
-                                                {value: 'fmtDateTime', label: 'fmtDateTime', defaultChecked: true},
+                                                {value: 'fmtDateTime', label: code('fmtDateTime'), defaultChecked: true},
                                                 'fmtTime',
                                                 'fmtCompactDate'
                                             ]

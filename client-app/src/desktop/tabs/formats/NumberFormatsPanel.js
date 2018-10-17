@@ -49,7 +49,7 @@ export class NumberFormatsPanel extends Component {
                                         label: 'Pre-set Functions',
                                         field: 'presetFunction',
                                         item: radioInput({
-                                            alignIndicator: 'right',
+                                            alignIndicator: 'left',
                                             onChange: (val) => model.handlePresetFunctionChange(val),
                                             inline: true,
                                             options: [
@@ -66,7 +66,7 @@ export class NumberFormatsPanel extends Component {
                                         label: 'Custom',
                                         field: 'presetFunction',
                                         item: radioInput({
-                                            alignIndicator: 'right',
+                                            alignIndicator: 'left',
                                             onChange: (val) => model.handlePresetFunctionChange(val),
                                             options: ['fmtNumber']
                                         })
