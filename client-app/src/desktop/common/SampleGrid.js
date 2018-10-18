@@ -43,8 +43,7 @@ class SampleGrid extends Component {
         icon: Icon.skull(),
         intent: 'danger',
         tooltip: 'Terminate this company.',
-        actionFn: ({record}) => this.showTerminateToast(record),
-        confirm: 'Are you sure you want to terminate this company?'
+        actionFn: ({record}) => this.showTerminateToast(record)
     };
 
     localModel = new GridModel({
@@ -134,8 +133,7 @@ class SampleGrid extends Component {
     }
 
     render() {
-        const {model} = this,
-            {store} = model;
+        const {model} = this;
 
         return panel({
             className: this.getClassName(),
@@ -145,12 +143,9 @@ class SampleGrid extends Component {
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
-                    storeFilterField({
-                        store,
-                        fields: ['company', 'city']
-                    }),
+                    storeFilterField({gridModel: model}),
                     storeCountLabel({
-                        store,
+                        gridModel: model,
                         unit: 'companies'
                     }),
                     filler(),
