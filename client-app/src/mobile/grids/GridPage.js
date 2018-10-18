@@ -8,7 +8,7 @@
 import {Component} from 'react';
 import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
-import {grid} from '@xh/hoist/mobile/cmp/grid';
+import {grid} from '@xh/hoist/cmp/grid';
 
 import {GridPageModel} from './GridPageModel';
 

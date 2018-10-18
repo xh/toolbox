@@ -8,7 +8,7 @@ import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {box, filler, fragment} from '@xh/hoist/cmp/layout';
-import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
+import {grid, GridModel, colChooserButton} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
