@@ -1,26 +1,27 @@
 import {HoistModel} from '@xh/hoist/core';
 import {FieldSupport, field} from '@xh/hoist/field';
+import moment from 'moment';
 import {random} from 'lodash';
 
 @HoistModel
 @FieldSupport
 export class ControlsPanelModel {
 
-    // TextField / TextArea
-    @field() text1
-    @field() text2
-    @field() text3
-    @field() text4
-    @field() text5
+    // TextInput / TextArea
+    @field() text1;
+    @field() text2;
+    @field() text3;
+    @field() text4;
+    @field() text5;
 
-    // NumberField / Single-val Slider
-    @field() number1
-    @field() number2
-    @field() number3
-    @field() number4
+    // NumberInput / Single-val Slider
+    @field() number1;
+    @field() number2;
+    @field() number3;
+    @field() number4;
 
     // Multi-val Slider
-    @field() range1
+    @field() range1;
 
     // Dropdowns
     @field() option1
@@ -28,22 +29,23 @@ export class ControlsPanelModel {
     @field() option3
     @field() option4
     @field() option5
-    @field() option6 // name this it's getting confusing
+    @field() option6
     @field() option7
 
     // Others
-    @field() startDate;
-    @field() endDate;
+    @field() date1;
+    @field() date2;
     @field() bool1;
     @field() bool2;
-
+    @field() buttonGroup1;
 
     constructor() {
         this.initFields({
             number3: random(0, 100),
             range1: [random(50000, 70000), random(110000, 150000)],
-            startDate: new Date(),
-            endDate: new Date()
+            date1: moment().startOf('day').toDate(),
+            date2: moment().startOf('hour').toDate(),
+            buttonGroup1: 'button2'
         });
     }
 

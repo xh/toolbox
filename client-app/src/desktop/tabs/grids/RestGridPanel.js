@@ -96,7 +96,8 @@ export class RestGridPanel extends Component {
             {field: 'lastUpdated'},
             {field: 'lastUpdatedBy'}
         ],
-        emptyText: 'No companies found - try adding one...'
+        emptyText: 'No companies found - try adding one...',
+        actionColEnabled: true
     });
 
     constructor() {
@@ -110,20 +111,20 @@ export class RestGridPanel extends Component {
         return wrapper({
             description: [
                 <p>
-                    RestGrid and its associated components provide a quick way to implement basic CRUD
-                    functionality for domain objects managed by the Hoist Grails server.
+                    RestGrid and its associated components provide a quick way to implement basic
+                    CRUD functionality for domain objects managed by the Hoist Grails server.
                 </p>,
                 <p>
-                    Use the toolbar buttons or double-click a record to display its associated add/edit
-                    form, including type-specific editor fields. These grids are especially useful
-                    when building lookup tables of simple objects and are used throughout
-                    the <a href="/admin" target="_blank">Hoist Admin Console</a>.
+                    Use the toolbar buttons or double-click a record to display its associated
+                    add/edit form, including type-specific editor fields. These grids are especially
+                    useful when building lookup tables of simple objects and are used throughout the
+                    <a href="/admin" target="_blank">Hoist Admin Console</a>.
                 </p>
             ],
             item: panel({
                 title: 'Grids > REST Editor',
                 icon: Icon.edit(),
-                width: 700,
+                width: 900,
                 height: 400,
                 item: restGrid({model})
             })

@@ -14,14 +14,15 @@ import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {switchField} from '@xh/hoist/desktop/cmp/form';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {switchInput, select} from '@xh/hoist/desktop/cmp/form';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {mask} from '@xh/hoist/desktop/cmp/mask';
+import {observable, action} from '@xh/hoist/mobx';
+import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/columns';
+
 import {App} from '../App';
 
 @HoistComponent
@@ -30,23 +31,34 @@ class SampleGrid extends Component {
 
     loadModel = new PendingTaskModel();
 
+    viewDetailsAction = {
+        text: 'View Details',
+        icon: Icon.search(),
+        tooltip: 'View details on the selected company',
+        actionFn: (action, rec) => this.showInfoToast(rec)
+    };
+
+    terminateAction = {
+        text: 'Terminate',
+        icon: Icon.skull(),
+        intent: 'danger',
+        tooltip: 'Terminate this company.',
+        actionFn: (action, rec) => this.showTerminateToast(rec)
+    };
+
     localModel = new GridModel({
         store: new LocalStore({
             fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
         }),
-        sortBy: [{colId: 'company', sort: 'asc'}],
+        sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
         contextMenuFn: () => {
             return new StoreContextMenu({
                 items: [
-                    {
-                        text: 'View Details',
-                        icon: Icon.search(),
-                        recordsRequired: 1,
-                        action: (item, rec) => this.showRecToast(rec)
-                    },
+                    this.viewDetailsAction,
+                    this.terminateAction,
                     '-',
                     ...GridModel.defaultContextMenuTokens
                 ],
@@ -60,10 +72,13 @@ class SampleGrid extends Component {
                 hide: true
             },
             {
-                field: 'active',
-                ...boolCheckCol,
-                headerName: '',
-                chooserName: 'Active Status'
+                ...actionCol,
+                width: calcActionColWidth(2),
+                actionsShowOnHoverOnly: true,
+                actions: [
+                    this.viewDetailsAction,
+                    this.terminateAction
+                ]
             },
             {
                 field: 'company',
@@ -72,7 +87,8 @@ class SampleGrid extends Component {
             },
             {
                 field: 'city',
-                width: 150
+                width: 150,
+                tooltip: (val, rec) => `${rec.company} is located in ${val}`
             },
             {
                 headerName: 'Trade Volume',
@@ -90,6 +106,7 @@ class SampleGrid extends Component {
                 field: 'profit_loss',
                 align: 'right',
                 width: 130,
+                absSort: true,
                 renderer: numberRenderer({
                     precision: 0,
                     ledger: true,
@@ -97,13 +114,21 @@ class SampleGrid extends Component {
                     tooltip: true
                 })
             },
+            {
+                field: 'active',
+                ...boolCheckCol,
+                headerName: '',
+                chooserName: 'Active Status',
+                tooltip: (active, rec) => active ? `${rec.company} is active` : ''
+            },
             {...emptyFlexCol}
         ]
     });
 
+    @observable groupBy = false;
+
     constructor(props) {
         super(props);
-        this.model.setGroupBy(this.props.groupBy);
         this.loadAsync();
     }
 
@@ -115,7 +140,7 @@ class SampleGrid extends Component {
             className: this.getClassName(),
             ...this.getLayoutProps(),
             item: grid({model}),
-            mask: mask({spinner: true, model: this.loadModel}),
+            mask: this.loadModel,
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
@@ -128,8 +153,18 @@ class SampleGrid extends Component {
                         unit: 'companies'
                     }),
                     filler(),
+                    box('Group by:'),
+                    select({
+                        options: [
+                            {value: 'active', label: 'Active'},
+                            {value: 'city', label: 'City'},
+                            {value: false, label: 'None'}
+                        ],
+                        model: this,
+                        field: 'groupBy'
+                    }),
                     box('Compact mode:'),
-                    switchField({
+                    switchInput({
                         field: 'compact',
                         model
                     }),
@@ -151,14 +186,28 @@ class SampleGrid extends Component {
             .linkTo(this.loadModel);
     }
 
-    showRecToast(rec) {
-        XH.alert({
-            title: rec.company,
-            message: `You asked to see details for ${rec.company}. They are based in ${rec.city}.`,
-            confirmText: 'Close',
-            confirmIntent: 'primary'
+    showInfoToast(rec) {
+        XH.toast({
+            message: `You asked for ${rec.company} details. They are based in ${rec.city}.`,
+            icon: Icon.info(),
+            intent: 'primary'
         });
     }
 
+    showTerminateToast(rec) {
+        XH.toast({
+            message: `You asked to terminate ${rec.company}. Sorry, ${rec.company}!`,
+            icon: Icon.skull(),
+            intent: 'danger'
+        });
+    }
+
+    @action
+    setGroupBy(groupBy) {
+        this.groupBy = groupBy;
+        this.model.setGroupBy(groupBy);
+    }
+
 }
+
 export const sampleGrid = elemFactory(SampleGrid);
