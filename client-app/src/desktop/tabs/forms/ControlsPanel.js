@@ -305,7 +305,6 @@ export class ControlsPanel extends Component {
         });
     };
 
-
     queryCompaniesAsync(query) {
         return App.companyService.queryAsync(query).then(hits => {
             return hits.map(it => `${it.name} (${it.city})`);
