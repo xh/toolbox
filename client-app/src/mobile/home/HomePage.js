@@ -14,6 +14,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {App} from '../App';
 import {gridPage} from '../grids/GridPage';
+import {treeGridPage} from '../grids/TreeGridPage';
 import {formPage} from '../form/FormPage';
 import {containersPage} from '../containers/ContainersPage';
 import {popupsPage} from '../popups/PopupsPage';
@@ -29,8 +30,14 @@ export class HomePage extends Component {
                 this.renderSummaryCard({
                     title: 'Grids',
                     icon: Icon.gridPanel(),
-                    summary: 'Show a collection of data bound to a store. Can specify 2 columns: leftColumn and rightColumn.',
+                    summary: 'Grids are at the heart of many Hoist React projects, and Grid, GridModel, and related helper components are key elements of the framework.',
                     pageFactory: gridPage
+                }),
+                this.renderSummaryCard({
+                    title: 'Tree Grids',
+                    icon: Icon.grid(),
+                    summary: 'Hoist\'s Grid supports the display of hierarchical tree data. Applications provide standard record data with children nodes containing their sub-records',
+                    pageFactory: treeGridPage
                 }),
                 this.renderSummaryCard({
                     title: 'Form',

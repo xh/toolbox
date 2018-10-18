@@ -20,8 +20,7 @@ import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 
-
-import {sampleTreeData} from './SampleTreeData';
+import {sampleTreeData} from '../../core/data';
 
 @HoistComponent
 @LayoutSupport

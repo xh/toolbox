@@ -21,7 +21,7 @@ import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 
-import {sampleTreeData} from './SampleTreeData';
+import {sampleTreeData} from '../../core/data';
 import './SampleTreeWithCheckBoxGrid.scss';
 
 @HoistComponent
