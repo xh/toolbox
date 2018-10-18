@@ -43,7 +43,7 @@ export class ControlsPanel extends Component {
 
     render() {
         const {model, row} = this,
-            {foodItems} = model;
+            {menuItems} = model;
 
         return wrapper({
             item: panel({
@@ -229,7 +229,7 @@ export class ControlsPanel extends Component {
                                     field: 'option8',
                                     model: model,
                                     item: multiSelect({
-                                        options: foodItems,
+                                        options: menuItems,
                                         placeholder: `Select ${model.option7 || 'items'}...`
                                     })
                                 }),

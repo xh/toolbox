@@ -51,7 +51,7 @@ export class ControlsPanelModel {
         });
     }
 
-    @computed get foodItems() {
+    @computed get menuItems() {
         const meal = this.option7;
         switch (meal) {
             case 'Breakfast':
