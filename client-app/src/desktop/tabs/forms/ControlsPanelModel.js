@@ -1,3 +1,4 @@
+import {computed, settable, observable} from '@xh/hoist/mobx';
 import {HoistModel} from '@xh/hoist/core';
 import {FieldSupport, field} from '@xh/hoist/field';
 import moment from 'moment';
@@ -24,13 +25,14 @@ export class ControlsPanelModel {
     @field() range1;
 
     // Dropdowns
-    @field() option1
-    @field() option2
-    @field() option3
-    @field() option4
-    @field() option5
-    @field() option6
-    @field() option7
+    @field() option1;
+    @field() option2;
+    @field() option3;
+    @field() option4;
+    @field() option5;
+    @field() option6;
+    @field() option7;
+    @field() option8;
 
     // Others
     @field() date1;
@@ -49,16 +51,17 @@ export class ControlsPanelModel {
         });
     }
 
-    getFoodItems() {
-        switch (this.option6) {
-            case 'breakfast':
-                return ['pancakes', 'waffles', 'toast', 'bacon', 'sausage'];
-            case 'lunch':
-                return ['soup', 'salad', 'sandwich', 'protein shake'];
-            case 'dinner':
-                return ['roast chicken', 'steak', 'pasta'];
+    @computed get foodItems() {
+        const meal = this.option7;
+        switch (meal) {
+            case 'Breakfast':
+                return ['Pancakes', 'Waffles', 'Eggs', 'Bacon', 'Sausage', 'Vegan Breakfast Bowl'];
+            case 'Lunch':
+                return ['Soup', 'Salad', 'Sandwich', 'Veggie Burger', 'Fries', 'Protein Shake'];
+            case 'Dinner':
+                return ['Roast Chicken', 'London Broil', 'Sushi', 'Pizza', 'Pasta', 'Baked Tofu'];
             default:
-                return ['Please select meal to populate...'];
+                return ['Please select a meal.'];
         }
     }
 }

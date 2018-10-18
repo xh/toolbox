@@ -42,7 +42,8 @@ export class ControlsPanel extends Component {
     localModel = new ControlsPanelModel();
 
     render() {
-        const {model, row} = this;
+        const {model, row} = this,
+            {foodItems} = model;
 
         return wrapper({
             item: panel({
@@ -212,23 +213,25 @@ export class ControlsPanel extends Component {
                                         placeholder: 'Select state(s)...'
                                     })
                                 }),
-                                testRow({
+                                row({
                                     label: 'Dynamic Options',
-                                    info: 'Custom/async search (name/city)',
-                                    displayField: 'option7',
-                                    model: mo
-                                    items: [
-                                        selectField({
-                                            options: ['Breakfast', 'Lunch', 'Dinner'],
-                                            placeholder: 'Select Meal...',
-                                            field: 'option6'
-                                        }),
-                                        multiSelectField({
-                                            options: model.getFoodItems(),
-                                            field: 'option7',
-                                            placeholder: 'Select items...'
-                                        })
-                                    ]
+                                    info: 'Selection here changes options in following dropdown',
+                                    field: 'option7',
+                                    model: model,
+                                    item: select({
+                                        options: ['Breakfast', 'Lunch', 'Dinner'],
+                                        placeholder: 'Select Meal...',
+                                    })
+                                }),
+                                row({
+                                    label: 'Menu',
+                                    info: 'Options dictated by dropdown above',
+                                    field: 'option8',
+                                    model: model,
+                                    item: multiSelect({
+                                        options: foodItems,
+                                        placeholder: `Select ${model.option7 || 'items'}...`
+                                    })
                                 }),
                                 row({
                                     label: 'CheckBox',
@@ -302,20 +305,6 @@ export class ControlsPanel extends Component {
         });
     };
 
-    // kinda hate this, big basically repeated helper just to put in formGroup?
-    testRow = ({label, displayField, items, info, fmtVal}) => {
-        const {model} = this;
-        ;
-        let displayVal = model[displayField];
-        if (fmtVal) displayVal = fmtVal(displayVal);
-
-        return formGroup({
-            label,
-            labelInfo: `${displayVal}`,
-            items: items.map(it => React.cloneElement(it, {field: it.props.field, model})),
-            helperText: info
-        });
-    };
 
     queryCompaniesAsync(query) {
         return App.companyService.queryAsync(query).then(hits => {

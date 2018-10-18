@@ -3,6 +3,10 @@
     width: 30%;
     margin: var(--xh-pad-px);
 
+    .xh-vframe {
+      overflow: auto !important;
+    }
+
     &:nth-child(2) {
       margin: var(--xh-pad-px) 0;
     }
