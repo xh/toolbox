@@ -163,14 +163,16 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'DateInput',
                                     field: 'date1',
-                                    info: 'minDate, maxDate',
+                                    info: 'leftIcon, minDate, maxDate, textAlign',
                                     fmtVal: v => fmtDateTime(v),
                                     item: dateInput({
                                         commitOnChange: true,
-                                        width: 130,
                                         leftIcon: Icon.calendar(),
-                                        minDate: moment().subtract(2, 'weeks').toDate(),
-                                        maxDate: moment().add(2, 'weeks').toDate()
+                                        placeholder: 'YYYY-MM-DD',
+                                        minDate: moment().subtract(5, 'weeks').toDate(),
+                                        maxDate: moment().add(2, 'weeks').toDate(),
+                                        textAlign: 'right',
+                                        width: 150
                                     })
                                 }),
                                 row({
@@ -180,6 +182,7 @@ export class ControlsPanel extends Component {
                                     fmtVal: v => fmtDateTime(v),
                                     item: dateInput({
                                         commitOnChange: true,
+                                        showActionsBar: true,
                                         timePrecision: 'minute',
                                         timePickerProps: {useAmPm: true}
                                     })
