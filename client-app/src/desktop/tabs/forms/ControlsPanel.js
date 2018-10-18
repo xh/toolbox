@@ -215,7 +215,7 @@ export class ControlsPanel extends Component {
                                 }),
                                 row({
                                     label: 'Dynamic Options',
-                                    info: 'Selection here changes options in following dropdown',
+                                    info: 'Selection changes options in following dropdown',
                                     field: 'option7',
                                     model: model,
                                     item: select({
@@ -225,7 +225,7 @@ export class ControlsPanel extends Component {
                                 }),
                                 row({
                                     label: 'Menu',
-                                    info: 'Options dictated by dropdown above',
+                                    info: 'Options dictated by selection above',
                                     field: 'option8',
                                     model: model,
                                     item: multiSelect({

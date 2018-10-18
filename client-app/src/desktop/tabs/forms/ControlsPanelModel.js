@@ -61,7 +61,7 @@ export class ControlsPanelModel {
             case 'Dinner':
                 return ['Roast Chicken', 'London Broil', 'Sushi', 'Pizza', 'Pasta', 'Baked Tofu'];
             default:
-                return ['Please select a meal.'];
+                return [];
         }
     }
 }
