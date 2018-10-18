@@ -34,10 +34,10 @@ export class ValidationPanelModel {
     @field(numberIs({min: 0, max: 99}))
     yearsExperience;
 
-    @field('Hire Date', required, dateIs({min: moment().startOf('day').toDate()}))
+    @field('Hire Date', required, dateIs({max: 'today'}))
     startDate;
 
-    @field('End Date')
+    @field('End Date', required, dateIs({min: 'today'}))
     endDate;
 
     constructor() {
