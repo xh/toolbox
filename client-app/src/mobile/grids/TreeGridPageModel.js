@@ -11,37 +11,42 @@ import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 
-import {companyTrades} from '../../core/data';
+import {sampleTreeData} from '../../core/data';
 
 @HoistModel
-export class GridPageModel {
+export class TreeGridPageModel {
 
     loadModel = new PendingTaskModel();
 
     gridModel = new GridModel({
-        stateModel: 'toolboxSampleGrid',
-        sortBy: ['profit_loss|desc|abs'],
+        treeMode: true,
         store: new LocalStore({
-            fields: ['company', 'city', 'trade_volume', 'profit_loss']
+            fields: ['id', 'name', 'pnl']
         }),
+        sortBy: 'pnl|desc|abs',
         columns: [
             {
-                field: 'company',
+                headerName: 'Name',
+                field: 'name',
+                isTreeColumn: true,
                 flex: true
             },
             {
                 headerName: 'P&L',
-                field: 'profit_loss',
-                width: 120,
+                field: 'pnl',
                 align: 'right',
+                width: 120,
                 absSort: true,
+                agOptions: {
+                    aggFunc: 'sum'
+                },
                 renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
             }
         ]
     });
 
     constructor() {
-        this.gridModel.loadData(companyTrades);
+        this.gridModel.loadData(sampleTreeData);
     }
 
     destroy() {

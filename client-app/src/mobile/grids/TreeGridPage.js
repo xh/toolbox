@@ -10,11 +10,11 @@ import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {grid} from '@xh/hoist/cmp/grid';
 
-import {GridPageModel} from './GridPageModel';
+import {TreeGridPageModel} from './TreeGridPageModel';
 
 @HoistComponent
-export class GridPage extends Component {
-    localModel = new GridPageModel();
+export class TreeGridPage extends Component {
+    localModel = new TreeGridPageModel();
 
     render() {
         const {model} = this,
@@ -26,7 +26,7 @@ export class GridPage extends Component {
                 model: gridModel,
                 onRowClicked: (e) => {
                     XH.toast({
-                        message: `${e.data.company} tapped!`,
+                        message: `${e.data.name} tapped!`,
                         timeout: 1000
                     });
                 }
@@ -36,4 +36,4 @@ export class GridPage extends Component {
 
 }
 
-export const gridPage = elemFactory(GridPage);
+export const treeGridPage = elemFactory(TreeGridPage);
