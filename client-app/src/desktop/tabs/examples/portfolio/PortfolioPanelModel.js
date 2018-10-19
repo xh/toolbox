@@ -74,7 +74,7 @@ export class PortfolioPanelModel {
     ordersGridModel = new GridModel({
         treeMode: true,
         store: new LocalStore({
-            fields: ['id', 'symbol', 'time', 'trader', 'dir', 'volume', 'pnl']
+            fields: ['id', 'symbol', 'time', 'dir']
         }),
         sortBy: [{colId: 'time', sort: 'asc'}],
         emptyText: 'No records found...',
@@ -89,37 +89,20 @@ export class PortfolioPanelModel {
             {
                 field: 'symbol',
                 headerName: 'Instrument',
-                width: 200,
+                width: 100,
                 tooltip: false
             },
             {
                 field: 'time',
                 headerName: 'Execution Time',
-                width: 200,
-                tooltip: false
-            },
-            {
-                field: 'trader',
-                headerName: 'Trader',
-                width: 200,
+                align: 'right',
+                width: 150,
                 tooltip: false
             },
             {
                 field: 'dir',
                 headerName: 'Direction',
                 width: 100,
-                tooltip: false
-            },
-            {
-                field: 'volume',
-                headerName: 'Quantity',
-                width: 190,
-                tooltip: false
-            },
-            {
-                field: 'pnl',
-                headerName: 'PnL',
-                width: 190,
                 tooltip: false
             }
         ]

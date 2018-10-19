@@ -24,9 +24,7 @@ export class PortfolioPanel extends Component {
 
         return wrapper({
             item: panel({
-                title: 'Positions',
-                icon: Icon.window(),
-                width: 800,
+                width: 1000,
                 items: [
                     hbox({
                         flex: 1,
@@ -42,7 +40,7 @@ export class PortfolioPanel extends Component {
                             panel({
                                 title: 'Orders',
                                 icon: Icon.gridPanel(),
-                                width: 900,
+                                width: 500,
                                 height: 300,
                                 item: grid({model: model.ordersGridModel}),
                                 mask: model.ordersLoadModel
@@ -53,7 +51,7 @@ export class PortfolioPanel extends Component {
                         flex: 1,
                         items: [
                             panel({
-                                title: 'Strategies',
+                                title: 'Trade Volume',
                                 icon: Icon.gridPanel(),
                                 width: 750,
                                 height: 400,
@@ -61,7 +59,7 @@ export class PortfolioPanel extends Component {
                                 mask: model.lineChartLoadModel
                             }),
                             panel({
-                                title: 'Orders',
+                                title: 'Prices',
                                 icon: Icon.gridPanel(),
                                 width: 750,
                                 height: 400,
