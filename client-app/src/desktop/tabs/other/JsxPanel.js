@@ -89,10 +89,7 @@ render() {
                             }
                         }),
                         filler(),
-                        storeFilterField({
-                            store: files.store,
-                            fields: ['filename']
-                        })
+                        storeFilterField({gridModel: files})
                      )
                 })
             logViewer({model}),
@@ -130,10 +127,7 @@ render() {
                                 />
                         }
                         <Filler />
-                        <StoreFilterField
-                            store={files.store}
-                            fields={['filename']}
-                        />
+                        <StoreFilterField gridModel={files}/>
                     </Toolbar>
                 }
             >

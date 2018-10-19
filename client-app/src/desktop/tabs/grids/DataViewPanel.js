@@ -53,10 +53,7 @@ export class DataViewPanel extends Component {
                 }),
                 bbar: toolbar({
                     items: [
-                        storeFilterField({
-                            store: model.store,
-                            fields: ['name', 'city']
-                        }),
+                        storeFilterField({store: model.store}),
                         filler(),
                         button({
                             text: 'Reload Data',

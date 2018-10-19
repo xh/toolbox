@@ -9,14 +9,14 @@ import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
-import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
+import {grid, GridModel, colChooserButton} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput, select} from '@xh/hoist/desktop/cmp/form';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
+import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
@@ -35,7 +35,7 @@ class SampleGrid extends Component {
         text: 'View Details',
         icon: Icon.search(),
         tooltip: 'View details on the selected company',
-        actionFn: (action, rec) => this.showInfoToast(rec)
+        actionFn: ({record}) => this.showInfoToast(record)
     };
 
     terminateAction = {
@@ -43,7 +43,7 @@ class SampleGrid extends Component {
         icon: Icon.skull(),
         intent: 'danger',
         tooltip: 'Terminate this company.',
-        actionFn: (action, rec) => this.showTerminateToast(rec)
+        actionFn: ({record}) => this.showTerminateToast(record)
     };
 
     localModel = new GridModel({
@@ -69,7 +69,7 @@ class SampleGrid extends Component {
             {
                 field: 'id',
                 headerName: 'ID',
-                hide: true
+                hidden: true
             },
             {
                 ...actionCol,
@@ -133,8 +133,7 @@ class SampleGrid extends Component {
     }
 
     render() {
-        const {model} = this,
-            {store} = model;
+        const {model} = this;
 
         return panel({
             className: this.getClassName(),
@@ -144,12 +143,9 @@ class SampleGrid extends Component {
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
-                    storeFilterField({
-                        store,
-                        fields: ['company', 'city']
-                    }),
+                    storeFilterField({gridModel: model}),
                     storeCountLabel({
-                        store,
+                        gridModel: model,
                         unit: 'companies'
                     }),
                     filler(),

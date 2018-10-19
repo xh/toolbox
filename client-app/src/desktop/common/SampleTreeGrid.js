@@ -8,20 +8,19 @@ import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {box, filler} from '@xh/hoist/cmp/layout';
-import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
+import {grid, GridModel, colChooserButton} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/form';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {emptyFlexCol} from '@xh/hoist/columns';
+import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 
-
-import {sampleTreeData} from './SampleTreeData';
+import {sampleTreeData} from '../../core/data';
 
 @HoistComponent
 @LayoutSupport
@@ -71,8 +70,7 @@ class SampleTreeGrid extends Component {
     }
 
     render() {
-        const {model} = this,
-            {store} = model;
+        const {model} = this;
 
         return panel({
             className: this.getClassName(),
@@ -82,12 +80,9 @@ class SampleTreeGrid extends Component {
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
-                    storeFilterField({
-                        store,
-                        fields: ['name']
-                    }),
+                    storeFilterField({gridModel: model}),
                     storeCountLabel({
-                        store,
+                        gridModel: model,
                         units: 'companies'
                     }),
                     filler(),
