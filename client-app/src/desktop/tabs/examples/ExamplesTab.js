@@ -8,8 +8,8 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
-import {NewsPanel} from './NewsPanel';
-import {PortfolioPanel} from './PortfolioPanel';
+import {NewsPanel} from './news/NewsPanel';
+import {PortfolioPanel} from './portfolio/PortfolioPanel';
 
 @HoistComponent
 export class ExamplesTab extends Component {

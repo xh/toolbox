@@ -6,12 +6,13 @@
  */
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
-import {wrapper} from '../../common';
+import {wrapper} from '../../../common/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {hbox} from '@xh/hoist/cmp/layout';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {grid} from '@xh/hoist/desktop/cmp/grid';
+import {chart} from '@xh/hoist/desktop/cmp/chart';
 
 @HoistComponent
 export class PortfolioPanel extends Component {
@@ -25,7 +26,7 @@ export class PortfolioPanel extends Component {
             item: panel({
                 title: 'Positions',
                 icon: Icon.window(),
-                width: 1500,
+                width: 800,
                 items: [
                     hbox({
                         flex: 1,
@@ -36,36 +37,39 @@ export class PortfolioPanel extends Component {
                                 width: 600,
                                 height: 300,
                                 item: grid({model: model.strategyGridModel}),
-                                mask: model.loadModel
+                                mask: model.portfolioLoadModel
                             }),
                             panel({
                                 title: 'Orders',
                                 icon: Icon.gridPanel(),
                                 width: 900,
                                 height: 300,
-                                item: grid({model: model.ordersGridModel})
+                                item: grid({model: model.ordersGridModel}),
+                                mask: model.ordersLoadModel
+                            })
+                        ]
+                    }),
+                    hbox({
+                        flex: 1,
+                        items: [
+                            panel({
+                                title: 'Strategies',
+                                icon: Icon.gridPanel(),
+                                width: 750,
+                                height: 400,
+                                item: chart({model: model.lineChartModel}),
+                                mask: model.lineChartLoadModel
+                            }),
+                            panel({
+                                title: 'Orders',
+                                icon: Icon.gridPanel(),
+                                width: 750,
+                                height: 400,
+                                item: chart({model: model.olhcChartModel}),
+                                mask: model.olhcChartLoadModel
                             })
                         ]
                     })
-                    // hbox({
-                    //     flex: 1,
-                    //     items: [
-                    //         panel({
-                    //             title: 'Strategies',
-                    //             icon: Icon.gridPanel(),
-                    //             width: 750,
-                    //             height: 400,
-                    //             item: portfolioLineChartPanel()
-                    //         }),
-                    //         panel({
-                    //             title: 'Orders',
-                    //             icon: Icon.gridPanel(),
-                    //             width: 750,
-                    //             height: 400,
-                    //             item: portfolioOLHCChartPanel()
-                    //         })
-                    //     ]
-                    // })
                 ]
             })
         });
