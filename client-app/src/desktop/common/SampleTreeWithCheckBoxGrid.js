@@ -15,7 +15,7 @@ import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {checkBox, switchInput} from '@xh/hoist/desktop/cmp/form';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {emptyFlexCol} from '@xh/hoist/columns';
+import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
