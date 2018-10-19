@@ -8,20 +8,20 @@ import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {box, filler, fragment} from '@xh/hoist/cmp/layout';
-import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
+import {grid, GridModel, colChooserButton} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {checkBox, switchInput} from '@xh/hoist/desktop/cmp/form';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {emptyFlexCol} from '@xh/hoist/columns';
+import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 
-import {sampleTreeData} from './SampleTreeData';
+import {sampleTreeData} from '../../core/data';
 import './SampleTreeWithCheckBoxGrid.scss';
 
 @HoistComponent

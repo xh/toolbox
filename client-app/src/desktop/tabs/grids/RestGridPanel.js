@@ -9,7 +9,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {restGrid, RestGridModel, RestStore, addAction, editAction, viewAction, deleteAction} from '@xh/hoist/desktop/cmp/rest';
-import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/columns';
+import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent
