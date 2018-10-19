@@ -113,7 +113,7 @@ export class PortfolioDataService {
     }
 
     generateMarketData() {
-        const startDate = moment('2018-01-01', 'YYYY-MM-DD'),
+        const startDate = moment('2017-01-01', 'YYYY-MM-DD'),
             todayDate = moment(),
             numDays = todayDate.diff(startDate, 'days'),
             ret = [];
