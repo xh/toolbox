@@ -22,12 +22,12 @@ export class DateFormatsPanelModel {
         moment(new Date()).subtract(100, 'years').format()
     ];
 
-    @bindable presetFunction = 'fmtDateTime';
+    @bindable builtinFunction = 'fmtDateTime';
     @observable singleOptionsDisabled = true;
 
     @bindable fmt = 'YYYY-MM-DD';
     @bindable tooltipSwitch = false;
-    tooltipFunc = (d) => `Date in tooltip: ${d}`;
+    tooltipFunc = (d) => `${d}`;
     @bindable dateFromUser = '20150926';
 
     @computed
@@ -41,7 +41,7 @@ export class DateFormatsPanelModel {
 
     @computed
     get formattedDates() {
-        const {testDates, presetFunction} = this,
+        const {testDates, builtinFunction} = this,
             rows = testDates.map(
                 (testDate, index) =>
                     <tr key={`num-${index}`}>
@@ -50,7 +50,7 @@ export class DateFormatsPanelModel {
                             {testDate}
                         </td>
                         <td align="right">
-                            {formatDate[presetFunction](moment(testDate), this.getFormatOptions())}
+                            {formatDate[builtinFunction](moment(testDate), this.getFormatOptions())}
                         </td>
                     </tr>
             );
@@ -60,10 +60,10 @@ export class DateFormatsPanelModel {
 
     @computed
     get formattedUserInput() {
-        const {dateFromUser, presetFunction} = this;
+        const {dateFromUser, builtinFunction} = this;
 
         try {
-            return formatDate[presetFunction](moment(dateFromUser), this.getFormatOptions());
+            return formatDate[builtinFunction](moment(dateFromUser), this.getFormatOptions());
         } catch (e) {
             return '';
         }
@@ -73,14 +73,14 @@ export class DateFormatsPanelModel {
     // Implementation
     //-----------------------------
     @action
-    handlePresetFunctionChange(val) {
+    handleBuiltinFunctionChange(val) {
         this.singleOptionsDisabled = val != 'fmtDate';
     }
 
 
     getFormatOptions() {
-        const {presetFunction, fOptions} = this;
-        return presetFunction == 'fmtDate' ?
+        const {builtinFunction, fOptions} = this;
+        return builtinFunction == 'fmtDate' ?
             clone(fOptions) :
             {
                 asElement: true

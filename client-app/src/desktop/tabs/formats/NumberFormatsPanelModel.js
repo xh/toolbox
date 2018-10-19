@@ -18,18 +18,15 @@ export class NumberFormatsPanelModel {
         '12456.12',
         '123400.1',
         '123450',
-        '123456',
         '920120.21343',
         '12345600',
-        '12345000',
         '100000001',
-        '123450000',
         '123456789.12',
         '1234567890.12',
         '1.23456e14'
     ];
 
-    @bindable presetFunction = 'fmtThousands';
+    @bindable builtinFunction = 'fmtQuantity';
     @observable singleOptionsDisabled = true;
 
     @bindable precisionAuto = false;
@@ -66,7 +63,7 @@ export class NumberFormatsPanelModel {
 
     @computed
     get formattedNumbers() {
-        const {testNumbers, presetFunction} = this,
+        const {testNumbers, builtinFunction} = this,
             rows = testNumbers.map(
                 (num, index) =>
                     <tr key={`num-${index}`}>
@@ -75,7 +72,7 @@ export class NumberFormatsPanelModel {
                             {num}
                         </td>
                         <td align="right">
-                            {formatNumber[presetFunction](Number(num), this.getFormatOptions())}
+                            {formatNumber[builtinFunction](Number(num), this.getFormatOptions())}
                         </td>
                     </tr>
             );
@@ -87,10 +84,10 @@ export class NumberFormatsPanelModel {
     // for example: 1.89e   - if not caught will cause numbro exception to be thrown
     @computed
     get formattedUserInput() {
-        const {numberFromUser, presetFunction} = this;
+        const {numberFromUser, builtinFunction} = this;
 
         try {
-            return formatNumber[presetFunction](Number(numberFromUser), this.getFormatOptions());
+            return formatNumber[builtinFunction](Number(numberFromUser), this.getFormatOptions());
         } catch (e) {
             return '';
         }
@@ -100,14 +97,14 @@ export class NumberFormatsPanelModel {
     // Implementation
     //-----------------------------
     @action
-    handlePresetFunctionChange(val) {
+    handleBuiltinFunctionChange(val) {
         this.singleOptionsDisabled = val != 'fmtNumber';
     }
 
 
     getFormatOptions() {
-        const {presetFunction, fOptions} = this;
-        return presetFunction == 'fmtNumber' ?
+        const {builtinFunction, fOptions} = this;
+        return builtinFunction == 'fmtNumber' ?
             clone(fOptions) :
             {
                 asElement: true

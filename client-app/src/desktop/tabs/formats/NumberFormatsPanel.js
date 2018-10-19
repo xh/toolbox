@@ -9,13 +9,13 @@ import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
-import {hframe} from '@xh/hoist/cmp/layout';
+import {code, hframe} from '@xh/hoist/cmp/layout';
 import {
     numberInput, radioInput,
     switchInput, TextInput, textInput
 } from '@xh/hoist/desktop/cmp/form';
 
-import {card, formGroup, FormGroup} from '@xh/hoist/kit/blueprint';
+import {card, controlGroup, formGroup, FormGroup} from '@xh/hoist/kit/blueprint';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 import './FormatsTab.scss';
 
@@ -29,75 +29,79 @@ export class NumberFormatsPanel extends Component {
         return wrapper({
             description: [
                 <p>
-                    Hoist provides a number formatting class: <a href="https://github.com/exhi/hoist-react/blob/master/format/FormatNumber.js" target="_blank">FormatNumber</a>.  The class offers several pre-set functions for common use cases and a lower-level 'fmtNumber' method by which formatting can be further customized.  FormatNumber is backed by <a href="https://numbrojs.com/" target="_blank">numbro.js</a>.  Any formatting needs not met by FormatNumber's methods and settings can be met by passing numbro.js configs to fmtNumber via the 'formatConfig' property.
+                    Hoist provides a collection of number formatting functions in <a href="https://github.com/exhi/hoist-react/blob/master/format/FormatNumber.js" target="_blank">FormatNumber.js</a>.  There are several built-in functions for common use cases and a lower-level 'fmtNumber' function by which formatting can be further customized.  FormatNumber is backed by <a href="https://numbrojs.com/" target="_blank">numbro.js</a>.  Any formatting needs not met by the built-in methods or custom options can be met by passing numbro.js configs to fmtNumber via the 'formatConfig' property.
                 </p>
             ],
             item:
                 panel({
-                    title: 'Number Format Tester',
+                    title: 'Number Format',
                     className: 'toolbox-formats-tab',
                     width: '90%',
                     height: '90%',
                     item: hframe({
                         items: [
                             panel({
-                                title: 'Parameters',
+                                title: 'Format',
                                 className: 'toolbox-formats-tab__panel',
                                 flex: 1,
                                 items: [
                                     row({
-                                        label: 'Pre-set Functions',
-                                        field: 'presetFunction',
+                                        label: 'Built-in Functions',
+                                        field: 'builtinFunction',
                                         item: radioInput({
                                             alignIndicator: 'left',
-                                            onChange: (val) => model.handlePresetFunctionChange(val),
+                                            onChange: (val) => model.handleBuiltinFunctionChange(val),
                                             inline: true,
                                             options: [
-                                                {value: 'fmtThousands', label: 'fmtThousands', defaultChecked: true},
-                                                'fmtMillions',
-                                                'fmtBillions',
-                                                'fmtQuantity',
-                                                'fmtPrice',
-                                                'fmtPercent'
+                                                {value: 'fmtQuantity', label: code('fmtQuantity')},
+                                                {value: 'fmtPrice', label: code('fmtPrice')},
+                                                {value: 'fmtPercent', label: code('fmtPercent')},
+                                                {value: 'fmtThousands', label: code('fmtThousands')},
+                                                {value: 'fmtMillions', label: code('fmtMillions')},
+                                                {value: 'fmtBillions', label: code('fmtBillions')}
                                             ]
                                         })
                                     }),
                                     row({
                                         label: 'Custom',
-                                        field: 'presetFunction',
+                                        field: 'builtinFunction',
                                         item: radioInput({
                                             alignIndicator: 'left',
-                                            onChange: (val) => model.handlePresetFunctionChange(val),
-                                            options: ['fmtNumber']
+                                            onChange: (val) => model.handleBuiltinFunctionChange(val),
+                                            options: [{value: 'fmtNumber', label: code('fmtNumber')}]
                                         })
                                     }),
                                     card({
                                         className: 'toolbox-formats-tab__panel__card',
                                         omit: model.singleOptionsDisabled,
                                         items: [
-                                            row({
-                                                label: 'Precision - auto',
-                                                field: 'precisionAuto',
-                                                item: switchInput({
-                                                    disabled: model.singleOptionsDisabled
-                                                }),
-                                                info: `precision:  ${model.precision}.  "auto" enables heuristic based auto-rounding.`
+                                            controlGroup({
+                                                items: [
+                                                    formGroup({
+                                                        helperText: 'or',
+                                                        item: switchInput({
+                                                            model: model,
+                                                            field: 'precisionAuto',
+                                                            disabled: model.singleOptionsDisabled
+                                                        })
+                                                    }),
+                                                    formGroup({
+                                                        helperText: `precision:  ${model.precision == 'auto' ? '"auto" - enables heuristic based auto-rounding.' : model.precision}`,
+                                                        item: numberInput({
+                                                            model: model,
+                                                            field: 'precisionNumber',
+                                                            min: 0,
+                                                            max: 12,
+                                                            width: 36,
+                                                            selectOnFocus: true,
+                                                            commitOnChange: true,
+                                                            disabled: model.precisionAuto || model.singleOptionsDisabled
+                                                        })
+                                                    })
+                                                ]
+
                                             }),
                                             row({
-                                                label: 'Precision - numerical',
-                                                field: 'precisionNumber',
-                                                item: numberInput({
-                                                    min: 0,
-                                                    max: 12,
-                                                    width: 36,
-                                                    selectOnFocus: true,
-                                                    commitOnChange: true,
-                                                    disabled: model.precisionAuto || model.singleOptionsDisabled
-                                                }),
-                                                info: `precision:  ${model.precision}. Specifies max digits to the right of decimal place.`
-                                            }),
-                                            row({
-                                                label: 'Zero Pad',
                                                 field: 'zeroPad',
                                                 item: switchInput({
                                                     disabled: model.singleOptionsDisabled
@@ -105,7 +109,6 @@ export class NumberFormatsPanel extends Component {
                                                 info: `zeroPad:  ${model.zeroPad}`
                                             }),
                                             row({
-                                                label: 'Ledger',
                                                 field: 'ledger',
                                                 item: switchInput({
                                                     disabled: model.singleOptionsDisabled
@@ -113,7 +116,6 @@ export class NumberFormatsPanel extends Component {
                                                 info: `ledger:  ${model.ledger}`
                                             }),
                                             row({
-                                                label: 'Force Ledger Align',
                                                 field: 'forceLedgerAlign',
                                                 item: switchInput({
                                                     disabled: model.singleOptionsDisabled
@@ -121,7 +123,6 @@ export class NumberFormatsPanel extends Component {
                                                 info: `forceLedgerAlign:  ${model.forceLedgerAlign}`
                                             }),
                                             row({
-                                                label: 'With Plus Sign',
                                                 field: 'withPlusSign',
                                                 item: switchInput({
                                                     disabled: model.singleOptionsDisabled
@@ -129,7 +130,6 @@ export class NumberFormatsPanel extends Component {
                                                 info: `withPlusSign:  ${model.withPlusSign}`
                                             }),
                                             row({
-                                                label: 'With Sign Glyph',
                                                 field: 'withSignGlyph',
                                                 item: switchInput({
                                                     disabled: model.singleOptionsDisabled
@@ -137,7 +137,6 @@ export class NumberFormatsPanel extends Component {
                                                 info: `withSignGlyph:  ${model.withSignGlyph}`
                                             }),
                                             row({
-                                                label: 'Color Spec',
                                                 field: 'colorSpec',
                                                 item: switchInput({
                                                     disabled: model.singleOptionsDisabled
@@ -145,13 +144,12 @@ export class NumberFormatsPanel extends Component {
                                                 info: `colorSpec:  ${model.colorSpec}`
                                             }),
                                             row({
-                                                label: 'Label',
                                                 field: 'label',
                                                 item: textInput({
                                                     disabled: model.singleOptionsDisabled,
                                                     commitOnChange: true
                                                 }),
-                                                info: `label:  ${model.label ? '"' + model.label + '"' : 'undefined'}`
+                                                info: `label:  ${model.label ? '"' + model.label + '"' : ''}`
                                             })
                                         ]
                                     })
@@ -159,7 +157,7 @@ export class NumberFormatsPanel extends Component {
                             }),
                             panel({
                                 className: 'toolbox-formats-tab__panel',
-                                title: 'Results',
+                                title: 'Result',
                                 flex: 1,
                                 item: [
                                     <table>
@@ -181,7 +179,7 @@ export class NumberFormatsPanel extends Component {
                                                     align="right"
                                                 >
                                                     <FormGroup
-                                                        label="Try your own:"
+                                                        label="Try it:"
                                                         inline={true}
                                                         width="90%"
                                                     >

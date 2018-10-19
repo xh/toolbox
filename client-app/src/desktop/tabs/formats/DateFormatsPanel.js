@@ -31,43 +31,43 @@ export class DateFormatsPanel extends Component {
         return wrapper({
             description: [
                 <p>
-                    Hoist provides a date formatting class: <a href="https://github.com/exhi/hoist-react/blob/master/format/FormatDate.js" target="_blank">FormatDate</a>. The class offers several pre-set functions for common use cases and a lower-level 'fmtDate' method by which formatting can be further customized.  FormatDate is backed by <a href="https://momentjs.com/" target="_blank">momentjs</a>.  Any formatting needs not met by FormatDate's pre-set methods can be met by passing a momentjs format string via the 'fmt' property.
+                    Hoist provides a collection date formatting functions in <a href="https://github.com/exhi/hoist-react/blob/master/format/FormatDate.js" target="_blank">FormatDate.js</a>. There are several built-in functions for common use cases and a lower-level 'fmtDate' function by which formatting can be further customized.  FormatDate is backed by <a href="https://momentjs.com/" target="_blank">momentjs</a>.  Any formatting needs not met by FormatDate's built-in methods can be met by passing a momentjs format string via the 'fmt' property.
                 </p>
             ],
             item:
                 panel({
-                    title: 'Date Format Tester',
+                    title: 'Date Format',
                     className: 'toolbox-formats-tab',
                     width: '90%',
                     height: '90%',
                     item: hframe({
                         items: [
                             panel({
-                                title: 'Parameters',
+                                title: 'Format',
                                 className: 'toolbox-formats-tab__panel',
                                 flex: 1,
                                 items: [
                                     row({
-                                        label: 'Pre-set Functions',
-                                        field: 'presetFunction',
+                                        label: 'Built-in Functions',
+                                        field: 'builtinFunction',
                                         item: radioInput({
-                                            alignIndicator: 'right',
-                                            onChange: (val) => model.handlePresetFunctionChange(val),
+                                            alignIndicator: 'left',
+                                            onChange: (val) => model.handleBuiltinFunctionChange(val),
                                             inline: true,
                                             options: [
-                                                {value: 'fmtDateTime', label: code('fmtDateTime'), defaultChecked: true},
-                                                'fmtTime',
-                                                'fmtCompactDate'
+                                                {value: 'fmtDateTime', label: code('fmtDateTime')},
+                                                {value: 'fmtTime', label: code('fmtTime')},
+                                                {value: 'fmtCompactDate', label: code('fmtCompactDate')}
                                             ]
                                         })
                                     }),
                                     row({
                                         label: 'Custom',
-                                        field: 'presetFunction',
+                                        field: 'builtinFunction',
                                         item: radioInput({
-                                            alignIndicator: 'right',
-                                            onChange: (val) => model.handlePresetFunctionChange(val),
-                                            options: ['fmtDate']
+                                            alignIndicator: 'left',
+                                            onChange: (val) => model.handleBuiltinFunctionChange(val),
+                                            options: [{value: 'fmtDate', label: code('fmtDate')}]
                                         })
                                     }),
                                     card({
@@ -75,7 +75,6 @@ export class DateFormatsPanel extends Component {
                                         omit: model.singleOptionsDisabled,
                                         items: [
                                             row({
-                                                label: 'Format',
                                                 field: 'fmt',
                                                 item: textInput({
                                                     disabled: model.singleOptionsDisabled,
@@ -85,12 +84,11 @@ export class DateFormatsPanel extends Component {
                                                 info: `fmt:  ${model.fmt ? '"' + model.fmt + '"' : 'undefined'} - a MomentJs format string.`
                                             }),
                                             row({
-                                                label: 'Tooltip',
                                                 field: 'tooltipSwitch',
                                                 item: switchInput({
                                                     disabled: model.singleOptionsDisabled
                                                 }),
-                                                info: `tooltip:  ${model.tooltipFunc} - function to generate a tooltip string, passed the original value to be formatted.`
+                                                info: 'tooltip - function to generate a tooltip string, passed the original date value.'
                                             })
                                         ]
                                     })
@@ -98,7 +96,7 @@ export class DateFormatsPanel extends Component {
                             }),
                             panel({
                                 className: 'toolbox-formats-tab__panel',
-                                title: 'Results',
+                                title: 'Result',
                                 flex: 1,
                                 item: [
                                     <table>
@@ -120,7 +118,7 @@ export class DateFormatsPanel extends Component {
                                                     align="right"
                                                 >
                                                     <FormGroup
-                                                        label="Try your own:"
+                                                        label="Try it:"
                                                         inline={true}
                                                         width="90%"
                                                     >
