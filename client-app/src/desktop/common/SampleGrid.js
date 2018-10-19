@@ -69,7 +69,7 @@ class SampleGrid extends Component {
             {
                 field: 'id',
                 headerName: 'ID',
-                hide: true
+                hidden: true
             },
             {
                 ...actionCol,
