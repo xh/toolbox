@@ -9,6 +9,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
 import {ControlsPanel} from './ControlsPanel';
+import {SelectPanel} from './SelectPanel';
 import {ValidationPanel} from './ValidationPanel';
 
 
@@ -19,6 +20,7 @@ export class FormsTab extends Component {
         route: 'default.forms',
         tabs: [
             {id: 'controls', title: 'Controls', content: ControlsPanel},
+            {id: 'selects', title: 'Selects', content: SelectPanel},
             {id: 'validation', title: 'Validation', content: ValidationPanel}
         ]
     });
