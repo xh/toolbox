@@ -23,8 +23,6 @@ import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {observable, action} from '@xh/hoist/mobx';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/columns';
 
-import {App} from '../App';
-
 @HoistComponent
 @LayoutSupport
 class SampleGrid extends Component {

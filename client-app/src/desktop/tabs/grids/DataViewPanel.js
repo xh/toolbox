@@ -15,7 +15,6 @@ import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
 import {LocalStore} from '@xh/hoist/data';
 
-import {App} from '../../App';
 import {wrapper} from '../../common/Wrapper';
 import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
@@ -72,7 +71,7 @@ export class DataViewPanel extends Component {
 
     loadData = () => {
         const {store} = this.model,
-            companies = App.companyService.randomCompanies,
+            companies = XH.appModel.companyService.randomCompanies,
             min = -1000,
             max = 1000;
 

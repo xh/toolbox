@@ -21,7 +21,6 @@ import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {App} from '../App';
 
 @HoistComponent
 @LayoutSupport
@@ -186,7 +185,7 @@ class SampleColumnGroupsGrid extends Component {
     //------------------------
     loadAsync() {
         wait(250)
-            .then(() => this.model.loadData(App.salesService.generateSales()))
+            .then(() => this.model.loadData(XH.appModel.salesService.generateSales()))
             .linkTo(this.loadModel);
     }
 
