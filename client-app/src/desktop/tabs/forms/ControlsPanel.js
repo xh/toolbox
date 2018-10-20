@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -33,7 +33,6 @@ import {
 import {usStates, restaurants} from '../../../core/data';
 import {wrapper} from '../../common';
 import {ControlsPanelModel} from './ControlsPanelModel';
-import {App} from '../../App';
 import './ControlsPanel.scss';
 
 @HoistComponent
@@ -285,7 +284,7 @@ export class ControlsPanel extends Component {
     };
 
     queryCompaniesAsync(query) {
-        return App.companyService.queryAsync(query).then(hits => {
+        return XH.appModel.companyService.queryAsync(query).then(hits => {
             return hits.map(it => `${it.name} (${it.city})`);
         });
     }

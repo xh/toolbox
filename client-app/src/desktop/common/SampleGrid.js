@@ -178,7 +178,7 @@ class SampleGrid extends Component {
     //------------------------
     loadAsync() {
         wait(250)
-            .then(() => this.model.loadData(App.tradeService.generateTrades()))
+            .then(() => this.model.loadData(XH.appModel.tradeService.generateTrades()))
             .linkTo(this.loadModel);
     }
 
