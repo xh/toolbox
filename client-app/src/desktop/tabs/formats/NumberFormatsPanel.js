@@ -12,10 +12,10 @@ import {wrapper} from '../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
 import {
     numberInput, radioInput,
-    switchInput, TextInput, textInput
+    switchInput, textInput
 } from '@xh/hoist/desktop/cmp/form';
 
-import {card, controlGroup, formGroup, FormGroup} from '@xh/hoist/kit/blueprint';
+import {card, controlGroup, formGroup} from '@xh/hoist/kit/blueprint';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 import './FormatsTab.scss';
 
@@ -177,21 +177,18 @@ export class NumberFormatsPanel extends Component {
                                             <tr key={'num-from-user'}>
                                                 <td colSpan={2}
                                                     align="right"
-                                                >
-                                                    <FormGroup
-                                                        label="Try it:"
-                                                        inline={true}
-                                                        width="90%"
-                                                    >
-                                                        <TextInput
-                                                            model={model}
-                                                            field="numberFromUser"
-                                                            commitOnChange={true}
-                                                            selectOnFocus={true}
-
-                                                            style={{textAlign: 'right'}}
-                                                        />
-                                                    </FormGroup>
+                                                >{formGroup({
+                                                        label: 'Try it:',
+                                                        inline: true,
+                                                        width: '90%',
+                                                        item: textInput({
+                                                            model: model,
+                                                            field: 'numberFromUser',
+                                                            commitOnChange: true,
+                                                            selectOnFocus: true,
+                                                            style: {textAlign: 'right'}
+                                                        })
+                                                    })}
                                                 </td>
                                                 <td align="right">
                                                     {model.formattedUserInput}

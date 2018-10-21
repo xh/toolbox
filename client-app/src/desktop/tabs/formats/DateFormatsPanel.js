@@ -13,11 +13,10 @@ import {code, hframe} from '@xh/hoist/cmp/layout';
 import {
     radioInput,
     switchInput,
-    TextInput,
     textInput
 } from '@xh/hoist/desktop/cmp/form';
 
-import {card, formGroup, FormGroup} from '@xh/hoist/kit/blueprint';
+import {card, formGroup} from '@xh/hoist/kit/blueprint';
 import {DateFormatsPanelModel} from './DateFormatsPanelModel';
 import './FormatsTab.scss';
 
@@ -116,21 +115,18 @@ export class DateFormatsPanel extends Component {
                                             <tr key={'num-from-user'}>
                                                 <td colSpan={2}
                                                     align="right"
-                                                >
-                                                    <FormGroup
-                                                        label="Try it:"
-                                                        inline={true}
-                                                        width="90%"
-                                                    >
-                                                        <TextInput
-                                                            model={model}
-                                                            field="dateFromUser"
-                                                            commitOnChange={true}
-                                                            selectOnFocus={true}
-
-                                                            style={{textAlign: 'right'}}
-                                                        />
-                                                    </FormGroup>
+                                                >{formGroup({
+                                                        label: 'Try it:',
+                                                        inline: true,
+                                                        width: '90%',
+                                                        item: textInput({
+                                                            model: model,
+                                                            field: 'dateFromUser',
+                                                            commitOnChange: true,
+                                                            selectOnFocus: true,
+                                                            style: {textAlign: 'right'}
+                                                        })
+                                                    })}
                                                 </td>
                                                 <td align="right">
                                                     {model.formattedUserInput}
