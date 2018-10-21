@@ -4,7 +4,7 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {HoistAppModel, initServicesAsync, XH} from '@xh/hoist/core';
+import {HoistAppModel, XH} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
 import {CompanyService} from '../core/svc/CompanyService';
@@ -25,21 +25,13 @@ export class AppModel {
 
     tabModel = this.createTabModel();
 
-    companyService = new CompanyService();
-    tradeService = new TradeService();
-    salesService = new SalesService();
-
     constructor() {
         this.addReaction(this.trackTabReaction());
     }
 
     async initAsync() {
-        return initServicesAsync(
-            this.companyService,
-            this.tradeService
-        ).then(() => {
-            XH.track({msg: 'Loaded App'});
-        });
+        await XH.installServicesAsync(CompanyService, TradeService, SalesService);
+        XH.track({msg: 'Loaded App'});
     }
 
     getRoutes() {

@@ -284,7 +284,7 @@ export class ControlsPanel extends Component {
     };
 
     queryCompaniesAsync(query) {
-        return XH.appModel.companyService.queryAsync(query).then(hits => {
+        return XH.companyService.queryAsync(query).then(hits => {
             return hits.map(it => `${it.name} (${it.city})`);
         });
     }

@@ -185,7 +185,7 @@ class SampleColumnGroupsGrid extends Component {
     //------------------------
     loadAsync() {
         wait(250)
-            .then(() => this.model.loadData(XH.appModel.salesService.generateSales()))
+            .then(() => this.model.loadData(XH.salesService.generateSales()))
             .linkTo(this.loadModel);
     }
 

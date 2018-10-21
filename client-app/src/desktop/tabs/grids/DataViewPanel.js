@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -71,7 +71,7 @@ export class DataViewPanel extends Component {
 
     loadData = () => {
         const {store} = this.model,
-            companies = XH.appModel.companyService.randomCompanies,
+            companies = XH.companyService.randomCompanies,
             min = -1000,
             max = 1000;
 
