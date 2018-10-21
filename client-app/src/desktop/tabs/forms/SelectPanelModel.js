@@ -20,7 +20,6 @@ export class SelectPanelModel {
     @field() option3Multi
     @field() option3Obj
 
-
     constructor() {
         this.initFields({
             option1: 'CA',

@@ -42,9 +42,10 @@ export class SelectPanel extends Component {
                             title: 'Simple',
                             field: 'option1',
                             select: {
-                                log: false,
+                                log: true,
                                 options: usStates,
-                                enableCreate: true
+                                enableCreate: true,
+                                width: 200
                             }
                         }),
                         this.renderSelect({
@@ -53,7 +54,7 @@ export class SelectPanel extends Component {
                             select: {
                                 log: false,
                                 loadingMessageFn: (q) => `Searching states for ${q}...`,
-                                queryFnAsync: this.queryStatesAsync
+                                queryFn: this.queryStatesAsync
                             }
                         }),
                         this.renderSelect({

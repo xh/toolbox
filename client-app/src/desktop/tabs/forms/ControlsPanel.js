@@ -22,6 +22,7 @@ import {
     radioInput,
     slider,
     select,
+    newSelect,
     multiSelect,
     switchInput,
     comboBox,
@@ -202,10 +203,32 @@ export class ControlsPanel extends Component {
                                     })
                                 }),
                                 row({
+                                    label: 'NewSelect',
+                                    field: 'option1',
+                                    item: newSelect({
+                                        options: usStates,
+                                        width: 180,
+                                        searchable: false,
+                                        placeholder: 'Select a state...',
+                                        rsOptions: {
+                                            // menuIsOpen: true
+                                        }
+                                    })
+                                }),
+                                row({
                                     label: 'ComboBox',
                                     field: 'option2',
                                     item: comboBox({
                                         options: restaurants,
+                                        placeholder: 'Search restaurants...'
+                                    })
+                                }),
+                                row({
+                                    label: 'NewSelect',
+                                    field: 'option2',
+                                    item: newSelect({
+                                        options: restaurants,
+                                        width: 260,
                                         placeholder: 'Search restaurants...'
                                     })
                                 }),
@@ -215,6 +238,16 @@ export class ControlsPanel extends Component {
                                     info: 'custom/async search (name/city)',
                                     item: comboBox({
                                         queryFn: this.queryCompaniesAsync,
+                                        placeholder: 'Search companies...'
+                                    })
+                                }),
+                                row({
+                                    label: 'NewSelect',
+                                    field: 'option3',
+                                    info: 'custom/async search (name/city)',
+                                    item: newSelect({
+                                        queryFn: this.queryCompaniesAsync,
+                                        width: 260,
                                         placeholder: 'Search companies...'
                                     })
                                 }),
@@ -304,8 +337,10 @@ export class ControlsPanel extends Component {
     };
 
     queryCompaniesAsync(query) {
-        return App.companyService.queryAsync(query).then(hits => {
-            return hits.map(it => `${it.name} (${it.city})`);
-        });
+        return App.companyService.queryAsync(query)
+            .wait(800)
+            .then(hits => {
+                return hits.map(it => `${it.name} (${it.city})`);
+            });
     }
 }
