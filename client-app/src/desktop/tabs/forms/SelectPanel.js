@@ -28,7 +28,7 @@ export class SelectPanel extends Component {
         return wrapper({
             item: panel({
                 className: 'toolbox-selects-panel',
-                width: 800,
+                width: '90%',
                 height: '90%',
                 item: div({
                     style: {
@@ -39,23 +39,26 @@ export class SelectPanel extends Component {
 
                     items: [
                         this.renderSelect({
+                            title: 'Simple',
+                            field: 'option1',
+                            select: {
+                                log: false,
+                                options: usStates,
+                                enableCreate: true
+                            }
+                        }),
+                        this.renderSelect({
                             title: 'Async',
                             field: 'option3',
                             select: {
-                                log: true,
+                                log: false,
+                                loadingMessageFn: (q) => `Searching states for ${q}...`,
                                 queryFnAsync: this.queryStatesAsync
                             }
                         }),
                         this.renderSelect({
                             title: 'Multi',
                             field: 'option2',
-                            select: {
-                                options: usStates
-                            }
-                        }),
-                        this.renderSelect({
-                            title: 'Simple',
-                            field: 'option1',
                             select: {
                                 options: usStates
                             }
@@ -80,7 +83,8 @@ export class SelectPanel extends Component {
                         model,
                         field,
                         emitObjects: model[field + 'Obj'],
-                        multi: model[field + 'Multi'],
+                        enableMulti: model[field + 'Multi'],
+                        enableCreate: model[field + 'Create'],
                         ...opts.select
                     }),
                     box({
@@ -95,17 +99,18 @@ export class SelectPanel extends Component {
                 button({text: 'NY', onClick: () => setter('NY')}),
                 button({text: 'XX', onClick: () => setter('XX')}),
                 toolbarSep(),
-                button({text: '{CA}', onClick: () => setter({value: 'CA', label: 'California'})}),
-                button({text: '{XX}', onClick: () => setter({value: 'XX', label: 'XX State'})}),
-                toolbarSep(),
-                button({text: '[NY]', onClick: () => setter(['NY'])}),
-                button({text: '[CA,NY]', onClick: () => setter(['CA', 'NY'])}),
-                toolbarSep(),
-                button({text: '""', onClick: () => setter('')}),
+                // button({text: '{CA}', onClick: () => setter({value: 'CA', label: 'California'})}),
+                // button({text: '{XX}', onClick: () => setter({value: 'XX', label: 'XX State'})}),
+                // toolbarSep(),
+                // button({text: '[NY]', onClick: () => setter(['NY'])}),
+                // button({text: '[CA,NY]', onClick: () => setter(['CA', 'NY'])}),
+                // toolbarSep(),
+                // button({text: '""', onClick: () => setter('')}),
                 button({text: 'null', onClick: () => setter(null)}),
                 toolbarSep(),
                 switchInput({model, field: field + 'Obj', label: '{}'}),
-                switchInput({model, field: field + 'Multi', label: '[]'})
+                switchInput({model, field: field + 'Multi', label: '[]'}),
+                switchInput({model, field: field + 'Create', label: '+'})
             )
         });
     }
