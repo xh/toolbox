@@ -14,7 +14,7 @@ import moment from 'moment';
 import {fmtDateTime, fmtThousands} from '@xh/hoist/format';
 import {
     formField,
-    checkBox,
+    checkbox,
     dateInput,
     textInput,
     textArea,
@@ -232,7 +232,7 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'CheckBox',
                                     field: 'bool1',
-                                    item: checkBox({
+                                    item: checkbox({
                                         label: 'enabled'
                                     })
                                 }),
