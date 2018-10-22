@@ -22,10 +22,7 @@ import {
     radioInput,
     slider,
     select,
-    newSelect,
-    multiSelect,
     switchInput,
-    comboBox,
     jsonInput,
     buttonGroupInput
 } from '@xh/hoist/desktop/cmp/form';
@@ -195,68 +192,40 @@ export class ControlsPanel extends Component {
                             items: [
                                 row({
                                     label: 'Select',
+                                    field: 'option2',
+                                    item: select({
+                                        options: restaurants,
+                                        placeholder: 'Search restaurants...'
+                                    })
+                                }),
+                                row({
+                                    label: 'Select',
                                     field: 'option1',
+                                    info: 'enableFilter:false',
                                     item: select({
                                         options: usStates,
-                                        placeholder: 'Select a state...',
-                                        icon: Icon.location()
+                                        width: 160,
+                                        enableFilter: false,
+                                        placeholder: 'Select a state...'
                                     })
                                 }),
                                 row({
-                                    label: 'NewSelect',
-                                    field: 'option1',
-                                    item: newSelect({
-                                        options: usStates,
-                                        width: 180,
-                                        searchable: false,
-                                        placeholder: 'Select a state...',
-                                        rsOptions: {
-                                            // menuIsOpen: true
-                                        }
-                                    })
-                                }),
-                                row({
-                                    label: 'ComboBox',
-                                    field: 'option2',
-                                    item: comboBox({
-                                        options: restaurants,
-                                        placeholder: 'Search restaurants...'
-                                    })
-                                }),
-                                row({
-                                    label: 'NewSelect',
-                                    field: 'option2',
-                                    item: newSelect({
-                                        options: restaurants,
-                                        width: 260,
-                                        placeholder: 'Search restaurants...'
-                                    })
-                                }),
-                                row({
-                                    label: 'ComboBox',
+                                    label: 'Select',
                                     field: 'option3',
-                                    info: 'custom/async search (name/city)',
-                                    item: comboBox({
+                                    info: 'custom async search (name/city)',
+                                    item: select({
                                         queryFn: this.queryCompaniesAsync,
                                         placeholder: 'Search companies...'
                                     })
                                 }),
                                 row({
-                                    label: 'NewSelect',
-                                    field: 'option3',
-                                    info: 'custom/async search (name/city)',
-                                    item: newSelect({
-                                        queryFn: this.queryCompaniesAsync,
-                                        width: 260,
-                                        placeholder: 'Search companies...'
-                                    })
-                                }),
-                                row({
-                                    label: 'MultiSelect',
+                                    label: 'Select',
                                     field: 'option5',
-                                    item: multiSelect({
+                                    info: 'enableMulti',
+                                    item: select({
                                         options: usStates,
-                                        className: 'toolbox-multiselect',
+                                        enableMulti: true,
+                                        width: '100%',
                                         placeholder: 'Select state(s)...'
                                     })
                                 }),

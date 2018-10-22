@@ -11,7 +11,7 @@ import {box, div, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {newSelect, switchInput} from '@xh/hoist/desktop/cmp/form';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/form';
 import {upperFirst} from 'lodash';
 
 import {usStates} from '../../../core/data';
@@ -44,7 +44,6 @@ export class SelectPanel extends Component {
                             select: {
                                 log: true,
                                 options: usStates,
-                                enableCreate: true,
                                 width: 200
                             }
                         }),
@@ -61,7 +60,8 @@ export class SelectPanel extends Component {
                             title: 'Multi',
                             field: 'option2',
                             select: {
-                                options: usStates
+                                options: usStates,
+                                width: 600
                             }
                         })
                     ]
@@ -80,7 +80,7 @@ export class SelectPanel extends Component {
             margin: '0 0 10 0',
             item: vframe({
                 items: [
-                    newSelect({
+                    select({
                         model,
                         field,
                         emitObjects: model[field + 'Obj'],
