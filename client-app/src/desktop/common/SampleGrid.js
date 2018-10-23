@@ -151,13 +151,15 @@ class SampleGrid extends Component {
                     filler(),
                     box('Group by:'),
                     select({
+                        model: this,
+                        field: 'groupBy',
                         options: [
                             {value: 'active', label: 'Active'},
                             {value: 'city', label: 'City'},
                             {value: false, label: 'None'}
                         ],
-                        model: this,
-                        field: 'groupBy'
+                        width: 120,
+                        enableFilter: false
                     }),
                     box('Compact mode:'),
                     switchInput({

@@ -99,6 +99,7 @@ class AppClass {
                         forwardTo: 'default.forms.controls',
                         children: [
                             {name: 'controls', path: '/controls'},
+                            {name: 'selects', path: '/selects'},
                             {name: 'validation', path: '/validation'}
                         ]
                     },
