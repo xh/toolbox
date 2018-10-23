@@ -83,7 +83,6 @@ export class SelectPanel extends Component {
                     select({
                         model,
                         field,
-                        emitObjects: model[field + 'Obj'],
                         enableMulti: model[field + 'Multi'],
                         enableCreate: model[field + 'Create'],
                         ...opts.select
@@ -109,15 +108,10 @@ export class SelectPanel extends Component {
                 // button({text: '""', onClick: () => setter('')}),
                 button({text: 'null', onClick: () => setter(null)}),
                 toolbarSep(),
-                switchInput({model, field: field + 'Obj', label: '{}'}),
                 switchInput({model, field: field + 'Multi', label: '[]'}),
                 switchInput({model, field: field + 'Create', label: '+'})
             )
         });
-    }
-
-    emitSwitch(field) {
-        return switchInput({model: this.model, field: field + 'Obj', label: 'as objects'});
     }
 
     queryStatesAsync = (q) => {
