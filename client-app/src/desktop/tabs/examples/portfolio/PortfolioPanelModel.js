@@ -1,8 +1,8 @@
 import {HoistModel} from '@xh/hoist/core';
 import {fmtDate, numberRenderer} from '@xh/hoist/format';
-import {GridModel} from '@xh/hoist/desktop/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
-import {emptyFlexCol} from '@xh/hoist/columns';
+import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {PortfolioDataService} from './PortfolioDataService';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
