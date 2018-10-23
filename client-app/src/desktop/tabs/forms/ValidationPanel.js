@@ -13,7 +13,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {formField, checkBox, dateInput, numberInput, textInput} from '@xh/hoist/desktop/cmp/form';
+import {formField, checkbox, dateInput, numberInput, textInput} from '@xh/hoist/desktop/cmp/form';
 
 import {wrapper} from '../../common';
 import {ValidationPanelModel} from './ValidationPanelModel';
@@ -105,7 +105,7 @@ export class ValidationPanel extends Component {
                                     model,
                                     label: 'Employment Role',
                                     field: 'isManager',
-                                    item: checkBox({
+                                    item: checkbox({
                                         width: 200,
                                         label: 'manager'
                                     })

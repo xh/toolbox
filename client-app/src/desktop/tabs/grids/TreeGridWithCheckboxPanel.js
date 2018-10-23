@@ -9,7 +9,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 
-import {wrapper, sampleTreeWithCheckBoxGrid} from '../../common';
+import {wrapper, sampleTreeWithCheckboxGrid} from '../../common';
 
 @HoistComponent
 export class TreeGridWithCheckboxPanel extends Component {
@@ -26,7 +26,7 @@ export class TreeGridWithCheckboxPanel extends Component {
                 icon: Icon.grid(),
                 width: 700,
                 height: 400,
-                item: sampleTreeWithCheckBoxGrid()
+                item: sampleTreeWithCheckboxGrid()
             })
         });
     }
