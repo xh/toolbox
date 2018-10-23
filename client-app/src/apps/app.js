@@ -9,6 +9,6 @@ XH.renderApp({
     containerClass: AppContainer,
     isMobile: false,
     isSSO: false,
-    checkAccess: ['APP_READER'],
+    checkAccess: 'APP_READER',
     loginMessage: "User: 'toolbox@xh.io' / Password: 'toolbox'"
 });
