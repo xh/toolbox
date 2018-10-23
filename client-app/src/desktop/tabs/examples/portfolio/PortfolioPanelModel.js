@@ -241,7 +241,7 @@ export class PortfolioPanelModel {
         return {
             track: () => this.portfolioDataService.portfolioVersion,
             run: () => {
-                this.portfolioDataService.getPortfolio()
+                this.portfolioDataService.getPortfolio(['strategy', 'model'])
                     .then((portfolio) => {
                         this.strategyGridModel.loadData(portfolio);
                         this.strategyGridModel.selectFirst();

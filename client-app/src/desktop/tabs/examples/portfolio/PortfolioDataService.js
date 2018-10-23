@@ -2,7 +2,7 @@ import {action, observable} from '@xh/hoist/mobx';
 import {HoistModel} from '@xh/hoist/core';
 import faker from 'faker';
 import moment from 'moment';
-import {times} from 'lodash';
+import {times, isNil} from 'lodash';
 import {wait} from '@xh/hoist/promise';
 
 @HoistModel
@@ -10,6 +10,7 @@ export class PortfolioDataService {
 
     models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul'];
     strategies = ['US Tech Long/Short', 'US Healthcare Long/Short', 'EU Long/Short', 'BRIC', 'Africa'];
+    symbols = [];
     numOrders = 100;
 
     @observable.ref portfolioVersion = 0;
@@ -20,12 +21,10 @@ export class PortfolioDataService {
     constructor() {
     }
 
-    getPortfolio() {
+    getPortfolio(dimensions) {
         return wait(500).then(() => {
-            if (this.portfolio.length === 0) {
-                this.initializePortfolio();
-            }
-            return (this.portfolio);
+            this.generatePortfolioFromOrders(this.generateRandomOrders(this.numOrders), dimensions);
+            return this.portfolio;
         });
     }
 
@@ -74,44 +73,6 @@ export class PortfolioDataService {
         });
     }
 
-    initializePortfolio() {
-        let a = 0;
-        this.models.forEach(model => {
-            a++;
-            const modelLevel = {
-                id: a,
-                name: model,
-                children: []
-            };
-            let b = 0;
-            this.strategies.forEach(strategy => {
-                b++;
-                const strategyLevel = {
-                    id: a + '-' + b,
-                    name: strategy,
-                    children: []
-                };
-                for (let x = 1; x < Math.floor(Math.random() * 6) + 2; x++) {
-                    const symbol = this.generateSymbol();
-                    strategyLevel.children.push({
-                        id: a + '-' + b + '-' + x,
-                        name: symbol,
-                        volume: 0,
-                        pnl:  0
-                    });
-                    this.marketData.push({symbol: symbol, data: this.generateMarketData()});
-                }
-                modelLevel.children.push(strategyLevel);
-            });
-            this.portfolio.push(modelLevel);
-        });
-
-        for (let x = 0; x < this.numOrders; x++) {
-            const order = this.generateOrder();
-            this.updatePortfolioWithOrder(order);
-        }
-    }
-
     generateMarketData() {
         const startDate = moment('2017-01-01', 'YYYY-MM-DD'),
             todayDate = moment(),
@@ -144,58 +105,100 @@ export class PortfolioDataService {
         return ret;
     }
 
-    generateOrder() {
-        const randomOrder =
-            this.getRandomPositionFromPortfolio(this.portfolio),
-            orderId = this.orders.length;
+    getRandomPositionForPortfolio() {
+        const modelIndex = Math.floor(Math.random() * this.models.length),
+            strategyIndex = Math.floor(Math.random() * this.strategies.length);
 
         return {
-            id: randomOrder.id + '-' + orderId,
-            model: randomOrder.model,
-            strategy: randomOrder.strategy,
-            symbol: randomOrder.symbol,
-            time: moment.utc(Math.round(Math.random() * 23400000) + 34200000).format('HH:mm:ss'),
-            trader: faker.name.findName(),
-            dir: this.generateRandomDirection(),
-            volume: this.generateRandomQuantity(),
-            pnl: this.generateRandomPnl()
+            model: this.models[modelIndex],
+            strategy: this.strategies[strategyIndex],
+            symbol: this.generateRandomSymbol()
         };
     }
 
-    updatePortfolioWithOrder(order) {
-        const {portfolio} = this;
-        this.orders.push(order);
-        const model = portfolio.find(model => model.name === order.model),
-            strategy = model.children.find(strategy => strategy.name === order.strategy),
-            position = strategy.children.find(position => position.name === order.symbol);
+    // portfolio builder
+    updatePortfolioWithOrder(keySet, order) {
+        let level = this.portfolio;
+        let id = (isNil(level) ? '0' : level.length).toString();
+        keySet.forEach((key, index) => {
+            let entry = level.find(level => level.name === key);
+            if (isNil(entry)) {
+                if (index === keySet.length - 1) {
+                    entry = {
+                        id: id,
+                        name: key,
+                        volume: 0,
+                        pnl: 0
+                    };
+                } else {
+                    entry = {
+                        id: id,
+                        name: key,
+                        children: []
+                    };
+                }
+                level.push(entry);
+            }
+            level = entry.children;
+            id = entry.id + '-' + (isNil(level) ? '0' : level.length).toString();
 
-        position.pnl += order.pnl;
-        position.volume += order.volume;
+            if (index === keySet.length - 1) {
+                entry.volume += order.volume;
+                entry.pnl += order.pnl;
+                this.orders.push({id: (entry.id + '-' + (isNil(this.orders) ? '0' : this.orders.length).toString()), ...order});
+            }
+        });
+    }
+    generatePortfolioFromOrders(orders, dimensions) {
+        orders.forEach((order) => {
+            const key = [];
+            dimensions.forEach((dimension) => {
+                key.push(order[dimension]);
+            });
+            this.updatePortfolioWithOrder(key, order);
+        });
     }
 
-    getRandomPositionFromPortfolio(portfolio) {
-        const modelIndex = Math.floor(Math.random() * portfolio.length),
-            strategyIndex = Math.floor(Math.random() * portfolio[modelIndex].children.length),
-            symbolIndex = Math.floor(Math.random() * portfolio[modelIndex].children[strategyIndex].children.length);
+    // random order-data generators
+    generateRandomOrders(numberOfOrders) {
+        const randomOrders = [];
 
-        return {
-            model: portfolio[modelIndex].name,
-            strategy: portfolio[modelIndex].children[strategyIndex].name,
-            symbol: portfolio[modelIndex].children[strategyIndex].children[symbolIndex].name,
-            id: portfolio[modelIndex].children[strategyIndex].children[symbolIndex].id
-        };
-    }
+        times(numberOfOrders, () => {
+            const randomOrder =
+                this.getRandomPositionForPortfolio(this.portfolio);
 
-    generateSymbol() {
-        const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const length = Math.floor(Math.random() * 2) + 3;
-        let symbol = '';
-
-        times(length, () => {
-            symbol += alpha.charAt(Math.floor(Math.random() * 27));
+            randomOrders.push({
+                model: randomOrder.model,
+                strategy: randomOrder.strategy,
+                symbol: randomOrder.symbol,
+                time: moment.utc(Math.round(Math.random() * 23400000) + 34200000).format('HH:mm:ss'),
+                trader: faker.name.findName(),
+                dir: this.generateRandomDirection(),
+                volume: this.generateRandomQuantity(),
+                pnl: this.generateRandomPnl()
+            });
         });
 
-        return symbol;
+        return randomOrders;
+    }
+
+    generateRandomSymbol() {
+        const numberOfSymbols = 50;
+
+        if (this.symbols.length === 0) {
+            const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            times(numberOfSymbols, () => {
+                let symbol = '';
+                const length = Math.floor(Math.random() * 2) + 3;
+                times(length, () => {
+                    symbol += alpha.charAt(Math.floor(Math.random() * 27));
+                });
+                this.symbols.push(symbol);
+                this.marketData.push({symbol: symbol, data: this.generateMarketData()});
+            });
+        }
+
+        return this.symbols[Math.round(Math.random() * 49)];
     }
 
     generateRandomDirection() {
