@@ -104,7 +104,8 @@ export class PortfolioPanelModel {
                 headerName: 'Direction',
                 width: 100,
                 tooltip: false
-            }
+            },
+            {...emptyFlexCol}
         ]
     });
 

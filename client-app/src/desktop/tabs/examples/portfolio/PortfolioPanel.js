@@ -7,7 +7,7 @@
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {wrapper} from '../../../common/index';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {panel, PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {hbox} from '@xh/hoist/cmp/layout';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
@@ -17,6 +17,16 @@ import {chart} from '@xh/hoist/desktop/cmp/chart';
 @HoistComponent
 export class PortfolioPanel extends Component {
 
+    strategiesSizingModel = new PanelSizingModel({
+        defaultSize: 600,
+        side: 'left'
+    });
+
+    bottomSizingModel = new PanelSizingModel({
+        defaultSize: 400,
+        side: 'bottom'
+    });
+
     localModel = new PortfolioPanelModel();
 
     render() {
@@ -24,49 +34,61 @@ export class PortfolioPanel extends Component {
 
         return wrapper({
             item: panel({
-                width: 1000,
+                width: 1200,
                 items: [
                     hbox({
-                        flex: 1,
                         items: [
                             panel({
+                                flex: 1,
                                 title: 'Strategies',
                                 icon: Icon.gridPanel(),
-                                width: 600,
+                                sizingModel: this.strategiesSizingModel,
                                 height: 300,
-                                item: grid({model: model.strategyGridModel}),
+                                item: grid({
+                                    flex: 1,
+                                    model: model.strategyGridModel
+                                }),
                                 mask: model.portfolioLoadModel
                             }),
                             panel({
+                                flex: 1,
                                 title: 'Orders',
                                 icon: Icon.gridPanel(),
-                                width: 500,
                                 height: 300,
-                                item: grid({model: model.ordersGridModel}),
+                                item: grid({
+                                    flex: 1,
+                                    model: model.ordersGridModel
+                                }),
                                 mask: model.ordersLoadModel
                             })
                         ]
                     }),
-                    hbox({
-                        flex: 1,
-                        items: [
-                            panel({
-                                title: 'Trade Volume',
-                                icon: Icon.gridPanel(),
-                                width: 750,
-                                height: 400,
-                                item: chart({model: model.lineChartModel}),
-                                mask: model.lineChartLoadModel
-                            }),
-                            panel({
-                                title: 'Prices',
-                                icon: Icon.gridPanel(),
-                                width: 750,
-                                height: 400,
-                                item: chart({model: model.olhcChartModel}),
-                                mask: model.olhcChartLoadModel
-                            })
-                        ]
+                    panel({
+                        sizingModel: this.bottomSizingModel,
+                        item: hbox({
+                            items: [
+                                panel({
+                                    title: 'Trade Volume',
+                                    icon: Icon.gridPanel(),
+                                    width: 600,
+                                    height: 400,
+                                    item: chart({
+                                        model: model.lineChartModel
+                                    }),
+                                    mask: model.lineChartLoadModel,
+                                }),
+                                panel({
+                                    title: 'Prices',
+                                    icon: Icon.gridPanel(),
+                                    width: 600,
+                                    height: 400,
+                                    item: chart({
+                                        model: model.olhcChartModel
+                                    }),
+                                    mask: model.olhcChartLoadModel
+                                })
+                            ]
+                        })
                     })
                 ]
             })
