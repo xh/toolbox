@@ -12,5 +12,5 @@ XH.renderApp({
     isSSO: false,
     checkAccess: 'HOIST_ADMIN',
     loginMessage: 'Contact support@xh.io for information on Hoist\'s bundled Admin Console.',
-    lockoutMessage: 'Please contect support@xh.io for access to this tool.'
+    lockoutMessage: 'Contact support@xh.io for information on Hoist\'s bundled Admin Console.'
 });

@@ -3,7 +3,6 @@ import {App} from '../mobile/App';
 import {AppModel} from '../mobile/AppModel';
 import {AppContainer} from '@xh/hoist/mobile/appcontainer';
 
-
 XH.renderApp({
     componentClass: App,
     modelClass: AppModel,
