@@ -31,7 +31,6 @@ export class AppModel {
 
     async initAsync() {
         await XH.installServicesAsync(CompanyService, TradeService, SalesService);
-        XH.track({msg: 'Loaded App'});
     }
 
     getRoutes() {

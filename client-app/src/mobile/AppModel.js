@@ -28,9 +28,7 @@ export class AppModel {
         this.navigatorModel.pushPage({title, pageFactory});
     }
 
-    async initAsync() {
-        XH.track({msg: 'Loaded Mobile App'});
-    }
+    async initAsync() {}
 
     destroy() {
         XH.safeDestroy(this.appMenuModel);
