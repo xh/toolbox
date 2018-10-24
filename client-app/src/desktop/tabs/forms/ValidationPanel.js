@@ -13,7 +13,14 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {formField, checkbox, dateInput, numberInput, textInput} from '@xh/hoist/desktop/cmp/form';
+import {
+    formField,
+    checkbox,
+    dateInput,
+    numberInput,
+    select,
+    textInput
+} from '@xh/hoist/desktop/cmp/form';
 
 import {wrapper} from '../../common';
 import {ValidationPanelModel} from './ValidationPanelModel';
@@ -96,18 +103,30 @@ export class ValidationPanel extends Component {
                                         })
                                     ]
                                 }),
-                                formField({
-                                    model,
-                                    field: 'yearsExperience',
-                                    item: numberInput({width: 50})
+                                hbox({
+                                    alignItems: 'center',
+                                    items: [
+                                        formField({
+                                            model,
+                                            field: 'yearsExperience',
+                                            item: numberInput({width: 50})
+                                        }),
+                                        formField({
+                                            model,
+                                            field: 'isManager',
+                                            label: null,
+                                            item: checkbox({
+                                                width: 200,
+                                                label: 'manager role'
+                                            })
+                                        })
+                                    ]
                                 }),
                                 formField({
                                     model,
-                                    label: 'Employment Role',
-                                    field: 'isManager',
-                                    item: checkbox({
-                                        width: 200,
-                                        label: 'manager'
+                                    field: 'region',
+                                    item: select({
+                                        options: ['California', 'London', 'Montreal', 'New York']
                                     })
                                 })
                             ]

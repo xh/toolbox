@@ -40,6 +40,9 @@ export class ValidationPanelModel {
     @field('End Date', required, dateIs({min: 'today'}))
     endDate;
 
+    @field('Region', required)
+    region;
+
     constructor() {
         this.initFields({
             isManager: false,
