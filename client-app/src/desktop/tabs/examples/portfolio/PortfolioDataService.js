@@ -8,6 +8,8 @@ import {wait} from '@xh/hoist/promise';
 @HoistModel
 export class PortfolioDataService {
 
+    randomOrders = [];
+
     models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul'];
     strategies = ['US Tech Long/Short', 'US Healthcare Long/Short', 'EU Long/Short', 'BRIC', 'Africa'];
     symbols = [];
@@ -18,16 +20,18 @@ export class PortfolioDataService {
     orders = [];
     marketData = [];
 
-    dimensions = [];
+    dimensions = ['model'];
 
     constructor() {
-        // this.loadOrdersAsync();
+        this.generateRandomOrders(this.numOrders);
+        this.generatePortfolioFromOrders(this.randomOrders, this.dimensions);
     }
 
     getPortfolio(dimensions) {
+        this.portfolio = [];
         this.dimensions = dimensions;
+        this.generatePortfolioFromOrders(this.randomOrders, this.dimensions);
         return wait(500).then(() => {
-            this.generatePortfolioFromOrders(this.generateRandomOrders(this.numOrders), this.dimensions);
             return this.portfolio;
         });
     }
@@ -165,13 +169,11 @@ export class PortfolioDataService {
 
     // random order-data generators
     generateRandomOrders(numberOfOrders) {
-        const randomOrders = [];
-
         times(numberOfOrders, () => {
             const randomOrder =
                 this.getRandomPositionForPortfolio(this.portfolio);
 
-            randomOrders.push({
+            this.randomOrders.push({
                 model: randomOrder.model,
                 strategy: randomOrder.strategy,
                 symbol: randomOrder.symbol,
@@ -182,8 +184,6 @@ export class PortfolioDataService {
                 pnl: this.generateRandomPnl()
             });
         });
-
-        return randomOrders;
     }
 
     generateRandomSymbol() {

@@ -8,7 +8,7 @@ import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
 import Highcharts from 'highcharts/highstock';
 import {isNil} from 'lodash';
-
+import {bindable} from '@xh/hoist/mobx';
 
 @HoistModel
 export class PortfolioPanelModel {
@@ -19,6 +19,7 @@ export class PortfolioPanelModel {
     lineChartLoadModel = new PendingTaskModel();
     olhcChartLoadModel = new PendingTaskModel();
 
+    @bindable dimensions = ['model'];
     strategyGridModel = new GridModel({
         treeMode: true,
         store: new LocalStore({
@@ -229,19 +230,34 @@ export class PortfolioPanelModel {
         }
     });
 
-
     constructor() {
+        this.addReaction(this.loadDimensionReaction());
         this.addReaction(this.loadPortfolioReaction());
         this.addReaction(this.loadOrdersReaction());
         this.addReaction(this.loadLineChartReaction());
         this.addReaction(this.loadOLHCChartReaction());
     }
 
+    // loadPortfolioDimensionReaction() {
+    //     return {
+    //         track: () => this.di
+    //         run: () => {
+    //             this.portfolioDataService.getPortfolio(['model', 'symbol'])
+    //                 .then((portfolio) => {
+    //                     this.strategyGridModel.loadData(portfolio);
+    //                     this.strategyGridModel.selectFirst();
+    //                 })
+    //                 .linkTo(this.portfolioLoadModel);
+    //         },
+    //         fireImmediately: true
+    //     };
+    // }
+
     loadPortfolioReaction() {
         return {
             track: () => this.portfolioDataService.portfolioVersion,
             run: () => {
-                this.portfolioDataService.getPortfolio(['model', 'symbol'])
+                this.portfolioDataService.getPortfolio(this.dimensions.slice())
                     .then((portfolio) => {
                         this.strategyGridModel.loadData(portfolio);
                         this.strategyGridModel.selectFirst();
@@ -249,6 +265,20 @@ export class PortfolioPanelModel {
                     .linkTo(this.portfolioLoadModel);
             },
             fireImmediately: true
+        };
+    }
+
+    loadDimensionReaction() {
+        return {
+            track: () => this.dimensions,
+            run: () => {
+                this.portfolioDataService.getPortfolio(this.dimensions.slice())
+                    .then((portfolio) => {
+                        this.strategyGridModel.loadData(portfolio);
+                        this.strategyGridModel.selectFirst();
+                    })
+                    .linkTo(this.portfolioLoadModel);
+            }
         };
     }
 

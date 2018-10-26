@@ -13,6 +13,8 @@ import {hbox} from '@xh/hoist/cmp/layout';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
+import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {action} from '@xh/hoist/mobx';
 
 @HoistComponent
 export class PortfolioPanel extends Component {
@@ -60,6 +62,14 @@ export class PortfolioPanel extends Component {
                                     model: model.ordersGridModel
                                 }),
                                 mask: model.ordersLoadModel
+                            }),
+                            dimensionChooser({
+                                model: model,
+                                field: 'dimensions',
+                                dimensions: [
+                                    {value: 'model', label: 'Model'},
+                                    {value: 'strategy', label: 'Strategy'},
+                                    {value: 'symbol', label: 'Symbol'}]
                             })
                         ]
                     }),
@@ -75,7 +85,7 @@ export class PortfolioPanel extends Component {
                                     item: chart({
                                         model: model.lineChartModel
                                     }),
-                                    mask: model.lineChartLoadModel,
+                                    mask: model.lineChartLoadModel
                                 }),
                                 panel({
                                     title: 'Prices',
