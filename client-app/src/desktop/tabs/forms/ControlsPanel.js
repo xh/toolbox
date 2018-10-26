@@ -62,8 +62,9 @@ export class ControlsPanel extends Component {
                                 }),
                                 row({
                                     label: 'TextInput',
+                                    clickableLabel: false,
                                     field: 'text2',
-                                    info: 'placeholder, leftIcon, rightElement',
+                                    info: 'placeholder, leftIcon, rightElement, clickableLabel: false',
                                     item: textInput({
                                         placeholder: 'user@company.com',
                                         round: true,
@@ -87,8 +88,9 @@ export class ControlsPanel extends Component {
                                 }),
                                 row({
                                     label: 'TextArea',
+                                    labelFor: 'special-textarea',
                                     field: 'text4',
-                                    info: 'fill, placeholder, selectOnFocus',
+                                    info: 'fill, labelFor, placeholder, selectOnFocus',
                                     item: textArea({
                                         fill: true,
                                         placeholder: 'Tell us your thoughts...',
@@ -281,7 +283,7 @@ export class ControlsPanel extends Component {
         });
     }
 
-    row = ({label, field, item, info, fmtVal}) => {
+    row = ({label, labelFor, clickableLabel, field, item, info, fmtVal}) => {
         const {model} = this;
 
         let displayVal = model[field];
@@ -297,6 +299,8 @@ export class ControlsPanel extends Component {
         return formField({
             item,
             label,
+            labelFor,
+            clickableLabel,
             field,
             model,
             labelInfo: `${displayVal}`,
