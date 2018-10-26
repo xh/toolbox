@@ -6,13 +6,12 @@
  */
 
 import {Component} from 'react';
-import {HoistComponent, elemFactory} from '@xh/hoist/core';
+import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
-import {App} from '../App';
 import {gridPage} from '../grids/GridPage';
 import {treeGridPage} from '../grids/TreeGridPage';
 import {formPage} from '../form/FormPage';
@@ -76,7 +75,7 @@ export class HomePage extends Component {
                 button({
                     icon: icon,
                     text: `Go to ${title}`,
-                    onClick: () => App.navigate(title, pageFactory)
+                    onClick: () => XH.appModel.navigate(title, pageFactory)
                 })
             ]
         });
