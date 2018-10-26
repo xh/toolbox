@@ -23,8 +23,6 @@ import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {observable, action} from '@xh/hoist/mobx';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/columns';
 
-import {App} from '../App';
-
 @HoistComponent
 @LayoutSupport
 class SampleGrid extends Component {
@@ -151,13 +149,15 @@ class SampleGrid extends Component {
                     filler(),
                     box('Group by:'),
                     select({
+                        model: this,
+                        field: 'groupBy',
                         options: [
                             {value: 'active', label: 'Active'},
                             {value: 'city', label: 'City'},
                             {value: false, label: 'None'}
                         ],
-                        model: this,
-                        field: 'groupBy'
+                        width: 120,
+                        enableFilter: false
                     }),
                     box('Compact mode:'),
                     switchInput({
@@ -178,7 +178,7 @@ class SampleGrid extends Component {
     //------------------------
     loadAsync() {
         wait(250)
-            .then(() => this.model.loadData(App.tradeService.generateTrades()))
+            .then(() => this.model.loadData(XH.tradeService.generateTrades()))
             .linkTo(this.loadModel);
     }
 

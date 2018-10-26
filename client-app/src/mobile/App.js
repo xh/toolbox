@@ -4,53 +4,30 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {XH, HoistApp} from '@xh/hoist/core';
-import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
-import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
 
-import {AppContainer} from '@xh/hoist/mobile/appcontainer';
-import {AppComponent} from './AppComponent';
-import {homePage} from './home/HomePage';
+import {Component} from 'react';
+import {HoistComponent} from '@xh/hoist/core';
+import {vframe} from '@xh/hoist/cmp/layout';
+import {page} from '@xh/hoist/mobile/cmp/page';
+import {appBar} from '@xh/hoist/mobile/cmp/header';
+import {navigator} from '@xh/hoist/mobile/cmp/navigator';
 
-@HoistApp
-class AppClass {
+import './App.scss';
 
-    navigatorModel = null;
-    appMenuModel = null;
+@HoistComponent
+export class App extends Component {
 
-    get isMobile() {return true}
-    get componentClass() {return AppComponent}
-    get containerClass() {return AppContainer}
-    get enableLogout() {return true}
-
-    checkAccess(user) {
-        const role = 'APP_READER',
-            hasAccess = user.hasRole(role),
-            message = hasAccess ? '' : `Role "${role}" is required to use this application.`;
-
-        return {hasAccess, message};
+    render() {
+        const {appMenuModel, navigatorModel} = this.model;
+        return vframe(
+            page({
+                renderToolbar: () => appBar({
+                    appMenuModel,
+                    navigatorModel,
+                    hideRefreshButton: true
+                }),
+                item: navigator({model: navigatorModel})
+            })
+        );
     }
-
-    constructor() {
-        this.appMenuModel = new AppMenuModel();
-        this.navigatorModel = new NavigatorModel({
-            pageFactory: homePage,
-            title: 'Toolbox'
-        });
-    }
-
-    navigate(title, pageFactory) {
-        this.navigatorModel.pushPage({title, pageFactory});
-    }
-
-    async initAsync() {
-        XH.track({msg: 'Loaded Mobile App'});
-    }
-
-    destroy() {
-        XH.safeDestroy(this.appMenuModel);
-        XH.safeDestroy(this.navigatorModel);
-    }
-
 }
-export const App = new AppClass();

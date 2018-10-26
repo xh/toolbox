@@ -40,9 +40,9 @@ export class ControlsPanelModel {
     
     constructor() {
         this.initFields({
+            option1: 'CA',
             number3: random(0, 100),
             range1: [random(50000, 70000), random(110000, 150000)],
-            date1: moment().startOf('day').toDate(),
             date2: moment().startOf('hour').toDate(),
             buttonGroup1: 'button2'
         });

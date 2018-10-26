@@ -14,7 +14,7 @@ import {wrapper} from '../../../common/Wrapper';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {multiSelect} from '@xh/hoist/desktop/cmp/form';
+import {select} from '@xh/hoist/desktop/cmp/form';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
@@ -75,12 +75,14 @@ export class NewsPanel extends Component {
                             fields: model.SEARCH_FIELDS,
                             placeholder: 'Filter by title...'
                         }),
-                        multiSelect({
-                            placeholder: 'Filter by source...',
-                            options: model.sourceOptions,
-                            commitOnChange: true,
+                        select({
                             model,
-                            field: 'sourceFilter'
+                            field: 'sourceFilter',
+                            options: model.sourceOptions,
+                            enableMulti: true,
+                            placeholder: 'Filter by source...',
+                            menuPlacement: 'top',
+                            width: 380
                         }),
                         filler(),
                         storeCountLabel({
