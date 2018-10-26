@@ -14,7 +14,7 @@ import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
 import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
-import {action} from '@xh/hoist/mobx';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 
 @HoistComponent
 export class PortfolioPanel extends Component {
@@ -50,7 +50,19 @@ export class PortfolioPanel extends Component {
                                     flex: 1,
                                     model: model.strategyGridModel
                                 }),
-                                mask: model.portfolioLoadModel
+                                mask: model.portfolioLoadModel,
+                                tbar: toolbar({
+                                    items: [
+                                        dimensionChooser({
+                                            model: model,
+                                            field: 'dimensions',
+                                            dimensions: [
+                                                {value: 'model', label: 'Model'},
+                                                {value: 'strategy', label: 'Strategy'},
+                                                {value: 'symbol', label: 'Symbol'}]
+                                        })
+                                    ]
+                                })
                             }),
                             panel({
                                 flex: 1,
@@ -63,14 +75,6 @@ export class PortfolioPanel extends Component {
                                 }),
                                 mask: model.ordersLoadModel
                             }),
-                            dimensionChooser({
-                                model: model,
-                                field: 'dimensions',
-                                dimensions: [
-                                    {value: 'model', label: 'Model'},
-                                    {value: 'strategy', label: 'Strategy'},
-                                    {value: 'symbol', label: 'Symbol'}]
-                            })
                         ]
                     }),
                     panel({
