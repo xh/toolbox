@@ -18,12 +18,16 @@ export class PortfolioDataService {
     orders = [];
     marketData = [];
 
+    dimensions = [];
+
     constructor() {
+        // this.loadOrdersAsync();
     }
 
     getPortfolio(dimensions) {
+        this.dimensions = dimensions;
         return wait(500).then(() => {
-            this.generatePortfolioFromOrders(this.generateRandomOrders(this.numOrders), dimensions);
+            this.generatePortfolioFromOrders(this.generateRandomOrders(this.numOrders), this.dimensions);
             return this.portfolio;
         });
     }
@@ -216,10 +220,12 @@ export class PortfolioDataService {
     async loadOrdersAsync() {
         setInterval(() => {
             console.log('new order received');
-            const order = this.generateOrder();
-            this.updatePortfolioWithOrder(order);
+            // const order = this.generateOrder();
+            // this.updatePortfolioWithOrder(order);
+
+            this.generatePortfolioFromOrders(this.generateRandomOrders(1), this.dimensions);
             this.incrementPortfolioVersion();
-        }, 1000);
+        }, 2500);
     }
 
     @action
