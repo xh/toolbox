@@ -9,6 +9,7 @@ import * as formatNumber from '@xh/hoist/format/FormatNumber';
 export class NumberFormatsPanelModel {
 
     @bindable testNumbers = [
+        '-0.0012', // tests that output is (0.00) with ledger: true, zeroPad: true
         '-1842343',
         '1.23456e-12',
         '0.25',
@@ -17,7 +18,7 @@ export class NumberFormatsPanelModel {
         '101',
         '12456.12',
         '123400.1',
-        '123450',
+        '123450',  // tests that rightmost zero is not cut off  when precision: 0 && zeroPad: false
         '920120.21343',
         '12345600',
         '100000001',
