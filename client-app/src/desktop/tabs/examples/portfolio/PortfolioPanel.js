@@ -74,7 +74,7 @@ export class PortfolioPanel extends Component {
                                     model: model.ordersGridModel
                                 }),
                                 mask: model.ordersLoadModel
-                            }),
+                            })
                         ]
                     }),
                     panel({
