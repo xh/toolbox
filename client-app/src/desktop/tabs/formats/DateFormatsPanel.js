@@ -54,9 +54,9 @@ export class DateFormatsPanel extends Component {
                                             onChange: (val) => model.handleBuiltinFunctionChange(val),
                                             inline: true,
                                             options: [
+                                                {value: 'fmtCompactDate', label: code('fmtCompactDate')},
                                                 {value: 'fmtDateTime', label: code('fmtDateTime')},
-                                                {value: 'fmtTime', label: code('fmtTime')},
-                                                {value: 'fmtCompactDate', label: code('fmtCompactDate')}
+                                                {value: 'fmtTime', label: code('fmtTime')}
                                             ]
                                         })
                                     }),

@@ -10,19 +10,12 @@ import * as formatDate from '@xh/hoist/format/FormatDate';
 export class DateFormatsPanelModel {
 
     @bindable testDates = [
-        new Date().getTime(),
-        new Date().toString(),
-        moment(new Date()).subtract(1, 'days').format(),
-        '20101031',
-        '2010-10-31',
-        '2010/10/31',
-        '10/31/2010',
-        '31/10/2010',
-        '2045-10-31',
-        moment(new Date()).subtract(100, 'years').format()
+        moment(new Date()).format(),                        // in fmtCompactDate, output is 'hh:mma'
+        moment(new Date()).subtract(1, 'days').format(),    // in fmtCompactDate, output is 'MMM D'
+        moment(new Date()).subtract(6, 'months').format()   // in fmtCompactDate, output is 'YYYY-MM-DD'
     ];
 
-    @bindable builtinFunction = 'fmtDateTime';
+    @bindable builtinFunction = 'fmtCompactDate';
     @observable singleOptionsDisabled = true;
 
     @bindable fmt = 'YYYY-MM-DD';
