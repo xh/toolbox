@@ -189,11 +189,21 @@ task publishAppWar(dependsOn: "publishAppWarPublicationToMavenRepository") {
     }
 }
 
-task publishAppWarAndClientAssets(dependsOn: "publishAppWarAndClientAssetsPublicationToMavenRepository") {
+task publishAppWarAndClientAssets(dependsOn: ["checkForClientAssets", "publishAppWarAndClientAssetsPublicationToMavenRepository"]) {
     group 'xhio'
     description 'Publishes a combined tarball with WAR and client assets to ExHI Nexus.'
 
     doLast {
         println "$appCode $version published to repo.xh.io!"
+    }
+}
+
+
+task checkForClientAssets() {
+    doFirst {
+        def clientBuild = new File('client-app/build')
+        if (!clientBuild.exists() || !clientBuild.listFiles().size()) {
+            throw new RuntimeException('Client build directory not populated - has a webpack build been run (outside of Gradle)?')
+        }
     }
 }
