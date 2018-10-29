@@ -133,7 +133,7 @@ publishing {
 
 // Tasks to create distribution bundles that include built client-assets, as well as (for the
 // first task) the WAR. This creates a self-contained archive with both sides of the build output.
-// NOTE - these rely on the client-side build having been completed (outside of Gradle) by Yarn and 
+// NOTE - these rely on the client-side build having been completed (outside of Gradle) by Yarn and
 // Webpack. A future project could be to orchestrate the Webpack build from within Gradle as well.
 apply plugin:'distribution'
 distributions {
@@ -143,9 +143,7 @@ distributions {
                 from ('client-app/build')
             }
             into ('war') {
-                from ('build/libs') {
-                    include '*.war'
-                }
+                from war.outputs.files
             }
         }
     }
