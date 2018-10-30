@@ -29,18 +29,6 @@ export class StrategyGrid extends Component {
                 model: this.model.gridModel
             }),
             mask: this.model.loadModel,
-            // tbar: toolbar({
-            //     items: [
-            //         dimensionChooser({
-            //             model: this.portfolioPanelModel,
-            //             field: 'dimensions',
-            //             dimensions: [
-            //                 {value: 'model', label: 'Model'},
-            //                 {value: 'strategy', label: 'Strategy'},
-            //                 {value: 'symbol', label: 'Symbol'}]
-            //         })
-            //     ]
-            // })
         });
     }
 }
