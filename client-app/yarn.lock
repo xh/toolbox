@@ -767,29 +767,29 @@
   version "0.2.7"
   resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.7.tgz#fe76803922db0eb4393675199c2e0c3bad52629c"
 
-"@fortawesome/fontawesome-pro@~5.4.1":
+"@fortawesome/fontawesome-pro@~5.4.2":
   version "5.4.2"
   resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-pro/-/fontawesome-pro-5.4.2.tgz#af54e8a44d6bd1edc9af2b9dd356cb9a497095d5"
 
-"@fortawesome/fontawesome-svg-core@~1.2.6":
+"@fortawesome/fontawesome-svg-core@~1.2.7":
   version "1.2.7"
   resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.2.7.tgz#064aefa1c8e4b055fbc6de0b6fbd3ff5ecf564ea"
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.7"
 
-"@fortawesome/pro-light-svg-icons@~5.4.1":
+"@fortawesome/pro-light-svg-icons@~5.4.2":
   version "5.4.2"
   resolved "https://npm.fontawesome.com/@fortawesome/pro-light-svg-icons/-/pro-light-svg-icons-5.4.2.tgz#9abdc2c8d3eaba5011d2f690b800200f79f696a3"
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.7"
 
-"@fortawesome/pro-regular-svg-icons@~5.4.1":
+"@fortawesome/pro-regular-svg-icons@~5.4.2":
   version "5.4.2"
   resolved "https://npm.fontawesome.com/@fortawesome/pro-regular-svg-icons/-/pro-regular-svg-icons-5.4.2.tgz#1ad96ad8d32db29e42225220181fce32a524d494"
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.7"
 
-"@fortawesome/pro-solid-svg-icons@~5.4.1":
+"@fortawesome/pro-solid-svg-icons@~5.4.2":
   version "5.4.2"
   resolved "https://npm.fontawesome.com/@fortawesome/pro-solid-svg-icons/-/pro-solid-svg-icons-5.4.2.tgz#24c557c6d4974dab3d47f73ced4ab1905d05754b"
   dependencies:
@@ -999,37 +999,37 @@
     webpackbar "~2.6.3"
 
 "@xh/hoist@^16.0.0-SNAPSHOT":
-  version "16.0.0-SNAPSHOT.1540564361262"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-16.0.0-SNAPSHOT.1540564361262.tgz#fb80ab0e5449d32575773f78495547746959f8c0"
+  version "16.0.0-SNAPSHOT.1540895545476"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-16.0.0-SNAPSHOT.1540895545476.tgz#3ba44a24710bcd2cc800fdea5b45d73ee9169e0e"
   dependencies:
     "@blueprintjs/core" "~3.7.0"
     "@blueprintjs/datetime" "~3.3.0"
-    "@fortawesome/fontawesome-pro" "~5.4.1"
-    "@fortawesome/fontawesome-svg-core" "~1.2.6"
-    "@fortawesome/pro-light-svg-icons" "~5.4.1"
-    "@fortawesome/pro-regular-svg-icons" "~5.4.1"
-    "@fortawesome/pro-solid-svg-icons" "~5.4.1"
+    "@fortawesome/fontawesome-pro" "~5.4.2"
+    "@fortawesome/fontawesome-svg-core" "~1.2.7"
+    "@fortawesome/pro-light-svg-icons" "~5.4.2"
+    "@fortawesome/pro-regular-svg-icons" "~5.4.2"
+    "@fortawesome/pro-solid-svg-icons" "~5.4.2"
     "@fortawesome/react-fontawesome" "~0.1.3"
     ag-grid "~18.1.2"
     ag-grid-enterprise "~18.1.1"
     ag-grid-react "~18.1.0"
     classnames "~2.2.6"
     clipboard "~2.0.0"
-    codemirror "~5.40.2"
+    codemirror "~5.41.0"
     downloadjs "^1.4.7"
-    highcharts "~6.1.4"
+    highcharts "~6.2.0"
     lodash-inflection "~1.5.0"
-    mobx "~5.5.0"
-    mobx-react "~5.2.8"
+    mobx "~5.5.2"
+    mobx-react "~5.3.6"
     moment "~2.22.1"
     numbro "~2.1.1"
     onsenui "~2.10.5"
     prop-types "~15.6.2"
     qs "~6.5.2"
     react-onsenui "~1.11.0"
-    react-select "~2.1.0"
+    react-select "~2.1.1"
     react-transition-group "~2.5.0"
-    router5 "~6.6.0"
+    router5 "~6.6.2"
     rsvp "~4.8.4"
     store2 "~2.7.0"
 
@@ -1960,9 +1960,9 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codemirror@~5.40.2:
-  version "5.40.2"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.40.2.tgz#f4a41fee2d84e679543591b3680af259d903330b"
+codemirror@~5.41.0:
+  version "5.41.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.41.0.tgz#57e245be197643c39440d2840236d3edc4bb1162"
 
 collection-visit@^1.0.0:
   version "1.0.0"
@@ -3574,9 +3574,9 @@ he@1.1.x:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/he/-/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
 
-highcharts@~6.1.4:
-  version "6.1.4"
-  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-6.1.4.tgz#753b6d4b99a279ade28276e1b4dc5a53346c7601"
+highcharts@~6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-6.2.0.tgz#2a6d04652eb43c66f462ca7e2d2808f1f2782b61"
 
 hmac-drbg@^1.0.0:
   version "1.0.1"
@@ -3586,9 +3586,11 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
-hoist-non-react-statics@^2.5.0:
-  version "2.5.5"
-  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
+hoist-non-react-statics@^3.0.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.1.0.tgz#42414ccdfff019cd2168168be998c7b3bd5245c0"
+  dependencies:
+    react-is "^16.3.2"
 
 hoopy@^0.1.2:
   version "0.1.4"
@@ -4823,14 +4825,14 @@ mkdirp@0.5.1, mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdi
   dependencies:
     minimist "0.0.8"
 
-mobx-react@~5.2.8:
-  version "5.2.8"
-  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-5.2.8.tgz#059c7f29254d7cd36e103d79113103b40348d3bf"
+mobx-react@~5.3.6:
+  version "5.3.6"
+  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-5.3.6.tgz#0bead0173aed7d12ace4981b53c28db4d61de9ef"
   dependencies:
-    hoist-non-react-statics "^2.5.0"
+    hoist-non-react-statics "^3.0.0"
     react-lifecycles-compat "^3.0.2"
 
-mobx@~5.5.0:
+mobx@~5.5.2:
   version "5.5.2"
   resolved "https://registry.yarnpkg.com/mobx/-/mobx-5.5.2.tgz#4f5d751b77807a88218caede92198679a0e18a4a"
 
@@ -5881,6 +5883,10 @@ react-input-autosize@^2.2.1:
   dependencies:
     prop-types "^15.5.8"
 
+react-is@^16.3.2:
+  version "16.6.0"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.6.0.tgz#456645144581a6e99f6816ae2bd24ee94bdd0c01"
+
 react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
@@ -5902,7 +5908,7 @@ react-popper@^1.0.0:
     typed-styles "^0.0.5"
     warning "^3.0.0"
 
-react-select@~2.1.0:
+react-select@~2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/react-select/-/react-select-2.1.1.tgz#762d0babd8c7c46a944db51cbb72e4ee117253f9"
   dependencies:
@@ -6250,7 +6256,7 @@ router5-transition-path@5.4.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/router5-transition-path/-/router5-transition-path-5.4.0.tgz#8913c88a623a951a61c4e6eb32762a7218e5c7b1"
 
-router5@~6.6.0:
+router5@~6.6.2:
   version "6.6.2"
   resolved "https://registry.yarnpkg.com/router5/-/router5-6.6.2.tgz#f78c9d634ecc19bc74b9906c2b07df593d3635c5"
   dependencies:
@@ -6668,8 +6674,8 @@ sprintf-js@~1.0.2:
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
 
 sshpk@^1.7.0:
-  version "1.15.1"
-  resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.15.1.tgz#b79a089a732e346c6e0714830f36285cd38191a2"
+  version "1.15.2"
+  resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.15.2.tgz#c946d6bd9b1a39d0e8635763f5242d6ed6dcb629"
   dependencies:
     asn1 "~0.2.3"
     assert-plus "^1.0.0"

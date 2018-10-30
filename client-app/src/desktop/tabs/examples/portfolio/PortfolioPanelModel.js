@@ -1,15 +1,12 @@
 import {HoistModel} from '@xh/hoist/core';
-import {fmtDate} from '@xh/hoist/format';
 import {PortfolioDataService} from './PortfolioDataService';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
-import Highcharts from 'highcharts/highstock';
 import {isNil} from 'lodash';
 import {bindable} from '@xh/hoist/mobx';
 import {StrategyGridModel} from './StrategyGridModel';
 import {OrdersGridModel} from './OrdersGridModel';
 import {LineChartModel} from './LineChartModel';
 import {OLHCChartModel} from './OLHCChartModel';
+import {PortfolioDimensionChooserModel} from './PortfolioDimensionChooserModel';
 
 @HoistModel
 export class PortfolioPanelModel {
@@ -19,162 +16,23 @@ export class PortfolioPanelModel {
     ordersGridModel = new OrdersGridModel();
     lineChartModel = new LineChartModel();
     olhcChartModel = new OLHCChartModel();
+    dimensionChooserModel = new PortfolioDimensionChooserModel();
 
     @bindable dimensions = ['model'];
 
-
-    // lineChartLoadModel = new PendingTaskModel();
-    // olhcChartLoadModel = new PendingTaskModel();
-    //
-    //
-    // olhcChartModel = new ChartModel({
-    //     config: {
-    //         chart: {
-    //             type: 'ohlc',
-    //             spacingLeft: 3,
-    //             spacingBottom: 5,
-    //             zoomType: 'x',
-    //             resetZoomButton: {
-    //                 theme: {
-    //                     display: 'none'
-    //                 }
-    //             }
-    //         },
-    //         legend: {
-    //             enabled: false
-    //         },
-    //         title: {
-    //             text: null
-    //         },
-    //         scrollbar: {
-    //             enabled: false
-    //         },
-    //         xAxis: {
-    //             labels: {
-    //                 formatter: function() {
-    //                     return fmtDate(this.value);
-    //                 }
-    //             }
-    //         },
-    //         yAxis: {
-    //             title: {text: null},
-    //             opposite: false,
-    //             endOnTick: true,
-    //             showLastLabel: true,
-    //             tickPixelInterval: 40,
-    //             maxPadding: 0,
-    //             labels: {
-    //                 y: 3,
-    //                 x: -8
-    //             }
-    //         },
-    //         tooltip: {
-    //             split: false,
-    //             crosshairs: false,
-    //             followPointer: true,
-    //             formatter: function() {
-    //                 const p = this.point;
-    //                 return `
-    //                     ${fmtDate(this.x)}<br>
-    //                     <b>${p.series.name}</b><br>
-    //                     Open: ${p.open}<br>
-    //                     High: ${p.high}<br>
-    //                     Low: ${p.low}<br>
-    //                     Close: ${p.close}<br>
-    //                 `;
-    //             }
-    //         }
-    //     }
-    // });
-    //
-    // lineChartModel = new ChartModel({
-    //     config: {
-    //         chart: {
-    //             zoomType: 'x'
-    //         },
-    //         title: {
-    //             text: 'Trade Volume over time'
-    //         },
-    //         subtitle: {
-    //             text: 'Click and drag in the plot area to zoom in'
-    //         },
-    //         scrollbar: {
-    //             enabled: false
-    //         },
-    //         rangeSelector: {
-    //             enabled: true
-    //         },
-    //         navigator: {
-    //             enabled: true
-    //         },
-    //         xAxis: {
-    //             type: 'datetime'
-    //         },
-    //         yAxis: {
-    //             title: {
-    //                 text: 'USD'
-    //             }
-    //         },
-    //         legend: {
-    //             enabled: false
-    //         },
-    //         plotOptions: {
-    //             area: {
-    //                 fillColor: {
-    //                     linearGradient: {
-    //                         x1: 0,
-    //                         y1: 0,
-    //                         x2: 0,
-    //                         y2: 1
-    //                     },
-    //                     stops: [
-    //                         [0, Highcharts.getOptions().colors[0]],
-    //                         [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-    //                     ]
-    //                 },
-    //                 marker: {
-    //                     radius: 2
-    //                 },
-    //                 lineWidth: 1,
-    //                 states: {
-    //                     hover: {
-    //                         lineWidth: 1
-    //                     }
-    //                 },
-    //                 threshold: null
-    //             }
-    //         }
-    //     }
-    // });
-
     constructor() {
-        // this.addReaction(this.loadDimensionReaction());
+        this.addReaction(this.loadDimensionReaction());
         this.addReaction(this.loadPortfolioReaction());
         this.addReaction(this.loadOrdersReaction());
         this.addReaction(this.loadLineChartReaction());
         this.addReaction(this.loadOLHCChartReaction());
     }
 
-    // loadPortfolioDimensionReaction() {
-    //     return {
-    //         track: () => this.di
-    //         run: () => {
-    //             this.portfolioDataService.getPortfolio(['model', 'symbol'])
-    //                 .then((portfolio) => {
-    //                     this.strategyGridModel.loadData(portfolio);
-    //                     this.strategyGridModel.selectFirst();
-    //                 })
-    //                 .linkTo(this.portfolioLoadModel);
-    //         },
-    //         fireImmediately: true
-    //     };
-    // }
-
     loadPortfolioReaction() {
         return {
             track: () => this.portfolioDataService.portfolioVersion,
             run: () => {
-                this.portfolioDataService.getPortfolioAsync(this.dimensions.slice())
+                this.portfolioDataService.getPortfolioAsync(this.dimensions)
                     .then((portfolio) => {
                         this.strategyGridModel.gridModel.loadData(portfolio);
                         this.strategyGridModel.gridModel.selectFirst();
@@ -187,14 +45,15 @@ export class PortfolioPanelModel {
 
     loadDimensionReaction() {
         return {
-            track: () => this.dimensions,
-            run: () => {
-                this.portfolioDataService.getPortfolio(this.dimensions.slice())
+            track: () => this.dimensionChooserModel.model.dimensions,
+            run: (dimensions) => {
+                this.dimensions = dimensions;
+                this.portfolioDataService.getPortfolioAsync(this.dimensions)
                     .then((portfolio) => {
-                        this.strategyGridModel.loadData(portfolio);
-                        this.strategyGridModel.selectFirst();
+                        this.strategyGridModel.gridModel.loadData(portfolio);
+                        this.strategyGridModel.gridModel.selectFirst();
                     })
-                    .linkTo(this.portfolioLoadModel);
+                    .linkTo(this.strategyGridModel.loadModel);
             }
         };
     }
@@ -206,9 +65,7 @@ export class PortfolioPanelModel {
                 if (!isNil(record)) {
                     this.portfolioDataService.getOrders(record.id)
                         .then((orders) => {
-                            console.log('HERE', orders);
                             this.ordersGridModel.gridModel.loadData(orders);
-                            console.log('HERE NOW');
                             if (orders.length > 0) {
                                 this.ordersGridModel.gridModel.selectFirst();
                             }
@@ -239,15 +96,15 @@ export class PortfolioPanelModel {
 
     loadOLHCChartReaction() {
         return {
-            track: () => this.ordersGridModel.selectedRecord,
+            track: () => this.ordersGridModel.gridModel.selectedRecord,
             run: (record) => {
                 if (!isNil(record)) {
                     this.portfolioDataService.getOLHCChartSeries(record.symbol)
                         .then((series) => {
-                            this.olhcChartModel.setSeries(series);
-                        }).linkTo(this.olhcChartLoadModel);
+                            this.olhcChartModel.olhcChartModel.setSeries(series);
+                        }).linkTo(this.olhcChartModel.loadModel);
                 } else {
-                    this.olhcChartModel.setSeries([]);
+                    this.olhcChartModel.olhcChartModel.setSeries([]);
                 }
             }
         };

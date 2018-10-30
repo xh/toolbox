@@ -71,6 +71,23 @@ class BootStrap {
         if (!user) new User(data).save()
     }
 
+    private void ensureRequiredPrefsCreated() {
+        Utils.prefService.ensureRequiredPrefsCreated([
+                xhDimensionsHistory: [
+                        type: 'json',
+                        local: true,
+                        groupName: 'toolbox.xh.io',
+                        note: 'Nested arrays containing user\'s dimension picker history'
+                ],
+                xhDimensionsDefault: [
+                        type: 'json',
+                        local: true,
+                        groupName: 'toolbox.xh.io',
+                        note: 'User defined default dimensions view'
+                ]
+            ])
+    }
+
     private void ensureRequiredConfigsCreated() {
         def adminUsername = getInstanceConfig('adminUsername')
 

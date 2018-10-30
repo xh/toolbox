@@ -13,8 +13,6 @@ import {chart} from '@xh/hoist/desktop/cmp/chart';
 @HoistComponent
 export class LineChart extends Component {
 
-    localModel = this.props.children.lineChartModel;
-
     render() {
         return panel({
             title: 'Prices',
@@ -22,9 +20,9 @@ export class LineChart extends Component {
             width: 600,
             height: 400,
             item: chart({
-                model: this.localModel.lineChartModel
+                model: this.model.lineChartModel
             }),
-            mask: this.localModel.localModel
+            mask: this.model.localModel
         });
     }
 }

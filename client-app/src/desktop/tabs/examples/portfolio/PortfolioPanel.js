@@ -14,6 +14,8 @@ import {strategyGrid} from './StrategyGrid';
 import {ordersGrid} from './OrdersGrid';
 import {lineChart} from './LineChart';
 import {olhcChart} from './OLHCChart';
+import { dimensionChooser } from '@xh/hoist/desktop/cmp/dimensionchooser/DimensionChooser';
+import { toolbar } from '@xh/hoist/desktop/cmp/toolbar';
 
 @HoistComponent
 export class PortfolioPanel extends Component {
@@ -31,19 +33,30 @@ export class PortfolioPanel extends Component {
         return wrapper({
             item: panel({
                 width: 1200,
+                tbar: toolbar(dimensionChooser({
+                    model: this.localModel.dimensionChooserModel.model
+                })),
                 items: [
                     hbox({
                         items: [
-                            strategyGrid(this.localModel),
-                            ordersGrid(this.localModel)
+                            strategyGrid({
+                                model: this.localModel.strategyGridModel
+                            }),
+                            ordersGrid({
+                                model: this.localModel.ordersGridModel
+                            })
                         ]
                     }),
                     panel({
                         sizingModel: this.bottomSizingModel,
                         item: hbox({
                             items: [
-                                lineChart(this.localModel),
-                                olhcChart(this.localModel)
+                                lineChart({
+                                    model: this.localModel.lineChartModel
+                                }),
+                                olhcChart({
+                                    model: this.localModel.olhcChartModel
+                                })
                             ]
                         })
                     })

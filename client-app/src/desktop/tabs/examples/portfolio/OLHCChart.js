@@ -13,8 +13,6 @@ import {chart} from '@xh/hoist/desktop/cmp/chart';
 @HoistComponent
 export class OLHCChart extends Component {
 
-    localModel = this.props.children.olhcChartModel;
-
     render() {
         return panel({
             title: 'Prices',
@@ -22,9 +20,9 @@ export class OLHCChart extends Component {
             width: 600,
             height: 400,
             item: chart({
-                model: this.localModel.olhcChartModel
+                model: this.model.olhcChartModel
             }),
-            mask: this.localModel.loadModel
+            mask: this.model.loadModel
         });
     }
 }

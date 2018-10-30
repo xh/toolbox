@@ -13,8 +13,6 @@ import {grid} from '@xh/hoist/cmp/grid';
 @HoistComponent
 export class OrdersGrid extends Component {
 
-    localModel = this.props.children.ordersGridModel;
-
     render() {
         return panel({
             flex: 1,
@@ -23,9 +21,9 @@ export class OrdersGrid extends Component {
             height: 300,
             item: grid({
                 flex: 1,
-                model: this.localModel.gridModel
+                model: this.model.gridModel
             }),
-            mask: this.localModel.loadModel
+            mask: this.model.loadModel
         });
     }
 }

@@ -13,7 +13,6 @@ import {grid} from '@xh/hoist/cmp/grid';
 @HoistComponent
 export class StrategyGrid extends Component {
 
-    localModel = this.props.children.strategyGridModel;
     strategiesSizingModel = new PanelSizingModel({
         defaultSize: 600,
         side: 'left'
@@ -27,9 +26,9 @@ export class StrategyGrid extends Component {
             height: 300,
             item: grid({
                 flex: 1,
-                model: this.localModel.gridModel
+                model: this.model.gridModel
             }),
-            mask: this.localModel.loadModel,
+            mask: this.model.loadModel,
             // tbar: toolbar({
             //     items: [
             //         dimensionChooser({
