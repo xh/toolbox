@@ -19,7 +19,8 @@ export const sampleTreeData = [
                     {id: '1b1', name: 'YEN', pnl: 20000},
                     {id: '1b2', name: 'EUR', pnl: 20000}
                 ]
-            }]
+            }
+        ]
     },
     {
         name: 'Icy Hot',
@@ -40,5 +41,7 @@ export const sampleTreeData = [
                     {id: '2b1', name: 'GBP', pnl: 10000},
                     {id: '2b2', name: 'MXN', pnl: 10000}
                 ]
-            }]
-    }];
+            }
+        ]
+    }
+];
