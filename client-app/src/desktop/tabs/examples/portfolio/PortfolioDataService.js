@@ -87,11 +87,17 @@ export class PortfolioDataService {
         const startDate = moment('2017-01-01', 'YYYY-MM-DD'),
             todayDate = moment(),
             numDays = todayDate.diff(startDate, 'days'),
-            ret = [];
+            ret = [],
+            randomDays = [];
+
+        const numberOfSpikes = Math.round(Math.random() * 25);
+        times(numberOfSpikes, () => {
+            randomDays.push(Math.round(Math.random() * numDays));
+        });
 
         let prevClose = Math.random() * 1000;
 
-        times(numDays, () => {
+        times(numDays, (i) => {
             const valueDate = startDate.add(1, 'd');
 
             const low = prevClose - (Math.random() * (prevClose / 100));
@@ -106,7 +112,8 @@ export class PortfolioDataService {
                     low: Number(low.toFixed(2)),
                     open: Number(open.toFixed(2)),
                     close: Number(close.toFixed(2)),
-                    volume: Math.round(Math.random() * 1000000)
+                    // volume: Math.round(Math.random() * (randomDays.includes(i) ? 1000000 : 100000))
+                    volume: Math.round(Math.random() * this.getRandomMultiplier(i, randomDays))
                 });
                 prevClose = close;
             }
@@ -234,5 +241,16 @@ export class PortfolioDataService {
     @action
     incrementPortfolioVersion() {
         this.portfolioVersion++;
+    }
+
+    getRandomMultiplier(i, randomDays) {
+
+        if (randomDays.includes(i - 1) || randomDays.includes(i + 1)) {
+            return 500000;
+        }
+        if (randomDays.includes(i)) {
+            return 1000000;
+        }
+        return 100000;
     }
 }

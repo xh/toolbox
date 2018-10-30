@@ -22,7 +22,7 @@ export class LineChart extends Component {
             item: chart({
                 model: this.model.lineChartModel
             }),
-            mask: this.model.localModel
+            mask: this.model.loadModel
         });
     }
 }
