@@ -1,7 +1,8 @@
-import {HoistModel} from '@xh/hoist/core';
+import {HoistModel, XH} from '@xh/hoist/core';
 import {fmtDate} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
+import {isNil} from 'lodash';
 
 @HoistModel
 export class OLHCChartModel {
@@ -66,4 +67,16 @@ export class OLHCChartModel {
             }
         }
     });
+
+    loadData(record) {
+        if (!isNil(record)) {
+            XH.portfolioService.getOLHCChartSeries(record.symbol)
+                .then(series => {
+                    this.olhcChartModel.setSeries(series);
+                }).linkTo(this.loadModel);
+        } else {
+            this.olhcChartModel.setSeries([]);
+        }
+    }
+
 }

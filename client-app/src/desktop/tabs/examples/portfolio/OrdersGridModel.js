@@ -1,8 +1,9 @@
-import {HoistModel} from '@xh/hoist/core';
+import {HoistModel, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {isNil} from 'lodash';
 
 @HoistModel
 export class OrdersGridModel {
@@ -44,4 +45,20 @@ export class OrdersGridModel {
             {...emptyFlexCol}
         ]
     });
+
+    loadData(recordId) {
+        if (!isNil(recordId)) {
+            XH.portfolioService.getOrders(recordId)
+                .then(orders => {
+                    this.gridModel.loadData(orders);
+                    if (orders.length > 0) {
+                        this.gridModel.selectFirst();
+                    }
+                })
+                .linkTo(this.loadModel);
+        } else {
+            this.gridModel.loadData([]);
+        }
+
+    }
 }

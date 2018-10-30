@@ -1,4 +1,4 @@
-import {HoistModel} from '@xh/hoist/core';
+import {HoistModel, XH} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
@@ -60,4 +60,13 @@ export class StrategyGridModel {
             {...emptyFlexCol}
         ]
     });
+
+    loadData(dimensions) {
+        XH.portfolioService.getPortfolioAsync(dimensions)
+            .then(portfolio => {
+                this.gridModel.loadData(portfolio);
+                this.gridModel.selectFirst()
+            })
+            .linkTo(this.loadModel);
+    }
 }

@@ -1,12 +1,12 @@
-import {action, observable} from '@xh/hoist/mobx';
-import {HoistModel} from '@xh/hoist/core';
+import {HoistService} from '@xh/hoist/core';
+import {action, observable} from '../../../../../hoist-react/mobx/index';
 import faker from 'faker';
 import moment from 'moment';
-import {times, isNil} from 'lodash';
-import {wait} from '@xh/hoist/promise';
+import {isNil, times} from 'lodash';
+import {wait} from '../../../../../hoist-react/promise/index';
 
-@HoistModel
-export class PortfolioDataService {
+@HoistService
+export class PortfolioService {
 
     randomOrders = [];
 

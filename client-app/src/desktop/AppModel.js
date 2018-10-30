@@ -10,6 +10,7 @@ import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
 import {SalesService} from '../core/svc/SalesService';
+import {PortfolioService} from '../core/svc/PortfolioService';
 
 import {ChartsTab} from './tabs/charts/ChartsTab';
 import {ContainersTab} from './tabs/containers/ContainersTab';
@@ -30,7 +31,7 @@ export class AppModel {
     }
 
     async initAsync() {
-        await XH.installServicesAsync(CompanyService, TradeService, SalesService);
+        await XH.installServicesAsync(CompanyService, TradeService, SalesService, PortfolioService);
     }
 
     getRoutes() {

@@ -28,11 +28,10 @@ export class PortfolioPanel extends Component {
     localModel = new PortfolioPanelModel();
 
     render() {
-        // const {model} = this;
-
         return wrapper({
             item: panel({
                 width: 1200,
+                height: 1000,
                 tbar: toolbar(dimensionChooser({
                     model: this.localModel.dimensionChooserModel.model
                 })),

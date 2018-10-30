@@ -1,13 +1,8 @@
-import {HoistModel} from '@xh/hoist/core';
-import {fmtDate} from '@xh/hoist/format';
-import {PortfolioDataService} from './PortfolioDataService';
+import {HoistModel, XH} from '@xh/hoist/core';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
 import Highcharts from 'highcharts/highstock';
 import {isNil} from 'lodash';
-import {bindable} from '@xh/hoist/mobx';
-import {StrategyGridModel} from './StrategyGridModel';
-import {OrdersGridModel} from './OrdersGridModel';
 
 @HoistModel
 export class LineChartModel {
@@ -72,4 +67,15 @@ export class LineChartModel {
             }
         }
     });
+
+    loadData(record) {
+        if (!isNil(record)) {
+            XH.portfolioService.getLineChartSeries(record.symbol)
+                .then(series => {
+                    this.lineChartModel.setSeries(series);
+                }).linkTo(this.loadModel);
+        } else {
+            this.lineChartModel.setSeries([]);
+        }
+    }
 }
