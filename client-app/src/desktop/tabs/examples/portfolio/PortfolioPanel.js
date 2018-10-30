@@ -12,8 +12,8 @@ import {hbox} from '@xh/hoist/cmp/layout';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {strategyGrid} from './StrategyGrid';
 import {ordersGrid} from './OrdersGrid';
-import {lineChart} from "./LineChart";
-import {olhcChart} from "./OLHCChart";
+import {lineChart} from './LineChart';
+import {olhcChart} from './OLHCChart';
 
 @HoistComponent
 export class PortfolioPanel extends Component {
