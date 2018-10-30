@@ -28,7 +28,7 @@ export class StrategyGrid extends Component {
                 flex: 1,
                 model: this.model.gridModel
             }),
-            mask: this.model.loadModel,
+            mask: this.model.loadModel
         });
     }
 }
