@@ -24,11 +24,13 @@ export class PortfolioDataService {
 
     constructor() {
         this.generateRandomOrders(this.numOrders);
-        this.generatePortfolioFromOrders(this.randomOrders, this.dimensions);
+        // this.generatePortfolioFromOrders(this.randomOrders, this.dimensions);
     }
 
     async getPortfolioAsync(dimensions) {
         this.portfolio = [];
+        this.orders = [];
+
         this.dimensions = dimensions;
         this.generatePortfolioFromOrders(this.randomOrders, this.dimensions);
         return wait(500).then(() => {
@@ -157,6 +159,7 @@ export class PortfolioDataService {
             }
         });
     }
+
     generatePortfolioFromOrders(orders, dimensions) {
         orders.forEach((order) => {
             const key = [];
