@@ -40,7 +40,7 @@ export class PortfolioDataService {
 
     getOrders(positionId) {
         return wait(250).then(() => {
-            const orders = this.orders.filter(order => order.id.startsWith(positionId));
+            const orders = this.orders.filter(order => order.id.startsWith(positionId + '-'));
             return orders;
         });
     }
