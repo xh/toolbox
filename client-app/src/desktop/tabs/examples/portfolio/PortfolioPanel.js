@@ -8,21 +8,15 @@ import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {wrapper} from '../../../common/index';
 import {panel, PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
-import {Icon} from '@xh/hoist/icon';
 import {hbox} from '@xh/hoist/cmp/layout';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
-import {grid} from '@xh/hoist/cmp/grid';
-import {chart} from '@xh/hoist/desktop/cmp/chart';
-import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {strategyGrid} from './StrategyGrid';
+import {ordersGrid} from './OrdersGrid';
+import {lineChart} from "./LineChart";
+import {olhcChart} from "./OLHCChart";
 
 @HoistComponent
 export class PortfolioPanel extends Component {
-
-    strategiesSizingModel = new PanelSizingModel({
-        defaultSize: 600,
-        side: 'left'
-    });
 
     bottomSizingModel = new PanelSizingModel({
         defaultSize: 400,
@@ -32,7 +26,7 @@ export class PortfolioPanel extends Component {
     localModel = new PortfolioPanelModel();
 
     render() {
-        const {model} = this;
+        // const {model} = this;
 
         return wrapper({
             item: panel({
@@ -40,67 +34,16 @@ export class PortfolioPanel extends Component {
                 items: [
                     hbox({
                         items: [
-                            panel({
-                                flex: 1,
-                                title: 'Strategies',
-                                icon: Icon.gridPanel(),
-                                sizingModel: this.strategiesSizingModel,
-                                height: 300,
-                                item: grid({
-                                    flex: 1,
-                                    model: model.strategyGridModel
-                                }),
-                                mask: model.portfolioLoadModel,
-                                tbar: toolbar({
-                                    items: [
-                                        dimensionChooser({
-                                            model: model,
-                                            field: 'dimensions',
-                                            dimensions: [
-                                                {value: 'model', label: 'Model'},
-                                                {value: 'strategy', label: 'Strategy'},
-                                                {value: 'symbol', label: 'Symbol'}]
-                                        })
-                                    ]
-                                })
-                            }),
-                            panel({
-                                flex: 1,
-                                title: 'Orders',
-                                icon: Icon.gridPanel(),
-                                height: 300,
-                                item: grid({
-                                    flex: 1,
-                                    model: model.ordersGridModel
-                                }),
-                                mask: model.ordersLoadModel
-                            })
+                            strategyGrid(this.localModel),
+                            ordersGrid(this.localModel)
                         ]
                     }),
                     panel({
                         sizingModel: this.bottomSizingModel,
                         item: hbox({
                             items: [
-                                panel({
-                                    title: 'Trade Volume',
-                                    icon: Icon.gridPanel(),
-                                    width: 600,
-                                    height: 400,
-                                    item: chart({
-                                        model: model.lineChartModel
-                                    }),
-                                    mask: model.lineChartLoadModel
-                                }),
-                                panel({
-                                    title: 'Prices',
-                                    icon: Icon.gridPanel(),
-                                    width: 600,
-                                    height: 400,
-                                    item: chart({
-                                        model: model.olhcChartModel
-                                    }),
-                                    mask: model.olhcChartLoadModel
-                                })
+                                lineChart(this.localModel),
+                                olhcChart(this.localModel)
                             ]
                         })
                     })

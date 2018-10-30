@@ -27,7 +27,7 @@ export class PortfolioDataService {
         this.generatePortfolioFromOrders(this.randomOrders, this.dimensions);
     }
 
-    getPortfolio(dimensions) {
+    async getPortfolioAsync(dimensions) {
         this.portfolio = [];
         this.dimensions = dimensions;
         this.generatePortfolioFromOrders(this.randomOrders, this.dimensions);
