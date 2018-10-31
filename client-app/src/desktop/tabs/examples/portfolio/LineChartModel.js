@@ -13,6 +13,9 @@ export class LineChartModel {
             chart: {
                 zoomType: 'x'
             },
+            tooltip: {
+                outside: true
+            },
             title: {
                 text: 'Trade Volume over time'
             },

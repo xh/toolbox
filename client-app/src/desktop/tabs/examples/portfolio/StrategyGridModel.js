@@ -65,7 +65,7 @@ export class StrategyGridModel {
         XH.portfolioService.getPortfolioAsync(dimensions)
             .then(portfolio => {
                 this.gridModel.loadData(portfolio);
-                this.gridModel.selectFirst()
+                this.gridModel.selectFirst();
             })
             .linkTo(this.loadModel);
     }

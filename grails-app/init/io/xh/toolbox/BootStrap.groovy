@@ -17,6 +17,7 @@ class BootStrap {
         logStartupMsg()
         ensureRequiredConfigsCreated()
         ensureMonitorsCreated()
+        ensureRequiredPrefsCreated()
         def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
         BaseService.parallelInit(services)
         ensureUsersCreated()
@@ -73,17 +74,11 @@ class BootStrap {
 
     private void ensureRequiredPrefsCreated() {
         Utils.prefService.ensureRequiredPrefsCreated([
-                xhDimensionsHistory: [
+                portfolioDimHistory: [
                         type: 'json',
                         local: true,
                         groupName: 'toolbox.xh.io',
                         note: 'Nested arrays containing user\'s dimension picker history'
-                ],
-                xhDimensionsDefault: [
-                        type: 'json',
-                        local: true,
-                        groupName: 'toolbox.xh.io',
-                        note: 'User defined default dimensions view'
                 ]
             ])
     }

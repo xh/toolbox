@@ -26,7 +26,7 @@ export class PortfolioPanelModel {
 
     loadStrategyGridReaction() {
         return {
-            track: () => this.dimensionChooserModel.model.dimensions,
+            track: () => this.dimensionChooserModel.model.value,
             run: (dimensions) => {
                 this.dimensions = dimensions;
                 this.strategyGridModel.loadData(dimensions);

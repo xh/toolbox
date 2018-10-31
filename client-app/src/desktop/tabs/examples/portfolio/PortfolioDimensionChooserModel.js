@@ -5,10 +5,11 @@ import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser/Dime
 export class PortfolioDimensionChooserModel {
 
     model = new DimensionChooserModel({
-        dimensionOptions: [
+        dimensions: [
             {value: 'model', label: 'Model'},
             {value: 'strategy', label: 'Strategy'},
             {value: 'symbol', label: 'Symbol'}
-        ]
+        ],
+        historyPreference: 'portfolioDimHistory'
     });
 }

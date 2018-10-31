@@ -4,7 +4,7 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import React, {Component} from 'react';
+import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {wrapper} from '../../../common/index';
 import {panel, PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
