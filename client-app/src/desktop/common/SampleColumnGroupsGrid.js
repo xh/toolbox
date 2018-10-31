@@ -173,7 +173,7 @@ class SampleColumnGroupsGrid extends Component {
                     }),
                     toolbarSep(),
                     colChooserButton({gridModel: model}),
-                    exportButton({model, exportType: 'excel'}),
+                    exportButton({model, exportOptions: {type: 'excelTable'}}),
                     refreshButton({model: this})
                 ]
             })
