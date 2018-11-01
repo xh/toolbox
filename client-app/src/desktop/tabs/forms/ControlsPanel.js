@@ -79,11 +79,12 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'TextInput',
                                     field: 'text3',
-                                    info: 'type:password, commitOnChange, selectOnFocus',
+                                    info: 'type:password, commitOnChange, selectOnFocus, id prop on input',
                                     item: textInput({
                                         type: 'password',
                                         commitOnChange: true,
-                                        selectOnFocus: true
+                                        selectOnFocus: true,
+                                        id: 'text3-id'
                                     })
                                 }),
                                 row({
