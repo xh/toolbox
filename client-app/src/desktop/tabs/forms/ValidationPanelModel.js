@@ -1,8 +1,9 @@
 import {HoistModel} from '@xh/hoist/core';
 import {dateIs, field, FieldSupport, lengthIs, numberIs, required} from '@xh/hoist/field';
 import {wait} from '@xh/hoist/promise';
-import {isNil} from 'lodash';
+import {bindable} from '@xh/hoist/mobx';
 import {SECONDS} from '@xh/hoist/utils/datetime';
+import {isNil} from 'lodash';
 import moment from 'moment';
 
 @HoistModel
@@ -28,7 +29,10 @@ export class ValidationPanelModel {
     )
     email;
 
-    @field('Manager')
+    @field(required, lengthIs({max: 300, min: 10}))
+    notes
+
+    @field('Manager', required)
     isManager;
 
     @field(numberIs({min: 0, max: 99}))
@@ -37,15 +41,23 @@ export class ValidationPanelModel {
     @field('Hire Date', required, dateIs({max: 'today'}))
     startDate;
 
-    @field('End Date', required, dateIs({min: 'today'}))
+    @field(required, dateIs({min: 'today'}))
     endDate;
 
-    @field('Region', required)
+    @field(required)
     region;
+
+    @field(required)
+    tags;
+
+    @bindable
+    minimalValidation = false;
+
+    @bindable
+    commitOnChange = true;
 
     constructor() {
         this.initFields({
-            isManager: false,
             startDate: moment().toDate()
         });
 
@@ -61,5 +73,7 @@ export class ValidationPanelModel {
                 ({value}) => isNil(value) || value < 10 ?  'Managerial positions require at least 10 years of experience.' : null
             ]
         });
+
+        XH.vm = this;
     }
 }
