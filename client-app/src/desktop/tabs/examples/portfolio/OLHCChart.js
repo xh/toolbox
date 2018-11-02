@@ -17,8 +17,9 @@ export class OLHCChart extends Component {
         return panel({
             title: 'Prices',
             icon: Icon.gridPanel(),
-            width: 600,
+            flex: 1,
             item: chart({
+                flex: 1,
                 model: this.model.olhcChartModel
             }),
             mask: this.model.loadModel

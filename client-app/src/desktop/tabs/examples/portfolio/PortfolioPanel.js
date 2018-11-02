@@ -6,7 +6,6 @@
  */
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
-import {wrapper} from '../../../common/index';
 import {panel, PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
 import {hbox} from '@xh/hoist/cmp/layout';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
@@ -34,53 +33,46 @@ export class PortfolioPanel extends Component {
     localModel = new PortfolioPanelModel();
 
     render() {
-        return wrapper({
-            description: [
-                <p>
-                    This example demonstrates the reactive features of the Hoist framework, and the ability to connect multiple components through a common model.
-                </p>
-            ],
-            item: panel({
-                width: 1200,
-                height: 1000,
-                items: [
-                    hbox({
-                        flex: 1,
-                        items: [
-                            panel({
-                                title: 'Strategies',
-                                icon: Icon.gridPanel(),
-                                sizingModel: this.leftSizingModel,
-                                tbar: toolbar(dimensionChooser({
-                                    model: this.localModel.dimensionChooserModel.model
-                                })),
-                                item: strategyGrid({
+        return panel({
+            items: [
+                hbox({
+                    flex: 1,
+                    items: [
+                        panel({
+                            title: 'Positions',
+                            icon: Icon.treeList(),
+                            sizingModel: this.leftSizingModel,
+                            items: [
+                                strategyGrid({
                                     model: this.localModel.strategyGridModel
-                                })
+                                }),
+                                toolbar(dimensionChooser({
+                                    model: this.localModel.dimensionChooserModel.model
+                                }))
+                            ]
+                        }),
+                        panel({
+                            item: ordersGrid({
+                                model: this.localModel.ordersGridModel
+                            })
+                        })
+                    ]
+                }),
+                panel({
+                    flex: 1,
+                    sizingModel: this.bottomSizingModel,
+                    item: hbox({
+                        items: [
+                            lineChart({
+                                model: this.localModel.lineChartModel
                             }),
-                            panel({
-                                item: ordersGrid({
-                                    model: this.localModel.ordersGridModel
-                                })
+                            olhcChart({
+                                model: this.localModel.olhcChartModel
                             })
                         ]
-                    }),
-                    panel({
-                        flex: 1,
-                        sizingModel: this.bottomSizingModel,
-                        item: hbox({
-                            items: [
-                                lineChart({
-                                    model: this.localModel.lineChartModel
-                                }),
-                                olhcChart({
-                                    model: this.localModel.olhcChartModel
-                                })
-                            ]
-                        })
                     })
-                ]
-            })
+                })
+            ]
         });
     }
 }

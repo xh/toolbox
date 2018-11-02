@@ -16,9 +16,10 @@ export class LineChart extends Component {
     render() {
         return panel({
             title: 'Volume',
-            icon: Icon.gridPanel(),
-            width: 600,
+            icon: Icon.chartLine(),
+            flex: 1,
             item: chart({
+                flex: 1,
                 model: this.model.lineChartModel
             }),
             mask: this.model.loadModel

@@ -4,6 +4,7 @@ import {LocalStore} from '@xh/hoist/data';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {isNil} from 'lodash';
+import {numberRenderer} from '@xh/hoist/format';
 
 @HoistModel
 export class OrdersGridModel {
@@ -11,7 +12,7 @@ export class OrdersGridModel {
     loadModel = new PendingTaskModel();
     gridModel = new GridModel({
         store: new LocalStore({
-            fields: ['id', 'symbol', 'time', 'dir']
+            fields: ['id', 'symbol', 'time', 'trader', 'dir', 'volume', 'pnl']
         }),
         sortBy: [{colId: 'time', sort: 'asc'}],
         emptyText: 'No records found...',
@@ -25,10 +26,9 @@ export class OrdersGridModel {
                 tooltip: false
             },
             {
-                field: 'time',
-                headerName: 'Execution Time',
-                align: 'right',
-                width: 150,
+                field: 'trader',
+                headerName: 'Trader',
+                width: 200,
                 tooltip: false
             },
             {
@@ -37,8 +37,42 @@ export class OrdersGridModel {
                 width: 100,
                 tooltip: false
             },
+            {
+                field: 'volume',
+                headerName: 'Volume',
+                width: 100,
+                tooltip: false,
+                align: 'right',
+                renderer: numberRenderer({
+                    precision: 0,
+                    ledger: true,
+                    tooltip: true
+                })
+            },
+            {
+                field: 'pnl',
+                headerName: 'P&L',
+                width: 150,
+                tooltip: false,
+                align: 'right',
+                renderer: numberRenderer({
+                    precision: 2,
+                    ledger: true,
+                    colorSpec: true,
+                    tooltip: true
+                })
+            },
+            {
+                field: 'time',
+                headerName: 'Execution Time',
+                align: 'right',
+                width: 150,
+                tooltip: false
+            },
             {...emptyFlexCol}
         ]
+
+        // dir, instrument, qty, pnl, time
     });
 
     loadData(recordId) {

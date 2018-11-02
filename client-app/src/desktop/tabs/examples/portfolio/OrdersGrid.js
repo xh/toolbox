@@ -8,7 +8,10 @@ import {Component} from 'react';
 import {elemFactory, HoistComponent} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {grid} from '@xh/hoist/cmp/grid';
+import {colChooserButton, grid} from '@xh/hoist/cmp/grid';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {filler} from '@xh/hoist/cmp/layout';
 
 @HoistComponent
 export class OrdersGrid extends Component {
@@ -17,13 +20,27 @@ export class OrdersGrid extends Component {
         return panel({
             flex: 1,
             title: 'Orders',
-            icon: Icon.gridPanel(),
-            height: 300,
+            icon: Icon.box(),
             item: grid({
                 flex: 1,
                 model: this.model.gridModel
             }),
-            mask: this.model.loadModel
+            mask: this.model.loadModel,
+
+
+            bbar: toolbar({
+                omit: this.props.omitToolbar,
+                items: [
+                    colChooserButton({gridModel: this.model.gridModel}),
+                    storeFilterField({gridModel: this.model.gridModel}),
+                    filler(),
+                    storeCountLabel({
+                        gridModel: this.model.gridModel,
+                        unit: 'orders'
+                    })
+                ]
+            })
+
         });
     }
 }

@@ -15,7 +15,6 @@ export class StrategyGrid extends Component {
     render() {
         return panel({
             flex: 1,
-            height: 300,
             item: grid({
                 flex: 1,
                 model: this.model.gridModel

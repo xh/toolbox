@@ -17,16 +17,13 @@ export class LineChartModel {
                 outside: true
             },
             title: {
-                text: 'Trade Volume over time'
-            },
-            subtitle: {
-                text: 'Click and drag in the plot area to zoom in'
+                text: ''
             },
             scrollbar: {
                 enabled: false
             },
             rangeSelector: {
-                enabled: true
+                enabled: false
             },
             navigator: {
                 enabled: true
@@ -35,8 +32,9 @@ export class LineChartModel {
                 type: 'datetime'
             },
             yAxis: {
+                floor: 0,
                 title: {
-                    text: 'USD'
+                    text: 'Volume'
                 }
             },
             legend: {
@@ -75,6 +73,9 @@ export class LineChartModel {
         if (!isNil(record)) {
             XH.portfolioService.getLineChartSeries(record.symbol)
                 .then(series => {
+                    console.log('record.symbol', record.symbol);
+                    console.log('title', this.lineChartModel.config.title.text);
+                    this.lineChartModel.config.title.text = record.symbol + ' Trade Volume';
                     this.lineChartModel.setSeries(series);
                 }).linkTo(this.loadModel);
         } else {
