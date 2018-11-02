@@ -6,7 +6,7 @@
  */
 
 import {XH, HoistModel} from '@xh/hoist/core';
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {Grid, GridModel} from '@xh/hoist/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
 import {multiFieldRenderer} from '@xh/hoist/cmp/grid/renderers';
@@ -30,6 +30,7 @@ export class GridPageModel {
                 field: 'company',
                 flex: true,
                 elementRenderer: multiFieldRenderer,
+                rowHeight: Grid.MULTIFIELD_ROW_HEIGHT,
                 multiFieldRendererCfg: {
                     subFields: [{colId: 'city', label: true}]
                 }
@@ -41,6 +42,7 @@ export class GridPageModel {
                 align: 'right',
                 absSort: true,
                 elementRenderer: multiFieldRenderer,
+                rowHeight: Grid.MULTIFIELD_ROW_HEIGHT,
                 multiFieldRendererCfg: {
                     mainRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}),
                     subFields: [{colId: 'trade_volume', label: true}]
