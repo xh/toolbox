@@ -11,7 +11,10 @@ export class PortfolioService {
     randomOrders = [];
 
     models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul'];
-    strategies = ['US Tech Long/Short', 'US Healthcare Long/Short', 'EU Long/Short', 'BRIC', 'Africa'];
+    strategies = ['Tech Long/Short', 'Healthcare', 'Long/Short', 'Bond', 'Financials Long / Short'];
+    fund = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay'];
+    regions = ['US', 'BRIC', 'Africa', 'EU', 'Japan'];
+
     symbols = [];
     numOrders = 100;
 
@@ -124,11 +127,15 @@ export class PortfolioService {
 
     getRandomPositionForPortfolio() {
         const modelIndex = Math.floor(Math.random() * this.models.length),
-            strategyIndex = Math.floor(Math.random() * this.strategies.length);
+            strategyIndex = Math.floor(Math.random() * this.strategies.length),
+            fundIndex = Math.floor(Math.random() * this.fund.length),
+            regionIndex = Math.floor(Math.random() * this.regions.length);
 
         return {
             model: this.models[modelIndex],
             strategy: this.strategies[strategyIndex],
+            fund: this.fund[fundIndex],
+            region: this.regions[regionIndex],
             symbol: this.generateRandomSymbol()
         };
     }
@@ -187,6 +194,8 @@ export class PortfolioService {
                 model: randomOrder.model,
                 strategy: randomOrder.strategy,
                 symbol: randomOrder.symbol,
+                fund: randomOrder.fund,
+                region: randomOrder.region,
                 time: moment.utc(Math.round(Math.random() * 23400000) + 34200000).format('HH:mm:ss'),
                 trader: faker.name.findName(),
                 dir: this.generateRandomDirection(),

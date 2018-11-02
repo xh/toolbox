@@ -8,7 +8,9 @@ export class PortfolioDimensionChooserModel {
         dimensions: [
             {value: 'model', label: 'Model'},
             {value: 'strategy', label: 'Strategy'},
-            {value: 'symbol', label: 'Symbol'}
+            {value: 'symbol', label: 'Symbol'},
+            {value: 'fund', label: 'Fund'},
+            {value: 'region', label: 'Region'}
         ],
         historyPreference: 'portfolioDimHistory'
     });

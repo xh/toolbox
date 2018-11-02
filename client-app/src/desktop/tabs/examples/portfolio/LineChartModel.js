@@ -73,8 +73,6 @@ export class LineChartModel {
         if (!isNil(record)) {
             XH.portfolioService.getLineChartSeries(record.symbol)
                 .then(series => {
-                    console.log('record.symbol', record.symbol);
-                    console.log('title', this.lineChartModel.config.title.text);
                     this.lineChartModel.config.title.text = record.symbol + ' Trade Volume';
                     this.lineChartModel.setSeries(series);
                 }).linkTo(this.loadModel);
