@@ -4,7 +4,7 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {wrapper} from '../../../common/index';
 import {panel, PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
@@ -14,11 +14,17 @@ import {strategyGrid} from './StrategyGrid';
 import {ordersGrid} from './OrdersGrid';
 import {lineChart} from './LineChart';
 import {olhcChart} from './OLHCChart';
-import { dimensionChooser } from '@xh/hoist/desktop/cmp/dimensionchooser/DimensionChooser';
-import { toolbar } from '@xh/hoist/desktop/cmp/toolbar';
+import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser/DimensionChooser';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {Icon} from '@xh/hoist/icon';
 
 @HoistComponent
 export class PortfolioPanel extends Component {
+
+    leftSizingModel = new PanelSizingModel({
+        defaultSize: 600,
+        side: 'left'
+    });
 
     bottomSizingModel = new PanelSizingModel({
         defaultSize: 400,
@@ -29,24 +35,38 @@ export class PortfolioPanel extends Component {
 
     render() {
         return wrapper({
+            description: [
+                <p>
+                    This example demonstrates the reactive features of the Hoist framework, and the ability to connect multiple components through a common model.
+                </p>
+            ],
             item: panel({
                 width: 1200,
                 height: 1000,
-                tbar: toolbar(dimensionChooser({
-                    model: this.localModel.dimensionChooserModel.model
-                })),
                 items: [
                     hbox({
+                        flex: 1,
                         items: [
-                            strategyGrid({
-                                model: this.localModel.strategyGridModel
+                            panel({
+                                title: 'Strategies',
+                                icon: Icon.gridPanel(),
+                                sizingModel: this.leftSizingModel,
+                                tbar: toolbar(dimensionChooser({
+                                    model: this.localModel.dimensionChooserModel.model
+                                })),
+                                item: strategyGrid({
+                                    model: this.localModel.strategyGridModel
+                                })
                             }),
-                            ordersGrid({
-                                model: this.localModel.ordersGridModel
+                            panel({
+                                item: ordersGrid({
+                                    model: this.localModel.ordersGridModel
+                                })
                             })
                         ]
                     }),
                     panel({
+                        flex: 1,
                         sizingModel: this.bottomSizingModel,
                         item: hbox({
                             items: [

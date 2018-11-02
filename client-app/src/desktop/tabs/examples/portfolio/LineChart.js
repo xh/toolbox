@@ -15,10 +15,9 @@ export class LineChart extends Component {
 
     render() {
         return panel({
-            title: 'Prices',
+            title: 'Volume',
             icon: Icon.gridPanel(),
             width: 600,
-            height: 400,
             item: chart({
                 model: this.model.lineChartModel
             }),

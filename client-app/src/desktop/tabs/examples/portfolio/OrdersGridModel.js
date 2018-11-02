@@ -19,11 +19,6 @@ export class OrdersGridModel {
         enableExport: true,
         columns: [
             {
-                field: 'id',
-                headerName: 'ID',
-                hide: true
-            },
-            {
                 field: 'symbol',
                 headerName: 'Instrument',
                 width: 100,

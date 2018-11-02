@@ -18,7 +18,6 @@ export class OLHCChart extends Component {
             title: 'Prices',
             icon: Icon.gridPanel(),
             width: 600,
-            height: 400,
             item: chart({
                 model: this.model.olhcChartModel
             }),

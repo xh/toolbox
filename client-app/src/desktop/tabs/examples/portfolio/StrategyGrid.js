@@ -6,23 +6,15 @@
  */
 import {Component} from 'react';
 import {elemFactory, HoistComponent} from '@xh/hoist/core/index';
-import {panel, PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
-import {Icon} from '@xh/hoist/icon';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
 
 @HoistComponent
 export class StrategyGrid extends Component {
 
-    strategiesSizingModel = new PanelSizingModel({
-        defaultSize: 600,
-        side: 'left'
-    });
     render() {
         return panel({
             flex: 1,
-            title: 'Strategies',
-            icon: Icon.gridPanel(),
-            sizingModel: this.strategiesSizingModel,
             height: 300,
             item: grid({
                 flex: 1,
