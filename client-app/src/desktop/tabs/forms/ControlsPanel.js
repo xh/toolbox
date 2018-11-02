@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {hframe} from '@xh/hoist/cmp/layout';
+import {hframe, hbox, div, box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import moment from 'moment';
@@ -211,10 +211,14 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'Select',
                                     field: 'option3',
-                                    info: 'custom async search (name/city)',
+                                    info: 'custom fields, renderer, async search',
                                     item: select({
+                                        valueField: 'id',
+                                        labelField: 'name',
                                         queryFn: this.queryCompaniesAsync,
-                                        placeholder: 'Search companies...'
+                                        optionRenderer: this.renderCompanyOption,
+                                        placeholder: 'Search companies...',
+                                        width: '90%'
                                     })
                                 }),
                                 row({
@@ -224,12 +228,12 @@ export class ControlsPanel extends Component {
                                     item: select({
                                         options: usStates,
                                         enableMulti: true,
-                                        width: '100%',
+                                        width: '90%',
                                         placeholder: 'Select state(s)...'
                                     })
                                 }),
                                 row({
-                                    label: 'CheckBox',
+                                    label: 'Checkbox',
                                     field: 'bool1',
                                     item: checkbox({
                                         label: 'enabled'
@@ -304,11 +308,30 @@ export class ControlsPanel extends Component {
         });
     };
 
-    queryCompaniesAsync(query) {
+    queryCompaniesAsync = (query) => {
         return XH.companyService.queryAsync(query)
-            .wait(800)
-            .then(hits => {
-                return hits.map(it => `${it.name} (${it.city})`);
-            });
+            .wait(400)
+            .then(hits => hits);
+    };
+
+    renderCompanyOption = (opt) => {
+        return hbox({
+            items: [
+                box({
+                    item: opt.isActive ?
+                        Icon.checkCircle({className: 'xh-green fa-fw'}) :
+                        Icon.x({className: 'xh-red fa-fw'}),
+                    width: 26
+                }),
+                div(
+                    opt.name,
+                    div({
+                        className: 'xh-text-color-muted xh-font-size-small',
+                        item: `${opt.city} · ID: ${opt.id}`
+                    })
+                )
+            ],
+            alignItems: 'center'
+        });
     }
 }
