@@ -73,7 +73,5 @@ export class ValidationPanelModel {
                 ({value}) => isNil(value) || value < 10 ?  'Managerial positions require at least 10 years of experience.' : null
             ]
         });
-
-        XH.vm = this;
     }
 }
