@@ -1,6 +1,5 @@
 import {HoistService} from '@xh/hoist/core';
 import {action, observable} from '../../../../../hoist-react/mobx/index';
-import faker from 'faker';
 import moment from 'moment';
 import {isNil, times} from 'lodash';
 import {wait} from '../../../../../hoist-react/promise/index';
