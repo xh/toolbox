@@ -14,6 +14,7 @@ export class PortfolioService {
     strategies = ['Tech Long/Short', 'Healthcare', 'Long/Short', 'Bond', 'Financials Long / Short'];
     fund = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay'];
     regions = ['US', 'BRIC', 'Africa', 'EU', 'Japan'];
+    traders = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn'];
 
     symbols = [];
     numOrders = 100;
@@ -115,7 +116,6 @@ export class PortfolioService {
                     low: Number(low.toFixed(2)),
                     open: Number(open.toFixed(2)),
                     close: Number(close.toFixed(2)),
-                    // volume: Math.round(Math.random() * (randomDays.includes(i) ? 1000000 : 100000))
                     volume: Math.round(Math.random() * this.getRandomMultiplier(i, randomDays))
                 });
                 prevClose = close;
@@ -129,14 +129,16 @@ export class PortfolioService {
         const modelIndex = Math.floor(Math.random() * this.models.length),
             strategyIndex = Math.floor(Math.random() * this.strategies.length),
             fundIndex = Math.floor(Math.random() * this.fund.length),
-            regionIndex = Math.floor(Math.random() * this.regions.length);
+            regionIndex = Math.floor(Math.random() * this.regions.length),
+            traderIndex = Math.floor(Math.random() * this.traders.length);
 
         return {
             model: this.models[modelIndex],
             strategy: this.strategies[strategyIndex],
             fund: this.fund[fundIndex],
             region: this.regions[regionIndex],
-            symbol: this.generateRandomSymbol()
+            symbol: this.generateRandomSymbol(),
+            trader: this.traders[traderIndex]
         };
     }
 
@@ -197,7 +199,7 @@ export class PortfolioService {
                 fund: randomOrder.fund,
                 region: randomOrder.region,
                 time: moment.utc(Math.round(Math.random() * 23400000) + 34200000).format('HH:mm:ss'),
-                trader: faker.name.findName(),
+                trader: randomOrder.trader,
                 dir: this.generateRandomDirection(),
                 volume: this.generateRandomQuantity(),
                 pnl: this.generateRandomPnl()
