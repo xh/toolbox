@@ -12,7 +12,7 @@ export class StrategyGridModel {
     gridModel = new GridModel({
         treeMode: true,
         store: new LocalStore({
-            fields: ['id', 'name', 'volume', 'pnl']
+            fields: ['id', 'name', 'quantity', 'pnl']
         }),
         sortBy: [{colId: 'name', sort: 'asc'}],
         emptyText: 'No records found...',
@@ -26,8 +26,8 @@ export class StrategyGridModel {
                 isTreeColumn: true
             },
             {
-                headerName: 'Volume',
-                field: 'volume',
+                headerName: 'Quantity',
+                field: 'quantity',
                 align: 'right',
                 width: 130,
                 absSort: true,

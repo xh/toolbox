@@ -152,7 +152,7 @@ export class PortfolioService {
                     entry = {
                         id: id,
                         name: key,
-                        volume: 0,
+                        quantity: 0,
                         pnl: 0
                     };
                 } else {
@@ -168,7 +168,7 @@ export class PortfolioService {
             id = entry.id + '-' + (isNil(level) ? '0' : level.length).toString();
 
             if (index === keySet.length - 1) {
-                entry.volume += order.volume;
+                entry.quantity += order.quantity;
                 entry.pnl += order.pnl;
                 this.orders.push({id: (entry.id + '-' + (isNil(this.orders) ? '0' : this.orders.length).toString()), ...order});
             }
@@ -200,7 +200,8 @@ export class PortfolioService {
                 time: moment.utc(Math.round(Math.random() * 23400000) + 34200000).format('HH:mm:ss'),
                 trader: randomOrder.trader,
                 dir: this.generateRandomDirection(),
-                volume: this.generateRandomQuantity(),
+                quantity: this.generateRandomQuantity(),
+                price: this.generateRandomPrice(),
                 pnl: this.generateRandomPnl()
             });
         });
@@ -230,7 +231,11 @@ export class PortfolioService {
     }
 
     generateRandomQuantity() {
-        return Math.floor(Math.random() * 1000001);
+        return Math.floor(Math.random() * 1001);
+    }
+
+    generateRandomPrice() {
+        return Number(Math.random() * 100).toFixed(2);
     }
 
     generateRandomPnl() {

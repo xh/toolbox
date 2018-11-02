@@ -12,7 +12,7 @@ export class OrdersGridModel {
     loadModel = new PendingTaskModel();
     gridModel = new GridModel({
         store: new LocalStore({
-            fields: ['id', 'symbol', 'time', 'trader', 'dir', 'volume', 'pnl']
+            fields: ['id', 'symbol', 'time', 'trader', 'dir', 'quantity', 'price']
         }),
         sortBy: [{colId: 'time', sort: 'asc'}],
         emptyText: 'No records found...',
@@ -38,8 +38,8 @@ export class OrdersGridModel {
                 tooltip: false
             },
             {
-                field: 'volume',
-                headerName: 'Volume',
+                field: 'quantity',
+                headerName: 'Quantity',
                 width: 100,
                 tooltip: false,
                 align: 'right',
@@ -50,8 +50,8 @@ export class OrdersGridModel {
                 })
             },
             {
-                field: 'pnl',
-                headerName: 'P&L',
+                field: 'price',
+                headerName: 'Price',
                 width: 150,
                 tooltip: false,
                 align: 'right',
