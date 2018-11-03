@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {colChooserButton, grid, GridModel} from '@xh/hoist/cmp/grid';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
-import {filler, fragment, span} from '@xh/hoist/cmp/layout';
+import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, LayoutSupport} from '@xh/hoist/core';
 import {LocalStore} from '@xh/hoist/data';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
