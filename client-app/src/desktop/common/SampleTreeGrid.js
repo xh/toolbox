@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
-import {box, filler} from '@xh/hoist/cmp/layout';
+import {filler} from '@xh/hoist/cmp/layout';
 import {grid, GridModel, colChooserButton} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -73,30 +73,25 @@ class SampleTreeGrid extends Component {
         const {model} = this;
 
         return panel({
-            className: this.getClassName(),
-            ...this.getLayoutProps(),
             item: grid({model}),
             mask: this.loadModel,
-            bbar: toolbar({
-                omit: this.props.omitToolbar,
-                items: [
-                    storeFilterField({gridModel: model}),
-                    storeCountLabel({
-                        gridModel: model,
-                        units: 'companies'
-                    }),
-                    filler(),
-                    box('Compact mode:'),
-                    switchInput({
-                        field: 'compact',
-                        model
-                    }),
-                    toolbarSep(),
-                    colChooserButton({gridModel: model}),
-                    exportButton({model, exportType: 'excel'}),
-                    refreshButton({model: this})
-                ]
-            })
+            bbar: toolbar(
+                refreshButton({model: this}),
+                toolbarSep(),
+                switchInput({
+                    model,
+                    field: 'compact',
+                    label: 'Compact mode:',
+                    labelAlign: 'left'
+                }),
+                filler(),
+                storeCountLabel({gridModel: model, units: 'companies'}),
+                storeFilterField({gridModel: model}),
+                colChooserButton({gridModel: model}),
+                exportButton({model, exportType: 'excel'})
+            ),
+            className: this.getClassName(),
+            ...this.getLayoutProps()
         });
     }
 

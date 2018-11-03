@@ -8,11 +8,11 @@ import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {observable, action} from '@xh/hoist/mobx';
-import {box, filler} from '@xh/hoist/cmp/layout';
+import {action, bindable} from '@xh/hoist/mobx';
+import {span, filler} from '@xh/hoist/cmp/layout';
 import {numberInput, textInput, switchInput} from '@xh/hoist/desktop/cmp/form';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {SECONDS} from '@xh/hoist/utils/datetime';
@@ -24,22 +24,14 @@ import {sampleGrid, wrapper} from '../../common';
 @HoistComponent
 export class MaskPanel extends Component {
 
-    @observable seconds = 6;
-    @action     setSeconds(v) {this.seconds = v}
-
-    @observable message = '';
-    @action     setMessage(v) {this.message = v}
-
-    @observable inline = true;
-    @action     setInline(v) {this.inline = v}
-
-    @observable spinner = true;
-    @action     setSpinner(v) {this.spinner = v}
+    @bindable seconds = 6;
+    @bindable message = '';
+    @bindable inline = true;
+    @bindable spinner = true;
 
     maskModel = new PendingTaskModel();
 
     render() {
-
         return wrapper({
             description: [
                 <p>
@@ -61,12 +53,12 @@ export class MaskPanel extends Component {
             item: panel({
                 title: 'Other > Mask',
                 icon: Icon.eyeSlash(),
-                width: 700,
+                width: 800,
                 height: 400,
                 item: sampleGrid({omitToolbar: true}),
                 bbar: toolbar({
                     items: [
-                        box('Mask for'),
+                        span('Mask for'),
                         numberInput({
                             model: this,
                             field: 'seconds',
@@ -74,22 +66,26 @@ export class MaskPanel extends Component {
                             min: 0,
                             max: 10
                         }),
-                        box('secs with'),
+                        span('secs with'),
                         textInput({
                             model: this,
                             field: 'message',
                             width: 120,
                             placeholder: 'optional text'
                         }),
+                        toolbarSep(),
                         switchInput({
                             model: this,
                             field: 'inline',
-                            label: 'inline'
+                            label: 'Inline:',
+                            labelAlign: 'left'
                         }),
+                        toolbarSep(),
                         switchInput({
                             model: this,
                             field: 'spinner',
-                            label: 'with spinner'
+                            label: 'Spinner:',
+                            labelAlign: 'left'
                         }),
                         filler(),
                         button({

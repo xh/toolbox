@@ -11,7 +11,7 @@ import {box, filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
 
@@ -50,22 +50,33 @@ export class RelativeTimestampPanel extends Component {
                 ],
                 bbar: toolbar(
                     filler(),
-                    button({
-                        text: 'Set to past',
-                        icon: Icon.angleLeft(),
-                        onClick: this.setToPast
+                    buttonGroup({
+                        items: [
+                            button({
+                                text: 'Set to past',
+                                icon: Icon.angleLeft(),
+                                minimal: false,
+                                width: 130,
+                                onClick: this.setToPast
+                            }),
+                            button({
+                                text: 'Set to now',
+                                intent: 'primary',
+                                icon: Icon.clock(),
+                                minimal: false,
+                                width: 130,
+                                onClick: this.setToNow
+                            }),
+                            button({
+                                text: 'Set to future',
+                                rightIcon: Icon.angleRight(),
+                                minimal: false,
+                                width: 130,
+                                onClick: this.setToFuture
+                            })
+                        ]
                     }),
-                    button({
-                        text: 'Set to now',
-                        intent: 'primary',
-                        icon: Icon.clock(),
-                        onClick: this.setToNow
-                    }),
-                    button({
-                        text: 'Set to future',
-                        icon: Icon.angleRight(),
-                        onClick: this.setToFuture
-                    })
+                    filler()
                 )
             })
         });
