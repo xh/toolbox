@@ -14,7 +14,8 @@ export class OrdersGridModel {
         store: new LocalStore({
             fields: ['id', 'symbol', 'time', 'trader', 'dir', 'quantity', 'price']
         }),
-        sortBy: [{colId: 'time', sort: 'asc'}],
+        groupBy: 'dir',
+        sortBy: [{colId: 'time', sort: 'desc'}],
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
@@ -28,7 +29,7 @@ export class OrdersGridModel {
             {
                 field: 'trader',
                 headerName: 'Trader',
-                width: 200,
+                width: 160,
                 tooltip: false
             },
             {
@@ -52,7 +53,7 @@ export class OrdersGridModel {
             {
                 field: 'price',
                 headerName: 'Price',
-                width: 150,
+                width: 100,
                 tooltip: false,
                 align: 'right',
                 renderer: numberRenderer({
@@ -64,9 +65,9 @@ export class OrdersGridModel {
             },
             {
                 field: 'time',
-                headerName: 'Execution Time',
+                headerName: 'Exec. Time',
                 align: 'right',
-                width: 150,
+                width: 130,
                 tooltip: false
             },
             {...emptyFlexCol}

@@ -1,6 +1,7 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
+import {fmtDate} from '@xh/hoist/format';
 import Highcharts from 'highcharts/highstock';
 import {isNil} from 'lodash';
 
@@ -13,32 +14,25 @@ export class LineChartModel {
             chart: {
                 zoomType: 'x'
             },
-            tooltip: {
-                outside: true
-            },
-            title: {
-                text: ''
-            },
-            scrollbar: {
-                enabled: false
-            },
-            rangeSelector: {
-                enabled: false
-            },
-            navigator: {
-                enabled: true
-            },
+            title: {text: null},
+            tooltip: {outside: true},
+            legend: {enabled: false},
+            scrollbar: {enabled: false},
+            rangeSelector: {enabled: false},
+            navigator: {enabled: true},
             xAxis: {
-                type: 'datetime'
+                type: 'datetime',
+                labels: {
+                    formatter: function() {
+                        return fmtDate(this.value, {fmt: 'DD-MMM-YY'});
+                    }
+                }
             },
             yAxis: {
                 floor: 0,
                 title: {
                     text: 'Volume'
                 }
-            },
-            legend: {
-                enabled: false
             },
             plotOptions: {
                 area: {
@@ -70,14 +64,15 @@ export class LineChartModel {
     });
 
     loadData(record) {
-        if (!isNil(record)) {
-            XH.portfolioService.getLineChartSeries(record.symbol)
-                .then(series => {
-                    this.lineChartModel.config.title.text = record.symbol + ' Trade Volume';
-                    this.lineChartModel.setSeries(series);
-                }).linkTo(this.loadModel);
-        } else {
+        if (isNil(record)) {
             this.lineChartModel.setSeries([]);
+            return;
         }
+
+        XH.portfolioService
+            .getLineChartSeries(record.symbol)
+            .then(series => this.lineChartModel.setSeries(series))
+            .linkTo(this.loadModel);
     }
+
 }

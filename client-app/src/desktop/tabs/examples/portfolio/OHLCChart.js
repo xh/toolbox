@@ -11,15 +11,17 @@ import {chart} from '@xh/hoist/desktop/cmp/chart';
 
 @HoistComponent
 @LayoutSupport
-export class LineChart extends Component {
+export class OHLCChart extends Component {
 
     render() {
+        const {olhcChartModel, loadModel} = this.model;
+
         return panel({
-            item: chart({model: this.model.lineChartModel}),
-            mask: this.model.loadModel,
+            item: chart({model: olhcChartModel}),
+            mask: loadModel,
             className: this.getClassName(),
             ...this.getLayoutProps()
         });
     }
 }
-export const lineChart = elemFactory(LineChart);
+export const ohlcChart = elemFactory(OHLCChart);

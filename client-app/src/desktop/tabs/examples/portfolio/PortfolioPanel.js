@@ -4,75 +4,73 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import React, {Component} from 'react';
+import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
-import {panel, PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
-import {hbox} from '@xh/hoist/cmp/layout';
+import {hbox, filler, vframe} from '@xh/hoist/cmp/layout';
+import {Icon} from '@xh/hoist/icon';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+
 import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {strategyGrid} from './StrategyGrid';
 import {ordersGrid} from './OrdersGrid';
 import {lineChart} from './LineChart';
-import {olhcChart} from './OLHCChart';
-import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser/DimensionChooser';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {Icon} from '@xh/hoist/icon';
+import {ohlcChart} from './OHLCChart';
 
 @HoistComponent
 export class PortfolioPanel extends Component {
 
-    leftSizingModel = new PanelSizingModel({
-        defaultSize: 600,
-        side: 'left'
-    });
-
-    bottomSizingModel = new PanelSizingModel({
-        defaultSize: 400,
-        side: 'bottom'
-    });
-
     localModel = new PortfolioPanelModel();
 
     render() {
-        return panel({
-            items: [
-                hbox({
-                    flex: 1,
-                    items: [
-                        panel({
-                            title: 'Positions',
-                            icon: Icon.treeList(),
-                            sizingModel: this.leftSizingModel,
-                            items: [
-                                strategyGrid({
-                                    model: this.localModel.strategyGridModel
-                                }),
-                                toolbar(dimensionChooser({
-                                    model: this.localModel.dimensionChooserModel.model
-                                }))
-                            ]
-                        }),
-                        panel({
-                            item: ordersGrid({
-                                model: this.localModel.ordersGridModel
+        const {model} = this;
+
+        return vframe(
+            hbox({
+                flex: 1,
+                items: [
+                    panel({
+                        title: 'Positions',
+                        icon: Icon.portfolio(),
+                        sizingModel: model.leftSizingModel,
+                        items: [
+                            strategyGrid({
+                                model: model.strategyGridModel
                             })
+                        ],
+                        bbar: toolbar(
+                            dimensionChooser({model: model.dimensionChooserModel.model}),
+                            filler(),
+                            relativeTimestamp({timestamp: model.loadTimestamp})
+                        )
+                    }),
+                    panel({
+                        item: ordersGrid({
+                            model: model.ordersGridModel
+                        })
+                    })
+                ]
+            }),
+            panel({
+                title: `Trading Volume + Price History: ${model.selectedOrderSymbol}`,
+                icon: Icon.chartArea(),
+                sizingModel: model.bottomSizingModel,
+                item: hbox({
+                    items: [
+                        lineChart({
+                            model: model.lineChartModel,
+                            flex: 1,
+                            className: 'xh-border-right'
+                        }),
+                        ohlcChart({
+                            model: model.olhcChartModel,
+                            flex: 1
                         })
                     ]
-                }),
-                panel({
-                    flex: 1,
-                    sizingModel: this.bottomSizingModel,
-                    item: hbox({
-                        items: [
-                            lineChart({
-                                model: this.localModel.lineChartModel
-                            }),
-                            olhcChart({
-                                model: this.localModel.olhcChartModel
-                            })
-                        ]
-                    })
                 })
-            ]
-        });
+            })
+        );
     }
 }

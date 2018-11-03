@@ -17,30 +17,20 @@ import {filler} from '@xh/hoist/cmp/layout';
 export class OrdersGrid extends Component {
 
     render() {
+        const {model} = this,
+            {gridModel} = model;
+
         return panel({
-            flex: 1,
             title: 'Orders',
-            icon: Icon.box(),
-            item: grid({
-                flex: 1,
-                model: this.model.gridModel
-            }),
-            mask: this.model.loadModel,
-
-
-            bbar: toolbar({
-                omit: this.props.omitToolbar,
-                items: [
-                    colChooserButton({gridModel: this.model.gridModel}),
-                    storeFilterField({gridModel: this.model.gridModel}),
-                    filler(),
-                    storeCountLabel({
-                        gridModel: this.model.gridModel,
-                        unit: 'orders'
-                    })
-                ]
-            })
-
+            icon: Icon.edit(),
+            item: grid({model: gridModel}),
+            mask: model.loadModel,
+            bbar: toolbar(
+                filler(),
+                storeCountLabel({gridModel, unit: 'orders'}),
+                storeFilterField({gridModel}),
+                colChooserButton({gridModel})
+            )
         });
     }
 }

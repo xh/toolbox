@@ -5,9 +5,10 @@ import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
 import {isNil} from 'lodash';
 
 @HoistModel
-export class OLHCChartModel {
+export class OHLCChartModel {
 
     loadModel = new PendingTaskModel();
+
     olhcChartModel = new ChartModel({
         config: {
             chart: {
@@ -16,24 +17,16 @@ export class OLHCChartModel {
                 spacingBottom: 5,
                 zoomType: 'x',
                 resetZoomButton: {
-                    theme: {
-                        display: 'none'
-                    }
+                    theme: {display: 'none'}
                 }
             },
-            legend: {
-                enabled: false
-            },
-            title: {
-                text: null
-            },
-            scrollbar: {
-                enabled: false
-            },
+            title: {text: null},
+            legend: {enabled: false},
+            scrollbar: {enabled: false},
             xAxis: {
                 labels: {
                     formatter: function() {
-                        return fmtDate(this.value);
+                        return fmtDate(this.value, {fmt: 'DD-MMM-YY'});
                     }
                 }
             },
@@ -69,14 +62,15 @@ export class OLHCChartModel {
     });
 
     loadData(record) {
-        if (!isNil(record)) {
-            XH.portfolioService.getOLHCChartSeries(record.symbol)
-                .then(series => {
-                    this.olhcChartModel.setSeries(series);
-                }).linkTo(this.loadModel);
-        } else {
+        if (isNil(record)) {
             this.olhcChartModel.setSeries([]);
+            return;
         }
+
+        XH.portfolioService
+            .getOLHCChartSeries(record.symbol)
+            .then(series => this.olhcChartModel.setSeries(series))
+            .linkTo(this.loadModel);
     }
 
 }

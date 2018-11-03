@@ -188,8 +188,9 @@ export class PortfolioService {
     // random order-data generators
     generateRandomOrders(numberOfOrders) {
         times(numberOfOrders, () => {
-            const randomOrder =
-                this.getRandomPositionForPortfolio(this.portfolio);
+            const randomOrder = this.getRandomPositionForPortfolio(this.portfolio),
+                qty = this.generateRandomQuantity(),
+                px = this.generateRandomPrice();
 
             this.randomOrders.push({
                 model: randomOrder.model,
@@ -200,8 +201,9 @@ export class PortfolioService {
                 time: moment.utc(Math.round(Math.random() * 23400000) + 34200000).format('HH:mm:ss'),
                 trader: randomOrder.trader,
                 dir: this.generateRandomDirection(),
-                quantity: this.generateRandomQuantity(),
-                price: this.generateRandomPrice(),
+                quantity: qty,
+                price: px,
+                marketValue: qty * px,
                 pnl: this.generateRandomPnl()
             });
         });
