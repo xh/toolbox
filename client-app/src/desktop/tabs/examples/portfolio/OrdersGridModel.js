@@ -23,26 +23,22 @@ export class OrdersGridModel {
             {
                 field: 'symbol',
                 headerName: 'Instrument',
-                width: 100,
-                tooltip: false
+                width: 100
             },
             {
                 field: 'trader',
                 headerName: 'Trader',
-                width: 160,
-                tooltip: false
+                width: 160
             },
             {
                 field: 'dir',
                 headerName: 'Direction',
-                width: 100,
-                tooltip: false
+                width: 100
             },
             {
                 field: 'quantity',
                 headerName: 'Quantity',
                 width: 100,
-                tooltip: false,
                 align: 'right',
                 renderer: numberRenderer({
                     precision: 0,
@@ -54,21 +50,16 @@ export class OrdersGridModel {
                 field: 'price',
                 headerName: 'Price',
                 width: 100,
-                tooltip: false,
                 align: 'right',
                 renderer: numberRenderer({
-                    precision: 2,
-                    ledger: true,
-                    colorSpec: true,
-                    tooltip: true
+                    precision: 4
                 })
             },
             {
                 field: 'time',
                 headerName: 'Exec. Time',
                 align: 'right',
-                width: 130,
-                tooltip: false
+                width: 130
             },
             {...emptyFlexCol}
         ]
