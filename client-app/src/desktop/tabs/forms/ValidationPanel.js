@@ -9,7 +9,7 @@ import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
@@ -19,6 +19,8 @@ import {
     dateInput,
     numberInput,
     select,
+    switchInput,
+    textArea,
     textInput
 } from '@xh/hoist/desktop/cmp/form';
 
@@ -35,7 +37,9 @@ export class ValidationPanel extends Component {
     validateButtonTask = new PendingTaskModel();
 
     render() {
-        const {model} = this;
+        const {model} = this,
+            commitOnChange = model.commitOnChange,
+            minimal = model.minimalValidation;
 
         return wrapper({
             item: panel({
@@ -55,16 +59,19 @@ export class ValidationPanel extends Component {
                                 formField({
                                     model,
                                     field: 'firstName',
-                                    item: textInput()
+                                    minimal,
+                                    item: textInput({commitOnChange})
                                 }),
                                 formField({
                                     model,
                                     field: 'lastName',
-                                    item: textInput()
+                                    minimal,
+                                    item: textInput({commitOnChange})
                                 }),
                                 formField({
                                     model,
                                     field: 'email',
+                                    minimal,
                                     item: textInput({
                                         placeholder: 'user@company.com',
                                         leftIcon: Icon.mail(),
@@ -73,6 +80,23 @@ export class ValidationPanel extends Component {
                                             minimal: true,
                                             onClick: () => model.setEmail(null)
                                         })
+                                    })
+                                }),
+                                formField({
+                                    model,
+                                    field: 'region',
+                                    minimal,
+                                    item: select({
+                                        options: ['California', 'London', 'Montreal', 'New York']
+                                    })
+                                }),
+                                formField({
+                                    model,
+                                    field: 'tags',
+                                    minimal,
+                                    item: select({
+                                        enableMulti: true,
+                                        enableCreate: true
                                     })
                                 })
                             ]
@@ -85,9 +109,10 @@ export class ValidationPanel extends Component {
                                         formField({
                                             model,
                                             field: 'startDate',
+                                            minimal,
                                             item: dateInput({
                                                 width: 120,
-                                                commitOnChange: true
+                                                commitOnChange
                                             })
                                         }),
                                         Icon.chevronRight({
@@ -96,38 +121,31 @@ export class ValidationPanel extends Component {
                                         formField({
                                             model,
                                             field: 'endDate',
+                                            minimal,
                                             item: dateInput({
                                                 width: 120,
-                                                commitOnChange: true
-                                            })
-                                        })
-                                    ]
-                                }),
-                                hbox({
-                                    alignItems: 'center',
-                                    items: [
-                                        formField({
-                                            model,
-                                            field: 'yearsExperience',
-                                            item: numberInput({width: 50})
-                                        }),
-                                        formField({
-                                            model,
-                                            field: 'isManager',
-                                            label: null,
-                                            item: checkbox({
-                                                width: 200,
-                                                label: 'manager role'
+                                                commitOnChange
                                             })
                                         })
                                     ]
                                 }),
                                 formField({
                                     model,
-                                    field: 'region',
-                                    item: select({
-                                        options: ['California', 'London', 'Montreal', 'New York']
-                                    })
+                                    field: 'yearsExperience',
+                                    minimal,
+                                    item: numberInput({width: 50, commitOnChange})
+                                }),
+                                formField({
+                                    model,
+                                    field: 'isManager',
+                                    minimal,
+                                    item: checkbox()
+                                }),
+                                formField({
+                                    model,
+                                    field: 'notes',
+                                    minimal,
+                                    item: textArea({width: 270, commitOnChange})
                                 })
                             ]
                         })
@@ -144,6 +162,17 @@ export class ValidationPanel extends Component {
                         icon: Icon.check(),
                         intent: 'primary',
                         onClick: this.onValidateClick
+                    }),
+                    toolbarSep(),
+                    switchInput({
+                        model,
+                        field: 'minimalValidation',
+                        label: 'Minimal validation display'
+                    }),
+                    switchInput({
+                        model,
+                        field: 'commitOnChange',
+                        label: 'Inputs commit on change'
                     }),
                     filler(),
                     button({

@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
-import {box, filler} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {grid, GridModel, colChooserButton} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
@@ -26,6 +26,8 @@ import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/columns';
 @HoistComponent
 @LayoutSupport
 class SampleGrid extends Component {
+
+    @observable groupBy = false;
 
     loadModel = new PendingTaskModel();
 
@@ -123,8 +125,6 @@ class SampleGrid extends Component {
         ]
     });
 
-    @observable groupBy = false;
-
     constructor(props) {
         super(props);
         this.loadAsync();
@@ -134,20 +134,14 @@ class SampleGrid extends Component {
         const {model} = this;
 
         return panel({
-            className: this.getClassName(),
-            ...this.getLayoutProps(),
             item: grid({model}),
             mask: this.loadModel,
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
-                    storeFilterField({gridModel: model}),
-                    storeCountLabel({
-                        gridModel: model,
-                        unit: 'companies'
-                    }),
-                    filler(),
-                    box('Group by:'),
+                    refreshButton({model: this}),
+                    toolbarSep(),
+                    span('Group by:'),
                     select({
                         model: this,
                         field: 'groupBy',
@@ -159,17 +153,18 @@ class SampleGrid extends Component {
                         width: 120,
                         enableFilter: false
                     }),
-                    box('Compact mode:'),
-                    switchInput({
-                        field: 'compact',
-                        model
-                    }),
                     toolbarSep(),
+                    span('Compact mode:'),
+                    switchInput({field: 'compact', model}),
+                    filler(),
+                    storeCountLabel({gridModel: model, unit: 'companies'}),
+                    storeFilterField({gridModel: model}),
                     colChooserButton({gridModel: model}),
-                    exportButton({model, exportType: 'excel'}),
-                    refreshButton({model: this})
+                    exportButton({model, exportType: 'excel'})
                 ]
-            })
+            }),
+            className: this.getClassName(),
+            ...this.getLayoutProps()
         });
     }
 

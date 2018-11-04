@@ -17,14 +17,21 @@ export class CompanyService {
 
     initAsync() {
         return start(() => {
-            const companies = companyTrades.map(it => ({name: it.company, city: it.city}));
+            const companies = companyTrades.map(it => {
+                return {
+                    id: it.id,
+                    name: it.company,
+                    city: it.city,
+                    isActive: it.id % 3 != 0
+                };
+            });
             runInAction(() => this.allCompanies = uniqBy(companies, 'name'));
         });
     }
 
     queryAsync(query) {
         return start(() => {
-            if (!query) return [];
+            if (!query) return this.allCompanies;
 
             query = query.toUpperCase();
             return this.allCompanies.filter(it => {
