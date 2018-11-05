@@ -19,6 +19,7 @@ import {HomeTab} from './tabs/home/HomeTab';
 import {IconsTab} from './tabs/icons/IconsTab';
 import {OtherTab} from './tabs/other/OtherTab';
 import {ExamplesTab} from './tabs/examples/ExamplesTab';
+import {FormatsTab} from './tabs/formats/FormatsTab';
 
 @HoistAppModel
 export class AppModel {
@@ -94,6 +95,15 @@ export class AppModel {
                         path: '/icons'
                     },
                     {
+                        name: 'formats',
+                        path: '/formats',
+                        forwardTo: 'default.formats.number',
+                        children: [
+                            {name: 'number', path: '/number'},
+                            {name: 'date', path: '/date'}
+                        ]
+                    },
+                    {
                         name: 'other',
                         path: '/other',
                         forwardTo: 'default.other.mask',
@@ -127,6 +137,7 @@ export class AppModel {
                 {id: 'forms', content: FormsTab},
                 {id: 'charts', content: ChartsTab},
                 {id: 'icons', content: IconsTab},
+                {id: 'formats', content: FormatsTab},
                 {id: 'other', content: OtherTab},
                 {id: 'examples', content: ExamplesTab}
             ]
