@@ -36,7 +36,7 @@ export class NumberFormatsPanel extends Component {
                 </p>,
                 <p>
                     All hoist formatting functions support the <code>asElement</code> option to produce either a React
-                    element, or a raw HTML string. This allows them to be useful in a both raw React and non-React
+                    element, or a raw HTML string. This allows them to be useful in both React and non-React
                     contexts.
                 </p>
             ],
