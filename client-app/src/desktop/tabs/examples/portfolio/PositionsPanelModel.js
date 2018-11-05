@@ -1,5 +1,6 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
+import {wait} from '@xh/hoist/promise';
 import {PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {numberRenderer} from '@xh/hoist/format';
@@ -15,10 +16,11 @@ export class PositionsPanelModel {
 
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
-            {value: 'model', label: 'Model'},
-            {value: 'strategy', label: 'Strategy'},
+            // {value: 'model', label: 'Model'},
+            // {value: 'strategy', label: 'Strategy'},
             {value: 'symbol', label: 'Symbol'},
-            {value: 'funds', label: 'Fund'},
+            {value: 'sector', label: 'Sector'},
+            {value: 'fund', label: 'Fund'},
             {value: 'region', label: 'Region'}
         ],
         historyPreference: 'portfolioDimHistory'
@@ -27,7 +29,7 @@ export class PositionsPanelModel {
     gridModel = new GridModel({
         treeMode: true,
         store: new LocalStore({
-            fields: ['id', 'name', 'quantity', 'pnl']
+            fields: ['id', 'name', 'pnl', 'mktVal']
         }),
         sortBy: [{colId: 'pnl', sort: 'desc', abs: true}],
         emptyText: 'No records found...',
@@ -102,13 +104,15 @@ export class PositionsPanelModel {
     }
 
     loadAsync() {
-        return XH.portfolioService
-            .getPortfolioAsync(this.dimensions)
-            .then(portfolio => {
-                this.gridModel.loadData(portfolio);
-                this.gridModel.selectFirst();
-                this.setLoadTimestamp(Date.now());
-            })
-            .linkTo(this.loadModel);
+        return wait(500).then(() => {
+            return XH.portfolioService
+                .getPortfolioAsync(this.dimensions)
+                .then(portfolio => {
+                    this.gridModel.loadData(portfolio);
+                    this.gridModel.selectFirst();
+                    this.setLoadTimestamp(Date.now());
+                })
+                .linkTo(this.loadModel);
+        })
     }
 }

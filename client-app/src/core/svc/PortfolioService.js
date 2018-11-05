@@ -1,44 +1,64 @@
 import {HoistService} from '@xh/hoist/core';
-import {action, observable} from '../../../../../hoist-react/mobx/index';
+import {action, observable} from '@xh/hoist/mobx';
+import {wait} from '@xh/hoist/promise';
+import {sumBy, isNil, castArray, forOwn, last, sortBy, groupBy, keys, values, find, random, sample, sampleSize, times} from 'lodash';
 import moment from 'moment';
-import {isNil, times} from 'lodash';
-import {wait} from '../../../../../hoist-react/promise/index';
 
 @HoistService
 export class PortfolioService {
 
-    randomOrders = [];
-
     models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul'];
     strategies = ['Tech Long/Short', 'Healthcare', 'Long/Short', 'Bond', 'Financials Long / Short'];
-    fund = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay'];
+    sectors = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing'];
+    funds = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay'];
     regions = ['US', 'BRIC', 'Africa', 'EU', 'Japan'];
     traders = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn'];
 
-    symbols = [];
-    numOrders = 100;
+    tradingDays = [];
+    instData = {};
+    rawOrders = [];
+    rawPositions = [];
+
 
     @observable.ref portfolioVersion = 0;
     portfolio = [];
     orders = [];
-    marketData = {};
 
     dimensions = ['model'];
 
+    INITIAL_ORDERS = 5000;
+    INITIAL_SYMBOLS = 40;
+
     constructor() {
-        this.generateRandomOrders(this.numOrders);
-        // this.generatePortfolioFromOrders(this.randomOrders, this.dimensions);
+        this.populateRefData();
+        this.rawOrders = this.generateRawOrders();
+        this.rawPositions = this.calculateRawPositions();
     }
 
-    async getPortfolioAsync(dimensions) {
-        this.portfolio = [];
-        this.orders = [];
+    async getPortfolioAsync(dims) {
+        return this.getPositions(castArray(dims));
+    }
 
-        this.dimensions = dimensions;
-        this.generatePortfolioFromOrders(this.randomOrders, this.dimensions);
-        return wait(500).then(() => {
-            return this.portfolio;
+    getPositions(dims, positions = this.rawPositions, id = 'root') {
+        const dim = dims.shift(),
+            byDim = groupBy(positions, it => it[dim]),
+            ret = [];
+
+        console.log(dim);
+
+        forOwn(byDim, (members, dimVal) => {
+            const groupPos = {
+                id: id + `>>${dim}:${dimVal}`,
+                name: dimVal,
+                pnl: sumBy(members, 'pnl'),
+                mktVal: sumBy(members, 'mktVal')
+            };
+
+            if (dims.length) groupPos.children = this.getPositions([...dims], members, groupPos.id);
+            ret.push(groupPos);
         });
+
+        return ret;
     }
 
     getOrders(positionId) {
@@ -50,95 +70,188 @@ export class PortfolioService {
 
     getLineChartSeries(symbol) {
         return wait(250).then(() => {
-            const data = this.marketData[symbol].map(it => {
+            const marketData = this.marketData.find(record => record.symbol === symbol);
+            const prices = marketData.data.map(it => {
                 const date = moment(it.valueDate).valueOf();
                 return [date, it.volume];
             });
-
-            return [{
+            return ([{
                 name: symbol,
                 type: 'area',
-                animation: false,
-                data
-            }];
+                data: prices
+            }]);
         });
     }
 
     getOLHCChartSeries(symbol) {
         return wait(250).then(() => {
-            const data = this.marketData[symbol].map(it => {
+            const marketData = this.marketData.find(record => record.symbol === symbol);
+            const prices = marketData.data.map(it => {
                 const date = moment(it.valueDate).valueOf();
                 return [date, it.open, it.high, it.low, it.close];
             });
-
-            return [{
-                name: symbol,
-                type: 'ohlc',
-                color: 'rgba(219, 0, 1, 0.55)',
-                upColor: 'rgba(23, 183, 0, 0.85)',
-                animation: false,
-                dataGrouping: {
-                    enabled: true,
-                    groupPixelWidth: 5
-                },
-                data
-            }];
+            return ([
+                {
+                    name: symbol,
+                    type: 'ohlc',
+                    color: 'rgba(219, 0, 1, 0.55)',
+                    upColor: 'rgba(23, 183, 0, 0.85)',
+                    dataGrouping: {
+                        enabled: true,
+                        groupPixelWidth: 5
+                    },
+                    data: prices
+                }
+            ]);
         });
     }
 
-    generateMarketData() {
-        const startDate = moment('2017-01-01', 'YYYY-MM-DD'),
-            todayDate = moment(),
-            numDays = todayDate.diff(startDate, 'days'),
-            ret = [],
-            randomDays = [];
 
-        const numberOfSpikes = Math.round(Math.random() * 25);
-        times(numberOfSpikes, () => {
-            randomDays.push(Math.round(Math.random() * numDays));
-        });
+    //------------------------
+    // Implementation
+    //------------------------
+    populateRefData() {
+        const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            days = this.tradingDays = [],
+            instData = this.instData = {};
 
-        let prevClose = Math.random() * 1000;
+        // Generate trading days.
+        let tradingDay = moment('2017-01-02', 'YYYY-MM-DD'),
+            today = moment();
 
-        times(numDays, (i) => {
-            const valueDate = startDate.add(1, 'd');
+        while (tradingDay < today) {
+            const dayOfWeek = tradingDay.day();
+            if (dayOfWeek != 0 && dayOfWeek != 6) days.push(tradingDay);
+            tradingDay = tradingDay.add(1, 'd');
+        }
 
-            const low = prevClose - (Math.random() * (prevClose / 100));
-            const high = prevClose + (Math.random() * (prevClose / 100));
-            const open = prevClose;
-            const close = (Math.random() * (high - low)) + low;
-
-            if (valueDate.day() !== 0 && valueDate.day() !== 6) {
-                ret.push({
-                    valueDate: valueDate.format('YYYYMMDD'),
-                    high: Number(high.toFixed(2)),
-                    low: Number(low.toFixed(2)),
-                    open: Number(open.toFixed(2)),
-                    close: Number(close.toFixed(2)),
-                    volume: Math.round(Math.random() * this.getRandomMultiplier(i, randomDays))
-                });
-                prevClose = close;
+        // Generate symbols + market data map.
+        while (keys(instData).length < this.INITIAL_SYMBOLS) {
+            let symbol = '';
+            times(random(1, 4), () => symbol += sample(alpha));
+            if (!instData[symbol]) {
+                instData[symbol] = {
+                    sector: sample(this.sectors),
+                    mktData: this.generateMarketData()
+                };
             }
+        }
+    }
+
+    generateMarketData() {
+        const tradingDays = this.tradingDays,
+            spikeDayIdxs = [],
+            ret = [];
+
+        // Randomly give some days a spike in trading volume.
+        times(random(0, 30), () => spikeDayIdxs.push(random(0, tradingDays.length - 1)));
+
+        // Set a seed price and generate a series from there.
+        let startPx = random(10, 100, true);
+        tradingDays.forEach((tradingDay, idx) => {
+            const pctDown = random(0, 0.06, true),
+                pctUp = random(0, 0.08, true),
+                open = startPx,
+                high = startPx + (pctUp * startPx),
+                low = startPx - (pctDown * startPx),
+                close = (Math.random() * (high - low)) + low;
+
+            let volMultiplier;
+            if (spikeDayIdxs.includes(idx)) {
+                volMultiplier = 1000000;
+            } else if (spikeDayIdxs.includes(idx - 1) || spikeDayIdxs.includes(idx + 1)) {
+                volMultiplier = 500000;
+            } else {
+                volMultiplier = 100000;
+            }
+
+            ret.push({
+                day: tradingDay,
+                high: high,
+                low: low,
+                open: open,
+                close: close,
+                volume: Math.round(Math.random() * volMultiplier)
+            });
+            startPx = close;
         });
 
         return ret;
     }
 
-    getRandomPositionForPortfolio() {
-        const modelIndex = Math.floor(Math.random() * this.models.length),
-            strategyIndex = Math.floor(Math.random() * this.strategies.length),
-            fundIndex = Math.floor(Math.random() * this.fund.length),
-            regionIndex = Math.floor(Math.random() * this.regions.length),
-            traderIndex = Math.floor(Math.random() * this.traders.length);
+    generateRawOrders() {
+        const orders = [];
 
-        return {
-            model: this.models[modelIndex],
-            strategy: this.strategies[strategyIndex],
-            fund: this.fund[fundIndex],
-            region: this.regions[regionIndex],
-            symbol: this.generateRandomSymbol(),
-            trader: this.traders[traderIndex]
+        times(this.INITIAL_ORDERS, () => {
+            const tradingDay = sample(this.tradingDays),
+                pos = this.getRandomPositionForPortfolio(),
+                symbol = pos.symbol,
+                dir = sample(['Sell', 'Buy']),
+                qty = random(300, 10000) * (dir == 'Sell' ? -1 : 1),
+                mktData = find(this.instData[symbol].mktData, {day: tradingDay}),
+                px = random(mktData.low, mktData.high, true);
+
+            orders.push({
+                ...pos,
+                time: tradingDay.add(random(540, 960), 'minutes'), // random trading-hours time on the day
+                dir: dir,
+                quantity: qty,
+                price: px,
+                mktVal: qty * px
+            });
+        });
+
+        return sortBy(orders, [it => it.time.valueOf()]);
+    }
+
+    getRandomPositionForPortfolio() {
+        const ret = {
+            // model: sample(this.models),
+            // strategy: sample(this.strategies),
+            fund: sample(this.funds),
+            region: sample(this.regions),
+            trader: sample(this.traders),
+            symbol: sample(keys(this.instData))
         };
+
+        ret.id = values(ret).join('||');
+        return ret;
+    }
+
+    calculateRawPositions() {
+        const byPosId = groupBy(this.rawOrders, 'id'),
+            positions = [];
+
+        forOwn(byPosId, (orders, id) => {
+            const first = orders[0],
+                symbol = first.symbol,
+                endPx = last(this.instData[symbol].mktData).close;
+
+            let endQty = 0, netCashflow = 0;
+
+            orders = sortBy(orders, [it => it.time.valueOf()]);  // Do we need this again?
+            orders.forEach(it => {
+                endQty += it.quantity;
+                netCashflow -= it.mktVal;
+            });
+
+            const endMktVal = endQty * endPx,
+                pnl = netCashflow + endMktVal;
+
+            positions.push({
+                // model: first.model,
+                // strategy: first.strategy,
+                fund: first.fund,
+                region: first.region,
+                trader: first.trader,
+                symbol: symbol,
+                sector: this.instData[symbol].sector,
+                mktVal: endMktVal,
+                pnl: pnl
+            });
+        });
+
+        return positions;
     }
 
     // portfolio builder
@@ -185,89 +298,4 @@ export class PortfolioService {
         });
     }
 
-    // random order-data generators
-    generateRandomOrders(numberOfOrders) {
-        times(numberOfOrders, () => {
-            const randomOrder = this.getRandomPositionForPortfolio(this.portfolio),
-                qty = this.generateRandomQuantity(),
-                px = this.generateRandomPrice();
-
-            this.randomOrders.push({
-                model: randomOrder.model,
-                strategy: randomOrder.strategy,
-                symbol: randomOrder.symbol,
-                fund: randomOrder.fund,
-                region: randomOrder.region,
-                time: moment.utc(Math.round(Math.random() * 23400000) + 34200000).format('HH:mm:ss'),
-                trader: randomOrder.trader,
-                dir: this.generateRandomDirection(),
-                quantity: qty,
-                price: px,
-                marketValue: qty * px,
-                pnl: this.generateRandomPnl()
-            });
-        });
-    }
-
-    generateRandomSymbol() {
-        const numberOfSymbols = 50;
-
-        if (this.symbols.length === 0) {
-            const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            times(numberOfSymbols, () => {
-                let symbol = '';
-                const length = Math.floor(Math.random() * 2) + 3;
-                times(length, () => {
-                    symbol += alpha.charAt(Math.floor(Math.random() * 27));
-                });
-                this.symbols.push(symbol);
-                this.marketData[symbol] = this.generateMarketData();
-            });
-        }
-
-        return this.symbols[Math.round(Math.random() * 49)];
-    }
-
-    generateRandomDirection() {
-        return Math.floor(Math.random() * 2) === 0 ? 'SELL' : 'BUY';
-    }
-
-    generateRandomQuantity() {
-        return Math.floor(Math.random() * 1001);
-    }
-
-    generateRandomPrice() {
-        return Number(Math.random() * 100).toFixed(2);
-    }
-
-    generateRandomPnl() {
-        return Math.floor(Math.random() * 1000001) * (Math.random() < 0.5 ? -1 : 1);
-    }
-
-    async loadOrdersAsync() {
-        setInterval(() => {
-            console.log('new order received');
-            // const order = this.generateOrder();
-            // this.updatePortfolioWithOrder(order);
-
-            this.generatePortfolioFromOrders(this.generateRandomOrders(1), this.dimensions);
-            this.incrementPortfolioVersion();
-        }, 2500);
-    }
-
-    @action
-    incrementPortfolioVersion() {
-        this.portfolioVersion++;
-    }
-
-    getRandomMultiplier(i, randomDays) {
-
-        if (randomDays.includes(i - 1) || randomDays.includes(i + 1)) {
-            return 500000;
-        }
-        if (randomDays.includes(i)) {
-            return 1000000;
-        }
-        return 100000;
-    }
 }
