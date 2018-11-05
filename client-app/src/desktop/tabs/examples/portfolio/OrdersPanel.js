@@ -14,7 +14,7 @@ import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {filler} from '@xh/hoist/cmp/layout';
 
 @HoistComponent
-export class OrdersGrid extends Component {
+export class OrdersPanel extends Component {
 
     render() {
         const {model} = this,
@@ -34,4 +34,4 @@ export class OrdersGrid extends Component {
         });
     }
 }
-export const ordersGrid = elemFactory(OrdersGrid);
+export const ordersPanel = elemFactory(OrdersPanel);

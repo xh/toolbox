@@ -6,16 +6,12 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
-import {hbox, filler, vframe} from '@xh/hoist/cmp/layout';
+import {hbox, vframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
-import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-
 import {PortfolioPanelModel} from './PortfolioPanelModel';
-import {strategyGrid} from './StrategyGrid';
-import {ordersGrid} from './OrdersGrid';
+import {positionsPanel} from './PositionsPanel';
+import {ordersPanel} from './OrdersPanel';
 import {lineChart} from './LineChart';
 import {ohlcChart} from './OHLCChart';
 
@@ -31,32 +27,15 @@ export class PortfolioPanel extends Component {
             hbox({
                 flex: 1,
                 items: [
-                    panel({
-                        title: 'Positions',
-                        icon: Icon.portfolio(),
-                        sizingModel: model.leftSizingModel,
-                        items: [
-                            strategyGrid({
-                                model: model.strategyGridModel
-                            })
-                        ],
-                        bbar: toolbar(
-                            dimensionChooser({model: model.dimensionChooserModel.model}),
-                            filler(),
-                            relativeTimestamp({timestamp: model.loadTimestamp})
-                        )
-                    }),
-                    panel({
-                        item: ordersGrid({
-                            model: model.ordersGridModel
-                        })
-                    })
+                    positionsPanel({model: model.positionsPanelModel}),
+                    ordersPanel({model: model.ordersPanelModel})
                 ]
             }),
             panel({
                 title: `Trading Volume + Price History: ${model.selectedOrderSymbol}`,
                 icon: Icon.chartArea(),
-                sizingModel: model.bottomSizingModel,
+                mask: !model.selectedOrder,
+                sizingModel: model.chartsSizingModel,
                 item: hbox({
                     items: [
                         lineChart({
@@ -65,7 +44,7 @@ export class PortfolioPanel extends Component {
                             className: 'xh-border-right'
                         }),
                         ohlcChart({
-                            model: model.olhcChartModel,
+                            model: model.ohlcChartModel,
                             flex: 1
                         })
                     ]

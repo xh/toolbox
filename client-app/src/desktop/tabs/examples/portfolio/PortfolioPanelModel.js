@@ -1,84 +1,48 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable, observable} from '@xh/hoist/mobx';
 import {PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
 
-import {StrategyGridModel} from './StrategyGridModel';
-import {OrdersGridModel} from './OrdersGridModel';
+import {PositionsPanelModel} from './PositionsPanelModel';
+import {OrdersPanelModel} from './OrdersPanelModel';
 import {LineChartModel} from './LineChartModel';
 import {OHLCChartModel} from './OHLCChartModel';
-import {PortfolioDimensionChooserModel} from './PortfolioDimensionChooserModel';
 
 @HoistModel
 export class PortfolioPanelModel {
 
-    strategyGridModel = new StrategyGridModel();
-    ordersGridModel = new OrdersGridModel();
+    positionsPanelModel = new PositionsPanelModel();
+    ordersPanelModel = new OrdersPanelModel();
     lineChartModel = new LineChartModel();
-    olhcChartModel = new OHLCChartModel();
-    dimensionChooserModel = new PortfolioDimensionChooserModel();
+    ohlcChartModel = new OHLCChartModel();
 
-    leftSizingModel = new PanelSizingModel({
-        defaultSize: 500,
-        side: 'left'
-    });
+    chartsSizingModel = new PanelSizingModel({defaultSize: 400, side: 'bottom'});
 
-    bottomSizingModel = new PanelSizingModel({
-        defaultSize: 400,
-        side: 'bottom'
-    });
+    get selectedPosition() {
+        return this.positionsPanelModel.selectedRecord;
+    }
 
-    @bindable dimensions = ['model'];
-
-    @observable loadTimestamp;
+    get selectedOrder() {
+        return this.ordersPanelModel.selectedRecord;
+    }
 
     get selectedOrderSymbol() {
-        const rec = this.ordersGridModel.gridModel.selectedRecord;
-        return rec ? rec.symbol : '';
+        return this.selectedOrder ? this.selectedOrder.symbol : '';
     }
 
     constructor() {
-        this.addReaction(this.loadStrategyGridReaction());
-        this.addReaction(this.loadOrdersGridReaction());
-        this.addReaction(this.loadLineChartReaction());
-        this.addReaction(this.loadOLHCChartReaction());
-    }
-
-    loadStrategyGridReaction() {
-        return {
-            track: () => this.dimensionChooserModel.model.value,
-            run: (dimensions) => {
-                this.dimensions = dimensions;
-                this.strategyGridModel.loadData(dimensions);
-                this.loadTimestamp = Date.now();
-            },
-            fireImmediately: true
-        };
-    }
-
-    loadOrdersGridReaction() {
-        return {
-            track: () => this.strategyGridModel.gridModel.selectedRecord,
+        this.addReaction({
+            track: () => this.selectedPosition,
             run: (record) => {
-                this.ordersGridModel.loadData(record.id);
+                this.ordersPanelModel.loadData(record.id);
             }
-        };
-    }
+        });
 
-    loadLineChartReaction() {
-        return {
-            track: () => this.ordersGridModel.gridModel.selectedRecord,
+        this.addReaction({
+            track: () => this.selectedOrder,
             run: (record) => {
                 this.lineChartModel.loadData(record);
+                this.ohlcChartModel.loadData(record);
             }
-        };
+        });
     }
 
-    loadOLHCChartReaction() {
-        return {
-            track: () => this.ordersGridModel.gridModel.selectedRecord,
-            run: (record) => {
-                this.olhcChartModel.loadData(record);
-            }
-        };
-    }
 }

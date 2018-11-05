@@ -21,7 +21,7 @@ export class PortfolioService {
     @observable.ref portfolioVersion = 0;
     portfolio = [];
     orders = [];
-    marketData = [];
+    marketData = {};
 
     dimensions = ['model'];
 
@@ -50,39 +50,39 @@ export class PortfolioService {
 
     getLineChartSeries(symbol) {
         return wait(250).then(() => {
-            const marketData = this.marketData.find(record => record.symbol === symbol);
-            const prices = marketData.data.map(it => {
+            const data = this.marketData[symbol].map(it => {
                 const date = moment(it.valueDate).valueOf();
                 return [date, it.volume];
             });
-            return ([{
+
+            return [{
                 name: symbol,
                 type: 'area',
-                data: prices
-            }]);
+                animation: false,
+                data
+            }];
         });
     }
 
     getOLHCChartSeries(symbol) {
         return wait(250).then(() => {
-            const marketData = this.marketData.find(record => record.symbol === symbol);
-            const prices = marketData.data.map(it => {
+            const data = this.marketData[symbol].map(it => {
                 const date = moment(it.valueDate).valueOf();
                 return [date, it.open, it.high, it.low, it.close];
             });
-            return ([
-                {
-                    name: symbol,
-                    type: 'ohlc',
-                    color: 'rgba(219, 0, 1, 0.55)',
-                    upColor: 'rgba(23, 183, 0, 0.85)',
-                    dataGrouping: {
-                        enabled: true,
-                        groupPixelWidth: 5
-                    },
-                    data: prices
-                }
-            ]);
+
+            return [{
+                name: symbol,
+                type: 'ohlc',
+                color: 'rgba(219, 0, 1, 0.55)',
+                upColor: 'rgba(23, 183, 0, 0.85)',
+                animation: false,
+                dataGrouping: {
+                    enabled: true,
+                    groupPixelWidth: 5
+                },
+                data
+            }];
         });
     }
 
@@ -221,7 +221,7 @@ export class PortfolioService {
                     symbol += alpha.charAt(Math.floor(Math.random() * 27));
                 });
                 this.symbols.push(symbol);
-                this.marketData.push({symbol: symbol, data: this.generateMarketData()});
+                this.marketData[symbol] = this.generateMarketData();
             });
         }
 

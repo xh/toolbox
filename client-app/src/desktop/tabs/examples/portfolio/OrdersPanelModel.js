@@ -7,9 +7,10 @@ import {isNil} from 'lodash';
 import {numberRenderer} from '@xh/hoist/format';
 
 @HoistModel
-export class OrdersGridModel {
+export class OrdersPanelModel {
 
     loadModel = new PendingTaskModel();
+
     gridModel = new GridModel({
         store: new LocalStore({
             fields: ['id', 'symbol', 'time', 'trader', 'dir', 'quantity', 'price']
@@ -52,7 +53,7 @@ export class OrdersGridModel {
                 width: 100,
                 align: 'right',
                 renderer: numberRenderer({
-                    precision: 4
+                    precision: 2
                 })
             },
             {
@@ -63,9 +64,11 @@ export class OrdersGridModel {
             },
             {...emptyFlexCol}
         ]
-
-        // dir, instrument, qty, pnl, time
     });
+
+    get selectedRecord() {
+        return this.gridModel.selectedRecord;
+    }
 
     loadData(recordId) {
         if (!isNil(recordId)) {

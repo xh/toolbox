@@ -76,8 +76,9 @@ class BootStrap {
         Utils.prefService.ensureRequiredPrefsCreated([
                 portfolioDimHistory: [
                         type: 'json',
+                        defaultValue: [],
                         local: true,
-                        groupName: 'toolbox.xh.io',
+                        groupName: 'Toolbox',
                         note: 'Nested arrays containing user\'s dimension picker history'
                 ]
             ])
