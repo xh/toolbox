@@ -43,7 +43,15 @@ class SampleGrid extends Component {
         icon: Icon.skull(),
         intent: 'danger',
         tooltip: 'Terminate this company.',
-        actionFn: ({record}) => this.showTerminateToast(record)
+        actionFn: ({record}) => this.showTerminateToast(record),
+        displayFn: ({record}) => {
+            if (record.city == 'New York') {
+                return {
+                    disabled: true,
+                    tooltip: 'New York companies cannot be terminated at this time.'
+                };
+            }
+        }
     };
 
     localModel = new GridModel({
