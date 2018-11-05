@@ -8,8 +8,8 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
-import {NumberFormatsPanel} from './NumberFormatsPanel';
-import {DateFormatsPanel} from './DateFormatsPanel';
+import {NumberFormatsPanel} from './tabs/NumberFormatsPanel';
+import {DateFormatsPanel} from './tabs/DateFormatsPanel';
 
 @HoistComponent
 export class FormatsTab extends Component {
