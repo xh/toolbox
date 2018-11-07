@@ -8,7 +8,8 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
-import {NewsPanel} from './NewsPanel';
+import {NewsPanel} from './news/NewsPanel';
+import {PortfolioPanel} from './portfolio/PortfolioPanel';
 
 @HoistComponent
 export class ExamplesTab extends Component {
@@ -16,7 +17,8 @@ export class ExamplesTab extends Component {
     localModel = new TabContainerModel({
         route: 'default.examples',
         tabs: [
-            {id: 'news', content: NewsPanel}
+            {id: 'news', content: NewsPanel},
+            {id: 'positions', content: PortfolioPanel}
         ]
     });
 
