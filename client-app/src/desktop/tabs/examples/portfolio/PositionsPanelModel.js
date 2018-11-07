@@ -3,7 +3,7 @@ import {bindable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
-import {numberRenderer} from '@xh/hoist/format';
+import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
@@ -11,13 +11,11 @@ import {PendingTaskModel} from '@xh/hoist/utils/async';
 @HoistModel
 export class PositionsPanelModel {
 
-    @bindable dimensions = ['model'];
     @bindable loadTimestamp;
 
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
-            // {value: 'model', label: 'Model'},
-            // {value: 'strategy', label: 'Strategy'},
+            {value: 'model', label: 'Model'},
             {value: 'symbol', label: 'Symbol'},
             {value: 'sector', label: 'Sector'},
             {value: 'fund', label: 'Fund'},
@@ -31,7 +29,7 @@ export class PositionsPanelModel {
         store: new LocalStore({
             fields: ['id', 'name', 'pnl', 'mktVal']
         }),
-        sortBy: [{colId: 'pnl', sort: 'desc', abs: true}],
+        sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
@@ -49,22 +47,23 @@ export class PositionsPanelModel {
                 isTreeColumn: true
             },
             {
-                field: 'quantity',
+                field: 'mktVal',
+                headerName: 'Mkt Value (m)',
                 align: 'right',
                 width: 130,
                 absSort: true,
                 agOptions: {
                     aggFunc: 'sum'
                 },
-                renderer: numberRenderer({
-                    precision: 0,
+                renderer: millionsRenderer({
+                    precision: 3,
                     ledger: true,
                     tooltip: true
                 })
             },
             {
-                headerName: 'P&L',
                 field: 'pnl',
+                headerName: 'P&L',
                 align: 'right',
                 width: 130,
                 absSort: true,
@@ -95,24 +94,19 @@ export class PositionsPanelModel {
     constructor() {
         this.addReaction({
             track: () => this.dimChooserModel.value,
-            run: (dimensions) => {
-                this.setDimensions(dimensions);
-                this.loadAsync();
-            },
+            run: (dimensions) => this.loadAsync(),
             fireImmediately: true
         });
     }
 
     loadAsync() {
-        return wait(500).then(() => {
-            return XH.portfolioService
-                .getPortfolioAsync(this.dimensions)
-                .then(portfolio => {
-                    this.gridModel.loadData(portfolio);
-                    this.gridModel.selectFirst();
-                    this.setLoadTimestamp(Date.now());
-                })
-                .linkTo(this.loadModel);
-        })
+        return XH.portfolioService
+            .getPortfolioAsync(this.dimChooserModel.value)
+            .then(portfolio => {
+                this.gridModel.loadData(portfolio);
+                wait(300).then(() => this.gridModel.selectFirst());  // TODO - this, working reliably.
+                this.setLoadTimestamp(Date.now());
+            })
+            .linkTo(this.loadModel);
     }
 }

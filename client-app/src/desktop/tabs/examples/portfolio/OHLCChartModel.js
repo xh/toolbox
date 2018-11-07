@@ -16,6 +16,7 @@ export class OHLCChartModel {
                 spacingLeft: 3,
                 spacingBottom: 5,
                 zoomType: 'x',
+                animation: false,
                 resetZoomButton: {
                     theme: {display: 'none'}
                 }

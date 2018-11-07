@@ -1,10 +1,10 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
-import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
+import {emptyFlexCol, dateTimeCol} from '@xh/hoist/cmp/grid/columns';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {isNil} from 'lodash';
 import {numberRenderer} from '@xh/hoist/format';
+import {isNil} from 'lodash';
 
 @HoistModel
 export class OrdersPanelModel {
@@ -13,7 +13,10 @@ export class OrdersPanelModel {
 
     gridModel = new GridModel({
         store: new LocalStore({
-            fields: ['id', 'symbol', 'time', 'trader', 'dir', 'quantity', 'price']
+            fields: [
+                'id', 'symbol', 'trader', 'model', 'fund', 'region', 'sector',
+                'dir', 'quantity', 'price', 'mktVal', 'time'
+            ]
         }),
         groupBy: 'dir',
         sortBy: [{colId: 'time', sort: 'desc'}],
@@ -30,6 +33,30 @@ export class OrdersPanelModel {
                 field: 'trader',
                 headerName: 'Trader',
                 width: 160
+            },
+            {
+                field: 'fund',
+                headerName: 'Fund',
+                width: 160,
+                hidden: true
+            },
+            {
+                field: 'model',
+                headerName: 'Model',
+                width: 160,
+                hidden: true
+            },
+            {
+                field: 'region',
+                headerName: 'Region',
+                width: 160,
+                hidden: true
+            },
+            {
+                field: 'sector',
+                headerName: 'Sector',
+                width: 160,
+                hidden: true
             },
             {
                 field: 'dir',
@@ -58,9 +85,9 @@ export class OrdersPanelModel {
             },
             {
                 field: 'time',
-                headerName: 'Exec. Time',
-                align: 'right',
-                width: 130
+                headerName: 'Exec Time',
+                ...dateTimeCol,
+                align: 'left'
             },
             {...emptyFlexCol}
         ]
@@ -70,19 +97,20 @@ export class OrdersPanelModel {
         return this.gridModel.selectedRecord;
     }
 
-    loadData(recordId) {
-        if (!isNil(recordId)) {
-            XH.portfolioService.getOrders(recordId)
-                .then(orders => {
-                    this.gridModel.loadData(orders);
-                    if (orders.length > 0) {
-                        this.gridModel.selectFirst();
-                    }
-                })
-                .linkTo(this.loadModel);
-        } else {
+    async loadOrdersForPositionAsync(posId) {
+        if (isNil(posId)) {
             this.gridModel.loadData([]);
+            return;
         }
 
+        return XH.portfolioService.getOrdersAsync(posId)
+            .then(orders => {
+                console.log('loading orders', orders.length);
+                this.gridModel.loadData(orders);
+                if (orders.length > 0) {
+                    this.gridModel.selectFirst();
+                }
+            })
+            .linkTo(this.loadModel);
     }
 }

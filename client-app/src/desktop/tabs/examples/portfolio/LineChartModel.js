@@ -12,7 +12,8 @@ export class LineChartModel {
     lineChartModel = new ChartModel({
         config: {
             chart: {
-                zoomType: 'x'
+                zoomType: 'x',
+                animation: false
             },
             title: {text: null},
             tooltip: {outside: true},

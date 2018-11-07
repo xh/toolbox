@@ -32,7 +32,7 @@ export class PortfolioPanelModel {
         this.addReaction({
             track: () => this.selectedPosition,
             run: (record) => {
-                this.ordersPanelModel.loadData(record.id);
+                if (record) this.ordersPanelModel.loadOrdersForPositionAsync(record.id);
             }
         });
 

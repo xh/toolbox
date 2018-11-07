@@ -27,8 +27,13 @@ export class PortfolioPanel extends Component {
             hbox({
                 flex: 1,
                 items: [
-                    positionsPanel({model: model.positionsPanelModel}),
-                    ordersPanel({model: model.ordersPanelModel})
+                    positionsPanel({
+                        model: model.positionsPanelModel
+                    }),
+                    ordersPanel({
+                        model: model.ordersPanelModel,
+                        mask: !model.selectedPosition
+                    })
                 ]
             }),
             panel({
