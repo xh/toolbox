@@ -15,6 +15,8 @@ import {ordersPanel} from './OrdersPanel';
 import {lineChart} from './LineChart';
 import {ohlcChart} from './OHLCChart';
 
+import './PortfolioPanel.scss';
+
 @HoistComponent
 export class PortfolioPanel extends Component {
 

@@ -118,10 +118,10 @@ export class AppModel {
                     {
                         name: 'examples',
                         path: '/examples',
-                        forwardTo: 'default.examples.positions',
+                        forwardTo: 'default.examples.portfolio',
                         children: [
-                            {name: 'news', path: '/news'},
-                            {name: 'positions', path: '/positions'}
+                            {name: 'portfolio', path: '/portfolio'},
+                            {name: 'news', path: '/news'}
                         ]
                     }
                 ]

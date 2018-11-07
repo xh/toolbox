@@ -1,5 +1,5 @@
 import {HoistModel, XH} from '@xh/hoist/core';
-import {fmtDate} from '@xh/hoist/format';
+import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
 import {isNil} from 'lodash';
@@ -47,15 +47,17 @@ export class OHLCChartModel {
                 split: false,
                 crosshairs: false,
                 followPointer: true,
+                useHTML: true,
                 formatter: function() {
                     const p = this.point;
                     return `
-                        ${fmtDate(this.x)}<br>
-                        <b>${p.series.name}</b><br>
-                        Open: ${p.open}<br>
-                        High: ${p.high}<br>
-                        Low: ${p.low}<br>
-                        Close: ${p.close}<br>
+                        <div class="tbox-pos-chart-tip__title"><b>${p.series.name}</b> ${fmtDate(this.x)}</div>
+                        <table class="tbox-pos-chart-tip">
+                            <tr><th>Open:</th><td>${fmtPrice(p.open)}</td></tr>
+                            <tr><th>High:</th><td>${fmtPrice(p.high)}</td></tr>
+                            <tr><th>Low:</th><td>${fmtPrice(p.low)}</td></tr>
+                            <tr><th>Close:</th><td>${fmtPrice(p.close)}</td></tr>
+                        </table>
                     `;
                 }
             }

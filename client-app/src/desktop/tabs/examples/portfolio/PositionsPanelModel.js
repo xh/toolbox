@@ -44,6 +44,7 @@ export class PositionsPanelModel {
                 field: 'name',
                 headerName: 'Name',
                 flex: 1,
+                minWidth: 180,
                 isTreeColumn: true
             },
             {

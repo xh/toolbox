@@ -17,7 +17,7 @@ export class PortfolioService {
     rawOrders = [];
     rawPositions = [];
 
-    INITIAL_ORDERS = 10000;
+    INITIAL_ORDERS = 5000;
     INITIAL_SYMBOLS = 60;
 
     // Public API around getPositions.

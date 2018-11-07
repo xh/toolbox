@@ -17,8 +17,8 @@ export class ExamplesTab extends Component {
     localModel = new TabContainerModel({
         route: 'default.examples',
         tabs: [
-            {id: 'news', content: NewsPanel},
-            {id: 'positions', content: PortfolioPanel}
+            {id: 'portfolio', content: PortfolioPanel},
+            {id: 'news', content: NewsPanel}
         ]
     });
 
