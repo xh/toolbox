@@ -1,5 +1,6 @@
 import {HoistService} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
+import {MINUTES} from '@xh/hoist/utils/datetime';
 import {sumBy, castArray, forOwn, last, sortBy, groupBy, keys, values, find, filter, random, sample, times} from 'lodash';
 import moment from 'moment';
 
@@ -7,18 +8,18 @@ import moment from 'moment';
 export class PortfolioService {
 
     models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul'];
-    sectors = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing'];
+    sectors = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing', 'Energy', 'Other', 'Utilities'];
     funds = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay'];
-    regions = ['US', 'BRIC', 'Africa', 'EU', 'Japan'];
-    traders = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn'];
+    regions = ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac'];
+    traders = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn', 'Robert Greer', 'HedgeSys', 'Susan Major'];
 
     tradingDays = [];
     instData = {};
-    rawOrders = [];
+    orders = [];
     rawPositions = [];
 
-    INITIAL_ORDERS = 5000;
-    INITIAL_SYMBOLS = 60;
+    INITIAL_ORDERS = 15000;
+    INITIAL_SYMBOLS = 300;
 
     // Public API around getPositions.
     async getPortfolioAsync(dims) {
@@ -29,14 +30,14 @@ export class PortfolioService {
 
     async getOrdersAsync(positionId) {
         if (!positionId) return [];
-        return filter(this.rawOrders, this.parsePositionId(positionId));
+        return filter(this.orders, this.parsePositionId(positionId));
     }
 
     async getLineChartSeries(symbol) {
         const mktData = this.instData[symbol].mktData;
         return ([{
             name: symbol,
-            type: 'area',
+            type: 'line',
             animation: false,
             data: mktData.map(it => [it.day.valueOf(), it.volume])
         }]);
@@ -56,6 +57,36 @@ export class PortfolioService {
         }]);
     }
 
+    // Available as a general function to generate a collection of mock orders of any given size.
+    // Called internally (lazily) to generate a reference set of orders from which positions are
+    // built to populate the demo portfolio viewer app.
+    generateOrders(count = this.INITIAL_ORDERS) {
+        const orders = [];
+
+        times(count, (idx) => {
+            const tradingDay = sample(this.tradingDays),
+                time = tradingDay + (random(540, 960) * MINUTES), // random time during market hours
+                pos = this.getRandomPositionForPortfolio(),
+                symbol = pos.symbol,
+                dir = sample(['Sell', 'Buy']),
+                qty = random(300, 10000) * (dir == 'Sell' ? -1 : 1),
+                mktData = find(this.instData[symbol].mktData, {day: tradingDay}),
+                px = random(mktData.low, mktData.high, true);
+
+            orders.push({
+                ...pos,
+                id: `order-${idx}`,
+                dir: dir,
+                quantity: qty,
+                price: px,
+                mktVal: qty * px,
+                time
+            });
+        });
+
+        return sortBy(orders, [it => it.time]);
+    }
+
 
     //------------------------
     // Implementation
@@ -63,7 +94,7 @@ export class PortfolioService {
     ensureLoaded() {
         if (!this.tradingDays.length) {
             this.populateRefData();
-            this.rawOrders = this.generateRawOrders();
+            this.orders = this.generateOrders();
             this.rawPositions = this.calculateRawPositions();
         }
     }
@@ -79,14 +110,14 @@ export class PortfolioService {
 
         while (tradingDay < today) {
             const dayOfWeek = tradingDay.day();
-            if (dayOfWeek != 0 && dayOfWeek != 6) days.push(tradingDay);
-            tradingDay = tradingDay.clone().add(1, 'day');
+            if (dayOfWeek != 0 && dayOfWeek != 6) days.push(tradingDay.valueOf());
+            tradingDay.add(1, 'day');
         }
 
         // Generate symbols + market data map.
         while (keys(instData).length < this.INITIAL_SYMBOLS) {
             let symbol = '';
-            times(random(1, 4), () => symbol += sample(alpha));
+            times(random(1, 5), () => symbol += sample(alpha));
             if (!instData[symbol]) {
                 instData[symbol] = {
                     sector: sample(this.sectors),
@@ -139,33 +170,6 @@ export class PortfolioService {
         return ret;
     }
 
-    generateRawOrders() {
-        const orders = [];
-
-        times(this.INITIAL_ORDERS, (idx) => {
-            const tradingDay = sample(this.tradingDays),
-                time = tradingDay.clone().add(random(540, 960), 'minutes'), // random time during market hours
-                pos = this.getRandomPositionForPortfolio(),
-                symbol = pos.symbol,
-                dir = sample(['Sell', 'Buy']),
-                qty = random(300, 10000) * (dir == 'Sell' ? -1 : 1),
-                mktData = find(this.instData[symbol].mktData, {day: tradingDay}),
-                px = random(mktData.low, mktData.high, true);
-
-            orders.push({
-                ...pos,
-                id: `order-${idx}`,
-                dir: dir,
-                quantity: qty,
-                price: px,
-                mktVal: qty * px,
-                time
-            });
-        });
-
-        return sortBy(orders, [it => it.time.valueOf()]);
-    }
-
     getRandomPositionForPortfolio() {
         const symbol = sample(keys(this.instData));
         const ret = {
@@ -184,7 +188,7 @@ export class PortfolioService {
 
     // Calculate lowest-level leaf positions with P&L.
     calculateRawPositions() {
-        const byPosId = groupBy(this.rawOrders, 'id'),
+        const byPosId = groupBy(this.orders, 'id'),
             positions = [];
 
         forOwn(byPosId, (orders) => {
@@ -194,7 +198,7 @@ export class PortfolioService {
 
             let endQty = 0, netCashflow = 0;
 
-            orders = sortBy(orders, [it => it.time.valueOf()]);  // Do we need this again?
+            orders = sortBy(orders, [it => it.time]);  // Do we need this again?
             orders.forEach(it => {
                 endQty += it.quantity;
                 netCashflow -= it.mktVal;

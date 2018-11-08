@@ -1,3 +1,5 @@
+import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
+
 /*
  * This file belongs to Hoist, an application development toolkit
  * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
@@ -30,6 +32,7 @@ export class PositionsPanel extends Component {
             item: grid({model: model.gridModel}),
             bbar: toolbar(
                 dimensionChooser({model: model.dimChooserModel}),
+                storeCountLabel({gridModel: model.gridModel, unit: 'position'}),
                 filler(),
                 relativeTimestamp({timestamp: model.loadTimestamp}),
                 refreshButton({model, intent: 'success'})

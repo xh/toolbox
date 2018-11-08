@@ -105,7 +105,6 @@ export class OrdersPanelModel {
 
         return XH.portfolioService.getOrdersAsync(posId)
             .then(orders => {
-                console.log('loading orders', orders.length);
                 this.gridModel.loadData(orders);
                 if (orders.length > 0) {
                     this.gridModel.selectFirst();

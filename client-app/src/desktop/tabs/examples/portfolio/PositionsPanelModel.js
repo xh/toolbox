@@ -15,11 +15,12 @@ export class PositionsPanelModel {
 
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
-            {value: 'model', label: 'Model'},
-            {value: 'symbol', label: 'Symbol'},
-            {value: 'sector', label: 'Sector'},
             {value: 'fund', label: 'Fund'},
-            {value: 'region', label: 'Region'}
+            {value: 'model', label: 'Model'},
+            {value: 'region', label: 'Region'},
+            {value: 'sector', label: 'Sector'},
+            {value: 'symbol', label: 'Symbol'},
+            {value: 'trader', label: 'Trader'}
         ],
         historyPreference: 'portfolioDimHistory'
     });
@@ -101,13 +102,21 @@ export class PositionsPanelModel {
     }
 
     loadAsync() {
+        const {gridModel, loadModel, dimChooserModel} = this,
+            dims = dimChooserModel.value;
+
         return XH.portfolioService
-            .getPortfolioAsync(this.dimChooserModel.value)
+            .getPortfolioAsync(dims)
             .then(portfolio => {
-                this.gridModel.loadData(portfolio);
-                wait(300).then(() => this.gridModel.selectFirst());  // TODO - this, working reliably.
+                gridModel.loadData(portfolio);
+                gridModel.selectFirst();
                 this.setLoadTimestamp(Date.now());
             })
-            .linkTo(this.loadModel);
+            .track({
+                category: 'Portfolio Viewer',
+                message: 'Loaded positions',
+                data: {dims}
+            })
+            .linkTo(loadModel);
     }
 }
