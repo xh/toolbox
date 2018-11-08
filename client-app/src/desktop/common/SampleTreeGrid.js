@@ -5,8 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, LayoutSupport} from '@xh/hoist/core';
-import {wait} from '@xh/hoist/promise';
+import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
 import {filler} from '@xh/hoist/cmp/layout';
 import {grid, GridModel, colChooserButton} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
@@ -17,10 +16,9 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer} from '@xh/hoist/format';
+import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 
-import {sampleTreeData} from '../../core/data';
 
 @HoistComponent
 @LayoutSupport
@@ -31,7 +29,7 @@ class SampleTreeGrid extends Component {
     localModel = new GridModel({
         treeMode: true,
         store: new LocalStore({
-            fields: ['id', 'name', 'pnl']
+            fields: ['id', 'name', 'pnl', 'mktVal']
         }),
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
@@ -43,6 +41,21 @@ class SampleTreeGrid extends Component {
                 width: 200,
                 field: 'name',
                 isTreeColumn: true
+            },
+            {
+                field: 'mktVal',
+                headerName: 'Mkt Value (m)',
+                align: 'right',
+                width: 130,
+                absSort: true,
+                agOptions: {
+                    aggFunc: 'sum'
+                },
+                renderer: millionsRenderer({
+                    precision: 3,
+                    ledger: true,
+                    tooltip: true
+                })
             },
             {
                 headerName: 'P&L',
@@ -99,9 +112,12 @@ class SampleTreeGrid extends Component {
     // Implementation
     //------------------------
     loadAsync() {
-        wait(250)
-            .then(() => this.model.loadData(sampleTreeData))
-            .linkTo(this.loadModel);
+        const {model, loadModel} = this;
+
+        return XH.portfolioService
+            .getPortfolioAsync(['region', 'sector', 'symbol'])
+            .then(data => model.loadData(data))
+            .linkTo(loadModel);
     }
 }
 export const sampleTreeGrid = elemFactory(SampleTreeGrid);

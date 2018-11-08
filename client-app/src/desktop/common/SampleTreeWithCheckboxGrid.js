@@ -5,10 +5,10 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
+import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
 import {colChooserButton, grid, GridModel} from '@xh/hoist/cmp/grid';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent, LayoutSupport} from '@xh/hoist/core';
 import {LocalStore} from '@xh/hoist/data';
 import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {checkbox, switchInput} from '@xh/hoist/desktop/cmp/form';
@@ -16,10 +16,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
-import {wait} from '@xh/hoist/promise';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-
-import {sampleTreeData} from '../../core/data';
 import './SampleTreeWithCheckboxGrid.scss';
 
 @HoistComponent
@@ -101,9 +98,12 @@ class SampleTreeWithCheckboxGrid extends Component {
     // Implementation
     //------------------------
     loadAsync() {
-        wait(250)
-            .then(() => this.model.loadData(sampleTreeData))
-            .linkTo(this.loadModel);
+        const {model, loadModel} = this;
+
+        return XH.portfolioService
+            .getPortfolioAsync(['fund', 'region'])
+            .then(data => model.loadData(data))
+            .linkTo(loadModel);
     }
 
 

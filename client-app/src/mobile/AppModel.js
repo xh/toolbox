@@ -7,6 +7,7 @@
 import {XH, HoistAppModel} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
+import {PortfolioService} from '../core/svc/PortfolioService';
 
 import {homePage} from './home/HomePage';
 
@@ -28,7 +29,9 @@ export class AppModel {
         this.navigatorModel.pushPage({title, pageFactory});
     }
 
-    async initAsync() {}
+    async initAsync() {
+        await XH.installServicesAsync(PortfolioService);
+    }
 
     destroy() {
         XH.safeDestroy(this.appMenuModel);
