@@ -1,6 +1,5 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
-import {wait} from '@xh/hoist/promise';
 import {PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
