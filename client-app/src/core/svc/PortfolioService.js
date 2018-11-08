@@ -1,7 +1,7 @@
 import {HoistService} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {MINUTES} from '@xh/hoist/utils/datetime';
-import {sumBy, castArray, forOwn, last, sortBy, groupBy, keys, values, find, filter, random, sample, times} from 'lodash';
+import {sumBy, castArray, forOwn, last, sortBy, groupBy, keys, values, find, filter, random, sample, times, round} from 'lodash';
 import moment from 'moment';
 
 @HoistService
@@ -71,7 +71,7 @@ export class PortfolioService {
                 dir = sample(['Sell', 'Buy']),
                 qty = random(300, 10000) * (dir == 'Sell' ? -1 : 1),
                 mktData = find(this.instData[symbol].mktData, {day: tradingDay}),
-                px = random(mktData.low, mktData.high, true);
+                px = random(mktData.low, mktData.high, true).toFixed(2);
 
             orders.push({
                 ...pos,
@@ -158,10 +158,10 @@ export class PortfolioService {
 
             ret.push({
                 day: tradingDay,
-                high: high,
-                low: low,
-                open: open,
-                close: close,
+                high: high.toFixed(2),
+                low: low.toFixed(2),
+                open: open.toFixed(2),
+                close: close.toFixed(2),
                 volume: random(80, maxVol) * 1000
             });
             startPx = close;
@@ -236,8 +236,8 @@ export class PortfolioService {
                 // Generate a drilldown ID that encodes the path to this row.
                 id: id + `>>${dim}:${dimVal}`,
                 name: dimVal,
-                pnl: sumBy(members, 'pnl'),
-                mktVal: sumBy(members, 'mktVal')
+                pnl: round(sumBy(members, 'pnl')),
+                mktVal: round(sumBy(members, 'mktVal'))
             };
 
             // Recurse to create children for this node if additional dimensions remain.
