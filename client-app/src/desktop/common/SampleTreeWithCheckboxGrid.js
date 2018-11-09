@@ -6,11 +6,11 @@
  */
 import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
-import {colChooserButton, grid, GridModel} from '@xh/hoist/cmp/grid';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {LocalStore} from '@xh/hoist/data';
-import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {checkbox, switchInput} from '@xh/hoist/desktop/cmp/form';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
