@@ -1,20 +1,20 @@
 import {HoistService} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {MINUTES} from '@xh/hoist/utils/datetime';
-import {sumBy, castArray, forOwn, last, sortBy, groupBy, keys, values, find, filter, random, sample, times, round} from 'lodash';
+import {sumBy, castArray, forOwn, last, sortBy, groupBy, values, find, filter, random, sample, times, round, isEmpty} from 'lodash';
 import moment from 'moment';
 
 @HoistService
 export class PortfolioService {
 
-    models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul'];
+    models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul', 'Ren II', 'Vader II', 'Beckett II', 'Hutt II', 'Maul II', 'Ren III', 'Vader III', 'Beckett III', 'Hutt III', 'Maul III'];
     sectors = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing', 'Energy', 'Other', 'Utilities'];
     funds = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay'];
     regions = ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac'];
     traders = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn', 'Robert Greer', 'HedgeSys', 'Susan Major'];
 
     tradingDays = [];
-    instData = {};
+    instData = [];
     orders = [];
     rawPositions = [];
 
@@ -22,10 +22,14 @@ export class PortfolioService {
     INITIAL_SYMBOLS = 300;
 
     // Public API around getPositions.
-    async getPortfolioAsync(dims) {
+    async getPortfolioAsync(dims, initialSymbols = this.INITIAL_SYMBOLS, initialOrders = this.INITIAL_ORDERS) {
+        this.INITIAL_SYMBOLS = initialSymbols;
+        this.INITIAL_ORDERS = initialOrders;
+
         await wait(300);
         this.ensureLoaded();
-        return this.getPositions(castArray(dims));
+        const getPositions = this.getPositions(castArray(dims));
+        return getPositions;
     }
 
     async getOrdersAsync(positionId) {
@@ -34,7 +38,7 @@ export class PortfolioService {
     }
 
     async getLineChartSeries(symbol) {
-        const mktData = this.instData[symbol].mktData;
+        const mktData = this.findInstrument(symbol).mktData;
         return ([{
             name: symbol,
             type: 'line',
@@ -44,7 +48,7 @@ export class PortfolioService {
     }
 
     async getOLHCChartSeries(symbol) {
-        const mktData = this.instData[symbol].mktData;
+        const mktData = this.findInstrument(symbol).mktData;
 
         return ([{
             name: symbol,
@@ -66,15 +70,21 @@ export class PortfolioService {
         times(count, (idx) => {
             const tradingDay = sample(this.tradingDays),
                 time = tradingDay + (random(540, 960) * MINUTES), // random time during market hours
-                pos = this.getRandomPositionForPortfolio(),
-                symbol = pos.symbol,
+                pos = this.getRandomPositionForPortfolio();
+            // console.log('pos', pos);
+            const
                 dir = sample(['Sell', 'Buy']),
                 qty = random(300, 10000) * (dir == 'Sell' ? -1 : 1),
-                mktData = find(this.instData[symbol].mktData, {day: tradingDay}),
-                px = random(mktData.low, mktData.high, true).toFixed(2);
+                mktData = find(pos.instrument.mktData, {day: tradingDay}),
+                px = isEmpty(mktData) ? 0.00 : random(mktData.low, mktData.high, true).toFixed(2);
 
             orders.push({
-                ...pos,
+                symbol: pos.instrument.symbol,
+                sector: pos.instrument.sector,
+                model: pos.model,
+                fund: pos.fund,
+                region: pos.region,
+                trader: pos.trader,
                 id: `order-${idx}`,
                 dir: dir,
                 quantity: qty,
@@ -102,10 +112,10 @@ export class PortfolioService {
     populateRefData() {
         const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
             days = this.tradingDays = [],
-            instData = this.instData = {};
+            instData = this.instData = [];
 
         // Generate trading days.
-        let tradingDay = moment('2017-01-02', 'YYYY-MM-DD'),
+        let tradingDay = moment('2017-01-01', 'YYYY-MM-DD'),
             today = moment();
 
         while (tradingDay < today) {
@@ -115,14 +125,15 @@ export class PortfolioService {
         }
 
         // Generate symbols + market data map.
-        while (keys(instData).length < this.INITIAL_SYMBOLS) {
+        while (instData.length < this.INITIAL_SYMBOLS) {
             let symbol = '';
             times(random(1, 5), () => symbol += sample(alpha));
-            if (!instData[symbol]) {
-                instData[symbol] = {
+            if (!this.findInstrument(symbol)) {
+                instData.push({
+                    symbol: symbol,
                     sector: sample(this.sectors),
                     mktData: this.generateMarketData()
-                };
+                });
             }
         }
     }
@@ -171,10 +182,9 @@ export class PortfolioService {
     }
 
     getRandomPositionForPortfolio() {
-        const symbol = sample(keys(this.instData));
+        const instrument = sample(this.instData);
         const ret = {
-            symbol,
-            sector: this.instData[symbol].sector,
+            instrument: instrument,
             model: sample(this.models),
             fund: sample(this.funds),
             region: sample(this.regions),
@@ -183,6 +193,8 @@ export class PortfolioService {
 
         // Generate unique key for leaf-level grouping within calculateRawPositions.
         ret.id = values(ret).join('||');
+
+        // console.log('getRandomPositionForPortfolio', ret);
         return ret;
     }
 
@@ -193,8 +205,9 @@ export class PortfolioService {
 
         forOwn(byPosId, (orders) => {
             const first = orders[0],
-                symbol = first.symbol,
-                endPx = last(this.instData[symbol].mktData).close;
+                instrument = this.findInstrument(first.symbol);
+            const
+                endPx = isEmpty(instrument.mktData) ? 0 : last(instrument.mktData).close;
 
             let endQty = 0, netCashflow = 0;
 
@@ -209,7 +222,7 @@ export class PortfolioService {
                 pnl = netCashflow + endMktVal;
 
             positions.push({
-                symbol: symbol,
+                symbol: first.symbol,
                 sector: first.sector,
                 model: first.model,
                 fund: first.fund,
@@ -247,7 +260,6 @@ export class PortfolioService {
 
             ret.push(groupPos);
         });
-
         return ret;
     }
 
@@ -263,6 +275,11 @@ export class PortfolioService {
         });
 
         return ret;
+    }
+
+
+    findInstrument(symbol) {
+        return this.instData.find(instDatum => instDatum.symbol === symbol);
     }
 
 }

@@ -80,7 +80,6 @@ class SampleBigDataTreeGrid extends Component {
     constructor(props) {
         super(props);
         this.loadAsync();
-        console.log('getPositions', XH.portfolioService.getPositions(['symbol']));
     }
 
     render() {
@@ -116,7 +115,7 @@ class SampleBigDataTreeGrid extends Component {
         const {model, loadModel} = this;
 
         return XH.portfolioService
-            .getPortfolioAsync(['region', 'sector', 'symbol'])
+            .getPortfolioAsync(['symbol', 'model', 'sector', 'region', 'fund', 'trader'], 500, 200000)
             .then(data => model.loadData(data))
             .linkTo(loadModel);
     }
