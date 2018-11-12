@@ -1,9 +1,8 @@
-import companies from './rest/CompanyRegistry';
-import companyTrades from './rest/CompanyTrades';
-import salesFigures from './rest/SalesFigures';
-import usStates from './rest/USStates';
-import {movies} from './rest/Movies';
-import {restaurants} from './rest/Restaurants';
-import {sampleTreeData} from './rest/SampleTreeData';
+import companies from './CompanyRegistry';
+import companyTrades from './CompanyTrades';
+import {movies} from './Movies';
+import {restaurants} from './Restaurants';
+import salesFigures from './SalesFigures';
+import usStates from './USStates';
 
-export {companies, companyTrades, salesFigures, movies, usStates, restaurants, sampleTreeData};
+export {companies, companyTrades, salesFigures, movies, usStates, restaurants};

@@ -2,7 +2,6 @@
 
 body {
   --panel-bg: var(--xh-bg);
-  --panel-border-width: 1;
 }
 
 .toolbox-tab > .xh-tab-switcher--left > .bp3-tab-list {
@@ -10,7 +9,6 @@ body {
   border-right: var(--xh-border-solid);
 }
 
-.toolbox-multiselect {
-  max-width: 240px;
-  max-height: 60px;
+.toolbox-wrapper > .xh-panel {
+  border: var(--xh-border-solid);
 }

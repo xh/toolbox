@@ -1,15 +1,9 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2018 Extremely Heavy Industries Inc.
- */
 import React, {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
@@ -50,17 +44,11 @@ export class DataViewPanel extends Component {
                     rowCls: 'dataview-item',
                     itemHeight: 70
                 }),
-                bbar: toolbar({
-                    items: [
-                        storeFilterField({store: model.store}),
-                        filler(),
-                        button({
-                            text: 'Reload Data',
-                            icon: Icon.refresh(),
-                            onClick: this.loadData
-                        })
-                    ]
-                })
+                bbar: toolbar(
+                    refreshButton({onClick: this.loadData}),
+                    filler(),
+                    storeFilterField({store: model.store})
+                )
             })
         });
     }

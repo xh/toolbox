@@ -17,6 +17,7 @@ class BootStrap {
         logStartupMsg()
         ensureRequiredConfigsCreated()
         ensureMonitorsCreated()
+        ensureRequiredPrefsCreated()
         def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
         BaseService.parallelInit(services)
         ensureUsersCreated()
@@ -69,6 +70,18 @@ class BootStrap {
     private void createUserIfNeeded(Map data) {
         def user = User.findByEmail(data.email)
         if (!user) new User(data).save()
+    }
+
+    private void ensureRequiredPrefsCreated() {
+        Utils.prefService.ensureRequiredPrefsCreated([
+                portfolioDimHistory: [
+                        type: 'json',
+                        defaultValue: [],
+                        local: true,
+                        groupName: 'Toolbox',
+                        note: 'Nested arrays containing user\'s dimension picker history'
+                ]
+            ])
     }
 
     private void ensureRequiredConfigsCreated() {
