@@ -5,23 +5,18 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, LayoutSupport} from '@xh/hoist/core';
-import {wait} from '@xh/hoist/promise';
-import {box, filler, fragment} from '@xh/hoist/cmp/layout';
-import {grid, GridModel, colChooserButton} from '@xh/hoist/cmp/grid';
-import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {checkbox, switchInput} from '@xh/hoist/desktop/cmp/form';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
+import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {LocalStore} from '@xh/hoist/data';
+import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {checkbox, switchInput} from '@xh/hoist/desktop/cmp/form';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {mask} from '@xh/hoist/desktop/cmp/mask';
-
-import {sampleTreeData} from '../../core/data';
 import './SampleTreeWithCheckboxGrid.scss';
 
 @HoistComponent
@@ -77,30 +72,25 @@ class SampleTreeWithCheckboxGrid extends Component {
         const {model} = this;
 
         return panel({
-            className: this.getClassName(),
-            ...this.getLayoutProps(),
             item: grid({className: 'sample-tree-checkbox-grid', model}),
-            mask: mask({spinner: true, model: this.loadModel}),
-            bbar: toolbar({
-                omit: this.props.omitToolbar,
-                items: [
-                    storeFilterField({gridModel: model}),
-                    storeCountLabel({
-                        gridModel: model,
-                        units: 'companies'
-                    }),
-                    filler(),
-                    box('Compact mode:'),
-                    switchInput({
-                        field: 'compact',
-                        model
-                    }),
-                    toolbarSep(),
-                    colChooserButton({gridModel: model}),
-                    exportButton({model, exportOptions: {type: 'excelTable'}}),
-                    refreshButton({model: this})
-                ]
-            })
+            mask: this.loadModel,
+            bbar: toolbar(
+                refreshButton({model: this}),
+                toolbarSep(),
+                switchInput({
+                    model,
+                    field: 'compact',
+                    label: 'Compact mode:',
+                    labelAlign: 'left'
+                }),
+                filler(),
+                storeCountLabel({gridModel: model, units: 'companies'}),
+                storeFilterField({gridModel: model}),
+                colChooserButton({gridModel: model}),
+                exportButton({model, exportOptions: {type: 'excelTable'}})
+            ),
+            className: this.getClassName(),
+            ...this.getLayoutProps()
         });
     }
 
@@ -108,9 +98,12 @@ class SampleTreeWithCheckboxGrid extends Component {
     // Implementation
     //------------------------
     loadAsync() {
-        wait(250)
-            .then(() => this.model.loadData(sampleTreeData))
-            .linkTo(this.loadModel);
+        const {model, loadModel} = this;
+
+        return XH.portfolioService
+            .getPortfolioAsync(['fund', 'region'])
+            .then(data => model.loadData(data))
+            .linkTo(loadModel);
     }
 
 

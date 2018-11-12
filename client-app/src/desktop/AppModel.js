@@ -10,6 +10,7 @@ import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
 import {SalesService} from '../core/svc/SalesService';
+import {PortfolioService} from '../core/svc/PortfolioService';
 
 import {ChartsTab} from './tabs/charts/ChartsTab';
 import {ContainersTab} from './tabs/containers/ContainersTab';
@@ -19,6 +20,7 @@ import {HomeTab} from './tabs/home/HomeTab';
 import {IconsTab} from './tabs/icons/IconsTab';
 import {OtherTab} from './tabs/other/OtherTab';
 import {ExamplesTab} from './tabs/examples/ExamplesTab';
+import {FormatsTab} from './tabs/formats/FormatsTab';
 
 @HoistAppModel
 export class AppModel {
@@ -30,7 +32,7 @@ export class AppModel {
     }
 
     async initAsync() {
-        await XH.installServicesAsync(CompanyService, TradeService, SalesService);
+        await XH.installServicesAsync(CompanyService, TradeService, SalesService, PortfolioService);
     }
 
     getRoutes() {
@@ -94,6 +96,15 @@ export class AppModel {
                         path: '/icons'
                     },
                     {
+                        name: 'formats',
+                        path: '/formats',
+                        forwardTo: 'default.formats.number',
+                        children: [
+                            {name: 'number', path: '/number'},
+                            {name: 'date', path: '/date'}
+                        ]
+                    },
+                    {
                         name: 'other',
                         path: '/other',
                         forwardTo: 'default.other.mask',
@@ -107,8 +118,9 @@ export class AppModel {
                     {
                         name: 'examples',
                         path: '/examples',
-                        forwardTo: 'default.examples.news',
+                        forwardTo: 'default.examples.portfolio',
                         children: [
+                            {name: 'portfolio', path: '/portfolio'},
                             {name: 'news', path: '/news'}
                         ]
                     }
@@ -127,6 +139,7 @@ export class AppModel {
                 {id: 'forms', content: FormsTab},
                 {id: 'charts', content: ChartsTab},
                 {id: 'icons', content: IconsTab},
+                {id: 'formats', content: FormatsTab},
                 {id: 'other', content: OtherTab},
                 {id: 'examples', content: ExamplesTab}
             ]

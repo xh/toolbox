@@ -1,10 +1,3 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2018 Extremely Heavy Industries Inc.
- */
-
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';

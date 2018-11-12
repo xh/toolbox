@@ -1,19 +1,13 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2018 Extremely Heavy Industries Inc.
- */
 import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
-import {box, filler} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
-import {grid, GridModel, colChooserButton} from '@xh/hoist/cmp/grid';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput, select} from '@xh/hoist/desktop/cmp/form';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
@@ -26,6 +20,8 @@ import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/columns';
 @HoistComponent
 @LayoutSupport
 class SampleGrid extends Component {
+
+    @observable groupBy = false;
 
     loadModel = new PendingTaskModel();
 
@@ -41,7 +37,15 @@ class SampleGrid extends Component {
         icon: Icon.skull(),
         intent: 'danger',
         tooltip: 'Terminate this company.',
-        actionFn: ({record}) => this.showTerminateToast(record)
+        actionFn: ({record}) => this.showTerminateToast(record),
+        displayFn: ({record}) => {
+            if (record.city == 'New York') {
+                return {
+                    disabled: true,
+                    tooltip: 'New York companies cannot be terminated at this time.'
+                };
+            }
+        }
     };
 
     localModel = new GridModel({
@@ -123,8 +127,6 @@ class SampleGrid extends Component {
         ]
     });
 
-    @observable groupBy = false;
-
     constructor(props) {
         super(props);
         this.loadAsync();
@@ -134,20 +136,14 @@ class SampleGrid extends Component {
         const {model} = this;
 
         return panel({
-            className: this.getClassName(),
-            ...this.getLayoutProps(),
             item: grid({model}),
             mask: this.loadModel,
             bbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
-                    storeFilterField({gridModel: model}),
-                    storeCountLabel({
-                        gridModel: model,
-                        unit: 'companies'
-                    }),
-                    filler(),
-                    box('Group by:'),
+                    refreshButton({model: this}),
+                    toolbarSep(),
+                    span('Group by:'),
                     select({
                         model: this,
                         field: 'groupBy',
@@ -159,17 +155,18 @@ class SampleGrid extends Component {
                         width: 120,
                         enableFilter: false
                     }),
-                    box('Compact mode:'),
-                    switchInput({
-                        field: 'compact',
-                        model
-                    }),
                     toolbarSep(),
+                    span('Compact mode:'),
+                    switchInput({field: 'compact', model}),
+                    filler(),
+                    storeCountLabel({gridModel: model, unit: 'companies'}),
+                    storeFilterField({gridModel: model}),
                     colChooserButton({gridModel: model}),
-                    exportButton({model, exportOptions: {type: 'excelTable'}}),
-                    refreshButton({model: this})
+                    exportButton({model, exportOptions: {type: 'excelTable'}})
                 ]
-            })
+            }),
+            className: this.getClassName(),
+            ...this.getLayoutProps()
         });
     }
 
