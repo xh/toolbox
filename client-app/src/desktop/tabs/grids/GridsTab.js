@@ -8,7 +8,7 @@ import {RestGridPanel} from './RestGridPanel';
 import {DataViewPanel} from './DataViewPanel';
 import {TreeGridPanel} from './TreeGridPanel';
 import {TreeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
-import {BigDataGridPanel} from "./BigDataGridPanel";
+import {LargeDatasetGridPanel} from './LargeDatasetGridPanel';
 
 @HoistComponent
 export class GridsTab extends Component {
@@ -18,7 +18,7 @@ export class GridsTab extends Component {
         tabs: [
             {id: 'standard', content: StandardGridPanel},
             {id: 'tree', content: TreeGridPanel},
-            {id: 'bigDataTree', title: 'Big Data Tree', content: BigDataGridPanel},
+            {id: 'largeDatasetTree', title: 'Large Dataset Tree', content: LargeDatasetGridPanel},
             {id: 'treeWithCheckBox', title: 'Tree w/CheckBox', content: TreeGridWithCheckboxPanel},
             {id: 'groupedCols', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
             {id: 'rest', title: 'REST Editor', content: RestGridPanel},

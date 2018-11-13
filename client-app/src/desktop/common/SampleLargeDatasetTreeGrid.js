@@ -86,7 +86,9 @@ class SampleBigDataTreeGrid extends Component {
         const {model} = this;
 
         return panel({
-            item: grid({model}),
+            item: grid({
+                model
+            }),
             mask: this.loadModel,
             bbar: toolbar(
                 refreshButton({model: this}),
@@ -115,9 +117,13 @@ class SampleBigDataTreeGrid extends Component {
         const {model, loadModel} = this;
 
         return XH.portfolioService
-            .getPortfolioAsync(['symbol', 'model', 'sector', 'region', 'fund', 'trader'], 500, 200000)
-            .then(data => model.loadData(data))
+            .getPortfolioAsync(['trader'])
+            .then(data => {
+                console.time('loadAsync');
+                model.loadData(data);
+                console.timeEnd('loadAsync');
+            })
             .linkTo(loadModel);
     }
 }
-export const sampleBigDataTreeGrid = elemFactory(SampleBigDataTreeGrid);
+export const sampleLargeDatasetTreeGrid = elemFactory(SampleBigDataTreeGrid);

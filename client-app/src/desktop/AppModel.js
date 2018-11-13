@@ -65,7 +65,7 @@ export class AppModel {
                         children: [
                             {name: 'standard', path: '/standard'},
                             {name: 'tree', path: '/tree'},
-                            {name: 'bigDataTree', path: '/bigDataTree'},
+                            {name: 'largeDatasetTree', path: '/largeDatasetTree'},
                             {name: 'treeWithCheckBox', path: '/treeWithCheckBox'},
                             {name: 'groupedRows', path: '/groupedRows'},
                             {name: 'groupedCols', path: '/groupedCols'},

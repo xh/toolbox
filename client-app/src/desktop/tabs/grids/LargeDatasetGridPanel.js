@@ -10,10 +10,10 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 
 import {wrapper} from '../../common';
-import {sampleBigDataTreeGrid} from '../../common/SampleBigDataTreeGrid';
+import {sampleLargeDatasetTreeGrid} from '../../common/SampleLargeDatasetTreeGrid';
 
 @HoistComponent
-export class BigDataGridPanel extends Component {
+export class LargeDatasetGridPanel extends Component {
 
     render() {
         return wrapper({
@@ -27,7 +27,7 @@ export class BigDataGridPanel extends Component {
                 icon: Icon.grid(),
                 width: 1200,
                 height: 800,
-                item: sampleBigDataTreeGrid()
+                item: sampleLargeDatasetTreeGrid()
             })
         });
     }

@@ -7,7 +7,8 @@ import moment from 'moment';
 @HoistService
 export class PortfolioService {
 
-    models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul', 'Ren II', 'Vader II', 'Beckett II', 'Hutt II', 'Maul II', 'Ren III', 'Vader III', 'Beckett III', 'Hutt III', 'Maul III'];
+    // models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul', 'Ren II', 'Vader II', 'Beckett II', 'Hutt II', 'Maul II', 'Ren III', 'Vader III', 'Beckett III', 'Hutt III', 'Maul III', 'Ren IV', 'Vader IV', 'Beckett IV', 'Hutt IV', 'Maul IV', 'Ren V', 'Vader V', 'Beckett V', 'Hutt V', 'Maul V', 'Ren VI', 'Vader VI', 'Beckett VI', 'Hutt VI', 'Maul VI', 'Ren VII', 'Vader VII', 'Beckett VII', 'Hutt VII', 'Maul VII', 'Ren VIII', 'Vader VIII', 'Beckett VIII', 'Hutt VIII', 'Maul VIII', 'Ren IX', 'Vader IX', 'Beckett IX', 'Hutt IX', 'Maul IX'];
+    models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul'];
     sectors = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing', 'Energy', 'Other', 'Utilities'];
     funds = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay'];
     regions = ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac'];
@@ -18,14 +19,11 @@ export class PortfolioService {
     orders = [];
     rawPositions = [];
 
-    INITIAL_ORDERS = 15000;
-    INITIAL_SYMBOLS = 300;
+    INITIAL_ORDERS = 1000;
+    INITIAL_SYMBOLS = 500;
 
     // Public API around getPositions.
-    async getPortfolioAsync(dims, initialSymbols = this.INITIAL_SYMBOLS, initialOrders = this.INITIAL_ORDERS) {
-        this.INITIAL_SYMBOLS = initialSymbols;
-        this.INITIAL_ORDERS = initialOrders;
-
+    async getPortfolioAsync(dims) {
         await wait(300);
         this.ensureLoaded();
         const getPositions = this.getPositions(castArray(dims));
@@ -103,9 +101,18 @@ export class PortfolioService {
     //------------------------
     ensureLoaded() {
         if (!this.tradingDays.length) {
+            console.log('INITIAL_ORDERS', this.INITIAL_ORDERS, 'INITIAL_SYMBOLS', this.INITIAL_SYMBOLS);
+            console.time('ensureLoaded');
+            console.time('populateRefData');
             this.populateRefData();
+            console.timeEnd('populateRefData');
+            console.time('generateOrders');
             this.orders = this.generateOrders();
+            console.timeEnd('generateOrders');
+            console.time('calculateRawPositions');
             this.rawPositions = this.calculateRawPositions();
+            console.timeEnd('calculateRawPositions');
+            console.timeEnd('ensureLoaded');
         }
     }
 
@@ -115,7 +122,7 @@ export class PortfolioService {
             instData = this.instData = [];
 
         // Generate trading days.
-        let tradingDay = moment('2017-01-01', 'YYYY-MM-DD'),
+        let tradingDay = moment('2018-11-01', 'YYYY-MM-DD'),
             today = moment();
 
         while (tradingDay < today) {
@@ -183,13 +190,17 @@ export class PortfolioService {
 
     getRandomPositionForPortfolio() {
         const instrument = sample(this.instData);
+        const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let trader = '';
+        times(random(10, 10), () => trader += sample(alpha));
         const ret = {
             instrument: instrument,
             model: sample(this.models),
             fund: sample(this.funds),
             region: sample(this.regions),
-            trader: sample(this.traders)
+            trader: trader
         };
+
 
         // Generate unique key for leaf-level grouping within calculateRawPositions.
         ret.id = values(ret).join('||');
