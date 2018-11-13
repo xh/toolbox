@@ -124,8 +124,8 @@ publishing {
             def repoEndpoint = version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'
             url "https://repo.xh.io/content/repositories/$repoEndpoint/"
             credentials {
-                username xhRepoDeployUser
-                password xhRepoDeployPassword
+                username project.findProperty('xhRepoDeployUser')
+                password project.findProperty('xhRepoDeployPassword')
             }
         }
     }
