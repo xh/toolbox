@@ -18,13 +18,22 @@ import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-
+import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 
 @HoistComponent
 @LayoutSupport
 class SampleTreeGrid extends Component {
 
     loadModel = new PendingTaskModel();
+
+    dimChooserModel = new DimensionChooserModel({
+        dimensions: [
+            {value: 'region', label: 'Region'},
+            {value: 'sector', label: 'Sector'},
+            {value: 'symbol', label: 'Symbol'}
+        ],
+        initialValue: ['sector', 'symbol']
+    });
 
     localModel = new GridModel({
         treeMode: true,
@@ -79,13 +88,22 @@ class SampleTreeGrid extends Component {
 
     constructor(props) {
         super(props);
-        this.loadAsync();
+        this.addReaction({
+            track: () => this.dimChooserModel.value,
+            run: () => this.loadAsync(),
+            fireImmediately: true
+        })
     }
 
     render() {
         const {model} = this;
 
         return panel({
+            tbar: toolbar(
+                dimensionChooser({
+                    model: this.dimChooserModel
+                })
+            ),
             item: grid({model}),
             mask: this.loadModel,
             bbar: toolbar(
@@ -112,10 +130,11 @@ class SampleTreeGrid extends Component {
     // Implementation
     //------------------------
     loadAsync() {
-        const {model, loadModel} = this;
+        const {model, loadModel, dimChooserModel} = this,
+            dims = dimChooserModel.value;
 
         return XH.portfolioService
-            .getPortfolioAsync(['region', 'sector', 'symbol'])
+            .getPortfolioAsync(dims)
             .then(data => model.loadData(data))
             .linkTo(loadModel);
     }
