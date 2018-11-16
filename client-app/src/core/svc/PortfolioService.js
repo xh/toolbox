@@ -19,7 +19,7 @@ export class PortfolioService {
     orders = [];
     rawPositions = [];
 
-    INITIAL_ORDERS = 1000;
+    INITIAL_ORDERS = 100000;
     INITIAL_SYMBOLS = 500;
 
     // Public API around getPositions.
@@ -101,17 +101,10 @@ export class PortfolioService {
     //------------------------
     ensureLoaded() {
         if (!this.tradingDays.length) {
-            console.log('INITIAL_ORDERS', this.INITIAL_ORDERS, 'INITIAL_SYMBOLS', this.INITIAL_SYMBOLS);
             console.time('ensureLoaded');
-            console.time('populateRefData');
             this.populateRefData();
-            console.timeEnd('populateRefData');
-            console.time('generateOrders');
             this.orders = this.generateOrders();
-            console.timeEnd('generateOrders');
-            console.time('calculateRawPositions');
             this.rawPositions = this.calculateRawPositions();
-            console.timeEnd('calculateRawPositions');
             console.timeEnd('ensureLoaded');
         }
     }
