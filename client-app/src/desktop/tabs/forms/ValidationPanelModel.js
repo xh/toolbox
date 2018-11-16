@@ -1,5 +1,5 @@
 import {HoistModel} from '@xh/hoist/core';
-import {dateIs, field, FieldSupport, lengthIs, numberIs, required} from '@xh/hoist/field';
+import {dateIs, field, FormSupport, lengthIs, numberIs, required} from '@xh/hoist/field';
 import {wait} from '@xh/hoist/promise';
 import {bindable} from '@xh/hoist/mobx';
 import {SECONDS} from '@xh/hoist/utils/datetime';
@@ -7,7 +7,7 @@ import {isNil} from 'lodash';
 import moment from 'moment';
 
 @HoistModel
-@FieldSupport
+@FormSupport
 export class ValidationPanelModel {
 
     // TextField / TextArea
@@ -57,6 +57,8 @@ export class ValidationPanelModel {
     commitOnChange = true;
 
     constructor() {
+
+        window.sniff = this;
         this.initFields({
             startDate: moment().toDate()
         });

@@ -1,9 +1,9 @@
 import {HoistModel} from '@xh/hoist/core';
-import {FieldSupport, field, required, lengthIs} from '@xh/hoist/field';
+import {FormSupport, field, required, lengthIs} from '@xh/hoist/field';
 import {movies} from '../../core/data';
 
 @HoistModel
-@FieldSupport
+@FormSupport
 export class FormPageModel {
 
     @field(required, lengthIs({min: 8}))
