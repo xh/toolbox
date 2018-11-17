@@ -1,10 +1,8 @@
-import {HoistModel} from '@xh/hoist/core';
-import {FormSupport, field} from '@xh/hoist/field';
+import {FormModel, field} from '@xh/hoist/cmp/form';
 import moment from 'moment';
 import {random} from 'lodash';
 
-@HoistModel
-@FormSupport
+@FormModel
 export class ControlsPanelModel {
 
     // TextInput / TextArea
