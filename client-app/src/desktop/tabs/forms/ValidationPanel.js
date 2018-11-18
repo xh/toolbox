@@ -11,8 +11,8 @@ import {filler, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {form} from '@xh/hoist/cmp/form';
 import {
     formField,
     checkbox,
@@ -37,172 +37,173 @@ export class ValidationPanel extends Component {
     validateButtonTask = new PendingTaskModel();
 
     render() {
-        const {model} = this,
-            commitOnChange = model.commitOnChange,
-            minimal = model.minimalValidation;
-
-        return wrapper({
-            item: panel({
+        return wrapper(
+            panel({
                 title: 'Validation',
                 className: 'toolbox-validation-panel',
                 icon: Icon.edit(),
                 width: '90%',
                 height: '90%',
-                mask: mask({model: this.validateButtonTask}),
-                item: hframe({
-                    className: 'toolbox-validation-panel__content',
-                    items: [
-                        vbox({
-                            width: 300,
-                            marginRight: 30,
-                            items: [
-                                formField({
-                                    model,
-                                    field: 'firstName',
-                                    minimal,
-                                    item: textInput({commitOnChange})
-                                }),
-                                formField({
-                                    model,
-                                    field: 'lastName',
-                                    minimal,
-                                    item: textInput({commitOnChange})
-                                }),
-                                formField({
-                                    model,
-                                    field: 'email',
-                                    minimal,
-                                    item: textInput({
-                                        placeholder: 'user@company.com',
-                                        leftIcon: Icon.mail(),
-                                        rightElement: button({
-                                            icon: Icon.cross(),
-                                            minimal: true,
-                                            onClick: () => model.setEmail(null)
-                                        })
-                                    })
-                                }),
-                                formField({
-                                    model,
-                                    field: 'region',
-                                    minimal,
-                                    item: select({
-                                        options: ['California', 'London', 'Montreal', 'New York']
-                                    })
-                                }),
-                                formField({
-                                    model,
-                                    field: 'tags',
-                                    minimal,
-                                    item: select({
-                                        enableMulti: true,
-                                        enableCreate: true
+                mask: this.validateButtonTask,
+                item: this.renderForm(),
+                bbar: this.renderToolbar()
+            })
+        );
+    }
+
+    renderForm() {
+        const {model} = this,
+            commitOnChange = model.commitOnChange,
+            minimal = model.minimalValidation;
+
+        return form({
+            model,
+            item: hframe({
+                className: 'toolbox-validation-panel__content',
+                items: [
+                    vbox({
+                        width: 300,
+                        marginRight: 30,
+                        items: [
+                            formField({
+                                field: 'firstName',
+                                minimal,
+                                item: textInput({commitOnChange})
+                            }),
+                            formField({
+                                field: 'lastName',
+                                minimal,
+                                item: textInput({commitOnChange})
+                            }),
+                            formField({
+                                field: 'email',
+                                minimal,
+                                item: textInput({
+                                    placeholder: 'user@company.com',
+                                    leftIcon: Icon.mail(),
+                                    rightElement: button({
+                                        icon: Icon.cross(),
+                                        minimal: true,
+                                        onClick: () => model.setEmail(null)
                                     })
                                 })
-                            ]
-                        }),
-                        vbox({
-                            items: [
-                                hbox({
-                                    alignItems: 'center',
-                                    items: [
-                                        formField({
-                                            model,
-                                            field: 'startDate',
-                                            minimal,
-                                            item: dateInput({
-                                                width: 120,
-                                                commitOnChange
-                                            })
-                                        }),
-                                        Icon.chevronRight({
-                                            style: {margin: '0 4px'}
-                                        }),
-                                        formField({
-                                            model,
-                                            field: 'endDate',
-                                            minimal,
-                                            item: dateInput({
-                                                width: 120,
-                                                commitOnChange
-                                            })
-                                        })
-                                    ]
-                                }),
-                                formField({
-                                    model,
-                                    field: 'yearsExperience',
-                                    minimal,
-                                    item: numberInput({width: 50, commitOnChange})
-                                }),
-                                formField({
-                                    model,
-                                    field: 'isManager',
-                                    minimal,
-                                    item: checkbox()
-                                }),
-                                formField({
-                                    model,
-                                    field: 'notes',
-                                    minimal,
-                                    item: textArea({width: 270, commitOnChange})
+                            }),
+                            formField({
+                                field: 'region',
+                                minimal,
+                                item: select({
+                                    options: ['California', 'London', 'Montreal', 'New York']
                                 })
-                            ]
-                        })
-                    ]
-                }),
-                bbar: toolbar(
-                    button({
-                        text: 'Reset',
-                        icon: Icon.undo(),
-                        onClick: this.onResetClick
+                            }),
+                            formField({
+                                field: 'tags',
+                                minimal,
+                                item: select({
+                                    enableMulti: true,
+                                    enableCreate: true
+                                })
+                            })
+                        ]
                     }),
-                    button({
-                        text: 'Validate',
-                        icon: Icon.check(),
-                        intent: 'primary',
-                        onClick: this.onValidateClick
-                    }),
-                    toolbarSep(),
-                    switchInput({
-                        model,
-                        field: 'minimalValidation',
-                        label: 'Minimal validation display'
-                    }),
-                    switchInput({
-                        model,
-                        field: 'commitOnChange',
-                        label: 'Inputs commit on change'
-                    }),
-                    filler(),
-                    button({
-                        text: 'Submit',
-                        icon: Icon.add(),
-                        intent: 'success',
-                        onClick: this.onSubmitClick,
-                        disabled: !model.isValid
+                    vbox({
+                        items: [
+                            hbox({
+                                alignItems: 'center',
+                                items: [
+                                    formField({
+                                        field: 'startDate',
+                                        minimal,
+                                        item: dateInput({
+                                            width: 120,
+                                            commitOnChange
+                                        })
+                                    }),
+                                    Icon.chevronRight({
+                                        style: {margin: '0 4px'}
+                                    }),
+                                    formField({
+                                        field: 'endDate',
+                                        minimal,
+                                        item: dateInput({
+                                            width: 120,
+                                            commitOnChange
+                                        })
+                                    })
+                                ]
+                            }),
+                            formField({
+                                field: 'yearsExperience',
+                                minimal,
+                                item: numberInput({width: 50, commitOnChange})
+                            }),
+                            formField({
+                                field: 'isManager',
+                                minimal,
+                                item: checkbox()
+                            }),
+                            formField({
+                                field: 'notes',
+                                minimal,
+                                item: textArea({width: 270, commitOnChange})
+                            })
+                        ]
                     })
-                )
+                ]
             })
         });
     }
 
-    onSubmitClick = () => {
-        if (this.model.isValid) {
-            XH.toast({message: 'User successfully submitted.'});
-        }
-        this.model.resetFields();
+    renderToolbar() {
+        const {model} = this;
+
+        return toolbar(
+            switchInput({
+                model,
+                field: 'minimalValidation',
+                label: 'Minimal validation display'
+            }),
+            switchInput({
+                model,
+                field: 'commitOnChange',
+                label: 'Inputs commit on change'
+            }),
+            filler(),
+            toolbarSep(),
+            button({
+                text: 'Reset',
+                icon: Icon.undo(),
+                onClick: this.onResetClick
+            }),
+            button({
+                text: 'Validate',
+                icon: Icon.check(),
+                intent: 'primary',
+                onClick: this.onValidateClick
+            }),
+            button({
+                text: 'Submit',
+                icon: Icon.add(),
+                intent: 'success',
+                onClick: this.onSubmitClick,
+                disabled: !model.isValid
+            })
+        );
     }
 
-    onResetClick = () => {
-        this.model.resetFields();
+
+    onSubmitClick = async () => {
+        const {model} = this;
+        await model.validateAsync().linkTo(this.validateButtonTask);
+        if (model.isValid) {
+            XH.toast({message: 'User successfully submitted.'});
+            model.resetFields();
+        }
     }
 
     onValidateClick = async () => {
         const {model} = this;
         await model.validateAsync().linkTo(this.validateButtonTask);
-
-        if (this.model.isValid) {
+        if (model.isValid) {
             XH.toast({message: 'Form is valid'});
         } else {
             const errCount = model.fields.filter(f => f.isNotValid).length;
@@ -212,5 +213,9 @@ export class ValidationPanel extends Component {
                 message: `Form is not valid. ${errCount} fields are still invalid!`
             });
         }
+    }
+
+    onResetClick = () => {
+        this.model.resetFields();
     }
 }

@@ -18,7 +18,7 @@ export class ValidationPanelModel {
     @field(required,
         ({value}) => {
             if (isNil(value)) return;
-            return wait(2 * SECONDS).then(() => {
+            return wait(1 * SECONDS).then(() => {
                 if ((!value.includes('@') || !value.includes('.'))) {
                     return 'Invalid email (validated async).';
                 }
