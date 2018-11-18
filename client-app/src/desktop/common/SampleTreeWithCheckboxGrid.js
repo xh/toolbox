@@ -80,7 +80,7 @@ class SampleTreeWithCheckboxGrid extends Component {
                 switchInput({
                     model,
                     field: 'compact',
-                    label: 'Compact mode:',
+                    label: 'Compact',
                     labelAlign: 'left'
                 }),
                 filler(),

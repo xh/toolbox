@@ -32,7 +32,7 @@ export class OrdersPanelModel {
             {
                 field: 'trader',
                 headerName: 'Trader',
-                width: 160
+                width: 140
             },
             {
                 field: 'fund',
@@ -60,8 +60,10 @@ export class OrdersPanelModel {
             },
             {
                 field: 'dir',
-                headerName: 'Direction',
-                width: 100
+                headerName: 'B/S',
+                chooserName: 'Direction',
+                align: 'center',
+                width: 60
             },
             {
                 field: 'quantity',
@@ -77,7 +79,7 @@ export class OrdersPanelModel {
             {
                 field: 'price',
                 headerName: 'Price',
-                width: 100,
+                width: 80,
                 align: 'right',
                 renderer: numberRenderer({
                     precision: 2
