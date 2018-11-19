@@ -118,7 +118,7 @@ class SampleTreeWithCheckboxGrid extends Component {
                         class extends Component {
                             constructor(props) {
                                 super(props);
-                                props.reactContainer.style = 'display: inherit';
+                                props.reactContainer.style = 'display: inline-block';
                             }
 
                             render() {
