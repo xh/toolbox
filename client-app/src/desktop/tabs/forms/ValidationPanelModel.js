@@ -1,6 +1,5 @@
 import {dateIs, field, FormModel, lengthIs, numberIs, required} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
-import {bindable} from '@xh/hoist/mobx';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {isNil} from 'lodash';
 import moment from 'moment';
@@ -47,15 +46,8 @@ export class ValidationPanelModel {
 
     @field(required)
     tags;
-
-    @bindable
-    minimalValidation = false;
-
-    @bindable
-    commitOnChange = true;
-
+    
     constructor() {
-        window.sniff = this;
         this.initFields({
             startDate: moment().toDate()
         });
