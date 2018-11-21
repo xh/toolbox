@@ -10,11 +10,13 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
+import {DimChooserModel} from '@xh/hoist/mobile/cmp/dimChooser';
 
 @HoistModel
 export class TreeGridPageModel {
 
     loadModel = new PendingTaskModel();
+    menuModel = new DimChooserModel();
 
     gridModel = new GridModel({
         treeMode: true,
@@ -52,6 +54,7 @@ export class TreeGridPageModel {
     destroy() {
         XH.safeDestroy(this.gridModel);
         XH.safeDestroy(this.loadModel);
+        XH.safeDestroy(this.menuModel);
     }
 
 }
