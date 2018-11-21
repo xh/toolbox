@@ -16,7 +16,12 @@ import {DimChooserModel} from '@xh/hoist/mobile/cmp/dimChooser';
 export class TreeGridPageModel {
 
     loadModel = new PendingTaskModel();
-    menuModel = new DimChooserModel();
+    dimChooserModel = new DimChooserModel({
+        dimensions: ['Alpha', 'Beta', 'Gamma', 'Delta'],
+        initialValue: ['Gamma'],
+        historyPreference: 'mobileDimHistory'
+    });
+    menuModel = this.dimChooserModel.menuModel;
 
     gridModel = new GridModel({
         treeMode: true,

@@ -29,7 +29,6 @@ export class TreeGridPage extends Component {
     render() {
         const {model} = this,
             {gridModel, loadModel, menuModel} = model;
-        console.log(menuModel);
         return page({
             loadModel: loadModel,
             items: [
