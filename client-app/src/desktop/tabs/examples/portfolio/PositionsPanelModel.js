@@ -108,7 +108,9 @@ export class PositionsPanelModel {
             .getPortfolioAsync(dims)
             .then(portfolio => {
                 gridModel.loadData(portfolio);
-                gridModel.selectFirst();
+                if (!gridModel.selectedRecord) {
+                    gridModel.selectFirst();
+                }
                 this.setLoadTimestamp(Date.now());
             })
             .track({

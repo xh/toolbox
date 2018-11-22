@@ -80,7 +80,7 @@ class SampleTreeWithCheckboxGrid extends Component {
                 switchInput({
                     model,
                     field: 'compact',
-                    label: 'Compact mode:',
+                    label: 'Compact',
                     labelAlign: 'left'
                 }),
                 filler(),
@@ -118,7 +118,7 @@ class SampleTreeWithCheckboxGrid extends Component {
                         class extends Component {
                             constructor(props) {
                                 super(props);
-                                props.reactContainer.style = 'display: inherit';
+                                props.reactContainer.style = 'display: inline-block';
                             }
 
                             render() {
