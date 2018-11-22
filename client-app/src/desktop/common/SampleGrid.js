@@ -1,21 +1,21 @@
-import {Component} from 'react';
-import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
-import {wait} from '@xh/hoist/promise';
-import {filler, span} from '@xh/hoist/cmp/layout';
-import {Icon} from '@xh/hoist/icon';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {switchInput, select} from '@xh/hoist/desktop/cmp/form';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
+import {box, filler, span} from '@xh/hoist/cmp/layout';
+import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
 import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {observable, action} from '@xh/hoist/mobx';
+import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/form';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/columns';
+import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon';
+import {action, observable} from '@xh/hoist/mobx';
+import {wait} from '@xh/hoist/promise';
+import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {Component} from 'react';
 
 @HoistComponent
 @LayoutSupport
@@ -29,6 +29,7 @@ class SampleGrid extends Component {
         text: 'View Details',
         icon: Icon.search(),
         tooltip: 'View details on the selected company',
+        recordsRequired: 1,
         actionFn: ({record}) => this.showInfoToast(record)
     };
 
@@ -37,6 +38,7 @@ class SampleGrid extends Component {
         icon: Icon.skull(),
         intent: 'danger',
         tooltip: 'Terminate this company.',
+        recordsRequired: 1,
         actionFn: ({record}) => this.showTerminateToast(record),
         displayFn: ({record}) => {
             if (record.city == 'New York') {
@@ -52,6 +54,7 @@ class SampleGrid extends Component {
         store: new LocalStore({
             fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
         }),
+        selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
@@ -133,12 +136,21 @@ class SampleGrid extends Component {
     }
 
     render() {
-        const {model} = this;
+        const {model} = this,
+            selection = model.selection,
+            selCount = selection.length;
+
+        let selText = 'None';
+        if (selCount == 1) {
+            selText = `${selection[0].company} (${selection[0].city})` ;
+        } else if (selCount > 1) {
+            selText = `${selCount} companies`;
+        }
 
         return panel({
             item: grid({model}),
             mask: this.loadModel,
-            bbar: toolbar({
+            tbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
                     refreshButton({model: this}),
@@ -156,13 +168,23 @@ class SampleGrid extends Component {
                         enableFilter: false
                     }),
                     toolbarSep(),
-                    span('Compact mode:'),
-                    switchInput({field: 'compact', model}),
+                    switchInput({
+                        model,
+                        field: 'compact',
+                        label: 'Compact',
+                        labelAlign: 'left'
+                    }),
                     filler(),
                     storeCountLabel({gridModel: model, unit: 'companies'}),
                     storeFilterField({gridModel: model}),
                     colChooserButton({gridModel: model}),
                     exportButton({model, exportOptions: {type: 'excelTable'}})
+                ]
+            }),
+            bbar: toolbar({
+                items: [
+                    Icon.info(),
+                    box(`Current selection: ${selText}`)
                 ]
             }),
             className: this.getClassName(),
