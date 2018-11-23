@@ -24,7 +24,7 @@ export class GridPageModel {
                 flex: true,
                 elementRenderer: multiFieldRenderer,
                 rowHeight: Grid.MULTIFIELD_ROW_HEIGHT,
-                multiFieldRendererCfg: {
+                multiFieldConfig: {
                     subFields: [{colId: 'city', label: true}]
                 }
             },
@@ -36,7 +36,7 @@ export class GridPageModel {
                 absSort: true,
                 elementRenderer: multiFieldRenderer,
                 rowHeight: Grid.MULTIFIELD_ROW_HEIGHT,
-                multiFieldRendererCfg: {
+                multiFieldConfig: {
                     mainRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}),
                     subFields: [{colId: 'trade_volume', label: true}]
                 }
