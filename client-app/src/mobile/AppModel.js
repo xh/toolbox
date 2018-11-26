@@ -18,7 +18,7 @@ export class AppModel {
 
     navigatorModel = null;
     appMenuModel = null;
-    // dimMenuModel = null;
+    dimMenuModel = null;
 
     constructor() {
         // this.dimMenuModel = new DimMenuModel({

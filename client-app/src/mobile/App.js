@@ -23,7 +23,6 @@ export class App extends Component {
                 renderToolbar: () => appBar({
                     appMenuModel,
                     navigatorModel,
-                    // rightItems: [menuButton({model: dimMenuModel})],
                     hideRefreshButton: true
                 }),
                 items: [
