@@ -308,8 +308,7 @@ export class ControlsPanel extends Component {
             item,
             label,
             field,
-            labelInfo: `${displayVal}`,
-            helperText: info
+            info
         });
     };
 
