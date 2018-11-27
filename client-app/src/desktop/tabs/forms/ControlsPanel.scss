@@ -15,6 +15,17 @@
       &:nth-child(odd) {
         background-color: var(--xh-grid-bg-odd);
       }
+
+      .bp3-label {
+        font-size: var(--xh-font-size-large-px);
+        margin-bottom: var(--xh-pad-px);
+        
+      }
+
+      .bp3-form-helper-text {
+        font-size: var(--xh-font-size-small-px);
+      }
     }
+
   }
 }
