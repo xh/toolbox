@@ -8,8 +8,6 @@ import {XH, HoistAppModel} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {DimMenuModel} from '@xh/hoist/mobile/cmp/dimChooser';
-
 
 import {homePage} from './home/HomePage';
 
@@ -18,13 +16,8 @@ export class AppModel {
 
     navigatorModel = null;
     appMenuModel = null;
-    dimMenuModel = null;
 
     constructor() {
-        // this.dimMenuModel = new DimMenuModel({
-        //     xPos: 50,
-        //     yPos: 400,
-        // });
         this.appMenuModel = new AppMenuModel();
         this.navigatorModel = new NavigatorModel({
             pageFactory: homePage,

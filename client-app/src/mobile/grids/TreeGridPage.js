@@ -8,15 +8,9 @@
 import {Component} from 'react';
 import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
-import {menu, MenuModel} from '@xh/hoist/mobile/cmp/menu';
-import {menuButton} from '@xh/hoist/mobile/cmp/button';
 import {grid} from '@xh/hoist/cmp/grid';
-import {div, span} from '@xh/hoist/cmp/layout';
-import {dimChooser} from '@xh/hoist/mobile/cmp/dimChooser'
-import {toolbar} from '@xh/hoist/kit/onsen';
-import {select} from '@xh/hoist/mobile/cmp/form'
-
-
+import {div} from '@xh/hoist/cmp/layout';
+import {dimensionChooser} from '@xh/hoist/mobile/cmp/dimensionChooser';
 
 import './TreeGridPage.scss'
 
@@ -44,11 +38,11 @@ export class TreeGridPage extends Component {
                 div({
                     className: 'dim-chooser-bar',
                     items: [
-                        dimChooser({
+                        dimensionChooser({
                             model: dimensionChooserModel
                         })
                     ]
-                }),
+                })
             ]
         });
     }

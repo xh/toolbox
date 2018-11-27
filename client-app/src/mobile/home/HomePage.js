@@ -4,8 +4,6 @@ import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-import {menuButton} from '@xh/hoist/mobile/cmp/button';
-import {menu, MenuModel} from '@xh/hoist/mobile/cmp/menu';
 
 import {gridPage} from '../grids/GridPage';
 import {treeGridPage} from '../grids/TreeGridPage';
@@ -16,11 +14,6 @@ import {iconPage} from '../icons/IconPage';
 
 @HoistComponent
 export class HomePage extends Component {
-    menuModel = null;
-
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         return page({
@@ -80,6 +73,7 @@ export class HomePage extends Component {
             ]
         });
     }
+
 }
 
 export const homePage = elemFactory(HomePage);

@@ -10,17 +10,22 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
-import {DimChooserModel} from '@xh/hoist/mobile/cmp/dimChooser';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser'
-import {observable} from 'mobx';
 
 @HoistModel
 export class TreeGridPageModel {
 
     loadModel = new PendingTaskModel();
     dimensionChooserModel = new DimensionChooserModel({
-        dimensions: ['Alpha', 'Beta', 'Gamma', 'Delta'],
-        initialValue: ['Gamma'],
+        dimensions: [
+            {value: 'fund', label: 'Fund'},
+            {value: 'model', label: 'Model'},
+            {value: 'region', label: 'Region'},
+            {value: 'sector', label: 'Sector'},
+            {value: 'symbol', label: 'Symbol'},
+            {value: 'trader', label: 'Trader'}
+        ],
+        initialValue: ['trader'],
         historyPreference: 'mobileDimHistory'
     });
 
@@ -52,15 +57,27 @@ export class TreeGridPageModel {
     });
 
     constructor() {
-        XH.portfolioService
-            .getPortfolioAsync(['trader', 'sector', 'symbol'])
-            .then(data => this.gridModel.loadData(data));
+        this.addReaction({
+            track: () => this.dimensionChooserModel.value,
+            run: () => this.loadAsync(),
+            fireImmediately: true
+        });
+
+    }
+
+    loadAsync() {
+        const dims = this.dimensionChooserModel.value;
+        return XH.portfolioService
+            .getPortfolioAsync(dims)
+            .then(data => {
+                this.gridModel.loadData(data)
+            }).linkTo(this.loadModel)
     }
 
     destroy() {
         XH.safeDestroy(this.gridModel);
         XH.safeDestroy(this.loadModel);
-        XH.safeDestroy(this.menuModel);
+        XH.safeDestroy(this.dimensionChooserModel);
     }
 
 }

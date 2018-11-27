@@ -4,12 +4,6 @@ import {vframe} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
 import {navigator} from '@xh/hoist/mobile/cmp/navigator';
-import {toolbar} from '@xh/hoist/kit/onsen';
-import {div, span} from '@xh/hoist/cmp/layout';
-
-import {menuButton} from '@xh/hoist/mobile/cmp/button';
-
-
 
 import './App.scss';
 
@@ -17,7 +11,7 @@ import './App.scss';
 export class App extends Component {
 
     render() {
-        const {appMenuModel, navigatorModel, dimMenuModel} = this.model;
+        const {appMenuModel, navigatorModel} = this.model;
         return vframe(
             page({
                 renderToolbar: () => appBar({
@@ -25,10 +19,7 @@ export class App extends Component {
                     navigatorModel,
                     hideRefreshButton: true
                 }),
-                items: [
-                    div(menuButton({model: dimMenuModel})),
-                    navigator({model: navigatorModel}),
-                ]
+                item: navigator({model: navigatorModel})
             })
         );
     }
