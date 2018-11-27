@@ -28,7 +28,7 @@ export class TreeGridPage extends Component {
 
     render() {
         const {model} = this,
-            {gridModel, loadModel, menuModel} = model;
+            {gridModel, loadModel, dimensionChooserModel} = model;
         return page({
             loadModel: loadModel,
             items: [
@@ -45,7 +45,7 @@ export class TreeGridPage extends Component {
                     className: 'dim-chooser-bar',
                     items: [
                         dimChooser({
-                            model: menuModel
+                            model: dimensionChooserModel
                         })
                     ]
                 }),

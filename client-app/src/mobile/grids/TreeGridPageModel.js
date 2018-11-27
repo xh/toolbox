@@ -11,14 +11,14 @@ import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {DimChooserModel} from '@xh/hoist/mobile/cmp/dimChooser';
+import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser'
 import {observable} from 'mobx';
 
 @HoistModel
 export class TreeGridPageModel {
 
     loadModel = new PendingTaskModel();
-    @observable.ref menuModel = null;
-    dimChooserModel = new DimChooserModel({
+    dimensionChooserModel = new DimensionChooserModel({
         dimensions: ['Alpha', 'Beta', 'Gamma', 'Delta'],
         initialValue: ['Gamma'],
         historyPreference: 'mobileDimHistory'
@@ -55,14 +55,6 @@ export class TreeGridPageModel {
         XH.portfolioService
             .getPortfolioAsync(['trader', 'sector', 'symbol'])
             .then(data => this.gridModel.loadData(data));
-
-        this.addReaction({
-            track: () => this.dimChooserModel.menuModel,
-            run: (menuModel) => {
-                this.menuModel = menuModel;
-            },
-            fireImmediately: true
-        });
     }
 
     destroy() {
