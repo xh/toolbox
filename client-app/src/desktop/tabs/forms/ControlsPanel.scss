@@ -2,6 +2,7 @@
   &__column {
     width: 30%;
     margin: var(--xh-pad-px);
+    border: var(--xh-border-solid);
 
     &:nth-child(2) {
       margin: var(--xh-pad-px) 0;
