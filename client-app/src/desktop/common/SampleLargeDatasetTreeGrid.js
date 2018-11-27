@@ -117,7 +117,7 @@ class SampleBigDataTreeGrid extends Component {
         const {model, loadModel} = this;
 
         return XH.portfolioService
-            .getPortfolioAsync(['trader'])
+            .getPortfolioAsync(['trader', 'model'])
             .then(data => {
                 console.time('loadAsync');
                 model.loadData(data);
