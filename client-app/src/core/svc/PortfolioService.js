@@ -16,6 +16,7 @@ export class PortfolioService {
 
     tradingDays = [];
     instData = [];
+    symbols = [];
     orders = [];
     rawPositions = [];
 
@@ -26,8 +27,7 @@ export class PortfolioService {
     async getPortfolioAsync(dims) {
         await wait(300);
         this.ensureLoaded();
-        const getPositions = this.getPositions(castArray(dims));
-        return getPositions;
+        return this.getPositions(castArray(dims));
     }
 
     async getOrdersAsync(positionId) {
@@ -197,8 +197,6 @@ export class PortfolioService {
 
         // Generate unique key for leaf-level grouping within calculateRawPositions.
         ret.id = values(ret).join('||');
-
-        // console.log('getRandomPositionForPortfolio', ret);
         return ret;
     }
 
@@ -264,6 +262,7 @@ export class PortfolioService {
 
             ret.push(groupPos);
         });
+
         return ret;
     }
 

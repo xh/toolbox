@@ -18,8 +18,9 @@ export class StandardGridPanel extends Component {
                 <p>
                     We rely on <a href="https://www.ag-grid.com/javascript-grid-reference-overview/" target="_blank">
                     ag-Grid</a> to provide the core component, with Hoist layering on a normalized API as well
-                    as custom integrations for data stores, sorting, filtering, a custom column selection UI,
-                    server-side exports, enhanced column definitions, absolute value sorting, and more.
+                    as custom integrations for observable row selection, data stores, sorting, filtering, a custom
+                    column selection UI, server-side exports, enhanced column definitions, absolute value sorting,
+                    and more.
                 </p>
             ],
             item: panel({
