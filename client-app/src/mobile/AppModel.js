@@ -7,8 +7,9 @@
 import {XH, HoistAppModel} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
-import {PortfolioService} from '../core/svc/PortfolioService';
+import {select} from '@xh/hoist/mobile/cmp/form';
 
+import {PortfolioService} from '../core/svc/PortfolioService';
 import {homePage} from './home/HomePage';
 
 @HoistAppModel
@@ -23,6 +24,22 @@ export class AppModel {
             pageFactory: homePage,
             title: 'Toolbox'
         });
+    }
+
+    getAppOptions() {
+        return [
+            {
+                label: 'Theme',
+                field: 'xhTheme',
+                valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark'),
+                control: select({
+                    options: [
+                        {value: 'light', label: 'Light'},
+                        {value: 'dark', label: 'Dark'}
+                    ]
+                })
+            }
+        ];
     }
 
     navigate(title, pageFactory) {

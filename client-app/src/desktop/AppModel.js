@@ -6,6 +6,7 @@
  */
 import {HoistAppModel, XH} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
+import {select} from '@xh/hoist/desktop/cmp/form';
 
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
@@ -33,6 +34,22 @@ export class AppModel {
 
     async initAsync() {
         await XH.installServicesAsync(CompanyService, TradeService, SalesService, PortfolioService);
+    }
+
+    getAppOptions() {
+        return [
+            {
+                label: 'Theme',
+                field: 'xhTheme',
+                valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark'),
+                control: select({
+                    options: [
+                        {value: 'light', label: 'Light'},
+                        {value: 'dark', label: 'Dark'}
+                    ]
+                })
+            }
+        ];
     }
 
     getRoutes() {
