@@ -19,14 +19,12 @@ import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {isEmpty} from 'lodash';
 import './NewsPanelItem.scss';
 
 @HoistComponent
 export class NewsPanel extends Component {
 
     localModel = new NewsPanelModel();
-
 
     render() {
         const {model} = this,
@@ -84,8 +82,7 @@ export class NewsPanel extends Component {
                             enableMulti: true,
                             placeholder: 'Filter by source...',
                             menuPlacement: 'top',
-                            width: 380,
-                            onCommit: (v) => this.checkSourcesNotEmpty(v)
+                            width: 380
                         }),
                         filler(),
                         storeCountLabel({
@@ -113,8 +110,4 @@ export class NewsPanel extends Component {
     onFilterChange = (f) => {
         this.model.setTextFilter(f);
     };
-
-    checkSourcesNotEmpty = (v) => {
-        if (isEmpty(v)) this.model.setSourceFilter(null);
-    }
 }
