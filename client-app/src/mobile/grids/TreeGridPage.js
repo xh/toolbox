@@ -12,7 +12,7 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {div} from '@xh/hoist/cmp/layout';
 import {dimensionChooser} from '@xh/hoist/mobile/cmp/dimensionChooser';
 
-import './TreeGridPage.scss'
+import './TreeGridPage.scss';
 
 import {TreeGridPageModel} from './TreeGridPageModel';
 
