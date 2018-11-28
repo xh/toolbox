@@ -5,16 +5,16 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {hframe} from '@xh/hoist/cmp/layout';
+import {hframe, hbox, div, box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import moment from 'moment';
 import {fmtDateTime, fmtThousands} from '@xh/hoist/format';
 import {
     formField,
-    checkBox,
+    checkbox,
     dateInput,
     textInput,
     textArea,
@@ -22,10 +22,7 @@ import {
     radioInput,
     slider,
     select,
-    multiSelect,
     switchInput,
-    comboBox,
-    queryComboBox,
     jsonInput,
     buttonGroupInput
 } from '@xh/hoist/desktop/cmp/form';
@@ -33,7 +30,6 @@ import {
 import {usStates, restaurants} from '../../../core/data';
 import {wrapper} from '../../common';
 import {ControlsPanelModel} from './ControlsPanelModel';
-import {App} from '../../App';
 import './ControlsPanel.scss';
 
 @HoistComponent
@@ -59,14 +55,18 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'TextInput',
                                     field: 'text1',
-                                    item: textInput()
+                                    info: 'autoFocus',
+                                    item: textInput({
+                                        autoFocus: true
+                                    })
                                 }),
                                 row({
                                     label: 'TextInput',
                                     field: 'text2',
-                                    info: 'placeholder, leftIcon, and rightElement',
+                                    info: 'placeholder, leftIcon, rightElement',
                                     item: textInput({
                                         placeholder: 'user@company.com',
+                                        round: true,
                                         leftIcon: Icon.mail(),
                                         rightElement: button({
                                             icon: Icon.cross(),
@@ -88,9 +88,10 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'TextArea',
                                     field: 'text4',
-                                    info: 'selectOnFocus',
+                                    info: 'fill, placeholder, selectOnFocus',
                                     item: textArea({
-                                        width: '100%',
+                                        fill: true,
+                                        placeholder: 'Tell us your thoughts...',
                                         selectOnFocus: true
                                     })
                                 }),
@@ -110,7 +111,14 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'NumberInput',
                                     field: 'number1',
-                                    item: numberInput()
+                                    info: 'buttons, stepSizes',
+                                    item: numberInput({
+                                        buttonPosition: 'right',
+                                        fill: true,
+                                        stepSize: 1000,
+                                        majorStepSize: 100000,
+                                        minorStepSize: 100
+                                    })
                                 }),
                                 row({
                                     label: 'NumberInput',
@@ -125,19 +133,18 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'Slider',
                                     field: 'number3',
-                                    info: 'custom labelRenderer',
+                                    info: 'max, min, stepSizes',
                                     item: slider({
-                                        min: 0,
                                         max: 100,
+                                        min: 0,
                                         labelStepSize: 25,
-                                        stepSize: 1,
-                                        labelRenderer: val => `${val}%`
+                                        stepSize: 1
                                     })
                                 }),
                                 row({
                                     label: 'Slider',
                                     field: 'range1',
-                                    info: 'multi-value, custom labelRenderer',
+                                    info: 'multi-value, labelRenderer',
                                     item: slider({
                                         min: 50000,
                                         max: 150000,
@@ -153,12 +160,16 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'DateInput',
                                     field: 'date1',
-                                    info: 'minDate, maxDate',
+                                    info: 'leftIcon, minDate, maxDate, textAlign',
                                     fmtVal: v => fmtDateTime(v),
                                     item: dateInput({
                                         commitOnChange: true,
-                                        minDate: moment().subtract(2, 'weeks').toDate(),
-                                        maxDate: moment().add(2, 'weeks').toDate()
+                                        leftIcon: Icon.calendar(),
+                                        placeholder: 'YYYY-MM-DD',
+                                        minDate: moment().subtract(5, 'weeks').toDate(),
+                                        maxDate: moment().add(2, 'weeks').toDate(),
+                                        textAlign: 'right',
+                                        width: 150
                                     })
                                 }),
                                 row({
@@ -168,6 +179,7 @@ export class ControlsPanel extends Component {
                                     fmtVal: v => fmtDateTime(v),
                                     item: dateInput({
                                         commitOnChange: true,
+                                        showActionsBar: true,
                                         timePrecision: 'minute',
                                         timePickerProps: {useAmPm: true}
                                     })
@@ -179,48 +191,61 @@ export class ControlsPanel extends Component {
                             items: [
                                 row({
                                     label: 'Select',
-                                    field: 'option1',
-                                    item: select({
-                                        options: usStates,
-                                        placeholder: 'Select a state...',
-                                        icon: Icon.location()
-                                    })
-                                }),
-                                row({
-                                    label: 'ComboBox',
                                     field: 'option2',
-                                    item: comboBox({
+                                    item: select({
                                         options: restaurants,
                                         placeholder: 'Search restaurants...'
                                     })
                                 }),
                                 row({
-                                    label: 'QueryComboBox',
-                                    field: 'option3',
-                                    info: 'custom/async search (name/city)',
-                                    item: queryComboBox({
-                                        queryFn: this.queryCompaniesAsync,
-                                        placeholder: 'Search companies...'
+                                    label: 'Select',
+                                    field: 'option1',
+                                    info: 'enableFilter:false',
+                                    item: select({
+                                        options: usStates,
+                                        width: 160,
+                                        enableFilter: false,
+                                        placeholder: 'Select a state...'
                                     })
                                 }),
                                 row({
-                                    label: 'MultiSelect',
+                                    label: 'Select',
+                                    field: 'option3',
+                                    info: 'custom fields, renderer, async search',
+                                    item: select({
+                                        valueField: 'id',
+                                        labelField: 'name',
+                                        queryFn: this.queryCompaniesAsync,
+                                        optionRenderer: this.renderCompanyOption,
+                                        placeholder: 'Search companies...',
+                                        width: '90%'
+                                    })
+                                }),
+                                row({
+                                    label: 'Select',
                                     field: 'option5',
-                                    item: multiSelect({
+                                    info: 'enableMulti',
+                                    item: select({
                                         options: usStates,
-                                        className: 'toolbox-multiselect',
+                                        enableMulti: true,
+                                        width: '90%',
                                         placeholder: 'Select state(s)...'
                                     })
                                 }),
                                 row({
-                                    label: 'CheckBox',
+                                    label: 'Checkbox',
                                     field: 'bool1',
-                                    item: checkBox()
+                                    item: checkbox({
+                                        label: 'enabled'
+                                    })
                                 }),
                                 row({
                                     label: 'SwitchInput',
                                     field: 'bool2',
-                                    item: switchInput()
+                                    item: switchInput({
+                                        label: 'Enabled:',
+                                        labelAlign: 'left'
+                                    })
                                 }),
                                 row({
                                     label: 'ButtonGroupInput',
@@ -246,9 +271,8 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'RadioInput',
                                     field: 'option6',
-                                    info: 'disabled option',
+                                    info: 'inline, disabled option',
                                     item: radioInput({
-                                        alignIndicator: 'right',
                                         inline: true,
                                         options: ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]
                                     })
@@ -284,9 +308,30 @@ export class ControlsPanel extends Component {
         });
     };
 
-    queryCompaniesAsync(query) {
-        return App.companyService.queryAsync(query).then(hits => {
-            return hits.map(it => `${it.name} (${it.city})`);
+    queryCompaniesAsync = (query) => {
+        return XH.companyService.queryAsync(query)
+            .wait(400)
+            .then(hits => hits);
+    };
+
+    renderCompanyOption = (opt) => {
+        return hbox({
+            items: [
+                box({
+                    item: opt.isActive ?
+                        Icon.checkCircle({className: 'xh-green fa-fw'}) :
+                        Icon.x({className: 'xh-red fa-fw'}),
+                    width: 26
+                }),
+                div(
+                    opt.name,
+                    div({
+                        className: 'xh-text-color-muted xh-font-size-small',
+                        item: `${opt.city} · ID: ${opt.id}`
+                    })
+                )
+            ],
+            alignItems: 'center'
         });
     }
 }

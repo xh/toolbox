@@ -1,15 +1,9 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2018 Extremely Heavy Industries Inc.
- */
-
 import {XH, HoistModel} from '@xh/hoist/core';
-import {GridModel} from '@xh/hoist/mobile/cmp/grid';
+import {Grid, GridModel} from '@xh/hoist/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer} from '@xh/hoist/format';
+import {multiFieldRenderer} from '@xh/hoist/cmp/grid/renderers';
+import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
 
 import {companyTrades} from '../../core/data';
 
@@ -19,23 +13,45 @@ export class GridPageModel {
     loadModel = new PendingTaskModel();
 
     gridModel = new GridModel({
+        stateModel: 'toolboxSampleGrid',
+        sortBy: ['profit_loss|desc|abs'],
         store: new LocalStore({
-            fields: ['company', 'profit_loss']
+            fields: ['company', 'city', 'trade_volume', 'profit_loss']
         }),
-        leftColumn: {
-            headerName: 'Company',
-            field: 'company'
-        },
-        rightColumn: {
-            headerName: 'P&L',
-            field: 'profit_loss',
-            valueFormatter: numberRenderer({
-                precision: 0,
-                ledger: true,
-                colorSpec: true,
-                asElement: true
-            })
-        }
+        columns: [
+            {
+                field: 'company',
+                flex: true,
+                elementRenderer: multiFieldRenderer,
+                rowHeight: Grid.MULTIFIELD_ROW_HEIGHT,
+                multiFieldConfig: {
+                    subFields: [{colId: 'city', label: true}]
+                }
+            },
+            {
+                headerName: 'P&L',
+                field: 'profit_loss',
+                width: 120,
+                align: 'right',
+                absSort: true,
+                elementRenderer: multiFieldRenderer,
+                rowHeight: Grid.MULTIFIELD_ROW_HEIGHT,
+                multiFieldConfig: {
+                    mainRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}),
+                    subFields: [{colId: 'trade_volume', label: true}]
+                }
+            },
+            {
+                hidden: true,
+                field: 'city'
+            },
+            {
+                hidden: true,
+                headerName: 'Volume',
+                field: 'trade_volume',
+                renderer: thousandsRenderer({precision: 1, label: true, asElement: true})
+            }
+        ]
     });
 
     constructor() {

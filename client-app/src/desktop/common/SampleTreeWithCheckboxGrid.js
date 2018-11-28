@@ -5,37 +5,35 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, LayoutSupport} from '@xh/hoist/core';
-import {wait} from '@xh/hoist/promise';
-import {box, filler, fragment} from '@xh/hoist/cmp/layout';
-import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
-import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {checkBox, switchInput} from '@xh/hoist/desktop/cmp/form';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {emptyFlexCol} from '@xh/hoist/columns';
+import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
+import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
+import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {LocalStore} from '@xh/hoist/data';
+import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {checkbox, switchInput} from '@xh/hoist/desktop/cmp/form';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {mask} from '@xh/hoist/desktop/cmp/mask';
-
-import {sampleTreeData} from './SampleTreeData';
-import './SampleTreeWithCheckBoxGrid.scss';
+import './SampleTreeWithCheckboxGrid.scss';
 
 @HoistComponent
 @LayoutSupport
-class SampleTreeWithCheckBoxGrid extends Component {
+class SampleTreeWithCheckboxGrid extends Component {
 
     loadModel = new PendingTaskModel();
 
     localModel = new GridModel({
         treeMode: true,
         store: new LocalStore({
-            fields: ['id', 'name', 'pnl']
+            fields: [
+                'id', 'name', 'pnl',
+                {name: 'enabled', type: 'bool', defaultValue: false}
+            ]
         }),
-        sortBy: [{colId: 'name', sort: 'asc'}],
+        sortBy: 'name',
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
@@ -71,37 +69,28 @@ class SampleTreeWithCheckBoxGrid extends Component {
     }
 
     render() {
-        const {model} = this,
-            {store} = model;
+        const {model} = this;
 
         return panel({
-            className: this.getClassName(),
-            ...this.getLayoutProps(),
             item: grid({className: 'sample-tree-checkbox-grid', model}),
-            mask: mask({spinner: true, model: this.loadModel}),
-            bbar: toolbar({
-                omit: this.props.omitToolbar,
-                items: [
-                    storeFilterField({
-                        store,
-                        fields: ['name']
-                    }),
-                    storeCountLabel({
-                        store,
-                        units: 'companies'
-                    }),
-                    filler(),
-                    box('Compact mode:'),
-                    switchInput({
-                        field: 'compact',
-                        model
-                    }),
-                    toolbarSep(),
-                    colChooserButton({gridModel: model}),
-                    exportButton({model, exportType: 'excel'}),
-                    refreshButton({model: this})
-                ]
-            })
+            mask: this.loadModel,
+            bbar: toolbar(
+                refreshButton({model: this}),
+                toolbarSep(),
+                switchInput({
+                    model,
+                    field: 'compact',
+                    label: 'Compact',
+                    labelAlign: 'left'
+                }),
+                filler(),
+                storeCountLabel({gridModel: model, units: 'companies'}),
+                storeFilterField({gridModel: model}),
+                colChooserButton({gridModel: model}),
+                exportButton({model, exportType: 'excel'})
+            ),
+            className: this.getClassName(),
+            ...this.getLayoutProps()
         });
     }
 
@@ -109,9 +98,12 @@ class SampleTreeWithCheckBoxGrid extends Component {
     // Implementation
     //------------------------
     loadAsync() {
-        wait(250)
-            .then(() => this.model.loadData(sampleTreeData))
-            .linkTo(this.loadModel);
+        const {model, loadModel} = this;
+
+        return XH.portfolioService
+            .getPortfolioAsync(['fund', 'region'])
+            .then(data => model.loadData(data))
+            .linkTo(loadModel);
     }
 
 
@@ -126,15 +118,14 @@ class SampleTreeWithCheckBoxGrid extends Component {
                         class extends Component {
                             constructor(props) {
                                 super(props);
-                                props.reactContainer.style = 'display: inherit';
+                                props.reactContainer.style = 'display: inline-block';
                             }
 
                             render() {
                                 const rec = this.props.data;
                                 return fragment(
-                                    checkBox({
-                                        checked: rec.enabled,
-                                        indeterminate: rec.indeterminate,
+                                    checkbox({
+                                        value: rec.enabled,
                                         onChange: () => me.toggleNode(rec)
                                     }),
                                     rec.name
@@ -152,7 +143,6 @@ class SampleTreeWithCheckBoxGrid extends Component {
         const {store} = this.model,
             realRec = store.getById(rec.id);
 
-        realRec.indeterminate = false;
         realRec.enabled = !realRec.enabled;
         this.setChildren(realRec, realRec.enabled);
         this.updateParents(realRec);
@@ -161,7 +151,6 @@ class SampleTreeWithCheckBoxGrid extends Component {
 
     setChildren(rec, enabled) {
         rec.children.forEach(it => {
-            it.indeterminate = false;
             it.enabled = enabled;
             this.setChildren(it, enabled);
         });
@@ -174,13 +163,10 @@ class SampleTreeWithCheckBoxGrid extends Component {
             isAllEnabled = (rec) => rec.children.every(it => it.enabled && isAllEnabled(it)),
             isAllDisabled = (rec) => rec.children.every(it => !it.enabled && isAllDisabled(it)),
             allEnabled = isAllEnabled(parent),
-            allDisabled = isAllDisabled(parent),
-            indeterminate = !allEnabled && !allDisabled;
+            allDisabled = isAllDisabled(parent);
 
-        parent.indeterminate = indeterminate;
-        parent.enabled = allEnabled;
-
+        parent.enabled = allEnabled ? true : (allDisabled ? false : null);
         this.updateParents(parent);
     }
 }
-export const sampleTreeWithCheckBoxGrid = elemFactory(SampleTreeWithCheckBoxGrid);
+export const sampleTreeWithCheckboxGrid = elemFactory(SampleTreeWithCheckboxGrid);

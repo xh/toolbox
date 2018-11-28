@@ -1,7 +1,7 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core/index';
 import {hbox, box} from '@xh/hoist/cmp/layout/index';
-import stockPhoto from '../../../core/img/stock-news.png';
+import stockPhoto from '../../../../core/img/stock-news.png';
 import React from 'react';
 
 @HoistComponent

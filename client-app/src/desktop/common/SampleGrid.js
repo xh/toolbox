@@ -1,33 +1,27 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2018 Extremely Heavy Industries Inc.
- */
-import {Component} from 'react';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
+import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
+import {box, filler, span} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
-import {wait} from '@xh/hoist/promise';
-import {box, filler} from '@xh/hoist/cmp/layout';
-import {Icon} from '@xh/hoist/icon';
-import {grid, GridModel, colChooserButton} from '@xh/hoist/desktop/cmp/grid';
-import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {switchInput, select} from '@xh/hoist/desktop/cmp/form';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {boolCheckCol, emptyFlexCol} from '@xh/hoist/columns';
 import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {observable, action} from '@xh/hoist/mobx';
+import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/form';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/columns';
-
-import {App} from '../App';
+import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon';
+import {action, observable} from '@xh/hoist/mobx';
+import {wait} from '@xh/hoist/promise';
+import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {Component} from 'react';
 
 @HoistComponent
 @LayoutSupport
 class SampleGrid extends Component {
+
+    @observable groupBy = false;
 
     loadModel = new PendingTaskModel();
 
@@ -35,7 +29,8 @@ class SampleGrid extends Component {
         text: 'View Details',
         icon: Icon.search(),
         tooltip: 'View details on the selected company',
-        actionFn: (action, rec) => this.showInfoToast(rec)
+        recordsRequired: 1,
+        actionFn: ({record}) => this.showInfoToast(record)
     };
 
     terminateAction = {
@@ -43,13 +38,23 @@ class SampleGrid extends Component {
         icon: Icon.skull(),
         intent: 'danger',
         tooltip: 'Terminate this company.',
-        actionFn: (action, rec) => this.showTerminateToast(rec)
+        recordsRequired: 1,
+        actionFn: ({record}) => this.showTerminateToast(record),
+        displayFn: ({record}) => {
+            if (record.city == 'New York') {
+                return {
+                    disabled: true,
+                    tooltip: 'New York companies cannot be terminated at this time.'
+                };
+            }
+        }
     };
 
     localModel = new GridModel({
         store: new LocalStore({
             fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
         }),
+        selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
@@ -69,7 +74,7 @@ class SampleGrid extends Component {
             {
                 field: 'id',
                 headerName: 'ID',
-                hide: true
+                hidden: true
             },
             {
                 ...actionCol,
@@ -125,8 +130,6 @@ class SampleGrid extends Component {
         ]
     });
 
-    @observable groupBy = false;
-
     constructor(props) {
         super(props);
         this.loadAsync();
@@ -134,46 +137,58 @@ class SampleGrid extends Component {
 
     render() {
         const {model} = this,
-            {store} = model;
+            selection = model.selection,
+            selCount = selection.length;
+
+        let selText = 'None';
+        if (selCount == 1) {
+            selText = `${selection[0].company} (${selection[0].city})` ;
+        } else if (selCount > 1) {
+            selText = `${selCount} companies`;
+        }
 
         return panel({
-            className: this.getClassName(),
-            ...this.getLayoutProps(),
             item: grid({model}),
             mask: this.loadModel,
-            bbar: toolbar({
+            tbar: toolbar({
                 omit: this.props.omitToolbar,
                 items: [
-                    storeFilterField({
-                        store,
-                        fields: ['company', 'city']
-                    }),
-                    storeCountLabel({
-                        store,
-                        unit: 'companies'
-                    }),
-                    filler(),
-                    box('Group by:'),
+                    refreshButton({model: this}),
+                    toolbarSep(),
+                    span('Group by:'),
                     select({
+                        model: this,
+                        field: 'groupBy',
                         options: [
                             {value: 'active', label: 'Active'},
                             {value: 'city', label: 'City'},
                             {value: false, label: 'None'}
                         ],
-                        model: this,
-                        field: 'groupBy'
-                    }),
-                    box('Compact mode:'),
-                    switchInput({
-                        field: 'compact',
-                        model
+                        width: 120,
+                        enableFilter: false
                     }),
                     toolbarSep(),
+                    switchInput({
+                        model,
+                        field: 'compact',
+                        label: 'Compact',
+                        labelAlign: 'left'
+                    }),
+                    filler(),
+                    storeCountLabel({gridModel: model, unit: 'companies'}),
+                    storeFilterField({gridModel: model}),
                     colChooserButton({gridModel: model}),
-                    exportButton({model, exportType: 'excel'}),
-                    refreshButton({model: this})
+                    exportButton({model, exportType: 'excel'})
                 ]
-            })
+            }),
+            bbar: toolbar({
+                items: [
+                    Icon.info(),
+                    box(`Current selection: ${selText}`)
+                ]
+            }),
+            className: this.getClassName(),
+            ...this.getLayoutProps()
         });
     }
 
@@ -182,7 +197,7 @@ class SampleGrid extends Component {
     //------------------------
     loadAsync() {
         wait(250)
-            .then(() => this.model.loadData(App.tradeService.generateTrades()))
+            .then(() => this.model.loadData(XH.tradeService.generateTrades()))
             .linkTo(this.loadModel);
     }
 

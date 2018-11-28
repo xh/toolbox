@@ -1,9 +1,3 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2018 Extremely Heavy Industries Inc.
- */
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {hframe} from '@xh/hoist/cmp/layout';
@@ -89,10 +83,7 @@ render() {
                             }
                         }),
                         filler(),
-                        storeFilterField({
-                            store: files.store,
-                            fields: ['filename']
-                        })
+                        storeFilterField({gridModel: files})
                      )
                 })
             logViewer({model}),
@@ -130,10 +121,7 @@ render() {
                                 />
                         }
                         <Filler />
-                        <StoreFilterField
-                            store={files.store}
-                            fields={['filename']}
-                        />
+                        <StoreFilterField gridModel={files}/>
                     </Toolbar>
                 }
             >

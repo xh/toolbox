@@ -1,21 +1,14 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2018 Extremely Heavy Industries Inc.
- */
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
 import {LocalStore} from '@xh/hoist/data';
 
-import {App} from '../../App';
 import {wrapper} from '../../common/Wrapper';
 import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
@@ -51,20 +44,11 @@ export class DataViewPanel extends Component {
                     rowCls: 'dataview-item',
                     itemHeight: 70
                 }),
-                bbar: toolbar({
-                    items: [
-                        storeFilterField({
-                            store: model.store,
-                            fields: ['name', 'city']
-                        }),
-                        filler(),
-                        button({
-                            text: 'Reload Data',
-                            icon: Icon.refresh(),
-                            onClick: this.loadData
-                        })
-                    ]
-                })
+                bbar: toolbar(
+                    refreshButton({onClick: this.loadData}),
+                    filler(),
+                    storeFilterField({store: model.store})
+                )
             })
         });
     }
@@ -75,7 +59,7 @@ export class DataViewPanel extends Component {
 
     loadData = () => {
         const {store} = this.model,
-            companies = App.companyService.randomCompanies,
+            companies = XH.companyService.randomCompanies,
             min = -1000,
             max = 1000;
 

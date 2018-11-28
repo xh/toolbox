@@ -1,15 +1,9 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2018 Extremely Heavy Industries Inc.
- */
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {restGrid, RestGridModel, RestStore} from '@xh/hoist/desktop/cmp/rest';
-import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/columns';
+import {restGrid, RestGridModel, RestStore, addAction, editAction, viewAction, deleteAction} from '@xh/hoist/desktop/cmp/rest';
+import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent
@@ -97,7 +91,12 @@ export class RestGridPanel extends Component {
             {field: 'lastUpdatedBy'}
         ],
         emptyText: 'No companies found - try adding one...',
-        actionColEnabled: true
+        menuActions: [
+            addAction,
+            editAction,
+            viewAction,
+            deleteAction
+        ]
     });
 
     constructor() {

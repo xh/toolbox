@@ -1,15 +1,9 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2018 Extremely Heavy Industries Inc.
- */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common/Wrapper';
-import {vframe} from '@xh/hoist/cmp/layout';
+import {box, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {comboBox, label} from '@xh/hoist/desktop/cmp/form';
+import {select} from '@xh/hoist/desktop/cmp/form';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
 import {OLHCChartModel} from './OLHCChartModel';
@@ -29,11 +23,12 @@ export class OLHCChartPanel extends Component {
                 height: 600,
                 item: this.renderExample(),
                 tbar: toolbar(
-                    label('Company: '),
-                    comboBox({
+                    box('Company: '),
+                    select({
                         model,
+                        field: 'currentCompany',
                         options: Object.keys(companyMap),
-                        field: 'currentCompany'
+                        enableFilter: false
                     }),
                 )
             })

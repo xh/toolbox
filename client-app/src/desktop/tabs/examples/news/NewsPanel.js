@@ -10,11 +10,11 @@ import {HoistComponent} from '@xh/hoist/core/index';
 import {NewsPanelModel} from './NewsPanelModel';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../../common/Wrapper';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {multiSelect} from '@xh/hoist/desktop/cmp/form';
+import {select} from '@xh/hoist/desktop/cmp/form';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
@@ -25,7 +25,6 @@ import './NewsPanelItem.scss';
 export class NewsPanel extends Component {
 
     localModel = new NewsPanelModel();
-
 
     render() {
         const {model} = this,
@@ -72,15 +71,18 @@ export class NewsPanel extends Component {
                     items: [
                         storeFilterField({
                             onFilterChange: this.onFilterChange,
-                            fields: model.SEARCH_FIELDS,
+                            includeFields: model.SEARCH_FIELDS,
+                            store: viewModel.store,
                             placeholder: 'Filter by title...'
                         }),
-                        multiSelect({
-                            placeholder: 'Filter by source...',
-                            options: model.sourceOptions,
-                            commitOnChange: true,
+                        select({
                             model,
-                            field: 'sourceFilter'
+                            field: 'sourceFilter',
+                            options: model.sourceOptions,
+                            enableMulti: true,
+                            placeholder: 'Filter by source...',
+                            menuPlacement: 'top',
+                            width: 380
                         }),
                         filler(),
                         storeCountLabel({
