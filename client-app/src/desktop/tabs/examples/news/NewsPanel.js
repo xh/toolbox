@@ -72,7 +72,6 @@ export class NewsPanel extends Component {
                         storeFilterField({
                             onFilterChange: this.onFilterChange,
                             includeFields: model.SEARCH_FIELDS,
-                            store: viewModel.store,
                             placeholder: 'Filter by title...'
                         }),
                         select({
