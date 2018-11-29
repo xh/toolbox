@@ -26,7 +26,6 @@ export class NewsPanel extends Component {
 
     localModel = new NewsPanelModel();
 
-
     render() {
         const {model} = this,
             {viewModel} = model;
@@ -72,7 +71,7 @@ export class NewsPanel extends Component {
                     items: [
                         storeFilterField({
                             onFilterChange: this.onFilterChange,
-                            fields: model.SEARCH_FIELDS,
+                            includeFields: model.SEARCH_FIELDS,
                             placeholder: 'Filter by title...'
                         }),
                         select({

@@ -112,7 +112,7 @@ class SampleTreeGrid extends Component {
                 switchInput({
                     model,
                     field: 'compact',
-                    label: 'Compact mode:',
+                    label: 'Compact',
                     labelAlign: 'left'
                 }),
                 filler(),

@@ -1,7 +1,7 @@
 import {HoistService} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {MINUTES} from '@xh/hoist/utils/datetime';
-import {sumBy, castArray, forOwn, last, sortBy, groupBy, keys, values, find, filter, random, sample, times, round} from 'lodash';
+import {sumBy, castArray, forOwn, last, sortBy, groupBy, values, find, filter, random, sample, times, round} from 'lodash';
 import moment from 'moment';
 
 @HoistService
@@ -14,12 +14,13 @@ export class PortfolioService {
     traders = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn', 'Robert Greer', 'HedgeSys', 'Susan Major'];
 
     tradingDays = [];
-    instData = {};
+    symbols = [];
+    instData = new Map();
     orders = [];
     rawPositions = [];
 
-    INITIAL_ORDERS = 15000;
-    INITIAL_SYMBOLS = 300;
+    INITIAL_ORDERS = 20000;
+    INITIAL_SYMBOLS = 500;
 
     // Public API around getPositions.
     async getPortfolioAsync(dims) {
@@ -34,7 +35,7 @@ export class PortfolioService {
     }
 
     async getLineChartSeries(symbol) {
-        const mktData = this.instData[symbol].mktData;
+        const mktData = this.getMktData(symbol);
         return ([{
             name: symbol,
             type: 'line',
@@ -44,7 +45,7 @@ export class PortfolioService {
     }
 
     async getOLHCChartSeries(symbol) {
-        const mktData = this.instData[symbol].mktData;
+        const mktData = this.getMktData(symbol);
 
         return ([{
             name: symbol,
@@ -70,8 +71,8 @@ export class PortfolioService {
                 symbol = pos.symbol,
                 dir = sample(['Sell', 'Buy']),
                 qty = random(300, 10000) * (dir == 'Sell' ? -1 : 1),
-                mktData = find(this.instData[symbol].mktData, {day: tradingDay}),
-                px = random(mktData.low, mktData.high, true).toFixed(2);
+                mktData = find(this.getMktData(symbol), {day: tradingDay}),
+                px = round(random(mktData.low, mktData.high, true), 2);
 
             orders.push({
                 ...pos,
@@ -102,7 +103,8 @@ export class PortfolioService {
     populateRefData() {
         const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
             days = this.tradingDays = [],
-            instData = this.instData = {};
+            symbols = this.symbols = [],
+            instData = this.instData = new Map();
 
         // Generate trading days.
         let tradingDay = moment('2017-01-02', 'YYYY-MM-DD'),
@@ -115,14 +117,15 @@ export class PortfolioService {
         }
 
         // Generate symbols + market data map.
-        while (keys(instData).length < this.INITIAL_SYMBOLS) {
+        while (symbols.length < this.INITIAL_SYMBOLS) {
             let symbol = '';
             times(random(1, 5), () => symbol += sample(alpha));
-            if (!instData[symbol]) {
-                instData[symbol] = {
+            if (!instData.has(symbol)) {
+                symbols.push(symbol);
+                instData.set(symbol, {
                     sector: sample(this.sectors),
                     mktData: this.generateMarketData()
-                };
+                });
             }
         }
     }
@@ -158,10 +161,10 @@ export class PortfolioService {
 
             ret.push({
                 day: tradingDay,
-                high: high.toFixed(2),
-                low: low.toFixed(2),
-                open: open.toFixed(2),
-                close: close.toFixed(2),
+                high: round(high, 2),
+                low: round(low, 2),
+                open: round(open, 2),
+                close: round(close, 2),
                 volume: random(80, maxVol) * 1000
             });
             startPx = close;
@@ -171,10 +174,10 @@ export class PortfolioService {
     }
 
     getRandomPositionForPortfolio() {
-        const symbol = sample(keys(this.instData));
+        const symbol = sample(this.symbols);
         const ret = {
             symbol,
-            sector: this.instData[symbol].sector,
+            sector: this.getSector(symbol),
             model: sample(this.models),
             fund: sample(this.funds),
             region: sample(this.regions),
@@ -194,7 +197,7 @@ export class PortfolioService {
         forOwn(byPosId, (orders) => {
             const first = orders[0],
                 symbol = first.symbol,
-                endPx = last(this.instData[symbol].mktData).close;
+                endPx = last(this.getMktData(symbol)).close;
 
             let endQty = 0, netCashflow = 0;
 
@@ -263,6 +266,14 @@ export class PortfolioService {
         });
 
         return ret;
+    }
+
+    getMktData(symbol) {
+        return this.instData.get(symbol).mktData;
+    }
+
+    getSector(symbol) {
+        return this.instData.get(symbol).sector;
     }
 
 }
