@@ -92,7 +92,7 @@ class SampleTreeGrid extends Component {
             track: () => this.dimChooserModel.value,
             run: () => this.loadAsync(),
             fireImmediately: true
-        })
+        });
     }
 
     render() {
