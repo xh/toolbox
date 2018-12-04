@@ -11,8 +11,6 @@ import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 
-import {sampleTreeData} from '../../core/data';
-
 @HoistModel
 export class TreeGridPageModel {
 
@@ -46,7 +44,9 @@ export class TreeGridPageModel {
     });
 
     constructor() {
-        this.gridModel.loadData(sampleTreeData);
+        XH.portfolioService
+            .getPortfolioAsync(['trader', 'sector', 'symbol'])
+            .then(data => this.gridModel.loadData(data));
     }
 
     destroy() {

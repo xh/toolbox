@@ -10,7 +10,7 @@ import {HoistComponent} from '@xh/hoist/core/index';
 import {NewsPanelModel} from './NewsPanelModel';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../../common/Wrapper';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -25,7 +25,6 @@ import './NewsPanelItem.scss';
 export class NewsPanel extends Component {
 
     localModel = new NewsPanelModel();
-
 
     render() {
         const {model} = this,
@@ -72,7 +71,7 @@ export class NewsPanel extends Component {
                     items: [
                         storeFilterField({
                             onFilterChange: this.onFilterChange,
-                            fields: model.SEARCH_FIELDS,
+                            includeFields: model.SEARCH_FIELDS,
                             placeholder: 'Filter by title...'
                         }),
                         select({

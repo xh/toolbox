@@ -1,15 +1,9 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2018 Extremely Heavy Industries Inc.
- */
-
 import {XH, HoistModel} from '@xh/hoist/core';
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {Grid, GridModel} from '@xh/hoist/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer} from '@xh/hoist/format';
+import {multiFieldRenderer} from '@xh/hoist/cmp/grid/renderers';
+import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
 
 import {companyTrades} from '../../core/data';
 
@@ -27,7 +21,12 @@ export class GridPageModel {
         columns: [
             {
                 field: 'company',
-                flex: true
+                flex: true,
+                elementRenderer: multiFieldRenderer,
+                rowHeight: Grid.MULTIFIELD_ROW_HEIGHT,
+                multiFieldConfig: {
+                    subFields: [{colId: 'city', label: true}]
+                }
             },
             {
                 headerName: 'P&L',
@@ -35,7 +34,22 @@ export class GridPageModel {
                 width: 120,
                 align: 'right',
                 absSort: true,
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+                elementRenderer: multiFieldRenderer,
+                rowHeight: Grid.MULTIFIELD_ROW_HEIGHT,
+                multiFieldConfig: {
+                    mainRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}),
+                    subFields: [{colId: 'trade_volume', label: true}]
+                }
+            },
+            {
+                hidden: true,
+                field: 'city'
+            },
+            {
+                hidden: true,
+                headerName: 'Volume',
+                field: 'trade_volume',
+                renderer: thousandsRenderer({precision: 1, label: true, asElement: true})
             }
         ]
     });
