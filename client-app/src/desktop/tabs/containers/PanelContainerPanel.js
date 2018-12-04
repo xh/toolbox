@@ -13,21 +13,17 @@ export class PanelContainerPanel extends Component {
 
     leftSizingModel = new PanelSizingModel({
         defaultSize: 125,
-        side: 'left',
-        showSplitter: false
+        side: 'left'
     });
 
     rightSizingModel = new PanelSizingModel({
         defaultSize: 125,
-        side: 'right',
-        showSplitterCollapseButton: false,
-        showHeaderCollapseButton: true
+        side: 'right'
     });
 
     bottomSizingModel = new PanelSizingModel({
         defaultSize: 130,
-        side: 'bottom',
-        showHeaderCollapseButton: true
+        side: 'bottom'
     });
 
     get allExpanded() {
@@ -57,7 +53,7 @@ export class PanelContainerPanel extends Component {
                         items: [
                             panel({
                                 title: 'Left Panel',
-                                icon: Icon.chevronLeft(),
+                                icon: Icon.arrowToLeft(),
                                 sizingModel: this.leftSizingModel,
                                 item: box({
                                     padding: 10,
@@ -85,7 +81,7 @@ export class PanelContainerPanel extends Component {
                             }),
                             panel({
                                 title: 'Right Panel',
-                                icon: Icon.chevronRight(),
+                                icon: Icon.arrowToRight(),
                                 sizingModel: this.rightSizingModel,
                                 item: box({
                                     padding: 10,
@@ -96,7 +92,7 @@ export class PanelContainerPanel extends Component {
                     }),
                     panel({
                         title: 'Bottom Panel',
-                        icon: Icon.chevronDown(),
+                        icon: Icon.arrowToBottom(),
                         sizingModel: this.bottomSizingModel,
                         item: box({
                             padding: 10,
