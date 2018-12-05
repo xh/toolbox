@@ -2,7 +2,17 @@ import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
-import {formField, label, textInput, numberInput, select, textArea, searchInput} from '@xh/hoist/mobile/cmp/form';
+import {
+    formField,
+    label,
+    textInput,
+    select,
+    numberInput,
+    checkbox,
+    switchInput,
+    textArea,
+    searchInput
+} from '@xh/hoist/mobile/cmp/form';
 
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
@@ -36,6 +46,16 @@ export class FormPage extends Component {
                                 enableShorthandUnits: true,
                                 displayWithCommas: true
                             })
+                        }),
+                        formField({
+                            model,
+                            field: 'included',
+                            item: checkbox()
+                        }),
+                        formField({
+                            model,
+                            field: 'enabled',
+                            item: switchInput()
                         }),
                         formField({
                             model,
