@@ -10,7 +10,7 @@ import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {grid} from '@xh/hoist/cmp/grid';
 import {div} from '@xh/hoist/cmp/layout';
-import {dimensionChooser} from '@xh/hoist/mobile/cmp/dimensionChooser';
+import {dimensionChooser} from '@xh/hoist/mobile/cmp/dimensionchooser';
 
 import './TreeGridPage.scss';
 

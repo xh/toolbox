@@ -10,7 +10,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
-import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {DimensionChooserModel} from '@xh/hoist/mobile/cmp/dimensionchooser';
 
 @HoistModel
 export class TreeGridPageModel {
