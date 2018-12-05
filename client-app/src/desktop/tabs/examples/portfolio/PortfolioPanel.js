@@ -20,7 +20,7 @@ import './PortfolioPanel.scss';
 @HoistComponent
 export class PortfolioPanel extends Component {
 
-    localModel = new PortfolioPanelModel();
+    model = new PortfolioPanelModel();
 
     render() {
         const {model} = this;

@@ -22,7 +22,7 @@ import './ControlsPanel.scss';
 @HoistComponent
 export class SelectPanel extends Component {
 
-    localModel = new SelectPanelModel();
+    model = new SelectPanelModel();
 
     render() {
         return wrapper({

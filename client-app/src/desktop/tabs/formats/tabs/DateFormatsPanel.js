@@ -20,7 +20,7 @@ import './Styles.scss';
 @HoistComponent
 export class DateFormatsPanel extends Component {
 
-    localModel = new DateFormatsPanelModel();
+    model = new DateFormatsPanelModel();
 
     render() {
         return wrapper({

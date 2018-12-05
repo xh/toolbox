@@ -14,7 +14,7 @@ import {DateFormatsPanel} from './tabs/DateFormatsPanel';
 @HoistComponent
 export class FormatsTab extends Component {
 
-    localModel = new TabContainerModel({
+    model = new TabContainerModel({
         route: 'default.formats',
         tabs: [
             {id: 'number', title: 'Number', content: NumberFormatsPanel},

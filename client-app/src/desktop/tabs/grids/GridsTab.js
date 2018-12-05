@@ -12,7 +12,7 @@ import {TreeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
 @HoistComponent
 export class GridsTab extends Component {
 
-    localModel = new TabContainerModel({
+    model = new TabContainerModel({
         route: 'default.grids',
         tabs: [
             {id: 'standard', content: StandardGridPanel},

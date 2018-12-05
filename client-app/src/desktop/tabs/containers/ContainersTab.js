@@ -13,7 +13,7 @@ import './ContainersTab.scss';
 @HoistComponent
 export class ContainersTab extends Component {
 
-    localModel = new TabContainerModel({
+    model = new TabContainerModel({
         route: 'default.containers',
         tabs: [
             {id: 'hbox', title: 'HBox', content: HBoxContainerPanel},

@@ -50,7 +50,7 @@ class SampleGrid extends Component {
         }
     };
 
-    localModel = new GridModel({
+    model = new GridModel({
         store: new LocalStore({
             fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
         }),
