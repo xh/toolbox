@@ -9,10 +9,8 @@ import {Component} from 'react';
 import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {grid} from '@xh/hoist/cmp/grid';
-import {div} from '@xh/hoist/cmp/layout';
+import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {dimensionChooser} from '@xh/hoist/mobile/cmp/dimensionchooser';
-
-import './TreeGridPage.scss';
 
 import {TreeGridPageModel} from './TreeGridPageModel';
 
@@ -23,6 +21,7 @@ export class TreeGridPage extends Component {
     render() {
         const {model} = this,
             {gridModel, loadModel, dimensionChooserModel} = model;
+
         return page({
             loadModel: loadModel,
             items: [
@@ -35,14 +34,9 @@ export class TreeGridPage extends Component {
                         });
                     }
                 }),
-                div({
-                    className: 'dim-chooser-bar',
-                    items: [
-                        dimensionChooser({
-                            model: dimensionChooserModel
-                        })
-                    ]
-                })
+                toolbar(
+                    dimensionChooser({model: dimensionChooserModel})
+                )
             ]
         });
     }
