@@ -53,7 +53,7 @@ export class PanelContainerPanel extends Component {
                         items: [
                             panel({
                                 title: 'Left Panel',
-                                icon: Icon.chevronLeft(),
+                                icon: Icon.arrowToLeft(),
                                 sizingModel: this.leftSizingModel,
                                 item: box({
                                     padding: 10,
@@ -80,6 +80,8 @@ export class PanelContainerPanel extends Component {
                                 )
                             }),
                             panel({
+                                title: 'Right Panel',
+                                icon: Icon.arrowToRight(),
                                 sizingModel: this.rightSizingModel,
                                 item: box({
                                     padding: 10,
@@ -90,7 +92,7 @@ export class PanelContainerPanel extends Component {
                     }),
                     panel({
                         title: 'Bottom Panel',
-                        icon: Icon.chevronDown(),
+                        icon: Icon.arrowToBottom(),
                         sizingModel: this.bottomSizingModel,
                         item: box({
                             padding: 10,
