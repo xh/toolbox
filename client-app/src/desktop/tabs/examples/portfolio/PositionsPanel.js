@@ -28,7 +28,10 @@ export class PositionsPanel extends Component {
             title: 'Positions',
             icon: Icon.portfolio(),
             mask: model.loadModel,
-            sizingModel: model.sizingModel,
+            model: {
+                defaultSize: 500,
+                side: 'left'
+            },
             item: grid({model: model.gridModel}),
             bbar: toolbar(
                 dimensionChooser({model: model.dimChooserModel}),
