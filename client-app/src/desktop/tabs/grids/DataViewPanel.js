@@ -16,7 +16,7 @@ import './DataViewItem.scss';
 @HoistComponent
 export class DataViewPanel extends Component {
 
-    localModel = new DataViewModel({
+    model = new DataViewModel({
         store: new LocalStore({
             fields: ['id', 'name', 'city', 'value']
         }),

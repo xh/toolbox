@@ -30,7 +30,7 @@ class SampleColumnGroupsGrid extends Component {
 
     loadModel = new PendingTaskModel();
 
-    localModel = new GridModel({
+    model = new GridModel({
         stateModel: 'toolboxGroupGrid',
         store: new LocalStore({
             fields: [

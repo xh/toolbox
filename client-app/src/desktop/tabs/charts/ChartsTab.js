@@ -8,7 +8,7 @@ import {LineChartPanel} from './LineChartPanel';
 @HoistComponent
 export class ChartsTab extends Component {
 
-    localModel = new TabContainerModel({
+    model = new TabContainerModel({
         route: 'default.charts',
         tabs: [
             {id: 'olhc', title: 'OLHC', content: OLHCChartPanel},

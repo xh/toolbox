@@ -19,7 +19,7 @@ import {param} from './Util';
 
 @HoistComponent
 export class NumberFormatsPanel extends Component {
-    localModel = new NumberFormatsPanelModel();
+    model = new NumberFormatsPanelModel();
 
     render() {
         return wrapper({

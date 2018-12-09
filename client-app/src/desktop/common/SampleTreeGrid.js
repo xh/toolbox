@@ -35,7 +35,7 @@ class SampleTreeGrid extends Component {
         initialValue: ['sector', 'symbol']
     });
 
-    localModel = new GridModel({
+    model = new GridModel({
         treeMode: true,
         store: new LocalStore({
             fields: ['id', 'name', 'pnl', 'mktVal']
