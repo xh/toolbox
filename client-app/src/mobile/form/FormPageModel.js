@@ -14,6 +14,12 @@ export class FormPageModel {
     salary = null;
 
     @field()
+    included;
+
+    @field()
+    enabled;
+
+    @field()
     notes = null;
 
     @field('Search')

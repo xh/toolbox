@@ -36,7 +36,7 @@ import './ControlsPanel.scss';
 @HoistComponent
 export class ControlsPanel extends Component {
 
-    localModel = new ControlsPanelModel();
+    model = new ControlsPanelModel();
 
     render() {
         return wrapper(

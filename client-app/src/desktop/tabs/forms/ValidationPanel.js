@@ -33,7 +33,7 @@ import './ValidationPanel.scss';
 @HoistComponent
 export class ValidationPanel extends Component {
 
-    localModel = new ValidationPanelModel();
+    model = new ValidationPanelModel();
 
     validateButtonTask = new PendingTaskModel();
 

@@ -7,7 +7,8 @@ import {GridPageModel} from './GridPageModel';
 
 @HoistComponent
 export class GridPage extends Component {
-    localModel = new GridPageModel();
+
+    model = new GridPageModel();
 
     render() {
         const {model} = this,

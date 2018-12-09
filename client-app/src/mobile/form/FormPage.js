@@ -4,11 +4,13 @@ import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {form} from '@xh/hoist/cmp/form';
 import {
-    formField, 
+    formField,
     label,
     textInput,
-    numberInput,
     select,
+    numberInput,
+    checkbox,
+    switchInput,
     textArea,
     searchInput
 } from '@xh/hoist/mobile/cmp/form';
@@ -18,7 +20,7 @@ import {FormPageModel} from './FormPageModel';
 
 @HoistComponent
 export class FormPage extends Component {
-    localModel = new FormPageModel();
+    model = new FormPageModel();
 
     render() {
         return page({
@@ -51,6 +53,14 @@ export class FormPage extends Component {
                             enableShorthandUnits: true,
                             displayWithCommas: true
                         })
+                    }),
+                    formField({
+                        field: 'included',
+                        item: checkbox()
+                    }),
+                    formField({
+                        field: 'enabled',
+                        item: switchInput()
                     }),
                     formField({
                         field: 'notes',

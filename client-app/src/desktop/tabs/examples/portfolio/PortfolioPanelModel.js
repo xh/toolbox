@@ -1,10 +1,9 @@
 import {HoistModel} from '@xh/hoist/core';
-import {PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
-
 import {PositionsPanelModel} from './PositionsPanelModel';
 import {OrdersPanelModel} from './OrdersPanelModel';
 import {LineChartModel} from './LineChartModel';
 import {OHLCChartModel} from './OHLCChartModel';
+import {bindable} from '@xh/hoist/mobx';
 
 @HoistModel
 export class PortfolioPanelModel {
@@ -13,8 +12,7 @@ export class PortfolioPanelModel {
     ordersPanelModel = new OrdersPanelModel();
     lineChartModel = new LineChartModel();
     ohlcChartModel = new OHLCChartModel();
-
-    chartsSizingModel = new PanelSizingModel({defaultSize: 400, side: 'bottom'});
+    @bindable displayedOrderSymbol = '';
 
     get selectedPosition() {
         return this.positionsPanelModel.selectedRecord;
@@ -24,24 +22,23 @@ export class PortfolioPanelModel {
         return this.ordersPanelModel.selectedRecord;
     }
 
-    get selectedOrderSymbol() {
-        return this.selectedOrder ? this.selectedOrder.symbol : '';
-    }
-
     constructor() {
         this.addReaction({
             track: () => this.selectedPosition,
             run: (record) => {
                 if (record) this.ordersPanelModel.loadOrdersForPositionAsync(record.id);
-            }
+            },
+            delay: 500
         });
 
         this.addReaction({
             track: () => this.selectedOrder,
             run: (record) => {
+                this.setDisplayedOrderSymbol(record ? record.symbol : '');
                 this.lineChartModel.loadData(record);
                 this.ohlcChartModel.loadData(record);
-            }
+            },
+            delay: 500
         });
     }
 
