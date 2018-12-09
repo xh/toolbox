@@ -1,6 +1,5 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
-import {PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
@@ -80,12 +79,6 @@ export class PositionsPanelModel {
             }
         ]
     });
-
-    sizingModel = new PanelSizingModel({
-        defaultSize: 500,
-        side: 'left'
-    });
-
     loadModel = new PendingTaskModel();
 
     get selectedRecord() {
