@@ -151,7 +151,7 @@ export class ValidationPanel extends Component {
         return toolbar(
             switchInput({
                 model: this,
-                field: 'displayMinimal',
+                field: 'minimal',
                 label: 'Minimal validation display'
             }),
             switchInput({
