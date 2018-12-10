@@ -95,6 +95,12 @@ export class DateFormatsPanel extends Component {
                             field: 'tooltip',
                             item: switchInput(),
                             info: 'function to generate a tooltip string.'
+                        }),
+                        param({
+                            model,
+                            field: 'nullDisplay',
+                            item: textInput({commitOnChange: true, width: 50}),
+                            info: 'format for null values'
                         })
                     ]
                 })
