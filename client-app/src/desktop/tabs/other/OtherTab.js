@@ -10,7 +10,7 @@ import {JsxPanel} from './JsxPanel';
 @HoistComponent
 export class OtherTab extends Component {
 
-    localModel = new TabContainerModel({
+    model = new TabContainerModel({
         route: 'default.other',
         tabs: [
             {id: 'mask', title: 'Mask', content: MaskPanel},

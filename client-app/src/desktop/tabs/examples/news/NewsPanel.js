@@ -24,7 +24,7 @@ import './NewsPanelItem.scss';
 @HoistComponent
 export class NewsPanel extends Component {
 
-    localModel = new NewsPanelModel();
+    model = new NewsPanelModel();
 
     render() {
         const {model} = this,

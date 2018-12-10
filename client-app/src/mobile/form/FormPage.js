@@ -22,7 +22,7 @@ import {FormPageModel} from './FormPageModel';
 
 @HoistComponent
 export class FormPage extends Component {
-    localModel = new FormPageModel();
+    model = new FormPageModel();
 
     render() {
         const {model} = this;
