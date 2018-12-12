@@ -107,7 +107,7 @@ class SampleTreeWithCheckboxGrid extends Component {
                 storeCountLabel({gridModel: model, units: 'companies'}),
                 storeFilterField({gridModel: model}),
                 colChooserButton({gridModel: model}),
-                exportButton({model, exportOptions: {type: 'excelTable'}})
+                exportButton({gridModel: model})
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()
