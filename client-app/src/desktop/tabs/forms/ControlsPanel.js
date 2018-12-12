@@ -38,7 +38,7 @@ export class ControlsPanel extends Component {
     model = new ControlsPanelModel();
 
     render() {
-        const {model, row} = this;
+        const {row} = this;
 
         return wrapper({
             item: panel({
