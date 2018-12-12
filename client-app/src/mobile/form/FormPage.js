@@ -2,6 +2,8 @@ import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
+import {button} from '@xh/hoist/mobile/cmp/button';
+import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
 import {
     formField,
@@ -9,6 +11,7 @@ import {
     textInput,
     select,
     numberInput,
+    buttonGroupInput,
     checkbox,
     switchInput,
     textArea,
@@ -63,6 +66,24 @@ export class FormPage extends Component {
                         item: switchInput()
                     }),
                     formField({
+                        field: 'buttonGroup',
+                        item: buttonGroupInput(
+                            button({
+                                text: 'Button 1',
+                                value: 'button1'
+                            }),
+                            button({
+                                icon: Icon.moon(),
+                                value: 'button2'
+                            }),
+                            button({
+                                icon: Icon.skull(),
+                                text: 'Button 2',
+                                value: 'button3'
+                            })
+                        )
+                    }),
+                    formField({
                         field: 'notes',
                         item: textArea()
                     }),
@@ -82,6 +103,7 @@ export class FormPage extends Component {
                 this.renderResult('Name:', 'name'),
                 this.renderResult('Movie:', 'movie'),
                 this.renderResult('Salary:', 'salary'),
+                this.renderResult('Selected Button:', 'buttonGroup'),
                 this.renderResult('Notes:', 'notes'),
                 this.renderResult('Search:', 'searchQuery')
             ]

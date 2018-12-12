@@ -82,11 +82,7 @@ export class ValidationPanel extends Component {
                                 item: textInput({
                                     placeholder: 'user@company.com',
                                     leftIcon: Icon.mail(),
-                                    rightElement: button({
-                                        icon: Icon.cross(),
-                                        minimal: true,
-                                        onClick: () => model.setEmail(null)
-                                    })
+                                    enableClear: true
                                 })
                             }),
                             formField({
