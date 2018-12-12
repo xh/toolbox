@@ -2,14 +2,27 @@ import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
-import {formField, label, textInput, numberInput, select, textArea, searchInput} from '@xh/hoist/mobile/cmp/form';
+import {button} from '@xh/hoist/mobile/cmp/button';
+import {Icon} from '@xh/hoist/icon';
+import {
+    formField,
+    label,
+    textInput,
+    select,
+    numberInput,
+    buttonGroupInput,
+    checkbox,
+    switchInput,
+    textArea,
+    searchInput
+} from '@xh/hoist/mobile/cmp/form';
 
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 
 @HoistComponent
 export class FormPage extends Component {
-    localModel = new FormPageModel();
+    model = new FormPageModel();
 
     render() {
         const {model} = this;
@@ -39,6 +52,35 @@ export class FormPage extends Component {
                         }),
                         formField({
                             model,
+                            field: 'included',
+                            item: checkbox()
+                        }),
+                        formField({
+                            model,
+                            field: 'enabled',
+                            item: switchInput()
+                        }),
+                        formField({
+                            model,
+                            field: 'buttonGroup',
+                            item: buttonGroupInput(
+                                button({
+                                    text: 'Button 1',
+                                    value: 'button1'
+                                }),
+                                button({
+                                    icon: Icon.moon(),
+                                    value: 'button2'
+                                }),
+                                button({
+                                    icon: Icon.skull(),
+                                    text: 'Button 2',
+                                    value: 'button3'
+                                })
+                            )
+                        }),
+                        formField({
+                            model,
                             field: 'notes',
                             item: textArea()
                         }),
@@ -55,6 +97,7 @@ export class FormPage extends Component {
                         this.renderResult('Name:', 'name'),
                         this.renderResult('Movie:', 'movie'),
                         this.renderResult('Salary:', 'salary'),
+                        this.renderResult('Selected Button:', 'buttonGroup'),
                         this.renderResult('Notes:', 'notes'),
                         this.renderResult('Search:', 'searchQuery')
                     ]

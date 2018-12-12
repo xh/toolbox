@@ -1,6 +1,4 @@
 import {HoistModel} from '@xh/hoist/core';
-import {PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
-
 import {PositionsPanelModel} from './PositionsPanelModel';
 import {OrdersPanelModel} from './OrdersPanelModel';
 import {LineChartModel} from './LineChartModel';
@@ -15,12 +13,6 @@ export class PortfolioPanelModel {
     lineChartModel = new LineChartModel();
     ohlcChartModel = new OHLCChartModel();
     @bindable displayedOrderSymbol = '';
-
-    chartsSizingModel = new PanelSizingModel({
-        defaultSize: 400,
-        side: 'bottom',
-        collapsedRenderMode: 'unmountOnHide'
-    });
 
     get selectedPosition() {
         return this.positionsPanelModel.selectedRecord;

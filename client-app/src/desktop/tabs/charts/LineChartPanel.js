@@ -10,7 +10,7 @@ import {LineChartModel} from './LineChartModel';
 
 @HoistComponent
 export class LineChartPanel extends Component {
-    localModel = new LineChartModel();
+    model = new LineChartModel();
 
     render() {
         const model = this.model,

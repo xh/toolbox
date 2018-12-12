@@ -26,6 +26,7 @@ export class DateFormatsPanelModel {
     @bindable fnName = 'fmtDate';
     @bindable fmt = null;
     @bindable tooltip = false;
+    @bindable nullDisplay = null;
 
     get testResults() {
         return this.testData.map(data => ({
@@ -50,7 +51,8 @@ export class DateFormatsPanelModel {
         const options = {
             asElement: true,
             tooltip: this.tooltip ? (d) => `${d}` : undefined,
-            fmt: this.enableFmt && this.fmt ? this.fmt : undefined
+            fmt: this.enableFmt && this.fmt ? this.fmt : undefined,
+            nullDisplay: this.nullDisplay != null ? this.nullDisplay : undefined
         };
 
         try {

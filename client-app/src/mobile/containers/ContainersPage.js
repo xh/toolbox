@@ -7,7 +7,7 @@ import {ContainersPageModel} from './ContainersPageModel';
 
 @HoistComponent
 export class ContainersPage extends Component {
-    localModel = new ContainersPageModel();
+    model = new ContainersPageModel();
 
     render() {
         const {tabContainerModel} = this.model;

@@ -35,7 +35,7 @@ import './ControlsPanel.scss';
 @HoistComponent
 export class ControlsPanel extends Component {
 
-    localModel = new ControlsPanelModel();
+    model = new ControlsPanelModel();
 
     render() {
         const {model, row} = this;
@@ -63,16 +63,13 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'TextInput',
                                     field: 'text2',
-                                    info: 'placeholder, leftIcon, rightElement',
+                                    info: 'placeholder, leftIcon, enableClear',
                                     item: textInput({
                                         placeholder: 'user@company.com',
                                         round: true,
                                         leftIcon: Icon.mail(),
-                                        rightElement: button({
-                                            icon: Icon.cross(),
-                                            minimal: true,
-                                            onClick: () => model.setText2(null)
-                                        })
+                                        enableClear: true
+
                                     })
                                 }),
                                 row({
