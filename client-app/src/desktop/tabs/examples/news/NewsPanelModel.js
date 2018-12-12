@@ -7,7 +7,7 @@
 
 import {XH, HoistModel} from '@xh/hoist/core';
 import {action, observable, bindable} from '@xh/hoist/mobx';
-import {uniq} from 'lodash';
+import {uniq, isEmpty} from 'lodash';
 import {DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
 import {LocalStore} from '@xh/hoist/data';
 import {newsPanelItem} from './NewsPanelItem';
@@ -77,7 +77,7 @@ export class NewsPanelModel {
         const filter = (rec) => {
             const {textFilter, sourceFilter} = this,
                 searchMatch = !textFilter || textFilter(rec),
-                sourceMatch = !sourceFilter || sourceFilter.includes(rec.source);
+                sourceMatch = isEmpty(sourceFilter) || sourceFilter.includes(rec.source);
 
             return sourceMatch && searchMatch;
         };
