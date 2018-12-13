@@ -30,6 +30,7 @@ class SampleGrid extends Component {
         icon: Icon.search(),
         tooltip: 'View details on the selected company',
         recordsRequired: 1,
+        displayFn: ({record}) => ({tooltip: `View details for ${record.company}`}),
         actionFn: ({record}) => this.showInfoToast(record)
     };
 
@@ -47,6 +48,10 @@ class SampleGrid extends Component {
                     tooltip: 'New York companies cannot be terminated at this time.'
                 };
             }
+
+            return {
+                tooltip: `Terminate ${record.company}`
+            };
         }
     };
 
@@ -93,7 +98,7 @@ class SampleGrid extends Component {
             {
                 field: 'city',
                 width: 150,
-                tooltip: (val, rec) => `${rec.company} is located in ${val}`
+                tooltip: (val, {record}) => `${record.company} is located in ${val}`
             },
             {
                 headerName: 'Trade Volume',
@@ -124,7 +129,7 @@ class SampleGrid extends Component {
                 ...boolCheckCol,
                 headerName: '',
                 chooserName: 'Active Status',
-                tooltip: (active, rec) => active ? `${rec.company} is active` : ''
+                tooltip: (active, {record}) => active ? `${record.company} is active` : ''
             },
             {...emptyFlexCol}
         ]
