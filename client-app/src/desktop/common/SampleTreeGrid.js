@@ -119,7 +119,7 @@ class SampleTreeGrid extends Component {
                 storeCountLabel({gridModel: model, units: 'companies'}),
                 storeFilterField({gridModel: model}),
                 colChooserButton({gridModel: model}),
-                exportButton({model, exportType: 'excel'})
+                exportButton({gridModel: model})
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()

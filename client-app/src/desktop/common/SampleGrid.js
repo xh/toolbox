@@ -178,7 +178,7 @@ class SampleGrid extends Component {
                     storeCountLabel({gridModel: model, unit: 'companies'}),
                     storeFilterField({gridModel: model}),
                     colChooserButton({gridModel: model}),
-                    exportButton({model, exportType: 'excel'})
+                    exportButton({gridModel: model})
                 ]
             }),
             bbar: toolbar({
