@@ -58,7 +58,7 @@ export class ValidationPanelModel {
         }, {
             name: 'startDate',
             displayName: 'Hire Date',
-            value: moment().toDate(),
+            initialValue: moment().toDate(),
             rules: [required, dateIs({max: 'today'})]
         }, {
             name: 'endDate',
@@ -66,8 +66,10 @@ export class ValidationPanelModel {
                 required,
                 dateIs({min: 'today'}),
                 {
-                    when: ({value}, {startDate}) => startDate && value,
-                    check: ({value, displayName}, {startDate}) => value < startDate ? `${displayName} must be after start date.` : null
+                    when: ({value, formModel}, {startDate}) => startDate && value,
+                    check: ({value, displayName}, {startDate}) => {
+                        value < startDate ? `${displayName} must be after start date.` : null
+                    }
                 }
             ]
         }, {
