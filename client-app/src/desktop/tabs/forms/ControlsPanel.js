@@ -6,6 +6,7 @@
  */
 import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
+import {popover} from '@xh/hoist/kit/blueprint';
 import {Icon} from '@xh/hoist/icon';
 import {hframe, hbox, div, box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -227,6 +228,33 @@ export class ControlsPanel extends Component {
                                         enableMulti: true,
                                         width: '90%',
                                         placeholder: 'Select state(s)...'
+                                    })
+                                }),
+                                box({
+                                    className: 'bp3-form-group xh-form-field',
+                                    item: popover({
+                                        target: button({
+                                            text: 'Select In Popover',
+                                            minimal: false
+                                        }),
+                                        content: box({
+                                            className: 'popover-background',
+                                            items: panel({
+                                                width: '400',
+                                                className: 'toolbox-controls-panel__column',
+                                                item: row({
+                                                    label: 'Select',
+                                                    field: 'option7',
+                                                    info: 'enableMulti, Escape key closes popover only when select dropdown menu is closed',
+                                                    item: select({
+                                                        options: usStates,
+                                                        enableMulti: true,
+                                                        width: '100%',
+                                                        placeholder: 'Select state(s)...'
+                                                    })
+                                                })
+                                            })
+                                        })
                                     })
                                 }),
                                 row({

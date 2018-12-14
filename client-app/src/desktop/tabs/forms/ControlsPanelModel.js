@@ -30,6 +30,7 @@ export class ControlsPanelModel {
     @field() option4
     @field() option5
     @field() option6
+    @field() option7
 
     // Others
     @field() date1;
