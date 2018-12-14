@@ -22,7 +22,7 @@ export class GridPageModel {
             {
                 field: 'company',
                 flex: true,
-                elementRenderer: multiFieldRenderer,
+                renderer: multiFieldRenderer,
                 rowHeight: Grid.MULTIFIELD_ROW_HEIGHT,
                 multiFieldConfig: {
                     subFields: [{colId: 'city', label: true}]
@@ -34,10 +34,10 @@ export class GridPageModel {
                 width: 120,
                 align: 'right',
                 absSort: true,
-                elementRenderer: multiFieldRenderer,
+                renderer: multiFieldRenderer,
                 rowHeight: Grid.MULTIFIELD_ROW_HEIGHT,
                 multiFieldConfig: {
-                    mainRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}),
+                    mainRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true}),
                     subFields: [{colId: 'trade_volume', label: true}]
                 }
             },
@@ -49,7 +49,7 @@ export class GridPageModel {
                 hidden: true,
                 headerName: 'Volume',
                 field: 'trade_volume',
-                renderer: thousandsRenderer({precision: 1, label: true, asElement: true})
+                renderer: thousandsRenderer({precision: 1, label: true})
             }
         ]
     });
