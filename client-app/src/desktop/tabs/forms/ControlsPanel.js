@@ -55,7 +55,7 @@ export class ControlsPanel extends Component {
         const {model, row} = this;
 
         return form({
-            model,
+            model: model.formModel,
             items: hframe(
                 panel({
                     className: 'toolbox-controls-panel__column',

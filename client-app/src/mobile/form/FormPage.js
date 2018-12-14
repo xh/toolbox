@@ -38,7 +38,7 @@ export class FormPage extends Component {
     renderForm() {
         const {model} = this;
         return form({
-            model,
+            model: model.formModel,
             items: div({
                 className: 'toolbox-card',
                 items: [

@@ -11,9 +11,7 @@ import {filler, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {form} from '@xh/hoist/cmp/form';
-import {bindable} from '@xh/hoist/mobx';
 import {
     formField,
     checkbox,
@@ -35,12 +33,6 @@ export class ValidationPanel extends Component {
 
     model = new ValidationPanelModel();
 
-    validateButtonTask = new PendingTaskModel();
-
-    // For meta controls below example.
-    @bindable minimal = false;
-    @bindable commitOnChange = true;
-
     render() {
         return wrapper(
             panel({
@@ -57,11 +49,14 @@ export class ValidationPanel extends Component {
     }
 
     renderForm() {
-        const {model, commitOnChange, minimal} = this;
+        const {formModel, commitOnChange, minimal} = this.model;
 
         return form({
-            model,
-            fieldDefaults: {minimal},
+            model: formModel,
+            readOnly: true,
+            fieldDefaults: {
+                minimal
+            },
             item: hframe({
                 className: 'toolbox-validation-panel__content',
                 items: [
@@ -144,14 +139,15 @@ export class ValidationPanel extends Component {
     }
 
     renderToolbar() {
+        const {model} = this;
         return toolbar(
             switchInput({
-                model: this,
+                model,
                 field: 'minimal',
                 label: 'Minimal validation display'
             }),
             switchInput({
-                model: this,
+                model,
                 field: 'commitOnChange',
                 label: 'Inputs commit on change'
             }),
@@ -173,28 +169,28 @@ export class ValidationPanel extends Component {
                 icon: Icon.add(),
                 intent: 'success',
                 onClick: this.onSubmitClick,
-                disabled: !this.model.isValid
+                disabled: !model.formModel.isValid
             })
         );
     }
 
 
     onSubmitClick = async () => {
-        const {model} = this;
-        await model.validateAsync().linkTo(this.validateButtonTask);
-        if (model.isValid) {
+        const {formModel} = this.model;
+        await formModel.validateAsync().linkTo(this.validateButtonTask);
+        if (formModel.isValid) {
             XH.toast({message: 'User successfully submitted.'});
-            model.resetFields();
+            formModel.resetFields();
         }
     }
 
     onValidateClick = async () => {
-        const {model} = this;
-        await model.validateAsync().linkTo(this.validateButtonTask);
-        if (model.isValid) {
+        const {formModel} = this.model;
+        await formModel.validateAsync().linkTo(this.validateButtonTask);
+        if (formModel.isValid) {
             XH.toast({message: 'Form is valid'});
         } else {
-            const errCount = model.fields.filter(f => f.isNotValid).length;
+            const errCount = formModel.fields.filter(f => f.isNotValid).length;
             XH.toast({
                 icon: Icon.warning(),
                 intent: 'danger',
@@ -204,6 +200,6 @@ export class ValidationPanel extends Component {
     }
 
     onResetClick = () => {
-        this.model.resetFields();
+        this.model.formModel.reset();
     }
 }
