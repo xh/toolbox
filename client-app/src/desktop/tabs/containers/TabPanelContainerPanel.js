@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {hspacer} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -94,8 +95,7 @@ export class TabPanelContainerPanel extends Component {
                                 title: 'Tab State',
                                 content: () => {
                                     const peopleTab = stateTabModel.getTabById('people'),
-                                        placesTab = stateTabModel.getTabById('places'),
-                                        thingsTab = stateTabModel.getTabById('things');
+                                        placesTab = stateTabModel.getTabById('places')
 
                                     return panel({
                                         className: 'child-tabcontainer',
@@ -105,14 +105,11 @@ export class TabPanelContainerPanel extends Component {
                                                 field: 'disabled',
                                                 label: 'People Disabled?'
                                             }),
+                                            hspacer(10),
+                                            'Places Tab Title: ',
                                             textInput({
                                                 model: placesTab,
                                                 field: 'title'
-                                            }),
-                                            switchInput({
-                                                model: thingsTab,
-                                                field: 'excludeFromSwitcher',
-                                                label: 'Things Hidden?'
                                             })
                                         ),
                                         item: tabContainer({model: stateTabModel})
