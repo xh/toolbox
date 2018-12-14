@@ -45,13 +45,16 @@ export class ValidationPanelModel {
             rules: [required]
         }, {
             name: 'yearsExperience',
-            rules: [{
-                when: (f, {isManager}) => isManager,
-                check: [
-                    required,
-                    ({value}) => isNil(value) || value < 10 ?  'Managerial positions require at least 10 years of experience.' : null
-                ]
-            }]
+            rules: [
+                numberIs({min: 0, max: 100}),
+                {
+                    when: (f, {isManager}) => isManager,
+                    check: [
+                        required,
+                        ({value}) => isNil(value) || value < 10 ?  'Managerial positions require at least 10 years of experience.' : null
+                    ]
+                }
+            ]
         }, {
             name: 'startDate',
             displayName: 'Hire Date',
