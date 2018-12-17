@@ -25,7 +25,7 @@ export class ControlsPanelModel {
            {name: 'option3'},
            {name: 'option4'},
            {name: 'option5'},
-           {name: 'options6'},
+           {name: 'option6'},
            {name: 'date1'},
            {name: 'date2', initialValue: moment().startOf('hour').toDate()},
            {name: 'bool1'},

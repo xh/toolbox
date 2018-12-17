@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
+import {filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -49,17 +49,17 @@ export class ValidationPanel extends Component {
     }
 
     renderForm() {
-        const {formModel, commitOnChange, minimal} = this.model;
+        const {formModel, commitOnChange, inline, minimal} = this.model;
 
-        return form({
-            model: formModel,
-            readOnly: true,
-            fieldDefaults: {
-                minimal
-            },
-            item: hframe({
-                className: 'toolbox-validation-panel__content',
-                items: [
+        return frame({
+            className: 'toolbox-validation-panel__content',
+            item: form({
+                model: formModel,
+                fieldDefaults: {
+                    inline,
+                    minimal
+                },
+                item: hframe(
                     vbox({
                         width: 300,
                         marginRight: 30,
@@ -102,8 +102,9 @@ export class ValidationPanel extends Component {
                                 items: [
                                     formField({
                                         field: 'startDate',
+                                        width: 120,
+                                        inline: false,
                                         item: dateInput({
-                                            width: 120,
                                             commitOnChange
                                         })
                                     }),
@@ -112,8 +113,9 @@ export class ValidationPanel extends Component {
                                     }),
                                     formField({
                                         field: 'endDate',
+                                        width: 120,
+                                        inline: false,
                                         item: dateInput({
-                                            width: 120,
                                             commitOnChange
                                         })
                                     })
@@ -133,7 +135,7 @@ export class ValidationPanel extends Component {
                             })
                         ]
                     })
-                ]
+                )
             })
         });
     }
@@ -141,6 +143,11 @@ export class ValidationPanel extends Component {
     renderToolbar() {
         const {model} = this;
         return toolbar(
+            switchInput({
+                model,
+                field: 'inline',
+                label: 'Display field labels inline'
+            }),
             switchInput({
                 model,
                 field: 'minimal',
