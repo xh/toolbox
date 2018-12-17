@@ -122,6 +122,7 @@ export class ControlsPanel extends Component {
                                     field: 'number2',
                                     info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
                                     item: numberInput({
+                                        fill: true,
                                         enableShorthandUnits: true,
                                         displayWithCommas: true,
                                         selectOnFocus: true
