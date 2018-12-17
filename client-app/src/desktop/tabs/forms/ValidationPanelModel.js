@@ -68,7 +68,7 @@ export class ValidationPanelModel {
                 {
                     when: ({value, formModel}, {startDate}) => startDate && value,
                     check: ({value, displayName}, {startDate}) => {
-                        value < startDate ? `${displayName} must be after start date.` : null
+                        return value < startDate ? `${displayName} must be after start date.` : null;
                     }
                 }
             ]
