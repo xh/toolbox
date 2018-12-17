@@ -95,7 +95,7 @@ export class TabPanelContainerPanel extends Component {
                                 title: 'Tab State',
                                 content: () => {
                                     const peopleTab = stateTabModel.getTabById('people'),
-                                        placesTab = stateTabModel.getTabById('places')
+                                        placesTab = stateTabModel.getTabById('places');
 
                                     return panel({
                                         className: 'child-tabcontainer',
