@@ -49,13 +49,14 @@ export class ValidationPanel extends Component {
     }
 
     renderForm() {
-        const {formModel, commitOnChange, inline, minimal} = this.model;
+        const {formModel, commitOnChange, readonly, inline, minimal} = this.model;
 
         return frame({
             className: 'toolbox-validation-panel__content',
             item: form({
                 model: formModel,
                 fieldDefaults: {
+                    readonly,
                     inline,
                     minimal
                 },
@@ -147,6 +148,11 @@ export class ValidationPanel extends Component {
                 model,
                 field: 'inline',
                 label: 'Display field labels inline'
+            }),
+            switchInput({
+                model,
+                field: 'readonly',
+                label: 'Read-only mode'
             }),
             switchInput({
                 model,

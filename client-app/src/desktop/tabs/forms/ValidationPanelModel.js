@@ -14,6 +14,7 @@ export class ValidationPanelModel {
     validateButtonTask = new PendingTaskModel();
 
     // For meta controls below example.
+    @bindable readonly = false;
     @bindable inline = false;
     @bindable minimal = false;
     @bindable commitOnChange = false;

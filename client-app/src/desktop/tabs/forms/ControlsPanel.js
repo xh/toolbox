@@ -9,9 +9,10 @@ import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {frame, hframe, hbox, div, box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import moment from 'moment';
-import {fmtDateTime, fmtThousands} from '@xh/hoist/format';
+import {fmtDateTime, fmtThousands, fmtNumber} from '@xh/hoist/format';
 import {form} from '@xh/hoist/cmp/form';
 import {
     formField,
@@ -46,7 +47,8 @@ export class ControlsPanel extends Component {
                 icon: Icon.edit(),
                 width: '90%',
                 height: '90%',
-                item: this.renderForm()
+                item: this.renderForm(),
+                bbar: this.renderToolbar()
             })
         );
     }
@@ -57,6 +59,7 @@ export class ControlsPanel extends Component {
         return frame(
             form({
                 model: model.formModel,
+                fieldDefaults: {readonly: model.readonly},
                 flex: 1,
                 items: hframe(
                     panel({
@@ -85,6 +88,7 @@ export class ControlsPanel extends Component {
                                 label: 'TextInput',
                                 field: 'text3',
                                 info: 'type:password, commitOnChange, selectOnFocus',
+                                readonlyRenderer: v => v ? v.replace(/./g, '•') : null,
                                 item: textInput({
                                     type: 'password',
                                     commitOnChange: true,
@@ -152,6 +156,7 @@ export class ControlsPanel extends Component {
                                 label: 'Slider',
                                 field: 'range1',
                                 info: 'multi-value, labelRenderer',
+                                readonlyRenderer: v => v.map(it => fmtNumber(it)).join(' - '),
                                 item: slider({
                                     min: 50000,
                                     max: 150000,
@@ -184,6 +189,7 @@ export class ControlsPanel extends Component {
                                 field: 'date2',
                                 info: 'timePrecision',
                                 fmtVal: v => fmtDateTime(v),
+                                readonlyRenderer: v => fmtDateTime(v),
                                 item: dateInput({
                                     commitOnChange: true,
                                     showActionsBar: true,
@@ -291,7 +297,7 @@ export class ControlsPanel extends Component {
         );
     }
 
-    row = ({label, field, item, info, fmtVal}) => {
+    row = ({label, field, item, info, readonlyRenderer, fmtVal}) => {
         const {model} = this;
 
         let displayVal = model[field];
@@ -315,7 +321,8 @@ export class ControlsPanel extends Component {
                     item,
                     label,
                     field,
-                    info
+                    info,
+                    readonlyRenderer
                 })
             ]
         });
@@ -347,4 +354,16 @@ export class ControlsPanel extends Component {
             alignItems: 'center'
         });
     }
+
+    renderToolbar() {
+        const {model} = this;
+        return toolbar(
+            switchInput({
+                model,
+                field: 'readonly',
+                label: 'Read-only mode'
+            })
+        );
+    }
+
 }
