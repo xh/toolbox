@@ -1,7 +1,8 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
-import {div} from '@xh/hoist/cmp/layout';
+import {div, vframe, span, filler} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
+import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
@@ -23,32 +24,44 @@ import {FormPageModel} from './FormPageModel';
 
 @HoistComponent
 export class FormPage extends Component {
+
     model = new FormPageModel();
 
     render() {
         return page({
             className: 'toolbox-page form-page',
             items: [
-                this.renderForm(),
-                this.renderResults()
+                vframe({
+                    overflowY: 'auto',
+                    items: [
+                        this.renderForm(),
+                        this.renderResults()
+                    ]
+                }),
+                this.renderToolbar()
             ]
         });
     }
 
     renderForm() {
-        const {model} = this;
-        return form({
-            model: model.formModel,
-            items: div({
-                className: 'toolbox-card',
+        const {model} = this,
+            {formModel, minimal, readonly, movies} = model;
+
+        return div({
+            className: 'toolbox-card',
+            items: form({
+                model: formModel,
+                fieldDefaults: {minimal, readonly},
+                flexDirection: 'column',
                 items: [
                     formField({
                         field: 'name',
+                        info: 'Min. 8 chars',
                         item: textInput()
                     }),
                     formField({
                         field: 'movie',
-                        item: select({options: model.movies})
+                        item: select({options: movies})
                     }),
                     formField({
                         field: 'salary',
@@ -119,6 +132,17 @@ export class FormPage extends Component {
                 div(value)
             ]
         });
+    }
+
+    renderToolbar() {
+        const {model} = this;
+        return toolbar(
+            switchInput({model, field: 'readonly'}),
+            span('Read-only'),
+            filler(),
+            switchInput({model, field: 'minimal'}),
+            span('Minimal validation'),
+        );
     }
 }
 

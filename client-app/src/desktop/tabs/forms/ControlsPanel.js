@@ -54,12 +54,13 @@ export class ControlsPanel extends Component {
     }
 
     renderForm() {
-        const {model, row} = this;
+        const {model, row} = this,
+            {formModel, readonly} = model;
 
         return frame(
             form({
-                model: model.formModel,
-                fieldDefaults: {readonly: model.readonly},
+                model: formModel,
+                fieldDefaults: {readonly},
                 flex: 1,
                 items: hframe(
                     panel({
