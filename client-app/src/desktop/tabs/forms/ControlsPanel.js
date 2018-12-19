@@ -108,9 +108,8 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'NumberInput',
                                     field: 'number1',
-                                    info: 'buttons, stepSizes',
+                                    info: 'stepSizes',
                                     item: numberInput({
-                                        buttonPosition: 'right',
                                         fill: true,
                                         stepSize: 1000,
                                         majorStepSize: 100000,
