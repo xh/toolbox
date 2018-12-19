@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
+import {filler, frame, hbox, hframe, vbox, pre} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -192,8 +192,13 @@ export class ValidationPanel extends Component {
         const {formModel} = this.model;
         await formModel.validateAsync().linkTo(this.validateButtonTask);
         if (formModel.isValid) {
-            XH.toast({message: 'User successfully submitted.'});
-            formModel.resetFields();
+            XH.alert({
+                message: vbox(
+                    'Submitted: ',
+                    pre(JSON.stringify(formModel.getData(), undefined, 2))
+                )
+            });
+            formModel.reset();
         }
     }
 

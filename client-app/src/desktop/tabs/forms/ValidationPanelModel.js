@@ -22,12 +22,15 @@ export class ValidationPanelModel {
     formModel = new FormModel({
         fields: [{
             name: 'firstName',
+            initialValue: 'Joe',
             rules: [required, lengthIs({max: 20})]
         }, {
             name: 'lastName',
+            initialValue: 'Bloggs',
             rules: [required, lengthIs({max: 20})]
         }, {
             name: 'email',
+            initialValue: 'jbloggs@gmail.com',
             rules: [
                 required,
                 ({value}) => {
@@ -41,6 +44,7 @@ export class ValidationPanelModel {
             ]
         }, {
             name: 'notes',
+            initialValue: '',
             rules: [required, lengthIs({max: 300, min: 10})]
         }, {
             name: 'isManager',
