@@ -64,7 +64,7 @@ export class ValidationPanelModel {
         }, {
             name: 'startDate',
             displayName: 'Hire Date',
-            initialValue: moment().toDate(),
+            initialValue: moment().startOf('day').toDate(),
             rules: [required, dateIs({max: 'today'})]
         }, {
             name: 'endDate',
