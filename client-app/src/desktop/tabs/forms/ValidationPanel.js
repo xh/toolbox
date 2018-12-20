@@ -99,7 +99,7 @@ export class ValidationPanel extends Component {
                     vbox({
                         items: [
                             hbox({
-                                alignItems: 'center',
+                                alignItems: 'top',
                                 items: [
                                     formField({
                                         field: 'startDate',
@@ -108,9 +108,6 @@ export class ValidationPanel extends Component {
                                         item: dateInput({
                                             commitOnChange
                                         })
-                                    }),
-                                    Icon.chevronRight({
-                                        style: {margin: '0 4px'}
                                     }),
                                     formField({
                                         field: 'endDate',
