@@ -316,9 +316,10 @@ export class ControlsPanel extends Component {
             items: [
                 box({
                     item: opt.isActive ?
-                        Icon.checkCircle({className: 'xh-green fa-fw'}) :
-                        Icon.x({className: 'xh-red fa-fw'}),
-                    width: 26
+                        Icon.checkCircle({className: 'xh-green'}) :
+                        Icon.x({className: 'xh-red'}),
+                    width: 32,
+                    paddingLeft: 8
                 }),
                 div(
                     opt.name,
