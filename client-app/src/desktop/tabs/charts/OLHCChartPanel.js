@@ -10,7 +10,7 @@ import {OLHCChartModel} from './OLHCChartModel';
 
 @HoistComponent
 export class OLHCChartPanel extends Component {
-    localModel = new OLHCChartModel();
+    model = new OLHCChartModel();
 
     render() {
         const model = this.model,

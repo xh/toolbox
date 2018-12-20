@@ -16,6 +16,15 @@ export class FormPageModel {
     salary = null;
 
     @field()
+    included;
+
+    @field()
+    enabled;
+
+    @field()
+    buttonGroup;
+
+    @field()
     notes = null;
 
     @field('Search')
@@ -24,6 +33,6 @@ export class FormPageModel {
     movies = movies;
 
     constructor() {
-        this.initFields({});
+        this.initFields({buttonGroup: 'button1'});
     }
 }

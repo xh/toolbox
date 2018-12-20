@@ -2,7 +2,7 @@ import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, hbox, filler} from '@xh/hoist/cmp/layout';
-import {panel, PanelSizingModel} from '@xh/hoist/desktop/cmp/panel';
+import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar/index';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
@@ -11,27 +11,27 @@ import {wrapper} from '../../common/Wrapper';
 @HoistComponent
 export class PanelContainerPanel extends Component {
 
-    leftSizingModel = new PanelSizingModel({
+    leftPanelModel = new PanelModel({
         defaultSize: 125,
         side: 'left'
     });
 
-    rightSizingModel = new PanelSizingModel({
+    rightPanelModel = new PanelModel({
         defaultSize: 125,
         side: 'right'
     });
 
-    bottomSizingModel = new PanelSizingModel({
+    bottomPanelModel = new PanelModel({
         defaultSize: 130,
         side: 'bottom'
     });
 
     get allExpanded() {
-        return !this.leftSizingModel.collapsed && !this.rightSizingModel.collapsed && !this.bottomSizingModel.collapsed;
+        return !this.leftPanelModel.collapsed && !this.rightPanelModel.collapsed && !this.bottomPanelModel.collapsed;
     }
 
     get allCollapsed() {
-        return this.leftSizingModel.collapsed && this.rightSizingModel.collapsed && this.bottomSizingModel.collapsed;
+        return this.leftPanelModel.collapsed && this.rightPanelModel.collapsed && this.bottomPanelModel.collapsed;
     }
 
     render() {
@@ -53,8 +53,8 @@ export class PanelContainerPanel extends Component {
                         items: [
                             panel({
                                 title: 'Left Panel',
-                                icon: Icon.chevronLeft(),
-                                sizingModel: this.leftSizingModel,
+                                icon: Icon.arrowToLeft(),
+                                model: this.leftPanelModel,
                                 item: box({
                                     padding: 10,
                                     item: 'Collapsible Left'
@@ -80,7 +80,9 @@ export class PanelContainerPanel extends Component {
                                 )
                             }),
                             panel({
-                                sizingModel: this.rightSizingModel,
+                                title: 'Right Panel',
+                                icon: Icon.arrowToRight(),
+                                model: this.rightPanelModel,
                                 item: box({
                                     padding: 10,
                                     item: 'Collapsible Right'
@@ -90,8 +92,8 @@ export class PanelContainerPanel extends Component {
                     }),
                     panel({
                         title: 'Bottom Panel',
-                        icon: Icon.chevronDown(),
-                        sizingModel: this.bottomSizingModel,
+                        icon: Icon.arrowToBottom(),
+                        model: this.bottomPanelModel,
                         item: box({
                             padding: 10,
                             item: 'Collapsible Bottom'
@@ -116,9 +118,9 @@ export class PanelContainerPanel extends Component {
     }
 
     setCollapsedAll(collapsed) {
-        this.leftSizingModel.setCollapsed(collapsed);
-        this.rightSizingModel.setCollapsed(collapsed);
-        this.bottomSizingModel.setCollapsed(collapsed);
+        this.leftPanelModel.setCollapsed(collapsed);
+        this.rightPanelModel.setCollapsed(collapsed);
+        this.bottomPanelModel.setCollapsed(collapsed);
     }
 
 }

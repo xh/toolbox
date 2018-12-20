@@ -35,10 +35,10 @@ import './ControlsPanel.scss';
 @HoistComponent
 export class ControlsPanel extends Component {
 
-    localModel = new ControlsPanelModel();
+    model = new ControlsPanelModel();
 
     render() {
-        const {model, row} = this;
+        const {row} = this;
 
         return wrapper({
             item: panel({
@@ -63,16 +63,13 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'TextInput',
                                     field: 'text2',
-                                    info: 'placeholder, leftIcon, rightElement',
+                                    info: 'placeholder, leftIcon, enableClear',
                                     item: textInput({
                                         placeholder: 'user@company.com',
                                         round: true,
                                         leftIcon: Icon.mail(),
-                                        rightElement: button({
-                                            icon: Icon.cross(),
-                                            minimal: true,
-                                            onClick: () => model.setText2(null)
-                                        })
+                                        enableClear: true
+
                                     })
                                 }),
                                 row({
@@ -111,9 +108,8 @@ export class ControlsPanel extends Component {
                                 row({
                                     label: 'NumberInput',
                                     field: 'number1',
-                                    info: 'buttons, stepSizes',
+                                    info: 'stepSizes',
                                     item: numberInput({
-                                        buttonPosition: 'right',
                                         fill: true,
                                         stepSize: 1000,
                                         majorStepSize: 100000,
@@ -125,6 +121,7 @@ export class ControlsPanel extends Component {
                                     field: 'number2',
                                     info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
                                     item: numberInput({
+                                        fill: true,
                                         enableShorthandUnits: true,
                                         displayWithCommas: true,
                                         selectOnFocus: true
@@ -319,9 +316,10 @@ export class ControlsPanel extends Component {
             items: [
                 box({
                     item: opt.isActive ?
-                        Icon.checkCircle({className: 'xh-green fa-fw'}) :
-                        Icon.x({className: 'xh-red fa-fw'}),
-                    width: 26
+                        Icon.checkCircle({className: 'xh-green'}) :
+                        Icon.x({className: 'xh-red'}),
+                    width: 32,
+                    paddingLeft: 8
                 }),
                 div(
                     opt.name,

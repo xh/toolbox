@@ -24,7 +24,7 @@ import './NewsPanelItem.scss';
 @HoistComponent
 export class NewsPanel extends Component {
 
-    localModel = new NewsPanelModel();
+    model = new NewsPanelModel();
 
     render() {
         const {model} = this,
@@ -72,7 +72,6 @@ export class NewsPanel extends Component {
                         storeFilterField({
                             onFilterChange: this.onFilterChange,
                             includeFields: model.SEARCH_FIELDS,
-                            store: viewModel.store,
                             placeholder: 'Filter by title...'
                         }),
                         select({

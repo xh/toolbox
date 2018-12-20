@@ -12,7 +12,7 @@ import data from './impl/LeftRightChooserData';
 @HoistComponent
 export class LeftRightChooserPanel extends Component {
 
-    localModel = new LeftRightChooserModel({
+    model = new LeftRightChooserModel({
         data,
         ungroupedName: 'Others',
         rightGroupingEnabled: false

@@ -10,7 +10,7 @@ import {ValidationPanel} from './ValidationPanel';
 @HoistComponent
 export class FormsTab extends Component {
 
-    localModel = new TabContainerModel({
+    model = new TabContainerModel({
         route: 'default.forms',
         tabs: [
             {id: 'controls', title: 'Controls', content: ControlsPanel},

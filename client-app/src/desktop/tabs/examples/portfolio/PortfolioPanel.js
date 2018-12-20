@@ -20,7 +20,7 @@ import './PortfolioPanel.scss';
 @HoistComponent
 export class PortfolioPanel extends Component {
 
-    localModel = new PortfolioPanelModel();
+    model = new PortfolioPanelModel();
 
     render() {
         const {model} = this;
@@ -42,7 +42,11 @@ export class PortfolioPanel extends Component {
                 title: `Trading Volume + Price History: ${model.displayedOrderSymbol}`,
                 icon: Icon.chartArea(),
                 mask: !model.selectedOrder,
-                sizingModel: model.chartsSizingModel,
+                model: {
+                    defaultSize: 400,
+                    side: 'bottom',
+                    collapsedRenderMode: 'unmountOnHide'
+                },
                 item: hbox({
                     items: [
                         lineChart({
