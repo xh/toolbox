@@ -62,7 +62,6 @@ export class TreeGridPageModel {
             run: () => this.loadAsync(),
             fireImmediately: true
         });
-
     }
 
     loadAsync() {
