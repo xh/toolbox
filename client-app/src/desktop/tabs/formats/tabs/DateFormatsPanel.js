@@ -8,7 +8,7 @@ import {
     switchInput,
     textInput,
     dateInput
-} from '@xh/hoist/desktop/cmp/form';
+} from '@xh/hoist/desktop/cmp/input';
 
 import {card} from '@xh/hoist/kit/blueprint';
 import {DateFormatsPanelModel} from './DateFormatsPanelModel';

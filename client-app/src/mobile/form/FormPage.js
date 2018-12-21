@@ -6,8 +6,8 @@ import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
+import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
-    formField,
     label,
     textInput,
     select,
@@ -17,7 +17,7 @@ import {
     switchInput,
     textArea,
     searchInput
-} from '@xh/hoist/mobile/cmp/form';
+} from '@xh/hoist/mobile/cmp/input';
 
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';

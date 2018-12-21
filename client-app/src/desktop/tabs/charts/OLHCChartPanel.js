@@ -3,7 +3,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common/Wrapper';
 import {box, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {select} from '@xh/hoist/desktop/cmp/form';
+import {select} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
 import {OLHCChartModel} from './OLHCChartModel';
