@@ -16,7 +16,7 @@ import {TreeGridPageModel} from './TreeGridPageModel';
 
 @HoistComponent
 export class TreeGridPage extends Component {
-    localModel = new TreeGridPageModel();
+    model = new TreeGridPageModel();
 
     render() {
         const {model} = this,

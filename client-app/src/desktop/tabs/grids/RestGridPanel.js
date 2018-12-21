@@ -9,7 +9,7 @@ import {wrapper} from '../../common/Wrapper';
 @HoistComponent
 export class RestGridPanel extends Component {
 
-    localModel = new RestGridModel({
+    model = new RestGridModel({
         store: new RestStore({
             url: 'rest/companyRest',
             fields: [

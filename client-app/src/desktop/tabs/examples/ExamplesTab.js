@@ -14,7 +14,7 @@ import {PortfolioPanel} from './portfolio/PortfolioPanel';
 @HoistComponent
 export class ExamplesTab extends Component {
 
-    localModel = new TabContainerModel({
+    model = new TabContainerModel({
         route: 'default.examples',
         tabs: [
             {id: 'portfolio', content: PortfolioPanel},
