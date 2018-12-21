@@ -7,7 +7,7 @@
 import {HoistAppModel, XH} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {required} from '@xh/hoist/cmp/form';
-import {select} from '@xh/hoist/desktop/cmp/form';
+import {select} from '@xh/hoist/desktop/cmp/input';
 
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';

@@ -8,7 +8,7 @@ import {XH, HoistAppModel} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
 import {required} from '@xh/hoist/cmp/form';
-import {select} from '@xh/hoist/mobile/cmp/form';
+import {select} from '@xh/hoist/mobile/cmp/input';
 
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {homePage} from './home/HomePage';
