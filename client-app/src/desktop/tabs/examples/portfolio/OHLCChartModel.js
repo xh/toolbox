@@ -60,6 +60,9 @@ export class OHLCChartModel {
                         </table>
                     `;
                 }
+            },
+            exporting: {
+                enabled: true
             }
         }
     });

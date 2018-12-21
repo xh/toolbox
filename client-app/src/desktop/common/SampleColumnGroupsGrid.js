@@ -175,8 +175,7 @@ class SampleColumnGroupsGrid extends Component {
                 storeCountLabel({gridModel: model, unit: 'salesperson'}),
                 storeFilterField({gridModel: model}),
                 colChooserButton({gridModel: model}),
-                exportButton({model, exportType: 'excel'}),
-
+                exportButton({gridModel: model})
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()

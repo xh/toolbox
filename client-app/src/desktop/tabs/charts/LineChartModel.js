@@ -91,6 +91,9 @@ export class LineChartModel {
                     },
                     threshold: null
                 }
+            },
+            exporting: {
+                enabled: true
             }
         };
     }
