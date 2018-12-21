@@ -11,7 +11,7 @@ import {box, div, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {select, switchInput} from '@xh/hoist/desktop/cmp/form';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {upperFirst} from 'lodash';
 
 import {usStates} from '../../../core/data';

@@ -74,6 +74,13 @@ class BootStrap {
 
     private void ensureRequiredPrefsCreated() {
         Utils.prefService.ensureRequiredPrefsCreated([
+                mobileDimHistory: [
+                        type: 'json',
+                        defaultValue: [],
+                        local: true,
+                        groupName: 'Toolbox',
+                        note: 'Nested arrays containing user\'s dimension picker history'
+                ],
                 portfolioDimHistory: [
                         type: 'json',
                         defaultValue: [],

@@ -7,7 +7,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
-import {switchInput, textInput} from '@xh/hoist/desktop/cmp/form';
+import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 
 @HoistComponent
 export class TabPanelContainerPanel extends Component {

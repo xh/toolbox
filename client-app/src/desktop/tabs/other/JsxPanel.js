@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {jsonInput} from '@xh/hoist/desktop/cmp/form';
+import {jsonInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common';
 
