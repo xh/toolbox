@@ -6,6 +6,7 @@
  */
 import {HoistAppModel, XH} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
+import {required} from '@xh/hoist/cmp/form';
 import {select} from '@xh/hoist/desktop/cmp/form';
 
 import {CompanyService} from '../core/svc/CompanyService';
@@ -39,10 +40,12 @@ export class AppModel {
     getAppOptions() {
         return [
             {
-                label: 'Theme',
-                field: 'xhTheme',
+                displayName: 'Theme',
+                name: 'xhTheme',
+                rules: [required],
                 valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark'),
                 control: select({
+                    width: 270,
                     options: [
                         {value: 'light', label: 'Light'},
                         {value: 'dark', label: 'Dark'}

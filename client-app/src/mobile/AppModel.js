@@ -7,6 +7,7 @@
 import {XH, HoistAppModel} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
+import {required} from '@xh/hoist/cmp/form';
 import {select} from '@xh/hoist/mobile/cmp/form';
 
 import {PortfolioService} from '../core/svc/PortfolioService';
@@ -29,8 +30,9 @@ export class AppModel {
     getAppOptions() {
         return [
             {
-                label: 'Theme',
-                field: 'xhTheme',
+                displayName: 'Theme',
+                name: 'xhTheme',
+                rules: [required],
                 valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark'),
                 control: select({
                     options: [
