@@ -15,7 +15,7 @@ export class LineChart extends Component {
 
     render() {
         return panel({
-            item: chart({model: this.model.lineChartModel}),
+            item: chart({model: this.model.lineChartModel, overflow: 'initial'}),
             mask: this.model.loadModel,
             className: this.getClassName(),
             ...this.getLayoutProps()
