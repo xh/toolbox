@@ -3,7 +3,7 @@ import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {toolbar, toolbarSep} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
-import {select} from '@xh/hoist/mobile/cmp/form';
+import {select} from '@xh/hoist/mobile/cmp/input';
 import {div, hframe, filler, frame} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 

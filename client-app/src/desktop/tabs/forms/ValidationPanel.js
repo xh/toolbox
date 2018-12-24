@@ -12,8 +12,8 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
+import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
-    formField,
     checkbox,
     dateInput,
     numberInput,
@@ -21,7 +21,7 @@ import {
     switchInput,
     textArea,
     textInput
-} from '@xh/hoist/desktop/cmp/form';
+} from '@xh/hoist/desktop/cmp/input';
 
 import {wrapper} from '../../common';
 import {ValidationPanelModel} from './ValidationPanelModel';

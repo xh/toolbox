@@ -4,7 +4,7 @@ import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable} from '@xh/hoist/mobx';
 import {span, filler} from '@xh/hoist/cmp/layout';
-import {numberInput, textInput, switchInput} from '@xh/hoist/desktop/cmp/form';
+import {numberInput, textInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';

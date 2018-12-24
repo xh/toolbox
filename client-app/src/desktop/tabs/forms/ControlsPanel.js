@@ -14,8 +14,8 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import moment from 'moment';
 import {fmtDateTime, fmtThousands, fmtNumber} from '@xh/hoist/format';
 import {form} from '@xh/hoist/cmp/form';
+import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
-    formField,
     checkbox,
     dateInput,
     textInput,
@@ -27,7 +27,7 @@ import {
     switchInput,
     jsonInput,
     buttonGroupInput
-} from '@xh/hoist/desktop/cmp/form';
+} from '@xh/hoist/desktop/cmp/input';
 
 import {usStates, restaurants} from '../../../core/data';
 import {wrapper} from '../../common';

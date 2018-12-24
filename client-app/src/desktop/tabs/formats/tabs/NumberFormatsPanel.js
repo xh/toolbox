@@ -9,7 +9,7 @@ import {
     switchInput,
     textInput,
     select
-} from '@xh/hoist/desktop/cmp/form';
+} from '@xh/hoist/desktop/cmp/input';
 
 import {card} from '@xh/hoist/kit/blueprint';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';

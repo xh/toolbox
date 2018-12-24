@@ -9,6 +9,8 @@ import {Component} from 'react';
 import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {grid} from '@xh/hoist/cmp/grid';
+import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
+import {dimensionChooser} from '@xh/hoist/mobile/cmp/dimensionchooser';
 
 import {TreeGridPageModel} from './TreeGridPageModel';
 
@@ -18,22 +20,26 @@ export class TreeGridPage extends Component {
 
     render() {
         const {model} = this,
-            {gridModel, loadModel} = model;
+            {gridModel, loadModel, dimensionChooserModel} = model;
 
         return page({
             loadModel: loadModel,
-            item: grid({
-                model: gridModel,
-                onRowClicked: (e) => {
-                    XH.toast({
-                        message: `${e.data.name} tapped!`,
-                        timeout: 1000
-                    });
-                }
-            })
+            items: [
+                grid({
+                    model: gridModel,
+                    onRowClicked: (e) => {
+                        XH.toast({
+                            message: `${e.data.name} tapped!`,
+                            timeout: 1000
+                        });
+                    }
+                }),
+                toolbar(
+                    dimensionChooser({model: dimensionChooserModel})
+                )
+            ]
         });
     }
-
 }
 
 export const treeGridPage = elemFactory(TreeGridPage);
