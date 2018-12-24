@@ -40,17 +40,19 @@ export class AppModel {
     getAppOptions() {
         return [
             {
-                displayName: 'Theme',
-                name: 'xhTheme',
-                rules: [required],
-                valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark'),
                 control: select({
                     width: 270,
                     options: [
                         {value: 'light', label: 'Light'},
                         {value: 'dark', label: 'Dark'}
                     ]
-                })
+                }),
+                fieldModel: {
+                    displayName: 'Theme',
+                    name: 'xhTheme',
+                    rules: [required]
+                },
+                valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark')
             }
         ];
     }
