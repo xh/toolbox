@@ -8,10 +8,10 @@
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "eslint .",
     "refreshHoist": "rimraf -rf node_modules/@xh/hoist && yarn upgrade @xh/hoist && yarn install --check-files",
-    "start": "webpack-dev-server",
-    "startOnDevice": "webpack-dev-server --env.inlineHoist --env.devHost=$(hostname)",
-    "startAndAnalyze": "webpack-dev-server --env.analyzeBundles",
-    "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && webpack-dev-server --env.inlineHoist"
+    "start": "yarn install && webpack-dev-server",
+    "startOnDevice": "yarn install && webpack-dev-server --env.inlineHoist --env.devHost=$(hostname)",
+    "startAndAnalyze": "yarn install && webpack-dev-server --env.analyzeBundles",
+    "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && webpack-dev-server --env.inlineHoist"
   },
   "dependencies": {
     "@xh/hoist": "^18.0.0-SNAPSHOT",
@@ -20,6 +20,6 @@
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "~3.3.0"
+    "@xh/hoist-dev-utils": "~3.4.0"
   }
 }
