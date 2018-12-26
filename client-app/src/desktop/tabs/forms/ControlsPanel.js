@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent, XH} from '@xh/hoist/core';
+import {HoistComponent, XH, elemFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {frame, hframe, hbox, div, box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -298,25 +298,11 @@ export class ControlsPanel extends Component {
     }
 
     row = ({label, field, item, info, readonlyRenderer, fmtVal}) => {
-        const {model} = this;
-
-        let displayVal = model[field];
-        if (displayVal == null) {
-            displayVal = 'null';
-        } else {
-            displayVal = fmtVal ? fmtVal(displayVal) : displayVal.toString();
-            if (displayVal.trim() === '') {
-                displayVal = displayVal.length ? '[Blank String]' : '[Empty String]';
-            }
-        }
-
+        const fieldModel = this.model.formModel.getField(field);
         return box({
             className: 'controls-panel-field-box',
             items: [
-                div({
-                    className: 'controls-panel-field-display',
-                    item: displayVal
-                }),
+                fieldDisplay({fieldModel, fmtVal}),
                 formField({
                     item,
                     label,
@@ -368,3 +354,28 @@ export class ControlsPanel extends Component {
     }
 
 }
+
+//--------------------------------------------------
+// Monitor and display the current value of a field.
+//--------------------------------------------------
+@HoistComponent
+class FieldDisplay extends Component {
+    render() {
+        const {fieldModel, fmtVal} = this.props;
+
+        let displayVal = fieldModel.value;
+        if (displayVal == null) {
+            displayVal = 'null';
+        } else {
+            displayVal = fmtVal ? fmtVal(displayVal) : displayVal.toString();
+            if (displayVal.trim() === '') {
+                displayVal = displayVal.length ? '[Blank String]' : '[Empty String]';
+            }
+        }
+        return div({
+            className: 'controls-panel-field-display',
+            item: displayVal
+        });
+    }
+}
+const fieldDisplay = elemFactory(FieldDisplay);
