@@ -8,6 +8,7 @@ import {RestGridPanel} from './RestGridPanel';
 import {DataViewPanel} from './DataViewPanel';
 import {TreeGridPanel} from './TreeGridPanel';
 import {TreeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
+import {ColumnFilterGridPanel} from './ColumnFilterGridPanel';
 
 @HoistComponent
 export class GridsTab extends Component {
@@ -19,6 +20,7 @@ export class GridsTab extends Component {
             {id: 'tree', content: TreeGridPanel},
             {id: 'treeWithCheckBox', title: 'Tree w/CheckBox', content: TreeGridWithCheckboxPanel},
             {id: 'groupedCols', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
+            {id: 'colFilters', title: 'Column Filters', content: ColumnFilterGridPanel},
             {id: 'rest', title: 'REST Editor', content: RestGridPanel},
             {id: 'dataview', title: 'DataView', content: DataViewPanel}
         ]

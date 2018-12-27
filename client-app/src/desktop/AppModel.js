@@ -68,6 +68,7 @@ export class AppModel {
                             {name: 'treeWithCheckBox', path: '/treeWithCheckBox'},
                             {name: 'groupedRows', path: '/groupedRows'},
                             {name: 'groupedCols', path: '/groupedCols'},
+                            {name: 'colFilters', path: '/colFilters'},
                             {name: 'rest', path: '/rest'},
                             {name: 'dataview', path: '/dataview'}
                         ]
