@@ -7,26 +7,30 @@
 import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
-import {filler} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
+import {fmtNumber} from '@xh/hoist/format';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
-import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
+import {colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, observable, bindable} from '@xh/hoist/mobx';
 
 @HoistComponent
 @LayoutSupport
 class SampleColumnFilterGrid extends Component {
 
     @observable groupRows = false;
+
+    // See below to-do
+    // @bindable rowCount = null;
+    @bindable isAnyFilterPresent = false;
 
     loadModel = new PendingTaskModel();
 
@@ -114,22 +118,27 @@ class SampleColumnFilterGrid extends Component {
 
     render() {
         const {model} = this;
-
         return panel({
             item: grid({
                 model,
                 agOptions: {
-                    suppressMenuHide: false,
                     enableFilter: true,
-                    onFilterChange: () => model.setRowCount(console.log('A'))
+                    onFilterChanged: () => {
+                        this.setIsAnyFilterPresent(model.agApi.isAnyFilterPresent());
+                        // TODO: Accessing the ag API this way is buggy post Hoist 17.0. Causes each ColumnHeader to unmount and re-render
+                        // this.setRowCount(this.model.agApi.getDisplayedRowCount())
+                    }
                 }
             }),
             mask: this.loadModel,
             bbar: toolbar(
+                // span(`${fmtNumber(this.rowCount)} record(s)`),
+                button({
+                    text: 'Reset filters',
+                    omit: !this.isAnyFilterPresent,
+                    onClick: () => model.agApi.setFilterModel(null)
+                }),
                 filler(),
-                // new label
-                storeCountLabel({gridModel: model, unit: 'salesperson'}),
-                storeFilterField({gridModel: model}),
                 colChooserButton({gridModel: model}),
                 exportButton({gridModel: model})
             ),

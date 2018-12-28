@@ -23,7 +23,7 @@ export class ColumnFilterGridPanel extends Component {
                     ag-Grid documentation</a>.
                 </p>
             ],
-            item: panel({
+            items: panel({
                 title: 'Grids > Column Filters',
                 icon: Icon.gridPanel(),
                 width: 900,
