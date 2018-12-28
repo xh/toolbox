@@ -10,10 +10,9 @@ import {wait} from '@xh/hoist/promise';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
+import {colChooserButton, exportButton, button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
 import {LocalStore} from '@xh/hoist/data';
@@ -28,7 +27,8 @@ class SampleColumnFilterGrid extends Component {
 
     @observable groupRows = false;
 
-    @bindable testState = null;
+    @bindable recordCount = null;
+    @bindable isAnyFilterPresent = null;
 
     loadModel = new PendingTaskModel();
 
@@ -115,22 +115,34 @@ class SampleColumnFilterGrid extends Component {
     }
 
     render() {
-        const {model} = this;
+        const {model, isAnyFilterPresent} = this,
+            {agApi} = model;
         return panel({
             item: grid({
                 model,
                 agOptions: {
                     enableFilter: true,
-
+                    onFilterChanged: () => {
+                        this.setIsAnyFilterPresent(agApi.isAnyFilterPresent());
+                        this.setRecordCount(agApi.getDisplayedRowCount());
+                    }
                 }
             }),
             mask: this.loadModel,
             bbar: toolbar(
-                button({
-                    text: 'Test',
-                    onClick: () => this.setTestState(!this.testState)
+                span({
+                    omit: this.recordCount === null,
+                    item: `${this.recordCount} record(s)`
                 }),
-                span(`${this.testState}`),
+                button({
+                    omit: !isAnyFilterPresent,
+                    text: 'Clear Filters',
+                    onClick: () => {
+                        this.setIsAnyFilterPresent(false);
+                        agApi.setFilterModel(null);
+                    },
+                    minimal: false
+                }),
                 filler(),
                 colChooserButton({gridModel: model}),
                 exportButton({gridModel: model})
@@ -146,6 +158,7 @@ class SampleColumnFilterGrid extends Component {
     loadAsync() {
         wait(250)
             .then(() => this.model.loadData(XH.salesService.generateSales()))
+            .then(() => this.setRecordCount(this.model.store.count))
             .linkTo(this.loadModel);
     }
 

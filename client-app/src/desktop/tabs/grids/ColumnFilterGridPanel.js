@@ -18,9 +18,8 @@ export class ColumnFilterGridPanel extends Component {
         return wrapper({
             description: [
                 <p>
-                    Hoist React grids support column grouping as described in
-                    the <a href="https://www.ag-grid.com/javascript-grid-column-properties/#columns-and-column-groups" target="_blank">
-                    ag-Grid documentation</a>.
+                    Hoist disables ag-Grid column filters by default, but supports their usage
+                    via the <code>agOptions</code> prop for Column and Grid.
                 </p>
             ],
             items: panel({
