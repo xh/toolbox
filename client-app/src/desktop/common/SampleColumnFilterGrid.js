@@ -10,7 +10,6 @@ import {wait} from '@xh/hoist/promise';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {fmtNumber} from '@xh/hoist/format';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -22,15 +21,14 @@ import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {action, observable, bindable} from '@xh/hoist/mobx';
 
+
 @HoistComponent
 @LayoutSupport
 class SampleColumnFilterGrid extends Component {
 
     @observable groupRows = false;
 
-    // See below to-do
-    // @bindable rowCount = null;
-    @bindable isAnyFilterPresent = false;
+    @bindable testState = null;
 
     loadModel = new PendingTaskModel();
 
@@ -123,21 +121,17 @@ class SampleColumnFilterGrid extends Component {
                 model,
                 agOptions: {
                     enableFilter: true,
-                    onFilterChanged: () => {
-                        this.setIsAnyFilterPresent(model.agApi.isAnyFilterPresent());
-                        // TODO: Accessing the ag API this way is buggy post Hoist 17.0. Causes each ColumnHeader to unmount and re-render
-                        // this.setRowCount(this.model.agApi.getDisplayedRowCount())
-                    }
+
                 }
             }),
             mask: this.loadModel,
             bbar: toolbar(
                 // span(`${fmtNumber(this.rowCount)} record(s)`),
                 button({
-                    text: 'Reset filters',
-                    omit: !this.isAnyFilterPresent,
-                    onClick: () => model.agApi.setFilterModel(null)
+                    text: 'Test',
+                    onClick: () => this.setTestState(!this.testState)
                 }),
+                span(`${this.testState}`),
                 filler(),
                 colChooserButton({gridModel: model}),
                 exportButton({gridModel: model})
