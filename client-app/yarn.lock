@@ -296,7 +296,7 @@
     "@babel/helper-remap-async-to-generator" "^7.1.0"
     "@babel/plugin-syntax-async-generators" "^7.2.0"
 
-"@babel/plugin-proposal-class-properties@~7.2.1":
+"@babel/plugin-proposal-class-properties@~7.2.3":
   version "7.2.3"
   resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-class-properties/-/plugin-proposal-class-properties-7.2.3.tgz#c9e1294363b346cff333007a92080f3203698461"
   integrity sha512-FVuQngLoN2iDrpW7LmhPZ2sO4DJxf35FOcwidwB9Ru9tMvI5URthnkVHuG14IStV+TzkMTyLMoOUlSTtrdVwqw==
@@ -304,7 +304,7 @@
     "@babel/helper-create-class-features-plugin" "^7.2.3"
     "@babel/helper-plugin-utils" "^7.0.0"
 
-"@babel/plugin-proposal-decorators@~7.2.2":
+"@babel/plugin-proposal-decorators@~7.2.3":
   version "7.2.3"
   resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-decorators/-/plugin-proposal-decorators-7.2.3.tgz#1fe5b0d22ce0c4418f225474ebd40267430364c0"
   integrity sha512-jhCFm7ftmue02EWIYqbhzP0iConEPsgVQeDriOs/Qc2lgr6MDtHTTrv3hE2GOOQDFjQ9tjP7nWQq0ad0JhIsQg==
@@ -643,7 +643,7 @@
     core-js "^2.5.7"
     regenerator-runtime "^0.11.1"
 
-"@babel/preset-env@~7.2.0":
+"@babel/preset-env@~7.2.3":
   version "7.2.3"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.2.3.tgz#948c8df4d4609c99c7e0130169f052ea6a7a8933"
   integrity sha512-AuHzW7a9rbv5WXmvGaPX7wADxFkZIqKlbBh1dmZUQp4iwiPpkE/Qnrji6SC4UQCQzvWY/cpHET29eUhXS9cLPw==
@@ -1085,18 +1085,18 @@
     eslint "~4.19.1"
     eslint-plugin-react "~7.7.0"
 
-"@xh/hoist-dev-utils@~3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-3.4.0.tgz#0e6693401d3a8e90461b68f6714dfb9c64d12ee3"
-  integrity sha512-Icanu+0BNq7+bZ6Lpm5NBoEGtvxC/Q4hlUnRnCxEJ1dS3jX0XuYvFkTeWeG6awXKG4zj6IMFyfkb3S5JsdXPzA==
+"@xh/hoist-dev-utils@~3.4.1":
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-3.4.1.tgz#8dd0c6e958c4ec3a70ac05908e6a2eac0b65eda9"
+  integrity sha512-RV7FI0SOmMJaEYQ8HTvgKE68v4/94mUcOEHV33e3g7tC58eq/Mt7F68MT5XTxV4SUHugZh6oGeil5lByP8i+tg==
   dependencies:
     "@babel/core" "~7.2.2"
-    "@babel/plugin-proposal-class-properties" "~7.2.1"
-    "@babel/plugin-proposal-decorators" "~7.2.2"
+    "@babel/plugin-proposal-class-properties" "~7.2.3"
+    "@babel/plugin-proposal-decorators" "~7.2.3"
     "@babel/plugin-proposal-object-rest-spread" "~7.2.0"
     "@babel/plugin-transform-regenerator" "~7.0.0"
     "@babel/polyfill" "~7.0.0"
-    "@babel/preset-env" "~7.2.0"
+    "@babel/preset-env" "~7.2.3"
     "@babel/preset-react" "~7.0.0"
     "@xh/eslint-config" "~0.2.3"
     autoprefixer "~9.4.3"
@@ -1117,12 +1117,12 @@
     sass-loader "~7.1.0"
     sass-material-colors "~0.0.5"
     style-loader "~0.23.1"
-    terser-webpack-plugin "~1.1.0"
+    terser-webpack-plugin "~1.2.1"
     url-loader "~1.1.2"
-    webpack "~4.27.1"
+    webpack "~4.28.2"
     webpack-bundle-analyzer "~3.0.3"
     webpack-cli "~3.1.2"
-    webpack-dev-server "~3.1.10"
+    webpack-dev-server "~3.1.14"
     webpackbar "~3.1.4"
 
 "@xh/hoist@^18.0.0-SNAPSHOT":
@@ -7754,10 +7754,24 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.2"
 
-terser-webpack-plugin@^1.1.0, terser-webpack-plugin@~1.1.0:
+terser-webpack-plugin@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-1.1.0.tgz#cf7c25a1eee25bf121f4a587bb9e004e3f80e528"
   integrity sha512-61lV0DSxMAZ8AyZG7/A4a3UPlrbOBo8NIQ4tJzLPAdGOQ+yoNC7l5ijEow27lBAL2humer01KLS6bGIMYQxKoA==
+  dependencies:
+    cacache "^11.0.2"
+    find-cache-dir "^2.0.0"
+    schema-utils "^1.0.0"
+    serialize-javascript "^1.4.0"
+    source-map "^0.6.1"
+    terser "^3.8.1"
+    webpack-sources "^1.1.0"
+    worker-farm "^1.5.2"
+
+terser-webpack-plugin@~1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-1.2.1.tgz#7545da9ae5f4f9ae6a0ac961eb46f5e7c845cc26"
+  integrity sha512-GGSt+gbT0oKcMDmPx4SRSfJPE1XaN3kQRWG4ghxKQw9cn5G9x6aCKSsgYdvyM0na9NJ4Drv0RG6jbBByZ5CMjw==
   dependencies:
     cacache "^11.0.2"
     find-cache-dir "^2.0.0"
@@ -8295,10 +8309,10 @@ webpack-dev-middleware@3.4.0:
     range-parser "^1.0.3"
     webpack-log "^2.0.0"
 
-webpack-dev-server@~3.1.10:
-  version "3.1.11"
-  resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-3.1.11.tgz#3b698b5b32476f1f0d3d4014952fcf42ab118205"
-  integrity sha512-E/uGbO9ndXrXgNUzw+O2UrrvYY/eIw10fpJnbvJf8VOH/NWZuY3nUG7arbgB/kbkORlF/sPHxnv10tKFtKf3aA==
+webpack-dev-server@~3.1.14:
+  version "3.1.14"
+  resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-3.1.14.tgz#60fb229b997fc5a0a1fc6237421030180959d469"
+  integrity sha512-mGXDgz5SlTxcF3hUpfC8hrQ11yhAttuUQWf1Wmb+6zo3x6rb7b9mIfuQvAPLdfDRCGRGvakBWHdHOa0I9p/EVQ==
   dependencies:
     ansi-html "0.0.7"
     bonjour "^3.5.0"
@@ -8347,10 +8361,10 @@ webpack-sources@^1.1.0, webpack-sources@^1.3.0:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack@~4.27.1:
-  version "4.27.1"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.27.1.tgz#5f2e2db446d2266376fa15d7d2277a1a9c2e12bb"
-  integrity sha512-WArHiLvHrlfyRM8i7f+2SFbr/XbQ0bXqTkPF8JpHOzub5482Y3wx7rEO8stuLGOKOgZJcqcisLhD7LrM/+fVMw==
+webpack@~4.28.2:
+  version "4.28.2"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.28.2.tgz#6b534a8bc91a45787ed631dc2e87aec94e9e4db7"
+  integrity sha512-PK3uVg3/NuNVOjPfYleFI6JF7khO7c2kIlksH7mivQm+QDcwiqV1x6+q89dDeOioh5FNxJHr3LKbDu3oSAhl9g==
   dependencies:
     "@webassemblyjs/ast" "1.7.11"
     "@webassemblyjs/helper-module-context" "1.7.11"
