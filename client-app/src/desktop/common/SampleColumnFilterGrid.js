@@ -126,7 +126,6 @@ class SampleColumnFilterGrid extends Component {
             }),
             mask: this.loadModel,
             bbar: toolbar(
-                // span(`${fmtNumber(this.rowCount)} record(s)`),
                 button({
                     text: 'Test',
                     onClick: () => this.setTestState(!this.testState)
