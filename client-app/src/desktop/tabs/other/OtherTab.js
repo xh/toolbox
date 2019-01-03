@@ -2,8 +2,9 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
-import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {MaskPanel} from './MaskPanel';
+import {LeftRightChooserPanel} from './LeftRightChooserPanel';
+import {FileChooserPanel} from './FileChooserPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {JsxPanel} from './JsxPanel';
 
@@ -15,6 +16,7 @@ export class OtherTab extends Component {
         tabs: [
             {id: 'mask', title: 'Mask', content: MaskPanel},
             {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
+            {id: 'fileChooser', title: 'FileChooser', content: FileChooserPanel},
             {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
             {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel}
         ]
