@@ -9,7 +9,7 @@ import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/columns';
+import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
