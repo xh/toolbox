@@ -1,5 +1,5 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
+import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {box, filler, span} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
 import {LocalStore} from '@xh/hoist/data';
