@@ -205,8 +205,10 @@ export class ControlsPanel extends Component {
                             row({
                                 label: 'Select',
                                 field: 'option2',
+                                info: 'enableClear:true',
                                 item: select({
                                     options: restaurants,
+                                    enableClear: true,
                                     placeholder: 'Search restaurants...'
                                 })
                             }),
