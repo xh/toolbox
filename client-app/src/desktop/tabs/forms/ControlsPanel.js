@@ -228,6 +228,7 @@ export class ControlsPanel extends Component {
                                 item: select({
                                     valueField: 'id',
                                     labelField: 'name',
+                                    enableClear: true,
                                     queryFn: this.queryCompaniesAsync,
                                     optionRenderer: this.renderCompanyOption,
                                     placeholder: 'Search companies...',
@@ -240,6 +241,7 @@ export class ControlsPanel extends Component {
                                 info: 'enableMulti',
                                 item: select({
                                     options: usStates,
+                                    enableClear: false,
                                     enableMulti: true,
                                     width: '90%',
                                     placeholder: 'Select state(s)...'

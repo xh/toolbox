@@ -130,12 +130,19 @@ export class ValidationPanel extends Component {
                             formField({
                                 field: 'notes',
                                 item: textArea({width: 270, commitOnChange})
-                            })
+                            }),
+                            this.renderReferences()
                         ]
                     })
                 )
             })
         });
+    }
+
+    renderReferences() {
+        const {formModel} = this.model,
+            referencesField = this.model
+
     }
 
     renderToolbar() {

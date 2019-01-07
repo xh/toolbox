@@ -3,7 +3,7 @@ import {HoistModel} from '@xh/hoist/core';
 import {dateIs, FormModel, lengthIs, numberIs, required} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
-import {isNil} from 'lodash';
+import {isNil, isEmpty} from 'lodash';
 import moment from 'moment';
 import {bindable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
@@ -19,6 +19,15 @@ export class ValidationPanelModel {
     @bindable minimal = false;
     @bindable commitOnChange = false;
 
+    validEmail = ({value}) => {
+        if (isNil(value)) return;
+        return wait(1 * SECONDS).then(() => {
+            if ((!value.includes('@') || !value.includes('.'))) {
+                return 'Invalid email (async).';
+            }
+        });
+    };
+
     formModel = new FormModel({
         fields: [{
             name: 'firstName',
@@ -31,17 +40,7 @@ export class ValidationPanelModel {
         }, {
             name: 'email',
             initialValue: 'jbloggs@gmail.com',
-            rules: [
-                required,
-                ({value}) => {
-                    if (isNil(value)) return;
-                    return wait(1 * SECONDS).then(() => {
-                        if ((!value.includes('@') || !value.includes('.'))) {
-                            return 'Invalid email (validated async).';
-                        }
-                    });
-                }
-            ]
+            rules: [required, this.validEmail]
         }, {
             name: 'notes',
             initialValue: '',
@@ -84,6 +83,31 @@ export class ValidationPanelModel {
         }, {
             name: 'tags',
             rules: [required]
+        }, {
+            name: 'references',
+            rules: [(ref) => isEmpty(ref) ? 'At least one reference is required.':  null]
         }]
     });
+
+    addReference() {
+        const referencesField = this.formModel.getField('references'),
+            references = referencesField.value || [],
+            newReference = new FormModel({
+                fields: [
+                    {name: 'name', rules: [required]},
+                    {name: 'relationship'},
+                    {name: 'email', rules: [required, this.validEmail]}
+                ]
+            });
+
+        referencesField.value = [references, ...newReference];
+    }
+
+    removeReference(referenceFormModel) {
+        const referencesField = this.formModel.getField('references'),
+            references = referenceField.value || [];
+
+        referencesField.value = without(reference, referenceFormModel);
+        XH.destroy(referenceFormModel)
+    }
 }
