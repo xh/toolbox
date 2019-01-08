@@ -110,26 +110,16 @@ export class FormPage extends Component {
     }
 
     renderResults() {
+        const {model} = this;
         return div({
             className: 'toolbox-card',
             items: [
-                this.renderResult('Name:', 'name'),
-                this.renderResult('Movie:', 'movie'),
-                this.renderResult('Salary:', 'salary'),
-                this.renderResult('Selected Button:', 'buttonGroup'),
-                this.renderResult('Notes:', 'notes'),
-                this.renderResult('Search:', 'searchQuery')
-            ]
-        });
-    }
-
-    renderResult(labelText, field) {
-        const value = this.model[field];
-        return div({
-            className: 'form-field-result',
-            items: [
-                label(labelText),
-                div(value)
+                fieldResultDisplay({model, field: 'name'}),
+                fieldResultDisplay({model, field: 'movie'}),
+                fieldResultDisplay({model, field: 'salary'}),
+                fieldResultDisplay({model, field: 'buttonGroup'}),
+                fieldResultDisplay({model, field: 'notes'}),
+                fieldResultDisplay({model, field: 'searchQuery'})
             ]
         });
     }
@@ -145,5 +135,20 @@ export class FormPage extends Component {
         );
     }
 }
-
 export const formPage = elemFactory(FormPage);
+
+
+@HoistComponent
+class FieldResultDisplay extends Component {
+    render() {
+        const {displayName, value} = this.model.formModel.getField(this.props.field);
+        return div({
+            className: 'form-field-result',
+            items: [
+                label(displayName),
+                div(value)
+            ]
+        });
+    }
+}
+const fieldResultDisplay = elemFactory(FieldResultDisplay);
