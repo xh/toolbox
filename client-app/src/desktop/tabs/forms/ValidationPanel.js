@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame, hbox, hframe, vbox, pre} from '@xh/hoist/cmp/layout';
+import {filler, frame, hbox, vspacer, vbox, pre} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -49,7 +49,7 @@ export class ValidationPanel extends Component {
     }
 
     renderForm() {
-        const {formModel, commitOnChange, readonly, inline, minimal} = this.model;
+        const {formModel, readonly, inline, minimal} = this.model;
 
         return frame({
             className: 'toolbox-validation-panel__content',
@@ -60,89 +60,137 @@ export class ValidationPanel extends Component {
                     inline,
                     minimal
                 },
-                item: hframe(
-                    vbox({
-                        width: 300,
-                        marginRight: 30,
-                        items: [
-                            formField({
-                                field: 'firstName',
-                                item: textInput({commitOnChange})
-                            }),
-                            formField({
-                                field: 'lastName',
-                                item: textInput({commitOnChange})
-                            }),
-                            formField({
-                                field: 'email',
-                                item: textInput({
-                                    placeholder: 'user@company.com',
-                                    leftIcon: Icon.mail(),
-                                    enableClear: true
-                                })
-                            }),
-                            formField({
-                                field: 'region',
-                                item: select({
-                                    options: ['California', 'London', 'Montreal', 'New York']
-                                })
-                            }),
-                            formField({
-                                field: 'tags',
-                                item: select({
-                                    enableMulti: true,
-                                    enableCreate: true
-                                })
-                            })
-                        ]
-                    }),
-                    vbox({
-                        items: [
-                            hbox({
-                                alignItems: 'top',
-                                items: [
-                                    formField({
-                                        field: 'startDate',
-                                        width: 120,
-                                        inline: false,
-                                        item: dateInput({
-                                            commitOnChange
-                                        })
-                                    }),
-                                    formField({
-                                        field: 'endDate',
-                                        width: 120,
-                                        inline: false,
-                                        item: dateInput({
-                                            commitOnChange
-                                        })
-                                    })
-                                ]
-                            }),
-                            formField({
-                                field: 'yearsExperience',
-                                item: numberInput({width: 50, commitOnChange})
-                            }),
-                            formField({
-                                field: 'isManager',
-                                item: checkbox()
-                            }),
-                            formField({
-                                field: 'notes',
-                                item: textArea({width: 270, commitOnChange})
-                            }),
-                            this.renderReferences()
-                        ]
-                    })
+                item: vbox(
+                    hbox(
+                        vbox({
+                            width: 300,
+                            marginRight: 30,
+                            items: this.renderLeftFields()
+                        }),
+                        vbox({
+                            items: this.renderRightFields()
+                        })
+                    ),
+                    this.renderReferences()
                 )
             })
         });
     }
 
-    renderReferences() {
-        const {formModel} = this.model,
-            referencesField = this.model
+    renderLeftFields() {
+        const {commitOnChange} = this.model;
+        return [
+            formField({
+                field: 'lastName',
+                item: textInput({commitOnChange})
+            }),
+            formField({
+                field: 'email',
+                item: textInput({
+                    placeholder: 'user@company.com',
+                    leftIcon: Icon.mail(),
+                    enableClear: true
+                })
+            }),
+            formField({
+                field: 'region',
+                item: select({
+                    options: ['California', 'London', 'Montreal', 'New York']
+                })
+            }),
+            formField({
+                field: 'tags',
+                item: select({
+                    enableMulti: true,
+                    enableCreate: true
+                })
+            })
+        ];
+    }
 
+    renderRightFields() {
+        const {commitOnChange} = this.model;
+        return [
+            hbox({
+                alignItems: 'top',
+                items: [
+                    formField({
+                        field: 'startDate',
+                        width: 120,
+                        inline: false,
+                        item: dateInput({
+                            commitOnChange
+                        })
+                    }),
+                    formField({
+                        field: 'endDate',
+                        width: 120,
+                        inline: false,
+                        item: dateInput({
+                            commitOnChange
+                        })
+                    })
+                ]
+            }),
+            formField({
+                field: 'yearsExperience',
+                item: numberInput({width: 50, commitOnChange})
+            }),
+            formField({
+                field: 'isManager',
+                item: checkbox()
+            }),
+            formField({
+                field: 'notes',
+                item: textArea({width: 270, commitOnChange})
+            })
+        ];
+    }
+
+
+    renderReferences() {
+        const {model} = this,
+            {formModel} = model,
+            references = formModel.getField('references').value || [];
+
+        const rows = references.map(refModel => {
+            return form({
+                model: refModel,
+                key: refModel.xhId,
+                item: hbox(
+                    formField({
+                        field: 'name',
+                        item: textInput()
+                    }),
+                    formField({
+                        field: 'relationship',
+                        item: textInput()
+                    }),
+                    formField({
+                        field: 'email',
+                        item: textInput()
+                    }),
+                    button({
+                        icon: Icon.delete(),
+                        onClick: () => model.removeReference(refModel)
+                    })
+                )
+            });
+        });
+        
+        return vbox({
+            alignItems: 'flex-start',
+            items: [
+                'References',
+                ...rows,
+                vspacer(5),
+                button({
+                    icon: Icon.add(),
+                    text: 'Add',
+                    onClick: () => model.addReference()
+                })
+            ]
+        });
     }
 
     renderToolbar() {
@@ -173,7 +221,8 @@ export class ValidationPanel extends Component {
             button({
                 text: 'Reset',
                 icon: Icon.undo(),
-                onClick: this.onResetClick
+                onClick: this.onResetClick,
+                disabled: !model.formModel.isDirty
             }),
             button({
                 text: 'Validate',

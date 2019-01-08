@@ -1,9 +1,9 @@
 
-import {HoistModel} from '@xh/hoist/core';
+import {XH, HoistModel} from '@xh/hoist/core';
 import {dateIs, FormModel, lengthIs, numberIs, required} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
-import {isNil, isEmpty} from 'lodash';
+import {isNil, isEmpty, without} from 'lodash';
 import moment from 'moment';
 import {bindable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
@@ -85,29 +85,34 @@ export class ValidationPanelModel {
             rules: [required]
         }, {
             name: 'references',
-            rules: [(ref) => isEmpty(ref) ? 'At least one reference is required.':  null]
+            type: 'subforms',
+            rules: [(ref) => isEmpty(ref) ? 'At least one reference is required.':  null],
+            initialValue: [this.createReference()]
         }]
     });
 
     addReference() {
         const referencesField = this.formModel.getField('references'),
-            references = referencesField.value || [],
-            newReference = new FormModel({
-                fields: [
-                    {name: 'name', rules: [required]},
-                    {name: 'relationship'},
-                    {name: 'email', rules: [required, this.validEmail]}
-                ]
-            });
+            references = referencesField.value || [];
 
-        referencesField.value = [references, ...newReference];
+        referencesField.setValue([...references, this.createReference()]);
     }
 
     removeReference(referenceFormModel) {
         const referencesField = this.formModel.getField('references'),
-            references = referenceField.value || [];
+            references = referencesField.value || [];
+        
+        referencesField.setValue(without(references, referenceFormModel));
+        XH.destroy(referenceFormModel);
+    }
 
-        referencesField.value = without(reference, referenceFormModel);
-        XH.destroy(referenceFormModel)
+    createReference() {
+        return new FormModel({
+            fields: [
+                {name: 'name', rules: [required]},
+                {name: 'relationship'},
+                {name: 'email', rules: [required, this.validEmail]}
+            ]
+        });
     }
 }
