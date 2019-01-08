@@ -49,7 +49,7 @@ export class ValidationPanel extends Component {
     }
 
     renderForm() {
-        const {formModel, readonly, inline, minimal} = this.model;
+        const {formModel, readonly, inline, minimal, commitOnChange} = this.model;
 
         return frame({
             className: 'toolbox-validation-panel__content',
@@ -58,7 +58,8 @@ export class ValidationPanel extends Component {
                 fieldDefaults: {
                     readonly,
                     inline,
-                    minimal
+                    minimal,
+                    commitOnChange
                 },
                 item: vbox(
                     hbox(
@@ -78,11 +79,10 @@ export class ValidationPanel extends Component {
     }
 
     renderLeftFields() {
-        const {commitOnChange} = this.model;
         return [
             formField({
                 field: 'lastName',
-                item: textInput({commitOnChange})
+                item: textInput()
             }),
             formField({
                 field: 'email',
@@ -109,7 +109,6 @@ export class ValidationPanel extends Component {
     }
 
     renderRightFields() {
-        const {commitOnChange} = this.model;
         return [
             hbox({
                 alignItems: 'top',
@@ -118,23 +117,19 @@ export class ValidationPanel extends Component {
                         field: 'startDate',
                         width: 120,
                         inline: false,
-                        item: dateInput({
-                            commitOnChange
-                        })
+                        item: dateInput()
                     }),
                     formField({
                         field: 'endDate',
                         width: 120,
                         inline: false,
-                        item: dateInput({
-                            commitOnChange
-                        })
+                        item: dateInput()
                     })
                 ]
             }),
             formField({
                 field: 'yearsExperience',
-                item: numberInput({width: 50, commitOnChange})
+                item: numberInput({width: 50})
             }),
             formField({
                 field: 'isManager',
@@ -142,7 +137,7 @@ export class ValidationPanel extends Component {
             }),
             formField({
                 field: 'notes',
-                item: textArea({width: 270, commitOnChange})
+                item: textArea({width: 270})
             })
         ];
     }
