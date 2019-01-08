@@ -1,9 +1,9 @@
 
-import {HoistModel} from '@xh/hoist/core';
+import {XH, HoistModel} from '@xh/hoist/core';
 import {dateIs, FormModel, lengthIs, numberIs, required} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
-import {isNil} from 'lodash';
+import {isNil, isEmpty, without} from 'lodash';
 import moment from 'moment';
 import {bindable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
@@ -19,6 +19,15 @@ export class ValidationPanelModel {
     @bindable minimal = false;
     @bindable commitOnChange = false;
 
+    validEmail = ({value}) => {
+        if (isNil(value)) return;
+        return wait(1 * SECONDS).then(() => {
+            if ((!value.includes('@') || !value.includes('.'))) {
+                return 'Invalid email (async).';
+            }
+        });
+    };
+
     formModel = new FormModel({
         fields: [{
             name: 'firstName',
@@ -31,17 +40,7 @@ export class ValidationPanelModel {
         }, {
             name: 'email',
             initialValue: 'jbloggs@gmail.com',
-            rules: [
-                required,
-                ({value}) => {
-                    if (isNil(value)) return;
-                    return wait(1 * SECONDS).then(() => {
-                        if ((!value.includes('@') || !value.includes('.'))) {
-                            return 'Invalid email (validated async).';
-                        }
-                    });
-                }
-            ]
+            rules: [required, this.validEmail]
         }, {
             name: 'notes',
             initialValue: '',
@@ -84,6 +83,36 @@ export class ValidationPanelModel {
         }, {
             name: 'tags',
             rules: [required]
+        }, {
+            name: 'references',
+            type: 'subforms',
+            rules: [(ref) => isEmpty(ref) ? 'At least one reference is required.':  null],
+            initialValue: [this.createReference()]
         }]
     });
+
+    addReference() {
+        const referencesField = this.formModel.getField('references'),
+            references = referencesField.value || [];
+
+        referencesField.setValue([...references, this.createReference()]);
+    }
+
+    removeReference(referenceFormModel) {
+        const referencesField = this.formModel.getField('references'),
+            references = referencesField.value || [];
+        
+        referencesField.setValue(without(references, referenceFormModel));
+        XH.destroy(referenceFormModel);
+    }
+
+    createReference() {
+        return new FormModel({
+            fields: [
+                {name: 'name', rules: [required]},
+                {name: 'relationship'},
+                {name: 'email', rules: [required, this.validEmail]}
+            ]
+        });
+    }
 }

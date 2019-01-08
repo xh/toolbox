@@ -55,12 +55,15 @@ export class ControlsPanel extends Component {
 
     renderForm() {
         const {model, row} = this,
-            {formModel, readonly} = model;
+            {formModel, readonly, commitOnChange} = model;
 
         return frame(
             form({
                 model: formModel,
-                fieldDefaults: {readonly},
+                fieldDefaults: {
+                    readonly,
+                    commitOnChange
+                },
                 flex: 1,
                 items: hframe(
                     panel({
@@ -88,11 +91,10 @@ export class ControlsPanel extends Component {
                             row({
                                 label: 'TextInput',
                                 field: 'text3',
-                                info: 'type:password, commitOnChange, selectOnFocus',
+                                info: 'type:password, selectOnFocus',
                                 readonlyRenderer: v => v ? v.replace(/./g, '•') : null,
                                 item: textInput({
                                     type: 'password',
-                                    commitOnChange: true,
                                     selectOnFocus: true
                                 })
                             }),
@@ -175,7 +177,6 @@ export class ControlsPanel extends Component {
                                 info: 'leftIcon, minDate, maxDate, textAlign',
                                 fmtVal: v => fmtDateTime(v),
                                 item: dateInput({
-                                    commitOnChange: true,
                                     leftIcon: Icon.calendar(),
                                     placeholder: 'YYYY-MM-DD',
                                     minDate: moment().subtract(5, 'weeks').toDate(),
@@ -191,7 +192,6 @@ export class ControlsPanel extends Component {
                                 fmtVal: v => fmtDateTime(v),
                                 readonlyRenderer: v => fmtDateTime(v),
                                 item: dateInput({
-                                    commitOnChange: true,
                                     showActionsBar: true,
                                     timePrecision: 'minute',
                                     timePickerProps: {useAmPm: true}
@@ -230,6 +230,7 @@ export class ControlsPanel extends Component {
                                 item: select({
                                     valueField: 'id',
                                     labelField: 'name',
+                                    enableClear: true,
                                     queryFn: this.queryCompaniesAsync,
                                     optionRenderer: this.renderCompanyOption,
                                     placeholder: 'Search companies...',
@@ -242,6 +243,7 @@ export class ControlsPanel extends Component {
                                 info: 'enableMulti',
                                 item: select({
                                     options: usStates,
+                                    enableClear: false,
                                     enableMulti: true,
                                     width: '90%',
                                     placeholder: 'Select state(s)...'
@@ -351,7 +353,12 @@ export class ControlsPanel extends Component {
                 model,
                 field: 'readonly',
                 label: 'Read-only mode'
-            })
+            }),
+            switchInput({
+                model,
+                field: 'commitOnChange',
+                label: 'Inputs commit on change'
+            }),
         );
     }
 
