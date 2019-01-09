@@ -5,9 +5,9 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent, XH} from '@xh/hoist/core';
+import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame, hbox, vspacer, vbox, pre} from '@xh/hoist/cmp/layout';
+import {filler, frame, hbox, vspacer, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -216,56 +216,15 @@ export class ValidationPanel extends Component {
             button({
                 text: 'Reset',
                 icon: Icon.undo(),
-                onClick: this.onResetClick,
+                onClick: () => model.reset(),
                 disabled: !model.formModel.isDirty
-            }),
-            button({
-                text: 'Validate',
-                icon: Icon.check(),
-                intent: 'primary',
-                onClick: this.onValidateClick
             }),
             button({
                 text: 'Submit',
                 icon: Icon.add(),
                 intent: 'success',
-                onClick: this.onSubmitClick,
-                disabled: !model.formModel.isValid
+                onClick: () => model.submitAsync()
             })
         );
-    }
-
-
-    onSubmitClick = async () => {
-        const {formModel} = this.model;
-        await formModel.validateAsync().linkTo(this.validateButtonTask);
-        if (formModel.isValid) {
-            XH.alert({
-                message: vbox(
-                    'Submitted: ',
-                    pre(JSON.stringify(formModel.getData(), undefined, 2))
-                )
-            });
-            formModel.reset();
-        }
-    }
-
-    onValidateClick = async () => {
-        const {formModel} = this.model;
-        await formModel.validateAsync().linkTo(this.validateButtonTask);
-        if (formModel.isValid) {
-            XH.toast({message: 'Form is valid'});
-        } else {
-            const errCount = formModel.fields.filter(f => f.isNotValid).length;
-            XH.toast({
-                icon: Icon.warning(),
-                intent: 'danger',
-                message: `Form is not valid. ${errCount} fields are still invalid!`
-            });
-        }
-    }
-
-    onResetClick = () => {
-        this.model.formModel.reset();
     }
 }
