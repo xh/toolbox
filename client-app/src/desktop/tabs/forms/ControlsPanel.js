@@ -64,7 +64,6 @@ export class ControlsPanel extends Component {
                     readonly,
                     commitOnChange
                 },
-                flex: 1,
                 items: hframe(
                     panel({
                         className: 'toolbox-controls-panel__column',

@@ -2,7 +2,6 @@
 import {XH, HoistModel} from '@xh/hoist/core';
 import {dateIs, FormModel, lengthIs, numberIs, required} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
-import {SECONDS} from '@xh/hoist/utils/datetime';
 import {isNil, isEmpty, without} from 'lodash';
 import moment from 'moment';
 import {bindable} from '@xh/hoist/mobx';
@@ -21,7 +20,7 @@ export class ValidationPanelModel {
 
     validEmail = ({value}) => {
         if (isNil(value)) return;
-        return wait(1 * SECONDS).then(() => {
+        return wait(500).then(() => {
             if ((!value.includes('@') || !value.includes('.'))) {
                 return 'Invalid email (async).';
             }
