@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
-import {div, vframe, span, filler} from '@xh/hoist/cmp/layout';
+import {div, vframe, span, filler, vbox} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
@@ -52,8 +52,7 @@ export class FormPage extends Component {
             items: form({
                 model: formModel,
                 fieldDefaults: {minimal, readonly},
-                flexDirection: 'column',
-                items: [
+                items: vbox(
                     formField({
                         field: 'name',
                         info: 'Min. 8 chars',
@@ -104,32 +103,22 @@ export class FormPage extends Component {
                         field: 'searchQuery',
                         item: searchInput()
                     })
-                ]
+                )
             })
         });
     }
 
     renderResults() {
+        const {model} = this;
         return div({
             className: 'toolbox-card',
             items: [
-                this.renderResult('Name:', 'name'),
-                this.renderResult('Movie:', 'movie'),
-                this.renderResult('Salary:', 'salary'),
-                this.renderResult('Selected Button:', 'buttonGroup'),
-                this.renderResult('Notes:', 'notes'),
-                this.renderResult('Search:', 'searchQuery')
-            ]
-        });
-    }
-
-    renderResult(labelText, field) {
-        const value = this.model[field];
-        return div({
-            className: 'form-field-result',
-            items: [
-                label(labelText),
-                div(value)
+                fieldResultDisplay({model, field: 'name'}),
+                fieldResultDisplay({model, field: 'movie'}),
+                fieldResultDisplay({model, field: 'salary'}),
+                fieldResultDisplay({model, field: 'buttonGroup'}),
+                fieldResultDisplay({model, field: 'notes'}),
+                fieldResultDisplay({model, field: 'searchQuery'})
             ]
         });
     }
@@ -145,5 +134,20 @@ export class FormPage extends Component {
         );
     }
 }
-
 export const formPage = elemFactory(FormPage);
+
+
+@HoistComponent
+class FieldResultDisplay extends Component {
+    render() {
+        const {displayName, value} = this.model.formModel.getField(this.props.field);
+        return div({
+            className: 'form-field-result',
+            items: [
+                label(displayName),
+                div(value)
+            ]
+        });
+    }
+}
+const fieldResultDisplay = elemFactory(FieldResultDisplay);
