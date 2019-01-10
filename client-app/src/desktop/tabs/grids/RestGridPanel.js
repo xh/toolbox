@@ -125,7 +125,7 @@ export class RestGridPanel extends Component {
                 icon: Icon.edit(),
                 width: 900,
                 height: 400,
-                item: restGrid({model, readOnly: true})
+                item: restGrid({model})
             })
         });
     }
