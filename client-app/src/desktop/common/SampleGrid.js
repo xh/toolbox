@@ -163,7 +163,7 @@ class SampleGrid extends Component {
                     span('Group by:'),
                     select({
                         model: this,
-                        field: 'groupBy',
+                        bind: 'groupBy',
                         options: [
                             {value: 'active', label: 'Active'},
                             {value: 'city', label: 'City'},
@@ -175,7 +175,7 @@ class SampleGrid extends Component {
                     toolbarSep(),
                     switchInput({
                         model,
-                        field: 'compact',
+                        bind: 'compact',
                         label: 'Compact',
                         labelAlign: 'left'
                     }),

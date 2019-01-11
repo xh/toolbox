@@ -126,10 +126,10 @@ export class FormPage extends Component {
     renderToolbar() {
         const {model} = this;
         return toolbar(
-            switchInput({model, field: 'readonly'}),
+            switchInput({model, bind: 'readonly'}),
             span('Read-only'),
             filler(),
-            switchInput({model, field: 'minimal'}),
+            switchInput({model, bind: 'minimal'}),
             span('Minimal validation'),
         );
     }

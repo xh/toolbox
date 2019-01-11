@@ -350,12 +350,12 @@ export class ControlsPanel extends Component {
         return toolbar(
             switchInput({
                 model,
-                field: 'readonly',
+                bind: 'readonly',
                 label: 'Read-only mode'
             }),
             switchInput({
                 model,
-                field: 'commitOnChange',
+                bind: 'commitOnChange',
                 label: 'Inputs commit on change'
             }),
         );

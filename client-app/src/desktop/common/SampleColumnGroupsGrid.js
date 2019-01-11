@@ -160,14 +160,14 @@ class SampleColumnGroupsGrid extends Component {
                 toolbarSep(),
                 switchInput({
                     model: this,
-                    field: 'groupRows',
+                    bind: 'groupRows',
                     label: 'Group rows:',
                     labelAlign: 'left'
                 }),
                 toolbarSep(),
                 switchInput({
                     model,
-                    field: 'compact',
+                    bind: 'compact',
                     label: 'Compact mode:',
                     labelAlign: 'left'
                 }),

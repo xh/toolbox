@@ -68,7 +68,7 @@ export class DateFormatsPanel extends Component {
                 param({
                     label: 'Function',
                     model,
-                    field: 'fnName',
+                    bind: 'fnName',
                     item: radioInput({
                         alignIndicator: 'left',
                         inline: true,
@@ -86,19 +86,19 @@ export class DateFormatsPanel extends Component {
                         param({
                             model,
                             disabled: !model.enableFmt,
-                            field: 'fmt',
+                            bind: 'fmt',
                             item: textInput({commitOnChange: true}),
                             info: 'a moment.js format string.'
                         }),
                         param({
                             model,
-                            field: 'tooltip',
+                            bind: 'tooltip',
                             item: switchInput(),
                             info: 'function to generate a tooltip string.'
                         }),
                         param({
                             model,
-                            field: 'nullDisplay',
+                            bind: 'nullDisplay',
                             item: textInput({commitOnChange: true, width: 50}),
                             info: 'format for null values'
                         })

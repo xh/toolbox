@@ -111,7 +111,7 @@ class SampleTreeGrid extends Component {
                 toolbarSep(),
                 switchInput({
                     model,
-                    field: 'compact',
+                    bind: 'compact',
                     label: 'Compact',
                     labelAlign: 'left'
                 }),
