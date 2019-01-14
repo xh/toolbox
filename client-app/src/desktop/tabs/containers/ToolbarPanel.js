@@ -57,7 +57,7 @@ export class ToolbarPanel extends Component {
                     filler(),
                     switchInput({
                         model,
-                        field: 'enableTerminate',
+                        bind: 'enableTerminate',
                         label: 'Danger mode',
                         alignIndicator: 'right'
                     }),
@@ -103,7 +103,7 @@ export class ToolbarPanel extends Component {
                     filler(),
                     select({
                         model,
-                        field: 'state',
+                        bind: 'state',
                         options: usStates,
                         placeholder: 'Select a State...'
                     }),

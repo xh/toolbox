@@ -193,22 +193,22 @@ export class ValidationPanel extends Component {
         return toolbar(
             switchInput({
                 model,
-                field: 'inline',
+                bind: 'inline',
                 label: 'Display field labels inline'
             }),
             switchInput({
                 model,
-                field: 'readonly',
+                bind: 'readonly',
                 label: 'Read-only mode'
             }),
             switchInput({
                 model,
-                field: 'minimal',
+                bind: 'minimal',
                 label: 'Minimal validation display'
             }),
             switchInput({
                 model,
-                field: 'commitOnChange',
+                bind: 'commitOnChange',
                 label: 'Inputs commit on change'
             }),
             filler(),

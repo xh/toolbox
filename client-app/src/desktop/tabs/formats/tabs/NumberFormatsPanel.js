@@ -63,7 +63,7 @@ export class NumberFormatsPanel extends Component {
                 param({
                     model,
                     label: 'Function',
-                    field: 'fnName',
+                    bind: 'fnName',
                     item: radioInput({
                         alignIndicator: 'left',
                         inline: true,
@@ -83,55 +83,55 @@ export class NumberFormatsPanel extends Component {
                     items: [
                         param({
                             model,
-                            field: 'precision',
+                            bind: 'precision',
                             item: select({options: ['auto', 0, 1, 2, 3, 4, 5, 6], enableCreate: false, width: 75}),
                             info: 'precision'
                         }),
                         param({
                             model,
-                            field: 'zeroPad',
+                            bind: 'zeroPad',
                             item: switchInput(),
                             info: 'pad with zeros out to fully specified precision'
                         }),
                         param({
                             model,
-                            field: 'ledger',
+                            bind: 'ledger',
                             item: switchInput(),
                             info: 'use ledger formatting'
                         }),
                         param({
                             model,
-                            field: 'forceLedgerAlign',
+                            bind: 'forceLedgerAlign',
                             item: switchInput(),
                             info: 'insert additional space to align numbers in ledger format'
                         }),
                         param({
                             model,
-                            field: 'withPlusSign',
+                            bind: 'withPlusSign',
                             item: switchInput(),
                             info: 'use explicit plus sign for positive numbers'
                         }),
                         param({
                             model,
-                            field: 'withSignGlyph',
+                            bind: 'withSignGlyph',
                             item: switchInput(),
                             info: 'use up/down glyphs to indicate sign'
                         }),
                         param({
                             model,
-                            field: 'colorSpec',
+                            bind: 'colorSpec',
                             item: switchInput(),
                             info: 'color positive and negative numbers (colors configurable)'
                         }),
                         param({
                             model,
-                            field: 'label',
+                            bind: 'label',
                             item: textInput({commitOnChange: true, width: 50}),
                             info: 'suffix charachters, typically used for units'
                         }),
                         param({
                             model,
-                            field: 'nullDisplay',
+                            bind: 'nullDisplay',
                             item: textInput({commitOnChange: true, width: 50}),
                             info: 'format for null values'
                         })

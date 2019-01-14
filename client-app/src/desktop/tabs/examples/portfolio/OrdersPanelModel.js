@@ -1,7 +1,7 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
-import {emptyFlexCol, dateTimeCol} from '@xh/hoist/cmp/grid/columns';
+import {emptyFlexCol, dateTimeCol} from '@xh/hoist/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {numberRenderer} from '@xh/hoist/format';
 import {isNil} from 'lodash';

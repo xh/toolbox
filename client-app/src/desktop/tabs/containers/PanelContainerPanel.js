@@ -12,12 +12,12 @@ import {wrapper} from '../../common/Wrapper';
 export class PanelContainerPanel extends Component {
 
     leftPanelModel = new PanelModel({
-        defaultSize: 125,
+        defaultSize: 150,
         side: 'left'
     });
 
     rightPanelModel = new PanelModel({
-        defaultSize: 125,
+        defaultSize: 150,
         side: 'right'
     });
 

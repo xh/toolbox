@@ -2,11 +2,11 @@ import React from 'react';
 import {formGroup} from '@xh/hoist/kit/blueprint';
 import {code, span} from '@xh/hoist/cmp/layout';
 
-export function param({label, field, item, model, info, disabled}) {
+export function param({label, bind, item, model, info, disabled}) {
     return formGroup({
         label,
-        item: React.cloneElement(item, {model, field, disabled}),
-        helperText: info ? span(code(field), ' - ', info) : null
+        item: React.cloneElement(item, {model, bind, disabled}),
+        helperText: info ? span(code(bind), ' - ', info) : null
     });
 }
 

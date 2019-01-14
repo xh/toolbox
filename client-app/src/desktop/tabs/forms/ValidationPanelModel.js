@@ -88,7 +88,7 @@ export class ValidationPanelModel {
             name: 'references',
             type: 'subforms',
             rules: [(ref) => isEmpty(ref) ? 'At least one reference is required.':  null],
-            initialValue: [this.createReference()]
+            initialValue: []
         }]
     });
 
