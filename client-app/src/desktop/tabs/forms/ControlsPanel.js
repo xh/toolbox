@@ -351,7 +351,7 @@ export class ControlsPanel extends Component {
             switchInput({
                 model: formModel,
                 bind: 'readonly',
-                label: 'Read-only mode'
+                label: 'Read-only'
             }),
             switchInput({
                 model: formModel,
@@ -361,7 +361,7 @@ export class ControlsPanel extends Component {
             switchInput({
                 model,
                 bind: 'commitOnChange',
-                label: 'Inputs commit on change'
+                label: 'Commit on change'
             }),
         );
     }

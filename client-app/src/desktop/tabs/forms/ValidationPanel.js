@@ -192,7 +192,7 @@ export class ValidationPanel extends Component {
             switchInput({
                 model,
                 bind: 'inline',
-                label: 'Display field labels inline'
+                label: 'Inline labels'
             }),
             switchInput({
                 model,
@@ -202,12 +202,12 @@ export class ValidationPanel extends Component {
             switchInput({
                 model,
                 bind: 'commitOnChange',
-                label: 'Inputs commit on change'
+                label: 'Commit on change'
             }),
             switchInput({
                 model: formModel,
                 bind: 'readonly',
-                label: 'Read-only mode'
+                label: 'Read-only'
             }),
             switchInput({
                 model: formModel,
