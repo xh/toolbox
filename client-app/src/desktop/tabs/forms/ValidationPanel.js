@@ -143,9 +143,9 @@ export class ValidationPanel extends Component {
 
 
     renderReferences() {
-        const referencesField = this.model.formModel.getField('references');
+        const {references} = this.model.formModel.fields;
 
-        const rows = referencesField.value.map(refModel => {
+        const rows = references.value.map(refModel => {
             return form({
                 model: refModel,
                 key: refModel.xhId,
@@ -164,7 +164,7 @@ export class ValidationPanel extends Component {
                     }),
                     button({
                         icon: Icon.delete(),
-                        onClick: () => referencesField.remove(refModel)
+                        onClick: () => references.remove(refModel)
                     })
                 )
             });
@@ -179,7 +179,7 @@ export class ValidationPanel extends Component {
                 button({
                     icon: Icon.add(),
                     text: 'Add',
-                    onClick: () => referencesField.add()
+                    onClick: () => references.add()
                 })
             ]
         });

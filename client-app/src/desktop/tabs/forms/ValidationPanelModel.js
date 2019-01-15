@@ -3,7 +3,7 @@ import {XH, HoistModel} from '@xh/hoist/core';
 import {dateIs, FormModel, lengthIs, numberIs, required} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
 import {vbox, pre} from '@xh/hoist/cmp/layout';
-import {isNil, isEmpty} from 'lodash';
+import {isNil, isEmpty, filter} from 'lodash';
 import moment from 'moment';
 import {bindable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
@@ -114,7 +114,7 @@ export class ValidationPanelModel {
             });
             this.reset();
         } else {
-            const errCount = formModel.fields.filter(f => f.isNotValid).length;
+            const errCount = filter(formModel.fields, f => f.isNotValid).length;
             XH.toast({
                 icon: Icon.warning(),
                 intent: 'danger',

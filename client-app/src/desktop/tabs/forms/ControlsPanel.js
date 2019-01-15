@@ -300,7 +300,7 @@ export class ControlsPanel extends Component {
     }
 
     row = ({label, field, item, info, readonlyRenderer, fmtVal}) => {
-        const fieldModel = this.model.formModel.getField(field);
+        const fieldModel = this.model.formModel.fields[field];
         return box({
             className: 'controls-panel-field-box',
             items: [
