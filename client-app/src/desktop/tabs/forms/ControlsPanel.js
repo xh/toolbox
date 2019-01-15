@@ -55,13 +55,12 @@ export class ControlsPanel extends Component {
 
     renderForm() {
         const {model, row} = this,
-            {formModel, readonly, commitOnChange} = model;
+            {formModel, commitOnChange} = model;
 
         return frame(
             form({
                 model: formModel,
                 fieldDefaults: {
-                    readonly,
                     commitOnChange
                 },
                 items: hframe(
@@ -346,12 +345,18 @@ export class ControlsPanel extends Component {
     }
 
     renderToolbar() {
-        const {model} = this;
+        const {model} = this,
+            {formModel} = model;
         return toolbar(
             switchInput({
-                model,
+                model: formModel,
                 bind: 'readonly',
                 label: 'Read-only mode'
+            }),
+            switchInput({
+                model: formModel,
+                bind: 'disabled',
+                label: 'Disabled'
             }),
             switchInput({
                 model,
