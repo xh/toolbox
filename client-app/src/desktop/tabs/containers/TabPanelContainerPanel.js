@@ -102,14 +102,14 @@ export class TabPanelContainerPanel extends Component {
                                         bbar: toolbar(
                                             switchInput({
                                                 model: peopleTab,
-                                                field: 'disabled',
+                                                bind: 'disabled',
                                                 label: 'People Disabled?'
                                             }),
                                             hspacer(10),
                                             'Places Tab Title: ',
                                             textInput({
                                                 model: placesTab,
-                                                field: 'title'
+                                                bind: 'title'
                                             })
                                         ),
                                         item: tabContainer({model: stateTabModel})

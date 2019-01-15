@@ -10,7 +10,7 @@ export class ResultsPanel extends Component {
 
     render() {
         const {model, props} = this,
-            tryItInput = React.cloneElement(props.tryItInput, {model, field: 'tryItData'});
+            tryItInput = React.cloneElement(props.tryItInput, {model, bind: 'tryItData'});
 
         return panel({
             className: 'toolbox-formats-tab__panel',

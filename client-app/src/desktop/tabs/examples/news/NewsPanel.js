@@ -76,7 +76,7 @@ export class NewsPanel extends Component {
                         }),
                         select({
                             model,
-                            field: 'sourceFilter',
+                            bind: 'sourceFilter',
                             options: model.sourceOptions,
                             enableMulti: true,
                             placeholder: 'Filter by source...',

@@ -1,5 +1,3 @@
-@import '../helpers';
-
 .toolbox-wrapper {
   display: flex;
   width: 100%;
@@ -8,11 +6,6 @@
   align-items: center;
   flex-direction: column;
   padding-top: 10px;
-
-  background-image: svg-url('<svg width="21" height="21"><rect x="0" y="0" width="20" height="20" style="fill: #F5F5F5;" /></svg>');
-  .xh-dark & {
-    background-image: svg-url('<svg width="21" height="21"><rect x="0" y="0" width="20" height="20" style="fill: #212121;" /></svg>');
-  }
 
   .toolbox-wrapper-description {
     background-color: var(--xh-bg-alt);

@@ -14,7 +14,7 @@ import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/c
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
+import {emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
@@ -111,7 +111,7 @@ class SampleTreeGrid extends Component {
                 toolbarSep(),
                 switchInput({
                     model,
-                    field: 'compact',
+                    bind: 'compact',
                     label: 'Compact',
                     labelAlign: 'left'
                 }),

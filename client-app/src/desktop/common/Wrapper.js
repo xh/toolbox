@@ -10,7 +10,7 @@ class Wrapper extends Component {
         const {description, children, ...rest} = this.props;
 
         return box({
-            className: 'toolbox-wrapper',
+            className: 'toolbox-wrapper xh-tiled-bg',
             items: [
                 panel({
                     className: 'toolbox-wrapper-description',

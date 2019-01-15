@@ -26,7 +26,7 @@ export class LineChartPanel extends Component {
                     box('Company: '),
                     select({
                         model,
-                        field: 'currentCompany',
+                        bind: 'currentCompany',
                         options: Object.keys(companyMap),
                         enableFilter: false
                     })

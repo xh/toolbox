@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
+import {emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {LocalStore} from '@xh/hoist/data';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
@@ -99,7 +99,7 @@ class SampleTreeWithCheckboxGrid extends Component {
                 toolbarSep(),
                 switchInput({
                     model,
-                    field: 'compact',
+                    bind: 'compact',
                     label: 'Compact',
                     labelAlign: 'left'
                 }),
