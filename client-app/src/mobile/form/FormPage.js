@@ -140,7 +140,7 @@ export const formPage = elemFactory(FormPage);
 @HoistComponent
 class FieldResultDisplay extends Component {
     render() {
-        const {displayName, value} = this.model.formModel.getField(this.props.field);
+        const {displayName, value} = this.model.formModel.fields[this.props.field];
         return div({
             className: 'form-field-result',
             items: [

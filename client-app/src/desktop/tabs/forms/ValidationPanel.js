@@ -49,14 +49,13 @@ export class ValidationPanel extends Component {
     }
 
     renderForm() {
-        const {formModel, readonly, inline, minimal, commitOnChange} = this.model;
+        const {formModel, inline, minimal, commitOnChange} = this.model;
 
         return frame({
             className: 'toolbox-validation-panel__content',
             item: form({
                 model: formModel,
                 fieldDefaults: {
-                    readonly,
                     inline,
                     minimal,
                     commitOnChange
@@ -144,11 +143,9 @@ export class ValidationPanel extends Component {
 
 
     renderReferences() {
-        const {model} = this,
-            {formModel} = model,
-            references = formModel.getField('references').value || [];
+        const {references} = this.model.formModel.fields;
 
-        const rows = references.map(refModel => {
+        const rows = references.value.map(refModel => {
             return form({
                 model: refModel,
                 key: refModel.xhId,
@@ -167,7 +164,7 @@ export class ValidationPanel extends Component {
                     }),
                     button({
                         icon: Icon.delete(),
-                        onClick: () => model.removeReference(refModel)
+                        onClick: () => references.remove(refModel)
                     })
                 )
             });
@@ -182,24 +179,20 @@ export class ValidationPanel extends Component {
                 button({
                     icon: Icon.add(),
                     text: 'Add',
-                    onClick: () => model.addReference()
+                    onClick: () => references.add()
                 })
             ]
         });
     }
 
     renderToolbar() {
-        const {model} = this;
+        const {model} = this,
+            {formModel} = model;
         return toolbar(
             switchInput({
                 model,
                 bind: 'inline',
                 label: 'Display field labels inline'
-            }),
-            switchInput({
-                model,
-                bind: 'readonly',
-                label: 'Read-only mode'
             }),
             switchInput({
                 model,
@@ -210,6 +203,16 @@ export class ValidationPanel extends Component {
                 model,
                 bind: 'commitOnChange',
                 label: 'Inputs commit on change'
+            }),
+            switchInput({
+                model: formModel,
+                bind: 'readonly',
+                label: 'Read-only mode'
+            }),
+            switchInput({
+                model: formModel,
+                bind: 'disabled',
+                label: 'Disabled'
             }),
             filler(),
             toolbarSep(),

@@ -3,7 +3,7 @@ import {XH, HoistModel} from '@xh/hoist/core';
 import {dateIs, FormModel, lengthIs, numberIs, required} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
 import {vbox, pre} from '@xh/hoist/cmp/layout';
-import {isNil, isEmpty, without} from 'lodash';
+import {isNil, isEmpty, filter} from 'lodash';
 import moment from 'moment';
 import {bindable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
@@ -86,36 +86,17 @@ export class ValidationPanelModel {
             rules: [required]
         }, {
             name: 'references',
-            type: 'subforms',
-            rules: [(ref) => isEmpty(ref) ? 'At least one reference is required.':  null],
-            initialValue: []
+            subforms: {
+                fields: [
+                    {name: 'name', rules: [required]},
+                    {name: 'relationship'},
+                    {name: 'email', rules: [required, this.validEmail]}
+                ],
+                initialValues: {relationship: 'spouse'}
+            },
+            rules: [(ref) => isEmpty(ref) ? 'At least one reference is required.':  null]
         }]
     });
-
-    addReference() {
-        const referencesField = this.formModel.getField('references'),
-            references = referencesField.value || [];
-
-        referencesField.setValue([...references, this.createReference()]);
-    }
-
-    removeReference(referenceFormModel) {
-        const referencesField = this.formModel.getField('references'),
-            references = referencesField.value || [];
-        
-        referencesField.setValue(without(references, referenceFormModel));
-        XH.destroy(referenceFormModel);
-    }
-
-    createReference() {
-        return new FormModel({
-            fields: [
-                {name: 'name', rules: [required]},
-                {name: 'relationship'},
-                {name: 'email', rules: [required, this.validEmail]}
-            ]
-        });
-    }
 
     async reset() {
         this.formModel.reset();
@@ -133,7 +114,7 @@ export class ValidationPanelModel {
             });
             this.reset();
         } else {
-            const errCount = formModel.fields.filter(f => f.isNotValid).length;
+            const errCount = filter(formModel.fields, f => f.isNotValid).length;
             XH.toast({
                 icon: Icon.warning(),
                 intent: 'danger',
