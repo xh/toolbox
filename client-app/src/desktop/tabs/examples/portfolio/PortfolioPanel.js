@@ -6,7 +6,7 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
-import {hbox, vframe} from '@xh/hoist/cmp/layout';
+import {hbox, hframe, vframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
@@ -47,7 +47,7 @@ export class PortfolioPanel extends Component {
                     side: 'bottom',
                     collapsedRenderMode: 'unmountOnHide'
                 },
-                item: hbox({
+                item: hframe({
                     items: [
                         lineChart({
                             model: model.lineChartModel,
