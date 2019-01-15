@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
@@ -8,6 +8,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
+import {pluralize} from '@xh/hoist/utils/js';
 import {wrapper} from '../../common/Wrapper';
 
 
@@ -48,17 +49,23 @@ export class FileChooserPanel extends Component {
                     flex: 1,
                     enableMulti: true,
                     showFileGrid: this.showFileGrid,
-                    accept: '.txt',
+                    accept: ['.txt', '.png'],
+                    targetText: (
+                        <Fragment>
+                            <p>Drop and drop files here, or click to browse.</p>
+                            <p>Note that this example is configured to accept only <code>*.txt</code> and <code>*.png</code> file types.</p>
+                        </Fragment>
+                    ),
                     model: chooserModel
                 }),
                 bbar: toolbar(
                     span('Show grid:'),
                     switchInput({
                         model: this,
-                        field: 'showFileGrid'
+                        bind: 'showFileGrid'
                     }),
                     filler(),
-                    span(`${chooserModel.files.length} file(s) selected`),
+                    span(`${pluralize('file', chooserModel.files.length, true)} selected`),
                     toolbarSep(),
                     button({
                         text: 'Clear all',
