@@ -1,6 +1,8 @@
 .toolbox-controls-panel {
   &__column {
     width: 30%;
+    flex: 1;
+    overflow-y: auto !important;
     margin: var(--xh-pad-px);
     border: var(--xh-border-solid);
 
@@ -9,7 +11,8 @@
     }
 
     .controls-panel-field-box {
-      padding: var(--xh-pad-half-px);
+      padding: var(--xh-pad-half-px) var(--xh-pad-half-px) 0 var(--xh-pad-half-px);
+      flex: none;
 
       &:nth-child(odd) {
         background-color: var(--xh-grid-bg-odd);
