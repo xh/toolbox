@@ -2,9 +2,7 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
-        maven {
-            url 'https://repo.grails.org/grails/core'
-        }
+        maven {url 'https://repo.grails.org/grails/core'}
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
@@ -29,16 +27,8 @@ apply plugin:'org.grails.grails-gsp'
 repositories {
     mavenLocal()
     jcenter()
-    maven {
-        url 'https://repo.grails.org/grails/core'
-    }
-    maven {
-        url 'https://repo.xh.io/content/groups/public/'
-        credentials {
-            username xhRepoReadUser
-            password xhRepoReadPassword
-        }
-    }
+    maven {url 'https://repo.grails.org/grails/core'}
+    maven {url 'https://repo.xh.io/content/groups/public/'}
 }
 
 configurations.all {
