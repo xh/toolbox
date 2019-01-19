@@ -122,7 +122,7 @@ class BootStrap {
                         defaultValue: 60,
                         groupName: 'News'
                 ],
-                fileManagerStorageDir: [
+                fileManagerStoragePath: [
                         valueType: 'string',
                         defaultValue: '/var/tmp/toolbox',
                         groupName: 'File Manager',

@@ -122,7 +122,8 @@ export class AppModel {
                         forwardTo: 'default.examples.portfolio',
                         children: [
                             {name: 'portfolio', path: '/portfolio'},
-                            {name: 'news', path: '/news'}
+                            {name: 'news', path: '/news'},
+                            {name: 'fileManager', path: '/fileManager'}
                         ]
                     }
                 ]

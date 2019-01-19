@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
-
+import {FileManager} from './filemanager/FileManager';
 import {NewsPanel} from './news/NewsPanel';
 import {PortfolioPanel} from './portfolio/PortfolioPanel';
 
@@ -18,7 +18,8 @@ export class ExamplesTab extends Component {
         route: 'default.examples',
         tabs: [
             {id: 'portfolio', content: PortfolioPanel},
-            {id: 'news', content: NewsPanel}
+            {id: 'news', content: NewsPanel},
+            {id: 'fileManager', content: FileManager}
         ]
     });
 
