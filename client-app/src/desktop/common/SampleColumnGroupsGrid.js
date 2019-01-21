@@ -16,7 +16,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
+import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
@@ -160,14 +160,14 @@ class SampleColumnGroupsGrid extends Component {
                 toolbarSep(),
                 switchInput({
                     model: this,
-                    field: 'groupRows',
+                    bind: 'groupRows',
                     label: 'Group rows:',
                     labelAlign: 'left'
                 }),
                 toolbarSep(),
                 switchInput({
                     model,
-                    field: 'compact',
+                    bind: 'compact',
                     label: 'Compact mode:',
                     labelAlign: 'left'
                 }),

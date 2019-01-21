@@ -14,7 +14,6 @@ export class FormsTab extends Component {
         route: 'default.forms',
         tabs: [
             {id: 'controls', title: 'Controls', content: ControlsPanel},
-            // {id: 'selects', title: 'Selects', content: SelectPanel},
             {id: 'validation', title: 'Validation', content: ValidationPanel}
         ]
     });
