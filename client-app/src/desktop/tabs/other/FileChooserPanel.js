@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {HoistComponent, XH} from '@xh/hoist/core';
+import {HoistComponent} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {span, filler} from '@xh/hoist/cmp/layout';
@@ -24,12 +24,27 @@ export class FileChooserPanel extends Component {
         const chooserModel = this.chooserModel;
 
         return wrapper({
-
+            description: [
+                <p>
+                    A component to select one or more files from the local filesystem. Wraps the
+                    third-party react-dropzone component to provide both drag-and-drop and
+                    click-to-browse file selection. Expands upon this core functionality with an
+                    optional grid (enabled by default) displaying the list of selected files and
+                    allowing the user to remove files from the selection.
+                </p>,
+                <p>
+                    This component should be provided with a FileChooserModel instance, as the
+                    model holds an observable collection of File objects and provides a public API
+                    to manipulate the selection. The application is responsible for processing the
+                    selected files (e.g. by uploading them to a server) and clearing the selection
+                    when complete.
+                </p>
+            ],
             item: panel({
                 title: 'Other > FileChooser',
                 icon: Icon.copy(),
-                width: 500,
-                height: 300,
+                width: 700,
+                height: 400,
                 item: fileChooser({
                     flex: 1,
                     enableMulti: true,
@@ -56,31 +71,9 @@ export class FileChooserPanel extends Component {
                         text: 'Clear all',
                         intent: 'danger',
                         onClick: () => chooserModel.removeAllFiles()
-                    }),
-                    button({
-                        text: 'Upload',
-                        intent: 'primary',
-                        onClick: () => this.uploadFiles()
                     })
                 )
             })
-        });
-    }
-
-    uploadFiles() {
-        const toUpload = this.chooserModel.files,
-            formData = new FormData();
-
-        toUpload.forEach((file, idx) => {
-            console.log(file.name);
-            formData.append(`file-${idx}`, file, file.name);
-        });
-
-        XH.fetch({
-            url: 'upload/postFiles',
-            method: 'POST',
-            body: formData,
-            headers: new Headers()
         });
     }
 
