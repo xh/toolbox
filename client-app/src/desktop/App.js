@@ -22,7 +22,7 @@ export class App extends Component {
                 leftItems: [
                     tabSwitcher({model: tabModel})
                 ],
-                hideRefreshButton: true
+                hideRefreshButton: false
             }),
             className: 'toolbox-app-frame',
             item: tabContainer({

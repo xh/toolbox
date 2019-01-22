@@ -88,7 +88,7 @@ export class PositionsPanelModel {
     constructor() {
         this.addReaction({
             track: () => this.dimChooserModel.value,
-            run: (dimensions) => this.loadAsync(),
+            run: this.loadAsync,
             fireImmediately: true
         });
     }

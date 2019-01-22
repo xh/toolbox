@@ -47,8 +47,7 @@ export class NewsPanelModel {
     loadAsync()  {
         return XH
             .fetchJson({url: 'news'})
-            .then(stories => this.completeLoad(stories))
-            .catchDefault();
+            .then(stories => this.completeLoad(stories));
     }
 
     //------------------------

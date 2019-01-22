@@ -1,7 +1,7 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {box, filler, span} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, LayoutSupport, LoadSupport, XH} from '@xh/hoist/core';
 import {LocalStore} from '@xh/hoist/data';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
@@ -19,10 +19,11 @@ import {Component} from 'react';
 
 @HoistComponent
 @LayoutSupport
+@LoadSupport
 class SampleGrid extends Component {
 
     @observable groupBy = false;
-
+    
     loadModel = new PendingTaskModel();
 
     viewDetailsAction = {
@@ -135,11 +136,6 @@ class SampleGrid extends Component {
         ]
     });
 
-    constructor(props) {
-        super(props);
-        this.loadAsync();
-    }
-
     render() {
         const {model} = this,
             selection = model.selection,
@@ -201,7 +197,7 @@ class SampleGrid extends Component {
     // Implementation
     //------------------------
     loadAsync() {
-        wait(250)
+        return wait(250)
             .then(() => this.model.loadData(XH.tradeService.generateTrades()))
             .linkTo(this.loadModel);
     }
@@ -227,7 +223,10 @@ class SampleGrid extends Component {
         this.groupBy = groupBy;
         this.model.setGroupBy(groupBy);
     }
-
+    
+    destroy() {
+        XH.safeDestroy(this.loadModel);
+    }
 }
 
 export const sampleGrid = elemFactory(SampleGrid);

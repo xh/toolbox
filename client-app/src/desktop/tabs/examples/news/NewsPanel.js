@@ -6,7 +6,7 @@
  */
 
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core/index';
+import {HoistComponent, LoadSupport} from '@xh/hoist/core/index';
 import {NewsPanelModel} from './NewsPanelModel';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -22,10 +22,11 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import './NewsPanelItem.scss';
 
 @HoistComponent
+@LoadSupport
 export class NewsPanel extends Component {
 
     model = new NewsPanelModel();
-
+    
     render() {
         const {model} = this,
             {viewModel} = model;
@@ -57,7 +58,7 @@ export class NewsPanel extends Component {
                         button({
                             text: 'Refresh Sources',
                             icon: Icon.refresh(),
-                            onClick: this.onRefreshClick
+                            onClick: () => this.loadAsync()
                         }),
                         filler(),
                         relativeTimestamp({
@@ -94,13 +95,9 @@ export class NewsPanel extends Component {
         });
     }
 
-    loadAsync() {
+    doLoadAsync() {
         return this.model.loadAsync();
     }
-
-    onRefreshClick = () => {
-        this.model.loadAsync();
-    };
 
     onRowDoubleClicked = (e) => {
         if (e.data.url) window.open(e.data.url, '_blank');

@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, LayoutSupport, LoadSupport, XH} from '@xh/hoist/core';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
@@ -23,6 +23,7 @@ import './SampleTreeWithCheckboxGrid.scss';
 
 @HoistComponent
 @LayoutSupport
+@LoadSupport
 class SampleTreeWithCheckboxGrid extends Component {
 
     loadModel = new PendingTaskModel();
@@ -78,8 +79,7 @@ class SampleTreeWithCheckboxGrid extends Component {
         super(props);
         this.addReaction({
             track: () => this.dimChooserModel.value,
-            run: () => this.loadAsync(),
-            fireImmediately: true
+            run: this.loadAsync
         });
     }
 
@@ -188,6 +188,10 @@ class SampleTreeWithCheckboxGrid extends Component {
 
         parent.enabled = allEnabled ? true : (allDisabled ? false : null);
         this.updateParents(parent);
+    }
+
+    destroy() {
+        XH.safeDestroy(this.loadModel);
     }
 }
 export const sampleTreeWithCheckboxGrid = elemFactory(SampleTreeWithCheckboxGrid);

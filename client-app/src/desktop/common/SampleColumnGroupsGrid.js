@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, LayoutSupport, LoadSupport, XH} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
@@ -24,6 +24,7 @@ import {action, observable} from '@xh/hoist/mobx';
 
 @HoistComponent
 @LayoutSupport
+@LoadSupport
 class SampleColumnGroupsGrid extends Component {
 
     @observable groupRows = false;
@@ -144,11 +145,6 @@ class SampleColumnGroupsGrid extends Component {
         ]
     });
 
-    constructor(props) {
-        super(props);
-        this.loadAsync();
-    }
-
     render() {
         const {model} = this;
 
@@ -186,7 +182,7 @@ class SampleColumnGroupsGrid extends Component {
     // Implementation
     //------------------------
     loadAsync() {
-        wait(250)
+        return wait(250)
             .then(() => this.model.loadData(XH.salesService.generateSales()))
             .linkTo(this.loadModel);
     }
@@ -205,6 +201,10 @@ class SampleColumnGroupsGrid extends Component {
         this.groupRows = groupRows;
         this.model.setGroupBy(groupRows ? 'state' : null);
     };
+
+    destroy() {
+        XH.safeDestroy(this.loadModel);
+    }
 
 }
 export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
