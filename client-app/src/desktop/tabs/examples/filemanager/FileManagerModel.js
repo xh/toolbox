@@ -7,6 +7,7 @@ import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import filesize from 'filesize';
+import download from 'downloadjs';
 import {filter, last, find} from 'lodash';
 
 @HoistModel
@@ -23,6 +24,7 @@ export class FileManagerModel {
         }),
         sortBy: 'name',
         groupBy: 'status',
+        emptyText: 'No files uploaded or queued for upload...',
         columns: [
             {
                 field: 'extension',
@@ -76,6 +78,12 @@ export class FileManagerModel {
         return this.getFilesToDelete().length + this.chooserModel.files.length;
     }
 
+    @computed
+    get enableDownload() {
+        const sel = this.gridModel.selectedRecord;
+        return sel && sel.status != 'Pending Upload';
+    }
+
     constructor() {
         this.addReaction({
             track: () => this.chooserModel.files,
@@ -125,12 +133,15 @@ export class FileManagerModel {
         const deletes = this.getFilesToDelete();
         if (deletes.length) {
             deletePromise = Promise.all(deletes.map(it => {
-                XH.fetch({
-                    url: 'fileManager/delete',
-                    params: {filename: it.name}
-                }).then(ret => {
-                    if (!ret.success) throw `Unable to delete ${it.name}`;
-                });
+                XH.fetchService
+                    .fetchJson({
+                        url: 'fileManager/delete',
+                        params: {filename: it.name}
+                    })
+                    .then(ret => {
+                        if (!ret.success) throw `Unable to delete ${it.name}`;
+                    })
+                    .catchDefault();
             }));
         }
 
@@ -154,6 +165,23 @@ export class FileManagerModel {
     async resetAndLoadAsync() {
         this.chooserModel.removeAllFiles();
         this.loadAsync();
+    }
+
+    async downloadSelectedAsync() {
+        if (!this.enableDownload) return;
+
+        const sel = this.gridModel.selectedRecord,
+            response = await XH.fetch({
+                url: 'fileManager/download',
+                params: {filename: sel.name}
+            }).catchDefault();
+
+        const blob = await response.blob();
+        download(blob, sel.name);
+        XH.toast({
+            icon: Icon.download(),
+            message: 'Download complete.'
+        });
     }
 
     // Mark already-uploaded file as pending deletion on save, or immediately remove a

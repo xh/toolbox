@@ -24,6 +24,15 @@ class FileManagerController extends BaseController {
         renderJSON(ret)
     }
 
+    def download(String filename) {
+        def file = fileManagerService.get(filename)
+        render(
+            file: file,
+            fileName: filename,
+            contentType: 'application/octet-stream'
+        )
+    }
+
     def delete(String filename) {
         def success = fileManagerService.delete(filename)
         renderJSON(success: success)

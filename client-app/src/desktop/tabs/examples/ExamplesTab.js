@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, XH} from '@xh/hoist/core';
 import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {FileManager} from './filemanager/FileManager';
 import {NewsPanel} from './news/NewsPanel';
@@ -19,7 +19,7 @@ export class ExamplesTab extends Component {
         tabs: [
             {id: 'portfolio', content: PortfolioPanel},
             {id: 'news', content: NewsPanel},
-            {id: 'fileManager', content: FileManager}
+            {id: 'fileManager', content: FileManager, omit: !XH.getUser().isHoistAdmin}
         ]
     });
 

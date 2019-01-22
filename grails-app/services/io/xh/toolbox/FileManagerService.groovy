@@ -18,7 +18,13 @@ class FileManagerService extends BaseService {
     }
 
     List<File> list() {
-        return storageDir.listFiles()
+        return storageDir.listFiles() ?: []
+    }
+
+    File get(String filename) {
+        def ret = new File("$storagePath/$filename")
+        if (!ret?.exists()) throw new RuntimeException("File not found with filename \"${filename}\".")
+        return ret
     }
 
     boolean delete(String filename) {

@@ -36,6 +36,7 @@ export class AppModel {
     }
 
     getRoutes() {
+        const isAdmin = XH.getUser().isHoistAdmin;
         return [
             {
                 name: 'default',
@@ -123,7 +124,7 @@ export class AppModel {
                         children: [
                             {name: 'portfolio', path: '/portfolio'},
                             {name: 'news', path: '/news'},
-                            {name: 'fileManager', path: '/fileManager'}
+                            {name: 'fileManager', path: '/fileManager', omit: !isAdmin}
                         ]
                     }
                 ]
