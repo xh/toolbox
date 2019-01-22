@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {HoistComponent, LoadSupport} from '@xh/hoist/core';
+import {HoistComponent, RefreshSupport} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {restGrid, RestGridModel, RestStore, addAction, editAction, viewAction, deleteAction} from '@xh/hoist/desktop/cmp/rest';
@@ -7,7 +7,7 @@ import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent
-@LoadSupport
+@RefreshSupport
 export class RestGridPanel extends Component {
 
     model = new RestGridModel({

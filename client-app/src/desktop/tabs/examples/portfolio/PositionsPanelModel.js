@@ -113,4 +113,9 @@ export class PositionsPanelModel {
             })
             .linkTo(loadModel);
     }
+
+    destroy() {
+        XH.safeDestroy(this.gridModel, this.loadModel, this.dimChooserModel);
+    }
+
 }
