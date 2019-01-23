@@ -1,4 +1,4 @@
-package io.xh.toolbox
+package io.xh.toolbox.app
 
 import io.xh.hoist.BaseService
 
