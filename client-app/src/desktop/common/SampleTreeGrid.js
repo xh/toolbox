@@ -128,7 +128,7 @@ class LocalModel {
         this.addReaction({
             track: () => this.dimChooserModel.value,
             run: this.loadAsync,
-            runImmediately: true
+            fireImmediately: true
         });
     }
 

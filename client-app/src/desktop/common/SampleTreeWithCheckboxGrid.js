@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, LayoutSupport, RefreshSupport, XH} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, HoistModel, LayoutSupport, RefreshSupport, XH} from '@xh/hoist/core';
 import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {LocalStore} from '@xh/hoist/data';
@@ -28,30 +28,31 @@ class SampleTreeWithCheckboxGrid extends Component {
     model = new LocalModel();
 
     render() {
-        const {model} = this;
+        const {model} = this,
+            {gridModel} = model;
 
         return panel({
             tbar: toolbar(
                 dimensionChooser({
-                    model: this.dimChooserModel
+                    model: model.dimChooserModel
                 })
             ),
-            item: grid({className: 'sample-tree-checkbox-grid', model}),
-            mask: this.loadModel,
+            item: grid({className: 'sample-tree-checkbox-grid', model: gridModel}),
+            mask: model.loadModel,
             bbar: toolbar(
-                refreshButton({model: this}),
+                refreshButton({model}),
                 toolbarSep(),
                 switchInput({
-                    model,
+                    model: gridModel,
                     bind: 'compact',
                     label: 'Compact',
                     labelAlign: 'left'
                 }),
                 filler(),
-                storeCountLabel({gridModel: model, units: 'companies'}),
-                storeFilterField({gridModel: model}),
-                colChooserButton({gridModel: model}),
-                exportButton({gridModel: model})
+                storeCountLabel({gridModel, units: 'companies'}),
+                storeFilterField({gridModel}),
+                colChooserButton({gridModel}),
+                exportButton({gridModel})
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()
@@ -60,6 +61,7 @@ class SampleTreeWithCheckboxGrid extends Component {
 }
 export const sampleTreeWithCheckboxGrid = elemFactory(SampleTreeWithCheckboxGrid);
 
+@HoistModel
 class LocalModel {
 
     loadModel = new PendingTaskModel();
@@ -115,7 +117,7 @@ class LocalModel {
         this.addReaction({
             track: () => this.dimChooserModel.value,
             run: this.loadAsync,
-            runImmediately: true
+            fireImmediately: true
         });
     }
 
