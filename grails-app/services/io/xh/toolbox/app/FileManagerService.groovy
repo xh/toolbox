@@ -18,7 +18,7 @@ class FileManagerService extends BaseService {
     }
 
     List<File> list() {
-        return storageDir.listFiles() ?: []
+        return storageDir.listFiles()?.toList() ?: []
     }
 
     File get(String filename) {
