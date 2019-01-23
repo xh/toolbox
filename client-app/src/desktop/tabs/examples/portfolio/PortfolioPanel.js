@@ -33,8 +33,7 @@ export class PortfolioPanel extends Component {
                         model: model.positionsPanelModel
                     }),
                     ordersPanel({
-                        model: model.ordersPanelModel,
-                        mask: !model.selectedPosition
+                        model: model.ordersPanelModel
                     })
                 ]
             }),

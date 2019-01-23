@@ -12,12 +12,15 @@ import {DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
 import {LocalStore} from '@xh/hoist/data';
 import {newsPanelItem} from './NewsPanelItem';
 import {fmtCompactDate} from '@xh/hoist/format';
+import {PendingTaskModel} from '@xh/hoist/utils/async';
 
 
 @HoistModel
 export class NewsPanelModel {
 
     SEARCH_FIELDS = ['title', 'text'];
+
+    loadModel = new PendingTaskModel();
 
     viewModel = new DataViewModel({
         store: new LocalStore({
@@ -43,12 +46,15 @@ export class NewsPanelModel {
             run: () => this.filterData(),
             fireImmediately: true
         });
+        this.loadAsync();
     }
 
     loadAsync()  {
         return XH
             .fetchJson({url: 'news'})
-            .then(stories => this.completeLoad(stories));
+            .wait(100)
+            .then(stories => this.completeLoad(stories))
+            .linkTo(this.loadModel);
     }
 
     //------------------------
@@ -86,6 +92,6 @@ export class NewsPanelModel {
     }
 
     destroy() {
-        XH.safeDestroy(this.viewModel);
+        XH.safeDestroy(this.viewModel, this.loadModel);
     }
 }

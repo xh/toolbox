@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {HoistComponent, XH} from '@xh/hoist/core';
+import {HoistComponent, HoistModel, RefreshSupport, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -14,14 +14,10 @@ import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
 
 @HoistComponent
+@RefreshSupport
 export class DataViewPanel extends Component {
 
-    model = new DataViewModel({
-        store: new LocalStore({
-            fields: ['id', 'name', 'city', 'value']
-        }),
-        itemRenderer: (v, {record}) => dataViewItem({record})
-    });
+    model = new LocalModel();
 
     render() {
         const {model} = this;
@@ -40,30 +36,40 @@ export class DataViewPanel extends Component {
                 width: 700,
                 height: 400,
                 item: dataView({
-                    model,
+                    model: model.dataViewModel,
                     rowCls: 'dataview-item',
                     itemHeight: 70
                 }),
                 bbar: toolbar(
-                    refreshButton({onClick: this.loadData}),
+                    refreshButton({model}),
                     filler(),
-                    storeFilterField({store: model.store})
+                    storeFilterField({store: model.dataViewModel.store})
                 )
             })
         });
     }
+}
 
-    componentDidMount() {
-        this.loadData();
+@HoistModel
+class LocalModel {
+
+    dataViewModel = new DataViewModel({
+        store: new LocalStore({
+            fields: ['id', 'name', 'city', 'value']
+        }),
+        itemRenderer: (v, {record}) => dataViewItem({record})
+    });
+
+    constructor() {
+        this.loadAsync();
     }
 
-    loadData = () => {
-        const {store} = this.model,
-            companies = XH.companyService.randomCompanies,
+    loadAsync() {
+        const companies = XH.companyService.randomCompanies,
             min = -1000,
             max = 1000;
 
-        store.loadData(companies.map(it => {
+        this.dataViewModel.store.loadData(companies.map(it => {
             const randVal = Math.random() * (max - min) + min;
             return {
                 name: it.name,
@@ -71,5 +77,9 @@ export class DataViewPanel extends Component {
                 value: randVal
             };
         }));
+    }
+
+    destroy() {
+        XH.safeDestroy(this.dataViewModel);
     }
 }

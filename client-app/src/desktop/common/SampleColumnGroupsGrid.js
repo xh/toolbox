@@ -189,6 +189,10 @@ class LocalModel {
     //------------------------
     // Implementation
     //------------------------
+    constructor() {
+        this.loadAsync();
+    }
+
     loadAsync() {
         return wait(250)
             .then(() => this.gridModel.loadData(XH.salesService.generateSales()))

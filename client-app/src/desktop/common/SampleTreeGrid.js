@@ -36,7 +36,7 @@ class SampleTreeGrid extends Component {
                 })
             ),
             item: grid({model: gridModel}),
-            mask: this.loadModel,
+            mask: model.loadModel,
             bbar: toolbar(
                 refreshButton({model}),
                 toolbarSep(),
