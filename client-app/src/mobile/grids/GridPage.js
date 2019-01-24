@@ -1,11 +1,12 @@
 import {Component} from 'react';
-import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
+import {XH, HoistComponent, elemFactory, RefreshSupport} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {grid} from '@xh/hoist/cmp/grid';
 
 import {GridPageModel} from './GridPageModel';
 
 @HoistComponent
+@RefreshSupport
 export class GridPage extends Component {
 
     model = new GridPageModel();
@@ -15,7 +16,7 @@ export class GridPage extends Component {
             {gridModel, loadModel} = model;
 
         return page({
-            loadModel: loadModel,
+            loadModel,
             item: grid({
                 model: gridModel,
                 onRowClicked: (e) => {
@@ -27,7 +28,6 @@ export class GridPage extends Component {
             })
         });
     }
-
 }
 
 export const gridPage = elemFactory(GridPage);
