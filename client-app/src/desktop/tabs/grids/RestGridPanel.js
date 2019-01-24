@@ -80,15 +80,15 @@ export class RestGridPanel extends Component {
             },
             {...emptyFlexCol}
         ],
-        editors: [
-            {field: 'name'},
-            {field: 'type'},
-            {field: 'employees'},
-            {field: 'note', type: 'textarea'},
-            {field: 'isActive', type: 'boolCheck'},
-            {field: 'cfg'},
-            {field: 'lastUpdated'},
-            {field: 'lastUpdatedBy'}
+        formFields: [
+            {name: 'name'},
+            {name: 'type'},
+            {name: 'employees'},
+            {name: 'note'},
+            {name: 'isActive'},
+            {name: 'cfg'},
+            {name: 'lastUpdated'},
+            {name: 'lastUpdatedBy'}
         ],
         emptyText: 'No companies found - try adding one...',
         menuActions: [
@@ -116,8 +116,8 @@ export class RestGridPanel extends Component {
                 <p>
                     Use the toolbar buttons or double-click a record to display its associated
                     add/edit form, including type-specific editor fields. These grids are especially
-                    useful when building lookup tables of simple objects and are used throughout the
-                    <a href="/admin" target="_blank">Hoist Admin Console</a>.
+                    useful when building lookup tables of simple objects and are used throughout
+                    the <a href="/admin" target="_blank">Hoist Admin Console</a>.
                 </p>
             ],
             item: panel({
