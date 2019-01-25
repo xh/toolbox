@@ -1,6 +1,6 @@
 import {HoistModel} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
-import {observable, action} from '@xh/hoist/mobx';
+import {observable, action, settable} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
 import moment from 'moment';
 import Amazon from '../../../core/data/charts/amazonPricing';
@@ -13,7 +13,16 @@ export class OLHCChartModel {
     companyMap = {Amazon, Facebook, Yahoo};
     chartModel = new ChartModel({config: this.getChartModelCfg()});
 
+    @settable @observable aspectRatio = null;
+    initWidth = 800;
+    initHeight = 600;
+    @settable @observable width;
+    @settable @observable height;
+    @settable @observable maximizeBtnIcon = 'expand';
+
     constructor() {
+        this.width = this.initWidth;
+        this.height = this.initHeight;
         this.addAutorun(() => this.loadChart());
     }
 
