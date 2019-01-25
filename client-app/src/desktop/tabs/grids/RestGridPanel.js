@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {dateRenderer, fmtDateTime} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {restGrid, RestGridModel, RestStore, addAction, editAction, viewAction, deleteAction} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
+import {numberInput} from '@xh/hoist/desktop/cmp/input';
 
 @HoistComponent
 export class RestGridPanel extends Component {
@@ -39,6 +41,10 @@ export class RestGridPanel extends Component {
                     name: 'cfg',
                     label: 'JSON Config',
                     type: 'json'
+                },
+                {
+                    name: 'earningsDate',
+                    type: 'date'
                 },
                 {
                     name: 'note'
@@ -78,15 +84,24 @@ export class RestGridPanel extends Component {
                 headerName: 'Active?',
                 width: 100
             },
+            {
+                field: 'earningsDate',
+                renderer: dateRenderer(),
+                width: 100
+            },
+            {
+                field: 'note'
+            },
             {...emptyFlexCol}
         ],
         formFields: [
-            {name: 'name'},
+            {name: 'name', fieldOptions: {leftErrorIcon: true}},
             {name: 'type'},
-            {name: 'employees'},
-            {name: 'note'},
-            {name: 'isActive'},
+            {name: 'employees', renderer: numberInput({displayWithCommas: true})},
+            {name: 'isActive', disabled: true},
             {name: 'cfg'},
+            {name: 'earningsDate'},
+            {name: 'note'},
             {name: 'lastUpdated'},
             {name: 'lastUpdatedBy'}
         ],
