@@ -4,7 +4,7 @@ import {wrapper} from '../../common/Wrapper';
 import {box, filler, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select, numberInput} from '@xh/hoist/desktop/cmp/input';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
 import {OLHCChartModel} from './OLHCChartModel';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
@@ -54,6 +54,7 @@ export class OLHCChartPanel extends Component {
                             })
                         ]
                     }),
+                    toolbarSep(),
                     button({
                         icon: Icon[model.maximizeBtnIcon](),
                         intent: 'primary',
@@ -81,6 +82,6 @@ export class OLHCChartPanel extends Component {
 
         model.setWidth(model.width == model.initWidth ? offsetWidth: model.initWidth);
         model.setHeight(model.height == model.initHeight ? offsetHeight: model.initHeight);
-        model.setMaxMinBtn(model.maximizeBtnIcon == 'expand' ? 'collapse' : 'expand');
+        model.setMaximizeBtnIcon(model.maximizeBtnIcon == 'expand' ? 'collapse' : 'expand');
     }
 }
