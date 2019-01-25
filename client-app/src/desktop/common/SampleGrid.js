@@ -1,6 +1,6 @@
 import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {box, filler, span} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent, LayoutSupport, RefreshSupport, XH, HoistModel} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, LayoutSupport, RefreshSupport, XH, HoistModel, managed} from '@xh/hoist/core';
 import {LocalStore} from '@xh/hoist/data';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
@@ -21,7 +21,7 @@ import {Component} from 'react';
 @RefreshSupport
 class SampleGrid extends Component {
 
-    model = new LocalModel();
+    model = new Model();
 
     render() {
         const {model} = this,
@@ -85,9 +85,10 @@ export const sampleGrid = elemFactory(SampleGrid);
 
 
 @HoistModel
-class LocalModel {
+class Model {
     @observable groupBy = false;
 
+    @managed
     loadModel = new PendingTaskModel();
 
     viewDetailsAction = {
@@ -120,6 +121,7 @@ class LocalModel {
         }
     };
 
+    @managed
     gridModel = new GridModel({
         store: new LocalStore({
             fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
@@ -230,9 +232,5 @@ class LocalModel {
     setGroupBy(groupBy) {
         this.groupBy = groupBy;
         this.gridModel.setGroupBy(groupBy);
-    }
-    
-    destroy() {
-        XH.safeDestroy(this.gridModel, this.loadModel);
     }
 }

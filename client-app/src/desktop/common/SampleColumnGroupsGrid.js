@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistModel, HoistComponent, LayoutSupport, RefreshSupport, XH} from '@xh/hoist/core';
+import {elemFactory, HoistModel, HoistComponent, LayoutSupport, RefreshSupport, managed, XH} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
@@ -26,7 +26,7 @@ import {action, observable} from '@xh/hoist/mobx';
 @RefreshSupport
 class SampleColumnGroupsGrid extends Component {
 
-    model = new LocalModel();
+    model = new Model();
 
     render() {
         const {model} = this,
@@ -66,12 +66,14 @@ export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
 
 
 @HoistModel
-class LocalModel {
+class Model {
 
     @observable groupRows = false;
 
+    @managed
     loadModel = new PendingTaskModel();
 
+    @managed
     gridModel = new GridModel({
         stateModel: 'toolboxGroupGrid',
         store: new LocalStore({
@@ -213,8 +215,4 @@ class LocalModel {
         this.groupRows = groupRows;
         this.gridModel.setGroupBy(groupRows ? 'state' : null);
     };
-
-    destroy() {
-        XH.safeDestroy(this.loadModel, this.gridModel);
-    }
 }

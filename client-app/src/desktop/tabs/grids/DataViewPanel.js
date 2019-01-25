@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {HoistComponent, HoistModel, RefreshSupport, XH} from '@xh/hoist/core';
+import {HoistComponent, HoistModel, RefreshSupport, XH, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -17,7 +17,7 @@ import './DataViewItem.scss';
 @RefreshSupport
 export class DataViewPanel extends Component {
 
-    model = new LocalModel();
+    model = new Model();
 
     render() {
         const {model} = this;
@@ -51,8 +51,9 @@ export class DataViewPanel extends Component {
 }
 
 @HoistModel
-class LocalModel {
+class Model {
 
+    @managed
     dataViewModel = new DataViewModel({
         store: new LocalStore({
             fields: ['id', 'name', 'city', 'value']
@@ -77,9 +78,5 @@ class LocalModel {
                 value: randVal
             };
         }));
-    }
-
-    destroy() {
-        XH.safeDestroy(this.dataViewModel);
     }
 }

@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, HoistModel, LayoutSupport, RefreshSupport, XH} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, HoistModel, LayoutSupport, RefreshSupport, XH, managed} from '@xh/hoist/core';
 import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {LocalStore} from '@xh/hoist/data';
@@ -25,7 +25,7 @@ import './SampleTreeWithCheckboxGrid.scss';
 @RefreshSupport
 class SampleTreeWithCheckboxGrid extends Component {
 
-    model = new LocalModel();
+    model = new Model();
 
     render() {
         const {model} = this,
@@ -62,10 +62,12 @@ class SampleTreeWithCheckboxGrid extends Component {
 export const sampleTreeWithCheckboxGrid = elemFactory(SampleTreeWithCheckboxGrid);
 
 @HoistModel
-class LocalModel {
+class Model {
 
+    @managed
     loadModel = new PendingTaskModel();
 
+    @managed
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
             {value: 'region', label: 'Region'},
@@ -75,6 +77,7 @@ class LocalModel {
         initialValue: ['sector', 'symbol']
     });
 
+    @managed
     gridModel = new GridModel({
         treeMode: true,
         store: new LocalStore({
@@ -195,10 +198,6 @@ class LocalModel {
 
         parent.enabled = allEnabled ? true : (allDisabled ? false : null);
         this.updateParents(parent);
-    }
-
-    destroy() {
-        XH.safeDestroy(this.loadModel, this.gridModel, this.dimChooserModel);
     }
 }
 

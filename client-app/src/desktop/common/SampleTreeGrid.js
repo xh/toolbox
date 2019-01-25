@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, HoistModel, LayoutSupport, RefreshSupport, XH} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, HoistModel, LayoutSupport, RefreshSupport, XH, managed} from '@xh/hoist/core';
 import {filler} from '@xh/hoist/cmp/layout';
 import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
@@ -23,7 +23,7 @@ import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dim
 @RefreshSupport
 class SampleTreeGrid extends Component {
 
-    model = new LocalModel();
+    model = new Model();
 
     render() {
         const {model} = this,
@@ -61,9 +61,11 @@ export const sampleTreeGrid = elemFactory(SampleTreeGrid);
 
 
 @HoistModel
-class LocalModel {
+class Model {
+    @managed
     loadModel = new PendingTaskModel();
 
+    @managed
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
             {value: 'region', label: 'Region'},
@@ -73,6 +75,7 @@ class LocalModel {
         initialValue: ['sector', 'symbol']
     });
 
+    @managed
     gridModel = new GridModel({
         treeMode: true,
         store: new LocalStore({
@@ -140,10 +143,6 @@ class LocalModel {
             .getPortfolioAsync(dims)
             .then(data => gridModel.loadData(data))
             .linkTo(loadModel);
-    }
-
-    destroy() {
-        XH.safeDestroy(this.loadModel, this.dimChooserModel, this.gridModel);
     }
 }
 
