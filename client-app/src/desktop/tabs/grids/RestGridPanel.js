@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {dateRenderer, fmtDateTime} from '@xh/hoist/format';
+import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {restGrid, RestGridModel, RestStore, addAction, editAction, viewAction, deleteAction} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
-import {numberInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
 
 @HoistComponent
 export class RestGridPanel extends Component {
@@ -44,7 +44,8 @@ export class RestGridPanel extends Component {
                 },
                 {
                     name: 'earningsDate',
-                    type: 'date'
+                    type: 'date',
+                    required: true
                 },
                 {
                     name: 'note'
@@ -94,16 +95,16 @@ export class RestGridPanel extends Component {
             },
             {...emptyFlexCol}
         ],
-        formFields: [
-            {name: 'name', fieldOptions: {leftErrorIcon: true}},
-            {name: 'type'},
-            {name: 'employees', renderer: numberInput({displayWithCommas: true})},
-            {name: 'isActive', disabled: true},
-            {name: 'cfg'},
-            {name: 'earningsDate'},
-            {name: 'note'},
-            {name: 'lastUpdated'},
-            {name: 'lastUpdatedBy'}
+        editors: [
+            {field: 'name'},
+            {field: 'type'},
+            {field: 'employees', formField: {item: numberInput({displayWithCommas: true})}},
+            {field: 'isActive', formField: {item: switchInput()}},
+            {field: 'cfg'},
+            {field: 'earningsDate'},
+            {field: 'note', formField: {item: textArea()}},
+            {field: 'lastUpdated'},
+            {field: 'lastUpdatedBy'}
         ],
         emptyText: 'No companies found - try adding one...',
         menuActions: [
