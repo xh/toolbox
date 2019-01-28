@@ -1094,7 +1094,7 @@
     eslint "~4.19.1"
     eslint-plugin-react "~7.12.4"
 
-"@xh/hoist-dev-utils@3.5.0":
+"@xh/hoist-dev-utils@~3.5.0":
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-3.5.0.tgz#40d19c75710bedfa6453b3c6f28fb6c771591422"
   integrity sha512-uaqkNKYzRNLMgFMMSY55TZj5vtsfSRJh4xr7cXbz4XeZSEMNSutxx3Nzv5G87jWM2eqdfTFJtwIy2eDWgcyLCA==
@@ -1134,10 +1134,10 @@
     webpack-dev-server "~3.1.14"
     webpackbar "~3.1.5"
 
-"@xh/hoist@18.1.0":
-  version "18.1.0"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-18.1.0.tgz#8c6898bda6f29ee8cec9d49ce2024dec34f68b87"
-  integrity sha512-CGfHoostS8VZP0BaDYvPZg+WyG/oN6TiqcPXeemhIPZwiukJNcJ5SAX2DUtRbCvINvAOte09PvPPNzhvQnub9A==
+"@xh/hoist@^19.0.0-SNAPSHOT":
+  version "19.0.0-SNAPSHOT.1548716357129"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-19.0.0-SNAPSHOT.1548716357129.tgz#6c331e7d0f47c563708d47652dfca642ea9d0638"
+  integrity sha512-P5HUPu3vT/nkfzZbOVeH2vdTzm1qTwdDSfcgmvQi5X6s2aW7g/5wmSwIky4iLa3D8EbskP5eiX46pfzzAPPeMA==
   dependencies:
     "@blueprintjs/core" "~3.12.0"
     "@blueprintjs/datetime" "~3.7.0"
