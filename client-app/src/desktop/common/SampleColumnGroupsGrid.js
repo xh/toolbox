@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistModel, HoistComponent, LayoutSupport, RefreshSupport, managed, XH} from '@xh/hoist/core';
+import {elemFactory, HoistModel, HoistComponent, LayoutSupport, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
@@ -23,7 +23,7 @@ import {action, observable} from '@xh/hoist/mobx';
 
 @HoistComponent
 @LayoutSupport
-@RefreshSupport
+@LoadSupport
 class SampleColumnGroupsGrid extends Component {
 
     model = new Model();
@@ -191,10 +191,6 @@ class Model {
     //------------------------
     // Implementation
     //------------------------
-    constructor() {
-        this.loadAsync();
-    }
-
     loadAsync() {
         return wait(250)
             .then(() => this.gridModel.loadData(XH.salesService.generateSales()))

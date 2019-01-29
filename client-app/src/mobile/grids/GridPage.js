@@ -1,12 +1,12 @@
 import {Component} from 'react';
-import {XH, HoistComponent, elemFactory, RefreshSupport} from '@xh/hoist/core';
+import {XH, HoistComponent, elemFactory, LoadSupport} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {grid} from '@xh/hoist/cmp/grid';
 
 import {GridPageModel} from './GridPageModel';
 
 @HoistComponent
-@RefreshSupport
+@LoadSupport
 export class GridPage extends Component {
 
     model = new GridPageModel();
@@ -29,5 +29,4 @@ export class GridPage extends Component {
         });
     }
 }
-
 export const gridPage = elemFactory(GridPage);

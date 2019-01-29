@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, HoistModel, LayoutSupport, RefreshSupport, XH, managed} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, HoistModel, LayoutSupport, LoadSupport, XH, managed} from '@xh/hoist/core';
 import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {LocalStore} from '@xh/hoist/data';
@@ -22,7 +22,7 @@ import './SampleTreeWithCheckboxGrid.scss';
 
 @HoistComponent
 @LayoutSupport
-@RefreshSupport
+@LoadSupport
 class SampleTreeWithCheckboxGrid extends Component {
 
     model = new Model();

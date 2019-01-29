@@ -1,4 +1,4 @@
-import {HoistModel, XH} from '@xh/hoist/core';
+import {HoistModel, XH, managed} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
@@ -11,6 +11,7 @@ export class PositionsPanelModel {
 
     @bindable loadTimestamp;
 
+    @managed
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
             {value: 'fund', label: 'Fund'},
@@ -23,6 +24,7 @@ export class PositionsPanelModel {
         historyPreference: 'portfolioDimHistory'
     });
 
+    @managed
     gridModel = new GridModel({
         treeMode: true,
         store: new LocalStore({
@@ -79,6 +81,8 @@ export class PositionsPanelModel {
             }
         ]
     });
+    
+    @managed
     loadModel = new PendingTaskModel();
 
     get selectedRecord() {
@@ -88,8 +92,7 @@ export class PositionsPanelModel {
     constructor() {
         this.addReaction({
             track: () => this.dimChooserModel.value,
-            run: this.loadAsync,
-            fireImmediately: true
+            run: this.loadAsync
         });
     }
 
@@ -113,9 +116,4 @@ export class PositionsPanelModel {
             })
             .linkTo(loadModel);
     }
-
-    destroy() {
-        XH.safeDestroy(this.gridModel, this.loadModel, this.dimChooserModel);
-    }
-
 }

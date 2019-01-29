@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, HoistModel, LayoutSupport, RefreshSupport, XH, managed} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, HoistModel, LayoutSupport, LoadSupport, XH, managed} from '@xh/hoist/core';
 import {filler} from '@xh/hoist/cmp/layout';
 import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
@@ -20,7 +20,7 @@ import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dim
 
 @HoistComponent
 @LayoutSupport
-@RefreshSupport
+@LoadSupport
 class SampleTreeGrid extends Component {
 
     model = new Model();
@@ -130,8 +130,7 @@ class Model {
     constructor() {
         this.addReaction({
             track: () => this.dimChooserModel.value,
-            run: this.loadAsync,
-            fireImmediately: true
+            run: this.loadAsync
         });
     }
 

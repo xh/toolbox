@@ -6,7 +6,7 @@
  */
 
 import React, {Component} from 'react';
-import {HoistComponent, RefreshSupport} from '@xh/hoist/core/index';
+import {HoistComponent, LoadSupport} from '@xh/hoist/core/index';
 import {NewsPanelModel} from './NewsPanelModel';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -21,7 +21,7 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import './NewsPanelItem.scss';
 
 @HoistComponent
-@RefreshSupport
+@LoadSupport
 export class NewsPanel extends Component {
 
     model = new NewsPanelModel();

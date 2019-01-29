@@ -1,6 +1,6 @@
 import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {box, filler, span} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent, LayoutSupport, RefreshSupport, XH, HoistModel, managed} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, LayoutSupport, LoadSupport, XH, HoistModel, managed} from '@xh/hoist/core';
 import {LocalStore} from '@xh/hoist/data';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
@@ -18,7 +18,7 @@ import {Component} from 'react';
 
 @HoistComponent
 @LayoutSupport
-@RefreshSupport
+@LoadSupport
 class SampleGrid extends Component {
 
     model = new Model();
@@ -201,11 +201,7 @@ class Model {
             {...emptyFlexCol}
         ]
     });
-
-    constructor() {
-        this.loadAsync();
-    }
-
+    
     loadAsync() {
         return wait(250)
             .then(() => this.gridModel.loadData(XH.tradeService.generateTrades()))

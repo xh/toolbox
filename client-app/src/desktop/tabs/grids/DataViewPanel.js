@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {HoistComponent, HoistModel, RefreshSupport, XH, managed} from '@xh/hoist/core';
+import {HoistComponent, HoistModel, LoadSupport, XH, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -14,7 +14,7 @@ import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
 
 @HoistComponent
-@RefreshSupport
+@LoadSupport
 export class DataViewPanel extends Component {
 
     model = new Model();
@@ -60,11 +60,7 @@ class Model {
         }),
         itemRenderer: (v, {record}) => dataViewItem({record})
     });
-
-    constructor() {
-        this.loadAsync();
-    }
-
+    
     loadAsync() {
         const companies = XH.companyService.randomCompanies,
             min = -1000,

@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 
-import {XH, HoistModel} from '@xh/hoist/core';
+import {XH, HoistModel, managed} from '@xh/hoist/core';
 import {action, observable, bindable} from '@xh/hoist/mobx';
 import {uniq, isEmpty} from 'lodash';
 import {DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
@@ -20,8 +20,10 @@ export class NewsPanelModel {
 
     SEARCH_FIELDS = ['title', 'text'];
 
+    @managed
     loadModel = new PendingTaskModel();
 
+    @managed
     viewModel = new DataViewModel({
         store: new LocalStore({
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published']
@@ -46,7 +48,6 @@ export class NewsPanelModel {
             run: () => this.filterData(),
             fireImmediately: true
         });
-        this.loadAsync();
     }
 
     loadAsync()  {
@@ -89,9 +90,5 @@ export class NewsPanelModel {
         };
 
         this.viewModel.store.setFilter(filter);
-    }
-
-    destroy() {
-        XH.safeDestroy(this.viewModel, this.loadModel);
     }
 }
