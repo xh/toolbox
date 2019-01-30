@@ -7,7 +7,7 @@ import {random} from 'lodash';
 @HoistModel
 export class ControlsPanelModel {
 
-    @bindable readonly;
+    @bindable commitOnChange = false;
 
     formModel = new FormModel({
         fields: [

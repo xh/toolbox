@@ -1,23 +1,33 @@
 
-import {HoistModel} from '@xh/hoist/core';
+import {XH, HoistModel} from '@xh/hoist/core';
 import {dateIs, FormModel, lengthIs, numberIs, required} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
-import {SECONDS} from '@xh/hoist/utils/datetime';
-import {isNil} from 'lodash';
+import {vbox, pre} from '@xh/hoist/cmp/layout';
+import {isNil, isEmpty, filter} from 'lodash';
 import moment from 'moment';
 import {bindable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {Icon} from '@xh/hoist/icon';
 
 @HoistModel
 export class ValidationPanelModel {
 
-    validateButtonTask = new PendingTaskModel();
+    validateTask = new PendingTaskModel();
 
     // For meta controls below example.
     @bindable readonly = false;
     @bindable inline = false;
     @bindable minimal = false;
     @bindable commitOnChange = false;
+
+    validEmail = ({value}) => {
+        if (isNil(value)) return;
+        return wait(500).then(() => {
+            if ((!value.includes('@') || !value.includes('.'))) {
+                return 'Invalid email (async).';
+            }
+        });
+    };
 
     formModel = new FormModel({
         fields: [{
@@ -31,17 +41,7 @@ export class ValidationPanelModel {
         }, {
             name: 'email',
             initialValue: 'jbloggs@gmail.com',
-            rules: [
-                required,
-                ({value}) => {
-                    if (isNil(value)) return;
-                    return wait(1 * SECONDS).then(() => {
-                        if ((!value.includes('@') || !value.includes('.'))) {
-                            return 'Invalid email (validated async).';
-                        }
-                    });
-                }
-            ]
+            rules: [required, this.validEmail]
         }, {
             name: 'notes',
             initialValue: '',
@@ -84,6 +84,42 @@ export class ValidationPanelModel {
         }, {
             name: 'tags',
             rules: [required]
+        }, {
+            name: 'references',
+            subforms: {
+                fields: [
+                    {name: 'name', rules: [required]},
+                    {name: 'relationship'},
+                    {name: 'email', rules: [required, this.validEmail]}
+                ],
+                initialValues: {relationship: 'spouse'}
+            },
+            rules: [(ref) => isEmpty(ref) ? 'At least one reference is required.':  null]
         }]
     });
+
+    async reset() {
+        this.formModel.reset();
+    }
+
+    async submitAsync() {
+        const {formModel} = this;
+        const isValid = await formModel.validateAsync().linkTo(this.validateTask);
+        if (isValid) {
+            XH.alert({
+                message: vbox(
+                    'Submitted: ',
+                    pre(JSON.stringify(formModel.getData(), undefined, 2))
+                )
+            });
+            this.reset();
+        } else {
+            const errCount = filter(formModel.fields, f => f.isNotValid).length;
+            XH.toast({
+                icon: Icon.warning(),
+                intent: 'danger',
+                message: `Form is not valid. ${errCount} fields are still invalid!`
+            });
+        }
+    }
 }
