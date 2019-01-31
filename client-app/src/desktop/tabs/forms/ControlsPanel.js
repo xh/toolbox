@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {HoistComponent, XH, elemFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {frame, hframe, hbox, div, box} from '@xh/hoist/cmp/layout';
+import {frame, hframe, hbox, vbox, div, box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -55,15 +55,16 @@ export class ControlsPanel extends Component {
 
     renderForm() {
         const {model, row} = this,
-            {formModel, readonly} = model;
+            {formModel, commitOnChange} = model;
 
-        return frame(
-            form({
+        return frame({
+            item: form({
                 model: formModel,
-                fieldDefaults: {readonly},
-                flex: 1,
+                fieldDefaults: {
+                    commitOnChange
+                },
                 items: hframe(
-                    panel({
+                    vbox({
                         className: 'toolbox-controls-panel__column',
                         items: [
                             row({
@@ -88,11 +89,10 @@ export class ControlsPanel extends Component {
                             row({
                                 label: 'TextInput',
                                 field: 'text3',
-                                info: 'type:password, commitOnChange, selectOnFocus',
+                                info: 'type:password, selectOnFocus',
                                 readonlyRenderer: v => v ? v.replace(/./g, '•') : null,
                                 item: textInput({
                                     type: 'password',
-                                    commitOnChange: true,
                                     selectOnFocus: true
                                 })
                             }),
@@ -116,7 +116,7 @@ export class ControlsPanel extends Component {
                             })
                         ]
                     }),
-                    panel({
+                    vbox({
                         className: 'toolbox-controls-panel__column',
                         items: [
                             row({
@@ -175,7 +175,6 @@ export class ControlsPanel extends Component {
                                 info: 'leftIcon, minDate, maxDate, textAlign',
                                 fmtVal: v => fmtDateTime(v),
                                 item: dateInput({
-                                    commitOnChange: true,
                                     leftIcon: Icon.calendar(),
                                     placeholder: 'YYYY-MM-DD',
                                     minDate: moment().subtract(5, 'weeks').toDate(),
@@ -191,7 +190,6 @@ export class ControlsPanel extends Component {
                                 fmtVal: v => fmtDateTime(v),
                                 readonlyRenderer: v => fmtDateTime(v),
                                 item: dateInput({
-                                    commitOnChange: true,
                                     showActionsBar: true,
                                     timePrecision: 'minute',
                                     timePickerProps: {useAmPm: true}
@@ -199,14 +197,16 @@ export class ControlsPanel extends Component {
                             })
                         ]
                     }),
-                    panel({
+                    vbox({
                         className: 'toolbox-controls-panel__column',
                         items: [
                             row({
                                 label: 'Select',
                                 field: 'option2',
+                                info: 'enableClear:true',
                                 item: select({
                                     options: restaurants,
+                                    enableClear: true,
                                     placeholder: 'Search restaurants...'
                                 })
                             }),
@@ -228,6 +228,7 @@ export class ControlsPanel extends Component {
                                 item: select({
                                     valueField: 'id',
                                     labelField: 'name',
+                                    enableClear: true,
                                     queryFn: this.queryCompaniesAsync,
                                     optionRenderer: this.renderCompanyOption,
                                     placeholder: 'Search companies...',
@@ -240,6 +241,7 @@ export class ControlsPanel extends Component {
                                 info: 'enableMulti',
                                 item: select({
                                     options: usStates,
+                                    enableClear: false,
                                     enableMulti: true,
                                     width: '90%',
                                     placeholder: 'Select state(s)...'
@@ -294,11 +296,11 @@ export class ControlsPanel extends Component {
                     })
                 )
             })
-        );
+        });
     }
 
     row = ({label, field, item, info, readonlyRenderer, fmtVal}) => {
-        const fieldModel = this.model.formModel.getField(field);
+        const fieldModel = this.model.formModel.fields[field];
         return box({
             className: 'controls-panel-field-box',
             items: [
@@ -343,13 +345,24 @@ export class ControlsPanel extends Component {
     }
 
     renderToolbar() {
-        const {model} = this;
+        const {model} = this,
+            {formModel} = model;
         return toolbar(
             switchInput({
+                model: formModel,
+                bind: 'readonly',
+                label: 'Read-only'
+            }),
+            switchInput({
+                model: formModel,
+                bind: 'disabled',
+                label: 'Disabled'
+            }),
+            switchInput({
                 model,
-                field: 'readonly',
-                label: 'Read-only mode'
-            })
+                bind: 'commitOnChange',
+                label: 'Commit on change'
+            }),
         );
     }
 

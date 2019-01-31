@@ -55,7 +55,7 @@ export class MaskPanel extends Component {
                         span('Mask for'),
                         numberInput({
                             model: this,
-                            field: 'seconds',
+                            bind: 'seconds',
                             width: 40,
                             min: 0,
                             max: 10
@@ -63,21 +63,21 @@ export class MaskPanel extends Component {
                         span('secs with'),
                         textInput({
                             model: this,
-                            field: 'message',
+                            bind: 'message',
                             width: 120,
                             placeholder: 'optional text'
                         }),
                         toolbarSep(),
                         switchInput({
                             model: this,
-                            field: 'inline',
+                            bind: 'inline',
                             label: 'Inline:',
                             labelAlign: 'left'
                         }),
                         toolbarSep(),
                         switchInput({
                             model: this,
-                            field: 'spinner',
+                            bind: 'spinner',
                             label: 'Spinner:',
                             labelAlign: 'left'
                         }),

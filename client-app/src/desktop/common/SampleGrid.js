@@ -1,5 +1,5 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
+import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {box, filler, span} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
 import {LocalStore} from '@xh/hoist/data';
@@ -9,7 +9,7 @@ import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/columns';
+import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
@@ -163,7 +163,7 @@ class SampleGrid extends Component {
                     span('Group by:'),
                     select({
                         model: this,
-                        field: 'groupBy',
+                        bind: 'groupBy',
                         options: [
                             {value: 'active', label: 'Active'},
                             {value: 'city', label: 'City'},
@@ -175,7 +175,7 @@ class SampleGrid extends Component {
                     toolbarSep(),
                     switchInput({
                         model,
-                        field: 'compact',
+                        bind: 'compact',
                         label: 'Compact',
                         labelAlign: 'left'
                     }),
