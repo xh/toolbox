@@ -4,7 +4,7 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {HoistAppModel, XH} from '@xh/hoist/core';
+import {HoistAppModel, XH, managed} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 import {required} from '@xh/hoist/cmp/form';
 import {select} from '@xh/hoist/desktop/cmp/input';
@@ -27,6 +27,7 @@ import {FormatsTab} from './tabs/formats/FormatsTab';
 @HoistAppModel
 export class AppModel {
 
+    @managed
     tabModel = this.createTabModel();
 
     constructor() {
@@ -40,18 +41,20 @@ export class AppModel {
     getAppOptions() {
         return [
             {
-                control: select({
-                    width: 270,
-                    options: [
-                        {value: 'light', label: 'Light'},
-                        {value: 'dark', label: 'Dark'}
-                    ]
-                }),
+                name: 'theme',
+                formField: {
+                    item: select({
+                        width: 270,
+                        options: [
+                            {value: 'light', label: 'Light'},
+                            {value: 'dark', label: 'Dark'}
+                        ]
+                    })
+                },
                 fieldModel: {
-                    displayName: 'Theme',
-                    name: 'xhTheme',
                     rules: [required]
                 },
+                valueGetter: () => XH.darkTheme ? 'dark' : 'light',
                 valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark')
             }
         ];
