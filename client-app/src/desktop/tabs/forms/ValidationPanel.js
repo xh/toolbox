@@ -150,24 +150,35 @@ export class ValidationPanel extends Component {
             return form({
                 model: refModel,
                 key: refModel.xhId,
-                item: hbox(
-                    formField({
-                        field: 'name',
-                        item: textInput()
-                    }),
-                    formField({
-                        field: 'relationship',
-                        item: textInput()
-                    }),
-                    formField({
-                        field: 'email',
-                        item: textInput()
-                    }),
-                    button({
-                        icon: Icon.delete(),
-                        onClick: () => references.remove(refModel)
-                    })
-                )
+                fieldDefaults: {label: null},
+                item: hbox({
+                    alignItems: 'baseline',
+                    items: [
+                        formField({
+                            field: 'name',
+                            item: textInput({placeholder: 'Full name'})
+                        }),
+                        formField({
+                            field: 'email',
+                            item: textInput({placeholder: 'Email'})
+                        }),
+                        formField({
+                            field: 'relationship',
+                            width: 220,
+                            item: select({
+                                options: [
+                                    {value: 'professional', label: 'Professional Contact'},
+                                    {value: 'personal', label: 'Personal Contact'}
+                                ]
+                            })
+                        }),
+                        button({
+                            icon: Icon.delete(),
+                            intent: 'danger',
+                            onClick: () => references.remove(refModel)
+                        })
+                    ]
+                })
             });
         });
         
@@ -179,7 +190,7 @@ export class ValidationPanel extends Component {
                 vspacer(5),
                 button({
                     icon: Icon.add(),
-                    text: 'Add',
+                    text: 'Add new reference..',
                     onClick: () => references.add()
                 })
             ]
