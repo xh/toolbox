@@ -1,6 +1,6 @@
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, LoadSupport} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -12,14 +12,14 @@ import {FileManagerModel} from './FileManagerModel';
 import './FileManager.scss';
 
 @HoistComponent
+@LoadSupport
 export class FileManager extends Component {
 
     model = new FileManagerModel();
 
     render() {
-        const model = this.model,
-            gridModel = model.gridModel,
-            chooserModel = model.chooserModel;
+        const {model} = this,
+            {gridModel, chooserModel} = model;
 
         return wrapper({
             description: [
@@ -92,10 +92,6 @@ export class FileManager extends Component {
         });
     }
 
-    async loadAsync() {
-        return this.model.loadAsync();
-    }
-
     // Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
     // accepted file types for sanity (and to demo the `accepts` prop).
     getAcceptedFileTypes() {
@@ -113,6 +109,4 @@ export class FileManager extends Component {
             '.pdf'
         ];
     }
-
-
 }

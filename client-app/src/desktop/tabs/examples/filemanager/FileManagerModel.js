@@ -1,4 +1,4 @@
-import {HoistModel, XH} from '@xh/hoist/core';
+import {HoistModel, XH, managed} from '@xh/hoist/core';
 import {GridModel, fileExtCol} from '@xh/hoist/cmp/grid';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
@@ -13,9 +13,13 @@ import {filter, last, find} from 'lodash';
 @HoistModel
 export class FileManagerModel {
 
+    @managed
     chooserModel = new FileChooserModel();
+
+    @managed
     loadMaskModel = new PendingTaskModel();
 
+    @managed
     gridModel = new GridModel({
         store: new LocalStore({
             fields: [

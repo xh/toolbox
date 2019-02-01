@@ -4,9 +4,9 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {Component, XH} from 'react';
+import {Component} from 'react';
 import {FileManager} from './filemanager/FileManager';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, XH} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/desktop/cmp/tab';
 
 import {NewsPanel} from './news/NewsPanel';
