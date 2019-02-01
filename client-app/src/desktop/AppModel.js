@@ -5,9 +5,10 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {HoistAppModel, XH, managed} from '@xh/hoist/core';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
-import {required} from '@xh/hoist/cmp/form';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
+import {Icon} from '@xh/hoist/icon/Icon';
 
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
@@ -36,28 +37,6 @@ export class AppModel {
 
     async initAsync() {
         await XH.installServicesAsync(CompanyService, TradeService, SalesService, PortfolioService);
-    }
-
-    getAppOptions() {
-        return [
-            {
-                name: 'theme',
-                formField: {
-                    item: select({
-                        width: 270,
-                        options: [
-                            {value: 'light', label: 'Light'},
-                            {value: 'dark', label: 'Dark'}
-                        ]
-                    })
-                },
-                fieldModel: {
-                    rules: [required]
-                },
-                valueGetter: () => XH.darkTheme ? 'dark' : 'light',
-                valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark')
-            }
-        ];
     }
 
     getRoutes() {
@@ -155,6 +134,42 @@ export class AppModel {
         ];
     }
 
+    getAppOptions() {
+        return [
+            {
+                name: 'theme',
+                formField: {
+                    item: buttonGroupInput({
+                        items: [
+                            button({value: 'light', text: 'Light', icon: Icon.sun()}),
+                            button({value: 'dark', text: 'Dark', icon: Icon.moon()})
+                        ]
+                    })
+                },
+                valueGetter: () => XH.darkTheme ? 'dark' : 'light',
+                valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark')
+            },
+            {
+                name: 'defaultGridMode',
+                prefName: 'defaultGridMode',
+                formField: {
+                    label: 'Default grid size',
+                    item: buttonGroupInput({
+                        items: [
+                            button({value: 'STANDARD', text: 'Standard', icon: Icon.gridLarge()}),
+                            button({value: 'COMPACT', text: 'Compact', icon: Icon.grid()})
+                        ]
+                    })
+                },
+                refreshRequired: true
+            }
+        ];
+    }
+
+    get useCompactGrids() {
+        return XH.getPref('defaultGridMode') == 'COMPACT';
+    }
+
     createTabModel() {
         return new TabContainerModel({
             route: 'default',
@@ -186,4 +201,5 @@ export class AppModel {
             }
         };
     }
+
 }
