@@ -1,10 +1,11 @@
 import {Component} from 'react';
-import {elemFactory} from '@xh/hoist/core';
+import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 
 import './Wrapper.scss';
 
+@HoistComponent
 class Wrapper extends Component {
     render() {
         const {description, children, ...rest} = this.props;
