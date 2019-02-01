@@ -53,6 +53,7 @@ export class PanelContainerPanel extends Component {
                         items: [
                             panel({
                                 title: 'Left Panel',
+                                minWidth: 200,
                                 icon: Icon.arrowToLeft(),
                                 model: this.leftPanelModel,
                                 item: box({
@@ -81,6 +82,7 @@ export class PanelContainerPanel extends Component {
                             }),
                             panel({
                                 title: 'Right Panel',
+                                minWidth: 200,
                                 icon: Icon.arrowToRight(),
                                 model: this.rightPanelModel,
                                 item: box({
@@ -92,6 +94,7 @@ export class PanelContainerPanel extends Component {
                     }),
                     panel({
                         title: 'Bottom Panel',
+                        minHeight: 300,
                         icon: Icon.arrowToBottom(),
                         model: this.bottomPanelModel,
                         item: box({
