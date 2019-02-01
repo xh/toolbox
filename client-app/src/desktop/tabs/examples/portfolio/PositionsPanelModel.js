@@ -34,6 +34,7 @@ export class PositionsPanelModel {
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
+        compact: XH.appModel.useCompactGrids,
         columns: [
             {
                 field: 'id',

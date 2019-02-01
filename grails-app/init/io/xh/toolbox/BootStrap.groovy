@@ -87,6 +87,13 @@ class BootStrap {
                         local: true,
                         groupName: 'Toolbox',
                         note: 'Nested arrays containing user\'s dimension picker history'
+                ],
+                defaultGridMode: [
+                        type: 'string',
+                        defaultValue: 'STANDARD',
+                        local: true,
+                        groupName: 'Toolbox',
+                        note: 'Grid sizing mode'
                 ]
             ])
     }

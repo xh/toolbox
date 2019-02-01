@@ -23,6 +23,7 @@ export class OrdersPanelModel {
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
+        compact: XH.appModel.useCompactGrids,
         columns: [
             {
                 field: 'symbol',
