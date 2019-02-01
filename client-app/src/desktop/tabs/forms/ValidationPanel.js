@@ -68,6 +68,7 @@ export class ValidationPanel extends Component {
                             items: this.renderLeftFields()
                         }),
                         vbox({
+                            width: 300,
                             items: this.renderRightFields()
                         })
                     ),
@@ -128,7 +129,7 @@ export class ValidationPanel extends Component {
             }),
             formField({
                 field: 'yearsExperience',
-                item: numberInput({width: 50})
+                item: numberInput()
             }),
             formField({
                 field: 'isManager',
@@ -136,7 +137,7 @@ export class ValidationPanel extends Component {
             }),
             formField({
                 field: 'notes',
-                item: textArea({width: 270})
+                item: textArea()
             })
         ];
     }
