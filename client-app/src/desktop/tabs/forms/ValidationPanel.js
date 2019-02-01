@@ -129,7 +129,7 @@ export class ValidationPanel extends Component {
             }),
             formField({
                 field: 'yearsExperience',
-                item: numberInput()
+                item: numberInput({width: 50})
             }),
             formField({
                 field: 'isManager',
