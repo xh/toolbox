@@ -1,7 +1,6 @@
-import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
+import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {box, filler, span} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, LayoutSupport, LoadSupport, XH, HoistModel, managed} from '@xh/hoist/core';
 import {LocalStore} from '@xh/hoist/data';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
@@ -19,10 +18,77 @@ import {Component} from 'react';
 
 @HoistComponent
 @LayoutSupport
+@LoadSupport
 class SampleGrid extends Component {
 
+    model = new Model();
+
+    render() {
+        const {model} = this,
+            {gridModel, loadModel} = model,
+            {selection} = gridModel,
+            selCount = selection.length;
+
+        let selText = 'None';
+        if (selCount == 1) {
+            selText = `${selection[0].company} (${selection[0].city})`;
+        } else if (selCount > 1) {
+            selText = `${selCount} companies`;
+        }
+
+        return panel({
+            item: grid({model: gridModel}),
+            mask: loadModel,
+            tbar: toolbar({
+                omit: this.props.omitToolbar,
+                items: [
+                    refreshButton({model}),
+                    toolbarSep(),
+                    span('Group by:'),
+                    select({
+                        model,
+                        bind: 'groupBy',
+                        options: [
+                            {value: 'active', label: 'Active'},
+                            {value: 'city', label: 'City'},
+                            {value: false, label: 'None'}
+                        ],
+                        width: 120,
+                        enableFilter: false
+                    }),
+                    toolbarSep(),
+                    switchInput({
+                        model: gridModel,
+                        bind: 'compact',
+                        label: 'Compact',
+                        labelAlign: 'left'
+                    }),
+                    filler(),
+                    storeCountLabel({gridModel, unit: 'companies'}),
+                    storeFilterField({gridModel}),
+                    colChooserButton({gridModel}),
+                    exportButton({gridModel})
+                ]
+            }),
+            bbar: toolbar({
+                items: [
+                    Icon.info(),
+                    box(`Current selection: ${selText}`)
+                ]
+            }),
+            className: this.getClassName(),
+            ...this.getLayoutProps()
+        });
+    }
+}
+export const sampleGrid = elemFactory(SampleGrid);
+
+
+@HoistModel
+class Model {
     @observable groupBy = false;
 
+    @managed
     loadModel = new PendingTaskModel();
 
     viewDetailsAction = {
@@ -55,7 +121,8 @@ class SampleGrid extends Component {
         }
     };
 
-    model = new GridModel({
+    @managed
+    gridModel = new GridModel({
         store: new LocalStore({
             fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
         }),
@@ -72,7 +139,7 @@ class SampleGrid extends Component {
                     '-',
                     ...GridModel.defaultContextMenuTokens
                 ],
-                gridModel: this.model
+                gridModel: this.gridModel
             });
         },
         columns: [
@@ -134,75 +201,10 @@ class SampleGrid extends Component {
             {...emptyFlexCol}
         ]
     });
-
-    constructor(props) {
-        super(props);
-        this.loadAsync();
-    }
-
-    render() {
-        const {model} = this,
-            selection = model.selection,
-            selCount = selection.length;
-
-        let selText = 'None';
-        if (selCount == 1) {
-            selText = `${selection[0].company} (${selection[0].city})` ;
-        } else if (selCount > 1) {
-            selText = `${selCount} companies`;
-        }
-
-        return panel({
-            item: grid({model}),
-            mask: this.loadModel,
-            tbar: toolbar({
-                omit: this.props.omitToolbar,
-                items: [
-                    refreshButton({model: this}),
-                    toolbarSep(),
-                    span('Group by:'),
-                    select({
-                        model: this,
-                        bind: 'groupBy',
-                        options: [
-                            {value: 'active', label: 'Active'},
-                            {value: 'city', label: 'City'},
-                            {value: false, label: 'None'}
-                        ],
-                        width: 120,
-                        enableFilter: false
-                    }),
-                    toolbarSep(),
-                    switchInput({
-                        model,
-                        bind: 'compact',
-                        label: 'Compact',
-                        labelAlign: 'left'
-                    }),
-                    filler(),
-                    storeCountLabel({gridModel: model, unit: 'companies'}),
-                    storeFilterField({gridModel: model}),
-                    colChooserButton({gridModel: model}),
-                    exportButton({gridModel: model})
-                ]
-            }),
-            bbar: toolbar({
-                items: [
-                    Icon.info(),
-                    box(`Current selection: ${selText}`)
-                ]
-            }),
-            className: this.getClassName(),
-            ...this.getLayoutProps()
-        });
-    }
-
-    //------------------------
-    // Implementation
-    //------------------------
+    
     loadAsync() {
-        wait(250)
-            .then(() => this.model.loadData(XH.tradeService.generateTrades()))
+        return wait(250)
+            .then(() => this.gridModel.loadData(XH.tradeService.generateTrades()))
             .linkTo(this.loadModel);
     }
 
@@ -225,9 +227,6 @@ class SampleGrid extends Component {
     @action
     setGroupBy(groupBy) {
         this.groupBy = groupBy;
-        this.model.setGroupBy(groupBy);
+        this.gridModel.setGroupBy(groupBy);
     }
-
 }
-
-export const sampleGrid = elemFactory(SampleGrid);

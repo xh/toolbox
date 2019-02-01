@@ -26,7 +26,7 @@ export class PortfolioPanelModel {
         this.addReaction({
             track: () => this.selectedPosition,
             run: (record) => {
-                if (record) this.ordersPanelModel.loadOrdersForPositionAsync(record.id);
+                this.ordersPanelModel.loadOrdersForPositionAsync(record ? record.id : null);
             },
             delay: 500
         });
