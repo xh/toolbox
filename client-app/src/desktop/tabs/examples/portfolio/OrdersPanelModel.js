@@ -111,7 +111,6 @@ export class OrdersPanelModel {
                 if (orders.length > 0) {
                     this.gridModel.selectFirst();
                 }
-            })
-            .linkTo(this.loadModel);
+            }).linkTo(this.loadModel);
     }
 }

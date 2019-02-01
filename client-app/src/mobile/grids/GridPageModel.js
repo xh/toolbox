@@ -4,6 +4,7 @@ import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
 import {multiFieldRenderer} from '@xh/hoist/cmp/grid/renderers';
 import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
+import {wait} from '@xh/hoist/promise';
 
 import {companyTrades} from '../../core/data';
 
@@ -55,12 +56,19 @@ export class GridPageModel {
     });
 
     constructor() {
-        this.gridModel.loadData(companyTrades);
+        this.loadAsync();
+    }
+
+    loadAsync() {
+        return wait(500).then(() => {
+            this.gridModel.loadData(companyTrades);
+        }).linkTo(
+            this.loadModel
+        );
     }
 
     destroy() {
-        XH.safeDestroy(this.gridModel);
-        XH.safeDestroy(this.loadModel);
+        XH.safeDestroy(this.gridModel, this.loadModel);
     }
 
 }
