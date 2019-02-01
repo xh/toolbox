@@ -18,7 +18,7 @@ import {filler} from '@xh/hoist/cmp/layout';
 export class OrdersPanel extends Component {
 
     render() {
-        const {model, ...rest} = this.props,
+        const {model} = this,
             {gridModel} = model;
 
         return panel({
@@ -31,8 +31,7 @@ export class OrdersPanel extends Component {
                 storeCountLabel({gridModel, unit: 'orders'}),
                 storeFilterField({gridModel}),
                 colChooserButton({gridModel})
-            ),
-            ...rest
+            )
         });
     }
 }

@@ -5,9 +5,8 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
-import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {emptyFlexCol} from '@xh/hoist/cmp/grid';
+import {elemFactory, HoistComponent, HoistModel, LayoutSupport, LoadSupport, XH, managed} from '@xh/hoist/core';
+import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {LocalStore} from '@xh/hoist/data';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
@@ -23,10 +22,52 @@ import './SampleTreeWithCheckboxGrid.scss';
 
 @HoistComponent
 @LayoutSupport
+@LoadSupport
 class SampleTreeWithCheckboxGrid extends Component {
 
+    model = new Model();
+
+    render() {
+        const {model} = this,
+            {gridModel} = model;
+
+        return panel({
+            tbar: toolbar(
+                dimensionChooser({
+                    model: model.dimChooserModel
+                })
+            ),
+            item: grid({className: 'sample-tree-checkbox-grid', model: gridModel}),
+            mask: model.loadModel,
+            bbar: toolbar(
+                refreshButton({model}),
+                toolbarSep(),
+                switchInput({
+                    model: gridModel,
+                    bind: 'compact',
+                    label: 'Compact',
+                    labelAlign: 'left'
+                }),
+                filler(),
+                storeCountLabel({gridModel, units: 'companies'}),
+                storeFilterField({gridModel}),
+                colChooserButton({gridModel}),
+                exportButton({gridModel})
+            ),
+            className: this.getClassName(),
+            ...this.getLayoutProps()
+        });
+    }
+}
+export const sampleTreeWithCheckboxGrid = elemFactory(SampleTreeWithCheckboxGrid);
+
+@HoistModel
+class Model {
+
+    @managed
     loadModel = new PendingTaskModel();
 
+    @managed
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
             {value: 'region', label: 'Region'},
@@ -36,7 +77,8 @@ class SampleTreeWithCheckboxGrid extends Component {
         initialValue: ['sector', 'symbol']
     });
 
-    model = new GridModel({
+    @managed
+    gridModel = new GridModel({
         treeMode: true,
         store: new LocalStore({
             fields: [
@@ -74,43 +116,11 @@ class SampleTreeWithCheckboxGrid extends Component {
         ]
     });
 
-    constructor(props) {
-        super(props);
+    constructor() {
         this.addReaction({
             track: () => this.dimChooserModel.value,
-            run: () => this.loadAsync(),
+            run: this.loadAsync,
             fireImmediately: true
-        });
-    }
-
-    render() {
-        const {model} = this;
-
-        return panel({
-            tbar: toolbar(
-                dimensionChooser({
-                    model: this.dimChooserModel
-                })
-            ),
-            item: grid({className: 'sample-tree-checkbox-grid', model}),
-            mask: this.loadModel,
-            bbar: toolbar(
-                refreshButton({model: this}),
-                toolbarSep(),
-                switchInput({
-                    model,
-                    bind: 'compact',
-                    label: 'Compact',
-                    labelAlign: 'left'
-                }),
-                filler(),
-                storeCountLabel({gridModel: model, units: 'companies'}),
-                storeFilterField({gridModel: model}),
-                colChooserButton({gridModel: model}),
-                exportButton({gridModel: model})
-            ),
-            className: this.getClassName(),
-            ...this.getLayoutProps()
         });
     }
 
@@ -118,12 +128,12 @@ class SampleTreeWithCheckboxGrid extends Component {
     // Implementation
     //------------------------
     loadAsync() {
-        const {model, loadModel, dimChooserModel} = this,
+        const {gridModel, loadModel, dimChooserModel} = this,
             dims = dimChooserModel.value;
 
         return XH.portfolioService
             .getPortfolioAsync(dims)
-            .then(data => model.loadData(data))
+            .then(data => gridModel.loadData(data))
             .linkTo(loadModel);
     }
 
@@ -161,7 +171,7 @@ class SampleTreeWithCheckboxGrid extends Component {
     }
 
     toggleNode(rec) {
-        const {store} = this.model,
+        const {store} = this.gridModel,
             realRec = store.getById(rec.id);
 
         realRec.enabled = !realRec.enabled;
@@ -190,4 +200,4 @@ class SampleTreeWithCheckboxGrid extends Component {
         this.updateParents(parent);
     }
 }
-export const sampleTreeWithCheckboxGrid = elemFactory(SampleTreeWithCheckboxGrid);
+
