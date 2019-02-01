@@ -117,10 +117,16 @@ class BootStrap {
                         ],
                         groupName: 'News'
                 ],
-                newsRefreshMins : [
+                newsRefreshMins: [
                         valueType: 'int',
                         defaultValue: 60,
                         groupName: 'News'
+                ],
+                fileManagerStoragePath: [
+                        valueType: 'string',
+                        defaultValue: '/var/tmp/toolbox',
+                        groupName: 'File Manager',
+                        note: 'Absolute path to disk location for storing uploaded files.'
                 ]
         ])
     }
