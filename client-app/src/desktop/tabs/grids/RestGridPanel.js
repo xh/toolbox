@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, LoadSupport} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -9,6 +9,7 @@ import {wrapper} from '../../common/Wrapper';
 import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
 
 @HoistComponent
+@LoadSupport
 export class RestGridPanel extends Component {
 
     model = new RestGridModel({
@@ -115,14 +116,7 @@ export class RestGridPanel extends Component {
         ]
     });
 
-    constructor() {
-        super();
-        this.model.loadAsync();
-    }
-
     render() {
-        const {model} = this;
-
         return wrapper({
             description: [
                 <p>
@@ -141,9 +135,8 @@ export class RestGridPanel extends Component {
                 icon: Icon.edit(),
                 width: 900,
                 height: 400,
-                item: restGrid({model, readOnly: true})
+                item: restGrid({model: this.model})
             })
         });
     }
-
 }

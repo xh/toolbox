@@ -5,18 +5,17 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
+import {elemFactory, HoistModel, HoistComponent, LayoutSupport, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
-import {grid, GridModel} from '@xh/hoist/cmp/grid';
+import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
@@ -24,13 +23,58 @@ import {action, observable} from '@xh/hoist/mobx';
 
 @HoistComponent
 @LayoutSupport
+@LoadSupport
 class SampleColumnGroupsGrid extends Component {
+
+    model = new Model();
+
+    render() {
+        const {model} = this,
+            {gridModel, loadModel} = model;
+
+        return panel({
+            item: grid({model: gridModel}),
+            mask: loadModel,
+            bbar: toolbar(
+                refreshButton({model}),
+                toolbarSep(),
+                switchInput({
+                    model: gridModel,
+                    bind: 'groupRows',
+                    label: 'Group rows:',
+                    labelAlign: 'left'
+                }),
+                toolbarSep(),
+                switchInput({
+                    model: gridModel,
+                    bind: 'compact',
+                    label: 'Compact mode:',
+                    labelAlign: 'left'
+                }),
+                filler(),
+                storeCountLabel({gridModel, unit: 'salesperson'}),
+                storeFilterField({gridModel}),
+                colChooserButton({gridModel}),
+                exportButton({gridModel})
+            ),
+            className: this.getClassName(),
+            ...this.getLayoutProps()
+        });
+    }
+}
+export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
+
+
+@HoistModel
+class Model {
 
     @observable groupRows = false;
 
+    @managed
     loadModel = new PendingTaskModel();
 
-    model = new GridModel({
+    @managed
+    gridModel = new GridModel({
         stateModel: 'toolboxGroupGrid',
         store: new LocalStore({
             fields: [
@@ -42,6 +86,7 @@ class SampleColumnGroupsGrid extends Component {
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
+        compact: XH.appModel.useCompactGrids,
         contextMenuFn: () => {
             return new StoreContextMenu({
                 items: [
@@ -54,7 +99,7 @@ class SampleColumnGroupsGrid extends Component {
                     '-',
                     ...GridModel.defaultContextMenuTokens
                 ],
-                gridModel: this.model
+                gridModel: this.gridModel
             });
         },
         columns: [
@@ -144,50 +189,12 @@ class SampleColumnGroupsGrid extends Component {
         ]
     });
 
-    constructor(props) {
-        super(props);
-        this.loadAsync();
-    }
-
-    render() {
-        const {model} = this;
-
-        return panel({
-            item: grid({model}),
-            mask: this.loadModel,
-            bbar: toolbar(
-                refreshButton({model: this}),
-                toolbarSep(),
-                switchInput({
-                    model: this,
-                    bind: 'groupRows',
-                    label: 'Group rows:',
-                    labelAlign: 'left'
-                }),
-                toolbarSep(),
-                switchInput({
-                    model,
-                    bind: 'compact',
-                    label: 'Compact mode:',
-                    labelAlign: 'left'
-                }),
-                filler(),
-                storeCountLabel({gridModel: model, unit: 'salesperson'}),
-                storeFilterField({gridModel: model}),
-                colChooserButton({gridModel: model}),
-                exportButton({gridModel: model})
-            ),
-            className: this.getClassName(),
-            ...this.getLayoutProps()
-        });
-    }
-
     //------------------------
     // Implementation
     //------------------------
     loadAsync() {
-        wait(250)
-            .then(() => this.model.loadData(XH.salesService.generateSales()))
+        return wait(250)
+            .then(() => this.gridModel.loadData(XH.salesService.generateSales()))
             .linkTo(this.loadModel);
     }
 
@@ -203,8 +210,6 @@ class SampleColumnGroupsGrid extends Component {
     @action
     setGroupRows = (groupRows) => {
         this.groupRows = groupRows;
-        this.model.setGroupBy(groupRows ? 'state' : null);
+        this.gridModel.setGroupBy(groupRows ? 'state' : null);
     };
-
 }
-export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
