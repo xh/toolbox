@@ -114,6 +114,7 @@ export class AppModel {
                         path: '/other',
                         forwardTo: 'default.other.mask',
                         children: [
+                            {name: 'gridTest', path: '/gridTest'},
                             {name: 'mask', path: '/mask'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},
