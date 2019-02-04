@@ -6,7 +6,7 @@ import {GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {times} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, observable} from '@xh/hoist/mobx';
 
 const pnlColumn = {
     absSort: true,
@@ -21,20 +21,20 @@ const pnlColumn = {
 @HoistModel
 export class GridTestModel {
 
-    @bindable recordCount = 10000;
-    @bindable tree = false;
+    @bindable recordCount = 100000;
+    @bindable tree = true;
 
     @managed
     loadModel = new PendingTaskModel();
 
     @managed
+    @observable
     gridModel = this.createGridModel();
 
     constructor() {
         this.addReaction({
             track: () =>  this.tree,
             run: () => {
-                console.log('swapping out grid');
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
             }
@@ -43,12 +43,18 @@ export class GridTestModel {
 
     loadAsync() {
         return start(() => {
-            return this.genTestData();
+            console.time('Clearing Old Data');
+            this.gridModel.loadData([]);
+            console.timeEnd('Clearing Old Data');
         }).then(data => {
-            console.log('hi');
-            console.time('sniff');
+            console.time('Creating Data');
+            const data = this.genTestData();
+            console.timeEnd('Creating Data');
+            return data;
+        }).then(data => {
+            console.time('Loading Data');
             this.gridModel.loadData(data);
-            console.timeEnd('sniff');
+            console.timeEnd('Loading Data');
         }).linkTo(
             this.loadModel
         );
