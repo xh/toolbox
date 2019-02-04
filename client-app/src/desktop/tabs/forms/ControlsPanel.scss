@@ -33,13 +33,9 @@
         text-overflow: ellipsis;
       }
 
-      .xh-form-field {
-        flex: 1;
-
-        .xh-form-field-label {
-          font-size: var(--xh-font-size-large-px);
-          margin-bottom: var(--xh-pad-half-px);
-        }
+      .xh-form-field .xh-form-field-label {
+        font-size: var(--xh-font-size-large-px);
+        margin-bottom: var(--xh-pad-half-px);
       }
     }
   }
