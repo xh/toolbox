@@ -4,25 +4,46 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {XH, HoistAppModel} from '@xh/hoist/core';
+import {XH, HoistAppModel, managed} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
-import {PortfolioService} from '../core/svc/PortfolioService';
+import {required} from '@xh/hoist/cmp/form';
+import {select} from '@xh/hoist/mobile/cmp/input';
 
+import {PortfolioService} from '../core/svc/PortfolioService';
 import {homePage} from './home/HomePage';
 
 @HoistAppModel
 export class AppModel {
 
-    navigatorModel = null;
-    appMenuModel = null;
+    @managed
+    appMenuModel = new AppMenuModel();
 
-    constructor() {
-        this.appMenuModel = new AppMenuModel();
-        this.navigatorModel = new NavigatorModel({
-            pageFactory: homePage,
-            title: 'Toolbox'
-        });
+    @managed
+    navigatorModel = new NavigatorModel({
+        pageFactory: homePage,
+        title: 'Toolbox'
+    });
+
+    getAppOptions() {
+        return [
+            {
+                name: 'theme',
+                formField: {
+                    item: select({
+                        options: [
+                            {value: 'light', label: 'Light'},
+                            {value: 'dark', label: 'Dark'}
+                        ]
+                    })
+                },
+                fieldModel: {
+                    rules: [required]
+                },
+                valueGetter: () => XH.darkTheme ? 'dark' : 'light',
+                valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark')
+            }
+        ];
     }
 
     navigate(title, pageFactory) {
@@ -31,10 +52,5 @@ export class AppModel {
 
     async initAsync() {
         await XH.installServicesAsync(PortfolioService);
-    }
-
-    destroy() {
-        XH.safeDestroy(this.appMenuModel);
-        XH.safeDestroy(this.navigatorModel);
     }
 }
