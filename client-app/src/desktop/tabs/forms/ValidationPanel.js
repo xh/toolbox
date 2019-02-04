@@ -82,10 +82,12 @@ export class ValidationPanel extends Component {
         return [
             formField({
                 field: 'lastName',
+                flex: 1,
                 item: textInput()
             }),
             formField({
                 field: 'email',
+                flex: 1,
                 item: textInput({
                     placeholder: 'user@company.com',
                     leftIcon: Icon.mail(),
@@ -94,12 +96,14 @@ export class ValidationPanel extends Component {
             }),
             formField({
                 field: 'region',
+                flex: 1,
                 item: select({
                     options: ['California', 'London', 'Montreal', 'New York']
                 })
             }),
             formField({
                 field: 'tags',
+                flex: 1,
                 item: select({
                     enableMulti: true,
                     enableCreate: true
@@ -137,6 +141,7 @@ export class ValidationPanel extends Component {
             }),
             formField({
                 field: 'notes',
+                flex: 1,
                 item: textArea()
             })
         ];
@@ -164,7 +169,6 @@ export class ValidationPanel extends Component {
                         }),
                         formField({
                             field: 'relationship',
-                            width: 220,
                             item: select({
                                 options: [
                                     {value: 'professional', label: 'Professional Contact'},
