@@ -5,6 +5,10 @@ grails {
     project.groupId = 'io.xh.toolbox'
     app.context = '/'
     resources.pattern = '/**'
+
+    // 50MB limit
+    controllers.upload.maxFileSize = 52428800
+    controllers.upload.maxRequestSize = 52428800
 }
 
 //------------------------------------------------------------

@@ -92,7 +92,7 @@ export class ValidationPanelModel {
                     {name: 'relationship'},
                     {name: 'email', rules: [required, this.validEmail]}
                 ],
-                initialValues: {relationship: 'spouse'}
+                initialValues: {relationship: 'professional'}
             },
             rules: [(ref) => isEmpty(ref) ? 'At least one reference is required.':  null]
         }]

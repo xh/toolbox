@@ -4,8 +4,11 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {HoistAppModel, XH} from '@xh/hoist/core';
+import {HoistAppModel, XH, managed} from '@xh/hoist/core';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
+import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
+import {Icon} from '@xh/hoist/icon/Icon';
 
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
@@ -25,6 +28,7 @@ import {FormatsTab} from './tabs/formats/FormatsTab';
 @HoistAppModel
 export class AppModel {
 
+    @managed
     tabModel = this.createTabModel();
 
     constructor() {
@@ -36,6 +40,7 @@ export class AppModel {
     }
 
     getRoutes() {
+        const isAdmin = XH.getUser().isHoistAdmin;
         return [
             {
                 name: 'default',
@@ -122,12 +127,49 @@ export class AppModel {
                         forwardTo: 'default.examples.portfolio',
                         children: [
                             {name: 'portfolio', path: '/portfolio'},
-                            {name: 'news', path: '/news'}
+                            {name: 'news', path: '/news'},
+                            {name: 'fileManager', path: '/fileManager', omit: !isAdmin}
                         ]
                     }
                 ]
             }
         ];
+    }
+
+    getAppOptions() {
+        return [
+            {
+                name: 'theme',
+                formField: {
+                    item: buttonGroupInput({
+                        items: [
+                            button({value: 'light', text: 'Light', icon: Icon.sun()}),
+                            button({value: 'dark', text: 'Dark', icon: Icon.moon()})
+                        ]
+                    })
+                },
+                valueGetter: () => XH.darkTheme ? 'dark' : 'light',
+                valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark')
+            },
+            {
+                name: 'defaultGridMode',
+                prefName: 'defaultGridMode',
+                formField: {
+                    label: 'Default grid size',
+                    item: buttonGroupInput({
+                        items: [
+                            button({value: 'STANDARD', text: 'Standard', icon: Icon.gridLarge()}),
+                            button({value: 'COMPACT', text: 'Compact', icon: Icon.grid()})
+                        ]
+                    })
+                },
+                refreshRequired: true
+            }
+        ];
+    }
+
+    get useCompactGrids() {
+        return XH.getPref('defaultGridMode') == 'COMPACT';
     }
 
     createTabModel() {
@@ -161,4 +203,5 @@ export class AppModel {
             }
         };
     }
+
 }
