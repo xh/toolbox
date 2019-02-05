@@ -3,7 +3,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
-import {refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {refreshButton, button} from '@xh/hoist/desktop/cmp/button';
 import {grid} from '@xh/hoist/cmp/grid';
 
 import {GridTestModel} from './GridTestModel';
@@ -19,10 +19,7 @@ export class GridTestPanel extends Component {
 
         return panel({
             mask: model.loadModel,
-            item: grid({
-                key: gridModel.xhId,
-                model: gridModel
-            }),
+            item: gridModel ? grid({key: gridModel.xhId, model: gridModel}) : null,
             bbar: toolbar(
                 numberInput({model, bind: 'recordCount'}),
                 switchInput({
@@ -31,8 +28,15 @@ export class GridTestPanel extends Component {
                     label: 'Tree',
                     labelAlign: 'left'
                 }),
+                switchInput({
+                    model,
+                    bind: 'clearData',
+                    label: 'Clear Data',
+                    labelAlign: 'left'
+                }),
                 toolbarSep(),
-                refreshButton({model})
+                refreshButton({model})                                  ,
+                button({text: 'Tear Down', onClick: () => model.tearDown()})
             )
         });
     }

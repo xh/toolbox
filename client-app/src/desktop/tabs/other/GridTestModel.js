@@ -6,7 +6,7 @@ import {GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {times} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {bindable, observable} from '@xh/hoist/mobx';
+import {bindable, observable, action} from '@xh/hoist/mobx';
 
 const pnlColumn = {
     absSort: true,
@@ -21,8 +21,9 @@ const pnlColumn = {
 @HoistModel
 export class GridTestModel {
 
-    @bindable recordCount = 100000;
-    @bindable tree = true;
+    @bindable recordCount = 10000;
+    @bindable tree = false;
+    @bindable clearData = false;
 
     @managed
     loadModel = new PendingTaskModel();
@@ -43,10 +44,12 @@ export class GridTestModel {
 
     loadAsync() {
         return start(() => {
-            console.time('Clearing Old Data');
-            this.gridModel.loadData([]);
-            console.timeEnd('Clearing Old Data');
-        }).then(data => {
+            if (this.clearData) {
+                console.time('Clearing Old Data');
+                this.gridModel.loadData([]);
+                console.timeEnd('Clearing Old Data');
+            }
+        }).then(() => {
             console.time('Creating Data');
             const data = this.genTestData();
             console.timeEnd('Creating Data');
@@ -131,5 +134,11 @@ export class GridTestModel {
                 {...emptyFlexCol}
             ]
         });
+    }
+
+    @action
+    tearDown() {
+        XH.destroy(this.gridModel);
+        this.gridModel = null;
     }
 }

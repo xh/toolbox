@@ -112,7 +112,7 @@ export class AppModel {
                     {
                         name: 'other',
                         path: '/other',
-                        forwardTo: 'default.other.mask',
+                        forwardTo: 'default.other.gridTest',
                         children: [
                             {name: 'gridTest', path: '/gridTest'},
                             {name: 'mask', path: '/mask'},
