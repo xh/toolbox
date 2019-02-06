@@ -11,7 +11,6 @@ import {required} from '@xh/hoist/cmp/form';
 import {select} from '@xh/hoist/mobile/cmp/input';
 
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {homePage} from './home/HomePage';
 
 import {HomePage} from './home/HomePage';
 import {GridPage} from './grids/GridPage';
@@ -29,17 +28,42 @@ export class AppModel {
 
     @managed
     navigatorModel = new NavigatorModel({
-        pageFactory: homePage,
-        title: 'Toolbox',
-
         routes: [
-            {id: 'default', content: HomePage},
-            {id: 'grids', content: GridPage},
-            {id: 'treegrids', content: TreeGridPage},
-            {id: 'form', content: FormPage},
-            {id: 'containers', content: ContainersPage},
-            {id: 'popups', content: PopupsPage},
-            {id: 'icons', content: IconPage}
+            {
+                id: 'default',
+                title: 'Toolbox',
+                content: HomePage
+            },
+            {
+                id: 'grids',
+                title: 'Grids',
+                content: GridPage
+            },
+            {
+                id: 'treegrids',
+                title: 'Tree Grids',
+                content: TreeGridPage
+            },
+            {
+                id: 'form',
+                title: 'Form',
+                content: FormPage
+            },
+            {
+                id: 'containers',
+                title: 'Containers',
+                content: ContainersPage
+            },
+            {
+                id: 'popups',
+                title: 'Popups',
+                content: PopupsPage
+            },
+            {
+                id: 'icons',
+                title: 'Icons',
+                content: IconPage
+            }
         ]
     });
 
@@ -99,8 +123,8 @@ export class AppModel {
         ];
     }
 
-    navigate(title, pageFactory) {
-        this.navigatorModel.pushPage({title, pageFactory});
+    appendRoute(...args) {
+        this.navigatorModel.appendRoute(...args);
     }
 
     async initAsync() {
