@@ -69,6 +69,7 @@ class Model {
         this.dataViewModel.store.loadData(companies.map(it => {
             const randVal = Math.random() * (max - min) + min;
             return {
+                id: it.id,
                 name: it.name,
                 city: it.city,
                 value: randVal
