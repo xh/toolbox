@@ -80,7 +80,8 @@ class Model {
             fields: [
                 'firstName', 'lastName', 'city', 'state', 'salary', 'projectedUnitsSold',
                 'projectedGross', 'actualUnitsSold', 'actualGross', 'retain'
-            ]
+            ],
+            idSpec: rec => `${rec.firstName}~${rec.lastName}~${rec.city}~${rec.state}`
         }),
         sortBy: 'lastName',
         emptyText: 'No records found...',
@@ -118,6 +119,11 @@ class Model {
                         headerName: 'Last',
                         width: 100,
                         chooserName: 'Last Name'
+                    },
+                    {
+                        field: 'city',
+                        width: 120,
+                        hidden: true
                     },
                     {
                         field: 'state',
