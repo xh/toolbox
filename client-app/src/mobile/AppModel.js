@@ -30,37 +30,37 @@ export class AppModel {
     navigatorModel = new NavigatorModel({
         routes: [
             {
-                id: 'default',
+                route: 'default',
                 title: 'Toolbox',
                 content: HomePage
             },
             {
-                id: 'grids',
+                route: 'grids',
                 title: 'Grids',
                 content: GridPage
             },
             {
-                id: 'treegrids',
+                route: 'treegrids',
                 title: 'Tree Grids',
                 content: TreeGridPage
             },
             {
-                id: 'form',
+                route: 'form',
                 title: 'Form',
                 content: FormPage
             },
             {
-                id: 'containers',
+                route: 'containers',
                 title: 'Containers',
                 content: ContainersPage
             },
             {
-                id: 'popups',
+                route: 'popups',
                 title: 'Popups',
                 content: PopupsPage
             },
             {
-                id: 'icons',
+                route: 'icons',
                 title: 'Icons',
                 content: IconPage
             }
