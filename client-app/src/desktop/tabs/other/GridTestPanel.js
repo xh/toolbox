@@ -35,7 +35,7 @@ export class GridTestPanel extends Component {
                     labelAlign: 'left'
                 }),
                 toolbarSep(),
-                refreshButton({model})                                  ,
+                refreshButton({model}),
                 button({text: 'Tear Down', onClick: () => model.tearDown()})
             )
         });

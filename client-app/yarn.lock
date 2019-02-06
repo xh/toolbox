@@ -776,7 +776,16 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@babel/types@^7.0.0", "@babel/types@^7.2.0", "@babel/types@^7.2.2", "@babel/types@^7.3.0":
+"@babel/types@^7.0.0":
+  version "7.3.2"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.3.2.tgz#424f5be4be633fff33fb83ab8d67e4a8290f5a2f"
+  integrity sha512-3Y6H8xlUlpbGR+XvawiH0UXehqydTmNmEpozWcXymqwcrwYAl5KMvKtQ+TF6f6E08V6Jur7v/ykdDSF+WDEIXQ==
+  dependencies:
+    esutils "^2.0.2"
+    lodash "^4.17.10"
+    to-fast-properties "^2.0.0"
+
+"@babel/types@^7.2.0", "@babel/types@^7.2.2", "@babel/types@^7.3.0":
   version "7.3.0"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.3.0.tgz#61dc0b336a93badc02bf5f69c4cd8e1353f2ffc0"
   integrity sha512-QkFPw68QqWU1/RVPyBe8SO7lXbPfjtqAxRYQKpFpaB8yMq7X2qAqfwK5LKoQufEkSmO5NQ70O6Kc3Afk03RwXw==
@@ -1135,9 +1144,9 @@
     webpackbar "~3.1.5"
 
 "@xh/hoist@^19.0.0-SNAPSHOT":
-  version "19.0.0-SNAPSHOT.1549068226080"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-19.0.0-SNAPSHOT.1549068226080.tgz#4180bf042e99607bd9adaeae6bca528e998ce68c"
-  integrity sha512-sPnk2kXTdMo8BOLtfvW8QXtXB6VvcvNfQU81ZGb8RUODgRmyEaJ/DDzNCJibusdKodD9PTcTX/TWGaqg68dpFg==
+  version "19.0.0-SNAPSHOT.1549393928794"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-19.0.0-SNAPSHOT.1549393928794.tgz#6433c239128402b76e245b1ab878eb0d9759a787"
+  integrity sha512-kiw+fw7PiOJHmiALjv2fM+Tw7uosG8dlR+9JeuyawjjOqrh1YlDrlz5vz3pUCEWKFldS4aVo6/nFKmzancfkPA==
   dependencies:
     "@blueprintjs/core" "~3.12.0"
     "@blueprintjs/datetime" "~3.7.0"
@@ -1147,9 +1156,9 @@
     "@fortawesome/pro-regular-svg-icons" "~5.7.0"
     "@fortawesome/pro-solid-svg-icons" "~5.7.0"
     "@fortawesome/react-fontawesome" "~0.1.4"
-    ag-grid-community "~19.1.4"
-    ag-grid-enterprise "~19.1.4"
-    ag-grid-react "~19.1.2"
+    ag-grid-community "~20.0.0"
+    ag-grid-enterprise "~20.0.0"
+    ag-grid-react "~20.0.0"
     classnames "~2.2.6"
     clipboard "~2.0.4"
     codemirror "~5.43.0"
@@ -1227,20 +1236,20 @@ adm-zip@^0.4.9:
   resolved "https://registry.yarnpkg.com/adm-zip/-/adm-zip-0.4.13.tgz#597e2f8cc3672151e1307d3e95cddbc75672314a"
   integrity sha512-fERNJX8sOXfel6qCBCMPvZLzENBEhZTzKqg6vrOW5pvoEaQuJhRU4ndTAh6lHOxn1I6jnz2NHra56ZODM751uw==
 
-ag-grid-community@~19.1.4:
-  version "19.1.4"
-  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-19.1.4.tgz#fc74d0dae3cac954e1cc977d6a4d7fee5321d809"
-  integrity sha512-il498Bek+OTVyhMs6MgJlgUVQKBDuoUwVNFy3c93U5ulWaMHOVfmVxpKdv1UkqfDwnaPhQrx/hNDQ32BuBud8g==
+ag-grid-community@~20.0.0:
+  version "20.0.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-20.0.0.tgz#0bda7f01e4ed665e3c63f12dc60f5b3e0726245b"
+  integrity sha512-KOvUnZsf1FY/0wt77xNRHJl76nxGwMuVZpEAAQvAsv+TrODXETSP9JcJskVBjr+s5VLvGaxJNfV7JQTc1ZPS5w==
 
-ag-grid-enterprise@~19.1.4:
-  version "19.1.4"
-  resolved "https://registry.yarnpkg.com/ag-grid-enterprise/-/ag-grid-enterprise-19.1.4.tgz#b056f423d21702043631dab97ccead919716b876"
-  integrity sha512-rzG7cZx467J37EajUVtdLIYoxKxdB9Yv8yGcqQLrvaq2mNrytxThP8s3Tv51t2kv2efc4XlX2ciQ0RAzGgbiUw==
+ag-grid-enterprise@~20.0.0:
+  version "20.0.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-enterprise/-/ag-grid-enterprise-20.0.0.tgz#9960932e093e812902b162369d351b3768746097"
+  integrity sha512-Y6wzD0vEVe7TNJGxiNZeVZqdfs0IUcR5crHRu2Mktt5hgQPjSeHG2vRsS1LgC4GzSRBC4CpXwzuCURF4jidk/g==
 
-ag-grid-react@~19.1.2:
-  version "19.1.2"
-  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-19.1.2.tgz#e1d29d19b0993301a468648d034aec245afa6935"
-  integrity sha512-87XaXdtuvy2/krFhyFfocIstRCwRX8G0uYBq78SD8VUoblEXN0nA77mStjMdfbjPbU+GxIbdULKOEdqlHVoDcg==
+ag-grid-react@~20.0.0:
+  version "20.0.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-20.0.0.tgz#f677b5050ad301ce71f92cffdffe882e15d25b58"
+  integrity sha512-0DAuUsF3qtI6cndtC1UkMT3h9iiIrK/ecgZZJme65h4Lyp08j5qz+u+jFWWm60LGnLL6+0uqPWLZoOA+TSgUpg==
   dependencies:
     prop-types "^15.6.2"
 
@@ -1276,10 +1285,20 @@ ajv@^5.2.3, ajv@^5.3.0:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.3.0"
 
-ajv@^6.1.0, ajv@^6.5.5:
+ajv@^6.1.0:
   version "6.7.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.7.0.tgz#e3ce7bb372d6577bb1839f1dfdfcbf5ad2948d96"
   integrity sha512-RZXPviBTtfmtka9n9sy1N5M5b82CbxWIR6HIis4s3WQTXDJamc/0gpCWNGz6EWdWp4DOfjzJfhz/AS9zVPjjWg==
+  dependencies:
+    fast-deep-equal "^2.0.1"
+    fast-json-stable-stringify "^2.0.0"
+    json-schema-traverse "^0.4.1"
+    uri-js "^4.2.2"
+
+ajv@^6.5.5:
+  version "6.8.1"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.8.1.tgz#0890b93742985ebf8973cd365c5b23920ce3cb20"
+  integrity sha512-eqxCp82P+JfqL683wwsL73XmFs1eG6qjw+RD3YHx+Jll1r0jNd4dh8QG9NYAeNGA/hnZjeEDgtTskgJULbxpWQ==
   dependencies:
     fast-deep-equal "^2.0.1"
     fast-json-stable-stringify "^2.0.0"
@@ -3123,9 +3142,9 @@ entities@^1.1.1, entities@~1.1.1:
   integrity sha512-f2LZMYl1Fzu7YSBKg+RoROelpOaNrcGmE9AZubeDfrCEia483oW4MI4VyFd5VNHIgQ/7qm1I0wUHK1eJnn2y2w==
 
 enzyme-adapter-react-16@^1.1.1:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/enzyme-adapter-react-16/-/enzyme-adapter-react-16-1.8.0.tgz#7055d8e908d8d27b807cf4292244db3c815ca11d"
-  integrity sha512-7cVHIKutqnesGeM3CjNFHSvktpypSWBokrBO8wIW+BVx+HGxWCF87W9TpkIIYJqgCtdw9FQGFrAbLg8kSwPRuQ==
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/enzyme-adapter-react-16/-/enzyme-adapter-react-16-1.9.1.tgz#6d49a3a31c3a0fccf527610f31b837e0f307128a"
+  integrity sha512-Egzogv1y77DUxdnq/CyHxLHaNxmSSKDDSDNNB/EiAXCZVFXdFibaNy2uUuRQ1n24T2m6KH/1Rw16XDRq+1yVEg==
   dependencies:
     enzyme-adapter-utils "^1.10.0"
     function.prototype.name "^1.1.0"
@@ -8194,9 +8213,9 @@ timers-browserify@^2.0.4:
     setimmediate "^1.0.4"
 
 tiny-emitter@^2.0.0:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.0.2.tgz#82d27468aca5ade8e5fd1e6d22b57dd43ebdfb7c"
-  integrity sha512-2NM0auVBGft5tee/OxP4PI3d8WItkDM+fPnaRAVo6xTDI2knbz9eC5ArWGqtGlYqiH3RU5yMpdyTTO7MguC4ow==
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
+  integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
 
 tinycolor2@^1.1.2:
   version "1.4.1"
