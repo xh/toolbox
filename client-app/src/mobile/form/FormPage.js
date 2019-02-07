@@ -6,7 +6,7 @@ import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
-import {formField} from '@xh/hoist/desktop/cmp/form';
+import {formField} from '@xh/hoist/mobile/cmp/form';
 import {
     label,
     textInput,
@@ -45,13 +45,13 @@ export class FormPage extends Component {
 
     renderForm() {
         const {model} = this,
-            {formModel, minimal, readonly, movies} = model;
+            {formModel, minimal, movies} = model;
 
         return div({
             className: 'toolbox-card',
             items: form({
                 model: formModel,
-                fieldDefaults: {minimal, readonly},
+                fieldDefaults: {minimal},
                 items: vbox(
                     formField({
                         field: 'name',
@@ -126,7 +126,7 @@ export class FormPage extends Component {
     renderToolbar() {
         const {model} = this;
         return toolbar(
-            switchInput({model, bind: 'readonly'}),
+            switchInput({model: model.formModel, bind: 'readonly'}),
             span('Read-only'),
             filler(),
             switchInput({model, bind: 'minimal'}),
