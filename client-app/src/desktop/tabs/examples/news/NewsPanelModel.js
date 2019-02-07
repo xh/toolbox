@@ -26,7 +26,8 @@ export class NewsPanelModel {
     @managed
     viewModel = new DataViewModel({
         store: new LocalStore({
-            fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published']
+            fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
+            idSpec: 'url'
         }),
         itemRenderer: (v, {record}) => newsPanelItem({record})
     });
