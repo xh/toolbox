@@ -24,7 +24,8 @@ export class FileManagerModel {
         store: new LocalStore({
             fields: [
                 'name', 'extension', 'size', 'status', 'file'
-            ]
+            ],
+            idSpec: 'name'
         }),
         sortBy: 'name',
         groupBy: 'status',
