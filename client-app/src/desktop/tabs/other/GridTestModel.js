@@ -66,7 +66,7 @@ export class GridTestModel {
     genTestData() {
         const ret = times(this.recordCount, (i) => {
             let symbol = 'symbol' + i,
-                trader = null;
+                trader = trader = 'trader' + i % (this.recordCount/10);
             const pos = {
                 id: symbol,
                 trader,
@@ -76,6 +76,7 @@ export class GridTestModel {
                 ytd: Math.random() * 100,
                 volume: 100000
             };
+
             if (this.tree) {
                 pos.children = times(2, (t) => {
                     trader = 'trader' + t;
@@ -102,6 +103,7 @@ export class GridTestModel {
             }),
             selModel: {mode: 'multiple'},
             sortBy: 'day|desc|abs',
+            // groupBy: 'trader',
             emptyText: 'No records found...',
             treeMode: this.tree,
             columns: [
