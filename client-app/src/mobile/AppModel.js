@@ -30,37 +30,37 @@ export class AppModel {
     navigatorModel = new NavigatorModel({
         routes: [
             {
-                route: 'default',
+                id: 'default',
                 title: 'Toolbox',
                 content: HomePage
             },
             {
-                route: 'grids',
+                id: 'grids',
                 title: 'Grids',
                 content: GridPage
             },
             {
-                route: 'treegrids',
+                id: 'treegrids',
                 title: 'Tree Grids',
                 content: TreeGridPage
             },
             {
-                route: 'form',
+                id: 'form',
                 title: 'Form',
                 content: FormPage
             },
             {
-                route: 'containers',
+                id: 'containers',
                 title: 'Containers',
                 content: ContainersPage
             },
             {
-                route: 'popups',
+                id: 'popups',
                 title: 'Popups',
                 content: PopupsPage
             },
             {
-                route: 'icons',
+                id: 'icons',
                 title: 'Icons',
                 content: IconPage
             }
@@ -121,10 +121,6 @@ export class AppModel {
                 valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark')
             }
         ];
-    }
-
-    appendRoute(...args) {
-        this.navigatorModel.appendRoute(...args);
     }
 
     async initAsync() {

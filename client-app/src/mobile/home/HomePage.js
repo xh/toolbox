@@ -61,7 +61,7 @@ export class HomePage extends Component {
                 button({
                     icon: icon,
                     text: `Go to ${title}`,
-                    onClick: () => XH.appModel.appendRoute(route)
+                    onClick: () => XH.appendRoute(route)
                 })
             ]
         });
