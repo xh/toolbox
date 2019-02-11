@@ -46,8 +46,8 @@ export class AppModel {
         ];
     }
 
-    navigate(title, pageFactory) {
-        this.navigatorModel.pushPage({title, pageFactory});
+    navigate(title, pageFactory, pageProps) {
+        this.navigatorModel.pushPage({title, pageFactory, pageProps});
     }
 
     async initAsync() {

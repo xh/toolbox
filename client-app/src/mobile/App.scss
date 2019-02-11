@@ -43,3 +43,25 @@
     font-family: var(--xh-font-family-mono);
   }
 }
+
+.toolbox-detail-page .page__content {
+  background-color: var(--xh-bg-alt) !important;
+
+  .toolbox-detail-row {
+    display: flex;
+    background-color: var(--xh-grid-bg);
+    border-bottom: var(--xh-border-solid);
+
+    &:nth-child(odd) {
+      background-color: var(--xh-grid-bg-odd);
+    }
+
+    & > div {
+      padding: var(--xh-pad-half-px) var(--xh-pad-px);
+
+      &:first-child {
+        flex: 1;
+      }
+    }
+  }
+}
