@@ -1,7 +1,7 @@
 import {HoistService} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {MINUTES} from '@xh/hoist/utils/datetime';
-import {sumBy, castArray, forOwn, last, sortBy, groupBy, values, find, filter, random, sample, times, round} from 'lodash';
+import {sumBy, castArray, forOwn, last, sortBy, groupBy, keys, values, find, filter, random, sample, times, round} from 'lodash';
 import moment from 'moment';
 
 @HoistService
@@ -27,6 +27,25 @@ export class PortfolioService {
         await wait(300);
         this.ensureLoaded();
         return this.getPositions(castArray(dims));
+    }
+
+    async getPositionAsync(positionId) {
+        await wait(100);
+        this.ensureLoaded();
+
+        const parsedId = this.parsePositionId(positionId),
+            dims = keys(parsedId),
+            dimVals = values(parsedId);
+
+        let positions = this.getPositions(dims),
+            ret = null;
+
+        dimVals.forEach(dimVal => {
+            ret = find(positions, {name: dimVal});
+            if (ret.children) positions = ret.children;
+        });
+
+        return ret;
     }
 
     async getOrdersAsync(positionId) {

@@ -14,7 +14,9 @@ import {PortfolioService} from '../core/svc/PortfolioService';
 
 import {HomePage} from './home/HomePage';
 import {GridPage} from './grids/GridPage';
-import {TreeGridPage} from './grids/TreeGridPage';
+import {GridDetailPage} from './grids/GridDetailPage';
+import {TreeGridPage} from './treegrids/TreeGridPage';
+import {TreeGridDetailPage} from './treegrids/TreeGridDetailPage';
 import {FormPage} from './form/FormPage';
 import {ContainersPage} from './containers/ContainersPage';
 import {PopupsPage} from './popups/PopupsPage';
@@ -40,9 +42,17 @@ export class AppModel {
                 content: GridPage
             },
             {
+                id: 'gridDetail',
+                content: GridDetailPage
+            },
+            {
                 id: 'treegrids',
                 title: 'Tree Grids',
                 content: TreeGridPage
+            },
+            {
+                id: 'treeGridDetail',
+                content: TreeGridDetailPage
             },
             {
                 id: 'form',
@@ -75,11 +85,19 @@ export class AppModel {
                 children: [
                     {
                         name: 'grids',
-                        path: '/grids'
+                        path: '/grids',
+                        children: [{
+                            name: 'gridDetail',
+                            path: '/:id<\\d+>'
+                        }]
                     },
                     {
                         name: 'treegrids',
-                        path: '/treegrids'
+                        path: '/treegrids',
+                        children: [{
+                            name: 'treeGridDetail',
+                            path: '/:id'
+                        }]
                     },
                     {
                         name: 'form',

@@ -13,7 +13,6 @@ import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {dimensionChooser} from '@xh/hoist/mobile/cmp/dimensionchooser';
 
 import {TreeGridPageModel} from './TreeGridPageModel';
-import {treeGridDetailPage} from './TreeGridDetailPage';
 
 @HoistComponent
 export class TreeGridPage extends Component {
@@ -29,8 +28,8 @@ export class TreeGridPage extends Component {
                 grid({
                     model: gridModel,
                     onRowClicked: (e) => {
-                        const record = e.data.raw;
-                        XH.appModel.navigate(record.name, treeGridDetailPage, {record});
+                        const {id} = e.data.raw;
+                        XH.appendRoute('treeGridDetail', {id});
                     }
                 }),
                 toolbar(
