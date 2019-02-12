@@ -100,6 +100,7 @@ export class ControlsPanel extends Component {
                                 label: 'TextArea',
                                 field: 'text4',
                                 info: 'fill, placeholder, selectOnFocus',
+                                layout: {height: 150},
                                 item: textArea({
                                     fill: true,
                                     placeholder: 'Tell us your thoughts...',
