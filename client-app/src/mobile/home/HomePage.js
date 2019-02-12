@@ -6,7 +6,7 @@ import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
 import {gridPage} from '../grids/GridPage';
-import {treeGridPage} from '../grids/TreeGridPage';
+import {treeGridPage} from '../treegrids/TreeGridPage';
 import {formPage} from '../form/FormPage';
 import {containersPage} from '../containers/ContainersPage';
 import {popupsPage} from '../popups/PopupsPage';

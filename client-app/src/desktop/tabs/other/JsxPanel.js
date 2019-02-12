@@ -60,6 +60,9 @@ export class JsxPanel extends Component {
     //------------------------
     renderCode(value, mode) {
         return jsonInput({
+            flex: 1,
+            width: null,
+            height: null,
             editorProps: {mode, readOnly: true},
             value: value.trim()
         });

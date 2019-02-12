@@ -12,6 +12,7 @@ class Company implements JSONFormat {
     boolean isActive = true
     String cfg
     String note
+    Date earningsDate
     String lastUpdatedBy
     Date lastUpdated
 
@@ -37,6 +38,7 @@ class Company implements JSONFormat {
                 employees: employees,
                 isActive: isActive,
                 cfg: cfg,
+                earningsDate: earningsDate,
                 note: note,
                 lastUpdatedBy: lastUpdatedBy,
                 lastUpdated: lastUpdated

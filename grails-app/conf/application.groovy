@@ -44,12 +44,20 @@ private void hoistDefaults() {
             ]
         }
 
+        controllers {
+            defaultScope = 'singleton'
+
+            // Increase limits to 20mb to support large grid exports, other file uploads.
+            upload {
+                maxFileSize = 20971520
+                maxRequestSize = 20971520
+            }
+        }
+
         views.default.codec = 'none'
         views.gsp.encoding = 'UTF-8'
 
         urlmapping.cache.maxsize = 1000
-        // 'singleton' recommended for method actions, 'prototype' (default) for closure actions.
-        controllers.defaultScope = 'singleton'
         converters.encoding = 'UTF-8'
         enable.native2ascii = true
         web.disable.multipart = false
