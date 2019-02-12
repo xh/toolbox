@@ -60,19 +60,23 @@ export class ValidationPanel extends Component {
                     minimal,
                     commitOnChange
                 },
-                item: vbox(
-                    hbox(
-                        vbox({
-                            width: 300,
-                            marginRight: 30,
-                            items: this.renderLeftFields()
-                        }),
-                        vbox({
-                            items: this.renderRightFields()
-                        })
-                    ),
-                    this.renderReferences()
-                )
+                item: vbox({
+                    width: 600,
+                    items: [
+                        hbox(
+                            vbox({
+                                flex: 1,
+                                marginRight: 30,
+                                items: this.renderLeftFields()
+                            }),
+                            vbox({
+                                flex: 1,
+                                items: this.renderRightFields()
+                            })
+                        ),
+                        this.renderReferences()
+                    ]
+                })
             })
         });
     }
@@ -136,7 +140,7 @@ export class ValidationPanel extends Component {
             }),
             formField({
                 field: 'notes',
-                item: textArea({width: 270})
+                item: textArea({height: 100})
             })
         ];
     }
@@ -149,40 +153,52 @@ export class ValidationPanel extends Component {
             return form({
                 model: refModel,
                 key: refModel.xhId,
-                item: hbox(
-                    formField({
-                        field: 'name',
-                        item: textInput()
-                    }),
-                    formField({
-                        field: 'relationship',
-                        item: textInput()
-                    }),
-                    formField({
-                        field: 'email',
-                        item: textInput()
-                    }),
-                    button({
-                        icon: Icon.delete(),
-                        onClick: () => references.remove(refModel)
-                    })
-                )
+                fieldDefaults: {label: null},
+                item: hbox({
+                    alignItems: 'baseline',
+                    items: [
+                        formField({
+                            field: 'name',
+                            flex: 1,
+                            item: textInput({placeholder: 'Full name'})
+                        }),
+                        formField({
+                            field: 'email',
+                            flex: 1,
+                            item: textInput({placeholder: 'Email'})
+                        }),
+                        formField({
+                            field: 'relationship',
+                            flex: 1,
+                            item: select({
+                                options: [
+                                    {value: 'professional', label: 'Professional Contact'},
+                                    {value: 'personal', label: 'Personal Contact'}
+                                ]
+                            })
+                        }),
+                        button({
+                            icon: Icon.delete(),
+                            intent: 'danger',
+                            onClick: () => references.remove(refModel)
+                        })
+                    ]
+                })
             });
         });
         
-        return vbox({
-            alignItems: 'flex-start',
-            items: [
-                'References',
-                ...rows,
-                vspacer(5),
+        return vbox(
+            'References',
+            ...rows,
+            vspacer(5),
+            hbox(
                 button({
                     icon: Icon.add(),
-                    text: 'Add',
+                    text: 'Add new reference..',
                     onClick: () => references.add()
                 })
-            ]
-        });
+            )
+        );
     }
 
     renderToolbar() {

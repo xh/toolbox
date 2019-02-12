@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, LoadSupport} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {restGrid, RestGridModel, RestStore, addAction, editAction, viewAction, deleteAction} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
+import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
 
 @HoistComponent
+@LoadSupport
 export class RestGridPanel extends Component {
 
     model = new RestGridModel({
@@ -39,6 +42,11 @@ export class RestGridPanel extends Component {
                     name: 'cfg',
                     label: 'JSON Config',
                     type: 'json'
+                },
+                {
+                    name: 'earningsDate',
+                    type: 'date',
+                    required: true
                 },
                 {
                     name: 'note'
@@ -78,15 +86,24 @@ export class RestGridPanel extends Component {
                 headerName: 'Active?',
                 width: 100
             },
+            {
+                field: 'earningsDate',
+                renderer: dateRenderer(),
+                width: 100
+            },
+            {
+                field: 'note'
+            },
             {...emptyFlexCol}
         ],
         editors: [
             {field: 'name'},
             {field: 'type'},
-            {field: 'employees'},
-            {field: 'note', type: 'textarea'},
-            {field: 'isActive', type: 'boolCheck'},
+            {field: 'employees', formField: {item: numberInput({displayWithCommas: true})}},
+            {field: 'isActive', formField: {item: switchInput()}},
             {field: 'cfg'},
+            {field: 'earningsDate'},
+            {field: 'note', formField: {item: textArea()}},
             {field: 'lastUpdated'},
             {field: 'lastUpdatedBy'}
         ],
@@ -99,14 +116,7 @@ export class RestGridPanel extends Component {
         ]
     });
 
-    constructor() {
-        super();
-        this.model.loadAsync();
-    }
-
     render() {
-        const {model} = this;
-
         return wrapper({
             description: [
                 <p>
@@ -116,8 +126,8 @@ export class RestGridPanel extends Component {
                 <p>
                     Use the toolbar buttons or double-click a record to display its associated
                     add/edit form, including type-specific editor fields. These grids are especially
-                    useful when building lookup tables of simple objects and are used throughout the
-                    <a href="/admin" target="_blank">Hoist Admin Console</a>.
+                    useful when building lookup tables of simple objects and are used throughout
+                    the <a href="/admin" target="_blank">Hoist Admin Console</a>.
                 </p>
             ],
             item: panel({
@@ -125,9 +135,8 @@ export class RestGridPanel extends Component {
                 icon: Icon.edit(),
                 width: 900,
                 height: 400,
-                item: restGrid({model, readOnly: true})
+                item: restGrid({model: this.model})
             })
         });
     }
-
 }

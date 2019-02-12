@@ -6,26 +6,26 @@
  */
 
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core/index';
+import {HoistComponent, LoadSupport} from '@xh/hoist/core/index';
 import {NewsPanelModel} from './NewsPanelModel';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {filler} from '@xh/hoist/cmp/layout';
-import {Icon} from '@xh/hoist/icon';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import './NewsPanelItem.scss';
 
 @HoistComponent
+@LoadSupport
 export class NewsPanel extends Component {
 
     model = new NewsPanelModel();
-
+    
     render() {
         const {model} = this,
             {viewModel} = model;
@@ -52,12 +52,12 @@ export class NewsPanel extends Component {
                     itemHeight: 120,
                     onRowDoubleClicked: this.onRowDoubleClicked
                 }),
+                mask: model.loadModel,
                 tbar: toolbar({
                     items: [
-                        button({
-                            text: 'Refresh Sources',
-                            icon: Icon.refresh(),
-                            onClick: this.onRefreshClick
+                        refreshButton({
+                            text: 'Refresh',
+                            model
                         }),
                         filler(),
                         relativeTimestamp({
@@ -93,14 +93,6 @@ export class NewsPanel extends Component {
             })
         });
     }
-
-    loadAsync() {
-        return this.model.loadAsync();
-    }
-
-    onRefreshClick = () => {
-        this.model.loadAsync();
-    };
 
     onRowDoubleClicked = (e) => {
         if (e.data.url) window.open(e.data.url, '_blank');
