@@ -6,29 +6,23 @@
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
+import {tabContainer} from '@xh/hoist/desktop/cmp/tab';
 
 import {NumberFormatsPanel} from './tabs/NumberFormatsPanel';
 import {DateFormatsPanel} from './tabs/DateFormatsPanel';
 
 @HoistComponent
 export class FormatsTab extends Component {
-
-    model = new TabContainerModel({
-        route: 'default.formats',
-        tabs: [
-            {id: 'number', title: 'Number', content: NumberFormatsPanel},
-            {id: 'date', title: 'Date', content: DateFormatsPanel}
-        ]
-    });
-
-    async loadAsync() {
-        this.model.requestRefresh();
-    }
-
+    
     render() {
         return tabContainer({
-            model: this.model,
+            model: {
+                route: 'default.formats',
+                tabs: [
+                    {id: 'number', title: 'Number', content: NumberFormatsPanel},
+                    {id: 'date', title: 'Date', content: DateFormatsPanel}
+                ]
+            },
             switcherPosition: 'left',
             className: 'toolbox-tab'
         });

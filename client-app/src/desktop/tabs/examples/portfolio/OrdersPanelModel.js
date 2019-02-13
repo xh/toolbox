@@ -23,6 +23,7 @@ export class OrdersPanelModel {
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
+        compact: XH.appModel.useCompactGrids,
         columns: [
             {
                 field: 'symbol',
@@ -111,7 +112,6 @@ export class OrdersPanelModel {
                 if (orders.length > 0) {
                     this.gridModel.selectFirst();
                 }
-            })
-            .linkTo(this.loadModel);
+            }).linkTo(this.loadModel);
     }
 }

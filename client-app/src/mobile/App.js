@@ -17,7 +17,7 @@ export class App extends Component {
                 renderToolbar: () => appBar({
                     appMenuModel,
                     navigatorModel,
-                    hideRefreshButton: true
+                    hideRefreshButton: false
                 }),
                 item: navigator({model: navigatorModel})
             })

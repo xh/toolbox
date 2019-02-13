@@ -8,6 +8,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {find} from 'lodash';
 
 @HoistComponent
 export class TabPanelContainerPanel extends Component {
@@ -94,8 +95,9 @@ export class TabPanelContainerPanel extends Component {
                                 id: 'state',
                                 title: 'Tab State',
                                 content: () => {
-                                    const peopleTab = stateTabModel.getTabById('people'),
-                                        placesTab = stateTabModel.getTabById('places');
+                                    const {tabs} = stateTabModel,
+                                        peopleTab = find(tabs, {id: 'people'}),
+                                        placesTab = find(tabs, {id: 'places'});
 
                                     return panel({
                                         className: 'child-tabcontainer',

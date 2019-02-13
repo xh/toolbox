@@ -5,8 +5,9 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
-import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
+import {FileManager} from './filemanager/FileManager';
+import {HoistComponent, XH} from '@xh/hoist/core';
+import {tabContainer} from '@xh/hoist/desktop/cmp/tab';
 
 import {NewsPanel} from './news/NewsPanel';
 import {PortfolioPanel} from './portfolio/PortfolioPanel';
@@ -14,21 +15,16 @@ import {PortfolioPanel} from './portfolio/PortfolioPanel';
 @HoistComponent
 export class ExamplesTab extends Component {
 
-    model = new TabContainerModel({
-        route: 'default.examples',
-        tabs: [
-            {id: 'portfolio', content: PortfolioPanel},
-            {id: 'news', content: NewsPanel}
-        ]
-    });
-
-    async loadAsync() {
-        this.model.requestRefresh();
-    }
-
     render() {
         return tabContainer({
-            model: this.model,
+            model: {
+                route: 'default.examples',
+                tabs: [
+                    {id: 'portfolio', content: PortfolioPanel},
+                    {id: 'news', content: NewsPanel},
+                    {id: 'fileManager', content: FileManager, omit: !XH.getUser().isHoistAdmin}
+                ]
+            },
             switcherPosition: 'left',
             className: 'toolbox-tab'
         });

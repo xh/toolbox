@@ -68,6 +68,7 @@ export class ValidationPanel extends Component {
                             items: this.renderLeftFields()
                         }),
                         vbox({
+                            width: 300,
                             items: this.renderRightFields()
                         })
                     ),
@@ -81,10 +82,12 @@ export class ValidationPanel extends Component {
         return [
             formField({
                 field: 'lastName',
+                width: null,
                 item: textInput()
             }),
             formField({
                 field: 'email',
+                width: null,
                 item: textInput({
                     placeholder: 'user@company.com',
                     leftIcon: Icon.mail(),
@@ -93,12 +96,14 @@ export class ValidationPanel extends Component {
             }),
             formField({
                 field: 'region',
+                width: null,
                 item: select({
                     options: ['California', 'London', 'Montreal', 'New York']
                 })
             }),
             formField({
                 field: 'tags',
+                width: null,
                 item: select({
                     enableMulti: true,
                     enableCreate: true
@@ -136,7 +141,8 @@ export class ValidationPanel extends Component {
             }),
             formField({
                 field: 'notes',
-                item: textArea({width: 270})
+                width: null,
+                item: textArea()
             })
         ];
     }
@@ -149,24 +155,34 @@ export class ValidationPanel extends Component {
             return form({
                 model: refModel,
                 key: refModel.xhId,
-                item: hbox(
-                    formField({
-                        field: 'name',
-                        item: textInput()
-                    }),
-                    formField({
-                        field: 'relationship',
-                        item: textInput()
-                    }),
-                    formField({
-                        field: 'email',
-                        item: textInput()
-                    }),
-                    button({
-                        icon: Icon.delete(),
-                        onClick: () => references.remove(refModel)
-                    })
-                )
+                fieldDefaults: {label: null},
+                item: hbox({
+                    alignItems: 'baseline',
+                    items: [
+                        formField({
+                            field: 'name',
+                            item: textInput({placeholder: 'Full name'})
+                        }),
+                        formField({
+                            field: 'email',
+                            item: textInput({placeholder: 'Email'})
+                        }),
+                        formField({
+                            field: 'relationship',
+                            item: select({
+                                options: [
+                                    {value: 'professional', label: 'Professional Contact'},
+                                    {value: 'personal', label: 'Personal Contact'}
+                                ]
+                            })
+                        }),
+                        button({
+                            icon: Icon.delete(),
+                            intent: 'danger',
+                            onClick: () => references.remove(refModel)
+                        })
+                    ]
+                })
             });
         });
         
@@ -178,7 +194,7 @@ export class ValidationPanel extends Component {
                 vspacer(5),
                 button({
                     icon: Icon.add(),
-                    text: 'Add',
+                    text: 'Add new reference..',
                     onClick: () => references.add()
                 })
             ]

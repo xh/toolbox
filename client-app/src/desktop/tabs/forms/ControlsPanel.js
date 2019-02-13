@@ -109,10 +109,8 @@ export class ControlsPanel extends Component {
                             row({
                                 label: 'JSONInput',
                                 field: 'text5',
-                                item: jsonInput({
-                                    width: 300,
-                                    height: 100
-                                })
+                                layout: {height: 200},
+                                item: jsonInput()
                             })
                         ]
                     }),
@@ -174,13 +172,13 @@ export class ControlsPanel extends Component {
                                 field: 'date1',
                                 info: 'leftIcon, minDate, maxDate, textAlign',
                                 fmtVal: v => fmtDateTime(v),
+                                layout: {width: 150},
                                 item: dateInput({
                                     leftIcon: Icon.calendar(),
                                     placeholder: 'YYYY-MM-DD',
                                     minDate: moment().subtract(5, 'weeks').toDate(),
                                     maxDate: moment().add(2, 'weeks').toDate(),
-                                    textAlign: 'right',
-                                    width: 150
+                                    textAlign: 'right'
                                 })
                             }),
                             row({
@@ -189,6 +187,7 @@ export class ControlsPanel extends Component {
                                 info: 'timePrecision',
                                 fmtVal: v => fmtDateTime(v),
                                 readonlyRenderer: v => fmtDateTime(v),
+                                layout: {width: 150},
                                 item: dateInput({
                                     showActionsBar: true,
                                     timePrecision: 'minute',
@@ -214,9 +213,9 @@ export class ControlsPanel extends Component {
                                 label: 'Select',
                                 field: 'option1',
                                 info: 'enableFilter:false',
+                                layout: {width: 150},
                                 item: select({
                                     options: usStates,
-                                    width: 160,
                                     enableFilter: false,
                                     placeholder: 'Select a state...'
                                 })
@@ -231,8 +230,7 @@ export class ControlsPanel extends Component {
                                     enableClear: true,
                                     queryFn: this.queryCompaniesAsync,
                                     optionRenderer: this.renderCompanyOption,
-                                    placeholder: 'Search companies...',
-                                    width: '90%'
+                                    placeholder: 'Search companies...'
                                 })
                             }),
                             row({
@@ -243,7 +241,6 @@ export class ControlsPanel extends Component {
                                     options: usStates,
                                     enableClear: false,
                                     enableMulti: true,
-                                    width: '90%',
                                     placeholder: 'Select state(s)...'
                                 })
                             }),
@@ -299,8 +296,11 @@ export class ControlsPanel extends Component {
         });
     }
 
-    row = ({label, field, item, info, readonlyRenderer, fmtVal}) => {
+    row = ({label, field, item, info, readonlyRenderer, fmtVal, layout = {}}) => {
         const fieldModel = this.model.formModel.fields[field];
+
+        if (!layout.width) layout.flex = 1;
+
         return box({
             className: 'controls-panel-field-box',
             items: [
@@ -310,7 +310,8 @@ export class ControlsPanel extends Component {
                     label,
                     field,
                     info,
-                    readonlyRenderer
+                    readonlyRenderer,
+                    ...layout
                 })
             ]
         });
@@ -347,6 +348,7 @@ export class ControlsPanel extends Component {
     renderToolbar() {
         const {model} = this,
             {formModel} = model;
+
         return toolbar(
             switchInput({
                 model: formModel,
@@ -362,7 +364,7 @@ export class ControlsPanel extends Component {
                 model,
                 bind: 'commitOnChange',
                 label: 'Commit on change'
-            }),
+            })
         );
     }
 
