@@ -1,10 +1,10 @@
 import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, LoadSupport} from '@xh/hoist/core';
 import {wrapper} from '../../common/Wrapper';
 import {box, filler, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select, numberInput} from '@xh/hoist/desktop/cmp/input';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
 import {OLHCChartModel} from './OLHCChartModel';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
@@ -12,19 +12,20 @@ import {Icon} from '@xh/hoist/icon/index';
 import { controlGroup } from '@xh/hoist/kit/blueprint';
 
 @HoistComponent
+@LoadSupport
 export class OLHCChartPanel extends Component {
     model = new OLHCChartModel();
 
     render() {
-        const model = this.model,
+        const {model} = this,
             {companyMap} = model;
         return wrapper({
             style: {paddingTop: 0},
             item: panel({
                 className: 'toolbox-olhcchart-panel',
                 title: 'OLHC Chart',
-                width: model.width,
-                height: model.height,
+                width: 800,
+                height: 600,
                 item: this.renderExample(),
                 tbar: toolbar(
                     box('Company: '),
@@ -47,19 +48,10 @@ export class OLHCChartPanel extends Component {
                             }),
                             button({
                                 icon: Icon.cross(),
-                                minimal: false,
-                                onClick: () => {
-                                    model.setAspectRatio(null);
-                                }
+                                onClick: () => model.setAspectRatio(null)
                             })
                         ]
-                    }),
-                    toolbarSep(),
-                    button({
-                        icon: Icon[model.maximizeBtnIcon](),
-                        intent: 'primary',
-                        onClick: () => this.toggleMaximized()
-                    }),
+                    })
                 )
             })
         });
@@ -74,14 +66,5 @@ export class OLHCChartPanel extends Component {
                 aspectRatio: aspectRatio
             })
         });
-    }
-
-    toggleMaximized() {
-        const {model} = this,
-            {offsetWidth, offsetHeight} = this.getDOMNode();
-
-        model.setWidth(model.width == model.initWidth ? offsetWidth: model.initWidth);
-        model.setHeight(model.height == model.initHeight ? offsetHeight: model.initHeight);
-        model.setMaximizeBtnIcon(model.maximizeBtnIcon == 'expand' ? 'collapse' : 'expand');
     }
 }
