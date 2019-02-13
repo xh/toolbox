@@ -62,6 +62,7 @@ export class OrdersPanelModel {
             {
                 field: 'dir',
                 headerName: 'B/S',
+                headerTooltip: 'Direction (Buy/Sell)',
                 chooserName: 'Direction',
                 align: 'center',
                 width: 60

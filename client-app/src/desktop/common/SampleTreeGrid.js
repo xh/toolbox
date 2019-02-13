@@ -96,6 +96,7 @@ class Model {
             {
                 field: 'mktVal',
                 headerName: 'Mkt Value (m)',
+                headerTooltip: 'Market value (in millions USD)',
                 align: 'right',
                 width: 130,
                 absSort: true,
