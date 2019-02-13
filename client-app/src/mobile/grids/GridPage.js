@@ -4,7 +4,6 @@ import {page} from '@xh/hoist/mobile/cmp/page';
 import {grid} from '@xh/hoist/cmp/grid';
 
 import {GridPageModel} from './GridPageModel';
-import {gridDetailPage} from './GridDetailPage';
 
 @HoistComponent
 @LoadSupport
@@ -21,8 +20,8 @@ export class GridPage extends Component {
             item: grid({
                 model: gridModel,
                 onRowClicked: (e) => {
-                    const record = e.data.raw;
-                    XH.appModel.navigate(record.company, gridDetailPage, {record});
+                    const {id} = e.data.raw;
+                    XH.appendRoute('gridDetail', {id});
                 }
             })
         });

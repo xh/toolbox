@@ -11,8 +11,8 @@ export class GridDetailPage extends Component {
 
     constructor(props) {
         super(props);
-        const {record} = props;
-        this.model = new GridDetailPageModel({record});
+        const {id} = props;
+        this.model = new GridDetailPageModel({id});
     }
 
     render() {

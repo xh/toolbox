@@ -11,7 +11,16 @@ import {required} from '@xh/hoist/cmp/form';
 import {select} from '@xh/hoist/mobile/cmp/input';
 
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {homePage} from './home/HomePage';
+
+import {HomePage} from './home/HomePage';
+import {GridPage} from './grids/GridPage';
+import {GridDetailPage} from './grids/GridDetailPage';
+import {TreeGridPage} from './treegrids/TreeGridPage';
+import {TreeGridDetailPage} from './treegrids/TreeGridDetailPage';
+import {FormPage} from './form/FormPage';
+import {ContainersPage} from './containers/ContainersPage';
+import {PopupsPage} from './popups/PopupsPage';
+import {IconPage} from './icons/IconPage';
 
 @HoistAppModel
 export class AppModel {
@@ -21,9 +30,95 @@ export class AppModel {
 
     @managed
     navigatorModel = new NavigatorModel({
-        pageFactory: homePage,
-        title: 'Toolbox'
+        routes: [
+            {
+                id: 'default',
+                title: 'Toolbox',
+                content: HomePage
+            },
+            {
+                id: 'grids',
+                title: 'Grids',
+                content: GridPage
+            },
+            {
+                id: 'gridDetail',
+                content: GridDetailPage
+            },
+            {
+                id: 'treegrids',
+                title: 'Tree Grids',
+                content: TreeGridPage
+            },
+            {
+                id: 'treeGridDetail',
+                content: TreeGridDetailPage
+            },
+            {
+                id: 'form',
+                title: 'Form',
+                content: FormPage
+            },
+            {
+                id: 'containers',
+                title: 'Containers',
+                content: ContainersPage
+            },
+            {
+                id: 'popups',
+                title: 'Popups',
+                content: PopupsPage
+            },
+            {
+                id: 'icons',
+                title: 'Icons',
+                content: IconPage
+            }
+        ]
     });
+
+    getRoutes() {
+        return [
+            {
+                name: 'default',
+                path: '/mobile',
+                children: [
+                    {
+                        name: 'grids',
+                        path: '/grids',
+                        children: [{
+                            name: 'gridDetail',
+                            path: '/:id<\\d+>'
+                        }]
+                    },
+                    {
+                        name: 'treegrids',
+                        path: '/treegrids',
+                        children: [{
+                            name: 'treeGridDetail',
+                            path: '/:id'
+                        }]
+                    },
+                    {
+                        name: 'form',
+                        path: '/form'
+                    },
+                    {
+                        name: 'containers',
+                        path: '/containers'
+                    },
+                    {
+                        name: 'popups',
+                        path: '/popups'
+                    },
+                    {
+                        name: 'icons',
+                        path: '/icons'
+                    }
+                ]
+            }
+        ];
+    }
 
     getAppOptions() {
         return [
@@ -44,10 +139,6 @@ export class AppModel {
                 valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark')
             }
         ];
-    }
-
-    navigate(title, pageFactory, pageProps) {
-        this.navigatorModel.pushPage({title, pageFactory, pageProps});
     }
 
     async initAsync() {

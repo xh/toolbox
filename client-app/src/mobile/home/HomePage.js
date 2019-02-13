@@ -5,13 +5,6 @@ import {page} from '@xh/hoist/mobile/cmp/page';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
-import {gridPage} from '../grids/GridPage';
-import {treeGridPage} from '../treegrids/TreeGridPage';
-import {formPage} from '../form/FormPage';
-import {containersPage} from '../containers/ContainersPage';
-import {popupsPage} from '../popups/PopupsPage';
-import {iconPage} from '../icons/IconPage';
-
 @HoistComponent
 export class HomePage extends Component {
 
@@ -23,43 +16,43 @@ export class HomePage extends Component {
                     title: 'Grids',
                     icon: Icon.gridPanel(),
                     summary: 'Grids are at the heart of many Hoist React projects, and Grid, GridModel, and related helper components are key elements of the framework.',
-                    pageFactory: gridPage
+                    route: 'grids'
                 }),
                 this.renderSummaryCard({
                     title: 'Tree Grids',
                     icon: Icon.grid(),
                     summary: 'Hoist\'s Grid supports the display of hierarchical tree data. Applications provide standard record data with children nodes containing their sub-records',
-                    pageFactory: treeGridPage
+                    route: 'treegrids'
                 }),
                 this.renderSummaryCard({
                     title: 'Form',
                     icon: Icon.edit(),
                     summary: 'Form fields can be bound to a model.',
-                    pageFactory: formPage
+                    route: 'form'
                 }),
                 this.renderSummaryCard({
                     title: 'Containers',
                     icon: Icon.box(),
                     summary: 'Layout children in Tabs, or flexed horizontally or vertically.',
-                    pageFactory: containersPage
+                    route: 'containers'
                 }),
                 this.renderSummaryCard({
                     title: 'Popups',
                     icon: Icon.comment(),
                     summary: 'Dialogs and Toasts.',
-                    pageFactory: popupsPage
+                    route: 'popups'
                 }),
                 this.renderSummaryCard({
                     title: 'Icons',
                     icon: Icon.rocket(),
                     summary: 'A collection of FontAwesome SVG icons, available in 3 variants.',
-                    pageFactory: iconPage
+                    route: 'icons'
                 })
             ]
         });
     }
 
-    renderSummaryCard({title, icon, summary, pageFactory}) {
+    renderSummaryCard({title, icon, summary, route}) {
         return div({
             className: 'toolbox-card',
             items: [
@@ -68,7 +61,7 @@ export class HomePage extends Component {
                 button({
                     icon: icon,
                     text: `Go to ${title}`,
-                    onClick: () => XH.appModel.navigate(title, pageFactory)
+                    onClick: () => XH.appendRoute(route)
                 })
             ]
         });

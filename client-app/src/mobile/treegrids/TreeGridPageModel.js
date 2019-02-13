@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 
-import {XH, HoistModel} from '@xh/hoist/core';
+import {managed, XH, HoistModel} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
@@ -15,7 +15,10 @@ import {DimensionChooserModel} from '@xh/hoist/mobile/cmp/dimensionchooser';
 @HoistModel
 export class TreeGridPageModel {
 
+    @managed
     loadModel = new PendingTaskModel();
+
+    @managed
     dimensionChooserModel = new DimensionChooserModel({
         dimensions: [
             {value: 'fund', label: 'Fund'},
@@ -29,6 +32,7 @@ export class TreeGridPageModel {
         historyPreference: 'mobileDimHistory'
     });
 
+    @managed
     gridModel = new GridModel({
         treeMode: true,
         store: new LocalStore({
@@ -64,19 +68,14 @@ export class TreeGridPageModel {
         });
     }
 
-    loadAsync() {
+    async loadAsync() {
         const dims = this.dimensionChooserModel.value;
         return XH.portfolioService
-            .getPortfolioAsync(dims)
+            .getPortfolioAsync(dims, 800)
             .then(data => {
                 this.gridModel.loadData(data);
-            }).linkTo(this.loadModel);
-    }
-
-    destroy() {
-        XH.safeDestroy(this.gridModel);
-        XH.safeDestroy(this.loadModel);
-        XH.safeDestroy(this.dimensionChooserModel);
+            })
+            .linkTo(this.loadModel);
     }
 
 }

@@ -1,4 +1,4 @@
-import {XH, HoistModel} from '@xh/hoist/core';
+import {managed, HoistModel} from '@xh/hoist/core';
 import {Grid, GridModel} from '@xh/hoist/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
@@ -11,8 +11,10 @@ import {companyTrades} from '../../core/data';
 @HoistModel
 export class GridPageModel {
 
+    @managed
     loadModel = new PendingTaskModel();
 
+    @managed
     gridModel = new GridModel({
         stateModel: 'toolboxSampleGrid',
         sortBy: ['profit_loss|desc|abs'],
@@ -65,10 +67,6 @@ export class GridPageModel {
         }).linkTo(
             this.loadModel
         );
-    }
-
-    destroy() {
-        XH.safeDestroy(this.gridModel, this.loadModel);
     }
 
 }
