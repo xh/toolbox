@@ -1,6 +1,6 @@
 import {HoistModel} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
-import {observable, action} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import Highcharts from 'highcharts/highstock';
 import moment from 'moment';
 import Amazon from '../../../core/data/charts/amazonPricing';
@@ -9,20 +9,18 @@ import Yahoo from '../../../core/data/charts/yahooPricing';
 
 @HoistModel
 export class LineChartModel {
-    @observable currentCompany = 'Amazon';
+    @bindable currentCompany = 'Amazon';
     companyMap = {Amazon, Facebook, Yahoo};
     chartModel = new ChartModel({config: this.getChartModelCfg()});
 
     constructor() {
-        this.addAutorun(() => this.loadChart());
+        this.addReaction({
+            track: () => this.currentCompany,
+            run: this.loadAsync
+        });
     }
-
-    @action
-    setCurrentCompany(currentCompany) {
-        this.currentCompany = currentCompany;
-    }
-
-    loadChart() {
+    
+    async loadAsync() {
         const company = this.currentCompany,
             data = this.companyMap[company];
 
