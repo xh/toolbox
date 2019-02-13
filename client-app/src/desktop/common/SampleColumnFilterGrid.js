@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, LayoutSupport, XH} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, LayoutSupport, LoadSupport, XH, HoistModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
@@ -23,29 +23,83 @@ import {action, observable, bindable} from '@xh/hoist/mobx';
 
 @HoistComponent
 @LayoutSupport
+@LoadSupport
 class SampleColumnFilterGrid extends Component {
+
+    model = new Model();
+
+    render() {
+        const {model} = this,
+            {gridModel, isAnyFilterPresent, loadModel, recordCount} = model,
+            {agApi} = gridModel;
+
+        return panel({
+            item: grid({
+                model: gridModel,
+                agOptions: {
+                    onFilterChanged: () => {
+                        model.setIsAnyFilterPresent(agApi.isAnyFilterPresent());
+                        model.setRecordCount(agApi.getDisplayedRowCount());
+                    }
+                }
+            }),
+            mask: loadModel,
+            bbar: toolbar(
+                span({
+                    omit: recordCount === null,
+                    item: `${recordCount} record(s)`
+                }),
+                button({
+                    omit: !isAnyFilterPresent,
+                    text: 'Clear Filters',
+                    onClick: () => {
+                        model.setIsAnyFilterPresent(false);
+                        agApi.setFilterModel(null);
+                    },
+                    minimal: false
+                }),
+                filler(),
+                colChooserButton({gridModel}),
+                exportButton({gridModel})
+            ),
+            className: this.getClassName(),
+            ...this.getLayoutProps()
+        });
+    }
+
+}
+
+export const sampleColumnFilterGrid = elemFactory(SampleColumnFilterGrid);
+
+
+@HoistModel
+class Model {
 
     @observable groupRows = false;
 
     @bindable recordCount = null;
     @bindable isAnyFilterPresent = null;
 
+    @managed
     loadModel = new PendingTaskModel();
 
     COL_FILTER_PROPS = {suppressMenu: false, suppressFilter: false, filterParams: {clearButton: true}};
 
-    model = new GridModel({
+    @managed
+    gridModel = new GridModel({
         stateModel: 'toolboxColFilterGrid',
         store: new LocalStore({
             fields: [
                 'firstName', 'lastName', 'city', 'state', 'salary', 'projectedUnitsSold',
                 'projectedGross', 'actualUnitsSold', 'actualGross', 'retain'
-            ]
+            ],
+            idSpec: XH.genId
         }),
         sortBy: 'lastName',
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
+        compact: XH.appModel.useCompactGrids,
         contextMenuFn: () => {
             return new StoreContextMenu({
                 items: [
@@ -58,7 +112,7 @@ class SampleColumnFilterGrid extends Component {
                     '-',
                     ...GridModel.defaultContextMenuTokens
                 ],
-                gridModel: this.model
+                gridModel: this.gridModel
             });
         },
         columns: [
@@ -109,56 +163,14 @@ class SampleColumnFilterGrid extends Component {
         ]
     });
 
-    constructor(props) {
-        super(props);
-        this.loadAsync();
-    }
-
-    render() {
-        const {model, isAnyFilterPresent} = this,
-            {agApi} = model;
-        return panel({
-            item: grid({
-                model,
-                agOptions: {
-                    enableFilter: true,
-                    onFilterChanged: () => {
-                        this.setIsAnyFilterPresent(agApi.isAnyFilterPresent());
-                        this.setRecordCount(agApi.getDisplayedRowCount());
-                    }
-                }
-            }),
-            mask: this.loadModel,
-            bbar: toolbar(
-                span({
-                    omit: this.recordCount === null,
-                    item: `${this.recordCount} record(s)`
-                }),
-                button({
-                    omit: !isAnyFilterPresent,
-                    text: 'Clear Filters',
-                    onClick: () => {
-                        this.setIsAnyFilterPresent(false);
-                        agApi.setFilterModel(null);
-                    },
-                    minimal: false
-                }),
-                filler(),
-                colChooserButton({gridModel: model}),
-                exportButton({gridModel: model})
-            ),
-            className: this.getClassName(),
-            ...this.getLayoutProps()
-        });
-    }
 
     //------------------------
     // Implementation
     //------------------------
     loadAsync() {
-        wait(250)
-            .then(() => this.model.loadData(XH.salesService.generateSales()))
-            .then(() => this.setRecordCount(this.model.store.count))
+        return wait(250)
+            .then(() => this.gridModel.loadData(XH.salesService.generateSales()))
+            .then(() => this.setRecordCount(this.gridModel.store.count))
             .linkTo(this.loadModel);
     }
 
@@ -174,8 +186,6 @@ class SampleColumnFilterGrid extends Component {
     @action
     setGroupRows = (groupRows) => {
         this.groupRows = groupRows;
-        this.model.setGroupBy(groupRows ? 'state' : null);
+        this.gridModel.setGroupBy(groupRows ? 'state' : null);
     };
-
 }
-export const sampleColumnFilterGrid = elemFactory(SampleColumnFilterGrid);
