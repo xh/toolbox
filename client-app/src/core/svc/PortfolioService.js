@@ -22,15 +22,27 @@ export class PortfolioService {
     INITIAL_ORDERS = 20000;
     INITIAL_SYMBOLS = 500;
 
-    // Public API around getPositions.
-    async getPortfolioAsync(dims) {
-        await wait(300);
+    /**
+     * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
+     * @param dims
+     * @param {number} [delay] - optional delay in ms - allows masks and page transitions to fully
+     *      render before kicking off a locally compute-intensive process that could stall them.
+     * @return {Promise<Array>}
+     */
+    async getPortfolioAsync(dims, delay = 300) {
+        await wait(delay);
         this.ensureLoaded();
         return this.getPositions(castArray(dims));
     }
 
-    async getPositionAsync(positionId) {
-        await wait(100);
+    /**
+     * Return a single grouped position, uniquely identified by drilldown ID.
+     * @param positionId - as generated/installed on each position returned by `getPorfolioAsync()`.
+     * @param delay - optional delay in ms, as above.
+     * @return {Promise<*>}
+     */
+    async getPositionAsync(positionId, delay = 100) {
+        await wait(delay);
         this.ensureLoaded();
 
         const parsedId = this.parsePositionId(positionId),
