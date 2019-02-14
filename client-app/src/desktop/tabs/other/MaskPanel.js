@@ -22,6 +22,7 @@ export class MaskPanel extends Component {
     @bindable message = '';
     @bindable inline = true;
     @bindable spinner = true;
+    @bindable isAnimated = false;
 
     maskModel = new PendingTaskModel();
 
@@ -81,6 +82,13 @@ export class MaskPanel extends Component {
                             label: 'Spinner:',
                             labelAlign: 'left'
                         }),
+                        toolbarSep(),
+                        switchInput({
+                            model: this,
+                            bind: 'isAnimated',
+                            label: 'Animate:',
+                            labelAlign: 'left'
+                        }),
                         filler(),
                         button({
                             text: 'Show Mask',
@@ -90,6 +98,7 @@ export class MaskPanel extends Component {
                     ]
                 }),
                 mask: mask({
+                    isAnimated: this.isAnimated,
                     spinner: this.spinner,
                     inline: this.inline,
                     model: this.maskModel
