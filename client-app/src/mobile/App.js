@@ -1,7 +1,7 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {vframe} from '@xh/hoist/cmp/layout';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
 import {navigator} from '@xh/hoist/mobile/cmp/navigator';
 
@@ -12,15 +12,15 @@ export class App extends Component {
 
     render() {
         const {appMenuModel, navigatorModel} = this.model;
-        return vframe(
-            page({
-                renderToolbar: () => appBar({
-                    appMenuModel,
-                    navigatorModel,
-                    hideRefreshButton: false
-                }),
-                item: navigator({model: navigatorModel})
-            })
-        );
+
+        return panel({
+            tbar: appBar({
+                icon: Icon.boxFull({size: 'lg', prefix: 'fal'}),
+                appMenuModel,
+                navigatorModel,
+                hideRefreshButton: false
+            }),
+            item: navigator({model: navigatorModel})
+        });
     }
 }
