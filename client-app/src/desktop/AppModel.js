@@ -4,16 +4,14 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {HoistAppModel, XH, managed} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {HoistAppModel, XH, managed, refreshAllAsync} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
-import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
-import {Icon} from '@xh/hoist/icon/Icon';
 
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
 import {SalesService} from '../core/svc/SalesService';
 import {PortfolioService} from '../core/svc/PortfolioService';
+import {AutoRefreshService} from '../core/svc/AutoRefreshService';
 
 import {ChartsTab} from './tabs/charts/ChartsTab';
 import {ContainersTab} from './tabs/containers/ContainersTab';
@@ -25,18 +23,54 @@ import {OtherTab} from './tabs/other/OtherTab';
 import {ExamplesTab} from './tabs/examples/ExamplesTab';
 import {FormatsTab} from './tabs/formats/FormatsTab';
 
+import {getAppOptions} from './AppOptions';
+
 @HoistAppModel
 export class AppModel {
 
     @managed
-    tabModel = this.createTabModel();
+    tabModel = new TabContainerModel({
+        route: 'default',
+        tabs: [
+            {id: 'home', content: HomeTab},
+            {id: 'containers', content: ContainersTab},
+            {id: 'grids', content: GridsTab},
+            {id: 'forms', content: FormsTab},
+            {id: 'charts', content: ChartsTab},
+            {id: 'icons', content: IconsTab},
+            {id: 'formats', content: FormatsTab},
+            {id: 'other', content: OtherTab},
+            {id: 'examples', content: ExamplesTab}
+        ]
+    });
+
+    get useCompactGrids() {
+        return XH.getPref('defaultGridMode') == 'COMPACT';
+    }
 
     constructor() {
         this.addReaction(this.trackTabReaction());
     }
 
     async initAsync() {
-        await XH.installServicesAsync(CompanyService, TradeService, SalesService, PortfolioService);
+        await XH.installServicesAsync(
+            CompanyService,
+            TradeService,
+            SalesService,
+            PortfolioService,
+            AutoRefreshService
+        );
+    }
+
+    async refreshAsync(isAutoRefresh) {
+        await refreshAllAsync(
+            [XH.companyService, XH.tradeService, XH.salesService, XH.portfolioService],
+            isAutoRefresh
+        );
+    }
+
+    getAppOptions() {
+        return getAppOptions();
     }
 
     getRoutes() {
@@ -136,59 +170,6 @@ export class AppModel {
         ];
     }
 
-    getAppOptions() {
-        return [
-            {
-                name: 'theme',
-                formField: {
-                    item: buttonGroupInput({
-                        items: [
-                            button({value: 'light', text: 'Light', icon: Icon.sun()}),
-                            button({value: 'dark', text: 'Dark', icon: Icon.moon()})
-                        ]
-                    })
-                },
-                valueGetter: () => XH.darkTheme ? 'dark' : 'light',
-                valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark')
-            },
-            {
-                name: 'defaultGridMode',
-                prefName: 'defaultGridMode',
-                formField: {
-                    label: 'Default grid size',
-                    item: buttonGroupInput({
-                        items: [
-                            button({value: 'STANDARD', text: 'Standard', icon: Icon.gridLarge()}),
-                            button({value: 'COMPACT', text: 'Compact', icon: Icon.grid()})
-                        ]
-                    })
-                },
-                refreshRequired: true
-            }
-        ];
-    }
-
-    get useCompactGrids() {
-        return XH.getPref('defaultGridMode') == 'COMPACT';
-    }
-
-    createTabModel() {
-        return new TabContainerModel({
-            route: 'default',
-            tabs: [
-                {id: 'home', content: HomeTab},
-                {id: 'containers', content: ContainersTab},
-                {id: 'grids', content: GridsTab},
-                {id: 'forms', content: FormsTab},
-                {id: 'charts', content: ChartsTab},
-                {id: 'icons', content: IconsTab},
-                {id: 'formats', content: FormatsTab},
-                {id: 'other', content: OtherTab},
-                {id: 'examples', content: ExamplesTab}
-            ]
-        });
-    }
-
     trackTabReaction() {
         return {
             track: () => this.tabModel.activeTab,
@@ -203,5 +184,4 @@ export class AppModel {
             }
         };
     }
-
 }
