@@ -6,7 +6,7 @@
  */
 import {HoistAppModel, XH, managed} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
+import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon/Icon';
 

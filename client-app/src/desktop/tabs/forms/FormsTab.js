@@ -1,6 +1,7 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
+import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import {tabContainer} from '@xh/hoist/desktop/cmp/tab';
 
 import {ControlsPanel} from './ControlsPanel';
 // import {SelectPanel} from './SelectPanel';
