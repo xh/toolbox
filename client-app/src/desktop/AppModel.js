@@ -58,6 +58,7 @@ export class AppModel {
                         children: [
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
+                            {name: 'modal', path: '/modal'},
                             {name: 'panel', path: '/panel'},
                             {name: 'tabPanel', path: '/tabPanel'},
                             {name: 'toolbar', path: '/toolbar'}

@@ -7,8 +7,10 @@ import {VBoxContainerPanel} from './VBoxContainerPanel';
 import {PanelContainerPanel} from './PanelContainerPanel';
 import {TabPanelContainerPanel} from './TabPanelContainerPanel';
 import {ToolbarPanel} from './ToolbarPanel';
+import { ModalPanel } from './ModalPanel';
 
 import './ContainersTab.scss';
+
 
 @HoistComponent
 export class ContainersTab extends Component {
@@ -19,6 +21,7 @@ export class ContainersTab extends Component {
                 tabs: [
                     {id: 'hbox', title: 'HBox', content: HBoxContainerPanel},
                     {id: 'vbox', title: 'VBox', content: VBoxContainerPanel},
+                    {id: 'modal', title: 'Modal', content: ModalPanel},
                     {id: 'panel', content: PanelContainerPanel},
                     {id: 'tabPanel', title: 'TabContainer', content: TabPanelContainerPanel},
                     {id: 'toolbar', content: ToolbarPanel}
