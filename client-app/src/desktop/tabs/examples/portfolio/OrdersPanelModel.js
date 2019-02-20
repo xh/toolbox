@@ -3,11 +3,21 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
 import {emptyFlexCol, dateTimeCol} from '@xh/hoist/cmp/grid';
 import {numberRenderer} from '@xh/hoist/format';
-import {isNil, has} from 'lodash';
+import {isNil} from 'lodash';
+import {bindable} from '@xh/hoist/mobx';
 
 @HoistModel
 @LoadSupport
 export class OrdersPanelModel {
+
+    @bindable positionId = null;
+
+    constructor() {
+        this.addReaction({
+            track: () => this.positionId,
+            run: this.loadAsync
+        });
+    }
 
     @managed
     gridModel = new GridModel({
@@ -101,16 +111,14 @@ export class OrdersPanelModel {
     }
 
     async doLoadAsync(loadSpec) {
-        if (has(loadSpec, 'position')) this.position = loadSpec.position;
+        const {positionId, gridModel} = this;
 
-        const {position, gridModel} = this;
-
-        if (isNil(position)) {
+        if (isNil(positionId)) {
             gridModel.loadData([]);
             return;
         }
 
-        const orders = await XH.portfolioService.getOrdersAsync(position.id);
+        const orders = await XH.portfolioService.getOrdersAsync(positionId);
         gridModel.loadData(orders);
         if (orders.length > 0) gridModel.selectFirst();
     }

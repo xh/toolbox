@@ -27,7 +27,7 @@ export class AutoRefreshService {
         XH.setPref('autoRefreshSecs', this.interval);
         XH.safeDestroy(this.timer);
         this.timer = Timer.create({
-            runFn: async () => XH.refreshAppAsync(true),
+            runFn: () => XH.refreshContextModel.autoRefreshAsync(),
             interval: this.interval * SECONDS
         });
     }

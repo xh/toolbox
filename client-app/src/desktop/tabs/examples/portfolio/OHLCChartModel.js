@@ -1,11 +1,21 @@
 import {HoistModel, XH, LoadSupport, managed} from '@xh/hoist/core';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
-import {isNil, has} from 'lodash';
+import {isNil} from 'lodash';
+import {bindable} from '@xh/hoist/mobx';
 
 @HoistModel
 @LoadSupport
 export class OHLCChartModel {
+
+    @bindable orderSymbol = null;
+
+    constructor() {
+        this.addReaction({
+            track: () => this.orderSymbol,
+            run: this.loadAsync
+        });
+    }
 
     @managed
     chartModel = new ChartModel({
@@ -67,15 +77,13 @@ export class OHLCChartModel {
     });
 
     async doLoadAsync(loadSpec) {
-        if (has(loadSpec, 'order')) this.order = loadSpec.order;
-
-        const {order} = this;
-        if (isNil(order)) {
+        const {orderSymbol} = this;
+        if (isNil(orderSymbol)) {
             this.chartModel.setSeries([]);
             return;
         }
 
-        const series = await XH.portfolioService.getOLHCChartSeries(order.symbol);
+        const series = await XH.portfolioService.getOLHCChartSeries(orderSymbol);
         this.chartModel.setSeries(series);
     }
 }

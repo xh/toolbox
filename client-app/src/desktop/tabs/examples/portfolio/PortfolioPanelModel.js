@@ -1,4 +1,4 @@
-import {HoistModel, LoadSupport, managed} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, loadAllAsync} from '@xh/hoist/core';
 import {PositionsPanelModel} from './PositionsPanelModel';
 import {OrdersPanelModel} from './OrdersPanelModel';
 import {LineChartModel} from './LineChartModel';
@@ -25,34 +25,42 @@ export class PortfolioPanelModel {
     }
 
     constructor() {
-        this.addReaction({
-            track: () => this.selectedPosition,
-            run: this.loadOrders,
-            delay: 500
-        });
-
-        this.addReaction({
-            track: () => this.selectedOrder,
-            run: this.loadCharts,
-            delay: 500
-        });
+        this.addReaction(this.selectedPositionReaction());
+        this.addReaction(this.selectedOrderReaction());
     }
 
     async doLoadAsync(loadSpec) {
-        await this.positionsPanelModel.loadAsync(loadSpec);
+        await loadAllAsync([
+            this.positionsPanelModel,
+            this.ordersPanelModel,
+            this.lineChartModel,
+            this.ohlcChartModel
+        ], loadSpec);
     }
 
     //----------------------------------------
     // Implementations
     //----------------------------------------
-    loadOrders() {
-        this.ordersPanelModel.loadAsync({position: this.selectedPosition});
+    selectedPositionReaction() {
+        return {
+            track: () => this.selectedPosition,
+            run: (position) => {
+                this.ordersPanelModel.setPositionId(position ? position.id : null);
+            },
+            delay: 500
+        };
     }
 
-    loadCharts() {
-        const {selectedOrder} = this;
-        this.setDisplayedOrderSymbol(selectedOrder ? selectedOrder.symbol : '');
-        this.lineChartModel.loadAsync({order: selectedOrder});
-        this.ohlcChartModel.loadAsync({order: selectedOrder});
+    selectedOrderReaction() {
+        return {
+            track: () => this.selectedOrder,
+            run: (order) => {
+                const symbol = order ? order.symbol : null;
+                this.setDisplayedOrderSymbol(symbol || '');
+                this.lineChartModel.setOrderSymbol(symbol);
+                this.ohlcChartModel.setOrderSymbol(symbol);
+            },
+            delay: 500
+        };
     }
 }
