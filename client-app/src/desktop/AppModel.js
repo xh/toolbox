@@ -4,7 +4,7 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {HoistAppModel, XH, managed, refreshAllAsync} from '@xh/hoist/core';
+import {HoistAppModel, XH, managed, loadAllAsync} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
 
 import {CompanyService} from '../core/svc/CompanyService';
@@ -62,11 +62,11 @@ export class AppModel {
         );
     }
 
-    async refreshAsync(isAutoRefresh) {
-        await refreshAllAsync(
-            [XH.companyService, XH.tradeService, XH.salesService, XH.portfolioService],
-            isAutoRefresh
-        );
+    async doLoadAsync(loadSpec) {
+        //await loadAllAsync(
+        //    [XH.companyService, XH.tradeService, XH.salesService, XH.portfolioService],
+        //    loadSpec
+        //);
     }
 
     getAppOptions() {

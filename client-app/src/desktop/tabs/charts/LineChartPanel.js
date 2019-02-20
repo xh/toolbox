@@ -1,5 +1,5 @@
 import {Component} from 'react';
-import {HoistComponent, LoadSupport} from '@xh/hoist/core';
+import {HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common/Wrapper';
 import {box, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -9,7 +9,6 @@ import {chart} from '@xh/hoist/desktop/cmp/chart';
 import {LineChartModel} from './LineChartModel';
 
 @HoistComponent
-@LoadSupport
 export class LineChartPanel extends Component {
     model = new LineChartModel();
 

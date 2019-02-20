@@ -1,4 +1,4 @@
-import {HoistModel} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed} from '@xh/hoist/core';
 import {PositionsPanelModel} from './PositionsPanelModel';
 import {OrdersPanelModel} from './OrdersPanelModel';
 import {LineChartModel} from './LineChartModel';
@@ -6,12 +6,14 @@ import {OHLCChartModel} from './OHLCChartModel';
 import {bindable} from '@xh/hoist/mobx';
 
 @HoistModel
+@LoadSupport
 export class PortfolioPanelModel {
 
-    positionsPanelModel = new PositionsPanelModel();
-    ordersPanelModel = new OrdersPanelModel();
-    lineChartModel = new LineChartModel();
-    ohlcChartModel = new OHLCChartModel();
+    @managed positionsPanelModel = new PositionsPanelModel();
+    @managed ordersPanelModel = new OrdersPanelModel();
+    @managed lineChartModel = new LineChartModel();
+    @managed ohlcChartModel = new OHLCChartModel();
+
     @bindable displayedOrderSymbol = '';
 
     get selectedPosition() {
@@ -25,21 +27,36 @@ export class PortfolioPanelModel {
     constructor() {
         this.addReaction({
             track: () => this.selectedPosition,
-            run: (record) => {
-                this.ordersPanelModel.loadOrdersForPositionAsync(record ? record.id : null);
-            },
+            run: this.loadOrdersAsync,
             delay: 500
         });
 
         this.addReaction({
             track: () => this.selectedOrder,
-            run: (record) => {
-                this.setDisplayedOrderSymbol(record ? record.symbol : '');
-                this.lineChartModel.loadData(record);
-                this.ohlcChartModel.loadData(record);
+            run: (order) => {
+                this.setDisplayedOrderSymbol(order ? order.symbol : '');
+                this.loadChartsAsync();
             },
             delay: 500
         });
     }
 
+    async doLoadAsync(loadSpec) {
+        await this.positionsPanelModel.loadAsync(loadSpec);
+        await this.loadOrdersAsync(loadSpec);
+        await this.loadChartsAsync(loadSpec);
+    }
+
+    //----------------------------------------
+    // Implementations
+    //----------------------------------------
+    async loadOrdersAsync(loadSpec) {
+        this.ordersPanelModel.loadPositionAsync(this.selectedPosition, loadSpec);
+    }
+
+    async loadChartsAsync(loadSpec) {
+        const {selectedOrder} = this;
+        this.lineChartModel.loadOrderAsync(selectedOrder, loadSpec);
+        this.ohlcChartModel.loadOrderAsync(selectedOrder, loadSpec);
+    }
 }

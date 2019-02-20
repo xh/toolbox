@@ -101,7 +101,7 @@ export class OrdersPanelModel {
         return this.gridModel.selectedRecord;
     }
 
-    async loadOrdersForPositionAsync(posId) {
+    async loadPositionAsync(posId) {
         if (isNil(posId)) {
             this.gridModel.loadData([]);
             return;

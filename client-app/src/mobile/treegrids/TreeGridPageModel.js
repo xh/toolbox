@@ -5,18 +5,15 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 
-import {managed, XH, HoistModel} from '@xh/hoist/core';
+import {managed, XH, HoistModel, LoadSupport} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {DimensionChooserModel} from '@xh/hoist/mobile/cmp/dimensionchooser';
 
 @HoistModel
+@LoadSupport
 export class TreeGridPageModel {
-
-    @managed
-    loadModel = new PendingTaskModel();
 
     @managed
     dimensionChooserModel = new DimensionChooserModel({
@@ -63,19 +60,17 @@ export class TreeGridPageModel {
     constructor() {
         this.addReaction({
             track: () => this.dimensionChooserModel.value,
-            run: () => this.loadAsync(),
+            run: this.loadAsync,
             fireImmediately: true
         });
     }
 
-    async loadAsync() {
+    async doLoadAsync(loadSpec) {
         const dims = this.dimensionChooserModel.value;
         return XH.portfolioService
             .getPortfolioAsync(dims, 800)
             .then(data => {
                 this.gridModel.loadData(data);
-            })
-            .linkTo(this.loadModel);
+            });
     }
-
 }
