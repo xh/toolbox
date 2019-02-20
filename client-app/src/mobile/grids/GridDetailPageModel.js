@@ -1,4 +1,4 @@
-import {XH, HoistModel} from '@xh/hoist/core';
+import {HoistModel} from '@xh/hoist/core';
 import {observable} from '@xh/hoist/mobx';
 import {find} from 'lodash';
 
@@ -12,7 +12,6 @@ export class GridDetailPageModel {
     constructor({id}) {
         const record = find(companyTrades, {id: parseInt(id)});
         this.record = record;
-        XH.appModel.navigatorModel.setTitle(record.company);
     }
 
 }

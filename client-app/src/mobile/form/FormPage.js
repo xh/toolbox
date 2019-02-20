@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
-import {div, vframe, span, filler, vbox} from '@xh/hoist/cmp/layout';
+import {div, span, filler, vbox} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
@@ -29,17 +29,15 @@ export class FormPage extends Component {
 
     render() {
         return page({
-            className: 'toolbox-page form-page',
+            title: 'Form',
+            icon: Icon.edit(),
+            scrollable: true,
+            className: 'toolbox-page form-page xh-tiled-bg',
             items: [
-                vframe({
-                    overflowY: 'auto',
-                    items: [
-                        this.renderForm(),
-                        this.renderResults()
-                    ]
-                }),
-                this.renderToolbar()
-            ]
+                this.renderForm(),
+                this.renderResults()
+            ],
+            bbar: this.renderToolbar()
         });
     }
 

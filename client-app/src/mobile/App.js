@@ -1,7 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {Icon} from '@xh/hoist/icon';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
 import {navigator} from '@xh/hoist/mobile/cmp/navigator';
 
@@ -15,7 +14,6 @@ export class App extends Component {
 
         return panel({
             tbar: appBar({
-                icon: Icon.boxFull({size: 'lg', prefix: 'fal'}),
                 appMenuModel,
                 navigatorModel,
                 hideRefreshButton: false

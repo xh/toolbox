@@ -2,6 +2,7 @@ import {Component} from 'react';
 import {XH, HoistComponent, elemFactory, LoadSupport} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {grid} from '@xh/hoist/cmp/grid';
+import {Icon} from '@xh/hoist/icon';
 
 import {GridPageModel} from './GridPageModel';
 
@@ -16,7 +17,9 @@ export class GridPage extends Component {
             {gridModel, loadModel} = model;
 
         return page({
-            loadModel,
+            title: 'Grids',
+            icon: Icon.gridPanel(),
+            mask: loadModel,
             item: grid({
                 model: gridModel,
                 onRowClicked: (e) => {

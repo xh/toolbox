@@ -3,6 +3,7 @@ import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {numberRenderer} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon';
 
 import {GridDetailPageModel} from './GridDetailPageModel';
 
@@ -19,6 +20,8 @@ export class GridDetailPage extends Component {
         const {record} = this.model;
 
         return page({
+            title: record.company,
+            icon: Icon.fund(),
             className: 'toolbox-detail-page',
             items: [
                 this.renderRow('ID', record.id),

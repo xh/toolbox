@@ -11,6 +11,7 @@ export class IconPage extends Component {
 
     render() {
         return page({
+            scrollable: true,
             className: 'icon-page',
             item: table(
                 tbody({

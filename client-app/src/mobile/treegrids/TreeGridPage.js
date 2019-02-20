@@ -11,6 +11,7 @@ import {page} from '@xh/hoist/mobile/cmp/page';
 import {grid} from '@xh/hoist/cmp/grid';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {dimensionChooser} from '@xh/hoist/mobile/cmp/dimensionchooser';
+import {Icon} from '@xh/hoist/icon';
 
 import {TreeGridPageModel} from './TreeGridPageModel';
 
@@ -23,7 +24,9 @@ export class TreeGridPage extends Component {
             {gridModel, loadModel, dimensionChooserModel} = model;
 
         return page({
-            loadModel: loadModel,
+            title: 'Tree Grids',
+            icon: Icon.grid(),
+            mask: loadModel,
             items: [
                 grid({
                     model: gridModel,

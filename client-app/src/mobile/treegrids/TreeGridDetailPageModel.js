@@ -20,7 +20,6 @@ export class TreeGridDetailPageModel {
             .getPositionAsync(this.id)
             .thenAction(record => {
                 this.record = record;
-                XH.appModel.navigatorModel.setTitle(record.name);
             }).linkTo(this.loadModel);
     }
 

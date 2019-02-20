@@ -4,6 +4,7 @@ import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {numberRenderer} from '@xh/hoist/format';
 import {capitalize} from 'lodash';
+import {Icon} from '@xh/hoist/icon';
 
 import {TreeGridDetailPageModel} from './TreeGridDetailPageModel';
 
@@ -20,10 +21,17 @@ export class TreeGridDetailPage extends Component {
         const {record, loadModel} = this.model;
 
         return page({
-            loadModel,
+            title: record ? this.renderPageTitle(record) : null,
+            icon: Icon.portfolio(),
+            mask: loadModel,
             className: 'toolbox-detail-page',
             item: record ? this.renderRecord(record) : null
         });
+    }
+
+    renderPageTitle(record) {
+        const lastPart = record.id.split('>>').pop();
+        return lastPart.split(':').pop();
     }
 
     renderRecord(record) {

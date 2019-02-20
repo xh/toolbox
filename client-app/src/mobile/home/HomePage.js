@@ -10,7 +10,8 @@ export class HomePage extends Component {
 
     render() {
         return page({
-            className: 'toolbox-page',
+            scrollable: true,
+            className: 'toolbox-page xh-tiled-bg',
             items: [
                 this.renderSummaryCard({
                     title: 'Grids',
