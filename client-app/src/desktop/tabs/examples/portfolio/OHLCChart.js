@@ -14,11 +14,11 @@ import {chart} from '@xh/hoist/desktop/cmp/chart';
 export class OHLCChart extends Component {
 
     render() {
-        const {olhcChartModel, loadModel} = this.model;
+        const {model} = this;
 
         return panel({
-            item: chart({model: olhcChartModel}),
-            mask: loadModel,
+            item: chart({model: model.chartModel}),
+            mask: model.loadModel,
             className: this.getClassName(),
             ...this.getLayoutProps()
         });

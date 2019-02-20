@@ -1,16 +1,15 @@
-import {HoistModel, XH} from '@xh/hoist/core';
+import {HoistModel, XH, LoadSupport, managed} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
 import {emptyFlexCol, dateTimeCol} from '@xh/hoist/cmp/grid';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {numberRenderer} from '@xh/hoist/format';
-import {isNil} from 'lodash';
+import {isNil, has} from 'lodash';
 
 @HoistModel
+@LoadSupport
 export class OrdersPanelModel {
 
-    loadModel = new PendingTaskModel();
-
+    @managed
     gridModel = new GridModel({
         store: new LocalStore({
             fields: [
@@ -101,18 +100,18 @@ export class OrdersPanelModel {
         return this.gridModel.selectedRecord;
     }
 
-    async loadPositionAsync(posId) {
-        if (isNil(posId)) {
-            this.gridModel.loadData([]);
+    async doLoadAsync(loadSpec) {
+        if (has(loadSpec, 'position')) this.position = loadSpec.position;
+
+        const {position, gridModel} = this;
+
+        if (isNil(position)) {
+            gridModel.loadData([]);
             return;
         }
 
-        return XH.portfolioService.getOrdersAsync(posId)
-            .then(orders => {
-                this.gridModel.loadData(orders);
-                if (orders.length > 0) {
-                    this.gridModel.selectFirst();
-                }
-            }).linkTo(this.loadModel);
+        const orders = await XH.portfolioService.getOrdersAsync(position.id);
+        gridModel.loadData(orders);
+        if (orders.length > 0) gridModel.selectFirst();
     }
 }

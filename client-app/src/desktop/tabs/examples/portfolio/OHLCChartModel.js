@@ -1,15 +1,14 @@
-import {HoistModel, XH} from '@xh/hoist/core';
+import {HoistModel, XH, LoadSupport, managed} from '@xh/hoist/core';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
-import {isNil} from 'lodash';
+import {isNil, has} from 'lodash';
 
 @HoistModel
+@LoadSupport
 export class OHLCChartModel {
 
-    loadModel = new PendingTaskModel();
-
-    olhcChartModel = new ChartModel({
+    @managed
+    chartModel = new ChartModel({
         config: {
             chart: {
                 type: 'ohlc',
@@ -67,16 +66,16 @@ export class OHLCChartModel {
         }
     });
 
-    loadData(record) {
-        if (isNil(record)) {
-            this.olhcChartModel.setSeries([]);
+    async doLoadAsync(loadSpec) {
+        if (has(loadSpec, 'order')) this.order = loadSpec.order;
+
+        const {order} = this;
+        if (isNil(order)) {
+            this.chartModel.setSeries([]);
             return;
         }
 
-        XH.portfolioService
-            .getOLHCChartSeries(record.symbol)
-            .then(series => this.olhcChartModel.setSeries(series))
-            .linkTo(this.loadModel);
+        const series = await XH.portfolioService.getOLHCChartSeries(order.symbol);
+        this.chartModel.setSeries(series);
     }
-
 }

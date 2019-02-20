@@ -1,15 +1,17 @@
-import {HoistModel, XH} from '@xh/hoist/core';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {HoistModel, XH, managed, LoadSupport} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
 import {fmtDate} from '@xh/hoist/format';
 import Highcharts from 'highcharts/highstock';
-import {isNil} from 'lodash';
+import {isNil, has} from 'lodash';
 
 @HoistModel
+@LoadSupport
 export class LineChartModel {
 
-    loadModel = new PendingTaskModel();
-    lineChartModel = new ChartModel({
+    order;
+
+    @managed
+    chartModel = new ChartModel({
         config: {
             chart: {
                 zoomType: 'x',
@@ -67,16 +69,16 @@ export class LineChartModel {
         }
     });
 
-    loadData(record) {
-        if (isNil(record)) {
-            this.lineChartModel.setSeries([]);
+    async doLoadAsync(loadSpec) {
+        if (has(loadSpec, 'order')) this.order = loadSpec.order;
+
+        const {order} = this;
+        if (isNil(order)) {
+            this.chartModel.setSeries([]);
             return;
         }
 
-        XH.portfolioService
-            .getLineChartSeries(record.symbol)
-            .then(series => this.lineChartModel.setSeries(series))
-            .linkTo(this.loadModel);
+        const series = await XH.portfolioService.getLineChartSeries(order.symbol);
+        this.chartModel.setSeries(series);
     }
-
 }

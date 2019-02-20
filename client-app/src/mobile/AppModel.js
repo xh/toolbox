@@ -145,10 +145,10 @@ export class AppModel {
         await XH.installServicesAsync(PortfolioService);
     }
 
-    async doLoadAsync(isAutoRefresh) {
-        //await loadAllAsync(
-        //    [XH.portfolioService],
-        //    isAutoRefresh
-        //);
+    async doLoadAsync(loadSpec) {
+        await loadAllAsync(
+            [XH.portfolioService],
+            loadSpec
+        );
     }
 }

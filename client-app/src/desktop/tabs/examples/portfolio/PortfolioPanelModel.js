@@ -27,36 +27,32 @@ export class PortfolioPanelModel {
     constructor() {
         this.addReaction({
             track: () => this.selectedPosition,
-            run: this.loadOrdersAsync,
+            run: this.loadOrders,
             delay: 500
         });
 
         this.addReaction({
             track: () => this.selectedOrder,
-            run: (order) => {
-                this.setDisplayedOrderSymbol(order ? order.symbol : '');
-                this.loadChartsAsync();
-            },
+            run: this.loadCharts,
             delay: 500
         });
     }
 
     async doLoadAsync(loadSpec) {
         await this.positionsPanelModel.loadAsync(loadSpec);
-        await this.loadOrdersAsync(loadSpec);
-        await this.loadChartsAsync(loadSpec);
     }
 
     //----------------------------------------
     // Implementations
     //----------------------------------------
-    async loadOrdersAsync(loadSpec) {
-        this.ordersPanelModel.loadPositionAsync(this.selectedPosition, loadSpec);
+    loadOrders() {
+        this.ordersPanelModel.loadAsync({position: this.selectedPosition});
     }
 
-    async loadChartsAsync(loadSpec) {
+    loadCharts() {
         const {selectedOrder} = this;
-        this.lineChartModel.loadOrderAsync(selectedOrder, loadSpec);
-        this.ohlcChartModel.loadOrderAsync(selectedOrder, loadSpec);
+        this.setDisplayedOrderSymbol(selectedOrder ? selectedOrder.symbol : '');
+        this.lineChartModel.loadAsync({order: selectedOrder});
+        this.ohlcChartModel.loadAsync({order: selectedOrder});
     }
 }

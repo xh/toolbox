@@ -63,10 +63,7 @@ export class AppModel {
     }
 
     async doLoadAsync(loadSpec) {
-        //await loadAllAsync(
-        //    [XH.companyService, XH.tradeService, XH.salesService, XH.portfolioService],
-        //    loadSpec
-        //);
+        await loadAllAsync([], loadSpec);
     }
 
     getAppOptions() {
