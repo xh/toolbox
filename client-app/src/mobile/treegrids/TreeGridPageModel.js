@@ -9,7 +9,7 @@ import {managed, XH, HoistModel} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer} from '@xh/hoist/format';
+import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {DimensionChooserModel} from '@xh/hoist/mobile/cmp/dimensionchooser';
 
 @HoistModel
@@ -35,8 +35,9 @@ export class TreeGridPageModel {
     @managed
     gridModel = new GridModel({
         treeMode: true,
+        enableColChooser: true,
         store: new LocalStore({
-            fields: ['id', 'name', 'pnl']
+            fields: ['id', 'name', 'pnl', 'mktVal']
         }),
         sortBy: 'pnl|desc|abs',
         columns: [
@@ -56,6 +57,22 @@ export class TreeGridPageModel {
                     aggFunc: 'sum'
                 },
                 renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+            },
+            {
+                headerName: 'Mkt Value (m)',
+                chooserName: 'Market Value',
+                field: 'mktVal',
+                align: 'right',
+                width: 130,
+                absSort: true,
+                agOptions: {
+                    aggFunc: 'sum'
+                },
+                renderer: millionsRenderer({
+                    precision: 3,
+                    ledger: true,
+                    tooltip: true
+                })
             }
         ]
     });
