@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {tabContainer} from '@xh/hoist/desktop/cmp/tab';
+import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {StandardGridPanel} from './StandardGridPanel';
 import {ColumnGroupsGridPanel} from './ColumnGroupsGridPanel';
@@ -23,9 +23,9 @@ export class GridsTab extends Component {
                     {id: 'groupedCols', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
                     {id: 'rest', title: 'REST Editor', content: RestGridPanel},
                     {id: 'dataview', title: 'DataView', content: DataViewPanel}
-                ]
+                ],
+                switcherPosition: 'left'
             },
-            switcherPosition: 'left',
             className: 'toolbox-tab'
         });
     }
