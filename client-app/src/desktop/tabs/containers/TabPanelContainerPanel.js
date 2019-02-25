@@ -126,9 +126,21 @@ export class TabPanelContainerPanel extends Component {
         const tabTxt = title => `This is the ${title} tab`;
         return {
             tabs: [
-                {id: 'people', content: () => tabTxt('People')},
-                {id: 'places', content: () => tabTxt('Places')},
-                {id: 'things', content: () => tabTxt('Things')}
+                {
+                    id: 'people',
+                    icon: Icon.user(),
+                    content: () => tabTxt('People')
+                },
+                {
+                    id: 'places',
+                    icon: Icon.home(),
+                    content: () => tabTxt('Places')
+                },
+                {
+                    id: 'things',
+                    icon: Icon.portfolio(),
+                    content: () => tabTxt('Things')
+                }
             ],
             ...args
         };
