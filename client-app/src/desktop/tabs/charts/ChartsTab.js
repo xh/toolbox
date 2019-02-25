@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {tabContainer} from '@xh/hoist/desktop/cmp/tab';
+import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {OLHCChartPanel} from './OLHCChartPanel';
 import {LineChartPanel} from './LineChartPanel';
@@ -12,12 +12,12 @@ export class ChartsTab extends Component {
         return tabContainer({
             model: {
                 route: 'default.charts',
+                switcherPosition: 'left',
                 tabs: [
                     {id: 'olhc', title: 'OLHC', content: OLHCChartPanel},
                     {id: 'line', content: LineChartPanel}
                 ]
             },
-            switcherPosition: 'left',
             className: 'toolbox-tab'
         });
     }

@@ -175,6 +175,7 @@ export class AppModel {
     createTabModel() {
         return new TabContainerModel({
             route: 'default',
+            switcherPosition: 'none',
             tabs: [
                 {id: 'home', content: HomeTab},
                 {id: 'containers', content: ContainersTab},

@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {tabContainer} from '@xh/hoist/desktop/cmp/tab';
+import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {StandardGridPanel} from './StandardGridPanel';
 import {ColumnGroupsGridPanel} from './ColumnGroupsGridPanel';
