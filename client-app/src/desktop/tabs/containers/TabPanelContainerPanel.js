@@ -52,8 +52,7 @@ export class TabPanelContainerPanel extends Component {
                                 title: 'Bottom Tabs',
                                 content: () => tabContainer({
                                     className: 'child-tabcontainer',
-                                    model: this.createContainerModelConfig(),
-                                    switcherPosition: 'bottom'
+                                    model: this.createContainerModelConfig({switcherPosition: 'bottom'})
                                 })
                             },
                             {
@@ -61,8 +60,7 @@ export class TabPanelContainerPanel extends Component {
                                 title: 'Left Tabs',
                                 content: () => tabContainer({
                                     className: 'child-tabcontainer',
-                                    model: this.createContainerModelConfig(),
-                                    switcherPosition: 'left'
+                                    model: this.createContainerModelConfig({switcherPosition: 'left'})
                                 })
                             },
                             {
@@ -70,8 +68,7 @@ export class TabPanelContainerPanel extends Component {
                                 title: 'Right Tabs',
                                 content: () => tabContainer({
                                     className: 'child-tabcontainer',
-                                    model: this.createContainerModelConfig(),
-                                    switcherPosition: 'right'
+                                    model: this.createContainerModelConfig({switcherPosition: 'right'})
                                 })
                             },
                             {
