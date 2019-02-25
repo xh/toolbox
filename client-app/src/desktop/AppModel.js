@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {HoistAppModel, XH, managed, loadAllAsync} from '@xh/hoist/core';
-import {TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
+import {TabContainerModel} from '@xh/hoist/cmp/tab';
 
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
@@ -42,7 +42,7 @@ export class AppModel {
             {id: 'other', content: OtherTab},
             {id: 'examples', content: ExamplesTab}
         ],
-        switcherPosition: null
+        switcherPosition: 'none'
     });
 
     get useCompactGrids() {
