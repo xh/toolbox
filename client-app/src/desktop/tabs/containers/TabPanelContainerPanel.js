@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {hspacer} from '@xh/hoist/cmp/layout';
-import {tabContainer, TabContainerModel} from '@xh/hoist/desktop/cmp/tab';
+import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -12,7 +12,7 @@ import {find} from 'lodash';
 
 @HoistComponent
 export class TabPanelContainerPanel extends Component {
-    detachedTabModel = new TabContainerModel(this.createContainerModelConfig());
+    detachedTabModel = new TabContainerModel(this.createContainerModelConfig({switcherPosition: 'none'}));
     stateTabModel = new TabContainerModel(this.createContainerModelConfig());
 
     render() {
@@ -52,8 +52,7 @@ export class TabPanelContainerPanel extends Component {
                                 title: 'Bottom Tabs',
                                 content: () => tabContainer({
                                     className: 'child-tabcontainer',
-                                    model: this.createContainerModelConfig(),
-                                    switcherPosition: 'bottom'
+                                    model: this.createContainerModelConfig({switcherPosition: 'bottom'})
                                 })
                             },
                             {
@@ -61,8 +60,7 @@ export class TabPanelContainerPanel extends Component {
                                 title: 'Left Tabs',
                                 content: () => tabContainer({
                                     className: 'child-tabcontainer',
-                                    model: this.createContainerModelConfig(),
-                                    switcherPosition: 'left'
+                                    model: this.createContainerModelConfig({switcherPosition: 'left'})
                                 })
                             },
                             {
@@ -70,8 +68,7 @@ export class TabPanelContainerPanel extends Component {
                                 title: 'Right Tabs',
                                 content: () => tabContainer({
                                     className: 'child-tabcontainer',
-                                    model: this.createContainerModelConfig(),
-                                    switcherPosition: 'right'
+                                    model: this.createContainerModelConfig({switcherPosition: 'right'})
                                 })
                             },
                             {
@@ -88,7 +85,7 @@ export class TabPanelContainerPanel extends Component {
                                             }
                                         }))
                                     ),
-                                    item: tabContainer({model: detachedTabModel, switcherPosition: 'none'})
+                                    item: tabContainer({model: detachedTabModel})
                                 })
                             },
                             {
@@ -125,14 +122,27 @@ export class TabPanelContainerPanel extends Component {
         });
     }
 
-    createContainerModelConfig() {
+    createContainerModelConfig(args = {}) {
         const tabTxt = title => `This is the ${title} tab`;
         return {
             tabs: [
-                {id: 'people', content: () => tabTxt('People')},
-                {id: 'places', content: () => tabTxt('Places')},
-                {id: 'things', content: () => tabTxt('Things')}
-            ]
+                {
+                    id: 'people',
+                    icon: Icon.user(),
+                    content: () => tabTxt('People')
+                },
+                {
+                    id: 'places',
+                    icon: Icon.home(),
+                    content: () => tabTxt('Places')
+                },
+                {
+                    id: 'things',
+                    icon: Icon.portfolio(),
+                    content: () => tabTxt('Things')
+                }
+            ],
+            ...args
         };
     }
 }

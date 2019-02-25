@@ -41,7 +41,8 @@ export class AppModel {
             {id: 'formats', content: FormatsTab},
             {id: 'other', content: OtherTab},
             {id: 'examples', content: ExamplesTab}
-        ]
+        ],
+        switcherPosition: null
     });
 
     get useCompactGrids() {

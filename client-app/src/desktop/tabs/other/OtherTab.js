@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {tabContainer} from '@xh/hoist/desktop/cmp/tab';
+import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {MaskPanel} from './MaskPanel';
 import {LeftRightChooserPanel} from './LeftRightChooserPanel';
@@ -14,6 +14,7 @@ export class OtherTab extends Component {
         return tabContainer({
             model: {
                 route: 'default.other',
+                switcherPosition: 'left',
                 tabs: [
                     {id: 'mask', title: 'Mask', content: MaskPanel},
                     {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
@@ -22,7 +23,6 @@ export class OtherTab extends Component {
                     {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel}
                 ]
             },
-            switcherPosition: 'left',
             className: 'toolbox-tab'
         });
     }
