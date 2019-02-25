@@ -46,7 +46,6 @@ export class GridPageModel {
                 field: 'trade_volume',
                 width: 90,
                 align: 'right',
-                hidden: true,
                 renderer: thousandsRenderer({precision: 1, label: true})
             },
             {...emptyFlexCol}
