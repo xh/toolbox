@@ -12,7 +12,7 @@ import {find} from 'lodash';
 
 @HoistComponent
 export class TabPanelContainerPanel extends Component {
-    detachedTabModel = new TabContainerModel(this.createContainerModelConfig());
+    detachedTabModel = new TabContainerModel(this.createContainerModelConfig({switcherPosition: 'none'}));
     stateTabModel = new TabContainerModel(this.createContainerModelConfig());
 
     render() {
@@ -88,7 +88,7 @@ export class TabPanelContainerPanel extends Component {
                                             }
                                         }))
                                     ),
-                                    item: tabContainer({model: detachedTabModel, switcherPosition: 'none'})
+                                    item: tabContainer({model: detachedTabModel})
                                 })
                             },
                             {
@@ -125,14 +125,15 @@ export class TabPanelContainerPanel extends Component {
         });
     }
 
-    createContainerModelConfig() {
+    createContainerModelConfig(args = {}) {
         const tabTxt = title => `This is the ${title} tab`;
         return {
             tabs: [
                 {id: 'people', content: () => tabTxt('People')},
                 {id: 'places', content: () => tabTxt('Places')},
                 {id: 'things', content: () => tabTxt('Things')}
-            ]
+            ],
+            ...args
         };
     }
 }

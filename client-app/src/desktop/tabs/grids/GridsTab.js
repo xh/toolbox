@@ -23,9 +23,9 @@ export class GridsTab extends Component {
                     {id: 'groupedCols', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
                     {id: 'rest', title: 'REST Editor', content: RestGridPanel},
                     {id: 'dataview', title: 'DataView', content: DataViewPanel}
-                ]
+                ],
+                switcherPosition: 'left'
             },
-            switcherPosition: 'left',
             className: 'toolbox-tab'
         });
     }
