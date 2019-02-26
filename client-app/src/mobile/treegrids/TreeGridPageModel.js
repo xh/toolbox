@@ -77,17 +77,13 @@ export class TreeGridPageModel {
     constructor() {
         this.addReaction({
             track: () => this.dimensionChooserModel.value,
-            run: this.loadAsync,
-            fireImmediately: true
+            run: this.loadAsync
         });
     }
 
     async doLoadAsync(loadSpec) {
         const dims = this.dimensionChooserModel.value;
-        return XH.portfolioService
-            .getPortfolioAsync(dims, 800)
-            .then(data => {
-                this.gridModel.loadData(data);
-            });
+        const data = await XH.portfolioService.getPortfolioAsync(dims, 800);
+        this.gridModel.loadData(data);
     }
 }

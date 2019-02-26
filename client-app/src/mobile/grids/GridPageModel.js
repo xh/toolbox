@@ -50,9 +50,8 @@ export class GridPageModel {
     });
 
     async doLoadAsync(loadSpec) {
-        return wait(500).then(() => {
-            this.gridModel.loadData(companyTrades);
-        });
+        await wait(500);
+        this.gridModel.loadData(companyTrades);
     }
 
 }

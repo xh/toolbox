@@ -11,7 +11,7 @@ import {TreeGridDetailPageModel} from './TreeGridDetailPageModel';
 export class TreeGridDetailPage extends Component {
 
     model = new TreeGridDetailPageModel({id: this.props.id});
-
+    
     render() {
         const {record, loadModel} = this.model;
 

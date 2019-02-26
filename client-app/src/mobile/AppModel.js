@@ -146,9 +146,6 @@ export class AppModel {
     }
 
     async doLoadAsync(loadSpec) {
-        await loadAllAsync(
-            [XH.portfolioService],
-            loadSpec
-        );
+        await loadAllAsync([], loadSpec);
     }
 }
