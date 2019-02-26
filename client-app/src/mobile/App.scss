@@ -25,7 +25,7 @@
   border-bottom: var(--xh-border-solid);
 }
 
-.toolbox-containers-page .xh-panel .xh-vframe {
+.toolbox-containers-page .xh-vframe {
   & > .xh-hbox,
   & > .xh-vbox {
     flex: 1;
@@ -37,7 +37,7 @@
   }
 }
 
-.toolbox-detail-page .page__content {
+.toolbox-detail-page {
   background-color: var(--xh-bg-alt) !important;
 
   .toolbox-detail-row {
