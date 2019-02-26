@@ -1,9 +1,9 @@
 import {managed, HoistModel} from '@xh/hoist/core';
-import {Grid, GridModel} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
-import {multiFieldRenderer} from '@xh/hoist/cmp/grid/renderers';
 import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
+import {emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wait} from '@xh/hoist/promise';
 
 import {companyTrades} from '../../core/data';
@@ -18,18 +18,20 @@ export class GridPageModel {
     gridModel = new GridModel({
         stateModel: 'toolboxSampleGrid',
         sortBy: ['profit_loss|desc|abs'],
+        enableColChooser: true,
         store: new LocalStore({
             fields: ['company', 'city', 'trade_volume', 'profit_loss']
         }),
         columns: [
             {
                 field: 'company',
-                flex: true,
-                renderer: multiFieldRenderer,
-                rowHeight: Grid.MULTIFIELD_ROW_HEIGHT,
-                multiFieldConfig: {
-                    subFields: [{colId: 'city', label: true}]
-                }
+                pinned: true,
+                hideable: false,
+                width: 170
+            },
+            {
+                field: 'city',
+                width: 120
             },
             {
                 headerName: 'P&L',
@@ -37,23 +39,16 @@ export class GridPageModel {
                 width: 120,
                 align: 'right',
                 absSort: true,
-                renderer: multiFieldRenderer,
-                rowHeight: Grid.MULTIFIELD_ROW_HEIGHT,
-                multiFieldConfig: {
-                    mainRenderer: numberRenderer({precision: 0, ledger: true, colorSpec: true}),
-                    subFields: [{colId: 'trade_volume', label: true}]
-                }
+                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
             },
             {
-                hidden: true,
-                field: 'city'
-            },
-            {
-                hidden: true,
                 headerName: 'Volume',
                 field: 'trade_volume',
+                width: 90,
+                align: 'right',
                 renderer: thousandsRenderer({precision: 1, label: true})
-            }
+            },
+            {...emptyFlexCol}
         ]
     });
 
