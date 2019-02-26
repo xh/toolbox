@@ -2,6 +2,9 @@ import {Component} from 'react';
 import {XH, HoistComponent, elemFactory, LoadSupport} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {grid} from '@xh/hoist/cmp/grid';
+import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
+import {filler} from '@xh/hoist/cmp/layout';
+import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
 import {GridPageModel} from './GridPageModel';
@@ -26,7 +29,14 @@ export class GridPage extends Component {
                     const {id} = e.data.raw;
                     XH.appendRoute('gridDetail', {id});
                 }
-            })
+            }),
+            bbar: toolbar(
+                filler(),
+                colChooserButton({
+                    text: 'Choose Columns',
+                    model: gridModel
+                })
+            )
         });
     }
 }
