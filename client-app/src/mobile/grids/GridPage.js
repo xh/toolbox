@@ -28,6 +28,7 @@ export class GridPage extends Component {
                         XH.appendRoute('gridDetail', {id});
                     }
                 }),
+                // Todo: page.bbar
                 toolbar(
                     filler(),
                     colChooserButton({

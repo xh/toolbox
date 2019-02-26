@@ -34,6 +34,7 @@ export class TreeGridPage extends Component {
                         XH.appendRoute('treeGridDetail', {id});
                     }
                 }),
+                // Todo: page.bbar
                 toolbar(
                     dimensionChooser({model: dimensionChooserModel}),
                     filler(),
