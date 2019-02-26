@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {tabContainer} from '@xh/hoist/desktop/cmp/tab';
+import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {HBoxContainerPanel} from './HBoxContainerPanel';
 import {VBoxContainerPanel} from './VBoxContainerPanel';
@@ -16,6 +16,7 @@ export class ContainersTab extends Component {
         return tabContainer({
             model: {
                 route: 'default.containers',
+                switcherPosition: 'left',
                 tabs: [
                     {id: 'hbox', title: 'HBox', content: HBoxContainerPanel},
                     {id: 'vbox', title: 'VBox', content: VBoxContainerPanel},
@@ -24,7 +25,6 @@ export class ContainersTab extends Component {
                     {id: 'toolbar', content: ToolbarPanel}
                 ]
             },
-            switcherPosition: 'left',
             className: 'toolbox-tab'
         });
     }
