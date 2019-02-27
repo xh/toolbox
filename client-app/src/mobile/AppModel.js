@@ -33,12 +33,10 @@ export class AppModel {
         routes: [
             {
                 id: 'default',
-                title: 'Toolbox',
                 content: HomePage
             },
             {
                 id: 'grids',
-                title: 'Grids',
                 content: GridPage
             },
             {
@@ -47,7 +45,6 @@ export class AppModel {
             },
             {
                 id: 'treegrids',
-                title: 'Tree Grids',
                 content: TreeGridPage
             },
             {
@@ -56,22 +53,18 @@ export class AppModel {
             },
             {
                 id: 'form',
-                title: 'Form',
                 content: FormPage
             },
             {
                 id: 'containers',
-                title: 'Containers',
                 content: ContainersPage
             },
             {
                 id: 'popups',
-                title: 'Popups',
                 content: PopupsPage
             },
             {
                 id: 'icons',
-                title: 'Icons',
                 content: IconPage
             }
         ]
