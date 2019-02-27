@@ -15,12 +15,10 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 
 @HoistComponent
 @LayoutSupport
-@LoadSupport
 class SampleTreeGrid extends Component {
 
     model = new Model();
@@ -61,10 +59,8 @@ export const sampleTreeGrid = elemFactory(SampleTreeGrid);
 
 
 @HoistModel
+@LoadSupport
 class Model {
-    @managed
-    loadModel = new PendingTaskModel();
-
     @managed
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
@@ -136,14 +132,13 @@ class Model {
         });
     }
 
-    loadAsync() {
-        const {gridModel, loadModel, dimChooserModel} = this,
+    async doLoadAsync(loadSpec) {
+        const {gridModel, dimChooserModel} = this,
             dims = dimChooserModel.value;
 
         return XH.portfolioService
             .getPortfolioAsync(dims)
-            .then(data => gridModel.loadData(data))
-            .linkTo(loadModel);
+            .then(data => gridModel.loadData(data));
     }
 }
 

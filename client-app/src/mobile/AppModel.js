@@ -4,7 +4,7 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {XH, HoistAppModel, managed} from '@xh/hoist/core';
+import {XH, HoistAppModel, managed, loadAllAsync} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
 import {required} from '@xh/hoist/cmp/form';
@@ -143,5 +143,9 @@ export class AppModel {
 
     async initAsync() {
         await XH.installServicesAsync(PortfolioService);
+    }
+
+    async doLoadAsync(loadSpec) {
+        await loadAllAsync([], loadSpec);
     }
 }

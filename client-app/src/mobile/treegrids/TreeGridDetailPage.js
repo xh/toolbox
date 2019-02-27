@@ -10,12 +10,8 @@ import {TreeGridDetailPageModel} from './TreeGridDetailPageModel';
 @HoistComponent
 export class TreeGridDetailPage extends Component {
 
-    constructor(props) {
-        super(props);
-        const {id} = props;
-        this.model = new TreeGridDetailPageModel({id});
-    }
-
+    model = new TreeGridDetailPageModel({id: this.props.id});
+    
     render() {
         const {record, loadModel} = this.model;
 

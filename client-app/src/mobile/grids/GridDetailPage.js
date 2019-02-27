@@ -9,15 +9,13 @@ import {GridDetailPageModel} from './GridDetailPageModel';
 @HoistComponent
 export class GridDetailPage extends Component {
 
-    constructor(props) {
-        super(props);
-        const {id} = props;
-        this.model = new GridDetailPageModel({id});
-    }
+    model = new GridDetailPageModel({id: this.props.id});
 
     render() {
         const {record} = this.model;
 
+        if (!record) return null;
+        
         return page({
             className: 'toolbox-detail-page',
             items: [

@@ -5,7 +5,6 @@ import {LocalStore} from '@xh/hoist/data';
 import {computed} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import filesize from 'filesize';
 import download from 'downloadjs';
 import {filter, last, find} from 'lodash';
@@ -15,10 +14,7 @@ export class FileManagerModel {
 
     @managed
     chooserModel = new FileChooserModel();
-
-    @managed
-    loadMaskModel = new PendingTaskModel();
-
+    
     @managed
     gridModel = new GridModel({
         store: new LocalStore({
@@ -92,20 +88,21 @@ export class FileManagerModel {
     constructor() {
         this.addReaction({
             track: () => this.chooserModel.files,
-            run: () => this.syncWithChooser()
+            run: this.syncWithChooser
         });
     }
 
-    async loadAsync() {
+    async doLoadAsync(loadSpec) {
         const files = await XH.fetchService
             .fetchJson({
-                url: 'fileManager/list'
+                url: 'fileManager/list',
+                loadSpec
             })
             .track({
                 category: 'File Manager',
-                message: 'Loaded Files'
+                message: 'Loaded Files',
+                loadSpec
             })
-            .linkTo(this.loadMaskModel)
             .catchDefault();
 
         files.forEach(file => {
@@ -163,7 +160,6 @@ export class FileManagerModel {
                     message: `Files processed successfully: ${uploads.length} uploaded | ${deletes.length} deleted.`
                 });
             })
-            .linkTo(this.loadMaskModel)
             .catchDefault();
     }
 

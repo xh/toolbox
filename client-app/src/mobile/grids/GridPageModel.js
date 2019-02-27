@@ -1,6 +1,5 @@
-import {managed, HoistModel} from '@xh/hoist/core';
+import {managed, HoistModel, LoadSupport} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid';
@@ -9,10 +8,8 @@ import {wait} from '@xh/hoist/promise';
 import {companyTrades} from '../../core/data';
 
 @HoistModel
+@LoadSupport
 export class GridPageModel {
-
-    @managed
-    loadModel = new PendingTaskModel();
 
     @managed
     gridModel = new GridModel({
@@ -52,16 +49,9 @@ export class GridPageModel {
         ]
     });
 
-    constructor() {
-        this.loadAsync();
-    }
-
-    loadAsync() {
-        return wait(500).then(() => {
-            this.gridModel.loadData(companyTrades);
-        }).linkTo(
-            this.loadModel
-        );
+    async doLoadAsync(loadSpec) {
+        await wait(500);
+        this.gridModel.loadData(companyTrades);
     }
 
 }
