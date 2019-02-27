@@ -5,23 +5,19 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 
-import {XH, HoistModel, managed} from '@xh/hoist/core';
+import {XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
 import {action, observable, bindable} from '@xh/hoist/mobx';
 import {uniq, isEmpty} from 'lodash';
 import {DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
 import {LocalStore} from '@xh/hoist/data';
 import {newsPanelItem} from './NewsPanelItem';
 import {fmtCompactDate} from '@xh/hoist/format';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
-
 
 @HoistModel
+@LoadSupport
 export class NewsPanelModel {
 
     SEARCH_FIELDS = ['title', 'text'];
-
-    @managed
-    loadModel = new PendingTaskModel();
 
     @managed
     viewModel = new DataViewModel({
@@ -46,17 +42,16 @@ export class NewsPanelModel {
     constructor() {
         this.addReaction({
             track: () => [this.sourceFilter, this.textFilter, this.lastRefresh],
-            run: () => this.filterData(),
+            run: this.filterData,
             fireImmediately: true
         });
     }
 
-    loadAsync()  {
+    async doLoadAsync(loadSpec)  {
         return XH
-            .fetchJson({url: 'news'})
+            .fetchJson({url: 'news', loadSpec})
             .wait(100)
-            .then(stories => this.completeLoad(stories))
-            .linkTo(this.loadModel);
+            .then(stories => this.completeLoad(stories));
     }
 
     //------------------------

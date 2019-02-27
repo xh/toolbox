@@ -1,26 +1,20 @@
-import {XH, HoistModel} from '@xh/hoist/core';
-import {observable} from '@xh/hoist/mobx';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
+import {settable, observable} from '@xh/hoist/mobx';
 
 @HoistModel
+@LoadSupport
 export class TreeGridDetailPageModel {
 
-    loadModel = new PendingTaskModel();
-
-    @observable id;
-    @observable record;
+    id;
+    @settable @observable.ref record;
 
     constructor({id}) {
         this.id = id;
-        this.loadAsync();
     }
 
-    loadAsync() {
-        return XH.portfolioService
-            .getPositionAsync(this.id)
-            .thenAction(record => {
-                this.record = record;
-            }).linkTo(this.loadModel);
+    async doLoadAsync(loadSpec) {
+        const record = await XH.portfolioService.getPositionAsync(this.id);
+        this.setRecord(record);
+        XH.appModel.navigatorModel.setTitle(record.name);
     }
-
 }

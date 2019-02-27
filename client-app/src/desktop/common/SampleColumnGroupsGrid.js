@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistModel, HoistComponent, LayoutSupport, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {elemFactory, HoistModel, HoistComponent, LoadSupport, LayoutSupport, managed, XH} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
@@ -18,12 +18,10 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {action, observable} from '@xh/hoist/mobx';
 
 @HoistComponent
 @LayoutSupport
-@LoadSupport
 class SampleColumnGroupsGrid extends Component {
 
     model = new Model();
@@ -66,12 +64,10 @@ export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
 
 
 @HoistModel
+@LoadSupport
 class Model {
 
     @observable groupRows = false;
-
-    @managed
-    loadModel = new PendingTaskModel();
 
     @managed
     gridModel = new GridModel({
@@ -198,10 +194,9 @@ class Model {
     //------------------------
     // Implementation
     //------------------------
-    loadAsync() {
+    async doLoadAsync(loadSpec) {
         return wait(250)
-            .then(() => this.gridModel.loadData(XH.salesService.generateSales()))
-            .linkTo(this.loadModel);
+            .then(() => this.gridModel.loadData(XH.salesService.generateSales()));
     }
 
     showRecToast(rec) {

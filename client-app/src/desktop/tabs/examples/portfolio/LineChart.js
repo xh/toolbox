@@ -14,9 +14,11 @@ import {chart} from '@xh/hoist/desktop/cmp/chart';
 export class LineChart extends Component {
 
     render() {
+        const {model} = this;
+
         return panel({
-            item: chart({model: this.model.lineChartModel}),
-            mask: this.model.loadModel,
+            item: chart({model: model.chartModel}),
+            mask: model.loadModel,
             className: this.getClassName(),
             ...this.getLayoutProps()
         });

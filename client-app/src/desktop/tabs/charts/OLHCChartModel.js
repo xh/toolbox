@@ -1,4 +1,4 @@
-import {HoistModel} from '@xh/hoist/core';
+import {HoistModel, LoadSupport} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
 import {bindable} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
@@ -8,6 +8,7 @@ import Facebook from '../../../core/data/charts/facebookPricing';
 import Yahoo from '../../../core/data/charts/yahooPricing';
 
 @HoistModel
+@LoadSupport
 export class OLHCChartModel {
     @bindable currentCompany = 'Amazon';
     companyMap = {Amazon, Facebook, Yahoo};
@@ -22,7 +23,7 @@ export class OLHCChartModel {
         });
     }
     
-    async loadAsync() {
+    async doLoadAsync(loadSpec) {
         const company = this.currentCompany,
             data = this.companyMap[company];
 
