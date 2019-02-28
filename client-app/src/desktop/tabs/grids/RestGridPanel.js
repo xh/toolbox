@@ -3,7 +3,7 @@ import {HoistComponent, LoadSupport} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {restGrid, RestGridModel, RestStore, addAction, editAction, viewAction, deleteAction} from '@xh/hoist/desktop/cmp/rest';
+import {restGrid, RestGridModel, RestStore, addAction, editAction, viewAction, deleteAction, cloneAction} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
 import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -112,8 +112,10 @@ export class RestGridPanel extends Component {
             addAction,
             editAction,
             viewAction,
-            deleteAction
-        ]
+            deleteAction,
+            cloneAction
+        ],
+        prepareCloneFn: ({record, clone}) => clone.name += ' CLONE'
     });
 
     render() {
