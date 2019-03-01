@@ -115,7 +115,7 @@ export class RestGridPanel extends Component {
             deleteAction,
             cloneAction
         ],
-        prepareCloneCb: ({record, clone}) => clone.name += ' CLONE'
+        prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
     });
 
     render() {
