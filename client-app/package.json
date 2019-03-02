@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@xh/hoist": "^20.0.0-SNAPSHOT",
-    "react": "~16.7.0",
-    "react-dom": "~16.7.0",
+    "react": "~16.8.3",
+    "react-dom": "~16.8.3",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
