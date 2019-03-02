@@ -33,6 +33,7 @@ export class OrdersPanelModel {
         enableColChooser: true,
         enableExport: true,
         compact: XH.appModel.useCompactGrids,
+        stateModel: 'portfolio-orders-grid',
         columns: [
             {
                 field: 'symbol',

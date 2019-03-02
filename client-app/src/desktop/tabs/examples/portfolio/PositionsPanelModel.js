@@ -35,6 +35,7 @@ export class PositionsPanelModel {
         enableColChooser: true,
         enableExport: true,
         compact: XH.appModel.useCompactGrids,
+        stateModel: 'portfolio-positions-grid',
         columns: [
             {
                 field: 'id',
