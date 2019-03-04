@@ -2,30 +2,37 @@ package io.xh.toolbox.app
 
 import io.xh.hoist.BaseService
 import io.xh.hoist.json.JSON
+import io.xh.hoist.util.Timer
 import io.xh.toolbox.NewsItem
 import org.grails.web.json.JSONArray
+import io.xh.hoist.cache.Cache
 
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
+import static io.xh.hoist.util.DateTimeUtils.HOURS
 
 
 class NewsService extends BaseService {
 
-    public List<NewsItem> _newsItems
-
-    static clearCachesConfigs = ['newsSources', 'newsApiKey']
     def configService
 
+    Cache<String, List<NewsItem>> cache = new Cache(svc: this, expireTime: 2 * HOURS)
+
+    Timer timer
+
+    static clearCachesConfigs = ['newsSources', 'newsApiKey']
+    static cacheKey = 'news'
+
     void init() {
-        createTimer(
-                runFn: this.&loadAllNews,
-                interval: 'newsRefreshMins',
-                intervalUnits: MINUTES
+        timer = createTimer(
+            runFn: this.&loadAllNews,
+            interval: 'newsRefreshMins',
+            intervalUnits: MINUTES
         )
         super.init()
     }
 
     List<NewsItem> getNewsItems() {
-        return _newsItems ? _newsItems.sort{-it.published.time} : Collections.emptyList()
+        cache.get(cacheKey)
     }
 
 
@@ -33,37 +40,39 @@ class NewsService extends BaseService {
     // For sample monitors
     //------------------------
     int getItemCount() {
-        return _newsItems.size()
+        return newsItems.size()
     }
 
     int getLoadedSourcesCount() {
-        return _newsItems.collect{it.source}.unique().size()
+        return newsItems.collect{it.source}.unique().size()
     }
 
     boolean getAllSourcesLoaded() {
-        return loadedSourcesCount == configService.getJSONObject('newsSources').size()
+        return loadedSourcesCount == sources.size()
     }
 
     Date getLastTimestamp() {
-        if (!_newsItems) return null
-        return _newsItems.sort{-it.published.time}.get(0).published
+        if (!newsItems) return null
+        return newsItems.get(0).published
     }
 
 
     //------------------------
     // Implementation
     //------------------------
+
     private void loadAllNews() {
-        def sources = configService.getJSONObject('newsSources') as Map<String, String>
 
         withShortInfo("Loading news from ${sources.size()} configured sources") {
-            def items = []
+            List<NewsItem> items = []
 
             sources.each{code, displayName ->
                 items.addAll(loadNewsForSource(code, displayName))
             }
 
-            _newsItems = items
+            def ret = items ? items.sort{-it.published.time} : Collections.emptyList()
+            cache.put(cacheKey, ret)
+
         }
     }
 
@@ -99,10 +108,13 @@ class NewsService extends BaseService {
         return ret
     }
 
+    Map<String, String> getSources() {
+        configService.getJSONObject('newsSources')
+    }
+
     void clearCaches() {
         super.clearCaches()
-        _newsItems = []
-        loadAllNews()
+        timer.forceRun()
     }
 
 }
