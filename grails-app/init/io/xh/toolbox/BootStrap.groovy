@@ -94,9 +94,17 @@ class BootStrap {
                         local: true,
                         groupName: 'Toolbox',
                         note: 'Grid sizing mode'
+                ],
+                autoRefreshSecs: [
+                        type: 'int',
+                        defaultValue: -1,
+                        local: true,
+                        groupName: 'Toolbox',
+                        note: 'Auto-Refresh Interval in seconds'
                 ]
-            ])
+        ])
     }
+
 
     private void ensureRequiredConfigsCreated() {
         def adminUsername = getInstanceConfig('adminUsername')

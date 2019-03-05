@@ -5,17 +5,17 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 
-import {XH, HoistModel} from '@xh/hoist/core';
+import {managed, XH, HoistModel, LoadSupport} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer} from '@xh/hoist/format';
+import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {DimensionChooserModel} from '@xh/hoist/mobile/cmp/dimensionchooser';
 
 @HoistModel
+@LoadSupport
 export class TreeGridPageModel {
 
-    loadModel = new PendingTaskModel();
+    @managed
     dimensionChooserModel = new DimensionChooserModel({
         dimensions: [
             {value: 'fund', label: 'Fund'},
@@ -29,10 +29,12 @@ export class TreeGridPageModel {
         historyPreference: 'mobileDimHistory'
     });
 
+    @managed
     gridModel = new GridModel({
         treeMode: true,
+        enableColChooser: true,
         store: new LocalStore({
-            fields: ['id', 'name', 'pnl']
+            fields: ['id', 'name', 'pnl', 'mktVal']
         }),
         sortBy: 'pnl|desc|abs',
         columns: [
@@ -52,6 +54,22 @@ export class TreeGridPageModel {
                     aggFunc: 'sum'
                 },
                 renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
+            },
+            {
+                headerName: 'Mkt Value (m)',
+                chooserName: 'Market Value',
+                field: 'mktVal',
+                align: 'right',
+                width: 130,
+                absSort: true,
+                agOptions: {
+                    aggFunc: 'sum'
+                },
+                renderer: millionsRenderer({
+                    precision: 3,
+                    ledger: true,
+                    tooltip: true
+                })
             }
         ]
     });
@@ -59,24 +77,13 @@ export class TreeGridPageModel {
     constructor() {
         this.addReaction({
             track: () => this.dimensionChooserModel.value,
-            run: () => this.loadAsync(),
-            fireImmediately: true
+            run: this.loadAsync
         });
     }
 
-    loadAsync() {
+    async doLoadAsync(loadSpec) {
         const dims = this.dimensionChooserModel.value;
-        return XH.portfolioService
-            .getPortfolioAsync(dims)
-            .then(data => {
-                this.gridModel.loadData(data);
-            }).linkTo(this.loadModel);
+        const data = await XH.portfolioService.getPortfolioAsync(dims, 800);
+        this.gridModel.loadData(data);
     }
-
-    destroy() {
-        XH.safeDestroy(this.gridModel);
-        XH.safeDestroy(this.loadModel);
-        XH.safeDestroy(this.dimensionChooserModel);
-    }
-
 }

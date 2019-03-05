@@ -1,12 +1,12 @@
-import {HoistModel, XH, managed} from '@xh/hoist/core';
+import {HoistModel, XH, managed, LoadSupport} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 
 @HoistModel
+@LoadSupport
 export class PositionsPanelModel {
 
     @bindable loadTimestamp;
@@ -35,6 +35,7 @@ export class PositionsPanelModel {
         enableColChooser: true,
         enableExport: true,
         compact: XH.appModel.useCompactGrids,
+        stateModel: 'portfolio-positions-grid',
         columns: [
             {
                 field: 'id',
@@ -52,6 +53,7 @@ export class PositionsPanelModel {
             {
                 field: 'mktVal',
                 headerName: 'Mkt Value (m)',
+                headerTooltip: 'Market value (in millions USD)',
                 align: 'right',
                 width: 130,
                 absSort: true,
@@ -82,9 +84,6 @@ export class PositionsPanelModel {
             }
         ]
     });
-    
-    @managed
-    loadModel = new PendingTaskModel();
 
     get selectedRecord() {
         return this.gridModel.selectedRecord;
@@ -97,8 +96,8 @@ export class PositionsPanelModel {
         });
     }
 
-    loadAsync() {
-        const {gridModel, loadModel, dimChooserModel} = this,
+    async doLoadAsync(loadSpec) {
+        const {gridModel, dimChooserModel} = this,
             dims = dimChooserModel.value;
 
         return XH.portfolioService
@@ -113,8 +112,8 @@ export class PositionsPanelModel {
             .track({
                 category: 'Portfolio Viewer',
                 message: 'Loaded positions',
-                data: {dims}
-            })
-            .linkTo(loadModel);
+                data: {dims},
+                loadSpec
+            });
     }
 }

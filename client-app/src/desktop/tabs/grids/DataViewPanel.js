@@ -14,7 +14,6 @@ import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
 
 @HoistComponent
-@LoadSupport
 export class DataViewPanel extends Component {
 
     model = new Model();
@@ -51,6 +50,7 @@ export class DataViewPanel extends Component {
 }
 
 @HoistModel
+@LoadSupport
 class Model {
 
     @managed
@@ -61,7 +61,7 @@ class Model {
         itemRenderer: (v, {record}) => dataViewItem({record})
     });
     
-    loadAsync() {
+    async doLoadAsync(loadSpec) {
         const companies = XH.companyService.randomCompanies,
             min = -1000,
             max = 1000;

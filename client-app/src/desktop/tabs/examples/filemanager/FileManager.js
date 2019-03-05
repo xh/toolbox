@@ -1,6 +1,6 @@
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import React, {Component} from 'react';
-import {HoistComponent, LoadSupport} from '@xh/hoist/core';
+import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -12,7 +12,6 @@ import {FileManagerModel} from './FileManagerModel';
 import './FileManager.scss';
 
 @HoistComponent
-@LoadSupport
 export class FileManager extends Component {
 
     model = new FileManagerModel();
@@ -46,7 +45,7 @@ export class FileManager extends Component {
                     title: 'File Manager',
                     icon: Icon.folder(),
                     className: 'file-manager',
-                    mask: model.loadMaskModel,
+                    mask: model.loadModel,
                     width: 700,
                     height: 500,
                     items: [

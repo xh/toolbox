@@ -1,6 +1,6 @@
 import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {box, filler, span} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent, LayoutSupport, LoadSupport, XH, HoistModel, managed} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, LayoutSupport, XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
 import {LocalStore} from '@xh/hoist/data';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
@@ -13,12 +13,10 @@ import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {Component} from 'react';
 
 @HoistComponent
 @LayoutSupport
-@LoadSupport
 class SampleGrid extends Component {
 
     model = new Model();
@@ -85,11 +83,9 @@ export const sampleGrid = elemFactory(SampleGrid);
 
 
 @HoistModel
+@LoadSupport
 class Model {
     @observable groupBy = false;
-
-    @managed
-    loadModel = new PendingTaskModel();
 
     viewDetailsAction = {
         text: 'View Details',
@@ -203,10 +199,9 @@ class Model {
         ]
     });
     
-    loadAsync() {
+    async doLoadAsync(loadSpec) {
         return wait(250)
-            .then(() => this.gridModel.loadData(XH.tradeService.generateTrades()))
-            .linkTo(this.loadModel);
+            .then(() => this.gridModel.loadData(XH.tradeService.generateTrades()));
     }
 
     showInfoToast(rec) {

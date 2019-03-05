@@ -1,6 +1,6 @@
-import {HoistModel} from '@xh/hoist/core';
+import {HoistModel, LoadSupport} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
-import {observable, action} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
 import moment from 'moment';
 import Amazon from '../../../core/data/charts/amazonPricing';
@@ -8,21 +8,22 @@ import Facebook from '../../../core/data/charts/facebookPricing';
 import Yahoo from '../../../core/data/charts/yahooPricing';
 
 @HoistModel
+@LoadSupport
 export class OLHCChartModel {
-    @observable currentCompany = 'Amazon';
+    @bindable currentCompany = 'Amazon';
     companyMap = {Amazon, Facebook, Yahoo};
     chartModel = new ChartModel({config: this.getChartModelCfg()});
 
+    @bindable aspectRatio = null;
+    
     constructor() {
-        this.addAutorun(() => this.loadChart());
+        this.addReaction({
+            track: () => this.currentCompany,
+            run: this.loadAsync
+        });
     }
-
-    @action
-    setCurrentCompany(currentCompany) {
-        this.currentCompany = currentCompany;
-    }
-
-    loadChart() {
+    
+    async doLoadAsync(loadSpec) {
         const company = this.currentCompany,
             data = this.companyMap[company];
 

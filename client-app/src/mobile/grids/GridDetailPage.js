@@ -3,22 +3,23 @@ import {HoistComponent, elemFactory} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {numberRenderer} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon';
 
 import {GridDetailPageModel} from './GridDetailPageModel';
 
 @HoistComponent
 export class GridDetailPage extends Component {
 
-    constructor(props) {
-        super(props);
-        const {record} = props;
-        this.model = new GridDetailPageModel({record});
-    }
+    model = new GridDetailPageModel({id: this.props.id});
 
     render() {
         const {record} = this.model;
 
+        if (!record) return null;
+        
         return page({
+            title: record.company,
+            icon: Icon.fund(),
             className: 'toolbox-detail-page',
             items: [
                 this.renderRow('ID', record.id),

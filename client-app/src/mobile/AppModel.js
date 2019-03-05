@@ -4,14 +4,23 @@
  *
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
-import {XH, HoistAppModel, managed} from '@xh/hoist/core';
+import {XH, HoistAppModel, managed, loadAllAsync} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
 import {required} from '@xh/hoist/cmp/form';
 import {select} from '@xh/hoist/mobile/cmp/input';
 
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {homePage} from './home/HomePage';
+
+import {HomePage} from './home/HomePage';
+import {GridPage} from './grids/GridPage';
+import {GridDetailPage} from './grids/GridDetailPage';
+import {TreeGridPage} from './treegrids/TreeGridPage';
+import {TreeGridDetailPage} from './treegrids/TreeGridDetailPage';
+import {FormPage} from './form/FormPage';
+import {ContainersPage} from './containers/ContainersPage';
+import {PopupsPage} from './popups/PopupsPage';
+import {IconPage} from './icons/IconPage';
 
 @HoistAppModel
 export class AppModel {
@@ -21,9 +30,88 @@ export class AppModel {
 
     @managed
     navigatorModel = new NavigatorModel({
-        pageFactory: homePage,
-        title: 'Toolbox'
+        routes: [
+            {
+                id: 'default',
+                content: HomePage
+            },
+            {
+                id: 'grids',
+                content: GridPage
+            },
+            {
+                id: 'gridDetail',
+                content: GridDetailPage
+            },
+            {
+                id: 'treegrids',
+                content: TreeGridPage
+            },
+            {
+                id: 'treeGridDetail',
+                content: TreeGridDetailPage
+            },
+            {
+                id: 'form',
+                content: FormPage
+            },
+            {
+                id: 'containers',
+                content: ContainersPage
+            },
+            {
+                id: 'popups',
+                content: PopupsPage
+            },
+            {
+                id: 'icons',
+                content: IconPage
+            }
+        ]
     });
+
+    getRoutes() {
+        return [
+            {
+                name: 'default',
+                path: '/mobile',
+                children: [
+                    {
+                        name: 'grids',
+                        path: '/grids',
+                        children: [{
+                            name: 'gridDetail',
+                            path: '/:id<\\d+>'
+                        }]
+                    },
+                    {
+                        name: 'treegrids',
+                        path: '/treegrids',
+                        children: [{
+                            name: 'treeGridDetail',
+                            path: '/:id'
+                        }]
+                    },
+                    {
+                        name: 'form',
+                        path: '/form'
+                    },
+                    {
+                        name: 'containers',
+                        path: '/containers'
+                    },
+                    {
+                        name: 'popups',
+                        path: '/popups'
+                    },
+                    {
+                        name: 'icons',
+                        path: '/icons'
+                    }
+                ]
+            }
+        ];
+    }
 
     getAppOptions() {
         return [
@@ -46,11 +134,11 @@ export class AppModel {
         ];
     }
 
-    navigate(title, pageFactory, pageProps) {
-        this.navigatorModel.pushPage({title, pageFactory, pageProps});
-    }
-
     async initAsync() {
         await XH.installServicesAsync(PortfolioService);
+    }
+
+    async doLoadAsync(loadSpec) {
+        await loadAllAsync([], loadSpec);
     }
 }

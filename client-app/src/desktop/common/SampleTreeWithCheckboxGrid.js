@@ -5,7 +5,7 @@
  * Copyright © 2018 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, HoistModel, LayoutSupport, LoadSupport, XH, managed} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, HoistModel, LayoutSupport, XH, managed, LoadSupport} from '@xh/hoist/core';
 import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {LocalStore} from '@xh/hoist/data';
@@ -15,14 +15,12 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 
 import './SampleTreeWithCheckboxGrid.scss';
 
 @HoistComponent
 @LayoutSupport
-@LoadSupport
 class SampleTreeWithCheckboxGrid extends Component {
 
     model = new Model();
@@ -62,10 +60,8 @@ class SampleTreeWithCheckboxGrid extends Component {
 export const sampleTreeWithCheckboxGrid = elemFactory(SampleTreeWithCheckboxGrid);
 
 @HoistModel
+@LoadSupport
 class Model {
-
-    @managed
-    loadModel = new PendingTaskModel();
 
     @managed
     dimChooserModel = new DimensionChooserModel({
@@ -128,14 +124,13 @@ class Model {
     //------------------------
     // Implementation
     //------------------------
-    loadAsync() {
-        const {gridModel, loadModel, dimChooserModel} = this,
+    async doLoadAsync(loadSpec) {
+        const {gridModel, dimChooserModel} = this,
             dims = dimChooserModel.value;
 
         return XH.portfolioService
             .getPortfolioAsync(dims)
-            .then(data => gridModel.loadData(data))
-            .linkTo(loadModel);
+            .then(data => gridModel.loadData(data));
     }
 
 
