@@ -67,8 +67,7 @@ export class TreeGridPageModel {
                 },
                 renderer: millionsRenderer({
                     precision: 3,
-                    ledger: true,
-                    tooltip: true
+                    ledger: true
                 })
             }
         ]

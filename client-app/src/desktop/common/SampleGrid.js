@@ -9,7 +9,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
@@ -169,10 +169,10 @@ class Model {
                 field: 'trade_volume',
                 align: 'right',
                 width: 130,
+                tooltip: (val) => fmtNumberTooltip(val),
                 renderer: millionsRenderer({
                     precision: 1,
-                    label: true,
-                    tooltip: true
+                    label: true
                 })
             },
             {
@@ -181,11 +181,11 @@ class Model {
                 align: 'right',
                 width: 130,
                 absSort: true,
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                 renderer: numberRenderer({
                     precision: 0,
                     ledger: true,
-                    colorSpec: true,
-                    tooltip: true
+                    colorSpec: true
                 })
             },
             {
