@@ -14,7 +14,7 @@ import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/c
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
+import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 
 @HoistComponent
@@ -99,10 +99,10 @@ class Model {
                 agOptions: {
                     aggFunc: 'sum'
                 },
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                 renderer: millionsRenderer({
                     precision: 3,
-                    ledger: true,
-                    tooltip: true
+                    ledger: true
                 })
             },
             {
@@ -114,11 +114,11 @@ class Model {
                 agOptions: {
                     aggFunc: 'sum'
                 },
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                 renderer: numberRenderer({
                     precision: 0,
                     ledger: true,
-                    colorSpec: true,
-                    tooltip: true
+                    colorSpec: true
                 })
             },
             {...emptyFlexCol}

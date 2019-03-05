@@ -1,7 +1,7 @@
 import {HoistModel, XH, managed, LoadSupport} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
-import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
+import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {LocalStore} from '@xh/hoist/data';
 
@@ -60,10 +60,10 @@ export class PositionsPanelModel {
                 agOptions: {
                     aggFunc: 'sum'
                 },
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                 renderer: millionsRenderer({
                     precision: 3,
-                    ledger: true,
-                    tooltip: true
+                    ledger: true
                 })
             },
             {
@@ -75,11 +75,11 @@ export class PositionsPanelModel {
                 agOptions: {
                     aggFunc: 'sum'
                 },
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                 renderer: numberRenderer({
                     precision: 0,
                     ledger: true,
-                    colorSpec: true,
-                    tooltip: true
+                    colorSpec: true
                 })
             }
         ]

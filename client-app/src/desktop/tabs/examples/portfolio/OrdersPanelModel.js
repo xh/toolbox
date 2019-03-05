@@ -84,8 +84,7 @@ export class OrdersPanelModel {
                 align: 'right',
                 renderer: numberRenderer({
                     precision: 0,
-                    ledger: true,
-                    tooltip: true
+                    ledger: true
                 })
             },
             {

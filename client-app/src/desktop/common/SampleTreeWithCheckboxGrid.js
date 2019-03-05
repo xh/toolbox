@@ -14,7 +14,7 @@ import {checkbox, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {numberRenderer} from '@xh/hoist/format';
+import {numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 
 import './SampleTreeWithCheckboxGrid.scss';
@@ -102,11 +102,11 @@ class Model {
                 agOptions: {
                     aggFunc: 'sum'
                 },
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                 renderer: numberRenderer({
                     precision: 0,
                     ledger: true,
-                    colorSpec: true,
-                    tooltip: true
+                    colorSpec: true
                 })
             },
             {...emptyFlexCol}
