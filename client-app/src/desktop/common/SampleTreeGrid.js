@@ -13,7 +13,6 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 
@@ -74,9 +73,9 @@ class Model {
     @managed
     gridModel = new GridModel({
         treeMode: true,
-        store: new LocalStore({
+        store: {
             fields: ['id', 'name', 'pnl', 'mktVal']
-        }),
+        },
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,

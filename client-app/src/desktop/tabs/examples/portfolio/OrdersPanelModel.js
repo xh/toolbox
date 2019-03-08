@@ -1,6 +1,5 @@
 import {HoistModel, XH, LoadSupport, managed} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {LocalStore} from '@xh/hoist/data';
 import {emptyFlexCol, dateTimeCol} from '@xh/hoist/cmp/grid';
 import {numberRenderer} from '@xh/hoist/format';
 import {isNil} from 'lodash';
@@ -21,12 +20,12 @@ export class OrdersPanelModel {
 
     @managed
     gridModel = new GridModel({
-        store: new LocalStore({
+        store: {
             fields: [
                 'id', 'symbol', 'trader', 'model', 'fund', 'region', 'sector',
                 'dir', 'quantity', 'price', 'mktVal', 'time'
             ]
-        }),
+        },
         groupBy: 'dir',
         sortBy: [{colId: 'time', sort: 'desc'}],
         emptyText: 'No records found...',

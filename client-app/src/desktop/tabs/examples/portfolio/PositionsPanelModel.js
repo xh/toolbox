@@ -3,7 +3,6 @@ import {bindable} from '@xh/hoist/mobx';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {LocalStore} from '@xh/hoist/data';
 
 @HoistModel
 @LoadSupport
@@ -27,9 +26,9 @@ export class PositionsPanelModel {
     @managed
     gridModel = new GridModel({
         treeMode: true,
-        store: new LocalStore({
+        store: {
             fields: ['id', 'name', 'pnl', 'mktVal']
-        }),
+        },
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,

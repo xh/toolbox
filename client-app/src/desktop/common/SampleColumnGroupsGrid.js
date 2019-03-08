@@ -16,7 +16,6 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
 import {action, observable} from '@xh/hoist/mobx';
 
@@ -72,13 +71,13 @@ class Model {
     @managed
     gridModel = new GridModel({
         stateModel: 'toolboxGroupGrid',
-        store: new LocalStore({
+        store: {
             fields: [
                 'firstName', 'lastName', 'city', 'state', 'salary', 'projectedUnitsSold',
                 'projectedGross', 'actualUnitsSold', 'actualGross', 'retain'
             ],
             idSpec: rec => `${rec.firstName}~${rec.lastName}~${rec.city}~${rec.state}`
-        }),
+        },
         sortBy: 'lastName',
         emptyText: 'No records found...',
         enableColChooser: true,

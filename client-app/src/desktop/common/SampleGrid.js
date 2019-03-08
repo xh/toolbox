@@ -1,7 +1,6 @@
 import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {box, filler, span} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, LayoutSupport, XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
-import {LocalStore} from '@xh/hoist/data';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -119,9 +118,9 @@ class Model {
 
     @managed
     gridModel = new GridModel({
-        store: new LocalStore({
+        store: {
             fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
-        }),
+        },
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',

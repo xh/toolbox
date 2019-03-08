@@ -1,7 +1,6 @@
 import {HoistModel, XH, managed} from '@xh/hoist/core';
 import {GridModel, fileExtCol} from '@xh/hoist/cmp/grid';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {LocalStore} from '@xh/hoist/data';
 import {computed} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
@@ -17,12 +16,12 @@ export class FileManagerModel {
     
     @managed
     gridModel = new GridModel({
-        store: new LocalStore({
+        store: {
             fields: [
                 'name', 'extension', 'size', 'status', 'file'
             ],
             idSpec: 'name'
-        }),
+        },
         sortBy: 'name',
         groupBy: 'status',
         emptyText: 'No files uploaded or queued for upload...',

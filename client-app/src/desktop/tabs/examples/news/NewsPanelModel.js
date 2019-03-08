@@ -9,7 +9,6 @@ import {XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
 import {action, observable, bindable} from '@xh/hoist/mobx';
 import {uniq, isEmpty} from 'lodash';
 import {DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
-import {LocalStore} from '@xh/hoist/data';
 import {newsPanelItem} from './NewsPanelItem';
 import {fmtCompactDate} from '@xh/hoist/format';
 
@@ -21,10 +20,10 @@ export class NewsPanelModel {
 
     @managed
     viewModel = new DataViewModel({
-        store: new LocalStore({
+        store: {
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
             idSpec: 'url'
-        }),
+        },
         itemRenderer: (v, {record}) => newsPanelItem({record})
     });
 

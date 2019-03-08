@@ -8,7 +8,6 @@ import {Component} from 'react';
 import {elemFactory, HoistComponent, HoistModel, LayoutSupport, XH, managed, LoadSupport} from '@xh/hoist/core';
 import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
-import {LocalStore} from '@xh/hoist/data';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {checkbox, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -76,12 +75,12 @@ class Model {
     @managed
     gridModel = new GridModel({
         treeMode: true,
-        store: new LocalStore({
+        store: {
             fields: [
                 'id', 'name', 'pnl',
                 {name: 'enabled', type: 'bool', defaultValue: false}
             ]
-        }),
+        },
         sortBy: 'name',
         emptyText: 'No records found...',
         enableColChooser: true,

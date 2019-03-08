@@ -7,7 +7,6 @@
 
 import {managed, XH, HoistModel, LoadSupport} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
 import {DimensionChooserModel} from '@xh/hoist/mobile/cmp/dimensionchooser';
 
@@ -33,9 +32,9 @@ export class TreeGridPageModel {
     gridModel = new GridModel({
         treeMode: true,
         enableColChooser: true,
-        store: new LocalStore({
+        store: {
             fields: ['id', 'name', 'pnl', 'mktVal']
-        }),
+        },
         sortBy: 'pnl|desc|abs',
         columns: [
             {

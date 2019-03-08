@@ -1,6 +1,5 @@
 import {managed, HoistModel, LoadSupport} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wait} from '@xh/hoist/promise';
@@ -16,9 +15,9 @@ export class GridPageModel {
         stateModel: 'toolboxSampleGrid',
         sortBy: ['profit_loss|desc|abs'],
         enableColChooser: true,
-        store: new LocalStore({
+        store: {
             fields: ['company', 'city', 'trade_volume', 'profit_loss']
-        }),
+        },
         columns: [
             {
                 field: 'company',
