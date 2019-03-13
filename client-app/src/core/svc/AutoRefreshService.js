@@ -16,19 +16,15 @@ export class AutoRefreshService {
     // Implementation
     //---------------------
     initAsync() {
-        this.addReaction({
-            track: () => this.interval,
-            run: this.adjustRefreshTimer
-        });
-        this.adjustRefreshTimer();
-    }
-
-    adjustRefreshTimer() {
-        XH.setPref('autoRefreshSecs', this.interval);
-        XH.safeDestroy(this.timer);
         this.timer = Timer.create({
             runFn: () => XH.refreshContextModel.autoRefreshAsync(),
             interval: this.interval * SECONDS
         });
+        this.addReaction({track: () => this.interval, run: this.adjustTimer});
+    }
+
+    adjustTimer() {
+        XH.setPref('autoRefreshSecs', this.interval);
+        this.timer.setInterval(this.interval * SECONDS);
     }
 }
