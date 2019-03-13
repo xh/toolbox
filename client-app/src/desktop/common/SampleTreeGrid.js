@@ -73,9 +73,6 @@ class Model {
     @managed
     gridModel = new GridModel({
         treeMode: true,
-        store: {
-            fields: ['id', 'name', 'pnl', 'mktVal']
-        },
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,

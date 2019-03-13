@@ -7,7 +7,6 @@ import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
-import {LocalStore} from '@xh/hoist/data';
 
 import {wrapper} from '../../common/Wrapper';
 import {dataViewItem} from './DataViewItem';
@@ -55,9 +54,10 @@ class Model {
 
     @managed
     dataViewModel = new DataViewModel({
-        store: new LocalStore({
+        store: {
             fields: ['id', 'name', 'city', 'value']
-        }),
+        },
+        emptyText: 'No companies found...',
         itemRenderer: (v, {record}) => dataViewItem({record})
     });
     

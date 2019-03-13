@@ -118,9 +118,6 @@ class Model {
 
     @managed
     gridModel = new GridModel({
-        store: {
-            fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
-        },
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
