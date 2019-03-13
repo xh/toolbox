@@ -20,12 +20,6 @@ export class OrdersPanelModel {
 
     @managed
     gridModel = new GridModel({
-        store: {
-            fields: [
-                'id', 'symbol', 'trader', 'model', 'fund', 'region', 'sector',
-                'dir', 'quantity', 'price', 'mktVal', 'time'
-            ]
-        },
         groupBy: 'dir',
         sortBy: [{colId: 'time', sort: 'desc'}],
         emptyText: 'No records found...',
