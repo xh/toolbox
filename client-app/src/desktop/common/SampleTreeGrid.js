@@ -28,26 +28,48 @@ class SampleTreeGrid extends Component {
 
         return panel({
             tbar: toolbar(
+                refreshButton({model}),
+                toolbarSep(),
                 dimensionChooser({
                     model: model.dimChooserModel
-                })
+                }),
+                filler(),
+                storeCountLabel({gridModel}),
+                storeFilterField({gridModel}),
+                colChooserButton({gridModel}),
+                exportButton({gridModel})
             ),
             item: grid({model: gridModel}),
             mask: model.loadModel,
             bbar: toolbar(
-                refreshButton({model}),
-                toolbarSep(),
+                filler(),
                 switchInput({
                     model: gridModel,
                     bind: 'compact',
                     label: 'Compact',
                     labelAlign: 'left'
                 }),
-                filler(),
-                storeCountLabel({gridModel, units: 'companies'}),
-                storeFilterField({gridModel}),
-                colChooserButton({gridModel}),
-                exportButton({gridModel})
+                toolbarSep(),
+                switchInput({
+                    model: gridModel,
+                    bind: 'stripeRows',
+                    label: 'Striped',
+                    labelAlign: 'left'
+                }),
+                toolbarSep(),
+                switchInput({
+                    model: gridModel,
+                    bind: 'rowBorders',
+                    label: 'Borders',
+                    labelAlign: 'left'
+                }),
+                toolbarSep(),
+                switchInput({
+                    model: gridModel,
+                    bind: 'highlightOnHover',
+                    label: 'Hover highlight',
+                    labelAlign: 'left'
+                })
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()
