@@ -53,13 +53,6 @@ class SampleGrid extends Component {
                         width: 120,
                         enableFilter: false
                     }),
-                    toolbarSep(),
-                    switchInput({
-                        model: gridModel,
-                        bind: 'compact',
-                        label: 'Compact',
-                        labelAlign: 'left'
-                    }),
                     filler(),
                     storeCountLabel({gridModel, unit: 'companies'}),
                     storeFilterField({gridModel}),
@@ -70,7 +63,35 @@ class SampleGrid extends Component {
             bbar: toolbar({
                 items: [
                     Icon.info(),
-                    box(`Current selection: ${selText}`)
+                    box(`Current selection: ${selText}`),
+                    filler(),
+                    switchInput({
+                        model: gridModel,
+                        bind: 'compact',
+                        label: 'Compact',
+                        labelAlign: 'left'
+                    }),
+                    toolbarSep(),
+                    switchInput({
+                        model: gridModel,
+                        bind: 'stripeRows',
+                        label: 'Striped',
+                        labelAlign: 'left'
+                    }),
+                    toolbarSep(),
+                    switchInput({
+                        model: gridModel,
+                        bind: 'rowBorders',
+                        label: 'Borders',
+                        labelAlign: 'left'
+                    }),
+                    toolbarSep(),
+                    switchInput({
+                        model: gridModel,
+                        bind: 'highlightOnHover',
+                        label: 'Hover highlight',
+                        labelAlign: 'left'
+                    })
                 ]
             }),
             className: this.getClassName(),

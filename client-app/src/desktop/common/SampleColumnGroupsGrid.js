@@ -32,27 +32,50 @@ class SampleColumnGroupsGrid extends Component {
         return panel({
             item: grid({model: gridModel}),
             mask: loadModel,
-            bbar: toolbar(
+            tbar: toolbar(
                 refreshButton({model}),
                 toolbarSep(),
                 switchInput({
-                    model: gridModel,
+                    model: model,
                     bind: 'groupRows',
                     label: 'Group rows:',
                     labelAlign: 'left'
                 }),
-                toolbarSep(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'compact',
-                    label: 'Compact mode:',
-                    labelAlign: 'left'
-                }),
                 filler(),
-                storeCountLabel({gridModel, unit: 'salesperson'}),
+                storeCountLabel({gridModel}),
                 storeFilterField({gridModel}),
                 colChooserButton({gridModel}),
                 exportButton({gridModel})
+            ),
+            bbar: toolbar(
+                filler(),
+                switchInput({
+                    model: gridModel,
+                    bind: 'compact',
+                    label: 'Compact',
+                    labelAlign: 'left'
+                }),
+                toolbarSep(),
+                switchInput({
+                    model: gridModel,
+                    bind: 'stripeRows',
+                    label: 'Striped',
+                    labelAlign: 'left'
+                }),
+                toolbarSep(),
+                switchInput({
+                    model: gridModel,
+                    bind: 'rowBorders',
+                    label: 'Borders',
+                    labelAlign: 'left'
+                }),
+                toolbarSep(),
+                switchInput({
+                    model: gridModel,
+                    bind: 'highlightOnHover',
+                    label: 'Hover highlight',
+                    labelAlign: 'left'
+                })
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()
