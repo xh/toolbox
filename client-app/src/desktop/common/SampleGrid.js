@@ -3,7 +3,7 @@ import {box, filler, span} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, LayoutSupport, XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
-import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -13,6 +13,9 @@ import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {Component} from 'react';
+import {truncate} from 'lodash';
+
+import {gridStyleSwitches} from './GridStyleSwitches';
 
 @HoistComponent
 @LayoutSupport
@@ -26,11 +29,11 @@ class SampleGrid extends Component {
             {selection} = gridModel,
             selCount = selection.length;
 
-        let selText = 'None';
+        let selText = 'No selection';
         if (selCount == 1) {
-            selText = `${selection[0].company} (${selection[0].city})`;
+            selText = truncate(selection[0].company, {length: 20});
         } else if (selCount > 1) {
-            selText = `${selCount} companies`;
+            selText = `Selected ${selCount} companies`;
         }
 
         return panel({
@@ -63,35 +66,9 @@ class SampleGrid extends Component {
             bbar: toolbar({
                 items: [
                     Icon.info(),
-                    box(`Current selection: ${selText}`),
+                    box(selText),
                     filler(),
-                    switchInput({
-                        model: gridModel,
-                        bind: 'compact',
-                        label: 'Compact',
-                        labelAlign: 'left'
-                    }),
-                    toolbarSep(),
-                    switchInput({
-                        model: gridModel,
-                        bind: 'stripeRows',
-                        label: 'Striped',
-                        labelAlign: 'left'
-                    }),
-                    toolbarSep(),
-                    switchInput({
-                        model: gridModel,
-                        bind: 'rowBorders',
-                        label: 'Borders',
-                        labelAlign: 'left'
-                    }),
-                    toolbarSep(),
-                    switchInput({
-                        model: gridModel,
-                        bind: 'highlightOnHover',
-                        label: 'Hover highlight',
-                        labelAlign: 'left'
-                    })
+                    gridStyleSwitches({gridModel})
                 ]
             }),
             className: this.getClassName(),

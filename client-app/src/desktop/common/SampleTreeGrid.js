@@ -11,10 +11,11 @@ import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
+
+import {gridStyleSwitches} from './GridStyleSwitches';
 
 @HoistComponent
 @LayoutSupport
@@ -43,33 +44,8 @@ class SampleTreeGrid extends Component {
             mask: model.loadModel,
             bbar: toolbar(
                 filler(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'compact',
-                    label: 'Compact',
-                    labelAlign: 'left'
-                }),
-                toolbarSep(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'stripeRows',
-                    label: 'Striped',
-                    labelAlign: 'left'
-                }),
-                toolbarSep(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'rowBorders',
-                    label: 'Borders',
-                    labelAlign: 'left'
-                }),
-                toolbarSep(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'highlightOnHover',
-                    label: 'Hover highlight',
-                    labelAlign: 'left'
-                })
+                gridStyleSwitches({gridModel})
+
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()
