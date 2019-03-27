@@ -34,8 +34,8 @@ export class GridStyleSwitches extends Component {
             toolbarSep(),
             switchInput({
                 model: gridModel,
-                bind: 'highlightOnHover',
-                label: 'Hover highlight',
+                bind: 'showHover',
+                label: 'Hover',
                 labelAlign: 'left'
             }),
             toolbarSep(),
