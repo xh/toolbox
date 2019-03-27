@@ -1,4 +1,4 @@
-import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
+import {HoistModel, LoadSupport} from '@xh/hoist/core';
 import {observable, settable} from '@xh/hoist/mobx';
 import {find} from 'lodash';
 
