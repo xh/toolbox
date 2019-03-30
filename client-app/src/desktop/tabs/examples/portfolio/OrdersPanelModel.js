@@ -25,13 +25,16 @@ export class OrdersPanelModel {
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
+        rowBorders: true,
+        showHover: true,
         compact: XH.appModel.useCompactGrids,
         stateModel: 'portfolio-orders-grid',
         columns: [
             {
                 field: 'symbol',
                 headerName: 'Instrument',
-                width: 100
+                width: 100,
+                pinned: true
             },
             {
                 field: 'trader',

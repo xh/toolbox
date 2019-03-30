@@ -15,11 +15,11 @@
   },
   "dependencies": {
     "@xh/hoist": "^21.0.0-SNAPSHOT",
-    "react": "~16.8.4",
-    "react-dom": "~16.8.4",
+    "react": "~16.8.5",
+    "react-dom": "~16.8.5",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "3.6.0"
+    "@xh/hoist-dev-utils": "3.7.0"
   }
 }

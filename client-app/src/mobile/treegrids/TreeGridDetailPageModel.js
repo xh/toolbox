@@ -15,6 +15,5 @@ export class TreeGridDetailPageModel {
     async doLoadAsync(loadSpec) {
         const record = await XH.portfolioService.getPositionAsync(this.id);
         this.setRecord(record);
-        XH.appModel.navigatorModel.setTitle(record.name);
     }
 }

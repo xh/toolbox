@@ -18,6 +18,7 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {action, observable} from '@xh/hoist/mobx';
+import {gridStyleSwitches} from './GridStyleSwitches';
 
 @HoistComponent
 @LayoutSupport
@@ -49,33 +50,7 @@ class SampleColumnGroupsGrid extends Component {
             ),
             bbar: toolbar(
                 filler(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'compact',
-                    label: 'Compact',
-                    labelAlign: 'left'
-                }),
-                toolbarSep(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'stripeRows',
-                    label: 'Striped',
-                    labelAlign: 'left'
-                }),
-                toolbarSep(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'rowBorders',
-                    label: 'Borders',
-                    labelAlign: 'left'
-                }),
-                toolbarSep(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'highlightOnHover',
-                    label: 'Hover highlight',
-                    labelAlign: 'left'
-                })
+                gridStyleSwitches({gridModel})
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()

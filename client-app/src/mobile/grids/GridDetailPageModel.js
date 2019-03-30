@@ -1,4 +1,4 @@
-import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
+import {HoistModel, LoadSupport} from '@xh/hoist/core';
 import {observable, settable} from '@xh/hoist/mobx';
 import {find} from 'lodash';
 
@@ -18,6 +18,5 @@ export class GridDetailPageModel {
     async doLoadAsync() {
         const record = find(companyTrades, {id: parseInt(this.id)});
         this.setRecord(record);
-        XH.appModel.navigatorModel.setTitle(record.company);
     }
 }

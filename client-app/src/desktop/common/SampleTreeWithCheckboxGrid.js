@@ -9,7 +9,7 @@ import {elemFactory, HoistComponent, HoistModel, LayoutSupport, XH, managed, Loa
 import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {checkbox, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -17,6 +17,7 @@ import {numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 
 import './SampleTreeWithCheckboxGrid.scss';
+import {gridStyleSwitches} from './GridStyleSwitches';
 
 @HoistComponent
 @LayoutSupport
@@ -45,33 +46,7 @@ class SampleTreeWithCheckboxGrid extends Component {
             mask: model.loadModel,
             bbar: toolbar(
                 filler(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'compact',
-                    label: 'Compact',
-                    labelAlign: 'left'
-                }),
-                toolbarSep(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'stripeRows',
-                    label: 'Striped',
-                    labelAlign: 'left'
-                }),
-                toolbarSep(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'rowBorders',
-                    label: 'Borders',
-                    labelAlign: 'left'
-                }),
-                toolbarSep(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'highlightOnHover',
-                    label: 'Hover highlight',
-                    labelAlign: 'left'
-                })
+                gridStyleSwitches({gridModel})
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()
