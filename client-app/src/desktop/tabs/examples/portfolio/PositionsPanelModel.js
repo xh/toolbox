@@ -30,6 +30,8 @@ export class PositionsPanelModel {
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
+        rowBorders: true,
+        showHover: true,
         compact: XH.appModel.useCompactGrids,
         stateModel: 'portfolio-positions-grid',
         columns: [
