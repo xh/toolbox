@@ -77,7 +77,6 @@ export class AppModel {
             {
                 name: 'default',
                 path: '/app',
-                forwardTo: 'default.home',
                 children: [
                     {
                         name: 'home',
@@ -86,7 +85,6 @@ export class AppModel {
                     {
                         name: 'containers',
                         path: '/containers',
-                        forwardTo: 'default.containers.hbox',
                         children: [
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
@@ -98,7 +96,6 @@ export class AppModel {
                     {
                         name: 'grids',
                         path: '/grids',
-                        forwardTo: 'default.grids.standard',
                         children: [
                             {name: 'standard', path: '/standard'},
                             {name: 'tree', path: '/tree'},
@@ -112,7 +109,6 @@ export class AppModel {
                     {
                         name: 'forms',
                         path: '/forms',
-                        forwardTo: 'default.forms.controls',
                         children: [
                             {name: 'controls', path: '/controls'},
                             {name: 'selects', path: '/selects'},
@@ -122,7 +118,6 @@ export class AppModel {
                     {
                         name: 'charts',
                         path: '/charts',
-                        forwardTo: 'default.charts.olhc',
                         children: [
                             {name: 'olhc', path: '/olhc'},
                             {name: 'line', path: '/line'}
@@ -135,7 +130,6 @@ export class AppModel {
                     {
                         name: 'formats',
                         path: '/formats',
-                        forwardTo: 'default.formats.number',
                         children: [
                             {name: 'number', path: '/number'},
                             {name: 'date', path: '/date'}
@@ -144,7 +138,6 @@ export class AppModel {
                     {
                         name: 'other',
                         path: '/other',
-                        forwardTo: 'default.other.mask',
                         children: [
                             {name: 'mask', path: '/mask'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
@@ -156,7 +149,6 @@ export class AppModel {
                     {
                         name: 'examples',
                         path: '/examples',
-                        forwardTo: 'default.examples.portfolio',
                         children: [
                             {name: 'portfolio', path: '/portfolio'},
                             {name: 'news', path: '/news'},
