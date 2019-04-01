@@ -92,7 +92,8 @@ export class AppModel {
                             {name: 'vbox', path: '/vbox'},
                             {name: 'panel', path: '/panel'},
                             {name: 'tabPanel', path: '/tabPanel'},
-                            {name: 'toolbar', path: '/toolbar'}
+                            {name: 'toolbar', path: '/toolbar'},
+                            {name: 'dock', path: '/dock'}
                         ]
                     },
                     {

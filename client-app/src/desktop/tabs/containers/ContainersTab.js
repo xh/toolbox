@@ -7,6 +7,7 @@ import {VBoxContainerPanel} from './VBoxContainerPanel';
 import {PanelContainerPanel} from './PanelContainerPanel';
 import {TabPanelContainerPanel} from './TabPanelContainerPanel';
 import {ToolbarPanel} from './ToolbarPanel';
+import {DockContainerPanel} from './DockContainerPanel';
 
 import './ContainersTab.scss';
 
@@ -22,7 +23,8 @@ export class ContainersTab extends Component {
                     {id: 'vbox', title: 'VBox', content: VBoxContainerPanel},
                     {id: 'panel', content: PanelContainerPanel},
                     {id: 'tabPanel', title: 'TabContainer', content: TabPanelContainerPanel},
-                    {id: 'toolbar', content: ToolbarPanel}
+                    {id: 'toolbar', content: ToolbarPanel},
+                    {id: 'dock', title: 'DockContainer', content: DockContainerPanel}
                 ]
             },
             className: 'toolbox-tab'
