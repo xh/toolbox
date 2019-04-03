@@ -2,7 +2,7 @@
  * This file belongs to Hoist, an application development toolkit
  * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
  *
- * Copyright © 2018 Extremely Heavy Industries Inc.
+ * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
 import {elemFactory, HoistComponent, HoistModel, LayoutSupport, LoadSupport, XH, managed} from '@xh/hoist/core';
@@ -11,16 +11,14 @@ import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {LocalStore} from '@xh/hoist/data';
-import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
+
+import {gridStyleSwitches} from './GridStyleSwitches';
 
 @HoistComponent
 @LayoutSupport
-@LoadSupport
 class SampleTreeGrid extends Component {
 
     model = new Model();
@@ -31,26 +29,23 @@ class SampleTreeGrid extends Component {
 
         return panel({
             tbar: toolbar(
+                refreshButton({model}),
+                toolbarSep(),
                 dimensionChooser({
                     model: model.dimChooserModel
-                })
+                }),
+                filler(),
+                storeCountLabel({gridModel}),
+                storeFilterField({gridModel}),
+                colChooserButton({gridModel}),
+                exportButton({gridModel})
             ),
             item: grid({model: gridModel}),
             mask: model.loadModel,
             bbar: toolbar(
-                refreshButton({model}),
-                toolbarSep(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'compact',
-                    label: 'Compact',
-                    labelAlign: 'left'
-                }),
                 filler(),
-                storeCountLabel({gridModel, units: 'companies'}),
-                storeFilterField({gridModel}),
-                colChooserButton({gridModel}),
-                exportButton({gridModel})
+                gridStyleSwitches({gridModel})
+
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()
@@ -61,10 +56,8 @@ export const sampleTreeGrid = elemFactory(SampleTreeGrid);
 
 
 @HoistModel
+@LoadSupport
 class Model {
-    @managed
-    loadModel = new PendingTaskModel();
-
     @managed
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
@@ -78,9 +71,6 @@ class Model {
     @managed
     gridModel = new GridModel({
         treeMode: true,
-        store: new LocalStore({
-            fields: ['id', 'name', 'pnl', 'mktVal']
-        }),
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
@@ -96,16 +86,17 @@ class Model {
             {
                 field: 'mktVal',
                 headerName: 'Mkt Value (m)',
+                headerTooltip: 'Market value (in millions USD)',
                 align: 'right',
                 width: 130,
                 absSort: true,
                 agOptions: {
                     aggFunc: 'sum'
                 },
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                 renderer: millionsRenderer({
                     precision: 3,
-                    ledger: true,
-                    tooltip: true
+                    ledger: true
                 })
             },
             {
@@ -117,11 +108,11 @@ class Model {
                 agOptions: {
                     aggFunc: 'sum'
                 },
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                 renderer: numberRenderer({
                     precision: 0,
                     ledger: true,
-                    colorSpec: true,
-                    tooltip: true
+                    colorSpec: true
                 })
             },
             {...emptyFlexCol}
@@ -135,14 +126,13 @@ class Model {
         });
     }
 
-    loadAsync() {
-        const {gridModel, loadModel, dimChooserModel} = this,
+    async doLoadAsync(loadSpec) {
+        const {gridModel, dimChooserModel} = this,
             dims = dimChooserModel.value;
 
         return XH.portfolioService
             .getPortfolioAsync(dims)
-            .then(data => gridModel.loadData(data))
-            .linkTo(loadModel);
+            .then(data => gridModel.loadData(data));
     }
 }
 

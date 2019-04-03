@@ -13,7 +13,7 @@ export class LineChartPanel extends Component {
     model = new LineChartModel();
 
     render() {
-        const model = this.model,
+        const {model} = this,
             {companyMap} = model;
         return wrapper(
             panel({

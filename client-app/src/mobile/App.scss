@@ -1,9 +1,4 @@
-.toolbox-page .page__content {
-  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21"><rect x="0" y="0" width="20" height="20" style="fill: #F5F5F5;" /></svg>') !important;
-  .xh-dark & {
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21"><rect x="0" y="0" width="20" height="20" style="fill: #212121;" /></svg>') !important;
-  }
-
+.toolbox-page {
   .toolbox-card {
     margin: var(--xh-pad-double-px);
     padding: var(--xh-pad-px);
@@ -30,16 +25,36 @@
   border-bottom: var(--xh-border-solid);
 }
 
-.toolbox-containers-page .page__content {
-  display: flex;
-  flex-direction: column;
-
-  & > .xh-hbox, & > .xh-vbox {
+.toolbox-containers-page .xh-vframe {
+  & > .xh-hbox,
+  & > .xh-vbox {
     flex: 1;
   }
 
   .toolbox-containers-box {
     border: var(--xh-border-solid);
     font-family: var(--xh-font-family-mono);
+  }
+}
+
+.toolbox-detail-page {
+  background-color: var(--xh-bg-alt) !important;
+
+  .toolbox-detail-row {
+    display: flex;
+    background-color: var(--xh-grid-bg);
+    border-bottom: var(--xh-border-solid);
+
+    &:nth-child(odd) {
+      background-color: var(--xh-grid-bg-odd);
+    }
+
+    & > div {
+      padding: var(--xh-pad-half-px) var(--xh-pad-px);
+
+      &:first-child {
+        flex: 1;
+      }
+    }
   }
 }

@@ -1,7 +1,7 @@
 import {HoistService} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {MINUTES} from '@xh/hoist/utils/datetime';
-import {sumBy, castArray, forOwn, last, sortBy, groupBy, values, find, filter, random, sample, times, round} from 'lodash';
+import {sumBy, castArray, forOwn, last, sortBy, groupBy, keys, values, find, filter, random, sample, times, round} from 'lodash';
 import moment from 'moment';
 
 @HoistService
@@ -22,11 +22,42 @@ export class PortfolioService {
     INITIAL_ORDERS = 20000;
     INITIAL_SYMBOLS = 500;
 
-    // Public API around getPositions.
-    async getPortfolioAsync(dims) {
-        await wait(300);
+    /**
+     * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
+     * @param dims
+     * @param {number} [delay] - optional delay in ms - allows masks and page transitions to fully
+     *      render before kicking off a locally compute-intensive process that could stall them.
+     * @return {Promise<Array>}
+     */
+    async getPortfolioAsync(dims, delay = 300) {
+        await wait(delay);
         this.ensureLoaded();
         return this.getPositions(castArray(dims));
+    }
+
+    /**
+     * Return a single grouped position, uniquely identified by drilldown ID.
+     * @param positionId - as generated/installed on each position returned by `getPorfolioAsync()`.
+     * @param delay - optional delay in ms, as above.
+     * @return {Promise<*>}
+     */
+    async getPositionAsync(positionId, delay = 100) {
+        await wait(delay);
+        this.ensureLoaded();
+
+        const parsedId = this.parsePositionId(positionId),
+            dims = keys(parsedId),
+            dimVals = values(parsedId);
+
+        let positions = this.getPositions(dims),
+            ret = null;
+
+        dimVals.forEach(dimVal => {
+            ret = find(positions, {name: dimVal});
+            if (ret.children) positions = ret.children;
+        });
+
+        return ret;
     }
 
     async getOrdersAsync(positionId) {

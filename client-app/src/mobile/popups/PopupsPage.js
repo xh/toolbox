@@ -10,7 +10,9 @@ export class PopupsPage extends Component {
 
     render() {
         return page({
-            className: 'toolbox-page',
+            title: 'Popups',
+            icon: Icon.comment(),
+            className: 'toolbox-page xh-tiled-bg',
             items: [
                 this.renderCard('Alert', () => {
                     XH.alert({

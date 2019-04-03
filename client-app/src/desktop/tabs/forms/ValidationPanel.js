@@ -2,7 +2,7 @@
  * This file belongs to Hoist, an application development toolkit
  * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
  *
- * Copyright © 2018 Extremely Heavy Industries Inc.
+ * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
@@ -60,20 +60,23 @@ export class ValidationPanel extends Component {
                     minimal,
                     commitOnChange
                 },
-                item: vbox(
-                    hbox(
-                        vbox({
-                            width: 300,
-                            marginRight: 30,
-                            items: this.renderLeftFields()
-                        }),
-                        vbox({
-                            width: 300,
-                            items: this.renderRightFields()
-                        })
-                    ),
-                    this.renderReferences()
-                )
+                item: vbox({
+                    width: 600,
+                    items: [
+                        hbox(
+                            vbox({
+                                flex: 1,
+                                marginRight: 30,
+                                items: this.renderLeftFields()
+                            }),
+                            vbox({
+                                flex: 1,
+                                items: this.renderRightFields()
+                            })
+                        ),
+                        this.renderReferences()
+                    ]
+                })
             })
         });
     }
@@ -82,12 +85,10 @@ export class ValidationPanel extends Component {
         return [
             formField({
                 field: 'lastName',
-                width: null,
                 item: textInput()
             }),
             formField({
                 field: 'email',
-                width: null,
                 item: textInput({
                     placeholder: 'user@company.com',
                     leftIcon: Icon.mail(),
@@ -96,14 +97,12 @@ export class ValidationPanel extends Component {
             }),
             formField({
                 field: 'region',
-                width: null,
                 item: select({
                     options: ['California', 'London', 'Montreal', 'New York']
                 })
             }),
             formField({
                 field: 'tags',
-                width: null,
                 item: select({
                     enableMulti: true,
                     enableCreate: true
@@ -141,8 +140,7 @@ export class ValidationPanel extends Component {
             }),
             formField({
                 field: 'notes',
-                width: null,
-                item: textArea()
+                item: textArea({height: 100})
             })
         ];
     }
@@ -161,14 +159,17 @@ export class ValidationPanel extends Component {
                     items: [
                         formField({
                             field: 'name',
+                            flex: 1,
                             item: textInput({placeholder: 'Full name'})
                         }),
                         formField({
                             field: 'email',
+                            flex: 1,
                             item: textInput({placeholder: 'Email'})
                         }),
                         formField({
                             field: 'relationship',
+                            flex: 1,
                             item: select({
                                 options: [
                                     {value: 'professional', label: 'Professional Contact'},
@@ -186,19 +187,18 @@ export class ValidationPanel extends Component {
             });
         });
         
-        return vbox({
-            alignItems: 'flex-start',
-            items: [
-                'References',
-                ...rows,
-                vspacer(5),
+        return vbox(
+            'References',
+            ...rows,
+            vspacer(5),
+            hbox(
                 button({
                     icon: Icon.add(),
                     text: 'Add new reference..',
                     onClick: () => references.add()
                 })
-            ]
-        });
+            )
+        );
     }
 
     renderToolbar() {

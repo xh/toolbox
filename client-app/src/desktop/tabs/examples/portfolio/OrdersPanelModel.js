@@ -1,34 +1,40 @@
-import {HoistModel, XH} from '@xh/hoist/core';
+import {HoistModel, XH, LoadSupport, managed} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {LocalStore} from '@xh/hoist/data';
 import {emptyFlexCol, dateTimeCol} from '@xh/hoist/cmp/grid';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {numberRenderer} from '@xh/hoist/format';
 import {isNil} from 'lodash';
+import {bindable} from '@xh/hoist/mobx';
 
 @HoistModel
+@LoadSupport
 export class OrdersPanelModel {
 
-    loadModel = new PendingTaskModel();
+    @bindable positionId = null;
 
+    constructor() {
+        this.addReaction({
+            track: () => this.positionId,
+            run: this.loadAsync
+        });
+    }
+
+    @managed
     gridModel = new GridModel({
-        store: new LocalStore({
-            fields: [
-                'id', 'symbol', 'trader', 'model', 'fund', 'region', 'sector',
-                'dir', 'quantity', 'price', 'mktVal', 'time'
-            ]
-        }),
         groupBy: 'dir',
         sortBy: [{colId: 'time', sort: 'desc'}],
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
+        rowBorders: true,
+        showHover: true,
         compact: XH.appModel.useCompactGrids,
+        stateModel: 'portfolio-orders-grid',
         columns: [
             {
                 field: 'symbol',
                 headerName: 'Instrument',
-                width: 100
+                width: 100,
+                pinned: true
             },
             {
                 field: 'trader',
@@ -62,6 +68,7 @@ export class OrdersPanelModel {
             {
                 field: 'dir',
                 headerName: 'B/S',
+                headerTooltip: 'Direction (Buy/Sell)',
                 chooserName: 'Direction',
                 align: 'center',
                 width: 60
@@ -73,8 +80,7 @@ export class OrdersPanelModel {
                 align: 'right',
                 renderer: numberRenderer({
                     precision: 0,
-                    ledger: true,
-                    tooltip: true
+                    ledger: true
                 })
             },
             {
@@ -100,18 +106,16 @@ export class OrdersPanelModel {
         return this.gridModel.selectedRecord;
     }
 
-    async loadOrdersForPositionAsync(posId) {
-        if (isNil(posId)) {
-            this.gridModel.loadData([]);
+    async doLoadAsync(loadSpec) {
+        const {positionId, gridModel} = this;
+
+        if (isNil(positionId)) {
+            gridModel.loadData([]);
             return;
         }
 
-        return XH.portfolioService.getOrdersAsync(posId)
-            .then(orders => {
-                this.gridModel.loadData(orders);
-                if (orders.length > 0) {
-                    this.gridModel.selectFirst();
-                }
-            }).linkTo(this.loadModel);
+        const orders = await XH.portfolioService.getOrdersAsync(positionId);
+        gridModel.loadData(orders);
+        if (orders.length > 0 && !this.selectedRecord) gridModel.selectFirst();
     }
 }

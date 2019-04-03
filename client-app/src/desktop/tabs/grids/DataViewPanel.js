@@ -7,14 +7,12 @@ import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
-import {LocalStore} from '@xh/hoist/data';
 
 import {wrapper} from '../../common/Wrapper';
 import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
 
 @HoistComponent
-@LoadSupport
 export class DataViewPanel extends Component {
 
     model = new Model();
@@ -51,17 +49,19 @@ export class DataViewPanel extends Component {
 }
 
 @HoistModel
+@LoadSupport
 class Model {
 
     @managed
     dataViewModel = new DataViewModel({
-        store: new LocalStore({
+        store: {
             fields: ['id', 'name', 'city', 'value']
-        }),
+        },
+        emptyText: 'No companies found...',
         itemRenderer: (v, {record}) => dataViewItem({record})
     });
     
-    loadAsync() {
+    async doLoadAsync(loadSpec) {
         const companies = XH.companyService.randomCompanies,
             min = -1000,
             max = 1000;
@@ -69,6 +69,7 @@ class Model {
         this.dataViewModel.store.loadData(companies.map(it => {
             const randVal = Math.random() * (max - min) + min;
             return {
+                id: it.id,
                 name: it.name,
                 city: it.city,
                 value: randVal

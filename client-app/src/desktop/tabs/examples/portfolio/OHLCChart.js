@@ -2,7 +2,7 @@
  * This file belongs to Hoist, an application development toolkit
  * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
  *
- * Copyright © 2018 Extremely Heavy Industries Inc.
+ * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
 import {elemFactory, HoistComponent, LayoutSupport} from '@xh/hoist/core/index';
@@ -14,11 +14,11 @@ import {chart} from '@xh/hoist/desktop/cmp/chart';
 export class OHLCChart extends Component {
 
     render() {
-        const {olhcChartModel, loadModel} = this.model;
+        const {model} = this;
 
         return panel({
-            item: chart({model: olhcChartModel}),
-            mask: loadModel,
+            item: chart({model: model.chartModel}),
+            mask: model.loadModel,
             className: this.getClassName(),
             ...this.getLayoutProps()
         });

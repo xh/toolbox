@@ -1,12 +1,15 @@
 import {Component} from 'react';
-import {XH, HoistComponent, elemFactory, LoadSupport} from '@xh/hoist/core';
+import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {grid} from '@xh/hoist/cmp/grid';
+import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
+import {filler} from '@xh/hoist/cmp/layout';
+import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
+import {Icon} from '@xh/hoist/icon';
 
 import {GridPageModel} from './GridPageModel';
 
 @HoistComponent
-@LoadSupport
 export class GridPage extends Component {
 
     model = new GridPageModel();
@@ -16,16 +19,23 @@ export class GridPage extends Component {
             {gridModel, loadModel} = model;
 
         return page({
-            loadModel,
+            title: 'Grids',
+            icon: Icon.gridPanel(),
+            mask: loadModel,
             item: grid({
                 model: gridModel,
                 onRowClicked: (e) => {
-                    XH.toast({
-                        message: `${e.data.company} tapped!`,
-                        timeout: 1000
-                    });
+                    const {id} = e.data.raw;
+                    XH.appendRoute('gridDetail', {id});
                 }
-            })
+            }),
+            bbar: toolbar(
+                filler(),
+                colChooserButton({
+                    text: 'Choose Columns',
+                    model: gridModel
+                })
+            )
         });
     }
 }

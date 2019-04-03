@@ -4,10 +4,10 @@ import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
  * This file belongs to Hoist, an application development toolkit
  * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
  *
- * Copyright © 2018 Extremely Heavy Industries Inc.
+ * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistComponent, LayoutSupport, LoadSupport} from '@xh/hoist/core/index';
+import {elemFactory, HoistComponent, LayoutSupport} from '@xh/hoist/core/index';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -19,7 +19,6 @@ import {grid} from '@xh/hoist/cmp/grid';
 
 @HoistComponent
 @LayoutSupport
-@LoadSupport
 export class PositionsPanel extends Component {
 
     render() {

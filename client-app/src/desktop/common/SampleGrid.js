@@ -1,24 +1,24 @@
 import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {box, filler, span} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent, LayoutSupport, LoadSupport, XH, HoistModel, managed} from '@xh/hoist/core';
-import {LocalStore} from '@xh/hoist/data';
+import {elemFactory, HoistComponent, LayoutSupport, XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
-import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {Component} from 'react';
+import {truncate} from 'lodash';
+
+import {gridStyleSwitches} from './GridStyleSwitches';
 
 @HoistComponent
 @LayoutSupport
-@LoadSupport
 class SampleGrid extends Component {
 
     model = new Model();
@@ -29,11 +29,11 @@ class SampleGrid extends Component {
             {selection} = gridModel,
             selCount = selection.length;
 
-        let selText = 'None';
+        let selText = 'No selection';
         if (selCount == 1) {
-            selText = `${selection[0].company} (${selection[0].city})`;
+            selText = truncate(selection[0].company, {length: 20});
         } else if (selCount > 1) {
-            selText = `${selCount} companies`;
+            selText = `Selected ${selCount} companies`;
         }
 
         return panel({
@@ -56,13 +56,6 @@ class SampleGrid extends Component {
                         width: 120,
                         enableFilter: false
                     }),
-                    toolbarSep(),
-                    switchInput({
-                        model: gridModel,
-                        bind: 'compact',
-                        label: 'Compact',
-                        labelAlign: 'left'
-                    }),
                     filler(),
                     storeCountLabel({gridModel, unit: 'companies'}),
                     storeFilterField({gridModel}),
@@ -73,7 +66,9 @@ class SampleGrid extends Component {
             bbar: toolbar({
                 items: [
                     Icon.info(),
-                    box(`Current selection: ${selText}`)
+                    box(selText),
+                    filler(),
+                    gridStyleSwitches({gridModel})
                 ]
             }),
             className: this.getClassName(),
@@ -85,11 +80,9 @@ export const sampleGrid = elemFactory(SampleGrid);
 
 
 @HoistModel
+@LoadSupport
 class Model {
     @observable groupBy = false;
-
-    @managed
-    loadModel = new PendingTaskModel();
 
     viewDetailsAction = {
         text: 'View Details',
@@ -123,9 +116,6 @@ class Model {
 
     @managed
     gridModel = new GridModel({
-        store: new LocalStore({
-            fields: ['id', 'company', 'active', 'city', 'trade_volume', 'profit_loss']
-        }),
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
@@ -173,10 +163,10 @@ class Model {
                 field: 'trade_volume',
                 align: 'right',
                 width: 130,
+                tooltip: (val) => fmtNumberTooltip(val),
                 renderer: millionsRenderer({
                     precision: 1,
-                    label: true,
-                    tooltip: true
+                    label: true
                 })
             },
             {
@@ -185,11 +175,11 @@ class Model {
                 align: 'right',
                 width: 130,
                 absSort: true,
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                 renderer: numberRenderer({
                     precision: 0,
                     ledger: true,
-                    colorSpec: true,
-                    tooltip: true
+                    colorSpec: true
                 })
             },
             {
@@ -203,10 +193,9 @@ class Model {
         ]
     });
     
-    loadAsync() {
+    async doLoadAsync(loadSpec) {
         return wait(250)
-            .then(() => this.gridModel.loadData(XH.tradeService.generateTrades()))
-            .linkTo(this.loadModel);
+            .then(() => this.gridModel.loadData(XH.tradeService.generateTrades()));
     }
 
     showInfoToast(rec) {

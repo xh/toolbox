@@ -2,11 +2,11 @@
  * This file belongs to Hoist, an application development toolkit
  * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
  *
- * Copyright © 2018 Extremely Heavy Industries Inc.
+ * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 
 import React, {Component} from 'react';
-import {HoistComponent, LoadSupport} from '@xh/hoist/core/index';
+import {HoistComponent} from '@xh/hoist/core/index';
 import {NewsPanelModel} from './NewsPanelModel';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -21,7 +21,6 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import './NewsPanelItem.scss';
 
 @HoistComponent
-@LoadSupport
 export class NewsPanel extends Component {
 
     model = new NewsPanelModel();

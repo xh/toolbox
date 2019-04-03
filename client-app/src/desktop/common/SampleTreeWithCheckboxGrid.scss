@@ -11,17 +11,15 @@
   }
 }
 
-.sample-tree-checkbox-grid.xh-grid-compact {
-    .ag-group-value {
-      .ag-react-container {
-        .bp3-control.bp3-checkbox {
-          input:checked ~ .bp3-control-indicator::before,
-          input:indeterminate ~ .bp3-control-indicator::before {
-            background-position: 0px 15px;
-          }
+.sample-tree-checkbox-grid.xh-grid--compact {
+  .ag-group-value {
+    .ag-react-container {
+      .bp3-control.bp3-checkbox {
+        input:checked ~ .bp3-control-indicator::before,
+        input:indeterminate ~ .bp3-control-indicator::before {
+          background-position: 0px 15px;
         }
       }
     }
   }
-
-
+}

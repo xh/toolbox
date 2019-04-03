@@ -2,10 +2,10 @@
  * This file belongs to Hoist, an application development toolkit
  * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
  *
- * Copyright © 2018 Extremely Heavy Industries Inc.
+ * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistModel, HoistComponent, LayoutSupport, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {elemFactory, HoistModel, HoistComponent, LoadSupport, LayoutSupport, managed, XH} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
@@ -16,14 +16,12 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {LocalStore} from '@xh/hoist/data';
 import {numberRenderer} from '@xh/hoist/format';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {action, observable} from '@xh/hoist/mobx';
+import {gridStyleSwitches} from './GridStyleSwitches';
 
 @HoistComponent
 @LayoutSupport
-@LoadSupport
 class SampleColumnGroupsGrid extends Component {
 
     model = new Model();
@@ -35,27 +33,24 @@ class SampleColumnGroupsGrid extends Component {
         return panel({
             item: grid({model: gridModel}),
             mask: loadModel,
-            bbar: toolbar(
+            tbar: toolbar(
                 refreshButton({model}),
                 toolbarSep(),
                 switchInput({
-                    model: gridModel,
+                    model: model,
                     bind: 'groupRows',
                     label: 'Group rows:',
                     labelAlign: 'left'
                 }),
-                toolbarSep(),
-                switchInput({
-                    model: gridModel,
-                    bind: 'compact',
-                    label: 'Compact mode:',
-                    labelAlign: 'left'
-                }),
                 filler(),
-                storeCountLabel({gridModel, unit: 'salesperson'}),
+                storeCountLabel({gridModel}),
                 storeFilterField({gridModel}),
                 colChooserButton({gridModel}),
                 exportButton({gridModel})
+            ),
+            bbar: toolbar(
+                filler(),
+                gridStyleSwitches({gridModel})
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()
@@ -66,22 +61,21 @@ export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
 
 
 @HoistModel
+@LoadSupport
 class Model {
 
     @observable groupRows = false;
 
     @managed
-    loadModel = new PendingTaskModel();
-
-    @managed
     gridModel = new GridModel({
         stateModel: 'toolboxGroupGrid',
-        store: new LocalStore({
+        store: {
             fields: [
                 'firstName', 'lastName', 'city', 'state', 'salary', 'projectedUnitsSold',
                 'projectedGross', 'actualUnitsSold', 'actualGross', 'retain'
-            ]
-        }),
+            ],
+            idSpec: rec => `${rec.firstName}~${rec.lastName}~${rec.city}~${rec.state}`
+        },
         sortBy: 'lastName',
         emptyText: 'No records found...',
         enableColChooser: true,
@@ -118,6 +112,11 @@ class Model {
                         headerName: 'Last',
                         width: 100,
                         chooserName: 'Last Name'
+                    },
+                    {
+                        field: 'city',
+                        width: 120,
+                        hidden: true
                     },
                     {
                         field: 'state',
@@ -192,10 +191,9 @@ class Model {
     //------------------------
     // Implementation
     //------------------------
-    loadAsync() {
+    async doLoadAsync(loadSpec) {
         return wait(250)
-            .then(() => this.gridModel.loadData(XH.salesService.generateSales()))
-            .linkTo(this.loadModel);
+            .then(() => this.gridModel.loadData(XH.salesService.generateSales()));
     }
 
     showRecToast(rec) {
