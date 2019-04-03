@@ -127,7 +127,7 @@ export class FileManagerModel {
                 url: 'fileManager/upload',
                 method: 'POST',
                 body: formData,
-                headers: new Headers()
+                headers: {'Content-Type': null}
             });
         }
 
