@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
-import {div, span, filler, vbox} from '@xh/hoist/cmp/layout';
+import {div, filler, vbox} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
