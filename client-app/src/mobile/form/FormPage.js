@@ -123,13 +123,16 @@ export class FormPage extends Component {
 
     renderToolbar() {
         const {model} = this;
-        return toolbar(
-            switchInput({model: model.formModel, bind: 'readonly'}),
-            span('Read-only'),
-            filler(),
-            switchInput({model, bind: 'minimal'}),
-            span('Minimal validation'),
-        );
+        return toolbar({
+            height: 38,
+            items: [
+                filler(),
+                label('Read-only'),
+                switchInput({model: model.formModel, bind: 'readonly'}),
+                label('Minimal validation'),
+                switchInput({model, bind: 'minimal'})
+            ]
+        });
     }
 }
 export const formPage = elemFactory(FormPage);
