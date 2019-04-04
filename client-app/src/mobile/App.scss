@@ -41,6 +41,7 @@
   .toolbox-detail-row {
     display: flex;
     background-color: var(--xh-grid-bg);
+    font-size: var(--xh-grid-font-size-px);
 
     &:nth-child(even) {
       background-color: var(--xh-grid-bg-odd);
