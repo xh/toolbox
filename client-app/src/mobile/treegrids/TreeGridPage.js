@@ -32,17 +32,14 @@ export class TreeGridPage extends Component {
             item: grid({
                 model: gridModel,
                 onRowClicked: (e) => {
-                    const {id} = e.data.raw;
+                    const id = encodeURIComponent(e.data.raw.id);
                     XH.appendRoute('treeGridDetail', {id});
                 }
             }),
             bbar: toolbar(
                 dimensionChooser({model: dimensionChooserModel}),
                 filler(),
-                colChooserButton({
-                    text: 'Choose Columns',
-                    model: gridModel
-                })
+                colChooserButton({model: gridModel})
             )
         });
     }
