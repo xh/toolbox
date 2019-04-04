@@ -145,7 +145,10 @@ class Model {
 
         return XH.portfolioService
             .getPortfolioAsync(dims)
-            .then(data => gridModel.loadData(data));
+            .then(data => {
+                gridModel.loadData(data);
+                gridModel.selectFirst();
+            });
     }
 
     syncDimsToRouter() {

@@ -49,11 +49,12 @@ class SampleGrid extends Component {
                         model,
                         bind: 'groupBy',
                         options: [
-                            {value: 'active', label: 'Active'},
                             {value: 'city', label: 'City'},
+                            {value: 'winLose', label: 'Win/Lose'},
+                            {value: 'winLose,city', label: 'Win/Lose > City'},
                             {value: false, label: 'None'}
                         ],
-                        width: 120,
+                        width: 160,
                         enableFilter: false
                     }),
                     filler(),
@@ -122,6 +123,12 @@ class Model {
         enableColChooser: true,
         enableExport: true,
         compact: XH.appModel.useCompactGrids,
+        store: {
+            processRawData: it => {
+                const pnl = it.profit_loss;
+                it.winLose = pnl > 0 ? 'Winner' : (pnl < 0 ? 'Loser' : 'Flat');
+            }
+        },
         contextMenuFn: () => {
             return new StoreContextMenu({
                 items: [
@@ -152,6 +159,11 @@ class Model {
                 field: 'company',
                 width: 200,
                 tooltip: true
+            },
+            {
+                field: 'winLose',
+                hidden: true,
+                excludeFromChooser: true
             },
             {
                 field: 'city',
@@ -194,8 +206,12 @@ class Model {
     });
     
     async doLoadAsync(loadSpec) {
+        const gridModel = this.gridModel;
         return wait(250)
-            .then(() => this.gridModel.loadData(XH.tradeService.generateTrades()));
+            .then(() => {
+                gridModel.loadData(XH.tradeService.generateTrades());
+                gridModel.selectFirst();
+            });
     }
 
     showInfoToast(rec) {
@@ -217,6 +233,9 @@ class Model {
     @action
     setGroupBy(groupBy) {
         this.groupBy = groupBy;
-        this.gridModel.setGroupBy(groupBy);
+
+        const groupByArr = groupBy ? groupBy.split(',') : [];
+        this.gridModel.setGroupBy(groupByArr);
+        wait(1).then(() => this.gridModel.selectFirst());
     }
 }
