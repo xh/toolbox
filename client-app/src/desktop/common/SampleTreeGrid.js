@@ -120,9 +120,22 @@ class Model {
     });
 
     constructor() {
+        // Load data when dimensions change
         this.addReaction({
             track: () => this.dimChooserModel.value,
             run: this.loadAsync
+        });
+
+        // Bind dimensions to url parameter
+        this.addReaction({
+            track: () => XH.routerState,
+            run: this.syncDimsToRouter,
+            fireImmediately: true
+        });
+
+        this.addReaction({
+            track: () => this.dimChooserModel.value,
+            run: () => this.syncRouterToDims()
         });
     }
 
@@ -133,6 +146,27 @@ class Model {
         return XH.portfolioService
             .getPortfolioAsync(dims)
             .then(data => gridModel.loadData(data));
+    }
+
+    syncDimsToRouter() {
+        const {name, params} = XH.routerState;
+        if (!name.endsWith('.tree')) return;
+
+        const {dims} = params;
+        if (!dims) {
+            this.syncRouterToDims({replace: true});
+        } else {
+            this.dimChooserModel.setValue(dims.split('.'));
+        }
+    }
+
+    syncRouterToDims(opts) {
+        const {name} = XH.routerState,
+            {dimChooserModel} = this,
+            dims = dimChooserModel.value.join('.');
+
+        if (!name.endsWith('.tree')) return;
+        XH.navigate(name, {dims}, opts);
     }
 }
 
