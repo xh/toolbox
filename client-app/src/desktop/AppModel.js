@@ -98,7 +98,7 @@ export class AppModel {
                         path: '/grids',
                         children: [
                             {name: 'standard', path: '/standard'},
-                            {name: 'tree', path: '/tree'},
+                            {name: 'tree', path: '/tree?dims'},
                             {name: 'treeWithCheckBox', path: '/treeWithCheckBox'},
                             {name: 'groupedRows', path: '/groupedRows'},
                             {name: 'groupedCols', path: '/groupedCols'},
