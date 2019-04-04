@@ -149,10 +149,9 @@ class Model {
     }
 
     syncDimsToRouter() {
-        const {name, params} = XH.routerState;
-        if (!name.endsWith('.tree')) return;
+        if (!XH.router.isActive('default.grids.tree')) return;
 
-        const {dims} = params;
+        const {dims} = XH.routerState.params;
         if (!dims) {
             this.syncRouterToDims({replace: true});
         } else {
@@ -161,12 +160,12 @@ class Model {
     }
 
     syncRouterToDims(opts) {
-        const {name} = XH.routerState,
-            {dimChooserModel} = this,
+        if (!XH.router.isActive('default.grids.tree')) return;
+
+        const {dimChooserModel} = this,
             dims = dimChooserModel.value.join('.');
 
-        if (!name.endsWith('.tree')) return;
-        XH.navigate(name, {dims}, opts);
+        XH.navigate(XH.routerState.name, {dims}, opts);
     }
 }
 
