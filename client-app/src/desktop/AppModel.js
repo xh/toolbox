@@ -103,7 +103,8 @@ export class AppModel {
                             {name: 'groupedRows', path: '/groupedRows'},
                             {name: 'groupedCols', path: '/groupedCols'},
                             {name: 'rest', path: '/rest'},
-                            {name: 'dataview', path: '/dataview'}
+                            {name: 'dataview', path: '/dataview'},
+                            {name: 'performance', path: '/performance'}
                         ]
                     },
                     {
@@ -139,7 +140,6 @@ export class AppModel {
                         name: 'other',
                         path: '/other',
                         children: [
-                            {name: 'gridTest', path: '/gridTest'},
                             {name: 'mask', path: '/mask'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},

@@ -1,15 +1,15 @@
 import {XH, HoistModel, managed} from '@xh/hoist/core';
-
+import {LoadSupport} from '@xh/hoist/core/mixins';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {LocalStore} from '@xh/hoist/data';
 import {GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {times} from 'lodash';
+import {random, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {bindable, observable, action} from '@xh/hoist/mobx';
 
 const pnlColumn = {
     absSort: true,
+    align: 'right',
+    width: 120,
     renderer: numberRenderer({
         precision: 0,
         ledger: true,
@@ -19,6 +19,7 @@ const pnlColumn = {
 };
 
 @HoistModel
+@LoadSupport
 export class GridTestModel {
 
     @bindable recordCount = 10000;
@@ -26,11 +27,10 @@ export class GridTestModel {
     @bindable clearData = false;
 
     @managed
-    loadModel = new PendingTaskModel();
-
-    @managed
     @observable
     gridModel = this.createGridModel();
+
+    @observable.ref runTimes = {};
 
     constructor() {
         this.addReaction({
@@ -38,69 +38,76 @@ export class GridTestModel {
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
+                this.loadAsync();
             }
         });
     }
 
-    loadAsync() {
+    doLoadAsync() {
+        const runTimes = {};
+
         return start(() => {
             if (this.clearData) {
-                console.time('Clearing Old Data');
+                const clearStart = Date.now();
                 this.gridModel.loadData([]);
-                console.timeEnd('Clearing Old Data');
+                runTimes.clear = Date.now() - clearStart;
             }
         }).then(() => {
-            console.time('Creating Data');
+            const dataStart = Date.now();
             const data = this.genTestData();
-            console.timeEnd('Creating Data');
+            runTimes.data = Date.now() - dataStart;
             return data;
         }).then(data => {
-            console.time('Loading Data');
+            const loadStart = Date.now();
             this.gridModel.loadData(data);
-            console.timeEnd('Loading Data');
+            runTimes.load = Date.now() - loadStart;
         }).linkTo(
             this.loadModel
-        );
+        ).finally(() => {
+            this.setRunTimes(runTimes);
+        });
     }
 
+    @action
+    setRunTimes(v) {this.runTimes = v}
+
     genTestData() {
-        const ret = times(this.recordCount, (i) => {
-            let symbol = 'symbol' + i,
-                trader = trader = 'trader' + i % (this.recordCount/10);
+        return times(this.recordCount, (i) => {
+            let symbol = 'Symbol ' + i,
+                trader = 'Trader ' + i % (this.recordCount/10);
+
             const pos = {
                 id: symbol,
                 trader,
                 symbol,
-                day: Math.random() * 100,
-                mtd: Math.random() * 100,
-                ytd: Math.random() * 100,
-                volume: 100000
+                day: random(-80000, 100000, true),
+                mtd: random(-500000, 500000, true),
+                ytd: random(-1000000, 2000000, true),
+                volume: random(1000, 2000000, true)
             };
 
             if (this.tree) {
-                pos.children = times(2, (t) => {
+                const childCount = random(0, 10);
+                pos.children = times(childCount, (t) => {
                     trader = 'trader' + t;
                     return {
                         id: symbol+trader,
                         trader,
                         symbol,
-                        day: Math.random() * 100,
-                        mtd: Math.random() * 100,
-                        ytd: Math.random() * 100,
-                        volume: 100000
+                        day: random(-80000, 100000, true),
+                        mtd: random(-500000, 500000, true),
+                        ytd: random(-1000000, 2000000, true),
+                        volume: random(1000, 1200000, true)
                     };
                 });
             }
+
             return pos;
         });
-        return ret;
     }
 
     createGridModel() {
         return new GridModel({
-            store: new LocalStore({
-                fields: ['id', 'symbol', 'trader', 'day', 'mtd', 'ytd']
-            }),
             selModel: {mode: 'multiple'},
             sortBy: 'day|desc|abs',
             // groupBy: 'trader',
@@ -109,6 +116,8 @@ export class GridTestModel {
             columns: [
                 {
                     field: 'id',
+                    headerName: 'ID',
+                    width: 140,
                     isTreeColumn: this.tree
                 },
                 {
@@ -120,15 +129,15 @@ export class GridTestModel {
                     width: 200
                 },
                 {field: 'day', ...pnlColumn},
-                {field: 'mtd', ...pnlColumn},
-                {field: 'ytd', ...pnlColumn},
+                {field: 'mtd', headerName: 'MTD', ...pnlColumn},
+                {field: 'ytd', headerName: 'YTD', ...pnlColumn},
                 {
-                    headerName: 'quantity',
+                    headerName: 'Volume',
                     field: 'volume',
                     align: 'right',
                     width: 130,
                     renderer: millionsRenderer({
-                        precision: 1,
+                        precision: 2,
                         label: true,
                         tooltip: true
                     })
@@ -141,6 +150,7 @@ export class GridTestModel {
     @action
     tearDown() {
         XH.destroy(this.gridModel);
-        this.gridModel = null;
+        this.gridModel = this.createGridModel();
+        this.runTimes = {};
     }
 }
