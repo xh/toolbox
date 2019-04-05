@@ -6,6 +6,7 @@ import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {filler} from '@xh/hoist/cmp/layout';
 import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
+import {label, switchInput} from '@xh/hoist/mobile/cmp/input';
 
 import {GridPageModel} from './GridPageModel';
 
@@ -29,12 +30,26 @@ export class GridPage extends Component {
                     XH.appendRoute('gridDetail', {id});
                 }
             }),
+            tbar: toolbar(
+                label('Compact:'),
+                switchInput({
+                    model: gridModel,
+                    bind: 'compact'
+                }),
+                label('Borders:'),
+                switchInput({
+                    model: gridModel,
+                    bind: 'rowBorders'
+                }),
+                label('Stripes:'),
+                switchInput({
+                    model: gridModel,
+                    bind: 'stripeRows'
+                })
+            ),
             bbar: toolbar(
                 filler(),
-                colChooserButton({
-                    text: 'Choose Columns',
-                    model: gridModel
-                })
+                colChooserButton({model: gridModel})
             )
         });
     }

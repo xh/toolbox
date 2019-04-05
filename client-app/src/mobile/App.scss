@@ -38,14 +38,12 @@
 }
 
 .toolbox-detail-page {
-  background-color: var(--xh-bg-alt) !important;
-
   .toolbox-detail-row {
     display: flex;
     background-color: var(--xh-grid-bg);
-    border-bottom: var(--xh-border-solid);
+    font-size: var(--xh-grid-font-size-px);
 
-    &:nth-child(odd) {
+    &:nth-child(even) {
       background-color: var(--xh-grid-bg-odd);
     }
 

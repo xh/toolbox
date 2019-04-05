@@ -9,7 +9,7 @@ export class TreeGridDetailPageModel {
     @settable @observable.ref record;
 
     constructor({id}) {
-        this.id = id;
+        this.id = decodeURIComponent(id);
     }
 
     async doLoadAsync(loadSpec) {
