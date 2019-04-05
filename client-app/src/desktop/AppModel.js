@@ -103,7 +103,8 @@ export class AppModel {
                             {name: 'groupedRows', path: '/groupedRows'},
                             {name: 'groupedCols', path: '/groupedCols'},
                             {name: 'rest', path: '/rest'},
-                            {name: 'dataview', path: '/dataview'}
+                            {name: 'dataview', path: '/dataview'},
+                            {name: 'performance', path: '/performance'}
                         ]
                     },
                     {
