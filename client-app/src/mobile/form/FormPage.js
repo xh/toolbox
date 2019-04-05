@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
-import {div, span, filler, vbox} from '@xh/hoist/cmp/layout';
+import {div, filler, vbox} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
@@ -123,13 +123,16 @@ export class FormPage extends Component {
 
     renderToolbar() {
         const {model} = this;
-        return toolbar(
-            switchInput({model: model.formModel, bind: 'readonly'}),
-            span('Read-only'),
-            filler(),
-            switchInput({model, bind: 'minimal'}),
-            span('Minimal validation'),
-        );
+        return toolbar({
+            height: 38,
+            items: [
+                filler(),
+                label('Read-only'),
+                switchInput({model: model.formModel, bind: 'readonly'}),
+                label('Minimal validation'),
+                switchInput({model, bind: 'minimal'})
+            ]
+        });
     }
 }
 export const formPage = elemFactory(FormPage);
