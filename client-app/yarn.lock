@@ -1215,10 +1215,10 @@
     webpack-dev-server "~3.2.1"
     webpackbar "~3.1.5"
 
-"@xh/hoist@21.0.0":
-  version "21.0.0"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-21.0.0.tgz#afead7239d12dc2cf93862255ddce30b9b4e45d3"
-  integrity sha512-peqzebpbcaIhci3k3FMyXeaYg9NcrzmRmvVua7+bhSBRwPDameIT0nqe1giFgDBkCeq0qoRDU1MeE7w8RfOKPw==
+"@xh/hoist@^22.0.0-SNAPSHOT":
+  version "22.0.0-SNAPSHOT.1554423999323"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-22.0.0-SNAPSHOT.1554423999323.tgz#d282070186646c06f2b8bc277d2bf6633ac8468a"
+  integrity sha512-jEB71A/XDlHh6sQrIMhVLJW/MSM4+e4dQ5q3moHP0D5pP4/6zDhQz+HL/8vqAEZvjxirlpEZ51kk2vWPwzqS6g==
   dependencies:
     "@blueprintjs/core" "~3.15.0"
     "@blueprintjs/datetime" "~3.8.0"
