@@ -51,7 +51,7 @@ class SampleGrid extends Component {
                         options: [
                             {value: 'city', label: 'City'},
                             {value: 'winLose', label: 'Win/Lose'},
-                            {value: 'winLose,city', label: 'Win/Lose > City'},
+                            {value: 'winLose,city', label: 'Win/Lose › City'},
                             {value: false, label: 'None'}
                         ],
                         width: 160,
@@ -210,7 +210,7 @@ class Model {
         return wait(250)
             .then(() => {
                 gridModel.loadData(XH.tradeService.generateTrades());
-                gridModel.selectFirst();
+                if (!gridModel.hasSelection) gridModel.selectFirst();
             });
     }
 
@@ -234,6 +234,7 @@ class Model {
     setGroupBy(groupBy) {
         this.groupBy = groupBy;
 
+        // Always select first when regrouping.
         const groupByArr = groupBy ? groupBy.split(',') : [];
         this.gridModel.setGroupBy(groupByArr);
         wait(1).then(() => this.gridModel.selectFirst());
