@@ -4,7 +4,7 @@ import {box, hbox, filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {dockContainer, DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
+import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
 import {wrapper, sampleGrid} from '../../common';
 
 @HoistComponent
