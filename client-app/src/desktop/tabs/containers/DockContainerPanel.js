@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {XH, HoistComponent} from '@xh/hoist/core';
 import {box, hbox, filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -49,6 +49,7 @@ export class DockContainerPanel extends Component {
 
     addNewDockedView() {
         this.dockContainerModel.addView({
+            id: XH.genId(),
             icon: Icon.add(),
             title: 'View',
             allowDialog: false,
