@@ -113,8 +113,8 @@ export class AppModel {
                         path: '/forms',
                         children: [
                             {name: 'controls', path: '/controls'},
-                            {name: 'selects', path: '/selects'},
-                            {name: 'validation', path: '/validation'}
+                            {name: 'validation', path: '/validation'},
+                            {name: 'toolbarForm', path: '/toolbarForm'}
                         ]
                     },
                     {
