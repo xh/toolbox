@@ -4,6 +4,7 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {refreshButton, button} from '@xh/hoist/desktop/cmp/button';
@@ -88,7 +89,13 @@ export class GridTestPanel extends Component {
                 }),
                 filler(),
                 this.formatRunTimes()
-            )
+            ),
+            bbar: toolbar([
+                storeFilterField({
+                    includeFields: ['symbol', 'trader'],
+                    gridModel
+                })
+            ])
         });
     }
 
