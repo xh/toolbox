@@ -9,7 +9,6 @@ class RecallsController extends BaseController {
     def recallsService
 
     def index() {
-        log.info('hi')
         def recalls = recallsService.fetchRecalls()
         renderJSON(recalls)
     }

@@ -14,7 +14,6 @@ class RecallsService extends BaseService {
         def url = new URL("https://$host/drug/enforcement.json?search=losartan&sort=recall_initiation_date:desc&limit=10"),
             response = JSON.parse(url.openStream(), 'UTF-8')
 
-        log.info(response)
-        return response
+        return response.results
     }
 }

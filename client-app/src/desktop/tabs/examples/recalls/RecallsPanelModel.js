@@ -17,6 +17,14 @@ export class RecallsPanelModel {
     }
 
     async doLoadAsync(loadSpec) {
+        return XH
+        //
+        // now that I know how the backend is, I think that 'recalls'
+        // is referring to our backend/recalls
+            .fetchJson({url: 'recalls' , loadSpec})
+            .wait(100)
+            .then(rxRecallEntries => console.log(rxRecallEntries));
+
     }
 
     //------------------------
