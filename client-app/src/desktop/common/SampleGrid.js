@@ -141,11 +141,7 @@ class Model {
                 gridModel
             });
         },
-        groupSortFn: (nodeA, nodeB) => {
-            const groupField = nodeA.field,
-                a = nodeA.key,
-                b = nodeB.key;
-
+        groupSortFn: (a, b, groupField) => {
             if (a == b) return 0;
             if (groupField == 'winLose') {
                 return a == 'Winner' ? -1 : 1;
