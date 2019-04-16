@@ -154,6 +154,7 @@ export class AppModel {
                         children: [
                             {name: 'portfolio', path: '/portfolio'},
                             {name: 'news', path: '/news'},
+                            {name: 'recalls', path: '/recalls'},
                             {name: 'fileManager', path: '/fileManager', omit: !isAdmin}
                         ]
                     }

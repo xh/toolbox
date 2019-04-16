@@ -6,7 +6,7 @@
  */
 
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core/index';
+import {HoistComponent} from '@xh/hoist/core';
 import {NewsPanelModel} from './NewsPanelModel';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {panel} from '@xh/hoist/desktop/cmp/panel';

@@ -11,6 +11,7 @@ import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {NewsPanel} from './news/NewsPanel';
 import {PortfolioPanel} from './portfolio/PortfolioPanel';
+import {RecallsPanel} from './recalls/RecallsPanel';
 
 @HoistComponent
 export class ExamplesTab extends Component {
@@ -23,6 +24,7 @@ export class ExamplesTab extends Component {
                 tabs: [
                     {id: 'portfolio', content: PortfolioPanel},
                     {id: 'news', content: NewsPanel},
+                    {id: 'recalls', content: RecallsPanel},
                     {id: 'fileManager', content: FileManager, omit: !XH.getUser().isHoistAdmin}
                 ]
             },

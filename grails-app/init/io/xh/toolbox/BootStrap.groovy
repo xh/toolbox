@@ -10,6 +10,7 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 import static io.xh.hoist.util.Utils.appEnvironment
 import static io.xh.hoist.util.Utils.appName
 import static io.xh.hoist.util.Utils.appVersion
+import javax.net.ssl.*
 
 class BootStrap {
 
@@ -21,6 +22,8 @@ class BootStrap {
         def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
         BaseService.parallelInit(services)
         ensureUsersCreated()
+
+
     }
 
     def destroy = {}
@@ -138,10 +141,15 @@ class BootStrap {
                         groupName: 'News'
                 ],
                 fileManagerStoragePath: [
-                        valueType: 'string',
-                        defaultValue: '/var/tmp/toolbox',
-                        groupName: 'File Manager',
-                        note: 'Absolute path to disk location for storing uploaded files.'
+                    valueType: 'string',
+                    defaultValue: '/var/tmp/toolbox',
+                    groupName: 'File Manager',
+                    note: 'Absolute path to disk location for storing uploaded files.'
+                ],
+                recallsHost: [
+                    valueType: 'string',
+                    defaultValue: 'api.fda.gov',
+                    groupName: 'Recall Manager'
                 ]
         ])
     }
