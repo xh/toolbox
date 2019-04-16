@@ -177,7 +177,10 @@ class Model {
             {
                 field: 'city',
                 width: 150,
-                tooltip: (val, {record}) => `${record.company} is located in ${val}`
+                tooltip: (val, {record}) => `${record.company} is located in ${val}`,
+                cellClass: (val) => {
+                    return val == 'New York' ? 'xh-text-color-accent' : '';
+                }
             },
             {
                 headerName: 'Trade Volume',
