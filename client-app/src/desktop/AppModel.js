@@ -105,7 +105,8 @@ export class AppModel {
                             {name: 'groupedCols', path: '/groupedCols'},
                             {name: 'rest', path: '/rest'},
                             {name: 'dataview', path: '/dataview'},
-                            {name: 'performance', path: '/performance'}
+                            {name: 'performance', path: '/performance'},
+                            {name: 'agGrid', path: '/agGrid'}
                         ]
                     },
                     {

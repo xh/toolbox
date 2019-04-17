@@ -9,6 +9,7 @@ import {DataViewPanel} from './DataViewPanel';
 import {TreeGridPanel} from './TreeGridPanel';
 import {TreeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
 import {GridTestPanel} from './GridTestPanel';
+import {AgGridView} from './AgGridView';
 
 @HoistComponent
 export class GridsTab extends Component {
@@ -24,7 +25,8 @@ export class GridsTab extends Component {
                     {id: 'groupedCols', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
                     {id: 'rest', title: 'REST Editor', content: RestGridPanel},
                     {id: 'dataview', title: 'DataView', content: DataViewPanel},
-                    {id: 'performance', title: 'Performance Test', content: GridTestPanel}
+                    {id: 'performance', title: 'Performance Test', content: GridTestPanel},
+                    {id: 'agGrid', title: 'ag-Grid', content: AgGridView}
                 ],
                 switcherPosition: 'left'
             },

@@ -8,7 +8,7 @@ import {Component} from 'react';
 export class GridStyleSwitches extends Component {
 
     render() {
-        const gridModel = this.props.gridModel;
+        const {gridModel} = this.props;
 
         return fragment(
             switchInput({
