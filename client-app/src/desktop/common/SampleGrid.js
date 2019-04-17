@@ -51,6 +51,7 @@ class SampleGrid extends Component {
                         options: [
                             {value: 'city', label: 'City'},
                             {value: 'winLose', label: 'Win/Lose'},
+                            {value: 'city,winLose', label: 'City › Win/Lose'},
                             {value: 'winLose,city', label: 'Win/Lose › City'},
                             {value: false, label: 'None'}
                         ],
@@ -129,7 +130,7 @@ class Model {
                 it.winLose = pnl > 0 ? 'Winner' : (pnl < 0 ? 'Loser' : 'Flat');
             }
         },
-        contextMenuFn: () => {
+        contextMenuFn: (params, gridModel) => {
             return new StoreContextMenu({
                 items: [
                     this.viewDetailsAction,
@@ -137,8 +138,16 @@ class Model {
                     '-',
                     ...GridModel.defaultContextMenuTokens
                 ],
-                gridModel: this.gridModel
+                gridModel
             });
+        },
+        groupSortFn: (a, b, groupField) => {
+            if (a == b) return 0;
+            if (groupField == 'winLose') {
+                return a == 'Winner' ? -1 : 1;
+            } else {
+                return a < b ? -1 : 1;
+            }
         },
         columns: [
             {
@@ -168,7 +177,10 @@ class Model {
             {
                 field: 'city',
                 width: 150,
-                tooltip: (val, {record}) => `${record.company} is located in ${val}`
+                tooltip: (val, {record}) => `${record.company} is located in ${val}`,
+                cellClass: (val) => {
+                    return val == 'New York' ? 'xh-text-color-accent' : '';
+                }
             },
             {
                 headerName: 'Trade Volume',

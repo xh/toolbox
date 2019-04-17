@@ -147,6 +147,7 @@ class Model {
                                 const rec = this.props.data;
                                 return fragment(
                                     checkbox({
+                                        displayUnsetState: true,
                                         value: rec.enabled,
                                         onChange: () => me.toggleNode(rec)
                                     }),

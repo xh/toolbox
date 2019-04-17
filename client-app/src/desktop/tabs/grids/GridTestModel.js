@@ -2,7 +2,7 @@ import {XH, HoistModel, managed} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {random, times} from 'lodash';
+import {random, sample, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {bindable, observable, action} from '@xh/hoist/mobx';
 
@@ -22,9 +22,19 @@ const pnlColumn = {
 @LoadSupport
 export class GridTestModel {
 
-    @bindable recordCount = 10000;
-    @bindable tree = false;
-    @bindable clearData = false;
+    // Total count (approx) of all nodes generated (parents + children).
+    @bindable recordCount = 75000;
+    // Loop x times over nodes, randomly selecting a note and twiddling data.
+    @bindable twiddleCount = 10000;
+    // Prefix for all IDs - change to ensure no IDs re-used across data gens.
+    @bindable idSeed = 1;
+    // True to generate data in tree structure.
+    @bindable tree = true;
+
+    // Generated data in tree (if requested).
+    _data;
+    // Generated data in flat list (for twiddling).
+    _allData;
 
     @managed
     @observable
@@ -38,28 +48,34 @@ export class GridTestModel {
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
+                this.clearData();
                 this.loadAsync();
             }
         });
+
+        this.addReaction({
+            track: () =>  this.recordCount,
+            run: () => this.clearData()
+        });
+    }
+
+    clearData() {
+        this._data = null;
+        this._allData = null;
     }
 
     doLoadAsync() {
         const runTimes = {};
 
         return start(() => {
-            if (this.clearData) {
-                const clearStart = Date.now();
-                this.gridModel.loadData([]);
-                runTimes.clear = Date.now() - clearStart;
+            if (!this._data) {
+                const dataStart = Date.now();
+                this.genTestData();
+                runTimes.data = Date.now() - dataStart;
             }
-        }).then(() => {
-            const dataStart = Date.now();
-            const data = this.genTestData();
-            runTimes.data = Date.now() - dataStart;
-            return data;
-        }).then(data => {
+
             const loadStart = Date.now();
-            this.gridModel.loadData(data);
+            this.gridModel.loadData(this._data);
             runTimes.load = Date.now() - loadStart;
         }).linkTo(
             this.loadModel
@@ -68,41 +84,74 @@ export class GridTestModel {
         });
     }
 
+    clearGrid() {
+        start(() => {
+            const start = Date.now();
+            this.gridModel.loadData([]);
+            this.setRunTimes({load: Date.now() - start});
+        }).linkTo(this.loadModel);
+    }
+
     @action
     setRunTimes(v) {this.runTimes = v}
 
     genTestData() {
-        return times(this.recordCount, (i) => {
-            let symbol = 'Symbol ' + i,
-                trader = 'Trader ' + i % (this.recordCount/10);
+        this._data = [];
+        this._allData = [];
+        let count = 0;
+        const idSeed = this.idSeed;
 
+        while (count < this.recordCount) {
+            let symbol = 'Symbol ' + count,
+                trader = 'Trader ' + count % (this.recordCount/10);
+
+            count++;
             const pos = {
-                id: symbol,
+                id: `${idSeed}~${symbol}`,
                 trader,
                 symbol,
-                day: random(-80000, 100000, true),
-                mtd: random(-500000, 500000, true),
-                ytd: random(-1000000, 2000000, true),
-                volume: random(1000, 2000000, true)
+                day: random(-80000, 100000),
+                mtd: random(-500000, 500000),
+                ytd: random(-1000000, 2000000),
+                volume: random(1000, 2000000)
             };
 
             if (this.tree) {
                 const childCount = random(0, 10);
                 pos.children = times(childCount, (t) => {
                     trader = 'trader' + t;
-                    return {
-                        id: symbol+trader,
+                    count++;
+                    const child = {
+                        id: `${idSeed}~${symbol}~${trader}`,
                         trader,
                         symbol,
-                        day: random(-80000, 100000, true),
-                        mtd: random(-500000, 500000, true),
-                        ytd: random(-1000000, 2000000, true),
-                        volume: random(1000, 1200000, true)
+                        day: random(-80000, 100000),
+                        mtd: random(-500000, 500000),
+                        ytd: random(-1000000, 2000000),
+                        volume: random(1000, 1200000)
                     };
+                    this._allData.push(child);
+                    return child;
                 });
             }
 
-            return pos;
+            this._data.push(pos);
+            this._allData.push(pos);
+        }
+
+        console.log(`Generated ${count} test records.`);
+    }
+
+    twiddleData() {
+        if (!this._allData) {
+            console.log('No data to twiddle');
+            return;
+        }
+
+        times(this.twiddleCount, () => {
+            const pos = sample(this._allData);
+            pos.day = random(-80000, 100000);
+            pos.volume = random(1000, 1200000);
         });
     }
 
@@ -110,7 +159,6 @@ export class GridTestModel {
         return new GridModel({
             selModel: {mode: 'multiple'},
             sortBy: 'day|desc|abs',
-            // groupBy: 'trader',
             emptyText: 'No records found...',
             treeMode: this.tree,
             columns: [
@@ -151,6 +199,7 @@ export class GridTestModel {
     tearDown() {
         XH.destroy(this.gridModel);
         this.gridModel = this.createGridModel();
+        this._data = null;
         this.runTimes = {};
     }
 }

@@ -1,4 +1,3 @@
-
 import {XH, HoistModel} from '@xh/hoist/core';
 import {dateIs, FormModel, lengthIs, numberIs, required} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';

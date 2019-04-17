@@ -4,10 +4,12 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {refreshButton, button} from '@xh/hoist/desktop/cmp/button';
 import {grid} from '@xh/hoist/cmp/grid';
+import {tooltip} from '@xh/hoist/kit/blueprint';
 
 import {GridTestModel} from './GridTestModel';
 
@@ -22,14 +24,47 @@ export class GridTestPanel extends Component {
 
         return panel({
             mask: model.loadModel,
-            item: gridModel ? grid({key: gridModel.xhId, model: gridModel}) : null,
+            item: gridModel ? grid({
+                key: gridModel.xhId,
+                model: gridModel,
+                renderFlag: model.renderFlag
+            }) : null,
             tbar: toolbar(
-                numberInput({
-                    model,
-                    bind: 'recordCount',
-                    width: 100
+                tooltip({
+                    content: 'ID prefix',
+                    item: numberInput({
+                        model,
+                        bind: 'idSeed',
+                        width: 40
+                    })
                 }),
-                'records',
+                tooltip({
+                    content: '# records to generate',
+                    item: numberInput({
+                        model,
+                        bind: 'recordCount',
+                        width: 100
+                    })
+                }),
+                button({
+                    text: 'Generate',
+                    icon: Icon.gears(),
+                    onClick: () => model.genTestData()
+                }),
+                toolbarSep(),
+                tooltip({
+                    content: '# records to randomly change',
+                    item: numberInput({
+                        model,
+                        bind: 'twiddleCount',
+                        width: 80
+                    })
+                }),
+                button({
+                    text: 'Twiddle',
+                    icon: Icon.diff(),
+                    onClick: () => model.twiddleData()
+                }),
                 toolbarSep(),
                 switchInput({
                     model,
@@ -37,25 +72,30 @@ export class GridTestPanel extends Component {
                     label: 'Tree mode',
                     labelAlign: 'left'
                 }),
-                switchInput({
-                    model,
-                    bind: 'clearData',
-                    label: 'Clear data before reload',
-                    labelAlign: 'left'
-                }),
                 toolbarSep(),
                 refreshButton({
-                    text: 'Load data',
+                    text: 'Load Grid',
                     model
                 }),
                 button({
+                    text: 'Clear Grid',
+                    icon: Icon.delete(),
+                    onClick: () => model.clearGrid()
+                }),
+                button({
                     text: 'Tear Down',
-                    icon: Icon.reset(),
+                    icon: Icon.skull(),
                     onClick: () => model.tearDown()
                 }),
                 filler(),
                 this.formatRunTimes()
-            )
+            ),
+            bbar: toolbar([
+                storeFilterField({
+                    includeFields: ['symbol', 'trader'],
+                    gridModel
+                })
+            ])
         });
     }
 
@@ -63,6 +103,6 @@ export class GridTestPanel extends Component {
         const rt = this.model.runTimes,
             fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null}) : 'N/A';
 
-        return `Clear: ${fmt(rt.clear)} • Gen Data: ${fmt(rt.data)} • Load: ${fmt(rt.load)} `;
+        return `Gen Data: ${fmt(rt.data)} • Load: ${fmt(rt.load)} `;
     }
 }
