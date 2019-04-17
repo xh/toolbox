@@ -1,6 +1,7 @@
 import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/grid/ag-grid';
 import {observable, settable} from '@xh/hoist/mobx';
+import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 
 @HoistModel
 @LoadSupport
@@ -9,33 +10,60 @@ export class AgGridViewModel {
 
     columnDefs = [
         {
-            colId: 'firstName',
-            field: 'firstName',
-            filter: 'agTextColumnFilter'
-        },
-        {
-            colId: 'lastName',
-            field: 'lastName',
-            filter: 'agTextColumnFilter'
-        },
-        {
-            colId: 'email',
-            field: 'email',
-            filter: 'agTextColumnFilter'
-        },
-        {
-            colId: 'gender',
-            field: 'gender',
+            field: 'symbol',
+            filter: 'agTextColumnFilter',
             enableRowGroup: true,
-            enablePivot: true,
-            enableValue: true
+            enablePivot: true
         },
         {
-            colId: 'favoriteColor',
-            field: 'favoriteColor',
+            field: 'sector',
             enableRowGroup: true,
-            enablePivot: true,
-            enableValue: true
+            enablePivot: true
+        },
+        {
+            field: 'model',
+            enableRowGroup: true,
+            enablePivot: true
+        },
+        {
+            field: 'fund',
+            enableRowGroup: true,
+            enablePivot: true
+        },
+        {
+            field: 'region',
+            enableRowGroup: true,
+            enablePivot: true
+        },
+        {
+            field: 'trader',
+            enableRowGroup: true,
+            enablePivot: true
+        },
+        {
+            field: 'mktVal',
+            type: 'numericColumn',
+            filter: 'agNumberFilter',
+            width: 130,
+            enableValue: true,
+            aggFunc: 'sum',
+            cellRenderer: ({value}) => fmtMillions(value, {
+                precision: 3,
+                ledger: true
+            })
+        },
+        {
+            field: 'pnl',
+            type: 'numericColumn',
+            filter: 'agNumberFilter',
+            width: 130,
+            enableValue: true,
+            aggFunc: 'sum',
+            cellRenderer: ({value}) => fmtNumber(value, {
+                precision: 0,
+                ledger: true,
+                colorSpec: true
+            })
         }
     ];
 
@@ -56,13 +84,7 @@ export class AgGridViewModel {
     }
 
     async doLoadAsync() {
-        const data = await XH.fetchJson({
-            url: 'https://my.api.mockaroo.com/directory.json?key=01df86d0',
-            fetchOpts: {
-                credentials: 'omit'
-            }
-        });
-
-        this.setData(data || []);
+        const data = await XH.portfolioService.getPositionsAsync();
+        this.setData(data);
     }
 }
