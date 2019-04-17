@@ -36,6 +36,7 @@ export class PositionsPanelModel {
         stateModel: 'portfolio-positions-grid',
         columns: [
             {
+
                 field: 'id',
                 headerName: 'ID',
                 width: 40,
