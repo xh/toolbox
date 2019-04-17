@@ -74,11 +74,9 @@ export class AgGridViewModel {
     constructor() {
         const {agGridModel} = this;
         this.addReaction({
-            track: () => [this.data, agGridModel.isReady],
-            run: ([data, isReady]) => {
-                if (isReady) {
-                    agGridModel.agApi.setRowData(data);
-                }
+            track: () => [this.data, agGridModel.agApi],
+            run: ([data, api]) => {
+                if (api) api.setRowData(data);
             }
         });
     }
