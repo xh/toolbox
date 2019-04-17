@@ -1,7 +1,7 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {agGrid} from '@xh/hoist/cmp/grid/ag-grid';
+import {agGrid} from '@xh/hoist/cmp/ag-grid';
 import {AgGridViewModel} from './AgGridViewModel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';

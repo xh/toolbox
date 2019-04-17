@@ -1,5 +1,5 @@
 import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
-import {AgGridModel} from '@xh/hoist/cmp/grid/ag-grid';
+import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
 import {observable, settable} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 
