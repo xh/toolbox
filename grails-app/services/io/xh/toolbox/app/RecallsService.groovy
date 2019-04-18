@@ -5,15 +5,21 @@ import io.xh.hoist.json.JSON
 
 class RecallsService extends BaseService {
 
-    def configService
+    /*
+        FDA Drug Recall API notes:
+        -   `_exists_:field` is useful for openfda;
+            _exists_ is true for *empty object*
+     */
 
     List fetchRecalls() {
         def host = configService.getString('recallsHost')
 
-        log.info(host)
-        def url = new URL("https://$host/drug/enforcement.json?search=losartan&sort=recall_initiation_date:desc&limit=10"),
+        def url = new URL("https://api.fda.gov/drug/enforcement.json?search=_exists_:openfda&sort=recall_initiation_date:desc&limit=20"),
             response = JSON.parse(url.openStream(), 'UTF-8')
+
 
         return response.results
     }
+
+    def configService
 }

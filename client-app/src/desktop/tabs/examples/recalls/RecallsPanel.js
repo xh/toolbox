@@ -10,7 +10,9 @@ import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {RecallsPanelModel} from './RecallsPanelModel';
 import './RecallsPanel.scss';
-import {grid} from '@xh/hoist/cmp/grid'
+import {grid} from '@xh/hoist/cmp/grid';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
 
 @HoistComponent
 export class RecallsPanel extends Component {
@@ -26,7 +28,11 @@ export class RecallsPanel extends Component {
             title: 'Recall Browser',
             item: grid({
                 model: gridModel
-            })
+
+            }),
+            bbar: toolbar(
+                colChooserButton({gridModel})
+            )
         });
     }
 

@@ -15,7 +15,9 @@ export class RecallsPanelModel {
     gridModel = new GridModel({
         // sortBy: 'pnl|desc|abs',
         store: {
-            idSpec: 'recall_number'
+            idSpec: this.createId,
+            processRawData: this.processRecord
+
         },
         emptyText: 'No records found...',
         enableColChooser: true,
@@ -28,26 +30,36 @@ export class RecallsPanelModel {
         columns: [
             {
                 field: 'recall_initiation_date',
-                headerName: 'Recall Initiation Date',
-                width: 150
-                // hidden: true
+                // want to format ^ field
+                headerName: 'Recalling as of',
+                width: 100,
+                hidden: false
             },
             {
-                field: 'product_description',
-                width: 150
-                // hidden: true
+                field: 'brandName',
+                width: 300,
+                hidden: false
+            },
+            {
+                field: 'genericName',
+                width: 300,
+                hidden: false
             },
             {
                 field: 'status',
-                width: 400
-                // hidden: true
+                width: 150,
+                hidden: false
+            },
+            {
+                field: 'product_description',
+                width: 400,
+                hidden: true
+            },
+            {
+                field: 'something_else_im_forgetting',
+                width: 400,
+                hidden: true
             }
-            // {
-            //     field: 'recall_initiation_date',
-            //     headerName: 'Recall Initiation Date',
-            //     width: 150,
-            //     // hidden: true
-            // }
         ]
     })
 
@@ -56,10 +68,14 @@ export class RecallsPanelModel {
 
     }
 
+    //------------------------
+    // Implementation
+    //------------------------
+
     async doLoadAsync(loadSpec) {
         await XH
         //
-        // now that I know how the backend is, I think that 'recalls'
+        // now that I know how the backend is, I think 'recalls'
         // is referring to our backend/recalls
             .fetchJson({url: 'recalls', loadSpec})  // no forward slash == relative path
             .wait(100)
@@ -68,13 +84,35 @@ export class RecallsPanelModel {
                 //
                 // console log displays the data that has been mutated!
                 // can use JSON.stringify() to see original at this line...
-                //
+
                 this.gridModel.loadData(rxRecallEntries);
             });
     }
 
-    //------------------------
-    // Implementation
-    //------------------------
+    // 04/18:
+    // using processRecord() for now because I'm too lazy to learn Groovy / Java
+    // to massage the data format on the backend...
+    processRecord(rawRec) {
+        rawRec.brandName = rawRec.openfda.brand_name[0];
+        rawRec.genericName = rawRec.openfda.generic_name[0];
+        // rawRec.recallInitDateWithFormat = rawRec.recall_initiation_date.toDateString()
+    }
+
+    createId(record) {
+        return record.brandName + record.recall_number;
+    }
+
+    formatDate(dateString) {
+
+        // 04/18:
+        //
+        // use `.toDateString()`
+        //      OR
+        // a lodash method...?
+        //      OR
+        // doesn't our library come wih something something date...?
+
+    }
+
 
 }
