@@ -76,19 +76,19 @@ render() {
         className: 'xh-log-viewer',
         items: [
             panel({
-                    item: grid({model: files}),
-                    bbar: toolbar(
-                        ...buttonCfgs.map(props => button(props)),
-                        deleteButton({
-                            omit: !XH.getUser().isHoistAdmin,
-                            onClick: () => {
-                                this.doDelete();
-                            }
-                        }),
-                        filler(),
-                        storeFilterField({gridModel: files})
-                     )
-                })
+                item: grid({model: files}),
+                bbar: toolbar(
+                    ...buttonCfgs.map(props => button(props)),
+                    deleteButton({
+                        omit: !XH.getUser().isHoistAdmin,
+                        onClick: () => {
+                            this.doDelete();
+                        }
+                    }),
+                    filler(),
+                    storeFilterField({gridModel: files})
+                 )
+            }),
             logViewer({model}),
             mask({model: loadModel})
         ]
@@ -114,7 +114,7 @@ render() {
                             })
                         }
                         {
-                            XH.getUser().isHoistAdmin && 
+                            XH.getUser().isHoistAdmin &&
                                 <DeleteButton
                                     onClick={
                                         () => {

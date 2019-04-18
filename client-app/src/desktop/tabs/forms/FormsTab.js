@@ -4,6 +4,7 @@ import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {ControlsPanel} from './ControlsPanel';
 import {ValidationPanel} from './ValidationPanel';
+import {ToolbarFormPanel} from './ToolbarFormPanel';
 
 
 @HoistComponent
@@ -16,7 +17,8 @@ export class FormsTab extends Component {
                 switcherPosition: 'left',
                 tabs: [
                     {id: 'controls', title: 'Controls', content: ControlsPanel},
-                    {id: 'validation', title: 'Validation', content: ValidationPanel}
+                    {id: 'validation', title: 'Validation', content: ValidationPanel},
+                    {id: 'toolbarForm', title: 'Toolbar Forms', content: ToolbarFormPanel}
                 ]
             },
             className: 'toolbox-tab'
