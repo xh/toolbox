@@ -50,7 +50,7 @@ export class ToolbarFormPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Toolbar Form',
+                title: 'Forms › Toolbar Form',
                 className: 'toolbox-toolbar-form-panel',
                 icon: Icon.edit(),
                 width: '90%',
@@ -109,7 +109,7 @@ export class ToolbarFormPanel extends Component {
                             formField({
                                 label: null,
                                 field: 'bool2',
-                                item: switchInput()
+                                item: switchInput({label: 'enabled'})
                             }),
                             filler(),
                             button({

@@ -20,7 +20,7 @@ export class AgGridView extends Component {
             description: [
                 <p>
                     The Hoist <code>agGrid</code> component provides a much more minimal wrapper for
-                    ag-grid, supporting direct use of the library with limited enhancements for
+                    ag-Grid, supporting direct use of the library with limited enhancements for
                     consistent Hoist styling, layout support, keyboard navigation, and a backing
                     model for convenient access to the ag-Grid APIs and other utility methods.
                 </p>,
@@ -33,7 +33,7 @@ export class AgGridView extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Grids > ag-Grid Wrapper',
+                title: 'Grids › ag-Grid Wrapper',
                 icon: Icon.gridPanel(),
                 flex: 1,
                 width: '95%',

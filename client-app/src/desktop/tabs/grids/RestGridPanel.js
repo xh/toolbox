@@ -132,7 +132,7 @@ export class RestGridPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Grids > REST Editor',
+                title: 'Grids › REST Editor',
                 icon: Icon.edit(),
                 width: 900,
                 height: 400,

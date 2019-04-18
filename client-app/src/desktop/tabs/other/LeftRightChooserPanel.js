@@ -35,7 +35,7 @@ export class LeftRightChooserPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Other > LeftRightChooser',
+                title: 'Other › LeftRightChooser',
                 icon: Icon.arrowsLeftRight(),
                 width: 700,
                 height: 400,

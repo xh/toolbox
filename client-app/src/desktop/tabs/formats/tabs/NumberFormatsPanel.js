@@ -41,7 +41,7 @@ export class NumberFormatsPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Number Format',
+                title: 'Formats › Numbers',
                 className: 'toolbox-formats-tab',
                 width: '90%',
                 height: '90%',

@@ -31,7 +31,7 @@ export class TabPanelContainerPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Containers > Tabs',
+                title: 'Containers › Tabs',
                 icon: Icon.tab(),
                 className: 'toolbox-containers-tabs',
                 width: 700,

@@ -41,7 +41,7 @@ export class FileChooserPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Other > FileChooser',
+                title: 'Other › FileChooser',
                 icon: Icon.copy(),
                 width: 700,
                 height: 400,

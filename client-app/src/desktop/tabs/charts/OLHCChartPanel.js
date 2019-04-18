@@ -22,7 +22,7 @@ export class OLHCChartPanel extends Component {
             style: {paddingTop: 0},
             item: panel({
                 className: 'toolbox-olhcchart-panel',
-                title: 'OLHC Chart',
+                title: 'Charts › OHLC',
                 width: 800,
                 height: 600,
                 item: this.renderExample(),
