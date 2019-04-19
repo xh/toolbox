@@ -25,8 +25,8 @@ export class GridsTab extends Component {
                     {id: 'groupedCols', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
                     {id: 'rest', title: 'REST Editor', content: RestGridPanel},
                     {id: 'dataview', title: 'DataView', content: DataViewPanel},
-                    {id: 'performance', title: 'Performance Test', content: GridTestPanel},
-                    {id: 'agGrid', title: 'ag-Grid', content: AgGridView}
+                    {id: 'agGrid', title: 'ag-Grid Wrapper', content: AgGridView},
+                    {id: 'performance', title: 'Performance Test', content: GridTestPanel}
                 ],
                 switcherPosition: 'left'
             },
