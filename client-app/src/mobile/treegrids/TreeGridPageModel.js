@@ -33,7 +33,7 @@ export class TreeGridPageModel {
         treeMode: true,
         enableColChooser: true,
         store: {
-            fields: ['id', 'name', 'pnl', 'mktVal']
+            fields: ['name', 'pnl', 'mktVal']
         },
         sortBy: 'pnl|desc|abs',
         columns: [

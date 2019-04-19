@@ -55,7 +55,7 @@ class Model {
     @managed
     dataViewModel = new DataViewModel({
         store: {
-            fields: ['id', 'name', 'city', 'value']
+            fields: ['name', 'city', 'value']
         },
         emptyText: 'No companies found...',
         itemRenderer: (v, {record}) => dataViewItem({record})
