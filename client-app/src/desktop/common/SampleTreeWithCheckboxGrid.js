@@ -163,33 +163,32 @@ class Model {
     }
 
     toggleNode(rec) {
-        const {store} = this.gridModel,
-            realRec = store.getById(rec.id);
-
-        realRec.enabled = !realRec.enabled;
-        this.setChildren(realRec, realRec.enabled);
-        this.updateParents(realRec);
-        store.noteDataUpdated();
+        rec.enabled = !rec.enabled;
+        this.setChildren(rec, rec.enabled);
+        this.updateAncestors(rec);
+        rec.store.noteDataUpdated();
     }
 
     setChildren(rec, enabled) {
-        rec.children.forEach(it => {
+        const children = rec.store.allRecords.filter(it => it.parentId == rec.id);
+        children.forEach(it => {
             it.enabled = enabled;
             this.setChildren(it, enabled);
         });
     }
 
-    updateParents(rec) {
-        if (!rec.parent) return;
+    updateAncestors(rec) {
+        const {parent} = rec;
+        if (parent) {
+            parent.enabled = this.calcAggregateEnabledState(parent);
+            this.updateAncestors(parent);
+        }
+    }
 
-        const parent = rec.parent,
-            isAllEnabled = (rec) => rec.children.every(it => it.enabled && isAllEnabled(it)),
-            isAllDisabled = (rec) => rec.children.every(it => !it.enabled && isAllDisabled(it)),
-            allEnabled = isAllEnabled(parent),
-            allDisabled = isAllDisabled(parent);
-
-        parent.enabled = allEnabled ? true : (allDisabled ? false : null);
-        this.updateParents(parent);
+    calcAggregateEnabledState(rec) {
+        const children = rec.store.allRecords.filter(it => it.parentId == rec.id);
+        return children.every(it => !!it.enabled);
     }
 }
+
 
