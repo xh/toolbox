@@ -1,7 +1,7 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common/Wrapper';
-import {box, filler, vframe} from '@xh/hoist/cmp/layout';
+import {filler, vframe, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select, numberInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -27,7 +27,7 @@ export class OLHCChartPanel extends Component {
                 height: 600,
                 item: this.renderExample(),
                 tbar: toolbar(
-                    box('Company: '),
+                    span('Company: '),
                     select({
                         model,
                         bind: 'currentCompany',
@@ -35,7 +35,7 @@ export class OLHCChartPanel extends Component {
                         enableFilter: false
                     }),
                     filler(),
-                    box('Aspect Ratio: '),
+                    span('Aspect Ratio: '),
                     controlGroup({
                         items: [
                             numberInput({
