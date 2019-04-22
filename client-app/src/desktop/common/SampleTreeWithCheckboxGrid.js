@@ -170,10 +170,10 @@ class Model {
     }
 
     setChildren(rec, enabled) {
-        const children = rec.store.allRecords.filter(it => it.parentId == rec.id);
-        children.forEach(it => {
-            it.enabled = enabled;
-            this.setChildren(it, enabled);
+        // For setting, consult only children currently showing
+        rec.children.forEach(r => {
+            r.enabled = enabled;
+            this.setChildren(r, enabled);
         });
     }
 
@@ -186,8 +186,10 @@ class Model {
     }
 
     calcAggregateEnabledState(rec) {
-        const children = rec.store.allRecords.filter(it => it.parentId == rec.id);
-        return children.every(it => !!it.enabled);
+        const states = rec.allChildren.map(r => r.enabled);   // here consult *all* children (even filtered out)
+        if (states.every(s => s === true)) return true;
+        if (states.every(s => s === false)) return false;
+        return null;
     }
 }
 
