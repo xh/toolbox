@@ -6,13 +6,16 @@
  */
 
 import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {XH, HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {RecallsPanelModel} from './RecallsPanelModel';
 import './RecallsPanel.scss';
 import {grid} from '@xh/hoist/cmp/grid';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {mask} from '@xh/hoist/desktop/cmp/mask';
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {filler} from '@xh/hoist/cmp/layout';
 
 @HoistComponent
 export class RecallsPanel extends Component {
@@ -20,8 +23,8 @@ export class RecallsPanel extends Component {
     model = new RecallsPanelModel();
     
     render() {
-        // const {model} = this;
-        const {gridModel} = this.model;
+        const {model} = this;
+        const {gridModel} = model;
 
         return panel({
             className: 'toolbox-recalls-panel',
@@ -30,10 +33,24 @@ export class RecallsPanel extends Component {
                 model: gridModel
 
             }),
+            mask: mask({
+                model: model.loadModel,
+                // isDisplayed: true,
+                message: 'you\'re looking at the best Mask ever',
+                spinner: true,
+                onClick: () => XH.toast({message: 'Cheerios mate!'})
+                // Without spinner or message, what is the eventListener attached to?!
+            }),
+            tbar: toolbar(
+                filler
+            ),
             bbar: toolbar(
-                colChooserButton({gridModel})
+                colChooserButton({gridModel}),
+                storeFilterField({gridModel})
+                // Demon magic!!
             )
         });
     }
 
 }
+

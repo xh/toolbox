@@ -7,6 +7,10 @@
 
 import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
+import moment from 'moment';
+import {dateCol} from '@xh/hoist/cmp/grid/columns';
+import {dateRenderer} from "@xh/hoist/format";
+
 
 @HoistModel
 @LoadSupport
@@ -25,14 +29,15 @@ export class RecallsPanelModel {
         rowBorders: true,
         showHover: true,
         compact: XH.appModel.useCompactGrids,
-        // stateModel: 'portfolio-positions-grid',
+        stateModel: 'recalls-main-grid',
         // stateModel is user preference for positions of grid sort
         columns: [
             {
-                field: 'recall_initiation_date',
-                // want to format ^ field
-                headerName: 'Recalling as of',
-                width: 100,
+                field: 'recallDate', // <~ never want to change
+                ...dateCol, // <~ XH convention to spread framework column 2nd line
+                renderer: dateRenderer('MMM D'),
+                headerName: 'Recalling since',
+                width: 120,
                 hidden: false
             },
             {
@@ -78,7 +83,7 @@ export class RecallsPanelModel {
         // now that I know how the backend is, I think 'recalls'
         // is referring to our backend/recalls
             .fetchJson({url: 'recalls', loadSpec})  // no forward slash == relative path
-            .wait(100)
+            .wait(300000)  // FOR MASK!!
             .then(rxRecallEntries => {
                 console.log(rxRecallEntries);
                 //
@@ -95,24 +100,24 @@ export class RecallsPanelModel {
     processRecord(rawRec) {
         rawRec.brandName = rawRec.openfda.brand_name[0];
         rawRec.genericName = rawRec.openfda.generic_name[0];
-        // rawRec.recallInitDateWithFormat = rawRec.recall_initiation_date.toDateString()
+        rawRec.recallDate = moment(rawRec.recall_initiation_date).toDate();
+
+        // use moment to parse date
     }
 
     createId(record) {
         return record.brandName + record.recall_number;
     }
 
-    formatDate(dateString) {
-
-        // 04/18:
-        //
-        // use `.toDateString()`
-        //      OR
-        // a lodash method...?
-        //      OR
-        // doesn't our library come wih something something date...?
-
-    }
+    // make an export button
 
 
 }
+
+// Hoist builds on top of AG Grid to let you do common tasks as one liners
+// aka POWERFUL!  we do EXTREMELY HEAVY LIFTING!
+// *remember user preferences / sort*
+//      - settings local to browser (localStorage)
+
+
+
