@@ -41,7 +41,7 @@ export class DateFormatsPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Date Format',
+                title: 'Formats › Dates',
                 className: 'toolbox-formats-tab',
                 width: '90%',
                 height: '90%',

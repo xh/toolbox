@@ -43,7 +43,7 @@ export class PanelContainerPanel extends Component {
                 optionally saving their sizing state in a per-user preference.
             `,
             item: panel({
-                title: 'Containers > Panel',
+                title: 'Containers › Panel',
                 icon: Icon.window(),
                 height: 450,
                 width: 700,

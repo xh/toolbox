@@ -32,9 +32,6 @@ export class TreeGridPageModel {
     gridModel = new GridModel({
         treeMode: true,
         enableColChooser: true,
-        store: {
-            fields: ['id', 'name', 'pnl', 'mktVal']
-        },
         sortBy: 'pnl|desc|abs',
         columns: [
             {

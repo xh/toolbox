@@ -1,4 +1,4 @@
-import {filler} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {fmtNumber} from '@xh/hoist/format';
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
@@ -88,7 +88,7 @@ export class GridTestPanel extends Component {
                     onClick: () => model.tearDown()
                 }),
                 filler(),
-                this.formatRunTimes()
+                span(this.formatRunTimes())
             ),
             bbar: toolbar([
                 storeFilterField({

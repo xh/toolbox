@@ -125,9 +125,12 @@ class Model {
         enableExport: true,
         compact: XH.appModel.useCompactGrids,
         store: {
-            processRawData: it => {
-                const pnl = it.profit_loss;
-                it.winLose = pnl > 0 ? 'Winner' : (pnl < 0 ? 'Loser' : 'Flat');
+            processRawData: (r) => {
+                const pnl = r.profit_loss;
+                return {
+                    winLose: pnl > 0 ? 'Winner' : (pnl < 0 ? 'Loser' : 'Flat'),
+                    ...r
+                };
             }
         },
         contextMenuFn: (params, gridModel) => {

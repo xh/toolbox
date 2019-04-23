@@ -22,7 +22,7 @@ export class TreeGridWithCheckboxPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Grids > Tree w/CheckBox',
+                title: 'Grids › Tree w/CheckBox',
                 icon: Icon.grid(),
                 width: 700,
                 height: 400,

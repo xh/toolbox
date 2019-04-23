@@ -45,7 +45,7 @@ export class MaskPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Other > Mask',
+                title: 'Other › Mask',
                 icon: Icon.eyeSlash(),
                 width: 800,
                 height: 400,
