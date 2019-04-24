@@ -104,7 +104,15 @@ class BootStrap {
                         local: true,
                         groupName: 'Toolbox',
                         note: 'Auto-Refresh Interval in seconds'
+                ],
+                recallsPanelConfig: [
+                        type: 'json',
+                        defaultValue: [],
+                        local: false,
+                        groupName: 'Toolbox',
+                        note: 'Size of Panel Model'
                 ]
+
         ])
     }
 

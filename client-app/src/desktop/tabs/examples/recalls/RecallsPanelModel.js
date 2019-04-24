@@ -17,7 +17,7 @@ import {dateRenderer} from "@xh/hoist/format";
 export class RecallsPanelModel {
 
     gridModel = new GridModel({
-        // sortBy: 'pnl|desc|abs',
+
         store: {
             idSpec: this.createId,
             processRawData: this.processRecord
@@ -66,12 +66,7 @@ export class RecallsPanelModel {
                 hidden: true
             }
         ]
-    })
-
-
-    constructor() {
-
-    }
+    });
 
     //------------------------
     // Implementation
@@ -80,10 +75,8 @@ export class RecallsPanelModel {
     async doLoadAsync(loadSpec) {
         await XH
         //
-        // now that I know how the backend is, I think 'recalls'
-        // is referring to our backend/recalls
+        // think 'recalls' refers to backend path
             .fetchJson({url: 'recalls', loadSpec})  // no forward slash == relative path
-            .wait(300000)  // FOR MASK!!
             .then(rxRecallEntries => {
                 console.log(rxRecallEntries);
                 //
@@ -118,6 +111,3 @@ export class RecallsPanelModel {
 // aka POWERFUL!  we do EXTREMELY HEAVY LIFTING!
 // *remember user preferences / sort*
 //      - settings local to browser (localStorage)
-
-
-
