@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {HoistComponent, XH, elemFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {frame, hframe, hbox, vbox, div, box} from '@xh/hoist/cmp/layout';
+import {hframe, hbox, vbox, div, box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -57,13 +57,13 @@ export class ControlsPanel extends Component {
         const {model, row} = this,
             {formModel, commitOnChange} = model;
 
-        return frame({
+        return hframe({
             item: form({
                 model: formModel,
                 fieldDefaults: {
                     commitOnChange
                 },
-                items: hframe(
+                items: [
                     vbox({
                         className: 'toolbox-controls-panel__column',
                         items: [
@@ -292,7 +292,7 @@ export class ControlsPanel extends Component {
                             })
                         ]
                     })
-                )
+                ]
             })
         });
     }
