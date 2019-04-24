@@ -9,7 +9,7 @@ import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import moment from 'moment';
 import {dateCol} from '@xh/hoist/cmp/grid/columns';
-import {dateRenderer} from "@xh/hoist/format";
+import {dateRenderer} from '@xh/hoist/format';
 
 
 @HoistModel
@@ -72,6 +72,8 @@ export class RecallsPanelModel {
     // Implementation
     //------------------------
 
+
+    // provided by @LoadSupport
     async doLoadAsync(loadSpec) {
         await XH
         //
@@ -79,10 +81,8 @@ export class RecallsPanelModel {
             .fetchJson({url: 'recalls', loadSpec})  // no forward slash == relative path
             .then(rxRecallEntries => {
                 console.log(rxRecallEntries);
-                //
                 // console log displays the data that has been mutated!
                 // can use JSON.stringify() to see original at this line...
-
                 this.gridModel.loadData(rxRecallEntries);
             });
     }
@@ -95,6 +95,7 @@ export class RecallsPanelModel {
         rawRec.genericName = rawRec.openfda.generic_name[0];
         rawRec.recallDate = moment(rawRec.recall_initiation_date).toDate();
 
+        return rawRec;
         // use moment to parse date
     }
 

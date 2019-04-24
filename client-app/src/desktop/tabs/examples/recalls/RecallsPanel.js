@@ -25,6 +25,7 @@ export class RecallsPanel extends Component {
         const {model} = this,
             {gridModel} = model;
 
+
         return vframe(
             panel({
                 className: 'toolbox-recalls-panel',
@@ -47,7 +48,7 @@ export class RecallsPanel extends Component {
                     prefName: 'recallsPanelConfig'
                 }
             })
-        );
+    );
     }
 
 }
