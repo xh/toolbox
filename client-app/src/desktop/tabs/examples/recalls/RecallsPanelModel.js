@@ -91,12 +91,14 @@ export class RecallsPanelModel {
     // using processRecord() for now because I'm too lazy to learn Groovy / Java
     // to massage the data format on the backend...
     processRecord(rawRec) {
-        rawRec.brandName = rawRec.openfda.brand_name[0];
-        rawRec.genericName = rawRec.openfda.generic_name[0];
-        rawRec.recallDate = moment(rawRec.recall_initiation_date).toDate();
 
-        return rawRec;
-        // use moment to parse date
+        let rawRecCopy = JSON.parse(JSON.stringify(rawRec));
+
+        rawRecCopy.brandName = rawRec.openfda.brand_name[0];
+        rawRecCopy.genericName = rawRec.openfda.generic_name[0];
+        rawRecCopy.recallDate = moment(rawRec.recall_initiation_date).toDate();
+
+        return rawRecCopy;
     }
 
     createId(record) {
