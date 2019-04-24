@@ -70,10 +70,6 @@ class Model {
     gridModel = new GridModel({
         stateModel: 'toolboxGroupGrid',
         store: {
-            fields: [
-                'firstName', 'lastName', 'city', 'state', 'salary', 'projectedUnitsSold',
-                'projectedGross', 'actualUnitsSold', 'actualGross', 'retain'
-            ],
             idSpec: rec => `${rec.firstName}~${rec.lastName}~${rec.city}~${rec.state}`
         },
         sortBy: 'lastName',
