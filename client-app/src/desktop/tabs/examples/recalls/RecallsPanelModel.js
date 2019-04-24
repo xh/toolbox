@@ -87,9 +87,6 @@ export class RecallsPanelModel {
             });
     }
 
-    // 04/18:
-    // using processRecord() for now because I'm too lazy to learn Groovy / Java
-    // to massage the data format on the backend...
     processRecord(rawRec) {
 
         let rawRecCopy = JSON.parse(JSON.stringify(rawRec));
