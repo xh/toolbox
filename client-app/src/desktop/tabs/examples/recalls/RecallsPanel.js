@@ -13,8 +13,11 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {vframe} from '@xh/hoist/cmp/layout';
+
+
 import {RecallsPanelModel} from './RecallsPanelModel';
 import './RecallsPanel.scss';
+import {detailsPanel} from './DetailsPanel';
 
 @HoistComponent
 export class RecallsPanel extends Component {
@@ -40,7 +43,7 @@ export class RecallsPanel extends Component {
             }),
             panel({
                 title: 'Details',
-                item: 'hi from details', // <~ this.model.detailModel(instance of DataViewModel) here
+                item: detailsPanel(), // <~ this.model.detailModel(instance of DataViewModel) here
                 model: {
                     side: 'bottom',
                     defaultSize: 250,
@@ -48,7 +51,7 @@ export class RecallsPanel extends Component {
                     prefName: 'recallsPanelConfig'
                 }
             })
-    );
+        );
     }
 
 }
