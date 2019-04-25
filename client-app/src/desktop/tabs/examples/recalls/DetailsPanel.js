@@ -13,15 +13,18 @@ import {table, tbody, tr, th, td} from '@xh/hoist/cmp/layout';
 class DetailsPanel extends Component {
 
     render() {
+        const {model} = this,
+            {currentRecord} = model;
 
+        if (!currentRecord) return null;
 
-        return table({
-            item: tbody(
-                tr(th('Brand Name'), td('Concerta, Ritalin')),
-                tr(th('Generic Name'), td('methylphenidate')),
-                tr(th('description'), td('Clonidine HCL Injection, 1000 mcg/10mL (100 mcg/mL), 10 ML Single Dose Vial, Rx only, Manufactured for: X-Gen Pharmaceuticals, Big Flats, NY 14814, NDC 39822-2000-1'))
+        return table(
+            tbody(
+                tr(th('Brand Name'), td(`${currentRecord.brandName}`)),
+                tr(th('Generic Name'), td(`${currentRecord.genericName}`)),
+                tr(th('Description'), td(`${currentRecord.description}`))
             )
-        });
+        );
     }
 
 }

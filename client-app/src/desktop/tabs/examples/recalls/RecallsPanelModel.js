@@ -10,12 +10,18 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import moment from 'moment';
 import {dateCol} from '@xh/hoist/cmp/grid/columns';
 import {dateRenderer} from '@xh/hoist/format';
+import {DetailsPanelModel} from './DetailsPanelModel';
+import {managed} from '@xh/hoist/core/mixins';
 
 
 @HoistModel
 @LoadSupport
 export class RecallsPanelModel {
 
+    @managed // use managed to manage life cycle of model objects
+    detailsPanelModel = new DetailsPanelModel();
+
+    @managed
     gridModel = new GridModel({
 
         store: {
@@ -48,6 +54,11 @@ export class RecallsPanelModel {
             {
                 field: 'genericName',
                 width: 300,
+                hidden: true
+            },
+            {
+                field: 'classification',
+                width: 100,
                 hidden: false
             },
             {
@@ -56,17 +67,22 @@ export class RecallsPanelModel {
                 hidden: false
             },
             {
-                field: 'product_description',
-                width: 400,
-                hidden: true
-            },
-            {
-                field: 'something_else_im_forgetting',
+                field: 'description',
                 width: 400,
                 hidden: true
             }
         ]
     });
+
+    constructor() {
+        this.addReaction({
+            track: () => this.gridModel.selModel.singleRecord,
+            run: (rec) => this.detailsPanelModel.setRecord(rec)
+            // ^ addReaction.run BOGO:
+            //   run takes a callback function that is given
+        });
+    }
+
 
     //------------------------
     // Implementation
@@ -82,20 +98,19 @@ export class RecallsPanelModel {
             .then(rxRecallEntries => {
                 console.log(rxRecallEntries);
                 // console log displays the data that has been mutated!
-                // can use JSON.stringify() to see original at this line...
+                // if want to see original state, use `JSON.stringify()`
                 this.gridModel.loadData(rxRecallEntries);
             });
     }
 
     processRecord(rawRec) {
-
-        let rawRecCopy = JSON.parse(JSON.stringify(rawRec));
-
-        rawRecCopy.brandName = rawRec.openfda.brand_name[0];
-        rawRecCopy.genericName = rawRec.openfda.generic_name[0];
-        rawRecCopy.recallDate = moment(rawRec.recall_initiation_date).toDate();
-
-        return rawRecCopy;
+        return {
+            ...rawRec,
+            brandName: rawRec.openfda.brand_name[0],
+            genericName: rawRec.openfda.generic_name[0],
+            recallDate: moment(rawRec.recall_initiation_date).toDate(),
+            description: rawRec.product_description
+        };
     }
 
     createId(record) {

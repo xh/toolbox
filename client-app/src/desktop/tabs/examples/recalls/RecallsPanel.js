@@ -12,8 +12,7 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
-import {vframe} from '@xh/hoist/cmp/layout';
-
+import {vframe, filler} from '@xh/hoist/cmp/layout';
 
 import {RecallsPanelModel} from './RecallsPanelModel';
 import './RecallsPanel.scss';
@@ -26,8 +25,7 @@ export class RecallsPanel extends Component {
     
     render() {
         const {model} = this,
-            {gridModel} = model;
-
+            {gridModel, detailsPanelModel} = model;
 
         return vframe(
             panel({
@@ -35,15 +33,15 @@ export class RecallsPanel extends Component {
                 title: 'Recall Browser',
                 item: grid({model: gridModel}),
                 mask: model.loadModel,
-                bbar: toolbar(
-                    colChooserButton({gridModel}),
-                    storeFilterField({gridModel})
-                    // black magic!!
+                tbar: toolbar(
+                    storeFilterField({gridModel}),
+                    filler(),
+                    colChooserButton({gridModel})
                 )
             }),
             panel({
                 title: 'Details',
-                item: detailsPanel(), // <~ this.model.detailModel(instance of DataViewModel) here
+                item: detailsPanel({model: detailsPanelModel}),
                 model: {
                     side: 'bottom',
                     defaultSize: 250,

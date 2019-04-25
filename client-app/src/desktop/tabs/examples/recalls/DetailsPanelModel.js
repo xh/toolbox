@@ -5,22 +5,19 @@
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 
-import {HoistModel, LoadSupport} from '@xh/hoist/core';
-import {DataViewModel} from'@xh/hoist/desktop/cmp/dataview';
+import {HoistModel} from '@xh/hoist/core';
+import {action, observable} from '@xh/hoist/mobx';
 
 @HoistModel
-@LoadSupport
 export class DetailsPanelModel {
 
-    detailsPanelModel = new DataViewModel({
+    @observable.ref
+    currentRecord = null;
 
-
-    })
-
+    @action
     setRecord(rec) {
-
+        this.currentRecord = rec;
     }
-
 
 
 }
