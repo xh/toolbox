@@ -26,7 +26,7 @@ export class ToolbarPanel extends Component {
                 own and can be displayed in a vertical configuration as well. 
             `,
             item: panel({
-                title: 'Containers > Toolbar',
+                title: 'Containers › Toolbar',
                 height: 400,
                 width: 700,
                 tbar: toolbar(

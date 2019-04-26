@@ -36,6 +36,17 @@ export class PortfolioService {
     }
 
     /**
+     * Return a list of flat position data.
+     * @param delay - optional delay in ms, as above.
+     * @returns {Promise<Array>}
+     */
+    async getPositionsAsync(delay = 300) {
+        await wait(delay);
+        this.ensureLoaded();
+        return this.rawPositions;
+    }
+
+    /**
      * Return a single grouped position, uniquely identified by drilldown ID.
      * @param positionId - as generated/installed on each position returned by `getPorfolioAsync()`.
      * @param delay - optional delay in ms, as above.

@@ -36,7 +36,7 @@ export class ValidationPanel extends Component {
     render() {
         return wrapper(
             panel({
-                title: 'Validation',
+                title: 'Forms › Validation',
                 className: 'toolbox-validation-panel',
                 icon: Icon.edit(),
                 width: '90%',

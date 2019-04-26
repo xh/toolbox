@@ -33,7 +33,7 @@ export class ColumnGroupsGridPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Grids > Grouped Columns',
+                title: 'Grids › Grouped Columns',
                 icon: Icon.gridPanel(),
                 width: 900,
                 height: 400,

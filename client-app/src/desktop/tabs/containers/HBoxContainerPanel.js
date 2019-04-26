@@ -14,7 +14,7 @@ export class HBoxContainerPanel extends Component {
                 with <code>flexDirection:row</code>.
             </p>,
             item: panel({
-                title: 'Containers > HBox',
+                title: 'Containers › HBox',
                 icon: Icon.box(),
                 height: 400,
                 width: 700,
