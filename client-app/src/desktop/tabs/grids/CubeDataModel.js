@@ -63,9 +63,9 @@ export class CubeDataModel {
     getQuery() {
         const {dimChooserModel, fundFilter} = this,
             dimensions = dimChooserModel.value,
-            filters = [
+            filters = fundFilter ? [
                 {name: 'fund', values: fundFilter}
-            ];
+            ] : null;
 
         return {dimensions, filters};
     }
