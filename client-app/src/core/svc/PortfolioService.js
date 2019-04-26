@@ -19,7 +19,7 @@ export class PortfolioService {
     orders = [];
     rawPositions = [];
 
-    INITIAL_ORDERS = 20000;
+    INITIAL_ORDERS = 2000;
     INITIAL_SYMBOLS = 500;
 
     /**

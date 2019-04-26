@@ -35,9 +35,9 @@ export class CubeDataModel {
         boundStore: this.gridModel.store,
         query: {
             filters: [],
-            dimensions: ['fund'],
+            dimensions: ['fund', 'trader'],
             includeRoot: false,
-            includeLeaves: true
+            includeLeaves: false
         },
         connect: true
     });
@@ -64,6 +64,9 @@ export class CubeDataModel {
 
     createGridModel() {
         return new GridModel({
+            store: {
+                idSpec: 'id'
+            },
             treeMode: true,
             sortBy: 'pnl|desc|abs',
             emptyText: 'No records found...',
