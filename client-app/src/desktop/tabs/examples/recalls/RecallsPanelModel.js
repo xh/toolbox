@@ -43,13 +43,11 @@ export class RecallsPanelModel {
                 ...dateCol, // <~ XH convention to spread framework column 2nd line
                 renderer: dateRenderer('MMM D'),
                 headerName: 'Recalling since',
-                width: 120,
-                hidden: false
+                width: 120
             },
             {
                 field: 'brandName',
-                width: 300,
-                hidden: false
+                width: 300
             },
             {
                 field: 'genericName',
@@ -59,7 +57,8 @@ export class RecallsPanelModel {
             {
                 field: 'classification',
                 width: 100,
-                hidden: false
+                hidden: false,
+                tooltip: (val) => `This is a ${val}`
             },
             {
                 field: 'status',
