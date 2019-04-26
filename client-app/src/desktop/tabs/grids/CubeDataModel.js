@@ -81,16 +81,10 @@ export class CubeDataModel {
     async doLoadAsync() {
         const positions = await XH.portfolioService.getPositionsAsync();
         this.cube.loadData(positions, {});
-
-        window.cube = this.cube;
-        window.cubeView = this.cubeView;
     }
 
     createGridModel() {
         return new GridModel({
-            store: {
-                idSpec: 'id'
-            },
             treeMode: true,
             sortBy: 'pnl|desc|abs',
             emptyText: 'No records found...',
