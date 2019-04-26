@@ -22,6 +22,7 @@ class DetailsPanel extends Component {
             tbody(
                 tr(th('Brand Name'), td(`${currentRecord.brandName}`)),
                 tr(th('Generic Name'), td(`${currentRecord.genericName}`)),
+                tr(th('Classification'), td(`${model.classification_details()}`)),
                 tr(th('Description'), td(`${currentRecord.description}`))
             )
         );

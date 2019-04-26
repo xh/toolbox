@@ -30,7 +30,7 @@ export class RecallsPanel extends Component {
         return vframe(
             panel({
                 className: 'toolbox-recalls-panel',
-                title: 'Recall Browser',
+                title: 'FDA Drug Recalls',
                 item: grid({model: gridModel}),
                 mask: model.loadModel,
                 tbar: toolbar(

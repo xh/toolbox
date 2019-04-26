@@ -10,9 +10,11 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import moment from 'moment';
 import {dateCol} from '@xh/hoist/cmp/grid/columns';
 import {dateRenderer} from '@xh/hoist/format';
-import {DetailsPanelModel} from './DetailsPanelModel';
 import {managed} from '@xh/hoist/core/mixins';
+import {span} from '@xh/hoist/cmp/layout';
+import {Icon} from '@xh/hoist/icon/Icon';
 
+import {DetailsPanelModel} from './DetailsPanelModel';
 
 @HoistModel
 @LoadSupport
@@ -58,7 +60,8 @@ export class RecallsPanelModel {
                 field: 'classification',
                 width: 100,
                 hidden: false,
-                tooltip: (val) => `This is a ${val}`
+                tooltip: (val) => `${val}`,
+                elementRenderer: this.classificationRenderer
             },
             {
                 field: 'status',
@@ -115,6 +118,20 @@ export class RecallsPanelModel {
     createId(record) {
         return record.brandName + record.recall_number;
     }
+
+    classificationRenderer(val) {
+        switch (val) {
+            case 'Class I':
+                return span(Icon.skull(), Icon.skull(), Icon.skull());
+            case 'Class II':
+                return span(Icon.skull(), Icon.skull());
+            case 'Class III':
+                return Icon.skull();
+            default:
+                return Icon.question();
+        }
+    }
+
 
     // make an export button
 
