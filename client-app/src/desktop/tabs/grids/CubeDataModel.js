@@ -2,6 +2,7 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 import {GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {View} from '@xh/hoist/data/cube';
+import {comparer, bindable} from '@xh/hoist/mobx';
 
 import {Cube} from '@xh/hoist/data/cube';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
@@ -28,19 +29,6 @@ export class CubeDataModel {
             {name: 'pnl', isDimension: false, aggregator: 'SUM'}
         ]
     });
-    
-    @managed
-    cubeView = new View({
-        cube: this.cube,
-        boundStore: this.gridModel.store,
-        query: {
-            filters: [],
-            dimensions: ['fund', 'trader'],
-            includeRoot: false,
-            includeLeaves: false
-        },
-        connect: true
-    });
 
     @managed
     dimChooserModel = new DimensionChooserModel({
@@ -51,8 +39,44 @@ export class CubeDataModel {
             {value: 'sector', label: 'Sector'},
             {value: 'symbol', label: 'Symbol'},
             {value: 'trader', label: 'Trader'}
-        ]
+        ],
+        historyPreference: 'portfolioDimHistory'
     });
+
+    @bindable
+    fundFilter = null;
+    
+    @managed
+    cubeView = new View({
+        cube: this.cube,
+        boundStore: this.gridModel.store,
+        query: {
+            filters: [],
+            dimensions: this.dimChooserModel.value,
+            includeRoot: false,
+            includeLeaves: false
+        },
+        connect: true
+    });
+
+
+    getQuery() {
+        const {dimChooserModel, fundFilter} = this,
+            dimensions = dimChooserModel.value,
+            filters = [
+                {name: 'fund', values: fundFilter}
+            ];
+
+        return {dimensions, filters};
+    }
+
+    constructor() {
+        this.addReaction({
+            track: () => this.getQuery(),
+            run: (q) => this.cubeView.setQuery(q),
+            equals: comparer.structural
+        });
+    }
 
     async doLoadAsync() {
         const positions = await XH.portfolioService.getPositionsAsync();
