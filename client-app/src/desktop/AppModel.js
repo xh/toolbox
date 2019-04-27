@@ -106,8 +106,7 @@ export class AppModel {
                             {name: 'rest', path: '/rest'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'performance', path: '/performance'},
-                            {name: 'agGrid', path: '/agGrid'},
-                            {name: 'cube', path: '/cube'}
+                            {name: 'agGrid', path: '/agGrid'}
                         ]
                     },
                     {
