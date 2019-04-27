@@ -42,7 +42,7 @@ export class ControlsPanel extends Component {
     render() {
         return wrapper(
             panel({
-                title: 'Controls',
+                title: 'Forms › Controls',
                 className: 'toolbox-controls-panel',
                 icon: Icon.edit(),
                 width: '90%',

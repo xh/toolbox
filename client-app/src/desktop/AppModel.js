@@ -90,7 +90,8 @@ export class AppModel {
                             {name: 'vbox', path: '/vbox'},
                             {name: 'panel', path: '/panel'},
                             {name: 'tabPanel', path: '/tabPanel'},
-                            {name: 'toolbar', path: '/toolbar'}
+                            {name: 'toolbar', path: '/toolbar'},
+                            {name: 'dock', path: '/dock'}
                         ]
                     },
                     {
@@ -103,7 +104,10 @@ export class AppModel {
                             {name: 'groupedRows', path: '/groupedRows'},
                             {name: 'groupedCols', path: '/groupedCols'},
                             {name: 'rest', path: '/rest'},
-                            {name: 'dataview', path: '/dataview'}
+                            {name: 'dataview', path: '/dataview'},
+                            {name: 'performance', path: '/performance'},
+                            {name: 'agGrid', path: '/agGrid'},
+                            {name: 'cube', path: '/cube'}
                         ]
                     },
                     {
@@ -111,8 +115,8 @@ export class AppModel {
                         path: '/forms',
                         children: [
                             {name: 'controls', path: '/controls'},
-                            {name: 'selects', path: '/selects'},
-                            {name: 'validation', path: '/validation'}
+                            {name: 'validation', path: '/validation'},
+                            {name: 'toolbarForm', path: '/toolbarForm'}
                         ]
                     },
                     {

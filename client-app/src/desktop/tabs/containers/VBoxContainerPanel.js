@@ -14,7 +14,7 @@ export class VBoxContainerPanel extends Component {
                 with <code>flexDirection:column</code>.
             </p>,
             item: panel({
-                title: 'Containers > VBox',
+                title: 'Containers › VBox',
                 icon: Icon.box(),
                 height: 400,
                 width: 700,

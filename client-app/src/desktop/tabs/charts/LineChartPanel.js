@@ -18,7 +18,7 @@ export class LineChartPanel extends Component {
         return wrapper(
             panel({
                 className: 'toolbox-linechart-panel',
-                title: 'Line Chart',
+                title: 'Charts › Line',
                 width: 800,
                 height: 600,
                 item: this.renderExample(),
