@@ -6,6 +6,7 @@
  */
 import {HoistAppModel, XH, managed, loadAllAsync} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import {Icon} from '@xh/hoist/icon';
 
 import {CompanyService} from '../core/svc/CompanyService';
 import {TradeService} from '../core/svc/TradeService';
@@ -32,15 +33,15 @@ export class AppModel {
     tabModel = new TabContainerModel({
         route: 'default',
         tabs: [
-            {id: 'home', content: HomeTab},
-            {id: 'containers', content: ContainersTab},
-            {id: 'grids', content: GridsTab},
-            {id: 'forms', content: FormsTab},
-            {id: 'charts', content: ChartsTab},
-            {id: 'icons', content: IconsTab},
-            {id: 'formats', content: FormatsTab},
-            {id: 'other', content: OtherTab},
-            {id: 'examples', content: ExamplesTab}
+            {id: 'home', icon: Icon.home(), content: HomeTab},
+            {id: 'containers', icon: Icon.box(), content: ContainersTab},
+            {id: 'grids', icon: Icon.grid(), content: GridsTab},
+            {id: 'forms', icon: Icon.edit(), content: FormsTab},
+            {id: 'charts', icon: Icon.chartLine(), content: ChartsTab},
+            {id: 'icons', icon: Icon.rocket(), content: IconsTab},
+            {id: 'formats', icon: Icon.print(), content: FormatsTab},
+            {id: 'other', icon: Icon.boxFull(), content: OtherTab},
+            {id: 'examples', icon: Icon.books(), content: ExamplesTab}
         ],
         switcherPosition: 'none'
     });
