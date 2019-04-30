@@ -1,76 +1,44 @@
+import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
-import {GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {View} from '@xh/hoist/data/cube';
-import {comparer, bindable} from '@xh/hoist/mobx';
-
-import {Cube} from '@xh/hoist/data/cube';
-import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
-import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
+import {Cube, View} from '@xh/hoist/data/cube';
+import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {bindable, comparer} from '@xh/hoist/mobx';
+import {values} from 'lodash';
+import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 
 @HoistModel
 @LoadSupport
 export class CubeDataModel {
 
-    @managed
-    gridModel = this.createGridModel();
+    @managed cube;
+    @managed gridModel;
+    @managed cubeView;
+    @managed dimManagerModel;
 
-    @managed
-    cube = new Cube({
-        idSpec: XH.genId,
-        fields: [
-            {name: 'symbol', isDimension: true},
-            {name: 'sector', isDimension: true},
-            {name: 'model', isDimension: true},
-            {name: 'fund', isDimension: true},
-            {name: 'region', isDimension: true},
-            {name: 'trader', isDimension: true},
-            {name: 'mktVal', isDimension: false, aggregator: 'SUM'},
-            {name: 'pnl', isDimension: false, aggregator: 'SUM'}
-        ]
-    });
-
-    @managed
-    dimChooserModel = new DimensionChooserModel({
-        dimensions: [
-            {value: 'fund', label: 'Fund'},
-            {value: 'model', label: 'Model'},
-            {value: 'region', label: 'Region'},
-            {value: 'sector', label: 'Sector'},
-            {value: 'symbol', label: 'Symbol'},
-            {value: 'trader', label: 'Trader'}
-        ],
-        historyPreference: 'portfolioDimHistory'
-    });
-
-    @bindable
-    fundFilter = null;
-    
-    @managed
-    cubeView = new View({
-        cube: this.cube,
-        boundStore: this.gridModel.store,
-        query: {
-            filters: [],
-            dimensions: this.dimChooserModel.value,
-            includeRoot: false,
-            includeLeaves: false
-        },
-        connect: true
-    });
-
-
-    getQuery() {
-        const {dimChooserModel, fundFilter} = this,
-            dimensions = dimChooserModel.value,
-            filters = fundFilter ? [
-                {name: 'fund', values: fundFilter}
-            ] : null;
-
-        return {dimensions, filters};
-    }
+    @bindable fundFilter = null;
 
     constructor() {
+        this.gridModel = this.createGridModel();
+        this.cube = this.createCube();
+
+        const cubeDims = values(this.cube.fields)
+            .filter(it => it.isDimension)
+            .map(it => ({value: it.name, label: it.displayName}));
+
+        this.dimManagerModel = new DimensionManagerModel({
+            dimensions: cubeDims,
+            defaultDimConfig: 'cubeTestDefaultDims',
+            userDimPref: 'cubeTestUserDims'
+        });
+
+        this.cubeView = new View({
+            cube: this.cube,
+            boundStore: this.gridModel.store,
+            query: this.getQuery(),
+            connect: true
+        });
+
         this.addReaction({
             track: () => this.getQuery(),
             run: (q) => this.cubeView.setQuery(q),
@@ -78,9 +46,33 @@ export class CubeDataModel {
         });
     }
 
+    getQuery() {
+        const {dimManagerModel, fundFilter} = this,
+            dimensions = dimManagerModel.value,
+            filters = fundFilter ? [{name: 'fund', values: fundFilter}] : null;
+
+        return {dimensions, filters};
+    }
+
     async doLoadAsync() {
         const positions = await XH.portfolioService.getPositionsAsync();
         this.cube.loadData(positions, {});
+    }
+
+    createCube() {
+        return new Cube({
+            idSpec: XH.genId,
+            fields: [
+                {name: 'symbol', isDimension: true},
+                {name: 'sector', isDimension: true},
+                {name: 'model', isDimension: true},
+                {name: 'fund', isDimension: true},
+                {name: 'region', isDimension: true},
+                {name: 'trader', isDimension: true},
+                {name: 'mktVal', displayName: 'Market Value', aggregator: 'SUM'},
+                {name: 'pnl', displayName: 'P&L', aggregator: 'SUM'}
+            ]
+        });
     }
 
     createGridModel() {

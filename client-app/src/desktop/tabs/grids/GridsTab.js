@@ -9,7 +9,7 @@ import {DataViewPanel} from './DataViewPanel';
 import {TreeGridPanel} from './TreeGridPanel';
 import {TreeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
 import {GridTestPanel} from './GridTestPanel';
-import {CubeDataPanel} from './CubeDataPanel';
+import {CubeDataPanel} from './cube/CubeDataPanel';
 import {AgGridView} from './AgGridView';
 
 @HoistComponent
