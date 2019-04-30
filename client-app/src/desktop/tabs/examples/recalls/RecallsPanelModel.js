@@ -96,13 +96,14 @@ export class RecallsPanelModel {
         await XH
         //
         // think 'recalls' refers to backend path
-            .fetchJson({url: 'recalls', loadSpec})  // no forward slash == relative path
+            .fetchJson({url: 'recalls/search', loadSpec})  // no forward slash == relative path
             .then(rxRecallEntries => {
                 console.log(rxRecallEntries);
                 // console log displays the data that has been mutated!
                 // if want to see original state, use `JSON.stringify()`
                 this.gridModel.loadData(rxRecallEntries);
-            });
+            })
+            .catchDefault();
     }
 
     processRecord(rawRec) {
