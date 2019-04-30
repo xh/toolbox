@@ -45,7 +45,7 @@ export class RecallsPanelModel {
                 ...dateCol, // <~ XH convention to spread framework column 2nd line
                 renderer: dateRenderer('MMM D'),
                 headerName: 'Recalling since',
-                width: 120
+                width: 130
             },
             {
                 field: 'brandName',
@@ -59,14 +59,12 @@ export class RecallsPanelModel {
             {
                 field: 'classification',
                 width: 100,
-                hidden: false,
-                tooltip: (val) => `${val}`,
+                tooltip: (val) => `${val} ${val === 'Not Yet Classified' ? '' : 'Click for more details' }`,
                 elementRenderer: this.classificationRenderer
             },
             {
                 field: 'status',
                 width: 150,
-                hidden: false
             },
             {
                 field: 'description',
@@ -94,9 +92,7 @@ export class RecallsPanelModel {
     // provided by @LoadSupport
     async doLoadAsync(loadSpec) {
         await XH
-        //
-        // think 'recalls' refers to backend path
-            .fetchJson({url: 'recalls/search', loadSpec})  // no forward slash == relative path
+            .fetchJson({url: 'recalls', loadSpec})  // no forward slash == relative path
             .then(rxRecallEntries => {
                 console.log(rxRecallEntries);
                 // console log displays the data that has been mutated!
