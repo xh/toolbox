@@ -18,12 +18,16 @@ class DetailsPanel extends Component {
 
         if (!currentRecord) return null;
 
+        console.log('We got the currentRecord: ', currentRecord);
+
         return table(
             tbody(
                 tr(th('Brand Name'), td(`${currentRecord.brandName}`)),
                 tr(th('Generic Name'), td(`${currentRecord.genericName}`)),
                 tr(th('Classification'), td(`${model.classification_details()}`)),
-                tr(th('Description'), td(`${currentRecord.description}`))
+                tr(th('Description'), td(`${currentRecord.description}`)),
+                tr(th('Recalling Firm'), td(`${currentRecord.recallingFirm}`)),
+                tr(th('Reason For Recall'), td(`${currentRecord.reason}`))
             )
         );
     }

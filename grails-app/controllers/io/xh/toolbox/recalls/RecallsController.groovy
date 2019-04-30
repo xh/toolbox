@@ -19,7 +19,7 @@ class RecallsController extends BaseController {
     }
 
     def search() {
-        def searchResults = recallsService.fetchSearch(params.drugName)
+        def searchResults = recallsService.fetchSearch(params.wordOrPhrase)
         // params are case sEnSiTiVe
         renderJSON(searchResults)
     }

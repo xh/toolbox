@@ -23,10 +23,10 @@ class RecallsService extends BaseService {
         return response.results
     }
 
-    List fetchSearch(drugName) {
+    List fetchSearch(wordOrPhrase) {
         def host = configService.getString('recallsHost'),
             url = new URL("https://api.fda.gov/drug/enforcement.json?search=" +
-                    "openfda.generic_name:${drugName}+openfda.brand_name:${drugName}" +
+                    "${wordOrPhrase}+_exists_:openfda" +
                     "&sort=recall_initiation_date:desc&limit=99"
             ),
             connection = url.openConnection()

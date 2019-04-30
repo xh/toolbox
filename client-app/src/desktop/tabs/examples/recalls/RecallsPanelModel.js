@@ -59,18 +59,29 @@ export class RecallsPanelModel {
             {
                 field: 'classification',
                 width: 100,
-                tooltip: (val) => `${val} ${val === 'Not Yet Classified' ? '' : 'Click for more details' }`,
+                tooltip: (val) => `${val} ${val === 'Not Yet Classified' ? '' : ' | Click for more details' }`,
                 elementRenderer: this.classificationRenderer
             },
             {
                 field: 'status',
-                width: 150,
+                width: 150
             },
             {
                 field: 'description',
                 width: 400,
                 hidden: true
+            },
+            {
+                field: 'recallingFirm',
+                width: 150,
+                hidden: true
+            },
+            {
+                field: 'reason',
+                width: 200,
+                hidden: true
             }
+
         ]
     });
 
@@ -94,22 +105,25 @@ export class RecallsPanelModel {
         await XH
             .fetchJson({url: 'recalls', loadSpec})  // no forward slash == relative path
             .then(rxRecallEntries => {
-                console.log(rxRecallEntries);
-                // console log displays the data that has been mutated!
-                // if want to see original state, use `JSON.stringify()`
+                // console log displays the data that has been mutated! for original state, use `JSON.stringify()`
                 this.gridModel.loadData(rxRecallEntries);
             })
             .catchDefault();
     }
 
     processRecord(rawRec) {
-        return {
+
+        const ret = {
             ...rawRec,
             brandName: rawRec.openfda.brand_name[0],
             genericName: rawRec.openfda.generic_name[0],
             recallDate: moment(rawRec.recall_initiation_date).toDate(),
-            description: rawRec.product_description
+            description: rawRec.product_description,
+            recallingFirm: rawRec.recalling_firm,
+            reason: rawRec.reason_for_recall
         };
+
+        return ret;
     }
 
     createId(record) {
@@ -123,7 +137,7 @@ export class RecallsPanelModel {
             case 'Class II':
                 return span(Icon.skull(), Icon.skull());
             case 'Class III':
-                return Icon.skull();
+                return Icon.warning();
             default:
                 return Icon.question();
         }
