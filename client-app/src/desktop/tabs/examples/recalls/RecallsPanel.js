@@ -35,7 +35,7 @@ export class RecallsPanel extends Component {
                 item: grid({model: gridModel}),
                 mask: model.loadModel,
                 tbar: toolbar(
-                    textInput({model, bind: 'searchQuery', placeholder: 'Search for a drug'}),
+                    textInput({model, bind: 'searchQuery', placeholder: 'Keyword Search', commitOnChange: true}),
                     filler(),
                     storeCountLabel({gridModel}),
                     colChooserButton({gridModel})

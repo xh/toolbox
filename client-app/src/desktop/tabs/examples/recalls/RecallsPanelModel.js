@@ -12,6 +12,7 @@ import {dateCol} from '@xh/hoist/cmp/grid/columns';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {managed} from '@xh/hoist/core/mixins';
 import {Icon} from '@xh/hoist/icon/Icon';
+import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 
 import {DetailsPanelModel} from './DetailsPanelModel';
 import {bindable} from '@xh/hoist/mobx';
@@ -40,7 +41,7 @@ export class RecallsPanelModel {
         rowBorders: true,
         showHover: true,
         compact: XH.appModel.useCompactGrids,
-        // stateModel: 'recalls-main-grid',
+        stateModel: 'recalls-main-grid',
         // stateModel is user preference for positions of grid sort
         columns: [
             {
@@ -93,7 +94,7 @@ export class RecallsPanelModel {
 
     constructor() {
         this.addReaction({
-            track: () => this.gridModel.selModel.singleRecord,
+            track: () => this.gridModel.selectedRecord,
             run: (rec) => this.detailsPanelModel.setRecord(rec)
             // ^ addReaction.run BOGO:
             //   run takes a callback function that is given
@@ -101,7 +102,8 @@ export class RecallsPanelModel {
 
         this.addReaction({
             track: () => this.searchQuery,
-            run: () => this.loadAsync()
+            run: () => this.loadAsync(),
+            delay: ONE_SECOND
         });
     }
 
@@ -118,8 +120,9 @@ export class RecallsPanelModel {
                 loadSpec
             })  // no forward slash == relative path
             .then(rxRecallEntries => {
-                // console log displays the data that has been mutated! for original state, use `JSON.stringify()`
-                this.gridModel.loadData(rxRecallEntries);
+                const {gridModel} = this;
+                gridModel.loadData(rxRecallEntries);
+                if (!gridModel.hasSelection) gridModel.selectFirst();
             })
             .catchDefault();
     }
