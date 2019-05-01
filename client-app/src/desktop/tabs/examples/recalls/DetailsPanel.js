@@ -18,8 +18,6 @@ class DetailsPanel extends Component {
 
         if (!currentRecord) return null;
 
-        console.log('We got the currentRecord: ', currentRecord);
-
         return table(
             tbody(
                 tr(th('Brand Name'), td(`${currentRecord.brandName}`)),

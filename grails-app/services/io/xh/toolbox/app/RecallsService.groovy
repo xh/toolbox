@@ -5,6 +5,8 @@ import io.xh.hoist.json.JSON
 
 class RecallsService extends BaseService {
 
+    def configService
+
     /*
         FDA Drug Recall API notes:
         -   `_exists_:field` is useful for openfda;
@@ -12,32 +14,21 @@ class RecallsService extends BaseService {
      */
 
 
-
-    List fetchRecalls() {
+    List fetchRecalls(String searchQuery) {
         def host = configService.getString('recallsHost'),
-            url = new URL("https://api.fda.gov/drug/enforcement.json?search=" +
-                    "_exists_:openfda&sort=recall_initiation_date:desc&limit=99"
-            ),
-            response = JSON.parse(url.openStream(), 'UTF-8')
-
-        return response.results
-    }
-
-    List fetchSearch(wordOrPhrase) {
-        def host = configService.getString('recallsHost'),
-            url = new URL("https://api.fda.gov/drug/enforcement.json?search=" +
-                    "${wordOrPhrase}+_exists_:openfda" +
-                    "&sort=recall_initiation_date:desc&limit=99"
-            ),
-            connection = url.openConnection()
+            url = !searchQuery ?
+                new URL("https://api.fda.gov/drug/enforcement.json?search=_exists_:openfda&sort=recall_initiation_date:desc&limit=99") :
+                new URL("https://api.fda.gov/drug/enforcement.json?search=(${searchQuery})+AND+_exists_:openfda&sort=recall_initiation_date:desc&limit=99")
 
 
+        def connection = url.openConnection()
         if (connection.responseCode == 404) {
-            return [];  // return empty if none found
+            return []
         } else {
             return JSON.parse(connection.getInputStream(), 'UTF-8').results
-        }               // return everything else, including exceptions
+        }
+
     }
 
-    def configService
+
 }

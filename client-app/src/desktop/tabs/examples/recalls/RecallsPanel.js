@@ -11,8 +11,9 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
-import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {vframe, filler} from '@xh/hoist/cmp/layout';
+import {textInput} from '@xh/hoist/desktop/cmp/input';
 
 import {RecallsPanelModel} from './RecallsPanelModel';
 import './RecallsPanel.scss';
@@ -34,8 +35,9 @@ export class RecallsPanel extends Component {
                 item: grid({model: gridModel}),
                 mask: model.loadModel,
                 tbar: toolbar(
-                    storeFilterField({gridModel}),
+                    textInput({model, bind: 'searchQuery', placeholder: 'Search for a drug'}),
                     filler(),
+                    storeCountLabel({gridModel}),
                     colChooserButton({gridModel})
                 )
             }),

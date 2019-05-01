@@ -24,7 +24,7 @@ export class ExamplesTab extends Component {
                 tabs: [
                     {id: 'portfolio', content: PortfolioPanel},
                     {id: 'news', content: NewsPanel},
-                    {id: 'recalls', content: RecallsPanel},
+                    {id: 'recalls', content: RecallsPanel, title: 'FDA Recalls'},
                     {id: 'fileManager', content: FileManager, omit: !XH.getUser().isHoistAdmin}
                 ]
             },

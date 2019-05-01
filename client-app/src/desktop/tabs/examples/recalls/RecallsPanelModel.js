@@ -9,16 +9,19 @@ import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import moment from 'moment';
 import {dateCol} from '@xh/hoist/cmp/grid/columns';
-import {dateRenderer} from '@xh/hoist/format';
+import {compactDateRenderer} from '@xh/hoist/format';
 import {managed} from '@xh/hoist/core/mixins';
-import {span} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
 
 import {DetailsPanelModel} from './DetailsPanelModel';
+import {bindable} from '@xh/hoist/mobx';
 
 @HoistModel
 @LoadSupport
 export class RecallsPanelModel {
+
+    @bindable
+    searchQuery = '';
 
     @managed // use managed to manage life cycle of model objects
     detailsPanelModel = new DetailsPanelModel();
@@ -37,15 +40,16 @@ export class RecallsPanelModel {
         rowBorders: true,
         showHover: true,
         compact: XH.appModel.useCompactGrids,
-        stateModel: 'recalls-main-grid',
+        // stateModel: 'recalls-main-grid',
         // stateModel is user preference for positions of grid sort
         columns: [
             {
-                field: 'recallDate', // <~ never want to change
-                ...dateCol, // <~ XH convention to spread framework column 2nd line
-                renderer: dateRenderer('MMM D'),
-                headerName: 'Recalling since',
-                width: 130
+                field: 'classification',
+                headerName: 'Class',
+                align: 'center',
+                width: 65,
+                tooltip: (cls) => `${cls} ${cls === 'Not Yet Classified' ? '' : ' | Click for more details' }`,
+                elementRenderer: this.classificationRenderer
             },
             {
                 field: 'brandName',
@@ -57,14 +61,16 @@ export class RecallsPanelModel {
                 hidden: true
             },
             {
-                field: 'classification',
-                width: 100,
-                tooltip: (val) => `${val} ${val === 'Not Yet Classified' ? '' : ' | Click for more details' }`,
-                elementRenderer: this.classificationRenderer
+                field: 'status',
+                width: 100
             },
             {
-                field: 'status',
-                width: 150
+                field: 'recallDate', // <~ never want to change
+                ...dateCol, // <~ XH convention to spread framework column 2nd line
+                headerName: 'Date',
+                width: 100,
+                renderer: compactDateRenderer('MMM D'),
+                tooltip: (date) => `${date}`
             },
             {
                 field: 'description',
@@ -92,18 +98,25 @@ export class RecallsPanelModel {
             // ^ addReaction.run BOGO:
             //   run takes a callback function that is given
         });
+
+        this.addReaction({
+            track: () => this.searchQuery,
+            run: () => this.loadAsync()
+        });
     }
 
 
     //------------------------
     // Implementation
     //------------------------
-
-
     // provided by @LoadSupport
     async doLoadAsync(loadSpec) {
         await XH
-            .fetchJson({url: 'recalls', loadSpec})  // no forward slash == relative path
+            .fetchJson({
+                url: 'recalls',
+                params: {searchQuery: this.searchQuery},
+                loadSpec
+            })  // no forward slash == relative path
             .then(rxRecallEntries => {
                 // console log displays the data that has been mutated! for original state, use `JSON.stringify()`
                 this.gridModel.loadData(rxRecallEntries);
@@ -133,13 +146,13 @@ export class RecallsPanelModel {
     classificationRenderer(val) {
         switch (val) {
             case 'Class I':
-                return span(Icon.skull(), Icon.skull(), Icon.skull());
+                return Icon.skull({className: 'xh-red'});
             case 'Class II':
-                return span(Icon.skull(), Icon.skull());
+                return Icon.warning({className: 'xh-orange'});
             case 'Class III':
-                return Icon.warning();
+                return Icon.info({className: 'xh-blue'});
             default:
-                return Icon.question();
+                return null;
         }
     }
 

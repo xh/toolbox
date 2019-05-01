@@ -10,7 +10,7 @@ class RecallsController extends BaseController {
 
     def index() {
 
-        def recalls = recallsService.fetchRecalls()
+        def recalls = recallsService.fetchRecalls(params.searchQuery)
         renderJSON(recalls)
 
         // or is it better to write:
@@ -18,9 +18,4 @@ class RecallsController extends BaseController {
         // ??
     }
 
-    def search() {
-        def searchResults = recallsService.fetchSearch(params.wordOrPhrase)
-        // params are case sEnSiTiVe
-        renderJSON(searchResults)
-    }
 }
