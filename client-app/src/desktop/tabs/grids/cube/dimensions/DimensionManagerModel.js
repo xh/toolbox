@@ -98,7 +98,7 @@ export class DimensionManagerModel {
 
         gridModel.loadData([...defaultRowData, ...userRowData]);
 
-        wait(100).then(() => {
+        wait(300).then(() => {
             if (idToSelect) {
                 gridModel.selModel.select(idToSelect);
             } else if (!gridModel.selectedRecord) {

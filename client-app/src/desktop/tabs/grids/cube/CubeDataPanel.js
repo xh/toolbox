@@ -1,12 +1,12 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {filler, hframe} from '@xh/hoist/cmp/layout';
+import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {HoistComponent, XH} from '@xh/hoist/core';
-import {refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
+import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {Component} from 'react';
 
 import {CubeDataModel} from './CubeDataModel';
@@ -19,10 +19,13 @@ export class CubeDataPanel extends Component {
 
     render() {
         const {model, agOptions} = this,
-            {gridModel, dimManagerModel} = model;
+            {gridModel, dimManagerModel, loadModel, loadTimesGridModel} = model;
 
         return panel({
-            mask: model.loadModel,
+            mask: mask({
+                model: loadModel,
+                spinner: true
+            }),
             item: hframe({
                 items: [
                     dimensionManager({
@@ -34,15 +37,32 @@ export class CubeDataPanel extends Component {
                         icon: Icon.grid(),
                         flex: 1,
                         item: grid({model: gridModel, agOptions})
+                    }),
+                    panel({
+                        title: 'Timings (ms)',
+                        icon: Icon.clock(),
+                        model: {
+                            side: 'right',
+                            defaultSize: 220
+                        },
+                        item: grid({model: loadTimesGridModel, hideHeaders: true})
                     })
-
                 ]
             }),
             bbar: toolbar(
-                refreshButton({
-                    text: 'Reload cube',
-                    model
+                numberInput({
+                    model,
+                    bind: 'orderCount',
+                    enableShorthandUnits: true,
+                    selectOnFocus: true,
+                    width: 80
                 }),
+                span('orders'),
+                toolbarSep(),
+                span('Root:'),
+                switchInput({model, bind: 'includeRoot'}),
+                span('Leaves:'),
+                switchInput({model, bind: 'includeLeaves'}),
                 filler(),
                 select({
                     model,

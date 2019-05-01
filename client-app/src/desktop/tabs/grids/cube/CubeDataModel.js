@@ -1,10 +1,12 @@
 import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
+import {numberCol, timeCol} from '@xh/hoist/cmp/grid/columns';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 import {Cube, View} from '@xh/hoist/data/cube';
-import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {fmtThousands, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer} from '@xh/hoist/mobx';
-import {values} from 'lodash';
+import {wait, start} from '@xh/hoist/promise';
+import {castArray, values} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 
 @HoistModel
@@ -12,14 +14,19 @@ import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 export class CubeDataModel {
 
     @managed cube;
-    @managed gridModel;
     @managed cubeView;
+    @managed gridModel;
+    @managed loadTimesGridModel
     @managed dimManagerModel;
 
+    @bindable includeLeaves = false;
+    @bindable includeRoot = false;
+    @bindable orderCount = XH.getPref('cubeTestOrderCount')
     @bindable fundFilter = null;
 
     constructor() {
         this.gridModel = this.createGridModel();
+        this.loadTimesGridModel = this.createLoadTimesGridModel();
         this.cube = this.createCube();
 
         const cubeDims = values(this.cube.fields)
@@ -41,22 +48,75 @@ export class CubeDataModel {
 
         this.addReaction({
             track: () => this.getQuery(),
-            run: (q) => this.cubeView.setQuery(q),
+            run: (q) => this.setQuery(q),
             equals: comparer.structural
+        });
+
+        this.addReaction({
+            track: () => this.orderCount,
+            run: (count) => {
+                XH.setPref('cubeTestOrderCount', count);
+                this.loadAsync();
+            }
         });
     }
 
     getQuery() {
-        const {dimManagerModel, fundFilter} = this,
+        const {dimManagerModel, fundFilter, includeLeaves, includeRoot} = this,
             dimensions = dimManagerModel.value,
             filters = fundFilter ? [{name: 'fund', values: fundFilter}] : null;
 
-        return {dimensions, filters};
+        return {dimensions, filters, includeLeaves, includeRoot};
+    }
+
+    setQuery(q) {
+        start(() => {
+            const start = Date.now();
+            this.cubeView.setQuery(q);
+            const end = Date.now();
+            this.addLoadTimes({
+                timestamp: end,
+                took: end - start,
+                tag: 'Set query'
+            });
+        }).linkTo(this.loadModel);
     }
 
     async doLoadAsync() {
-        const positions = await XH.portfolioService.getPositionsAsync();
-        this.cube.loadData(positions, {});
+        const loadTimes = [],
+            {loadModel} = this,
+            ocTxt = fmtThousands(this.orderCount) + 'k';
+
+        let start = Date.now();
+        loadModel.setMessage(`Generating ${ocTxt} orders`);
+        await wait(10);  // Allow mask message to update
+
+        const orders = XH.portfolioService.generateOrders(this.orderCount);
+        orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
+
+        let end = Date.now();
+        loadTimes.push({
+            timestamp: end,
+            took: end - start - 10,
+            tag: `Gen ${ocTxt} orders`
+        });
+
+
+        start = Date.now();
+        loadModel.setMessage('Loading cube...');
+        await wait(10);
+
+        this.cube.loadData(orders, {});
+
+        end = Date.now();
+        loadTimes.push({
+            timestamp: end,
+            took: end - start - 10,
+            tag: 'Load cube'
+        });
+
+        loadModel.setMessage('');
+        this.addLoadTimes(loadTimes);
     }
 
     createCube() {
@@ -69,8 +129,15 @@ export class CubeDataModel {
                 {name: 'fund', isDimension: true},
                 {name: 'region', isDimension: true},
                 {name: 'trader', isDimension: true},
+                {name: 'dir', displayName: 'Direction', isDimension: true},
                 {name: 'mktVal', displayName: 'Market Value', aggregator: 'SUM'},
-                {name: 'pnl', displayName: 'P&L', aggregator: 'SUM'}
+                {name: 'quantity', aggregator: 'SUM'},
+                {name: 'commission', aggregator: 'SUM'},
+                // {name: 'confidence', aggregator: 'AVG'},  // TODO - average aggregator?
+                {name: 'maxConfidence', aggregator: 'MAX'},
+                {name: 'minConfidence', aggregator: 'MIN'},
+                {name: 'price', aggregator: 'UNIQUE'},
+                {name: 'time', aggregator: 'MAX'}
             ]
         });
     }
@@ -78,7 +145,7 @@ export class CubeDataModel {
     createGridModel() {
         return new GridModel({
             treeMode: true,
-            sortBy: 'pnl|desc|abs',
+            sortBy: 'time|desc',
             emptyText: 'No records found...',
             enableColChooser: true,
             enableExport: true,
@@ -113,21 +180,72 @@ export class CubeDataModel {
                     })
                 },
                 {
-                    field: 'pnl',
-                    headerName: 'P&L',
+                    field: 'quantity',
+                    headerName: 'Qty',
                     align: 'right',
                     width: 130,
                     absSort: true,
-                    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                     renderer: numberRenderer({
                         precision: 0,
-                        ledger: true,
-                        colorSpec: true
+                        ledger: true
                     })
-                }, {
-                    ...emptyFlexCol
-                }
+                },
+                {
+                    field: 'price',
+                    align: 'right',
+                    width: 130,
+                    renderer: numberRenderer({
+                        precision: 4
+                    })
+                },
+                {
+                    field: 'commission',
+                    align: 'right',
+                    width: 130,
+                    renderer: numberRenderer({
+                        precision: 0,
+                        ledger: true
+                    })
+                },
+                {
+                    field: 'maxConfidence',
+                    align: 'right',
+                    width: 130,
+                    renderer: numberRenderer({
+                        precision: 0
+                    })
+                },
+                {
+                    field: 'minConfidence',
+                    align: 'right',
+                    width: 130,
+                    renderer: numberRenderer({
+                        precision: 0
+                    })
+                },
+                {
+                    field: 'time',
+                    ...timeCol
+                },
+                {...emptyFlexCol}
             ]
         });
+    }
+
+    createLoadTimesGridModel() {
+        return new GridModel({
+            store: {idSpec: 'timestamp'},
+            sortBy: 'timestamp|desc',
+            columns: [
+                {field: 'timestamp', hidden: true},
+                {field: 'tag', flex: 1},
+                {field: 'took', width: 80, ...numberCol}
+            ]
+        });
+    }
+
+    addLoadTimes(times) {
+        times = castArray(times);
+        this.loadTimesGridModel.store.updateData(times);
     }
 }

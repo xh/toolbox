@@ -89,6 +89,12 @@ class BootStrap {
                 groupName: 'Toolbox',
                 note: 'Auto-Refresh Interval in seconds'
             ],
+            cubeTestOrderCount: [
+                type: 'int',
+                defaultValue: 80000,
+                groupName: 'Toolbox',
+                note: 'Orders to generate for Grids > Cube data test panel'
+            ],
             cubeTestUserDims: [
                 type: 'json',
                 defaultValue: [],
