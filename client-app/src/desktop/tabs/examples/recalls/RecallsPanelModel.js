@@ -138,7 +138,7 @@ export class RecallsPanelModel {
             recallingFirm: rawRec.recalling_firm,
             reason: rawRec.reason_for_recall
         };
-
+        // console.log(ret);
         return ret;
     }
 
@@ -159,8 +159,6 @@ export class RecallsPanelModel {
         }
     }
 
-
-    // make an export button
 
 
 }

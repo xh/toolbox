@@ -1,33 +1,28 @@
-.toolbox-recalls-panel {
+.toolbox-recalls-detail-panel {
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
+  table {
+    width: 700px;
+    border-collapse: collapse;
+    border-right: var(--xh-border-solid);
 
-      th {
-        width: 55%;
-        padding: var(--xh-pad-half-px);
-        text-transform: uppercase;
-        background-color: var(--xh-grid-header-bg);
-        border-bottom: var(--xh-border-solid);
-      }
-
-      tr {
-        background-color: var(--xh-grid-bg);
-
-        &:nth-child(odd) {
-          background-color: var(--xh-grid-bg-odd);
-        }
-
-        td {
-          padding: var(--xh-pad-px);
-
-          &:not(:first-child) {
-            text-align: center;
-          }
-        }
-      }
+    th {
+      padding: var(--xh-pad-half-px);
+      background-color: var(--xh-bg-alt);
+      width: 140px;
+      text-align: right;
     }
+
+    tr {
+      border-bottom: var(--xh-border-solid);
+    }
+
+    td {
+      vertical-align: top;
+      text-align: left;
+      padding: var(--xh-pad-px);
+    }
+
+  }
 
 }
 

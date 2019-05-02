@@ -30,7 +30,6 @@ export class RecallsPanel extends Component {
 
         return vframe(
             panel({
-                className: 'toolbox-recalls-panel',
                 title: 'FDA Drug Recalls',
                 item: grid({model: gridModel}),
                 mask: model.loadModel,
@@ -44,10 +43,10 @@ export class RecallsPanel extends Component {
             panel({
                 title: 'Details',
                 item: detailsPanel({model: detailsPanelModel}),
+                className: 'toolbox-recalls-detail-panel',
                 model: {
                     side: 'bottom',
-                    defaultSize: 250,
-                    defaultCollapsed: true,
+                    defaultSize: 325,
                     prefName: 'recallsPanelConfig'
                 }
             })
