@@ -78,9 +78,9 @@ class BootStrap {
                 groupName: 'Permissions'
             ],
             recallsHost: [
-                    valueType: 'string',
-                    defaultValue: 'api.fda.gov',
-                    groupName: 'Recall Manager'
+                valueType: 'string',
+                defaultValue: 'api.fda.gov',
+                groupName: 'Recall Manager'
             ]
         ])
     }
@@ -128,11 +128,11 @@ class BootStrap {
                 note: 'Nested arrays containing user\'s dimension picker history'
             ],
             recallsPanelConfig: [
-                    type: 'json',
-                    defaultValue: [],
-                    local: false,
-                    groupName: 'Toolbox',
-                    note: 'Size of Panel Model'
+                type: 'json',
+                defaultValue: [],
+                local: false,
+                groupName: 'Toolbox',
+                note: 'Size of Panel Model'
             ]
         ])
     }

@@ -7,7 +7,6 @@
 
 import {HoistModel} from '@xh/hoist/core';
 import {action, observable} from '@xh/hoist/mobx';
-// import {div} from '@xh/hoist/cmp/layout';
 
 @HoistModel
 export class DetailsPanelModel {
@@ -20,9 +19,9 @@ export class DetailsPanelModel {
         this.currentRecord = rec;
     }
 
-    classification_details() {
-
-        switch (this.currentRecord.classification) {
+    get classificationDetails() {
+        const {classification} = this.currentRecord;
+        switch (classification) {
             case 'Class I':
                 return 'Class I: A dangerous or defective product that could cause serious health problems or death.';
             case 'Class II':
@@ -30,7 +29,7 @@ export class DetailsPanelModel {
             case 'Class III':
                 return 'Class III: A products that is unlikely to cause any adverse health reaction, but that violates FDA labeling or manufacturing laws.';
             default:
-                return this.currentRecord.classification
+                return classification;
         }
     }
 }

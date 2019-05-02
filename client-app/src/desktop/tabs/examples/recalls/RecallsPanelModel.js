@@ -24,7 +24,7 @@ export class RecallsPanelModel {
     @bindable
     searchQuery = '';
 
-    @managed // use managed to manage life cycle of model objects
+    @managed
     detailsPanelModel = new DetailsPanelModel();
 
     @managed
@@ -42,14 +42,13 @@ export class RecallsPanelModel {
         showHover: true,
         compact: XH.appModel.useCompactGrids,
         stateModel: 'recalls-main-grid',
-        // stateModel is user preference for positions of grid sort
         columns: [
             {
                 field: 'classification',
                 headerName: 'Class',
                 align: 'center',
                 width: 65,
-                tooltip: (cls) => `${cls} ${cls === 'Not Yet Classified' ? '' : ' | Click for more details' }`,
+                tooltip: (cls) => cls,
                 elementRenderer: this.classificationRenderer
             },
             {
@@ -66,12 +65,11 @@ export class RecallsPanelModel {
                 width: 100
             },
             {
-                field: 'recallDate', // <~ never want to change
-                ...dateCol, // <~ XH convention to spread framework column 2nd line
+                field: 'recallDate',
+                ...dateCol,
                 headerName: 'Date',
                 width: 100,
-                renderer: compactDateRenderer('MMM D'),
-                tooltip: (date) => `${date}`
+                renderer: compactDateRenderer('MMM D')
             },
             {
                 field: 'description',
@@ -96,8 +94,6 @@ export class RecallsPanelModel {
         this.addReaction({
             track: () => this.gridModel.selectedRecord,
             run: (rec) => this.detailsPanelModel.setRecord(rec)
-            // ^ addReaction.run BOGO:
-            //   run takes a callback function that is given
         });
 
         this.addReaction({
@@ -111,14 +107,14 @@ export class RecallsPanelModel {
     //------------------------
     // Implementation
     //------------------------
-    // provided by @LoadSupport
+
     async doLoadAsync(loadSpec) {
         await XH
             .fetchJson({
                 url: 'recalls',
                 params: {searchQuery: this.searchQuery},
                 loadSpec
-            })  // no forward slash == relative path
+            })
             .then(rxRecallEntries => {
                 const {gridModel} = this;
                 gridModel.loadData(rxRecallEntries);
@@ -138,7 +134,7 @@ export class RecallsPanelModel {
             recallingFirm: rawRec.recalling_firm,
             reason: rawRec.reason_for_recall
         };
-        // console.log(ret);
+
         return ret;
     }
 
@@ -158,12 +154,4 @@ export class RecallsPanelModel {
                 return null;
         }
     }
-
-
-
 }
-
-// Hoist builds on top of AG Grid to let you do common tasks as one liners
-// aka POWERFUL!  we do EXTREMELY HEAVY LIFTING!
-// *remember user preferences / sort*
-//      - settings local to browser (localStorage)

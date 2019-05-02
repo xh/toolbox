@@ -13,9 +13,6 @@ class RecallsController extends BaseController {
         def recalls = recallsService.fetchRecalls(params.searchQuery)
         renderJSON(recalls)
 
-        // or is it better to write:
-        // renderJSON(recallsService.fetchRecalls())
-        // ??
     }
 
 }
