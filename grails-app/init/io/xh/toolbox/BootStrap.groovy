@@ -76,6 +76,11 @@ class BootStrap {
                     HOIST_ADMIN: [adminUsername].findAll {it}
                 ],
                 groupName: 'Permissions'
+            ],
+            recallsHost: [
+                valueType: 'string',
+                defaultValue: 'api.fda.gov',
+                groupName: 'Recall Manager'
             ]
         ])
     }
@@ -121,6 +126,13 @@ class BootStrap {
                 local: true,
                 groupName: 'Toolbox',
                 note: 'Nested arrays containing user\'s dimension picker history'
+            ],
+            recallsPanelConfig: [
+                type: 'json',
+                defaultValue: [],
+                local: false,
+                groupName: 'Toolbox',
+                note: 'Size of Panel Model'
             ]
         ])
     }

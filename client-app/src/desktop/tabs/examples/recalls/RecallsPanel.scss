@@ -1,0 +1,28 @@
+.toolbox-recalls-detail-panel {
+
+  table {
+    width: 700px;
+    border-collapse: collapse;
+    border-right: var(--xh-border-solid);
+
+    th {
+      padding: var(--xh-pad-half-px);
+      background-color: var(--xh-bg-alt);
+      width: 140px;
+      text-align: right;
+    }
+
+    tr {
+      border-bottom: var(--xh-border-solid);
+    }
+
+    td {
+      vertical-align: top;
+      text-align: left;
+      padding: var(--xh-pad-px);
+    }
+
+  }
+
+}
+

@@ -47,7 +47,7 @@ export class NewsPanelModel {
     }
 
     async doLoadAsync(loadSpec)  {
-        return XH
+        await XH
             .fetchJson({url: 'news', loadSpec})
             .wait(100)
             .then(stories => this.completeLoad(stories));
