@@ -12,7 +12,7 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {vframe, filler, span} from '@xh/hoist/cmp/layout';
+import {vframe, filler, span, p, a} from '@xh/hoist/cmp/layout';
 import {textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 
@@ -27,21 +27,25 @@ export class RecallsPanel extends Component {
     
     render() {
         const {model} = this,
-            {gridModel, detailsPanelModel} = model;
+            {gridModel, detailsPanelModel} = model,
+            fdaWebsite = 'https://open.fda.gov/apis/drug/enforcement/',
+            aboutBlurb = 'This applet uses the openFDA drug enforcement reports API, ' +
+                'which provides information on drug recall events since 2004. ' +
+                'For more information, see: ';
 
         return vframe(
             panel({
                 title: span('FDA Drug Recalls '),
-                headerItems: [button({
-                    title: 'about the API',
-                    text: 'about',
-                    icon: Icon.questionCircle(),
-                    onClick: () => XH.alert({message: '\n' +
-                            'This applet uses the openFDA drug enforcement reports API, ' +
-                            'which provides information on drug recall events since 2004.  ' +
-                            'For more information, see: https://open.fda.gov/apis/drug/enforcement/'
+                headerItems: [
+                    button({
+                        title: 'about the API',
+                        text: 'about',
+                        icon: Icon.questionCircle(),
+                        onClick: () => XH.alert({
+                            message: p(aboutBlurb, a({href: fdaWebsite, item: fdaWebsite, target: '_blank'}))
+                        })
                     })
-                })],
+                ],
                 item: grid({model: gridModel}),
                 mask: model.loadModel,
                 tbar: toolbar(
