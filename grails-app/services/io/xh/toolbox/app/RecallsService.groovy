@@ -17,8 +17,8 @@ class RecallsService extends BaseService {
     List fetchRecalls(String searchQuery) {
         def host = configService.getString('recallsHost'),
             url = !searchQuery ?
-                new URL("https://api.fda.gov/drug/enforcement.json?search=_exists_:openfda&sort=recall_initiation_date:desc&limit=99") :
-                new URL("https://api.fda.gov/drug/enforcement.json?search=(${searchQuery})+AND+_exists_:openfda&sort=recall_initiation_date:desc&limit=99")
+                new URL("https://$host/drug/enforcement.json?search=_exists_:openfda&sort=recall_initiation_date:desc&limit=99") :
+                new URL("https://$host/drug/enforcement.json?search=($searchQuery)+AND+_exists_:openfda&sort=recall_initiation_date:desc&limit=99")
 
 
         def connection = url.openConnection()

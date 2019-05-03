@@ -6,11 +6,11 @@
  */
 
 import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {vframe, filler, span} from '@xh/hoist/cmp/layout';
 import {textInput} from '@xh/hoist/desktop/cmp/input';
@@ -31,7 +31,17 @@ export class RecallsPanel extends Component {
 
         return vframe(
             panel({
-                title: span('FDA Drug Recalls ', Icon.questionCircle()),
+                title: span('FDA Drug Recalls '),
+                headerItems: [button({
+                    title: 'about the API',
+                    text: 'about',
+                    icon: Icon.questionCircle(),
+                    onClick: () => XH.alert({message: '\n' +
+                            'This applet uses the openFDA drug enforcement reports API, ' +
+                            'which provides information on drug recall events since 2004.  ' +
+                            'For more information, see: https://open.fda.gov/apis/drug/enforcement/'
+                    })
+                })],
                 item: grid({model: gridModel}),
                 mask: model.loadModel,
                 tbar: toolbar(
