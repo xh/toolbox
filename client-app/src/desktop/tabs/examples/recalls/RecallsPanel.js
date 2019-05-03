@@ -12,8 +12,9 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {vframe, filler} from '@xh/hoist/cmp/layout';
+import {vframe, filler, span} from '@xh/hoist/cmp/layout';
 import {textInput} from '@xh/hoist/desktop/cmp/input';
+import {Icon} from '@xh/hoist/icon';
 
 import {RecallsPanelModel} from './RecallsPanelModel';
 import './RecallsPanel.scss';
@@ -30,7 +31,7 @@ export class RecallsPanel extends Component {
 
         return vframe(
             panel({
-                title: 'FDA Drug Recalls',
+                title: span('FDA Drug Recalls ', Icon.questionCircle()),
                 item: grid({model: gridModel}),
                 mask: model.loadModel,
                 tbar: toolbar(
