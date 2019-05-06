@@ -1,18 +1,16 @@
 package io.xh.toolbox.recalls
 
-import io.xh.hoist.security.AccessAll
+import io.xh.hoist.security.Access
 import io.xh.toolbox.BaseController
 
-@AccessAll
+@Access(['APP_READER'])
 class RecallsController extends BaseController {
 
     def recallsService
 
-    def index() {
-
-        def recalls = recallsService.fetchRecalls(params.searchQuery)
+    def index(String searchQuery) {
+        def recalls = recallsService.fetchRecalls(searchQuery)
         renderJSON(recalls)
-
     }
 
 }

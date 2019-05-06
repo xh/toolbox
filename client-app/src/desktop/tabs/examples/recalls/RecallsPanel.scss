@@ -6,10 +6,11 @@
     border-right: var(--xh-border-solid);
 
     th {
-      padding: var(--xh-pad-half-px);
+      padding: var(--xh-pad-px);
       background-color: var(--xh-bg-alt);
       width: 140px;
       text-align: right;
+      vertical-align: top;
     }
 
     tr {

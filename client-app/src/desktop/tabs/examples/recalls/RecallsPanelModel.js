@@ -29,11 +29,9 @@ export class RecallsPanelModel {
 
     @managed
     gridModel = new GridModel({
-
         store: {
             idSpec: this.createId,
             processRawData: this.processRecord
-
         },
         emptyText: 'No records found...',
         enableColChooser: true,
@@ -107,7 +105,6 @@ export class RecallsPanelModel {
     //------------------------
     // Implementation
     //------------------------
-
     async doLoadAsync(loadSpec) {
         await XH
             .fetchJson({
@@ -124,8 +121,7 @@ export class RecallsPanelModel {
     }
 
     processRecord(rawRec) {
-
-        const ret = {
+        return {
             ...rawRec,
             brandName: rawRec.openfda.brand_name[0],
             genericName: rawRec.openfda.generic_name[0],
@@ -134,8 +130,6 @@ export class RecallsPanelModel {
             recallingFirm: rawRec.recalling_firm,
             reason: rawRec.reason_for_recall
         };
-
-        return ret;
     }
 
     createId(record) {

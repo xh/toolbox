@@ -9,10 +9,10 @@ import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {vframe, filler, span, p, a} from '@xh/hoist/cmp/layout';
+import {vframe, filler, p, a} from '@xh/hoist/cmp/layout';
 import {textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 
@@ -35,11 +35,12 @@ export class RecallsPanel extends Component {
 
         return vframe(
             panel({
-                title: span('FDA Drug Recalls '),
+                title: 'FDA Drug Recalls',
+                icon: Icon.health(),
                 headerItems: [
                     button({
-                        title: 'about the API',
-                        text: 'about',
+                        title: 'About the API',
+                        text: 'About',
                         icon: Icon.questionCircle(),
                         onClick: () => XH.alert({
                             message: p(aboutBlurb, a({href: fdaWebsite, item: fdaWebsite, target: '_blank'}))
@@ -53,15 +54,21 @@ export class RecallsPanel extends Component {
                         model,
                         bind: 'searchQuery',
                         placeholder: 'Keyword Search',
-                        commitOnChange: true
+                        commitOnChange: true,
+                        enableClear: true
                     }),
                     filler(),
-                    storeCountLabel({gridModel}),
+                    storeCountLabel({
+                        gridModel,
+                        unit: 'latest recall'
+                    }),
+                    toolbarSep(),
                     colChooserButton({gridModel})
                 )
             }),
             panel({
                 title: 'Details',
+                icon: Icon.detail(),
                 item: detailsPanel({model: detailsPanelModel}),
                 className: 'toolbox-recalls-detail-panel',
                 model: {
