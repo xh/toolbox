@@ -63,6 +63,10 @@ export class RecallsPanelModel {
                 width: 100
             },
             {
+                field: 'recallingFirm',
+                width: 200
+            },
+            {
                 field: 'recallDate',
                 ...dateCol,
                 headerName: 'Date',
@@ -72,11 +76,6 @@ export class RecallsPanelModel {
             {
                 field: 'description',
                 width: 400,
-                hidden: true
-            },
-            {
-                field: 'recallingFirm',
-                width: 150,
                 hidden: true
             },
             {
