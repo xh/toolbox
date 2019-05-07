@@ -1,5 +1,7 @@
 .toolbox-recalls-detail-panel {
 
+  overflow: scroll;
+
   table {
     width: 700px;
     border-collapse: collapse;
@@ -25,5 +27,8 @@
 
   }
 
-}
+  .recalls-detail-wrapper {
+    overflow-y: auto;
+  }
 
+}
