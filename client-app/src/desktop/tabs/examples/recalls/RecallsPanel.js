@@ -34,9 +34,6 @@ export class RecallsPanel extends Component {
                 'which provides information on drug recall events since 2004. ' +
                 'For more information, see: ';
 
-        console.log(detailsPanelModel);
-        console.log(detailsPanelModel.currentRecord)
-
         return vframe(
             panel({
                 title: 'FDA Drug Recalls',
@@ -71,7 +68,7 @@ export class RecallsPanel extends Component {
                 )
             }),
             panel({
-                title: currentRecord ? currentRecord.brandName : 'Details',
+                title: currentRecord ? currentRecord.brandName : 'Select a drug to see its details',
                 icon: Icon.detail(),
                 item: detailsPanel({model: detailsPanelModel}),
                 className: 'toolbox-recalls-detail-panel',
