@@ -16,8 +16,8 @@ class BootStrap {
     def init = {servletContext ->
         logStartupMsg()
         ensureRequiredConfigsCreated()
-        ensureMonitorsCreated()
         ensureRequiredPrefsCreated()
+        ensureMonitorsCreated()
         def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
         BaseService.parallelInit(services)
         ensureUsersCreated()
@@ -29,6 +29,146 @@ class BootStrap {
     //------------------------
     // Implementation
     //------------------------
+    private void ensureRequiredConfigsCreated() {
+        def adminUsername = getInstanceConfig('adminUsername')
+
+        Utils.configService.ensureRequiredConfigsCreated([
+            cubeTestDefaultDims: [
+                valueType: 'json',
+                defaultValue: [
+                    ['fund', 'trader'],
+                    ['sector', 'symbol'],
+                    ['fund', 'trader', 'model']
+                ],
+                clientVisible: true,
+                groupName: 'Grids',
+                note: 'Default dimension selections for cube data test.'
+            ],
+            fileManagerStoragePath: [
+                valueType: 'string',
+                defaultValue: '/var/tmp/toolbox',
+                groupName: 'File Manager',
+                note: 'Absolute path to disk location for storing uploaded files.'
+            ],
+            newsApiKey: [
+                valueType: 'string',
+                defaultValue: 'ab052127f3e349d38db094eade1d96d8',
+                groupName: 'News'
+            ],
+            newsRefreshMins: [
+                valueType: 'int',
+                defaultValue: 60,
+                groupName: 'News'
+            ],
+            newsSources: [
+                valueType: 'json',
+                defaultValue: [
+                    "cnbc": "CNBC",
+                    "fortune": "Fortune",
+                    "reuters": "Reuters"
+                ],
+                groupName: 'News'
+            ],
+            roles: [
+                valueType: 'json',
+                defaultValue: [
+                    APP_READER: ['toolbox@xh.io', 'inactive@xh.io', adminUsername].findAll {it},
+                    HOIST_ADMIN: [adminUsername].findAll {it}
+                ],
+                groupName: 'Permissions'
+            ],
+            recallsHost: [
+                valueType: 'string',
+                defaultValue: 'api.fda.gov',
+                groupName: 'Recall Manager'
+            ]
+        ])
+    }
+
+    private void ensureRequiredPrefsCreated() {
+        Utils.prefService.ensureRequiredPrefsCreated([
+            autoRefreshSecs: [
+                type: 'int',
+                defaultValue: -1,
+                local: true,
+                groupName: 'Toolbox',
+                note: 'Auto-Refresh Interval in seconds'
+            ],
+            cubeTestOrderCount: [
+                type: 'int',
+                defaultValue: 80000,
+                groupName: 'Toolbox',
+                note: 'Orders to generate for Grids > Cube data test panel'
+            ],
+            cubeTestUserDims: [
+                type: 'json',
+                defaultValue: [],
+                groupName: 'Toolbox',
+                note: 'Nested arrays containing user\'s custom dimension choices'
+            ],
+            defaultGridMode: [
+                type: 'string',
+                defaultValue: 'STANDARD',
+                local: true,
+                groupName: 'Toolbox',
+                note: 'Grid sizing mode'
+            ],
+            mobileDimHistory: [
+                type: 'json',
+                defaultValue: [],
+                local: true,
+                groupName: 'Toolbox',
+                note: 'Nested arrays containing user\'s dimension picker history'
+            ],
+            portfolioDimHistory: [
+                type: 'json',
+                defaultValue: [],
+                local: true,
+                groupName: 'Toolbox',
+                note: 'Nested arrays containing user\'s dimension picker history'
+            ],
+            recallsPanelConfig: [
+                type: 'json',
+                defaultValue: [],
+                local: false,
+                groupName: 'Toolbox',
+                note: 'Size of Panel Model'
+            ]
+        ])
+    }
+
+    private void ensureMonitorsCreated() {
+        createMonitorIfNeeded(
+            code: 'newsStoryCount',
+            name: 'Loaded Stories',
+            metricType: 'Floor',
+            failThreshold: 0,
+            metricUnit: 'stories',
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'lastUpdateAgeMins',
+            name: 'Most Recent Story',
+            metricType: 'Ceil',
+            metricUnit: 'minutes since last story',
+            warnThreshold: 60,
+            failThreshold: 360,
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'loadedSourcesCount',
+            name: 'All Sources Loaded',
+            metricType: 'None',
+            metricUnit: 'sources',
+            active: true
+        )
+    }
+
+    private void createMonitorIfNeeded(Map data) {
+        def monitor = Monitor.findByCode(data.code as String)
+        if (!monitor) new Monitor(data).save()
+    }
+
     private void ensureUsersCreated() {
         String adminUsername = getInstanceConfig('adminUsername')
         String adminPassword = getInstanceConfig('adminPassword')
@@ -68,114 +208,8 @@ class BootStrap {
     }
 
     private void createUserIfNeeded(Map data) {
-        def user = User.findByEmail(data.email)
+        def user = User.findByEmail(data.email as String)
         if (!user) new User(data).save()
-    }
-
-    private void ensureRequiredPrefsCreated() {
-        Utils.prefService.ensureRequiredPrefsCreated([
-                mobileDimHistory: [
-                        type: 'json',
-                        defaultValue: [],
-                        local: true,
-                        groupName: 'Toolbox',
-                        note: 'Nested arrays containing user\'s dimension picker history'
-                ],
-                portfolioDimHistory: [
-                        type: 'json',
-                        defaultValue: [],
-                        local: true,
-                        groupName: 'Toolbox',
-                        note: 'Nested arrays containing user\'s dimension picker history'
-                ],
-                defaultGridMode: [
-                        type: 'string',
-                        defaultValue: 'STANDARD',
-                        local: true,
-                        groupName: 'Toolbox',
-                        note: 'Grid sizing mode'
-                ],
-                autoRefreshSecs: [
-                        type: 'int',
-                        defaultValue: -1,
-                        local: true,
-                        groupName: 'Toolbox',
-                        note: 'Auto-Refresh Interval in seconds'
-                ]
-        ])
-    }
-
-
-    private void ensureRequiredConfigsCreated() {
-        def adminUsername = getInstanceConfig('adminUsername')
-
-        Utils.configService.ensureRequiredConfigsCreated([
-                roles: [
-                    valueType: 'json',
-                    defaultValue: [
-                        APP_READER: ['toolbox@xh.io', 'inactive@xh.io', adminUsername].findAll{it},
-                        HOIST_ADMIN: [adminUsername].findAll{it}
-                    ],
-                    groupName: 'Permissions'
-                ],
-                newsApiKey : [
-                        valueType: 'string',
-                        defaultValue: 'ab052127f3e349d38db094eade1d96d8',
-                        groupName: 'News'
-                ],
-                newsSources: [
-                        valueType: 'json',
-                        defaultValue: [
-                                "cnbc"     : "CNBC",
-                                "fortune"  : "Fortune",
-                                "reuters"  : "Reuters"
-                        ],
-                        groupName: 'News'
-                ],
-                newsRefreshMins: [
-                        valueType: 'int',
-                        defaultValue: 60,
-                        groupName: 'News'
-                ],
-                fileManagerStoragePath: [
-                        valueType: 'string',
-                        defaultValue: '/var/tmp/toolbox',
-                        groupName: 'File Manager',
-                        note: 'Absolute path to disk location for storing uploaded files.'
-                ]
-        ])
-    }
-
-    private void ensureMonitorsCreated() {
-        createMonitorIfNeeded(
-                code: 'newsStoryCount',
-                name: 'Loaded Stories',
-                metricType: 'Floor',
-                failThreshold: 0,
-                metricUnit: 'stories',
-                active: true
-        )
-        createMonitorIfNeeded(
-                code: 'lastUpdateAgeMins',
-                name: 'Most Recent Story',
-                metricType: 'Ceil',
-                metricUnit: 'minutes since last story',
-                warnThreshold: 60,
-                failThreshold: 360,
-                active: true
-        )
-        createMonitorIfNeeded(
-                code: 'loadedSourcesCount',
-                name: 'All Sources Loaded',
-                metricType: 'None',
-                metricUnit: 'sources',
-                active: true
-        )
-    }
-
-    private void createMonitorIfNeeded(Map data) {
-        def monitor = Monitor.findByCode(data.code)
-        if (!monitor) new Monitor(data).save()
     }
 
     private void logStartupMsg() {

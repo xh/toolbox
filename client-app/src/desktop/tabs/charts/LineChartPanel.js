@@ -1,4 +1,5 @@
 import {Component} from 'react';
+import {Icon} from '@xh/hoist/icon';
 import {HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common/Wrapper';
 import {span, vframe} from '@xh/hoist/cmp/layout';
@@ -19,6 +20,7 @@ export class LineChartPanel extends Component {
             panel({
                 className: 'toolbox-linechart-panel',
                 title: 'Charts › Line',
+                icon: Icon.chartLine(),
                 width: 800,
                 height: 600,
                 item: this.renderExample(),

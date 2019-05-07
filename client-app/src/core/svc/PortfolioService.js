@@ -48,7 +48,7 @@ export class PortfolioService {
 
     /**
      * Return a single grouped position, uniquely identified by drilldown ID.
-     * @param positionId - as generated/installed on each position returned by `getPorfolioAsync()`.
+     * @param positionId - as generated/installed on each position returned by `getPortfolioAsync()`.
      * @param delay - optional delay in ms, as above.
      * @return {Promise<*>}
      */
@@ -104,6 +104,8 @@ export class PortfolioService {
     // Called internally (lazily) to generate a reference set of orders from which positions are
     // built to populate the demo portfolio viewer app.
     generateOrders(count = this.INITIAL_ORDERS) {
+        this.ensureLoaded();
+
         const orders = [];
 
         times(count, (idx) => {
@@ -114,7 +116,8 @@ export class PortfolioService {
                 dir = sample(['Sell', 'Buy']),
                 qty = random(300, 10000) * (dir == 'Sell' ? -1 : 1),
                 mktData = find(this.getMktData(symbol), {day: tradingDay}),
-                px = round(random(mktData.low, mktData.high, true), 2);
+                px = round(random(mktData.low, mktData.high, true), 2),
+                mktVal = qty * px;
 
             orders.push({
                 ...pos,
@@ -122,7 +125,9 @@ export class PortfolioService {
                 dir: dir,
                 quantity: qty,
                 price: px,
-                mktVal: qty * px,
+                mktVal,
+                commission: Math.abs(mktVal * 0.0002),
+                confidence: random(0, 1000),
                 time
             });
         });

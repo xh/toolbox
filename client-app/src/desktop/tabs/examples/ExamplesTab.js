@@ -5,12 +5,14 @@
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {FileManager} from './filemanager/FileManager';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
+import {Icon} from '@xh/hoist/icon';
 
+import {FileManager} from './filemanager/FileManager';
 import {NewsPanel} from './news/NewsPanel';
 import {PortfolioPanel} from './portfolio/PortfolioPanel';
+import {RecallsPanel} from './recalls/RecallsPanel';
 
 @HoistComponent
 export class ExamplesTab extends Component {
@@ -21,9 +23,28 @@ export class ExamplesTab extends Component {
                 route: 'default.examples',
                 switcherPosition: 'left',
                 tabs: [
-                    {id: 'portfolio', content: PortfolioPanel},
-                    {id: 'news', content: NewsPanel},
-                    {id: 'fileManager', content: FileManager, omit: !XH.getUser().isHoistAdmin}
+                    {
+                        id: 'portfolio',
+                        icon: Icon.portfolio(),
+                        content: PortfolioPanel
+                    },
+                    {
+                        id: 'news',
+                        icon: Icon.news(),
+                        content: NewsPanel
+                    },
+                    {
+                        id: 'recalls',
+                        title: 'FDA Recalls',
+                        icon: Icon.health(),
+                        content: RecallsPanel
+                    },
+                    {
+                        id: 'fileManager',
+                        icon: Icon.folder(),
+                        content: FileManager,
+                        omit: !XH.getUser().isHoistAdmin
+                    }
                 ]
             },
             className: 'toolbox-tab'
