@@ -37,7 +37,7 @@ export class RecallsPanel extends Component {
         return vframe(
             panel({
                 title: 'FDA Drug Recalls',
-                icon: Icon.health(),
+                icon: Icon.pills(),
                 headerItems: [
                     button({
                         title: 'About the API',

@@ -36,7 +36,7 @@ export class ExamplesTab extends Component {
                     {
                         id: 'recalls',
                         title: 'FDA Recalls',
-                        icon: Icon.health(),
+                        icon: Icon.pills(),
                         content: RecallsPanel
                     },
                     {
