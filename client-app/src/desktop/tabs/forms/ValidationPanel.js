@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame, hbox, vspacer, vbox} from '@xh/hoist/cmp/layout';
+import {filler, hframe, hbox, vspacer, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -51,7 +51,7 @@ export class ValidationPanel extends Component {
     renderForm() {
         const {formModel, inline, minimal, commitOnChange} = this.model;
 
-        return frame({
+        return hframe({
             className: 'toolbox-validation-panel__content',
             item: form({
                 model: formModel,

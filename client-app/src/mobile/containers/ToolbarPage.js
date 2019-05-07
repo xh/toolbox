@@ -4,7 +4,7 @@ import {page} from '@xh/hoist/mobile/cmp/page';
 import {toolbar, toolbarSep} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {select} from '@xh/hoist/mobile/cmp/input';
-import {div, hframe, filler, frame} from '@xh/hoist/cmp/layout';
+import {div, hframe, filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 
 import {usStates} from '../../core/data';
@@ -56,7 +56,7 @@ export class ToolbarPage extends Component {
                             filler()
                         ]
                     }),
-                    frame({
+                    hframe({
                         padding: 10,
                         item: 'Help, I am surrounded by toolbars!'
                     }),
