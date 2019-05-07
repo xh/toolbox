@@ -1,5 +1,8 @@
 body {
   --panel-bg: var(--xh-bg);
+  .bp3-toast-container {
+    position: absolute;
+  }
 }
 
 .toolbox-tab > .xh-tab-switcher--left > .bp3-tab-list {

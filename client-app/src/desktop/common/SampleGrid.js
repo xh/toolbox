@@ -1,7 +1,7 @@
 import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {box, filler, span} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, LayoutSupport, XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
-import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {colChooserButton, exportButton, refreshButton, button} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -12,7 +12,7 @@ import {millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/form
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {truncate} from 'lodash';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
@@ -22,6 +22,8 @@ import {gridStyleSwitches} from './GridStyleSwitches';
 class SampleGrid extends Component {
 
     model = new Model();
+
+    panelRef = null;
 
     render() {
         const {model} = this,
@@ -37,6 +39,7 @@ class SampleGrid extends Component {
         }
 
         return panel({
+            ref: this.setPanelRef,
             item: grid({model: gridModel}),
             mask: loadModel,
             tbar: toolbar({
@@ -62,7 +65,15 @@ class SampleGrid extends Component {
                     storeCountLabel({gridModel, unit: 'companies'}),
                     storeFilterField({gridModel}),
                     colChooserButton({gridModel}),
-                    exportButton({gridModel})
+                    exportButton({gridModel}),
+                    button({
+                        onClick: () => XH.toast({
+                            message: 'I\'m inside a panel',
+                            containerRef: this.panelRef,
+                            position: 'bottom-left'
+                        }),
+                        text: 'Toast me!'
+                    })
                 ]
             }),
             bbar: toolbar({
@@ -76,6 +87,10 @@ class SampleGrid extends Component {
             className: this.getClassName(),
             ...this.getLayoutProps()
         });
+    }
+
+    setPanelRef = elem => {
+        this.panelRef = elem;
     }
 }
 export const sampleGrid = elemFactory(SampleGrid);
