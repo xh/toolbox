@@ -28,10 +28,14 @@ export class RecallsPanel extends Component {
     render() {
         const {model} = this,
             {gridModel, detailsPanelModel} = model,
+            {currentRecord} = detailsPanelModel,
             fdaWebsite = 'https://open.fda.gov/apis/drug/enforcement/',
             aboutBlurb = 'This applet uses the openFDA drug enforcement reports API, ' +
                 'which provides information on drug recall events since 2004. ' +
                 'For more information, see: ';
+
+        console.log(detailsPanelModel);
+        console.log(detailsPanelModel.currentRecord)
 
         return vframe(
             panel({
@@ -67,7 +71,7 @@ export class RecallsPanel extends Component {
                 )
             }),
             panel({
-                title: 'Details',
+                title: currentRecord ? currentRecord.brandName : 'Details',
                 icon: Icon.detail(),
                 item: detailsPanel({model: detailsPanelModel}),
                 className: 'toolbox-recalls-detail-panel',
