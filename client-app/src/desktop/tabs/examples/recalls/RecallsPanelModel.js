@@ -6,16 +6,16 @@
  */
 
 import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
+import {managed} from '@xh/hoist/core/mixins';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import moment from 'moment';
 import {dateCol} from '@xh/hoist/cmp/grid/columns';
 import {compactDateRenderer} from '@xh/hoist/format';
-import {managed} from '@xh/hoist/core/mixins';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 
 import {DetailsPanelModel} from './DetailsPanelModel';
 import {bindable} from '@xh/hoist/mobx';
+import moment from 'moment';
 
 @HoistModel
 @LoadSupport
@@ -23,6 +23,9 @@ export class RecallsPanelModel {
 
     @bindable
     searchQuery = '';
+
+    @bindable
+    groupBy = false;
 
     @managed
     detailsPanelModel = new DetailsPanelModel();
@@ -97,6 +100,11 @@ export class RecallsPanelModel {
             track: () => this.searchQuery,
             run: () => this.loadAsync(),
             delay: ONE_SECOND
+        });
+
+        this.addReaction({
+            track: () => this.groupBy,
+            run: (selectedGroup) => this.gridModel.setGroupBy(selectedGroup)
         });
     }
 

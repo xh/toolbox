@@ -12,8 +12,8 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {vframe, filler, p, a} from '@xh/hoist/cmp/layout';
-import {textInput} from '@xh/hoist/desktop/cmp/input';
+import {vframe, filler, p, a, span} from '@xh/hoist/cmp/layout';
+import {textInput, buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 
 import {RecallsPanelModel} from './RecallsPanelModel';
@@ -57,6 +57,35 @@ export class RecallsPanel extends Component {
                         placeholder: 'Keyword Search',
                         commitOnChange: true,
                         enableClear: true
+                    }),
+                    toolbarSep(),
+                    span('Group By : '),
+                    buttonGroupInput({
+                        model: model,
+                        bind: 'groupBy',
+                        items: [
+                            button({
+                                text: 'Class',
+                                value: 'classification'
+                            }),
+                            button({
+                                text: 'Brand Name',
+                                value: 'brandName'
+                            }),
+                            button({
+                                text: 'Status',
+                                value: 'status'
+                            }),
+                            button({
+                                text: 'Recalling Firm',
+                                value: 'recallingFirm'
+                            }),
+                            button({
+                                text: 'None',
+                                value: false
+                                // value cannot be null because 'ButtonGroupInput child must declare a value'
+                            })
+                        ]
                     }),
                     filler(),
                     storeCountLabel({
