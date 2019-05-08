@@ -37,7 +37,7 @@ export class RecallsPanel extends Component {
         return vframe(
             panel({
                 title: 'FDA Drug Recalls',
-                icon: Icon.pills(),
+                icon: Icon.health(),
                 headerItems: [
                     button({
                         title: 'About the API',
@@ -63,6 +63,7 @@ export class RecallsPanel extends Component {
                     buttonGroupInput({
                         model: model,
                         bind: 'groupBy',
+                        enableClear: true,
                         items: [
                             button({
                                 text: 'Class',
@@ -79,11 +80,6 @@ export class RecallsPanel extends Component {
                             button({
                                 text: 'Recalling Firm',
                                 value: 'recallingFirm'
-                            }),
-                            button({
-                                text: 'None',
-                                value: false
-                                // value cannot be null because 'ButtonGroupInput child must declare a value'
                             })
                         ]
                     }),
