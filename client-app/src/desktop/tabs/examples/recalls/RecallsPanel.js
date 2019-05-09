@@ -12,8 +12,8 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {vframe, filler, p, a} from '@xh/hoist/cmp/layout';
-import {textInput} from '@xh/hoist/desktop/cmp/input';
+import {vframe, filler, p, a, span} from '@xh/hoist/cmp/layout';
+import {textInput, buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 
 import {RecallsPanelModel} from './RecallsPanelModel';
@@ -28,6 +28,7 @@ export class RecallsPanel extends Component {
     render() {
         const {model} = this,
             {gridModel, detailsPanelModel} = model,
+            {currentRecord} = detailsPanelModel,
             fdaWebsite = 'https://open.fda.gov/apis/drug/enforcement/',
             aboutBlurb = 'This applet uses the openFDA drug enforcement reports API, ' +
                 'which provides information on drug recall events since 2004. ' +
@@ -57,6 +58,31 @@ export class RecallsPanel extends Component {
                         commitOnChange: true,
                         enableClear: true
                     }),
+                    toolbarSep(),
+                    span('Group By : '),
+                    buttonGroupInput({
+                        model: model,
+                        bind: 'groupBy',
+                        enableClear: true,
+                        items: [
+                            button({
+                                text: 'Class',
+                                value: 'classification'
+                            }),
+                            button({
+                                text: 'Brand Name',
+                                value: 'brandName'
+                            }),
+                            button({
+                                text: 'Status',
+                                value: 'status'
+                            }),
+                            button({
+                                text: 'Recalling Firm',
+                                value: 'recallingFirm'
+                            })
+                        ]
+                    }),
                     filler(),
                     storeCountLabel({
                         gridModel,
@@ -67,7 +93,7 @@ export class RecallsPanel extends Component {
                 )
             }),
             panel({
-                title: 'Details',
+                title: currentRecord ? currentRecord.brandName : 'Select a drug to see its details',
                 icon: Icon.detail(),
                 item: detailsPanel({model: detailsPanelModel}),
                 className: 'toolbox-recalls-detail-panel',
