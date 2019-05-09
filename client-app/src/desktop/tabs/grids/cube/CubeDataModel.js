@@ -6,7 +6,7 @@ import {Cube} from '@xh/hoist/data/cube';
 import {fmtThousands, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-import {castArray, values} from 'lodash';
+import {castArray} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 
 @HoistModel
@@ -20,7 +20,7 @@ export class CubeDataModel {
 
     @bindable includeLeaves = false;
     @bindable includeRoot = false;
-    @bindable orderCount = XH.getPref('cubeTestOrderCount')
+    @bindable orderCount = XH.getPref('cubeTestOrderCount');
     @bindable fundFilter = null;
 
     constructor() {
@@ -28,7 +28,7 @@ export class CubeDataModel {
         this.loadTimesGridModel = this.createLoadTimesGridModel();
         this.cube = this.createCube();
 
-        const cubeDims = values(this.cube.fields)
+        const cubeDims = this.cube.fieldList
             .filter(it => it.isDimension)
             .map(it => ({value: it.name, label: it.displayName}));
 
@@ -64,6 +64,7 @@ export class CubeDataModel {
     async doLoadAsync() {
         let orders,
             ocTxt = fmtThousands(this.orderCount) + 'k';
+
         this.withLoadTime(`Gen ${ocTxt} orders`, () => {
             orders = XH.portfolioService.generateOrders(this.orderCount);
             orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
