@@ -2,11 +2,11 @@ import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
 import {numberCol, timeCol} from '@xh/hoist/cmp/grid/columns';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
-import {Cube, View} from '@xh/hoist/data/cube';
+import {Cube} from '@xh/hoist/data/cube';
 import {fmtThousands, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer} from '@xh/hoist/mobx';
-import {wait, start} from '@xh/hoist/promise';
-import {castArray, values} from 'lodash';
+import {wait} from '@xh/hoist/promise';
+import {castArray} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 
 @HoistModel
@@ -14,14 +14,13 @@ import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 export class CubeDataModel {
 
     @managed cube;
-    @managed cubeView;
     @managed gridModel;
     @managed loadTimesGridModel
     @managed dimManagerModel;
 
     @bindable includeLeaves = false;
     @bindable includeRoot = false;
-    @bindable orderCount = XH.getPref('cubeTestOrderCount')
+    @bindable orderCount = XH.getPref('cubeTestOrderCount');
     @bindable fundFilter = null;
 
     constructor() {
@@ -29,7 +28,7 @@ export class CubeDataModel {
         this.loadTimesGridModel = this.createLoadTimesGridModel();
         this.cube = this.createCube();
 
-        const cubeDims = values(this.cube.fields)
+        const cubeDims = this.cube.fieldList
             .filter(it => it.isDimension)
             .map(it => ({value: it.name, label: it.displayName}));
 
@@ -39,16 +38,9 @@ export class CubeDataModel {
             userDimPref: 'cubeTestUserDims'
         });
 
-        this.cubeView = new View({
-            cube: this.cube,
-            boundStore: this.gridModel.store,
-            query: this.getQuery(),
-            connect: true
-        });
-
         this.addReaction({
             track: () => this.getQuery(),
-            run: (q) => this.setQuery(q),
+            run: (q) => this.executeQuery(),
             equals: comparer.structural
         });
 
@@ -69,54 +61,45 @@ export class CubeDataModel {
         return {dimensions, filters, includeLeaves, includeRoot};
     }
 
-    setQuery(q) {
-        start(() => {
-            const start = Date.now();
-            this.cubeView.setQuery(q);
-            const end = Date.now();
-            this.addLoadTimes({
-                timestamp: end,
-                took: end - start,
-                tag: 'Set query'
-            });
-        }).linkTo(this.loadModel);
-    }
-
     async doLoadAsync() {
-        const loadTimes = [],
-            {loadModel} = this,
+        let orders,
             ocTxt = fmtThousands(this.orderCount) + 'k';
 
-        let start = Date.now();
-        loadModel.setMessage(`Generating ${ocTxt} orders`);
-        await wait(10);  // Allow mask message to update
-
-        const orders = XH.portfolioService.generateOrders(this.orderCount);
-        orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
-
-        let end = Date.now();
-        loadTimes.push({
-            timestamp: end,
-            took: end - start - 10,
-            tag: `Gen ${ocTxt} orders`
+        this.withLoadTime(`Gen ${ocTxt} orders`, () => {
+            orders = XH.portfolioService.generateOrders(this.orderCount);
+            orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
         });
 
+        this.withLoadTime('Loading Cube', () => {
+            this.cube.loadData(orders, {});
+        });
 
-        start = Date.now();
-        loadModel.setMessage('Loading cube...');
+        this.executeQuery();
+    }
+
+    executeQuery() {
+        let data;
+        this.withLoadTime('Executing Cube Query', () => {
+            data = this.cube.executeQuery(this.getQuery()) ;
+        });
+
+        this.withLoadTime('Loading Grid', () => {
+            this.gridModel.loadData(data) ;
+        });
+    }
+
+    async withLoadTime(tag, fn) {
+        this.loadModel.setMessage(tag);
         await wait(10);
-
-        this.cube.loadData(orders, {});
-
-        end = Date.now();
-        loadTimes.push({
+        const start = Date.now();
+        await fn();
+        const end = Date.now();
+        this.addLoadTimes([{
             timestamp: end,
-            took: end - start - 10,
-            tag: 'Load cube'
-        });
-
-        loadModel.setMessage('');
-        this.addLoadTimes(loadTimes);
+            took: end - start,
+            tag
+        }]);
+        this.loadModel.setMessage('');
     }
 
     createCube() {
