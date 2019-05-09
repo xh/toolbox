@@ -26,7 +26,7 @@ export function getAppOptions() {
                     button({value: 'COMPACT', text: 'Compact', icon: Icon.grid()})
                 )
             },
-            refreshRequired: true
+            reloadRequired: true
         },
         {
             name: 'autoRefresh',
