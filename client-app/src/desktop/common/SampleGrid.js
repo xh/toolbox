@@ -12,7 +12,7 @@ import {millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/form
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-import React, {Component} from 'react';
+import {Component} from 'react';
 import {truncate} from 'lodash';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
