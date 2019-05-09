@@ -25,7 +25,7 @@ export class RecallsPanelModel {
     searchQuery = '';
 
     @bindable
-    groupBy = false;
+    groupBy = null;
 
     @managed
     detailsPanelModel = new DetailsPanelModel();
@@ -91,8 +91,10 @@ export class RecallsPanelModel {
     });
 
     constructor() {
+        const {gridModel} = this;
+
         this.addReaction({
-            track: () => this.gridModel.selectedRecord,
+            track: () => gridModel.selectedRecord,
             run: (rec) => this.detailsPanelModel.setRecord(rec)
         });
 
@@ -104,8 +106,11 @@ export class RecallsPanelModel {
 
         this.addReaction({
             track: () => this.groupBy,
-            run: (selectedGroup) => this.gridModel.setGroupBy(selectedGroup)
+            run: (selectedGroup) => gridModel.setGroupBy(selectedGroup)
         });
+
+        const {groupBy} = gridModel;
+        this.setGroupBy(groupBy && groupBy.length > 0 ? groupBy[0] : null);
     }
 
 
