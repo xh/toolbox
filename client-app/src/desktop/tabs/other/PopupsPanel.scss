@@ -1,6 +1,4 @@
-.toolbox-recalls-detail-panel {
-
-  overflow: scroll;
+.toolbox-popups-panel {
 
   table {
     width: 700px;
@@ -25,10 +23,6 @@
       padding: var(--xh-pad-px);
     }
 
-  }
-
-  .recalls-detail-wrapper {
-    overflow-y: auto;
   }
 
 }

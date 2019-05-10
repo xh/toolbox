@@ -8,10 +8,11 @@
 import {Component} from 'react';
 import {XH, HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common';
-import {p, div, table, tr, th, td} from '@xh/hoist/cmp/layout';
+import {p, div, table, tr, th, td, tbody} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {Icon} from '@xh/hoist/icon';
 
-
+// import './PopupsPanel.scss';
 
 @HoistComponent
 export class PopupsPanel extends Component {
@@ -19,10 +20,8 @@ export class PopupsPanel extends Component {
     render() {
 
         const buttonAppearance = {
-            // icon: Icon.add(),
-            minimal: false,
-            flex: 1,
-            margin: 5
+            icon: Icon.add(),
+            minimal: false
         };
         const row = (col1, col2, col3) => {
             return tr(
@@ -32,11 +31,14 @@ export class PopupsPanel extends Component {
 
         return wrapper({
             description: p('here are some popups'),
-            items: [
-                table(
+            // className: 'recalls-popup-panel',
+            item: div({
+                className: 'recalls-popup-panel',
+                item: table(tbody(
                     row(
                         'Alert',
                         button({
+                            ...buttonAppearance,
                             text: 'Alert',
                             onClick: () => XH.alert({
                                 title: 'Alert',
@@ -44,61 +46,42 @@ export class PopupsPanel extends Component {
                             })
                         })
                     ),
-                    row('Confirm'),
-                    row('Message'),
-                    row('Toast')
-                ),
-                div(
-                    button({
-                        ...buttonAppearance,
-                        text: 'Confirm',
-                        onClick: () => XH.confirm({
-                            title: 'Confirm',
-                            message: 'This is a confirm dialoge.'
+                    row(
+                        'Confirm',
+                        button({
+                            ...buttonAppearance,
+                            text: 'Confirm',
+                            onClick: () => XH.confirm({
+                                title: 'Confirm',
+                                message: 'This is a confirm dialoge.'
+                            })
+                        }),
+                    ),
+                    row(
+                        'Message',
+                        button({
+                            ...buttonAppearance,
+                            text: 'Message (message)',
+                            onClick: () => XH.message({
+                                title: 'Message',
+                                message: 'Messages are highly configurable.',
+                                confirmText: 'Ok, got it',
+                                cancelText: 'Exit'
+                            })
+                        }),
+                    ),
+                    row(
+                        'Toast',
+                        button({
+                            ...buttonAppearance,
+                            text: 'Toast',
+                            onClick: () => XH.toast({
+                                message: 'This is a toast.'
+                            })
                         })
-                    }),
-                ),
-                div(
-                    button({
-                        ...buttonAppearance,
-                        text: 'Message (alert)',
-                        onClick: () => XH.alert({
-                            title: 'Message',
-                            message: 'Messages are highly configurable.',
-                            confirmText: 'Ok, got it',
-                            cancelText: 'Exit'
-                        })
-                    }),
-                    button({...buttonAppearance,
-                        text: 'Message (confirm)',
-                        onClick: () => XH.confirm({
-                            title: 'Message',
-                            message: 'Messages are highly configurable.',
-                            confirmText: 'Ok, got it',
-                            cancelText: 'Exit'
-                        })
-                    }),
-                    button({
-                        ...buttonAppearance,
-                        text: 'Message (message)',
-                        onClick: () => XH.message({
-                            title: 'Message',
-                            message: 'Messages are highly configurable.',
-                            confirmText: 'Ok, got it',
-                            cancelText: 'Exit'
-                        })
-                    }),
-                ),
-                div(
-                    button({
-                        ...buttonAppearance,
-                        text: 'Toast',
-                        onClick: () => XH.toast({
-                            message: 'This is a toast.'
-                        })
-                    })
-                )
-            ]
+                    )
+                ))
+            })
         });
     }
 }
