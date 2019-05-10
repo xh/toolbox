@@ -1,7 +1,7 @@
 import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {box, filler, span} from '@xh/hoist/cmp/layout';
+import {box, filler, fragment, span, br} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, LayoutSupport, XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
-import {colChooserButton, exportButton, refreshButton, button} from '@xh/hoist/desktop/cmp/button';
+import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -23,8 +23,6 @@ class SampleGrid extends Component {
 
     model = new Model();
 
-    panelRef = null;
-
     render() {
         const {model} = this,
             {gridModel, loadModel} = model,
@@ -39,8 +37,8 @@ class SampleGrid extends Component {
         }
 
         return panel({
-            ref: this.setPanelRef,
             item: grid({model: gridModel}),
+            ref: (elem) => model.panelRef = elem,
             mask: loadModel,
             tbar: toolbar({
                 omit: this.props.omitToolbar,
@@ -65,15 +63,7 @@ class SampleGrid extends Component {
                     storeCountLabel({gridModel, unit: 'companies'}),
                     storeFilterField({gridModel}),
                     colChooserButton({gridModel}),
-                    exportButton({gridModel}),
-                    button({
-                        onClick: () => XH.toast({
-                            message: 'I\'m inside a panel',
-                            containerRef: this.panelRef,
-                            position: 'bottom-left'
-                        }),
-                        text: 'Toast me!'
-                    })
+                    exportButton({gridModel})
                 ]
             }),
             bbar: toolbar({
@@ -89,9 +79,6 @@ class SampleGrid extends Component {
         });
     }
 
-    setPanelRef = elem => {
-        this.panelRef = elem;
-    }
 }
 export const sampleGrid = elemFactory(SampleGrid);
 
@@ -100,6 +87,8 @@ export const sampleGrid = elemFactory(SampleGrid);
 @LoadSupport
 class Model {
     @observable groupBy = false;
+
+    panelRef;
 
     viewDetailsAction = {
         text: 'View Details',
@@ -246,9 +235,13 @@ class Model {
 
     showInfoToast(rec) {
         XH.toast({
-            message: `You asked for ${rec.company} details. They are based in ${rec.city}.`,
+            message: fragment(
+                `You asked for ${rec.company} details.`, br(),
+                `They are based in ${rec.city}.`
+            ),
             icon: Icon.info(),
-            intent: 'primary'
+            intent: 'primary',
+            containerRef: this.panelRef
         });
     }
 
@@ -256,7 +249,8 @@ class Model {
         XH.toast({
             message: `You asked to terminate ${rec.company}. Sorry, ${rec.company}!`,
             icon: Icon.skull(),
-            intent: 'danger'
+            intent: 'danger',
+            containerRef: this.panelRef
         });
     }
 
