@@ -65,8 +65,6 @@ export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
 @LoadSupport
 class Model {
 
-    @observable groupRows = false;
-
     panelRef;
 
     @managed
@@ -187,10 +185,8 @@ class Model {
         ]
     });
 
-    constructor() {
-        const {groupBy} = this.gridModel;
-        this.setGroupRows(groupBy && groupBy.length > 0);
-    }
+    @observable
+    groupRows = (this.gridModel.groupBy && this.gridModel.groupBy.length > 0);
 
     //------------------------
     // Implementation
