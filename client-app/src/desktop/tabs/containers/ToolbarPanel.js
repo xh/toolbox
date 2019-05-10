@@ -1,10 +1,11 @@
 import {Component} from 'react';
+import {span} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {XH, HoistComponent} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
 import {filler, frame, hframe} from '@xh/hoist/cmp/layout/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel/index';
-import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar/index';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {Icon} from '@xh/hoist/icon/index';
@@ -100,6 +101,18 @@ export class ToolbarPanel extends Component {
                     )
                 ],
                 bbar: toolbar(
+                    buttonGroupInput({
+                        model,
+                        bind: 'visible',
+                        items: [
+                            button({icon: Icon.eye(), text: 'Show', value: true}),
+                            button({icon: Icon.eyeSlash(), text: 'Hide', value: false})
+                        ]
+                    }),
+                    span({
+                        item: 'Now you see me...',
+                        omit: !model.visible
+                    }),
                     filler(),
                     select({
                         model,
@@ -107,6 +120,7 @@ export class ToolbarPanel extends Component {
                         options: usStates,
                         placeholder: 'Select a State...'
                     }),
+                    toolbarSep(),
                     button({
                         text: 'Show Toast',
                         onClick: this.onShowToastClick
