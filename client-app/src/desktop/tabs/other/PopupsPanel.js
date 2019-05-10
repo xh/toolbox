@@ -35,7 +35,9 @@ export class PopupsPanel extends Component {
                             title: 'Aawwwwww',
                             message: 'this is an alert dialog.'
                         })
-                    }),
+                    })
+                ),
+                div(
                     button({
                         ...buttonAppearance,
                         text: 'Confirm',
@@ -44,6 +46,8 @@ export class PopupsPanel extends Component {
                             message: 'This is a confirm dialoge.'
                         })
                     }),
+                ),
+                div(
                     button({
                         ...buttonAppearance,
                         text: 'Message (alert)',
@@ -54,8 +58,7 @@ export class PopupsPanel extends Component {
                             cancelText: 'Exit'
                         })
                     }),
-                    button({
-                        ...buttonAppearance,
+                    button({...buttonAppearance,
                         text: 'Message (confirm)',
                         onClick: () => XH.confirm({
                             title: 'Message',
@@ -74,7 +77,6 @@ export class PopupsPanel extends Component {
                             cancelText: 'Exit'
                         })
                     }),
-
                 ),
                 div(
                     button({
