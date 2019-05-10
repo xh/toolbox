@@ -1,9 +1,10 @@
 .toolbox-popups-panel {
 
   table {
-    width: 700px;
+    width: 400px;
+    alighItems: 'center';
     border-collapse: collapse;
-    border-right: var(--xh-border-solid);
+    //border: var(--xh-border-solid);
 
     th {
       padding: var(--xh-pad-px);
@@ -14,7 +15,7 @@
     }
 
     tr {
-      border-bottom: var(--xh-border-solid);
+      //border-bottom: var(--xh-border-solid);
     }
 
     td {

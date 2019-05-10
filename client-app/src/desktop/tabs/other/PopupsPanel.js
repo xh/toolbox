@@ -12,7 +12,7 @@ import {p, div, table, tr, th, td, tbody} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
-// import './PopupsPanel.scss';
+import './PopupsPanel.scss';
 
 @HoistComponent
 export class PopupsPanel extends Component {
@@ -21,11 +21,13 @@ export class PopupsPanel extends Component {
 
         const buttonAppearance = {
             icon: Icon.add(),
-            minimal: false
+            minimal: false,
+            flex: 1,
+            margin: 5
         };
         const row = (col1, col2, col3) => {
             return tr(
-                th(col1), td(col2), td(col3)
+                td(col1), td(col2), td(col3)
             );
         };
 
@@ -33,45 +35,48 @@ export class PopupsPanel extends Component {
             description: p('here are some popups'),
             // className: 'recalls-popup-panel',
             item: div({
-                className: 'recalls-popup-panel',
+                className: 'toolbox-popups-panel',
                 item: table(tbody(
                     row(
-                        'Alert',
                         button({
                             ...buttonAppearance,
                             text: 'Alert',
                             onClick: () => XH.alert({
                                 title: 'Alert',
-                                message: 'This is an alert'
+                                message: 'This is an alert.  Notice the "OK" button'
+                            })
+                        }),
+                        button({
+                            ...buttonAppearance,
+                            text: 'Alert',
+                            onClick: () => XH.alert({
+                                title: 'Alert with a'
                             })
                         })
                     ),
                     row(
-                        'Confirm',
                         button({
                             ...buttonAppearance,
                             text: 'Confirm',
                             onClick: () => XH.confirm({
                                 title: 'Confirm',
-                                message: 'This is a confirm dialoge.'
+                                message: 'This is a confirm dialoge. Notice the two button choices.'
                             })
                         }),
                     ),
                     row(
-                        'Message',
                         button({
                             ...buttonAppearance,
-                            text: 'Message (message)',
+                            text: 'Message',
                             onClick: () => XH.message({
                                 title: 'Message',
                                 message: 'Messages are highly configurable.',
-                                confirmText: 'Ok, got it',
-                                cancelText: 'Exit'
+                                confirmText: 'Oh I see...',
+                                cancelText: 'Nope, no seas here.'
                             })
                         }),
                     ),
                     row(
-                        'Toast',
                         button({
                             ...buttonAppearance,
                             text: 'Toast',
