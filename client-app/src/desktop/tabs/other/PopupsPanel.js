@@ -15,6 +15,6 @@ import {p} from '@xh/hoist/cmp/layout';
 export class PopupsPanel extends Component {
 
     render() {
-        return p('hi');
+        return wrapper('hi');
     }
-}g
+}
