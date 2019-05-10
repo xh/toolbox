@@ -184,6 +184,10 @@ class Model {
         ]
     });
 
+    constructor() {
+        this.setGroupRows(this.gridModel.groupBy[0]);
+    }
+
     //------------------------
     // Implementation
     //------------------------
