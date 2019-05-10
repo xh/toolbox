@@ -8,8 +8,9 @@
 import {Component} from 'react';
 import {XH, HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common';
-import {p, div} from '@xh/hoist/cmp/layout';
+import {p, div, table, tr, th, td} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
+
 
 
 @HoistComponent
@@ -23,19 +24,29 @@ export class PopupsPanel extends Component {
             flex: 1,
             margin: 5
         };
+        const row = (col1, col2, col3) => {
+            return tr(
+                th(col1), td(col2), td(col3)
+            );
+        };
 
         return wrapper({
             description: p('here are some popups'),
             items: [
-                div(
-                    button({
-                        ...buttonAppearance,
-                        text: 'Alert',
-                        onClick: () => XH.alert({
-                            title: 'Aawwwwww',
-                            message: 'this is an alert dialog.'
+                table(
+                    row(
+                        'Alert',
+                        button({
+                            text: 'Alert',
+                            onClick: () => XH.alert({
+                                title: 'Alert',
+                                message: 'This is an alert'
+                            })
                         })
-                    })
+                    ),
+                    row('Confirm'),
+                    row('Message'),
+                    row('Toast')
                 ),
                 div(
                     button({
