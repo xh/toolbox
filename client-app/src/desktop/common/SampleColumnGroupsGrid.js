@@ -188,7 +188,6 @@ class Model {
     });
 
     constructor() {
-        console.log(this.gridModel.groupBy.toJS());
         const {groupBy} = this.gridModel;
         this.setGroupRows(groupBy && groupBy.length > 0);
     }
