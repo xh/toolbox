@@ -32,6 +32,7 @@ class SampleColumnGroupsGrid extends Component {
 
         return panel({
             item: grid({model: gridModel}),
+            ref: (elem) => this.model.panelRef = elem,
             mask: loadModel,
             tbar: toolbar(
                 refreshButton({model}),
@@ -65,6 +66,8 @@ export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
 class Model {
 
     @observable groupRows = false;
+
+    panelRef;
 
     @managed
     gridModel = new GridModel({
@@ -197,11 +200,11 @@ class Model {
     }
 
     showRecToast(rec) {
-        XH.alert({
+        XH.toast({
             title: `${rec.firstName} ${rec.lastName}`,
             message: `You asked to see details for ${rec.firstName}. They sold ${rec.actualUnitsSold} last year.`,
-            confirmText: 'Close',
-            confirmIntent: 'primary'
+            intent: 'primary',
+            containerRef: this.panelRef
         });
     }
 
