@@ -148,7 +148,8 @@ export class AppModel {
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'timestamp', path: '/timestamp'},
-                            {name: 'jsx', path: '/jsx'}
+                            {name: 'jsx', path: '/jsx'},
+                            {name: 'popups', path: '/popups'}
                         ]
                     },
                     {

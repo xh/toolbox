@@ -7,6 +7,7 @@ import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {FileChooserPanel} from './FileChooserPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {JsxPanel} from './JsxPanel';
+import {PopupsPanel} from './PopupsPanel';
 
 @HoistComponent
 export class OtherTab extends Component {
@@ -20,7 +21,8 @@ export class OtherTab extends Component {
                     {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
                     {id: 'fileChooser', title: 'FileChooser', content: FileChooserPanel},
                     {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
-                    {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel}
+                    {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel},
+                    {id: 'popups', content: PopupsPanel}
                 ]
             },
             className: 'toolbox-tab'

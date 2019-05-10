@@ -7,17 +7,14 @@
 
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {vframe} from '@xh/hoist/cmp/layout';
-
-
+import {wrapper} from '../../common';
+import {p} from '@xh/hoist/cmp/layout';
 
 
 @HoistComponent
 export class PopupsPanel extends Component {
 
     render() {
-        return vframe({
-
-        });
+        return p('hi');
     }
-}
+}g
