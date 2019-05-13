@@ -16,6 +16,7 @@ import {Component} from 'react';
 import {truncate} from 'lodash';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
+import {Ref} from '@xh/hoist/utils/react';
 
 @HoistComponent
 @LayoutSupport
@@ -38,7 +39,7 @@ class SampleGrid extends Component {
 
         return panel({
             item: grid({model: gridModel}),
-            ref: (elem) => model.panelRef = elem,
+            // ref: model.panelRef.ref,
             mask: loadModel,
             tbar: toolbar({
                 omit: this.props.omitToolbar,
@@ -88,7 +89,7 @@ export const sampleGrid = elemFactory(SampleGrid);
 class Model {
     @observable groupBy = false;
 
-    panelRef;
+    panelRef = new Ref();
 
     viewDetailsAction = {
         text: 'View Details',
@@ -241,7 +242,7 @@ class Model {
             ),
             icon: Icon.info(),
             intent: 'primary',
-            containerRef: this.panelRef
+            containerRef: this.panelRef.value
         });
     }
 
@@ -250,7 +251,7 @@ class Model {
             message: `You asked to terminate ${rec.company}. Sorry, ${rec.company}!`,
             icon: Icon.skull(),
             intent: 'danger',
-            containerRef: this.panelRef
+            containerRef: this.panelRef.value
         });
     }
 
