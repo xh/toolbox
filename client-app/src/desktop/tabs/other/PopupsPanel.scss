@@ -1,29 +1,18 @@
-.toolbox-popups-panel {
+.toolbox-popups-table {
 
   table {
-    width: 400px;
-    alighItems: 'center';
-    border-collapse: collapse;
+    width: 700px;
     //border: var(--xh-border-solid);
-
-    th {
-      padding: var(--xh-pad-px);
-      background-color: var(--xh-bg-alt);
-      width: 140px;
-      text-align: right;
-      vertical-align: top;
-    }
-
-    tr {
-      //border-bottom: var(--xh-border-solid);
-    }
 
     td {
       vertical-align: top;
-      text-align: left;
       padding: var(--xh-pad-px);
     }
 
+  }
+
+  button {
+    width: 150px;
   }
 
 }
