@@ -1,18 +1,22 @@
-.toolbox-popups-table {
+.toolbox-popups-vframe {
+
+  width: 750px;
+  height: 300px;
+  border: var(--xh-border-solid);
+  text-align: center;
 
   table {
-    width: 700px;
-    //border: var(--xh-border-solid);
 
     td {
-      vertical-align: top;
+      text-align : center;
+
       padding: var(--xh-pad-px);
     }
 
   }
 
-  button {
-    width: 150px;
+    .toolbox-popups-button {
+    width: 200px;
   }
 
 }
