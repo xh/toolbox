@@ -92,7 +92,7 @@ export class PopupsPanel extends Component {
                                     title: 'Message Title',
                                     message: div(
                                         p('Messages are highly configurable. (Alerts and Confirms are just preconfigured Messages).'),
-                                        p('Dev Beware: without ', code('confirmText'), 'or', code('cancelText'), 'there will be no buttons!')
+                                        p('Dev Beware: without ', code('confirmText'), ' or ', code('cancelText'), ' there will be no buttons!')
                                     ),
                                     confirmText: 'Oh I see!',
                                     cancelText: 'Nope, no seas here.'
