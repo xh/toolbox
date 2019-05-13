@@ -8,10 +8,9 @@
 import {Component} from 'react';
 import {XH, HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common';
-import {p, div, table, tr, td, tbody, vframe, vbox, code, span, ul, li} from '@xh/hoist/cmp/layout';
+import {p, div, table, tr, td, tbody, vbox, code, span, ul, li} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-import {SECONDS} from '@xh/hoist/utils/datetime';
 import {Ref} from '@xh/hoist/utils/react';
 
 import './PopupsPanel.scss';
@@ -112,7 +111,7 @@ export class PopupsPanel extends Component {
                                                 li('Confirm and Message promises return true if user confirms, ' +
                                                 'or false if user cancels.')
                                             ),
-                                            p('This the return of this promise will be ', code('console.log()'), ' ed')
+                                            p('The return of this promise will be ', code('console.log()'), ' ed')
                                         ),
                                         confirmText: 'OK',
                                         cancelText: 'Cancel'
