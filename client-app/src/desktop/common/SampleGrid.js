@@ -39,7 +39,7 @@ class SampleGrid extends Component {
 
         return panel({
             item: grid({model: gridModel}),
-            // ref: model.panelRef.ref,
+            ref: model.panelRef.ref,
             mask: loadModel,
             tbar: toolbar({
                 omit: this.props.omitToolbar,
