@@ -19,7 +19,6 @@ import {ContainersTab} from './tabs/containers/ContainersTab';
 import {FormsTab} from './tabs/forms/FormsTab';
 import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
-import {IconsTab} from './tabs/icons/IconsTab';
 import {OtherTab} from './tabs/other/OtherTab';
 import {ExamplesTab} from './tabs/examples/ExamplesTab';
 import {FormatsTab} from './tabs/formats/FormatsTab';
@@ -38,7 +37,6 @@ export class AppModel {
             {id: 'grids', icon: Icon.grid(), content: GridsTab},
             {id: 'forms', icon: Icon.edit(), content: FormsTab},
             {id: 'charts', icon: Icon.chartLine(), content: ChartsTab},
-            {id: 'icons', icon: Icon.rocket(), content: IconsTab},
             {id: 'formats', icon: Icon.print(), content: FormatsTab},
             {id: 'other', icon: Icon.boxFull(), content: OtherTab},
             {id: 'examples', icon: Icon.books(), content: ExamplesTab}
@@ -129,10 +127,6 @@ export class AppModel {
                         ]
                     },
                     {
-                        name: 'icons',
-                        path: '/icons'
-                    },
-                    {
                         name: 'formats',
                         path: '/formats',
                         children: [
@@ -144,6 +138,7 @@ export class AppModel {
                         name: 'other',
                         path: '/other',
                         children: [
+                            {name: 'icons', path: '/icons'},
                             {name: 'mask', path: '/mask'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},
