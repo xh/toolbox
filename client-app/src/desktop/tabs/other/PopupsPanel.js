@@ -20,12 +20,14 @@ export class PopupsPanel extends Component {
 
     divRef = new Ref();
 
-    buttonAppearance = {
-        className: 'toolbox-popups-button',
-        icon: Icon.add(),
-        minimal: false,
-        flex: 1,
-        margin: 0
+    buttonAppearance = (icon) => {
+        return ({
+            className: 'toolbox-popups-button',
+            icon: icon,
+            minimal: false,
+            flex: 1,
+            margin: 0
+        });
     };
 
     row = (col1, col2, col3) => {
@@ -35,7 +37,7 @@ export class PopupsPanel extends Component {
     };
 
     promiseToast = (returnedBoolean) => XH.toast({
-        message: p('That promise resolved to ', code(`${returnedBoolean}`)),
+        message: span('That popup resolved to ', code(`${returnedBoolean}`)),
         containerRef: this.divRef.value
     });
 
@@ -53,7 +55,7 @@ export class PopupsPanel extends Component {
                 item: table(tbody(
                     row(
                         button({
-                            ...buttonAppearance,
+                            ...buttonAppearance(Icon.warning()),
                             text: 'Alert',
                             onClick: () => XH.alert({
                                 title: 'Just a vanilla Alert',
@@ -61,7 +63,7 @@ export class PopupsPanel extends Component {
                             })
                         }),
                         button({
-                            ...buttonAppearance,
+                            ...buttonAppearance(Icon.warning()),
                             text: 'Alert w/ custom Button',
                             onClick: () => XH.alert({
                                 title: 'Alert Title',
@@ -71,7 +73,7 @@ export class PopupsPanel extends Component {
                             })
                         }),
                         button({
-                            ...buttonAppearance,
+                            ...buttonAppearance(Icon.warning()),
                             text: 'Alert w/ callback',
                             onClick: () => XH.alert({
                                 title: 'Alert Title',
@@ -83,7 +85,7 @@ export class PopupsPanel extends Component {
                     ),
                     row(
                         button({
-                            ...buttonAppearance,
+                            ...buttonAppearance(Icon.questionCircle()),
                             text: 'Confirm',
                             onClick: () => XH.confirm({
                                 title: 'Just a vanilla Confirm',
@@ -91,7 +93,7 @@ export class PopupsPanel extends Component {
                             })
                         }),
                         button({
-                            ...buttonAppearance,
+                            ...buttonAppearance(Icon.questionCircle()),
                             text: 'Confirm w/ custom Button',
                             onClick: () => XH.confirm({
                                 title: 'Confirm Title',
@@ -102,7 +104,7 @@ export class PopupsPanel extends Component {
                             })
                         }),
                         button({
-                            ...buttonAppearance,
+                            ...buttonAppearance(Icon.questionCircle()),
                             text: 'Confirm w/ callback',
                             onClick: () => XH.confirm({
                                 title: 'Confirm Title',
@@ -113,7 +115,7 @@ export class PopupsPanel extends Component {
                     ),
                     row(
                         button({
-                            ...buttonAppearance,
+                            ...buttonAppearance(Icon.comment()),
                             text: 'Message',
                             onClick: () => XH.message({
                                 title: 'Message Title',
@@ -127,7 +129,7 @@ export class PopupsPanel extends Component {
                             })
                         }),
                         button({
-                            ...buttonAppearance,
+                            ...buttonAppearance(Icon.comment()),
                             text: 'Message w/ adv configs',
                             onClick: () => XH.message({
                                 title: 'Message Title',
@@ -138,17 +140,17 @@ export class PopupsPanel extends Component {
                                 confirmText: 'Got it',
                                 cancelText: 'Come again?',
                                 onConfirm: () => XH.toast({
-                                    message: p(code('onConfirm'), ' is an alternative to the returned promise'),
+                                    message: span(code('onConfirm'), ' called!'),
                                     containerRef: this.divRef.value
                                 }),
                                 onCancel: () => XH.toast({
-                                    message: p(code('onCancel'), ' is an alternative to the returned promise'),
+                                    message: span(code('onCancel'), ' called!'),
                                     containerRef: this.divRef.value
                                 })
                             })
                         }),
                         button({
-                            ...buttonAppearance,
+                            ...buttonAppearance(Icon.comment()),
                             text: 'Message w/ callback',
                             onClick: () => XH.message({
                                 title: 'Message Title',
@@ -166,26 +168,36 @@ export class PopupsPanel extends Component {
                     ),
                     row(
                         button({
-                            ...buttonAppearance,
+                            ...buttonAppearance(Icon.toast()),
                             text: 'Toast',
                             onClick: () => XH.toast({
                                 message: 'This is a toast. Bottom right by default.'
                             })
                         }),
                         button({
-                            ...buttonAppearance,
-                            text: 'Toast w/ timeout',
+                            ...buttonAppearance(Icon.toast()),
+                            text: 'Toast w/ custom timeout',
                             onClick: () => XH.toast({
-                                message: span('This is a toast has a ', code('timeout: 5000')),
-                                timeout: 5000
+                                message: span('This is a toast has a ', code('timeout: 1000'), '. See ya!'),
+                                timeout: 1000
                             })
                         }),
                         button({
-                            ...buttonAppearance,
+                            ...buttonAppearance(Icon.toast()),
                             text: 'Toast, anchored',
                             onClick: () => XH.toast({
-                                message: span('This is a Toast anchored to a ', code('containerRef')),
+                                message: span('This is a Toast anchored using ', code('containerRef')),
                                 containerRef: this.divRef.value
+                            })
+                        })
+                    ),
+                    row(
+                        button({
+                            ...buttonAppearance(Icon.toast()),
+                            text: 'Toast, position',
+                            onClick: () => XH.toast({
+                                message: span('This is a Toast anchored using ', code('containerRef')),
+                                position: 'RIGHT_TOP'
                             })
                         })
                     )
