@@ -44,7 +44,9 @@ export class PopupsPanel extends Component {
         const {buttonAppearance, row, promiseToast} = this;
 
         return wrapper({
-            description: p('Here are some popups. '),
+            description: div(
+                p('Popups are quick ways to notify the user of important information.  Here are just a few examples of our popups:')
+            ),
             item: vbox({
                 className: 'toolbox-popups-vframe',
                 ref: this.divRef.ref,
@@ -54,7 +56,7 @@ export class PopupsPanel extends Component {
                             ...buttonAppearance,
                             text: 'Alert',
                             onClick: () => XH.alert({
-                                title: 'Alert Title: just a vanilla Alert',
+                                title: 'Just a vanilla Alert',
                                 message: 'This is an alert.  Alerts come with one button: "OK"'
                             })
                         }),
@@ -74,7 +76,7 @@ export class PopupsPanel extends Component {
                             onClick: () => XH.alert({
                                 title: 'Alert Title',
                                 message: p('Alerts return a promise that resolves to ', code('true'),
-                                    'when user acknowledges the Alert'
+                                    ' when user acknowledges the Alert'
                                 )
                             }).then(promiseToast)
                         })
@@ -84,7 +86,7 @@ export class PopupsPanel extends Component {
                             ...buttonAppearance,
                             text: 'Confirm',
                             onClick: () => XH.confirm({
-                                title: 'Confirm Title: just a vanilla Confirm',
+                                title: 'Just a vanilla Confirm',
                                 message: 'This is a confirm. Confirms come with two buttons: "OK" and "Cancel"'
                             })
                         }),
@@ -118,7 +120,7 @@ export class PopupsPanel extends Component {
                                 message: div(
                                     p('Messages are highly configurable. (Alerts and Confirms are just preconfigured Messages).'),
                                     p('Dev Beware: without ', code('confirmText'), ' or ', code('cancelText'),
-                                        ' Messages will have no buttons!')
+                                        ', Messages will have no buttons!')
                                 ),
                                 confirmText: 'Oh I see!',
                                 cancelText: 'Nope, no seas here.'
