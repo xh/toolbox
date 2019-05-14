@@ -44,7 +44,7 @@ export class PopupsPanel extends Component {
         const {buttonAppearance, row, promiseToast} = this;
 
         return wrapper({
-            description: p('Here are some popups.'),
+            description: p('Here are some popups. '),
             item: vbox({
                 className: 'toolbox-popups-vframe',
                 ref: this.divRef.ref,
@@ -117,7 +117,7 @@ export class PopupsPanel extends Component {
                                 title: 'Message Title',
                                 message: div(
                                     p('Messages are highly configurable. (Alerts and Confirms are just preconfigured Messages).'),
-                                    p('Dev Beware: without', code('confirmText'), ' or ', code('cancelText'),
+                                    p('Dev Beware: without ', code('confirmText'), ' or ', code('cancelText'),
                                         ' Messages will have no buttons!')
                                 ),
                                 confirmText: 'Oh I see!',
@@ -154,8 +154,7 @@ export class PopupsPanel extends Component {
                                     p('Messages, Alerts, and Confirms all return a promise...'),
                                     ul(
                                         li('Alert promises resolve to true when user acknolwedges alert. '),
-                                        li('Confirm and Message promises resolve to true if user confirms, ' +
-                                            'or false if user cancels.')
+                                        li('Confirm and Message promises resolve to true if user confirms, or false if user cancels.')
                                     )
                                 ),
                                 confirmText: 'Cool',
@@ -190,7 +189,6 @@ export class PopupsPanel extends Component {
                     )
                 ))
             })
-
         });
     }
 }
