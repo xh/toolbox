@@ -10,6 +10,7 @@ import {XH, HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common';
 import {p, div, table, tr, td, tbody, vbox, code, span, ul, li} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {Icon} from '@xh/hoist/icon';
 import {Ref} from '@xh/hoist/utils/react';
 
 import './PopupsPanel.scss';
@@ -21,10 +22,10 @@ export class PopupsPanel extends Component {
 
     buttonAppearance = {
         className: 'toolbox-popups-button',
-        // icon: Icon.add(),
+        icon: Icon.add(),
         minimal: false,
         flex: 1,
-        margin: 5
+        margin: 0
     };
 
     row = (col1, col2, col3) => {
@@ -43,7 +44,7 @@ export class PopupsPanel extends Component {
         const {buttonAppearance, row, promiseToast} = this;
 
         return wrapper({
-            description: p('here are some popups'),
+            description: p('Here are some popups.'),
             item: vbox({
                 className: 'toolbox-popups-vframe',
                 ref: this.divRef.ref,
