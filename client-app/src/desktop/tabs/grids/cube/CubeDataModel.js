@@ -40,7 +40,7 @@ export class CubeDataModel {
 
         this.addReaction({
             track: () => this.getQuery(),
-            run: (q) => this.executeQuery(),
+            run: (q) => this.executeQueryAsync(),
             equals: comparer.structural
         });
 
@@ -64,26 +64,25 @@ export class CubeDataModel {
     async doLoadAsync() {
         let orders,
             ocTxt = fmtThousands(this.orderCount) + 'k';
-
         this.withLoadTime(`Gen ${ocTxt} orders`, () => {
             orders = XH.portfolioService.generateOrders(this.orderCount);
             orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
         });
 
-        this.withLoadTime('Loading Cube', () => {
-            this.cube.loadData(orders, {});
+        this.withLoadTime('Loading Cube', async () => {
+            await this.cube.loadDataAsync(orders, {});
         });
 
-        this.executeQuery();
+        await this.executeQueryAsync();
     }
 
-    executeQuery() {
+    async executeQueryAsync() {
         let data;
-        this.withLoadTime('Executing Cube Query', () => {
-            data = this.cube.executeQuery(this.getQuery()) ;
+        await this.withLoadTime('Executing Cube Query', async () => {
+            data = await this.cube.executeQueryAsync(this.getQuery()) ;
         });
 
-        this.withLoadTime('Loading Grid', () => {
+        await this.withLoadTime('Loading Grid', () => {
             this.gridModel.loadData(data) ;
         });
     }
@@ -103,6 +102,10 @@ export class CubeDataModel {
     }
 
     createCube() {
+        const isInstrument = (dim, val, appliedDims) => {
+            return !!appliedDims['symbol'];
+        };
+
         return new Cube({
             idSpec: XH.genId,
             fields: [
@@ -114,12 +117,15 @@ export class CubeDataModel {
                 {name: 'trader', isDimension: true},
                 {name: 'dir', displayName: 'Direction', isDimension: true},
                 {name: 'mktVal', displayName: 'Market Value', aggregator: 'SUM'},
-                {name: 'quantity', aggregator: 'SUM'},
+
+                {name: 'quantity', aggregator: 'SUM', canAggregateFn: isInstrument},
+                {name: 'price', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
+
                 {name: 'commission', aggregator: 'SUM'},
                 // {name: 'confidence', aggregator: 'AVG'},  // TODO - average aggregator?
+
                 {name: 'maxConfidence', aggregator: 'MAX'},
                 {name: 'minConfidence', aggregator: 'MIN'},
-                {name: 'price', aggregator: 'UNIQUE'},
                 {name: 'time', aggregator: 'MAX'}
             ]
         });
