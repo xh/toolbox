@@ -56,25 +56,29 @@ export class PopupsPanel extends Component {
                 item: table(tbody(
                     row(
                         button({
-                            ...buttonAppearance(Icon.warning()),
+                            ...buttonAppearance(Icon.warning({className: 'xh-orange'})),
                             text: 'Alert',
                             onClick: () => XH.alert({
                                 title: 'Just a vanilla Alert',
-                                message: 'This is an alert.  Alerts come with one button: "OK"'
+                                message: 'This is an Alert.  Alerts come with one button: "OK"'
                             })
                         }),
                         button({
-                            ...buttonAppearance(Icon.warning()),
+                            ...buttonAppearance(Icon.warning({className: 'xh-orange'})),
                             text: 'Alert w/ custom Button',
                             onClick: () => XH.alert({
                                 title: 'Alert Title',
-                                message: 'This is also an alert.  Here, we customized the text in the button.',
-                                confirmText: 'COOL BUTTON!'
+                                message: p(
+                                    'This is also an Alert.  Here, we customized the text and color of the button with ',
+                                    code('confirmText'), ' and ', code('confirmIntent')
+                                ),
+                                confirmText: 'COOL BUTTON!',
+                                confirmIntent: 'warning'
 
                             })
                         }),
                         button({
-                            ...buttonAppearance(Icon.warning()),
+                            ...buttonAppearance(Icon.warning({className: 'xh-orange'})),
                             text: 'Alert w/ callback',
                             onClick: () => XH.alert({
                                 title: 'Alert Title',
@@ -86,7 +90,7 @@ export class PopupsPanel extends Component {
                     ),
                     row(
                         button({
-                            ...buttonAppearance(Icon.questionCircle()),
+                            ...buttonAppearance(Icon.questionCircle({className: 'xh-blue-dark'})),
                             text: 'Confirm',
                             onClick: () => XH.confirm({
                                 title: 'Just a vanilla Confirm',
@@ -94,18 +98,23 @@ export class PopupsPanel extends Component {
                             })
                         }),
                         button({
-                            ...buttonAppearance(Icon.questionCircle()),
+                            ...buttonAppearance(Icon.questionCircle({className: 'xh-blue-dark'})),
                             text: 'Confirm w/ custom Button',
                             onClick: () => XH.confirm({
                                 title: 'Confirm Title',
-                                message: 'This is also a confirm. Like Alerts, we can also customize ' +
-                                    'the text inside our buttons.',
+                                message: p(
+                                    'This is also a Confirm.  Here, we customized the text and color of the buttons with ',
+                                    code('confirmText'), ', ', code('confirmIntent'), ', ',
+                                    code('cancelText'), ', ', code('cancelText')
+                                ),
                                 confirmText: 'Nice',
-                                cancelText: 'Nope'
+                                confirmIntent: 'primary',
+                                cancelText: 'Nope',
+                                cancelIntent: 'danger'
                             })
                         }),
                         button({
-                            ...buttonAppearance(Icon.questionCircle()),
+                            ...buttonAppearance(Icon.questionCircle({className: 'xh-blue-dark'})),
                             text: 'Confirm w/ callback',
                             onClick: () => XH.confirm({
                                 title: 'Confirm Title',
@@ -116,7 +125,7 @@ export class PopupsPanel extends Component {
                     ),
                     row(
                         button({
-                            ...buttonAppearance(Icon.comment()),
+                            ...buttonAppearance(Icon.comment({className: 'xh-green'})),
                             text: 'Message',
                             onClick: () => XH.message({
                                 title: 'Message Title',
@@ -130,7 +139,7 @@ export class PopupsPanel extends Component {
                             })
                         }),
                         button({
-                            ...buttonAppearance(Icon.comment()),
+                            ...buttonAppearance(Icon.comment({className: 'xh-green'})),
                             text: 'Message w/ adv configs',
                             onClick: () => XH.message({
                                 title: 'Message Title',
@@ -151,7 +160,7 @@ export class PopupsPanel extends Component {
                             })
                         }),
                         button({
-                            ...buttonAppearance(Icon.comment()),
+                            ...buttonAppearance(Icon.comment({className: 'xh-green'})),
                             text: 'Message w/ callback',
                             onClick: () => XH.message({
                                 title: 'Message Title',
@@ -169,14 +178,14 @@ export class PopupsPanel extends Component {
                     ),
                     row(
                         button({
-                            ...buttonAppearance(Icon.toast()),
+                            ...buttonAppearance(Icon.toast({className: 'xh-yellow'})),
                             text: 'Toast',
                             onClick: () => XH.toast({
                                 message: 'This is a toast. Bottom right by default.'
                             })
                         }),
                         button({
-                            ...buttonAppearance(Icon.toast()),
+                            ...buttonAppearance(Icon.toast({className: 'xh-yellow'})),
                             text: 'Toast w/ custom timeout',
                             onClick: () => XH.toast({
                                 message: span('This is a toast has a ', code('timeout: 1000'), '. See ya!'),
@@ -184,7 +193,7 @@ export class PopupsPanel extends Component {
                             })
                         }),
                         button({
-                            ...buttonAppearance(Icon.toast()),
+                            ...buttonAppearance(Icon.toast({className: 'xh-yellow'})),
                             text: 'Toast w/ containerRef',
                             onClick: () => XH.toast({
                                 message: span('This is a Toast anchored using ', code('containerRef')),
@@ -194,31 +203,15 @@ export class PopupsPanel extends Component {
                     ),
                     row(
                         button({
-                            ...buttonAppearance(Icon.toast()),
-                            text: 'Toast w/ position: top',
-                            onClick: () => XH.toast({
-                                position: 'top',
-                                message: span('This is a Toast position ', code('top'))
-                            })
-                        }),
-                        button({
-                            ...buttonAppearance(Icon.toast()),
-                            text: 'Toast w/ position: top-left',
+                            ...buttonAppearance(Icon.toast({className: 'xh-yellow'})),
+                            text: 'Toast w/ position',
                             onClick: () => XH.toast({
                                 position: 'top-left',
                                 message: span('This is a Toast position ', code('top-left'))
                             })
                         }),
                         button({
-                            ...buttonAppearance(Icon.toast()),
-                            text: 'Toast w/ position: top-right',
-                            onClick: () => XH.toast({
-                                position: 'top-right',
-                                message: span('This is a Toast position ', code('top-right'))
-                            })
-                        }),
-                        button({
-                            ...buttonAppearance(Icon.toast()),
+                            ...buttonAppearance(Icon.toast({className: 'xh-yellow'})),
                             text: 'Toast w/ intent',
                             onClick: () => XH.toast({
                                 message: span('This is a ', code("intent: 'danger'"), 'toast'),
