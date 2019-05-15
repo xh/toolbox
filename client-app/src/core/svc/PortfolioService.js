@@ -1,7 +1,23 @@
 import {HoistService} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {MINUTES} from '@xh/hoist/utils/datetime';
-import {sumBy, castArray, forOwn, last, sortBy, groupBy, keys, values, find, filter, random, sample, times, round} from 'lodash';
+import {
+    castArray,
+    filter,
+    find,
+    forOwn,
+    groupBy,
+    isEmpty,
+    keys,
+    last,
+    random,
+    round,
+    sample,
+    sortBy,
+    sumBy,
+    times,
+    values
+} from 'lodash';
 import moment from 'moment';
 
 @HoistService
@@ -48,7 +64,7 @@ export class PortfolioService {
 
     /**
      * Return a single grouped position, uniquely identified by drilldown ID.
-     * @param positionId - as generated/installed on each position returned by `getPortfolioAsync()`.
+     * @param positionId - ID installed on each position returned by `getPortfolioAsync()`.
      * @param delay - optional delay in ms, as above.
      * @return {Promise<*>}
      */
@@ -104,7 +120,7 @@ export class PortfolioService {
     // Called internally (lazily) to generate a reference set of orders from which positions are
     // built to populate the demo portfolio viewer app.
     generateOrders(count = this.INITIAL_ORDERS) {
-        this.ensureLoaded();
+        this.ensureRefDataLoaded();
 
         const orders = [];
 
@@ -140,10 +156,20 @@ export class PortfolioService {
     // Implementation
     //------------------------
     ensureLoaded() {
-        if (!this.tradingDays.length) {
-            this.populateRefData();
+        this.ensureRefDataLoaded();
+
+        if (isEmpty(this.orders)) {
             this.orders = this.generateOrders();
+        }
+
+        if (isEmpty(this.rawPositions)) {
             this.rawPositions = this.calculateRawPositions();
+        }
+    }
+
+    ensureRefDataLoaded() {
+        if (isEmpty(this.tradingDays)) {
+            this.populateRefData();
         }
     }
 
