@@ -1,23 +1,34 @@
 .toolbox-popups-vframe {
 
-  width: 700px;
-  height: 300px;
   border: var(--xh-border-solid);
-  text-align: center;
 
   table {
 
-    td {
-      text-align : center;
+    width: 600px;
+    height: 270px;
+    text-align: left;
 
+
+    th {
       padding: var(--xh-pad-px);
+      padding-right: 50px;
+
+      .toolbox-popups-button {
+        width: 120px;
+      }
+
     }
 
-  }
+    td {
+      text-align : center;
+      padding: var(--xh-pad-px);
 
-  .toolbox-popups-button {
-    width: 200px;
-    text-align: left;
+      .toolbox-popups-button {
+        width: 180px;
+      }
+
+    }
+
   }
 
 }
