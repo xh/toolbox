@@ -77,7 +77,6 @@ export class AgGridViewModel {
         this.addReaction({
             track: () => [this.data, agGridModel.agApi],
             run: ([data, api]) => {
-                console.log(data);
                 if (api && !isEmpty(data)) {
                     api.setRowData(data);
 

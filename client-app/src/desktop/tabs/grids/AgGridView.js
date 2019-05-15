@@ -44,7 +44,7 @@ export class AgGridView extends Component {
                     button({
                         icon: Icon.code(),
                         text: 'Log Grid State',
-                        onClick: () => agGridModel.logStateDebugInfo()
+                        onClick: () => console.log(agGridModel.getState())
                     }),
                     button({
                         icon: Icon.save(),
