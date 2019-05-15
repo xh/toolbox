@@ -47,7 +47,8 @@ export class PopupsPanel extends Component {
 
         return wrapper({
             description: div(
-                p('Popups are quick ways to notify the user of important information.  Here are just a few examples of our popups:')
+                p('Popups are interactive ways to notify or gather important information.  '),
+                p('Here are just a few examples of our popups:')
             ),
             item: vbox({
                 className: 'toolbox-popups-vframe',
@@ -184,7 +185,7 @@ export class PopupsPanel extends Component {
                         }),
                         button({
                             ...buttonAppearance(Icon.toast()),
-                            text: 'Toast, anchored',
+                            text: 'Toast w/ containerRef',
                             onClick: () => XH.toast({
                                 message: span('This is a Toast anchored using ', code('containerRef')),
                                 containerRef: this.divRef.value
@@ -194,10 +195,34 @@ export class PopupsPanel extends Component {
                     row(
                         button({
                             ...buttonAppearance(Icon.toast()),
-                            text: 'Toast, position',
+                            text: 'Toast w/ position: top',
                             onClick: () => XH.toast({
-                                message: span('This is a Toast anchored using ', code('containerRef')),
-                                position: 'RIGHT_TOP'
+                                position: 'top',
+                                message: span('This is a Toast position ', code('top'))
+                            })
+                        }),
+                        button({
+                            ...buttonAppearance(Icon.toast()),
+                            text: 'Toast w/ position: top-left',
+                            onClick: () => XH.toast({
+                                position: 'top-left',
+                                message: span('This is a Toast position ', code('top-left'))
+                            })
+                        }),
+                        button({
+                            ...buttonAppearance(Icon.toast()),
+                            text: 'Toast w/ position: top-right',
+                            onClick: () => XH.toast({
+                                position: 'top-right',
+                                message: span('This is a Toast position ', code('top-right'))
+                            })
+                        }),
+                        button({
+                            ...buttonAppearance(Icon.toast()),
+                            text: 'Toast w/ intent',
+                            onClick: () => XH.toast({
+                                message: span('This is a ', code("intent: 'danger'"), 'toast'),
+                                intent: 'danger'
                             })
                         })
                     )
