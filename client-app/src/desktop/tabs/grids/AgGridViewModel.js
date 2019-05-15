@@ -2,6 +2,7 @@ import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
 import {observable, settable} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
+import {isNil, isEmpty} from 'lodash';
 
 @HoistModel
 @LoadSupport
@@ -43,7 +44,7 @@ export class AgGridViewModel {
         {
             field: 'mktVal',
             type: 'numericColumn',
-            filter: 'agNumberFilter',
+            filter: 'agNumberColumnFilter',
             width: 130,
             enableValue: true,
             aggFunc: 'sum',
@@ -55,7 +56,7 @@ export class AgGridViewModel {
         {
             field: 'pnl',
             type: 'numericColumn',
-            filter: 'agNumberFilter',
+            filter: 'agNumberColumnFilter',
             width: 130,
             enableValue: true,
             aggFunc: 'sum',
@@ -76,9 +77,27 @@ export class AgGridViewModel {
         this.addReaction({
             track: () => [this.data, agGridModel.agApi],
             run: ([data, api]) => {
-                if (api) api.setRowData(data);
+                console.log(data);
+                if (api && !isEmpty(data)) {
+                    api.setRowData(data);
+
+                    // Also load our grid view state now that we have data
+                    this.reloadCurrentGridView();
+                }
             }
         });
+    }
+
+    saveCurrentGridView() {
+        const state = this.agGridModel.getState();
+        XH.localStorageService.set('agGridWrapperView', state);
+    }
+
+    reloadCurrentGridView() {
+        const state = XH.localStorageService.get('agGridWrapperView', null);
+        if (!isNil(state)) {
+            this.agGridModel.setState(state);
+        }
     }
 
     async doLoadAsync() {

@@ -7,6 +7,7 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {gridStyleSwitches, wrapper} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';
+import {button} from '@xh/hoist/desktop/cmp/button';
 
 @HoistComponent
 export class AgGridView extends Component {
@@ -39,7 +40,29 @@ export class AgGridView extends Component {
                 width: '95%',
                 marginBottom: 10,
                 mask: loadModel,
-                bbar: toolbar(filler(), gridStyleSwitches({gridModel: agGridModel})),
+                bbar: toolbar(
+                    button({
+                        icon: Icon.code(),
+                        text: 'Log Grid State',
+                        onClick: () => agGridModel.logStateDebugInfo()
+                    }),
+                    button({
+                        icon: Icon.save(),
+                        intent: 'success',
+                        text: 'Save View',
+                        title: 'Save Current Grid View',
+                        onClick: this.onSaveGridViewClick
+                    }),
+                    button({
+                        icon: Icon.undo(),
+                        intent: 'primary',
+                        text: 'Load View',
+                        title: 'Reload Current Grid View',
+                        onClick: this.onReloadGridViewClick
+                    }),
+                    filler(),
+                    gridStyleSwitches({gridModel: agGridModel})
+                ),
                 item: agGrid({
                     key: agGridModel.xhId,
                     model: agGridModel,
@@ -55,9 +78,14 @@ export class AgGridView extends Component {
 
                     sideBar: true,
 
-                    rowSelection: 'single'
+                    rowSelection: 'single',
+
+                    onGridReady: this.onGridReady
                 })
             })
         });
     }
+
+    onSaveGridViewClick = () => this.model.saveCurrentGridView();
+    onReloadGridViewClick = () => this.model.reloadCurrentGridView();
 }
