@@ -1,4 +1,4 @@
-import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
+import {grid, GridModel, calendarDateCol, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {box, filler, fragment, span, br} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, LayoutSupport, XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
@@ -194,7 +194,7 @@ class Model {
                 headerName: 'Trade Volume',
                 field: 'trade_volume',
                 align: 'right',
-                width: 130,
+                width: 120,
                 tooltip: (val) => fmtNumberTooltip(val),
                 renderer: millionsRenderer({
                     precision: 1,
@@ -213,6 +213,11 @@ class Model {
                     ledger: true,
                     colorSpec: true
                 })
+            },
+            {
+                headerName: 'Date',
+                field: 'tradeDate',
+                ...calendarDateCol
             },
             {
                 field: 'active',
