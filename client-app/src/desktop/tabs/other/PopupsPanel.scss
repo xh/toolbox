@@ -1,0 +1,34 @@
+.toolbox-popups-vframe {
+
+  border: var(--xh-border-solid);
+
+  table {
+
+    width: 600px;
+    height: 270px;
+    text-align: left;
+
+
+    th {
+      padding: var(--xh-pad-px);
+      padding-right: 50px;
+
+      .toolbox-popups-button {
+        width: 120px;
+      }
+
+    }
+
+    td {
+      text-align : center;
+      padding: var(--xh-pad-px);
+
+      .toolbox-popups-button {
+        width: 180px;
+      }
+
+    }
+
+  }
+
+}

@@ -7,6 +7,7 @@ import {JsxPanel} from './JsxPanel';
 import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {MaskPanel} from './MaskPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
+import {PopupsPanel} from './PopupsPanel';
 
 @HoistComponent
 export class OtherTab extends Component {
@@ -16,6 +17,7 @@ export class OtherTab extends Component {
                 route: 'default.other',
                 switcherPosition: 'left',
                 tabs: [
+                    {id: 'popups', content: PopupsPanel},
                     {id: 'icons', title: 'Icons', content: IconsPanel},
                     {id: 'mask', title: 'Mask', content: MaskPanel},
                     {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
