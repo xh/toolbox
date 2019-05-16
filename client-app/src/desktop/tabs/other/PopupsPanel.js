@@ -50,7 +50,12 @@ export class PopupsPanel extends Component {
 
         return wrapper({
             description: div(
-                p('Popups are interactive ways to notify or confirm important information.  '),
+                p('Popups are interactive ways to notify users about important information.  They can also be used to ',
+                    'confirm a decision with users. '),
+                p(code('Message'), 's provide modal dialogs to the user, and ',
+                    code('Alert'), ' and ', code('Confirm'), ' are preconfigured ', code('Message'), 's. Use ',
+                    code('Toast'), ' for non-modal notifications.'),
+                p('See ', code('XH.alert'), ', ', code('XH.confirm'), ', ', code('XH.message'), ', ', code('XH.toast'), '.'),
                 p('Here are just a few examples of our popups:')
             ),
             item: vbox({
@@ -191,14 +196,14 @@ export class PopupsPanel extends Component {
                             ...buttonAppearance(Icon.toast({className: 'xh-orange'})),
                             text: 'Toast',
                             onClick: () => XH.toast({
-                                message: 'This is a toast. Bottom right by default.'
+                                message: 'This is a Toast. Bottom right of app by default.'
                             })
                         }),
                         button({
                             ...buttonAppearance(Icon.toast({className: 'xh-orange-muted'})),
                             text: 'with custom timeout',
                             onClick: () => XH.toast({
-                                message: span('This is a toast has a ', code('timeout: 1000'), '. See ya!'),
+                                message: span('This is a Toast has a ', code('timeout: 1000'), '. See ya!'),
                                 timeout: 1000
                             })
                         }),
@@ -217,14 +222,14 @@ export class PopupsPanel extends Component {
                             text: 'with position',
                             onClick: () => XH.toast({
                                 position: 'top-left',
-                                message: span('This is a Toast position ', code('top-left'))
+                                message: span('This is a Toast with ', code('position: top-left'))
                             })
                         }),
                         button({
                             ...buttonAppearance(Icon.toast({className: 'xh-orange-muted'})),
                             text: 'with intent',
                             onClick: () => XH.toast({
-                                message: span('This is a ', code("intent: 'danger'"), 'toast'),
+                                message: span('This is a Toast with ', code("intent: 'danger'")),
                                 intent: 'danger'
                             })
                         })

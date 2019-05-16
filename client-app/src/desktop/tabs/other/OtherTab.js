@@ -17,13 +17,13 @@ export class OtherTab extends Component {
                 route: 'default.other',
                 switcherPosition: 'left',
                 tabs: [
+                    {id: 'popups', content: PopupsPanel},
                     {id: 'icons', title: 'Icons', content: IconsPanel},
                     {id: 'mask', title: 'Mask', content: MaskPanel},
                     {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
                     {id: 'fileChooser', title: 'FileChooser', content: FileChooserPanel},
                     {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
-                    {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel},
-                    {id: 'popups', content: PopupsPanel}
+                    {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel}
                 ]
             },
             className: 'toolbox-tab'
