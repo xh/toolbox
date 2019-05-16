@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {action, observable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -13,10 +13,10 @@ import {wrapper} from '../../common/Wrapper';
 @HoistComponent
 export class RelativeTimestampPanel extends Component {
 
-    @observable
+    @bindable
     timestamp = new Date();
 
-    @observable
+    @bindable
     useShortFmt = false;
 
     render() {
@@ -78,8 +78,8 @@ export class RelativeTimestampPanel extends Component {
                     switchInput({
                         label: 'Short',
                         labelAlign: 'left',
-                        model: this,
-                        bind: 'useShortFmt'
+                        value: this.useShortFmt,
+                        onChange: v => this.setUseShortFmt(v)
                     }),
                 )
             })
@@ -96,16 +96,6 @@ export class RelativeTimestampPanel extends Component {
 
     setToFuture = () => {
         this.setTimestamp(Date.now() + this.randShift());
-    }
-
-    @action
-    setTimestamp(ts) {
-        this.timestamp = ts;
-    }
-
-    @action
-    setUseShortFmt(short) {
-        this.useShortFmt = short;
     }
 
     randShift() {
