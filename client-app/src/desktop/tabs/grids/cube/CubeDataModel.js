@@ -1,12 +1,12 @@
 import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
-import {numberCol, timeCol} from '@xh/hoist/cmp/grid/columns';
+import {timeCol} from '@xh/hoist/cmp/grid/columns';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 import {Cube} from '@xh/hoist/data/cube';
 import {fmtThousands, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer} from '@xh/hoist/mobx';
-import {wait} from '@xh/hoist/promise';
-import {castArray} from 'lodash';
+import {start} from '@xh/hoist/promise';
+import {castArray, isEmpty} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 
 @HoistModel
@@ -53,10 +53,14 @@ export class CubeDataModel {
         });
     }
 
+    clearLoadTimes() {
+        this.loadTimesGridModel.store.loadData([]);
+    }
+
     getQuery() {
         const {dimManagerModel, fundFilter, includeLeaves, includeRoot} = this,
             dimensions = dimManagerModel.value,
-            filters = fundFilter ? [{name: 'fund', values: fundFilter}] : null;
+            filters = !isEmpty(fundFilter) ? [{name: 'fund', values: [...fundFilter]}] : null;
 
         return {dimensions, filters, includeLeaves, includeRoot};
     }
@@ -64,12 +68,14 @@ export class CubeDataModel {
     async doLoadAsync() {
         let orders,
             ocTxt = fmtThousands(this.orderCount) + 'k';
-        this.withLoadTime(`Gen ${ocTxt} orders`, () => {
+
+        await this.withLoadTime(`Gen ${ocTxt} orders`, async () => {
+            // TODO - generate orders in non-blocking/async loop.
             orders = XH.portfolioService.generateOrders(this.orderCount);
             orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
         });
 
-        this.withLoadTime('Loading Cube', async () => {
+        await this.withLoadTime('Load Cube', async () => {
             await this.cube.loadDataAsync(orders, {});
         });
 
@@ -77,28 +83,35 @@ export class CubeDataModel {
     }
 
     async executeQueryAsync() {
-        let data;
-        await this.withLoadTime('Executing Cube Query', async () => {
-            data = await this.cube.executeQueryAsync(this.getQuery()) ;
-        });
+        const query = this.getQuery(),
+            dimCount = query.dimensions.length,
+            filterCount = !isEmpty(query.filters) ? query.filters[0].values.length : 0;
 
-        await this.withLoadTime('Loading Grid', () => {
-            this.gridModel.loadData(data) ;
-        });
+        // Query is initialized with empty dims and is triggering an initial run we don't need.
+        if (!dimCount) return;
+
+        return start(async () => {
+            let data;
+            await this.withLoadTime(`Query | ${dimCount} dims | ${filterCount} fund filters`, async () => {
+                data = await this.cube.executeQueryAsync(this.getQuery()) ;
+            });
+
+            await this.withLoadTime('Load Grid', () => {
+                this.gridModel.loadData(data) ;
+            });
+        }).linkTo(this.loadModel);
     }
 
     async withLoadTime(tag, fn) {
-        this.loadModel.setMessage(tag);
-        await wait(10);
         const start = Date.now();
         await fn();
         const end = Date.now();
+
         this.addLoadTimes([{
             timestamp: end,
             took: end - start,
             tag
         }]);
-        this.loadModel.setMessage('');
     }
 
     createCube() {
@@ -225,10 +238,16 @@ export class CubeDataModel {
         return new GridModel({
             store: {idSpec: 'timestamp'},
             sortBy: 'timestamp|desc',
+            emptyText: 'No actions recorded...',
             columns: [
                 {field: 'timestamp', hidden: true},
                 {field: 'tag', flex: 1},
-                {field: 'took', width: 80, ...numberCol}
+                {
+                    field: 'took',
+                    width: 80,
+                    align: 'right',
+                    renderer: numberRenderer({precision: 0, label: 'ms'})
+                }
             ]
         });
     }
