@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core/index';
+import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../common/Wrapper';
 import {Icon} from '@xh/hoist/icon';
+import {wrapper} from '../../common/Wrapper';
 
-import './IconsTab.scss';
+import './IconsPanel.scss';
 
 @HoistComponent
-export class IconsTab extends Component {
+export class IconsPanel extends Component {
 
     render() {
         const row = icon => <tr key={icon.name}>

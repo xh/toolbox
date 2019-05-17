@@ -6,16 +6,16 @@
  */
 
 import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
+import {managed} from '@xh/hoist/core/mixins';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import moment from 'moment';
 import {dateCol} from '@xh/hoist/cmp/grid/columns';
 import {compactDateRenderer} from '@xh/hoist/format';
-import {managed} from '@xh/hoist/core/mixins';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 
 import {DetailsPanelModel} from './DetailsPanelModel';
 import {bindable} from '@xh/hoist/mobx';
+import moment from 'moment';
 
 @HoistModel
 @LoadSupport
@@ -23,6 +23,9 @@ export class RecallsPanelModel {
 
     @bindable
     searchQuery = '';
+
+    @bindable
+    groupBy = null;
 
     @managed
     detailsPanelModel = new DetailsPanelModel();
@@ -63,6 +66,10 @@ export class RecallsPanelModel {
                 width: 100
             },
             {
+                field: 'recallingFirm',
+                width: 200
+            },
+            {
                 field: 'recallDate',
                 ...dateCol,
                 headerName: 'Date',
@@ -75,11 +82,6 @@ export class RecallsPanelModel {
                 hidden: true
             },
             {
-                field: 'recallingFirm',
-                width: 150,
-                hidden: true
-            },
-            {
                 field: 'reason',
                 width: 200,
                 hidden: true
@@ -89,8 +91,10 @@ export class RecallsPanelModel {
     });
 
     constructor() {
+        const {gridModel} = this;
+
         this.addReaction({
-            track: () => this.gridModel.selectedRecord,
+            track: () => gridModel.selectedRecord,
             run: (rec) => this.detailsPanelModel.setRecord(rec)
         });
 
@@ -99,6 +103,14 @@ export class RecallsPanelModel {
             run: () => this.loadAsync(),
             delay: ONE_SECOND
         });
+
+        this.addReaction({
+            track: () => this.groupBy,
+            run: (selectedGroup) => gridModel.setGroupBy(selectedGroup)
+        });
+
+        const {groupBy} = gridModel;
+        this.setGroupBy(groupBy && groupBy.length > 0 ? groupBy[0] : null);
     }
 
 

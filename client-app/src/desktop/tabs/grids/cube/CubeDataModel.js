@@ -1,12 +1,12 @@
 import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
-import {numberCol, timeCol} from '@xh/hoist/cmp/grid/columns';
+import {timeCol} from '@xh/hoist/cmp/grid/columns';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
-import {Cube, View} from '@xh/hoist/data/cube';
+import {Cube} from '@xh/hoist/data/cube';
 import {fmtThousands, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer} from '@xh/hoist/mobx';
-import {wait, start} from '@xh/hoist/promise';
-import {castArray, values} from 'lodash';
+import {start} from '@xh/hoist/promise';
+import {castArray, isEmpty} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 
 @HoistModel
@@ -14,14 +14,13 @@ import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 export class CubeDataModel {
 
     @managed cube;
-    @managed cubeView;
     @managed gridModel;
     @managed loadTimesGridModel
     @managed dimManagerModel;
 
     @bindable includeLeaves = false;
     @bindable includeRoot = false;
-    @bindable orderCount = XH.getPref('cubeTestOrderCount')
+    @bindable orderCount = XH.getPref('cubeTestOrderCount');
     @bindable fundFilter = null;
 
     constructor() {
@@ -29,7 +28,7 @@ export class CubeDataModel {
         this.loadTimesGridModel = this.createLoadTimesGridModel();
         this.cube = this.createCube();
 
-        const cubeDims = values(this.cube.fields)
+        const cubeDims = this.cube.fieldList
             .filter(it => it.isDimension)
             .map(it => ({value: it.name, label: it.displayName}));
 
@@ -39,16 +38,9 @@ export class CubeDataModel {
             userDimPref: 'cubeTestUserDims'
         });
 
-        this.cubeView = new View({
-            cube: this.cube,
-            boundStore: this.gridModel.store,
-            query: this.getQuery(),
-            connect: true
-        });
-
         this.addReaction({
             track: () => this.getQuery(),
-            run: (q) => this.setQuery(q),
+            run: (q) => this.executeQueryAsync(),
             equals: comparer.structural
         });
 
@@ -61,65 +53,72 @@ export class CubeDataModel {
         });
     }
 
+    clearLoadTimes() {
+        this.loadTimesGridModel.store.loadData([]);
+    }
+
     getQuery() {
         const {dimManagerModel, fundFilter, includeLeaves, includeRoot} = this,
             dimensions = dimManagerModel.value,
-            filters = fundFilter ? [{name: 'fund', values: fundFilter}] : null;
+            filters = !isEmpty(fundFilter) ? [{name: 'fund', values: [...fundFilter]}] : null;
 
         return {dimensions, filters, includeLeaves, includeRoot};
     }
 
-    setQuery(q) {
-        start(() => {
-            const start = Date.now();
-            this.cubeView.setQuery(q);
-            const end = Date.now();
-            this.addLoadTimes({
-                timestamp: end,
-                took: end - start,
-                tag: 'Set query'
+    async doLoadAsync() {
+        let orders,
+            ocTxt = fmtThousands(this.orderCount) + 'k';
+
+        await this.withLoadTime(`Gen ${ocTxt} orders`, async () => {
+            // TODO - generate orders in non-blocking/async loop.
+            orders = XH.portfolioService.generateOrders(this.orderCount);
+            orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
+        });
+
+        await this.withLoadTime('Load Cube', async () => {
+            await this.cube.loadDataAsync(orders, {});
+        });
+
+        await this.executeQueryAsync();
+    }
+
+    async executeQueryAsync() {
+        const query = this.getQuery(),
+            dimCount = query.dimensions.length,
+            filterCount = !isEmpty(query.filters) ? query.filters[0].values.length : 0;
+
+        // Query is initialized with empty dims and is triggering an initial run we don't need.
+        if (!dimCount) return;
+
+        return start(async () => {
+            let data;
+            await this.withLoadTime(`Query | ${dimCount} dims | ${filterCount} fund filters`, async () => {
+                data = await this.cube.executeQueryAsync(this.getQuery()) ;
+            });
+
+            await this.withLoadTime('Load Grid', () => {
+                this.gridModel.loadData(data) ;
             });
         }).linkTo(this.loadModel);
     }
 
-    async doLoadAsync() {
-        const loadTimes = [],
-            {loadModel} = this,
-            ocTxt = fmtThousands(this.orderCount) + 'k';
+    async withLoadTime(tag, fn) {
+        const start = Date.now();
+        await fn();
+        const end = Date.now();
 
-        let start = Date.now();
-        loadModel.setMessage(`Generating ${ocTxt} orders`);
-        await wait(10);  // Allow mask message to update
-
-        const orders = XH.portfolioService.generateOrders(this.orderCount);
-        orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
-
-        let end = Date.now();
-        loadTimes.push({
+        this.addLoadTimes([{
             timestamp: end,
-            took: end - start - 10,
-            tag: `Gen ${ocTxt} orders`
-        });
-
-
-        start = Date.now();
-        loadModel.setMessage('Loading cube...');
-        await wait(10);
-
-        this.cube.loadData(orders, {});
-
-        end = Date.now();
-        loadTimes.push({
-            timestamp: end,
-            took: end - start - 10,
-            tag: 'Load cube'
-        });
-
-        loadModel.setMessage('');
-        this.addLoadTimes(loadTimes);
+            took: end - start,
+            tag
+        }]);
     }
 
     createCube() {
+        const isInstrument = (dim, val, appliedDims) => {
+            return !!appliedDims['symbol'];
+        };
+
         return new Cube({
             idSpec: XH.genId,
             fields: [
@@ -131,12 +130,15 @@ export class CubeDataModel {
                 {name: 'trader', isDimension: true},
                 {name: 'dir', displayName: 'Direction', isDimension: true},
                 {name: 'mktVal', displayName: 'Market Value', aggregator: 'SUM'},
-                {name: 'quantity', aggregator: 'SUM'},
+
+                {name: 'quantity', aggregator: 'SUM', canAggregateFn: isInstrument},
+                {name: 'price', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
+
                 {name: 'commission', aggregator: 'SUM'},
                 // {name: 'confidence', aggregator: 'AVG'},  // TODO - average aggregator?
+
                 {name: 'maxConfidence', aggregator: 'MAX'},
                 {name: 'minConfidence', aggregator: 'MIN'},
-                {name: 'price', aggregator: 'UNIQUE'},
                 {name: 'time', aggregator: 'MAX'}
             ]
         });
@@ -236,10 +238,16 @@ export class CubeDataModel {
         return new GridModel({
             store: {idSpec: 'timestamp'},
             sortBy: 'timestamp|desc',
+            emptyText: 'No actions recorded...',
             columns: [
                 {field: 'timestamp', hidden: true},
                 {field: 'tag', flex: 1},
-                {field: 'took', width: 80, ...numberCol}
+                {
+                    field: 'took',
+                    width: 80,
+                    align: 'right',
+                    renderer: numberRenderer({precision: 0, label: 'ms'})
+                }
             ]
         });
     }
