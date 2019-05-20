@@ -1,7 +1,7 @@
 import {HoistModel} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {bindable} from '@xh/hoist/mobx';
-import {fmtCalendarDate} from '@xh/hoist/format';
+import {toCalendarDate} from '@xh/hoist/utils/datetime';
 import moment from 'moment';
 import {random} from 'lodash';
 
@@ -31,7 +31,7 @@ export class ControlsPanelModel {
             {name: 'option6'},
             {name: 'date1'},
             {name: 'date2', initialValue: moment().startOf('hour').toDate()},
-            {name: 'calendarDate', initialValue: fmtCalendarDate(moment().toDate())},
+            {name: 'calendarDate', initialValue: toCalendarDate(new Date())},
             {name: 'bool1'},
             {name: 'bool2'},
             {name: 'buttonGroup1', initialValue: 'button2'}
