@@ -1,8 +1,11 @@
+import React from 'react';
 import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
 import {observable, settable} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
-import {isNil, isEmpty} from 'lodash';
+import {isNil, isEmpty, entries, startCase} from 'lodash';
+import {Icon} from '@xh/hoist/icon';
+import {vbox} from '@xh/hoist/cmp/layout';
 
 @HoistModel
 @LoadSupport
@@ -89,6 +92,14 @@ export class AgGridViewModel {
 
     saveCurrentGridView() {
         const state = this.agGridModel.getState();
+        if (state.errors) {
+            XH.toast({
+                intent: 'warning',
+                icon: Icon.warning(),
+                message: vbox(<span>Failed to retrieve full grid state! Errors:</span>, ...entries(state.errors).map(([type, msg]) => <span>{`${startCase(type)}: ${msg}`}</span>))
+            });
+        }
+
         XH.localStorageService.set('agGridWrapperView', state);
     }
 
