@@ -12,6 +12,7 @@ import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
 export class RestGridPanel extends Component {
 
     model = new RestGridModel({
+        enableExport: true,
         store: new RestStore({
             url: 'rest/companyRest',
             fields: [
