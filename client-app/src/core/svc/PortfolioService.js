@@ -1,6 +1,6 @@
 import {HoistService} from '@xh/hoist/core';
-import {wait} from '@xh/hoist/promise';
 import {MINUTES} from '@xh/hoist/utils/datetime';
+import {whileAsync} from '@xh/hoist/utils/async';
 import {
     castArray,
     filter,
@@ -40,37 +40,30 @@ export class PortfolioService {
 
     /**
      * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
-     * @param dims
-     * @param {number} [delay] - optional delay in ms - allows masks and page transitions to fully
-     *      render before kicking off a locally compute-intensive process that could stall them.
+     * @param {string[]} dims - field names for dimensions on which to group.
      * @return {Promise<Array>}
      */
-    async getPortfolioAsync(dims, delay = 300) {
-        await wait(delay);
-        this.ensureLoaded();
+    async getPortfolioAsync(dims) {
+        await this.ensureLoadedAsync();
         return this.getPositions(castArray(dims));
     }
 
     /**
      * Return a list of flat position data.
-     * @param delay - optional delay in ms, as above.
      * @returns {Promise<Array>}
      */
-    async getPositionsAsync(delay = 300) {
-        await wait(delay);
-        this.ensureLoaded();
+    async getPositionsAsync() {
+        await this.ensureLoadedAsync();
         return this.rawPositions;
     }
 
     /**
      * Return a single grouped position, uniquely identified by drilldown ID.
      * @param positionId - ID installed on each position returned by `getPortfolioAsync()`.
-     * @param delay - optional delay in ms, as above.
      * @return {Promise<*>}
      */
-    async getPositionAsync(positionId, delay = 100) {
-        await wait(delay);
-        this.ensureLoaded();
+    async getPositionAsync(positionId) {
+        await this.ensureLoadedAsync();
 
         const parsedId = this.parsePositionId(positionId),
             dims = keys(parsedId),
@@ -116,37 +109,50 @@ export class PortfolioService {
         }]);
     }
 
-    // Available as a general function to generate a collection of mock orders of any given size.
-    // Called internally (lazily) to generate a reference set of orders from which positions are
-    // built to populate the demo portfolio viewer app.
-    generateOrders(count = this.INITIAL_ORDERS) {
-        this.ensureRefDataLoaded();
+    /**
+     * Available as a general function to generate a collection of mock orders of any given size.
+     * Called internally (lazily) to generate a reference set of orders from which positions are
+     * built to populate the demo portfolio viewer app.
+     *
+     * @param count - desired number of synthetic orders to generate.
+     * @returns {Promise<Object[]>}
+     */
+    async generateOrdersAsync(count = this.INITIAL_ORDERS) {
+        await this.ensureRefDataLoadedAsync();
 
         const orders = [];
+        await whileAsync(
+            () => orders.length < count,
+            () => {
+                const tradingDay = sample(this.tradingDays),
+                    time = tradingDay + (random(540, 960) * MINUTES), // random time during market hours
+                    pos = this.getRandomPositionForPortfolio(),
+                    symbol = pos.symbol,
+                    dir = sample(['Sell', 'Buy']),
+                    quantity = random(300, 10000) * (dir == 'Sell' ? -1 : 1),
+                    mktData = find(this.getMktData(symbol), {day: tradingDay}),
+                    price = round(random(mktData.low, mktData.high, true), 2),
+                    mktVal = quantity * price;
 
-        times(count, (idx) => {
-            const tradingDay = sample(this.tradingDays),
-                time = tradingDay + (random(540, 960) * MINUTES), // random time during market hours
-                pos = this.getRandomPositionForPortfolio(),
-                symbol = pos.symbol,
-                dir = sample(['Sell', 'Buy']),
-                qty = random(300, 10000) * (dir == 'Sell' ? -1 : 1),
-                mktData = find(this.getMktData(symbol), {day: tradingDay}),
-                px = round(random(mktData.low, mktData.high, true), 2),
-                mktVal = qty * px;
-
-            orders.push({
-                ...pos,
-                id: `order-${idx}`,
-                dir: dir,
-                quantity: qty,
-                price: px,
-                mktVal,
-                commission: Math.abs(mktVal * 0.0002),
-                confidence: random(0, 1000),
-                time
-            });
-        });
+                orders.push({
+                    id: `order-${orders.length}`,
+                    symbol,
+                    dir,
+                    quantity,
+                    price,
+                    mktVal,
+                    time,
+                    sector: pos.sector,
+                    model: pos.model,
+                    fund: pos.fund,
+                    region: pos.region,
+                    trader: pos.trader,
+                    commission: Math.abs(mktVal * 0.0002),
+                    confidence: random(0, 1000)
+                });
+            },
+            {tag: 'Generate orders'}
+        );
 
         return sortBy(orders, [it => it.time]);
     }
@@ -155,11 +161,11 @@ export class PortfolioService {
     //------------------------
     // Implementation
     //------------------------
-    ensureLoaded() {
-        this.ensureRefDataLoaded();
+    async ensureLoadedAsync() {
+        await this.ensureRefDataLoadedAsync();
 
         if (isEmpty(this.orders)) {
-            this.orders = this.generateOrders();
+            this.orders = await this.generateOrdersAsync();
         }
 
         if (isEmpty(this.rawPositions)) {
@@ -167,20 +173,19 @@ export class PortfolioService {
         }
     }
 
-    ensureRefDataLoaded() {
+    async ensureRefDataLoadedAsync() {
         if (isEmpty(this.tradingDays)) {
-            this.populateRefData();
+            await this.populateRefDataAsync();
         }
     }
 
-    populateRefData() {
-        const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-            days = this.tradingDays = [],
+    async populateRefDataAsync() {
+        const days = this.tradingDays = [],
             symbols = this.symbols = [],
             instData = this.instData = new Map();
 
         // Generate trading days.
-        let tradingDay = moment('2017-01-02', 'YYYY-MM-DD'),
+        let tradingDay = moment('2018-01-02', 'YYYY-MM-DD'),
             today = moment();
 
         while (tradingDay < today) {
@@ -190,26 +195,35 @@ export class PortfolioService {
         }
 
         // Generate symbols + market data map.
-        while (symbols.length < this.INITIAL_SYMBOLS) {
-            let symbol = '';
-            times(random(1, 5), () => symbol += sample(alpha));
-            if (!instData.has(symbol)) {
-                symbols.push(symbol);
-                instData.set(symbol, {
-                    sector: sample(this.sectors),
-                    mktData: this.generateMarketData()
-                });
-            }
-        }
+        await whileAsync(
+            () => symbols.length < this.INITIAL_SYMBOLS,
+            () => {
+                const symbol = this.generateSymbol();
+                if (!instData.has(symbol)) {
+                    symbols.push(symbol);
+                    instData.set(symbol, {
+                        sector: sample(this.sectors),
+                        mktData: this.generateMarketData()
+                    });
+                }
+            },
+            {tag: 'Populate market data'}
+        );
+    }
+
+    generateSymbol() {
+        let ret = '';
+        times(random(1, 5), () => ret += sample('ABCDEFGHIJKLMNOPQRSTUVWXYZ'));
+        return ret;
     }
 
     generateMarketData() {
         const tradingDays = this.tradingDays,
-            spikeDayIdxs = [],
+            spikeDayIdxs = new Set(),
             ret = [];
 
         // Give some random number of days a spike in trading volume to make that chart interesting.
-        times(random(0, 30), () => spikeDayIdxs.push(random(0, tradingDays.length)));
+        times(random(0, 30), () => spikeDayIdxs.add(random(0, tradingDays.length)));
 
         // Set a seed price and generate a series from there.
         let startPx = random(10, 100, true);
@@ -224,9 +238,9 @@ export class PortfolioService {
                 close = (Math.random() * (high - low)) + low;
 
             let maxVol;
-            if (spikeDayIdxs.includes(idx)) {
+            if (spikeDayIdxs.has(idx)) {
                 maxVol = 200;
-            } else if (spikeDayIdxs.includes(idx - 1) || spikeDayIdxs.includes(idx + 1)) {
+            } else if (spikeDayIdxs.has(idx - 1) || spikeDayIdxs.has(idx + 1)) {
                 maxVol = 150;
             } else {
                 maxVol = 100;
@@ -312,8 +326,8 @@ export class PortfolioService {
                 // Generate a drilldown ID that encodes the path to this row.
                 id: id + `>>${dim}:${dimVal}`,
                 name: dimVal,
-                pnl: round(sumBy(members, 'pnl')),
-                mktVal: round(sumBy(members, 'mktVal'))
+                pnl: sumBy(members, 'pnl'),
+                mktVal: sumBy(members, 'mktVal')
             };
 
             // Recurse to create children for this node if additional dimensions remain.
