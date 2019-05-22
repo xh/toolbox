@@ -12,7 +12,6 @@ import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
 export class RestGridPanel extends Component {
 
     model = new RestGridModel({
-        enableExport: true,
         store: new RestStore({
             url: 'rest/companyRest',
             fields: [
@@ -108,6 +107,13 @@ export class RestGridPanel extends Component {
             {field: 'lastUpdatedBy'}
         ],
         emptyText: 'No companies found - try adding one...',
+        menuActions: [
+            addAction,
+            editAction,
+            viewAction,
+            deleteAction,
+            cloneAction
+        ],
         prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
     });
 
