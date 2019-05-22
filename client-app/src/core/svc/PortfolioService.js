@@ -48,7 +48,17 @@ export class PortfolioService {
     async getPortfolioAsync(dims, delay = 300) {
         await wait(delay);
         this.ensureLoaded();
-        return this.getPositions(castArray(dims));
+        const positions = this.getPositions(castArray(dims));
+
+        return [
+            {
+                id: 'rootSummary',
+                name: 'Total',
+                pnl: round(sumBy(positions, 'pnl')),
+                mktVal: round(sumBy(positions, 'mktVal')),
+                children: positions
+            }
+        ];
     }
 
     /**
