@@ -78,7 +78,7 @@ export class TreeGridPageModel {
 
     async doLoadAsync(loadSpec) {
         const dims = this.dimensionChooserModel.value;
-        const data = await XH.portfolioService.getPortfolioAsync(dims, 800);
+        const data = await XH.portfolioService.getPortfolioAsync(dims);
         this.gridModel.loadData(data);
     }
 }
