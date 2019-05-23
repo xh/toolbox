@@ -47,8 +47,7 @@ export class RestGridPanel extends Component {
                 {
                     name: 'earningsDate',
                     type: 'date',
-                    required: true,
-                    exportFormat: ExportFormat.DATE_FMT
+                    required: true
                 },
                 {
                     name: 'note'
@@ -91,7 +90,8 @@ export class RestGridPanel extends Component {
             {
                 field: 'earningsDate',
                 renderer: dateRenderer(),
-                width: 100
+                width: 100,
+                exportFormat: ExportFormat.DATE_FMT
             },
             {
                 field: 'note'
