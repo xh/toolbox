@@ -151,7 +151,7 @@ export class PortfolioService {
                     confidence: random(0, 1000)
                 });
             },
-            {tag: 'Generate orders'}
+            {debug: 'Generate orders'}
         );
 
         return sortBy(orders, [it => it.time]);
@@ -207,7 +207,7 @@ export class PortfolioService {
                     });
                 }
             },
-            {tag: 'Populate market data'}
+            {debug: 'Populate market data'}
         );
     }
 
