@@ -18,10 +18,18 @@ export class FileChooserPanel extends Component {
     chooserModel = new FileChooserModel();
 
     @bindable
+    enableMulti = true;
+
+    @bindable
+    enableAddMulti = true;
+
+    @bindable
     showFileGrid = true;
 
     render() {
-        const chooserModel = this.chooserModel;
+        const chooserModel = this.chooserModel,
+            {enableMulti, enableAddMulti, showFileGrid} = this;
+
 
         return wrapper({
             description: [
@@ -47,12 +55,13 @@ export class FileChooserPanel extends Component {
                 height: 400,
                 item: fileChooser({
                     flex: 1,
-                    enableMulti: true,
-                    showFileGrid: this.showFileGrid,
+                    enableMulti,
+                    enableAddMulti,
+                    showFileGrid,
                     accept: ['.txt', '.png'],
                     targetText: (
                         <Fragment>
-                            <p>Drop and drop files here, or click to browse.</p>
+                            <p>Drag and drop files here, or click to browse.</p>
                             <p>Note that this example is configured to accept only <code>*.txt</code> and <code>*.png</code> file types.</p>
                         </Fragment>
                     ),
@@ -63,6 +72,17 @@ export class FileChooserPanel extends Component {
                     switchInput({
                         model: this,
                         bind: 'showFileGrid'
+                    }),
+                    toolbarSep(),
+                    span('Enable Multiple:'),
+                    switchInput({
+                        model: this,
+                        bind: 'enableMulti'
+                    }),
+                    span('Enable Bulk Addition: '),
+                    switchInput({
+                        model: this,
+                        bind: 'enableAddMulti'
                     }),
                     filler(),
                     span(`${pluralize('file', chooserModel.files.length, true)} selected`),
