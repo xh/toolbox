@@ -18,10 +18,18 @@ export class FileChooserPanel extends Component {
     chooserModel = new FileChooserModel();
 
     @bindable
+    enableMulti = true;
+
+    @bindable
+    enableAddMulti = true;
+
+    @bindable
     showFileGrid = true;
 
     render() {
-        const chooserModel = this.chooserModel;
+        const   chooserModel = this.chooserModel,
+            {enableMulti, enableAddMulti, showFileGrid} = this;
+
 
         return wrapper({
             description: [
@@ -47,8 +55,9 @@ export class FileChooserPanel extends Component {
                 height: 400,
                 item: fileChooser({
                     flex: 1,
-                    enableMulti: true,
-                    showFileGrid: this.showFileGrid,
+                    enableMulti,
+                    enableAddMulti,
+                    showFileGrid,
                     accept: ['.txt', '.png'],
                     targetText: (
                         <Fragment>
@@ -63,6 +72,17 @@ export class FileChooserPanel extends Component {
                     switchInput({
                         model: this,
                         bind: 'showFileGrid'
+                    }),
+                    toolbarSep(),
+                    span('enableMulti: '),
+                    switchInput({
+                        model: this,
+                        bind: 'enableMulti'
+                    }),
+                    span('enableAddMulti: '),
+                    switchInput({
+                        model: this,
+                        bind: 'enableAddMulti'
                     }),
                     filler(),
                     span(`${pluralize('file', chooserModel.files.length, true)} selected`),
