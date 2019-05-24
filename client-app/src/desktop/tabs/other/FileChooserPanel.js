@@ -27,7 +27,7 @@ export class FileChooserPanel extends Component {
     showFileGrid = true;
 
     render() {
-        const   chooserModel = this.chooserModel,
+        const chooserModel = this.chooserModel,
             {enableMulti, enableAddMulti, showFileGrid} = this;
 
 
