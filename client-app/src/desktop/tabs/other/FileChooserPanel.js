@@ -74,12 +74,12 @@ export class FileChooserPanel extends Component {
                         bind: 'showFileGrid'
                     }),
                     toolbarSep(),
-                    span('enableMulti: '),
+                    span('Enable Multiple:'),
                     switchInput({
                         model: this,
                         bind: 'enableMulti'
                     }),
-                    span('enableAddMulti: '),
+                    span('Enable Bulk Addition: '),
                     switchInput({
                         model: this,
                         bind: 'enableAddMulti'
