@@ -52,7 +52,7 @@ export class FileChooserPanel extends Component {
                     accept: ['.txt', '.png'],
                     targetText: (
                         <Fragment>
-                            <p>Drop and drop files here, or click to browse.</p>
+                            <p>Drag and drop files here, or click to browse.</p>
                             <p>Note that this example is configured to accept only <code>*.txt</code> and <code>*.png</code> file types.</p>
                         </Fragment>
                     ),
