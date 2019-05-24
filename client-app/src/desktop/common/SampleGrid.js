@@ -123,6 +123,7 @@ class Model {
 
     @managed
     gridModel = new GridModel({
+        showSummary: 'bottom',
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
@@ -229,7 +230,7 @@ class Model {
         const gridModel = this.gridModel;
         return wait(250)
             .then(() => {
-                gridModel.loadData(XH.tradeService.generateTrades());
+                gridModel.loadData(XH.tradeService.generateTrades(true));
                 if (!gridModel.hasSelection) gridModel.selectFirst();
             });
     }

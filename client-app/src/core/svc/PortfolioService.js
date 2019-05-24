@@ -52,7 +52,7 @@ export class PortfolioService {
 
         return [
             {
-                id: 'rootSummary',
+                id: 'summary',
                 name: 'Total',
                 pnl: round(sumBy(positions, 'pnl')),
                 mktVal: round(sumBy(positions, 'mktVal')),

@@ -14,6 +14,7 @@ import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/c
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {select} from '@xh/hoist/desktop/cmp/input';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
 
@@ -44,6 +45,17 @@ class SampleTreeGrid extends Component {
             mask: model.loadModel,
             bbar: toolbar(
                 filler(),
+                'Summary',
+                select({
+                    model: gridModel,
+                    bind: 'showSummary',
+                    width: 100,
+                    options: [
+                        {label: 'Top', value: 'top'},
+                        {label: 'Bottom', value: 'bottom'},
+                        {label: 'None', value: false}
+                    ]
+                }),
                 gridStyleSwitches({gridModel})
 
             ),
@@ -71,7 +83,6 @@ class Model {
     @managed
     gridModel = new GridModel({
         treeMode: true,
-        rootSummary: true,
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
