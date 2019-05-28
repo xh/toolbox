@@ -139,6 +139,7 @@ export class AppModel {
                         path: '/other',
                         children: [
                             {name: 'icons', path: '/icons'},
+                            {name: 'loadingIndicator', path: '/loadingindicator'},
                             {name: 'mask', path: '/mask'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},
