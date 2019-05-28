@@ -156,7 +156,7 @@ class Model {
             dims = dimChooserModel.value;
 
         return XH.portfolioService
-            .getPortfolioAsync(dims)
+            .getPortfolioAsync(dims, true)
             .then(data => {
                 gridModel.loadData(data);
                 gridModel.selectFirst();
