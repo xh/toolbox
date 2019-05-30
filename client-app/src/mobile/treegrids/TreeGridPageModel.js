@@ -31,6 +31,7 @@ export class TreeGridPageModel {
     @managed
     gridModel = new GridModel({
         treeMode: true,
+        showSummary: true,
         enableColChooser: true,
         sortBy: 'pnl|desc|abs',
         columns: [
@@ -78,7 +79,7 @@ export class TreeGridPageModel {
 
     async doLoadAsync(loadSpec) {
         const dims = this.dimensionChooserModel.value;
-        const data = await XH.portfolioService.getPortfolioAsync(dims);
+        const data = await XH.portfolioService.getPortfolioAsync(dims, true);
         this.gridModel.loadData(data);
     }
 }
