@@ -25,7 +25,7 @@ class NewsService extends BaseService {
     }
 
     List<NewsItem> getNewsItems() {
-        return _newsItems ?  _newsItem : Collections.emptyList()
+        return _newsItems ?  _newsItems : Collections.emptyList()
     }
 
 
