@@ -14,7 +14,7 @@ export function getAppOptions() {
                 )
             },
             valueGetter: () => XH.darkTheme,
-            valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v)
+            valueSetter: (v) => XH.setDarkTheme(v)
         },
         {
             name: 'defaultGridMode',
@@ -26,7 +26,7 @@ export function getAppOptions() {
                     button({value: 'COMPACT', text: 'Compact', icon: Icon.grid()})
                 )
             },
-            refreshRequired: true
+            reloadRequired: true
         },
         {
             name: 'autoRefresh',

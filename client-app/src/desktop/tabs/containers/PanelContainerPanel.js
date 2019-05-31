@@ -1,7 +1,7 @@
 import {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {box, hbox, filler} from '@xh/hoist/cmp/layout';
+import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar/index';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
@@ -50,20 +50,23 @@ export class PanelContainerPanel extends Component {
                 items: [
                     hbox({
                         flex: 1,
+                        className: 'xh-border-top',
                         items: [
                             panel({
                                 title: 'Left Panel',
                                 icon: Icon.arrowToLeft(),
                                 model: this.leftPanelModel,
                                 item: box({
-                                    padding: 10,
+                                    className: 'xh-pad',
                                     item: 'Collapsible Left'
                                 })
                             }),
                             panel({
                                 item: box({
-                                    padding: 10,
-                                    item: 'Main Content Area'
+                                    items: this.loremIpsum,
+                                    padding: '0 6 6 6',
+                                    display: 'block',
+                                    overflowY: 'auto'
                                 }),
                                 tbar: toolbar(
                                     filler(),
@@ -84,7 +87,7 @@ export class PanelContainerPanel extends Component {
                                 icon: Icon.arrowToRight(),
                                 model: this.rightPanelModel,
                                 item: box({
-                                    padding: 10,
+                                    className: 'xh-pad',
                                     item: 'Collapsible Right'
                                 })
                             })
@@ -123,4 +126,15 @@ export class PanelContainerPanel extends Component {
         this.bottomPanelModel.setCollapsed(collapsed);
     }
 
+    loremIpsum = [
+        h3({
+            className: 'xh-text-color-accent',
+            item: 'Some old-fashioned text content'
+        }),
+        p('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta velit varius augue fermentum, vulputate tempus magna tempus.)'),
+        p('Fusce consectetur malesuada vehicula. Aliquam commodo magna at porta sollicitudin. Sed laoreet vehicula leo vel aliquam. Aliquam auctor fringilla ex, nec iaculis felis tincidunt ac. Pellentesque blandit ipsum odio, vel lacinia arcu blandit non.'),
+        p('Vestibulum non libero sem. Mauris a ipsum elit. Donec vestibulum sodales dapibus. Mauris posuere facilisis mollis. Etiam nec mauris nunc. Praesent mauris libero, blandit gravida ullamcorper vel, condimentum et velit. Suspendisse fermentum odio ac dui aliquet semper. Duis arcu felis, accumsan in leo sit amet, vehicula imperdiet tellus. Nulla ut condimentum quam. Donec eget mauris vitae libero blandit facilisis efficitur id justo.'),
+        p('Nam et tincidunt risus, at faucibus enim. Aliquam tortor est, finibus ac metus id, eleifend auctor quam. Aenean purus odio, tempus interdum velit et, faucibus placerat nisi. Etiam eget nunc vehicula, eleifend justo quis, varius leo. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris bibendum mollis tempor.'),
+        p('Fusce ac sollicitudin nunc, at tempus sem. Fusce dapibus lorem malesuada vestibulum luctus. Etiam semper est in ligula sagittis facilisis. Phasellus accumsan placerat ex, eu fringilla mauris semper nec.')
+    ]
 }

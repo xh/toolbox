@@ -1,12 +1,13 @@
-import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-
-import {MaskPanel} from './MaskPanel';
-import {LeftRightChooserPanel} from './LeftRightChooserPanel';
+import {HoistComponent} from '@xh/hoist/core';
+import {Component} from 'react';
 import {FileChooserPanel} from './FileChooserPanel';
-import {RelativeTimestampPanel} from './RelativeTimestampPanel';
+import {IconsPanel} from './IconsPanel';
 import {JsxPanel} from './JsxPanel';
+import {LeftRightChooserPanel} from './LeftRightChooserPanel';
+import {MaskPanel} from './MaskPanel';
+import {RelativeTimestampPanel} from './RelativeTimestampPanel';
+import {PopupsPanel} from './PopupsPanel';
 
 @HoistComponent
 export class OtherTab extends Component {
@@ -16,6 +17,8 @@ export class OtherTab extends Component {
                 route: 'default.other',
                 switcherPosition: 'left',
                 tabs: [
+                    {id: 'popups', content: PopupsPanel},
+                    {id: 'icons', title: 'Icons', content: IconsPanel},
                     {id: 'mask', title: 'Mask', content: MaskPanel},
                     {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
                     {id: 'fileChooser', title: 'FileChooser', content: FileChooserPanel},

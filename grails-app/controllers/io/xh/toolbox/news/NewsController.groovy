@@ -1,9 +1,9 @@
 package io.xh.toolbox.news
 
-import io.xh.hoist.security.AccessAll
+import io.xh.hoist.security.Access
 import io.xh.toolbox.BaseController
 
-@AccessAll
+@Access(['APP_READER'])
 class NewsController extends BaseController {
 
     def newsService

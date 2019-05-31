@@ -19,6 +19,7 @@ import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {action, observable} from '@xh/hoist/mobx';
 import {gridStyleSwitches} from './GridStyleSwitches';
+import {Ref} from '@xh/hoist/utils/react';
 
 @HoistComponent
 @LayoutSupport
@@ -32,6 +33,7 @@ class SampleColumnGroupsGrid extends Component {
 
         return panel({
             item: grid({model: gridModel}),
+            ref: model.panelRef.ref,
             mask: loadModel,
             tbar: toolbar(
                 refreshButton({model}),
@@ -64,7 +66,7 @@ export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
 @LoadSupport
 class Model {
 
-    @observable groupRows = false;
+    panelRef = new Ref();
 
     @managed
     gridModel = new GridModel({
@@ -184,6 +186,9 @@ class Model {
         ]
     });
 
+    @observable
+    groupRows = (this.gridModel.groupBy && this.gridModel.groupBy.length > 0);
+
     //------------------------
     // Implementation
     //------------------------
@@ -193,11 +198,11 @@ class Model {
     }
 
     showRecToast(rec) {
-        XH.alert({
+        XH.toast({
             title: `${rec.firstName} ${rec.lastName}`,
             message: `You asked to see details for ${rec.firstName}. They sold ${rec.actualUnitsSold} last year.`,
-            confirmText: 'Close',
-            confirmIntent: 'primary'
+            intent: 'primary',
+            containerRef: this.panelRef.value
         });
     }
 

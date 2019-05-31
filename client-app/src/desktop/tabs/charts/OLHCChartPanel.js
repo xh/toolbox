@@ -1,15 +1,15 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {wrapper} from '../../common/Wrapper';
+import {Icon} from '@xh/hoist/icon';
 import {box, filler, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select, numberInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
-import {OLHCChartModel} from './OLHCChartModel';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
-import {Icon} from '@xh/hoist/icon/index';
 import {controlGroup} from '@xh/hoist/kit/blueprint';
+import {OLHCChartModel} from './OLHCChartModel';
+import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent
 export class OLHCChartPanel extends Component {
@@ -23,6 +23,7 @@ export class OLHCChartPanel extends Component {
             item: panel({
                 className: 'toolbox-olhcchart-panel',
                 title: 'Charts › OHLC',
+                icon: Icon.chartLine(),
                 width: 800,
                 height: 600,
                 item: this.renderExample(),
@@ -46,7 +47,7 @@ export class OLHCChartPanel extends Component {
                                 min: 0
                             }),
                             button({
-                                icon: Icon.cross(),
+                                icon: Icon.x(),
                                 onClick: () => model.setAspectRatio(null)
                             })
                         ]

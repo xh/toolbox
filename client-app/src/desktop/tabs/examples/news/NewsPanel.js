@@ -6,11 +6,10 @@
  */
 
 import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core/index';
-import {NewsPanelModel} from './NewsPanelModel';
+import {HoistComponent} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../../common/Wrapper';
 import {filler} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {select} from '@xh/hoist/desktop/cmp/input';
@@ -18,6 +17,8 @@ import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+import {wrapper} from '../../../common/Wrapper';
+import {NewsPanelModel} from './NewsPanelModel';
 import './NewsPanelItem.scss';
 
 @HoistComponent
@@ -43,6 +44,7 @@ export class NewsPanel extends Component {
             item: panel({
                 className: 'toolbox-news-panel',
                 title: 'News Feed',
+                icon: Icon.news(),
                 width: '75%',
                 height: '90%',
                 item: dataView({

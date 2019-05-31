@@ -28,7 +28,14 @@ export class GridStyleSwitches extends Component {
             switchInput({
                 model: gridModel,
                 bind: 'rowBorders',
-                label: 'Borders',
+                label: 'Row Borders',
+                labelAlign: 'left'
+            }),
+            toolbarSep(),
+            switchInput({
+                model: gridModel,
+                bind: 'cellBorders',
+                label: 'Cell Borders',
                 labelAlign: 'left'
             }),
             toolbarSep(),
