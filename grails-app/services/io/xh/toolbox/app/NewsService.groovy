@@ -25,7 +25,7 @@ class NewsService extends BaseService {
     }
 
     List<NewsItem> getNewsItems() {
-        return _newsItems ? _newsItems.sort{-it.published.time} : Collections.emptyList()
+        return _newsItems ?  _newsItem : Collections.emptyList()
     }
 
 
@@ -46,7 +46,7 @@ class NewsService extends BaseService {
 
     Date getLastTimestamp() {
         if (!_newsItems) return null
-        return _newsItems.sort{-it.published.time}.get(0).published
+        return _newsItems.get(0).published
     }
 
 
@@ -62,6 +62,8 @@ class NewsService extends BaseService {
             sources.each{code, displayName ->
                 items.addAll(loadNewsForSource(code, displayName))
             }
+
+            items.sort {-it.published.time}
 
             _newsItems = items
         }
