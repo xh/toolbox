@@ -78,8 +78,8 @@ export class RelativeTimestampPanel extends Component {
                     switchInput({
                         label: 'Short',
                         labelAlign: 'left',
-                        value: this.useShortFmt,
-                        onChange: v => this.setUseShortFmt(v)
+                        model: this,
+                        bind: 'useShortFmt'
                     }),
                 )
             })
