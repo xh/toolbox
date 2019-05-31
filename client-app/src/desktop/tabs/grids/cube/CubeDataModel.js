@@ -155,6 +155,9 @@ export class CubeDataModel {
         return new GridModel({
             treeMode: true,
             showSummary: true,
+            store: {
+                treatRootAsSummary: true
+            },
             sortBy: 'time|desc',
             emptyText: 'No records found...',
             enableColChooser: true,

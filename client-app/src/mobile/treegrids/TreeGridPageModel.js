@@ -32,6 +32,9 @@ export class TreeGridPageModel {
     gridModel = new GridModel({
         treeMode: true,
         showSummary: true,
+        store: {
+            treatRootAsSummary: true
+        },
         enableColChooser: true,
         sortBy: 'pnl|desc|abs',
         columns: [

@@ -230,7 +230,8 @@ class Model {
         const gridModel = this.gridModel;
         return wait(250)
             .then(() => {
-                gridModel.loadData(XH.tradeService.generateTrades(true));
+                const {trades, summary} = XH.tradeService.generateTrades();
+                gridModel.loadData(trades, summary);
                 if (!gridModel.hasSelection) gridModel.selectFirst();
             });
     }

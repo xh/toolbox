@@ -5,7 +5,7 @@ import {cloneDeep, sumBy} from 'lodash';
 @HoistService
 export class TradeService {
 
-    generateTrades(includeSummary) {
+    generateTrades() {
         const trades = cloneDeep(companyTrades);
 
         trades.forEach(it => {
@@ -14,15 +14,13 @@ export class TradeService {
             it.active = it.trade_volume % 6 == 0;
         });
 
-        if (includeSummary) {
-            trades.push({
+        return {
+            trades,
+            summary: {
                 id: 'summary',
                 profit_loss: sumBy(trades, 'profit_loss'),
                 trade_volume: sumBy(trades, 'trade_volume')
-            });
-        }
-
-        return trades;
+            }
+        };
     }
-
 }

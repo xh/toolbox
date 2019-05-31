@@ -83,6 +83,9 @@ class Model {
     @managed
     gridModel = new GridModel({
         treeMode: true,
+        store: {
+            treatRootAsSummary: true
+        },
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
