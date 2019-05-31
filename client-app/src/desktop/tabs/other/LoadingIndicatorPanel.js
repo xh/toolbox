@@ -29,30 +29,26 @@ export class LoadingIndicatorPanel extends Component {
         return wrapper({
             description: [
                 <p>
-                    Loading Indicators provide an unobtrusive message on a panel to indicate that its content is loading.
-                    They are typically configured with a <code>PendingTaskModel</code>, which is a general
-                    model class used to track the status of one or more asynchronous Promises. In
-                    controlled mode, the model will reactively show/hide a bound loading indicator while a linked
-                    promise is pending.
+                    Loading Indicators display an unobtrusive overlay in the corner of a component
+                    with a spinner and/or message. This indicate that a longer-running operation is
+                    in progress without using a modal Mask.
                 </p>,
                 <p>
-                    A convenient way to display a loading indicator is via the <code>loadingIndicator</code> property of Panel.
-                    This prop can accept a fully configured loadingIndicator element or simply <code>true</code>
-                    to show a default loadingIndicator. Either will be shown in one of the panel's corners.
-                </p>,
-                <p>
-                    User the <code>corner</code> property of <code>loadingIndicator</code> to set which corner the indicator will appear in.
+                    A convenient way to display a loading indicator is via the <code>loadingIndicator</code> property
+                    of Panel. This prop can accept a fully configured loadingIndicator element or
+                    (most commonly) a <code>PendingTaskModel</code> instance to automatically show
+                    the indicator when a linked promise is pending.
                 </p>
             ],
             item: panel({
                 title: 'Other › Loading Indicator',
-                icon: Icon.eyeSlash(),
+                icon: Icon.spinner(),
                 width: 800,
                 height: 400,
-                item: sampleGrid({omitToolbar: true, externalLoadModel: this.loadingIndicatorModel}),
+                item: sampleGrid({omitToolbars: true, externalLoadModel: this.loadingIndicatorModel}),
                 bbar: toolbar({
                     items: [
-                        span('Show Loading Indicator for'),
+                        span('Show for'),
                         numberInput({
                             model: this,
                             bind: 'seconds',
@@ -64,7 +60,7 @@ export class LoadingIndicatorPanel extends Component {
                         textInput({
                             model: this,
                             bind: 'message',
-                            width: 120,
+                            width: 150,
                             placeholder: 'optional text'
                         }),
                         toolbarSep(),
@@ -84,9 +80,9 @@ export class LoadingIndicatorPanel extends Component {
                             label: 'Spinner:',
                             labelAlign: 'left'
                         }),
-                        filler(),
+                        toolbarSep(),
                         button({
-                            text: 'Show Ind.',
+                            text: 'Show',
                             intent: 'primary',
                             onClick: this.showLoadingIndicator
                         })
@@ -103,17 +99,12 @@ export class LoadingIndicatorPanel extends Component {
 
     showLoadingIndicator = () => {
         this.showLoadingIndicatorSequenceAsync().linkTo(this.loadingIndicatorModel);
-    }
+    };
 
     @action
     async showLoadingIndicatorSequenceAsync() {
-        const {loadingIndicatorModel, message, seconds} = this,
-            interval = seconds / 3 * SECONDS;
+        const {loadingIndicatorModel, message, seconds} = this;
         loadingIndicatorModel.setMessage(message);
-        await wait(interval);
-        if (message) loadingIndicatorModel.setMessage(message + ' - Still Loading...');
-        await wait(interval);
-        if (message) loadingIndicatorModel.setMessage(message + ' - Almost Finished...');
-        await wait(interval);
+        await wait(seconds * SECONDS);
     }
 }

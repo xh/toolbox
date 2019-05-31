@@ -47,7 +47,7 @@ class SampleGrid extends Component {
             ref: model.panelRef.ref,
             mask: props.externalLoadModel ? false : loadModel,
             tbar: toolbar({
-                omit: props.omitToolbar,
+                omit: props.omitToolbars,
                 items: [
                     refreshButton({model}),
                     toolbarSep(),
@@ -73,6 +73,7 @@ class SampleGrid extends Component {
                 ]
             }),
             bbar: toolbar({
+                omit: props.omitToolbars,
                 items: [
                     Icon.info(),
                     box(selText),
