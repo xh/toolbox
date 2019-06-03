@@ -84,7 +84,7 @@ class Model {
     gridModel = new GridModel({
         treeMode: true,
         store: {
-            treatRootAsSummary: true
+            loadRootAsSummary: true
         },
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',

@@ -156,7 +156,7 @@ export class CubeDataModel {
             treeMode: true,
             showSummary: true,
             store: {
-                treatRootAsSummary: true
+                loadRootAsSummary: true
             },
             sortBy: 'time|desc',
             emptyText: 'No records found...',

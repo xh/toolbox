@@ -33,7 +33,7 @@ export class TreeGridPageModel {
         treeMode: true,
         showSummary: true,
         store: {
-            treatRootAsSummary: true
+            loadRootAsSummary: true
         },
         enableColChooser: true,
         sortBy: 'pnl|desc|abs',
