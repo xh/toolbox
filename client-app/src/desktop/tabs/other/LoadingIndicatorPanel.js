@@ -30,7 +30,7 @@ export class LoadingIndicatorPanel extends Component {
             description: [
                 <p>
                     Loading Indicators display an unobtrusive overlay in the corner of a component
-                    with a spinner and/or message. This indicate that a longer-running operation is
+                    with a spinner and/or message. They indicate that a longer-running operation is
                     in progress without using a modal Mask.
                 </p>,
                 <p>
