@@ -44,7 +44,7 @@ export class PortfolioService {
      * @param {boolean} [includeSummary] - true to include a root summary node
      * @return {Promise<Array>}
      */
-    async getPortfolioAsync(dims, includeSummary) {
+    async getPortfolioAsync(dims, includeSummary = false) {
         await this.ensureLoadedAsync();
         const positions = this.getPositions(castArray(dims));
 

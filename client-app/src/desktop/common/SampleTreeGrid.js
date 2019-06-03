@@ -44,18 +44,17 @@ class SampleTreeGrid extends Component {
             item: grid({model: gridModel}),
             mask: model.loadModel,
             bbar: toolbar(
-                filler(),
-                'Summary',
                 select({
                     model: gridModel,
                     bind: 'showSummary',
-                    width: 100,
+                    width: 150,
                     options: [
-                        {label: 'Top', value: 'top'},
-                        {label: 'Bottom', value: 'bottom'},
-                        {label: 'None', value: false}
+                        {label: 'Top Summary', value: 'top'},
+                        {label: 'Bottom Summary', value: 'bottom'},
+                        {label: 'No Summary', value: false}
                     ]
                 }),
+                filler(),
                 gridStyleSwitches({gridModel})
 
             ),
