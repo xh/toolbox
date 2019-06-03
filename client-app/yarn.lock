@@ -1197,10 +1197,10 @@
     webpack-dev-server "~3.3.1"
     webpackbar "~3.2.0"
 
-"@xh/hoist@^23.0.0-SNAPSHOT":
-  version "23.0.0-SNAPSHOT.1557933939084"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-23.0.0-SNAPSHOT.1557933939084.tgz#99a57b12ba3bdd8e79bffff6b06e01e909e5362e"
-  integrity sha512-kC3ax1z19mtAQbHjgs6bEwk8SZ09k2+KDn0x1i4sGp8+TkxBRwmRn+sQtk/9oJ0thJ9Pvo+BBZk2vgTIVC+gTQ==
+"@xh/hoist@^24.0.0-SNAPSHOT":
+  version "24.0.0-SNAPSHOT.1559520542602"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-24.0.0-SNAPSHOT.1559520542602.tgz#e0c0e2f36597dd723273567d7fea140d9ee88023"
+  integrity sha512-zwm35OdTM6FGTlwivXTdBr93W2BWQ9sBErNwI4YdHLQMsdg3rnVJ7mgZaazlZHjaZiS7mYUPV/ah7CtVnx2RJA==
   dependencies:
     "@blueprintjs/core" "~3.15.0"
     "@blueprintjs/datetime" "~3.9.0"
@@ -1215,7 +1215,7 @@
     ag-grid-react "~20.0.0"
     classnames "~2.2.6"
     clipboard "~2.0.4"
-    codemirror "~5.46.0"
+    codemirror "~5.47.0"
     debounce-promise "^3.1.0"
     downloadjs "~1.4.7"
     filesize "~4.1.2"
@@ -2388,10 +2388,10 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codemirror@~5.46.0:
-  version "5.46.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.46.0.tgz#be3591572f88911e0105a007c324856a9ece0fb7"
-  integrity sha512-3QpMge0vg4QEhHW3hBAtCipJEWjTJrqLLXdIaWptJOblf1vHFeXLNtFhPai/uX2lnFCehWNk4yOdaMR853Z02w==
+codemirror@~5.47.0:
+  version "5.47.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.47.0.tgz#c13a521ae5660d3acc655af252f4955065293789"
+  integrity sha512-kV49Fr+NGFHFc/Imsx6g180hSlkGhuHxTSDDmDHOuyln0MQYFLixDY4+bFkBVeCEiepYfDimAF/e++9jPJk4QA==
 
 collection-visit@^1.0.0:
   version "1.0.0"
