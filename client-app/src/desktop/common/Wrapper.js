@@ -5,14 +5,14 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {castArray} from 'lodash';
 import {DockContainerModel, dockContainer} from '@xh/hoist/cmp/dock';
+import {managed} from '@xh/hoist/core/mixins';
 
 import './Wrapper.scss';
-import {managed} from '@xh/hoist/core/mixins';
 
 @HoistComponent
 class Wrapper extends Component {
     
-    // @managed
+    @managed
     dockContainerModel = new DockContainerModel();
     
     render() {
@@ -62,12 +62,12 @@ class Wrapper extends Component {
         const arrayLinks = this.props.links || castArray(this.props.link);
         
         return div(
-            arrayLinks.map(linkObj => this.generateSingleLink(linkObj))
+            arrayLinks.map(linkObj => this.renderSingleLink(linkObj))
         );
         
     }
     
-    generateSingleLink(linkObj) {
+    renderSingleLink(linkObj) {
         return p(
             a({
                 href: this.generateUrl(linkObj.url),
