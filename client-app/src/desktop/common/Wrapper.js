@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory, XH} from '@xh/hoist/core';
-import {box, a, br, code, div, p, span} from '@xh/hoist/cmp/layout';
+import {box, a, code, div, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {castArray} from 'lodash';
