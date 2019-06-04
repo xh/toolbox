@@ -41,11 +41,22 @@ export class PortfolioService {
     /**
      * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
      * @param {string[]} dims - field names for dimensions on which to group.
+     * @param {boolean} [includeSummary] - true to include a root summary node
      * @return {Promise<Array>}
      */
-    async getPortfolioAsync(dims) {
+    async getPortfolioAsync(dims, includeSummary = false) {
         await this.ensureLoadedAsync();
-        return this.getPositions(castArray(dims));
+        const positions = this.getPositions(castArray(dims));
+
+        return !includeSummary ? positions : [
+            {
+                id: 'summary',
+                name: 'Total',
+                pnl: round(sumBy(positions, 'pnl')),
+                mktVal: round(sumBy(positions, 'mktVal')),
+                children: positions
+            }
+        ];
     }
 
     /**

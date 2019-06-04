@@ -14,6 +14,7 @@ import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/c
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {select} from '@xh/hoist/desktop/cmp/input';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
 
@@ -43,6 +44,16 @@ class SampleTreeGrid extends Component {
             item: grid({model: gridModel}),
             mask: model.loadModel,
             bbar: toolbar(
+                select({
+                    model: gridModel,
+                    bind: 'showSummary',
+                    width: 150,
+                    options: [
+                        {label: 'Top Summary', value: 'top'},
+                        {label: 'Bottom Summary', value: 'bottom'},
+                        {label: 'No Summary', value: false}
+                    ]
+                }),
                 filler(),
                 gridStyleSwitches({gridModel})
 
@@ -71,6 +82,9 @@ class Model {
     @managed
     gridModel = new GridModel({
         treeMode: true,
+        store: {
+            loadRootAsSummary: true
+        },
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
@@ -144,7 +158,7 @@ class Model {
             dims = dimChooserModel.value;
 
         return XH.portfolioService
-            .getPortfolioAsync(dims)
+            .getPortfolioAsync(dims, true)
             .then(data => {
                 gridModel.loadData(data);
                 gridModel.selectFirst();
