@@ -1,8 +1,9 @@
 import {Component} from 'react';
-import {HoistComponent, elemFactory} from '@xh/hoist/core';
+import {HoistComponent, elemFactory, XH} from '@xh/hoist/core';
 import {box, a, br, code, div, p, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {castArray} from 'lodash';
 
 import './Wrapper.scss';
 
@@ -26,7 +27,7 @@ class Wrapper extends Component {
                 panel({
                     item: this.generateLinks(),
                     icon: Icon.code(),
-                    title: 'Source Code',
+                    title: code('Source Code'),
                     model: {
                         defaultSize: 100,
                         collapsible: true,
@@ -42,20 +43,20 @@ class Wrapper extends Component {
     
     generateLinks() {
         const {links, link} = this.props;
-        if (Array.isArray(links)) {
-            return div(
-                links.map(this.generateSingleLink)
+        let ret = null;
+        
+        if (links || link) {
+            ret = div(
+                (links || castArray(link)).map(linkObj => this.generateSingleLink(linkObj))
             );
-        } else if (link) {
-            return this.generateSingleLink(link);
         }
-        return null;
+        return ret;
     }
     
     generateSingleLink(linkObj) {
         return p(
             a({
-                href: linkObj.url,
+                href: this.generateUrl(linkObj.url),
                 item: code(linkObj.text),
                 target: '_blank'
             }),
@@ -64,5 +65,19 @@ class Wrapper extends Component {
         );
     }
     
+    generateUrl(url) {
+        const sourceUrls = XH.getConf('sourceUrls'),
+            urlHead = url.slice(0, 3),
+            urlTail = url.slice(3);
+            
+        switch (urlHead) {
+            case '$TB':
+                return sourceUrls.toolbox + urlTail;
+            case '$HR':
+                return sourceUrls.hoistReact + urlTail;
+            default:
+                return url;
+        }
+    }
 }
 export const wrapper = elemFactory(Wrapper);
