@@ -1,5 +1,6 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory, XH} from '@xh/hoist/core';
+import PT from 'prop-types';
 import {box, a, code, div, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -11,6 +12,31 @@ import './Wrapper.scss';
 
 @HoistComponent
 class Wrapper extends Component {
+
+    /**
+     * Wrapper is current standard 'wrapper' for demoing hoist-react components. :)
+     * It accepts:
+     *      (optional) `description` for a quick summary of the component,
+     *      (optional) `links` or `link` to source code on GitHub or external websites.
+     *
+     * Note that while `link` and  its plural form, `links`, is optional,
+     * when providing Wrapper with a `link` object, `link.url` and `link.text` are required:
+     *
+     * @param {Object} link - link configuration.
+     * @param {string} link.url - can be a full URL (must https://) or a string that starts with:
+     *      '$TB' for toolbox files, such as '$TB/client-app/src/desktop/tabs/other/PopupsPanel.js', or
+     *      '$HR' for hoist-react files, such as '$HR/desktop/cmp/button/Button.js'.
+     * @param {string} link.text - text to be displayed in hyperlink.
+     * @param {(string\|React component)} [link.notes] - text to be displayed outside hyperlink.
+     */
+    
+    static propTypes = {
+        
+        link: PT.object,
+        
+        links: PT.arrayOf(PT.object)
+    };
+    
     
     @managed
     dockContainerModel = new DockContainerModel();
@@ -48,7 +74,7 @@ class Wrapper extends Component {
                 allowClose: false,
                 content: panel({
                     className: 'toolbox-wrapper-sourcecode',
-                    item: this.generateLinks(),
+                    item: this.generateLinks()
                 })
             });
             
@@ -74,7 +100,7 @@ class Wrapper extends Component {
                 item: code(linkObj.text),
                 target: '_blank'
             }),
-            ' ',
+            ' | ',
             linkObj.notes
         );
     }
