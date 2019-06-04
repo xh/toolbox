@@ -24,33 +24,38 @@ class Wrapper extends Component {
                     omit: !description
                 }),
                 children,
-                panel({
-                    item: this.generateLinks(),
-                    icon: Icon.code(),
-                    title: code('Source Code'),
-                    model: {
-                        defaultSize: 100,
-                        collapsible: true,
-                        showSplitterCollapseButton: false,
-                        side: 'bottom',
-                        hide: true
-                    }
-                })
+                this.renderSourceCodePanel()
             ],
             ...rest
         });
     }
     
-    generateLinks() {
+    renderSourceCodePanel() {
         const {links, link} = this.props;
-        let ret = null;
         
         if (links || link) {
-            ret = div(
-                (links || castArray(link)).map(linkObj => this.generateSingleLink(linkObj))
-            );
+            return panel({
+                item: this.generateLinks(),
+                icon: Icon.code(),
+                title: code('Source Code'),
+                model: {
+                    defaultSize: 100,
+                    collapsible: true,
+                    showSplitterCollapseButton: false,
+                    side: 'bottom',
+                    hide: true
+                }
+            });
         }
-        return ret;
+    }
+    
+    generateLinks() {
+        const arrayLinks = this.props.links || castArray(this.props.link);
+        
+        return div(
+            arrayLinks.map(linkObj => this.generateSingleLink(linkObj))
+        );
+        
     }
     
     generateSingleLink(linkObj) {
