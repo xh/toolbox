@@ -4,11 +4,16 @@ import {box, a, code, div, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {castArray} from 'lodash';
+import {DockContainerModel, dockContainer} from '@xh/hoist/cmp/dock';
 
 import './Wrapper.scss';
+import {managed} from '@xh/hoist/core/mixins';
 
 @HoistComponent
 class Wrapper extends Component {
+    
+    // @managed
+    dockContainerModel = new DockContainerModel();
     
     render() {
         const {description, children, ...rest} = this.props;
@@ -31,20 +36,24 @@ class Wrapper extends Component {
     }
     
     renderSourceCodePanel() {
+        const {dockContainerModel} = this;
         const {links, link} = this.props;
         
         if (links || link) {
-            return panel({
-                item: this.generateLinks(),
+            dockContainerModel.addView({
+                id: XH.genId(),
                 icon: Icon.code(),
                 title: code('Source Code'),
-                model: {
-                    defaultSize: 100,
-                    collapsible: true,
-                    showSplitterCollapseButton: false,
-                    side: 'bottom',
-                    hide: true
-                }
+                allowDialog: false,
+                allowClose: false,
+                content: panel({
+                    className: 'toolbox-wrapper-sourcecode',
+                    item: this.generateLinks(),
+                })
+            });
+            
+            return dockContainer({
+                model: dockContainerModel
             });
         }
     }
