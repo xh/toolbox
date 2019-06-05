@@ -31,7 +31,7 @@ class Wrapper extends Component {
     
     static propTypes = {
         
-        links: PT.arrayOf(PT.object)
+        links: PT.oneOfType([PT.arrayOf(PT.object), PT.object])
     };
     
     
