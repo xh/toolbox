@@ -20,7 +20,7 @@ class Wrapper extends Component {
      *      (optional) `links` to source code on GitHub or external websites.
      *
      * Note that while `links` is optional and that Developers may choose to provide either
-     * a single Object, or array of Objects, each Object requires a `.url` and `.text` prop:
+     * a single Object, or array of Objects, each Object requires a `url` and `text` prop:
      *
      * @param {string} link.url - can be a full URL (must include https://) or a string that starts with:
      *      '$TB' for toolbox files, such as '$TB/client-app/src/desktop/tabs/other/PopupsPanel.js', or
@@ -34,9 +34,26 @@ class Wrapper extends Component {
         links: PT.oneOfType([PT.arrayOf(PT.object), PT.object])
     };
     
-    
     @managed
     dockContainerModel = new DockContainerModel();
+    
+    constructor(props) {
+        super();
+        if (!props.links) return;
+        
+        this.dockContainerModel.addView({
+            id: XH.genId(),
+            icon: Icon.code(),
+            title: code('Source Code'),
+            allowDialog: false,
+            allowClose: false,
+            collapsed: true,
+            content: panel({
+                className: 'toolbox-wrapper-sourcecode',
+                item: this.renderLinks(props)
+            })
+        });
+    }
     
     render() {
         const {description, children, ...rest} = this.props;
@@ -52,39 +69,15 @@ class Wrapper extends Component {
                     omit: !description
                 }),
                 children,
-                this.renderSourceCodePanel()
+                dockContainer({model: this.dockContainerModel})
             ],
             ...rest
         });
     }
     
-    renderSourceCodePanel() {
-        const {dockContainerModel} = this;
-        const {links} = this.props;
-        
-        if (!links) return null;
-        
-        dockContainerModel.addView({
-            id: XH.genId(),
-            icon: Icon.code(),
-            title: code('Source Code'),
-            allowDialog: false,
-            allowClose: false,
-            collapsed: true,
-            content: panel({
-                className: 'toolbox-wrapper-sourcecode',
-                item: this.generateLinks()
-            })
-        });
-        
-        return dockContainer({
-            model: dockContainerModel
-        });
-    }
-    
-    generateLinks() {
-        const arrayLinks = castArray(this.props.links);
-        
+    renderLinks(props) {
+        const arrayLinks = castArray(props.links);
+
         return div(
             arrayLinks.map(linkObj => this.renderSingleLink(linkObj))
         );
@@ -95,29 +88,22 @@ class Wrapper extends Component {
             a({
                 href: this.generateUrl(linkObj.url),
                 item: linkObj.text,
-                target: '_blank'
+                target: '_wrapperLink'
             }),
-            this.hasNotes(linkObj)
+            this.renderNotes(linkObj)
         );
     }
     
-    hasNotes(linkObj) {
+    renderNotes(linkObj) {
         if (linkObj.notes) return [' | ', linkObj.notes];
     }
     
     generateUrl(url) {
-        const sourceUrls = XH.getConf('sourceUrls'),
-            urlHead = url.slice(0, 3),
-            urlTail = url.slice(3);
-            
-        switch (urlHead) {
-            case '$TB':
-                return sourceUrls.toolbox + urlTail;
-            case '$HR':
-                return sourceUrls.hoistReact + urlTail;
-            default:
-                return url;
-        }
+        const sourceUrls = XH.getConf('sourceUrls');
+        return (url
+            .replace('$TB', sourceUrls.toolbox)
+            .replace('$HR', sourceUrls.hoistReact)
+        );
     }
 }
 export const wrapper = elemFactory(Wrapper);
