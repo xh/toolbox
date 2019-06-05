@@ -17,22 +17,19 @@ class Wrapper extends Component {
      * Wrapper is current standard 'wrapper' for demoing hoist-react components. :)
      * It accepts:
      *      (optional) `description` for a quick summary of the component,
-     *      (optional) `links` or `link` to source code on GitHub or external websites.
+     *      (optional) `links` to source code on GitHub or external websites.
      *
-     * Note that while `link` and  its plural form, `links`, is optional,
-     * when providing Wrapper with a `link` object, `link.url` and `link.text` are required:
+     * Note that while `links` is optional and that Developers may choose to provide either
+     * a single Object, or array of Objects, each Object requires a `.url` and `.text` prop:
      *
-     * @param {Object} link - link configuration.
-     * @param {string} link.url - can be a full URL (must https://) or a string that starts with:
+     * @param {string} link.url - can be a full URL (must include https://) or a string that starts with:
      *      '$TB' for toolbox files, such as '$TB/client-app/src/desktop/tabs/other/PopupsPanel.js', or
      *      '$HR' for hoist-react files, such as '$HR/desktop/cmp/button/Button.js'.
      * @param {string} link.text - text to be displayed in hyperlink.
-     * @param {(string\|React component)} [link.notes] - text to be displayed outside hyperlink.
+     * @param {(string|Element)} [link.notes] - text to be displayed outside hyperlink.
      */
     
     static propTypes = {
-        
-        link: PT.object,
         
         links: PT.arrayOf(PT.object)
     };
@@ -63,46 +60,49 @@ class Wrapper extends Component {
     
     renderSourceCodePanel() {
         const {dockContainerModel} = this;
-        const {links, link} = this.props;
+        const {links} = this.props;
         
-        if (links || link) {
-            dockContainerModel.addView({
-                id: XH.genId(),
-                icon: Icon.code(),
-                title: code('Source Code'),
-                allowDialog: false,
-                allowClose: false,
-                content: panel({
-                    className: 'toolbox-wrapper-sourcecode',
-                    item: this.generateLinks()
-                })
-            });
-            
-            return dockContainer({
-                model: dockContainerModel
-            });
-        }
+        if (!links) return null;
+        
+        dockContainerModel.addView({
+            id: XH.genId(),
+            icon: Icon.code(),
+            title: code('Source Code'),
+            allowDialog: false,
+            allowClose: false,
+            collapsed: true,
+            content: panel({
+                className: 'toolbox-wrapper-sourcecode',
+                item: this.generateLinks()
+            })
+        });
+        
+        return dockContainer({
+            model: dockContainerModel
+        });
     }
     
     generateLinks() {
-        const arrayLinks = this.props.links || castArray(this.props.link);
+        const arrayLinks = castArray(this.props.links);
         
         return div(
             arrayLinks.map(linkObj => this.renderSingleLink(linkObj))
         );
-        
     }
     
     renderSingleLink(linkObj) {
         return p(
             a({
                 href: this.generateUrl(linkObj.url),
-                item: code(linkObj.text),
+                item: linkObj.text,
                 target: '_blank'
             }),
-            ' | ',
-            linkObj.notes
+            this.hasNotes(linkObj)
         );
+    }
+    
+    hasNotes(linkObj) {
+        if (linkObj.notes) return [' | ', linkObj.notes];
     }
     
     generateUrl(url) {
