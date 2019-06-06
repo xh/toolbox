@@ -9,6 +9,7 @@ import {Component} from 'react';
 import {XH, HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common';
 import {p, div, table, tr, th, td, tbody, vbox, code, span, ul, li} from '@xh/hoist/cmp/layout';
+import {textArea} from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {Ref} from '@xh/hoist/utils/react';
@@ -25,8 +26,6 @@ export class PopupsPanel extends Component {
             className: 'toolbox-popups-button',
             icon: icon,
             minimal: false
-            // flex: 1,
-            // margin: 0
         });
     };
 
@@ -36,13 +35,13 @@ export class PopupsPanel extends Component {
         );
     };
 
-    promiseToast = (returnedBoolean) => XH.toast({
-        message: span('That popup resolved to ', code(`${returnedBoolean}`)),
+    promiseToast = (ret) => XH.toast({
+        message: span('That popup resolved to ', code(`${ret}`)),
         containerRef: this.divRef.value
     });
 
-    acceptRichTextReminder = p('Good to know: ', code('Alert'), ', ', code('Confirm'), ', and ', code('Message'),
-        ' can display rich text by accepting strings, JSX, and React elements. '
+    acceptRichTextReminder = p('Good to know: ', code('Alert'), ', ', code('Confirm'), ', ', code('Prompt'),
+        ', and ', code('Message'), ' can display rich text by accepting strings, JSX, and React elements. '
     );
 
     render() {
@@ -53,9 +52,9 @@ export class PopupsPanel extends Component {
                 p('Popups are interactive ways to notify users about important information.  They can also be used to ',
                     'confirm a decision with users. '),
                 p(code('Message'), 's provide modal dialogs to the user, and ',
-                    code('Alert'), ' and ', code('Confirm'), ' are preconfigured ', code('Message'), 's. Use ',
-                    code('Toast'), ' for non-modal notifications.'),
-                p('See ', code('XH.alert'), ', ', code('XH.confirm'), ', ', code('XH.message'), ', ', code('XH.toast'), '.'),
+                    code('Alert'), ', ', code('Confirm'), ' and ', code('Prompt'), ' are preconfigured ', code('Message'), 's. ',
+                    'Use ', code('Toast'), ' for non-modal notifications.'),
+                p('See ', code('XH.alert'), ', ', code('XH.confirm'), ', ', code('XH.prompt'), ', ', code('XH.message'), ', ', code('XH.toast'), '.'),
                 p('Here are just a few examples of our popups:')
             ),
             item: vbox({
@@ -133,6 +132,46 @@ export class PopupsPanel extends Component {
                             onClick: () => XH.confirm({
                                 title: 'Confirm Title',
                                 message: p('Confirm return a promise that resolves to ', code('true'), ' if user confirms, or ',
+                                    code('false'), ' if user cancels.')
+                            }).then(promiseToast)
+                        })
+                    ),
+                    row(
+                        button({
+                            ...buttonAppearance(Icon.edit({className: 'xh-blue-light'})),
+                            text: 'Prompt',
+                            onClick: () => XH.prompt({
+                                title: 'Just a vanilla Prompt',
+                                message: div(
+                                    p('This is a prompt. Prompt comes with two buttons: "OK" and "Cancel"'),
+                                    acceptRichTextReminder
+                                )
+                            })
+                        }),
+                        button({
+                            ...buttonAppearance(Icon.edit({className: 'xh-blue-light'})),
+                            text: 'with customizations',
+                            onClick: () => XH.prompt({
+                                title: 'Prompt Title',
+                                message: p(
+                                    'This is also a Prompt.  Here, we customized the input with ', code('input'),
+                                    ', and the text and color of the buttons with ',
+                                    code('confirmText'), ', ', code('confirmIntent'), ', ',
+                                    code('cancelText'), ', ', code('cancelText')
+                                ),
+                                input: textArea({autoFocus: true}),
+                                confirmText: 'Submit',
+                                confirmIntent: 'primary',
+                                cancelText: 'Nope',
+                                cancelIntent: 'danger'
+                            })
+                        }),
+                        button({
+                            ...buttonAppearance(Icon.edit({className: 'xh-blue-light'})),
+                            text: 'with callback',
+                            onClick: () => XH.prompt({
+                                title: 'Prompt Title',
+                                message: p('Prompt return a promise that resolves to the input\'s ', code('value'), ' if user confirms, or ',
                                     code('false'), ' if user cancels.')
                             }).then(promiseToast)
                         })
