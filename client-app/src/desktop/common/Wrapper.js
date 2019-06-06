@@ -37,11 +37,9 @@ class Wrapper extends Component {
     @managed
     dockContainerModel = new DockContainerModel();
     
-    constructor() {
+    constructor(props) {
         super(props);
         
-        
-        console.log(this.props);
         if (!this.props.links) return;
         
         this.dockContainerModel.addView({
@@ -53,7 +51,7 @@ class Wrapper extends Component {
             collapsed: true,
             content: panel({
                 className: 'toolbox-wrapper-sourcecode',
-                item: this.createLinks(this.props)
+                item: this.createLinks()
             })
         });
     }
@@ -78,8 +76,8 @@ class Wrapper extends Component {
         });
     }
     
-    createLinks(props) {
-        const arrayLinks = castArray(props.links);
+    createLinks() {
+        const arrayLinks = castArray(this.props.links);
 
         return div(
             arrayLinks.map(linkObj => this.createSingleLink(linkObj))
