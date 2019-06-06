@@ -7,11 +7,13 @@ import {restGrid, RestGridModel, RestStore, addAction, editAction, viewAction, d
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
 import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
 
 @HoistComponent
 export class RestGridPanel extends Component {
 
     model = new RestGridModel({
+        enableExport: true,
         store: new RestStore({
             url: 'rest/companyRest',
             fields: [
@@ -88,7 +90,8 @@ export class RestGridPanel extends Component {
             {
                 field: 'earningsDate',
                 renderer: dateRenderer(),
-                width: 100
+                width: 100,
+                exportFormat: ExportFormat.DATE_FMT
             },
             {
                 field: 'note'

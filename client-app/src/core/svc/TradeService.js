@@ -1,7 +1,7 @@
 import {HoistService} from '@xh/hoist/core';
 import {DAYS, toCalendarDate} from '@xh/hoist/utils/datetime';
 import {companyTrades} from '../data/';
-import {cloneDeep} from 'lodash';
+import {cloneDeep, sumBy} from 'lodash';
 
 @HoistService
 export class TradeService {
@@ -17,7 +17,13 @@ export class TradeService {
             it.tradeDate = toCalendarDate(new Date(Date.now() - Math.random() * dateRange));
         });
 
-        return trades;
+        return {
+            trades,
+            summary: {
+                id: 'summary',
+                profit_loss: sumBy(trades, 'profit_loss'),
+                trade_volume: sumBy(trades, 'trade_volume')
+            }
+        };
     }
-
 }
