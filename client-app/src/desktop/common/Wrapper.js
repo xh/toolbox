@@ -37,9 +37,12 @@ class Wrapper extends Component {
     @managed
     dockContainerModel = new DockContainerModel();
     
-    constructor(props) {
-        super();
-        if (!props.links) return;
+    constructor() {
+        super(props);
+        
+        
+        console.log(this.props);
+        if (!this.props.links) return;
         
         this.dockContainerModel.addView({
             id: XH.genId(),
@@ -50,7 +53,7 @@ class Wrapper extends Component {
             collapsed: true,
             content: panel({
                 className: 'toolbox-wrapper-sourcecode',
-                item: this.renderLinks(props)
+                item: this.createLinks(this.props)
             })
         });
     }
@@ -75,30 +78,30 @@ class Wrapper extends Component {
         });
     }
     
-    renderLinks(props) {
+    createLinks(props) {
         const arrayLinks = castArray(props.links);
 
         return div(
-            arrayLinks.map(linkObj => this.renderSingleLink(linkObj))
+            arrayLinks.map(linkObj => this.createSingleLink(linkObj))
         );
     }
     
-    renderSingleLink(linkObj) {
+    createSingleLink(linkObj) {
         return p(
             a({
-                href: this.generateUrl(linkObj.url),
+                href: this.createUrl(linkObj.url),
                 item: linkObj.text,
                 target: '_wrapperLink'
             }),
-            this.renderNotes(linkObj)
+            this.createNotes(linkObj)
         );
     }
     
-    renderNotes(linkObj) {
+    createNotes(linkObj) {
         if (linkObj.notes) return [' | ', linkObj.notes];
     }
     
-    generateUrl(url) {
+    createUrl(url) {
         const sourceUrls = XH.getConf('sourceUrls');
         return (url
             .replace('$TB', sourceUrls.toolbox)
