@@ -7,7 +7,7 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory, XH} from '@xh/hoist/core';
 import PT from 'prop-types';
-import {a, span} from '@xh/hoist/cmp/layout';
+import {a} from '@xh/hoist/cmp/layout';
 
 @HoistComponent
 class ToolboxLink extends Component {
@@ -22,33 +22,24 @@ class ToolboxLink extends Component {
         url: PT.string.isRequired,
         
         /* text to be displayed in the hyperlink */
-        text: PT.string.isRequired,
-        
-        /* text or Element to be displayed outside the hyperlink */
-        notes: PT.oneOfType([PT.string, PT.element])
+        text: PT.string.isRequired
     };
     
     render() {
-        return span(
-            a({
-                href: this.createUrl(),
-                item: this.text,
-                target: '_wrapperLink'
-            }),
-            this.createNotes()
-        );
+        return a({
+            href: this.createUrl(),
+            item: this.props.text,
+            target: '_wrapperLink'
+        });
     }
     
     createUrl() {
         const sourceUrls = XH.getConf('sourceUrls');
-        return (this.url
+        
+        return (this.props.url
             .replace('$TB', sourceUrls.toolbox)
             .replace('$HR', sourceUrls.hoistReact)
         );
-    }
-    
-    createNotes() {
-        if (this.notes) return [' -- ', this.notes];
     }
 }
 export const toolboxLink = elemFactory(ToolboxLink);
