@@ -10,6 +10,7 @@ import {XH, HoistComponent} from '@xh/hoist/core';
 import {wrapper} from '../../common';
 import {p, div, table, tr, th, td, tbody, vbox, code, span, ul, li} from '@xh/hoist/cmp/layout';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
+import {required, lengthIs} from '@xh/hoist/cmp/form';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {Ref} from '@xh/hoist/utils/react';
@@ -159,7 +160,11 @@ export class PopupsPanel extends Component {
                                     code('confirmText'), ', ', code('confirmIntent'), ', ',
                                     code('cancelText'), ', ', code('cancelText')
                                 ),
-                                input: textArea({autoFocus: true}),
+                                input: {
+                                    value: 'Hello world...',
+                                    item: textArea({autoFocus: true}),
+                                    rules: [required, lengthIs({min: 20})]
+                                },
                                 confirmText: 'Submit',
                                 confirmIntent: 'primary',
                                 cancelText: 'Nope',
