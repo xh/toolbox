@@ -19,8 +19,12 @@ class Wrapper extends Component {
         /* quick summary of the component */
         description: PT.oneOfType([PT.element, PT.string]),
         
-        /* links to source code on GitHub or external websites */
-        links: PT.oneOfType([PT.arrayOf(PT.object), PT.object])
+        /*  links to source code on GitHub or external websites
+        *
+        *   A single link Obj should have a `url` prop and a `text` prop (see ToolboxLink).
+        *   Optionally, the link Obj can have a `notes` prop, to be displayed to the right of link
+        */
+        links: PT.oneOfType([PT.object, PT.arrayOf(PT.object)])
     };
     
     @managed
