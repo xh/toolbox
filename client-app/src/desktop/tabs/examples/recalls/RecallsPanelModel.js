@@ -37,7 +37,7 @@ export class RecallsPanelModel {
             processRawData: this.processRecord
         },
         emptyText: 'No records found...',
-        enableColChooser: true,
+        colChooser: true,
         enableExport: true,
         rowBorders: true,
         showHover: true,

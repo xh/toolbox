@@ -35,7 +35,7 @@ export class TreeGridPageModel {
         store: {
             loadRootAsSummary: true
         },
-        enableColChooser: true,
+        colChooser: true,
         sortBy: 'pnl|desc|abs',
         columns: [
             {

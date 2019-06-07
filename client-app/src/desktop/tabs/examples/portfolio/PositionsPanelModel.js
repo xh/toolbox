@@ -28,7 +28,7 @@ export class PositionsPanelModel {
         treeMode: true,
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
-        enableColChooser: true,
+        colChooser: true,
         enableExport: true,
         rowBorders: true,
         showHover: true,

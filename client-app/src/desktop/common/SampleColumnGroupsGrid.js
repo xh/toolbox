@@ -76,7 +76,7 @@ class Model {
         },
         sortBy: 'lastName',
         emptyText: 'No records found...',
-        enableColChooser: true,
+        colChooser: true,
         enableExport: true,
         compact: XH.appModel.useCompactGrids,
         contextMenuFn: () => {

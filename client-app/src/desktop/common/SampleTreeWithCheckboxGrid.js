@@ -79,7 +79,7 @@ class Model {
         },
         sortBy: 'name',
         emptyText: 'No records found...',
-        enableColChooser: true,
+        colChooser: true,
         enableExport: true,
         compact: XH.appModel.useCompactGrids,
         columns: [
