@@ -85,8 +85,8 @@ class BootStrap {
             sourceUrls: [
                 valueType: 'json',
                 defaultValue: [
-                    toolbox: 'https://github.com/exhi/toolbox/blob/develop/',
-                    hoistReact: 'https://github.com/exhi/hoist-react/blob/develop/'
+                    toolbox: 'https://github.com/exhi/toolbox/blob/develop',
+                    hoistReact: 'https://github.com/exhi/hoist-react/blob/develop'
                 ],
                 groupName: 'xh.io',
                 clientVisible: true,
