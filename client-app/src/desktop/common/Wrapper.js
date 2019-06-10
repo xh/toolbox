@@ -7,7 +7,7 @@ import {Icon} from '@xh/hoist/icon';
 import {castArray} from 'lodash';
 import {DockContainerModel, dockContainer} from '@xh/hoist/cmp/dock';
 import {managed} from '@xh/hoist/core/mixins';
-import {toolboxLink} from './ToolboxLink';
+import {toolboxLink} from '../../common/ToolboxLink';
 
 import './Wrapper.scss';
 

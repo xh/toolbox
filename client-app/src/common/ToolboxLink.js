@@ -29,7 +29,7 @@ class ToolboxLink extends Component {
         return a({
             href: this.createUrl(),
             item: this.props.text,
-            target: '_wrapperLink'
+            target: '_blank'
         });
     }
     
