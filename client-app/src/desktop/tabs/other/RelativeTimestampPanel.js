@@ -27,6 +27,17 @@ export class RelativeTimestampPanel extends Component {
                 itself on a regular interval to stay current, and displays the time difference
                 in a friendly and readable manner. 
             `,
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/RelativeTimestampPanel.js#L43',
+                    text: 'RelativeTimestampPanel.js'
+                },
+                {
+                    url: '$TB/client-app/src/desktop/tabs/examples/news/NewsPanel.js#L64',
+                    text: 'NewsPanel.js',
+                    notes: 'example of use'
+                }
+            ],
             item: panel({
                 title: 'Other › Relative Timestamp',
                 icon: Icon.clock(),

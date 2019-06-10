@@ -33,6 +33,17 @@ export class IconsPanel extends Component {
                     glyphs directly to include them in the bundled output.
                 </p>
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/IconsPanel.js#L49',
+                    text: 'IconsPanel.js'
+                },
+                {
+                    url: '$TB/client-app/src/desktop/tabs/examples/ExamplesTab.js#L28',
+                    text: 'ExamplesTab.js',
+                    notes: 'example of use'
+                }
+            ],
             item: panel({
                 title: 'Icons (regular, solid, and light variants)',
                 icon: Icon.thumbsUp(),

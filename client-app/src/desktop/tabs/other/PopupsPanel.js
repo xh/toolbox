@@ -25,8 +25,6 @@ export class PopupsPanel extends Component {
             className: 'toolbox-popups-button',
             icon: icon,
             minimal: false
-            // flex: 1,
-            // margin: 0
         });
     };
 
@@ -58,6 +56,28 @@ export class PopupsPanel extends Component {
                 p('See ', code('XH.alert'), ', ', code('XH.confirm'), ', ', code('XH.message'), ', ', code('XH.toast'), '.'),
                 p('Here are just a few examples of our popups:')
             ),
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/PopupsPanel.js',
+                    text: 'PopupsPanel.js',
+                    notes: 'code to this panel'
+                },
+                {
+                    url: '$HR/core/XH.js#L290',
+                    text: 'XH.js',
+                    notes: 'Messages, Confirms, Alerts, and Toasts'
+                },
+                {
+                    url: '$TB/client-app/src/desktop/tabs/examples/recalls/RecallsPanel.js',
+                    text: 'RecallsPanel.js',
+                    notes: 'Alert Example'
+                },
+                {
+                    url: '$TB/client-app/src/desktop/common/SampleGrid.js',
+                    text: 'SampleGrid.js',
+                    notes: 'Toast Example'
+                }
+            ],
             item: vbox({
                 className: 'toolbox-popups-vframe',
                 ref: this.divRef.ref,

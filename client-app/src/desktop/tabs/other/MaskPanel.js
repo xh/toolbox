@@ -44,6 +44,12 @@ export class MaskPanel extends Component {
                     A mask configured with <code>inline: false</code> will mask the entire Viewport.
                 </p>
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/MaskPanel.js',
+                    text: 'MaskPanel.js'
+                }
+            ],
             item: panel({
                 title: 'Other › Mask',
                 icon: Icon.eyeSlash(),

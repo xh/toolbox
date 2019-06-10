@@ -48,6 +48,12 @@ export class FileChooserPanel extends Component {
                     when complete.
                 </p>
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/FileChooserPanel.js',
+                    text: 'FileChooserPanel.js'
+                }
+            ],
             item: panel({
                 title: 'Other › FileChooser',
                 icon: Icon.copy(),
