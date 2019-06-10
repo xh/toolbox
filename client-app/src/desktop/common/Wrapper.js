@@ -83,7 +83,7 @@ class Wrapper extends Component {
     }
     
     createNotes(linkObj) {
-        if (linkObj.notes) return [br(), linkObj.notes, br()];
+        return (linkObj.notes ? [br(), linkObj.notes, br()] : null);
     }
 }
 export const wrapper = elemFactory(Wrapper);
