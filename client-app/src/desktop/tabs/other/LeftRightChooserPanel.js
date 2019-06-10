@@ -36,7 +36,7 @@ export class LeftRightChooserPanel extends Component {
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/other/LeftRightChooserPanel.js',
+                    url: '$TB/client-app/src/desktop/tabs/other/LeftRightChooserPanel.js#L48',
                     text: 'LeftRightChooserPanel.js'
                 }
             ],

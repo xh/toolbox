@@ -46,7 +46,7 @@ export class MaskPanel extends Component {
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/other/MaskPanel.js',
+                    url: '$TB/client-app/src/desktop/tabs/other/MaskPanel.js#L98',
                     text: 'MaskPanel.js'
                 }
             ],
