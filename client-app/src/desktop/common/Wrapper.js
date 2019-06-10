@@ -38,13 +38,14 @@ class Wrapper extends Component {
         this.dockContainerModel.addView({
             id: XH.genId(),
             icon: Icon.code(),
-            title: code('Source Code'),
+            title: code('Source Links'),
             allowDialog: false,
             allowClose: false,
             collapsed: true,
             content: panel({
                 className: 'toolbox-wrapper-sourcecode',
-                item: this.createLinksWithNotes()
+                item: this.createLinksWithNotes(),
+                width: 350
             })
         });
     }
@@ -63,7 +64,9 @@ class Wrapper extends Component {
                     omit: !description
                 }),
                 children,
-                dockContainer({model: this.dockContainerModel})
+                dockContainer({
+                    model: this.dockContainerModel,
+                })
             ],
             ...rest
         });

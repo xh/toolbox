@@ -58,22 +58,18 @@ export class PopupsPanel extends Component {
             ),
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/other/PopupsPanel.js#L88',
-                    text: 'PopupsPanel.js'
+                    url: '$TB/client-app/src/desktop/tabs/other/PopupsPanel.js#L84'
                 },
                 {
                     url: '$HR/core/XH.js#L290',
-                    text: 'XH.js',
                     notes: 'Messages, Confirms, Alerts, and Toasts'
                 },
                 {
                     url: '$TB/client-app/src/desktop/tabs/examples/recalls/RecallsPanel.js#L54',
-                    text: 'RecallsPanel.js',
                     notes: 'Alert Example'
                 },
                 {
                     url: '$TB/client-app/src/desktop/common/SampleGrid.js#L240',
-                    text: 'SampleGrid.js',
                     notes: 'Toast Example'
                 }
             ],

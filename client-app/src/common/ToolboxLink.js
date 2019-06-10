@@ -21,14 +21,14 @@ class ToolboxLink extends Component {
          */
         url: PT.string.isRequired,
         
-        /* text to be displayed in the hyperlink */
-        text: PT.string.isRequired
+        /* text to be displayed in the hyperlink.  Defaults to the text after the last `/` */
+        text: PT.string
     };
     
     render() {
         return a({
             href: this.createUrl(),
-            item: this.props.text,
+            item: this.props.text || this.createDefaultText(),
             target: '_blank'
         });
     }
@@ -40,6 +40,15 @@ class ToolboxLink extends Component {
             .replace('$TB', sourceUrls.toolbox)
             .replace('$HR', sourceUrls.hoistReact)
         );
+    }
+    
+    createDefaultText() {
+        const {url} = this.props,
+            posAfterLastSlash = url.lastIndexOf('/') + 1,
+            posLastOctothorpe = url.lastIndexOf('#') === -1 ? url.length : url.lastIndexOf('#');
+            // .lastIndexOf() returns -1 if char not found
+        
+        return url.substring(posAfterLastSlash, posLastOctothorpe);
     }
 }
 export const toolboxLink = elemFactory(ToolboxLink);
