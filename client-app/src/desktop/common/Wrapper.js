@@ -1,7 +1,7 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory, XH} from '@xh/hoist/core';
 import PT from 'prop-types';
-import {box, code, div, p} from '@xh/hoist/cmp/layout';
+import {box, br, code, div, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {castArray} from 'lodash';
@@ -83,7 +83,7 @@ class Wrapper extends Component {
     }
     
     createNotes(linkObj) {
-        if (linkObj.notes) return [' • ', linkObj.notes];
+        if (linkObj.notes) return [br(), linkObj.notes, br()];
     }
 }
 export const wrapper = elemFactory(Wrapper);
