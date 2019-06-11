@@ -14,7 +14,7 @@ export class GridPageModel {
     gridModel = new GridModel({
         stateModel: 'toolboxSampleGrid',
         sortBy: ['profit_loss|desc|abs'],
-        enableColChooser: true,
+        colChooser: true,
         columns: [
             {
                 field: 'company',

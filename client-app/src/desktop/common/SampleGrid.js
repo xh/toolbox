@@ -127,7 +127,7 @@ class Model {
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
-        enableColChooser: true,
+        colChooser: true,
         enableExport: true,
         compact: XH.appModel.useCompactGrids,
         store: {

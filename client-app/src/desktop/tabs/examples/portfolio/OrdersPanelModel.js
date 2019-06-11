@@ -23,7 +23,7 @@ export class OrdersPanelModel {
         groupBy: 'dir',
         sortBy: [{colId: 'time', sort: 'desc'}],
         emptyText: 'No records found...',
-        enableColChooser: true,
+        colChooser: true,
         enableExport: true,
         rowBorders: true,
         showHover: true,
