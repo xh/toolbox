@@ -24,11 +24,12 @@ export class StandardGridPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Grids › Standard',
-                icon: Icon.gridPanel(),
-                width: 850,
+                width: 700,
                 height: 400,
-                item: sampleGrid()
+                item: sampleGrid({
+                    title: 'Grids › Standard',
+                    icon: Icon.gridPanel()
+                })
             })
         });
     }

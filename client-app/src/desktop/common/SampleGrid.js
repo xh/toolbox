@@ -1,5 +1,5 @@
 import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {box, hframe, filler, fragment, span, br} from '@xh/hoist/cmp/layout';
+import {box, hframe, vbox, filler, fragment, span, br} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, LayoutSupport, XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
@@ -28,6 +28,7 @@ class SampleGrid extends Component {
         const {model} = this,
             {gridModel, loadModel} = model,
             {selection} = gridModel,
+            {title, icon} = this.props,
             selCount = selection.length;
 
         let selText = 'No selection';
@@ -39,6 +40,7 @@ class SampleGrid extends Component {
 
         return hframe(
             panel({
+                title, icon,
                 ref: model.panelRef.ref,
                 mask: loadModel,
                 tbar: toolbar({
@@ -79,13 +81,18 @@ class SampleGrid extends Component {
                 ...this.getLayoutProps()
             }),
             panel({
-                title: span(Icon.gears(), 'Settings'),
-                item: gridStyleSwitches({gridModel}),
+                icon: Icon.gears(),
+                item: vbox({
+                    flex: 1,
+                    item: gridStyleSwitches({gridModel})
+                }),
                 mask: loadModel,
                 model: {
-                    side: 'right',
-                    defaultSize: 150
-                }
+                    side: 'left',
+                    defaultSize: 150,
+                    showHeaderCollapseButton: false
+                },
+                ...this.getLayoutProps()
             })
         );
     }
