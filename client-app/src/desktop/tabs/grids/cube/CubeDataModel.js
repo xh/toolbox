@@ -23,6 +23,9 @@ export class CubeDataModel {
     @bindable orderCount = XH.getPref('cubeTestOrderCount');
     @bindable fundFilter = null;
 
+    // Flag to short-circuit initial/duplicate firing of query reaction (below).
+    _initialLoadComplete = false;
+
     constructor() {
         this.gridModel = this.createGridModel();
         this.loadTimesGridModel = this.createLoadTimesGridModel();
@@ -40,7 +43,11 @@ export class CubeDataModel {
 
         this.addReaction({
             track: () => this.getQuery(),
-            run: (q) => this.executeQueryAsync(),
+            run: () => {
+                if (this._initialLoadComplete) {
+                    this.executeQueryAsync();
+                }
+            },
             equals: comparer.structural
         });
 
@@ -70,8 +77,7 @@ export class CubeDataModel {
             ocTxt = fmtThousands(this.orderCount) + 'k';
 
         await this.withLoadTime(`Gen ${ocTxt} orders`, async () => {
-            // TODO - generate orders in non-blocking/async loop.
-            orders = XH.portfolioService.generateOrders(this.orderCount);
+            orders = await XH.portfolioService.generateOrdersAsync(this.orderCount);
             orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
         });
 
@@ -80,6 +86,7 @@ export class CubeDataModel {
         });
 
         await this.executeQueryAsync();
+        this._initialLoadComplete = true;
     }
 
     async executeQueryAsync() {
@@ -147,6 +154,10 @@ export class CubeDataModel {
     createGridModel() {
         return new GridModel({
             treeMode: true,
+            showSummary: true,
+            store: {
+                loadRootAsSummary: true
+            },
             sortBy: 'time|desc',
             emptyText: 'No records found...',
             enableColChooser: true,

@@ -25,7 +25,7 @@ export class OrdersPanel extends Component {
             title: 'Orders',
             icon: Icon.edit(),
             item: grid({model: gridModel}),
-            mask: model.loadModel,
+            mask: model.positionId == null,
             bbar: toolbar(
                 filler(),
                 storeCountLabel({gridModel, unit: 'orders'}),

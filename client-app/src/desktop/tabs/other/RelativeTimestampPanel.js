@@ -1,19 +1,23 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {action, observable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
+import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent
 export class RelativeTimestampPanel extends Component {
 
-    @observable
+    @bindable
     timestamp = new Date();
+
+    @bindable
+    useShortFmt = false;
 
     render() {
         return wrapper({
@@ -32,7 +36,7 @@ export class RelativeTimestampPanel extends Component {
                         margin: 10,
                         item: relativeTimestamp({
                             timestamp: this.timestamp,
-                            options: {allowFuture: true, prefix: 'Latest timestamp:'},
+                            options: {allowFuture: true, prefix: 'Latest timestamp:', short: this.useShortFmt},
                             marginLeft: 10
                         })
                     }),
@@ -70,7 +74,13 @@ export class RelativeTimestampPanel extends Component {
                             })
                         ]
                     }),
-                    filler()
+                    filler(),
+                    switchInput({
+                        label: 'Short',
+                        labelAlign: 'left',
+                        model: this,
+                        bind: 'useShortFmt'
+                    }),
                 )
             })
         });
@@ -86,11 +96,6 @@ export class RelativeTimestampPanel extends Component {
 
     setToFuture = () => {
         this.setTimestamp(Date.now() + this.randShift());
-    }
-
-    @action
-    setTimestamp(ts) {
-        this.timestamp = ts;
     }
 
     randShift() {

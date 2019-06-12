@@ -1,6 +1,6 @@
 import {HoistService} from '@xh/hoist/core';
 import {companyTrades} from '../data/';
-import {cloneDeep} from 'lodash';
+import {cloneDeep, sumBy} from 'lodash';
 
 @HoistService
 export class TradeService {
@@ -13,7 +13,14 @@ export class TradeService {
             it.trade_volume = it.trade_volume * 1000000;
             it.active = it.trade_volume % 6 == 0;
         });
-        return trades;
-    }
 
+        return {
+            trades,
+            summary: {
+                id: 'summary',
+                profit_loss: sumBy(trades, 'profit_loss'),
+                trade_volume: sumBy(trades, 'trade_volume')
+            }
+        };
+    }
 }
