@@ -1,5 +1,5 @@
 import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {box, filler, fragment, span, br} from '@xh/hoist/cmp/layout';
+import {box, hframe, filler, fragment, span, br} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, LayoutSupport, XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
@@ -37,47 +37,57 @@ class SampleGrid extends Component {
             selText = `Selected ${selCount} companies`;
         }
 
-        return panel({
-            item: grid({model: gridModel}),
-            ref: model.panelRef.ref,
-            mask: loadModel,
-            tbar: toolbar({
-                omit: this.props.omitToolbar,
-                items: [
-                    refreshButton({model}),
-                    toolbarSep(),
-                    span('Group by:'),
-                    select({
-                        model,
-                        bind: 'groupBy',
-                        options: [
-                            {value: 'city', label: 'City'},
-                            {value: 'winLose', label: 'Win/Lose'},
-                            {value: 'city,winLose', label: 'City › Win/Lose'},
-                            {value: 'winLose,city', label: 'Win/Lose › City'},
-                            {value: false, label: 'None'}
-                        ],
-                        width: 160,
-                        enableFilter: false
-                    }),
-                    filler(),
-                    storeCountLabel({gridModel, unit: 'companies'}),
-                    storeFilterField({gridModel}),
-                    colChooserButton({gridModel}),
-                    exportButton({gridModel})
-                ]
+        return hframe(
+            panel({
+                ref: model.panelRef.ref,
+                mask: loadModel,
+                tbar: toolbar({
+                    omit: this.props.omitToolbar,
+                    items: [
+                        refreshButton({model}),
+                        toolbarSep(),
+                        span('Group by:'),
+                        select({
+                            model,
+                            bind: 'groupBy',
+                            options: [
+                                {value: 'city', label: 'City'},
+                                {value: 'winLose', label: 'Win/Lose'},
+                                {value: 'city,winLose', label: 'City › Win/Lose'},
+                                {value: 'winLose,city', label: 'Win/Lose › City'},
+                                {value: false, label: 'None'}
+                            ],
+                            width: 160,
+                            enableFilter: false
+                        }),
+                        filler(),
+                        storeCountLabel({gridModel, unit: 'companies'}),
+                        storeFilterField({gridModel}),
+                        colChooserButton({gridModel}),
+                        exportButton({gridModel})
+                    ]
+                }),
+                item: grid({model: gridModel}),
+                bbar: toolbar({
+                    items: [
+                        Icon.info(),
+                        box(selText),
+                        filler()
+                    ]
+                }),
+                className: this.getClassName(),
+                ...this.getLayoutProps()
             }),
-            bbar: toolbar({
-                items: [
-                    Icon.info(),
-                    box(selText),
-                    filler(),
-                    gridStyleSwitches({gridModel})
-                ]
-            }),
-            className: this.getClassName(),
-            ...this.getLayoutProps()
-        });
+            panel({
+                title: span(Icon.gears(), 'Settings'),
+                item: gridStyleSwitches({gridModel}),
+                mask: loadModel,
+                model: {
+                    side: 'right',
+                    defaultSize: 150
+                }
+            })
+        );
     }
 
 }
