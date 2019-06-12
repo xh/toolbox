@@ -82,13 +82,16 @@ class SampleGrid extends Component {
             }),
             panel({
                 icon: Icon.gears(),
-                item: vbox({
+                item: toolbar({
+                    alignItems: 'flex-end',
                     flex: 1,
+                    width: '100%',
+                    vertical: true,
                     item: gridStyleSwitches({gridModel})
                 }),
                 mask: loadModel,
                 model: {
-                    side: 'left',
+                    side: 'right',
                     defaultSize: 150,
                     showHeaderCollapseButton: false
                 },
