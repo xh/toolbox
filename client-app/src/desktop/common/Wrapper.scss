@@ -29,7 +29,28 @@
     }
   }
 
-  .toolbox-wrapper-sourcecode {
+  .toolbox-wrapper-source-links {
     padding: var(--xh-pad-px);
+  }
+
+  .toolbox-wrapper-source-links-table {
+    table {
+      width: 100%;
+    }
+
+    th, td {
+      vertical-align: top;
+      //border-bottom: var(--xh-border-solid);
+    }
+
+    th {
+      text-align: right;
+      //border-right: var(--xh-border-solid);
+    }
+
+    tr:last-child {
+        border: 0
+    }
+
   }
 }
