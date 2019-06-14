@@ -137,7 +137,7 @@ export class RestGridPanel extends Component {
             item: panel({
                 title: 'Grids › REST Editor',
                 icon: Icon.edit(),
-                width: 900,
+                width: 850,
                 height: 400,
                 item: restGrid({model: this.model})
             })
