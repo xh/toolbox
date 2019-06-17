@@ -41,7 +41,7 @@ export class LoadingIndicatorPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Other › Loading Indicator',
+                title: 'Panels › Loading Indicator',
                 icon: Icon.spinner(),
                 width: 800,
                 height: 400,

@@ -20,6 +20,7 @@ import {FormsTab} from './tabs/forms/FormsTab';
 import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
 import {OtherTab} from './tabs/other/OtherTab';
+import {PanelsTab} from './tabs/panels/PanelsTab';
 import {ExamplesTab} from './tabs/examples/ExamplesTab';
 import {FormatsTab} from './tabs/formats/FormatsTab';
 
@@ -34,6 +35,7 @@ export class AppModel {
         tabs: [
             {id: 'home', icon: Icon.home(), content: HomeTab},
             {id: 'containers', icon: Icon.box(), content: ContainersTab},
+            {id: 'panels', icon: Icon.window(), content: PanelsTab},
             {id: 'grids', icon: Icon.grid(), content: GridsTab},
             {id: 'forms', icon: Icon.edit(), content: FormsTab},
             {id: 'charts', icon: Icon.chartLine(), content: ChartsTab},
@@ -87,10 +89,19 @@ export class AppModel {
                         children: [
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
-                            {name: 'panel', path: '/panel'},
                             {name: 'tabPanel', path: '/tabPanel'},
-                            {name: 'toolbar', path: '/toolbar'},
                             {name: 'dock', path: '/dock'}
+                        ]
+                    },
+                    {
+                        name: 'panels',
+                        path: '/panels',
+                        children: [
+                            {name: 'panel', path: '/panel'},
+                            {name: 'toolbar', path: '/toolbar'},
+                            {name: 'panelSizing', path: '/panelsizing'},
+                            {name: 'mask', path: '/mask'},
+                            {name: 'loadingIndicator', path: '/loadingindicator'}
                         ]
                     },
                     {
@@ -139,8 +150,6 @@ export class AppModel {
                         path: '/other',
                         children: [
                             {name: 'icons', path: '/icons'},
-                            {name: 'loadingIndicator', path: '/loadingindicator'},
-                            {name: 'mask', path: '/mask'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'timestamp', path: '/timestamp'},

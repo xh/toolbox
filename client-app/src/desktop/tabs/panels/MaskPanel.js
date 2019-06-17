@@ -42,7 +42,7 @@ export class MaskPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Other › Mask',
+                title: 'Panels › Mask',
                 icon: Icon.mask({prefix: 'fas'}),
                 width: 800,
                 height: 400,
