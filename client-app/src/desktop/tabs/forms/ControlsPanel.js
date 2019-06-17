@@ -171,11 +171,10 @@ export class ControlsPanel extends Component {
                             row({
                                 label: 'DateInput',
                                 field: 'date1',
-                                info: 'leftIcon, minDate, maxDate, textAlign',
+                                info: 'minDate, maxDate, textAlign',
                                 fmtVal: v => fmtDateTime(v),
-                                layout: {width: 150},
+                                layout: {width: 160},
                                 item: dateInput({
-                                    leftIcon: Icon.calendar(),
                                     placeholder: 'YYYY-MM-DD',
                                     minDate: moment().subtract(5, 'weeks').toDate(),
                                     maxDate: moment().add(2, 'weeks').toDate(),
@@ -188,7 +187,7 @@ export class ControlsPanel extends Component {
                                 info: 'timePrecision',
                                 fmtVal: v => fmtDateTime(v),
                                 readonlyRenderer: v => fmtDateTime(v),
-                                layout: {width: 150},
+                                layout: {width: 160},
                                 item: dateInput({
                                     showActionsBar: true,
                                     timePrecision: 'minute',

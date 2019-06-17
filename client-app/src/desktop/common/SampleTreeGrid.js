@@ -14,6 +14,8 @@ import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/c
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {bindable} from '@xh/hoist/mobx';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
 
@@ -36,16 +38,31 @@ class SampleTreeGrid extends Component {
                 }),
                 filler(),
                 storeCountLabel({gridModel}),
-                storeFilterField({gridModel}),
+                storeFilterField({gridModel, filterOptions: {includeChildren: model.filterIncludeChildren}}),
                 colChooserButton({gridModel}),
                 exportButton({gridModel})
             ),
             item: grid({model: gridModel}),
             mask: model.loadModel,
             bbar: toolbar(
-                filler(),
-                gridStyleSwitches({gridModel})
-
+                select({
+                    model: gridModel,
+                    bind: 'showSummary',
+                    width: 120,
+                    options: [
+                        {label: 'Top Total', value: 'top'},
+                        {label: 'Bottom Total', value: 'bottom'},
+                        {label: 'No Total', value: false}
+                    ]
+                }),
+                gridStyleSwitches({gridModel}),
+                toolbarSep(),
+                switchInput({
+                    model,
+                    bind: 'filterIncludeChildren',
+                    label: 'Filter w/Children',
+                    labelAlign: 'left'
+                })
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()
@@ -58,6 +75,10 @@ export const sampleTreeGrid = elemFactory(SampleTreeGrid);
 @HoistModel
 @LoadSupport
 class Model {
+
+    @bindable
+    filterIncludeChildren = false;
+    
     @managed
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
@@ -71,6 +92,9 @@ class Model {
     @managed
     gridModel = new GridModel({
         treeMode: true,
+        store: {
+            loadRootAsSummary: true
+        },
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
@@ -144,7 +168,7 @@ class Model {
             dims = dimChooserModel.value;
 
         return XH.portfolioService
-            .getPortfolioAsync(dims)
+            .getPortfolioAsync(dims, true)
             .then(data => {
                 gridModel.loadData(data);
                 gridModel.selectFirst();
