@@ -1,6 +1,6 @@
 import {XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon/Icon';
 
 export function getAppOptions() {
@@ -30,18 +30,12 @@ export function getAppOptions() {
         },
         {
             name: 'autoRefresh',
+            prefName: 'xhAutoRefreshEnabled',
             formField: {
-                label: 'Auto-Refresh',
-                item: select({
-                    options: [
-                        {value: -1, label: 'Disabled'},
-                        {value: 15, label: 'Every 15 Seconds'},
-                        {value: 60, label: 'Every 60 Seconds'}
-                    ]
-                })
-            },
-            valueGetter: () => XH.autoRefreshService.interval,
-            valueSetter: (v) => XH.autoRefreshService.setInterval(v)
+                label: 'Auto-refresh',
+                info: `Enable to auto-refresh app data every ${XH.autoRefreshService.interval} seconds`,
+                item: switchInput()
+            }
         }
     ];
 }
