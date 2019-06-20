@@ -8,7 +8,7 @@ import {XH, HoistAppModel, managed, loadAllAsync} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
 import {required} from '@xh/hoist/cmp/form';
-import {select} from '@xh/hoist/mobile/cmp/input';
+import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
 
 import {PortfolioService} from '../core/svc/PortfolioService';
 
@@ -130,6 +130,15 @@ export class AppModel {
                 },
                 valueGetter: () => XH.darkTheme ? 'dark' : 'light',
                 valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark')
+            },
+            {
+                name: 'autoRefresh',
+                prefName: 'xhAutoRefreshEnabled',
+                formField: {
+                    label: 'Auto-refresh',
+                    info: `Enable to auto-refresh app data every ${XH.autoRefreshService.interval} seconds`,
+                    item: switchInput()
+                }
             }
         ];
     }

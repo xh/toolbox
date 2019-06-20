@@ -4,6 +4,7 @@ import {AppModel} from '../desktop/AppModel';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
 XH.renderApp({
+    clientAppCode: 'app',
     clientAppName: 'Toolbox',
     componentClass: App,
     modelClass: AppModel,
