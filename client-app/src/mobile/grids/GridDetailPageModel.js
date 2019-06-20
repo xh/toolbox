@@ -1,5 +1,5 @@
 import {HoistModel, LoadSupport} from '@xh/hoist/core';
-import {observable, settable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {find} from 'lodash';
 
 import {companyTrades} from '../../core/data';
@@ -9,7 +9,7 @@ import {companyTrades} from '../../core/data';
 export class GridDetailPageModel {
 
     id;
-    @settable @observable.ref record;
+    @bindable.ref record;
 
     constructor({id}) {
         this.id = id;
