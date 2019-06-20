@@ -4,6 +4,7 @@ import {AppModel} from '../mobile/AppModel';
 import {AppContainer} from '@xh/hoist/mobile/appcontainer';
 
 XH.renderApp({
+    clientAppCode: 'mobile',
     clientAppName: 'Toolbox Mobile',
     componentClass: App,
     modelClass: AppModel,
