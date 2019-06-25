@@ -4,26 +4,25 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {HoistAppModel, XH, managed, loadAllAsync} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
 
 import {CompanyService} from '../core/svc/CompanyService';
-import {TradeService} from '../core/svc/TradeService';
-import {SalesService} from '../core/svc/SalesService';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {AutoRefreshService} from '../core/svc/AutoRefreshService';
+import {SalesService} from '../core/svc/SalesService';
+import {TradeService} from '../core/svc/TradeService';
+
+import {getAppOptions} from './AppOptions';
 
 import {ChartsTab} from './tabs/charts/ChartsTab';
 import {ContainersTab} from './tabs/containers/ContainersTab';
+import {ExamplesTab} from './tabs/examples/ExamplesTab';
+import {FormatsTab} from './tabs/formats/FormatsTab';
 import {FormsTab} from './tabs/forms/FormsTab';
 import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
-import {IconsTab} from './tabs/icons/IconsTab';
 import {OtherTab} from './tabs/other/OtherTab';
-import {ExamplesTab} from './tabs/examples/ExamplesTab';
-import {FormatsTab} from './tabs/formats/FormatsTab';
-
-import {getAppOptions} from './AppOptions';
 
 @HoistAppModel
 export class AppModel {
@@ -32,15 +31,14 @@ export class AppModel {
     tabModel = new TabContainerModel({
         route: 'default',
         tabs: [
-            {id: 'home', content: HomeTab},
-            {id: 'containers', content: ContainersTab},
-            {id: 'grids', content: GridsTab},
-            {id: 'forms', content: FormsTab},
-            {id: 'charts', content: ChartsTab},
-            {id: 'icons', content: IconsTab},
-            {id: 'formats', content: FormatsTab},
-            {id: 'other', content: OtherTab},
-            {id: 'examples', content: ExamplesTab}
+            {id: 'home', icon: Icon.home(), content: HomeTab},
+            {id: 'containers', icon: Icon.box(), content: ContainersTab},
+            {id: 'grids', icon: Icon.grid(), content: GridsTab},
+            {id: 'forms', icon: Icon.edit(), content: FormsTab},
+            {id: 'charts', icon: Icon.chartLine(), content: ChartsTab},
+            {id: 'formats', icon: Icon.print(), content: FormatsTab},
+            {id: 'other', icon: Icon.boxFull(), content: OtherTab},
+            {id: 'examples', icon: Icon.books(), content: ExamplesTab}
         ],
         switcherPosition: 'none'
     });
@@ -58,8 +56,7 @@ export class AppModel {
             CompanyService,
             TradeService,
             SalesService,
-            PortfolioService,
-            AutoRefreshService
+            PortfolioService
         );
     }
 
@@ -106,7 +103,8 @@ export class AppModel {
                             {name: 'rest', path: '/rest'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'performance', path: '/performance'},
-                            {name: 'agGrid', path: '/agGrid'}
+                            {name: 'agGrid', path: '/agGrid'},
+                            {name: 'cube', path: '/cube'}
                         ]
                     },
                     {
@@ -127,10 +125,6 @@ export class AppModel {
                         ]
                     },
                     {
-                        name: 'icons',
-                        path: '/icons'
-                    },
-                    {
                         name: 'formats',
                         path: '/formats',
                         children: [
@@ -142,11 +136,13 @@ export class AppModel {
                         name: 'other',
                         path: '/other',
                         children: [
+                            {name: 'icons', path: '/icons'},
                             {name: 'mask', path: '/mask'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'timestamp', path: '/timestamp'},
-                            {name: 'jsx', path: '/jsx'}
+                            {name: 'jsx', path: '/jsx'},
+                            {name: 'popups', path: '/popups'}
                         ]
                     },
                     {
@@ -155,6 +151,7 @@ export class AppModel {
                         children: [
                             {name: 'portfolio', path: '/portfolio'},
                             {name: 'news', path: '/news'},
+                            {name: 'recalls', path: '/recalls'},
                             {name: 'fileManager', path: '/fileManager', omit: !isAdmin}
                         ]
                     }

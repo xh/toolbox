@@ -1,4 +1,4 @@
-import {HoistModel, XH, managed} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, XH, managed} from '@xh/hoist/core';
 import {GridModel, fileExtCol} from '@xh/hoist/cmp/grid';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {computed} from '@xh/hoist/mobx';
@@ -6,9 +6,10 @@ import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import filesize from 'filesize';
 import download from 'downloadjs';
-import {filter, last, find} from 'lodash';
+import {filter, last, find, pull} from 'lodash';
 
 @HoistModel
+@LoadSupport
 export class FileManagerModel {
 
     @managed
@@ -205,14 +206,13 @@ export class FileManagerModel {
         }
     }
 
-    // Update the status of an existing record, ensuring store reloaded to reflect.
-    // TODO: store recs -> rawData -> manipulate -> reload (is there a better way?)
+    // Update the status of an existing record.
     setFileStatus(id, newStatus) {
-        const data = this.getAllData(),
-            toUpdate = find(data, {id});
+        const store = this.getStore(),
+            rec = store.getById(id),
+            newData = {...rec.raw, status: newStatus};
 
-        toUpdate.status = newStatus;
-        this.getStore().loadData(data);
+        store.updateData([newData]);
     }
 
     syncWithChooser() {
@@ -223,6 +223,10 @@ export class FileManagerModel {
 
         // Mix in copy of chooser files.
         chooserModel.files.forEach(newFile => {
+            // A chooser file of the same name will replace any current file.
+            const dupeFile = find(newData, {name: newFile.name});
+            if (dupeFile) pull(newData, dupeFile);
+
             newData.push({
                 name: newFile.name,
                 extension: this.getExtension(newFile.name),

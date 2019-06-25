@@ -15,6 +15,7 @@ export class LeftRightChooserPanel extends Component {
     model = new LeftRightChooserModel({
         data,
         ungroupedName: 'Others',
+        leftEmptyText: 'No more fruits to choose!',
         rightGroupingEnabled: false
     });
 

@@ -1,5 +1,5 @@
 import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {box, filler, span} from '@xh/hoist/cmp/layout';
+import {box, filler, fragment, span, br} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, LayoutSupport, XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
@@ -16,6 +16,7 @@ import {Component} from 'react';
 import {truncate} from 'lodash';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
+import {Ref} from '@xh/hoist/utils/react';
 
 @HoistComponent
 @LayoutSupport
@@ -38,6 +39,7 @@ class SampleGrid extends Component {
 
         return panel({
             item: grid({model: gridModel}),
+            ref: model.panelRef.ref,
             mask: loadModel,
             tbar: toolbar({
                 omit: this.props.omitToolbar,
@@ -77,6 +79,7 @@ class SampleGrid extends Component {
             ...this.getLayoutProps()
         });
     }
+
 }
 export const sampleGrid = elemFactory(SampleGrid);
 
@@ -85,6 +88,8 @@ export const sampleGrid = elemFactory(SampleGrid);
 @LoadSupport
 class Model {
     @observable groupBy = false;
+
+    panelRef = new Ref();
 
     viewDetailsAction = {
         text: 'View Details',
@@ -118,6 +123,7 @@ class Model {
 
     @managed
     gridModel = new GridModel({
+        showSummary: 'bottom',
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
@@ -224,16 +230,21 @@ class Model {
         const gridModel = this.gridModel;
         return wait(250)
             .then(() => {
-                gridModel.loadData(XH.tradeService.generateTrades());
+                const {trades, summary} = XH.tradeService.generateTrades();
+                gridModel.loadData(trades, summary);
                 if (!gridModel.hasSelection) gridModel.selectFirst();
             });
     }
 
     showInfoToast(rec) {
         XH.toast({
-            message: `You asked for ${rec.company} details. They are based in ${rec.city}.`,
+            message: fragment(
+                `You asked for ${rec.company} details.`, br(),
+                `They are based in ${rec.city}.`
+            ),
             icon: Icon.info(),
-            intent: 'primary'
+            intent: 'primary',
+            containerRef: this.panelRef.value
         });
     }
 
@@ -241,7 +252,8 @@ class Model {
         XH.toast({
             message: `You asked to terminate ${rec.company}. Sorry, ${rec.company}!`,
             icon: Icon.skull(),
-            intent: 'danger'
+            intent: 'danger',
+            containerRef: this.panelRef.value
         });
     }
 
