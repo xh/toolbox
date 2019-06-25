@@ -737,7 +737,7 @@
     "@babel/plugin-transform-react-jsx-self" "^7.0.0"
     "@babel/plugin-transform-react-jsx-source" "^7.0.0"
 
-"@babel/runtime-corejs2@^7.4.4":
+"@babel/runtime-corejs2@^7.4.5":
   version "7.4.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime-corejs2/-/runtime-corejs2-7.4.5.tgz#3d892f0560df21bafb384dd7727e33853e95d3c9"
   integrity sha512-5yLuwzvIDecKwYMzJtiarky4Fb5643H3Ao5jwX0HrMR5oM5mn2iHH9wSZonxwNK0oAjAFUQAiOd4jT7/9Y2jMQ==
@@ -1226,10 +1226,10 @@
     webpack-dev-server "~3.3.1"
     webpackbar "~3.2.0"
 
-"@xh/hoist@^24.0.0-SNAPSHOT":
-  version "24.0.0-SNAPSHOT.1560201817657"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-24.0.0-SNAPSHOT.1560201817657.tgz#b8fda901b43988fd7093271e932f98f495d2b715"
-  integrity sha512-HV9MeWE3SE+/da4qdGrCye4MRGqCLPopOZCkeUl04ScvD3bPxUhWPEcjIT5EU8iNZp8l4qHiLAjkJ9Am9wJsgA==
+"@xh/hoist@24.0.0":
+  version "24.0.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-24.0.0.tgz#79a3798230ffd66d6fe460f4e3ee51e8b03265c1"
+  integrity sha512-r/AHJPdBHsGkVY6puEpmB8dS8+nNHIpG11hZ+TBxN2CmDdPOkrYJa2edv4wj9Y4z9IAehBuINkJVrzbno315fg==
   dependencies:
     "@blueprintjs/core" "~3.15.0"
     "@blueprintjs/datetime" "~3.9.0"
@@ -1251,14 +1251,14 @@
     highcharts "~7.1.1"
     lodash "~4.17.11"
     lodash-inflection "~1.5.0"
-    mobx "~5.10.0"
+    mobx "~5.10.1"
     mobx-react "~6.0.3"
     moment "~2.24.0"
     numbro "~2.1.2"
     onsenui "~2.10.8"
     prop-types "~15.7.2"
     qs "~6.7.0"
-    react-beautiful-dnd "~11.0.3"
+    react-beautiful-dnd "~11.0.4"
     react-dropzone "~10.1.4"
     react-onsenui "~1.11.2"
     react-select "^3.0.4"
@@ -5726,7 +5726,7 @@ mobx-react@~6.0.3:
   dependencies:
     mobx-react-lite "1.4.0"
 
-mobx@~5.10.0:
+mobx@~5.10.1:
   version "5.10.1"
   resolved "https://registry.yarnpkg.com/mobx/-/mobx-5.10.1.tgz#eb0e2ff76fe376d0a42c941533260deeae5956d8"
   integrity sha512-L+akEGxdkKYssejgW9ayRPx5cZYJfxvTmdBUeR3S9oeumScV7Jj57yPeh9WMEk6NWeG8Wx3H0cWhqs0pftbtmg==
@@ -7001,12 +7001,12 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-beautiful-dnd@~11.0.3:
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/react-beautiful-dnd/-/react-beautiful-dnd-11.0.3.tgz#5678bb3e725d8b56cb7cf57f56e952105fc4f2af"
-  integrity sha512-2FX2SnOlKMmfn90xUHCav7cxRWXwY7FeRa6TzdxWeX7DdP5JTvVQcsWgiOkdbJSj+J+1q1nA9QO4/HQ52D0DAA==
+react-beautiful-dnd@~11.0.4:
+  version "11.0.4"
+  resolved "https://registry.yarnpkg.com/react-beautiful-dnd/-/react-beautiful-dnd-11.0.4.tgz#4f9baa0bf035aac44e60702d6b20b4f140c18f1a"
+  integrity sha512-Obt3mYk8PhVMVp/AtgVgzP4YT2lJ2znN8XNsioYBoBbLTINurAF9H7toLoc3cCRnCYgUI1QUwK+UltXsuckSdQ==
   dependencies:
-    "@babel/runtime-corejs2" "^7.4.4"
+    "@babel/runtime-corejs2" "^7.4.5"
     css-box-model "^1.1.2"
     memoize-one "^5.0.4"
     raf-schd "^4.0.0"
