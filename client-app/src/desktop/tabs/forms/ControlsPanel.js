@@ -171,14 +171,14 @@ export class ControlsPanel extends Component {
                             row({
                                 label: 'DateInput',
                                 field: 'date1',
-                                info: 'minDate, maxDate, textAlign',
+                                info: 'minDate, maxDate, enableClear',
                                 fmtVal: v => fmtDateTime(v),
                                 layout: {width: 160},
                                 item: dateInput({
                                     placeholder: 'YYYY-MM-DD',
                                     minDate: moment().subtract(5, 'weeks').toDate(),
                                     maxDate: moment().add(2, 'weeks').toDate(),
-                                    textAlign: 'right'
+                                    enableClear: true
                                 })
                             }),
                             row({

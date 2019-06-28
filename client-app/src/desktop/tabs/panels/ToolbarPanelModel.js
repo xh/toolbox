@@ -1,5 +1,5 @@
-import {HoistModel} from '@xh/hoist/core/index';
-import {bindable} from '@xh/hoist/mobx/index';
+import {HoistModel} from '@xh/hoist/core';
+import {bindable} from '@xh/hoist/mobx';
 
 @HoistModel
 export class ToolbarPanelModel {
