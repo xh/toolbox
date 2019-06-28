@@ -22,10 +22,15 @@ import {Ref} from '@xh/hoist/utils/react';
 @LayoutSupport
 class SampleGrid extends Component {
 
-    model = new Model();
+    model;
+
+    constructor(props) {
+        super(props);
+        this.model = new Model({loadModel: props.externalLoadModel});
+    }
 
     render() {
-        const {model} = this,
+        const {model, props} = this,
             {gridModel, loadModel} = model,
             {selection} = gridModel,
             selCount = selection.length;
@@ -40,9 +45,9 @@ class SampleGrid extends Component {
         return panel({
             item: grid({model: gridModel}),
             ref: model.panelRef.ref,
-            mask: loadModel,
+            mask: props.externalLoadModel ? false : loadModel,
             tbar: toolbar({
-                omit: this.props.omitToolbar,
+                omit: props.omitToolbars,
                 items: [
                     refreshButton({model}),
                     toolbarSep(),
@@ -68,6 +73,7 @@ class SampleGrid extends Component {
                 ]
             }),
             bbar: toolbar({
+                omit: props.omitToolbars,
                 items: [
                     Icon.info(),
                     box(selText),
@@ -90,6 +96,12 @@ class Model {
     @observable groupBy = false;
 
     panelRef = new Ref();
+
+    constructor({loadModel}) {
+        if (loadModel) {
+            this._loadModel = loadModel;
+        }
+    }
 
     viewDetailsAction = {
         text: 'View Details',

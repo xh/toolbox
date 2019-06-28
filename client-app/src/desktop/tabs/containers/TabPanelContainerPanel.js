@@ -43,9 +43,9 @@ export class TabPanelContainerPanel extends Component {
                                 id: 'top',
                                 title: 'Top Tabs',
                                 content: () => `
-                        This overall example is a standard TabContainer with its switcher located in the default,
-                        top position. Change the tabs above to see examples of other TabContainer configurations.
-                    `
+                                    This overall example is a standard TabContainer with its switcher located in the default,
+                                    top position. Change the tabs above to see examples of other TabContainer configurations.
+                                `
                             },
                             {
                                 id: 'bottom',
