@@ -28,7 +28,6 @@ class SampleGrid extends Component {
         const {model} = this,
             {gridModel, loadModel} = model,
             {selection} = gridModel,
-            {title, icon} = this.props,
             selCount = selection.length;
 
         let selText = 'No selection';
@@ -40,7 +39,7 @@ class SampleGrid extends Component {
 
         return hframe(
             panel({
-                title, icon,
+                // title, icon,
                 ref: model.panelRef.ref,
                 mask: loadModel,
                 tbar: toolbar({
@@ -81,7 +80,6 @@ class SampleGrid extends Component {
                 ...this.getLayoutProps()
             }),
             panel({
-                icon: Icon.gears(),
                 item: toolbar({
                     alignItems: 'flex-end',
                     flex: 1,
@@ -92,8 +90,7 @@ class SampleGrid extends Component {
                 mask: loadModel,
                 model: {
                     side: 'right',
-                    defaultSize: 150,
-                    showHeaderCollapseButton: false
+                    defaultSize: 150
                 },
                 ...this.getLayoutProps()
             })

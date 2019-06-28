@@ -17,35 +17,30 @@ export class GridStyleSwitches extends Component {
                 label: 'Compact',
                 labelAlign: 'left'
             }),
-            toolbarSep(),
             switchInput({
                 model: gridModel,
                 bind: 'stripeRows',
                 label: 'Striped',
                 labelAlign: 'left'
             }),
-            toolbarSep(),
             switchInput({
                 model: gridModel,
                 bind: 'rowBorders',
                 label: 'Row Borders',
                 labelAlign: 'left'
             }),
-            toolbarSep(),
             switchInput({
                 model: gridModel,
                 bind: 'cellBorders',
                 label: 'Cell Borders',
                 labelAlign: 'left'
             }),
-            toolbarSep(),
             switchInput({
                 model: gridModel,
                 bind: 'showHover',
                 label: 'Hover',
                 labelAlign: 'left'
             }),
-            toolbarSep(),
             switchInput({
                 model: gridModel,
                 bind: 'showCellFocus',
