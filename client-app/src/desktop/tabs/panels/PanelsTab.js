@@ -18,11 +18,11 @@ export class PanelsTab extends Component {
                 route: 'default.panels',
                 switcherPosition: 'left',
                 tabs: [
-                    {id: 'panel', content: BasicPanel},
-                    {id: 'toolbar', content: ToolbarPanel},
-                    {id: 'panelSizing', title: 'Panel Sizing', content: PanelSizingPanel},
-                    {id: 'mask', title: 'Mask', content: MaskPanel},
-                    {id: 'loadingIndicator', title: 'Loading Indicator', content: LoadingIndicatorPanel}
+                    {id: 'intro', content: BasicPanel},
+                    {id: 'toolbars', content: ToolbarPanel},
+                    {id: 'sizing', content: PanelSizingPanel},
+                    {id: 'mask', content: MaskPanel},
+                    {id: 'loadingIndicator', content: LoadingIndicatorPanel}
                 ]
             },
             className: 'toolbox-tab'

@@ -25,8 +25,6 @@ import {HomeTab} from './tabs/home/HomeTab';
 import {OtherTab} from './tabs/other/OtherTab';
 import {PanelsTab} from './tabs/panels/PanelsTab';
 
-import {getAppOptions} from './AppOptions';
-
 @HoistAppModel
 export class AppModel {
 
@@ -97,11 +95,11 @@ export class AppModel {
                         name: 'panels',
                         path: '/panels',
                         children: [
-                            {name: 'panel', path: '/panel'},
-                            {name: 'toolbar', path: '/toolbar'},
-                            {name: 'panelSizing', path: '/panelsizing'},
+                            {name: 'intro', path: '/intro'},
+                            {name: 'toolbars', path: '/toolbars'},
+                            {name: 'sizing', path: '/sizing'},
                             {name: 'mask', path: '/mask'},
-                            {name: 'loadingIndicator', path: '/loadingindicator'}
+                            {name: 'loadingIndicator', path: '/loadingIndicator'}
                         ]
                     },
                     {

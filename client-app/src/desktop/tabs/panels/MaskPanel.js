@@ -80,8 +80,8 @@ export class MaskPanel extends Component {
                         }),
                         toolbarSep(),
                         button({
-                            text: 'Show',
-                            intent: 'primary',
+                            text: 'Show Mask',
+                            intent: 'success',
                             onClick: this.showMask
                         })
                     ]

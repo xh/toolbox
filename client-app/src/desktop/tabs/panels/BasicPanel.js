@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {p, div} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {XH, HoistComponent} from '@xh/hoist/core/index';
@@ -20,16 +20,21 @@ export class BasicPanel extends Component {
         const model = this.basicPanelModel;
 
         return wrapper({
-            description: `
-                Panels support a number of important and frequent layout tasks. They include a header bar with a standard icon, title, and header items. They accept props to create docked top and and bottom toolbars. Panel content is limited to your imagination, but most often contains grids or charts or other panels. See the other Panel tabs for more complex panel examples and more panel features.
-            `,
+            description: [
+                <p>
+                    Panels are a core building block for layouts in Hoist. They support an optional
+                    header bar with props to configure an icon, title and custom header items,
+                    props for top and bottom toolbars, and an optional model to manage their sizing.
+                    See the other tabs at left for additional features and conveniences, including
+                    built-in integrations with other Hoist components such as masks.
+                </p>
+            ],
             item: panel({
                 icon: Icon.window(),
-                title: 'Panels › Basic Panel',
+                title: 'Panels › Intro',
                 height: 400,
                 width: 700,
                 tbar: toolbar(
-                    filler(),
                     popover({
                         position: 'bottom-left',
                         minimal: true,

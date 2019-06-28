@@ -82,8 +82,8 @@ export class LoadingIndicatorPanel extends Component {
                         }),
                         toolbarSep(),
                         button({
-                            text: 'Show',
-                            intent: 'primary',
+                            text: 'Show Indicator',
+                            intent: 'success',
                             onClick: this.showLoadingIndicator
                         })
                     ]
