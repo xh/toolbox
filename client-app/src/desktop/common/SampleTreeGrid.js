@@ -14,7 +14,8 @@ import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/c
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {bindable} from '@xh/hoist/mobx';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
 
@@ -37,7 +38,7 @@ class SampleTreeGrid extends Component {
                 }),
                 filler(),
                 storeCountLabel({gridModel}),
-                storeFilterField({gridModel}),
+                storeFilterField({gridModel, filterOptions: {includeChildren: model.filterIncludeChildren}}),
                 colChooserButton({gridModel}),
                 exportButton({gridModel})
             ),
@@ -47,16 +48,21 @@ class SampleTreeGrid extends Component {
                 select({
                     model: gridModel,
                     bind: 'showSummary',
-                    width: 150,
+                    width: 120,
                     options: [
-                        {label: 'Top Summary', value: 'top'},
-                        {label: 'Bottom Summary', value: 'bottom'},
-                        {label: 'No Summary', value: false}
+                        {label: 'Top Total', value: 'top'},
+                        {label: 'Bottom Total', value: 'bottom'},
+                        {label: 'No Total', value: false}
                     ]
                 }),
-                filler(),
-                gridStyleSwitches({gridModel})
-
+                gridStyleSwitches({gridModel}),
+                toolbarSep(),
+                switchInput({
+                    model,
+                    bind: 'filterIncludeChildren',
+                    label: 'Filter w/Children',
+                    labelAlign: 'left'
+                })
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()
@@ -69,6 +75,10 @@ export const sampleTreeGrid = elemFactory(SampleTreeGrid);
 @HoistModel
 @LoadSupport
 class Model {
+
+    @bindable
+    filterIncludeChildren = false;
+    
     @managed
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
