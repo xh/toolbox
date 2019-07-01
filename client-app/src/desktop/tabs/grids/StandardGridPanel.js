@@ -24,7 +24,7 @@ export class StandardGridPanel extends Component {
                 </p>
             ],
             item: panel({
-                width: 700,
+                width: 900,
                 height: 400,
                 title: 'Grids › Standard',
                 icon: Icon.gridPanel(),

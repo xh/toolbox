@@ -46,7 +46,7 @@ export class MaskPanel extends Component {
                 icon: Icon.mask({prefix: 'fas'}),
                 width: 800,
                 height: 400,
-                item: sampleGrid({omitToolbars: true}),
+                item: sampleGrid({omitGridTools: true}),
                 bbar: toolbar({
                     items: [
                         span('Mask for'),

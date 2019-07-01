@@ -1,7 +1,6 @@
 import {fragment} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent} from '@xh/hoist/core';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Component} from 'react';
 
 @HoistComponent
