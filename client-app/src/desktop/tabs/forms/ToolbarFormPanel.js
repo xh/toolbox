@@ -79,10 +79,10 @@ export class ToolbarFormPanel extends Component {
                             formField({
                                 label: null,
                                 field: 'date1',
-                                width: 120,
+                                width: 150,
                                 item: dateInput({
                                     placeholder: 'YYYY-MM-DD',
-                                    textAlign: 'right'
+                                    enableClear: true
                                 })
                             }),
                             formField({

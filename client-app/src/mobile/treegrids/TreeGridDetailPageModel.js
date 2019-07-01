@@ -1,12 +1,12 @@
 import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
-import {settable, observable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 
 @HoistModel
 @LoadSupport
 export class TreeGridDetailPageModel {
 
     id;
-    @settable @observable.ref record;
+    @bindable.ref record;
 
     constructor({id}) {
         this.id = decodeURIComponent(id);

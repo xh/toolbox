@@ -13,6 +13,7 @@ export class PopupsPage extends Component {
             title: 'Popups',
             icon: Icon.comment(),
             className: 'toolbox-page xh-tiled-bg',
+            scrollable: true,
             items: [
                 this.renderCard('Alert', () => {
                     XH.alert({

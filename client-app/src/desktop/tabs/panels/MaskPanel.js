@@ -3,7 +3,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable} from '@xh/hoist/mobx';
-import {span, filler} from '@xh/hoist/cmp/layout';
+import {span} from '@xh/hoist/cmp/layout';
 import {numberInput, textInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -29,16 +29,13 @@ export class MaskPanel extends Component {
         return wrapper({
             description: [
                 <p>
-                    Masks provide a semi-opaque overlay to disable interaction with a component. They
-                    are typically configured with a <code>PendingTaskModel</code>, which is a general
-                    model class used to track the status of one or more asynchronous Promises. In
-                    controlled mode, the model will reactively show/hide a bound mask while a linked
-                    promise is pending.
+                    Masks provide a semi-opaque overlay to disable interaction with a component.
                 </p>,
                 <p>
                     A convenient way to display a mask is via the <code>mask</code> property of Panel.
-                    This prop can accept a fully configured mask element or simply <code>true</code>
-                    to show a default mask. Either will be shown over the parent Panel.
+                    This prop can accept a fully configured mask element, <code>true</code> for a
+                    plain default mask, or (most commonly) a <code>PendingTaskModel</code> instance
+                    to automatically show a mask with a spinner when a linked promise is pending.
                 </p>,
                 <p>
                     A mask configured with <code>inline: false</code> will mask the entire Viewport.
@@ -51,11 +48,11 @@ export class MaskPanel extends Component {
                 }
             ],
             item: panel({
-                title: 'Other › Mask',
-                icon: Icon.eyeSlash(),
+                title: 'Panels › Mask',
+                icon: Icon.mask({prefix: 'fas'}),
                 width: 800,
                 height: 400,
-                item: sampleGrid({omitToolbar: true}),
+                item: sampleGrid({omitGridTools: true}),
                 bbar: toolbar({
                     items: [
                         span('Mask for'),
@@ -87,10 +84,10 @@ export class MaskPanel extends Component {
                             label: 'Spinner:',
                             labelAlign: 'left'
                         }),
-                        filler(),
+                        toolbarSep(),
                         button({
                             text: 'Show Mask',
-                            intent: 'primary',
+                            intent: 'success',
                             onClick: this.showMask
                         })
                     ]

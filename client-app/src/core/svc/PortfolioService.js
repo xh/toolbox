@@ -147,6 +147,7 @@ export class PortfolioService {
 
                 orders.push({
                     id: `order-${orders.length}`,
+                    posId: pos.id,
                     symbol,
                     dir,
                     quantity,
@@ -289,7 +290,7 @@ export class PortfolioService {
 
     // Calculate lowest-level leaf positions with P&L.
     calculateRawPositions() {
-        const byPosId = groupBy(this.orders, 'id'),
+        const byPosId = groupBy(this.orders, 'posId'),
             positions = [];
 
         forOwn(byPosId, (orders) => {

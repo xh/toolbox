@@ -118,13 +118,13 @@ export class ValidationPanel extends Component {
                 items: [
                     formField({
                         field: 'startDate',
-                        width: 120,
+                        width: 130,
                         inline: false,
                         item: dateInput()
                     }),
                     formField({
                         field: 'endDate',
-                        width: 120,
+                        width: 130,
                         inline: false,
                         item: dateInput()
                     })
