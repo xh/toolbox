@@ -45,7 +45,7 @@ export class LoadingIndicatorPanel extends Component {
                 icon: Icon.spinner(),
                 width: 800,
                 height: 400,
-                item: sampleGrid({omitToolbars: true, externalLoadModel: this.loadingIndicatorModel}),
+                item: sampleGrid({omitGridTools: true, externalLoadModel: this.loadingIndicatorModel}),
                 bbar: toolbar({
                     items: [
                         span('Show for'),

@@ -1,27 +1,49 @@
-import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {box, filler, fragment, span, br} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent, LayoutSupport, XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
+import {boolCheckCol, emptyFlexCol, grid, GridModel} from '@xh/hoist/cmp/grid';
+import {br, filler, fragment, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
+import {
+    elemFactory,
+    HoistComponent,
+    HoistModel,
+    LayoutSupport,
+    LoadSupport,
+    managed,
+    XH
+} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
+import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
+import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
+import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {Ref} from '@xh/hoist/utils/react';
+import PT from 'prop-types';
 import {Component} from 'react';
-import {truncate} from 'lodash';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
-import {Ref} from '@xh/hoist/utils/react';
+
+import './SampleGrid.scss';
 
 @HoistComponent
 @LayoutSupport
 class SampleGrid extends Component {
 
+    static propTypes = {
+        externalLoadModel: PT.instanceOf(PendingTaskModel),
+
+        /**
+         * True to drop grid-example-specific toolbars/controls - for use when embedding the grid
+         * within other examples where such controls would be distracting.
+         */
+        omitGridTools: PT.bool
+    };
+
+    baseClassName = 'tbox-samplegrid';
     model;
 
     constructor(props) {
@@ -35,19 +57,39 @@ class SampleGrid extends Component {
             {selection} = gridModel,
             selCount = selection.length;
 
-        let selText = 'No selection';
-        if (selCount == 1) {
-            selText = truncate(selection[0].company, {length: 20});
-        } else if (selCount > 1) {
-            selText = `Selected ${selCount} companies`;
+        let selText;
+        switch (selCount) {
+            case 0: selText = 'No selection'; break;
+            case 1: selText = `Selected ${selection[0].company}`; break;
+            default: selText = `Selected ${selCount} companies`;
         }
-
+        
         return panel({
-            item: grid({model: gridModel}),
-            ref: model.panelRef.ref,
-            mask: props.externalLoadModel ? false : loadModel,
+            items: [
+                hframe(
+                    vframe(
+                        grid({model: gridModel}),
+                        hbox({
+                            items: [Icon.info(), selText],
+                            className: 'tbox-samplegrid__selbar',
+                            omit: props.omitGridTools,
+                        })
+                    ),
+                    panel({
+                        items: [
+                            hbox({
+                                className: 'tbox-samplegrid__switches__title',
+                                items: [Icon.settings(), 'Display Options']
+                            }),
+                            gridStyleSwitches({gridModel})
+                        ],
+                        className: 'tbox-samplegrid__switches',
+                        omit: props.omitGridTools,
+                        model: {side: 'right', defaultSize: 150, resizable: false}
+                    })
+                )
+            ],
             tbar: toolbar({
-                omit: props.omitToolbars,
                 items: [
                     refreshButton({model}),
                     toolbarSep(),
@@ -70,17 +112,11 @@ class SampleGrid extends Component {
                     storeFilterField({gridModel}),
                     colChooserButton({gridModel}),
                     exportButton({gridModel})
-                ]
+                ],
+                omit: props.omitGridTools
             }),
-            bbar: toolbar({
-                omit: props.omitToolbars,
-                items: [
-                    Icon.info(),
-                    box(selText),
-                    filler(),
-                    gridStyleSwitches({gridModel})
-                ]
-            }),
+            ref: model.panelRef.ref,
+            mask: props.externalLoadModel ? false : loadModel,
             className: this.getClassName(),
             ...this.getLayoutProps()
         });
@@ -197,17 +233,17 @@ class Model {
             },
             {
                 field: 'city',
-                width: 150,
+                width: 140,
                 tooltip: (val, {record}) => `${record.company} is located in ${val}`,
                 cellClass: (val) => {
                     return val == 'New York' ? 'xh-text-color-accent' : '';
                 }
             },
             {
-                headerName: 'Trade Volume',
+                headerName: 'Volume',
                 field: 'trade_volume',
                 align: 'right',
-                width: 130,
+                width: 110,
                 tooltip: (val) => fmtNumberTooltip(val),
                 renderer: millionsRenderer({
                     precision: 1,
