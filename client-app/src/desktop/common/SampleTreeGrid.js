@@ -48,13 +48,15 @@ class SampleTreeGrid extends Component {
                 select({
                     model: gridModel,
                     bind: 'showSummary',
-                    width: 120,
+                    width: 130,
+                    enableFilter: false,
                     options: [
                         {label: 'Top Total', value: 'top'},
                         {label: 'Bottom Total', value: 'bottom'},
                         {label: 'No Total', value: false}
                     ]
                 }),
+                filler(),
                 gridStyleSwitches({gridModel}),
                 toolbarSep(),
                 switchInput({

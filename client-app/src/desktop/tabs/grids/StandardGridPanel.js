@@ -24,10 +24,10 @@ export class StandardGridPanel extends Component {
                 </p>
             ],
             item: panel({
+                width: 900,
+                height: 400,
                 title: 'Grids › Standard',
                 icon: Icon.gridPanel(),
-                width: 850,
-                height: 400,
                 item: sampleGrid()
             })
         });

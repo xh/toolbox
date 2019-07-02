@@ -5,7 +5,6 @@ import {FileChooserPanel} from './FileChooserPanel';
 import {IconsPanel} from './IconsPanel';
 import {JsxPanel} from './JsxPanel';
 import {LeftRightChooserPanel} from './LeftRightChooserPanel';
-import {MaskPanel} from './MaskPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {PopupsPanel} from './PopupsPanel';
 
@@ -19,7 +18,6 @@ export class OtherTab extends Component {
                 tabs: [
                     {id: 'popups', content: PopupsPanel},
                     {id: 'icons', title: 'Icons', content: IconsPanel},
-                    {id: 'mask', title: 'Mask', content: MaskPanel},
                     {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
                     {id: 'fileChooser', title: 'FileChooser', content: FileChooserPanel},
                     {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
