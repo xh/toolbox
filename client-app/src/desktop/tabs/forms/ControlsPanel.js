@@ -191,7 +191,8 @@ export class ControlsPanel extends Component {
                                 item: dateInput({
                                     showActionsBar: true,
                                     timePrecision: 'minute',
-                                    timePickerProps: {useAmPm: true}
+                                    timePickerProps: {useAmPm: true},
+                                    pickerOnlyMode: true
                                 })
                             })
                         ]
