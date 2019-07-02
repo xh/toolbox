@@ -72,7 +72,7 @@ class SampleGrid extends Component {
                         hbox({
                             items: [Icon.info(), selText],
                             className: 'tbox-samplegrid__selbar',
-                            omit: props.omitGridTools,
+                            omit: props.omitGridTools
                         })
                     ),
                     panel({
