@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
@@ -36,10 +36,18 @@ export class PanelSizingPanel extends Component {
 
     render() {
         return wrapper({
-            description: `
-                Panels support collapsing and drag-and-drop resizing, 
-                optionally saving their sizing state in a per-user preference.
-            `,
+            description: (
+                <div>
+                    <p>
+                        Panels support collapsing and drag-and-drop resizing via their <code>model</code> config,
+                        optionally saving their sizing state in a per-user preference.
+                    </p>
+                    <p>
+                        Note that the child panels below are also configured with
+                        their <code>compactHeader</code> prop set to true.
+                    </p>
+                </div>
+            ),
             item: panel({
                 title: 'Panels › Panel Sizing',
                 icon: Icon.window(),
@@ -54,6 +62,7 @@ export class PanelSizingPanel extends Component {
                                 title: 'Left Panel',
                                 icon: Icon.arrowToLeft(),
                                 model: this.leftPanelModel,
+                                compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
                                     item: 'Collapsible Left'
@@ -84,6 +93,7 @@ export class PanelSizingPanel extends Component {
                                 title: 'Right Panel',
                                 icon: Icon.arrowToRight(),
                                 model: this.rightPanelModel,
+                                compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
                                     item: 'Collapsible Right'
@@ -95,6 +105,7 @@ export class PanelSizingPanel extends Component {
                         title: 'Bottom Panel',
                         icon: Icon.arrowToBottom(),
                         model: this.bottomPanelModel,
+                        compactHeader: true,
                         item: box({
                             padding: 10,
                             item: 'Collapsible Bottom'
@@ -108,7 +119,6 @@ export class PanelSizingPanel extends Component {
                             button({
                                 icon: Icon.gear(),
                                 minimal: true,
-                                large: true,
                                 onClick: () => XH.toast({message: 'You clicked a Panel headerItem'})
                             })
                         ]
