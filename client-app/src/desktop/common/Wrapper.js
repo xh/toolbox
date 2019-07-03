@@ -1,30 +1,36 @@
 import {Component} from 'react';
 import {HoistComponent, elemFactory, XH} from '@xh/hoist/core';
 import PT from 'prop-types';
-import {box, code, table, tbody, tr, td, th} from '@xh/hoist/cmp/layout';
+import {box, table, tbody, tr, td, th} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {castArray} from 'lodash';
 import {DockContainerModel, dockContainer} from '@xh/hoist/cmp/dock';
 import {managed} from '@xh/hoist/core/mixins';
 import {toolboxLink} from '../../common/ToolboxLink';
 
 import './Wrapper.scss';
 
+/**
+ * A styled panel used to wrap component examples within Toolbox.
+ */
 @HoistComponent
 class Wrapper extends Component {
     
     static propTypes = {
-        
-        /* quick summary of the component */
+        /**
+         * Intro text or description for the Component/pattern demo'd by this tab.
+         */
         description: PT.oneOfType([PT.element, PT.string]),
         
-        /*  links to source code on GitHub or external websites
-        *
-        *   A single link Obj should have a `url` prop and a `text` prop (see ToolboxLink).
-        *   Optionally, the link Obj can have a `notes` prop, to be displayed to the right of link
-        */
-        links: PT.oneOfType([PT.object, PT.arrayOf(PT.object)])
+        /**
+         * Links to display for this tab, pointing either to relevant source code within ExHI
+         * repos or to external sites (e.g. docs for key external components). Links should be
+         * provided as objects with `url` and `text` properties for the link itself, as well as an
+         * optional `notes` property for additional descriptive text.
+         *
+         * @see ToolboxLink for additional details.
+         */
+        links: PT.arrayOf(PT.object)
     };
     
     @managed
@@ -32,40 +38,40 @@ class Wrapper extends Component {
     
     constructor(props) {
         super(props);
-        
-        if (!this.props.links) return;
-        
-        this.dockContainerModel.addView({
-            id: XH.genId(),
-            icon: Icon.code(),
-            title: code('Source Links'),
-            allowDialog: false,
-            allowClose: false,
-            collapsed: true,
-            content: panel({
-                className: 'toolbox-wrapper-source-links',
-                item: this.createLinksWithNotes(),
-                width: 350
-            })
-        });
+
+        if (this.props.links) {
+            this.dockContainerModel.addView({
+                id: XH.genId(),
+                icon: Icon.link(),
+                title: 'Links',
+                compactHeader: true,
+                allowDialog: false,
+                allowClose: false,
+                collapsed: true,
+                content: panel({
+                    className: 'tbox-wrapper__links',
+                    item: this.createLinksWithNotes(),
+                    width: 350
+                })
+            });
+        }
     }
     
     render() {
-        const {description, children, ...rest} = this.props;
+        const {description, links, children, ...rest} = this.props;
         
         return box({
-            className: 'toolbox-wrapper xh-tiled-bg',
+            className: 'tbox-wrapper xh-tiled-bg',
             items: [
                 panel({
-                    className: 'toolbox-wrapper-description',
+                    className: 'tbox-wrapper__description',
                     item: description,
-                    width: 700,
-                    marginBottom: 10,
                     omit: !description
                 }),
                 children,
                 dockContainer({
                     model: this.dockContainerModel,
+                    omit: !links
                 })
             ],
             ...rest
@@ -73,21 +79,19 @@ class Wrapper extends Component {
     }
     
     createLinksWithNotes() {
-        const arrayLinks = castArray(this.props.links);
+        const {links} = this.props;
 
-        return table({
-            className: 'toolbox-wrapper-source-links-table',
-            item: tbody(arrayLinks.map(linkObj => {
-                return tr(
-                    th(toolboxLink(linkObj)),
-                    td(this.createNotes(linkObj))
-                );
-            }))
-        });
+        return table(
+            tbody(
+                links.map(link => {
+                    return tr(
+                        th(toolboxLink(link)),
+                        td(link.notes || '')
+                    );
+                })
+            )
+        );
     }
-    
-    createNotes(linkObj) {
-        return (linkObj.notes ? [' ', linkObj.notes] : null);
-    }
+
 }
 export const wrapper = elemFactory(Wrapper);

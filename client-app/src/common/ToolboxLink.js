@@ -15,13 +15,21 @@ class ToolboxLink extends Component {
     static propTypes = {
         
         /**
-         * URL for the link, can be a full URL (must include https://) or a string that starts with:
-         *      '$TB' for toolbox files, such as '$TB/client-app/src/desktop/tabs/other/PopupsPanel.js', or
-         *      '$HR' for hoist-react files, such as '$HR/desktop/cmp/button/Button.js'.
+         * URL for the link.
+         *
+         * Can be a fully qualified URL for external/other links, or start with one of the following
+         * tokens to support configurable roots for the Hoist-React and Toolbox Github repos.
+         *
+         *      `$TB` for toolbox files, e.g. '$TB/client-app/src/desktop/App.js'
+         *          - or -
+         *      `$HR` for hoist-react files, e.g. '$HR/desktop/cmp/button/Button.js'
          */
         url: PT.string.isRequired,
         
-        /* text to be displayed in the hyperlink.  Defaults to the text after the last `/` */
+        /**
+         * Custom text for the link itself. Defaults to the portion of the url following the
+         * last slash - typically expected to be the relevant file name.
+         */
         text: PT.string
     };
     
@@ -44,11 +52,10 @@ class ToolboxLink extends Component {
     
     createDefaultText() {
         const {url} = this.props,
-            posAfterLastSlash = url.lastIndexOf('/') + 1,
-            posLastOctothorpe = url.lastIndexOf('#') === -1 ? url.length : url.lastIndexOf('#');
-            // .lastIndexOf() returns -1 if char not found
-        
-        return url.substring(posAfterLastSlash, posLastOctothorpe);
+            start = url.lastIndexOf('/'),
+            end = url.includes('#') ? url.lastIndexOf('#') : url.length;
+
+        return url.substring(start + 1, end);
     }
 }
 export const toolboxLink = elemFactory(ToolboxLink);
