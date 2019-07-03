@@ -177,6 +177,7 @@ class Model {
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
+        exportOptions: {columns: ['VISIBLE', 'id']},
         compact: XH.appModel.useCompactGrids,
         store: {
             processRawData: (r) => {
