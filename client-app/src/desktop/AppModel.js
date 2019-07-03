@@ -4,26 +4,26 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {HoistAppModel, XH, managed, loadAllAsync} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
+import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 
 import {CompanyService} from '../core/svc/CompanyService';
-import {TradeService} from '../core/svc/TradeService';
-import {SalesService} from '../core/svc/SalesService';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {AutoRefreshService} from '../core/svc/AutoRefreshService';
+import {SalesService} from '../core/svc/SalesService';
+import {TradeService} from '../core/svc/TradeService';
+
+import {getAppOptions} from './AppOptions';
 
 import {ChartsTab} from './tabs/charts/ChartsTab';
 import {ContainersTab} from './tabs/containers/ContainersTab';
+import {ExamplesTab} from './tabs/examples/ExamplesTab';
+import {FormatsTab} from './tabs/formats/FormatsTab';
 import {FormsTab} from './tabs/forms/FormsTab';
 import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
 import {OtherTab} from './tabs/other/OtherTab';
-import {ExamplesTab} from './tabs/examples/ExamplesTab';
-import {FormatsTab} from './tabs/formats/FormatsTab';
-
-import {getAppOptions} from './AppOptions';
+import {PanelsTab} from './tabs/panels/PanelsTab';
 
 @HoistAppModel
 export class AppModel {
@@ -34,6 +34,7 @@ export class AppModel {
         tabs: [
             {id: 'home', icon: Icon.home(), content: HomeTab},
             {id: 'containers', icon: Icon.box(), content: ContainersTab},
+            {id: 'panels', icon: Icon.window(), content: PanelsTab},
             {id: 'grids', icon: Icon.grid(), content: GridsTab},
             {id: 'forms', icon: Icon.edit(), content: FormsTab},
             {id: 'charts', icon: Icon.chartLine(), content: ChartsTab},
@@ -57,8 +58,7 @@ export class AppModel {
             CompanyService,
             TradeService,
             SalesService,
-            PortfolioService,
-            AutoRefreshService
+            PortfolioService
         );
     }
 
@@ -87,10 +87,19 @@ export class AppModel {
                         children: [
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
-                            {name: 'panel', path: '/panel'},
                             {name: 'tabPanel', path: '/tabPanel'},
-                            {name: 'toolbar', path: '/toolbar'},
                             {name: 'dock', path: '/dock'}
+                        ]
+                    },
+                    {
+                        name: 'panels',
+                        path: '/panels',
+                        children: [
+                            {name: 'intro', path: '/intro'},
+                            {name: 'toolbars', path: '/toolbars'},
+                            {name: 'sizing', path: '/sizing'},
+                            {name: 'mask', path: '/mask'},
+                            {name: 'loadingIndicator', path: '/loadingIndicator'}
                         ]
                     },
                     {
@@ -139,7 +148,6 @@ export class AppModel {
                         path: '/other',
                         children: [
                             {name: 'icons', path: '/icons'},
-                            {name: 'mask', path: '/mask'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'timestamp', path: '/timestamp'},

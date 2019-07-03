@@ -31,12 +31,7 @@ export class NewsPanelModel {
     @observable lastRefresh = null;
 
     @bindable sourceFilter = null;
-    @observable.ref textFilter = null;
-
-    @action
-    setTextFilter(filter) {
-        this.textFilter = filter;
-    }
+    @bindable.ref textFilter = null;
 
     constructor() {
         this.addReaction({
@@ -78,7 +73,7 @@ export class NewsPanelModel {
     filterData() {
         const filter = (rec) => {
             const {textFilter, sourceFilter} = this,
-                searchMatch = !textFilter || textFilter(rec),
+                searchMatch = !textFilter || textFilter.fn(rec),
                 sourceMatch = isEmpty(sourceFilter) || sourceFilter.includes(rec.source);
 
             return sourceMatch && searchMatch;

@@ -32,7 +32,7 @@ export class TreeGridPanel extends Component {
             item: panel({
                 title: 'Grids › Tree',
                 icon: Icon.grid(),
-                width: 700,
+                width: 975,
                 height: 400,
                 item: sampleTreeGrid()
             })
