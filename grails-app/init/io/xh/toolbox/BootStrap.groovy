@@ -83,7 +83,7 @@ class BootStrap {
             recallsHost: [
                 valueType: 'string',
                 defaultValue: 'api.fda.gov',
-                groupName: 'Toolbox - Example Apps'
+                groupName: 'Toolbox - Example Apps',
             ],
             sourceUrls: [
                 valueType: 'json',
