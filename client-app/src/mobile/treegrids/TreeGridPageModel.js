@@ -25,7 +25,7 @@ export class TreeGridPageModel {
             {value: 'trader', label: 'Trader'}
         ],
         initialValue: ['trader'],
-        historyPreference: 'mobileDimHistory'
+        preference: 'mobileDims'
     });
 
     @managed

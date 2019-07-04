@@ -120,19 +120,19 @@ class BootStrap {
                 groupName: 'Toolbox',
                 note: 'Grid sizing mode'
             ],
-            mobileDimHistory: [
+            mobileDims: [
                 type: 'json',
-                defaultValue: [],
+                defaultValue: {},
                 local: true,
                 groupName: 'Toolbox',
-                note: 'Nested arrays containing user\'s dimension picker history'
+                note: 'Object containing user\'s dimension picker value & history'
             ],
-            portfolioDimHistory: [
+            portfolioDims: [
                 type: 'json',
-                defaultValue: [],
+                defaultValue: {},
                 local: true,
                 groupName: 'Toolbox',
-                note: 'Nested arrays containing user\'s dimension picker history'
+                note: 'Object containing user\'s dimension picker value & history'
             ],
             recallsPanelConfig: [
                 type: 'json',
