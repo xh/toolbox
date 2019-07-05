@@ -192,7 +192,7 @@ export class ControlsPanel extends Component {
                                     showActionsBar: true,
                                     timePrecision: 'minute',
                                     timePickerProps: {useAmPm: true},
-                                    pickerOnlyMode: true
+                                    enableTextInput: false
                                 })
                             })
                         ]
