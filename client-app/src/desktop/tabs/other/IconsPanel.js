@@ -35,13 +35,13 @@ export class IconsPanel extends Component {
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/other/IconsPanel.js#L49',
-                    text: 'IconsPanel.js'
+                    url: '$TB/client-app/src/desktop/tabs/other/IconsPanel.js',
+                    notes: 'This example.'
                 },
                 {
-                    url: '$TB/client-app/src/desktop/tabs/examples/ExamplesTab.js#L28',
-                    text: 'ExamplesTab.js',
-                    notes: 'example of use'
+                    url: 'https://fontawesome.com/icons',
+                    text: 'FontAwesome',
+                    notes: 'The library used by Hoist to provide enumerated icons. Note that not all icons are included in the Hoist Icon class, but can be easily added.'
                 }
             ],
             item: panel({

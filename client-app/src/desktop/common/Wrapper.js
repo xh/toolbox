@@ -20,7 +20,7 @@ class Wrapper extends Component {
         /**
          * Intro text or description for the Component/pattern demo'd by this tab.
          */
-        description: PT.oneOfType([PT.element, PT.string]),
+        description: PT.oneOfType([PT.array, PT.element, PT.string]),
         
         /**
          * Links to display for this tab, pointing either to relevant source code within ExHI
@@ -47,11 +47,11 @@ class Wrapper extends Component {
                 compactHeader: true,
                 allowDialog: false,
                 allowClose: false,
-                collapsed: true,
+                collapsed: !XH.getPref('expandDockedLinks'),
                 content: panel({
                     className: 'tbox-wrapper__links',
                     item: this.createLinksWithNotes(),
-                    width: 350
+                    width: 400
                 })
             });
         }

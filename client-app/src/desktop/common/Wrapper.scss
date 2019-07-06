@@ -42,10 +42,6 @@
       }
 
       tr {
-        &:not(:last-child) {
-          border-bottom: var(--xh-border-solid);
-        }
-
         &:nth-child(even) {
           background-color: var(--xh-grid-bg-odd);
         }

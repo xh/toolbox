@@ -29,13 +29,12 @@ export class RelativeTimestampPanel extends Component {
             `,
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/other/RelativeTimestampPanel.js#L43',
-                    text: 'RelativeTimestampPanel.js'
+                    url: '$TB/client-app/src/desktop/tabs/other/RelativeTimestampPanel.js',
+                    notes: 'This example.'
                 },
                 {
-                    url: '$TB/client-app/src/desktop/tabs/examples/news/NewsPanel.js#L64',
-                    text: 'NewsPanel.js',
-                    notes: 'example of use'
+                    url: '$HR/cmp/relativetimestamp/RelativeTimestamp.js',
+                    notes: 'Hoist component.'
                 }
             ],
             item: panel({

@@ -129,6 +129,12 @@ class BootStrap {
                 groupName: 'Toolbox',
                 note: 'Grid sizing mode'
             ],
+            expandDockedLinks: [
+                type: 'bool',
+                defaultValue: false,
+                groupName: 'Toolbox',
+                note: 'True to expand the docked linked panel by default, false to start collapsed.'
+            ],
             mobileDimHistory: [
                 type: 'json',
                 defaultValue: [],

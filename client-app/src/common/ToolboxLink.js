@@ -4,10 +4,10 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
-import {HoistComponent, elemFactory, XH} from '@xh/hoist/core';
-import PT from 'prop-types';
 import {a} from '@xh/hoist/cmp/layout';
+import {elemFactory, HoistComponent, XH} from '@xh/hoist/core';
+import PT from 'prop-types';
+import {Component} from 'react';
 
 @HoistComponent
 class ToolboxLink extends Component {
