@@ -43,9 +43,17 @@ export class MaskPanel extends Component {
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/other/MaskPanel.js#L98',
-                    text: 'MaskPanel.js'
-                }
+                    url: '$TB/client-app/src/desktop/tabs/panels/MaskPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/mask/Mask.js',
+                    notes: 'Hoist component.'
+                },
+                {
+                    url: '$HR/utils/async/PendingTaskModel.js',
+                    notes: 'Hoist model for tracking async tasks - can be linked to masks.'
+                },
             ],
             item: panel({
                 title: 'Panels › Mask',

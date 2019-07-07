@@ -40,6 +40,20 @@ export class LoadingIndicatorPanel extends Component {
                     the indicator when a linked promise is pending.
                 </p>
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/panels/LoadingIndicatorPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/loadingindicator/LoadingIndicator.js',
+                    notes: 'Hoist component.'
+                },
+                {
+                    url: '$HR/utils/async/PendingTaskModel.js',
+                    notes: 'Hoist model for tracking async tasks - can be linked to indicators.'
+                },
+            ],
             item: panel({
                 title: 'Panels › Loading Indicator',
                 icon: Icon.spinner(),
