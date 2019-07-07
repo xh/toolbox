@@ -53,7 +53,7 @@ export class MaskPanel extends Component {
                 {
                     url: '$HR/utils/async/PendingTaskModel.js',
                     notes: 'Hoist model for tracking async tasks - can be linked to masks.'
-                },
+                }
             ],
             item: panel({
                 title: 'Panels › Mask',

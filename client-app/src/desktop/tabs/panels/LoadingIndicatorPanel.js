@@ -52,7 +52,7 @@ export class LoadingIndicatorPanel extends Component {
                 {
                     url: '$HR/utils/async/PendingTaskModel.js',
                     notes: 'Hoist model for tracking async tasks - can be linked to indicators.'
-                },
+                }
             ],
             item: panel({
                 title: 'Panels › Loading Indicator',
