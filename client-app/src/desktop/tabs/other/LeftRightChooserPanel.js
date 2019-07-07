@@ -35,6 +35,24 @@ export class LeftRightChooserPanel extends Component {
                     with <code>locked:true</code> to prevent them from being moved from one side to another.
                 </p>
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/LeftRightChooserPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooser.js',
+                    notes: 'Hoist component.'
+                },
+                {
+                    url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooserModel.js',
+                    notes: 'Hoist component model.'
+                },
+                {
+                    url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooserFilter.js',
+                    notes: 'Optional filter component.'
+                }
+            ],
             item: panel({
                 title: 'Other › LeftRightChooser',
                 icon: Icon.arrowsLeftRight(),

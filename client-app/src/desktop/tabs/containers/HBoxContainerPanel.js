@@ -13,6 +13,16 @@ export class HBoxContainerPanel extends Component {
                 An HBox lays out its children horizontally, rendering a Box
                 with <code>flexDirection:row</code>.
             </p>,
+            links: [
+                {
+                    url: '$HR/cmp/layout/Box.js',
+                    notes: 'Hoist Box components.'
+                },
+                {
+                    url: '$HR/core/mixins/LayoutSupport.js',
+                    notes: 'Decorator to support core layout props.'
+                }
+            ],
             item: panel({
                 title: 'Containers › HBox',
                 icon: Icon.box(),
