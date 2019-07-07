@@ -48,6 +48,16 @@ export class FileChooserPanel extends Component {
                     when complete.
                 </p>
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/FileChooserPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/filechooser/FileChooser.js',
+                    notes: 'Hoist component for selecting and queuing files for upload.'
+                }
+            ],
             item: panel({
                 title: 'Other › FileChooser',
                 icon: Icon.copy(),

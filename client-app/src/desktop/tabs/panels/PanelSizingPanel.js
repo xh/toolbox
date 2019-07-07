@@ -9,7 +9,7 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent
-export class PanelContainerPanel extends Component {
+export class PanelSizingPanel extends Component {
 
     leftPanelModel = new PanelModel({
         defaultSize: 150,
@@ -37,13 +37,25 @@ export class PanelContainerPanel extends Component {
     render() {
         return wrapper({
             description: `
-                Panels support a number of important and frequent layout tasks. They include a header 
-                bar with a standard icon, title, and header items. They accept props to create docked
-                top and and bottom toolbars. Finally they support collapsing and drag-and-drop resizing, 
+                Panels support collapsing and drag-and-drop resizing, 
                 optionally saving their sizing state in a per-user preference.
             `,
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/panel/Panel.js',
+                    notes: 'Hoist component.'
+                },
+                {
+                    url: '$HR/desktop/cmp/panel/PanelModel.js',
+                    notes: 'Hoist component model (for resize / collapse).'
+                }
+            ],
             item: panel({
-                title: 'Containers › Panel',
+                title: 'Panels › Panel Sizing',
                 icon: Icon.window(),
                 height: 450,
                 width: 700,
