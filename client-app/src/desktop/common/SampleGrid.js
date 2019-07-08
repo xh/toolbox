@@ -1,4 +1,5 @@
 import {boolCheckCol, emptyFlexCol, grid, GridModel} from '@xh/hoist/cmp/grid';
+import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
 import {br, filler, fragment, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {
     elemFactory,
@@ -174,6 +175,10 @@ class Model {
         emptyText: 'No records found...',
         enableColChooser: true,
         enableExport: true,
+        exportOptions: {
+            columns: ['id', 'company', 'VISIBLE'],
+            filename: 'hoist-sample-export'
+        },
         compact: XH.appModel.useCompactGrids,
         store: {
             processRawData: (r) => {
@@ -245,7 +250,8 @@ class Model {
                 renderer: millionsRenderer({
                     precision: 1,
                     label: true
-                })
+                }),
+                exportFormat: ExportFormat.NUM_DELIMITED
             },
             {
                 headerName: 'P&L',
@@ -258,7 +264,8 @@ class Model {
                     precision: 0,
                     ledger: true,
                     colorSpec: true
-                })
+                }),
+                exportFormat: ExportFormat.LEDGER_COLOR
             },
             {
                 field: 'active',

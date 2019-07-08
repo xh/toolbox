@@ -30,6 +30,28 @@ export class TabPanelContainerPanel extends Component {
                     or omitted entirely via the <code>switcherPosition</code> prop.
                 </p>
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/containers/TabPanelContainerPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$TB/client-app/src/desktop/AppModel.js',
+                    notes: 'Toolbox AppModel with top-level TabContainerModel.'
+                },
+                {
+                    url: '$HR/cmp/tab/TabContainer.js',
+                    notes: 'Hoist container component.'
+                },
+                {
+                    url: '$HR/cmp/tab/TabContainerModel.js',
+                    notes: 'Hoist container model - primary API and configuration point for tabs.'
+                },
+                {
+                    url: '$HR/cmp/tab/TabModel.js',
+                    notes: 'Hoist tab model - created by TabContainerModel in its ctor from provided configs.'
+                }
+            ],
             item: panel({
                 title: 'Containers › Tabs',
                 icon: Icon.tab(),
