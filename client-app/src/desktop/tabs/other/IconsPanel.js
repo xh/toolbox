@@ -33,6 +33,17 @@ export class IconsPanel extends Component {
                     glyphs directly to include them in the bundled output.
                 </p>
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/IconsPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: 'https://fontawesome.com/icons',
+                    text: 'FontAwesome',
+                    notes: 'The library used by Hoist to provide enumerated icons. Note that not all icons are included in the Hoist Icon class, but can be easily added.'
+                }
+            ],
             item: panel({
                 title: 'Icons (regular, solid, and light variants)',
                 icon: Icon.thumbsUp(),

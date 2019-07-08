@@ -40,6 +40,20 @@ export class PanelSizingPanel extends Component {
                 Panels support collapsing and drag-and-drop resizing, 
                 optionally saving their sizing state in a per-user preference.
             `,
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/panel/Panel.js',
+                    notes: 'Hoist component.'
+                },
+                {
+                    url: '$HR/desktop/cmp/panel/PanelModel.js',
+                    notes: 'Hoist component model (for resize / collapse).'
+                }
+            ],
             item: panel({
                 title: 'Panels › Panel Sizing',
                 icon: Icon.window(),

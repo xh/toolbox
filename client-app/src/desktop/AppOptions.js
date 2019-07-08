@@ -36,6 +36,15 @@ export function getAppOptions() {
                 info: `Enable to auto-refresh app data every ${XH.autoRefreshService.interval} seconds`,
                 item: switchInput()
             }
+        },
+        {
+            name: 'expandDockedLinks',
+            prefName: 'expandDockedLinks',
+            formField: {
+                label: 'Expand Links',
+                info: 'Enable to always expand the docked Links panel when available.',
+                item: switchInput()
+            }
         }
     ];
 }

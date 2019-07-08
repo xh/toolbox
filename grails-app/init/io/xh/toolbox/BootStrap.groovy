@@ -84,6 +84,15 @@ class BootStrap {
                 valueType: 'string',
                 defaultValue: 'api.fda.gov',
                 groupName: 'Toolbox - Example Apps',
+            ],
+            sourceUrls: [
+                valueType: 'json',
+                defaultValue: [
+                    toolbox: 'https://github.com/exhi/toolbox/blob/develop',
+                    hoistReact: 'https://github.com/exhi/hoist-react/blob/develop'
+                ],
+                groupName: 'xh.io',
+                clientVisible: true,
             ]
         ])
 
@@ -119,6 +128,12 @@ class BootStrap {
                 local: true,
                 groupName: 'Toolbox',
                 note: 'Grid sizing mode'
+            ],
+            expandDockedLinks: [
+                type: 'bool',
+                defaultValue: false,
+                groupName: 'Toolbox',
+                note: 'True to expand the docked linked panel by default, false to start collapsed.'
             ],
             mobileDims: [
                 type: 'json',
