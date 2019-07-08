@@ -44,7 +44,6 @@ class Wrapper extends Component {
                 id: XH.genId(),
                 icon: Icon.link(),
                 title: 'Links',
-                compactHeader: true,
                 allowDialog: false,
                 allowClose: false,
                 collapsed: !XH.getPref('expandDockedLinks'),
@@ -71,6 +70,7 @@ class Wrapper extends Component {
                 children,
                 dockContainer({
                     model: this.dockContainerModel,
+                    compactHeaders: true,
                     omit: !links
                 })
             ],
