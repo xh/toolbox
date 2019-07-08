@@ -77,16 +77,13 @@ class SampleGrid extends Component {
                         })
                     ),
                     panel({
-                        items: [
-                            hbox({
-                                className: 'tbox-samplegrid__switches__title',
-                                items: [Icon.settings(), 'Display Options']
-                            }),
-                            gridStyleSwitches({gridModel})
-                        ],
+                        title: 'Display Options',
+                        icon: Icon.settings(),
+                        compactHeader: true,
+                        items: gridStyleSwitches({gridModel}),
                         className: 'tbox-samplegrid__switches',
                         omit: props.omitGridTools,
-                        model: {side: 'right', defaultSize: 150, resizable: false}
+                        model: {side: 'right', defaultSize: 170, resizable: false}
                     })
                 )
             ],
