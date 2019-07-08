@@ -91,7 +91,7 @@ class BootStrap {
                     toolbox: 'https://github.com/exhi/toolbox/blob/develop',
                     hoistReact: 'https://github.com/exhi/hoist-react/blob/develop'
                 ],
-                groupName: 'xh.io',
+                groupName: 'Toolbox',
                 clientVisible: true,
             ]
         ])
