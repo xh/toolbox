@@ -20,7 +20,7 @@ export class PositionsPanelModel {
             {value: 'symbol', label: 'Symbol'},
             {value: 'trader', label: 'Trader'}
         ],
-        historyPreference: 'portfolioDimHistory'
+        preference: 'portfolioDims'
     });
 
     @managed

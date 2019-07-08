@@ -135,19 +135,19 @@ class BootStrap {
                 groupName: 'Toolbox',
                 note: 'True to expand the docked linked panel by default, false to start collapsed.'
             ],
-            mobileDimHistory: [
+            mobileDims: [
                 type: 'json',
-                defaultValue: [],
+                defaultValue: {},
                 local: true,
                 groupName: 'Toolbox',
-                note: 'Nested arrays containing user\'s dimension picker history'
+                note: 'Object containing user\'s dimension picker value & history'
             ],
-            portfolioDimHistory: [
+            portfolioDims: [
                 type: 'json',
-                defaultValue: [],
+                defaultValue: {},
                 local: true,
                 groupName: 'Toolbox',
-                note: 'Nested arrays containing user\'s dimension picker history'
+                note: 'Object containing user\'s dimension picker value & history'
             ],
             recallsPanelConfig: [
                 type: 'json',
