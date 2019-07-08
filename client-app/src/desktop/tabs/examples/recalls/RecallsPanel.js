@@ -97,6 +97,7 @@ export class RecallsPanel extends Component {
                 icon: Icon.detail(),
                 item: detailsPanel({model: detailsPanelModel}),
                 className: 'toolbox-recalls-detail-panel',
+                compactHeader: true,
                 model: {
                     side: 'bottom',
                     defaultSize: 325,
