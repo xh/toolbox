@@ -13,15 +13,15 @@ export class App extends Component {
     render() {
         return panel({
             tbar: appBar({
-                icon: Icon.boxFull({size: '2x', prefix: 'fal'}),
-                title: 'NewsFeed',
-                hideRefreshButton: false
+                icon: Icon.news({size: '2x', prefix: 'fal'}),
+                title: 'News Feed',
+                hideRefreshButton: true
             }),
             item: newsPanel()
         });
     }
 
-    getContextMenuItems() {
+    static getContextMenuItems() {
         const Item = ContextMenuItem;
         return [Item.reloadApp(), Item.about(), Item.logout()];
     }

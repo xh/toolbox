@@ -31,10 +31,9 @@ export class NewsPanel extends Component {
 
         return panel({
             className: 'toolbox-news-panel',
-            title: 'News Feed',
-            icon: Icon.news(),
-            width: '75%',
-            height: '90%',
+            title: 'Latest Stories',
+            width: '100%',
+            height: '100%',
             item: dataView({
                 model: viewModel,
                 rowCls: 'news-item',
