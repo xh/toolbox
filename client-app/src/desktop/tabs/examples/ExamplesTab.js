@@ -10,7 +10,6 @@ import {tabContainer} from '@xh/hoist/cmp/tab';
 import {Icon} from '@xh/hoist/icon';
 
 import {FileManager} from './filemanager/FileManager';
-import {NewsPanel} from './news/NewsPanel';
 import {PortfolioPanel} from './portfolio/PortfolioPanel';
 import {RecallsPanel} from './recalls/RecallsPanel';
 
@@ -27,11 +26,6 @@ export class ExamplesTab extends Component {
                         id: 'portfolio',
                         icon: Icon.portfolio(),
                         content: PortfolioPanel
-                    },
-                    {
-                        id: 'news',
-                        icon: Icon.news(),
-                        content: NewsPanel
                     },
                     {
                         id: 'recalls',
