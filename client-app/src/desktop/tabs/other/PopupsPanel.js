@@ -122,7 +122,7 @@ export class PopupsPanel extends Component {
                             ...popBtn(Icon.edit({className: 'xh-blue-light'})),
                             text: 'Prompt',
                             onClick: () => XH.prompt({
-                                title: 'Just a vanilla Prompt',
+                                title: 'Prompt',
                                 message: div(
                                     p('This is a prompt. Prompt comes with two buttons: "OK" and "Cancel"'),
                                     acceptRichTextReminder
@@ -133,12 +133,12 @@ export class PopupsPanel extends Component {
                             ...popBtn(Icon.edit({className: 'xh-blue-light'})),
                             text: 'with customizations',
                             onClick: () => XH.prompt({
-                                title: 'Prompt Title',
-                                message: p(
-                                    'This is also a Prompt.  Here, we customized the input with ', code('input'),
-                                    ', and the text and color of the buttons with ',
-                                    code('confirmText'), ', ', code('confirmIntent'), ', ',
-                                    code('cancelText'), ', ', code('cancelText')
+                                title: 'Prompt with customizations',
+                                message: (
+                                    <p>
+                                        This is also a Prompt. Here, we customized the input with <code>input</code>, and the text and color of the buttons
+                                        with <code>confirmText</code>, <code>confirmIntent</code>, <code>cancelText</code>, and <code>cancelIntent</code>.
+                                    </p>
                                 ),
                                 input: {
                                     value: 'Hello world...',
@@ -207,10 +207,11 @@ export class PopupsPanel extends Component {
                             onClick: () => XH.message({
                                 title: 'Message with promise',
                                 message: div(
-                                    p('Messages, Alerts, and Confirms all return a promise...'),
+                                    p('Messages, Prompts, Alerts, and Confirms all return a promise...'),
                                     ul(
                                         li('Alert promises resolve to true when user acknowledges alert. '),
-                                        li('Confirm and Message promises resolve to true if user confirms, or false if user cancels.')
+                                        li('Confirm and Message promises resolve to true if user confirms, or false if user cancels.'),
+                                        li('Prompt promises resolve to the entered value if user confirms, or false if user cancels.')
                                     )
                                 ),
                                 confirmText: 'Cool',
