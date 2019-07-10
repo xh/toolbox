@@ -135,21 +135,21 @@ class BootStrap {
             ],
             mobileDims: [
                 type: 'json',
-                defaultValue: {},
+                defaultValue: [:],
                 local: true,
                 groupName: 'Toolbox',
                 note: 'Object containing user\'s dimension picker value & history'
             ],
             portfolioDims: [
                 type: 'json',
-                defaultValue: {},
+                defaultValue: [:],
                 local: true,
                 groupName: 'Toolbox',
                 note: 'Object containing user\'s dimension picker value & history'
             ],
             recallsPanelConfig: [
                 type: 'json',
-                defaultValue: [],
+                defaultValue: [:],
                 local: false,
                 groupName: 'Toolbox - Example Apps',
                 note: 'Size of Panel Model'
