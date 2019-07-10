@@ -6,7 +6,7 @@
  */
 
 import {Component} from 'react';
-import {HoistComponent, XH} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -36,8 +36,8 @@ export class RecallsPanel extends Component {
 
         return vframe(
             panel({
-                title: 'FDA Drug Recalls',
-                icon: Icon.health(),
+                // title: 'FDA Drug Recalls',
+                // icon: Icon.health(),
                 headerItems: [
                     button({
                         title: 'About the API',
@@ -80,6 +80,10 @@ export class RecallsPanel extends Component {
                             button({
                                 text: 'Recalling Firm',
                                 value: 'recallingFirm'
+                            }),
+                            button({
+                                text: 'Reason',
+                                value: 'reason'
                             })
                         ]
                     }),
@@ -106,6 +110,7 @@ export class RecallsPanel extends Component {
             })
         );
     }
-
 }
+
+export const recallsPanel = elemFactory(RecallsPanel);
 
