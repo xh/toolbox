@@ -1,10 +1,11 @@
 .toolbox-containers-box {
   border: var(--xh-border-solid);
   font-family: var(--xh-font-family-mono);
+  padding: var(--xh-pad-px);
 }
 
 .toolbox-containers-tabs {
-  .xh-tab-panel {
+  .xh-tab {
     padding: var(--xh-pad-px);
   }
 

@@ -26,8 +26,18 @@ export class ToolbarPanel extends Component {
                 toolbars is built into Panel via its tbar/bbar props, but they can be used on their
                 own and can be displayed in a vertical configuration as well. 
             `,
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/panels/ToolbarPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/toolbar/Toolbar.js',
+                    notes: 'Hoist component.'
+                }
+            ],
             item: panel({
-                title: 'Containers › Toolbar',
+                title: 'Panels › Toolbar',
                 height: 400,
                 width: 700,
                 tbar: toolbar(

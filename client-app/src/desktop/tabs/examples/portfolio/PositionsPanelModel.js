@@ -20,7 +20,7 @@ export class PositionsPanelModel {
             {value: 'symbol', label: 'Symbol'},
             {value: 'trader', label: 'Trader'}
         ],
-        historyPreference: 'portfolioDimHistory'
+        preference: 'portfolioDims'
     });
 
     @managed
@@ -90,7 +90,7 @@ export class PositionsPanelModel {
     constructor() {
         this.addReaction({
             track: () => this.dimChooserModel.value,
-            run: this.loadAsync
+            run: () => this.loadAsync()
         });
     }
 

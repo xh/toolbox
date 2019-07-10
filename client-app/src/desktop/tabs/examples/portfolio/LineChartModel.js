@@ -14,7 +14,7 @@ export class LineChartModel {
     constructor() {
         this.addReaction({
             track: () => this.orderSymbol,
-            run: this.loadAsync
+            run: () => this.loadAsync()
         });
     }
 

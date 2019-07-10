@@ -1,8 +1,8 @@
 package io.xh.toolbox
 
-import io.xh.hoist.json.JSONFormat
+import io.xh.hoist.json.JSONFormatCached
 
-class NewsItem implements JSONFormat {
+class NewsItem extends JSONFormatCached {
 
     final String source
     final String title
@@ -21,8 +21,6 @@ class NewsItem implements JSONFormat {
         imageUrl = mp.imageUrl
         published = mp.published
     }
-
-    boolean cacheJSON() {true}
 
     Map formatForJSON() {
         return [

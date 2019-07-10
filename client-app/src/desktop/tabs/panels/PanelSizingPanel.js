@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
@@ -9,7 +9,7 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {wrapper} from '../../common/Wrapper';
 
 @HoistComponent
-export class PanelContainerPanel extends Component {
+export class PanelSizingPanel extends Component {
 
     leftPanelModel = new PanelModel({
         defaultSize: 150,
@@ -36,14 +36,34 @@ export class PanelContainerPanel extends Component {
 
     render() {
         return wrapper({
-            description: `
-                Panels support a number of important and frequent layout tasks. They include a header 
-                bar with a standard icon, title, and header items. They accept props to create docked
-                top and and bottom toolbars. Finally they support collapsing and drag-and-drop resizing, 
-                optionally saving their sizing state in a per-user preference.
-            `,
+            description: (
+                <div>
+                    <p>
+                        Panels support collapsing and drag-and-drop resizing via their <code>model</code> config,
+                        optionally saving their sizing state in a per-user preference.
+                    </p>
+                    <p>
+                        Note that the child panels below are also configured with
+                        their <code>compactHeader</code> prop set to true.
+                    </p>
+                </div>
+            ),
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/panel/Panel.js',
+                    notes: 'Hoist component.'
+                },
+                {
+                    url: '$HR/desktop/cmp/panel/PanelModel.js',
+                    notes: 'Hoist component model (for resize / collapse).'
+                }
+            ],
             item: panel({
-                title: 'Containers › Panel',
+                title: 'Panels › Panel Sizing',
                 icon: Icon.window(),
                 height: 450,
                 width: 700,
@@ -56,6 +76,7 @@ export class PanelContainerPanel extends Component {
                                 title: 'Left Panel',
                                 icon: Icon.arrowToLeft(),
                                 model: this.leftPanelModel,
+                                compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
                                     item: 'Collapsible Left'
@@ -86,6 +107,7 @@ export class PanelContainerPanel extends Component {
                                 title: 'Right Panel',
                                 icon: Icon.arrowToRight(),
                                 model: this.rightPanelModel,
+                                compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
                                     item: 'Collapsible Right'
@@ -97,6 +119,7 @@ export class PanelContainerPanel extends Component {
                         title: 'Bottom Panel',
                         icon: Icon.arrowToBottom(),
                         model: this.bottomPanelModel,
+                        compactHeader: true,
                         item: box({
                             padding: 10,
                             item: 'Collapsible Bottom'
@@ -110,7 +133,6 @@ export class PanelContainerPanel extends Component {
                             button({
                                 icon: Icon.gear(),
                                 minimal: true,
-                                large: true,
                                 onClick: () => XH.toast({message: 'You clicked a Panel headerItem'})
                             })
                         ]

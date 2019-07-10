@@ -40,6 +40,7 @@ export class PortfolioPanel extends Component {
             panel({
                 title: `Trading Volume + Price History: ${model.displayedOrderSymbol}`,
                 icon: Icon.chartArea(),
+                compactHeader: true,
                 mask: !model.selectedOrder,
                 model: {
                     defaultSize: 400,
