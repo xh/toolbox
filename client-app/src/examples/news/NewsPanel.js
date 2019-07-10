@@ -5,33 +5,26 @@
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 
-import React, {Component} from 'react';
+import {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {filler} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
-import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {NewsPanelModel} from './NewsPanelModel';
 import './NewsPanelItem.scss';
 
 @HoistComponent
 export class NewsPanel extends Component {
 
-    model = new NewsPanelModel();
-    
     render() {
         const {model} = this,
             {viewModel} = model;
 
         return panel({
             className: 'toolbox-news-panel',
-            title: 'Latest Stories',
             width: '100%',
             height: '100%',
             item: dataView({
@@ -41,20 +34,6 @@ export class NewsPanel extends Component {
                 onRowDoubleClicked: this.onRowDoubleClicked
             }),
             mask: model.loadModel,
-            tbar: toolbar({
-                items: [
-                    refreshButton({
-                        text: 'Refresh',
-                        model
-                    }),
-                    filler(),
-                    relativeTimestamp({
-                        timestamp: model.lastRefresh,
-                        options: {prefix: 'Last Updated:'}
-                    })
-
-                ]
-            }),
             bbar: toolbar({
                 items: [
                     storeFilterField({

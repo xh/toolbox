@@ -6,15 +6,15 @@
  */
 import {HoistAppModel, loadAllAsync, XH} from '@xh/hoist/core';
 
-import {CompanyService} from '../../core/svc/CompanyService';
-import {PortfolioService} from '../../core/svc/PortfolioService';
-import {SalesService} from '../../core/svc/SalesService';
-import {TradeService} from '../../core/svc/TradeService';
+import {managed} from "@xh/hoist/core";
+import {NewsPanelModel} from "./NewsPanelModel";
 
 
 @HoistAppModel
 export class AppModel {
 
+    @managed
+    newsPanelModel = new NewsPanelModel();
 
     get useCompactGrids() {
         return XH.getPref('defaultGridMode') == 'COMPACT';
@@ -24,16 +24,11 @@ export class AppModel {
     }
 
     async initAsync() {
-        await XH.installServicesAsync(
-            CompanyService,
-            TradeService,
-            SalesService,
-            PortfolioService
-        );
+        this.loadAsync();
     }
 
     async doLoadAsync(loadSpec) {
-        await loadAllAsync([], loadSpec);
+        await loadAllAsync([this.newsPanelModel], loadSpec);
     }
 
     getRoutes() {
