@@ -4,44 +4,63 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
-import {HoistComponent, XH} from '@xh/hoist/core';
-import {tabContainer} from '@xh/hoist/cmp/tab';
-import {Icon} from '@xh/hoist/icon';
-
-import {FileManager} from './filemanager/FileManager';
-import {PortfolioPanel} from './portfolio/PortfolioPanel';
-import {RecallsPanel} from './recalls/RecallsPanel';
+import React, {Component} from 'react';
+import {HoistComponent} from '@xh/hoist/core';
+import {a, div, p, vframe} from '@xh/hoist/cmp/layout';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {Icon} from "@xh/hoist/icon";
+import {panel} from "@xh/hoist/desktop/cmp/panel";
 
 @HoistComponent
 export class ExamplesTab extends Component {
 
+    examples = [
+        {
+            title: 'News Example',
+            path: '/news',
+            text: [
+                <p>
+                    This example demonstrates Hoist support for loading and caching data on the server from a <a href="https://newsapi.org/" target="_blank">Remote API</a>.
+                    Refresh rate, news sources, and API key can be modified in the Admin Config tab.
+                </p>,
+                <p>
+                    On the client side, we use a <a href="../app/grids/dataview" target="_blank">DataView</a> grid
+                    to support custom filtering logic and rich component rendering.
+                </p>
+            ]
+        },
+        {
+            title: 'Portfolio Example',
+            path: '/portfolio',
+            text: ['Portfolio explanation']
+        },
+        {
+            title: 'Recalls Example',
+            path: '/recalls',
+            text: ['Recalls explanation']
+        }
+    ];
+
+    renderTile(params) {
+        // Maybe add thumbnail image somewhere?
+        return panel({
+            headerItems: [
+                button({
+                    icon: Icon.openExternal(),
+                    onClick: () => window.open(params.path)
+                })
+            ],
+            title: params.title,
+            item: div({
+                className: 'toolbox-panel-text-reader',
+                items: params.text
+            })
+        })
+    }
+
     render() {
-        return tabContainer({
-            model: {
-                route: 'default.examples',
-                switcherPosition: 'left',
-                tabs: [
-                    {
-                        id: 'portfolio',
-                        icon: Icon.portfolio(),
-                        content: PortfolioPanel
-                    },
-                    {
-                        id: 'recalls',
-                        title: 'FDA Recalls',
-                        icon: Icon.health(),
-                        content: RecallsPanel
-                    },
-                    {
-                        id: 'fileManager',
-                        icon: Icon.folder(),
-                        content: FileManager,
-                        omit: !XH.getUser().isHoistAdmin
-                    }
-                ]
-            },
-            className: 'toolbox-tab'
-        });
+        return vframe(
+            this.examples.map((ex) => this.renderTile(ex))
+        );
     }
 }
