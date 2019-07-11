@@ -111,7 +111,7 @@ class Model {
     constructor() {
         this.addReaction({
             track: () => this.dimChooserModel.value,
-            run: this.loadAsync,
+            run: () => this.loadAsync(),
             fireImmediately: true
         });
     }

@@ -76,7 +76,7 @@ export class TreeGridPageModel {
     constructor() {
         this.addReaction({
             track: () => this.dimensionChooserModel.value,
-            run: this.loadAsync
+            run: () => this.loadAsync()
         });
     }
 

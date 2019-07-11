@@ -13,7 +13,7 @@ export class OHLCChartModel {
     constructor() {
         this.addReaction({
             track: () => this.orderSymbol,
-            run: this.loadAsync
+            run: () => this.loadAsync()
         });
     }
 

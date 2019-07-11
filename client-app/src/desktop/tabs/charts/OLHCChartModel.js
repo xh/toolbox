@@ -19,7 +19,7 @@ export class OLHCChartModel {
     constructor() {
         this.addReaction({
             track: () => this.currentCompany,
-            run: this.loadAsync
+            run: () => this.loadAsync()
         });
     }
     

@@ -1,11 +1,12 @@
 package io.xh.toolbox
 
 import io.xh.hoist.config.AppConfig
-import io.xh.hoist.json.JSON
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.Monitor
+
+import static io.xh.hoist.json.JSONSerializer.serializePretty
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
 
@@ -99,10 +100,7 @@ class BootStrap {
         // Edit Hoist-installed auto-refresh config to enable default refresh for TB.
         def autoRefreshConfig = AppConfig.findByName('xhAutoRefreshIntervals')
         if (autoRefreshConfig && autoRefreshConfig.lastUpdatedBy == 'hoist-bootstrap') {
-            autoRefreshConfig.value = new JSON([
-                app: 30,
-                mobile: 60
-            ]).toString(true)
+            autoRefreshConfig.value = serializePretty([app: 30, mobile: 60])
             autoRefreshConfig.save()
         }
 
@@ -137,21 +135,21 @@ class BootStrap {
             ],
             mobileDims: [
                 type: 'json',
-                defaultValue: {},
+                defaultValue: [:],
                 local: true,
                 groupName: 'Toolbox',
                 note: 'Object containing user\'s dimension picker value & history'
             ],
             portfolioDims: [
                 type: 'json',
-                defaultValue: {},
+                defaultValue: [:],
                 local: true,
                 groupName: 'Toolbox',
                 note: 'Object containing user\'s dimension picker value & history'
             ],
             recallsPanelConfig: [
                 type: 'json',
-                defaultValue: [],
+                defaultValue: [:],
                 local: false,
                 groupName: 'Toolbox - Example Apps',
                 note: 'Size of Panel Model'

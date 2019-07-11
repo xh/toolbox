@@ -149,7 +149,7 @@ class Model {
         // Load data when dimensions change
         this.addReaction({
             track: () => this.dimChooserModel.value,
-            run: this.loadAsync
+            run: () => this.loadAsync()
         });
 
         // Bind dimensions to url parameter
