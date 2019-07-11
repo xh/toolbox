@@ -12,8 +12,8 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {vframe, filler, p, a, span} from '@xh/hoist/cmp/layout';
-import {textInput, buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
+import {a, filler, p, span, vframe} from '@xh/hoist/cmp/layout';
+import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 
 import {RecallsPanelModel} from './RecallsPanelModel';
@@ -38,16 +38,16 @@ export class RecallsPanel extends Component {
             panel({
                 // title: 'FDA Drug Recalls',
                 // icon: Icon.health(),
-                headerItems: [
-                    button({
-                        title: 'About the API',
-                        text: 'About',
-                        icon: Icon.questionCircle(),
-                        onClick: () => XH.alert({
-                            message: p(aboutBlurb, a({href: fdaWebsite, item: fdaWebsite, target: '_blank'}))
-                        })
-                    })
-                ],
+                // headerItems: [
+                //     button({
+                //         title: 'About the API',
+                //         text: 'About',
+                //         icon: Icon.questionCircle(),
+                //         onClick: () => XH.alert({
+                //             message: p(aboutBlurb, a({href: fdaWebsite, item: fdaWebsite, target: '_blank'}))
+                //         })
+                //     })
+                // ],
                 item: grid({model: gridModel}),
                 mask: model.loadModel,
                 tbar: toolbar(
@@ -91,6 +91,15 @@ export class RecallsPanel extends Component {
                     storeCountLabel({
                         gridModel,
                         unit: 'latest recall'
+                    }),
+                    toolbarSep(),
+                    button({
+                        title: 'About the API',
+                        text: 'About',
+                        icon: Icon.questionCircle(),
+                        onClick: () => XH.alert({
+                            message: p(aboutBlurb, a({href: fdaWebsite, item: fdaWebsite, target: '_blank'}))
+                        })
                     }),
                     toolbarSep(),
                     colChooserButton({gridModel})
