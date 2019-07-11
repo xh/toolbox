@@ -152,18 +152,13 @@ export class AppModel {
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'timestamp', path: '/timestamp'},
                             {name: 'jsx', path: '/jsx'},
-                            {name: 'popups', path: '/popups'}
+                            {name: 'popups', path: '/popups'},
+                            {name: 'fileManager', path: '/fileManager'}
                         ]
                     },
                     {
                         name: 'examples',
                         path: '/examples',
-                        children: [
-                            {name: 'portfolio', path: '/portfolio'},
-                            {name: 'news', path: '/news'},
-                            {name: 'recalls', path: '/recalls'},
-                            {name: 'fileManager', path: '/fileManager', omit: !isAdmin}
-                        ]
                     }
                 ]
             }
