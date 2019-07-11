@@ -7,6 +7,7 @@ import {JsxPanel} from './JsxPanel';
 import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {PopupsPanel} from './PopupsPanel';
+import {FileManager} from "./filemanager/FileManager";
 
 @HoistComponent
 export class OtherTab extends Component {
@@ -21,7 +22,8 @@ export class OtherTab extends Component {
                     {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
                     {id: 'fileChooser', title: 'FileChooser', content: FileChooserPanel},
                     {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
-                    {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel}
+                    {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel},
+                    {id: 'fileManager', title: 'FileManager', content: FileManager, omit: !XH.getUser().isHoistAdmin}
                 ]
             },
             className: 'toolbox-tab'
