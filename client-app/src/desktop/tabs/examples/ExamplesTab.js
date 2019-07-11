@@ -16,6 +16,16 @@ export class ExamplesTab extends Component {
 
     examples = [
         {
+            title: 'Portfolio Example',
+            path: '/portfolio',
+            text: [
+                <p>
+                    This example shows a synthetic portfolio analysis tool.  Includes examples of large data-set grids,
+                    master-detail grids, charting, and dimensional analysis.
+                </p>
+            ]
+        },
+        {
             title: 'News Example',
             path: '/news',
             text: [
@@ -30,37 +40,40 @@ export class ExamplesTab extends Component {
             ]
         },
         {
-            title: 'Portfolio Example',
-            path: '/portfolio',
-            text: ['Portfolio explanation']
-        },
-        {
             title: 'Recalls Example',
             path: '/recalls',
-            text: ['Recalls explanation']
+            text: [
+                <p>
+                    This applet uses the openFDA drug enforcement reports API, which provides information on drug recall
+                    events since 2004. Provides examples of filtering and searching data from an external API.
+                </p>,
+                <p>
+                    For more information, see <a href="https://open.fda.gov/apis/drug/enforcement/">here</a>.
+                </p>
+            ]
         }
     ];
-
-    renderTile(params) {
-        // Maybe add thumbnail image somewhere?
-        return panel({
-            headerItems: [
-                button({
-                    icon: Icon.openExternal(),
-                    onClick: () => window.open(params.path)
-                })
-            ],
-            title: params.title,
-            item: div({
-                className: 'toolbox-panel-text-reader',
-                items: params.text
-            })
-        })
-    }
 
     render() {
         return vframe(
             this.examples.map((ex) => this.renderTile(ex))
         );
+    }
+
+    renderTile({path, text, title}) {
+        // Maybe add thumbnail image somewhere?
+        return panel({
+            title,
+            headerItems: [
+                button({
+                    icon: Icon.openExternal(),
+                    onClick: () => window.open(path)
+                })
+            ],
+            item: div({
+                className: 'toolbox-panel-text-reader',
+                items: text
+            })
+        })
     }
 }
