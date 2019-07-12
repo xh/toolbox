@@ -15,7 +15,7 @@ export class CompanyService {
         return take(shuffle(this.allCompanies), 100);
     }
 
-    initAsync() {
+    async initAsync() {
         return start(() => {
             const companies = companyTrades.map(it => {
                 return {
@@ -25,11 +25,13 @@ export class CompanyService {
                     isActive: it.id % 3 != 0
                 };
             });
+
             runInAction(() => this.allCompanies = uniqBy(companies, 'name'));
+
         });
     }
 
-    queryAsync(query) {
+    async queryAsync(query) {
         return start(() => {
             if (!query) return this.allCompanies;
 

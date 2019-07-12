@@ -37,7 +37,7 @@ class NewsService extends BaseService {
     }
 
     int getLoadedSourcesCount() {
-        return _newsItems.collect{it.source}.unique().size()
+        return _newsItems.collect {it.source}.unique().size()
     }
 
     boolean getAllSourcesLoaded() {

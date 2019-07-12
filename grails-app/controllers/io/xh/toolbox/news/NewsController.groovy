@@ -13,4 +13,10 @@ class NewsController extends BaseController {
         renderJSON(items)
     }
 
+    def shortNews(String newsType) {
+        log.info(newsType)
+        def items = newsService.newsItems
+        renderJSON(items.subList(0,5))
+    }
+
 }
