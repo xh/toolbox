@@ -21,9 +21,9 @@ export class OtherTab extends Component {
                     {id: 'icons', title: 'Icons', content: IconsPanel},
                     {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
                     {id: 'fileChooser', title: 'FileChooser', content: FileChooserPanel},
+                    {id: 'fileManager', title: 'FileManager', content: FileManager, omit: !XH.getUser().isHoistAdmin},
                     {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
                     {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel},
-                    {id: 'fileManager', title: 'FileManager', content: FileManager, omit: !XH.getUser().isHoistAdmin}
                 ]
             },
             className: 'toolbox-tab'
