@@ -6,10 +6,12 @@
  */
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {a, div, p, vframe} from '@xh/hoist/cmp/layout';
+import {a, div, p, table, tbody, td, tr} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from "@xh/hoist/icon";
 import {panel} from "@xh/hoist/desktop/cmp/panel";
+import {wrapper} from "../../common";
+import './ExamplesTab.scss';
 
 @HoistComponent
 export class ExamplesTab extends Component {
@@ -55,21 +57,31 @@ export class ExamplesTab extends Component {
     ];
 
     render() {
-        return vframe(
-            this.examples.map((ex) => this.renderTile(ex))
-        );
+        // return hbox(
+        //     this.examples.map((ex) => this.renderTile(ex))
+        // );
+        return wrapper(
+            table({
+                className: 'tiles-container-table',
+                items: [
+                    tbody(
+                        tr(this.examples.map((ex) => td(this.renderTile(ex))))
+                    )
+                ]
+            })
+        )
     }
 
     renderTile({path, text, title}) {
         // Maybe add thumbnail image somewhere?
         return panel({
-            title,
-            headerItems: [
-                button({
-                    icon: Icon.openExternal(),
-                    onClick: () => window.open(path)
-                })
-            ],
+            title: button({
+                       text: title,
+                       icon: Icon.openExternal(),
+                       onClick: () => window.open(path)
+                   }),
+            width: 250,
+            height: 250,
             item: div({
                 className: 'toolbox-panel-text-reader',
                 items: text
