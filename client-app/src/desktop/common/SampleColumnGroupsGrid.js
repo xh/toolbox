@@ -4,22 +4,30 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
-import {elemFactory, HoistModel, HoistComponent, LoadSupport, LayoutSupport, managed, XH} from '@xh/hoist/core';
-import {wait} from '@xh/hoist/promise';
+import {boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {Icon} from '@xh/hoist/icon';
-import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {
+    elemFactory,
+    HoistComponent,
+    HoistModel,
+    LayoutSupport,
+    LoadSupport,
+    managed,
+    XH
+} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
-import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
-import {gridStyleSwitches} from './GridStyleSwitches';
+import {wait} from '@xh/hoist/promise';
 import {Ref} from '@xh/hoist/utils/react';
+import {Component} from 'react';
+import {gridStyleSwitches} from './GridStyleSwitches';
 
 @HoistComponent
 @LayoutSupport
@@ -45,7 +53,7 @@ class SampleColumnGroupsGrid extends Component {
                     labelAlign: 'left'
                 }),
                 filler(),
-                storeCountLabel({gridModel}),
+                gridCountLabel({gridModel}),
                 storeFilterField({gridModel}),
                 colChooserButton({gridModel}),
                 exportButton({gridModel})
