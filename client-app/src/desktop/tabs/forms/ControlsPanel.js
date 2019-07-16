@@ -5,31 +5,31 @@
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent, XH, elemFactory} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {frame, hframe, hbox, vbox, div, box} from '@xh/hoist/cmp/layout';
+import {box, div, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import moment from 'moment';
-import {fmtDateTime, fmtThousands, fmtNumber} from '@xh/hoist/format';
+import {fmtDateTime, fmtNumber, fmtThousands} from '@xh/hoist/format';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
+    buttonGroupInput,
     checkbox,
     dateInput,
-    textInput,
-    textArea,
+    jsonInput,
     numberInput,
     radioInput,
-    slider,
     select,
+    slider,
     switchInput,
-    jsonInput,
-    buttonGroupInput
+    textArea,
+    textInput
 } from '@xh/hoist/desktop/cmp/input';
 
-import {usStates, restaurants} from '../../../core/data';
+import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import {ControlsPanelModel} from './ControlsPanelModel';
 import './ControlsPanel.scss';
@@ -228,9 +228,9 @@ export class ControlsPanel extends Component {
                                     valueField: 'id',
                                     labelField: 'name',
                                     enableClear: true,
-                                    queryFn: this.queryCompaniesAsync,
-                                    optionRenderer: this.renderCompanyOption,
-                                    placeholder: 'Search companies...'
+                                    queryFn: this.queryCustomersAsync,
+                                    optionRenderer: this.renderCustomerOption,
+                                    placeholder: 'Search customers...'
                                 })
                             }),
                             row({
@@ -317,13 +317,14 @@ export class ControlsPanel extends Component {
         });
     };
 
-    queryCompaniesAsync = (query) => {
-        return XH.companyService.queryAsync(query)
-            .wait(400)
-            .then(hits => hits);
+    queryCustomersAsync = (query) => {
+        return XH.fetchJson({
+            url: 'customer',
+            params: {query: query}
+        })
     };
 
-    renderCompanyOption = (opt) => {
+    renderCustomerOption = (opt) => {
         return hbox({
             items: [
                 box({
@@ -343,7 +344,7 @@ export class ControlsPanel extends Component {
             ],
             alignItems: 'center'
         });
-    }
+    };
 
     renderToolbar() {
         const {model} = this,
