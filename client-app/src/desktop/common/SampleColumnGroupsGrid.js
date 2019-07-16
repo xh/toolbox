@@ -5,17 +5,16 @@
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {elemFactory, HoistModel, HoistComponent, LoadSupport, LayoutSupport, managed, XH} from '@xh/hoist/core';
-import {wait} from '@xh/hoist/promise';
+import {elemFactory, HoistComponent, HoistModel, LayoutSupport, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
-import {grid, GridModel, boolCheckCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
+import {boolCheckCol, emptyFlexCol, grid, GridModel} from '@xh/hoist/cmp/grid';
+import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
-import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {action, observable} from '@xh/hoist/mobx';
 import {gridStyleSwitches} from './GridStyleSwitches';
@@ -193,8 +192,9 @@ class Model {
     // Implementation
     //------------------------
     async doLoadAsync(loadSpec) {
-        return wait(250)
-            .then(() => this.gridModel.loadData(XH.salesService.generateSales()));
+        const sales = await XH.fetchJson({url: 'sales'});
+
+        this.gridModel.loadData(sales);
     }
 
     showRecToast(rec) {
