@@ -6,38 +6,71 @@ import java.time.DayOfWeek
 
 class PortfolioService extends BaseService {
 
-    private def models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul']
-    private def sectors = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing', 'Energy', 'Other', 'Utilities']
-    private def funds = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay']
-    private def regions = ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
-    private def traders = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn', 'Robert Greer', 'HedgeSys', 'Susan Major']
+    //-----------------------------------------
+    // Constants for synthetic data generation
+    //-----------------------------------------
+    private final List models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul']
+    private final List sectors = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing', 'Energy', 'Other', 'Utilities']
+    private final List funds = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay']
+    private final List regions = ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
+    private final List traders = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn', 'Robert Greer', 'HedgeSys', 'Susan Major']
 
-    private List<Date> tradingDays = generateTradingDays()
+    private final Long INITIAL_ORDERS = 20000
 
-    private final def INITIAL_ORDERS = 20000
-    private final def INITIAL_SYMBOLS = 500
 
     private final def random = new Random()
+
+
+    /**
+     * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
+     * @param dims - field names for dimensions on which to group.
+     */
+    List<Map> getPortfolio(Collection<String> dims, boolean includeSummary = false) {
+
+        List positions = getPositions(dims);
+
+        return !includeSummary ? positions : [
+                [
+                        id      : 'summary',
+                        name    : 'Total',
+                        pnl     : positions.sum {it.pnl},
+                        mktVal  : positions.sum {it.mktVal},
+                        children: positions
+                ]
+        ];
+    }
+
+
+    /**
+     * Return a single grouped position, uniquely identified by drilldown ID.
+     * @param positionId - ID installed on each position returned by `getPortfolio()`.
+     */
+    Map getPositionAsync(String positionId) {
+
+        Map parsedId = parsePositionId(positionId)
+        List dims = parsedId.keySet()
+        List dimVals = parsedId.values()
+
+        List positions = getPositions(dims)
+        Map ret = null
+
+        dimVals.each {dimVal ->
+            ret = positions.find {it.name == dimVal}
+            if (ret.children) positions = ret.children;
+        }
+
+        return ret;
+    }
+
+
+    List<Map> getOrdersAsync(String positionId) {
+        orders.findAll {it.positionId == positionId}
+    }
+
 
     //------------------------
     // Implementation
     //------------------------
-
-    private List<Date> generateTradingDays() {
-        Date tradingDay = new Date(2018, 1, 2)
-        Date today = new Date()
-
-        List<Date> ret = []
-        tradingDay.upto(today) { date ->
-            def dayOfWeek = date.toDayOfWeek()
-            if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY) {
-                ret << date
-            }
-        }
-
-        return ret
-    }
-
     String generateSymbol() {
         String ret = ""
         int n = randInt(1, 5)
@@ -61,5 +94,4 @@ class PortfolioService extends BaseService {
         super.clearCaches()
 
     }
-
 }
