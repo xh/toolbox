@@ -8,10 +8,7 @@ import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 
-import {CompanyService} from '../core/svc/CompanyService';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {SalesService} from '../core/svc/SalesService';
-import {TradeService} from '../core/svc/TradeService';
 
 import {getAppOptions} from './AppOptions';
 
@@ -55,9 +52,6 @@ export class AppModel {
 
     async initAsync() {
         await XH.installServicesAsync(
-            CompanyService,
-            TradeService,
-            SalesService,
             PortfolioService
         );
     }
