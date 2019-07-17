@@ -36,10 +36,11 @@ export class ValidationPanel extends Component {
     render() {
         return wrapper({
             description: [
-                <p> Forms provide a standard way for validating and editing data. The <code>Form</code> component
-                    provides the ability to centrally control certain properties on all its contained
-                    <code>FormField</code>s and bind them to a <code>FormModel</code>.  The <code>FormModel</code>
-                    provides an observable API for loading, validating, and submitting the data to back-end services.
+                <p>
+                    Forms provide a standard way for validating and editing data. The <code>Form</code> component
+                    provides the ability to centrally control certain properties on all its contained <code>FormField</code>s
+                    and bind them to a <code>FormModel</code>.  The <code>FormModel</code> provides an observable API for
+                    loading, validating, and submitting the data to back-end services.
                 </p>
             ],
             item: panel({
