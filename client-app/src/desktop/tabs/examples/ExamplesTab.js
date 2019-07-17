@@ -75,7 +75,7 @@ export class ExamplesTab extends Component {
             title,
             icon,
             width: 250,
-            height: 250,
+            height: 270,
             item: vframe({
                 className: 'example-tile-text',
                 items: text
