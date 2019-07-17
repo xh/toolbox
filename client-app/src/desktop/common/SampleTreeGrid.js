@@ -128,7 +128,7 @@ class Model {
             {
                 headerName: 'P&L',
                 field: 'pnl',
-                align: 'right',
+                    align: 'right',
                 width: 130,
                 absSort: true,
                 agOptions: {
