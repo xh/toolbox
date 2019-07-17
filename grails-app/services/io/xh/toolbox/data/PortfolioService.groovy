@@ -2,8 +2,6 @@ package io.xh.toolbox.data
 
 import io.xh.hoist.BaseService
 
-import java.time.DayOfWeek
-
 class PortfolioService extends BaseService {
 
     //-----------------------------------------
@@ -27,7 +25,7 @@ class PortfolioService extends BaseService {
      */
     List<Map> getPortfolio(Collection<String> dims, boolean includeSummary = false) {
 
-        List positions = getPositions(dims);
+        List positions = getPositions(dims)
 
         return !includeSummary ? positions : [
                 [
@@ -37,7 +35,7 @@ class PortfolioService extends BaseService {
                         mktVal  : positions.sum {it.mktVal},
                         children: positions
                 ]
-        ];
+        ]
     }
 
 
@@ -56,10 +54,10 @@ class PortfolioService extends BaseService {
 
         dimVals.each {dimVal ->
             ret = positions.find {it.name == dimVal}
-            if (ret.children) positions = ret.children;
+            if (ret.children) positions = ret.children
         }
 
-        return ret;
+        return ret
     }
 
 
@@ -71,7 +69,7 @@ class PortfolioService extends BaseService {
     //------------------------
     // Implementation
     //------------------------
-    String generateSymbol() {
+    private String generateSymbol() {
         String ret = ""
         int n = randInt(1, 5)
         def letters = ('A'..'Z')

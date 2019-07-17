@@ -2,7 +2,6 @@ package io.xh.toolbox.data
 
 import io.xh.hoist.BaseService
 
-import java.time.DayOfWeek
 import java.time.LocalDate
 
 import static java.time.DayOfWeek.SATURDAY
@@ -15,73 +14,77 @@ class InstrumentService extends BaseService {
     //-----------------------------------------
     private final Long INITIAL_SYMBOLS = 500
 
-    private List<Date> tradingDays
+    private List<LocalDate> tradingDays
 
 
     private final def random = new Random()
 
 
     List<Map> getHistoricalData(String symbol) {
-        List mktData = getMktData(symbol);
-        return []
-
+        List<Map> mktData = getMktData(symbol)
+        return mktData.collect {
+            [it.day.toEpochDay(), it.open, it.high, it.low, it.close]
+        }
     }
 
 
     //---------------
     // Implementation
     //---------------
-    private List<Map> generateTimeSeries(List<>) {
-        const tradingDays = this.tradingDays,
-                spikeDayIdxs = new Set(),
-                ret = [];
+    private List<Map> generateTimeSeries() {
+        List<LocalDate> tradingDays = this.tradingDays
+        Set<Integer> spikeDayIdxs = []
+        List<Map> ret = []
 
         // Give some random number of days a spike in trading volume to make that chart interesting.
-        times(random(0, 30), () => spikeDayIdxs.add(random(0, tradingDays.length)));
+        int nSpikes = randInt(0, 30)
+        nSpikes.times {
+            spikeDayIdxs += randInt(0, tradingDays.length())
+        }
 
         // Set a seed price and generate a series from there.
-        let startPx = random(10, 100, true);
-        tradingDays.forEach((tradingDay, idx) => {
-            const bigDown = Math.random() > 0.95,  // Allow for a few bigger swings.
-                    bigUp = Math.random() > 0.95,
-                    pctDown = random(0, bigDown ? 0.1 : 0.02, true),
-                    pctUp = random(0, bigUp ? 0.1 : 0.025, true),  // We can rig the game here...
-                    open = startPx,
-                    high = startPx + (pctUp * startPx),
-                    low = startPx - (pctDown * startPx),
-                    close = (Math.random() * (high - low)) + low;
+        double startPx = randDouble(10, 100)
+        tradingDays.eachWithIndex { tradingDay, idx ->
+            boolean bigDown = Math.random() > 0.95  // Allow for a few bigger swings.
+            boolean bigUp = Math.random() > 0.95
+            double pctDown = randDouble(0, (bigDown ? 0.1 : 0.02))
+            double pctUp = randDouble(0, (bigUp ? 0.1 : 0.025))  // We can rig the game here...
+            double open = startPx
+            double high = startPx + (pctUp * startPx)
+            double low = startPx - (pctDown * startPx)
+            double close = (Math.random() * (high - low)) + low
 
-            let maxVol;
-            if (spikeDayIdxs.has(idx)) {
-                maxVol = 200;
-            } else if (spikeDayIdxs.has(idx - 1) || spikeDayIdxs.has(idx + 1)) {
-                maxVol = 150;
+            int maxVol
+            if (spikeDayIdxs.find { it == idx }) {
+                maxVol = 200
+            } else if (spikeDayIdxs.find { it == (idx - 1) } || spikeDayIdxs.find { it == (idx + 1) }) {
+                maxVol = 150
             } else {
-                maxVol = 100;
+                maxVol = 100
             }
 
-            ret.push({
-                day: tradingDay,
-                high: round(high, 2),
-                low: round(low, 2),
-                open: round(open, 2),
-                close: round(close, 2),
-                volume: random(80, maxVol) * 1000
-            });
-            startPx = close;
-        });
+            ret << [
+                    day   : tradingDay,
+                    high  : Math.round(high, 2),
+                    low   : Math.round(low, 2),
+                    open  : Math.round(open, 2),
+                    close : Math.round(close, 2),
+                    volume: randInt(80, maxVol) * 1000
+            ]
+            startPx = close
+        }
 
-        return ret;
+        return ret
     }
 
 
     private List<LocalDate> generateTradingDays() {
-        Date tradingDay = LocalDate.of(2018, 0, 0);
-        Date today = LocalDate.now()
+        LocalDate today = LocalDate.now()
+        LocalDate tradingDay = LocalDate.of(today.getYear() - 2, 0, 0)
 
-        List<Date> ret = []
+        List<LocalDate> ret = []
         tradingDay.upto(today) {date ->
-            def dayOfWeek = date.toDayOfWeek()
+            def dayOfWeek = date.getDayOfWeek()
             if (dayOfWeek != SATURDAY && dayOfWeek != SUNDAY) {
                 ret << date
             }
@@ -92,23 +95,15 @@ class InstrumentService extends BaseService {
 
 
 
-    generateSymbol() {
-        let ret = '';
-        times(random(1, 5), () => ret += sample('ABCDEFGHIJKLMNOPQRSTUVWXYZ'));
-        return ret;
-    }
-
-
-
     private getMktData(String symbol) {
-        instData[symbol].mktData
+        return instData.symbol.mktData
     }
 
     private String getSector(String symbol) {
-        instData[symbol].sector
+        return instData.symbol.sector
     }
 
-    String generateSymbol() {
+    private String generateSymbol() {
         String ret = ""
         int n = randInt(1, 5)
         def letters = ('A'..'Z')
@@ -116,6 +111,11 @@ class InstrumentService extends BaseService {
             ret += sample(letters)
         }
         return ret
+    }
+
+
+    private double randDouble(Number lower, Number upper) {
+        return random.nextDouble(upper - lower) + lower
     }
 
     private def randInt(int lower, int upper) {
