@@ -17,7 +17,7 @@ export class LineChartModel {
     constructor() {
         this.addReaction({
             track: () => this.currentCompany,
-            run: this.loadAsync
+            run: () => this.loadAsync()
         });
     }
     

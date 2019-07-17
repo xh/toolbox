@@ -29,6 +29,20 @@ export class BasicPanel extends Component {
                     built-in integrations with other Hoist components such as masks.
                 </p>
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/panels/BasicPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/panel/Panel.js',
+                    notes: 'Hoist component.'
+                },
+                {
+                    url: '$HR/desktop/cmp/panel/PanelModel.js',
+                    notes: 'Hoist component model (for resize / collapse).'
+                }
+            ],
             item: panel({
                 icon: Icon.window(),
                 title: 'Panels › Intro',
