@@ -4,7 +4,7 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, frame, hbox, vspacer, vbox} from '@xh/hoist/cmp/layout';
@@ -34,9 +34,16 @@ export class ValidationPanel extends Component {
     model = new ValidationPanelModel();
 
     render() {
-        return wrapper(
-            panel({
-                title: 'Forms › Validation',
+        return wrapper({
+            description: [
+                <p> Forms provide a standard way for validating and editing data. The <code>Form</code> component
+                    provides the ability to centrally control certain properties on all its contained
+                    <code>FormField</code>s and bind them to a <code>FormModel</code>.  The <code>FormModel</code>
+                    provides an observable API for loading, validating, and submitting the data to back-end services.
+                </p>
+            ],
+            item: panel({
+                title: 'Forms › Forms ',
                 className: 'toolbox-validation-panel',
                 icon: Icon.edit(),
                 width: '90%',
@@ -44,8 +51,26 @@ export class ValidationPanel extends Component {
                 mask: this.validateButtonTask,
                 item: this.renderForm(),
                 bbar: this.renderToolbar()
-            })
-        );
+            }),
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/forms/ValidationPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/form/Form.js',
+                    notes: 'Form Component'
+                },
+                {
+                    url: '$HR/cmp/form/FormModel.js',
+                    notes: 'Form Model'
+                },
+                {
+                    url: '$HR/desktop/cmp/form/FormField.js',
+                    notes: 'Form Field'
+                }
+            ]
+        });
     }
 
     renderForm() {

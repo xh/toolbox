@@ -4,7 +4,7 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent, XH, elemFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {frame, hframe, hbox, vbox, div, box} from '@xh/hoist/cmp/layout';
@@ -40,17 +40,43 @@ export class ControlsPanel extends Component {
     model = new ControlsPanelModel();
 
     render() {
-        return wrapper(
-            panel({
-                title: 'Forms › Controls',
+        return wrapper({
+            description: [
+                <p>
+                    <code>HoistInput</code>s are core Components used to display editable data in applications.
+                    They present a consistent API for editing data with MobX, React, and the underlying UI widgets
+                    provided by libraries such as Blueprint and Onsen.  At its simplest, any HoistInput can be bound to a
+                    data source using the <code>bind</code> and <code>model</code> props.
+                </p>,
+                <p>
+                    For more complex uses <code>HoistInput</code>s may also be hosted in <code>Form</code>s.  Forms provide
+                    support for validation, data submission, and dirty state management.
+                </p>
+            ],
+            item: panel({
+                title: 'Forms › HoistInputs',
                 className: 'toolbox-controls-panel',
                 icon: Icon.edit(),
                 width: '90%',
                 height: '90%',
                 item: this.renderForm(),
                 bbar: this.renderToolbar()
-            })
-        );
+            }),
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/forms/ControlsPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/input/HoistInput.js',
+                    notes: 'HoistInput Base Class'
+                },
+                {
+                    url: '$HR/desktop/cmp/input',
+                    notes: 'Hoist Inputs'
+                }
+            ]
+        });
     }
 
     renderForm() {

@@ -16,8 +16,8 @@ export class FormsTab extends Component {
                 route: 'default.forms',
                 switcherPosition: 'left',
                 tabs: [
-                    {id: 'controls', title: 'Controls', content: ControlsPanel},
-                    {id: 'validation', title: 'Validation', content: ValidationPanel},
+                    {id: 'controls', title: 'Hoist Inputs', content: ControlsPanel},
+                    {id: 'validation', title: 'Forms', content: ValidationPanel},
                     {id: 'toolbarForm', title: 'Toolbar Forms', content: ToolbarFormPanel}
                 ]
             },
