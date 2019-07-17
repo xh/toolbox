@@ -6,8 +6,9 @@
  */
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {a, div, p, table, tbody, td, tr} from '@xh/hoist/cmp/layout';
+import {a, hbox, p, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from "@xh/hoist/icon";
 import {panel} from "@xh/hoist/desktop/cmp/panel";
 import {wrapper} from "../../common";
@@ -18,7 +19,8 @@ export class ExamplesTab extends Component {
 
     examples = [
         {
-            title: 'Portfolio Example',
+            title: 'Portfolio',
+            icon: Icon.portfolio(),
             path: '/portfolio',
             text: [
                 <p>
@@ -28,7 +30,8 @@ export class ExamplesTab extends Component {
             ]
         },
         {
-            title: 'News Example',
+            title: 'News',
+            icon: Icon.news(),
             path: '/news',
             text: [
                 <p>
@@ -42,7 +45,8 @@ export class ExamplesTab extends Component {
             ]
         },
         {
-            title: 'Recalls Example',
+            title: 'FDA Recalls',
+            icon: Icon.health(),
             path: '/recalls',
             text: [
                 <p>
@@ -57,35 +61,32 @@ export class ExamplesTab extends Component {
     ];
 
     render() {
-        // return hbox(
-        //     this.examples.map((ex) => this.renderTile(ex))
-        // );
         return wrapper(
-            table({
-                className: 'tiles-container-table',
-                items: [
-                    tbody(
-                        tr(this.examples.map((ex) => td(this.renderTile(ex))))
-                    )
-                ]
+            hbox({
+                className: 'example-tile-container',
+                items: this.examples.map((ex) => this.renderTile(ex))
             })
         )
     }
 
-    renderTile({path, text, title}) {
+    renderTile({title, icon, path, text}) {
         // Maybe add thumbnail image somewhere?
         return panel({
-            title: button({
-                       text: title,
-                       icon: Icon.openExternal(),
-                       onClick: () => window.open(path)
-                   }),
+            title,
+            icon,
             width: 250,
             height: 250,
-            item: div({
-                className: 'toolbox-panel-text-reader',
+            item: vframe({
+                className: 'example-tile-text',
                 items: text
-            })
+            }),
+            bbar: toolbar(
+                button({
+                    text: 'Launch app',
+                    icon: Icon.openExternal(),
+                    onClick: () => window.open(path)
+                })
+            )
         })
     }
 }

@@ -1,3 +1,10 @@
-table.tiles-container-table {
-  border-spacing: 50px;
+.example-tile-text {
+  flex: auto;
+  overflow-y: auto;
+  padding: var(--xh-pad-px)
+}
+
+.example-tile-container {
+  justify-content: space-evenly;
+  width: 900px;
 }
