@@ -44,7 +44,7 @@ export class ControlsPanel extends Component {
             description: [
                 <p>
                     <code>HoistInput</code>s are core Components used to display editable data in applications.
-                    They present a consistent API for editing data with MobX, React, and the underlying UI widgets
+                    They present a consistent API for editing data with MobX, React, and the underlying widgets
                     provided by libraries such as Blueprint and Onsen.  At its simplest, any HoistInput can be bound to a
                     data source using the <code>bind</code> and <code>model</code> props.
                 </p>,
