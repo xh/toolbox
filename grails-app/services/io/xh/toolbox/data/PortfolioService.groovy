@@ -69,6 +69,95 @@ class PortfolioService extends BaseService {
     //------------------------
     // Implementation
     //------------------------
+
+    private Map getRandomPositionForPortfolio() {
+        String symbol = sample(symbols)
+        Map ret = [
+                symbol: symbol,
+                sector: getSector(symbol),
+                model : sample(models),
+                fund  : sample(funds),
+                region: sample(regions),
+                trader: sample(traders)
+        ]
+
+        // Generate unique key for leaf-level grouping within calculateRawPositions.
+        ret.id = values(ret).join('||')
+        return ret
+    }
+
+    // Calculate lowest-level leaf positions with P&L.
+    private List<Map> calculateRawPositions() {
+        Map byPosId = orders.groupBy { it.posId }
+        List<Map> positions = []
+
+        byPosId.each { id, ordersForId ->
+            Map first = ordersForId.first()
+            String symbol = first.symbol
+            double endPx = getMktData(symbol).last().close
+
+            def endQty = 0
+            def netCashflow = 0
+
+            ordersForId = ordersForId.sort {
+                it.time
+            }
+            ordersForId.each {
+                endQty += it.quantity
+                netCashflow -= it.mktVal
+            }
+
+            // Crude P&L calc.
+            double endMktVal = endQty * endPx
+            double pnl = netCashflow + endMktVal
+
+            positions << [
+                    symbol: symbol,
+                    sector: first.sector,
+                    model : first.model,
+                    fund  : first.fund,
+                    region: first.region,
+                    trader: first.trader,
+                    mktVal: endMktVal,
+                    pnl   : pnl
+            ]
+        }
+
+        return positions
+    }
+
+    // Generate grouped, hierarchical position rollups for a list of one or more dimensions.
+    private List<Map> getPositions(List<String> dims, List<Map> positions = rawPositions, String id = 'root') {
+        List<String> dimsC = dims.collect()  // Avoid mutating our input array.
+
+        const dim = dims.shift(),
+                byDimVal = groupBy(positions, it = > it[dim]),
+                ret = []
+
+        forOwn(byDimVal, (members, dimVal) = > {
+            const groupPos = {
+                // Generate a drilldown ID that encodes the path to this row.
+                id:
+                id + ` >> $ { dim } : $ { dimVal } `,
+                name:
+                dimVal ,
+                pnl:
+                sumBy(members, 'pnl') ,
+                mktVal:
+                sumBy(members, 'mktVal')
+            }
+
+            // Recurse to create children for this node if additional dimensions remain.
+            if (dims.length) {
+                groupPos.children = this.getPositions(dims, members, groupPos.id)
+            }
+
+            ret.push(groupPos)
+        })
+
+        return ret
+    }
+
     private String generateSymbol() {
         String ret = ""
         int n = randInt(1, 5)
@@ -86,6 +175,10 @@ class PortfolioService extends BaseService {
     private def sample(List list) {
         def i = random.nextInt(list.size())
         return list[i]
+    }
+
+    private String getSector(String symbol) {
+        return instData.symbol.sector
     }
 
     void clearCaches() {
