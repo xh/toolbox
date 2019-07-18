@@ -1,11 +1,12 @@
 package io.xh.toolbox
 
 import io.xh.hoist.config.AppConfig
-import io.xh.hoist.json.JSON
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.Monitor
+
+import static io.xh.hoist.json.JSONSerializer.serializePretty
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
 
@@ -84,16 +85,22 @@ class BootStrap {
                 valueType: 'string',
                 defaultValue: 'api.fda.gov',
                 groupName: 'Toolbox - Example Apps',
+            ],
+            sourceUrls: [
+                valueType: 'json',
+                defaultValue: [
+                    toolbox: 'https://github.com/exhi/toolbox/blob/develop',
+                    hoistReact: 'https://github.com/exhi/hoist-react/blob/develop'
+                ],
+                groupName: 'Toolbox',
+                clientVisible: true,
             ]
         ])
 
         // Edit Hoist-installed auto-refresh config to enable default refresh for TB.
         def autoRefreshConfig = AppConfig.findByName('xhAutoRefreshIntervals')
         if (autoRefreshConfig && autoRefreshConfig.lastUpdatedBy == 'hoist-bootstrap') {
-            autoRefreshConfig.value = new JSON([
-                app: 30,
-                mobile: 60
-            ]).toString(true)
+            autoRefreshConfig.value = serializePretty([app: 30, mobile: 60])
             autoRefreshConfig.save()
         }
 
@@ -120,23 +127,29 @@ class BootStrap {
                 groupName: 'Toolbox',
                 note: 'Grid sizing mode'
             ],
-            mobileDimHistory: [
-                type: 'json',
-                defaultValue: [],
-                local: true,
+            expandDockedLinks: [
+                type: 'bool',
+                defaultValue: false,
                 groupName: 'Toolbox',
-                note: 'Nested arrays containing user\'s dimension picker history'
+                note: 'True to expand the docked linked panel by default, false to start collapsed.'
             ],
-            portfolioDimHistory: [
+            mobileDims: [
                 type: 'json',
-                defaultValue: [],
+                defaultValue: [:],
                 local: true,
                 groupName: 'Toolbox',
-                note: 'Nested arrays containing user\'s dimension picker history'
+                note: 'Object containing user\'s dimension picker value & history'
+            ],
+            portfolioDims: [
+                type: 'json',
+                defaultValue: [:],
+                local: true,
+                groupName: 'Toolbox',
+                note: 'Object containing user\'s dimension picker value & history'
             ],
             recallsPanelConfig: [
                 type: 'json',
-                defaultValue: [],
+                defaultValue: [:],
                 local: false,
                 groupName: 'Toolbox - Example Apps',
                 note: 'Size of Panel Model'

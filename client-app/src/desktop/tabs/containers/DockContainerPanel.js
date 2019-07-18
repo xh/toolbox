@@ -41,6 +41,24 @@ export class DockContainerPanel extends Component {
                     Use the buttons below to test adding views to a container within this tab.
                 </p>
             ],
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/containers/DockContainerPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/dock/DockContainer.js',
+                    notes: 'Hoist container component.'
+                },
+                {
+                    url: '$HR/cmp/dock/DockContainerModel.js',
+                    notes: 'Hoist container model - primary API and configuration point for views.'
+                },
+                {
+                    url: '$HR/cmp/dock/DockViewModel.js',
+                    notes: 'Hoist view model - created by DockContainerModel in its ctor from provided configs.'
+                }
+            ],
             items: [
                 hbox({
                     width: 700,

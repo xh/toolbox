@@ -1,30 +1,27 @@
-.toolbox-popups-vframe {
-
+.tbox-popups {
   border: var(--xh-border-solid);
+  background-color: var(--xh-panel-bg);
 
   table {
-
-    width: 600px;
+    width: 700px;
     height: 270px;
     text-align: left;
 
-
     th {
+      width: 20%;
       padding: var(--xh-pad-px);
-      padding-right: 50px;
-
-      .toolbox-popups-button {
-        width: 120px;
+      .tbox-popups__button {
+        width: 100%;
       }
-
     }
 
     td {
-      text-align : center;
+      width: 40%;
       padding: var(--xh-pad-px);
+      text-align: center;
 
-      .toolbox-popups-button {
-        width: 180px;
+      .tbox-popups__button {
+        width: 100%;
       }
 
     }

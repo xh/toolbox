@@ -1,14 +1,6 @@
 .tbox-samplegrid {
 
   &__switches {
-    &__title {
-      font-size: var(--xh-font-size-small-px);
-      background-color: var(--xh-title-bg);
-      padding: var(--xh-pad-half-px);
-      align-items: center;
-      svg {margin-right: 4px}
-    }
-
     .xh-switch-input {
       margin: var(--xh-pad-px) var(--xh-pad-px) 0 var(--xh-pad-px);
     }

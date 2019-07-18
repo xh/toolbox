@@ -14,7 +14,7 @@ export class OrdersPanelModel {
     constructor() {
         this.addReaction({
             track: () => this.positionId,
-            run: this.loadAsync
+            run: () => this.loadAsync()
         });
     }
 
