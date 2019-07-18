@@ -178,8 +178,7 @@ export class ControlsPanel extends Component {
                                     placeholder: 'YYYY-MM-DD',
                                     minDate: moment().subtract(5, 'weeks').toDate(),
                                     maxDate: moment().add(2, 'weeks').toDate(),
-                                    enableClear: true,
-                                    enablePicker: false
+                                    enableClear: true
                                 })
                             }),
                             row({
@@ -193,7 +192,8 @@ export class ControlsPanel extends Component {
                                     showActionsBar: true,
                                     timePrecision: 'minute',
                                     timePickerProps: {useAmPm: true},
-                                    enableTextInput: false
+                                    enableTextInput: false,
+                                    enableClear: true
                                 })
                             })
                         ]
