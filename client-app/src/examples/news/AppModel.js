@@ -4,10 +4,10 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {HoistAppModel, loadAllAsync, XH} from '@xh/hoist/core';
+import {HoistAppModel, XH} from '@xh/hoist/core';
 
-import {managed} from "@xh/hoist/core";
-import {NewsPanelModel} from "./NewsPanelModel";
+import {managed} from '@xh/hoist/core';
+import {NewsPanelModel} from './NewsPanelModel';
 
 
 @HoistAppModel
@@ -19,19 +19,12 @@ export class AppModel {
     get useCompactGrids() {
         return XH.getPref('defaultGridMode') == 'COMPACT';
     }
-
-    constructor() {
-    }
-
+    
     async initAsync() {
         this.loadAsync();
     }
 
     async doLoadAsync(loadSpec) {
-        await loadAllAsync([this.newsPanelModel], loadSpec);
-    }
-
-    getRoutes() {
-        return [];
+        await this.newsPanelModel.loadAsync(loadSpec);
     }
 }

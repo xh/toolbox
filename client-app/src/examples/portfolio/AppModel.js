@@ -20,9 +20,6 @@ export class AppModel {
         return XH.getPref('defaultGridMode') == 'COMPACT';
     }
 
-    constructor() {
-    }
-
     async initAsync() {
         await XH.installServicesAsync(
             CompanyService,
@@ -34,9 +31,5 @@ export class AppModel {
 
     async doLoadAsync(loadSpec) {
         await loadAllAsync([], loadSpec);
-    }
-
-    getRoutes() {
-        return [];
     }
 }

@@ -66,11 +66,10 @@ export class ExamplesTab extends Component {
                 className: 'example-tile-container',
                 items: this.examples.map((ex) => this.renderTile(ex))
             })
-        )
+        );
     }
 
     renderTile({title, icon, path, text}) {
-        // Maybe add thumbnail image somewhere?
         return panel({
             title,
             icon,
