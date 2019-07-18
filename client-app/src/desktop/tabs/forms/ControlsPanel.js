@@ -178,7 +178,8 @@ export class ControlsPanel extends Component {
                                     placeholder: 'YYYY-MM-DD',
                                     minDate: moment().subtract(5, 'weeks').toDate(),
                                     maxDate: moment().add(2, 'weeks').toDate(),
-                                    enableClear: true
+                                    enableClear: true,
+                                    enablePicker: false
                                 })
                             }),
                             row({
