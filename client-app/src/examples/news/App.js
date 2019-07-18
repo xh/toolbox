@@ -3,9 +3,9 @@ import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {appBar} from '@xh/hoist/desktop/cmp/appbar';
-import {ContextMenuSupport, ContextMenuItem} from '@xh/hoist/desktop/cmp/contextmenu';
+import {ContextMenuItem, ContextMenuSupport} from '@xh/hoist/desktop/cmp/contextmenu';
 import {newsPanel} from './NewsPanel';
-import {relativeTimestamp} from "@xh/hoist/cmp/relativetimestamp";
+import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 
 @HoistComponent
 @ContextMenuSupport

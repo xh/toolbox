@@ -36,18 +36,6 @@ export class RecallsPanel extends Component {
 
         return vframe(
             panel({
-                // title: 'FDA Drug Recalls',
-                // icon: Icon.health(),
-                // headerItems: [
-                //     button({
-                //         title: 'About the API',
-                //         text: 'About',
-                //         icon: Icon.questionCircle(),
-                //         onClick: () => XH.alert({
-                //             message: p(aboutBlurb, a({href: fdaWebsite, item: fdaWebsite, target: '_blank'}))
-                //         })
-                //     })
-                // ],
                 item: grid({model: gridModel}),
                 mask: model.loadModel,
                 tbar: toolbar(
@@ -80,10 +68,6 @@ export class RecallsPanel extends Component {
                             button({
                                 text: 'Recalling Firm',
                                 value: 'recallingFirm'
-                            }),
-                            button({
-                                text: 'Reason',
-                                value: 'reason'
                             })
                         ]
                     }),

@@ -9,9 +9,9 @@ import {HoistComponent} from '@xh/hoist/core';
 import {a, hbox, p, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {Icon} from "@xh/hoist/icon";
-import {panel} from "@xh/hoist/desktop/cmp/panel";
-import {wrapper} from "../../common";
+import {Icon} from '@xh/hoist/icon';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {wrapper} from '../../common';
 import './ExamplesTab.scss';
 
 @HoistComponent
@@ -86,6 +86,6 @@ export class ExamplesTab extends Component {
                     onClick: () => window.open(path)
                 })
             )
-        })
+        });
     }
 }

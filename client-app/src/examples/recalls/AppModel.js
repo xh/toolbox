@@ -9,7 +9,6 @@ import {HoistAppModel, XH} from '@xh/hoist/core';
 @HoistAppModel
 export class AppModel {
 
-
     get useCompactGrids() {
         return XH.getPref('defaultGridMode') == 'COMPACT';
     }

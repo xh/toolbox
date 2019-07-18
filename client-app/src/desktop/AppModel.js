@@ -150,15 +150,15 @@ export class AppModel {
                             {name: 'icons', path: '/icons'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},
+                            {name: 'fileManager', path: '/fileManager', omit: !isAdmin},
                             {name: 'timestamp', path: '/timestamp'},
                             {name: 'jsx', path: '/jsx'},
-                            {name: 'popups', path: '/popups'},
-                            {name: 'fileManager', path: '/fileManager'}
+                            {name: 'popups', path: '/popups'}
                         ]
                     },
                     {
                         name: 'examples',
-                        path: '/examples',
+                        path: '/examples'
                     }
                 ]
             }

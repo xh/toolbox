@@ -4,17 +4,11 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {HoistAppModel, loadAllAsync, XH} from '@xh/hoist/core';
-
-import {CompanyService} from '../../core/svc/CompanyService';
+import {HoistAppModel, XH} from '@xh/hoist/core';
 import {PortfolioService} from '../../core/svc/PortfolioService';
-import {SalesService} from '../../core/svc/SalesService';
-import {TradeService} from '../../core/svc/TradeService';
-
 
 @HoistAppModel
 export class AppModel {
-
 
     get useCompactGrids() {
         return XH.getPref('defaultGridMode') == 'COMPACT';
@@ -22,14 +16,7 @@ export class AppModel {
 
     async initAsync() {
         await XH.installServicesAsync(
-            CompanyService,
-            TradeService,
-            SalesService,
             PortfolioService
         );
-    }
-
-    async doLoadAsync(loadSpec) {
-        await loadAllAsync([], loadSpec);
     }
 }
