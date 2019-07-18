@@ -36,7 +36,7 @@ export class NewsPanelModel {
     constructor() {
         this.addReaction({
             track: () => [this.sourceFilter, this.textFilter, this.lastRefresh],
-            run: this.filterData,
+            run: () => this.filterData(),
             fireImmediately: true
         });
     }

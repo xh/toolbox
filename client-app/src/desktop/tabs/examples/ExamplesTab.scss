@@ -1,0 +1,14 @@
+.example-tile-text {
+  flex: auto;
+  overflow-y: auto !important;
+  padding: var(--xh-pad-px)
+}
+
+.example-tile-container {
+  justify-content: space-evenly;
+  width: 900px;
+
+  > .xh-panel {
+    border: var(--xh-border-solid);
+  }
+}
