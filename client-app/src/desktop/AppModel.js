@@ -144,6 +144,7 @@ export class AppModel {
                             {name: 'icons', path: '/icons'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},
+                            {name: 'fileManager', path: '/fileManager', omit: !isAdmin},
                             {name: 'timestamp', path: '/timestamp'},
                             {name: 'jsx', path: '/jsx'},
                             {name: 'popups', path: '/popups'}
@@ -151,13 +152,7 @@ export class AppModel {
                     },
                     {
                         name: 'examples',
-                        path: '/examples',
-                        children: [
-                            {name: 'portfolio', path: '/portfolio'},
-                            {name: 'news', path: '/news'},
-                            {name: 'recalls', path: '/recalls'},
-                            {name: 'fileManager', path: '/fileManager', omit: !isAdmin}
-                        ]
+                        path: '/examples'
                     }
                 ]
             }
