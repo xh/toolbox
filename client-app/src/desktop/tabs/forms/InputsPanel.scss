@@ -1,4 +1,4 @@
-.toolbox-controls-panel {
+.toolbox-inputs-panel {
   &__column {
     width: 30%;
     flex: 1;
@@ -10,7 +10,7 @@
       margin: var(--xh-pad-px) 0;
     }
 
-    .controls-panel-field-box {
+    .inputs-panel-field-box {
       padding: var(--xh-pad-half-px) var(--xh-pad-half-px) 0 var(--xh-pad-half-px);
       flex: none;
 
@@ -18,7 +18,7 @@
         background-color: var(--xh-grid-bg-odd);
       }
 
-      .controls-panel-field-display {
+      .inputs-panel-field-display {
         position: absolute;
         top: 10px;
         right: 10px;

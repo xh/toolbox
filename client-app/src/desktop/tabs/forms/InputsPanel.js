@@ -31,13 +31,13 @@ import {
 
 import {usStates, restaurants} from '../../../core/data';
 import {wrapper} from '../../common';
-import {ControlsPanelModel} from './ControlsPanelModel';
-import './ControlsPanel.scss';
+import {InputsPanelModel} from './InputsPanelModel';
+import './InputsPanel.scss';
 
 @HoistComponent
-export class ControlsPanel extends Component {
+export class InputsPanel extends Component {
 
-    model = new ControlsPanelModel();
+    model = new InputsPanelModel();
 
     render() {
         return wrapper({
@@ -55,7 +55,7 @@ export class ControlsPanel extends Component {
             ],
             item: panel({
                 title: 'Forms › HoistInputs',
-                className: 'toolbox-controls-panel',
+                className: 'toolbox-inputs-panel',
                 icon: Icon.edit(),
                 width: '90%',
                 height: '90%',
@@ -64,7 +64,7 @@ export class ControlsPanel extends Component {
             }),
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/forms/ControlsPanel.js',
+                    url: '$TB/client-app/src/desktop/tabs/forms/InputsPanel.js',
                     notes: 'This example.'
                 },
                 {
@@ -91,7 +91,7 @@ export class ControlsPanel extends Component {
                 },
                 items: hframe(
                     vbox({
-                        className: 'toolbox-controls-panel__column',
+                        className: 'toolbox-inputs-panel__column',
                         items: [
                             row({
                                 label: 'TextInput',
@@ -142,7 +142,7 @@ export class ControlsPanel extends Component {
                         ]
                     }),
                     vbox({
-                        className: 'toolbox-controls-panel__column',
+                        className: 'toolbox-inputs-panel__column',
                         items: [
                             row({
                                 label: 'NumberInput',
@@ -223,7 +223,7 @@ export class ControlsPanel extends Component {
                         ]
                     }),
                     vbox({
-                        className: 'toolbox-controls-panel__column',
+                        className: 'toolbox-inputs-panel__column',
                         items: [
                             row({
                                 label: 'Select',
@@ -328,7 +328,7 @@ export class ControlsPanel extends Component {
         if (!layout.width) layout.flex = 1;
 
         return box({
-            className: 'controls-panel-field-box',
+            className: 'inputs-panel-field-box',
             items: [
                 fieldDisplay({fieldModel, fmtVal}),
                 formField({
@@ -414,7 +414,7 @@ class FieldDisplay extends Component {
             }
         }
         return div({
-            className: 'controls-panel-field-display',
+            className: 'inputs-panel-field-display',
             item: displayVal
         });
     }

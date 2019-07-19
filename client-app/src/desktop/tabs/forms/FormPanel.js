@@ -24,14 +24,14 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 
 import {wrapper} from '../../common';
-import {ValidationPanelModel} from './ValidationPanelModel';
+import {FormPanelModel} from './FormPanelModel';
 
-import './ValidationPanel.scss';
+import './FormPanel.scss';
 
 @HoistComponent
-export class ValidationPanel extends Component {
+export class FormPanel extends Component {
 
-    model = new ValidationPanelModel();
+    model = new FormPanelModel();
 
     render() {
         return wrapper({
@@ -45,7 +45,7 @@ export class ValidationPanel extends Component {
             ],
             item: panel({
                 title: 'Forms › Forms ',
-                className: 'toolbox-validation-panel',
+                className: 'toolbox-form-panel',
                 icon: Icon.edit(),
                 width: '90%',
                 height: '90%',
@@ -55,7 +55,7 @@ export class ValidationPanel extends Component {
             }),
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/forms/ValidationPanel.js',
+                    url: '$TB/client-app/src/desktop/tabs/forms/FormPanel.js',
                     notes: 'This example.'
                 },
                 {
@@ -78,7 +78,7 @@ export class ValidationPanel extends Component {
         const {formModel, inline, minimal, commitOnChange} = this.model;
 
         return frame({
-            className: 'toolbox-validation-panel__content',
+            className: 'toolbox-form-panel__content',
             item: form({
                 model: formModel,
                 fieldDefaults: {
