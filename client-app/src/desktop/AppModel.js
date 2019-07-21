@@ -71,7 +71,6 @@ export class AppModel {
     }
 
     getRoutes() {
-        const isAdmin = XH.getUser().isHoistAdmin;
         return [
             {
                 name: 'default',
@@ -148,7 +147,6 @@ export class AppModel {
                             {name: 'icons', path: '/icons'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'fileChooser', path: '/fileChooser'},
-                            {name: 'fileManager', path: '/fileManager', omit: !isAdmin},
                             {name: 'timestamp', path: '/timestamp'},
                             {name: 'jsx', path: '/jsx'},
                             {name: 'popups', path: '/popups'}
