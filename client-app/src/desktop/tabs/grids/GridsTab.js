@@ -8,8 +8,6 @@ import {RestGridPanel} from './RestGridPanel';
 import {DataViewPanel} from './DataViewPanel';
 import {TreeGridPanel} from './TreeGridPanel';
 import {TreeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
-import {GridTestPanel} from './GridTestPanel';
-import {CubeDataPanel} from './cube/CubeDataPanel';
 import {AgGridView} from './AgGridView';
 
 @HoistComponent
@@ -26,9 +24,7 @@ export class GridsTab extends Component {
                     {id: 'groupedCols', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
                     {id: 'rest', title: 'REST Editor', content: RestGridPanel},
                     {id: 'dataview', title: 'DataView', content: DataViewPanel},
-                    {id: 'agGrid', title: 'ag-Grid Wrapper', content: AgGridView},
-                    {id: 'performance', title: 'Performance Test', content: GridTestPanel},
-                    {id: 'cube', title: 'Cube Data', content: CubeDataPanel}
+                    {id: 'agGrid', title: 'ag-Grid Wrapper', content: AgGridView}
                 ],
                 switcherPosition: 'left'
             },

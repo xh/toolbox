@@ -5,7 +5,7 @@ import moment from 'moment';
 import {random} from 'lodash';
 
 @HoistModel
-export class ControlsPanelModel {
+export class InputsPanelModel {
 
     @bindable commitOnChange = false;
 

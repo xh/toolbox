@@ -71,7 +71,6 @@ export class AppModel {
     }
 
     getRoutes() {
-        const isAdmin = XH.getUser().isHoistAdmin;
         return [
             {
                 name: 'default',
@@ -113,17 +112,15 @@ export class AppModel {
                             {name: 'groupedCols', path: '/groupedCols'},
                             {name: 'rest', path: '/rest'},
                             {name: 'dataview', path: '/dataview'},
-                            {name: 'performance', path: '/performance'},
-                            {name: 'agGrid', path: '/agGrid'},
-                            {name: 'cube', path: '/cube'}
+                            {name: 'agGrid', path: '/agGrid'}
                         ]
                     },
                     {
                         name: 'forms',
                         path: '/forms',
                         children: [
-                            {name: 'controls', path: '/controls'},
-                            {name: 'validation', path: '/validation'},
+                            {name: 'inputs', path: '/inputs'},
+                            {name: 'form', path: '/form'},
                             {name: 'toolbarForm', path: '/toolbarForm'}
                         ]
                     },
@@ -157,13 +154,7 @@ export class AppModel {
                     },
                     {
                         name: 'examples',
-                        path: '/examples',
-                        children: [
-                            {name: 'portfolio', path: '/portfolio'},
-                            {name: 'news', path: '/news'},
-                            {name: 'recalls', path: '/recalls'},
-                            {name: 'fileManager', path: '/fileManager', omit: !isAdmin}
-                        ]
+                        path: '/examples'
                     }
                 ]
             }

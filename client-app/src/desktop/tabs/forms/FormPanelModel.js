@@ -9,7 +9,7 @@ import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {Icon} from '@xh/hoist/icon';
 
 @HoistModel
-export class ValidationPanelModel {
+export class FormPanelModel {
 
     validateTask = new PendingTaskModel();
 
