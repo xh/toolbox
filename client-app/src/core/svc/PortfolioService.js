@@ -1,6 +1,33 @@
+import {HoistService} from '@xh/hoist/core';
+import {MINUTES} from '@xh/hoist/utils/datetime';
+import {whileAsync} from '@xh/hoist/utils/async';
+import {
+    castArray,
+    filter,
+    find,
+    forOwn,
+    groupBy,
+    isEmpty,
+    keys,
+    last,
+    random,
+    round,
+    sample,
+    sortBy,
+    sumBy,
+    times,
+    values
+} from 'lodash';
+import moment from 'moment';
 
 @HoistService
 export class PortfolioService {
+
+    models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul'];
+    sectors = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing', 'Energy', 'Other', 'Utilities'];
+    funds = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay'];
+    regions = ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac'];
+    traders = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn', 'Robert Greer', 'HedgeSys', 'Susan Major'];
 
     tradingDays = [];
     symbols = [];
@@ -11,10 +38,63 @@ export class PortfolioService {
     INITIAL_ORDERS = 20000;
     INITIAL_SYMBOLS = 500;
 
+    /**
+     * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
+     * @param {string[]} dims - field names for dimensions on which to group.
+     * @param {boolean} [includeSummary] - true to include a root summary node
+     * @return {Promise<Array>}
+     */
+    async getPortfolioAsync(dims, includeSummary = false) {
+        await this.ensureLoadedAsync();
+        const positions = this.getPositions(castArray(dims));
 
+        return !includeSummary ? positions : [
+            {
+                id: 'summary',
+                name: 'Total',
+                pnl: round(sumBy(positions, 'pnl')),
+                mktVal: round(sumBy(positions, 'mktVal')),
+                children: positions
+            }
+        ];
+    }
 
+    /**
+     * Return a list of flat position data.
+     * @returns {Promise<Array>}
+     */
+    async getPositionsAsync() {
+        await this.ensureLoadedAsync();
+        return this.rawPositions;
+    }
 
+    /**
+     * Return a single grouped position, uniquely identified by drilldown ID.
+     * @param positionId - ID installed on each position returned by `getPortfolioAsync()`.
+     * @return {Promise<*>}
+     */
+    async getPositionAsync(positionId) {
+        await this.ensureLoadedAsync();
 
+        const parsedId = this.parsePositionId(positionId),
+            dims = keys(parsedId),
+            dimVals = values(parsedId);
+
+        let positions = this.getPositions(dims),
+            ret = null;
+
+        dimVals.forEach(dimVal => {
+            ret = find(positions, {name: dimVal});
+            if (ret.children) positions = ret.children;
+        });
+
+        return ret;
+    }
+
+    async getOrdersAsync(positionId) {
+        if (!positionId) return [];
+        return filter(this.orders, this.parsePositionId(positionId));
+    }
 
     async getLineChartSeries(symbol) {
         const mktData = this.getMktData(symbol);
@@ -143,6 +223,54 @@ export class PortfolioService {
         );
     }
 
+    generateSymbol() {
+        let ret = '';
+        times(random(1, 5), () => ret += sample('ABCDEFGHIJKLMNOPQRSTUVWXYZ'));
+        return ret;
+    }
+
+    generateMarketData() {
+        const tradingDays = this.tradingDays,
+            spikeDayIdxs = new Set(),
+            ret = [];
+
+        // Give some random number of days a spike in trading volume to make that chart interesting.
+        times(random(0, 30), () => spikeDayIdxs.add(random(0, tradingDays.length)));
+
+        // Set a seed price and generate a series from there.
+        let startPx = random(10, 100, true);
+        tradingDays.forEach((tradingDay, idx) => {
+            const bigDown = Math.random() > 0.95,  // Allow for a few bigger swings.
+                bigUp = Math.random() > 0.95,
+                pctDown = random(0, bigDown ? 0.1 : 0.02, true),
+                pctUp = random(0, bigUp ? 0.1 : 0.025, true),  // We can rig the game here...
+                open = startPx,
+                high = startPx + (pctUp * startPx),
+                low = startPx - (pctDown * startPx),
+                close = (Math.random() * (high - low)) + low;
+
+            let maxVol;
+            if (spikeDayIdxs.has(idx)) {
+                maxVol = 200;
+            } else if (spikeDayIdxs.has(idx - 1) || spikeDayIdxs.has(idx + 1)) {
+                maxVol = 150;
+            } else {
+                maxVol = 100;
+            }
+
+            ret.push({
+                day: tradingDay,
+                high: round(high, 2),
+                low: round(low, 2),
+                open: round(open, 2),
+                close: round(close, 2),
+                volume: random(80, maxVol) * 1000
+            });
+            startPx = close;
+        });
+
+        return ret;
+    }
 
     getRandomPositionForPortfolio() {
         const symbol = sample(this.symbols);
@@ -237,6 +365,14 @@ export class PortfolioService {
         });
 
         return ret;
+    }
+
+    getMktData(symbol) {
+        return this.instData.get(symbol).mktData;
+    }
+
+    getSector(symbol) {
+        return this.instData.get(symbol).sector;
     }
 
 }
