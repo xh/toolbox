@@ -11,7 +11,7 @@ class Utils {
         return random.nextDouble() * (upper - lower) + lower
     }
 
-    static def sample(List list) {
+    static <T> T sample(List<T> list) {
         int idx = random.nextInt(list.size())
         return list[idx]
     }

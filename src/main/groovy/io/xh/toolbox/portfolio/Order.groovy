@@ -2,34 +2,38 @@ package io.xh.toolbox.portfolio
 
 import io.xh.hoist.json.JSONFormatCached
 
-import java.time.LocalDateTime
+import java.time.Instant
 
 class Order extends JSONFormatCached {
     String id
-    String posId
     String symbol
     String dir
     long quantity
     double price
     long mktVal
-    LocalDateTime time
-    Position position
     long commission
     int confidence
+
+    Instant time
+
+    String model
+    String trader
+    String fund
 
     Map formatForJSON() {
         return [
                 id        : id,
-                posId     : posId,
                 symbol    : symbol,
                 dir       : dir,
                 quantity  : quantity,
                 price     : price,
                 mktVal    : mktVal,
                 time      : time,
-                position  : position,
                 commission: commission,
-                confidance: confidence
+                confidence: confidence,
+                model:      model,
+                trader:     trader,
+                fund:       fund
         ]
     }
 }

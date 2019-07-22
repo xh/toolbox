@@ -2,6 +2,7 @@ package io.xh.toolbox.portfolio
 
 import io.xh.hoist.BaseService
 
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -18,33 +19,11 @@ class PortfolioService extends BaseService {
     private final List TRADERS = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn', 'Robert Greer', 'HedgeSys', 'Susan Major']
     private final int ORDERS_COUNT = 20000
 
-    private List<Order> orders = generateOrders()
+    private List<Order> orders
     private List<Position> rawPositions
 
     void init() {
-        def symbols = marketService.getAllSymbols()
-
-        def symStr = symbols.take(5) as String
-        log.debug(symStr)
-
-        Map<String, List<MarketPrice>> marketData = new ConcurrentHashMap(symbols.size())
-        symbols.each {
-            marketData[it] = marketService.getMarketData(it)
-        }
-
-        tradingDays = marketData[symbols.first()].collect { it.getDay() }
-
-        instData = marketData.collectEntries { symbol, marketPriceList ->
-            [
-                    symbol: [
-                            sector : sample(sectors),
-                            mktData: marketPriceList
-                    ]
-            ]
-        }
-
-        orders =
-
+        orders = generateOrders()
         rawPositions = calculateRawPositions()
 
         super.init()
@@ -107,76 +86,49 @@ class PortfolioService extends BaseService {
         }
     }
 
-    /**
-     * Available as a general function to generate a collection of mock orders of any given size.
-     * Called internally (lazily) to generate a reference set of orders from which positions are
-     * built to populate the demo portfolio viewer app.
-     *
-     * @param count - desired number of synthetic orders to generate.
-     * @returns{Promise<Object[]>}
-     */
-    List<Order> generateOrders(int count = ORDERS_COUNT) {
-        List<Order> orders = []
-        int i = 0 // Invariant: i == orders.length
-        while (i < count) {
-            Position pos = getRandomPositionForPortfolio()
-            String symbol = pos.getSymbol()
-            String dir = sample(["Sell", "Buy"])
-            long quantity = randInt(300, 10000) * (dir == "Sell" ? -1 : 1)
-            MarketPrice mktData = sample(getMktData(symbol))
-            LocalDate tradingDay = mktData.getDay()
-            int hour = randInt(9, 16); int min = randInt(0, 59)
-            LocalDateTime time = tradingDay.atTime(LocalTime.of(hour, min))
-
-            double price = randDouble(mktData.low, mktData.high).round(2)
-            long mktVal = (quantity * price).round()
-
-            orders << new Order([
-                    id        : "order-${i}",
-                    posId     : pos.getId(),
-                    symbol    : symbol,
-                    dir       : dir,
-                    quantity  : quantity,
-                    price     : price,
-                    mktVal    : mktVal,
-                    time      : time,
-                    sector    : pos.getSector(),
-                    model     : pos.getModel(),
-                    fund      : pos.getFund(),
-                    region    : pos.getRegion(),
-                    trader    : pos.getTrader(),
-                    commission: Math.abs(mktVal * 0.0002),
-                    confidence: randInt(0, 1000)
-            ])
-
-            i += 1
-        }
-
-        log.debug("Generate orders")
-
-
-        return orders.sort { it.getTime() }
-    }
 
 
     //------------------------
     // Implementation
     //------------------------
+    private List<Order> generateOrders() {
+        List<Order> ret = new ArrayList(ORDERS_COUNT)
+        List<String> symbols = marketService.getAllSymbols() as List
+        ORDERS_COUNT.times {i ->
 
-    private Position getRandomPositionForPortfolio() {
-        String symbol = sample(symbols)
-        Map posMap = [
-                symbol: symbol,
-                sector: getSector(symbol),
-                model : sample(MODELS),
-                fund  : sample(FUNDS),
-                region: sample(REGIONS),
-                trader: sample(TRADERS)
-        ]
+            // Get random attributes
+            def symbol = sample(symbols),
+                fund = sample(FUNDS),
+                model = sample(MODELS),
+                trader = sample(TRADERS),
+                dir = sample(['Sell', 'Buy']),
+                hour = randInt(9, 16),
+                min = randInt(0, 59)
 
-        // Generate unique key for leaf-level grouping within calculateRawPositions.
-        posMap.id = posMap.values().join('||')
-        return new Position(posMap)
+            // Calc 2nd order, partially random attributes
+            MarketPrice mktData = sample(marketService.getMarketData(symbol))
+            Instant time = mktData.day.atTime(LocalTime.of(hour, min))
+            long quantity = randInt(300, 10000) * (dir == 'Sell' ? -1 : 1)
+            double price = randDouble(mktData.low, mktData.high).round(2)
+            long mktVal = (quantity * price).round()
+
+            orders << new Order(
+                    id: "order-${i}",
+                    symbol: symbol,
+                    dir: dir,
+                    quantity: quantity,
+                    price: price,
+                    mktVal: mktVal,
+                    time: time,
+                    model: model,
+                    fund: fund,
+                    trader: trader,
+                    commission: Math.abs(mktVal * 0.0002),
+                    confidence: randInt(0, 1000)
+            )
+        }
+
+        return orders.sort {it.time}
     }
 
     // Calculate lowest-level leaf positions with P&L.
@@ -257,14 +209,6 @@ class PortfolioService extends BaseService {
         }
 
         return posMap
-    }
-
-    private List<MarketPrice> getMktData(String symbol) {
-        return instData[symbol].mktData
-    }
-
-    private String getSector(String symbol) {
-        return instData[symbol].sector
     }
 
     void clearCaches() {
