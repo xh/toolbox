@@ -1,8 +1,9 @@
 import {HoistModel, LoadSupport} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
 import {bindable} from '@xh/hoist/mobx';
-import Highcharts from 'highcharts/highstock';
+import {Highcharts} from '@xh/hoist/kit/highcharts';
 import moment from 'moment';
+
 import Amazon from '../../../core/data/charts/amazonPricing';
 import Facebook from '../../../core/data/charts/facebookPricing';
 import Yahoo from '../../../core/data/charts/yahooPricing';
