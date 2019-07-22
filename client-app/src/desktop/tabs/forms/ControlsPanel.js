@@ -175,6 +175,7 @@ export class ControlsPanel extends Component {
                                 fmtVal: v => fmtDateTime(v),
                                 layout: {width: 160},
                                 item: dateInput({
+                                    showActionsBar: true,
                                     placeholder: 'YYYY-MM-DD',
                                     minDate: moment().subtract(5, 'weeks').toDate(),
                                     maxDate: moment().add(2, 'weeks').toDate(),
