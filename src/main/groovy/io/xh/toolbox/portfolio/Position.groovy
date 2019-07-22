@@ -15,7 +15,6 @@ class Position extends JSONFormatCached {
                 symbol: symbol,
                 model : model,
                 fund  : fund,
-                region: region,
                 trader: trader
         ]
     }
