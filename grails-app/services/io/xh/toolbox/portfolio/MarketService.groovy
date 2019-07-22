@@ -12,32 +12,62 @@ import static java.time.DayOfWeek.SUNDAY
 
 class MarketService extends BaseService {
 
-    private final int SYMBOL_COUNT = 500
+    private final int INSTRUMENT_COUNT = 500
+    private final List SECTORS = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing', 'Energy', 'Other', 'Utilities']
+    private final List REGIONS = ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
 
-    // Map of instrument symbol to time-series of market activity
-    private Map<String, List<MarketPrice>> marketData = generateData()
+    // Map of symbol to instrument
+    private Map<String, Instrument> instruments
+
+    // Map of symbol to time-series of market activity
+    private Map<String, List<MarketPrice>> marketPrices
 
     Set<String> getAllSymbols() {
-        return marketData.keySet()
+        instruments.keySet()
+    }
+
+    Instrument getInstrument(String symbol) {
+        instruments[symbol]
     }
 
     List<MarketPrice> getMarketData(String symbol) {
-        return marketData[symbol]
+        marketPrices[symbol]
     }
+
+
+    void init() {
+        instruments = generateInstruments()
+        marketPrices = generatePrices()
+        
+
+        super.init()
+    }
+
+
 
     //---------------
     // Implementation
     //---------------
-    private Map<String, List<MarketPrice>> generateData() {
-        Map<String, List<MarketPrice>> ret = new ConcurrentHashMap(SYMBOL_COUNT)
-        List<LocalDate> tradingDays = generateTradingDays()
-        def symbolsGenerated = 0
-        while (symbolsGenerated < SYMBOL_COUNT) {
+    private Map<String, Instrument> generateInstruments() {
+        Map<String, Instrument> ret = new ConcurrentHashMap(INSTRUMENT_COUNT)
+        while (ret.size() < INSTRUMENT_COUNT) {
             String symbol = generateSymbol()
             if (!ret[symbol]) {
-                ret[symbol] = generateTimeSeries(tradingDays)
-                symbolsGenerated += 1
+                ret[symbol] = new Instrument(
+                        symbol: symbol,
+                        sector: sample(SECTORS),
+                        region: sample(REGIONS)
+                )
             }
+        }
+        return ret
+    }
+
+    private Map<String, List<MarketPrice>> generatePrices() {
+        Map<String, List<MarketPrice>> ret = new ConcurrentHashMap(INSTRUMENT_COUNT)
+        List<LocalDate> tradingDays = generateTradingDays()
+        instruments.keySet().each {
+            ret[it] = generateTimeSeries(tradingDays)
         }
         return ret
     }
@@ -114,6 +144,5 @@ class MarketService extends BaseService {
 
     void clearCaches() {
         super.clearCaches()
-
     }
 }

@@ -13,26 +13,16 @@ class PortfolioService extends BaseService {
 
     def marketService
 
-    //-----------------------------------------
-    // Constants for synthetic data generation
-    //-----------------------------------------
-    private final List models = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul']
-    private final List sectors = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing', 'Energy', 'Other', 'Utilities']
-    private final List funds = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay']
-    private final List regions = ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
-    private final List traders = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn', 'Robert Greer', 'HedgeSys', 'Susan Major']
-
+    private final List MODELS = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul']
+    private final List FUNDS = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay']
+    private final List TRADERS = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn', 'Robert Greer', 'HedgeSys', 'Susan Major']
     private final int ORDERS_COUNT = 20000
 
-    List<LocalDate> tradingDays
-    Set<String> symbols
-    Map<String, Map> instData
-    List<Order> orders
-    List<Position> rawPositions
-
+    private List<Order> orders = generateOrders()
+    private List<Position> rawPositions
 
     void init() {
-        symbols = marketService.getAllSymbols()
+        def symbols = marketService.getAllSymbols()
 
         def symStr = symbols.take(5) as String
         log.debug(symStr)
@@ -53,7 +43,7 @@ class PortfolioService extends BaseService {
             ]
         }
 
-        orders = generateOrders()
+        orders =
 
         rawPositions = calculateRawPositions()
 
