@@ -5,10 +5,8 @@ import io.xh.hoist.json.JSONFormatCached
 class Position extends JSONFormatCached {
     String id
     String symbol
-    String sector
     String model
     String fund
-    String region
     String trader
 
     Map formatForJSON() {

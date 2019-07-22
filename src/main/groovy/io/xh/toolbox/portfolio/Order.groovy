@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 
 class Order extends JSONFormatCached {
     String id
+    String posId
     String symbol
     String dir
     long quantity
@@ -19,6 +20,7 @@ class Order extends JSONFormatCached {
     Map formatForJSON() {
         return [
                 id        : id,
+                posId     : posId,
                 symbol    : symbol,
                 dir       : dir,
                 quantity  : quantity,

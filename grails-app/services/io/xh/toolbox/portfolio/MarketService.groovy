@@ -6,7 +6,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.concurrent.ConcurrentHashMap
 
-import static Utils.*
+import static io.xh.toolbox.portfolio.Utils.*
 import static java.time.DayOfWeek.SATURDAY
 import static java.time.DayOfWeek.SUNDAY
 
@@ -73,21 +73,21 @@ class MarketService extends BaseService {
                 maxVol = 100
             }
 
-            ret << new MarketPrice([
+            ret << new MarketPrice(
                     day   : tradingDay,
                     high  : high.round(2),
                     low   : low.round(2),
                     open  : open.round(2),
                     close : close.round(2),
                     volume: randInt(80, maxVol) * 1000
-            ])
+            )
             startPx = close
         }
 
         return ret
     }
 
-    private static List<LocalDate> generateTradingDays() {
+    private List<LocalDate> generateTradingDays() {
         LocalDate today = LocalDate.now()
         LocalDate tradingDay = LocalDate.of(today.getYear() - 2, 1, 1)
 
@@ -102,7 +102,7 @@ class MarketService extends BaseService {
         return ret
     }
 
-    private static String generateSymbol() {
+    private String generateSymbol() {
         def ret = '',
             n = randInt(1, 5),
             letters = ('A'..'Z') as List<Character>

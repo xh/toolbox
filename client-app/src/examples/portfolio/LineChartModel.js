@@ -1,9 +1,10 @@
-import {HoistModel, XH, managed, LoadSupport} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
 import {fmtDate} from '@xh/hoist/format';
 import Highcharts from 'highcharts/highstock';
 import {isNil} from 'lodash';
 import {bindable} from '@xh/hoist/mobx';
+import moment from 'moment';
 
 @HoistModel
 @LoadSupport
@@ -84,7 +85,16 @@ export class LineChartModel {
             return;
         }
 
-        const series = await XH.portfolioService.getLineChartSeries(orderSymbol);
+        const mktData = await XH.fetchJson({url: `market?symbol=${orderSymbol}`});
+        console.log(mktData);
+        const series = [{
+            name: orderSymbol,
+            type: 'line',
+            animation: false,
+            data: mktData.map(it => [moment(it.day).valueOf(), it.volume])
+        }];
+
+        // const series = await XH.portfolioService.getLineChartSeries(orderSymbol);
         this.chartModel.setSeries(series);
     }
 }

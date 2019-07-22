@@ -4,7 +4,7 @@ import io.xh.hoist.security.Access
 import io.xh.toolbox.BaseController
 
 @Access(['APP_READER'])
-class SalesController extends BaseController {
+class MarketController extends BaseController {
 
     def marketService
 

@@ -5,8 +5,9 @@ import io.xh.hoist.BaseService
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.concurrent.ConcurrentHashMap
 
-import static Utils.*
+import static io.xh.toolbox.portfolio.Utils.*
 
 class PortfolioService extends BaseService {
 
@@ -26,13 +27,23 @@ class PortfolioService extends BaseService {
     List<LocalDate> tradingDays
     Set<String> symbols
     Map<String, Map> instData
+    List<Order> orders
+    List<Position> rawPositions
 
 
     void init() {
         symbols = marketService.getAllSymbols()
-        Map<String, List<MarketPrice>> marketData = marketService.getMarketData()
+
+        def symStr = symbols.take(5) as String
+        log.debug(symStr)
+
+        Map<String, List<MarketPrice>> marketData = new ConcurrentHashMap(symbols.size())
+        symbols.each {
+            marketData[it] = marketService.getMarketData(it)
+        }
 
         tradingDays = marketData[symbols.first()].collect { it.getDay() }
+
         instData = marketData.collectEntries { symbol, marketPriceList ->
             [
                     symbol: [
@@ -41,6 +52,10 @@ class PortfolioService extends BaseService {
                     ]
             ]
         }
+
+        orders = generateOrders()
+
+        rawPositions = calculateRawPositions()
 
         super.init()
     }
@@ -71,7 +86,7 @@ class PortfolioService extends BaseService {
      */
     GroupedPosition getPosition(String positionId) {
 
-        Position parsedId = parsePositionId(positionId)
+        Map parsedId = parsePositionId(positionId)
         List dims = parsedId.keySet()
         List dimVals = parsedId.values()
 
@@ -87,8 +102,19 @@ class PortfolioService extends BaseService {
     }
 
 
-    List<Map> getOrders(String positionId) {
-        orders.findAll { it.positionId == positionId }
+    List<Order> getOrders(String positionId) {
+        if (!positionId)
+            return []
+        else {
+            Map posDimsMap = parsePositionId(positionId)
+            List dims = posDimsMap.keySet()
+            return orders.findAll { order ->
+                Map orderAsMap = order.formatForJSON()
+                return dims.every { dim ->
+                    posDimsMap[dim] == orderAsMap.position.formatForJSON()[dim]
+                }
+            }
+        }
     }
 
     /**
@@ -112,6 +138,7 @@ class PortfolioService extends BaseService {
             String symbol = pos.getSymbol()
             String dir = sample(["Sell", "Buy"])
             long quantity = randInt(300, 10000) * (dir == "Sell" ? -1 : 1)
+            // MAKE THIS FASTER BY SAMPLING DIRECTLY FROM getMktData(symbol)
             MarketPrice mktData = getMktData(symbol).find { it.getDay() == tradingDay }
             double price = randDouble(mktData.low, mktData.high).round(2)
             long mktVal = (quantity * price).round()
@@ -232,7 +259,7 @@ class PortfolioService extends BaseService {
 
     // Parse a drilldown ID from a rolled-up position into a map of all
     // dimensions -> dim values contained within the rollup.
-    private Position parsePositionId(String id) {
+    private Map parsePositionId(String id) {
         List<String> dims = id.split(">>").drop(1)
         Map posMap = [:]
 
@@ -241,15 +268,15 @@ class PortfolioService extends BaseService {
             posMap[dimParts[0]] = dimParts[1]
         }
 
-        return new Position(posMap)
+        return posMap
     }
 
     private List<MarketPrice> getMktData(String symbol) {
-        return instData.symbol.mktData
+        return instData[symbol].mktData
     }
 
     private String getSector(String symbol) {
-        return instData.symbol.sector
+        return instData[symbol].sector
     }
 
     void clearCaches() {
