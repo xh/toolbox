@@ -119,17 +119,15 @@ class PortfolioService extends BaseService {
         List<Order> orders = []
         int i = 0 // Invariant: i == orders.length
         while (i < count) {
-            LocalDate tradingDay = sample(tradingDays)
-
-            int hour = randInt(9, 16); int min = randInt(0, 59)
-            LocalDateTime time = tradingDay.atTime(LocalTime.of(hour, min))
-
             Position pos = getRandomPositionForPortfolio()
             String symbol = pos.getSymbol()
             String dir = sample(["Sell", "Buy"])
             long quantity = randInt(300, 10000) * (dir == "Sell" ? -1 : 1)
-            // MAKE THIS FASTER BY SAMPLING DIRECTLY FROM getMktData(symbol)
-            MarketPrice mktData = getMktData(symbol).find { it.getDay() == tradingDay }
+            MarketPrice mktData = sample(getMktData(symbol))
+            LocalDate tradingDay = mktData.getDay()
+            int hour = randInt(9, 16); int min = randInt(0, 59)
+            LocalDateTime time = tradingDay.atTime(LocalTime.of(hour, min))
+
             double price = randDouble(mktData.low, mktData.high).round(2)
             long mktVal = (quantity * price).round()
 
@@ -170,10 +168,10 @@ class PortfolioService extends BaseService {
         Map posMap = [
                 symbol: symbol,
                 sector: getSector(symbol),
-                model : sample(models),
-                fund  : sample(funds),
-                region: sample(regions),
-                trader: sample(traders)
+                model : sample(MODELS),
+                fund  : sample(FUNDS),
+                region: sample(REGIONS),
+                trader: sample(TRADERS)
         ]
 
         // Generate unique key for leaf-level grouping within calculateRawPositions.
