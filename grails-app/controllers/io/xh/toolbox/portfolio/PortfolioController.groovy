@@ -9,6 +9,6 @@ class PortfolioController extends BaseController {
     def portfolioService
 
     def index() {
-        renderJSON(portfolioService.getPortfolio(["fund"], false))
+        renderJSON(portfolioService.getPortfolio(["fund", "trader", "model"], false))
     }
 }
