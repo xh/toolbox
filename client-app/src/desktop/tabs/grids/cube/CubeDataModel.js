@@ -77,7 +77,7 @@ export class CubeDataModel {
             ocTxt = fmtThousands(this.orderCount) + 'k';
 
         await this.withLoadTime(`Gen ${ocTxt} orders`, async () => {
-            orders = await XH.portfolioService.generateOrdersAsync(this.orderCount);
+            orders = await XH.portfolioService.getAllOrders(this.orderCount);
             orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
         });
 
