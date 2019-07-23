@@ -8,13 +8,14 @@
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "eslint .",
     "refreshHoist": "rimraf -rf node_modules/@xh/hoist && yarn upgrade @xh/hoist && yarn install --check-files",
+    "refreshHoistDevUtils": "rimraf -rf node_modules/@xh/hoist-dev-utils && yarn upgrade @xh/hoist-dev-utils && yarn install --check-files",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
     "startOnDevice": "yarn install && webpack-dev-server --env.inlineHoist --env.devHost=$(hostname)",
     "startAndAnalyze": "yarn install && webpack-dev-server --env.analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env.inlineHoist"
   },
   "dependencies": {
-    "@xh/hoist": "25.1.0",
+    "@xh/hoist": "^26.0.0-SNAPSHOT",
     "react": "~16.8.6",
     "react-dom": "~16.8.6",
     "react-dom-factories": "~1.0.2"
