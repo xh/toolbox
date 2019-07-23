@@ -118,7 +118,7 @@ class MarketService extends BaseService {
 
     private List<LocalDate> generateTradingDays() {
         LocalDate today = LocalDate.now()
-        LocalDate tradingDay = LocalDate.of(today.getYear() - 2, 1, 1)
+        LocalDate tradingDay = LocalDate.of(today.getYear() - 1, 1, 1)
 
         List<LocalDate> ret = []
 
@@ -133,7 +133,7 @@ class MarketService extends BaseService {
 
     private String generateSymbol() {
         def ret = '',
-            n = randInt(1, 5),
+            n = randInt(1, 6),
             letters = ('A'..'Z') as List<Character>
         n.times {
             ret += sample(letters)
