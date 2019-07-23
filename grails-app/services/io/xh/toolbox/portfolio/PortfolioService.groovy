@@ -21,9 +21,9 @@ class PortfolioService extends BaseService {
     private List<RawPosition> rawPositions
 
     void init() {
-
         orders = generateOrders()
         rawPositions = calculateRawPositions(orders)
+
         super.init()
     }
 
@@ -31,21 +31,17 @@ class PortfolioService extends BaseService {
      * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
      * @param dims - field names for dimensions on which to group.
      */
-    List<Position> getPortfolio(List<String> dims, boolean includeSummary = false) {
-
-        List<Position> positions = getPositions(dims)
-
-        return (!includeSummary) ? positions : [
-                new Position(
-                        id      : 'summary',
-                        name    : 'Total',
-                        pnl     : positions.sum { it.pnl },
-                        mktVal  : positions.sum { it.mktVal },
-                        children: positions
-                )
-        ]
+    List<Position> getPortfolio(List<String> dims) {
+        return getPositions(dims)
     }
 
+    /**
+     * Return a list of flat position data.
+     * @returns{Promise<Array>}
+     */
+    List<RawPosition> getRawPositions() {
+        return rawPositions
+    }
 
     /**
      * Return a single grouped position, uniquely identified by drill-down ID.
@@ -54,7 +50,7 @@ class PortfolioService extends BaseService {
     Position getPosition(String positionId) {
 
         Map parsedId = parsePositionId(positionId)
-        List dims = parsedId.keySet() as List
+        List<String> dims = parsedId.keySet() as List<String>
         List dimVals = parsedId.values()
 
         List<Position> positions = getPositions(dims)
@@ -74,7 +70,7 @@ class PortfolioService extends BaseService {
             return []
         else {
             Map parsedId = parsePositionId(positionId)
-            List dims = parsedId.keySet() as List
+            List<String> dims = parsedId.keySet() as List<String>
 
             return orders.findAll { order ->
                 dims.every { dim ->
@@ -183,28 +179,27 @@ class PortfolioService extends BaseService {
         String dim = dimsCopy.first()
         dimsCopy.remove(0)
 
-        Map byDimVal = positions.groupBy { pos ->
-            List portfolioDims = ['model', 'fund', 'trader']
-            List marketDims = ['sector', 'region']
+        Map<String, List<RawPosition>> byDimVal = positions.groupBy { pos ->
+            List<String> portfolioDims = ['model', 'fund', 'trader']
+            List<String> marketDims = ['sector', 'region']
             if (portfolioDims.contains(dim)) {
                 return pos."$dim"
             }
             else if (marketDims.contains(dim)) {
                 Instrument inst = marketService.getInstrument(pos.symbol)
                 return inst."$dim"
-            }
-            else return false
+            } else throw new Exception('Invalid Dimensions')
         }
         List<Position> ret = []
 
         byDimVal.each { dimVal, members ->
-            Position pos = new Position([
+            Position pos = new Position(
                     // Generate a drill-down ID that encodes the path to this row.
                     id    : id + ">>${dim}:${dimVal}",
                     name  : dimVal,
                     pnl   : members.sum { it.pnl },
                     mktVal: members.sum { it.mktVal }
-            ])
+            )
 
             // Recurse to create children for this node if additional dimensions remain.
             if (dimsCopy.size()) {
