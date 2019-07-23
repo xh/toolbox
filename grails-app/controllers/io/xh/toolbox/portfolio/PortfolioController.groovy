@@ -9,6 +9,23 @@ class PortfolioController extends BaseController {
     def portfolioService
 
     def index() {
-        renderJSON(portfolioService.getPortfolio(["fund", "trader", "model"], false))
+        List<String> dims = params.dims.split(',') as List<String>
+        renderJSON(portfolioService.getPortfolio(dims))
+    }
+
+    def rawPositions() {
+        renderJSON(portfolioService.getRawPositions())
+    }
+
+    def position() {
+        renderJSON(portfolioService.getPosition(params.positionId))
+    }
+
+    def orders() {
+        renderJSON(portfolioService.getAllOrders())
+    }
+
+    def filteredOrders() {
+        renderJSON(portfolioService.getOrders(params.positionId))
     }
 }
