@@ -11,7 +11,7 @@ import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
 import {wrapper} from '../../common/Wrapper';
 import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
-import {shuffle, take} from 'lodash'
+import {shuffle, take} from 'lodash';
 
 @HoistComponent
 export class DataViewPanel extends Component {
@@ -77,6 +77,6 @@ class Model {
                 city: it.city,
                 value: randVal
             };
-        }))
+        }));
     }
 }
