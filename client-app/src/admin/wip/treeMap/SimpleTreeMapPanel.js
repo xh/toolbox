@@ -3,12 +3,12 @@ import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {treeMap} from '@xh/hoist/desktop/cmp/treemap';
 
-import {TreeMapPanelModel} from './TreeMapPanelModel';
+import {SimpleTreeMapModel} from './SimpleTreeMapModel';
 
 @HoistComponent
-export class TreeMapPanel extends Component {
+export class SimpleTreeMapPanel extends Component {
 
-    model = new TreeMapPanelModel();
+    model = new SimpleTreeMapModel();
 
     render() {
         const {model} = this,
