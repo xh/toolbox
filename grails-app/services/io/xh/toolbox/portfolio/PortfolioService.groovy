@@ -21,9 +21,9 @@ class PortfolioService extends BaseService {
     private List<RawPosition> rawPositions
 
     void init() {
+
         orders = generateOrders()
         rawPositions = calculateRawPositions(orders)
-
         super.init()
     }
 
@@ -54,7 +54,6 @@ class PortfolioService extends BaseService {
     Position getPosition(String positionId) {
 
         Map parsedId = parsePositionId(positionId)
-        log.debug("getting position: " + positionId)
         List dims = parsedId.keySet() as List
         List dimVals = parsedId.values()
 
@@ -74,18 +73,29 @@ class PortfolioService extends BaseService {
         if (!positionId)
             return []
         else {
-            log.debug("getting position for order: " + positionId)
-            Map parseId = parsePositionId(positionId)
-            List dims = parseId.keySet() as List
+            Map parsedId = parsePositionId(positionId)
+            List dims = parsedId.keySet() as List
 
             return orders.findAll { order ->
                 dims.every { dim ->
-                    parseId[dim] == order."$dim"
+                    List portfolioDims = ['model', 'fund', 'trader']
+                    List marketDims = ['sector', 'region']
+                    if (portfolioDims.contains(dim)) {
+                        return parsedId[dim] == order."$dim"
+                    }
+                    else if (marketDims.contains(dim)) {
+                        Instrument inst = marketService.getInstrument(order.symbol)
+                        return parsedId[dim] == inst."$dim"
+                    }
+                    else return false
                 }
             }
         }
     }
 
+    List<Order> getAllOrders() {
+        return orders
+    }
 
 
     //------------------------
@@ -172,7 +182,19 @@ class PortfolioService extends BaseService {
 
         String dim = dimsCopy.first()
         dimsCopy.remove(0)
-        Map byDimVal = positions.groupBy { it[dim] }
+
+        Map byDimVal = positions.groupBy { pos ->
+            List portfolioDims = ['model', 'fund', 'trader']
+            List marketDims = ['sector', 'region']
+            if (portfolioDims.contains(dim)) {
+                return pos."$dim"
+            }
+            else if (marketDims.contains(dim)) {
+                Instrument inst = marketService.getInstrument(pos.symbol)
+                return inst."$dim"
+            }
+            else return false
+        }
         List<Position> ret = []
 
         byDimVal.each { dimVal, members ->
