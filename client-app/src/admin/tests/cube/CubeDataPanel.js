@@ -49,6 +49,8 @@ export class CubeDataPanel extends Component {
                             span('Leaves:'),
                             switchInput({model, bind: 'includeLeaves'}),
                             toolbarSep(),
+                            span(' >100m Mkt Value:'),
+                            switchInput({model, bind: 'highMktVal'}),
                             select({
                                 model,
                                 bind: 'fundFilter',

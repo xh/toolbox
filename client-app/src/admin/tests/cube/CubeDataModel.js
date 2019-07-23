@@ -22,6 +22,7 @@ export class CubeDataModel {
     @bindable includeRoot = false;
     @bindable orderCount = XH.getPref('cubeTestOrderCount');
     @bindable fundFilter = null;
+    @bindable highMktVal = false;
 
     // Flag to short-circuit initial/duplicate firing of query reaction (below).
     _initialLoadComplete = false;
@@ -65,13 +66,12 @@ export class CubeDataModel {
     }
 
     getQuery() {
-        const {dimManagerModel, fundFilter, includeLeaves, includeRoot} = this,
-            filterFn = (val) => {return val > 10000000},
+        const {dimManagerModel, fundFilter, highMktVal, includeLeaves, includeRoot} = this,
             dimensions = dimManagerModel.value,
-            // TODO: values cannot be undefined, fix this.
-            filters = !isEmpty(fundFilter) ?
-                [{name: 'fund', values: [...fundFilter]}] :
-                [{name: 'mktVal', values: [], filterFn: filterFn}];
+            filters = !isEmpty(fundFilter) ? [{name: 'fund', values: [...fundFilter]}] : [];
+
+        // TODO: values key cannot be undefined, fix this if going forward.
+        if (highMktVal) filters.push({name: 'mktVal', values: [], filterFn: (val) => {return val > 100}});
 
         return {dimensions, filters, includeLeaves, includeRoot};
     }
