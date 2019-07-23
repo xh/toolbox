@@ -34,7 +34,6 @@ class MarketService extends BaseService {
         marketPrices[symbol]
     }
 
-
     void init() {
         instruments = generateInstruments()
         marketPrices = generatePrices()
