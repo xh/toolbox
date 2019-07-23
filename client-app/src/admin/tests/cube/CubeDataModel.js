@@ -71,7 +71,10 @@ export class CubeDataModel {
             filters = !isEmpty(fundFilter) ? [{name: 'fund', values: [...fundFilter]}] : [];
 
         // TODO: values key cannot be undefined, fix this if going forward.
-        if (highMktVal) filters.push({name: 'mktVal', values: [], filterFn: (val) => {return val > 100}});
+        if (highMktVal) filters.push({name: 'mktVal', values: [], filterFn: (val) => {
+            console.log(val);
+            return val > 100000;
+        }});
 
         return {dimensions, filters, includeLeaves, includeRoot};
     }
