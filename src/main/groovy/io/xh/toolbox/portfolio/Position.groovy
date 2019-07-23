@@ -4,18 +4,18 @@ import io.xh.hoist.json.JSONFormatCached
 
 class Position extends JSONFormatCached {
     String id
-    String symbol
-    String model
-    String fund
-    String trader
+    String name
+    long pnl
+    long mktVal
+    List<Position> children
 
     Map formatForJSON() {
         return [
-                id    : id,
-                symbol: symbol,
-                model : model,
-                fund  : fund,
-                trader: trader
+                id      : id,
+                name    : name,
+                pnl     : pnl,
+                mktVal  : mktVal,
+                children: children
         ]
     }
 }
