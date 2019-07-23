@@ -15,7 +15,7 @@ export class CubeDataModel {
 
     @managed cube;
     @managed gridModel;
-    @managed loadTimesGridModel
+    @managed loadTimesGridModel;
     @managed dimManagerModel;
 
     @bindable includeLeaves = false;
@@ -66,8 +66,12 @@ export class CubeDataModel {
 
     getQuery() {
         const {dimManagerModel, fundFilter, includeLeaves, includeRoot} = this,
+            filterFn = (val) => {return val > 10000000},
             dimensions = dimManagerModel.value,
-            filters = !isEmpty(fundFilter) ? [{name: 'fund', values: [...fundFilter]}] : null;
+            // TODO: values cannot be undefined, fix this.
+            filters = !isEmpty(fundFilter) ?
+                [{name: 'fund', values: [...fundFilter]}] :
+                [{name: 'mktVal', values: [], filterFn: filterFn}];
 
         return {dimensions, filters, includeLeaves, includeRoot};
     }
