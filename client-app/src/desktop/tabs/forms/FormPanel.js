@@ -4,55 +4,74 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame, hbox, vspacer, vbox} from '@xh/hoist/cmp/layout';
+import {filler, frame, hbox, vbox, vspacer} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {
-    checkbox,
-    dateInput,
-    numberInput,
-    select,
-    switchInput,
-    textArea,
-    textInput
-} from '@xh/hoist/desktop/cmp/input';
+import {checkbox, dateInput, numberInput, select, switchInput, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
 
 import {wrapper} from '../../common';
-import {ValidationPanelModel} from './ValidationPanelModel';
+import {FormPanelModel} from './FormPanelModel';
 
-import './ValidationPanel.scss';
+import './FormPanel.scss';
 
 @HoistComponent
-export class ValidationPanel extends Component {
+export class FormPanel extends Component {
 
-    model = new ValidationPanelModel();
+    model = new FormPanelModel();
 
     render() {
-        return wrapper(
-            panel({
-                title: 'Forms › Validation',
-                className: 'toolbox-validation-panel',
+        return wrapper({
+            description: [
+                <p>
+                    Forms provide a standard way for validating and editing data. The <code>Form</code> component
+                    provides the ability to centrally control certain properties on all its
+                    contained <code>FormField</code>s
+                    and bind them to a <code>FormModel</code>. The <code>FormModel</code> provides an observable API for
+                    loading, validating, and submitting the data to back-end services.
+                </p>
+            ],
+            item: panel({
+                title: 'Forms › Forms ',
+                className: 'toolbox-form-panel',
                 icon: Icon.edit(),
                 width: '90%',
                 height: '90%',
                 mask: this.validateButtonTask,
                 item: this.renderForm(),
                 bbar: this.renderToolbar()
-            })
-        );
+            }),
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/forms/FormPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/form/Form.js',
+                    notes: 'Form Component'
+                },
+                {
+                    url: '$HR/cmp/form/FormModel.js',
+                    notes: 'Form Model'
+                },
+                {
+                    url: '$HR/desktop/cmp/form/FormField.js',
+                    notes: 'Form Field'
+                }
+            ]
+        });
     }
 
     renderForm() {
         const {formModel, inline, minimal, commitOnChange} = this.model;
 
         return frame({
-            className: 'toolbox-validation-panel__content',
+            className: 'toolbox-form-panel__content',
             item: form({
                 model: formModel,
                 fieldDefaults: {

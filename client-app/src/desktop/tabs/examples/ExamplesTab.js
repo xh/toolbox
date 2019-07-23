@@ -6,7 +6,7 @@
  */
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
-import {a, hbox, p, vframe} from '@xh/hoist/cmp/layout';
+import {a, code, hbox, p, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
@@ -16,6 +16,7 @@ import './ExamplesTab.scss';
 
 @HoistComponent
 export class ExamplesTab extends Component {
+
 
     examples = [
         {
@@ -35,11 +36,12 @@ export class ExamplesTab extends Component {
             path: '/news',
             text: [
                 <p>
-                    This example demonstrates Hoist support for loading and caching data on the server from a <a href="https://newsapi.org/" target="_blank">Remote API</a>.
-                    Refresh rate, news sources, and API key can be modified in the Admin Config tab.
+                    This example demonstrates Hoist support for loading and caching data on the server from
+                    a {link('Remote API', 'https://newsapi.org/')}. Refresh rate, news sources, and API key can
+                    be modified in the Admin Config tab.
                 </p>,
                 <p>
-                    On the client side, we use a <a href="../app/grids/dataview" target="_blank">DataView</a> grid
+                    On the client side, we use a {link(code('DataView'), '../app/grids/dataview')} grid
                     to support custom filtering logic and rich component rendering.
                 </p>
             ]
@@ -54,7 +56,27 @@ export class ExamplesTab extends Component {
                     events since 2004. Provides examples of filtering and searching data from an external API.
                 </p>,
                 <p>
-                    For more information, see <a href="https://open.fda.gov/apis/drug/enforcement/">here</a>.
+                    For more information, see {link('here', 'https://open.fda.gov/apis/drug/enforcement/')}.
+                </p>
+            ]
+        },
+        {
+            title: 'File Manager',
+            icon: Icon.fileArchive(),
+            path: '/fileManager',
+            text: [
+                <p>
+                    This example shows a simple, full-stack pattern for uploading and storing files on a server.
+                </p>,
+                <p>
+                    On the client side this app uses the {link(code('FileChooser'), '/app/other/fileChooser')}.
+                    The server-side controller and service provide examples of how uploads can
+                    be extracted from the request and processed within Grails.
+                </p>,
+                <p>
+                    <strong>This example is visible only to admins</strong> to avoid
+                    arbitrary file uploads to our server.
+                    Please {link('contact us', 'https://xh.io/contact/')} for access.
                 </p>
             ]
         }
@@ -64,6 +86,7 @@ export class ExamplesTab extends Component {
         return wrapper(
             hbox({
                 className: 'example-tile-container',
+                flexWrap: 'wrap',
                 items: this.examples.map((ex) => this.renderTile(ex))
             })
         );
@@ -73,8 +96,9 @@ export class ExamplesTab extends Component {
         return panel({
             title,
             icon,
-            width: 250,
-            height: 270,
+            width: 300,
+            height: 300,
+            margin: 20,
             item: vframe({
                 className: 'example-tile-text',
                 items: text
@@ -89,3 +113,5 @@ export class ExamplesTab extends Component {
         });
     }
 }
+
+const link = (txt, url) => <a href={url} target="_blank">{txt}</a>;

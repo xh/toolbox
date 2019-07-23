@@ -3,7 +3,7 @@ import {timeCol} from '@xh/hoist/cmp/grid/columns';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 import {Cube} from '@xh/hoist/data/cube';
-import {fmtThousands, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {fmtNumberTooltip, fmtThousands, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer} from '@xh/hoist/mobx';
 import {start} from '@xh/hoist/promise';
 import {castArray, isEmpty} from 'lodash';

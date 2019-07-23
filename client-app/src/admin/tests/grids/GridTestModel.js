@@ -1,10 +1,10 @@
-import {XH, HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
+import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
 import {random, sample, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
-import {bindable, observable, action} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 
 const pnlColumn = {
     absSort: true,
@@ -29,7 +29,7 @@ export class GridTestModel {
     // Prefix for all IDs - change to ensure no IDs re-used across data gens.
     @bindable idSeed = 1;
     // True to generate data in tree structure.
-    @bindable tree = true;
+    @bindable tree = false;
 
     // Generated data in tree (if requested).
     _data;
@@ -64,9 +64,10 @@ export class GridTestModel {
         this._allData = null;
     }
 
-    doLoadAsync() {
-        const runTimes = {};
+    async doLoadAsync(loadSpec) {
+        if (loadSpec.isAutoRefresh) return; // avoid auto-refresh confusing our tests here
 
+        const runTimes = {};
         return start(() => {
             if (!this._data) {
                 const dataStart = Date.now();

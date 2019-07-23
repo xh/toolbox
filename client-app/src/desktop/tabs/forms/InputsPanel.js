@@ -4,7 +4,7 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {elemFactory, HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, div, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
@@ -31,26 +31,53 @@ import {
 
 import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
-import {ControlsPanelModel} from './ControlsPanelModel';
-import './ControlsPanel.scss';
+import {InputsPanelModel} from './InputsPanelModel';
+import './InputsPanel.scss';
 
 @HoistComponent
-export class ControlsPanel extends Component {
+export class InputsPanel extends Component {
 
-    model = new ControlsPanelModel();
+    model = new InputsPanelModel();
 
     render() {
-        return wrapper(
-            panel({
-                title: 'Forms › Controls',
-                className: 'toolbox-controls-panel',
+        return wrapper({
+            description: [
+                <p>
+                    <code>HoistInput</code>s are core Components used to display editable data in applications.
+                    They present a consistent API for editing data with MobX, React, and the underlying widgets
+                    provided by libraries such as Blueprint and Onsen. At its simplest, any HoistInput can be bound to a
+                    data source using the <code>bind</code> and <code>model</code> props.
+                </p>,
+                <p>
+                    For more complex uses <code>HoistInput</code>s may also be hosted in <code>Form</code>s. Forms
+                    provide
+                    support for validation, data submission, and dirty state management.
+                </p>
+            ],
+            item: panel({
+                title: 'Forms › HoistInputs',
+                className: 'toolbox-inputs-panel',
                 icon: Icon.edit(),
                 width: '90%',
                 height: '90%',
                 item: this.renderForm(),
                 bbar: this.renderToolbar()
-            })
-        );
+            }),
+            links: [
+                {
+                    url: '$TB/client-app/src/desktop/tabs/forms/InputsPanel.js',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/input/HoistInput.js',
+                    notes: 'HoistInput Base Class'
+                },
+                {
+                    url: '$HR/desktop/cmp/input',
+                    notes: 'Hoist Inputs'
+                }
+            ]
+        });
     }
 
     renderForm() {
@@ -65,7 +92,7 @@ export class ControlsPanel extends Component {
                 },
                 items: hframe(
                     vbox({
-                        className: 'toolbox-controls-panel__column',
+                        className: 'toolbox-inputs-panel__column',
                         items: [
                             row({
                                 label: 'TextInput',
@@ -116,7 +143,7 @@ export class ControlsPanel extends Component {
                         ]
                     }),
                     vbox({
-                        className: 'toolbox-controls-panel__column',
+                        className: 'toolbox-inputs-panel__column',
                         items: [
                             row({
                                 label: 'NumberInput',
@@ -197,7 +224,7 @@ export class ControlsPanel extends Component {
                         ]
                     }),
                     vbox({
-                        className: 'toolbox-controls-panel__column',
+                        className: 'toolbox-inputs-panel__column',
                         items: [
                             row({
                                 label: 'Select',
@@ -228,9 +255,9 @@ export class ControlsPanel extends Component {
                                     valueField: 'id',
                                     labelField: 'name',
                                     enableClear: true,
-                                    queryFn: this.queryCustomersAsync,
-                                    optionRenderer: this.renderCustomerOption,
-                                    placeholder: 'Search customers...'
+                                    queryFn: this.queryCompaniesAsync,
+                                    optionRenderer: this.renderCompanyOption,
+                                    placeholder: 'Search companies...'
                                 })
                             }),
                             row({
@@ -302,7 +329,7 @@ export class ControlsPanel extends Component {
         if (!layout.width) layout.flex = 1;
 
         return box({
-            className: 'controls-panel-field-box',
+            className: 'inputs-panel-field-box',
             items: [
                 fieldDisplay({fieldModel, fmtVal}),
                 formField({
@@ -317,14 +344,13 @@ export class ControlsPanel extends Component {
         });
     };
 
-    queryCustomersAsync = (query) => {
-        return XH.fetchJson({
-            url: 'customer',
-            params: {query: query}
-        })
+    queryCompaniesAsync = (query) => {
+        return XH.companyService.queryAsync(query)
+            .wait(400)
+            .then(hits => hits);
     };
 
-    renderCustomerOption = (opt) => {
+    renderCompanyOption = (opt) => {
         return hbox({
             items: [
                 box({
@@ -344,7 +370,7 @@ export class ControlsPanel extends Component {
             ],
             alignItems: 'center'
         });
-    };
+    }
 
     renderToolbar() {
         const {model} = this,
@@ -389,7 +415,7 @@ class FieldDisplay extends Component {
             }
         }
         return div({
-            className: 'controls-panel-field-display',
+            className: 'inputs-panel-field-display',
             item: displayVal
         });
     }
