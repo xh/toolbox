@@ -1,28 +1,27 @@
 package io.xh.toolbox
 
+import io.xh.hoist.BaseService
 import io.xh.hoist.config.AppConfig
+import io.xh.hoist.monitor.Monitor
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.user.User
-import io.xh.hoist.BaseService
-import io.xh.hoist.monitor.Monitor
 
 import static io.xh.hoist.json.JSONSerializer.serializePretty
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
-
-
-import static io.xh.hoist.util.Utils.appEnvironment
-import static io.xh.hoist.util.Utils.appName
-import static io.xh.hoist.util.Utils.appVersion
-import static io.xh.hoist.util.Utils.configService
+import static io.xh.hoist.util.Utils.*
 
 class BootStrap {
 
+    def marketService
     def init = {servletContext ->
         logStartupMsg()
         ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
         ensureMonitorsCreated()
-        def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
+        BaseService.parallelInit([marketService])
+        def services = Utils.xhServices.findAll {
+            it.class.canonicalName.startsWith('io.xh.toolbox') && !it.initialized
+        }
         BaseService.parallelInit(services)
         ensureUsersCreated()
     }
