@@ -29,7 +29,7 @@ export class GridTestModel {
     // Prefix for all IDs - change to ensure no IDs re-used across data gens.
     @bindable idSeed = 1;
     // True to generate data in tree structure.
-    @bindable tree = true;
+    @bindable tree = false;
 
     // Generated data in tree (if requested).
     _data;
@@ -64,9 +64,10 @@ export class GridTestModel {
         this._allData = null;
     }
 
-    doLoadAsync() {
-        const runTimes = {};
+    async doLoadAsync(loadSpec) {
+        if (loadSpec.isAutoRefresh) return; // avoid auto-refresh confusing our tests here
 
+        const runTimes = {};
         return start(() => {
             if (!this._data) {
                 const dataStart = Date.now();

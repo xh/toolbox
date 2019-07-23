@@ -43,8 +43,8 @@ export class AppModel extends BaseAppModel {
     createTabs() {
         return [
             ...super.createTabs(),
-            {id: 'tests', icon: Icon.shield(), content: TestsTab},
-            {id: 'wip', icon: Icon.bolt(), content: WipTab}
+            {id: 'tests', icon: Icon.stopwatch(), content: TestsTab},
+            {id: 'wip', title: 'WIP', icon: Icon.experiment(), content: WipTab}
         ];
     }
 }
