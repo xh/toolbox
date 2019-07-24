@@ -1,5 +1,4 @@
 import {HoistService, XH} from '@xh/hoist/core';
-import {round, sumBy} from 'lodash';
 import moment from 'moment';
 
 @HoistService
@@ -12,22 +11,14 @@ export class PortfolioService {
      * @return {Promise<Array>}
      */
     async getPortfolioAsync(dims, includeSummary = false) {
-        const positions = await XH.fetchJson({
+        const portfolio = await XH.fetchJson({
             url: 'portfolio',
             params: {
                 dims: dims.join(',')
             }
         });
 
-        return !includeSummary ? positions : [
-            {
-                id: 'summary',
-                name: 'Total',
-                pnl: round(sumBy(positions, 'pnl')),
-                mktVal: round(sumBy(positions, 'mktVal')),
-                children: positions
-            }
-        ];
+        return includeSummary ? portfolio : portfolio[0].children;
     }
 
     /**
@@ -49,7 +40,7 @@ export class PortfolioService {
         return await XH.fetchJson({
             url: 'portfolio/position',
             params: {
-                positionId: positionId
+                positionId
             }
         });
     }
@@ -58,17 +49,14 @@ export class PortfolioService {
         return await XH.fetchJson({
             url: 'portfolio/filteredOrders',
             params: {
-                positionId: positionId
+                positionId
             }
         });
     }
 
     async getLineChartSeries(symbol) {
         const mktData = await XH.fetchJson({
-            url: 'market',
-            params: {
-                symbol: symbol
-            }
+            url: `market/prices/${symbol}`
         });
         return ([{
             name: symbol,
@@ -80,10 +68,7 @@ export class PortfolioService {
 
     async getOLHCChartSeries(symbol) {
         const mktData = await XH.fetchJson({
-            url: 'market',
-            params: {
-                symbol: symbol
-            }
+            url: `market/prices/${symbol}`
         });
         return ([{
             name: symbol,
