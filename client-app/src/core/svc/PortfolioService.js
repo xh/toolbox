@@ -4,6 +4,16 @@ import moment from 'moment';
 @HoistService
 export class PortfolioService {
 
+    async getConstants() {
+        const marketConstants = await XH.fetchJson({
+            url: 'market/constants'
+        });
+        const portfolioConstants = await XH.fetchJson({
+            url: 'portfolio/constants'
+        });
+        return {...marketConstants, ...portfolioConstants};
+    }
+
     /**
      * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
      * @param {string[]} dims - field names for dimensions on which to group.
