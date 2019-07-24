@@ -8,12 +8,12 @@ class MarketController extends BaseController {
 
     def marketService
 
-    def index() {
-        renderJSON(marketService.getMarketData(params.symbol))
+    def prices() {
+        renderJSON(marketService.getMarketData(params.id))
     }
 
     def instrument() {
-        renderJSON(marketService.getInstrument(params.symbol))
+        renderJSON(marketService.getInstrument(params.id))
     }
 
     def symbols() {
