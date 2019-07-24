@@ -35,7 +35,11 @@ export class AppModel extends BaseAppModel {
             },
             {
                 name: 'wip',
-                path: '/wip'
+                path: '/wip',
+                children: [
+                    {name: 'simpleTreeMap', path: '/simpleTreeMap'},
+                    {name: 'gridTreeMap', path: '/gridTreeMap'}
+                ]
             }
         ];
     }

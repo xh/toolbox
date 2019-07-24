@@ -9,6 +9,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {SimpleTreeMapPanel} from './treeMap/SimpleTreeMapPanel';
+import {GridTreeMapPanel} from './treeMap/GridTreeMapPanel';
 
 @HoistComponent
 export class WipTab extends Component {
@@ -18,7 +19,8 @@ export class WipTab extends Component {
             model: {
                 route: 'default.wip',
                 tabs: [
-                    {id: 'simpleTreeMap', title: 'Simple TreeMap', content: SimpleTreeMapPanel}
+                    {id: 'simpleTreeMap', title: 'Simple TreeMap', content: SimpleTreeMapPanel},
+                    {id: 'gridTreeMap', title: 'Grid TreeMap', content: GridTreeMapPanel}
                 ],
                 switcherPosition: 'left'
             }
