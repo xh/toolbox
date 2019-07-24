@@ -51,7 +51,7 @@ class PortfolioService extends BaseService {
 
         Map parsedId = parsePositionId(positionId)
         List<String> dims = parsedId.keySet() as List<String>
-        List dimVals = parsedId.values()
+        List<String> dimVals = parsedId.values() as List<String>
 
         List<Position> positions = getPositions(dims)
         Position ret = null
