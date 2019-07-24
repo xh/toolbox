@@ -30,6 +30,8 @@ class Order extends JSONFormatCached {
         return [
                 id        : id,
                 symbol    : symbol,
+                sector    : sector,
+                region    : region,
                 dir       : dir,
                 quantity  : quantity,
                 price     : price,
@@ -37,9 +39,9 @@ class Order extends JSONFormatCached {
                 time      : time,
                 commission: commission,
                 confidence: confidence,
-                model:      model,
-                trader:     trader,
-                fund:       fund
+                model     :      model,
+                trader    :     trader,
+                fund      :       fund
         ]
     }
 }
