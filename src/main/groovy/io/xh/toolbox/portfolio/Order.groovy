@@ -6,7 +6,7 @@ import java.time.Instant
 
 class Order extends JSONFormatCached {
     String id
-    String symbol
+    Instrument instrument
     String dir
     long quantity
     double price
@@ -19,6 +19,12 @@ class Order extends JSONFormatCached {
     String model
     String trader
     String fund
+
+    String getRegion() { instrument.region }
+
+    String getSector() { instrument.sector }
+
+    String getSymbol() { instrument.symbol }
 
     Map formatForJSON() {
         return [
