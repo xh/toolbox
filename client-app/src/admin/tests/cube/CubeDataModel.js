@@ -15,12 +15,12 @@ export class CubeDataModel {
 
     @managed cube;
     @managed gridModel;
-    @managed loadTimesGridModel
+    @managed loadTimesGridModel;
     @managed dimManagerModel;
 
     @bindable includeLeaves = false;
     @bindable includeRoot = false;
-    @bindable orderCount = XH.getPref('cubeTestOrderCount');
+    @bindable.ref funds = [];
     @bindable fundFilter = null;
 
     // Flag to short-circuit initial/duplicate firing of query reaction (below).
@@ -50,14 +50,6 @@ export class CubeDataModel {
             },
             equals: comparer.structural
         });
-
-        this.addReaction({
-            track: () => this.orderCount,
-            run: (count) => {
-                XH.setPref('cubeTestOrderCount', count);
-                this.loadAsync();
-            }
-        });
     }
 
     clearLoadTimes() {
@@ -73,15 +65,17 @@ export class CubeDataModel {
     }
 
     async doLoadAsync() {
-        let orders,
-            ocTxt = fmtThousands(this.orderCount) + 'k';
+        const portfolioConstants = await XH.portfolioService.getConstants();
+        this.setFunds(portfolioConstants.FUNDS);
 
-        await this.withLoadTime(`Gen ${ocTxt} orders`, async () => {
-            orders = await XH.portfolioService.getAllOrders(this.orderCount);
+        let orders;
+        await this.withLoadTime('Fetch orders', async () => {
+            orders = await XH.portfolioService.getAllOrders();
             orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
         });
 
-        await this.withLoadTime('Load Cube', async () => {
+        const ocTxt = fmtThousands(orders.length) + 'k';
+        await this.withLoadTime(`Loaded ${ocTxt} orders in Cube`, async () => {
             await this.cube.loadDataAsync(orders, {});
         });
 
@@ -142,7 +136,6 @@ export class CubeDataModel {
                 {name: 'price', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
 
                 {name: 'commission', aggregator: 'SUM'},
-                // {name: 'confidence', aggregator: 'AVG'},  // TODO - average aggregator?
 
                 {name: 'maxConfidence', aggregator: 'MAX'},
                 {name: 'minConfidence', aggregator: 'MIN'},
