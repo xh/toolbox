@@ -5,7 +5,7 @@
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core/index';
+import {elemFactory, HoistComponent} from '@xh/hoist/core/index';
 import {hbox, hframe, vframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -64,3 +64,5 @@ export class PortfolioPanel extends Component {
         );
     }
 }
+
+export const portfolioPanel = elemFactory(PortfolioPanel);
