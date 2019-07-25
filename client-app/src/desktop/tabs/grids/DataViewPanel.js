@@ -73,7 +73,7 @@ class Model {
             const randVal = Math.random() * (max - min) + min;
             return {
                 id: it.id,
-                name: it.name,
+                name: it.company,
                 city: it.city,
                 value: randVal
             };
