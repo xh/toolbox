@@ -1,6 +1,6 @@
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler, hframe, span} from '@xh/hoist/cmp/layout';
-import {HoistComponent} from '@xh/hoist/core';
+import {HoistComponent, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -43,7 +43,7 @@ export class CubeDataPanel extends Component {
                             select({
                                 model,
                                 bind: 'fundFilter',
-                                options: model.funds,
+                                options: XH.portfolioService.lookups.funds,
                                 placeholder: 'Fund filter...',
                                 enableClear: true,
                                 enableMulti: true,

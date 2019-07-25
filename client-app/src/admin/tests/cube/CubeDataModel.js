@@ -20,7 +20,6 @@ export class CubeDataModel {
 
     @bindable includeLeaves = false;
     @bindable includeRoot = false;
-    @bindable.ref funds = [];
     @bindable fundFilter = null;
 
     // Flag to short-circuit initial/duplicate firing of query reaction (below).
@@ -65,8 +64,6 @@ export class CubeDataModel {
     }
 
     async doLoadAsync() {
-        this.setFunds(XH.portfolioService.lookups.funds);
-
         let orders;
         await this.withLoadTime('Fetch orders', async () => {
             orders = await XH.portfolioService.getAllOrders();
