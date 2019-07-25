@@ -21,7 +21,7 @@ class CustomerService extends BaseService {
     //------------------------
 
     private List<Map> loadCustomersFromFile() {
-        def file = new File("grails-app/services/io/xh/toolbox/data/CompanyTrades.json")
+        def file = new File('grails-app/services/io/xh/toolbox/data/CompanyTrades.json')
         def ret = (new JsonSlurper()).parseText(file.text)
         ret.each { it ->
             it.isActive = (it.id % 3 != 0)
