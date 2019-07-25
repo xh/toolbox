@@ -271,9 +271,8 @@ class Model {
     });
     
     async doLoadAsync(loadSpec) {
-        const {trades, summary} = await XH.fetchJson({url: 'trade'});
-
-        const gridModel = this.gridModel;
+        const {trades, summary} = await XH.fetchJson({url: 'trade'}),
+            gridModel = this.gridModel;
 
         gridModel.loadData(trades, summary);
         if (!gridModel.hasSelection) gridModel.selectFirst();
