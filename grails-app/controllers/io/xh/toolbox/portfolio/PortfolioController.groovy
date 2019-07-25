@@ -6,26 +6,44 @@ import io.xh.toolbox.BaseController
 @Access(['APP_READER'])
 class PortfolioController extends BaseController {
 
-    def portfolioService
+    def portfolioService,
+        positionService
 
-    def index() {
+    def positions() {
         List<String> dims = params.dims.split(',') as List<String>
-        renderJSON(portfolioService.getPortfolio(dims))
-    }
-
-    def rawPositions() {
-        renderJSON(portfolioService.getRawPositions())
+        renderJSON(positionService.getPositions(dims))
     }
 
     def position() {
-        renderJSON(portfolioService.getPosition(params.positionId))
+        renderJSON(positionService.getPosition(params.positionId))
+    }
+
+    def ordersForPosition() {
+        renderJSON(positionService.ordersForPosition(params.positionId))
+    }
+
+    def rawPositions() {
+        renderJSON(portfolioService.getData().rawPositions)
     }
 
     def orders() {
-        renderJSON(portfolioService.getAllOrders())
+        renderJSON(portfolioService.getData().orders)
     }
 
-    def filteredOrders() {
-        renderJSON(portfolioService.getOrders(params.positionId))
+    def symbols() {
+        renderJSON(portfolioService.getData().instruments.keySet())
+    }
+
+    def instrument() {
+        renderJSON(portfolioService.getData().instruments[params.id])
+    }
+
+    // List of MarketPrices for the given instrument identified by its symbol
+    def prices() {
+        renderJSON(portfolioService.getData().marketPrices[params.id])
+    }
+
+    def lookups() {
+        renderJSON(portfolioService.getLookups())
     }
 }
