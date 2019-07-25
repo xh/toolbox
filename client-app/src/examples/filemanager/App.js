@@ -11,11 +11,6 @@ import {fileManager} from './FileManager';
 @ContextMenuSupport
 export class App extends Component {
 
-    static getContextMenuItems() {
-        const Item = ContextMenuItem;
-        return [Item.reloadApp(), Item.about(), Item.logout()];
-    }
-
     render() {
         return panel({
             tbar: appBar({
@@ -30,6 +25,11 @@ export class App extends Component {
                 item: fileManager()
             })
         });
+    }
+
+    static getContextMenuItems() {
+        const Item = ContextMenuItem;
+        return [Item.reloadApp(), Item.about(), Item.logout()];
     }
 
 }
