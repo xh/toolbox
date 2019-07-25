@@ -20,7 +20,6 @@ export class PortfolioService {
         });
     }
 
-    // Test
     async getInstrumentAsync(symbol) {
         return await XH.fetchJson({
             url: `portfolio/instrument/${symbol}`
