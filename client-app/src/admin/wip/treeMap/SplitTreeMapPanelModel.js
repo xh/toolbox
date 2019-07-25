@@ -2,12 +2,12 @@ import {XH, HoistModel, managed} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 import {GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
-import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
+import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 
 @HoistModel
 @LoadSupport
-export class GridTreeMapModel {
+export class SplitTreeMapPanelModel {
 
     @managed
     dimChooserModel = new DimensionChooserModel({
@@ -71,12 +71,17 @@ export class GridTreeMapModel {
     });
 
     @managed
-    treeMapModel = new TreeMapModel({
+    splitTreeMapModel = new SplitTreeMapModel({
         gridModel: this.gridModel,
-        labelField: 'name',
-        valueField: 'pnl',
-        heatField: 'pnl',
-        valueFieldLabel: 'Pnl'
+        filter: (rec) => {
+            return rec.pnl >= 0;
+        },
+        treeMapModelConfig: {
+            labelField: 'name',
+            valueField: 'pnl',
+            heatField: 'pnl',
+            valueFieldLabel: 'Pnl'
+        }
     });
 
     constructor() {
