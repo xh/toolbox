@@ -29,7 +29,15 @@ export class OLHCChartModel {
         if (!this.currentSymbol) {
             this.setCurrentSymbol(this.symbols[0]);
         }
-        const series = await XH.portfolioService.getOLHCChartSeries(this.currentSymbol);
+        let series = await XH.portfolioService.getOLHCChartSeries(this.currentSymbol);
+
+        const groupPixelWidth = 5;
+        Object.assign(series[0], {
+            dataGrouping: {
+                enabled: !!groupPixelWidth,
+                groupPixelWidth: groupPixelWidth
+            }
+        });
 
         this.chartModel.setSeries(series);
     }
@@ -92,21 +100,5 @@ export class OLHCChartModel {
                 }
             }
         };
-    }
-
-    createChartSeries(name, data, groupPixelWidth) {
-        return [
-            {
-                name: name,
-                type: 'ohlc',
-                color: 'rgba(219, 0, 1, 0.55)',
-                upColor: 'rgba(23, 183, 0, 0.85)',
-                dataGrouping: {
-                    enabled: !!groupPixelWidth,
-                    groupPixelWidth: groupPixelWidth
-                },
-                data: data
-            }
-        ];
     }
 }
