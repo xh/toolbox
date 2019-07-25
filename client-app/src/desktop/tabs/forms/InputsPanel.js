@@ -45,12 +45,11 @@ export class InputsPanel extends Component {
                 <p>
                     <code>HoistInput</code>s are core Components used to display editable data in applications.
                     They present a consistent API for editing data with MobX, React, and the underlying widgets
-                    provided by libraries such as Blueprint and Onsen. At its simplest, any HoistInput can be bound to a
+                    provided by libraries such as Blueprint and Onsen.  At its simplest, any HoistInput can be bound to a
                     data source using the <code>bind</code> and <code>model</code> props.
                 </p>,
                 <p>
-                    For more complex uses <code>HoistInput</code>s may also be hosted in <code>Form</code>s. Forms
-                    provide
+                    For more complex uses <code>HoistInput</code>s may also be hosted in <code>Form</code>s.  Forms provide
                     support for validation, data submission, and dirty state management.
                 </p>
             ],
