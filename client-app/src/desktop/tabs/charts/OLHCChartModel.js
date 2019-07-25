@@ -29,17 +29,17 @@ export class OLHCChartModel {
         if (!this.currentSymbol) {
             this.setCurrentSymbol(this.symbols[0]);
         }
-        let series = await XH.portfolioService.getOLHCChartSeries(this.currentSymbol);
+        let series = await XH.portfolioService.getOLHCChartSeriesAsync(this.currentSymbol);
 
         const groupPixelWidth = 5;
-        Object.assign(series[0], {
+        Object.assign(series, {
             dataGrouping: {
                 enabled: !!groupPixelWidth,
                 groupPixelWidth: groupPixelWidth
             }
         });
 
-        this.chartModel.setSeries(series);
+        this.chartModel.setSeries([series]);
     }
 
     getChartModelCfg() {
