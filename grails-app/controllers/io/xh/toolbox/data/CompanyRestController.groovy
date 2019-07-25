@@ -2,7 +2,6 @@ package io.xh.toolbox.data
 
 import io.xh.hoist.RestController
 import io.xh.hoist.security.Access
-import io.xh.toolbox.company.Company
 import org.grails.web.json.JSONObject
 
 @Access(['APP_READER'])
