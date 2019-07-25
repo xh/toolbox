@@ -4,14 +4,26 @@ import moment from 'moment';
 @HoistService
 export class PortfolioService {
 
-    async getConstants() {
-        const marketConstants = await XH.fetchJson({
-            url: 'market/constants'
+    async initAsync() {
+        this.lookups = await this.getLookupsAsync();
+    }
+
+    async getLookupsAsync() {
+        return await XH.fetchJson({
+            url: 'portfolio/lookups'
         });
-        const portfolioConstants = await XH.fetchJson({
-            url: 'portfolio/constants'
+    }
+
+    async getSymbolsAsync() {
+        return await XH.fetchJson({
+            url: 'portfolio/symbols'
         });
-        return {...marketConstants, ...portfolioConstants};
+    }
+
+    async getInstrumentAsync(symbol) {
+        return await XH.fetchJson({
+            url: `portfolio/instrument/${symbol}`
+        });
     }
 
     /**
@@ -22,7 +34,7 @@ export class PortfolioService {
      */
     async getPortfolioAsync(dims, includeSummary = false) {
         const portfolio = await XH.fetchJson({
-            url: 'portfolio',
+            url: 'portfolio/positions',
             params: {
                 dims: dims.join(',')
             }
@@ -57,28 +69,28 @@ export class PortfolioService {
 
     async getOrdersAsync(positionId) {
         return await XH.fetchJson({
-            url: 'portfolio/filteredOrders',
+            url: 'portfolio/ordersForPosition',
             params: {
                 positionId
             }
         });
     }
 
-    async getLineChartSeries(symbol) {
+    async getLineChartSeries(symbol, dimension = 'volume') {
         const mktData = await XH.fetchJson({
-            url: `market/prices/${symbol}`
+            url: `portfolio/prices/${symbol}`
         });
         return ([{
             name: symbol,
             type: 'line',
             animation: false,
-            data: mktData.map(it => [moment(it.day).valueOf(), it.volume])
+            data: mktData.map(it => [moment(it.day).valueOf(), it[dimension]])
         }]);
     }
 
     async getOLHCChartSeries(symbol) {
         const mktData = await XH.fetchJson({
-            url: `market/prices/${symbol}`
+            url: `portfolio/prices/${symbol}`
         });
         return ([{
             name: symbol,
