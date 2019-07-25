@@ -1,14 +1,19 @@
 package io.xh.toolbox
 
-import io.xh.hoist.BaseService
 import io.xh.hoist.config.AppConfig
-import io.xh.hoist.monitor.Monitor
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.user.User
+import io.xh.hoist.BaseService
+import io.xh.hoist.monitor.Monitor
 
 import static io.xh.hoist.json.JSONSerializer.serializePretty
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
-import static io.xh.hoist.util.Utils.*
+
+
+import static io.xh.hoist.util.Utils.appEnvironment
+import static io.xh.hoist.util.Utils.appName
+import static io.xh.hoist.util.Utils.appVersion
+import static io.xh.hoist.util.Utils.configService
 
 class BootStrap {
 
@@ -17,7 +22,7 @@ class BootStrap {
         ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
         ensureMonitorsCreated()
-        def services = Utils.xhServices.findAll { it.class.canonicalName.startsWith('io.xh.toolbox') }
+        def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
         BaseService.parallelInit(services)
         ensureUsersCreated()
     }
