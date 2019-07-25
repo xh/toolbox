@@ -5,25 +5,11 @@ import moment from 'moment';
 export class PortfolioService {
 
     async initAsync() {
-        this.lookups = await this.getLookupsAsync();
-    }
-
-    async getLookupsAsync() {
-        return await XH.fetchJson({
-            url: 'portfolio/lookups'
-        });
+        this.lookups = await XH.fetchJson({url: 'portfolio/lookups'});
     }
 
     async getSymbolsAsync() {
-        return await XH.fetchJson({
-            url: 'portfolio/symbols'
-        });
-    }
-
-    async getInstrumentAsync(symbol) {
-        return await XH.fetchJson({
-            url: `portfolio/instrument/${symbol}`
-        });
+        return XH.fetchJson({url: 'portfolio/symbols'});
     }
 
     /**
@@ -48,9 +34,7 @@ export class PortfolioService {
      * @returns {Promise<Array>}
      */
     async getPositionsAsync() {
-        return await XH.fetchJson({
-            url: 'portfolio/rawPositions'
-        });
+        return XH.fetchJson({url: 'portfolio/rawPositions'});
     }
 
     /**
@@ -59,7 +43,7 @@ export class PortfolioService {
      * @return {Promise<*>}
      */
     async getPositionAsync(positionId) {
-        return await XH.fetchJson({
+        return XH.fetchJson({
             url: 'portfolio/position',
             params: {
                 positionId
@@ -67,8 +51,12 @@ export class PortfolioService {
         });
     }
 
+    async getAllOrdersAsync() {
+        return XH.fetchJson({url: 'portfolio/orders'});
+    }
+
     async getOrdersAsync(positionId) {
-        return await XH.fetchJson({
+        return XH.fetchJson({
             url: 'portfolio/ordersForPosition',
             params: {
                 positionId
@@ -76,23 +64,19 @@ export class PortfolioService {
         });
     }
 
-    async getLineChartSeries(symbol, dimension = 'volume') {
-        const mktData = await XH.fetchJson({
-            url: `portfolio/prices/${symbol}`
-        });
-        return ([{
+    async getLineChartSeriesAsync(symbol, dimension = 'volume') {
+        const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`});
+        return {
             name: symbol,
             type: 'line',
             animation: false,
             data: mktData.map(it => [moment(it.day).valueOf(), it[dimension]])
-        }]);
+        };
     }
 
-    async getOLHCChartSeries(symbol) {
-        const mktData = await XH.fetchJson({
-            url: `portfolio/prices/${symbol}`
-        });
-        return ([{
+    async getOLHCChartSeriesAsync(symbol) {
+        const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`});
+        return {
             name: symbol,
             type: 'ohlc',
             color: 'rgba(219, 0, 1, 0.55)',
@@ -100,19 +84,6 @@ export class PortfolioService {
             animation: false,
             dataGrouping: {enabled: false},
             data: mktData.map(it => [moment(it.day).valueOf(), it.open, it.high, it.low, it.close])
-        }]);
-    }
-
-    /**
-     * Available as a general function to generate a collection of mock orders of any given size.
-     * Called internally (lazily) to generate a reference set of orders from which positions are
-     * built to populate the demo portfolio viewer app.
-     *
-     * @returns {Promise<Object[]>}
-     */
-    async getAllOrders() {
-        return await XH.fetchJson({
-            url: 'portfolio/orders'
-        });
+        };
     }
 }
