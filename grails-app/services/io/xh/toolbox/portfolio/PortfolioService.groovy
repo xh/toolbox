@@ -32,18 +32,6 @@ class PortfolioService extends BaseService {
         return data
     }
 
-    Set<String> getAllSymbols() {
-        data.instruments.keySet()
-    }
-
-    Instrument getInstrument(String symbol) {
-        data.instruments[symbol]
-    }
-
-    List<MarketPrice> getMarketData(String symbol) {
-        data.marketPrices[symbol]
-    }
-
     Map getLookups() {
         [
                 sectors: SECTORS,
