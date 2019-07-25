@@ -12,7 +12,7 @@ class CustomerService extends BaseService {
 
         def q = query.toUpperCase()
         return allCustomers.findAll {
-            it.name.toUpperCase().startsWith(q) || it.city.toUpperCase().startsWith(q)
+            it.company.toUpperCase().startsWith(q) || it.city.toUpperCase().startsWith(q)
         }
     }
 
@@ -22,16 +22,11 @@ class CustomerService extends BaseService {
 
     private List<Map> loadCustomersFromFile() {
         def file = new File("grails-app/services/io/xh/toolbox/data/CompanyTrades.json")
-        def input = (new JsonSlurper()).parseText(file.text)
-        def ret = input.collect {
-            [
-                    id      : it.id,
-                    name    : it.company,
-                    city    : it.city,
-                    isActive: (it.id % 3 != 0)
-            ]
+        def ret = (new JsonSlurper()).parseText(file.text)
+        ret.each { it ->
+            it.isActive = (it.id % 3 != 0)
         }
-        return ret.unique { it.name }
+        return ret.unique { it.company }
     }
 
     void clearCaches() {
