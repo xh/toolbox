@@ -12,9 +12,9 @@ export class AppModel {
     get useCompactGrids() {
         return XH.getPref('defaultGridMode') == 'COMPACT';
     }
-
+    
     async initAsync() {
         this.loadAsync();
     }
-
+    
 }
