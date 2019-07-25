@@ -108,7 +108,6 @@ export class PortfolioService {
      * Called internally (lazily) to generate a reference set of orders from which positions are
      * built to populate the demo portfolio viewer app.
      *
-     * @param count - desired number of synthetic orders to generate.
      * @returns {Promise<Object[]>}
      */
     async getAllOrders() {
