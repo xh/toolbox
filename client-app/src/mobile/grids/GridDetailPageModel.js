@@ -14,8 +14,8 @@ export class GridDetailPageModel {
     }
 
     async doLoadAsync() {
-        const companyTrades = await XH.fetchJson({url: 'customer'});
-        const record = find(companyTrades, {id: parseInt(this.id)});
+        const customers = await XH.fetchJson({url: 'customer'});
+        const record = find(customers, {id: parseInt(this.id)});
         this.setRecord(record);
     }
 }
