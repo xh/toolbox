@@ -2,98 +2,180 @@ package io.xh.toolbox.portfolio
 
 import io.xh.hoist.BaseService
 
-import java.time.Instant
-import java.time.LocalTime
-import java.time.ZoneOffset
+import java.time.*
+import java.util.concurrent.ConcurrentHashMap
 
 import static io.xh.toolbox.portfolio.Utils.*
+import static java.time.DayOfWeek.SATURDAY
+import static java.time.DayOfWeek.SUNDAY
 
 class PortfolioService extends BaseService {
 
-    def marketService
+    private final int INSTRUMENT_COUNT = 500
+    private final int ORDERS_COUNT = 20000
+
+    private final List SECTORS = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing', 'Energy', 'Other', 'Utilities']
+    private final List REGIONS = ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
 
     private final List MODELS = ['Ren', 'Vader', 'Beckett', 'Hutt', 'Maul']
     private final List FUNDS = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay']
     private final List TRADERS = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn', 'Robert Greer', 'HedgeSys', 'Susan Major']
-    private final int ORDERS_COUNT = 20000
 
-    private List<Order> orders
-    private List<RawPosition> rawPositions
+    private PortfolioDataSet data
 
     void init() {
-        orders = generateOrders()
-        rawPositions = calculateRawPositions(orders)
-
+        data = generateData()
         super.init()
     }
 
-    List<Position> getPortfolio(List<String> dims) {
-        List<Position> positions = getPositions(dims)
+    PortfolioDataSet getData() {
+        return data
+    }
 
-        return [
-                new Position(
-                        id: 'summary',
-                        name: 'Total',
-                        pnl: (positions.sum { it.pnl }) as long,
-                        mktVal: (positions.sum { it.mktVal }) as long,
-                        children: positions
-                )
+    Set<String> getAllSymbols() {
+        data.instruments.keySet()
+    }
+
+    Instrument getInstrument(String symbol) {
+        data.instruments[symbol]
+    }
+
+    List<MarketPrice> getMarketData(String symbol) {
+        data.marketPrices[symbol]
+    }
+
+    Map getLookups() {
+        [
+                sectors: SECTORS,
+                regions: REGIONS,
+                models : MODELS,
+                funds  : FUNDS,
+                traders: TRADERS
         ]
     }
 
-    List<RawPosition> getRawPositions() {
-        return rawPositions
-    }
+    //----------------
+    // Implementation
+    //-----------------
+    private PortfolioDataSet generateData() {
+        def instruments = generateInstruments(),
+            marketPrices = generatePrices(instruments),
+            orders = generateOrders(instruments, marketPrices),
+            rawPositions = calculateRawPositions(instruments, marketPrices, orders)
 
-    Position getPosition(String positionId) {
-
-        Map<String, String> parsedId = parsePositionId(positionId)
-        List<String> dims = parsedId.keySet() as List<String>
-        List<String> dimVals = parsedId.values() as List<String>
-
-        List<RawPosition> positions = rawPositions.findAll { pos ->
-            dims.every { dim ->
-                pos."$dim" == parsedId[dim]
-            }
-        }
-
-        return new Position(
-                id: positionId,
-                name: dimVals.last(),
-                children: null,
-                pnl: positions.sum { it.pnl } as long,
-                mktVal: positions.sum { it.mktVal } as long,
+        return new PortfolioDataSet(
+                instruments: instruments,
+                marketPrices: marketPrices,
+                orders: orders,
+                rawPositions: rawPositions
         )
     }
 
-
-    List<Order> getOrders(String positionId) {
-        if (!positionId)
-            return []
-        else {
-            Map<String, String> parsedId = parsePositionId(positionId)
-            List<String> dims = parsedId.keySet() as List<String>
-
-            return orders.findAll { order ->
-                dims.every { dim ->
-                    parsedId[dim] == order."$dim"
-                }
+    //-------------------
+    // Markets Generation
+    //-------------------
+    private Map<String, Instrument> generateInstruments() {
+        Map<String, Instrument> ret = new ConcurrentHashMap(INSTRUMENT_COUNT)
+        while (ret.size() < INSTRUMENT_COUNT) {
+            String symbol = generateSymbol()
+            if (!ret[symbol]) {
+                ret[symbol] = new Instrument(
+                        symbol: symbol,
+                        sector: sample(SECTORS),
+                        region: sample(REGIONS)
+                )
             }
         }
+        return ret
     }
 
-    List<Order> getAllOrders() {
-        return orders
+    private Map<String, List<MarketPrice>> generatePrices(Map<String, Instrument> instruments) {
+        Map<String, List<MarketPrice>> ret = new ConcurrentHashMap(INSTRUMENT_COUNT)
+        List<LocalDate> tradingDays = generateTradingDays()
+        instruments.keySet().each {
+            ret[it] = generateTimeSeries(tradingDays)
+        }
+        return ret
+    }
+
+    private List<MarketPrice> generateTimeSeries(List<LocalDate> tradingDays) {
+        Set<Integer> spikeDayIdxs = []
+        List<MarketPrice> ret = []
+
+        // Give some random number of days a spike in trading volume to make that chart interesting.
+        int nSpikes = randInt(0, 30)
+        nSpikes.times {
+            spikeDayIdxs += randInt(0, tradingDays.size())
+        }
+
+        // Set a seed price and generate a series from there.
+        double startPx = randDouble(10, 100)
+        tradingDays.eachWithIndex { tradingDay, idx ->
+            boolean bigDown = Math.random() > 0.95  // Allow for a few bigger swings.
+            boolean bigUp = Math.random() > 0.95
+            double pctDown = randDouble(0, (bigDown ? 0.1 : 0.02))
+            double pctUp = randDouble(0, (bigUp ? 0.1 : 0.025))  // We can rig the game here...
+            double open = startPx
+            double high = startPx + (pctUp * startPx)
+            double low = startPx - (pctDown * startPx)
+            double close = (Math.random() * (high - low)) + low
+
+            int maxVol
+            if (spikeDayIdxs.find { it == idx }) {
+                maxVol = 200
+            } else if (spikeDayIdxs.find { it == (idx - 1) } || spikeDayIdxs.find { it == (idx + 1) }) {
+                maxVol = 150
+            } else {
+                maxVol = 100
+            }
+
+            ret << new MarketPrice(
+                    day: tradingDay,
+                    high: high.round(2),
+                    low: low.round(2),
+                    open: open.round(2),
+                    close: close.round(2),
+                    volume: randInt(80, maxVol) * 1000
+            )
+            startPx = close
+        }
+
+        return ret
+    }
+
+    private List<LocalDate> generateTradingDays() {
+        LocalDate today = LocalDate.now()
+        LocalDate tradingDay = LocalDate.of(today.getYear() - 1, 1, 1)
+
+        List<LocalDate> ret = []
+
+        while (tradingDay <= today) {
+            DayOfWeek dow = tradingDay.getDayOfWeek()
+            if (dow != SATURDAY && dow != SUNDAY) ret << tradingDay
+            tradingDay = tradingDay.plusDays(1)
+        }
+
+        return ret
+    }
+
+    private String generateSymbol() {
+        def ret = '',
+            n = randInt(1, 6),
+            letters = ('A'..'Z') as List<Character>
+        n.times {
+            ret += sample(letters)
+        }
+        return ret
     }
 
 
     //------------------------
-    // Implementation
+    // Portfolio Generation
     //------------------------
-    private List<Order> generateOrders() {
+    private List<Order> generateOrders(Map<String, Instrument> instruments, Map<String, List<MarketPrice>> marketPrices) {
         List<Order> ret = new ArrayList<Order>(ORDERS_COUNT)
-        List<String> symbols = marketService.getAllSymbols() as List<String>
-        ORDERS_COUNT.times {i ->
+        List<String> symbols = instruments.keySet() as List<String>
+        ORDERS_COUNT.times { i ->
 
             // Get random attributes
             def symbol = sample(symbols),
@@ -105,15 +187,15 @@ class PortfolioService extends BaseService {
                 min = randInt(0, 59)
 
             // Calc 2nd order, partially random attributes
-            MarketPrice mktData = sample(marketService.getMarketData(symbol))
+            MarketPrice mktData = sample(marketPrices[symbol])
             Instant time = mktData.day.atTime(LocalTime.of(hour, min)).toInstant(ZoneOffset.ofHours(-5))
-            long quantity = randInt(300, 10000) * (dir == 'Sell' ? -1 : 1)
+            long quantity = randInt(300, 10001) * (dir == 'Sell' ? -1 : 1)
             double price = randDouble(mktData.low, mktData.high).round(2)
             long mktVal = (quantity * price).round()
 
             ret << new Order(
                     id: "order-${i}",
-                    instrument: marketService.getInstrument(symbol),
+                    instrument: instruments[symbol],
                     dir: dir,
                     quantity: quantity,
                     price: price,
@@ -123,7 +205,7 @@ class PortfolioService extends BaseService {
                     fund: fund,
                     trader: trader,
                     commission: Math.abs(mktVal * 0.0002),
-                    confidence: randInt(0, 1000)
+                    confidence: randInt(0, 1001)
             )
         }
 
@@ -131,12 +213,16 @@ class PortfolioService extends BaseService {
     }
 
     // Calculate lowest-level leaf positions with P&L.
-    private List<RawPosition> calculateRawPositions(List<Order> orders) {
+    private List<RawPosition> calculateRawPositions(
+            Map<String, Instrument> instruments,
+            Map<String, List<MarketPrice>> marketPrices,
+            List<Order> orders
+    ) {
         Map<String, List<Order>> bySymbol = orders.groupBy { it.symbol }
 
         return bySymbol.collect { symbol, ordersForSymbol ->
             Order first = ordersForSymbol.first()
-            double endPx = marketService.getMarketData(symbol).last().close
+            double endPx = marketPrices[symbol].last().close
 
             long endQty = ordersForSymbol.sum { it.quantity } as long
             long netCashflow = ordersForSymbol.sum { -it.mktVal } as long
@@ -146,51 +232,18 @@ class PortfolioService extends BaseService {
             long pnl = netCashflow + mktVal
 
             new RawPosition(
-                    instrument: marketService.getInstrument(symbol),
-                    model : first.model,
-                    fund  : first.fund,
+                    instrument: instruments[symbol],
+                    model: first.model,
+                    fund: first.fund,
                     trader: first.trader,
                     mktVal: mktVal,
-                    pnl   : pnl
+                    pnl: pnl
             )
         }
-    }
-
-    // Generate grouped, hierarchical position roll-ups for a list of one or more dimensions.
-    private List<Position> getPositions(List<String> dims, List<RawPosition> positions = rawPositions, String id = 'root') {
-
-        String dim = dims.first()
-        Map<String, List<RawPosition>> byDimVal = positions.groupBy { it."$dim" }
-
-        List<String> childDims = dims.tail()
-        return byDimVal.collect { dimVal, members ->
-
-            String posId = id + ">>${dim}:${dimVal}"
-
-            // Recurse to create children for this node if additional dimensions remain.
-            // Use these children to calc metrics, bottom up, if possible.
-            List<Position> children = childDims ? getPositions(childDims, members, posId) : null
-            List<Object> calcChildren = children ?: members
-
-            new Position(
-                    id: posId,
-                    name: dimVal,
-                    children: children,
-                    pnl: calcChildren.sum { it.pnl } as long,
-                    mktVal: calcChildren.sum { it.mktVal } as long
-            )
-        }
-    }
-
-    // Parse a drill-down ID from a rolled-up position into a map of all
-    // dimensions -> dim values contained within the rollup.
-    private Map<String, String> parsePositionId(String id) {
-        List<String> dims = id.split('>>').drop(1)
-        return dims.collectEntries { it.split(':') as List<String> }
     }
 
     void clearCaches() {
+        this.data = generateData()
         super.clearCaches()
-
     }
 }
