@@ -5,6 +5,7 @@ import {hframe} from '@xh/hoist/cmp/layout';
 import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {grid} from '@xh/hoist/cmp/grid';
 import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
+import {fmtMillions} from '@xh/hoist/format';
 
 import {SplitTreeMapPanelModel} from './SplitTreeMapPanelModel';
 
@@ -25,7 +26,13 @@ export class SplitTreeMapPanel extends Component {
                     model: {defaultSize: 480, side: 'left'},
                     item: grid({model: gridModel})
                 }),
-                splitTreeMap({model: splitTreeMapModel})
+                splitTreeMap({
+                    model: splitTreeMapModel,
+                    titleRenderer: (v, side) => {
+                        const opts = {prefix: '$', precision: 2, label: true, asElement: true};
+                        return `${side == 'positive' ? 'Profit' : 'Loss'}: ${fmtMillions(v, opts)}`;
+                    }
+                })
             )
         });
     }
