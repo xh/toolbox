@@ -66,7 +66,7 @@ export class CubeDataModel {
     async doLoadAsync() {
         let orders;
         await this.withLoadTime('Fetch orders', async () => {
-            orders = await XH.portfolioService.getAllOrders();
+            orders = await XH.portfolioService.getAllOrdersAsync();
             orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
         });
 
