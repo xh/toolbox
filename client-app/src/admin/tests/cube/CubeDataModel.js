@@ -65,8 +65,7 @@ export class CubeDataModel {
     }
 
     async doLoadAsync() {
-        const portfolioConstants = await XH.portfolioService.getConstants();
-        this.setFunds(portfolioConstants.FUNDS);
+        this.setFunds(XH.portfolioService.lookups.funds);
 
         let orders;
         await this.withLoadTime('Fetch orders', async () => {
