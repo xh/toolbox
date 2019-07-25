@@ -16,7 +16,7 @@ class TradeService extends BaseService {
     //------------------------
 
     private Map loadTradesFromFile() {
-        def file = new File("grails-app/services/io/xh/toolbox/data/CompanyTrades.json")
+        def file = new File('grails-app/services/io/xh/toolbox/data/CompanyTrades.json')
         def input = (new JsonSlurper()).parseText(file.text)
         input.each { it ->
             it.profit_loss = Math.round(it.profit_loss * Math.random())
@@ -26,7 +26,7 @@ class TradeService extends BaseService {
         return [
                 trades : input,
                 summary: [
-                        id          : "summary",
+                        id          : 'summary',
                         profit_loss : input.sum { it.profit_loss },
                         trade_volume: input.sum { it.trade_volume }
                 ]
