@@ -44,8 +44,8 @@ export class GridPageModel {
 
     async doLoadAsync(loadSpec) {
         await wait(500);
-        const companyTrades = await XH.fetchJson({url: 'customer'});
-        this.gridModel.loadData(companyTrades);
+        const customers = await XH.fetchJson({url: 'customer'});
+        this.gridModel.loadData(customers);
     }
 
 }
