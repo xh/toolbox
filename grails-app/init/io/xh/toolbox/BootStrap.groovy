@@ -12,16 +12,12 @@ import static io.xh.hoist.util.Utils.*
 
 class BootStrap {
 
-    def marketService
     def init = {servletContext ->
         logStartupMsg()
         ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
         ensureMonitorsCreated()
-        BaseService.parallelInit([marketService])
-        def services = Utils.xhServices.findAll {
-            it.class.canonicalName.startsWith('io.xh.toolbox') && !it.initialized
-        }
+        def services = Utils.xhServices.findAll { it.class.canonicalName.startsWith('io.xh.toolbox') }
         BaseService.parallelInit(services)
         ensureUsersCreated()
     }
