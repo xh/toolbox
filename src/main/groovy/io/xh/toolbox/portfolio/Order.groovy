@@ -39,9 +39,9 @@ class Order extends JSONFormatCached {
                 time      : time,
                 commission: commission,
                 confidence: confidence,
-                model     :      model,
-                trader    :     trader,
-                fund      :       fund
+                model     : model,
+                trader    : trader,
+                fund      : fund
         ]
     }
 }
