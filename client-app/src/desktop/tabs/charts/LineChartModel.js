@@ -28,13 +28,13 @@ export class LineChartModel {
             this.setCurrentSymbol(this.symbols[0]);
         }
 
-        let series = await XH.portfolioService.getLineChartSeries(this.currentSymbol, 'close');
-        Object.assign(series[0], {
+        let series = await XH.portfolioService.getLineChartSeriesAsync(this.currentSymbol, 'close');
+        Object.assign(series, {
             type: 'area',
             animation: true
         });
 
-        this.chartModel.setSeries(series);
+        this.chartModel.setSeries([series]);
     }
 
     getChartModelCfg() {
