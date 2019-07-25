@@ -1,4 +1,4 @@
-import {boolCheckCol, emptyFlexCol, grid, GridModel} from '@xh/hoist/cmp/grid';
+import {boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
 import {br, filler, fragment, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, HoistModel, LayoutSupport, LoadSupport, managed, XH} from '@xh/hoist/core';
@@ -7,7 +7,7 @@ import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -98,7 +98,7 @@ class SampleGrid extends Component {
                         enableFilter: false
                     }),
                     filler(),
-                    storeCountLabel({gridModel, unit: 'companies'}),
+                    gridCountLabel({gridModel, unit: 'companies'}),
                     storeFilterField({gridModel}),
                     colChooserButton({gridModel}),
                     exportButton({gridModel})
