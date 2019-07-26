@@ -29,8 +29,15 @@ export class SplitTreeMapPanel extends Component {
                 splitTreeMap({
                     model: splitTreeMapModel,
                     titleRenderer: (v, side) => {
-                        const opts = {prefix: '$', precision: 2, label: true, asElement: true};
-                        return `${side == 'positive' ? 'Profit' : 'Loss'}: ${fmtMillions(v, opts)}`;
+                        return [
+                            side === 'positive' ? 'Profit' : 'Loss',
+                            fmtMillions(v, {
+                                prefix: ': $',
+                                precision: 2,
+                                label: true,
+                                asElement: true
+                            })
+                        ];
                     }
                 })
             )
