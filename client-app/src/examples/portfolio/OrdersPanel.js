@@ -4,15 +4,15 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
-import {elemFactory, HoistComponent} from '@xh/hoist/core/index';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {Icon} from '@xh/hoist/icon';
-import {grid} from '@xh/hoist/cmp/grid';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
-import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
+import {elemFactory, HoistComponent} from '@xh/hoist/core/index';
+import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {Icon} from '@xh/hoist/icon';
+import {Component} from 'react';
 
 @HoistComponent
 export class OrdersPanel extends Component {
@@ -28,7 +28,7 @@ export class OrdersPanel extends Component {
             mask: model.positionId == null,
             bbar: toolbar(
                 filler(),
-                storeCountLabel({gridModel, unit: 'orders'}),
+                gridCountLabel({gridModel, unit: 'orders'}),
                 storeFilterField({gridModel}),
                 colChooserButton({gridModel})
             )

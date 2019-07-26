@@ -4,18 +4,26 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
-import {elemFactory, HoistComponent, HoistModel, LayoutSupport, LoadSupport, XH, managed} from '@xh/hoist/core';
+import {emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {storeFilterField, storeCountLabel} from '@xh/hoist/desktop/cmp/store';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {
+    elemFactory,
+    HoistComponent,
+    HoistModel,
+    LayoutSupport,
+    LoadSupport,
+    managed,
+    XH
+} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
-import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {dimensionChooser, DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {bindable} from '@xh/hoist/mobx';
+import {Component} from 'react';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
 
@@ -37,7 +45,7 @@ class SampleTreeGrid extends Component {
                     model: model.dimChooserModel
                 }),
                 filler(),
-                storeCountLabel({gridModel}),
+                gridCountLabel({gridModel, includeChildren: true}),
                 storeFilterField({gridModel, filterOptions: {includeChildren: model.filterIncludeChildren}}),
                 colChooserButton({gridModel}),
                 exportButton({gridModel})
@@ -97,6 +105,7 @@ class Model {
         store: {
             loadRootAsSummary: true
         },
+        selModel: {mode: 'multiple'},
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         enableColChooser: true,
