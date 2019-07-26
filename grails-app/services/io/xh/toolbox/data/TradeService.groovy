@@ -1,36 +1,52 @@
 package io.xh.toolbox.data
 
 import groovy.json.JsonSlurper
+import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 
+@Slf4j
 class TradeService extends BaseService {
 
-    private Map trades = loadTradesFromFile()
+    private Map trades
+
+    void init() {
+        trades = loadTradesFromFile()
+        super.init()
+    }
 
     Map getTrades() {
         return trades
     }
 
+
     //------------------------
     // Implementation
     //------------------------
-
     private Map loadTradesFromFile() {
-        def file = new File('grails-app/services/io/xh/toolbox/data/CompanyTrades.json')
-        def input = (new JsonSlurper()).parseText(file.text)
-        input.each { it ->
-            it.profit_loss = Math.round(it.profit_loss * Math.random())
-            it.trade_volume = it.trade_volume * 1000000
-            it.active = it.trade_volume.toBigInteger() % 6 == 0
-        }
-        return [
-                trades : input,
+        def ret = [:]
+        try {
+            def mockData = applicationContext.getResource('classpath:MockTradesData.json'),
+                trades = new JsonSlurper().parse(mockData.inputStream)
+
+            trades.each {it ->
+                it.profit_loss = Math.round(it.profit_loss * Math.random())
+                it.trade_volume = it.trade_volume * 1000000
+                it.active = it.trade_volume.toBigInteger() % 6 == 0
+            }
+
+            ret = [
+                trades: trades,
                 summary: [
-                        id          : 'summary',
-                        profit_loss : input.sum { it.profit_loss },
-                        trade_volume: input.sum { it.trade_volume }
+                    id          : 'summary',
+                    profit_loss : trades.sum { it.profit_loss },
+                    trade_volume: trades.sum { it.trade_volume }
                 ]
-        ]
+            ]
+        } catch (Exception e) {
+            log.error("Failure loading mock data | ${e.message}")
+        }
+
+        return ret
     }
 
     void clearCaches() {

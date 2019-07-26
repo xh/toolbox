@@ -1,11 +1,18 @@
 package io.xh.toolbox.data
 
 import groovy.json.JsonSlurper
+import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 
+@Slf4j
 class CustomerService extends BaseService {
 
-    private List<Map> allCustomers = loadCustomersFromFile()
+    private List<Map> allCustomers
+
+    void init() {
+        allCustomers = loadCustomersFromFile()
+        super.init()
+    }
 
     List<Map> queryCustomers(String query) {
         if (!query) return allCustomers
@@ -16,17 +23,22 @@ class CustomerService extends BaseService {
         }
     }
 
+
     //------------------------
     // Implementation
     //------------------------
-
     private List<Map> loadCustomersFromFile() {
-        def file = new File('grails-app/services/io/xh/toolbox/data/CompanyTrades.json')
-        def ret = (new JsonSlurper()).parseText(file.text)
-        ret.each { it ->
-            it.isActive = (it.id % 3 != 0)
+        def ret = []
+        try {
+            def mockData = applicationContext.getResource('classpath:MockTradesData.json')
+            ret = new JsonSlurper().parse(mockData.inputStream)
+            ret.each{it -> it.isActive = (it.id % 3 != 0)}
+            ret = ret.unique{it.company}
+        } catch (Exception e) {
+            log.error("Failure loading mock data | ${e.message}")
         }
-        return ret.unique { it.company }
+
+        return ret
     }
 
     void clearCaches() {
