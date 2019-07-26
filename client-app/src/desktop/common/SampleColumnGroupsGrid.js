@@ -24,7 +24,6 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
-import {wait} from '@xh/hoist/promise';
 import {Ref} from '@xh/hoist/utils/react';
 import {Component} from 'react';
 import {gridStyleSwitches} from './GridStyleSwitches';
@@ -201,8 +200,9 @@ class Model {
     // Implementation
     //------------------------
     async doLoadAsync(loadSpec) {
-        return wait(250)
-            .then(() => this.gridModel.loadData(XH.salesService.generateSales()));
+        const sales = await XH.fetchJson({url: 'sales'});
+
+        this.gridModel.loadData(sales);
     }
 
     showRecToast(rec) {

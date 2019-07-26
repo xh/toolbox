@@ -1,11 +1,11 @@
-import {XH, HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
-import {isEmpty, unionWith, pullAllWith, isEqual, startCase, cloneDeep} from 'lodash';
+import {cloneDeep, isEmpty, isEqual, pullAllWith, startCase, unionWith} from 'lodash';
 
 @HoistModel
 export class DimensionManagerModel {

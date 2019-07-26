@@ -1,15 +1,7 @@
 import {boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
 import {br, filler, fragment, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
-import {
-    elemFactory,
-    HoistComponent,
-    HoistModel,
-    LayoutSupport,
-    LoadSupport,
-    managed,
-    XH
-} from '@xh/hoist/core';
+import {elemFactory, HoistComponent, HoistModel, LayoutSupport, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
@@ -279,13 +271,11 @@ class Model {
     });
     
     async doLoadAsync(loadSpec) {
-        const gridModel = this.gridModel;
-        return wait(250)
-            .then(() => {
-                const {trades, summary} = XH.tradeService.generateTrades();
-                gridModel.loadData(trades, summary);
-                if (!gridModel.hasSelection) gridModel.selectFirst();
-            });
+        const {trades, summary} = await XH.fetchJson({url: 'trade'}),
+            gridModel = this.gridModel;
+
+        gridModel.loadData(trades, summary);
+        if (!gridModel.hasSelection) gridModel.selectFirst();
     }
 
     showInfoToast(rec) {

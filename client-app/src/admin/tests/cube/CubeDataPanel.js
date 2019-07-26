@@ -1,7 +1,7 @@
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {HoistComponent, XH} from '@xh/hoist/core';
-import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
@@ -35,15 +35,6 @@ export class CubeDataPanel extends Component {
                         flex: 1,
                         item: grid({model: gridModel, agOptions}),
                         bbar: toolbar(
-                            numberInput({
-                                model,
-                                bind: 'orderCount',
-                                enableShorthandUnits: true,
-                                selectOnFocus: true,
-                                width: 80
-                            }),
-                            span('orders'),
-                            toolbarSep(),
                             span('Root:'),
                             switchInput({model, bind: 'includeRoot'}),
                             span('Leaves:'),
@@ -52,7 +43,7 @@ export class CubeDataPanel extends Component {
                             select({
                                 model,
                                 bind: 'fundFilter',
-                                options: XH.portfolioService.funds,
+                                options: XH.portfolioService.lookups.funds,
                                 placeholder: 'Fund filter...',
                                 enableClear: true,
                                 enableMulti: true,
