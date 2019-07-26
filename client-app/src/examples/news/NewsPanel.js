@@ -5,15 +5,15 @@
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 
-import {Component} from 'react';
-import {HoistComponent, elemFactory} from '@xh/hoist/core';
-import {dataView} from '@xh/hoist/desktop/cmp/dataview';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {filler} from '@xh/hoist/cmp/layout';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {storeCountLabel} from '@xh/hoist/cmp/store';
+import {elemFactory, HoistComponent} from '@xh/hoist/core';
+import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {select} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
-import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {Component} from 'react';
 import './NewsPanelItem.scss';
 
 @HoistComponent

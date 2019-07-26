@@ -252,11 +252,11 @@ export class InputsPanel extends Component {
                                 info: 'custom fields, renderer, async search',
                                 item: select({
                                     valueField: 'id',
-                                    labelField: 'name',
+                                    labelField: 'company',
                                     enableClear: true,
-                                    queryFn: this.queryCompaniesAsync,
-                                    optionRenderer: this.renderCompanyOption,
-                                    placeholder: 'Search companies...'
+                                    queryFn: this.queryCustomersAsync,
+                                    optionRenderer: this.renderCustomerOption,
+                                    placeholder: 'Search customers...'
                                 })
                             }),
                             row({
@@ -343,13 +343,14 @@ export class InputsPanel extends Component {
         });
     };
 
-    queryCompaniesAsync = (query) => {
-        return XH.companyService.queryAsync(query)
-            .wait(400)
-            .then(hits => hits);
+    queryCustomersAsync = (query) => {
+        return XH.fetchJson({
+            url: 'customer',
+            params: {query}
+        });
     };
 
-    renderCompanyOption = (opt) => {
+    renderCustomerOption = (opt) => {
         return hbox({
             items: [
                 box({
@@ -360,7 +361,7 @@ export class InputsPanel extends Component {
                     paddingLeft: 8
                 }),
                 div(
-                    opt.name,
+                    opt.company,
                     div({
                         className: 'xh-text-color-muted xh-font-size-small',
                         item: `${opt.city} · ID: ${opt.id}`
@@ -369,7 +370,7 @@ export class InputsPanel extends Component {
             ],
             alignItems: 'center'
         });
-    }
+    };
 
     renderToolbar() {
         const {model} = this,

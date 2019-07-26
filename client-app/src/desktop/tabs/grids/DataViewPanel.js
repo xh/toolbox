@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {HoistComponent, HoistModel, LoadSupport, XH, managed} from '@xh/hoist/core';
+import {HoistComponent, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -11,6 +11,7 @@ import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
 import {wrapper} from '../../common/Wrapper';
 import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
+import {shuffle, take} from 'lodash';
 
 @HoistComponent
 export class DataViewPanel extends Component {
@@ -62,15 +63,17 @@ class Model {
     });
     
     async doLoadAsync(loadSpec) {
-        const companies = XH.companyService.randomCompanies,
-            min = -1000,
+        const allCustomers = await XH.fetchJson({url: 'customer'}),
+            customers = take(shuffle(allCustomers), 100);
+
+        const min = -1000,
             max = 1000;
 
-        this.dataViewModel.store.loadData(companies.map(it => {
+        this.dataViewModel.store.loadData(customers.map(it => {
             const randVal = Math.random() * (max - min) + min;
             return {
                 id: it.id,
-                name: it.name,
+                name: it.company,
                 city: it.city,
                 value: randVal
             };

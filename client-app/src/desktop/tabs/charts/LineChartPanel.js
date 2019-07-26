@@ -15,7 +15,7 @@ export class LineChartPanel extends Component {
 
     render() {
         const {model} = this,
-            {companyMap} = model;
+            {symbols} = model;
         return wrapper(
             panel({
                 className: 'toolbox-linechart-panel',
@@ -25,11 +25,11 @@ export class LineChartPanel extends Component {
                 height: 600,
                 item: this.renderExample(),
                 tbar: toolbar(
-                    box('Company: '),
+                    box('Symbol: '),
                     select({
                         model,
-                        bind: 'currentCompany',
-                        options: Object.keys(companyMap),
+                        bind: 'currentSymbol',
+                        options: symbols,
                         enableFilter: false
                     })
                 )

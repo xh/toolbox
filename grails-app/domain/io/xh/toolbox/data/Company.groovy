@@ -1,4 +1,4 @@
-package io.xh.toolbox.company
+package io.xh.toolbox.data
 
 import io.xh.hoist.json.JSONFormat
 

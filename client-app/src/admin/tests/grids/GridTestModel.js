@@ -1,10 +1,10 @@
-import {XH, HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
+import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
 import {random, sample, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
-import {bindable, observable, action} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 
 const pnlColumn = {
     absSort: true,
