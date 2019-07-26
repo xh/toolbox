@@ -1,10 +1,11 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
+import {webSocketIndicator} from '@xh/hoist/cmp/websocket';
 import {tabSwitcher} from '@xh/hoist/desktop/cmp/tab';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {appBar} from '@xh/hoist/desktop/cmp/appbar';
+import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
 import {ContextMenuSupport, ContextMenuItem} from '@xh/hoist/desktop/cmp/contextmenu';
 
 import './App.scss';
@@ -22,6 +23,10 @@ export class App extends Component {
                 title: 'Hoist React Toolbox',
                 leftItems: [
                     tabSwitcher({model: tabModel})
+                ],
+                rightItems: [
+                    webSocketIndicator({iconOnly: true, marginRight: 4}),
+                    appBarSeparator()
                 ],
                 hideRefreshButton: false
             }),
