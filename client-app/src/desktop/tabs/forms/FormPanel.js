@@ -7,21 +7,13 @@
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame, hbox, vspacer, vbox} from '@xh/hoist/cmp/layout';
+import {filler, frame, hbox, vbox, vspacer} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {
-    checkbox,
-    dateInput,
-    numberInput,
-    select,
-    switchInput,
-    textArea,
-    textInput
-} from '@xh/hoist/desktop/cmp/input';
+import {checkbox, dateInput, numberInput, select, switchInput, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
 
 import {wrapper} from '../../common';
 import {FormPanelModel} from './FormPanelModel';

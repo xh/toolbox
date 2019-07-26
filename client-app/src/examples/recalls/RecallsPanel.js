@@ -5,20 +5,19 @@
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 
-import {Component} from 'react';
-import {elemFactory, HoistComponent, XH} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {grid} from '@xh/hoist/cmp/grid';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
-import {storeCountLabel} from '@xh/hoist/desktop/cmp/store';
+import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {a, filler, p, span, vframe} from '@xh/hoist/cmp/layout';
+import {elemFactory, HoistComponent, XH} from '@xh/hoist/core';
+import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
+import {Component} from 'react';
+import {detailsPanel} from './DetailsPanel';
+import './RecallsPanel.scss';
 
 import {RecallsPanelModel} from './RecallsPanelModel';
-import './RecallsPanel.scss';
-import {detailsPanel} from './DetailsPanel';
 
 @HoistComponent
 export class RecallsPanel extends Component {
@@ -72,10 +71,7 @@ export class RecallsPanel extends Component {
                         ]
                     }),
                     filler(),
-                    storeCountLabel({
-                        gridModel,
-                        unit: 'latest recall'
-                    }),
+                    gridCountLabel({gridModel, unit: 'latest recall'}),
                     toolbarSep(),
                     button({
                         title: 'About the API',

@@ -3,7 +3,7 @@ import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, filler, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {select, numberInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
@@ -17,7 +17,7 @@ export class OLHCChartPanel extends Component {
 
     render() {
         const {model} = this,
-            {companyMap} = model;
+            {symbols} = model;
         return wrapper({
             style: {paddingTop: 0},
             item: panel({
@@ -28,11 +28,11 @@ export class OLHCChartPanel extends Component {
                 height: 600,
                 item: this.renderExample(),
                 tbar: toolbar(
-                    box('Company: '),
+                    box('Symbol: '),
                     select({
                         model,
-                        bind: 'currentCompany',
-                        options: Object.keys(companyMap),
+                        bind: 'currentSymbol',
+                        options: symbols,
                         enableFilter: false
                     }),
                     filler(),

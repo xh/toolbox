@@ -13,7 +13,7 @@ import {tabContainer} from '@xh/hoist/cmp/tab';
 
 @HoistComponent
 export class TestsTab extends Component {
-    
+
     render() {
         return tabContainer({
             model: {

@@ -84,7 +84,7 @@ export class LineChartModel {
             return;
         }
 
-        const series = await XH.portfolioService.getLineChartSeries(orderSymbol);
-        this.chartModel.setSeries(series);
+        const series = await XH.portfolioService.getLineChartSeriesAsync(orderSymbol);
+        this.chartModel.setSeries([series]);
     }
 }

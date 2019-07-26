@@ -3,7 +3,7 @@ import {timeCol} from '@xh/hoist/cmp/grid/columns';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 import {Cube} from '@xh/hoist/data/cube';
-import {fmtThousands, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {fmtNumberTooltip, fmtThousands, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer} from '@xh/hoist/mobx';
 import {start} from '@xh/hoist/promise';
 import {castArray, isEmpty} from 'lodash';
@@ -15,12 +15,11 @@ export class CubeDataModel {
 
     @managed cube;
     @managed gridModel;
-    @managed loadTimesGridModel
+    @managed loadTimesGridModel;
     @managed dimManagerModel;
 
     @bindable includeLeaves = false;
     @bindable includeRoot = false;
-    @bindable orderCount = XH.getPref('cubeTestOrderCount');
     @bindable fundFilter = null;
 
     // Flag to short-circuit initial/duplicate firing of query reaction (below).
@@ -50,14 +49,6 @@ export class CubeDataModel {
             },
             equals: comparer.structural
         });
-
-        this.addReaction({
-            track: () => this.orderCount,
-            run: (count) => {
-                XH.setPref('cubeTestOrderCount', count);
-                this.loadAsync();
-            }
-        });
     }
 
     clearLoadTimes() {
@@ -73,15 +64,14 @@ export class CubeDataModel {
     }
 
     async doLoadAsync() {
-        let orders,
-            ocTxt = fmtThousands(this.orderCount) + 'k';
-
-        await this.withLoadTime(`Gen ${ocTxt} orders`, async () => {
-            orders = await XH.portfolioService.generateOrdersAsync(this.orderCount);
+        let orders;
+        await this.withLoadTime('Fetch orders', async () => {
+            orders = await XH.portfolioService.getAllOrdersAsync();
             orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
         });
 
-        await this.withLoadTime('Load Cube', async () => {
+        const ocTxt = fmtThousands(orders.length) + 'k';
+        await this.withLoadTime(`Loaded ${ocTxt} orders in Cube`, async () => {
             await this.cube.loadDataAsync(orders, {});
         });
 
@@ -142,7 +132,6 @@ export class CubeDataModel {
                 {name: 'price', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
 
                 {name: 'commission', aggregator: 'SUM'},
-                // {name: 'confidence', aggregator: 'AVG'},  // TODO - average aggregator?
 
                 {name: 'maxConfidence', aggregator: 'MAX'},
                 {name: 'minConfidence', aggregator: 'MIN'},

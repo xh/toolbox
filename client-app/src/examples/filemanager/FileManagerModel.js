@@ -1,12 +1,12 @@
-import {HoistModel, LoadSupport, XH, managed} from '@xh/hoist/core';
-import {GridModel, fileExtCol} from '@xh/hoist/cmp/grid';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {fileExtCol, GridModel} from '@xh/hoist/cmp/grid';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {computed} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import filesize from 'filesize';
 import download from 'downloadjs';
-import {filter, last, find, pull} from 'lodash';
+import {filter, find, last, pull} from 'lodash';
 
 @HoistModel
 @LoadSupport
