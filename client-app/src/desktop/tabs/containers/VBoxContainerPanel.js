@@ -13,6 +13,16 @@ export class VBoxContainerPanel extends Component {
                 A VBox lays out its children vertically, rendering a Box
                 with <code>flexDirection:column</code>.
             </p>,
+            links: [
+                {
+                    url: '$HR/cmp/layout/Box.js',
+                    notes: 'Hoist Box components.'
+                },
+                {
+                    url: '$HR/core/mixins/LayoutSupport.js',
+                    notes: 'Decorator to support core layout props.'
+                }
+            ],
             item: panel({
                 title: 'Containers › VBox',
                 icon: Icon.box(),

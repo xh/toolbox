@@ -1,12 +1,12 @@
 import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
-import {observable, settable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 
 @HoistModel
 @LoadSupport
 export class AgGridViewModel {
-    @observable.ref @settable data = [];
+    @bindable.ref data = [];
 
     columnDefs = [
         {

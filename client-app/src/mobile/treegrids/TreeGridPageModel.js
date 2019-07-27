@@ -25,12 +25,16 @@ export class TreeGridPageModel {
             {value: 'trader', label: 'Trader'}
         ],
         initialValue: ['trader'],
-        historyPreference: 'mobileDimHistory'
+        preference: 'mobileDims'
     });
 
     @managed
     gridModel = new GridModel({
         treeMode: true,
+        showSummary: true,
+        store: {
+            loadRootAsSummary: true
+        },
         enableColChooser: true,
         sortBy: 'pnl|desc|abs',
         columns: [
@@ -72,13 +76,13 @@ export class TreeGridPageModel {
     constructor() {
         this.addReaction({
             track: () => this.dimensionChooserModel.value,
-            run: this.loadAsync
+            run: () => this.loadAsync()
         });
     }
 
     async doLoadAsync(loadSpec) {
         const dims = this.dimensionChooserModel.value;
-        const data = await XH.portfolioService.getPortfolioAsync(dims);
+        const data = await XH.portfolioService.getPortfolioAsync(dims, true);
         this.gridModel.loadData(data);
     }
 }

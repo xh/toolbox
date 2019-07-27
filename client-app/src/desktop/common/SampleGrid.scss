@@ -1,0 +1,17 @@
+.tbox-samplegrid {
+
+  &__switches {
+    .xh-switch-input {
+      margin: var(--xh-pad-px) var(--xh-pad-px) 0 var(--xh-pad-px);
+    }
+  }
+
+  &__selbar {
+    font-size: var(--xh-font-size-small-px);
+    padding: var(--xh-pad-half-px);
+    border-top: var(--xh-border-solid);
+    align-items: center;
+    svg {margin-right: 4px}
+  }
+
+}

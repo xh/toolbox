@@ -1,10 +1,7 @@
-import {managed, HoistModel, LoadSupport} from '@xh/hoist/core';
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
 import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
-import {emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wait} from '@xh/hoist/promise';
-
-import {companyTrades} from '../../core/data';
 
 @HoistModel
 @LoadSupport
@@ -47,7 +44,8 @@ export class GridPageModel {
 
     async doLoadAsync(loadSpec) {
         await wait(500);
-        this.gridModel.loadData(companyTrades);
+        const customers = await XH.fetchJson({url: 'customer'});
+        this.gridModel.loadData(customers);
     }
 
 }

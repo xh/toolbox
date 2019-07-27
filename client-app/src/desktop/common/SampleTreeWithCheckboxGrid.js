@@ -4,20 +4,27 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import {Component} from 'react';
-import {elemFactory, HoistComponent, HoistModel, LayoutSupport, XH, managed, LoadSupport} from '@xh/hoist/core';
-import {grid, GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
+import {emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
+import {
+    elemFactory,
+    HoistComponent,
+    HoistModel,
+    LayoutSupport,
+    LoadSupport,
+    managed,
+    XH
+} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {dimensionChooser, DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeCountLabel, storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
-import {DimensionChooserModel, dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
-
-import './SampleTreeWithCheckboxGrid.scss';
+import {fmtNumberTooltip, numberRenderer} from '@xh/hoist/format';
+import {Component} from 'react';
 import {gridStyleSwitches} from './GridStyleSwitches';
+import './SampleTreeWithCheckboxGrid.scss';
 
 @HoistComponent
 @LayoutSupport
@@ -37,7 +44,7 @@ class SampleTreeWithCheckboxGrid extends Component {
                     model: model.dimChooserModel
                 }),
                 filler(),
-                storeCountLabel({gridModel}),
+                gridCountLabel({gridModel}),
                 storeFilterField({gridModel}),
                 colChooserButton({gridModel}),
                 exportButton({gridModel})
@@ -111,7 +118,7 @@ class Model {
     constructor() {
         this.addReaction({
             track: () => this.dimChooserModel.value,
-            run: this.loadAsync,
+            run: () => this.loadAsync(),
             fireImmediately: true
         });
     }

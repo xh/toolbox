@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
-import {div} from '@xh/hoist/cmp/layout';
+import {div, span, code} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -13,6 +13,7 @@ export class PopupsPage extends Component {
             title: 'Popups',
             icon: Icon.comment(),
             className: 'toolbox-page xh-tiled-bg',
+            scrollable: true,
             items: [
                 this.renderCard('Alert', () => {
                     XH.alert({
@@ -24,7 +25,17 @@ export class PopupsPage extends Component {
                     XH.confirm({
                         title: 'Confirm',
                         message: 'This is a confirm dialog.'
-                    });
+                    }).then(ret => XH.toast({
+                        message: span('That popup resolved to ', code(`${ret}`))
+                    }));
+                }),
+                this.renderCard('Prompt', () => {
+                    XH.prompt({
+                        title: 'Prompt',
+                        message: 'This is a prompt dialog.'
+                    }).then(ret => XH.toast({
+                        message: span('That popup resolved to ', code(`${ret}`))
+                    }));
                 }),
                 this.renderCard('Message', () => {
                     XH.confirm({

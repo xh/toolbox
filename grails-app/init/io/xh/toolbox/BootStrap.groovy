@@ -1,15 +1,19 @@
 package io.xh.toolbox
 
+import io.xh.hoist.config.AppConfig
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.Monitor
+
+import static io.xh.hoist.json.JSONSerializer.serializePretty
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
 
 import static io.xh.hoist.util.Utils.appEnvironment
 import static io.xh.hoist.util.Utils.appName
 import static io.xh.hoist.util.Utils.appVersion
+import static io.xh.hoist.util.Utils.configService
 
 class BootStrap {
 
@@ -32,43 +36,7 @@ class BootStrap {
     private void ensureRequiredConfigsCreated() {
         def adminUsername = getInstanceConfig('adminUsername')
 
-        Utils.configService.ensureRequiredConfigsCreated([
-            cubeTestDefaultDims: [
-                valueType: 'json',
-                defaultValue: [
-                    ['fund', 'trader'],
-                    ['sector', 'symbol'],
-                    ['fund', 'trader', 'model']
-                ],
-                clientVisible: true,
-                groupName: 'Grids',
-                note: 'Default dimension selections for cube data test.'
-            ],
-            fileManagerStoragePath: [
-                valueType: 'string',
-                defaultValue: '/var/tmp/toolbox',
-                groupName: 'File Manager',
-                note: 'Absolute path to disk location for storing uploaded files.'
-            ],
-            newsApiKey: [
-                valueType: 'string',
-                defaultValue: 'ab052127f3e349d38db094eade1d96d8',
-                groupName: 'News'
-            ],
-            newsRefreshMins: [
-                valueType: 'int',
-                defaultValue: 60,
-                groupName: 'News'
-            ],
-            newsSources: [
-                valueType: 'json',
-                defaultValue: [
-                    "cnbc": "CNBC",
-                    "fortune": "Fortune",
-                    "reuters": "Reuters"
-                ],
-                groupName: 'News'
-            ],
+        configService.ensureRequiredConfigsCreated([
             roles: [
                 valueType: 'json',
                 defaultValue: [
@@ -77,23 +45,69 @@ class BootStrap {
                 ],
                 groupName: 'Permissions'
             ],
+            cubeTestDefaultDims: [
+                valueType: 'json',
+                defaultValue: [
+                    ['fund', 'trader'],
+                    ['sector', 'symbol'],
+                    ['fund', 'trader', 'model']
+                ],
+                clientVisible: true,
+                groupName: 'Toolbox',
+                note: 'Default dimension selections for cube data test.'
+            ],
+            fileManagerStoragePath: [
+                valueType: 'string',
+                defaultValue: '/var/tmp/toolbox',
+                groupName: 'Toolbox - Example Apps',
+                note: 'Absolute path to disk location for storing uploaded files.'
+            ],
+            newsApiKey: [
+                valueType: 'string',
+                defaultValue: 'ab052127f3e349d38db094eade1d96d8',
+                groupName: 'Toolbox - Example Apps',
+            ],
+            newsRefreshMins: [
+                valueType: 'int',
+                defaultValue: 60,
+                groupName: 'Toolbox - Example Apps',
+            ],
+            newsSources: [
+                valueType: 'json',
+                defaultValue: [
+                    "cnbc": "CNBC",
+                    "fortune": "Fortune",
+                    "reuters": "Reuters"
+                ],
+                groupName: 'Toolbox - Example Apps',
+            ],
             recallsHost: [
                 valueType: 'string',
                 defaultValue: 'api.fda.gov',
-                groupName: 'Recall Manager'
+                groupName: 'Toolbox - Example Apps',
+            ],
+            sourceUrls: [
+                valueType: 'json',
+                defaultValue: [
+                    toolbox: 'https://github.com/exhi/toolbox/blob/develop',
+                    hoistReact: 'https://github.com/exhi/hoist-react/blob/develop'
+                ],
+                groupName: 'Toolbox',
+                clientVisible: true,
             ]
         ])
+
+        // Edit Hoist-installed auto-refresh config to enable default refresh for TB.
+        def autoRefreshConfig = AppConfig.findByName('xhAutoRefreshIntervals')
+        if (autoRefreshConfig && autoRefreshConfig.lastUpdatedBy == 'hoist-bootstrap') {
+            autoRefreshConfig.value = serializePretty([app: 30, mobile: 60])
+            autoRefreshConfig.save()
+        }
+
     }
 
     private void ensureRequiredPrefsCreated() {
         Utils.prefService.ensureRequiredPrefsCreated([
-            autoRefreshSecs: [
-                type: 'int',
-                defaultValue: -1,
-                local: true,
-                groupName: 'Toolbox',
-                note: 'Auto-Refresh Interval in seconds'
-            ],
             cubeTestOrderCount: [
                 type: 'int',
                 defaultValue: 80000,
@@ -113,25 +127,31 @@ class BootStrap {
                 groupName: 'Toolbox',
                 note: 'Grid sizing mode'
             ],
-            mobileDimHistory: [
-                type: 'json',
-                defaultValue: [],
-                local: true,
+            expandDockedLinks: [
+                type: 'bool',
+                defaultValue: false,
                 groupName: 'Toolbox',
-                note: 'Nested arrays containing user\'s dimension picker history'
+                note: 'True to expand the docked linked panel by default, false to start collapsed.'
             ],
-            portfolioDimHistory: [
+            mobileDims: [
                 type: 'json',
-                defaultValue: [],
+                defaultValue: [:],
                 local: true,
                 groupName: 'Toolbox',
-                note: 'Nested arrays containing user\'s dimension picker history'
+                note: 'Object containing user\'s dimension picker value & history'
+            ],
+            portfolioDims: [
+                type: 'json',
+                defaultValue: [:],
+                local: true,
+                groupName: 'Toolbox',
+                note: 'Object containing user\'s dimension picker value & history'
             ],
             recallsPanelConfig: [
                 type: 'json',
-                defaultValue: [],
+                defaultValue: [:],
                 local: false,
-                groupName: 'Toolbox',
+                groupName: 'Toolbox - Example Apps',
                 note: 'Size of Panel Model'
             ]
         ])
