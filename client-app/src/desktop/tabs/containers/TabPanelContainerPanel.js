@@ -67,7 +67,7 @@ export class TabPanelContainerPanel extends Component {
                                 contentFn: () => `
                                     This overall example is a standard TabContainer with its switcher located in the default,
                                     top position. Change the tabs above to see examples of other TabContainer configurations.
-                
+                                    `
                             },
                             {
                                 id: 'bottom',
@@ -113,7 +113,7 @@ export class TabPanelContainerPanel extends Component {
                             {
                                 id: 'state',
                                 title: 'Tab State',
-                                content: () => {
+                                contentFn: () => {
                                     const {tabs} = stateTabModel,
                                         peopleTab = find(tabs, {id: 'people'}),
                                         placesTab = find(tabs, {id: 'places'});
