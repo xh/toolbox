@@ -30,7 +30,8 @@ export class AppModel extends BaseAppModel {
                 path: '/tests',
                 children: [
                     {name: 'performance', path: '/performance'},
-                    {name: 'cube', path: '/cube'}
+                    {name: 'cube', path: '/cube'},
+                    {name: 'webSockets', path: '/webSockets'}
                 ]
             },
             {
