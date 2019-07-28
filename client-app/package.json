@@ -21,7 +21,7 @@
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "3.7.5",
+    "@xh/hoist-dev-utils": "3.7.6",
     "cross-env": "~5.2.0"
   }
 }
