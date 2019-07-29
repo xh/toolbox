@@ -6,7 +6,7 @@
  */
 import {Component} from 'react';
 import {elemFactory, HoistComponent} from '@xh/hoist/core/index';
-import {hbox, hframe, vframe} from '@xh/hoist/cmp/layout';
+import {hbox, vframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
@@ -14,8 +14,11 @@ import {positionsPanel} from './PositionsPanel';
 import {ordersPanel} from './OrdersPanel';
 import {lineChart} from './LineChart';
 import {ohlcChart} from './OHLCChart';
+import {tabContainer} from '@xh/hoist/cmp/tab';
+import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
 
 import './PortfolioPanel.scss';
+import {fmtMillions} from '@xh/hoist/format';
 
 @HoistComponent
 export class PortfolioPanel extends Component {
@@ -23,40 +26,77 @@ export class PortfolioPanel extends Component {
     model = new PortfolioPanelModel();
 
     render() {
-        const {model} = this;
+        const {model} = this,
+            {positionsPanelModel, splitTreeMapModel, ordersPanelModel, lineChartModel, ohlcChartModel} = model;
 
         return vframe(
             hbox({
                 flex: 1,
                 items: [
                     positionsPanel({
-                        model: model.positionsPanelModel
+                        model: positionsPanelModel
                     }),
-                    ordersPanel({
-                        model: model.ordersPanelModel
+                    splitTreeMap({
+                        model: splitTreeMapModel,
+                        titleRenderer: (v, side) => {
+                            return [
+                                side === 'positive' ? 'Profit' : 'Loss',
+                                fmtMillions(v, {
+                                    prefix: ': $',
+                                    precision: 2,
+                                    label: true,
+                                    asElement: true
+                                })
+                            ];
+                        }
                     })
                 ]
             }),
             panel({
-                title: `Trading Volume + Price History: ${model.displayedOrderSymbol}`,
-                icon: Icon.chartArea(),
-                compactHeader: true,
-                mask: !model.selectedOrder,
                 model: {
                     defaultSize: 400,
                     side: 'bottom',
                     collapsedRenderMode: 'unmountOnHide'
                 },
-                item: hframe({
+                mask: !model.selectedOrder,
+                item: hbox({
+                    flex: 1,
                     items: [
-                        lineChart({
-                            model: model.lineChartModel,
-                            flex: 1,
-                            className: 'xh-border-right'
+                        ordersPanel({
+                            model: ordersPanelModel
                         }),
-                        ohlcChart({
-                            model: model.ohlcChartModel,
-                            flex: 1
+                        panel({
+                            title: `Charts: ${model.displayedOrderSymbol}`,
+                            icon: Icon.chartArea(),
+                            mask: !model.selectedOrder,
+                            model: {
+                                defaultSize: 700,
+                                side: 'right',
+                                collapsedRenderMode: 'unmountOnHide'
+                            },
+                            item: tabContainer({
+                                model: {
+                                    tabs: [
+                                        {
+                                            id: 'line',
+                                            title: 'Trading Volume',
+                                            content: () => lineChart({
+                                                model: lineChartModel,
+                                                flex: 1,
+                                                className: 'xh-border-right'
+                                            })
+                                        },
+                                        {
+                                            id: 'ohlc',
+                                            title: 'Price History',
+                                            content: () => ohlcChart({
+                                                model: ohlcChartModel,
+                                                flex: 1
+                                            })
+                                        }
+                                    ]
+                                }
+                            })
                         })
                     ]
                 })
