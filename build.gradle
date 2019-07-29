@@ -69,8 +69,9 @@ dependencies {
     console "org.grails:grails-console"
     profile "org.grails.profiles:web"
 
+    compile "org.springframework:spring-websocket"
+    
     runtime "org.apache.tomcat:tomcat-jdbc"
-
     runtime "mysql:mysql-connector-java:5.1.47"
     runtime "com.h2database:h2"
 

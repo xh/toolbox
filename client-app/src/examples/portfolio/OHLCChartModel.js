@@ -19,7 +19,7 @@ export class OHLCChartModel {
 
     @managed
     chartModel = new ChartModel({
-        config: {
+        highchartsConfig: {
             chart: {
                 type: 'ohlc',
                 spacingLeft: 3,
