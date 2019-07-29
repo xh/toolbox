@@ -5,6 +5,8 @@ import {LineChartModel} from './LineChartModel';
 import {OHLCChartModel} from './OHLCChartModel';
 import {bindable} from '@xh/hoist/mobx';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
+import {hspacer} from '@xh/hoist/cmp/layout';
+import {fmtMillions} from '@xh/hoist/format';
 
 @HoistModel
 @LoadSupport
@@ -13,8 +15,20 @@ export class PortfolioPanelModel {
     @managed positionsPanelModel = new PositionsPanelModel();
     @managed splitTreeMapModel = new SplitTreeMapModel({
         gridModel: this.positionsPanelModel.gridModel,
-        filter: (rec) => {
-            return rec.pnl >= 0;
+        mapFilter: rec => rec.pnl >= 0,
+        mapTitleFn: (mapName, model) => {
+            const isPrimary = mapName === 'primary',
+                v = isPrimary ? model.primaryMapTotal : model.secondaryMapTotal;
+            return [
+                isPrimary ? 'Profit:' : 'Loss:',
+                hspacer(5),
+                fmtMillions(v, {
+                    prefix: '$',
+                    precision: 2,
+                    label: true,
+                    asElement: true
+                })
+            ];
         },
         treeMapModelConfig: {
             labelField: 'name',
@@ -29,20 +43,18 @@ export class PortfolioPanelModel {
     @managed ohlcChartModel = new OHLCChartModel();
 
     @bindable displayedOrderSymbol = '';
-    @bindable selectedOrder = null;
 
     get selectedPosition() {
         return this.positionsPanelModel.selectedRecord;
     }
 
-    // get selectedOrder() {
-    //     return this.ordersPanelModel.selectedRecord;
-    // }
+    get selectedOrder() {
+        return this.ordersPanelModel.selectedRecord;
+    }
 
     constructor() {
         this.addReaction(this.selectedPositionReaction());
         this.addReaction(this.selectedOrderReaction());
-        this.setSelectedOrder(this.ordersPanelModel.selectedRecord);
     }
 
     async doLoadAsync(loadSpec) {
@@ -72,15 +84,10 @@ export class PortfolioPanelModel {
         return {
             track: () => this.ordersPanelModel.selectedRecord,
             run: (order) => {
-                const orderStr = order ? order.symbol : 'null';
-                console.log('ORDER: '+orderStr);
-                if (order) {
-                    this.setSelectedOrder(order);
-                    const symbol = order.symbol;
-                    this.setDisplayedOrderSymbol(symbol || '');
-                    this.lineChartModel.setOrderSymbol(symbol);
-                    this.ohlcChartModel.setOrderSymbol(symbol);
-                }
+                const symbol = order ? order.symbol : null;
+                this.setDisplayedOrderSymbol(symbol || '');
+                this.lineChartModel.setOrderSymbol(symbol);
+                this.ohlcChartModel.setOrderSymbol(symbol);
             },
             delay: 500
         };

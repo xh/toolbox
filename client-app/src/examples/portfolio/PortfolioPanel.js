@@ -18,7 +18,6 @@ import {tabContainer} from '@xh/hoist/cmp/tab';
 import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
 
 import './PortfolioPanel.scss';
-import {fmtMillions} from '@xh/hoist/format';
 
 @HoistComponent
 export class PortfolioPanel extends Component {
@@ -37,18 +36,7 @@ export class PortfolioPanel extends Component {
                         model: positionsPanelModel
                     }),
                     splitTreeMap({
-                        model: splitTreeMapModel,
-                        titleRenderer: (v, side) => {
-                            return [
-                                side === 'positive' ? 'Profit' : 'Loss',
-                                fmtMillions(v, {
-                                    prefix: ': $',
-                                    precision: 2,
-                                    label: true,
-                                    asElement: true
-                                })
-                            ];
-                        }
+                        model: splitTreeMapModel
                     })
                 ]
             }),
