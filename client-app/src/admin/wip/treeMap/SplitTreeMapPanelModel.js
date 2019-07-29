@@ -74,11 +74,12 @@ export class SplitTreeMapPanelModel {
     @managed
     splitTreeMapModel = new SplitTreeMapModel({
         gridModel: this.gridModel,
-        regionFilter: rec => rec.pnl >= 0,
-        regionTitleFn: (region, model) => {
-            const v = region === 'primary' ? model.primaryRegionTotal : model.secondaryRegionTotal;
+        mapFilter: rec => rec.pnl >= 0,
+        mapTitleFn: (mapName, model) => {
+            const isPrimary = mapName === 'primary',
+                v = isPrimary ? model.primaryMapTotal : model.secondaryMapTotal;
             return [
-                region === 'primary' ? 'Profit:' : 'Loss:',
+                isPrimary ? 'Profit:' : 'Loss:',
                 hspacer(5),
                 fmtMillions(v, {
                     prefix: '$',
