@@ -73,9 +73,7 @@ export class SplitTreeMapPanelModel {
     @managed
     splitTreeMapModel = new SplitTreeMapModel({
         gridModel: this.gridModel,
-        filter: (rec) => {
-            return rec.pnl >= 0;
-        },
+        regionFilter: rec => rec.pnl >= 0,
         treeMapModelConfig: {
             labelField: 'name',
             valueField: 'pnl',

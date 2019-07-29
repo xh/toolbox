@@ -1,7 +1,7 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {hframe} from '@xh/hoist/cmp/layout';
+import {hframe, hspacer} from '@xh/hoist/cmp/layout';
 import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {grid} from '@xh/hoist/cmp/grid';
 import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
@@ -28,11 +28,12 @@ export class SplitTreeMapPanel extends Component {
                 }),
                 splitTreeMap({
                     model: splitTreeMapModel,
-                    titleRenderer: (v, side) => {
+                    regionTitleRenderer: (v, region) => {
                         return [
-                            side === 'positive' ? 'Profit' : 'Loss',
+                            region === 'primary' ? 'Profit:' : 'Loss:',
+                            hspacer(5),
                             fmtMillions(v, {
-                                prefix: ': $',
+                                prefix: '$',
                                 precision: 2,
                                 label: true,
                                 asElement: true
