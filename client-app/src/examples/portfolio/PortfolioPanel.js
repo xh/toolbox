@@ -7,15 +7,10 @@
 import {Component} from 'react';
 import {elemFactory, HoistComponent} from '@xh/hoist/core/index';
 import {hbox, vframe} from '@xh/hoist/cmp/layout';
-import {Icon} from '@xh/hoist/icon';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {positionsPanel} from './PositionsPanel';
-import {ordersPanel} from './OrdersPanel';
-import {lineChart} from './LineChart';
-import {ohlcChart} from './OHLCChart';
-import {tabContainer} from '@xh/hoist/cmp/tab';
 import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
+import {positionInfoPanel} from './PositionInfoPanel';
 
 import './PortfolioPanel.scss';
 
@@ -26,7 +21,7 @@ export class PortfolioPanel extends Component {
 
     render() {
         const {model} = this,
-            {positionsPanelModel, splitTreeMapModel, ordersPanelModel, lineChartModel, ohlcChartModel} = model;
+            {positionsPanelModel, splitTreeMapModel, positionInfoPanelModel} = model;
 
         return vframe(
             hbox({
@@ -40,54 +35,8 @@ export class PortfolioPanel extends Component {
                     })
                 ]
             }),
-            panel({
-                model: {
-                    defaultSize: 400,
-                    side: 'bottom',
-                    collapsedRenderMode: 'unmountOnHide'
-                },
-                mask: !model.selectedOrder,
-                item: hbox({
-                    flex: 1,
-                    items: [
-                        ordersPanel({
-                            model: ordersPanelModel
-                        }),
-                        panel({
-                            title: `Charts: ${model.displayedOrderSymbol}`,
-                            icon: Icon.chartArea(),
-                            mask: !model.selectedOrder,
-                            model: {
-                                defaultSize: 700,
-                                side: 'right',
-                                collapsedRenderMode: 'unmountOnHide'
-                            },
-                            item: tabContainer({
-                                model: {
-                                    tabs: [
-                                        {
-                                            id: 'line',
-                                            title: 'Trading Volume',
-                                            content: () => lineChart({
-                                                model: lineChartModel,
-                                                flex: 1,
-                                                className: 'xh-border-right'
-                                            })
-                                        },
-                                        {
-                                            id: 'ohlc',
-                                            title: 'Price History',
-                                            content: () => ohlcChart({
-                                                model: ohlcChartModel,
-                                                flex: 1
-                                            })
-                                        }
-                                    ]
-                                }
-                            })
-                        })
-                    ]
-                })
+            positionInfoPanel({
+                model: positionInfoPanelModel
             })
         );
     }

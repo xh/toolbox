@@ -7,6 +7,7 @@ import {bindable} from '@xh/hoist/mobx';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {fmtMillions} from '@xh/hoist/format';
+import {PositionInfoPanelModel} from './PositionInfoPanelModel';
 
 @HoistModel
 @LoadSupport
@@ -38,32 +39,20 @@ export class PortfolioPanelModel {
         },
         orientation: 'horizontal'
     });
-    @managed ordersPanelModel = new OrdersPanelModel();
-    @managed lineChartModel = new LineChartModel();
-    @managed ohlcChartModel = new OHLCChartModel();
-
-    @bindable displayedOrderSymbol = '';
+    @managed positionInfoPanelModel = new PositionInfoPanelModel();
 
     get selectedPosition() {
         return this.positionsPanelModel.selectedRecord;
     }
 
-    get selectedOrder() {
-        return this.ordersPanelModel.selectedRecord;
-    }
-
     constructor() {
         this.addReaction(this.selectedPositionReaction());
-        this.addReaction(this.selectedOrderReaction());
     }
 
     async doLoadAsync(loadSpec) {
         await loadAllAsync([
             this.positionsPanelModel,
-            // this.splitTreeMapModel,
-            this.ordersPanelModel,
-            this.lineChartModel,
-            this.ohlcChartModel
+            this.positionInfoPanelModel
         ], loadSpec);
     }
 
@@ -74,20 +63,7 @@ export class PortfolioPanelModel {
         return {
             track: () => this.selectedPosition,
             run: (position) => {
-                this.ordersPanelModel.setPositionId(position ? position.id : null);
-            },
-            delay: 500
-        };
-    }
-
-    selectedOrderReaction() {
-        return {
-            track: () => this.ordersPanelModel.selectedRecord,
-            run: (order) => {
-                const symbol = order ? order.symbol : null;
-                this.setDisplayedOrderSymbol(symbol || '');
-                this.lineChartModel.setOrderSymbol(symbol);
-                this.ohlcChartModel.setOrderSymbol(symbol);
+                this.positionInfoPanelModel.setPositionId(position ? position.id : null);
             },
             delay: 500
         };
