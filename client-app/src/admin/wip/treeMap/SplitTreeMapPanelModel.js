@@ -3,7 +3,8 @@ import {LoadSupport} from '@xh/hoist/core/mixins';
 import {GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
-import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
+import {hspacer} from '@xh/hoist/cmp/layout';
+import {numberRenderer, millionsRenderer, fmtMillions, fmtNumberTooltip} from '@xh/hoist/format';
 
 @HoistModel
 @LoadSupport
@@ -74,6 +75,19 @@ export class SplitTreeMapPanelModel {
     splitTreeMapModel = new SplitTreeMapModel({
         gridModel: this.gridModel,
         regionFilter: rec => rec.pnl >= 0,
+        regionTitleFn: (region, model) => {
+            const v = region === 'primary' ? model.primaryRegionTotal : model.secondaryRegionTotal;
+            return [
+                region === 'primary' ? 'Profit:' : 'Loss:',
+                hspacer(5),
+                fmtMillions(v, {
+                    prefix: '$',
+                    precision: 2,
+                    label: true,
+                    asElement: true
+                })
+            ];
+        },
         treeMapModelConfig: {
             labelField: 'name',
             valueField: 'pnl',
