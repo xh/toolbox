@@ -84,6 +84,9 @@ export class FormPanelModel {
             name: 'tags',
             rules: [required]
         }, {
+            name: 'favoriteHobby',
+            rules: [required]
+        }, {
             name: 'references',
             subforms: {
                 fields: [

@@ -125,6 +125,14 @@ export class FormPanel extends Component {
                     enableMulti: true,
                     enableCreate: true
                 })
+            }),
+            formField({
+                field: 'favoriteHobby',
+                item: select({
+                    enableCreate: true,
+                    options: ['sports', 'reading', 'coding'],
+                    selectOnFocus: true
+                })
             })
         ];
     }
