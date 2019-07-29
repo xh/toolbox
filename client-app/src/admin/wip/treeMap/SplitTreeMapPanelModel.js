@@ -89,12 +89,10 @@ export class SplitTreeMapPanelModel {
                 })
             ];
         },
-        treeMapModelConfig: {
-            labelField: 'name',
-            valueField: 'pnl',
-            heatField: 'pnl',
-            valueFieldLabel: 'Pnl'
-        }
+        labelField: 'name',
+        valueField: 'pnl',
+        heatField: 'pnl',
+        valueFieldLabel: 'Pnl'
     });
 
     constructor() {
