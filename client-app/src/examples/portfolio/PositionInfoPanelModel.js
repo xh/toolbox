@@ -25,7 +25,9 @@ export class PositionInfoPanelModel {
         this.addReaction({
             track: () => [this.positionId, panelSizingModel.collapsed],
             run: () => {
-                ordersPanelModel.setPositionId(this.positionId);
+                if (!panelSizingModel.collapsed) {
+                    ordersPanelModel.setPositionId(this.positionId);
+                }
             }
         });
         this.addReaction({
