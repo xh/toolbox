@@ -11,6 +11,7 @@ import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {positionsPanel} from './PositionsPanel';
 import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
 import {positionInfoPanel} from './PositionInfoPanel';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 
 import './PortfolioPanel.scss';
 
@@ -30,8 +31,10 @@ export class PortfolioPanel extends Component {
                     positionsPanel({
                         model: positionsPanelModel
                     }),
-                    splitTreeMap({
-                        model: splitTreeMapModel
+                    panel({
+                        item: splitTreeMap({
+                            model: splitTreeMapModel
+                        })
                     })
                 ]
             }),
