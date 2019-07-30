@@ -8,14 +8,14 @@ import {OHLCChartModel} from './OHLCChartModel';
 @LoadSupport
 export class ChartsPanelModel {
 
-    @bindable symbol = '';
+    @bindable symbol = null;
 
     @managed lineChartModel = new LineChartModel();
     @managed ohlcChartModel = new OHLCChartModel();
 
     constructor() {
         this.addReaction({
-            track: () => this.selectedSymbol,
+            track: () => this.symbol,
             run: (symbol) => {
                 this.lineChartModel.setSymbol(symbol);
                 this.ohlcChartModel.setSymbol(symbol);

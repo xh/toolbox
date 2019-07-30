@@ -9,11 +9,11 @@ import {bindable} from '@xh/hoist/mobx';
 @LoadSupport
 export class LineChartModel {
 
-    @bindable orderSymbol = null;
+    @bindable symbol = null;
 
     constructor() {
         this.addReaction({
-            track: () => this.orderSymbol,
+            track: () => this.symbol,
             run: () => this.loadAsync()
         });
     }
@@ -78,13 +78,13 @@ export class LineChartModel {
     });
 
     async doLoadAsync(loadSpec) {
-        const {orderSymbol} = this;
-        if (isNil(orderSymbol)) {
+        const {symbol} = this;
+        if (isNil(symbol)) {
             this.chartModel.setSeries([]);
             return;
         }
 
-        const series = await XH.portfolioService.getLineChartSeriesAsync(orderSymbol);
+        const series = await XH.portfolioService.getLineChartSeriesAsync(symbol);
         this.chartModel.setSeries([series]);
     }
 }

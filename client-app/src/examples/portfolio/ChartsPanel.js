@@ -10,14 +10,12 @@ import {ohlcChart} from './OHLCChart';
 @HoistComponent
 export class ChartsPanel extends Component {
 
-    model = new ChartsPanelModel();
-
     render() {
         const {model} = this,
             {lineChartModel, ohlcChartModel} = model;
 
         return panel({
-            title: `Charts: ${model.symbol}`,
+            title: `Charts: ${model.symbol ? model.symbol : ''}`,
             icon: Icon.chartArea(),
             mask: !model.symbol,
             model: {

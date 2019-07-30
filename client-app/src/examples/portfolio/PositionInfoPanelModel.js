@@ -1,6 +1,7 @@
 import {HoistModel, LoadSupport} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {managed} from '@xh/hoist/core';
+import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {OrdersPanelModel} from './OrdersPanelModel';
 import {ChartsPanelModel} from './ChartsPanelModel';
 import {loadAllAsync} from '@xh/hoist/core';
@@ -8,31 +9,40 @@ import {loadAllAsync} from '@xh/hoist/core';
 @HoistModel
 @LoadSupport
 export class PositionInfoPanelModel {
-    @bindable positionId = '';
+    @bindable positionId = null;
 
     @managed ordersPanelModel = new OrdersPanelModel();
     @managed chartsPanelModel = new ChartsPanelModel();
 
+    @managed panelSizingModel = new PanelModel({
+        defaultSize: 400,
+        side: 'bottom',
+        collapsedRenderMode: 'unmountOnHide'
+    });
+
     constructor() {
+        const {chartsPanelModel, ordersPanelModel, panelSizingModel} = this;
         this.addReaction({
-            track: () => this.positionId,
-            run: (positionId) => {
-                this.ordersPanelModel.setPositionId(positionId);
+            track: () => [this.positionId, panelSizingModel.collapsed],
+            run: () => {
+                ordersPanelModel.setPositionId(this.positionId);
             }
         });
         this.addReaction({
-            track: () => this.ordersPanelModel.selectedRecord,
+            track: () => ordersPanelModel.selectedRecord,
             run: (order) => {
-                const symbol = order ? order.symbol : '';
-                this.chartsPanelModel.setSymbol(symbol);
+                const symbol = order ? order.symbol : null;
+                chartsPanelModel.setSymbol(symbol);
             }
         });
     }
 
     async doLoadAsync(loadSpec) {
-        await loadAllAsync([
-            this.ordersPanelModel,
-            this.chartsPanelModel
-        ], loadSpec);
+        if (!this.panelSizingModel.collapsed) {
+            await loadAllAsync([
+                this.ordersPanelModel,
+                this.chartsPanelModel
+            ], loadSpec);
+        }
     }
 }

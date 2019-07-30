@@ -1,9 +1,5 @@
 import {HoistModel, LoadSupport, managed, loadAllAsync} from '@xh/hoist/core';
 import {PositionsPanelModel} from './PositionsPanelModel';
-import {OrdersPanelModel} from './OrdersPanelModel';
-import {LineChartModel} from './LineChartModel';
-import {OHLCChartModel} from './OHLCChartModel';
-import {bindable} from '@xh/hoist/mobx';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {fmtMillions} from '@xh/hoist/format';
@@ -31,12 +27,12 @@ export class PortfolioPanelModel {
                 })
             ];
         },
-        treeMapModelConfig: {
-            labelField: 'name',
-            valueField: 'pnl',
-            heatField: 'pnl',
-            valueFieldLabel: 'Pnl'
-        },
+
+        labelField: 'name',
+        valueField: 'pnl',
+        heatField: 'pnl',
+        valueFieldLabel: 'Pnl',
+
         orientation: 'horizontal'
     });
     @managed positionInfoPanelModel = new PositionInfoPanelModel();
@@ -63,6 +59,7 @@ export class PortfolioPanelModel {
         return {
             track: () => this.selectedPosition,
             run: (position) => {
+                console.log(`setting positionInfoPanelModel's positionId to: ${position ? position.id : 'null'}`);
                 this.positionInfoPanelModel.setPositionId(position ? position.id : null);
             },
             delay: 500
