@@ -6,14 +6,12 @@
  */
 import {Component} from 'react';
 import {elemFactory, HoistComponent} from '@xh/hoist/core/index';
-import {hbox, hframe, vframe} from '@xh/hoist/cmp/layout';
-import {Icon} from '@xh/hoist/icon';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {hbox, vframe} from '@xh/hoist/cmp/layout';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {positionsPanel} from './PositionsPanel';
-import {ordersPanel} from './OrdersPanel';
-import {lineChart} from './LineChart';
-import {ohlcChart} from './OHLCChart';
+import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
+import {positionInfoPanel} from './PositionInfoPanel';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 
 import './PortfolioPanel.scss';
 
@@ -23,43 +21,25 @@ export class PortfolioPanel extends Component {
     model = new PortfolioPanelModel();
 
     render() {
-        const {model} = this;
+        const {model} = this,
+            {positionsPanelModel, splitTreeMapModel, positionInfoPanelModel} = model;
 
         return vframe(
             hbox({
                 flex: 1,
                 items: [
                     positionsPanel({
-                        model: model.positionsPanelModel
+                        model: positionsPanelModel
                     }),
-                    ordersPanel({
-                        model: model.ordersPanelModel
+                    panel({
+                        item: splitTreeMap({
+                            model: splitTreeMapModel
+                        })
                     })
                 ]
             }),
-            panel({
-                title: `Trading Volume + Price History: ${model.displayedOrderSymbol}`,
-                icon: Icon.chartArea(),
-                compactHeader: true,
-                mask: !model.selectedOrder,
-                model: {
-                    defaultSize: 400,
-                    side: 'bottom',
-                    collapsedRenderMode: 'unmountOnHide'
-                },
-                item: hframe({
-                    items: [
-                        lineChart({
-                            model: model.lineChartModel,
-                            flex: 1,
-                            className: 'xh-border-right'
-                        }),
-                        ohlcChart({
-                            model: model.ohlcChartModel,
-                            flex: 1
-                        })
-                    ]
-                })
+            positionInfoPanel({
+                model: positionInfoPanelModel
             })
         );
     }

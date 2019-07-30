@@ -1,40 +1,54 @@
 import {HoistModel, LoadSupport, managed, loadAllAsync} from '@xh/hoist/core';
 import {PositionsPanelModel} from './PositionsPanelModel';
-import {OrdersPanelModel} from './OrdersPanelModel';
-import {LineChartModel} from './LineChartModel';
-import {OHLCChartModel} from './OHLCChartModel';
-import {bindable} from '@xh/hoist/mobx';
+import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
+import {hspacer} from '@xh/hoist/cmp/layout';
+import {fmtMillions} from '@xh/hoist/format';
+import {PositionInfoPanelModel} from './PositionInfoPanelModel';
 
 @HoistModel
 @LoadSupport
 export class PortfolioPanelModel {
 
     @managed positionsPanelModel = new PositionsPanelModel();
-    @managed ordersPanelModel = new OrdersPanelModel();
-    @managed lineChartModel = new LineChartModel();
-    @managed ohlcChartModel = new OHLCChartModel();
+    @managed splitTreeMapModel = new SplitTreeMapModel({
+        gridModel: this.positionsPanelModel.gridModel,
+        mapFilter: rec => rec.pnl >= 0,
+        mapTitleFn: (mapName, model) => {
+            const isPrimary = mapName === 'primary',
+                v = isPrimary ? model.primaryMapTotal : model.secondaryMapTotal;
+            return [
+                isPrimary ? 'Profit:' : 'Loss:',
+                hspacer(5),
+                fmtMillions(v, {
+                    prefix: '$',
+                    precision: 2,
+                    label: true,
+                    asElement: true
+                })
+            ];
+        },
 
-    @bindable displayedOrderSymbol = '';
+        labelField: 'name',
+        valueField: 'pnl',
+        heatField: 'pnl',
+        valueFieldLabel: 'Pnl',
+
+        orientation: 'horizontal'
+    });
+    @managed positionInfoPanelModel = new PositionInfoPanelModel();
 
     get selectedPosition() {
         return this.positionsPanelModel.selectedRecord;
     }
 
-    get selectedOrder() {
-        return this.ordersPanelModel.selectedRecord;
-    }
-
     constructor() {
         this.addReaction(this.selectedPositionReaction());
-        this.addReaction(this.selectedOrderReaction());
     }
 
     async doLoadAsync(loadSpec) {
         await loadAllAsync([
             this.positionsPanelModel,
-            this.ordersPanelModel,
-            this.lineChartModel,
-            this.ohlcChartModel
+            this.positionInfoPanelModel
         ], loadSpec);
     }
 
@@ -45,20 +59,8 @@ export class PortfolioPanelModel {
         return {
             track: () => this.selectedPosition,
             run: (position) => {
-                this.ordersPanelModel.setPositionId(position ? position.id : null);
-            },
-            delay: 500
-        };
-    }
-
-    selectedOrderReaction() {
-        return {
-            track: () => this.selectedOrder,
-            run: (order) => {
-                const symbol = order ? order.symbol : null;
-                this.setDisplayedOrderSymbol(symbol || '');
-                this.lineChartModel.setOrderSymbol(symbol);
-                this.ohlcChartModel.setOrderSymbol(symbol);
+                console.log(`setting positionInfoPanelModel's positionId to: ${position ? position.id : 'null'}`);
+                this.positionInfoPanelModel.setPositionId(position ? position.id : null);
             },
             delay: 500
         };
