@@ -50,9 +50,10 @@ export class PopupsPanel extends Component {
                             onClick: () => XH.alert({
                                 title: 'Alert',
                                 message: div(
-                                    p('This is an Alert. Alerts come with one button: "OK"'),
+                                    p('This is an Alert. Alerts come with one button: "OK". This alert has its button set to autoFocus.'),
                                     acceptRichTextReminder
-                                )
+                                ),
+                                autoFocus: 'confirm'
                             })
                         }),
                         button({
@@ -86,9 +87,10 @@ export class PopupsPanel extends Component {
                             onClick: () => XH.confirm({
                                 title: 'Confirm',
                                 message: div(
-                                    p('This is a confirm. Confirms come with two buttons: "OK" and "Cancel"'),
+                                    p('This is a confirm. Confirms come with two buttons: "OK" and "Cancel".  This confirm has the primary confirm button set to autoFocus.'),
                                     acceptRichTextReminder
-                                )
+                                ),
+                                autoFocus: 'confirm'
                             })
                         }),
                         button({
@@ -124,9 +126,10 @@ export class PopupsPanel extends Component {
                             onClick: () => XH.prompt({
                                 title: 'Prompt',
                                 message: div(
-                                    p('This is a prompt. Prompt comes with two buttons: "OK" and "Cancel"'),
+                                    p('This is a prompt. Prompt comes with two buttons: "OK" and "Cancel". This prompt has the cancel button set to autoFocus.'),
                                     acceptRichTextReminder
-                                )
+                                ),
+                                autoFocus: 'cancel'
                             })
                         }),
                         button({
@@ -170,9 +173,11 @@ export class PopupsPanel extends Component {
                                 message: div(
                                     <p>Messages are highly configurable - Alerts and Confirms are simply preconfigured Messages.</p>,
                                     <p>Note, without <code>confirmText</code> or <code>cancelText</code>, the displayed Message will have no buttons!</p>,
+                                    <p>This message has the primary button set to autoFocus.</p>,
                                     acceptRichTextReminder
                                 ),
                                 confirmText: 'Oh I see!',
+                                autoFocus: 'confirm',
                                 cancelText: 'Nope, no seas here.'
                             })
                         }),
