@@ -131,31 +131,37 @@ export class FormPanel extends Component {
 
     renderRightFields() {
         return [
-            hbox({
-                alignItems: 'top',
-                items: [
-                    formField({
-                        field: 'startDate',
-                        width: 130,
-                        inline: false,
-                        item: dateInput()
-                    }),
-                    formField({
-                        field: 'endDate',
-                        width: 130,
-                        inline: false,
-                        item: dateInput()
-                    })
-                ]
-            }),
+            hbox(
+                formField({
+                    field: 'startDate',
+                    flex: 1,
+                    item: dateInput()
+                }),
+                formField({
+                    field: 'endDate',
+                    flex: 1,
+                    item: dateInput({enableClear: true})
+                })
+            ),
             formField({
-                field: 'yearsExperience',
-                item: numberInput({width: 50})
+                field: 'reasonForLeaving',
+                item: select({
+                    options: ['New Job', 'Retirement', 'Terminated', 'Other']
+                })
             }),
-            formField({
-                field: 'isManager',
-                item: checkbox()
-            }),
+            hbox(
+                formField({
+                    field: 'isManager',
+                    label: 'Manager?',
+                    flex: 1,
+                    item: checkbox()
+                }),
+                formField({
+                    field: 'yearsExperience',
+                    flex: 1,
+                    item: numberInput({width: 50})
+                })
+            ),
             formField({
                 field: 'notes',
                 item: textArea({height: 100})

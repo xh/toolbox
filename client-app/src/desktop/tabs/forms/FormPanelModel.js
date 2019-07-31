@@ -29,73 +29,103 @@ export class FormPanelModel {
     };
 
     formModel = new FormModel({
-        fields: [{
-            name: 'firstName',
-            initialValue: 'Joe',
-            rules: [required, lengthIs({max: 20})]
-        }, {
-            name: 'lastName',
-            initialValue: 'Bloggs',
-            rules: [required, lengthIs({max: 20})]
-        }, {
-            name: 'email',
-            initialValue: 'jbloggs@gmail.com',
-            rules: [required, this.validEmail]
-        }, {
-            name: 'notes',
-            initialValue: '',
-            rules: [required, lengthIs({max: 300, min: 10})]
-        }, {
-            name: 'isManager',
-            rules: [required]
-        }, {
-            name: 'yearsExperience',
-            rules: [
-                numberIs({min: 0, max: 100}),
-                {
-                    when: (f, {isManager}) => isManager,
-                    check: [
-                        required,
-                        ({value}) => isNil(value) || value < 10 ?  'Managerial positions require at least 10 years of experience.' : null
-                    ]
-                }
-            ]
-        }, {
-            name: 'startDate',
-            displayName: 'Hire Date',
-            initialValue: moment().startOf('day').toDate(),
-            rules: [required, dateIs({max: 'today'})]
-        }, {
-            name: 'endDate',
-            rules: [
-                required,
-                dateIs({min: 'today'}),
-                {
-                    when: ({value, formModel}, {startDate}) => startDate && value,
-                    check: ({value, displayName}, {startDate}) => {
-                        return value < startDate ? `${displayName} must be after start date.` : null;
-                    }
-                }
-            ]
-        }, {
-            name: 'region',
-            rules: [required]
-        }, {
-            name: 'tags',
-            rules: [required]
-        }, {
-            name: 'references',
-            subforms: {
-                fields: [
-                    {name: 'name', rules: [required]},
-                    {name: 'relationship'},
-                    {name: 'email', rules: [required, this.validEmail]}
-                ],
-                initialValues: {relationship: 'professional'}
+        fields: [
+            {
+                name: 'firstName',
+                initialValue: 'Joe',
+                rules: [required, lengthIs({max: 20})]
             },
-            rules: [(ref) => isEmpty(ref) ? 'At least one reference is required.':  null]
-        }]
+            {
+                name: 'lastName',
+                initialValue: 'Bloggs',
+                rules: [required, lengthIs({max: 20})]
+            },
+            {
+                name: 'email',
+                initialValue: 'jbloggs@gmail.com',
+                rules: [required, this.validEmail]
+            },
+            {
+                name: 'notes',
+                initialValue: '',
+                rules: [required, lengthIs({max: 300, min: 10})]
+            },
+            {
+                name: 'isManager',
+                rules: [required]
+            },
+            {
+                name: 'yearsExperience',
+                rules: [
+                    numberIs({min: 0, max: 100}),
+                    {
+                        when: (f, {isManager}) => isManager,
+                        check: [
+                            required,
+                            ({value}) => isNil(value) || value < 10 ?  'Managerial positions require at least 10 years of experience.' : null
+                        ]
+                    }
+                ]
+            },
+            {
+                name: 'startDate',
+                displayName: 'Hire Date',
+                initialValue: moment().startOf('day').toDate(),
+                rules: [required, dateIs({max: 'today'})]
+            },
+            {
+                name: 'endDate',
+                rules: [
+                    dateIs({min: 'today'}),
+                    {
+                        when: ({value, formModel}, {startDate}) => startDate && value,
+                        check: ({value, displayName}, {startDate}) => {
+                            return value < startDate ? `${displayName} must be after start date.` : null;
+                        }
+                    }
+                ]
+            },
+            {
+                name: 'reasonForLeaving'
+            },
+            {
+                name: 'region',
+                rules: [required]
+            },
+            {
+                name: 'tags',
+                rules: [required]
+            },
+            {
+                name: 'references',
+                subforms: {
+                    fields: [
+                        {name: 'name', rules: [required]},
+                        {name: 'relationship'},
+                        {name: 'email', rules: [required, this.validEmail]}
+                    ],
+                    initialValues: {relationship: 'professional'}
+                },
+                rules: [(ref) => isEmpty(ref) ? 'At least one reference is required.':  null]
+            }
+        ]
     });
+
+    constructor() {
+        this.addReaction({
+            track: () => this.formModel.values.endDate,
+            run: (endDate) => {
+                const reasonField = this.formModel.fields.reasonForLeaving;
+                if (endDate) {
+                    reasonField.setDisabled(false);
+                } else {
+                    reasonField.setDisabled(true);
+                    reasonField.setValue(null);
+                }
+            },
+            fireImmediately: true
+        });
+    }
 
     async reset() {
         this.formModel.reset();
