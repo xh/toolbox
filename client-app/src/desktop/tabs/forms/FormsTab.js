@@ -17,7 +17,7 @@ export class FormsTab extends Component {
                 switcherPosition: 'left',
                 tabs: [
                     {id: 'inputs', title: 'Hoist Inputs', content: InputsPanel},
-                    {id: 'form', title: 'Forms', content: FormPanel},
+                    {id: 'form', title: 'FormModel', content: FormPanel},
                     {id: 'toolbarForm', title: 'Toolbar Forms', content: ToolbarFormPanel}
                 ]
             },
