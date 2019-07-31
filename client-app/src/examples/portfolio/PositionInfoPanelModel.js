@@ -39,6 +39,10 @@ export class PositionInfoPanelModel {
         });
     }
 
+    get isResizing() {
+        return this.panelSizingModel.isResizing;
+    }
+
     async doLoadAsync(loadSpec) {
         if (!this.panelSizingModel.collapsed) {
             await loadAllAsync([
