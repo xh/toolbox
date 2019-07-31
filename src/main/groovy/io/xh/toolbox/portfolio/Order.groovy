@@ -20,6 +20,8 @@ class Order extends JSONFormatCached {
     String trader
     String fund
 
+    String getKey() { [getSymbol(), trader, model, fund].join('||') }
+
     String getRegion() { instrument.region }
 
     String getSector() { instrument.sector }
