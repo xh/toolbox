@@ -9,9 +9,8 @@ import {elemFactory, HoistComponent} from '@xh/hoist/core/index';
 import {hbox, vframe} from '@xh/hoist/cmp/layout';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {positionsPanel} from './PositionsPanel';
-import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
 import {positionInfoPanel} from './PositionInfoPanel';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {splitTreeMapPanel} from './SplitTreeMapPanel';
 
 import './PortfolioPanel.scss';
 
@@ -22,7 +21,7 @@ export class PortfolioPanel extends Component {
 
     render() {
         const {model} = this,
-            {positionsPanelModel, splitTreeMapModel, positionInfoPanelModel} = model;
+            {positionsPanelModel, splitTreeMapPanelModel, positionInfoPanelModel} = model;
 
         return vframe(
             hbox({
@@ -31,10 +30,9 @@ export class PortfolioPanel extends Component {
                     positionsPanel({
                         model: positionsPanelModel
                     }),
-                    panel({
-                        item: splitTreeMap({
-                            model: splitTreeMapModel
-                        })
+                    splitTreeMapPanel({
+                        // omit: model.isResizing,
+                        model: splitTreeMapPanelModel
                     })
                 ]
             }),
