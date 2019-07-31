@@ -1,40 +1,76 @@
-import {HoistModel, LoadSupport, managed, loadAllAsync} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, loadAllAsync, XH} from '@xh/hoist/core';
 import {PositionsPanelModel} from './PositionsPanelModel';
-import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
-import {hspacer} from '@xh/hoist/cmp/layout';
-import {fmtMillions} from '@xh/hoist/format';
+import {SplitTreeMapPanelModel} from './SplitTreeMapPanelModel';
+import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {PositionInfoPanelModel} from './PositionInfoPanelModel';
+import {GridModel} from '@xh/hoist/cmp/grid';
 
 @HoistModel
 @LoadSupport
 export class PortfolioPanelModel {
 
-    @managed positionsPanelModel = new PositionsPanelModel();
-    @managed splitTreeMapModel = new SplitTreeMapModel({
-        gridModel: this.positionsPanelModel.gridModel,
-        mapFilter: rec => rec.pnl >= 0,
-        mapTitleFn: (mapName, model) => {
-            const isPrimary = mapName === 'primary',
-                v = isPrimary ? model.primaryMapTotal : model.secondaryMapTotal;
-            return [
-                isPrimary ? 'Profit:' : 'Loss:',
-                hspacer(5),
-                fmtMillions(v, {
-                    prefix: '$',
-                    precision: 2,
-                    label: true,
-                    asElement: true
+    @managed
+    gridModel = new GridModel({
+        treeMode: true,
+        sortBy: 'pnl|desc|abs',
+        emptyText: 'No records found...',
+        enableColChooser: true,
+        enableExport: true,
+        rowBorders: true,
+        showHover: true,
+        compact: XH.appModel.useCompactGrids,
+        stateModel: 'portfolio-positions-grid',
+        columns: [
+            {
+                field: 'id',
+                headerName: 'ID',
+                width: 40,
+                hidden: true
+            },
+            {
+                field: 'name',
+                headerName: 'Name',
+                flex: 1,
+                minWidth: 180,
+                isTreeColumn: true
+            },
+            {
+                field: 'mktVal',
+                headerName: 'Mkt Value (m)',
+                headerTooltip: 'Market value (in millions USD)',
+                align: 'right',
+                width: 130,
+                absSort: true,
+                agOptions: {
+                    aggFunc: 'sum'
+                },
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
+                renderer: millionsRenderer({
+                    precision: 3,
+                    ledger: true
                 })
-            ];
-        },
-
-        labelField: 'name',
-        valueField: 'pnl',
-        heatField: 'pnl',
-        valueFieldLabel: 'Pnl',
-
-        orientation: 'horizontal'
+            },
+            {
+                field: 'pnl',
+                headerName: 'P&L',
+                align: 'right',
+                width: 130,
+                absSort: true,
+                agOptions: {
+                    aggFunc: 'sum'
+                },
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
+                renderer: numberRenderer({
+                    precision: 0,
+                    ledger: true,
+                    colorSpec: true
+                })
+            }
+        ]
     });
+
+    @managed positionsPanelModel = new PositionsPanelModel({gridModel: this.gridModel});
+    @managed splitTreeMapPanelModel = new SplitTreeMapPanelModel({gridModel: this.gridModel});
     @managed positionInfoPanelModel = new PositionInfoPanelModel();
 
     get selectedPosition() {
@@ -50,6 +86,10 @@ export class PortfolioPanelModel {
             this.positionsPanelModel,
             this.positionInfoPanelModel
         ], loadSpec);
+    }
+
+    get isResizing() {
+        return this.positionInfoPanelModel.isResizing || this.positionsPanelModel.isResizing;
     }
 
     //----------------------------------------
