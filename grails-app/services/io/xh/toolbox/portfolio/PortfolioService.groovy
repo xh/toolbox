@@ -206,14 +206,15 @@ class PortfolioService extends BaseService {
             Map<String, List<MarketPrice>> marketPrices,
             List<Order> orders
     ) {
-        Map<String, List<Order>> bySymbol = orders.groupBy { it.symbol }
+        Map<String, List<Order>> byKey = orders.groupBy { it.key }
 
-        return bySymbol.collect { symbol, ordersForSymbol ->
-            Order first = ordersForSymbol.first()
+        return byKey.collect { key, ordersForKey ->
+            Order first = ordersForKey.first()
+            String symbol = first.symbol
             double endPx = marketPrices[symbol].last().close
 
-            long endQty = ordersForSymbol.sum { it.quantity } as long
-            long netCashflow = ordersForSymbol.sum { -it.mktVal } as long
+            long endQty = ordersForKey.sum { it.quantity } as long
+            long netCashflow = ordersForKey.sum { -it.mktVal } as long
 
             // Crude P&L calc.
             long mktVal = (endQty * endPx).round()
