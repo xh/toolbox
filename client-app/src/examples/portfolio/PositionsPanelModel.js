@@ -3,6 +3,7 @@ import {bindable} from '@xh/hoist/mobx';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 
 @HoistModel
 @LoadSupport
@@ -23,71 +24,12 @@ export class PositionsPanelModel {
         preference: 'portfolioDims'
     });
 
-    @managed
-    gridModel = new GridModel({
-        treeMode: true,
-        sortBy: 'pnl|desc|abs',
-        emptyText: 'No records found...',
-        enableColChooser: true,
-        enableExport: true,
-        rowBorders: true,
-        showHover: true,
-        compact: XH.appModel.useCompactGrids,
-        stateModel: 'portfolio-positions-grid',
-        columns: [
-            {
-                field: 'id',
-                headerName: 'ID',
-                width: 40,
-                hidden: true
-            },
-            {
-                field: 'name',
-                headerName: 'Name',
-                flex: 1,
-                minWidth: 180,
-                isTreeColumn: true
-            },
-            {
-                field: 'mktVal',
-                headerName: 'Mkt Value (m)',
-                headerTooltip: 'Market value (in millions USD)',
-                align: 'right',
-                width: 130,
-                absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
-                renderer: millionsRenderer({
-                    precision: 3,
-                    ledger: true
-                })
-            },
-            {
-                field: 'pnl',
-                headerName: 'P&L',
-                align: 'right',
-                width: 130,
-                absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
-                renderer: numberRenderer({
-                    precision: 0,
-                    ledger: true,
-                    colorSpec: true
-                })
-            }
-        ]
-    });
-
     get selectedRecord() {
         return this.gridModel.selectedRecord;
     }
 
-    constructor() {
+    constructor({gridModel}) {
+        this.gridModel = gridModel;
         this.addReaction({
             track: () => this.dimChooserModel.value,
             run: () => this.loadAsync()
