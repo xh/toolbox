@@ -25,7 +25,6 @@ export class SplitTreeMapPanelModel {
         treeMode: true,
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
-        enableColChooser: true,
         compact: XH.appModel.useCompactGrids,
         selModel: 'multiple',
         columns: [
@@ -38,14 +37,9 @@ export class SplitTreeMapPanelModel {
             {
                 field: 'mktVal',
                 headerName: 'Mkt Value (m)',
-                headerTooltip: 'Market value (in millions USD)',
                 align: 'right',
                 width: 130,
                 absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                 renderer: millionsRenderer({
                     precision: 3,
                     ledger: true
@@ -57,10 +51,6 @@ export class SplitTreeMapPanelModel {
                 align: 'right',
                 width: 130,
                 absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                 renderer: numberRenderer({
                     precision: 0,
                     ledger: true,
@@ -91,12 +81,12 @@ export class SplitTreeMapPanelModel {
         },
         labelField: 'name',
         valueField: 'pnl',
-        heatField: 'pnl',
-        valueFieldLabel: 'Pnl'
+        heatField: 'mktVal',
+        valueFieldLabel: 'P&L',
+        heatFieldLabel: 'Market Value'
     });
 
     constructor() {
-        // Load data when dimensions change
         this.addReaction({
             track: () => this.dimChooserModel.value,
             run: () => this.loadAsync()

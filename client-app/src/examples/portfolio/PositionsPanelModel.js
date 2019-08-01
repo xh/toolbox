@@ -1,9 +1,6 @@
 import {HoistModel, XH, managed, LoadSupport} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
-import {numberRenderer, millionsRenderer, fmtNumberTooltip} from '@xh/hoist/format';
-import {GridModel} from '@xh/hoist/cmp/grid';
-import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 
 @HoistModel
 @LoadSupport

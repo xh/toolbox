@@ -18,7 +18,7 @@ export class SimpleTreeMapModel {
         labelField: 'name',
         valueField: 'pnl',
         heatField: 'mktVal',
-        valueFieldLabel: 'Pnl',
+        valueFieldLabel: 'P&L',
         heatFieldLabel: 'Market Value'
     });
 
