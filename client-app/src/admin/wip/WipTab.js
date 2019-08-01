@@ -10,19 +10,11 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 
-import {SimpleTreeMapPanel} from './treeMap/SimpleTreeMapPanel';
-import {GridTreeMapPanel} from './treeMap/GridTreeMapPanel';
-import {SplitTreeMapPanel} from './treeMap/SplitTreeMapPanel';
-
 @HoistComponent
 export class WipTab extends Component {
 
     render() {
-        const tabs = [
-            {id: 'simpleTreeMap', title: 'Simple TreeMap', content: SimpleTreeMapPanel},
-            {id: 'gridTreeMap', title: 'Grid TreeMap', content: GridTreeMapPanel},
-            {id: 'splitTreeMap', title: 'Split TreeMap', content: SplitTreeMapPanel}
-        ];
+        const tabs = [];
 
         if (tabs.length) {
             return tabContainer({
