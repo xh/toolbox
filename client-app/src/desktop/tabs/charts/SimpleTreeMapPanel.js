@@ -1,5 +1,7 @@
 import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
+import {wrapper} from '../../common/Wrapper';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {treeMap} from '@xh/hoist/desktop/cmp/treemap';
 
@@ -14,10 +16,16 @@ export class SimpleTreeMapPanel extends Component {
         const {model} = this,
             {loadModel, treeMapModel} = model;
 
-        return panel({
-            mask: loadModel,
-            item: treeMap({model: treeMapModel})
-        });
+        return wrapper(
+            panel({
+                icon: Icon.gridLarge(),
+                title: 'Simple TreeMap',
+                mask: loadModel,
+                width: 800,
+                height: 600,
+                item: treeMap({model: treeMapModel})
+            })
+        );
     }
 
 }
