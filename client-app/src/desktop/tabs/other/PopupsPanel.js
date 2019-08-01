@@ -53,7 +53,7 @@ export class PopupsPanel extends Component {
                                     p('This is an Alert. Alerts come with one button: "OK". This alert has its button set to autoFocus.'),
                                     acceptRichTextReminder
                                 ),
-                                autoFocus: 'confirm'
+                                confirmProps: {autoFocus: true}
                             })
                         }),
                         button({
@@ -90,7 +90,7 @@ export class PopupsPanel extends Component {
                                     p('This is a confirm. Confirms come with two buttons: "OK" and "Cancel".  This confirm has the primary confirm button set to autoFocus.'),
                                     acceptRichTextReminder
                                 ),
-                                autoFocus: 'confirm'
+                                confirmProps: {autoFocus: true}
                             })
                         }),
                         button({
@@ -129,7 +129,7 @@ export class PopupsPanel extends Component {
                                     p('This is a prompt. Prompt comes with two buttons: "OK" and "Cancel". This prompt has the cancel button set to autoFocus.'),
                                     acceptRichTextReminder
                                 ),
-                                autoFocus: 'cancel'
+                                confirmProps: {autoFocus: true}
                             })
                         }),
                         button({
@@ -176,8 +176,7 @@ export class PopupsPanel extends Component {
                                     <p>This message has the primary button set to autoFocus.</p>,
                                     acceptRichTextReminder
                                 ),
-                                confirmText: 'Oh I see!',
-                                autoFocus: 'confirm',
+                                confirmProps: {text: 'Oh I see!', autoFocus: true},
                                 cancelText: 'Nope, no seas here.'
                             })
                         }),
