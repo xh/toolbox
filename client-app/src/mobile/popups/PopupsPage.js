@@ -26,7 +26,8 @@ export class PopupsPage extends Component {
                         title: 'Confirm',
                         message: 'This is a confirm dialog.'
                     }).then(ret => XH.toast({
-                        message: span('That popup resolved to ', code(`${ret}`))
+                        message: span('That popup resolved to ', code(`${ret}`)),
+                        intent: ret ? 'success' : 'danger'
                     }));
                 }),
                 this.renderCard('Prompt', () => {
@@ -42,8 +43,8 @@ export class PopupsPage extends Component {
                         title: 'Message',
                         icon: Icon.comment(),
                         message: 'Messages are highly configurable.',
-                        confirmText: 'Ok, got it',
-                        cancelText: 'Exit'
+                        confirmProps: {text: 'Ok, got it', icon: Icon.thumbsUp()},
+                        cancelProps: {text: 'Exit'}
                     });
                 }),
                 this.renderCard('Toast', () => {
