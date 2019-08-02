@@ -42,7 +42,7 @@ export class LineChartModel {
             yAxis: {
                 floor: 0,
                 title: {
-                    text: 'Volume'
+                    text: null
                 }
             },
             plotOptions: {
