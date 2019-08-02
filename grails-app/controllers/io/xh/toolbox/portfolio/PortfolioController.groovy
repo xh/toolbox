@@ -11,7 +11,10 @@ class PortfolioController extends BaseController {
 
     def positions() {
         List<String> dims = params.dims.split(',') as List<String>
-        renderJSON(positionService.getPositions(dims))
+        Map options = [:]
+        Long maxPositions = params.maxPositions as Long
+        if (maxPositions) options.maxPositions = maxPositions
+        renderJSON(positionService.getPositions(dims, options))
     }
 
     def position() {
