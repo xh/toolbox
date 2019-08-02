@@ -7,7 +7,7 @@ class PositionService extends BaseService {
 
     def portfolioService
 
-    List<Position> getPositions(List<String> dims) {
+    List<Position> getPositions(List<String> dims, Map options = null) {
 
         List<RawPosition> rawPositions = portfolioService.getData().rawPositions
 
@@ -21,11 +21,7 @@ class PositionService extends BaseService {
                 children: positions
         )
 
-        Map options = [
-               maxPositions: 950
-        ]
-
-        truncatePositions(root, options)
+        if (options) truncatePositions(root, options)
 
         return [root]
     }
@@ -130,7 +126,7 @@ class PositionService extends BaseService {
 
             List<Position> children = pos.children
             if (children) {
-                children.each { child -> removePos(child) }
+                children.each(removePos)
             }
             return
         }
@@ -168,7 +164,7 @@ class PositionService extends BaseService {
     }
 
     private Position createBasket(List<Position> minors) {
-        String basketName = 'Minor Positions'
+        String basketName = "Minor Positions (${minors.size()})"
         String firstPosId = minors.first().id
         int idx = firstPosId.lastIndexOf(':')
         String basketId = firstPosId.substring(0, idx+1) + basketName
@@ -197,21 +193,6 @@ class PositionService extends BaseService {
         addToParentMapRecursive(root)
         return ret
     }
-
-//    private Position findPosition(String positionId, List<Position> positions) {
-//
-//    }
-//
-//    private Position getParent(Position pos, List<Position> positions) {
-//        String parentPositionId = getParentPositionId(pos.id)
-//        return findPosition(parentPositionId, positions)
-//    }
-//
-
-//    private String getParentPositionId(String positionId) {
-//        int idx = positionId.lastIndexOf('>>')
-//        return positionId.substring(0, idx)
-//    }
 
     // Parse a drill-down ID from a rolled-up position into a map of all
     // dimensions -> dim values contained within the rollup.
