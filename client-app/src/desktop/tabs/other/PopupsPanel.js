@@ -62,12 +62,16 @@ export class PopupsPanel extends Component {
                                 title: 'Alert with custom button',
                                 message: (
                                     <p>
-                                        This is also an Alert. Here, we customized the text and color of the button
-                                        with <code>confirmText</code> and <code>confirmIntent</code>.
+                                        This is also an Alert. Here, we customized the appearance of
+                                        the button and set it to autoFocus via <code>confirmProps</code>.
                                     </p>
                                 ),
-                                confirmText: 'COOL BUTTON!',
-                                confirmIntent: 'warning'
+                                confirmProps: {
+                                    intent: 'success',
+                                    minimal: false,
+                                    icon: Icon.checkCircle(),
+                                    autoFocus: true
+                                }
                             })
                         }),
                         button({
@@ -86,7 +90,7 @@ export class PopupsPanel extends Component {
                             onClick: () => XH.confirm({
                                 title: 'Confirm',
                                 message: div(
-                                    p('This is a confirm. Confirms come with two buttons: "OK" and "Cancel"'),
+                                    p('This is a confirm. Confirms come with two buttons: "OK" and "Cancel".'),
                                     acceptRichTextReminder
                                 )
                             })
@@ -98,14 +102,20 @@ export class PopupsPanel extends Component {
                                 title: 'Confirm with custom buttons',
                                 message: (
                                     <p>
-                                        This is also a Confirm. Here, we customized the text and color of the buttons
-                                        with <code>confirmText</code>, <code>confirmIntent</code>, <code>cancelText</code>, and <code>cancelIntent</code>.
+                                        This is also an Alert. Here, we customized the appearance of
+                                        the buttons and set the cancel button to autoFocus
+                                        via <code>confirmProps</code> and <code>cancelProps</code>.
                                     </p>
                                 ),
-                                confirmText: 'Nice',
-                                confirmIntent: 'primary',
-                                cancelText: 'Nope',
-                                cancelIntent: 'danger'
+                                confirmProps: {
+                                    text: 'Go ahead...',
+                                    intent: 'primary'
+                                },
+                                cancelProps: {
+                                    text: 'Get me outta here!',
+                                    intent: 'danger',
+                                    autoFocus: true
+                                }
                             })
                         }),
                         button({
@@ -124,7 +134,7 @@ export class PopupsPanel extends Component {
                             onClick: () => XH.prompt({
                                 title: 'Prompt',
                                 message: div(
-                                    p('This is a prompt. Prompt comes with two buttons: "OK" and "Cancel"'),
+                                    p('This is a prompt. Prompt comes with two buttons: "OK" and "Cancel" and support an input field to collect a response from the user.'),
                                     acceptRichTextReminder
                                 )
                             })
@@ -136,19 +146,18 @@ export class PopupsPanel extends Component {
                                 title: 'Prompt with customizations',
                                 message: (
                                     <p>
-                                        This is also a Prompt. Here, we customized the input with <code>input</code>, and the text and color of the buttons
-                                        with <code>confirmText</code>, <code>confirmIntent</code>, <code>cancelText</code>, and <code>cancelIntent</code>.
+                                        This is also a Prompt. Here, we set the input to a custom
+                                        textArea with validation via <code>input</code> and
+                                        customized the buttons via <code>confirmProps</code> and <code>cancelProps</code>.
                                     </p>
                                 ),
                                 input: {
-                                    value: 'Hello world...',
-                                    item: textArea({autoFocus: true}),
+                                    value: 'I must be at least 20 characters to send...',
+                                    item: textArea({autoFocus: true, selectOnFocus: true}),
                                     rules: [required, lengthIs({min: 20})]
                                 },
-                                confirmText: 'Submit',
-                                confirmIntent: 'primary',
-                                cancelText: 'Nope',
-                                cancelIntent: 'danger'
+                                confirmProps: {text: 'Send a Message', icon: Icon.mail(), intent: 'primary'},
+                                cancelProps: {intent: 'danger'}
                             })
                         }),
                         button({
@@ -169,11 +178,12 @@ export class PopupsPanel extends Component {
                                 title: 'Message',
                                 message: div(
                                     <p>Messages are highly configurable - Alerts and Confirms are simply preconfigured Messages.</p>,
-                                    <p>Note, without <code>confirmText</code> or <code>cancelText</code>, the displayed Message will have no buttons!</p>,
+                                    <p>Note, without valid <code>confirmProps</code> or <code>cancelProps</code>, the displayed Message will have no buttons!</p>,
+                                    <p>This message has the primary button set to autoFocus.</p>,
                                     acceptRichTextReminder
                                 ),
-                                confirmText: 'Oh I see!',
-                                cancelText: 'Nope, no seas here.'
+                                confirmProps: {text: 'Oh I see!', autoFocus: true},
+                                cancelProps: {icon: Icon.xCircle()}
                             })
                         }),
                         button({
@@ -187,12 +197,12 @@ export class PopupsPanel extends Component {
                                         the <code>onCancel</code> and <code>onConfirm</code> callback configs.
                                     </p>
                                 ),
-                                confirmText: 'Got it',
-                                cancelText: 'Cancel',
+                                confirmProps: {text: 'Trigger onConfirm()'},
                                 onConfirm: () => XH.toast({
                                     message: <span>Called <code>onConfirm</code></span>,
                                     containerRef: this.divRef.value
                                 }),
+                                cancelProps: {text: 'Trigger onCancel()'},
                                 onCancel: () => XH.toast({
                                     message: <span>Called <code>onCancel</code></span>,
                                     icon: Icon.x(),
@@ -214,8 +224,8 @@ export class PopupsPanel extends Component {
                                         li('Prompt promises resolve to the entered value if user confirms, or false if user cancels.')
                                     )
                                 ),
-                                confirmText: 'Cool',
-                                cancelText: 'Cancel'
+                                confirmProps: {text: 'Resolve to true'},
+                                cancelProps: {text: 'Resolve to false'}
                             }).then(promiseToast)
                         })
                     ),
