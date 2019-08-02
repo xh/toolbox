@@ -15,14 +15,16 @@ export class PortfolioService {
     /**
      * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
      * @param {string[]} dims - field names for dimensions on which to group.
+     * @param {int} maxPositions - truncate position tree, by smallest pnl, until this number positions is reached
      * @param {boolean} [includeSummary] - true to include a root summary node
      * @return {Promise<Array>}
      */
-    async getPortfolioAsync(dims, includeSummary = false) {
+    async getPortfolioAsync(dims, maxPositions = 400, includeSummary = false) {
         const portfolio = await XH.fetchJson({
             url: 'portfolio/positions',
             params: {
-                dims: dims.join(',')
+                dims: dims.join(','),
+                maxPositions
             }
         });
 
