@@ -228,10 +228,12 @@ export class InputsPanel extends Component {
                             row({
                                 label: 'Select',
                                 field: 'option2',
-                                info: 'enableClear:true',
+                                info: 'enableClear, enableCreate, selectOnFocus',
                                 item: select({
                                     options: restaurants,
                                     enableClear: true,
+                                    enableCreate: true,
+                                    selectOnFocus: true,
                                     placeholder: 'Search restaurants...'
                                 })
                             }),
@@ -249,11 +251,12 @@ export class InputsPanel extends Component {
                             row({
                                 label: 'Select',
                                 field: 'option3',
-                                info: 'custom fields, renderer, async search',
+                                info: 'custom fields, renderer, selectOnFocus, async search',
                                 item: select({
                                     valueField: 'id',
                                     labelField: 'company',
                                     enableClear: true,
+                                    selectOnFocus: true,
                                     queryFn: this.queryCustomersAsync,
                                     optionRenderer: this.renderCustomerOption,
                                     placeholder: 'Search customers...'
