@@ -20,6 +20,18 @@ export class PortfolioPanelModel {
         showHover: true,
         compact: XH.appModel.useCompactGrids,
         stateModel: 'portfolio-positions-grid',
+        store: {
+            processRawData: (r) => {
+                return {
+                    pnlMktVal: r.pnl / Math.abs(r.mktVal),
+                    ...r
+                };
+            },
+            fields: [
+                {name: 'pnl', label: 'P&L'},
+                {name: 'pnlMktVal', label: 'P&L / Mkt Val'}
+            ]
+        },
         columns: [
             {
                 field: 'id',
