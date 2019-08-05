@@ -7,11 +7,11 @@ class PositionService extends BaseService {
 
     def portfolioService
 
-    List<Position> getPositions(List<String> dims, Map options = null) {
+    PositionResultSet getPositions(PositionQuery query) {
 
         List<RawPosition> rawPositions = portfolioService.getData().rawPositions
 
-        List<Position> positions = groupPositions(dims, rawPositions, 'root')
+        List<Position> positions = groupPositions(query.dims, rawPositions, 'root')
 
         Position root = new Position(
                 id: 'root',
@@ -21,9 +21,17 @@ class PositionService extends BaseService {
                 children: positions
         )
 
-        if (options) truncatePositions(root, options)
+        Map options = [
+                maxPositons: query.maxCount,
+                returnAllGroups: query.returnAllGroups
+        ]
 
-        return [root]
+        truncatePositions(root, options)
+
+        return new PositionResultSet(
+                query: query,
+                root: root
+        )
     }
 
     Position getPosition(String positionId) {
