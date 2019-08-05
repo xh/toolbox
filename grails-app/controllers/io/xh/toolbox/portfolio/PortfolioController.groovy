@@ -10,11 +10,8 @@ class PortfolioController extends BaseController {
         positionService
 
     def positions() {
-        List<String> dims = params.dims.split(',') as List<String>
-        Map options = [:]
-        Long maxPositions = params.maxPositions as Long
-        if (maxPositions) options.maxPositions = maxPositions
-        renderJSON(positionService.getPositions(dims, options))
+        PositionQuery query = parsePositionQuery()
+        renderJSON(positionService.getPositions(query))
     }
 
     def position() {
@@ -49,4 +46,14 @@ class PortfolioController extends BaseController {
     def lookups() {
         renderJSON(portfolioService.getLookups())
     }
+
+    PositionQuery parsePositionQuery() {
+        List<String> dims = params.dims.split(',') as List<String>
+        Long maxCount = params.maxCount as Long
+        return new PositionQuery(
+                dims: dims,
+                maxCount: maxCount
+        )
+    }
+
 }
