@@ -30,7 +30,7 @@ export class PortfolioService {
             }
         });
 
-        return includeSummary ? portfolio.root : portfolio.root.children;
+        return includeSummary ? [portfolio.root] : portfolio.root.children;
     }
 
     /**
