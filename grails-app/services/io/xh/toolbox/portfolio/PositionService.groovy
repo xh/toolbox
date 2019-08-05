@@ -22,11 +22,11 @@ class PositionService extends BaseService {
         )
 
         Map options = [
-                maxPositons: query.maxCount,
+                maxPositions: query.maxCount,
                 returnAllGroups: query.returnAllGroups
         ]
 
-        truncatePositions(root, options)
+        if (options.maxPositions) truncatePositions(root, options)
 
         return new PositionResultSet(
                 query: query,
@@ -102,10 +102,10 @@ class PositionService extends BaseService {
     }
 
     private long truncatePositions(Position root, Map options) {
-        long maxPositions = options.maxPositions as long
+        Integer maxPositions = options.maxPositions as Integer
         if (!maxPositions) return 0
 
-        boolean returnAllGroups = options.returnAllGroups ?: false
+        Boolean returnAllGroups = options.returnAllGroups ?: false
         Closure priorityFn = options.priorityFn ?: { pos -> Math.abs(pos.pnl) }
 
         Map<Position, Position> parentMap = buildParentMap(root)
@@ -174,10 +174,10 @@ class PositionService extends BaseService {
     private Position createBasket(List<Position> minors) {
         String basketName = "Minor Positions (${minors.size()})"
         String firstPosId = minors.first().id
-        int idx = firstPosId.lastIndexOf(':')
+        Integer idx = firstPosId.lastIndexOf(':')
         String basketId = firstPosId.substring(0, idx+1) + basketName
-        long basketPnl = minors.sum { it.pnl } as long
-        long basketMktVal = minors.sum { it.mktVal } as long
+        Long basketPnl = minors.sum { it.pnl } as Long
+        Long basketMktVal = minors.sum { it.mktVal } as Long
 
         return new Position(
                 id: basketId,
