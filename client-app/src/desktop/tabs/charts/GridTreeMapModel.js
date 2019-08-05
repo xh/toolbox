@@ -26,6 +26,18 @@ export class GridTreeMapModel {
         emptyText: 'No records found...',
         compact: XH.appModel.useCompactGrids,
         selModel: 'multiple',
+        store: {
+            processRawData: (r) => {
+                return {
+                    pnlMktVal: r.pnl / Math.abs(r.mktVal),
+                    ...r
+                };
+            },
+            fields: [
+                {name: 'pnl', label: 'P&L'},
+                {name: 'pnlMktVal', label: 'P&L / Mkt Val'}
+            ]
+        },
         columns: [
             {
                 headerName: 'Name',
@@ -65,9 +77,7 @@ export class GridTreeMapModel {
         gridModel: this.gridModel,
         labelField: 'name',
         valueField: 'pnl',
-        heatField: 'mktVal',
-        valueFieldLabel: 'P&L',
-        heatFieldLabel: 'Market Value'
+        heatField: 'pnlMktVal'
     });
 
     constructor() {

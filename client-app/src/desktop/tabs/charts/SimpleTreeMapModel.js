@@ -9,7 +9,17 @@ export class SimpleTreeMapModel {
 
     @managed
     store = new Store({
-        fields: ['name', 'pnl', 'mktVal']
+        processRawData: (r) => {
+            return {
+                pnlMktVal: r.pnl / Math.abs(r.mktVal),
+                ...r
+            };
+        },
+        fields: [
+            'name',
+            {name: 'pnl', label: 'P&L'},
+            {name: 'pnlMktVal', label: 'P&L / Mkt Val'}
+        ]
     });
 
     @managed
@@ -17,9 +27,7 @@ export class SimpleTreeMapModel {
         store: this.store,
         labelField: 'name',
         valueField: 'pnl',
-        heatField: 'mktVal',
-        valueFieldLabel: 'P&L',
-        heatFieldLabel: 'Market Value'
+        heatField: 'pnlMktVal'
     });
 
     async doLoadAsync() {
