@@ -261,7 +261,7 @@ class Model {
             },
             {
                 headerName: 'Date',
-                field: 'tradeDate',
+                field: 'trade_date',
                 ...calendarDateCol
             },
             {
