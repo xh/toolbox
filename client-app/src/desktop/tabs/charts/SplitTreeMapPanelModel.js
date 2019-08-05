@@ -27,6 +27,18 @@ export class SplitTreeMapPanelModel {
         emptyText: 'No records found...',
         compact: XH.appModel.useCompactGrids,
         selModel: 'multiple',
+        store: {
+            processRawData: (r) => {
+                return {
+                    pnlMktVal: r.pnl / Math.abs(r.mktVal),
+                    ...r
+                };
+            },
+            fields: [
+                {name: 'pnl', label: 'P&L'},
+                {name: 'pnlMktVal', label: 'P&L / Mkt Val'}
+            ]
+        },
         columns: [
             {
                 headerName: 'Name',
@@ -66,12 +78,10 @@ export class SplitTreeMapPanelModel {
         gridModel: this.gridModel,
         mapFilter: rec => rec.pnl >= 0,
         mapTitleFn: (mapName, model) => {
-            const isPrimary = mapName === 'primary',
-                v = isPrimary ? model.primaryMapTotal : model.secondaryMapTotal;
             return [
-                isPrimary ? 'Profit:' : 'Loss:',
+                mapName === 'primary' ? 'Profit:' : 'Loss:',
                 hspacer(5),
-                fmtMillions(v, {
+                fmtMillions(model.total, {
                     prefix: '$',
                     precision: 2,
                     label: true,
@@ -81,9 +91,7 @@ export class SplitTreeMapPanelModel {
         },
         labelField: 'name',
         valueField: 'pnl',
-        heatField: 'mktVal',
-        valueFieldLabel: 'P&L',
-        heatFieldLabel: 'Market Value'
+        heatField: 'pnlMktVal'
     });
 
     constructor() {

@@ -20,12 +20,10 @@ export class SplitTreeMapPanelModel {
             gridModel,
             mapFilter: rec => rec.pnl >= 0,
             mapTitleFn: (mapName, model) => {
-                const isPrimary = mapName === 'primary',
-                    v = isPrimary ? model.primaryMapTotal : model.secondaryMapTotal;
                 return [
-                    isPrimary ? 'Profit:' : 'Loss:',
+                    mapName === 'primary' ? 'Profit:' : 'Loss:',
                     hspacer(5),
-                    fmtMillions(v, {
+                    fmtMillions(model.total, {
                         prefix: '$',
                         precision: 2,
                         label: true,
@@ -37,7 +35,6 @@ export class SplitTreeMapPanelModel {
             labelField: 'name',
             valueField: 'pnl',
             heatField: 'pnl',
-            valueFieldLabel: 'P&L',
 
             orientation: 'horizontal'
         });
