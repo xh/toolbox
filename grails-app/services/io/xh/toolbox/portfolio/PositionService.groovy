@@ -22,11 +22,11 @@ class PositionService extends BaseService {
         )
 
         Map options = [
-                maxPositions: query.maxCount,
+                maxCount: query.maxCount,
                 returnAllGroups: query.returnAllGroups
         ]
 
-        if (options.maxPositions) truncatePositions(root, options)
+        if (options.maxCount) truncatePositions(root, options)
 
         return new PositionResultSet(
                 query: query,
@@ -102,15 +102,15 @@ class PositionService extends BaseService {
     }
 
     private long truncatePositions(Position root, Map options) {
-        Integer maxPositions = options.maxPositions as Integer
-        if (!maxPositions) return 0
+        Integer maxCount = options.maxCount as Integer
+        if (!maxCount) return 0
 
         Boolean returnAllGroups = options.returnAllGroups ?: false
         Closure priorityFn = options.priorityFn ?: { pos -> Math.abs(pos.pnl) }
 
         Map<Position, Position> parentMap = buildParentMap(root)
 
-        long numToTruncate = parentMap.size() - maxPositions
+        long numToTruncate = parentMap.size() - maxCount
         if (numToTruncate <= 0) return 0
 
         List<Position> removeCandidates = parentMap.keySet().sort(priorityFn)
