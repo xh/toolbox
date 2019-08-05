@@ -4,6 +4,8 @@ import moment from 'moment';
 @HoistService
 export class PortfolioService {
 
+    MAX_POSITIONS = 950;
+
     async initAsync() {
         this.lookups = await XH.fetchJson({url: 'portfolio/lookups'});
     }
@@ -19,7 +21,7 @@ export class PortfolioService {
      * @param {boolean} [includeSummary] - true to include a root summary node
      * @return {Promise<Array>}
      */
-    async getPortfolioAsync(dims, maxPositions = 400, includeSummary = false) {
+    async getPortfolioAsync(dims, maxPositions = this.MAX_POSITIONS, includeSummary = false) {
         const portfolio = await XH.fetchJson({
             url: 'portfolio/positions',
             params: {
@@ -28,7 +30,7 @@ export class PortfolioService {
             }
         });
 
-        return includeSummary ? portfolio : portfolio[0].children;
+        return includeSummary ? portfolio.root : portfolio.root.children;
     }
 
     /**
