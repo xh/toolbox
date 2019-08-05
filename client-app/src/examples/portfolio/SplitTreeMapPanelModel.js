@@ -34,7 +34,7 @@ export class SplitTreeMapPanelModel {
 
             labelField: 'name',
             valueField: 'pnl',
-            heatField: 'pnl',
+            heatField: 'pnlMktVal',
 
             orientation: 'horizontal'
         });
