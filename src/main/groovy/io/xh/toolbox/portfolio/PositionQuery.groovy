@@ -5,8 +5,8 @@ import io.xh.hoist.json.JSONFormatCached
 class PositionQuery extends JSONFormatCached {
 
     List<String> dims
-    int maxCount
-    boolean returnAllGroups
+    Integer maxCount
+    Boolean returnAllGroups
 
     Map formatForJSON() {
         return [
