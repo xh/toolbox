@@ -7,6 +7,12 @@ body {
   border-right: var(--xh-border-solid);
 }
 
-.toolbox-wrapper > .xh-panel {
-  border: var(--xh-border-solid);
+.tbox-display-opts {
+  .xh-panel-header {
+    color: var(--xh-text-color);
+    background-color: var(--xh-bg-alt);
+  }
+  .xh-switch-input {
+    margin: var(--xh-pad-px) var(--xh-pad-px) 0 var(--xh-pad-px);
+  }
 }

@@ -1,37 +1,40 @@
-import {HoistModel, LoadSupport} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
 import {bindable} from '@xh/hoist/mobx';
 import Highcharts from 'highcharts/highstock';
-import moment from 'moment';
-import Amazon from '../../../core/data/charts/amazonPricing';
-import Facebook from '../../../core/data/charts/facebookPricing';
-import Yahoo from '../../../core/data/charts/yahooPricing';
 
 @HoistModel
 @LoadSupport
 export class LineChartModel {
-    @bindable currentCompany = 'Amazon';
-    companyMap = {Amazon, Facebook, Yahoo};
+    @bindable currentSymbol = '';
+    @bindable.ref symbols = null;
+    numCompanies = 3;
     chartModel = new ChartModel({config: this.getChartModelCfg()});
 
     constructor() {
         this.addReaction({
-            track: () => this.currentCompany,
-            run: this.loadAsync
+            track: () => this.currentSymbol,
+            run: () => this.loadAsync()
         });
     }
     
     async doLoadAsync(loadSpec) {
-        const company = this.currentCompany,
-            data = this.companyMap[company];
+        if (!this.symbols) {
+            let symbols = await XH.portfolioService.getSymbolsAsync();
+            symbols = symbols.slice(0, this.numCompanies);
+            this.setSymbols(symbols);
+        }
+        if (!this.currentSymbol) {
+            this.setCurrentSymbol(this.symbols[0]);
+        }
 
-        const prices = data.map(it => {
-            const date = moment(it.valueDate).valueOf();
-            return [date, it.close];
+        let series = await XH.portfolioService.getLineChartSeriesAsync(this.currentSymbol, 'close');
+        Object.assign(series, {
+            type: 'area',
+            animation: true
         });
 
-        const series = this.createChartSeries(company, prices);
-        this.chartModel.setSeries(series);
+        this.chartModel.setSeries([series]);
     }
 
     getChartModelCfg() {
@@ -95,15 +98,5 @@ export class LineChartModel {
                 enabled: true
             }
         };
-    }
-
-    createChartSeries(name, data) {
-        return [
-            {
-                name: name,
-                type: 'area',
-                data: data
-            }
-        ];
     }
 }

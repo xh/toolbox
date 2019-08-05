@@ -2,8 +2,8 @@ import {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 
-import {ControlsPanel} from './ControlsPanel';
-import {ValidationPanel} from './ValidationPanel';
+import {InputsPanel} from './InputsPanel';
+import {FormPanel} from './FormPanel';
 import {ToolbarFormPanel} from './ToolbarFormPanel';
 
 
@@ -16,8 +16,8 @@ export class FormsTab extends Component {
                 route: 'default.forms',
                 switcherPosition: 'left',
                 tabs: [
-                    {id: 'controls', title: 'Controls', content: ControlsPanel},
-                    {id: 'validation', title: 'Validation', content: ValidationPanel},
+                    {id: 'inputs', title: 'Hoist Inputs', content: InputsPanel},
+                    {id: 'form', title: 'FormModel', content: FormPanel},
                     {id: 'toolbarForm', title: 'Toolbar Forms', content: ToolbarFormPanel}
                 ]
             },
