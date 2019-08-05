@@ -182,7 +182,7 @@ export class PopupsPanel extends Component {
                                     <p>This message has the primary button set to autoFocus.</p>,
                                     acceptRichTextReminder
                                 ),
-                                confirmProps: {text: 'Oh I see!', autoFocus: true},
+                                confirmProps: {text: 'Oh I see!'},
                                 cancelProps: {icon: Icon.xCircle()}
                             })
                         }),
