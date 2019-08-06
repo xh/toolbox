@@ -31,7 +31,8 @@ export class AppModel extends BaseAppModel {
                 children: [
                     {name: 'performance', path: '/performance'},
                     {name: 'cube', path: '/cube'},
-                    {name: 'webSockets', path: '/webSockets'}
+                    {name: 'webSockets', path: '/webSockets'},
+                    {name: 'calendarDate', path: '/calendarDate'}
                 ]
             },
             {
