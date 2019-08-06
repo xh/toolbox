@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
 import static io.xh.toolbox.portfolio.Utils.*
 import static java.time.DayOfWeek.SATURDAY
 import static java.time.DayOfWeek.SUNDAY
+import static io.xh.hoist.util.DateTimeUtils.MINUTES
 
 class PortfolioService extends BaseService {
 
@@ -23,8 +24,15 @@ class PortfolioService extends BaseService {
 
     private PortfolioDataSet data
 
+    def configService
+
     void init() {
-        data = generateData()
+        // data = generateData()
+        createTimer(
+                runFn: this.&loadData,
+                interval: 'newsRefreshMins',
+                intervalUnits: MINUTES
+        )
         super.init()
     }
 
@@ -45,6 +53,15 @@ class PortfolioService extends BaseService {
     //----------------
     // Implementation
     //-----------------
+    private void loadData() {
+        if (!data) {
+            data = generateData()
+        } else {
+            changeData()
+        }
+
+    }
+
     private PortfolioDataSet generateData() {
         def instruments = generateInstruments(),
             marketPrices = generatePrices(instruments),
@@ -57,6 +74,29 @@ class PortfolioService extends BaseService {
                 orders: orders,
                 rawPositions: rawPositions
         )
+    }
+
+    private void changeData() {
+        Long numToChange = (15 * data.instruments.size() / 100).round() as Long
+        Set<Instrument> changed = new HashSet<Instrument>()
+        while (changed.size() < numToChange) {
+            Instrument instToChange = sample(data.instruments)
+            if (changed.contains(instToChange)) continue
+            else {
+                changed.add(instToChange)
+                String symbol = instToChange.symbol
+                List<MarketPrice> pricesForSymbol = data.marketPrices[symbol]
+                MarketPrice lastMktPrice = pricesForSymbol.last()
+                double oldClose = lastMktPrice.close
+                double newClose = preturbPrice(oldClose)
+
+                lastMktPrice.setClose(newClose)
+                if (newClose < lastMktPrice.low) lastMktPrice.setLow(newClose)
+                if (newClose > lastMktPrice.high) lastMktPrice.setHigh(newClose)
+
+
+            }
+        }
     }
 
     //-------------------
