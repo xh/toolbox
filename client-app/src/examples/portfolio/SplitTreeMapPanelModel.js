@@ -18,7 +18,6 @@ export class SplitTreeMapPanelModel {
     constructor({gridModel}) {
         this.splitTreeMapModel = new SplitTreeMapModel({
             gridModel,
-            mapFilter: rec => rec.pnl >= 0,
             mapTitleFn: (mapName, model) => {
                 return [
                     mapName === 'primary' ? 'Profit:' : 'Loss:',
