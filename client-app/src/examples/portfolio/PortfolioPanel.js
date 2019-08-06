@@ -31,7 +31,6 @@ export class PortfolioPanel extends Component {
                         model: positionsPanelModel
                     }),
                     splitTreeMapPanel({
-                        // omit: model.isResizing,
                         model: splitTreeMapPanelModel
                     })
                 ]
