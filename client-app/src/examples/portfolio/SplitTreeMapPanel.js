@@ -12,6 +12,7 @@ export class SplitTreeMapPanel extends Component {
             {splitTreeMapModel, panelSizingModel} = model;
 
         return panel({
+            title: panelSizingModel.collapsed ? 'Treemap' : null,
             model: panelSizingModel,
             item: splitTreeMap({
                 model: splitTreeMapModel
