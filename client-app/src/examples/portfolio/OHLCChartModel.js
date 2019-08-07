@@ -25,10 +25,7 @@ export class OHLCChartModel {
                 spacingLeft: 3,
                 spacingBottom: 5,
                 zoomType: 'x',
-                animation: false,
-                resetZoomButton: {
-                    theme: {display: 'none'}
-                }
+                animation: false
             },
             title: {text: null},
             legend: {enabled: false},
