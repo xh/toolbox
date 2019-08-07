@@ -1,6 +1,8 @@
 package io.xh.toolbox.portfolio
 
+import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
+import io.xh.hoist.cache.Cache
 
 import java.time.*
 import java.util.concurrent.ConcurrentHashMap
@@ -9,11 +11,13 @@ import static io.xh.toolbox.portfolio.Utils.*
 import static java.time.DayOfWeek.SATURDAY
 import static java.time.DayOfWeek.SUNDAY
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
+import static java.util.Collections.EMPTY_MAP
 
+@Slf4j
 class PortfolioService extends BaseService {
 
-    private final int INSTRUMENT_COUNT = 500
-    private final int ORDERS_COUNT = 20000
+    private final int INSTRUMENT_COUNT = 5
+    private final int ORDERS_COUNT = 200
 
     private final List SECTORS = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing', 'Energy', 'Other', 'Utilities']
     private final List REGIONS = ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
@@ -22,21 +26,22 @@ class PortfolioService extends BaseService {
     private final List FUNDS = ['Oak Mount', 'Black Crescent', 'Winter Star', 'Red River', 'Hudson Bay']
     private final List TRADERS = ['Freda Klecko', 'London Rohan', 'Kennedy Hills', 'Linnea Trolley', 'Pearl Hellens', 'Jimmy Falcon', 'Fred Corn', 'Robert Greer', 'HedgeSys', 'Susan Major']
 
-    private PortfolioDataSet data
 
-    def configService
+    private Cache<LocalDate, PortfolioDataSet> dataSets = new Cache(svc:this)
 
     void init() {
-        // data = generateData()
         createTimer(
-                runFn: this.&loadData,
-                interval: 'newsRefreshMins',
-                intervalUnits: MINUTES
+                runFn: this.&generateIntradayPrices,
+                interval: 1 * MINUTES
         )
         super.init()
     }
 
     PortfolioDataSet getData() {
+        LocalDate today = LocalDate.now()
+        def data = dataSets.getOrCreate(today) {
+            generateData(today)
+        }
         return data
     }
 
@@ -53,51 +58,39 @@ class PortfolioService extends BaseService {
     //----------------
     // Implementation
     //-----------------
-    private void loadData() {
-        if (!data) {
-            data = generateData()
-        } else {
-            changeData()
+    void generateIntradayPrices() {
+        // Get current day portfolio from cache.  If it exists, perturb it, and put it back in the cache
+        try {
+            log.info('Entering generateIntradayPrices')
+            def today = LocalDate.now()
+            def data = dataSets.get(today)
+            if (data) {
+                data = perturbIntradayPrices(data, today)
+                dataSets.put(data.day, data)
+            }
+        } catch (Exception e) {
+            log.error('Failed in generateIntradayPrices', e)
         }
 
     }
 
-    private PortfolioDataSet generateData() {
+
+    private PortfolioDataSet generateData(LocalDate day) {
         def instruments = generateInstruments(),
-            marketPrices = generatePrices(instruments),
-            orders = generateOrders(instruments, marketPrices),
-            rawPositions = calculateRawPositions(instruments, marketPrices, orders)
+            historicalPrices = generateHistoricalPrices(instruments, day),
+            orders = generateOrders(instruments, historicalPrices),
+            rawPositions = calculateRawPositions(instruments, historicalPrices, orders)
 
         return new PortfolioDataSet(
+                day: day,
                 instruments: instruments,
-                marketPrices: marketPrices,
+                historicalPrices: historicalPrices,
+                intradayPrices: EMPTY_MAP,
                 orders: orders,
                 rawPositions: rawPositions
         )
     }
 
-    private void changeData() {
-        Long numToChange = (15 * data.instruments.size() / 100).round() as Long
-        Set<Instrument> changed = new HashSet<Instrument>()
-        while (changed.size() < numToChange) {
-            Instrument instToChange = sample(data.instruments)
-            if (changed.contains(instToChange)) continue
-            else {
-                changed.add(instToChange)
-                String symbol = instToChange.symbol
-                List<MarketPrice> pricesForSymbol = data.marketPrices[symbol]
-                MarketPrice lastMktPrice = pricesForSymbol.last()
-                double oldClose = lastMktPrice.close
-                double newClose = preturbPrice(oldClose)
-
-                lastMktPrice.setClose(newClose)
-                if (newClose < lastMktPrice.low) lastMktPrice.setLow(newClose)
-                if (newClose > lastMktPrice.high) lastMktPrice.setHigh(newClose)
-
-
-            }
-        }
-    }
 
     //-------------------
     // Markets Generation
@@ -117,16 +110,17 @@ class PortfolioService extends BaseService {
         return ret
     }
 
-    private Map<String, List<MarketPrice>> generatePrices(Map<String, Instrument> instruments) {
-        Map<String, List<MarketPrice>> ret = new ConcurrentHashMap(INSTRUMENT_COUNT)
-        List<LocalDate> tradingDays = generateTradingDays()
-        instruments.keySet().each {
-            ret[it] = generateTimeSeries(tradingDays)
+    private Map<String, List<MarketPrice>> generateHistoricalPrices(
+            Map<String, Instrument> instruments,
+            LocalDate day
+    ) {
+        List<LocalDate> tradingDays = generateHistoricalTradingDays(day)
+        return instruments.keySet().collectEntries {
+            [it, generatePriceSeries(tradingDays)]
         }
-        return ret
     }
 
-    private List<MarketPrice> generateTimeSeries(List<LocalDate> tradingDays) {
+    private List<MarketPrice> generatePriceSeries(List<LocalDate> tradingDays) {
         Set<Integer> spikeDayIdxs = []
         List<MarketPrice> ret = []
 
@@ -146,7 +140,7 @@ class PortfolioService extends BaseService {
             double open = startPx
             double high = startPx + (pctUp * startPx)
             double low = startPx - (pctDown * startPx)
-            double close = (Math.random() * (high - low)) + low
+            double close = randDouble(low, high)
 
             int maxVol
             if (spikeDayIdxs.find { it == idx }) {
@@ -171,16 +165,14 @@ class PortfolioService extends BaseService {
         return ret
     }
 
-    private List<LocalDate> generateTradingDays() {
-        LocalDate today = LocalDate.now()
-        LocalDate tradingDay = LocalDate.of(today.getYear() - 1, 1, 1)
-
+    private List<LocalDate> generateHistoricalTradingDays(LocalDate currDay) {
         List<LocalDate> ret = []
 
-        while (tradingDay <= today) {
-            DayOfWeek dow = tradingDay.getDayOfWeek()
-            if (dow != SATURDAY && dow != SUNDAY) ret << tradingDay
-            tradingDay = tradingDay.plusDays(1)
+        LocalDate day = LocalDate.of(currDay.getYear() - 1, 1, 1)
+        while (day <= currDay) {
+            DayOfWeek dow = day.getDayOfWeek()
+            if (dow != SATURDAY && dow != SUNDAY) ret << day
+            day = day.plusDays(1)
         }
 
         return ret
@@ -200,7 +192,9 @@ class PortfolioService extends BaseService {
     //------------------------
     // Portfolio Generation
     //------------------------
-    private List<Order> generateOrders(Map<String, Instrument> instruments, Map<String, List<MarketPrice>> marketPrices) {
+    private List<Order> generateOrders(Map<String, Instrument> instruments,
+                                       Map<String, List<MarketPrice>> historicalPrices
+    ) {
         List<Order> ret = new ArrayList<Order>(ORDERS_COUNT)
         List<String> symbols = instruments.keySet() as List<String>
         ORDERS_COUNT.times { i ->
@@ -215,11 +209,11 @@ class PortfolioService extends BaseService {
                 min = randInt(0, 59)
 
             // Calc 2nd order, partially random attributes
-            MarketPrice mktData = sample(marketPrices[symbol])
+            MarketPrice mktData = sample(historicalPrices[symbol])
             Instant time = mktData.day.atTime(LocalTime.of(hour, min)).toInstant(ZoneOffset.ofHours(-5))
-            long quantity = randInt(300, 10001) * (dir == 'Sell' ? -1 : 1)
-            double price = randDouble(mktData.low, mktData.high).round(2)
-            long mktVal = (quantity * price).round()
+            Long quantity = randInt(300, 10001) * (dir == 'Sell' ? -1 : 1)
+            Double price = randDouble(mktData.low, mktData.high).round(2)
+            Long cost = (quantity * price).round()
 
             ret << new Order(
                     id: "order-${i}",
@@ -227,12 +221,12 @@ class PortfolioService extends BaseService {
                     dir: dir,
                     quantity: quantity,
                     price: price,
-                    mktVal: mktVal,
+                    cost: cost,
                     time: time,
                     model: model,
                     fund: fund,
                     trader: trader,
-                    commission: Math.abs(mktVal * 0.0002),
+                    commission: Math.abs(cost * 0.0002),
                     confidence: randInt(0, 1001)
             )
         }
@@ -243,7 +237,7 @@ class PortfolioService extends BaseService {
     // Calculate lowest-level leaf positions with P&L.
     private List<RawPosition> calculateRawPositions(
             Map<String, Instrument> instruments,
-            Map<String, List<MarketPrice>> marketPrices,
+            Map<String, List<MarketPrice>> historicalPrices,
             List<Order> orders
     ) {
         Map<String, List<Order>> byKey = orders.groupBy { it.key }
@@ -251,28 +245,69 @@ class PortfolioService extends BaseService {
         return byKey.collect { key, ordersForKey ->
             Order first = ordersForKey.first()
             String symbol = first.symbol
-            double endPx = marketPrices[symbol].last().close
+            double endPx = historicalPrices[symbol].last().close
 
             long endQty = ordersForKey.sum { it.quantity } as long
-            long netCashflow = ordersForKey.sum { -it.mktVal } as long
+            long cost = ordersForKey.sum { it.cost } as long
 
-            // Crude P&L calc.
-            long mktVal = (endQty * endPx).round()
-            long pnl = netCashflow + mktVal
-
-            new RawPosition(
+            return new RawPosition(
                     instrument: instruments[symbol],
                     model: first.model,
                     fund: first.fund,
                     trader: first.trader,
-                    mktVal: mktVal,
-                    pnl: pnl
+                    cost: cost,
+                    endQty: endQty,
+                    endPx: endPx
             )
         }
     }
 
+
+    //-------------------------
+    // Perturb intraday prices
+    //------------------------
+    private PortfolioDataSet perturbIntradayPrices(PortfolioDataSet oldData, LocalDate today) {
+        def pctToChange = 100
+        def perturbPctRange = 10
+
+        Long numToChange = Math.round((pctToChange * oldData.instruments.size() / 100))
+
+        Map<String, MarketPrice> newPrices = [:]
+        def allInstruments = oldData.instruments.values() as List<Instrument>
+        while (newPrices.size() < numToChange) {
+            def instrument = sample(allInstruments),
+                symbol = instrument.symbol
+
+            if (!newPrices.containsKey(symbol)) {
+                def oldPrice = oldData.intradayPrices[symbol] ?: oldData.historicalPrices[symbol].last()
+                newPrices[symbol] = oldPrice.perturb(perturbPctRange)
+            }
+        }
+
+        Map<String, MarketPrice> newIntradayPrices = new HashMap(oldData.intradayPrices)
+        newIntradayPrices.putAll(newPrices)
+
+
+        // Use the new current prices to update the raw positions' mktVal and pnl values,
+        // according to the method used in generateTimeSeries.
+        List<RawPosition> newRawPositions = oldData.rawPositions.collect { pos ->
+            def newPrice = newPrices[pos.instrument.symbol]
+            return newPrice ? pos.repricePosition(newPrice.close) : pos
+        }
+
+        return new PortfolioDataSet(
+                day: today,
+                instruments: oldData.instruments,
+                historicalPrices: oldData.historicalPrices,
+                intradayPrices: newIntradayPrices,
+                orders: oldData.orders,
+                rawPositions: newRawPositions
+        )
+    }
+
+
     void clearCaches() {
-        this.data = generateData()
+        dataSets.clear()
         super.clearCaches()
     }
 }
