@@ -14,8 +14,10 @@ class MarketPrice extends JSONFormatCached {
     long volume
 
 
-    MarketPrice perturb(Float pctRange) {
-        double newClose = close * (1+(randDouble(-pctRange, pctRange)/100))
+    MarketPrice perturb(double pctRange) {
+        int sign = Math.random() > 0.5 ? 1 : -1
+        double pctChange = randDouble(0, pctRange)
+        double newClose = close * (1+(sign*pctChange/100))
         double newHigh = newClose > high ? newClose : high
         double newLow = newClose < low ? newClose : low
 
