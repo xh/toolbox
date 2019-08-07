@@ -9,7 +9,7 @@ export class LineChartModel {
     @bindable currentSymbol = '';
     @bindable.ref symbols = null;
     numCompanies = 3;
-    chartModel = new ChartModel({config: this.getChartModelCfg()});
+    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
     constructor() {
         this.addReaction({
