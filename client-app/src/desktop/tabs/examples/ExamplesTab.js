@@ -66,7 +66,7 @@ export class ExamplesTab extends Component {
             path: '/fileManager',
             text: [
                 <p>
-                    This example shows a simple, full-stack pattern for uploading and storing files on a server.
+                    This example shows a simple, full-stack pattern for syncing files to a server.
                 </p>,
                 <p>
                     On the client side this app uses the {link(code('FileChooser'), '/app/other/fileChooser')}.
