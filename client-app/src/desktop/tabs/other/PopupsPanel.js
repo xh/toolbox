@@ -152,7 +152,7 @@ export class PopupsPanel extends Component {
                                     </p>
                                 ),
                                 input: {
-                                    value: 'I must be at least 20 characters to send...',
+                                    initialValue: 'I must be at least 20 characters to send...',
                                     item: textArea({autoFocus: true, selectOnFocus: true}),
                                     rules: [required, lengthIs({min: 20})]
                                 },
@@ -182,7 +182,7 @@ export class PopupsPanel extends Component {
                                     <p>This message has the primary button set to autoFocus.</p>,
                                     acceptRichTextReminder
                                 ),
-                                confirmProps: {text: 'Oh I see!', autoFocus: true},
+                                confirmProps: {text: 'Oh I see!'},
                                 cancelProps: {icon: Icon.xCircle()}
                             })
                         }),
