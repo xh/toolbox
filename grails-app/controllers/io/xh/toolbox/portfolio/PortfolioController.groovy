@@ -40,7 +40,10 @@ class PortfolioController extends BaseController {
 
     // List of MarketPrices for the given instrument identified by its symbol
     def prices() {
-        renderJSON(portfolioService.getData().marketPrices[params.id])
+        List<MarketPrice> historicalPrices = portfolioService.getData().historicalPrices[params.id]
+        MarketPrice intradayPrices = portfolioService.getData().intradayPrices[params.id]
+        List<MarketPrice> allPrices = intradayPrices ? historicalPrices+[intradayPrices] : historicalPrices
+        renderJSON(allPrices)
     }
 
     def lookups() {
