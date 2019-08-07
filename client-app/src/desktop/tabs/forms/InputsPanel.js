@@ -222,11 +222,11 @@ export class InputsPanel extends Component {
                             }),
                             row({
                                 label: 'DateInput',
-                                field: 'calendarDate',
-                                info: 'valueType: calendarDate',
+                                field: 'localDate',
+                                info: 'valueType: localDate',
                                 layout: {width: 130},
                                 item: dateInput({
-                                    valueType: 'calendarDate'
+                                    valueType: 'localDate'
                                 })
                             })
                         ]

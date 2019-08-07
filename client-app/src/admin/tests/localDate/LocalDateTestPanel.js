@@ -4,13 +4,13 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {groupBy, forOwn, startCase} from 'lodash';
 
-import './CalendarDateTestPanel.scss';
-import {CalendarDateTestModel} from './CalendarDateTestModel';
+import './LocalDateTestPanel.scss';
+import {LocalDateTestModel} from './LocalDateTestModel';
 
 @HoistComponent
-export class CalendarDateTestPanel extends Component {
+export class LocalDateTestPanel extends Component {
 
-    model = new CalendarDateTestModel();
+    model = new LocalDateTestModel();
 
     render() {
         const results = groupBy(this.model.testResults, 'category'),
@@ -21,7 +21,7 @@ export class CalendarDateTestPanel extends Component {
         });
 
         return panel({
-            className: 'calendar-date-test-panel xh-tiled-bg',
+            className: 'local-date-test-panel xh-tiled-bg',
             items
         });
     }
@@ -29,7 +29,7 @@ export class CalendarDateTestPanel extends Component {
     renderResultTable(title, tests) {
         return (
             <div>
-                <p className="test-title">{startCase(title)}</p>
+                <p>{startCase(title)}</p>
                 <table>
                     <tbody>
                         <tr>

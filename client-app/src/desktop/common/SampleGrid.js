@@ -1,4 +1,4 @@
-import {calendarDateCol, boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
+import {localDateCol, boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
 import {br, filler, fragment, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, HoistModel, LayoutSupport, LoadSupport, managed, XH} from '@xh/hoist/core';
@@ -262,7 +262,7 @@ class Model {
             {
                 headerName: 'Date',
                 field: 'trade_date',
-                ...calendarDateCol
+                ...localDateCol
             },
             {
                 field: 'active',

@@ -145,13 +145,18 @@ export class FormPanel extends Component {
                     field: 'startDate',
                     flex: 1,
                     inline: false,  // always print labels on top (override form-level inline)
-                    item: dateInput()
+                    item: dateInput({
+                        valueType: 'localDate'
+                    })
                 }),
                 formField({
                     field: 'endDate',
                     flex: 1,
                     inline: false,
-                    item: dateInput({enableClear: true})
+                    item: dateInput({
+                        valueType: 'localDate',
+                        enableClear: true
+                    })
                 })
             ),
             formField({

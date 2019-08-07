@@ -2,11 +2,11 @@ import {HoistModel, XH} from '@xh/hoist/core';
 import {dateIs, FormModel, lengthIs, numberIs, required} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
 import {pre, vbox} from '@xh/hoist/cmp/layout';
-import {filter, isEmpty, isNil} from 'lodash';
-import moment from 'moment';
 import {bindable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {LocalDate} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon';
+import {filter, isEmpty, isNil} from 'lodash';
 
 @HoistModel
 export class FormPanelModel {
@@ -70,7 +70,7 @@ export class FormPanelModel {
             {
                 name: 'startDate',
                 displayName: 'Hire Date',
-                initialValue: moment().startOf('day').toDate(),
+                initialValue: new LocalDate(),
                 rules: [required, dateIs({max: 'today'})]
             },
             {

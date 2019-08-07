@@ -1,7 +1,7 @@
 import {HoistModel} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {bindable} from '@xh/hoist/mobx';
-import {CalendarDate} from '@xh/hoist/utils/datetime';
+import {LocalDate} from '@xh/hoist/utils/datetime';
 import moment from 'moment';
 import {random} from 'lodash';
 
@@ -31,7 +31,7 @@ export class InputsPanelModel {
             {name: 'option6'},
             {name: 'date1'},
             {name: 'date2', initialValue: moment().startOf('hour').toDate()},
-            {name: 'calendarDate', initialValue: new CalendarDate()},
+            {name: 'localDate', initialValue: new LocalDate()},
             {name: 'bool1'},
             {name: 'bool2'},
             {name: 'buttonGroup1', initialValue: 'button2'}
