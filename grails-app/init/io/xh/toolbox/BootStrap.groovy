@@ -94,6 +94,15 @@ class BootStrap {
                 ],
                 groupName: 'Toolbox',
                 clientVisible: true,
+            ],
+            portfolioConfigs: [
+                valueType: 'json',
+                defaultValue: [
+                    updateInterval: 1,
+                    pctInstrumentsToChange: 20,
+                    perturbPctRange: 0.025
+                ],
+                groupName: 'Toolbox - Example Apps'
             ]
         ])
 
