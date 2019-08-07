@@ -152,7 +152,7 @@ export class PopupsPanel extends Component {
                                     </p>
                                 ),
                                 input: {
-                                    value: 'I must be at least 20 characters to send...',
+                                    initialValue: 'I must be at least 20 characters to send...',
                                     item: textArea({autoFocus: true, selectOnFocus: true}),
                                     rules: [required, lengthIs({min: 20})]
                                 },
