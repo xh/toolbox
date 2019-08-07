@@ -76,7 +76,6 @@ export class FormPanelModel {
             {
                 name: 'endDate',
                 rules: [
-                    dateIs({min: 'today'}),
                     {
                         when: ({value, formModel}, {startDate}) => startDate && value,
                         check: ({value, displayName}, {startDate}) => {

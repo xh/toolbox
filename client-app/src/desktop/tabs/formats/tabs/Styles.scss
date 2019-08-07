@@ -1,30 +1,34 @@
-.toolbox-formats-tab {
+.tbox-formats-tab {
+  > .xh-vframe {
+    padding-left: var(--xh-pad-px);
+  }
+
   &__panel {
-    margin: var(--xh-pad-px);
-    display: flex;
+    margin: var(--xh-pad-px) var(--xh-pad-px) var(--xh-pad-px) 0;
+    border: var(--xh-border-solid);
 
     table {
-      padding: 5px 10px;
-      font-size: larger;
-    }
-    tr {
-      text-align: right;
-      background-color: var(--xh-grid-bg);
-      &:nth-child(odd) {
-        td {
-          background-color: var(--xh-grid-bg-odd);
+      width: 100%;
+
+      tr {
+        background-color: var(--xh-grid-bg);
+        &:nth-child(odd) {
+          td {
+            background-color: var(--xh-grid-bg-odd);
+          }
         }
       }
-    }
-    td.inputColumn {
-      width: 291px;
+
+      td {
+        text-align: right;
+        width: 50%;
+      }
     }
 
     &__card {
       display: flex;
       flex-direction: column;
-      margin: 0px 22px 8px 22px;
-      padding: 0px 8px 8px 0px;
+      margin: 0 var(--xh-pad-px);
     }
   }
 
@@ -32,31 +36,16 @@
     display: flex;
   }
 
-  .xh-number-field {
-    flex: 0 0 125px;
-  }
-
-  .xh-select-field {
-    flex: 0 0 125px;
-    button {
-      width: 125px;
-      font-size: var(--xh-font-size-md-px);
-    }
-  }
-
   .bp3-form-group {
     margin: 0;
-    padding: 10px 20px;
+    padding: var(--xh-pad-half-px);
     float: right;
 
-
     .bp3-label {
-      font-size: var(--xh-font-size-large-px);
       margin-bottom: 2px;
 
       .bp3-text-muted {
         visibility: hidden;
-        font-size: var(--xh-font-size-small-px);
         font-family: var(--xh-font-family-mono);
         background-color: var(--xh-bg-alt);
         border: var(--xh-border-solid);
@@ -70,7 +59,6 @@
     }
 
     .bp3-form-helper-text {
-      font-size: var(--xh-font-size-small-px);
       margin-left: 20px;
     }
   }
