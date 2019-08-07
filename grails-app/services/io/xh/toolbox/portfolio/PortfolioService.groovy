@@ -16,8 +16,8 @@ import static java.util.Collections.EMPTY_MAP
 @Slf4j
 class PortfolioService extends BaseService {
 
-    private final int INSTRUMENT_COUNT = 5
-    private final int ORDERS_COUNT = 200
+    private final int INSTRUMENT_COUNT = 500
+    private final int ORDERS_COUNT = 20000
 
     private final List SECTORS = ['Financials', 'Healthcare', 'Real Estate', 'Technology', 'Consumer Products', 'Manufacturing', 'Energy', 'Other', 'Utilities']
     private final List REGIONS = ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
@@ -29,10 +29,15 @@ class PortfolioService extends BaseService {
 
     private Cache<LocalDate, PortfolioDataSet> dataSets = new Cache(svc:this)
 
+    def configService
+
     void init() {
+        def updateInterval = configService.getJSONObject('portfolioConfigs').updateInterval
+        log.debug("Initializing PortfolioService with update interval: ${updateInterval} minutes")
         createTimer(
                 runFn: this.&generateIntradayPrices,
-                interval: 1 * MINUTES
+                interval: updateInterval,
+                intervalUnits: MINUTES
         )
         super.init()
     }
@@ -61,12 +66,13 @@ class PortfolioService extends BaseService {
     void generateIntradayPrices() {
         // Get current day portfolio from cache.  If it exists, perturb it, and put it back in the cache
         try {
-            log.info('Entering generateIntradayPrices')
+            log.debug('Entering generateIntradayPrices')
             def today = LocalDate.now()
             def data = dataSets.get(today)
             if (data) {
                 data = perturbIntradayPrices(data, today)
                 dataSets.put(data.day, data)
+                log.debug('Perturbed prices')
             }
         } catch (Exception e) {
             log.error('Failed in generateIntradayPrices', e)
@@ -267,8 +273,9 @@ class PortfolioService extends BaseService {
     // Perturb intraday prices
     //------------------------
     private PortfolioDataSet perturbIntradayPrices(PortfolioDataSet oldData, LocalDate today) {
-        def pctToChange = 100
-        def perturbPctRange = 10
+        def portfolioConfigs = configService.getJSONObject('portfolioConfigs')
+        def pctToChange = portfolioConfigs.pctInstrumentsToChange
+        def perturbPctRange = portfolioConfigs.perturbPctRange
 
         Long numToChange = Math.round((pctToChange * oldData.instruments.size() / 100))
 
