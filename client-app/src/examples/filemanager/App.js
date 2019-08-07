@@ -14,7 +14,7 @@ export class App extends Component {
     render() {
         return panel({
             tbar: appBar({
-                icon: Icon.file({size: '2x', prefix: 'fal'}),
+                icon: Icon.folder({size: '2x', prefix: 'fal'}),
                 title: 'File Manager',
                 hideRefreshButton: true
             }),
