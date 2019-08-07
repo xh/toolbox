@@ -4,35 +4,35 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import React, {Component} from 'react';
-import {HoistComponent, XH, elemFactory} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
-import {frame, hframe, hbox, vbox, div, box} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import moment from 'moment';
-import {fmtDateTime, fmtThousands, fmtNumber} from '@xh/hoist/format';
 import {form} from '@xh/hoist/cmp/form';
+import {box, div, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
+import {elemFactory, HoistComponent, XH} from '@xh/hoist/core';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
+    buttonGroupInput,
     checkbox,
     dateInput,
-    textInput,
-    textArea,
+    jsonInput,
     numberInput,
     radioInput,
-    slider,
     select,
+    slider,
     switchInput,
-    jsonInput,
-    buttonGroupInput
+    textArea,
+    textInput
 } from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {fmtDateTime, fmtNumber, fmtThousands} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon';
+import moment from 'moment';
+import React, {Component} from 'react';
 
-import {usStates, restaurants} from '../../../core/data';
+import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
-import {InputsPanelModel} from './InputsPanelModel';
 import './InputsPanel.scss';
+import {InputsPanelModel} from './InputsPanelModel';
 
 @HoistComponent
 export class InputsPanel extends Component {
@@ -380,16 +380,19 @@ export class InputsPanel extends Component {
             {formModel} = model;
 
         return toolbar(
+            filler(),
             switchInput({
                 model: formModel,
                 bind: 'readonly',
                 label: 'Read-only'
             }),
+            toolbarSep(),
             switchInput({
                 model: formModel,
                 bind: 'disabled',
                 label: 'Disabled'
             }),
+            toolbarSep(),
             switchInput({
                 model,
                 bind: 'commitOnChange',
