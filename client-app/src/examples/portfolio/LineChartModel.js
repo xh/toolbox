@@ -20,7 +20,7 @@ export class LineChartModel {
 
     @managed
     chartModel = new ChartModel({
-        config: {
+        highchartsConfig: {
             chart: {
                 zoomType: 'x',
                 animation: false
