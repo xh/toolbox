@@ -17,7 +17,6 @@ import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
     checkbox,
-    calendarDateInput,
     dateInput,
     textInput,
     textArea,
@@ -222,12 +221,12 @@ export class InputsPanel extends Component {
                                 })
                             }),
                             row({
-                                label: 'CalendarDateInput',
+                                label: 'DateInput',
                                 field: 'calendarDate',
-                                info: 'minDate',
-                                layout: {width: 150},
-                                item: calendarDateInput({
-                                    minDate: moment().subtract(1, 'days').toDate()
+                                info: 'valueType: calendarDate',
+                                layout: {width: 130},
+                                item: dateInput({
+                                    valueType: 'calendarDate'
                                 })
                             })
                         ]
