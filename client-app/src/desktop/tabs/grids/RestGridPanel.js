@@ -46,7 +46,7 @@ export class RestGridPanel extends Component {
                 },
                 {
                     name: 'earningsDate',
-                    type: 'date',
+                    type: 'localDate',
                     required: true
                 },
                 {

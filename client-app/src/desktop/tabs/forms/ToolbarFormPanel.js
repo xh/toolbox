@@ -79,8 +79,9 @@ export class ToolbarFormPanel extends Component {
                             formField({
                                 label: null,
                                 field: 'date1',
-                                width: 150,
+                                width: 140,
                                 item: dateInput({
+                                    valueType: 'localDate',
                                     placeholder: 'YYYY-MM-DD',
                                     enableClear: true
                                 })

@@ -6,16 +6,15 @@
  */
 
 import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
+import {bindable} from '@xh/hoist/mobx';
 import {managed} from '@xh/hoist/core/mixins';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {dateCol} from '@xh/hoist/cmp/grid/columns';
+import {localDateCol} from '@xh/hoist/cmp/grid/columns';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {ONE_SECOND} from '@xh/hoist/utils/datetime';
+import {LocalDate, ONE_SECOND} from '@xh/hoist/utils/datetime';
 
 import {DetailsPanelModel} from './DetailsPanelModel';
-import {bindable} from '@xh/hoist/mobx';
-import moment from 'moment';
 
 @HoistModel
 @LoadSupport
@@ -71,7 +70,7 @@ export class RecallsPanelModel {
             },
             {
                 field: 'recallDate',
-                ...dateCol,
+                ...localDateCol,
                 headerName: 'Date',
                 width: 100,
                 renderer: compactDateRenderer('MMM D')
@@ -137,7 +136,7 @@ export class RecallsPanelModel {
             ...rawRec,
             brandName: rawRec.openfda.brand_name[0],
             genericName: rawRec.openfda.generic_name[0],
-            recallDate: moment(rawRec.recall_initiation_date).toDate(),
+            recallDate: new LocalDate(rawRec.recall_initiation_date),
             description: rawRec.product_description,
             recallingFirm: rawRec.recalling_firm,
             reason: rawRec.reason_for_recall
