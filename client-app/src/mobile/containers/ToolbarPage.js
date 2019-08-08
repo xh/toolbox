@@ -7,12 +7,15 @@ import {select} from '@xh/hoist/mobile/cmp/input';
 import {div, hframe, filler, frame} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 
-import {usStates} from '../../core/data';
+import {ToolbarPageModel} from './ToolbarPageModel';
 
 @HoistComponent
 export class ToolbarPage extends Component {
 
+    model = new ToolbarPageModel();
+
     render() {
+        const {model} = this;
         return page({
             className: 'toolbox-toolbar-page',
             items: [
@@ -71,12 +74,16 @@ export class ToolbarPage extends Component {
                     filler(),
                     select({
                         width: 200,
-                        options: usStates,
-                        placeholder: 'Select a State...'
+                        placeholder: 'Select a State...',
+                        options: model.options,
+                        model: model,
+                        bind: 'state'
                     }),
                     button({
                         text: 'Show Toast',
-                        onClick: () => XH.toast({message: 'Toast Shown!'})
+                        onClick: () => XH.toast({
+                            message: model.state ? `Selected "${model.state}"` : 'No state selected'
+                        })
                     })
                 )
             ]
