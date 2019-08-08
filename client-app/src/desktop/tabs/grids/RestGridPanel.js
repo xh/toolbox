@@ -69,11 +69,11 @@ export class RestGridPanel extends Component {
         columns: [
             {
                 field: 'name',
-                width: 250
+                width: 200
             },
             {
                 field: 'type',
-                width: 180
+                width: 120
             },
             {
                 field: 'employees',
@@ -90,11 +90,12 @@ export class RestGridPanel extends Component {
             {
                 field: 'earningsDate',
                 renderer: dateRenderer(),
-                width: 100,
+                width: 140,
                 exportFormat: ExportFormat.DATE_FMT
             },
             {
-                field: 'note'
+                field: 'note',
+                width: 200
             },
             {...emptyFlexCol}
         ],
@@ -137,8 +138,8 @@ export class RestGridPanel extends Component {
             item: panel({
                 title: 'Grids › REST Editor',
                 icon: Icon.edit(),
-                width: 850,
-                height: 400,
+                width: 900,
+                height: 500,
                 item: restGrid({model: this.model})
             })
         });

@@ -5,7 +5,7 @@
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 import {emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
-import {filler} from '@xh/hoist/cmp/layout';
+import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {
     elemFactory,
     HoistComponent,
@@ -22,6 +22,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable} from '@xh/hoist/mobx';
 import {Component} from 'react';
 
@@ -38,6 +39,19 @@ class SampleTreeGrid extends Component {
             {gridModel} = model;
 
         return panel({
+            items: [
+                hframe(
+                    grid({model: gridModel}),
+                    panel({
+                        title: 'Display Options',
+                        icon: Icon.settings(),
+                        className: 'tbox-display-opts',
+                        compactHeader: true,
+                        items: gridStyleSwitches({gridModel}),
+                        model: {side: 'right', defaultSize: 170, resizable: false}
+                    })
+                )
+            ],
             tbar: toolbar(
                 refreshButton({model}),
                 toolbarSep(),
@@ -50,7 +64,6 @@ class SampleTreeGrid extends Component {
                 colChooserButton({gridModel}),
                 exportButton({gridModel})
             ),
-            item: grid({model: gridModel}),
             mask: model.loadModel,
             bbar: toolbar(
                 select({
@@ -64,8 +77,6 @@ class SampleTreeGrid extends Component {
                         {label: 'No Total', value: false}
                     ]
                 }),
-                filler(),
-                gridStyleSwitches({gridModel}),
                 toolbarSep(),
                 switchInput({
                     model,

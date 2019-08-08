@@ -30,7 +30,7 @@ export class NumberFormatsPanelModel {
         null,
         undefined
     ];
-    @bindable tryItData = 0;
+    @bindable tryItData;
 
     // Parameters
     @bindable fnName = 'fmtNumber';
