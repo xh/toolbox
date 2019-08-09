@@ -42,17 +42,20 @@ export class PositionsPanelModel {
 
         if (this.positionsSession) this.positionsSession.destroy();
 
-
         const session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp'),
-            positions = session.positions.root.children;
+            positions = session.initialPositions.root.children;
 
-        console.log(positions);
+        session.onUpdate = (updates) => {
+            gridModel.store.updateData(updates.data);
+        };
+
         this.positionsSession = session;
 
         gridModel.loadData(positions);
         if (!gridModel.selectedRecord) {
             gridModel.selectFirst();
         }
+
         this.setLoadTimestamp(Date.now());
     }
 }
