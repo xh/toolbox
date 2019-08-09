@@ -1,6 +1,8 @@
 import {HoistService, XH} from '@xh/hoist/core';
 import moment from 'moment';
 
+import {PositionSession} from '../positions/PositionSession';
+
 @HoistService
 export class PortfolioService {
 
@@ -14,6 +16,20 @@ export class PortfolioService {
         return XH.fetchJson({url: 'portfolio/symbols'});
     }
 
+    async getLivePositionsAsync(dims, topic, maxPositions = this.MAX_POSITIONS, includeSummary = false) {
+        const session = await XH.fetchJson({
+            url: 'portfolio/livePositions',
+            params: {
+                dims: dims.join(','),
+                maxPositions,
+                channelKey: XH.webSocketService.channelKey,
+                topic
+            }
+        });
+
+        return new PositionSession(session);
+    }
+
     /**
      * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
      * @param {string[]} dims - field names for dimensions on which to group.
@@ -21,8 +37,8 @@ export class PortfolioService {
      * @param {boolean} [includeSummary] - true to include a root summary node
      * @return {Promise<Array>}
      */
-    async getPortfolioAsync(dims, maxPositions = this.MAX_POSITIONS, includeSummary = false) {
-        const portfolio = await XH.fetchJson({
+    async getPositionsAsync(dims, maxPositions = this.MAX_POSITIONS, includeSummary = false) {
+        const positions = await XH.fetchJson({
             url: 'portfolio/positions',
             params: {
                 dims: dims.join(','),
@@ -30,20 +46,12 @@ export class PortfolioService {
             }
         });
 
-        return includeSummary ? [portfolio.root] : portfolio.root.children;
-    }
-
-    /**
-     * Return a list of flat position data.
-     * @returns {Promise<Array>}
-     */
-    async getPositionsAsync() {
-        return XH.fetchJson({url: 'portfolio/rawPositions'});
+        return includeSummary ? [positions.root] : positions.root.children;
     }
 
     /**
      * Return a single grouped position, uniquely identified by drilldown ID.
-     * @param positionId - ID installed on each position returned by `getPortfolioAsync()`.
+     * @param positionId - ID installed on each position returned by `getPositionsAsync()`.
      * @return {Promise<*>}
      */
     async getPositionAsync(positionId) {
@@ -53,6 +61,14 @@ export class PortfolioService {
                 positionId
             }
         });
+    }
+
+    /**
+     * Return a list of flat position data.
+     * @returns {Promise<Array>}
+     */
+    async getRawPositionsAsync() {
+        return XH.fetchJson({url: 'portfolio/rawPositions'});
     }
 
     async getAllOrdersAsync() {
