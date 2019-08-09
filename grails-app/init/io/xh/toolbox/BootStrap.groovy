@@ -100,9 +100,10 @@ class BootStrap {
                 defaultValue: [
                     instrumentCount: 500,
                     orderCount: 20000,
-                    updateIntervalSecs: 10,
+                    updateIntervalSecs: 5,
                     updatePctInstruments: 20,
-                    updatePctPriceRange: 0.025
+                    updatePctPriceRange: 0.025,
+                    pushUpdatesIntervalSecs: 5
                 ],
                 groupName: 'Toolbox - Example Apps'
             ]
