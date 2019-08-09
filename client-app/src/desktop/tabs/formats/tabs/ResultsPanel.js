@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {HoistComponent, elemFactory} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {thead, tbody, table, tr, td, th} from '@xh/hoist/cmp/layout';
-import {formGroup} from '@xh/hoist/kit/blueprint';
+import {tbody, table, tr, td} from '@xh/hoist/cmp/layout';
 import './Styles.scss';
 
 @HoistComponent
@@ -13,13 +12,11 @@ export class ResultsPanel extends Component {
             tryItInput = React.cloneElement(props.tryItInput, {model, bind: 'tryItData'});
 
         return panel({
-            className: 'toolbox-formats-tab__panel',
-            title: 'Result',
-            flex: 1,
+            title: 'Input › Output',
+            compactHeader: true,
+            width: 400,
+            className: 'tbox-formats-tab__panel',
             item: table(
-                thead(
-                    tr(th('Input'), th('Output'))
-                ),
                 tbody(
                     ...model.testResults.map(({formattedData, result}) => {
                         return tr({
@@ -30,14 +27,7 @@ export class ResultsPanel extends Component {
                         });
                     }),
                     tr(
-                        td(
-                            formGroup({
-                                label: 'Try it:',
-                                inline: true,
-                                width: '90%',
-                                item: tryItInput
-                            })
-                        ),
+                        td(tryItInput),
                         td(model.tryItResult)
                     )
                 )

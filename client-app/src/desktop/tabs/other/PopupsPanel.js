@@ -63,14 +63,13 @@ export class PopupsPanel extends Component {
                                 message: (
                                     <p>
                                         This is also an Alert. Here, we customized the appearance of
-                                        the button and set it to autoFocus via <code>confirmProps</code>.
+                                        the button via <code>confirmProps</code>.
                                     </p>
                                 ),
                                 confirmProps: {
                                     intent: 'success',
                                     minimal: false,
-                                    icon: Icon.checkCircle(),
-                                    autoFocus: true
+                                    icon: Icon.checkCircle()
                                 }
                             })
                         }),

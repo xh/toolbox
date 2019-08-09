@@ -40,7 +40,7 @@ export class FormPanel extends Component {
                 className: 'tbox-form-panel',
                 icon: Icon.edit(),
                 width: 870,
-                height: 600,
+                height: 550,
                 mask: this.validateButtonTask,
                 item: hframe(
                     this.renderForm(),

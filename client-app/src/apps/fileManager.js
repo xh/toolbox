@@ -1,6 +1,6 @@
 import {XH} from '@xh/hoist/core';
 import {App} from '../examples/filemanager/App';
-import {AppModel} from '../examples/recalls/AppModel';
+import {AppModel} from '../examples/filemanager/AppModel';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
 XH.renderApp({

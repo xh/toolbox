@@ -35,8 +35,8 @@ export class ColumnGroupsGridPanel extends Component {
             item: panel({
                 title: 'Grids › Grouped Columns',
                 icon: Icon.gridPanel(),
-                width: 700,
-                height: 400,
+                width: 900,
+                height: 500,
                 item: sampleColumnGroupsGrid()
             })
         });
