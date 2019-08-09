@@ -2,12 +2,18 @@ package io.xh.toolbox.portfolio
 
 import io.xh.hoist.security.Access
 import io.xh.toolbox.BaseController
+import static io.xh.toolbox.portfolio.Lookups.*
 
 @Access(['APP_READER'])
 class PortfolioController extends BaseController {
 
     def portfolioService,
         positionService
+
+    def livePositions() {
+        PositionQuery query = parsePositionQuery(params)
+        renderJSON(positionService.getLivePositions(query, params.channelKey, params.topic))
+    }
 
     def positions() {
         PositionQuery query = parsePositionQuery(params)
@@ -42,12 +48,18 @@ class PortfolioController extends BaseController {
     def prices() {
         List<MarketPrice> historicalPrices = portfolioService.getData().historicalPrices[params.id]
         MarketPrice intradayPrices = portfolioService.getData().intradayPrices[params.id]
-        List<MarketPrice> allPrices = intradayPrices ? historicalPrices+[intradayPrices] : historicalPrices
+        List<MarketPrice> allPrices = intradayPrices ? historicalPrices.dropRight(1)+[intradayPrices] : historicalPrices
         renderJSON(allPrices)
     }
 
     def lookups() {
-        renderJSON(portfolioService.getLookups())
+        renderJSON(
+                funds: FUNDS,
+                models: MODELS,
+                regions: REGIONS,
+                sectors: SECTORS,
+                traders: TRADERS
+        )
     }
 
     private PositionQuery parsePositionQuery(Map params) {
