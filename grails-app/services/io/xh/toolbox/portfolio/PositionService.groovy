@@ -12,12 +12,14 @@ class PositionService extends BaseService {
     private Map<String, PositionSession> sessions = new ConcurrentHashMap()
 
     def portfolioService,
-        webSocketService
+        webSocketService,
+        configService
 
     void init() {
+        def pushUpdatesIntervalSecs = config.pushUpdatesIntervalSecs
         createTimer(
                 runFn: this.&pushUpdatesToAllSessions,
-                interval: 30,
+                interval: pushUpdatesIntervalSecs,
                 intervalUnits: SECONDS
         )
         super.init()
@@ -252,5 +254,9 @@ class PositionService extends BaseService {
             it.destroy()
             sessions.remove(it.id)
         }
+    }
+
+    private Map getConfig() {
+        configService.getJSONObject('portfolioConfigs')
     }
 }
