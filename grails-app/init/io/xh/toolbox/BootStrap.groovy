@@ -98,9 +98,11 @@ class BootStrap {
             portfolioConfigs: [
                 valueType: 'json',
                 defaultValue: [
-                    updateInterval: 1,
-                    pctInstrumentsToChange: 20,
-                    perturbPctRange: 0.025
+                    instrumentCount: 500,
+                    orderCount: 20000,
+                    updateIntervalSecs: 10,
+                    updatePctInstruments: 20,
+                    updatePctPriceRange: 0.025
                 ],
                 groupName: 'Toolbox - Example Apps'
             ]
