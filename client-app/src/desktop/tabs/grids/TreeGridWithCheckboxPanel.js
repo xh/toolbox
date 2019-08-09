@@ -24,8 +24,8 @@ export class TreeGridWithCheckboxPanel extends Component {
             item: panel({
                 title: 'Grids › Tree w/CheckBox',
                 icon: Icon.grid(),
-                width: 700,
-                height: 400,
+                width: 900,
+                height: 500,
                 item: sampleTreeWithCheckboxGrid()
             })
         });

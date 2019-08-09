@@ -53,7 +53,7 @@ class SampleTreeWithCheckboxGrid extends Component {
             mask: model.loadModel,
             bbar: toolbar(
                 filler(),
-                gridStyleSwitches({gridModel})
+                gridStyleSwitches({gridModel, forToolbar: true})
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()

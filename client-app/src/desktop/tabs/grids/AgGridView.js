@@ -39,7 +39,7 @@ export class AgGridView extends Component {
                 width: '95%',
                 marginBottom: 10,
                 mask: loadModel,
-                bbar: toolbar(filler(), gridStyleSwitches({gridModel: agGridModel})),
+                bbar: toolbar(filler(), gridStyleSwitches({gridModel: agGridModel, forToolbar: true})),
                 item: agGrid({
                     key: agGridModel.xhId,
                     model: agGridModel,

@@ -1,3 +1,4 @@
+import {Icon} from '@xh/hoist/icon';
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -42,9 +43,10 @@ export class DateFormatsPanel extends Component {
             ],
             item: panel({
                 title: 'Formats › Dates',
-                className: 'toolbox-formats-tab',
-                width: '90%',
-                height: '90%',
+                icon: Icon.print(),
+                className: 'tbox-formats-tab',
+                width: 1100,
+                height: 350,
                 item: hframe(
                     this.renderParams(),
                     resultsPanel({
@@ -61,12 +63,12 @@ export class DateFormatsPanel extends Component {
         const {model} = this;
         
         return panel({
-            title: 'Format',
-            className: 'toolbox-formats-tab__panel',
+            title: 'Function + Options',
+            compactHeader: true,
+            className: 'tbox-formats-tab__panel',
             flex: 1,
             items: [
                 param({
-                    label: 'Function',
                     model,
                     bind: 'fnName',
                     item: radioInput({
@@ -81,7 +83,7 @@ export class DateFormatsPanel extends Component {
                     })
                 }),
                 card({
-                    className: 'toolbox-formats-tab__panel__card',
+                    className: 'tbox-formats-tab__panel__card',
                     items: [
                         param({
                             model,
@@ -92,15 +94,15 @@ export class DateFormatsPanel extends Component {
                         }),
                         param({
                             model,
-                            bind: 'tooltip',
-                            item: switchInput(),
-                            info: 'function to generate a tooltip string.'
+                            bind: 'nullDisplay',
+                            item: textInput({commitOnChange: true}),
+                            info: 'format for null values'
                         }),
                         param({
                             model,
-                            bind: 'nullDisplay',
-                            item: textInput({commitOnChange: true, width: 50}),
-                            info: 'format for null values'
+                            bind: 'tooltip',
+                            item: switchInput(),
+                            info: 'function to generate a tooltip string (enable for default)'
                         })
                     ]
                 })
