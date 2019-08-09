@@ -2,10 +2,37 @@ package io.xh.toolbox.portfolio
 
 import io.xh.hoist.BaseService
 
+import java.util.concurrent.ConcurrentHashMap
+
+import static io.xh.hoist.util.DateTimeUtils.getSECONDS
+
 
 class PositionService extends BaseService {
 
-    def portfolioService
+    private Map<String, PositionSession> sessions = new ConcurrentHashMap()
+
+    def portfolioService,
+        webSocketService
+
+    void init() {
+        createTimer(
+                runFn: this.&pushUpdatesToAllSessions,
+                interval: 30,
+                intervalUnits: SECONDS
+        )
+        super.init()
+    }
+
+
+    PositionSession getLivePositions(PositionQuery query, String channelKey, String topic) {
+        def newSession = new PositionSession(query, channelKey, topic),
+            oldSession = sessions[newSession.id]
+
+        if (oldSession) oldSession.destroy()
+        sessions[newSession.id] = newSession
+        return newSession
+    }
+
 
     PositionResultSet getPositions(PositionQuery query) {
 
@@ -207,5 +234,23 @@ class PositionService extends BaseService {
     private Map<String, String> parsePositionId(String id) {
         List<String> dims = id.split('>>').drop(1)
         return dims.collectEntries { it.split(':') as List<String> }
+    }
+
+
+    void pushUpdatesToAllSessions() {
+        cullSessions()
+        sessions.values().each {
+            it.pushUpdate()
+        }
+    }
+
+    void cullSessions() {
+        def obsoleteSessions = sessions.values().findAll {
+            !webSocketService.hasChannel(it.channelKey)
+        }
+        obsoleteSessions.each {
+            it.destroy()
+            sessions.remove(it.id)
+        }
     }
 }
