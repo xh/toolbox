@@ -6,7 +6,9 @@ export class PositionSession {
     id;
     channelKey;
     topic;
-    positions;
+    initialPositions;
+    onUpdate;
+
 
     _subscription;
 
@@ -14,7 +16,7 @@ export class PositionSession {
         this.id = config.id;
         this.channelKey = config.channelKey;
         this.topic = config.topic;
-        this.positions = config.positions;
+        this.initialPositions = config.positions;
 
         this._subscription = XH.webSocketService.subscribe(
             this.topic,
@@ -23,7 +25,7 @@ export class PositionSession {
     }
 
     handleUpdate(update) {
-        console.log(update);
+        if (this.onUpdate) this.onUpdate(update);
     }
 
     destroy() {
