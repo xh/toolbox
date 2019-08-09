@@ -82,7 +82,7 @@ export class AgGridViewModel {
     }
 
     async doLoadAsync() {
-        const data = await XH.portfolioService.getPositionsAsync();
+        const data = await XH.portfolioService.getRawPositionsAsync();
         this.setData(data);
     }
 }
