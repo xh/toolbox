@@ -9,6 +9,9 @@ export class PositionsPanelModel {
     @bindable loadTimestamp;
 
     @managed
+    positionsSession;
+
+    @managed
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
             {value: 'fund', label: 'Fund'},
@@ -37,20 +40,19 @@ export class PositionsPanelModel {
         const {gridModel, dimChooserModel} = this,
             dims = dimChooserModel.value;
 
-        return XH.portfolioService
-            .getPortfolioAsync(dims)
-            .then(portfolio => {
-                gridModel.loadData(portfolio);
-                if (!gridModel.selectedRecord) {
-                    gridModel.selectFirst();
-                }
-                this.setLoadTimestamp(Date.now());
-            })
-            .track({
-                category: 'Portfolio Viewer',
-                message: 'Loaded positions',
-                data: {dims},
-                loadSpec
-            });
+        if (this.positionsSession) this.positionsSession.destroy();
+
+
+        const session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp'),
+            positions = session.positions.root.children;
+
+        console.log(positions);
+        this.positionsSession = session;
+
+        gridModel.loadData(positions);
+        if (!gridModel.selectedRecord) {
+            gridModel.selectFirst();
+        }
+        this.setLoadTimestamp(Date.now());
     }
 }
