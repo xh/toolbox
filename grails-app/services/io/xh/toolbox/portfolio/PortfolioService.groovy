@@ -25,10 +25,12 @@ class PortfolioService extends BaseService {
 
     void init() {
         def updateIntervalSecs = config.updateIntervalSecs
+        this.getData()
         createTimer(
                 runFn: this.&generateIntradayPrices,
                 interval: updateIntervalSecs,
-                intervalUnits: SECONDS
+                intervalUnits: SECONDS,
+                delayMs: 30 * SECONDS
         )
         super.init()
     }
