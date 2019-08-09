@@ -89,7 +89,7 @@ export class GridTreeMapModel {
 
     async doLoadAsync() {
         const dims = this.dimChooserModel.value;
-        const data = await XH.portfolioService.getPortfolioAsync(dims);
+        const data = await XH.portfolioService.getPositionsAsync(dims);
         this.gridModel.loadData(data);
     }
 
