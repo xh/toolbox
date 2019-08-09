@@ -31,7 +31,7 @@ export class SimpleTreeMapModel {
     });
 
     async doLoadAsync() {
-        const data = await XH.portfolioService.getPortfolioAsync(['symbol']);
+        const data = await XH.portfolioService.getPositionsAsync(['symbol']);
         this.store.loadData(data);
     }
 
