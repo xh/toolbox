@@ -37,6 +37,8 @@ class PositionSession implements JSONFormat {
             return (newPos.pnl != oldPos.pnl || newPos.mktVal != oldPos.mktVal)
         }.collect { id -> newPositionMap[id] }
 
+        changedPositions.each { it.children = null }
+
         Utils.webSocketService.pushToChannel(channelKey, topic, changedPositions)
     }
 
