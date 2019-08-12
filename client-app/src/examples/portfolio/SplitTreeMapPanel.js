@@ -9,10 +9,11 @@ export class SplitTreeMapPanel extends Component {
 
     render() {
         const {model} = this,
-            {splitTreeMapModel, panelSizingModel} = model;
+            {splitTreeMapModel, panelSizingModel, loadModel} = model;
 
         return panel({
             title: panelSizingModel.collapsed ? 'Treemap' : null,
+            mask: loadModel,
             model: panelSizingModel,
             item: splitTreeMap({
                 model: splitTreeMapModel
