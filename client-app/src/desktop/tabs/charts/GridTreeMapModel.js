@@ -4,6 +4,7 @@ import {GridModel, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
+import {clamp} from 'lodash';
 
 @HoistModel
 @LoadSupport
@@ -29,7 +30,7 @@ export class GridTreeMapModel {
         store: {
             processRawData: (r) => {
                 return {
-                    pnlMktVal: r.pnl / Math.abs(r.mktVal),
+                    pnlMktVal: clamp(r.pnl / Math.abs(r.mktVal), -1, 1),
                     ...r
                 };
             },
@@ -75,6 +76,7 @@ export class GridTreeMapModel {
     @managed
     treeMapModel = new TreeMapModel({
         gridModel: this.gridModel,
+        colorMode: 'balanced',
         labelField: 'name',
         valueField: 'pnl',
         heatField: 'pnlMktVal'

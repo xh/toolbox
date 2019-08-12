@@ -4,6 +4,7 @@ import {SplitTreeMapPanelModel} from './SplitTreeMapPanelModel';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {PositionInfoPanelModel} from './PositionInfoPanelModel';
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {clamp} from 'lodash';
 
 @HoistModel
 @LoadSupport
@@ -23,7 +24,7 @@ export class PortfolioPanelModel {
         store: {
             processRawData: (r) => {
                 return {
-                    pnlMktVal: r.pnl / Math.abs(r.mktVal),
+                    pnlMktVal: clamp(r.pnl / Math.abs(r.mktVal), -1, 1),
                     ...r
                 };
             },
@@ -82,7 +83,7 @@ export class PortfolioPanelModel {
     });
 
     @managed positionsPanelModel = new PositionsPanelModel({gridModel: this.gridModel});
-    @managed splitTreeMapPanelModel = new SplitTreeMapPanelModel({gridModel: this.gridModel});
+    @managed splitTreeMapPanelModel = new SplitTreeMapPanelModel({gridModel: this.gridModel, colorMode: 'balanced'});
     @managed positionInfoPanelModel = new PositionInfoPanelModel();
 
     get selectedPosition() {

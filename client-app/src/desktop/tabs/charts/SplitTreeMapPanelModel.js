@@ -5,6 +5,7 @@ import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {numberRenderer, millionsRenderer, fmtMillions} from '@xh/hoist/format';
+import {clamp} from 'lodash';
 
 @HoistModel
 @LoadSupport
@@ -30,7 +31,7 @@ export class SplitTreeMapPanelModel {
         store: {
             processRawData: (r) => {
                 return {
-                    pnlMktVal: r.pnl / Math.abs(r.mktVal),
+                    pnlMktVal: clamp(r.pnl / Math.abs(r.mktVal), -1, 1),
                     ...r
                 };
             },
@@ -88,6 +89,7 @@ export class SplitTreeMapPanelModel {
                 })
             ];
         },
+        colorMode: 'balanced',
         labelField: 'name',
         valueField: 'pnl',
         heatField: 'pnlMktVal'
