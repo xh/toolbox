@@ -46,7 +46,8 @@ export class PositionsPanelModel {
             positions = session.initialPositions.root.children;
 
         session.onUpdate = (updates) => {
-            gridModel.store.updateData(updates.data);
+            this.setLoadTimestamp(Date.now());
+            gridModel.store.updateRecords(updates.data);
         };
 
         this.positionsSession = session;
@@ -55,7 +56,5 @@ export class PositionsPanelModel {
         if (!gridModel.selectedRecord) {
             gridModel.selectFirst();
         }
-
-        this.setLoadTimestamp(Date.now());
     }
 }
