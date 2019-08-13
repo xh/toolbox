@@ -5,7 +5,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
 
 @HoistComponent
-export class SplitTreeMapPanel extends Component {
+export class MapPanel extends Component {
 
     render() {
         const {model} = this,
@@ -22,5 +22,5 @@ export class SplitTreeMapPanel extends Component {
     }
 }
 
-export const splitTreeMapPanel = elemFactory(SplitTreeMapPanel);
+export const mapPanel = elemFactory(MapPanel);
 

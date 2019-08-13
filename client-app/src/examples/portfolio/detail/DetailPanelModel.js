@@ -8,7 +8,7 @@ import {loadAllAsync} from '@xh/hoist/core';
 
 @HoistModel
 @LoadSupport
-export class PositionInfoPanelModel {
+export class DetailPanelModel {
     @bindable positionId = null;
 
     @managed ordersPanelModel = new OrdersPanelModel();
@@ -18,7 +18,7 @@ export class PositionInfoPanelModel {
         defaultSize: 400,
         side: 'bottom',
         collapsedRenderMode: 'unmountOnHide',
-        prefName: 'portfolioPositionInfoPanelConfig'
+        prefName: 'portfolioDetailPanelConfig'
     });
 
     constructor() {
@@ -38,10 +38,6 @@ export class PositionInfoPanelModel {
                 chartsPanelModel.setSymbol(symbol);
             }
         });
-    }
-
-    get isResizing() {
-        return this.panelSizingModel.isResizing;
     }
 
     async doLoadAsync(loadSpec) {

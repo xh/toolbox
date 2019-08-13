@@ -6,19 +6,19 @@ import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 
 @HoistModel
-export class SplitTreeMapPanelModel {
+export class MapPanelModel {
 
     @managed splitTreeMapModel;
 
     @managed panelSizingModel = new PanelModel({
         defaultSize: 1000,
         side: 'right',
-        prefName: 'portfolioTreeMapPanelConfig'
+        prefName: 'portfolioMapPanelConfig'
     });
 
-    constructor({gridModel}) {
+    constructor({parentModel}) {
         this.splitTreeMapModel = new SplitTreeMapModel({
-            gridModel,
+            gridModel: parentModel.gridPanelModel.gridModel,
             mapTitleFn: (mapName, model) => {
                 return [
                     mapName === 'primary' ? 'Profit:' : 'Loss:',
@@ -35,12 +35,7 @@ export class SplitTreeMapPanelModel {
             labelField: 'name',
             valueField: 'pnl',
             heatField: 'pnlMktVal',
-
             orientation: 'horizontal'
         });
-    }
-
-    get isResizing() {
-        return this.panelSizingModel.isResizing;
     }
 }

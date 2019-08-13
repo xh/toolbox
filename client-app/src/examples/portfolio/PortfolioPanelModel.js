@@ -1,110 +1,61 @@
-import {HoistModel, LoadSupport, managed, loadAllAsync, XH} from '@xh/hoist/core';
-import {PositionsPanelModel} from './PositionsPanelModel';
-import {SplitTreeMapPanelModel} from './SplitTreeMapPanelModel';
-import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {PositionInfoPanelModel} from './PositionInfoPanelModel';
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {Store} from '@xh/hoist/data';
+import {GridPanelModel} from './GridPanelModel';
+import {MapPanelModel} from './MapPanelModel';
+import {DetailPanelModel} from './detail/DetailPanelModel';
 import {clamp} from 'lodash';
+import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
+
 
 @HoistModel
 @LoadSupport
 export class PortfolioPanelModel {
 
-    @managed
-    gridModel = new GridModel({
-        treeMode: true,
-        sortBy: 'pnl|desc|abs',
-        emptyText: 'No records found...',
-        enableColChooser: true,
-        enableExport: true,
-        rowBorders: true,
-        showHover: true,
-        showSummary: true,
-        compact: XH.appModel.useCompactGrids,
-        stateModel: 'portfolio-positions-grid',
-        store: {
-            processRawData: (r) => {
-                return {
-                    pnlMktVal: clamp(r.pnl / Math.abs(r.mktVal), -1, 1),
-                    ...r
-                };
-            },
-            fields: [
-                {name: 'pnl', label: 'P&L'},
-                {name: 'pnlMktVal', label: 'P&L / Mkt Val'}
-            ],
-            loadRootAsSummary: true
-        },
-        columns: [
-            {
-                field: 'id',
-                headerName: 'ID',
-                width: 40,
-                hidden: true
-            },
-            {
-                field: 'name',
-                headerName: 'Name',
-                flex: 1,
-                minWidth: 180,
-                isTreeColumn: true
-            },
-            {
-                field: 'mktVal',
-                headerName: 'Mkt Value (m)',
-                headerTooltip: 'Market value (in millions USD)',
-                align: 'right',
-                width: 130,
-                absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
-                renderer: millionsRenderer({
-                    precision: 3,
-                    ledger: true
-                })
-            },
-            {
-                field: 'pnl',
-                headerName: 'P&L',
-                align: 'right',
-                width: 130,
-                absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
-                renderer: numberRenderer({
-                    precision: 0,
-                    ledger: true,
-                    colorSpec: true
-                })
-            }
-        ]
-    });
+    @managed session;
 
-    @managed positionsPanelModel = new PositionsPanelModel({gridModel: this.gridModel});
-    @managed splitTreeMapPanelModel = new SplitTreeMapPanelModel({gridModel: this.gridModel, colorMode: 'balanced'});
-    @managed positionInfoPanelModel = new PositionInfoPanelModel();
+    @managed dimChooserModel = this.createDimChooserModel();
+    @managed store = this.createStore();
+    @managed gridPanelModel = new GridPanelModel({parentModel: this});
+    @managed mapPanelModel = new MapPanelModel({parentModel: this});
+    @managed detailPanelModel = new DetailPanelModel();
 
     get selectedPosition() {
-        return this.positionsPanelModel.selectedRecord;
+        return this.gridPanelModel.selectedRecord;
     }
 
     constructor() {
         this.addReaction(this.selectedPositionReaction());
+        this.addReaction(this.dimensionChooserReaction());
     }
 
     async doLoadAsync(loadSpec) {
-        await loadAllAsync([
-            this.positionsPanelModel,
-            this.positionInfoPanelModel
-        ], loadSpec);
-    }
+        const {store, dimChooserModel} = this,
+            dims = dimChooserModel.value;
 
-    get isResizing() {
-        return this.positionInfoPanelModel.isResizing || this.positionsPanelModel.isResizing;
+        if (this.session) this.session.destroy();
+
+        const session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp'),
+            positions = [session.initialPositions.root];
+
+        session.onUpdate = ({data}) => {
+            this.gridPanelModel.setLoadTimestamp(Date.now());
+            if (data.isFull) {
+                console.log('Sending full update');
+                store.updateData(data.positions);
+            } else {
+                store.updateRecords(data.positions);
+            }
+        };
+
+        this.session = session;
+
+        store.loadData(positions);
+
+        if (!this.selectedPosition) {
+            this.gridPanelModel.gridModel.selectFirst();
+        }
+
+        await this.detailPanelModel.doLoadAsync();
     }
 
     //----------------------------------------
@@ -114,9 +65,48 @@ export class PortfolioPanelModel {
         return {
             track: () => this.selectedPosition,
             run: (position) => {
-                this.positionInfoPanelModel.setPositionId(position ? position.id : null);
+                this.detailPanelModel.setPositionId(position ? position.id : null);
             },
             delay: 500
         };
+    }
+
+    dimensionChooserReaction() {
+        return {
+            track: () => this.dimChooserModel.value,
+            run: () => this.loadAsync()
+        };
+    }
+
+    createStore() {
+        return new Store({
+            processRawData: (r) => {
+                return {
+                    pnlMktVal: clamp(r.pnl / Math.abs(r.mktVal), -1, 1),
+                    ...r
+                };
+            },
+            fields: [
+                {name: 'name'},
+                {name: 'mktVal'},
+                {name: 'pnl', label: 'P&L'},
+                {name: 'pnlMktVal', label: 'P&L / Mkt Val'}
+            ],
+            loadRootAsSummary: true
+        });
+    }
+
+    createDimChooserModel() {
+        return new DimensionChooserModel({
+            dimensions: [
+                {value: 'fund', label: 'Fund'},
+                {value: 'model', label: 'Model'},
+                {value: 'region', label: 'Region'},
+                {value: 'sector', label: 'Sector'},
+                {value: 'symbol', label: 'Symbol'},
+                {value: 'trader', label: 'Trader'}
+            ],
+            preference: 'portfolioDims'
+        });
     }
 }

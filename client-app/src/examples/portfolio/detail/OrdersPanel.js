@@ -22,7 +22,7 @@ export class OrdersPanel extends Component {
             {gridModel} = model;
 
         return panel({
-            title: `Orders: ${this.reformatPositionId(model.positionId)}`,
+            title: `Orders: ${this.formatPositionId(model.positionId)}`,
             icon: Icon.edit(),
             item: grid({model: gridModel}),
             mask: model.positionId == null,
@@ -38,15 +38,12 @@ export class OrdersPanel extends Component {
     //------------------
     // Implementation
     //------------------
+    formatPositionId(positionId) {
+        if (!positionId) return '';
 
-    reformatPositionId(positionId) {
-        if (positionId) {
-            const dimValPairs = positionId.split('>>').splice(1);
-            const dimVals = dimValPairs.map((str) => str.split(':')[1]);
-            return dimVals.join(' > ');
-        } else {
-            return '';
-        }
+        const dimValPairs = positionId.split('>>').splice(1);
+        const dimVals = dimValPairs.map((str) => str.split(':')[1]);
+        return dimVals.join(' > ');
     }
 }
 export const ordersPanel = elemFactory(OrdersPanel);

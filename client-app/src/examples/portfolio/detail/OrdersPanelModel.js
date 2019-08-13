@@ -116,6 +116,6 @@ export class OrdersPanelModel {
 
         const orders = await XH.portfolioService.getOrdersAsync(positionId);
         gridModel.loadData(orders);
-        if (orders.length > 0 && !this.selectedRecord) gridModel.selectFirst();
+        if (!this.selectedRecord) gridModel.selectFirst();
     }
 }

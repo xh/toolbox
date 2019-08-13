@@ -6,7 +6,7 @@ import {ordersPanel} from './OrdersPanel';
 import {chartsPanel} from './ChartsPanel';
 
 @HoistComponent
-export class PositionInfoPanel extends Component {
+export class DetailPanel extends Component {
 
     render() {
         const {model} = this,
@@ -30,4 +30,4 @@ export class PositionInfoPanel extends Component {
     }
 }
 
-export const positionInfoPanel = elemFactory(PositionInfoPanel);
+export const detailPanel = elemFactory(DetailPanel);

@@ -6,11 +6,12 @@
  */
 import {Component} from 'react';
 import {elemFactory, HoistComponent} from '@xh/hoist/core/index';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {hbox, vframe} from '@xh/hoist/cmp/layout';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
-import {positionsPanel} from './PositionsPanel';
-import {positionInfoPanel} from './PositionInfoPanel';
-import {splitTreeMapPanel} from './SplitTreeMapPanel';
+import {gridPanel} from './GridPanel';
+import {detailPanel} from './detail/DetailPanel';
+import {mapPanel} from './MapPanel';
 
 import './PortfolioPanel.scss';
 
@@ -21,24 +22,21 @@ export class PortfolioPanel extends Component {
 
     render() {
         const {model} = this,
-            {positionsPanelModel, splitTreeMapPanelModel, positionInfoPanelModel} = model;
+            {gridPanelModel, mapPanelModel, detailPanelModel} = model;
 
-        return vframe(
-            hbox({
-                flex: 1,
-                items: [
-                    positionsPanel({
-                        model: positionsPanelModel
-                    }),
-                    splitTreeMapPanel({
-                        model: splitTreeMapPanelModel
-                    })
-                ]
-            }),
-            positionInfoPanel({
-                model: positionInfoPanelModel
-            })
-        );
+        return panel({
+            item: vframe(
+                hbox({
+                    flex: 1,
+                    items: [
+                        gridPanel({model: gridPanelModel}),
+                        mapPanel({model: mapPanelModel})
+                    ]
+                }),
+                detailPanel({model: detailPanelModel})
+            ),
+            mask: model.loadModel
+        });
     }
 }
 

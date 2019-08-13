@@ -18,26 +18,25 @@ import {Component} from 'react';
 
 @HoistComponent
 @LayoutSupport
-export class PositionsPanel extends Component {
+export class GridPanel extends Component {
 
     render() {
-        const {model} = this;
+        const {model} = this,
+            {parentModel} = model;
 
         return panel({
             title: 'Positions',
             icon: Icon.portfolio(),
-            mask: model.loadModel,
-            model: model.panelSizingModel,
             item: grid({model: model.gridModel}),
             bbar: toolbar(
-                dimensionChooser({model: model.dimChooserModel}),
+                dimensionChooser({model: parentModel.dimChooserModel}),
                 gridCountLabel({gridModel: model.gridModel, unit: 'position'}),
                 filler(),
                 relativeTimestamp({timestamp: model.loadTimestamp}),
-                refreshButton({model, intent: 'success'})
+                refreshButton({model: parentModel, intent: 'success'})
             ),
             ...this.getLayoutProps()
         });
     }
 }
-export const positionsPanel = elemFactory(PositionsPanel);
+export const gridPanel = elemFactory(GridPanel);
