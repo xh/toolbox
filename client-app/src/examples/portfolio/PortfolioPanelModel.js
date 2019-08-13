@@ -19,6 +19,7 @@ export class PortfolioPanelModel {
         enableExport: true,
         rowBorders: true,
         showHover: true,
+        showSummary: true,
         compact: XH.appModel.useCompactGrids,
         stateModel: 'portfolio-positions-grid',
         store: {
@@ -31,7 +32,8 @@ export class PortfolioPanelModel {
             fields: [
                 {name: 'pnl', label: 'P&L'},
                 {name: 'pnlMktVal', label: 'P&L / Mkt Val'}
-            ]
+            ],
+            loadRootAsSummary: true
         },
         columns: [
             {
@@ -112,7 +114,6 @@ export class PortfolioPanelModel {
         return {
             track: () => this.selectedPosition,
             run: (position) => {
-                console.log(`setting positionInfoPanelModel's positionId to: ${position ? position.id : 'null'}`);
                 this.positionInfoPanelModel.setPositionId(position ? position.id : null);
             },
             delay: 500
