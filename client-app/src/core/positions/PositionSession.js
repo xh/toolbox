@@ -9,7 +9,6 @@ export class PositionSession {
     initialPositions;
     onUpdate;
 
-
     _subscription;
 
     constructor(config) {
