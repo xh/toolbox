@@ -17,7 +17,8 @@ export class PositionInfoPanelModel {
     @managed panelSizingModel = new PanelModel({
         defaultSize: 400,
         side: 'bottom',
-        collapsedRenderMode: 'unmountOnHide'
+        collapsedRenderMode: 'unmountOnHide',
+        prefName: 'portfolioPositionInfoPanelConfig'
     });
 
     constructor() {
