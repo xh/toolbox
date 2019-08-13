@@ -16,20 +16,6 @@ export class PortfolioService {
         return XH.fetchJson({url: 'portfolio/symbols'});
     }
 
-    async getLivePositionsAsync(dims, topic, maxPositions = this.MAX_POSITIONS) {
-        const session = await XH.fetchJson({
-            url: 'portfolio/livePositions',
-            params: {
-                dims: dims.join(','),
-                maxPositions,
-                channelKey: XH.webSocketService.channelKey,
-                topic
-            }
-        });
-
-        return new PositionSession(session);
-    }
-
     /**
      * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
      * @param {string[]} dims - field names for dimensions on which to group.
@@ -61,6 +47,26 @@ export class PortfolioService {
                 positionId
             }
         });
+    }
+
+    /**
+     *  Return a PositionSession that will receive live updates.
+     *  See getPositionsAsync(), the static form of this method, for more details.
+     *
+     * @returns {Promise<PositionSession>}
+     */
+    async getLivePositionsAsync(dims, topic, maxPositions = this.MAX_POSITIONS) {
+        const session = await XH.fetchJson({
+            url: 'portfolio/livePositions',
+            params: {
+                dims: dims.join(','),
+                maxPositions,
+                channelKey: XH.webSocketService.channelKey,
+                topic
+            }
+        });
+
+        return new PositionSession(session);
     }
 
     /**
