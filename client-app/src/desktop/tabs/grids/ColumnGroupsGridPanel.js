@@ -24,7 +24,7 @@ export class ColumnGroupsGridPanel extends Component {
                 </p>,
                 <p>
                     Note that column group configurations must be provided either a <code>headerName</code>
-                    or <code>groupId</code> property, which must be unique within the GridMModel. Column
+                    or <code>groupId</code> property, which must be unique within the GridModel. Column
                     groups in Hoist React are also 'sealed', meaning that columns may be reordered <em>within</em> the
                     group in which they are defined but not broken out from them.
                 </p>,
