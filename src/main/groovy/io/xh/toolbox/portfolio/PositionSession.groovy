@@ -1,9 +1,10 @@
 package io.xh.toolbox.portfolio
 
+import groovy.util.logging.Slf4j
 import io.xh.hoist.json.JSONFormat
 import io.xh.hoist.util.Utils
 
-
+@Slf4j
 class PositionSession implements JSONFormat {
 
     final String id
@@ -27,19 +28,32 @@ class PositionSession implements JSONFormat {
         Map<String, Position> oldPositionMap = getMappedPositions(positions.root)
         Map<String, Position> newPositionMap = getMappedPositions(newPositions.root)
 
-        def allIds = oldPositionMap.keySet()
-        List<Position> changedPositions = allIds.findAll { id ->
-            if (id == 'root') return false
-            Position oldPos = oldPositionMap[id]
-            Position newPos = newPositionMap[id]
-            // Position tree structure is the same in new positions and old, as only prices have changed.
-            // So, positions are different iff their pnl and/or mktVal values differ.
-            return (newPos.pnl != oldPos.pnl || newPos.mktVal != oldPos.mktVal)
-        }.collect { id -> newPositionMap[id] }
+        def oldIds = oldPositionMap.keySet()
+        def newIds = newPositionMap.keySet()
 
-        changedPositions.each { it.children = null }
+        PositionUpdate posUpdate
 
-        Utils.webSocketService.pushToChannel(channelKey, topic, changedPositions)
+        if (oldIds == newIds) {
+            List<Position> changedPositions = oldIds.findAll { id ->
+                Position oldPos = oldPositionMap[id]
+                Position newPos = newPositionMap[id]
+                // Position tree structure is the same in new positions and old, as only prices have changed.
+                // So, positions are different iff their pnl and/or mktVal values differ.
+                if (!newPos || !oldPos) {
+                    log.error("Position ${id} is null in ${!newPos ? 'new' : 'old'}PositionsMap")
+                    return false
+                }
+                return (newPos.pnl != oldPos.pnl || newPos.mktVal != oldPos.mktVal)
+            }.collect { id -> newPositionMap[id] }
+
+            changedPositions.each { it.children = null }
+
+            posUpdate = new PositionUpdate(isFull: false, positions: changedPositions)
+        } else {
+            // If tree structure changed, we send a full update
+            posUpdate = new PositionUpdate(isFull: true, positions: [newPositions.root])
+        }
+        Utils.webSocketService.pushToChannel(channelKey, topic, posUpdate)
     }
 
 
