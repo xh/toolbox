@@ -20,7 +20,8 @@ export class ChartsPanel extends Component {
             model: {
                 defaultSize: 700,
                 side: 'right',
-                collapsedRenderMode: 'unmountOnHide'
+                collapsedRenderMode: 'unmountOnHide',
+                prefName: 'portfolioChartsPanelConfig'
             },
             item: tabContainer({
                 model: {
