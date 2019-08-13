@@ -12,7 +12,8 @@ export class SplitTreeMapPanelModel {
 
     @managed panelSizingModel = new PanelModel({
         defaultSize: 1000,
-        side: 'right'
+        side: 'right',
+        prefName: 'portfolioTreeMapPanelConfig'
     });
 
     constructor({gridModel}) {
