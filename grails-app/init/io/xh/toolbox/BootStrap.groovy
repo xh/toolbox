@@ -156,8 +156,26 @@ class BootStrap {
                 type: 'json',
                 defaultValue: [:],
                 local: true,
-                groupName: 'Toolbox',
+                groupName: 'Toolbox - Example Apps',
                 note: 'Object containing user\'s dimension picker value & history'
+            ],
+            portfolioTreeMapPanelConfig: [
+                type: 'json',
+                defaultValue: [:],
+                local: true,
+                groupName: 'Toolbox - Example Apps'
+            ],
+            portfolioPositionInfoPanelConfig: [
+                type: 'json',
+                defaultValue: [:],
+                local: true,
+                groupName: 'Toolbox - Example Apps'
+            ],
+            portfolioChartsPanelConfig: [
+                type: 'json',
+                defaultValue: [:],
+                local: true,
+                groupName: 'Toolbox - Example Apps'
             ],
             recallsPanelConfig: [
                 type: 'json',
