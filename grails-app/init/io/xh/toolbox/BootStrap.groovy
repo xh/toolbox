@@ -159,13 +159,13 @@ class BootStrap {
                 groupName: 'Toolbox - Example Apps',
                 note: 'Object containing user\'s dimension picker value & history'
             ],
-            portfolioTreeMapPanelConfig: [
+            portfolioMapPanelConfig: [
                 type: 'json',
                 defaultValue: [:],
                 local: true,
                 groupName: 'Toolbox - Example Apps'
             ],
-            portfolioPositionInfoPanelConfig: [
+            portfolioDetailPanelConfig: [
                 type: 'json',
                 defaultValue: [:],
                 local: true,
