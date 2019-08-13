@@ -70,7 +70,7 @@ export class FormPanelModel {
             {
                 name: 'startDate',
                 displayName: 'Hire Date',
-                initialValue: new LocalDate(),
+                initialValue: LocalDate.today(),
                 rules: [required, dateIs({max: 'today'})]
             },
             {

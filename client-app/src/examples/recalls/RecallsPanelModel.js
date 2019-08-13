@@ -136,7 +136,7 @@ export class RecallsPanelModel {
             ...rawRec,
             brandName: rawRec.openfda.brand_name[0],
             genericName: rawRec.openfda.generic_name[0],
-            recallDate: new LocalDate(rawRec.recall_initiation_date),
+            recallDate: LocalDate.fromIsoDate(rawRec.recall_initiation_date),
             description: rawRec.product_description,
             recallingFirm: rawRec.recalling_firm,
             reason: rawRec.reason_for_recall
