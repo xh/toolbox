@@ -16,7 +16,7 @@ export class PortfolioService {
         return XH.fetchJson({url: 'portfolio/symbols'});
     }
 
-    async getLivePositionsAsync(dims, topic, maxPositions = this.MAX_POSITIONS, includeSummary = false) {
+    async getLivePositionsAsync(dims, topic, maxPositions = this.MAX_POSITIONS) {
         const session = await XH.fetchJson({
             url: 'portfolio/livePositions',
             params: {
