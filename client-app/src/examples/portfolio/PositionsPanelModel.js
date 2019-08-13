@@ -43,11 +43,16 @@ export class PositionsPanelModel {
         if (this.positionsSession) this.positionsSession.destroy();
 
         const session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp'),
-            positions = session.initialPositions.root.children;
+            positions = [session.initialPositions.root];
 
         session.onUpdate = (updates) => {
             this.setLoadTimestamp(Date.now());
-            gridModel.store.updateRecords(updates.data);
+            if (updates.data.isFull) {
+                console.log('Sending full update');
+                gridModel.store.updateData(updates.data.positions);
+            } else {
+                gridModel.store.updateRecords(updates.data.positions);
+            }
         };
 
         this.positionsSession = session;
