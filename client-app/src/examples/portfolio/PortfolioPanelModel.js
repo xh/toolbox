@@ -39,12 +39,7 @@ export class PortfolioPanelModel {
 
         session.onUpdate = ({data}) => {
             this.gridPanelModel.setLoadTimestamp(Date.now());
-            if (data.isFull) {
-                console.log('Sending full update');
-                store.updateData(data.positions);
-            } else {
-                store.updateRecords(data.positions);
-            }
+            store.updateData(data.positions, null, {processHierarchy: data.isFull});
         };
 
         this.session = session;
