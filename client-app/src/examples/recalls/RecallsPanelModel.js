@@ -33,7 +33,11 @@ export class RecallsPanelModel {
     gridModel = new GridModel({
         store: {
             idSpec: this.createId,
-            processRawData: this.processRecord
+            processRawData: this.processRecord,
+            fields: [{
+                name: 'recallDate',
+                type: 'localDate'
+            }]
         },
         emptyText: 'No records found...',
         enableColChooser: true,

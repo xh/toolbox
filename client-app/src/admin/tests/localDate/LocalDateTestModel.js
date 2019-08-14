@@ -247,17 +247,50 @@ export class LocalDateTestModel {
         },
 
         //----------------
-        // Query
+        // Compare
         //----------------
         {
-            category: 'query',
-            title: 'LocalDate < LocalDate)',
+            category: 'compare',
+            title: 'LocalDate == LocalDate',
+            input: '(20190101) == (20190101)',
+            expected: 'true',
+            testFn: () => {
+                const d = LocalDate.create('20190101'),
+                    other = LocalDate.create('20190101');
+                return d == other;
+            }
+        },
+        {
+            category: 'compare',
+            title: 'LocalDate === LocalDate',
+            input: '(20190101) === (20190101)',
+            expected: 'true',
+            testFn: () => {
+                const d = LocalDate.create('20190101'),
+                    other = LocalDate.create('20190101');
+                return d === other;
+            }
+        },
+        {
+            category: 'compare',
+            title: 'LocalDate < LocalDate',
             input: '(20190601) < (20190101)',
             expected: 'false',
             testFn: () => {
                 const d = LocalDate.create('20190601'),
                     other = LocalDate.create('20190101');
                 return d < other;
+            }
+        },
+        {
+            category: 'compare',
+            title: 'LocalDate > LocalDate',
+            input: '(20190601) > (20190101)',
+            expected: 'true',
+            testFn: () => {
+                const d = LocalDate.create('20190601'),
+                    other = LocalDate.create('20190101');
+                return d > other;
             }
         }
     ];
