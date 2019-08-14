@@ -1,0 +1,31 @@
+.local-date-test-panel {
+  & > .xh-vframe {
+    overflow-y: auto !important;
+  }
+
+  p {
+    margin: var(--xh-pad-px);
+    font-size: var(--xh-font-size-large-px);
+  }
+
+  table {
+    margin: var(--xh-pad-px);
+    border: var(--xh-border-solid);
+    background: var(--xh-bg);
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+    border: var(--xh-border-solid);
+    text-align: left;
+  }
+
+  tr {
+    background-color: var(--xh-grid-bg);
+
+    &:nth-child(odd) {
+      background-color: var(--xh-grid-bg-odd);
+    }
+  }
+}

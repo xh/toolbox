@@ -219,6 +219,15 @@ export class InputsPanel extends Component {
                                     timePrecision: 'minute',
                                     timePickerProps: {useAmPm: true}
                                 })
+                            }),
+                            row({
+                                label: 'DateInput',
+                                field: 'localDate',
+                                info: 'valueType: localDate',
+                                layout: {width: 130},
+                                item: dateInput({
+                                    valueType: 'localDate'
+                                })
                             })
                         ]
                     }),

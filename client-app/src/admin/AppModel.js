@@ -29,6 +29,7 @@ export class AppModel extends BaseAppModel {
                 name: 'tests',
                 path: '/tests',
                 children: [
+                    {name: 'localDate', path: '/localDate'},
                     {name: 'performance', path: '/performance'},
                     {name: 'cube', path: '/cube'},
                     {name: 'webSockets', path: '/webSockets'}
