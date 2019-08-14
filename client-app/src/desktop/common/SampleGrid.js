@@ -179,7 +179,11 @@ class Model {
                     winLose: pnl > 0 ? 'Winner' : (pnl < 0 ? 'Loser' : 'Flat'),
                     ...r
                 };
-            }
+            },
+            fields: [{
+                name: 'trade_date',
+                type: 'localDate'
+            }]
         },
         contextMenuFn: (params, gridModel) => {
             return new StoreContextMenu({

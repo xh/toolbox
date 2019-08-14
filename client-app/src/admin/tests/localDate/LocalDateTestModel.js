@@ -31,58 +31,47 @@ export class LocalDateTestModel {
         // Constructor
         //----------------
         {
-            category: 'constructor',
+            category: 'factory',
             title: 'Create from string',
             input: 'String "20190101"',
             expected: '20190101',
             testFn: () => {
-                const ret = LocalDate.from('20190101');
-                return ret.value;
+                const ret = LocalDate.create('20190101');
+                return ret.valueOf();
             }
         },
         {
-            category: 'constructor',
+            category: 'factory',
             title: 'Create from date',
             input: 'new Date(2019, 0, 1)',
             expected: '20190101',
             testFn: () => {
                 const d = new Date(2019, 0, 1),
                     ret = LocalDate.from(d);
-                return ret.value;
+                return ret.valueOf();
             }
         },
         {
-            category: 'constructor',
+            category: 'factory',
             title: 'Create from moment',
             input: 'moment("20190101")',
             expected: '20190101',
             testFn: () => {
                 const d = moment('20190101'),
                     ret = LocalDate.from(d);
-                return ret.value;
+                return ret.valueOf();
             }
         },
         {
-            category: 'constructor',
+            category: 'factory',
             title: 'Create from LocalDate',
-            input: 'LocalDate.from("20190101")',
+            input: 'LocalDate.create("20190101")',
             expected: '20190101',
             testFn: () => {
-                const d = LocalDate.from('20190101'),
+                const d = LocalDate.create('20190101'),
                     ret = LocalDate.from(d);
-                return ret.value;
+                return ret.valueOf();
             }
-        },
-        {
-            category: 'constructor',
-            title: 'Create with no params',
-            input: 'LocalDate.from()',
-            expected: moment().format('YYYYMMDD'),
-            testFn: () => {
-                const ret = LocalDate.from();
-                return ret.value;
-            },
-            notes: 'Creating with no params uses the current date.'
         },
         {
             category: 'manipulate',
@@ -91,7 +80,7 @@ export class LocalDateTestModel {
             expected: moment().format('YYYYMMDD'),
             testFn: () => {
                 const d = LocalDate.today();
-                return d.value;
+                return d.valueOf();
             }
         },
 
@@ -104,7 +93,7 @@ export class LocalDateTestModel {
             input: '20190101',
             expected: '2019-01-01',
             testFn: () => {
-                const d = new LocalDate('20190101');
+                const d = LocalDate.create('20190101');
                 return d.format('YYYY-MM-DD');
             }
         },
@@ -114,7 +103,7 @@ export class LocalDateTestModel {
             input: '20190101',
             expected: 'Tuesday',
             testFn: () => {
-                const d = new LocalDate('20190101');
+                const d = LocalDate.create('20190101');
                 return d.dayOfWeek();
             }
         },
@@ -128,9 +117,9 @@ export class LocalDateTestModel {
             input: '20190101',
             expected: '20190102',
             testFn: () => {
-                const d = new LocalDate('20190101'),
+                const d = LocalDate.create('20190101'),
                     ret = d.add(1);
-                return ret.value;
+                return ret.valueOf();
             }
         },
         {
@@ -139,9 +128,9 @@ export class LocalDateTestModel {
             input: '20190101',
             expected: '20190201',
             testFn: () => {
-                const d = new LocalDate('20190101'),
+                const d = LocalDate.create('20190101'),
                     ret = d.add(1, 'month');
-                return ret.value;
+                return ret.valueOf();
             }
         },
         {
@@ -150,9 +139,9 @@ export class LocalDateTestModel {
             input: '20190101',
             expected: '20181231',
             testFn: () => {
-                const d = new LocalDate('20190101'),
+                const d = LocalDate.create('20190101'),
                     ret = d.subtract(1);
-                return ret.value;
+                return ret.valueOf();
             }
         },
         {
@@ -161,9 +150,9 @@ export class LocalDateTestModel {
             input: '20190101',
             expected: '20181201',
             testFn: () => {
-                const d = new LocalDate('20190101'),
+                const d = LocalDate.create('20190101'),
                     ret = d.subtract(1, 'month');
-                return ret.value;
+                return ret.valueOf();
             }
         },
         {
@@ -172,9 +161,9 @@ export class LocalDateTestModel {
             input: '20190606',
             expected: '20190101',
             testFn: () => {
-                const d = LocalDate.from('20190606'),
+                const d = LocalDate.create('20190606'),
                     ret = d.startOf('year');
-                return ret.value;
+                return ret.valueOf();
             }
         },
         {
@@ -183,9 +172,9 @@ export class LocalDateTestModel {
             input: '20190606',
             expected: '20190601',
             testFn: () => {
-                const d = LocalDate.from('20190606'),
+                const d = LocalDate.create('20190606'),
                     ret = d.startOf('month');
-                return ret.value;
+                return ret.valueOf();
             }
         },
         {
@@ -194,9 +183,9 @@ export class LocalDateTestModel {
             input: '20190606',
             expected: '20191231',
             testFn: () => {
-                const d = LocalDate.from('20190606'),
+                const d = LocalDate.create('20190606'),
                     ret = d.endOf('year');
-                return ret.value;
+                return ret.valueOf();
             }
         },
         {
@@ -205,9 +194,9 @@ export class LocalDateTestModel {
             input: '20190606',
             expected: '20190630',
             testFn: () => {
-                const d = LocalDate.from('20190606'),
+                const d = LocalDate.create('20190606'),
                     ret = d.endOf('month');
-                return ret.value;
+                return ret.valueOf();
             }
         },
         {
@@ -216,9 +205,9 @@ export class LocalDateTestModel {
             input: '20190808',
             expected: '20190809',
             testFn: () => {
-                const d = LocalDate.from('20190808'),
+                const d = LocalDate.create('20190808'),
                     ret = d.nextBusinessDay();
-                return ret.value;
+                return ret.valueOf();
             }
         },
         {
@@ -227,9 +216,9 @@ export class LocalDateTestModel {
             input: '20190809',
             expected: '20190812',
             testFn: () => {
-                const d = LocalDate.from('20190809'),
+                const d = LocalDate.create('20190809'),
                     ret = d.nextBusinessDay();
-                return ret.value;
+                return ret.valueOf();
             },
             notes: 'nextBusinessDay() ignores weekends'
         },
@@ -239,9 +228,9 @@ export class LocalDateTestModel {
             input: '20190813',
             expected: '20190812',
             testFn: () => {
-                const d = LocalDate.from('20190813'),
+                const d = LocalDate.create('20190813'),
                     ret = d.previousBusinessDay();
-                return ret.value;
+                return ret.valueOf();
             }
         },
         {
@@ -250,9 +239,9 @@ export class LocalDateTestModel {
             input: '20190812',
             expected: '20190809',
             testFn: () => {
-                const d = LocalDate.from('20190812'),
+                const d = LocalDate.create('20190812'),
                     ret = d.previousBusinessDay();
-                return ret.value;
+                return ret.valueOf();
             },
             notes: 'previousBusinessDay() ignores weekends'
         },
@@ -262,38 +251,14 @@ export class LocalDateTestModel {
         //----------------
         {
             category: 'query',
-            title: 'LocalDate.equals(moment)',
-            input: '(20190601).equals(20190101)',
+            title: 'LocalDate < LocalDate)',
+            input: '(20190601) < (20190101)',
             expected: 'false',
             testFn: () => {
-                const d = LocalDate.from('20190601'),
-                    other = moment('20190101');
-                return d.equals(other);
-            },
-            notes: 'Can compare to moments'
-        },
-        {
-            category: 'query',
-            title: 'LocalDate.isBefore(LocalDate)',
-            input: '(20190601).isBefore(20190101)',
-            expected: 'false',
-            testFn: () => {
-                const d = LocalDate.from('20190601'),
-                    other = LocalDate.from('20190101');
-                return d.isBefore(other);
+                const d = LocalDate.create('20190601'),
+                    other = LocalDate.create('20190101');
+                return d < other;
             }
-        },
-        {
-            category: 'query',
-            title: 'LocalDate.isAfter(Date)',
-            input: '(20190601).isAfter(20190101)',
-            expected: 'true',
-            testFn: () => {
-                const d = LocalDate.from('20190601'),
-                    other = new Date(2019, 0, 1);
-                return d.isAfter(other);
-            },
-            notes: 'Can compare to dates'
         }
     ];
 

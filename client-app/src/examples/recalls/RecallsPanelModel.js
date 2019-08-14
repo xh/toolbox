@@ -12,7 +12,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {localDateCol} from '@xh/hoist/cmp/grid/columns';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {LocalDate, ONE_SECOND} from '@xh/hoist/utils/datetime';
+import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 
 import {DetailsPanelModel} from './DetailsPanelModel';
 
@@ -136,7 +136,7 @@ export class RecallsPanelModel {
             ...rawRec,
             brandName: rawRec.openfda.brand_name[0],
             genericName: rawRec.openfda.generic_name[0],
-            recallDate: LocalDate.fromIsoDate(rawRec.recall_initiation_date),
+            recallDate: rawRec.recall_initiation_date,
             description: rawRec.product_description,
             recallingFirm: rawRec.recalling_firm,
             reason: rawRec.reason_for_recall

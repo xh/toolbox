@@ -22,10 +22,10 @@ export class TestsTab extends Component {
             model: {
                 route: 'default.tests',
                 tabs: [
+                    {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
                     {id: 'performance', title: 'Grid Performance', content: GridTestPanel},
                     {id: 'cube', title: 'Cube Data', content: CubeDataPanel},
-                    {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel},
-                    {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel}
+                    {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel}
                 ],
                 switcherPosition: 'left'
             }
