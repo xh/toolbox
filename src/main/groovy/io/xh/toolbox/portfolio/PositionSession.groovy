@@ -35,6 +35,10 @@ class PositionSession implements JSONFormat {
 
         if (oldIds == newIds) {
             List<Position> changedPositions = oldIds.findAll { id ->
+                // We can ignore the root position since that will always be included in the response if any positions
+                // have changed
+                if (id == 'root') return false
+
                 Position oldPos = oldPositionMap[id]
                 Position newPos = newPositionMap[id]
                 // Position tree structure is the same in new positions and old, as only prices have changed.
@@ -47,8 +51,15 @@ class PositionSession implements JSONFormat {
             }.collect { id -> newPositionMap[id] }
 
             changedPositions.each { it.children = null }
+            newPositions.root.children = changedPositions
 
-            posUpdate = new PositionUpdate(isFull: false, positions: changedPositions)
+            def positions = []
+            if (!changedPositions.empty) {
+                newPositions.root.children = changedPositions
+                positions = [newPositions.root]
+            }
+
+            posUpdate = new PositionUpdate(isFull: false, positions: positions)
         } else {
             // If tree structure changed, we send a full update
             posUpdate = new PositionUpdate(isFull: true, positions: [newPositions.root])
