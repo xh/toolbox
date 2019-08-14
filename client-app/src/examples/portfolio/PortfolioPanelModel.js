@@ -39,7 +39,11 @@ export class PortfolioPanelModel {
 
         session.onUpdate = ({data}) => {
             this.gridPanelModel.setLoadTimestamp(Date.now());
-            store.updateData(data.positions, null, {processHierarchy: data.isFull});
+            if (data.isFull) {
+                store.loadData(data.positions);
+            } else {
+                throw XH.exception('Streaming updates not yet implemented on the client');
+            }
         };
 
         this.session = session;
