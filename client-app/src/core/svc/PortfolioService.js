@@ -70,7 +70,7 @@ export class PortfolioService {
             name: symbol,
             type: 'line',
             animation: false,
-            data: mktData.map(it => [LocalDate.create(it.day).timestamp, it[dimension]])
+            data: mktData.map(it => [LocalDate.get(it.day).timestamp, it[dimension]])
         };
     }
 
@@ -83,7 +83,7 @@ export class PortfolioService {
             upColor: 'rgba(23, 183, 0, 0.85)',
             animation: false,
             dataGrouping: {enabled: false},
-            data: mktData.map(it => [LocalDate.create(it.day).timestamp, it.open, it.high, it.low, it.close])
+            data: mktData.map(it => [LocalDate.get(it.day).timestamp, it.open, it.high, it.low, it.close])
         };
     }
 }
