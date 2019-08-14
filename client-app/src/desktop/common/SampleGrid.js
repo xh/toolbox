@@ -1,4 +1,4 @@
-import {boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
+import {localDateCol, boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
 import {br, filler, fragment, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {elemFactory, HoistComponent, HoistModel, LayoutSupport, LoadSupport, managed, XH} from '@xh/hoist/core';
@@ -56,7 +56,7 @@ class SampleGrid extends Component {
             case 1: selText = `Selected ${selection[0].company}`; break;
             default: selText = `Selected ${selCount} companies`;
         }
-        
+
         return panel({
             items: [
                 hframe(
@@ -179,7 +179,11 @@ class Model {
                     winLose: pnl > 0 ? 'Winner' : (pnl < 0 ? 'Loser' : 'Flat'),
                     ...r
                 };
-            }
+            },
+            fields: [{
+                name: 'trade_date',
+                type: 'localDate'
+            }]
         },
         contextMenuFn: (params, gridModel) => {
             return new StoreContextMenu({
@@ -258,6 +262,11 @@ class Model {
                     colorSpec: true
                 }),
                 exportFormat: ExportFormat.LEDGER_COLOR
+            },
+            {
+                headerName: 'Date',
+                field: 'trade_date',
+                ...localDateCol
             },
             {
                 field: 'active',
