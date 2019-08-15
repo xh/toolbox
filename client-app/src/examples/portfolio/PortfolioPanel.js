@@ -6,14 +6,12 @@
  */
 import {Component} from 'react';
 import {elemFactory, HoistComponent} from '@xh/hoist/core/index';
-import {hbox, hframe, vframe} from '@xh/hoist/cmp/layout';
-import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {hbox, vframe} from '@xh/hoist/cmp/layout';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
-import {positionsPanel} from './PositionsPanel';
-import {ordersPanel} from './OrdersPanel';
-import {lineChart} from './LineChart';
-import {ohlcChart} from './OHLCChart';
+import {gridPanel} from './GridPanel';
+import {detailPanel} from './detail/DetailPanel';
+import {mapPanel} from './MapPanel';
 
 import './PortfolioPanel.scss';
 
@@ -23,45 +21,22 @@ export class PortfolioPanel extends Component {
     model = new PortfolioPanelModel();
 
     render() {
-        const {model} = this;
+        const {model} = this,
+            {gridPanelModel, mapPanelModel, detailPanelModel} = model;
 
-        return vframe(
-            hbox({
-                flex: 1,
-                items: [
-                    positionsPanel({
-                        model: model.positionsPanelModel
-                    }),
-                    ordersPanel({
-                        model: model.ordersPanelModel
-                    })
-                ]
-            }),
-            panel({
-                title: `Trading Volume + Price History: ${model.displayedOrderSymbol}`,
-                icon: Icon.chartArea(),
-                compactHeader: true,
-                mask: !model.selectedOrder,
-                model: {
-                    defaultSize: 400,
-                    side: 'bottom',
-                    collapsedRenderMode: 'unmountOnHide'
-                },
-                item: hframe({
+        return panel({
+            item: vframe(
+                hbox({
+                    flex: 1,
                     items: [
-                        lineChart({
-                            model: model.lineChartModel,
-                            flex: 1,
-                            className: 'xh-border-right'
-                        }),
-                        ohlcChart({
-                            model: model.ohlcChartModel,
-                            flex: 1
-                        })
+                        gridPanel({model: gridPanelModel}),
+                        mapPanel({model: mapPanelModel})
                     ]
-                })
-            })
-        );
+                }),
+                detailPanel({model: detailPanelModel})
+            ),
+            mask: model.loadModel
+        });
     }
 }
 

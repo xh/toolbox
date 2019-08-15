@@ -8,11 +8,11 @@ import {bindable} from '@xh/hoist/mobx';
 @LoadSupport
 export class OHLCChartModel {
 
-    @bindable orderSymbol = null;
+    @bindable symbol = null;
 
     constructor() {
         this.addReaction({
-            track: () => this.orderSymbol,
+            track: () => this.symbol,
             run: () => this.loadAsync()
         });
     }
@@ -25,10 +25,7 @@ export class OHLCChartModel {
                 spacingLeft: 3,
                 spacingBottom: 5,
                 zoomType: 'x',
-                animation: false,
-                resetZoomButton: {
-                    theme: {display: 'none'}
-                }
+                animation: false
             },
             title: {text: null},
             legend: {enabled: false},
@@ -77,13 +74,13 @@ export class OHLCChartModel {
     });
 
     async doLoadAsync(loadSpec) {
-        const {orderSymbol} = this;
-        if (isNil(orderSymbol)) {
+        const {symbol} = this;
+        if (isNil(symbol)) {
             this.chartModel.setSeries([]);
             return;
         }
 
-        const series = await XH.portfolioService.getOLHCChartSeriesAsync(orderSymbol);
+        const series = await XH.portfolioService.getOLHCChartSeriesAsync(symbol);
         this.chartModel.setSeries([series]);
     }
 }

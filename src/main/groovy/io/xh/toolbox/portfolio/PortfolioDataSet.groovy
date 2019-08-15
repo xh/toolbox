@@ -1,11 +1,16 @@
 package io.xh.toolbox.portfolio
 
+import java.time.LocalDate
+
 class PortfolioDataSet {
+
+    LocalDate day
 
     // Market Data
     // Map of symbol to instrument, marketPrices
     Map<String, Instrument> instruments
-    Map<String, List<MarketPrice>> marketPrices
+    Map<String, List<MarketPrice>> historicalPrices
+    Map<String, MarketPrice> intradayPrices
 
     // Fund positioning/data
     List<Order> orders

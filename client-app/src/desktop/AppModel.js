@@ -123,7 +123,10 @@ export class AppModel {
                         path: '/charts',
                         children: [
                             {name: 'olhc', path: '/olhc'},
-                            {name: 'line', path: '/line'}
+                            {name: 'line', path: '/line'},
+                            {name: 'simpleTreeMap', path: '/simpleTreeMap'},
+                            {name: 'gridTreeMap', path: '/gridTreeMap'},
+                            {name: 'splitTreeMap', path: '/splitTreeMap'}
                         ]
                     },
                     {

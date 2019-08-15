@@ -1,8 +1,12 @@
 import {HoistService, XH} from '@xh/hoist/core';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 
+import {PositionSession} from '../positions/PositionSession';
+
 @HoistService
 export class PortfolioService {
+
+    MAX_POSITIONS = 950;
 
     async initAsync() {
         this.lookups = await XH.fetchJson({url: 'portfolio/lookups'});
@@ -15,31 +19,25 @@ export class PortfolioService {
     /**
      * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
      * @param {string[]} dims - field names for dimensions on which to group.
+     * @param {int} maxPositions - truncate position tree, by smallest pnl, until this number positions is reached
      * @param {boolean} [includeSummary] - true to include a root summary node
      * @return {Promise<Array>}
      */
-    async getPortfolioAsync(dims, includeSummary = false) {
-        const portfolio = await XH.fetchJson({
+    async getPositionsAsync(dims, maxPositions = this.MAX_POSITIONS, includeSummary = false) {
+        const positions = await XH.fetchJson({
             url: 'portfolio/positions',
             params: {
-                dims: dims.join(',')
+                dims: dims.join(','),
+                maxPositions
             }
         });
 
-        return includeSummary ? portfolio : portfolio[0].children;
-    }
-
-    /**
-     * Return a list of flat position data.
-     * @returns {Promise<Array>}
-     */
-    async getPositionsAsync() {
-        return XH.fetchJson({url: 'portfolio/rawPositions'});
+        return includeSummary ? [positions.root] : positions.root.children;
     }
 
     /**
      * Return a single grouped position, uniquely identified by drilldown ID.
-     * @param positionId - ID installed on each position returned by `getPortfolioAsync()`.
+     * @param positionId - ID installed on each position returned by `getPositionsAsync()`.
      * @return {Promise<*>}
      */
     async getPositionAsync(positionId) {
@@ -49,6 +47,34 @@ export class PortfolioService {
                 positionId
             }
         });
+    }
+
+    /**
+     *  Return a PositionSession that will receive live updates.
+     *  See getPositionsAsync(), the static form of this method, for more details.
+     *
+     * @returns {Promise<PositionSession>}
+     */
+    async getLivePositionsAsync(dims, topic, maxPositions = this.MAX_POSITIONS) {
+        const session = await XH.fetchJson({
+            url: 'portfolio/livePositions',
+            params: {
+                dims: dims.join(','),
+                maxPositions,
+                channelKey: XH.webSocketService.channelKey,
+                topic
+            }
+        });
+
+        return new PositionSession(session);
+    }
+
+    /**
+     * Return a list of flat position data.
+     * @returns {Promise<Array>}
+     */
+    async getRawPositionsAsync() {
+        return XH.fetchJson({url: 'portfolio/rawPositions'});
     }
 
     async getAllOrdersAsync() {

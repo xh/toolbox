@@ -8,17 +8,20 @@ class Order extends JSONFormatCached {
     String id
     Instrument instrument
     String dir
-    long quantity
-    double price
-    long mktVal
-    long commission
-    int confidence
+    Long quantity
+    Double price
+    Long cost
+    Long mktVal
+    Long commission
+    Integer confidence
 
     Instant time
 
     String model
     String trader
     String fund
+
+    String getKey() { [getSymbol(), trader, model, fund].join('||') }
 
     String getRegion() { instrument.region }
 
