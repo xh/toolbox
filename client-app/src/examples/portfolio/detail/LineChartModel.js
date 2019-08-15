@@ -1,7 +1,7 @@
 import {HoistModel, XH, managed, LoadSupport} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
 import {fmtDate} from '@xh/hoist/format';
-import Highcharts from 'highcharts/highstock';
+import {Highcharts} from '@xh/hoist/kit/highcharts';
 import {isNil} from 'lodash';
 import {bindable} from '@xh/hoist/mobx';
 
@@ -9,11 +9,11 @@ import {bindable} from '@xh/hoist/mobx';
 @LoadSupport
 export class LineChartModel {
 
-    @bindable orderSymbol = null;
+    @bindable symbol = null;
 
     constructor() {
         this.addReaction({
-            track: () => this.orderSymbol,
+            track: () => this.symbol,
             run: () => this.loadAsync()
         });
     }
@@ -42,7 +42,7 @@ export class LineChartModel {
             yAxis: {
                 floor: 0,
                 title: {
-                    text: 'Volume'
+                    text: null
                 }
             },
             plotOptions: {
@@ -78,13 +78,13 @@ export class LineChartModel {
     });
 
     async doLoadAsync(loadSpec) {
-        const {orderSymbol} = this;
-        if (isNil(orderSymbol)) {
+        const {symbol} = this;
+        if (isNil(symbol)) {
             this.chartModel.setSeries([]);
             return;
         }
 
-        const series = await XH.portfolioService.getLineChartSeriesAsync(orderSymbol);
+        const series = await XH.portfolioService.getLineChartSeriesAsync(symbol);
         this.chartModel.setSeries([series]);
     }
 }

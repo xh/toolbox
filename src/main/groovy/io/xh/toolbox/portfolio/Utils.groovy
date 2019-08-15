@@ -7,7 +7,7 @@ class Utils {
         return random.nextInt(upper - lower) + lower
     }
 
-    static double randDouble(Number upper, Number lower) {
+    static double randDouble(Number lower, Number upper) {
         return random.nextDouble() * (upper - lower) + lower
     }
 

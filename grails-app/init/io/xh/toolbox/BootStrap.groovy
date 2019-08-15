@@ -94,6 +94,18 @@ class BootStrap {
                 ],
                 groupName: 'Toolbox',
                 clientVisible: true,
+            ],
+            portfolioConfigs: [
+                valueType: 'json',
+                defaultValue: [
+                    instrumentCount: 500,
+                    orderCount: 20000,
+                    updateIntervalSecs: 5,
+                    updatePctInstruments: 20,
+                    updatePctPriceRange: 0.025,
+                    pushUpdatesIntervalSecs: 5
+                ],
+                groupName: 'Toolbox - Example Apps'
             ]
         ])
 
@@ -144,8 +156,26 @@ class BootStrap {
                 type: 'json',
                 defaultValue: [:],
                 local: true,
-                groupName: 'Toolbox',
+                groupName: 'Toolbox - Example Apps',
                 note: 'Object containing user\'s dimension picker value & history'
+            ],
+            portfolioMapPanelConfig: [
+                type: 'json',
+                defaultValue: [:],
+                local: true,
+                groupName: 'Toolbox - Example Apps'
+            ],
+            portfolioDetailPanelConfig: [
+                type: 'json',
+                defaultValue: [:],
+                local: true,
+                groupName: 'Toolbox - Example Apps'
+            ],
+            portfolioChartsPanelConfig: [
+                type: 'json',
+                defaultValue: [:],
+                local: true,
+                groupName: 'Toolbox - Example Apps'
             ],
             recallsPanelConfig: [
                 type: 'json',
