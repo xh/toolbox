@@ -1,3 +1,4 @@
+import {Icon} from '@xh/hoist/icon';
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -42,12 +43,15 @@ export class NumberFormatsPanel extends Component {
             ],
             item: panel({
                 title: 'Formats › Numbers',
-                className: 'toolbox-formats-tab',
-                width: '90%',
-                height: '90%',
+                icon: Icon.print(),
+                className: 'tbox-formats-tab',
+                width: 1000,
                 item: hframe(
                     this.renderParams(),
-                    resultsPanel({model: this.model, tryItInput: numberInput({selectOnFocus: true})})
+                    resultsPanel({
+                        model: this.model,
+                        tryItInput: numberInput({selectOnFocus: true, placeholder: 'Enter a value to test'})
+                    })
                 )
             })
         });
@@ -56,13 +60,13 @@ export class NumberFormatsPanel extends Component {
     renderParams() {
         const {model} = this;
         return panel({
-            title: 'Format',
-            className: 'toolbox-formats-tab__panel',
+            title: 'Function + Options',
+            compactHeader: true,
+            className: 'tbox-formats-tab__panel',
             flex: 1,
             items: [
                 param({
                     model,
-                    label: 'Function',
                     bind: 'fnName',
                     item: radioInput({
                         alignIndicator: 'left',
@@ -79,12 +83,12 @@ export class NumberFormatsPanel extends Component {
                     })
                 }),
                 card({
-                    className: 'toolbox-formats-tab__panel__card',
+                    className: 'tbox-formats-tab__panel__card',
                     items: [
                         param({
                             model,
                             bind: 'precision',
-                            item: select({options: ['auto', 0, 1, 2, 3, 4, 5, 6], enableCreate: false, width: 75}),
+                            item: select({options: ['auto', 0, 1, 2, 3, 4, 5, 6], enableFilter: false, width: 75}),
                             info: 'precision'
                         }),
                         param({
@@ -127,7 +131,7 @@ export class NumberFormatsPanel extends Component {
                             model,
                             bind: 'label',
                             item: textInput({commitOnChange: true, width: 50}),
-                            info: 'suffix charachters, typically used for units'
+                            info: 'suffix characters, typically used for units'
                         }),
                         param({
                             model,

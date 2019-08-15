@@ -59,7 +59,7 @@ class SampleColumnGroupsGrid extends Component {
             ),
             bbar: toolbar(
                 filler(),
-                gridStyleSwitches({gridModel})
+                gridStyleSwitches({gridModel, forToolbar: true})
             ),
             className: this.getClassName(),
             ...this.getLayoutProps()

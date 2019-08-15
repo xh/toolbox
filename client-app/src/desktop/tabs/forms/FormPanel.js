@@ -7,9 +7,9 @@
 import React, {Component} from 'react';
 import {HoistComponent} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame, hbox, vbox, vspacer} from '@xh/hoist/cmp/layout';
+import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -36,14 +36,16 @@ export class FormPanel extends Component {
                 </p>
             ],
             item: panel({
-                title: 'Forms › Forms ',
-                className: 'toolbox-form-panel',
+                title: 'Forms › FormModel',
+                className: 'tbox-form-panel',
                 icon: Icon.edit(),
-                width: '90%',
-                height: '90%',
+                width: 870,
+                height: 550,
                 mask: this.validateButtonTask,
-                item: this.renderForm(),
-                bbar: this.renderToolbar()
+                item: hframe(
+                    this.renderForm(),
+                    this.renderDisplayOptions()
+                )
             }),
             links: [
                 {
@@ -69,8 +71,8 @@ export class FormPanel extends Component {
     renderForm() {
         const {formModel, inline, minimal, commitOnChange} = this.model;
 
-        return frame({
-            className: 'toolbox-form-panel__content',
+        return panel({
+            flex: 1,
             item: form({
                 model: formModel,
                 fieldDefaults: {
@@ -78,24 +80,29 @@ export class FormPanel extends Component {
                     minimal,
                     commitOnChange
                 },
-                item: vbox({
-                    width: 600,
+                item: vframe({
+                    padding: 10,
                     items: [
-                        hbox(
-                            vbox({
-                                flex: 1,
-                                marginRight: 30,
-                                items: this.renderLeftFields()
-                            }),
-                            vbox({
-                                flex: 1,
-                                items: this.renderRightFields()
-                            })
-                        ),
+                        hbox({
+                            flex: 'none',
+                            items: [
+                                vbox({
+                                    flex: 1,
+                                    marginRight: 30,
+                                    items: this.renderLeftFields()
+                                }),
+                                vbox({
+                                    flex: 1,
+                                    items: this.renderRightFields()
+                                })
+                            ]
+                        }),
+                        'References',
                         this.renderReferences()
                     ]
                 })
-            })
+            }),
+            bbar: this.renderToolbar()
         });
     }
 
@@ -130,31 +137,47 @@ export class FormPanel extends Component {
     }
 
     renderRightFields() {
+        const {model} = this;
+
         return [
+            hbox(
+                formField({
+                    field: 'startDate',
+                    flex: 1,
+                    inline: false,  // always print labels on top (override form-level inline)
+                    item: dateInput({
+                        valueType: 'localDate'
+                    })
+                }),
+                formField({
+                    field: 'endDate',
+                    flex: 1,
+                    inline: false,
+                    item: dateInput({
+                        valueType: 'localDate',
+                        enableClear: true
+                    })
+                })
+            ),
+            formField({
+                field: 'reasonForLeaving',
+                item: select({
+                    options: ['New Job', 'Retirement', 'Terminated', 'Other']
+                })
+            }),
             hbox({
-                alignItems: 'top',
                 items: [
                     formField({
-                        field: 'startDate',
-                        width: 130,
-                        inline: false,
-                        item: dateInput()
+                        field: 'isManager',
+                        label: 'Manager?',
+                        item: checkbox()
                     }),
                     formField({
-                        field: 'endDate',
-                        width: 130,
-                        inline: false,
-                        item: dateInput()
+                        field: 'yearsExperience',
+                        item: numberInput({width: 50})
                     })
-                ]
-            }),
-            formField({
-                field: 'yearsExperience',
-                item: numberInput({width: 50})
-            }),
-            formField({
-                field: 'isManager',
-                item: checkbox()
+                ],
+                alignItems: model.inline ? 'center' : 'top'
             }),
             formField({
                 field: 'notes',
@@ -162,7 +185,6 @@ export class FormPanel extends Component {
             })
         ];
     }
-
 
     renderReferences() {
         const {references} = this.model.formModel.fields;
@@ -173,7 +195,7 @@ export class FormPanel extends Component {
                 key: refModel.xhId,
                 fieldDefaults: {label: null},
                 item: hbox({
-                    alignItems: 'baseline',
+                    className: 'tbox-form-panel__reference-row',
                     items: [
                         formField({
                             field: 'name',
@@ -205,60 +227,74 @@ export class FormPanel extends Component {
             });
         });
         
-        return vbox(
-            'References',
-            ...rows,
-            vspacer(5),
-            hbox(
+        return vbox({
+            className: 'tbox-form-panel__references',
+            items: [
+                ...rows,
                 button({
                     icon: Icon.add(),
-                    text: 'Add new reference..',
+                    text: 'Add new reference...',
                     onClick: () => references.add()
                 })
-            )
-        );
+            ]
+        });
+    }
+
+    renderDisplayOptions() {
+        const {model} = this,
+            {formModel} = model;
+
+        return panel({
+            title: 'Display Options',
+            className: 'tbox-display-opts',
+            icon: Icon.settings(),
+            compactHeader: true,
+            items: [
+                switchInput({
+                    model,
+                    bind: 'inline',
+                    label: 'Inline labels'
+                }),
+                switchInput({
+                    model,
+                    bind: 'minimal',
+                    label: 'Minimal validation display'
+                }),
+                switchInput({
+                    model,
+                    bind: 'commitOnChange',
+                    label: 'Commit on change'
+                }),
+                switchInput({
+                    model: formModel,
+                    bind: 'readonly',
+                    label: 'Read-only'
+                }),
+                switchInput({
+                    model: formModel,
+                    bind: 'disabled',
+                    label: 'Disabled'
+                })
+            ],
+            model: {side: 'right', defaultSize: 220, resizable: false}
+        });
     }
 
     renderToolbar() {
-        const {model} = this,
-            {formModel} = model;
+        const {model} = this;
+
         return toolbar(
-            switchInput({
-                model,
-                bind: 'inline',
-                label: 'Inline labels'
-            }),
-            switchInput({
-                model,
-                bind: 'minimal',
-                label: 'Minimal validation display'
-            }),
-            switchInput({
-                model,
-                bind: 'commitOnChange',
-                label: 'Commit on change'
-            }),
-            switchInput({
-                model: formModel,
-                bind: 'readonly',
-                label: 'Read-only'
-            }),
-            switchInput({
-                model: formModel,
-                bind: 'disabled',
-                label: 'Disabled'
-            }),
-            filler(),
-            toolbarSep(),
             button({
                 text: 'Reset',
-                icon: Icon.undo(),
+                icon: Icon.reset({className: 'xh-red'}),
                 onClick: () => model.reset(),
                 disabled: !model.formModel.isDirty
             }),
+            filler(),
             button({
                 text: 'Submit',
-                icon: Icon.add(),
+                icon: Icon.check(),
+                minimal: false,
                 intent: 'success',
                 onClick: () => model.submitAsync()
             })

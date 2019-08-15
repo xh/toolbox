@@ -1,5 +1,5 @@
 import {HoistService, XH} from '@xh/hoist/core';
-import moment from 'moment';
+import {LocalDate} from '@xh/hoist/utils/datetime';
 
 @HoistService
 export class PortfolioService {
@@ -70,7 +70,7 @@ export class PortfolioService {
             name: symbol,
             type: 'line',
             animation: false,
-            data: mktData.map(it => [moment(it.day).valueOf(), it[dimension]])
+            data: mktData.map(it => [LocalDate.get(it.day).timestamp, it[dimension]])
         };
     }
 
@@ -83,7 +83,7 @@ export class PortfolioService {
             upColor: 'rgba(23, 183, 0, 0.85)',
             animation: false,
             dataGrouping: {enabled: false},
-            data: mktData.map(it => [moment(it.day).valueOf(), it.open, it.high, it.low, it.close])
+            data: mktData.map(it => [LocalDate.get(it.day).timestamp, it.open, it.high, it.low, it.close])
         };
     }
 }

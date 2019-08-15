@@ -4,6 +4,8 @@ import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 
+import java.time.LocalDate
+
 @Slf4j
 class TradeService extends BaseService {
 
@@ -26,12 +28,14 @@ class TradeService extends BaseService {
         def ret = [:]
         try {
             def mockData = applicationContext.getResource('classpath:MockTradesData.json'),
-                trades = new JsonSlurper().parse(mockData.inputStream)
+                trades = new JsonSlurper().parse(mockData.inputStream),
+                dateRange = 30
 
             trades.each {it ->
                 it.profit_loss = Math.round(it.profit_loss * Math.random())
                 it.trade_volume = it.trade_volume * 1000000
                 it.active = it.trade_volume.toBigInteger() % 6 == 0
+                it.trade_date = LocalDate.now().minusDays(Math.round(dateRange * Math.random()))
             }
 
             ret = [

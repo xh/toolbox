@@ -28,7 +28,9 @@ class DataViewItem extends Component {
                     precision: 2
                 })
             }),
-            loser ? Icon.skull({size: '3x', className: 'xh-red'}) : Icon.rocket({size: '3x', className: 'xh-green'})
+            loser ?
+                Icon.skull({size: '3x', className: 'xh-red', prefix: 'fal'}) :
+                Icon.rocket({size: '3x', className: 'xh-green', prefix: 'fal'})
         );
     }
 }

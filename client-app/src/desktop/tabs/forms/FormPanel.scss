@@ -1,7 +1,16 @@
-.toolbox-form-panel {
-  &__content {
+.tbox-form-panel {
+  &__references {
     border: var(--xh-border-solid);
-    margin: var(--xh-pad-px);
+    overflow-y: scroll !important;
     padding: var(--xh-pad-px);
+    flex: 1;
+    margin-top: var(--xh-pad-px);
+  }
+
+  &__reference-row {
+    flex: none;
+    .xh-form-field {
+      margin-bottom: 0;
+    }
   }
 }
