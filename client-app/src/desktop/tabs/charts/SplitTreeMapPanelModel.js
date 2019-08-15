@@ -77,9 +77,9 @@ export class SplitTreeMapPanelModel {
     @managed
     splitTreeMapModel = new SplitTreeMapModel({
         gridModel: this.gridModel,
-        mapTitleFn: (mapName, model) => {
+        mapTitleFn: (model, isPrimary) => {
             return [
-                mapName === 'primary' ? 'Profit:' : 'Loss:',
+                isPrimary ? 'Profit:' : 'Loss:',
                 hspacer(5),
                 fmtMillions(model.total, {
                     prefix: '$',

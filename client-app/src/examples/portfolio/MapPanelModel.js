@@ -19,9 +19,9 @@ export class MapPanelModel {
     constructor({parentModel}) {
         this.splitTreeMapModel = new SplitTreeMapModel({
             gridModel: parentModel.gridPanelModel.gridModel,
-            mapTitleFn: (mapName, model) => {
+            mapTitleFn: (model, isPrimary) => {
                 return [
-                    mapName === 'primary' ? 'Profit:' : 'Loss:',
+                    isPrimary ? 'Profit:' : 'Loss:',
                     hspacer(5),
                     fmtMillions(model.total, {
                         prefix: '$',
