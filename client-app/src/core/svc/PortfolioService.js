@@ -19,11 +19,11 @@ export class PortfolioService {
     /**
      * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
      * @param {string[]} dims - field names for dimensions on which to group.
-     * @param {int} maxPositions - truncate position tree, by smallest pnl, until this number positions is reached
      * @param {boolean} [includeSummary] - true to include a root summary node
+     * @param {int} maxPositions - truncate position tree, by smallest pnl, until this number positions is reached
      * @return {Promise<Array>}
      */
-    async getPositionsAsync(dims, maxPositions = this.MAX_POSITIONS, includeSummary = false) {
+    async getPositionsAsync(dims, includeSummary = false, maxPositions = this.MAX_POSITIONS) {
         const positions = await XH.fetchJson({
             url: 'portfolio/positions',
             params: {
