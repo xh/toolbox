@@ -3,7 +3,7 @@ import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {MapPanelModel} from './MapPanelModel';
 import {DetailPanelModel} from './detail/DetailPanelModel';
-import {clamp} from 'lodash';
+import {clamp, round} from 'lodash';
 import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
 
 
@@ -74,8 +74,9 @@ export class PortfolioPanelModel {
     createStore() {
         return new Store({
             processRawData: (r) => {
+                const roundedPnlMktVal = round(r.pnl / Math.abs(r.mktVal), 2);
                 return {
-                    pnlMktVal: clamp(r.pnl / Math.abs(r.mktVal), -1, 1),
+                    pnlMktVal: clamp(roundedPnlMktVal, -1, 1),
                     ...r
                 };
             },
