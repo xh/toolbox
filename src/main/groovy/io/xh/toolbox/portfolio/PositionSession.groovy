@@ -53,7 +53,6 @@ class PositionSession implements JSONFormat {
             if (oldPos) {
                 if (oldPos.pnl != newPos.pnl || oldPos.mktVal != newPos.mktVal) {
                     updates << newPos
-                    // oldIds.remove(id)
                 }
 
                 newPos.children.each { Position newPosChild ->
@@ -63,7 +62,7 @@ class PositionSession implements JSONFormat {
             } else {
                 adds << [
                         parentId: parentId,
-                        position: newPos
+                        rawData: newPos
                 ]
             }
         }
