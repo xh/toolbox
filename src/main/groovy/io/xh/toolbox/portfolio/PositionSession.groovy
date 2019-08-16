@@ -23,68 +23,67 @@ class PositionSession implements JSONFormat {
 
     void pushUpdate() {
         PositionResultSet newPositions = positionService.getPositions(positions.query)
+        PositionUpdate posUpdate = computeDiff(newPositions)
 
-
-
-// TODO: Restore differential updates when client can handle.
-// find changed positions, and send them as a flat list of updates.
-//        Map<String, Position> oldPositionMap = getMappedPositions(positions.root)
-//        Map<String, Position> newPositionMap = getMappedPositions(newPositions.root)
-//
-//
-//        def oldIds = oldPositionMap.keySet()
-//        def newIds = newPositionMap.keySet()
-//        if (oldIds == newIds) {
-//            List<Position> changedPositions = oldIds.findAll { id ->
-//                // We can ignore the root position since that will always be included in the response if any positions
-//                // have changed
-//                if (id == 'root') return false
-//
-//                Position oldPos = oldPositionMap[id]
-//                Position newPos = newPositionMap[id]
-//                // Position tree structure is the same in new positions and old, as only prices have changed.
-//                // So, positions are different iff their pnl and/or mktVal values differ.
-//                if (!newPos || !oldPos) {
-//                    log.error("Position ${id} is null in ${!newPos ? 'new' : 'old'}PositionsMap")
-//                    return false
-//                }
-//                return (newPos.pnl != oldPos.pnl || newPos.mktVal != oldPos.mktVal)
-//            }.collect { id -> newPositionMap[id] }
-//
-//            changedPositions.each { it.children = null }
-//            newPositions.root.children = changedPositions
-//
-//            def positions = []
-//            if (!changedPositions.empty) {
-//                newPositions.root.children = changedPositions
-//                positions = [newPositions.root]
-//            }
-//
-//            posUpdate = new PositionUpdate(isFull: false, positions: positions)
-//        }
-
-        def posUpdate = new PositionUpdate(isFull: true, positions: [newPositions.root])
         Utils.webSocketService.pushToChannel(channelKey, topic, posUpdate)
+
+        // log.info(newPositions.root.formatForJSON().toString())
+
+        this.positions = newPositions
     }
 
 
     //--------------------
     // Implementation
     //--------------------
-    private Map<String, Position> getMappedPositions(Position root) {
-        Map<String, Position> ret = [:]
-        Closure<Void> addToPositionMapRecursive
-        addToPositionMapRecursive = { Position pos ->
-            ret[pos.id] = pos
-            if (pos.children) {
-                pos.children.each { childPos ->
-                    addToPositionMapRecursive(childPos)
+    private PositionUpdate computeDiff(PositionResultSet newPositions) {
+        Map<String, Position> oldPositionMap = getMappedPositions(positions.root)
+        Set<String> oldIds = oldPositionMap.keySet()
+
+        List<Position> updates = []
+        List<Map> adds = []
+
+        // Compute updates and adds by recursively traversing the new positions tree
+        Closure computeDiffRecursive
+        computeDiffRecursive = {Position newPos, String parentId ->
+            String id = newPos.id
+            Position oldPos = oldPositionMap[id]
+
+            // If id corresponds to an existing position, update it
+            if (oldPos) {
+                if (oldPos.pnl != newPos.pnl || oldPos.mktVal != newPos.mktVal) {
+                    updates << newPos
+                    // oldIds.remove(id)
                 }
+
+                newPos.children.each { Position newPosChild ->
+                    computeDiffRecursive(newPosChild, id)
+                }
+
+            } else {
+                adds << [
+                        parentId: parentId,
+                        position: newPos
+                ]
             }
-            return
         }
-        addToPositionMapRecursive(root)
-        return ret
+
+        computeDiffRecursive(newPositions.root, null)
+
+        Map<String, Position> newPositionMap = getMappedPositions(newPositions.root)
+        Collection<String> deletes = oldIds.findAll {!newPositionMap[it]}
+
+        return new PositionUpdate(
+                updates: updates,
+                adds: adds,
+                deletes: deletes // The remaining ids in oldIds are deletions
+        )
+    }
+
+    private Map<String, Position> getMappedPositions(Position pos, Map<String, Position> col = [:]) {
+        col[pos.id] = pos
+        pos.children.each { getMappedPositions(it, col) }
+        return col
     }
 
     private PositionService getPositionService() {

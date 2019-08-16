@@ -3,7 +3,7 @@ import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {MapPanelModel} from './MapPanelModel';
 import {DetailPanelModel} from './detail/DetailPanelModel';
-import {clamp} from 'lodash';
+import {clamp, partition} from 'lodash';
 import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
 
 
@@ -38,12 +38,14 @@ export class PortfolioPanelModel {
             positions = [session.initialPositions.root];
 
         session.onUpdate = ({data}) => {
+            console.log(data);
+
             this.gridPanelModel.setLoadTimestamp(Date.now());
-            if (data.isFull) {
-                store.loadData(data.positions);
-            } else {
-                throw XH.exception('Streaming updates not yet implemented on the client');
-            }
+
+            const {adds, deletes} = data,
+                [[summaryUpdate], updates] = partition(data.updates, {id: 'root'});
+
+            store.updateData({adds, deletes, updates, summaryUpdate});
         };
 
         this.session = session;
