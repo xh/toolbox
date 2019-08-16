@@ -3,7 +3,7 @@ import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {MapPanelModel} from './MapPanelModel';
 import {DetailPanelModel} from './detail/DetailPanelModel';
-import {clamp, partition} from 'lodash';
+import {clamp} from 'lodash';
 import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
 
 
@@ -29,31 +29,23 @@ export class PortfolioPanelModel {
     }
 
     async doLoadAsync(loadSpec) {
-        const {store, dimChooserModel} = this,
+        const {store, dimChooserModel, gridPanelModel} = this,
             dims = dimChooserModel.value;
 
-        if (this.session) this.session.destroy();
+        let {session} = this;
+        if (session) session.destroy();
+        session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp');
 
-        const session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp'),
-            positions = [session.initialPositions.root];
-
+        store.loadData([session.initialPositions.root]);
         session.onUpdate = ({data}) => {
-            console.log(data);
-
-            this.gridPanelModel.setLoadTimestamp(Date.now());
-
-            const {adds, deletes} = data,
-                [[summaryUpdate], updates] = partition(data.updates, {id: 'root'});
-
-            store.updateData({adds, deletes, updates, summaryUpdate});
+            gridPanelModel.setLoadTimestamp(Date.now());
+            store.updateData(data);
         };
 
         this.session = session;
 
-        store.loadData(positions);
-
         if (!this.selectedPosition) {
-            this.gridPanelModel.gridModel.selectFirst();
+            gridPanelModel.gridModel.selectFirst();
         }
 
         await this.detailPanelModel.doLoadAsync();

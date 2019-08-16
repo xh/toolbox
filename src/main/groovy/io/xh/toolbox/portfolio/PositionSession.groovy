@@ -27,8 +27,6 @@ class PositionSession implements JSONFormat {
 
         Utils.webSocketService.pushToChannel(channelKey, topic, posUpdate)
 
-        // log.info(newPositions.root.formatForJSON().toString())
-
         this.positions = newPositions
     }
 
@@ -37,13 +35,11 @@ class PositionSession implements JSONFormat {
     // Implementation
     //--------------------
     private PositionUpdate computeDiff(PositionResultSet newPositions) {
-        Map<String, Position> oldPositionMap = getMappedPositions(positions.root)
-        Set<String> oldIds = oldPositionMap.keySet()
+        Map oldPositionMap = getMappedPositions(positions.root)
 
+        // 1) Compute updates and adds by recursively traversing the new positions tree
         List<Position> updates = []
         List<Map> adds = []
-
-        // Compute updates and adds by recursively traversing the new positions tree
         Closure computeDiffRecursive
         computeDiffRecursive = {Position newPos, String parentId ->
             String id = newPos.id
@@ -60,23 +56,16 @@ class PositionSession implements JSONFormat {
                 }
 
             } else {
-                adds << [
-                        parentId: parentId,
-                        rawData: newPos
-                ]
+                adds << [parentId: parentId, rawData: newPos]
             }
         }
-
         computeDiffRecursive(newPositions.root, null)
 
-        Map<String, Position> newPositionMap = getMappedPositions(newPositions.root)
-        Collection<String> deletes = oldIds.findAll {!newPositionMap[it]}
+        // 2) Compute deletes with a simple pass through existing positions
+        Map newPositionMap = getMappedPositions(newPositions.root)
+        Collection<String> deletes = oldPositionMap.keySet().findAll {!newPositionMap[it]}
 
-        return new PositionUpdate(
-                updates: updates,
-                adds: adds,
-                deletes: deletes // The remaining ids in oldIds are deletions
-        )
+        return new PositionUpdate(updates: updates, adds: adds, deletes: deletes)
     }
 
     private Map<String, Position> getMappedPositions(Position pos, Map<String, Position> col = [:]) {
@@ -89,10 +78,6 @@ class PositionSession implements JSONFormat {
         Utils.appContext.positionService
     }
 
-    void destroy() {
-
-    }
-
     Object formatForJSON() {
         return [
                 id: id,
@@ -100,5 +85,9 @@ class PositionSession implements JSONFormat {
                 topic: topic,
                 positions: positions
         ]
+    }
+
+    void destroy() {
+
     }
 }
