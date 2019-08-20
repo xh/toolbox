@@ -87,18 +87,19 @@ export class GridTestPanel extends Component {
             bbar: [
                 switchInput({
                     model,
+                    bind: 'tree',
+                    label: 'Tree mode'
+                }),
+                switchInput({
+                    model,
                     bind: 'useTransactions',
                     label: 'Use Transactions'
                 }),
                 switchInput({
                     model,
                     bind: 'useDeltaSort',
-                    label: 'Use Delta Sort'
-                }),
-                switchInput({
-                    model,
-                    bind: 'tree',
-                    label: 'Tree mode'
+                    label: 'Use Delta Sort',
+                    disabled: model.tree
                 }),
                 filler(),
                 storeFilterField({
