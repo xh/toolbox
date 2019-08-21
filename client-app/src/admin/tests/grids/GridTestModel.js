@@ -1,6 +1,6 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
-import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {millionsRenderer, numberRenderer, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
 import {random, sample, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
@@ -23,34 +23,36 @@ const pnlColumn = {
 export class GridTestModel {
 
     // Total count (approx) of all nodes generated (parents + children).
-    @bindable recordCount = 75000;
+    @bindable recordCount = 750;
     // Loop x times over nodes, randomly selecting a note and twiddling data.
-    @bindable twiddleCount = 10000;
+    @bindable twiddleCount = Math.round(this.recordCount * .10);
     // Prefix for all IDs - change to ensure no IDs re-used across data gens.
     @bindable idSeed = 1;
     // True to generate data in tree structure.
     @bindable tree = false;
+    @bindable useTransactions = true;
+    @bindable useDeltaSort = true;
 
-    // Generated data in tree (if requested).
+    // Generated data in tree
     _data;
-    // Generated data in flat list (for twiddling).
-    _allData;
 
     @managed
     @observable
     gridModel = this.createGridModel();
 
-    @observable.ref runTimes = {};
+    @bindable gridUpdateTime = null;
+    @bindable gridLoadTime = null;
 
     constructor() {
         this.addReaction({
-            track: () =>  this.tree,
+            track: () =>  [this.tree, this.useTransactions, this.useDeltaSort],
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
                 this.clearData();
                 this.loadAsync();
-            }
+            },
+            delay: 100
         });
 
         this.addReaction({
@@ -61,44 +63,47 @@ export class GridTestModel {
 
     clearData() {
         this._data = null;
-        this._allData = null;
     }
 
     async doLoadAsync(loadSpec) {
         if (loadSpec.isAutoRefresh) return; // avoid auto-refresh confusing our tests here
 
-        const runTimes = {};
-        return start(() => {
-            if (!this._data) {
-                const dataStart = Date.now();
-                this.genTestData();
-                runTimes.data = Date.now() - dataStart;
-            }
-
-            const loadStart = Date.now();
-            this.gridModel.loadData(this._data);
-            runTimes.load = Date.now() - loadStart;
-        }).linkTo(
-            this.loadModel
-        ).finally(() => {
-            this.setRunTimes(runTimes);
-        });
+        if (!this._data) {
+            this.genTestData();
+        }
+        this.loadData(this._data);
     }
 
     clearGrid() {
-        start(() => {
-            const start = Date.now();
-            this.gridModel.loadData([]);
-            this.setRunTimes({load: Date.now() - start});
-        }).linkTo(this.loadModel);
+        this.loadData([]);
     }
 
-    @action
-    setRunTimes(v) {this.runTimes = v}
+
+    loadData(data) {
+        const loadStart = Date.now();
+        return start(() => {
+            this.gridModel.loadData(data);
+        }).linkTo(
+            this.loadModel
+        ).finally(() => {
+            this.setGridLoadTime(Date.now() - loadStart);
+            this.setGridUpdateTime(null);
+
+        });
+    }
+
+    updateData(updates) {
+        const loadStart = Date.now();
+        return start(() => {
+            this.gridModel.store.updateData(updates);
+        }).finally(() => {
+            this.setGridUpdateTime(Date.now() - loadStart);
+        });
+    }
+
 
     genTestData() {
         this._data = [];
-        this._allData = [];
         let count = 0;
         const idSeed = this.idSeed;
 
@@ -131,37 +136,46 @@ export class GridTestModel {
                         ytd: random(-1000000, 2000000),
                         volume: random(1000, 1200000)
                     };
-                    this._allData.push(child);
                     return child;
                 });
             }
 
             this._data.push(pos);
-            this._allData.push(pos);
         }
 
         console.log(`Generated ${count} test records.`);
     }
 
     twiddleData() {
-        if (!this._allData) {
+        if (!this._data) {
             console.log('No data to twiddle');
             return;
         }
 
+        const newPositions = [];
         times(this.twiddleCount, () => {
-            const pos = sample(this._allData);
-            pos.day = random(-80000, 100000);
-            pos.volume = random(1000, 1200000);
+            const pos = sample(this.gridModel.store.allRecords);
+            newPositions.push({
+                ...pos,
+                day: random(-80000, 100000),
+                volume: random(1000, 1200000)
+            });
         });
+
+        this.updateData({update: newPositions});
     }
 
     createGridModel() {
         return new GridModel({
             selModel: {mode: 'multiple'},
-            sortBy: 'day|desc|abs',
+            sortBy: 'id',
             emptyText: 'No records found...',
             treeMode: this.tree,
+            experimental: {
+                useTransactions: this.useTransactions,
+                useDeltaSort: this.useDeltaSort,
+                suppressUpdateExpandStateOnDataLoad: true
+            },
             columns: [
                 {
                     field: 'id',
@@ -171,13 +185,21 @@ export class GridTestModel {
                 },
                 {
                     field: 'symbol',
+                    agOptions: {
+                        filter: 'agTextColumnFilter',
+                        suppressMenu: false
+                    },
                     width: 200
                 },
                 {
                     field: 'trader',
                     width: 200
                 },
-                {field: 'day', ...pnlColumn},
+                {
+                    field: 'day',
+                    ...pnlColumn,
+                    agOptions: {enableCellChangeFlash: true}
+                },
                 {field: 'mtd', headerName: 'MTD', ...pnlColumn},
                 {field: 'ytd', headerName: 'YTD', ...pnlColumn},
                 {
@@ -185,12 +207,27 @@ export class GridTestModel {
                     field: 'volume',
                     align: 'right',
                     width: 130,
+                    agOptions: {enableCellChangeFlash: true},
                     renderer: millionsRenderer({
                         precision: 2,
                         label: true,
                         tooltip: true
                     })
                 },
+                {
+                    headerName: 'Complex',
+                    field: 'complex',
+                    align: 'right',
+                    width: 130,
+                    renderer: (v, {record}) => {
+                        return fmtMillions(record.volume, {precision: 2, label: true}) +
+                            ' | ' +
+                            fmtNumber(record.day, {colorSpec: true});
+                    },
+                    rendererIsComplex: true
+                },
+
+
                 {...emptyFlexCol}
             ]
         });

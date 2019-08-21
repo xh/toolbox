@@ -28,7 +28,7 @@ class RawPosition extends JSONFormatCached {
         trader = mp.trader
         cost = mp.cost as Long
         endQty = mp.endQty as Long
-        endPx = mp.endPx as Long
+        endPx = mp.endPx as Double
         mktVal = (endQty * endPx).round()
         pnl = mktVal - cost
     }

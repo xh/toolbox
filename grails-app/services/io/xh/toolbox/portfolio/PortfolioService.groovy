@@ -111,7 +111,7 @@ class PortfolioService extends BaseService {
             def instrument = sample(allInstruments),
                 symbol = instrument.symbol
 
-            if (!newPrices.containsKey(symbol)) {
+            if (!newPrices[symbol]) {
                 def oldPrice = oldData.intradayPrices[symbol] ?: oldData.historicalPrices[symbol].last()
                 newPrices[symbol] = oldPrice.perturb(pctPriceRange)
             }
