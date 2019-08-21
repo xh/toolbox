@@ -43,6 +43,8 @@ export class GridTestPanel extends Component {
                     item: numberInput({
                         model,
                         bind: 'recordCount',
+                        enableShorthandUnits: true,
+                        selectOnFocus: true,
                         width: 100
                     })
                 }),
@@ -72,6 +74,8 @@ export class GridTestPanel extends Component {
                     item: numberInput({
                         model,
                         bind: 'twiddleCount',
+                        enableShorthandUnits: true,
+                        selectOnFocus: true,
                         width: 80
                     })
                 }),
