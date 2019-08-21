@@ -38,8 +38,8 @@ class PositionSession implements JSONFormat {
         Map oldPositionMap = getMappedPositions(positions.root)
 
         // 1) Compute updates and adds by recursively traversing the new positions tree
-        List<Position> updates = []
-        List<Map> adds = []
+        List<Position> update = []
+        List<Map> add = []
         Closure computeDiffRecursive
         computeDiffRecursive = {Position newPos, String parentId ->
             String id = newPos.id
@@ -48,7 +48,7 @@ class PositionSession implements JSONFormat {
             // If id corresponds to an existing position, update it
             if (oldPos) {
                 if (oldPos.pnl != newPos.pnl || oldPos.mktVal != newPos.mktVal) {
-                    updates << newPos
+                    update << newPos
                 }
 
                 newPos.children.each { Position newPosChild ->
@@ -56,16 +56,16 @@ class PositionSession implements JSONFormat {
                 }
 
             } else {
-                adds << [parentId: parentId, rawData: newPos]
+                add << [parentId: parentId, rawData: newPos]
             }
         }
         computeDiffRecursive(newPositions.root, null)
 
         // 2) Compute deletes with a simple pass through existing positions
         Map newPositionMap = getMappedPositions(newPositions.root)
-        Collection<String> deletes = oldPositionMap.keySet().findAll {!newPositionMap[it]}
+        Collection<String> remove = oldPositionMap.keySet().findAll {!newPositionMap[it]}
 
-        return new PositionUpdate(updates: updates, adds: adds, deletes: deletes)
+        return new PositionUpdate(update: update, add: add, remove: remove)
     }
 
     private Map<String, Position> getMappedPositions(Position pos, Map<String, Position> col = [:]) {

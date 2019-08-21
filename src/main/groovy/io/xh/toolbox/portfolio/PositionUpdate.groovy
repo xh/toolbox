@@ -3,15 +3,15 @@ package io.xh.toolbox.portfolio
 import io.xh.hoist.json.JSONFormat
 
 class PositionUpdate implements JSONFormat {
-    Collection<Position> updates
-    Collection<Map> adds
-    Collection<String> deletes
+    Collection<Position> update
+    Collection<Map> add
+    Collection<String> remove
 
     Object formatForJSON() {
         return [
-                updates: updates.collect {it.formatForJSON(false)},
-                adds: adds,
-                deletes: deletes
+                update: update.collect {it.formatForJSON(false)},
+                add: add,
+                remove: remove
         ]
     }
 }

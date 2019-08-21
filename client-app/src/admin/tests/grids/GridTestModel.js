@@ -162,7 +162,7 @@ export class GridTestModel {
             });
         });
 
-        this.updateData({updates: newPositions});
+        this.updateData({update: newPositions});
     }
 
     createGridModel() {
