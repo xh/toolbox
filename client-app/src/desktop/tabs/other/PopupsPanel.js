@@ -133,7 +133,7 @@ export class PopupsPanel extends Component {
                             onClick: () => XH.prompt({
                                 title: 'Prompt',
                                 message: div(
-                                    p('This is a prompt. Prompt comes with two buttons: "OK" and "Cancel" and support an input field to collect a response from the user.'),
+                                    p('This is a prompt. Prompt comes with two buttons: "OK" and "Cancel" and supports an input field to collect a response from the user.'),
                                     acceptRichTextReminder
                                 )
                             })
