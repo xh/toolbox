@@ -9,13 +9,13 @@ class Position extends JSONFormatCached {
     long mktVal
     List<Position> children
 
-    Map formatForJSON() {
+    Map formatForJSON(boolean includeChildren = true) {
         return [
                 id      : id,
                 name    : name,
                 pnl     : pnl,
                 mktVal  : mktVal,
-                children: children
+                children: includeChildren ? children : null
         ]
     }
 }

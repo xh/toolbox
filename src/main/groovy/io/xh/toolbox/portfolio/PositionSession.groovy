@@ -23,76 +23,59 @@ class PositionSession implements JSONFormat {
 
     void pushUpdate() {
         PositionResultSet newPositions = positionService.getPositions(positions.query)
+        PositionUpdate posUpdate = computeDiff(newPositions)
 
-
-
-// TODO: Restore differential updates when client can handle.
-// find changed positions, and send them as a flat list of updates.
-//        Map<String, Position> oldPositionMap = getMappedPositions(positions.root)
-//        Map<String, Position> newPositionMap = getMappedPositions(newPositions.root)
-//
-//
-//        def oldIds = oldPositionMap.keySet()
-//        def newIds = newPositionMap.keySet()
-//        if (oldIds == newIds) {
-//            List<Position> changedPositions = oldIds.findAll { id ->
-//                // We can ignore the root position since that will always be included in the response if any positions
-//                // have changed
-//                if (id == 'root') return false
-//
-//                Position oldPos = oldPositionMap[id]
-//                Position newPos = newPositionMap[id]
-//                // Position tree structure is the same in new positions and old, as only prices have changed.
-//                // So, positions are different iff their pnl and/or mktVal values differ.
-//                if (!newPos || !oldPos) {
-//                    log.error("Position ${id} is null in ${!newPos ? 'new' : 'old'}PositionsMap")
-//                    return false
-//                }
-//                return (newPos.pnl != oldPos.pnl || newPos.mktVal != oldPos.mktVal)
-//            }.collect { id -> newPositionMap[id] }
-//
-//            changedPositions.each { it.children = null }
-//            newPositions.root.children = changedPositions
-//
-//            def positions = []
-//            if (!changedPositions.empty) {
-//                newPositions.root.children = changedPositions
-//                positions = [newPositions.root]
-//            }
-//
-//            posUpdate = new PositionUpdate(isFull: false, positions: positions)
-//        }
-
-        def posUpdate = new PositionUpdate(isFull: true, positions: [newPositions.root])
         Utils.webSocketService.pushToChannel(channelKey, topic, posUpdate)
+
+        this.positions = newPositions
     }
 
 
     //--------------------
     // Implementation
     //--------------------
-    private Map<String, Position> getMappedPositions(Position root) {
-        Map<String, Position> ret = [:]
-        Closure<Void> addToPositionMapRecursive
-        addToPositionMapRecursive = { Position pos ->
-            ret[pos.id] = pos
-            if (pos.children) {
-                pos.children.each { childPos ->
-                    addToPositionMapRecursive(childPos)
+    private PositionUpdate computeDiff(PositionResultSet newPositions) {
+        Map oldPositionMap = getMappedPositions(positions.root)
+
+        // 1) Compute updates and adds by recursively traversing the new positions tree
+        List<Position> update = []
+        List<Map> add = []
+        Closure computeDiffRecursive
+        computeDiffRecursive = {Position newPos, String parentId ->
+            String id = newPos.id
+            Position oldPos = oldPositionMap[id]
+
+            // If id corresponds to an existing position, update it
+            if (oldPos) {
+                if (oldPos.pnl != newPos.pnl || oldPos.mktVal != newPos.mktVal) {
+                    update << newPos
                 }
+
+                newPos.children.each { Position newPosChild ->
+                    computeDiffRecursive(newPosChild, id)
+                }
+
+            } else {
+                add << [parentId: parentId, rawData: newPos]
             }
-            return
         }
-        addToPositionMapRecursive(root)
-        return ret
+        computeDiffRecursive(newPositions.root, null)
+
+        // 2) Compute deletes with a simple pass through existing positions
+        Map newPositionMap = getMappedPositions(newPositions.root)
+        Collection<String> remove = oldPositionMap.keySet().findAll {!newPositionMap[it]}
+
+        return new PositionUpdate(update: update, add: add, remove: remove)
+    }
+
+    private Map<String, Position> getMappedPositions(Position pos, Map<String, Position> col = [:]) {
+        col[pos.id] = pos
+        pos.children.each { getMappedPositions(it, col) }
+        return col
     }
 
     private PositionService getPositionService() {
         Utils.appContext.positionService
-    }
-
-    void destroy() {
-
     }
 
     Object formatForJSON() {
@@ -102,5 +85,9 @@ class PositionSession implements JSONFormat {
                 topic: topic,
                 positions: positions
         ]
+    }
+
+    void destroy() {
+
     }
 }

@@ -3,7 +3,7 @@ import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {MapPanelModel} from './MapPanelModel';
 import {DetailPanelModel} from './detail/DetailPanelModel';
-import {clamp} from 'lodash';
+import {clamp, round} from 'lodash';
 import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
 
 
@@ -29,29 +29,23 @@ export class PortfolioPanelModel {
     }
 
     async doLoadAsync(loadSpec) {
-        const {store, dimChooserModel} = this,
+        const {store, dimChooserModel, gridPanelModel} = this,
             dims = dimChooserModel.value;
 
-        if (this.session) this.session.destroy();
+        let {session} = this;
+        if (session) session.destroy();
+        session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp');
 
-        const session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp'),
-            positions = [session.initialPositions.root];
-
+        store.loadData([session.initialPositions.root]);
         session.onUpdate = ({data}) => {
-            this.gridPanelModel.setLoadTimestamp(Date.now());
-            if (data.isFull) {
-                store.loadData(data.positions);
-            } else {
-                throw XH.exception('Streaming updates not yet implemented on the client');
-            }
+            gridPanelModel.setLoadTimestamp(Date.now());
+            store.updateData(data);
         };
 
         this.session = session;
 
-        store.loadData(positions);
-
         if (!this.selectedPosition) {
-            this.gridPanelModel.gridModel.selectFirst();
+            gridPanelModel.gridModel.selectFirst();
         }
 
         await this.detailPanelModel.doLoadAsync();
@@ -80,8 +74,9 @@ export class PortfolioPanelModel {
     createStore() {
         return new Store({
             processRawData: (r) => {
+                const roundedPnlMktVal = round(r.pnl / Math.abs(r.mktVal), 2);
                 return {
-                    pnlMktVal: clamp(r.pnl / Math.abs(r.mktVal), -1, 1),
+                    pnlMktVal: clamp(roundedPnlMktVal, -1, 1),
                     ...r
                 };
             },
