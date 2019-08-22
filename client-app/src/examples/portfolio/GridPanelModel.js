@@ -70,9 +70,7 @@ export class GridPanelModel {
                     align: 'right',
                     width: 130,
                     absSort: true,
-                    agOptions: {
-                        enableCellChangeFlash: true
-                    },
+                    highlightOnChange: true,
                     tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
                     renderer: numberRenderer({
                         precision: 0,

@@ -197,8 +197,8 @@ export class GridTestModel {
                 },
                 {
                     field: 'day',
-                    ...pnlColumn,
-                    agOptions: {enableCellChangeFlash: true}
+                    highlightOnChange: true,
+                    ...pnlColumn
                 },
                 {field: 'mtd', headerName: 'MTD', ...pnlColumn},
                 {field: 'ytd', headerName: 'YTD', ...pnlColumn},
@@ -207,7 +207,7 @@ export class GridTestModel {
                     field: 'volume',
                     align: 'right',
                     width: 130,
-                    agOptions: {enableCellChangeFlash: true},
+                    highlightOnChange: true,
                     renderer: millionsRenderer({
                         precision: 2,
                         label: true,
