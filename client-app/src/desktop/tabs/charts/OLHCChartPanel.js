@@ -52,7 +52,7 @@ export class OLHCChartPanel extends Component {
                         icon: Icon.code(),
                         disabled: !chartModel.highchartsChart,
                         onClick: () => {
-                            const xExtremes = chartModel.highchartsChart.axes[0].getExtremes()
+                            const xExtremes = chartModel.highchartsChart.axes[0].getExtremes();
                             XH.alert({
                                 title: 'X-axis extremes - as read from chart API',
                                 message: JSON.stringify(xExtremes)
