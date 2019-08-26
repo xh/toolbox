@@ -64,7 +64,7 @@ export class TabPanelContainerPanel extends Component {
                             {
                                 id: 'top',
                                 title: 'Top Tabs',
-                                contentFn: () => `
+                                content: () => `
                                     This overall example is a standard TabContainer with its switcher located in the default,
                                     top position. Change the tabs above to see examples of other TabContainer configurations.
                                     `
@@ -72,7 +72,7 @@ export class TabPanelContainerPanel extends Component {
                             {
                                 id: 'bottom',
                                 title: 'Bottom Tabs',
-                                contentFn: () => tabContainer({
+                                content: () => tabContainer({
                                     className: 'child-tabcontainer',
                                     model: this.createContainerModelConfig({switcherPosition: 'bottom'})
                                 })
@@ -80,7 +80,7 @@ export class TabPanelContainerPanel extends Component {
                             {
                                 id: 'left',
                                 title: 'Left Tabs',
-                                contentFn: () => tabContainer({
+                                content: () => tabContainer({
                                     className: 'child-tabcontainer',
                                     model: this.createContainerModelConfig({switcherPosition: 'left'})
                                 })
@@ -88,7 +88,7 @@ export class TabPanelContainerPanel extends Component {
                             {
                                 id: 'right',
                                 title: 'Right Tabs',
-                                contentFn: () => tabContainer({
+                                content: () => tabContainer({
                                     className: 'child-tabcontainer',
                                     model: this.createContainerModelConfig({switcherPosition: 'right'})
                                 })
@@ -96,7 +96,7 @@ export class TabPanelContainerPanel extends Component {
                             {
                                 id: 'custom',
                                 title: 'Custom Switcher',
-                                contentFn: () => panel({
+                                content: () => panel({
                                     className: 'child-tabcontainer',
                                     tbar: toolbar(
                                         detachedTabModel.tabs.map(childModel => button({
@@ -113,7 +113,7 @@ export class TabPanelContainerPanel extends Component {
                             {
                                 id: 'state',
                                 title: 'Tab State',
-                                contentFn: () => {
+                                content: () => {
                                     const {tabs} = stateTabModel,
                                         peopleTab = find(tabs, {id: 'people'}),
                                         placesTab = find(tabs, {id: 'places'});
@@ -151,17 +151,17 @@ export class TabPanelContainerPanel extends Component {
                 {
                     id: 'people',
                     icon: Icon.user(),
-                    contentFn: () => tabTxt('People')
+                    content: () => tabTxt('People')
                 },
                 {
                     id: 'places',
                     icon: Icon.home(),
-                    contentFn: () => tabTxt('Places')
+                    content: () => tabTxt('Places')
                 },
                 {
                     id: 'things',
                     icon: Icon.portfolio(),
-                    contentFn: () => tabTxt('Things')
+                    content: () => tabTxt('Things')
                 }
             ],
             ...args
