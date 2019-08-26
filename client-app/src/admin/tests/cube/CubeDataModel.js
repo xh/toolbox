@@ -254,6 +254,6 @@ export class CubeDataModel {
 
     addLoadTimes(times) {
         times = castArray(times);
-        this.loadTimesGridModel.store.updateData(times);
+        this.loadTimesGridModel.updateData({add: [times]});
     }
 }

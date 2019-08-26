@@ -27,7 +27,7 @@ export class WebSocketTestModel {
     }
 
     onUpdateMessage(msg) {
-        this.gridModel.store.updateData([msg.data]);
+        this.gridModel.updateData({add: [msg.data]});
     }
 
     async subscribeAsync() {
