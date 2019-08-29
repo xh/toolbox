@@ -1,49 +1,38 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2019 Extremely Heavy Industries Inc.
- */
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent} from '@xh/hoist/core/index';
+import {hoistElemFactory} from '@xh/hoist/core/index';
 import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {Component} from 'react';
 
-@HoistComponent
-export class OrdersPanel extends Component {
-
-    render() {
-        const {model} = this,
-            {gridModel} = model;
+export const ordersPanel = hoistElemFactory(
+    ({model, ...rest}) => {
+        const {gridModel} = model;
 
         return panel({
-            title: `Orders: ${this.formatPositionId(model.positionId)}`,
+            title: `Orders: ${formatPositionId(model.positionId)}`,
             icon: Icon.edit(),
             item: grid({model: gridModel}),
             mask: model.positionId == null,
-            bbar: toolbar(
+            bbar: [
                 filler(),
                 gridCountLabel({gridModel, unit: 'orders'}),
                 storeFilterField({gridModel}),
                 colChooserButton({gridModel})
-            )
+            ],
+            ...rest
         });
     }
+);
 
-    //------------------
-    // Implementation
-    //------------------
-    formatPositionId(positionId) {
-        if (!positionId) return '';
+//------------------
+// Implementation
+//------------------
+function formatPositionId(positionId) {
+    if (!positionId) return '';
 
-        const dimValPairs = positionId.split('>>').splice(1);
-        const dimVals = dimValPairs.map((str) => str.split(':')[1]);
-        return dimVals.join(' > ');
-    }
+    const dimValPairs = positionId.split('>>').splice(1);
+    const dimVals = dimValPairs.map((str) => str.split(':')[1]);
+    return dimVals.join(' > ');
 }
-export const ordersPanel = elemFactory(OrdersPanel);

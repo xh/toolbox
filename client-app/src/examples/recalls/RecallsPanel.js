@@ -1,31 +1,19 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2019 Extremely Heavy Industries Inc.
- */
 
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {a, filler, p, span, vframe} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent, XH} from '@xh/hoist/core';
+import {hoistElemFactory, useLocalModel, XH} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {Component} from 'react';
 import {detailsPanel} from './DetailsPanel';
 import './RecallsPanel.scss';
-
 import {RecallsPanelModel} from './RecallsPanelModel';
 
-@HoistComponent
-export class RecallsPanel extends Component {
-
-    model = new RecallsPanelModel();
-    
-    render() {
-        const {model} = this,
+export const recallsPanel = hoistElemFactory(
+    () => {
+        const model = useLocalModel(RecallsPanelModel),
             {gridModel, detailsPanelModel} = model,
             {currentRecord} = detailsPanelModel,
             fdaWebsite = 'https://open.fda.gov/apis/drug/enforcement/',
@@ -37,7 +25,7 @@ export class RecallsPanel extends Component {
             panel({
                 item: grid({model: gridModel}),
                 mask: model.loadModel,
-                tbar: toolbar(
+                tbar: [
                     textInput({
                         model,
                         bind: 'searchQuery',
@@ -83,7 +71,7 @@ export class RecallsPanel extends Component {
                     }),
                     toolbarSep(),
                     colChooserButton({gridModel})
-                )
+                ]
             }),
             panel({
                 title: currentRecord ? currentRecord.brandName : 'Select a drug to see its details',
@@ -99,7 +87,4 @@ export class RecallsPanel extends Component {
             })
         );
     }
-}
-
-export const recallsPanel = elemFactory(RecallsPanel);
-
+);

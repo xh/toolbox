@@ -1,20 +1,9 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2019 Extremely Heavy Industries Inc.
- */
-
-import {Component} from 'react';
-import {elemFactory, HoistComponent} from '@xh/hoist/core';
+import {hoistElemFactory} from '@xh/hoist/core';
 import {div, table, tbody, tr, th, td} from '@xh/hoist/cmp/layout';
 
-@HoistComponent
-class DetailsPanel extends Component {
-
-    render() {
-        const {model} = this,
-            {currentRecord} = model;
+export const detailsPanel = hoistElemFactory(
+    ({model}) => {
+        const {currentRecord} = model;
 
         if (!currentRecord) return null;
 
@@ -32,7 +21,4 @@ class DetailsPanel extends Component {
             )
         });
     }
-
-}
-
-export const detailsPanel = elemFactory(DetailsPanel);
+);

@@ -1,14 +1,11 @@
-import {Component} from 'react';
-import {HoistComponent, elemFactory} from '@xh/hoist/core/index';
+import {hoistElemFactory} from '@xh/hoist/core/index';
 import {hbox, box} from '@xh/hoist/cmp/layout/index';
 import stockPhoto from '../../core/img/stock-news.png';
 import React from 'react';
 
-@HoistComponent
-class NewsPanelItem extends Component {
-
-    render() {
-        const {title, text, imageUrl, published, source, author} = this.props.record;
+export const newsPanelItem = hoistElemFactory(
+    (props) => {
+        const {title, text, imageUrl, published, source, author} = props.record;
 
         return hbox(
             box({
@@ -34,6 +31,4 @@ class NewsPanelItem extends Component {
             })
         );
     }
-}
-
-export const newsPanelItem = elemFactory(NewsPanelItem);
+);
