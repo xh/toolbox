@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {HoistComponent, XH} from '@xh/hoist/core';
+import React from 'react';
+import {hoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
@@ -7,9 +7,8 @@ import logo from '../../../core/img/xhio+hoist.png';
 import logoDark from '../../../core/img/xhio+hoist-dark.png';
 import './HomeTab.scss';
 
-@HoistComponent
-export class HomeTab extends Component {
-    render() {
+export const HomeTab = hoistComponent(
+    () => {
         const link = (txt, url) => <a href={url} target="_blank">{txt}</a>;
 
         return wrapper(
@@ -43,4 +42,4 @@ export class HomeTab extends Component {
             })
         );
     }
-}
+);

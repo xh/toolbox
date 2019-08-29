@@ -1,24 +1,42 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2019 Extremely Heavy Industries Inc.
- */
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {hoistComponent} from '@xh/hoist/core';
 import {a, code, hbox, p, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
 import './ExamplesTab.scss';
 
-@HoistComponent
-export class ExamplesTab extends Component {
+export const ExamplesTab = hoistComponent(
+    () => wrapper(
+        hbox({
+            className: 'example-tile-container',
+            flexWrap: 'wrap',
+            items: getExamples().map(e => panel({
+                title: e.title,
+                icon: e.icon,
+                width: 300,
+                height: 300,
+                margin: 20,
+                item: vframe({
+                    className: 'example-tile-text',
+                    items: e.text
+                }),
+                bbar: [
+                    button({
+                        text: 'Launch app',
+                        icon: Icon.openExternal(),
+                        onClick: () => window.open(e.path)
+                    })
+                ]
+            }))
+        })
+    )
+);
 
 
-    examples = [
+function getExamples() {
+    return [
         {
             title: 'Portfolio',
             icon: Icon.portfolio(),
@@ -81,37 +99,6 @@ export class ExamplesTab extends Component {
             ]
         }
     ];
-
-    render() {
-        return wrapper(
-            hbox({
-                className: 'example-tile-container',
-                flexWrap: 'wrap',
-                items: this.examples.map((ex) => this.renderTile(ex))
-            })
-        );
-    }
-
-    renderTile({title, icon, path, text}) {
-        return panel({
-            title,
-            icon,
-            width: 300,
-            height: 300,
-            margin: 20,
-            item: vframe({
-                className: 'example-tile-text',
-                items: text
-            }),
-            bbar: toolbar(
-                button({
-                    text: 'Launch app',
-                    icon: Icon.openExternal(),
-                    onClick: () => window.open(path)
-                })
-            )
-        });
-    }
 }
 
-const link = (txt, url) => <a href={url} target="_blank">{txt}</a>;
+function link(txt, url) { <a href={url} target="_blank">{txt}</a> }
