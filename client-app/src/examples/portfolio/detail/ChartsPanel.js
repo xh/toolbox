@@ -23,7 +23,7 @@ export const chartsPanel = hoistElemFactory(
                         id: 'line',
                         title: 'Trading Volume',
                         content: () => lineChart({
-                            model: lineChartModel,
+                            model: model.lineChartModel,
                             flex: 1,
                             className: 'xh-border-right'
                         })
@@ -32,7 +32,7 @@ export const chartsPanel = hoistElemFactory(
                         id: 'ohlc',
                         title: 'Price History',
                         content: () => ohlcChart({
-                            model: ohlcChartModel,
+                            model: model.ohlcChartModel,
                             flex: 1
                         })
                     }
