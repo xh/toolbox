@@ -58,7 +58,7 @@ export class InputsPanel extends Component {
                 className: 'toolbox-inputs-panel',
                 icon: Icon.edit(),
                 width: '90%',
-                height: 800,
+                height: 850,
                 item: this.renderForm(),
                 bbar: this.renderToolbar()
             }),
