@@ -1,7 +1,6 @@
-import {Component} from 'react';
 import {span} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import {XH, HoistComponent} from '@xh/hoist/core/index';
+import {XH, hoistComponent, useLocalModel} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
 import {filler, frame, hframe} from '@xh/hoist/cmp/layout/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel/index';
@@ -12,12 +11,9 @@ import {Icon} from '@xh/hoist/icon/index';
 import {usStates} from '../../../core/data/index';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
-@HoistComponent
-export class ToolbarPanel extends Component {
-    toolBarModel = new ToolbarPanelModel();
-
-    render() {
-        const model = this.toolBarModel;
+export const ToolbarPanel = hoistComponent(
+    () => {
+        const model = useLocalModel(ToolbarPanelModel);
 
         return wrapper({
             description: `
@@ -40,7 +36,7 @@ export class ToolbarPanel extends Component {
                 title: 'Panels › Toolbar',
                 height: 400,
                 width: 700,
-                tbar: toolbar(
+                tbar: [
                     button({
                         icon: Icon.add(),
                         text: 'New',
@@ -77,9 +73,9 @@ export class ToolbarPanel extends Component {
                         text: 'Terminate',
                         intent: 'danger',
                         disabled: !model.enableTerminate,
-                        onClick: this.onTerminateClick
+                        onClick: () => XH.toast({message: 'Game over!', icon: Icon.skull(), intent: 'danger'})
                     })
-                ),
+                ],
                 items: [
                     hframe(
                         toolbar({
@@ -110,7 +106,7 @@ export class ToolbarPanel extends Component {
                         })
                     )
                 ],
-                bbar: toolbar(
+                bbar: [
                     buttonGroupInput({
                         model,
                         bind: 'visible',
@@ -133,20 +129,10 @@ export class ToolbarPanel extends Component {
                     toolbarSep(),
                     button({
                         text: 'Show Toast',
-                        onClick: this.onShowToastClick
+                        onClick: () => XH.toast({message: `Currently selected State: ${model.state || 'None'}`})
                     })
-                )
+                ]
             })
         });
     }
-
-    onTerminateClick = () => {
-        XH.toast({message: 'Game over!', icon: Icon.skull(), intent: 'danger'});
-    }
-
-    onShowToastClick = () => {
-        XH.toast({
-            message: `Currently selected State: ${this.toolBarModel.state || 'None'}`
-        });
-    }
-}
+);

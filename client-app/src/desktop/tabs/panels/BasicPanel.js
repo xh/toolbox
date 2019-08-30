@@ -1,23 +1,20 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {p, div} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import {XH, HoistComponent} from '@xh/hoist/core/index';
+import {XH, hoistComponent, useLocalModel} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
 import {filler} from '@xh/hoist/cmp/layout/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel/index';
 import {select} from '@xh/hoist/desktop/cmp/input';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar/index';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar/index';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {Icon} from '@xh/hoist/icon/index';
 import {usStates} from '../../../core/data/index';
 import {BasicPanelModel} from './BasicPanelModel';
 
-@HoistComponent
-export class BasicPanel extends Component {
-    basicPanelModel = new BasicPanelModel();
-
-    render() {
-        const model = this.basicPanelModel;
+export const BasicPanel = hoistComponent(
+    () => {
+        const model = useLocalModel(BasicPanelModel);
 
         return wrapper({
             description: [
@@ -48,7 +45,7 @@ export class BasicPanel extends Component {
                 title: 'Panels › Intro',
                 height: 400,
                 width: 700,
-                tbar: toolbar(
+                tbar: [
                     popover({
                         position: 'bottom-left',
                         minimal: true,
@@ -62,12 +59,12 @@ export class BasicPanel extends Component {
                             menuItem({text: 'Menu Item 3'})
                         )
                     })
-                ),
+                ],
                 item: div({
                     className: 'toolbox-panel-text-reader',
                     items: model.demoText.map(it => p(it))
                 }),
-                bbar: toolbar(
+                bbar: [
                     filler(),
                     select({
                         model,
@@ -78,16 +75,12 @@ export class BasicPanel extends Component {
                     toolbarSep(),
                     button({
                         text: 'Show Toast',
-                        onClick: this.onShowToastClick
+                        onClick: () => XH.toast({
+                            message: `Currently selected State: ${model.state || 'None'}`
+                        })
                     })
-                )
+                ]
             })
         });
     }
-
-    onShowToastClick = () => {
-        XH.toast({
-            message: `Currently selected State: ${this.basicPanelModel.state || 'None'}`
-        });
-    }
-}
+);

@@ -1,35 +1,20 @@
-import React, {Component, Fragment} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React, {Fragment} from 'react';
+import {hoistComponent, HoistModel, managed, useLocalModel} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {span, filler} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {pluralize} from '@xh/hoist/utils/js';
 import {wrapper} from '../../common/Wrapper';
 
-
-@HoistComponent
-export class FileChooserPanel extends Component {
-
-    chooserModel = new FileChooserModel();
-
-    @bindable
-    enableMulti = true;
-
-    @bindable
-    enableAddMulti = true;
-
-    @bindable
-    showFileGrid = true;
-
-    render() {
-        const chooserModel = this.chooserModel,
-            {enableMulti, enableAddMulti, showFileGrid} = this;
-
+export const FileChooserPanel = hoistComponent(
+    ()  => {
+        const model = useLocalModel(Model),
+            {chooserModel, enableMulti, enableAddMulti, showFileGrid} = model;
 
         return wrapper({
             description: [
@@ -72,26 +57,27 @@ export class FileChooserPanel extends Component {
                     targetText: (
                         <Fragment>
                             <p>Drag and drop files here, or click to browse.</p>
-                            <p>Note that this example is configured to accept only <code>*.txt</code> and <code>*.png</code> file types.</p>
+                            <p>Note that this example is configured to accept
+                                only <code>*.txt</code> and <code>*.png</code> file types.</p>
                         </Fragment>
                     ),
                     model: chooserModel
                 }),
-                bbar: toolbar(
+                bbar: [
                     span('Show grid:'),
                     switchInput({
-                        model: this,
+                        model,
                         bind: 'showFileGrid'
                     }),
                     toolbarSep(),
                     span('Enable Multiple:'),
                     switchInput({
-                        model: this,
+                        model,
                         bind: 'enableMulti'
                     }),
                     span('Enable Bulk Addition: '),
                     switchInput({
-                        model: this,
+                        model,
                         bind: 'enableAddMulti'
                     }),
                     filler(),
@@ -102,9 +88,25 @@ export class FileChooserPanel extends Component {
                         intent: 'danger',
                         onClick: () => chooserModel.removeAllFiles()
                     })
-                )
+                ]
             })
         });
     }
+);
+
+
+@HoistModel
+class Model {
+    @managed
+    chooserModel = new FileChooserModel();
+
+    @bindable
+    enableMulti = true;
+
+    @bindable
+    enableAddMulti = true;
+
+    @bindable
+    showFileGrid = true;
 
 }

@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {hoistComponent, HoistModel, useLocalModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {span} from '@xh/hoist/cmp/layout';
 import {numberInput, textInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {SECONDS} from '@xh/hoist/utils/datetime';
@@ -14,18 +14,10 @@ import {mask} from '@xh/hoist/desktop/cmp/mask';
 
 import {sampleGrid, wrapper} from '../../common';
 
+export const MaskPanel = hoistComponent(
+    () => {
+        const model = useLocalModel(Model);
 
-@HoistComponent
-export class MaskPanel extends Component {
-
-    @bindable seconds = 6;
-    @bindable message = '';
-    @bindable inline = true;
-    @bindable spinner = true;
-
-    maskModel = new PendingTaskModel();
-
-    render() {
         return wrapper({
             description: [
                 <p>
@@ -61,59 +53,68 @@ export class MaskPanel extends Component {
                 width: 800,
                 height: 400,
                 item: sampleGrid({omitGridTools: true}),
-                bbar: toolbar({
-                    items: [
-                        span('Mask for'),
-                        numberInput({
-                            model: this,
-                            bind: 'seconds',
-                            width: 40,
-                            min: 0,
-                            max: 10
-                        }),
-                        span('secs with'),
-                        textInput({
-                            model: this,
-                            bind: 'message',
-                            width: 120,
-                            placeholder: 'optional text'
-                        }),
-                        toolbarSep(),
-                        switchInput({
-                            model: this,
-                            bind: 'inline',
-                            label: 'Inline:',
-                            labelAlign: 'left'
-                        }),
-                        toolbarSep(),
-                        switchInput({
-                            model: this,
-                            bind: 'spinner',
-                            label: 'Spinner:',
-                            labelAlign: 'left'
-                        }),
-                        toolbarSep(),
-                        button({
-                            text: 'Show Mask',
-                            intent: 'success',
-                            onClick: this.showMask
-                        })
-                    ]
-                }),
+                bbar: [
+                    span('Mask for'),
+                    numberInput({
+                        model,
+                        bind: 'seconds',
+                        width: 40,
+                        min: 0,
+                        max: 10
+                    }),
+                    span('secs with'),
+                    textInput({
+                        model,
+                        bind: 'message',
+                        width: 120,
+                        placeholder: 'optional text'
+                    }),
+                    toolbarSep(),
+                    switchInput({
+                        model,
+                        bind: 'inline',
+                        label: 'Inline:',
+                        labelAlign: 'left'
+                    }),
+                    toolbarSep(),
+                    switchInput({
+                        model,
+                        bind: 'spinner',
+                        label: 'Spinner:',
+                        labelAlign: 'left'
+                    }),
+                    toolbarSep(),
+                    button({
+                        text: 'Show Mask',
+                        intent: 'success',
+                        onClick: () => model.showMask()
+                    })
+                ],
                 mask: mask({
-                    spinner: this.spinner,
-                    inline: this.inline,
-                    model: this.maskModel
+                    spinner: model.spinner,
+                    inline: model.inline,
+                    model: model.maskModel
                 })
             })
         });
     }
+);
 
-    showMask = () => {
+@HoistModel
+class Model {
+
+    @bindable seconds = 6;
+    @bindable message = '';
+    @bindable inline = true;
+    @bindable spinner = true;
+
+    @managed
+    maskModel = new PendingTaskModel();
+
+    showMask() {
         this.showMaskSequenceAsync().linkTo(this.maskModel);
     }
 
-    @action
     async showMaskSequenceAsync() {
         const {maskModel, message, seconds} = this,
             interval = seconds / 3 * SECONDS;

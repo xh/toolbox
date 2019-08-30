@@ -1,30 +1,25 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2019 Extremely Heavy Industries Inc.
- */
-
 import {box, code, div, li, p, span, table, tbody, td, th, tr, ul} from '@xh/hoist/cmp/layout';
-import {HoistComponent, XH} from '@xh/hoist/core';
+import {hoistComponent, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
 import {required, lengthIs} from '@xh/hoist/cmp/form';
 import {Icon} from '@xh/hoist/icon';
-import {Ref} from '@xh/hoist/utils/react';
-import React, {Component} from 'react';
+import React, {useRef} from 'react';
 import {wrapper} from '../../common';
 
 import './PopupsPanel.scss';
 
-@HoistComponent
-export class PopupsPanel extends Component {
-
-    divRef = new Ref();
-
-    render() {
-        const {popBtn, row, promiseToast, acceptRichTextReminder} = this;
-
+export const PopupsPanel = hoistComponent(
+    () => {
+        const divRef = useRef(null),
+            acceptRichTextReminder = getRichTextReminder(),
+            responseToast = (ret) => XH.toast({
+                message: span('That popup resolved to ', code(`${ret}`)),
+                intent: ret ? 'success' : 'danger',
+                icon: ret ? Icon.check() : Icon.x(),
+                containerRef: divRef.current
+            });
+        
         return wrapper({
             description: (
                 <div>
@@ -41,7 +36,7 @@ export class PopupsPanel extends Component {
             ),
             item: box({
                 className: 'tbox-popups',
-                ref: this.divRef.ref,
+                ref: divRef,
                 item: table(tbody(
                     row(
                         button({
@@ -78,8 +73,8 @@ export class PopupsPanel extends Component {
                             text: 'as promise',
                             onClick: () => XH.alert({
                                 title: 'Alert with callback',
-                                message: p('Alert return a promise that resolves to true when acknowledged.')
-                            }).then(promiseToast)
+                                message: p('Alert returns a promise that resolves to true when acknowledged.')
+                            }).then(responseToast)
                         })
                     ),
                     row(
@@ -123,7 +118,7 @@ export class PopupsPanel extends Component {
                             onClick: () => XH.confirm({
                                 title: 'Confirm with promise',
                                 message: p('Confirm returns a promise that resolves to true if the user confirms or false if the user cancels.')
-                            }).then(promiseToast)
+                            }).then(responseToast)
                         })
                     ),
                     row(
@@ -166,7 +161,7 @@ export class PopupsPanel extends Component {
                                 title: 'Prompt with promise',
                                 message: p('Prompt return a promise that resolves to the input\'s ', code('value'), ' if user confirms, or ',
                                     code('false'), ' if user cancels.')
-                            }).then(promiseToast)
+                            }).then(responseToast)
                         })
                     ),
                     row(
@@ -199,14 +194,14 @@ export class PopupsPanel extends Component {
                                 confirmProps: {text: 'Trigger onConfirm()'},
                                 onConfirm: () => XH.toast({
                                     message: <span>Called <code>onConfirm</code></span>,
-                                    containerRef: this.divRef.value
+                                    containerRef: divRef.current
                                 }),
                                 cancelProps: {text: 'Trigger onCancel()'},
                                 onCancel: () => XH.toast({
                                     message: <span>Called <code>onCancel</code></span>,
                                     icon: Icon.x(),
                                     intent: 'danger',
-                                    containerRef: this.divRef.value
+                                    containerRef: divRef.current
                                 })
                             })
                         }),
@@ -225,7 +220,7 @@ export class PopupsPanel extends Component {
                                 ),
                                 confirmProps: {text: 'Resolve to true'},
                                 cancelProps: {text: 'Resolve to false'}
-                            }).then(promiseToast)
+                            }).then(responseToast)
                         })
                     ),
                     row(
@@ -249,7 +244,7 @@ export class PopupsPanel extends Component {
                             text: 'with containerRef',
                             onClick: () => XH.toast({
                                 message: span('This is a Toast anchored using ', code('containerRef')),
-                                containerRef: this.divRef.value
+                                containerRef: divRef.current
                             })
                         })
                     ),
@@ -276,27 +271,24 @@ export class PopupsPanel extends Component {
             })
         });
     }
+);
 
-    popBtn = (icon) => {
-        return ({
-            className: 'tbox-popups__button',
-            icon: icon,
-            minimal: false
-        });
-    };
 
-    row = (col1, col2, col3) => {
-        return tr(th(col1), td(col2), td(col3));
-    };
-
-    promiseToast = (returnedBoolean) => XH.toast({
-        message: span('That popup resolved to ', code(`${returnedBoolean}`)),
-        intent: returnedBoolean ? 'success' : 'danger',
-        icon: returnedBoolean ? Icon.check() : Icon.x(),
-        containerRef: this.divRef.value
+function popBtn(icon) {
+    return ({
+        className: 'tbox-popups__button',
+        icon: icon,
+        minimal: false
     });
+}
 
-    acceptRichTextReminder = p('Good to know: ', code('Alert'), ', ', code('Confirm'), ', ', code('Prompt'),
+function row(col1, col2, col3) {
+    return tr(th(col1), td(col2), td(col3));
+}
+
+function getRichTextReminder() {
+    return p('Good to know: ', code('Alert'), ', ', code('Confirm'), ', ', code('Prompt'),
         ', and ', code('Message'), ' can display rich text by accepting strings, JSX, and React elements. '
     );
 }
+
