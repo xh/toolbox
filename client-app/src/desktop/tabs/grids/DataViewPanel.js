@@ -1,10 +1,9 @@
-import React, {Component} from 'react';
-import {HoistComponent, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import React from 'react';
+import {hoistComponent, HoistModel, LoadSupport, managed, XH, useLocalModel} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
 
@@ -13,13 +12,9 @@ import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
 import {shuffle, take} from 'lodash';
 
-@HoistComponent
-export class DataViewPanel extends Component {
-
-    model = new Model();
-
-    render() {
-        const {model} = this;
+export const DataViewPanel = hoistComponent(
+    () => {
+        const model = useLocalModel(Model);
 
         return wrapper({
             description: [
@@ -39,15 +34,15 @@ export class DataViewPanel extends Component {
                     rowCls: 'dataview-item',
                     itemHeight: 70
                 }),
-                bbar: toolbar(
+                bbar: [
                     refreshButton({model}),
                     filler(),
                     storeFilterField({store: model.dataViewModel.store})
-                )
+                ]
             })
         });
     }
-}
+);
 
 @HoistModel
 @LoadSupport

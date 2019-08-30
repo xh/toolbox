@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {hoistComponent, useLocalModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -9,10 +9,36 @@ import {wrapper} from '../../common/Wrapper';
 import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
 
-@HoistComponent
-export class RestGridPanel extends Component {
+export const RestGridPanel = hoistComponent(
+    () => {
+        const restGridModel = useLocalModel(createRestGridModel);
 
-    model = new RestGridModel({
+        return wrapper({
+            description: [
+                <p>
+                    RestGrid and its associated components provide a quick way to implement basic
+                    CRUD functionality for domain objects managed by the Hoist Grails server.
+                </p>,
+                <p>
+                    Use the toolbar buttons or double-click a record to display its associated
+                    add/edit form, including type-specific editor fields. These grids are especially
+                    useful when building lookup tables of simple objects and are used throughout
+                    the <a href="/admin" target="_blank">Hoist Admin Console</a>.
+                </p>
+            ],
+            item: panel({
+                title: 'Grids › REST Editor',
+                icon: Icon.edit(),
+                width: 900,
+                height: 500,
+                item: restGrid({model: restGridModel})
+            })
+        });
+    }
+);
+
+function createRestGridModel() {
+    return new RestGridModel({
         enableExport: true,
         store: new RestStore({
             url: 'rest/companyRest',
@@ -120,28 +146,4 @@ export class RestGridPanel extends Component {
         ],
         prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
     });
-
-    render() {
-        return wrapper({
-            description: [
-                <p>
-                    RestGrid and its associated components provide a quick way to implement basic
-                    CRUD functionality for domain objects managed by the Hoist Grails server.
-                </p>,
-                <p>
-                    Use the toolbar buttons or double-click a record to display its associated
-                    add/edit form, including type-specific editor fields. These grids are especially
-                    useful when building lookup tables of simple objects and are used throughout
-                    the <a href="/admin" target="_blank">Hoist Admin Console</a>.
-                </p>
-            ],
-            item: panel({
-                title: 'Grids › REST Editor',
-                icon: Icon.edit(),
-                width: 900,
-                height: 500,
-                item: restGrid({model: this.model})
-            })
-        });
-    }
 }

@@ -1,19 +1,15 @@
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {hoistComponent, useLocalModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {agGrid} from '@xh/hoist/cmp/ag-grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {gridStyleSwitches, wrapper} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';
 
-@HoistComponent
-export class AgGridView extends Component {
-    model = new AgGridViewModel();
-
-    render() {
-        const {model} = this,
+export const AgGridView = hoistComponent(
+    () => {
+        const model = useLocalModel(AgGridViewModel),
             {agGridModel, loadModel, columnDefs} = model;
 
         return wrapper({
@@ -39,7 +35,7 @@ export class AgGridView extends Component {
                 width: '95%',
                 marginBottom: 10,
                 mask: loadModel,
-                bbar: toolbar(filler(), gridStyleSwitches({gridModel: agGridModel, forToolbar: true})),
+                bbar: [filler(), gridStyleSwitches({gridModel: agGridModel, forToolbar: true})],
                 item: agGrid({
                     key: agGridModel.xhId,
                     model: agGridModel,
@@ -60,4 +56,4 @@ export class AgGridView extends Component {
             })
         });
     }
-}
+);

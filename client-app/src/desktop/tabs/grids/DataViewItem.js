@@ -1,14 +1,11 @@
-import {Component} from 'react';
-import {HoistComponent, elemFactory} from '@xh/hoist/core/index';
+import {hoistElemFactory} from '@xh/hoist/core/index';
 import {vbox, box} from '@xh/hoist/cmp/layout/index';
 import {Icon} from '@xh/hoist/icon/index';
 import {fmtNumber} from '@xh/hoist/format';
 
-@HoistComponent
-class DataViewItem extends Component {
-
-    render() {
-        const {name, city, value} = this.props.record,
+export const dataViewItem = hoistElemFactory(
+    (props) => {
+        const {name, city, value} = props.record,
             loser = value < 0;
         return vbox(
             box({
@@ -33,6 +30,4 @@ class DataViewItem extends Component {
                 Icon.rocket({size: '3x', className: 'xh-green', prefix: 'fal'})
         );
     }
-}
-
-export const dataViewItem = elemFactory(DataViewItem);
+);
