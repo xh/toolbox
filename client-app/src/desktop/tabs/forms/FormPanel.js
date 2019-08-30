@@ -1,37 +1,29 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2019 Extremely Heavy Industries Inc.
- */
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {hoistComponent, useLocalModel, hoistElemFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {checkbox, dateInput, numberInput, select, switchInput, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
-
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {wrapper} from '../../common';
 import {FormPanelModel} from './FormPanelModel';
 
 import './FormPanel.scss';
 
-@HoistComponent
-export class FormPanel extends Component {
+export const FormPanel = hoistComponent(
+    () => {
+        const model = useLocalModel(FormPanelModel);
 
-    model = new FormPanelModel();
-
-    render() {
         return wrapper({
             description: [
                 <p>
                     Forms provide a standard way for validating and editing data. The <code>Form</code> component
-                    provides the ability to centrally control certain properties on all its contained <code>FormField</code>s
-                    and bind them to a <code>FormModel</code>.  The <code>FormModel</code> provides an observable API for
+                    provides the ability to centrally control certain properties on all its
+                    contained <code>FormField</code>s
+                    and bind them to a <code>FormModel</code>. The <code>FormModel</code> provides an observable API for
                     loading, validating, and submitting the data to back-end services.
                 </p>
             ],
@@ -41,10 +33,9 @@ export class FormPanel extends Component {
                 icon: Icon.edit(),
                 width: 870,
                 height: 550,
-                mask: this.validateButtonTask,
                 item: hframe(
-                    this.renderForm(),
-                    this.renderDisplayOptions()
+                    formContent({model}),
+                    displayOptions({model})
                 )
             }),
             links: [
@@ -67,9 +58,11 @@ export class FormPanel extends Component {
             ]
         });
     }
+);
 
-    renderForm() {
-        const {formModel, inline, minimal, commitOnChange} = this.model;
+const formContent = hoistElemFactory(
+    ({model}) => {
+        const {formModel, inline, minimal, commitOnChange} = model;
 
         return panel({
             flex: 1,
@@ -89,106 +82,105 @@ export class FormPanel extends Component {
                                 vbox({
                                     flex: 1,
                                     marginRight: 30,
-                                    items: this.renderLeftFields()
+                                    items: renderLeftFields(model)
                                 }),
                                 vbox({
                                     flex: 1,
-                                    items: this.renderRightFields()
+                                    items: renderRightFields(model)
                                 })
                             ]
                         }),
                         'References',
-                        this.renderReferences()
+                        references({model})
                     ]
                 })
             }),
-            bbar: this.renderToolbar()
+            bbar: bbar({model})
         });
     }
+);
 
-    renderLeftFields() {
-        return [
+function renderLeftFields(model) {
+    return [
+        formField({
+            field: 'lastName',
+            item: textInput()
+        }),
+        formField({
+            field: 'email',
+            item: textInput({
+                placeholder: 'user@company.com',
+                leftIcon: Icon.mail(),
+                enableClear: true
+            })
+        }),
+        formField({
+            field: 'region',
+            item: select({
+                options: ['California', 'London', 'Montreal', 'New York']
+            })
+        }),
+        formField({
+            field: 'tags',
+            item: select({
+                enableMulti: true,
+                enableCreate: true
+            })
+        })
+    ];
+}
+
+function renderRightFields(model) {
+    return [
+        hbox(
             formField({
-                field: 'lastName',
-                item: textInput()
+                field: 'startDate',
+                flex: 1,
+                inline: false,  // always print labels on top (override form-level inline)
+                item: dateInput({
+                    valueType: 'localDate'
+                })
             }),
             formField({
-                field: 'email',
-                item: textInput({
-                    placeholder: 'user@company.com',
-                    leftIcon: Icon.mail(),
+                field: 'endDate',
+                flex: 1,
+                inline: false,
+                item: dateInput({
+                    valueType: 'localDate',
                     enableClear: true
                 })
-            }),
-            formField({
-                field: 'region',
-                item: select({
-                    options: ['California', 'London', 'Montreal', 'New York']
-                })
-            }),
-            formField({
-                field: 'tags',
-                item: select({
-                    enableMulti: true,
-                    enableCreate: true
-                })
             })
-        ];
-    }
-
-    renderRightFields() {
-        const {model} = this;
-
-        return [
-            hbox(
+        ),
+        formField({
+            field: 'reasonForLeaving',
+            item: select({
+                options: ['New Job', 'Retirement', 'Terminated', 'Other']
+            })
+        }),
+        hbox({
+            items: [
                 formField({
-                    field: 'startDate',
-                    flex: 1,
-                    inline: false,  // always print labels on top (override form-level inline)
-                    item: dateInput({
-                        valueType: 'localDate'
-                    })
+                    field: 'isManager',
+                    label: 'Manager?',
+                    item: checkbox()
                 }),
                 formField({
-                    field: 'endDate',
-                    flex: 1,
-                    inline: false,
-                    item: dateInput({
-                        valueType: 'localDate',
-                        enableClear: true
-                    })
+                    field: 'yearsExperience',
+                    item: numberInput({width: 50})
                 })
-            ),
-            formField({
-                field: 'reasonForLeaving',
-                item: select({
-                    options: ['New Job', 'Retirement', 'Terminated', 'Other']
-                })
-            }),
-            hbox({
-                items: [
-                    formField({
-                        field: 'isManager',
-                        label: 'Manager?',
-                        item: checkbox()
-                    }),
-                    formField({
-                        field: 'yearsExperience',
-                        item: numberInput({width: 50})
-                    })
-                ],
-                alignItems: model.inline ? 'center' : 'top'
-            }),
-            formField({
-                field: 'notes',
-                item: textArea({height: 100})
-            })
-        ];
-    }
+            ],
+            alignItems: model.inline ? 'center' : 'top'
+        }),
+        formField({
+            field: 'notes',
+            item: textArea({height: 100})
+        })
+    ];
+}
 
-    renderReferences() {
-        const {references} = this.model.formModel.fields;
-
+const references = hoistElemFactory(
+    ({model}) => {
+        const {references} = model.formModel.fields;
         const rows = references.value.map(refModel => {
             return form({
                 model: refModel,
@@ -226,7 +218,7 @@ export class FormPanel extends Component {
                 })
             });
         });
-        
+
         return vbox({
             className: 'tbox-form-panel__references',
             items: [
@@ -239,10 +231,11 @@ export class FormPanel extends Component {
             ]
         });
     }
+);
 
-    renderDisplayOptions() {
-        const {model} = this,
-            {formModel} = model;
+const displayOptions = hoistElemFactory(
+    ({model}) => {
+        const {formModel} = model;
 
         return panel({
             title: 'Display Options',
@@ -279,25 +272,23 @@ export class FormPanel extends Component {
             model: {side: 'right', defaultSize: 220, resizable: false}
         });
     }
+);
 
-    renderToolbar() {
-        const {model} = this;
-
-        return toolbar(
-            button({
-                text: 'Reset',
-                icon: Icon.reset({className: 'xh-red'}),
-                onClick: () => model.reset(),
-                disabled: !model.formModel.isDirty
-            }),
-            filler(),
-            button({
-                text: 'Submit',
-                icon: Icon.check(),
-                minimal: false,
-                intent: 'success',
-                onClick: () => model.submitAsync()
-            })
-        );
-    }
-}
+const bbar = hoistElemFactory(
+    ({model}) => toolbar(
+        button({
+            text: 'Reset',
+            icon: Icon.reset({className: 'xh-red'}),
+            onClick: () => model.reset(),
+            disabled: !model.formModel.isDirty
+        }),
+        filler(),
+        button({
+            text: 'Submit',
+            icon: Icon.check(),
+            minimal: false,
+            intent: 'success',
+            onClick: () => model.submitAsync()
+        })
+    )
+);
