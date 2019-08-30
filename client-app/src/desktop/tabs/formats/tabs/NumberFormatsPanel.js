@@ -1,6 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core/index';
+import React from 'react';
+import {hoistComponent, useLocalModel} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
@@ -18,11 +18,10 @@ import './Styles.scss';
 import {resultsPanel} from './ResultsPanel';
 import {param} from './Util';
 
-@HoistComponent
-export class NumberFormatsPanel extends Component {
-    model = new NumberFormatsPanelModel();
+export const NumberFormatsPanel = hoistComponent(
+    () => {
+        const model = useLocalModel(NumberFormatsPanelModel);
 
-    render() {
         return wrapper({
             description: [
                 <p>
@@ -47,101 +46,100 @@ export class NumberFormatsPanel extends Component {
                 className: 'tbox-formats-tab',
                 width: 1000,
                 item: hframe(
-                    this.renderParams(),
+                    renderParams(model),
                     resultsPanel({
-                        model: this.model,
+                        model,
                         tryItInput: numberInput({selectOnFocus: true, placeholder: 'Enter a value to test'})
                     })
                 )
             })
         });
     }
+);
 
-    renderParams() {
-        const {model} = this;
-        return panel({
-            title: 'Function + Options',
-            compactHeader: true,
-            className: 'tbox-formats-tab__panel',
-            flex: 1,
-            items: [
-                param({
-                    model,
-                    bind: 'fnName',
-                    item: radioInput({
-                        alignIndicator: 'left',
-                        inline: true,
-                        options: [
-                            {value: 'fmtNumber', label: code('fmtNumber')},
-                            {value: 'fmtQuantity', label: code('fmtQuantity')},
-                            {value: 'fmtPrice', label: code('fmtPrice')},
-                            {value: 'fmtPercent', label: code('fmtPercent')},
-                            {value: 'fmtThousands', label: code('fmtThousands')},
-                            {value: 'fmtMillions', label: code('fmtMillions')},
-                            {value: 'fmtBillions', label: code('fmtBillions')}
-                        ]
-                    })
-                }),
-                card({
-                    className: 'tbox-formats-tab__panel__card',
-                    items: [
-                        param({
-                            model,
-                            bind: 'precision',
-                            item: select({options: ['auto', 0, 1, 2, 3, 4, 5, 6], enableFilter: false, width: 75}),
-                            info: 'precision'
-                        }),
-                        param({
-                            model,
-                            bind: 'zeroPad',
-                            item: switchInput(),
-                            info: 'pad with zeros out to fully specified precision'
-                        }),
-                        param({
-                            model,
-                            bind: 'ledger',
-                            item: switchInput(),
-                            info: 'use ledger formatting'
-                        }),
-                        param({
-                            model,
-                            bind: 'forceLedgerAlign',
-                            item: switchInput(),
-                            info: 'insert additional space to align numbers in ledger format'
-                        }),
-                        param({
-                            model,
-                            bind: 'withPlusSign',
-                            item: switchInput(),
-                            info: 'use explicit plus sign for positive numbers'
-                        }),
-                        param({
-                            model,
-                            bind: 'withSignGlyph',
-                            item: switchInput(),
-                            info: 'use up/down glyphs to indicate sign'
-                        }),
-                        param({
-                            model,
-                            bind: 'colorSpec',
-                            item: switchInput(),
-                            info: 'color positive and negative numbers (colors configurable)'
-                        }),
-                        param({
-                            model,
-                            bind: 'label',
-                            item: textInput({commitOnChange: true, width: 50}),
-                            info: 'suffix characters, typically used for units'
-                        }),
-                        param({
-                            model,
-                            bind: 'nullDisplay',
-                            item: textInput({commitOnChange: true, width: 50}),
-                            info: 'format for null values'
-                        })
+function renderParams(model) {
+    return panel({
+        title: 'Function + Options',
+        compactHeader: true,
+        className: 'tbox-formats-tab__panel',
+        flex: 1,
+        items: [
+            param({
+                model,
+                bind: 'fnName',
+                item: radioInput({
+                    alignIndicator: 'left',
+                    inline: true,
+                    options: [
+                        {value: 'fmtNumber', label: code('fmtNumber')},
+                        {value: 'fmtQuantity', label: code('fmtQuantity')},
+                        {value: 'fmtPrice', label: code('fmtPrice')},
+                        {value: 'fmtPercent', label: code('fmtPercent')},
+                        {value: 'fmtThousands', label: code('fmtThousands')},
+                        {value: 'fmtMillions', label: code('fmtMillions')},
+                        {value: 'fmtBillions', label: code('fmtBillions')}
                     ]
                 })
-            ]
-        });
-    }
+            }),
+            card({
+                className: 'tbox-formats-tab__panel__card',
+                items: [
+                    param({
+                        model,
+                        bind: 'precision',
+                        item: select({options: ['auto', 0, 1, 2, 3, 4, 5, 6], enableFilter: false, width: 75}),
+                        info: 'precision'
+                    }),
+                    param({
+                        model,
+                        bind: 'zeroPad',
+                        item: switchInput(),
+                        info: 'pad with zeros out to fully specified precision'
+                    }),
+                    param({
+                        model,
+                        bind: 'ledger',
+                        item: switchInput(),
+                        info: 'use ledger formatting'
+                    }),
+                    param({
+                        model,
+                        bind: 'forceLedgerAlign',
+                        item: switchInput(),
+                        info: 'insert additional space to align numbers in ledger format'
+                    }),
+                    param({
+                        model,
+                        bind: 'withPlusSign',
+                        item: switchInput(),
+                        info: 'use explicit plus sign for positive numbers'
+                    }),
+                    param({
+                        model,
+                        bind: 'withSignGlyph',
+                        item: switchInput(),
+                        info: 'use up/down glyphs to indicate sign'
+                    }),
+                    param({
+                        model,
+                        bind: 'colorSpec',
+                        item: switchInput(),
+                        info: 'color positive and negative numbers (colors configurable)'
+                    }),
+                    param({
+                        model,
+                        bind: 'label',
+                        item: textInput({commitOnChange: true, width: 50}),
+                        info: 'suffix characters, typically used for units'
+                    }),
+                    param({
+                        model,
+                        bind: 'nullDisplay',
+                        item: textInput({commitOnChange: true, width: 50}),
+                        info: 'format for null values'
+                    })
+                ]
+            })
+        ]
+    });
 }

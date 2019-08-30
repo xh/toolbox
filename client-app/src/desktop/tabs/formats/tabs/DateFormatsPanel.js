@@ -1,6 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core/index';
+import React from 'react';
+import {hoistComponent, useLocalModel} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
@@ -18,12 +18,10 @@ import {param} from './Util';
 import './Styles.scss';
 
 
-@HoistComponent
-export class DateFormatsPanel extends Component {
+export const DateFormatsPanel = hoistComponent(
+    () => {
+        const model = useLocalModel(DateFormatsPanelModel);
 
-    model = new DateFormatsPanelModel();
-
-    render() {
         return wrapper({
             description: [
                 <p>
@@ -48,65 +46,62 @@ export class DateFormatsPanel extends Component {
                 width: 1100,
                 height: 350,
                 item: hframe(
-                    this.renderParams(),
+                    renderParams(model),
                     resultsPanel({
-                        model: this.model,
+                        model,
                         tryItInput: dateInput({timePrecision: 'minute', textAlign: 'right'})
                     })
                 )
             })
         });
     }
+);
 
-
-    renderParams() {
-        const {model} = this;
-        
-        return panel({
-            title: 'Function + Options',
-            compactHeader: true,
-            className: 'tbox-formats-tab__panel',
-            flex: 1,
-            items: [
-                param({
-                    model,
-                    bind: 'fnName',
-                    item: radioInput({
-                        alignIndicator: 'left',
-                        inline: true,
-                        options: [
-                            {value: 'fmtDate', label: code('fmtDate')},
-                            {value: 'fmtCompactDate', label: code('fmtCompactDate')},
-                            {value: 'fmtDateTime', label: code('fmtDateTime')},
-                            {value: 'fmtTime', label: code('fmtTime')}
-                        ]
-                    })
-                }),
-                card({
-                    className: 'tbox-formats-tab__panel__card',
-                    items: [
-                        param({
-                            model,
-                            disabled: !model.enableFmt,
-                            bind: 'fmt',
-                            item: textInput({commitOnChange: true}),
-                            info: 'a moment.js format string.'
-                        }),
-                        param({
-                            model,
-                            bind: 'nullDisplay',
-                            item: textInput({commitOnChange: true}),
-                            info: 'format for null values'
-                        }),
-                        param({
-                            model,
-                            bind: 'tooltip',
-                            item: switchInput(),
-                            info: 'function to generate a tooltip string (enable for default)'
-                        })
+function renderParams(model) {
+    return panel({
+        title: 'Function + Options',
+        compactHeader: true,
+        className: 'tbox-formats-tab__panel',
+        flex: 1,
+        items: [
+            param({
+                model,
+                bind: 'fnName',
+                item: radioInput({
+                    alignIndicator: 'left',
+                    inline: true,
+                    options: [
+                        {value: 'fmtDate', label: code('fmtDate')},
+                        {value: 'fmtCompactDate', label: code('fmtCompactDate')},
+                        {value: 'fmtDateTime', label: code('fmtDateTime')},
+                        {value: 'fmtTime', label: code('fmtTime')}
                     ]
                 })
-            ]
-        });
-    }
+            }),
+            card({
+                className: 'tbox-formats-tab__panel__card',
+                items: [
+                    param({
+                        model,
+                        disabled: !model.enableFmt,
+                        bind: 'fmt',
+                        item: textInput({commitOnChange: true}),
+                        info: 'a moment.js format string.'
+                    }),
+                    param({
+                        model,
+                        bind: 'nullDisplay',
+                        item: textInput({commitOnChange: true}),
+                        info: 'format for null values'
+                    }),
+                    param({
+                        model,
+                        bind: 'tooltip',
+                        item: switchInput(),
+                        info: 'function to generate a tooltip string (enable for default)'
+                    })
+                ]
+            })
+        ]
+    });
 }
