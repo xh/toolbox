@@ -15,13 +15,13 @@
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env.inlineHoist"
   },
   "dependencies": {
-    "@xh/hoist": "27.0.0",
+    "@xh/hoist": "27.1.0",
     "react": "~16.8.6",
     "react-dom": "~16.8.6",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
     "@xh/hoist-dev-utils": "3.8.1",
-    "cross-env": "~5.2.0"
+    "cross-env": "~5.2.1"
   }
 }
