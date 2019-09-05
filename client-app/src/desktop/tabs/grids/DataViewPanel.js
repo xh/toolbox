@@ -1,17 +1,16 @@
-import React, {Component} from 'react';
-import {HoistComponent, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {HoistComponent, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
-
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {Icon} from '@xh/hoist/icon';
+import {shuffle, take} from 'lodash';
+import React, {Component} from 'react';
 import {wrapper} from '../../common/Wrapper';
 import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
-import {shuffle, take} from 'lodash';
 
 @HoistComponent
 export class DataViewPanel extends Component {
@@ -40,7 +39,10 @@ export class DataViewPanel extends Component {
                     itemHeight: 70
                 }),
                 bbar: toolbar(
-                    refreshButton({model}),
+                    refreshButton({
+                        text: 'Load new (random) records',
+                        model
+                    }),
                     filler(),
                     storeFilterField({store: model.dataViewModel.store})
                 )
@@ -58,18 +60,20 @@ class Model {
         store: {
             fields: ['name', 'city', 'value']
         },
+        sortBy: {colId: 'name', sort: 'asc'},
         emptyText: 'No companies found...',
         itemRenderer: (v, {record}) => dataViewItem({record})
     });
     
     async doLoadAsync(loadSpec) {
-        const allCustomers = await XH.fetchJson({url: 'customer'}),
+        const {dataViewModel} = this,
+            allCustomers = await XH.fetchJson({url: 'customer'}),
             customers = take(shuffle(allCustomers), 100);
 
         const min = -1000,
             max = 1000;
 
-        this.dataViewModel.store.loadData(customers.map(it => {
+        await dataViewModel.store.loadData(customers.map(it => {
             const randVal = Math.random() * (max - min) + min;
             return {
                 id: it.id,
@@ -78,5 +82,7 @@ class Model {
                 value: randVal
             };
         }));
+
+        dataViewModel.selectFirst();
     }
 }
