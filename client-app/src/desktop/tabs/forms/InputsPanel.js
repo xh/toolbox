@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {form, FormContext} from '@xh/hoist/cmp/form';
 import {box, div, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
-import {hoistComponent, hoistElemFactory, useLocalModel} from '@xh/hoist/core';
+import {hoistComponent, hoistElemFactory, localModel, useModel} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
@@ -28,22 +28,28 @@ import {wrapper} from '../../common';
 import './InputsPanel.scss';
 import {InputsPanelModel} from './InputsPanelModel';
 
-export const InputsPanel = hoistComponent(
-    () => {
-        const model = useLocalModel(InputsPanelModel);
+export const InputsPanel = hoistComponent({
+    model: localModel(InputsPanelModel),
 
+    render() {
         return wrapper({
             description: [
                 <p>
                     <code>HoistInput</code>s are core Components used to display editable data in applications.
                     They present a consistent API for editing data with MobX, React, and the underlying widgets
-                    provided by libraries such as Blueprint and Onsen.  At its simplest, any HoistInput can be bound to a
+                    provided by libraries such as Blueprint and Onsen. At its simplest, any HoistInput can be bound to a
                     data source using the <code>bind</code> and <code>model</code> props.
                 </p>,
                 <p>
-                    For more complex uses <code>HoistInput</code>s may also be hosted in <code>Form</code>s.  Forms provide
+                    For more complex uses <code>HoistInput</code>s may also be hosted in <code>Form</code>s. Forms
+                    provide
                     support for validation, data submission, and dirty state management.
                 </p>
+            ],
+            links: [
+                {url: '$TB/client-app/src/desktop/tabs/forms/InputsPanel.js', notes: 'This example.'},
+                {url: '$HR/cmp/input/HoistInput.js', notes: 'HoistInput Base Class'},
+                {url: '$HR/desktop/cmp/input', notes: 'Hoist Inputs'}
             ],
             item: panel({
                 title: 'Forms › HoistInputs',
@@ -51,30 +57,17 @@ export const InputsPanel = hoistComponent(
                 icon: Icon.edit(),
                 width: '90%',
                 height: 800,
-                item: frame(formContents({model})),
-                bbar: bbar({model})
-            }),
-            links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/forms/InputsPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/cmp/input/HoistInput.js',
-                    notes: 'HoistInput Base Class'
-                },
-                {
-                    url: '$HR/desktop/cmp/input',
-                    notes: 'Hoist Inputs'
-                }
-            ]
+                item: frame(formContents()),
+                bbar: bbar()
+            })
         });
     }
-);
+});
 
 
-const formContents = hoistElemFactory(
-    ({model}) => form({
+const formContents = hoistElemFactory(() => {
+    const model = useModel();
+    return form({
         model: model.formModel,
         fieldDefaults: {
             commitOnChange: model.commitOnChange
@@ -320,8 +313,8 @@ const formContents = hoistElemFactory(
                 ]
             })
         )
-    })
-);
+    });
+});
 
 const row = hoistElemFactory(
     ({label, field, info, readonlyRenderer, fmtVal, layout = {}, children}) => {
@@ -370,36 +363,32 @@ const customerOption = hoistElemFactory(
 );
 
 
-const bbar = hoistElemFactory(
-    ({model}) => {
-        const {formModel} = model;
+const bbar = hoistElemFactory(() => {
+    const model = useModel(),
+        {formModel} = model;
 
-        return toolbar(
-            filler(),
-            switchInput({
-                model: formModel,
-                bind: 'readonly',
-                label: 'Read-only'
-            }),
-            toolbarSep(),
-            switchInput({
-                model: formModel,
-                bind: 'disabled',
-                label: 'Disabled'
-            }),
-            toolbarSep(),
-            switchInput({
-                model,
-                bind: 'commitOnChange',
-                label: 'Commit on change'
-            })
-        );
-    }
-);
+    return toolbar(
+        filler(),
+        switchInput({
+            model: formModel,
+            bind: 'readonly',
+            label: 'Read-only'
+        }),
+        toolbarSep(),
+        switchInput({
+            model: formModel,
+            bind: 'disabled',
+            label: 'Disabled'
+        }),
+        toolbarSep(),
+        switchInput({
+            model,
+            bind: 'commitOnChange',
+            label: 'Commit on change'
+        })
+    );
+});
 
-//--------------------------------------------------
-// Monitor and display the current value of a field.
-//--------------------------------------------------
 const fieldDisplay = hoistElemFactory(
     ({fieldModel, fmtVal}) => {
         let displayVal = fieldModel.value;

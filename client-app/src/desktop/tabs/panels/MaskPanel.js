@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, HoistModel, useLocalModel, managed} from '@xh/hoist/core';
+import {hoistComponent, HoistModel, useModel, localModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -14,10 +14,11 @@ import {mask} from '@xh/hoist/desktop/cmp/mask';
 
 import {sampleGrid, wrapper} from '../../common';
 
-export const MaskPanel = hoistComponent(
-    () => {
-        const model = useLocalModel(Model);
+export const MaskPanel = hoistComponent({
+    model: localModel(Model),
 
+    render() {
+        const model = useModel(Model);
         return wrapper({
             description: [
                 <p>
@@ -34,14 +35,8 @@ export const MaskPanel = hoistComponent(
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/panels/MaskPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/mask/Mask.js',
-                    notes: 'Hoist component.'
-                },
+                {url: '$TB/client-app/src/desktop/tabs/panels/MaskPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/mask/Mask.js', notes: 'Hoist component.'},
                 {
                     url: '$HR/utils/async/PendingTaskModel.js',
                     notes: 'Hoist model for tracking async tasks - can be linked to masks.'
@@ -56,7 +51,6 @@ export const MaskPanel = hoistComponent(
                 bbar: [
                     span('Mask for'),
                     numberInput({
-                        model,
                         bind: 'seconds',
                         width: 40,
                         min: 0,
@@ -64,21 +58,18 @@ export const MaskPanel = hoistComponent(
                     }),
                     span('secs with'),
                     textInput({
-                        model,
                         bind: 'message',
                         width: 120,
                         placeholder: 'optional text'
                     }),
                     toolbarSep(),
                     switchInput({
-                        model,
                         bind: 'inline',
                         label: 'Inline:',
                         labelAlign: 'left'
                     }),
                     toolbarSep(),
                     switchInput({
-                        model,
                         bind: 'spinner',
                         label: 'Spinner:',
                         labelAlign: 'left'
@@ -98,7 +89,7 @@ export const MaskPanel = hoistComponent(
             })
         });
     }
-);
+});
 
 @HoistModel
 class Model {

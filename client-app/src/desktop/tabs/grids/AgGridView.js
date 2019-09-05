@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, useLocalModel} from '@xh/hoist/core';
+import {hoistComponent, useModel, localModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {agGrid} from '@xh/hoist/cmp/ag-grid';
 import {filler} from '@xh/hoist/cmp/layout';
@@ -7,10 +7,11 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import {gridStyleSwitches, wrapper} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';
 
-export const AgGridView = hoistComponent(
-    () => {
-        const model = useLocalModel(AgGridViewModel),
-            {agGridModel, loadModel, columnDefs} = model;
+export const AgGridView = hoistComponent({
+    model: localModel(AgGridViewModel),
+
+    render() {
+        const {agGridModel, loadModel, columnDefs} = useModel();
 
         return wrapper({
             description: [
@@ -56,4 +57,4 @@ export const AgGridView = hoistComponent(
             })
         });
     }
-);
+});

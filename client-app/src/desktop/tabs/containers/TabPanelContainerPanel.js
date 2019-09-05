@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, useLocalModel, managed, HoistModel} from '@xh/hoist/core';
+import {hoistComponent, useModel, localModel, managed, HoistModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
@@ -9,9 +9,11 @@ import {wrapper} from '../../common/Wrapper';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {find} from 'lodash';
 
-export const TabPanelContainerPanel = hoistComponent(
-    () => {
-        const model = useLocalModel(Model),
+export const TabPanelContainerPanel = hoistComponent({
+    model: localModel(Model),
+
+    render() {
+        const model = useModel(),
             {stateTabModel, detachedTabModel} = model;
 
         return wrapper({
@@ -27,26 +29,11 @@ export const TabPanelContainerPanel = hoistComponent(
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/containers/TabPanelContainerPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$TB/client-app/src/desktop/AppModel.js',
-                    notes: 'Toolbox AppModel with top-level TabContainerModel.'
-                },
-                {
-                    url: '$HR/cmp/tab/TabContainer.js',
-                    notes: 'Hoist container component.'
-                },
-                {
-                    url: '$HR/cmp/tab/TabContainerModel.js',
-                    notes: 'Hoist container model - primary API and configuration point for tabs.'
-                },
-                {
-                    url: '$HR/cmp/tab/TabModel.js',
-                    notes: 'Hoist tab model - created by TabContainerModel in its ctor from provided configs.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/containers/TabPanelContainerPanel.js', notes: 'This example.'},
+                {url: '$TB/client-app/src/desktop/AppModel.js', notes: 'Toolbox AppModel with top-level TabContainerModel.'},
+                {url: '$HR/cmp/tab/TabContainer.js', notes: 'Hoist container component.'},
+                {url: '$HR/cmp/tab/TabContainerModel.js', notes: 'Hoist container model - primary API and configuration point for tabs.'},
+                {url: '$HR/cmp/tab/TabModel.js', notes: 'Hoist tab model - created by TabContainerModel in its ctor from provided configs.'}
             ],
             item: panel({
                 title: 'Containers › Tabs',
@@ -137,7 +124,7 @@ export const TabPanelContainerPanel = hoistComponent(
             })
         });
     }
-);
+});
 
 
 @HoistModel

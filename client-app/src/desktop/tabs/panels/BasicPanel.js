@@ -1,7 +1,7 @@
 import React from 'react';
 import {p, div} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import {XH, hoistComponent, useLocalModel} from '@xh/hoist/core/index';
+import {XH, hoistComponent, useModel, localModel} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
 import {filler} from '@xh/hoist/cmp/layout/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel/index';
@@ -12,10 +12,11 @@ import {Icon} from '@xh/hoist/icon/index';
 import {usStates} from '../../../core/data/index';
 import {BasicPanelModel} from './BasicPanelModel';
 
-export const BasicPanel = hoistComponent(
-    () => {
-        const model = useLocalModel(BasicPanelModel);
+export const BasicPanel = hoistComponent({
+    model: localModel(BasicPanelModel),
 
+    render() {
+        const model = useModel();
         return wrapper({
             description: [
                 <p>
@@ -27,18 +28,9 @@ export const BasicPanel = hoistComponent(
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/panels/BasicPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/panel/Panel.js',
-                    notes: 'Hoist component.'
-                },
-                {
-                    url: '$HR/desktop/cmp/panel/PanelModel.js',
-                    notes: 'Hoist component model (for resize / collapse).'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/panels/BasicPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/panel/Panel.js', notes: 'Hoist component.'},
+                {url: '$HR/desktop/cmp/panel/PanelModel.js', notes: 'Hoist component model (for resize / collapse).'}
             ],
             item: panel({
                 icon: Icon.window(),
@@ -67,7 +59,6 @@ export const BasicPanel = hoistComponent(
                 bbar: [
                     filler(),
                     select({
-                        model,
                         bind: 'state',
                         options: usStates,
                         placeholder: 'Select a State...'
@@ -83,4 +74,4 @@ export const BasicPanel = hoistComponent(
             })
         });
     }
-);
+});

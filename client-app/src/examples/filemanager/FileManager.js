@@ -1,6 +1,6 @@
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import React from 'react';
-import {hoistElemFactory, useLocalModel} from '@xh/hoist/core';
+import {hoistElemFactory, localModel, useModel} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -10,10 +10,11 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {FileManagerModel} from './FileManagerModel';
 import './FileManager.scss';
 
-export const fileManager = hoistElemFactory(
-    () => {
-        const model = useLocalModel(FileManagerModel),
-            {gridModel, chooserModel} = model;
+export const fileManager = hoistElemFactory({
+    model: localModel(FileManagerModel),
+
+    render() {
+        const model = useModel();
 
         return panel({
             title: 'File Manager',
@@ -23,9 +24,9 @@ export const fileManager = hoistElemFactory(
             width: 700,
             height: 500,
             items: [
-                grid({model: gridModel}),
+                grid({model: model.gridModel}),
                 fileChooser({
-                    model: chooserModel,
+                    model: model.chooserModel,
                     accept: acceptedFileTypes,
                     showFileGrid: false,
                     targetText: fragment(
@@ -60,7 +61,7 @@ export const fileManager = hoistElemFactory(
             ]
         });
     }
-);
+});
 
 // Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
 // accepted file types for sanity (and to demo the `accepts` prop).

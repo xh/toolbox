@@ -1,6 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
-import {hoistComponent, useLocalModel} from '@xh/hoist/core/index';
+import {hoistComponent, useModel, localModel, hoistElemFactory} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
@@ -18,10 +18,10 @@ import {param} from './Util';
 import './Styles.scss';
 
 
-export const DateFormatsPanel = hoistComponent(
-    () => {
-        const model = useLocalModel(DateFormatsPanelModel);
+export const DateFormatsPanel = hoistComponent({
+    model: localModel(DateFormatsPanelModel),
 
+    render() {
         return wrapper({
             description: [
                 <p>
@@ -46,18 +46,18 @@ export const DateFormatsPanel = hoistComponent(
                 width: 1100,
                 height: 350,
                 item: hframe(
-                    renderParams(model),
+                    paramsPanel(),
                     resultsPanel({
-                        model,
                         tryItInput: dateInput({timePrecision: 'minute', textAlign: 'right'})
                     })
                 )
             })
         });
     }
-);
+});
 
-function renderParams(model) {
+export const paramsPanel = hoistElemFactory(() => {
+    const model = useModel();
     return panel({
         title: 'Function + Options',
         compactHeader: true,
@@ -65,7 +65,6 @@ function renderParams(model) {
         flex: 1,
         items: [
             param({
-                model,
                 bind: 'fnName',
                 item: radioInput({
                     alignIndicator: 'left',
@@ -82,20 +81,17 @@ function renderParams(model) {
                 className: 'tbox-formats-tab__panel__card',
                 items: [
                     param({
-                        model,
                         disabled: !model.enableFmt,
                         bind: 'fmt',
                         item: textInput({commitOnChange: true}),
                         info: 'a moment.js format string.'
                     }),
                     param({
-                        model,
                         bind: 'nullDisplay',
                         item: textInput({commitOnChange: true}),
                         info: 'format for null values'
                     }),
                     param({
-                        model,
                         bind: 'tooltip',
                         item: switchInput(),
                         info: 'function to generate a tooltip string (enable for default)'
@@ -104,4 +100,4 @@ function renderParams(model) {
             })
         ]
     });
-}
+});

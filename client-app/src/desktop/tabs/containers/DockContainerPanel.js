@@ -1,5 +1,5 @@
 import React from 'react';
-import {XH, HoistModel, hoistComponent, useLocalModel, managed} from '@xh/hoist/core';
+import {XH, HoistModel, hoistComponent, useModel, localModel, managed} from '@xh/hoist/core';
 import {box, br, hbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -7,16 +7,10 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
 import {wrapper, sampleGrid} from '../../common';
 
-export const DockContainerPanel = hoistComponent(
-    () => {
-        const model = useLocalModel(Model),
-            btnCfg = {
-                icon: Icon.add(),
-                minimal: false,
-                flex: 1,
-                margin: 5
-            };
-
+export const DockContainerPanel = hoistComponent({
+    model: localModel(Model),
+    render() {
+        const model = useModel();
         return wrapper({
             description: [
                 <p>
@@ -38,14 +32,8 @@ export const DockContainerPanel = hoistComponent(
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/containers/DockContainerPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/cmp/dock/DockContainer.js',
-                    notes: 'Hoist container component.'
-                },
+                {url: '$TB/client-app/src/desktop/tabs/containers/DockContainerPanel.js', notes: 'This example.'},
+                {url: '$HR/cmp/dock/DockContainer.js', notes: 'Hoist container component.'},
                 {
                     url: '$HR/cmp/dock/DockContainerModel.js',
                     notes: 'Hoist container model - primary API and configuration point for views.'
@@ -96,7 +84,15 @@ export const DockContainerPanel = hoistComponent(
             ]
         });
     }
-);
+});
+
+
+const btnCfg = {
+    icon: Icon.add(),
+    minimal: false,
+    flex: 1,
+    margin: 5
+};
 
 
 @HoistModel

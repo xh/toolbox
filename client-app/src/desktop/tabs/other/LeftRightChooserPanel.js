@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, useLocalModel, HoistModel, managed} from '@xh/hoist/core';
+import {hoistComponent, localModel, useModel, HoistModel, managed} from '@xh/hoist/core';
 import {wrapper} from '../../common/Wrapper';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
@@ -8,10 +8,11 @@ import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import data from './impl/LeftRightChooserData';
 
-export const LeftRightChooserPanel = hoistComponent(
-    () => {
-        const model = useLocalModel(Model);
+export const LeftRightChooserPanel = hoistComponent({
+    model: localModel(Model),
 
+    render() {
+        const model = useModel();
         return wrapper({
             description: [
                 <p>
@@ -26,22 +27,10 @@ export const LeftRightChooserPanel = hoistComponent(
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/other/LeftRightChooserPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooser.js',
-                    notes: 'Hoist component.'
-                },
-                {
-                    url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooserModel.js',
-                    notes: 'Hoist component model.'
-                },
-                {
-                    url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooserFilter.js',
-                    notes: 'Optional filter component.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/other/LeftRightChooserPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooser.js', notes: 'Hoist component.'},
+                {url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooserModel.js', notes: 'Hoist component model.'},
+                {url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooserFilter.js', notes: 'Optional filter component.'}
             ],
             item: panel({
                 title: 'Other › LeftRightChooser',
@@ -59,7 +48,6 @@ export const LeftRightChooserPanel = hoistComponent(
                         anyMatch: model.anyMatch
                     }),
                     switchInput({
-                        model,
                         bind: 'anyMatch',
                         label: 'match anywhere in the string'
                     })
@@ -67,7 +55,7 @@ export const LeftRightChooserPanel = hoistComponent(
             })
         });
     }
-);
+});
 
 
 @HoistModel

@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import {hoistComponent, HoistModel, managed, useLocalModel} from '@xh/hoist/core';
+import {hoistComponent, HoistModel, managed, useModel, localModel} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {span, filler} from '@xh/hoist/cmp/layout';
@@ -11,10 +11,11 @@ import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {pluralize} from '@xh/hoist/utils/js';
 import {wrapper} from '../../common/Wrapper';
 
-export const FileChooserPanel = hoistComponent(
-    ()  => {
-        const model = useLocalModel(Model),
-            {chooserModel, enableMulti, enableAddMulti, showFileGrid} = model;
+export const FileChooserPanel = hoistComponent({
+    model: localModel(Model),
+
+    render() {
+        const {chooserModel, enableMulti, enableAddMulti, showFileGrid} = useModel(Model);
 
         return wrapper({
             description: [
@@ -34,10 +35,7 @@ export const FileChooserPanel = hoistComponent(
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/other/FileChooserPanel.js',
-                    notes: 'This example.'
-                },
+                {url: '$TB/client-app/src/desktop/tabs/other/FileChooserPanel.js', notes: 'This example.'},
                 {
                     url: '$HR/desktop/cmp/filechooser/FileChooser.js',
                     notes: 'Hoist component for selecting and queuing files for upload.'
@@ -66,18 +64,15 @@ export const FileChooserPanel = hoistComponent(
                 bbar: [
                     span('Show grid:'),
                     switchInput({
-                        model,
                         bind: 'showFileGrid'
                     }),
                     toolbarSep(),
                     span('Enable Multiple:'),
                     switchInput({
-                        model,
                         bind: 'enableMulti'
                     }),
                     span('Enable Bulk Addition: '),
                     switchInput({
-                        model,
                         bind: 'enableAddMulti'
                     }),
                     filler(),
@@ -92,7 +87,7 @@ export const FileChooserPanel = hoistComponent(
             })
         });
     }
-);
+});
 
 
 @HoistModel

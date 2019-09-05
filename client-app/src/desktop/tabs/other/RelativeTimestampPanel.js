@@ -1,4 +1,4 @@
-import {hoistComponent, HoistModel, useLocalModel} from '@xh/hoist/core';
+import {hoistComponent, HoistModel, localModel, useModel} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
@@ -8,9 +8,11 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
 
-export const RelativeTimestampPanel = hoistComponent(
-    () =>  {
-        const model = useLocalModel(Model);
+export const RelativeTimestampPanel = hoistComponent({
+    model: localModel(Model),
+
+    render() {
+        const model = useModel();
 
         return wrapper({
             description: `
@@ -20,14 +22,8 @@ export const RelativeTimestampPanel = hoistComponent(
                 in a friendly and readable manner. 
             `,
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/other/RelativeTimestampPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/cmp/relativetimestamp/RelativeTimestamp.js',
-                    notes: 'Hoist component.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/other/RelativeTimestampPanel.js', notes: 'This example.'},
+                {url: '$HR/cmp/relativetimestamp/RelativeTimestamp.js', notes: 'Hoist component.'}
             ],
             item: panel({
                 title: 'Other › Relative Timestamp',
@@ -85,7 +81,7 @@ export const RelativeTimestampPanel = hoistComponent(
             })
         });
     }
-);
+});
 
 
 @HoistModel

@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, HoistModel, useLocalModel, managed} from '@xh/hoist/core';
+import {hoistComponent, HoistModel, useModel, localModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -14,10 +14,12 @@ import {loadingIndicator} from '@xh/hoist/desktop/cmp/loadingindicator';
 
 import {sampleGrid, wrapper} from '../../common';
 
-export const LoadingIndicatorPanel = hoistComponent(
-    () => {
-        const model = useLocalModel(Model);
-        
+export const LoadingIndicatorPanel = hoistComponent({
+
+    model: localModel(Model),
+
+    render() {
+        const model = useModel();
         return wrapper({
             description: [
                 <p>
@@ -33,18 +35,9 @@ export const LoadingIndicatorPanel = hoistComponent(
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/panels/LoadingIndicatorPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/loadingindicator/LoadingIndicator.js',
-                    notes: 'Hoist component.'
-                },
-                {
-                    url: '$HR/utils/async/PendingTaskModel.js',
-                    notes: 'Hoist model for tracking async tasks - can be linked to indicators.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/panels/LoadingIndicatorPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/loadingindicator/LoadingIndicator.js', notes: 'Hoist component.'},
+                {url: '$HR/utils/async/PendingTaskModel.js', notes: 'Hoist model for tracking async tasks - can be linked to indicators.'}
             ],
             item: panel({
                 title: 'Panels › Loading Indicator',
@@ -55,7 +48,6 @@ export const LoadingIndicatorPanel = hoistComponent(
                 bbar: [
                     span('Show for'),
                     numberInput({
-                        model,
                         bind: 'seconds',
                         width: 40,
                         min: 0,
@@ -63,14 +55,12 @@ export const LoadingIndicatorPanel = hoistComponent(
                     }),
                     span('secs with'),
                     textInput({
-                        model,
                         bind: 'message',
                         width: 150,
                         placeholder: 'optional text'
                     }),
                     toolbarSep(),
                     select({
-                        model,
                         bind: 'corner',
                         label: 'Corner:',
                         labelAlign: 'left',
@@ -80,7 +70,6 @@ export const LoadingIndicatorPanel = hoistComponent(
                     }),
                     toolbarSep(),
                     switchInput({
-                        model,
                         bind: 'spinner',
                         label: 'Spinner:',
                         labelAlign: 'left'
@@ -100,7 +89,7 @@ export const LoadingIndicatorPanel = hoistComponent(
             })
         });
     }
-);
+});
 
 
 @HoistModel

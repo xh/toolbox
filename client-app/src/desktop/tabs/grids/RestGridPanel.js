@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, useLocalModel} from '@xh/hoist/core';
+import {hoistComponent, localModel, useModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -9,9 +9,11 @@ import {wrapper} from '../../common/Wrapper';
 import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
 
-export const RestGridPanel = hoistComponent(
-    () => {
-        const restGridModel = useLocalModel(createRestGridModel);
+export const RestGridPanel = hoistComponent({
+    model: localModel(RestGridModel, createRestGridModel),
+
+    render() {
+        const model = useModel();
 
         return wrapper({
             description: [
@@ -31,11 +33,11 @@ export const RestGridPanel = hoistComponent(
                 icon: Icon.edit(),
                 width: 900,
                 height: 500,
-                item: restGrid({model: restGridModel})
+                item: restGrid({model})
             })
         });
     }
-);
+});
 
 function createRestGridModel() {
     return new RestGridModel({

@@ -1,12 +1,13 @@
 import {cloneElement} from 'react';
-import {hoistElemFactory} from '@xh/hoist/core/index';
+import {hoistElemFactory, useModel} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {tbody, table, tr, td} from '@xh/hoist/cmp/layout';
 import './Styles.scss';
 
 export const resultsPanel = hoistElemFactory(
-    ({model, tryItInput}) => {
-        const tryItElem = cloneElement(tryItInput, {model, bind: 'tryItData'});
+    ({tryItInput}) => {
+        const model = useModel(),
+            tryItElem = cloneElement(tryItInput, {bind: 'tryItData'});
 
         return panel({
             title: 'Input › Output',

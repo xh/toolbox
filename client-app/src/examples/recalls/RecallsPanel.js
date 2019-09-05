@@ -1,7 +1,7 @@
 
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {a, filler, p, span, vframe} from '@xh/hoist/cmp/layout';
-import {hoistElemFactory, useLocalModel, XH} from '@xh/hoist/core';
+import {hoistElemFactory, localModel, useModel, XH} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -11,9 +11,11 @@ import {detailsPanel} from './DetailsPanel';
 import './RecallsPanel.scss';
 import {RecallsPanelModel} from './RecallsPanelModel';
 
-export const recallsPanel = hoistElemFactory(
-    () => {
-        const model = useLocalModel(RecallsPanelModel),
+export const recallsPanel = hoistElemFactory({
+    model: localModel(RecallsPanelModel),
+
+    render() {
+        const model = useModel(),
             {gridModel, detailsPanelModel} = model,
             {currentRecord} = detailsPanelModel,
             fdaWebsite = 'https://open.fda.gov/apis/drug/enforcement/',
@@ -87,4 +89,4 @@ export const recallsPanel = hoistElemFactory(
             })
         );
     }
-);
+});

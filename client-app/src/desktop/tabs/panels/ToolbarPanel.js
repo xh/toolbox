@@ -1,6 +1,6 @@
 import {span} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import {XH, hoistComponent, useLocalModel} from '@xh/hoist/core/index';
+import {XH, hoistComponent, useModel, localModel} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
 import {filler, frame, hframe} from '@xh/hoist/cmp/layout/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel/index';
@@ -11,9 +11,12 @@ import {Icon} from '@xh/hoist/icon/index';
 import {usStates} from '../../../core/data/index';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
-export const ToolbarPanel = hoistComponent(
-    () => {
-        const model = useLocalModel(ToolbarPanelModel);
+export const ToolbarPanel = hoistComponent({
+
+    model: localModel(ToolbarPanelModel),
+
+    render() {
+        const model = useModel();
 
         return wrapper({
             description: `
@@ -23,14 +26,8 @@ export const ToolbarPanel = hoistComponent(
                 own and can be displayed in a vertical configuration as well. 
             `,
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/panels/ToolbarPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/toolbar/Toolbar.js',
-                    notes: 'Hoist component.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/panels/ToolbarPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/toolbar/Toolbar.js', notes: 'Hoist component.'}
             ],
             item: panel({
                 title: 'Panels › Toolbar',
@@ -63,7 +60,6 @@ export const ToolbarPanel = hoistComponent(
                     }),
                     filler(),
                     switchInput({
-                        model,
                         bind: 'enableTerminate',
                         label: 'Danger mode',
                         alignIndicator: 'right'
@@ -108,7 +104,6 @@ export const ToolbarPanel = hoistComponent(
                 ],
                 bbar: [
                     buttonGroupInput({
-                        model,
                         bind: 'visible',
                         items: [
                             button({icon: Icon.eye(), text: 'Show', value: true}),
@@ -121,7 +116,6 @@ export const ToolbarPanel = hoistComponent(
                     }),
                     filler(),
                     select({
-                        model,
                         bind: 'state',
                         options: usStates,
                         placeholder: 'Select a State...'
@@ -135,4 +129,4 @@ export const ToolbarPanel = hoistComponent(
             })
         });
     }
-);
+});

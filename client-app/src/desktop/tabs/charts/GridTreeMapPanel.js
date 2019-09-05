@@ -1,4 +1,4 @@
-import {hoistComponent, useLocalModel} from '@xh/hoist/core';
+import {hoistComponent, localModel, useModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {hframe} from '@xh/hoist/cmp/layout';
 import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
@@ -7,10 +7,11 @@ import {treeMap} from '@xh/hoist/desktop/cmp/treemap';
 
 import {GridTreeMapModel} from './GridTreeMapModel';
 
-export const GridTreeMapPanel = hoistComponent(
-    () => {
-        const model = useLocalModel(GridTreeMapModel),
-            {loadModel, dimChooserModel, gridModel, treeMapModel} = model;
+export const GridTreeMapPanel = hoistComponent({
+    model: localModel(GridTreeMapModel),
+
+    render() {
+        const {loadModel, dimChooserModel, gridModel, treeMapModel} = useModel();
 
         return panel({
             mask: loadModel,
@@ -24,4 +25,4 @@ export const GridTreeMapPanel = hoistComponent(
             )
         });
     }
-);
+});

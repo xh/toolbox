@@ -1,4 +1,4 @@
-import {hoistComponent, useLocalModel} from '@xh/hoist/core';
+import {hoistComponent, localModel, useModel, hoistElemFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, filler, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -10,9 +10,11 @@ import {OLHCChartModel} from './OLHCChartModel';
 import {wrapper} from '../../common/Wrapper';
 
 
-export const OLHCChartPanel = hoistComponent(
-    () => {
-        const model = useLocalModel(OLHCChartModel);
+export const OLHCChartPanel = hoistComponent({
+    model: localModel(OLHCChartModel),
+
+    render() {
+        const model = useModel();
 
         return wrapper({
             style: {paddingTop: 0},
@@ -22,11 +24,10 @@ export const OLHCChartPanel = hoistComponent(
                 icon: Icon.chartLine(),
                 width: 800,
                 height: 600,
-                item: renderExample(model),
+                item: example(),
                 tbar: [
                     box('Symbol: '),
                     select({
-                        model,
                         bind: 'currentSymbol',
                         options: model.symbols,
                         enableFilter: false
@@ -36,7 +37,6 @@ export const OLHCChartPanel = hoistComponent(
                     controlGroup(
                         numberInput({
                             width: 50,
-                            model,
                             bind: 'aspectRatio',
                             commitOnChange: true,
                             min: 0
@@ -50,9 +50,10 @@ export const OLHCChartPanel = hoistComponent(
             })
         });
     }
-);
+});
 
-function renderExample(model) {
+const example = hoistElemFactory(() => {
+    const model = useModel();
     return vframe({
         className: 'toolbox-example-container',
         item: chart({
@@ -60,4 +61,4 @@ function renderExample(model) {
             aspectRatio: model.aspectRatio
         })
     });
-}
+});

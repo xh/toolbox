@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, XH, useLocalModel, HoistModel, managed} from '@xh/hoist/core';
+import {hoistComponent, XH, useModel, localModel, HoistModel, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
@@ -7,22 +7,11 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {wrapper} from '../../common/Wrapper';
 
-export const PanelSizingPanel = hoistComponent(
-    () => {
-        const model = useLocalModel(Model);
+export const PanelSizingPanel = hoistComponent({
+    model: localModel(Model),
 
-        const loremIpsum = [
-            h3({
-                className: 'xh-text-color-accent',
-                item: 'Some old-fashioned text content'
-            }),
-            p('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta velit varius augue fermentum, vulputate tempus magna tempus.)'),
-            p('Fusce consectetur malesuada vehicula. Aliquam commodo magna at porta sollicitudin. Sed laoreet vehicula leo vel aliquam. Aliquam auctor fringilla ex, nec iaculis felis tincidunt ac. Pellentesque blandit ipsum odio, vel lacinia arcu blandit non.'),
-            p('Vestibulum non libero sem. Mauris a ipsum elit. Donec vestibulum sodales dapibus. Mauris posuere facilisis mollis. Etiam nec mauris nunc. Praesent mauris libero, blandit gravida ullamcorper vel, condimentum et velit. Suspendisse fermentum odio ac dui aliquet semper. Duis arcu felis, accumsan in leo sit amet, vehicula imperdiet tellus. Nulla ut condimentum quam. Donec eget mauris vitae libero blandit facilisis efficitur id justo.'),
-            p('Nam et tincidunt risus, at faucibus enim. Aliquam tortor est, finibus ac metus id, eleifend auctor quam. Aenean purus odio, tempus interdum velit et, faucibus placerat nisi. Etiam eget nunc vehicula, eleifend justo quis, varius leo. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris bibendum mollis tempor.'),
-            p('Fusce ac sollicitudin nunc, at tempus sem. Fusce dapibus lorem malesuada vestibulum luctus. Etiam semper est in ligula sagittis facilisis. Phasellus accumsan placerat ex, eu fringilla mauris semper nec.')
-        ];
-
+    render() {
+        const model = useModel();
         return wrapper({
             description: (
                 <div>
@@ -37,18 +26,9 @@ export const PanelSizingPanel = hoistComponent(
                 </div>
             ),
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/panel/Panel.js',
-                    notes: 'Hoist component.'
-                },
-                {
-                    url: '$HR/desktop/cmp/panel/PanelModel.js',
-                    notes: 'Hoist component model (for resize / collapse).'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/panel/Panel.js', notes: 'Hoist component.'},
+                {url: '$HR/desktop/cmp/panel/PanelModel.js', notes: 'Hoist component model (for resize / collapse).'}
             ],
             item: panel({
                 title: 'Panels › Panel Sizing',
@@ -129,7 +109,19 @@ export const PanelSizingPanel = hoistComponent(
             })
         });
     }
-);
+});
+
+const loremIpsum = [
+    h3({
+        className: 'xh-text-color-accent',
+        item: 'Some old-fashioned text content'
+    }),
+    p('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta velit varius augue fermentum, vulputate tempus magna tempus.)'),
+    p('Fusce consectetur malesuada vehicula. Aliquam commodo magna at porta sollicitudin. Sed laoreet vehicula leo vel aliquam. Aliquam auctor fringilla ex, nec iaculis felis tincidunt ac. Pellentesque blandit ipsum odio, vel lacinia arcu blandit non.'),
+    p('Vestibulum non libero sem. Mauris a ipsum elit. Donec vestibulum sodales dapibus. Mauris posuere facilisis mollis. Etiam nec mauris nunc. Praesent mauris libero, blandit gravida ullamcorper vel, condimentum et velit. Suspendisse fermentum odio ac dui aliquet semper. Duis arcu felis, accumsan in leo sit amet, vehicula imperdiet tellus. Nulla ut condimentum quam. Donec eget mauris vitae libero blandit facilisis efficitur id justo.'),
+    p('Nam et tincidunt risus, at faucibus enim. Aliquam tortor est, finibus ac metus id, eleifend auctor quam. Aenean purus odio, tempus interdum velit et, faucibus placerat nisi. Etiam eget nunc vehicula, eleifend justo quis, varius leo. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris bibendum mollis tempor.'),
+    p('Fusce ac sollicitudin nunc, at tempus sem. Fusce dapibus lorem malesuada vestibulum luctus. Etiam semper est in ligula sagittis facilisis. Phasellus accumsan placerat ex, eu fringilla mauris semper nec.')
+];
 
 
 @HoistModel
