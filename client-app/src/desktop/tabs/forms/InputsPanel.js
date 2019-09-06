@@ -56,7 +56,7 @@ export const InputsPanel = hoistComponent({
                 className: 'toolbox-inputs-panel',
                 icon: Icon.edit(),
                 width: '90%',
-                height: 800,
+                height: 850,
                 item: frame(formContents()),
                 bbar: bbar()
             })

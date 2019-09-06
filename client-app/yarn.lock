@@ -1241,9 +1241,9 @@
     webpackbar "~3.2.0"
 
 "@xh/hoist@^28.0.0-SNAPSHOT":
-  version "28.0.0-SNAPSHOT.1566576931879"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-28.0.0-SNAPSHOT.1566576931879.tgz#26e971d29939ffe962e1f7c6f461d7093e28de22"
-  integrity sha512-lZUvl3xXt5amIJddkBhErCunjPazq7XEbw6zsaSgV97ZGgFm9aqYnXh4itZthpWHM05HdcBiOMCbuWu9WPUafQ==
+  version "28.0.0-SNAPSHOT.1567698546639"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-28.0.0-SNAPSHOT.1567698546639.tgz#414d49b9430847ed3e57f4d6f18d458a951f8802"
+  integrity sha512-fxtp2IZlBUQ7fCSOpxTqdeb2GgtE8taM/Gaa43+F8TF4T+pEhiIyH01vuU+1HhAs3+9EQG0MyWYxRX88XWa2OA==
   dependencies:
     "@blueprintjs/core" "~3.18.0"
     "@blueprintjs/datetime" "~3.12.0"
@@ -2700,13 +2700,12 @@ create-react-context@^0.3.0:
     gud "^1.0.0"
     warning "^4.0.3"
 
-cross-env@~5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.2.0.tgz#6ecd4c015d5773e614039ee529076669b9d126f2"
-  integrity sha512-jtdNFfFW1hB7sMhr/H6rW1Z45LFqyI431m3qU6bFXcQ3Eh7LtBuG3h74o7ohHZ3crrRkkqHlo4jYHFPcjroANg==
+cross-env@~5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.2.1.tgz#b2c76c1ca7add66dc874d11798466094f551b34d"
+  integrity sha512-1yHhtcfAd1r4nwQgknowuUNfIT9E8dOMMspC36g45dN+iD1blloi7xp8X/xAIDnjHWyt1uQ8PHk2fkNaym7soQ==
   dependencies:
     cross-spawn "^6.0.5"
-    is-windows "^1.0.0"
 
 cross-spawn@6.0.5, cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
@@ -5045,7 +5044,7 @@ is-valid-path@^0.1.1:
   dependencies:
     is-invalid-path "^0.1.0"
 
-is-windows@^1.0.0, is-windows@^1.0.1, is-windows@^1.0.2:
+is-windows@^1.0.1, is-windows@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-windows/-/is-windows-1.0.2.tgz#d1850eb9791ecd18e6182ce12a30f396634bb19d"
   integrity sha512-eXK1UInq2bPmjyX6e3VHIzMLobc4J94i4AWn+Hpq3OU5KkrRC96OAcR3PRJ/pGu6m8TRnBHP9dkXQVsT/COVIA==

@@ -37,7 +37,10 @@ export const DataViewPanel = hoistComponent({
                     itemHeight: 70
                 }),
                 bbar: [
-                    refreshButton({model}),
+                    refreshButton({
+                        text: 'Load new (random) records',
+                        model
+                    }),
                     filler(),
                     storeFilterField({store: model.dataViewModel.store})
                 ]
@@ -55,18 +58,20 @@ class Model {
         store: {
             fields: ['name', 'city', 'value']
         },
+        sortBy: {colId: 'name', sort: 'asc'},
         emptyText: 'No companies found...',
         itemRenderer: (v, {record}) => dataViewItem({record})
     });
     
     async doLoadAsync(loadSpec) {
-        const allCustomers = await XH.fetchJson({url: 'customer'}),
+        const {dataViewModel} = this,
+            allCustomers = await XH.fetchJson({url: 'customer'}),
             customers = take(shuffle(allCustomers), 100);
 
         const min = -1000,
             max = 1000;
 
-        this.dataViewModel.store.loadData(customers.map(it => {
+        await dataViewModel.store.loadData(customers.map(it => {
             const randVal = Math.random() * (max - min) + min;
             return {
                 id: it.id,
@@ -75,5 +80,7 @@ class Model {
                 value: randVal
             };
         }));
+
+        dataViewModel.selectFirst();
     }
 }
