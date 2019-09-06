@@ -4,6 +4,8 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
+import {concat} from 'lodash';
+
 import {emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {
@@ -151,14 +153,19 @@ class Model {
                             }
 
                             render() {
-                                const rec = this.props.data;
+                                const {props} = this,
+                                    rowData = props.data,
+                                    agApi = props.api;
                                 return fragment(
                                     checkbox({
                                         displayUnsetState: true,
-                                        value: rec.enabled,
-                                        onChange: () => me.toggleNode(rec)
+                                        value: rowData.enabled === 'indeterminate' ? null : rowData.enabled,
+                                        onChange: () => {
+                                            const updatedNodes = me.updateFamily(agApi, rowData, me.gridModel.store);
+                                            agApi.refreshCells({force: true, columns: ['name'], rowNodes: updatedNodes});
+                                        }
                                     }),
-                                    rec.name
+                                    rowData.name
                                 );
                             }
 
@@ -169,34 +176,58 @@ class Model {
         };
     }
 
-    toggleNode(rec) {
-        rec.enabled = !rec.enabled;
-        this.setChildren(rec, rec.enabled);
-        this.updateAncestors(rec);
-        rec.store.noteDataUpdated();
+    updateFamily(agApi, rec, store) {
+
+        rec.enabled = rec.enabled === true ? false : true;
+    
+        const toggledNode = agApi.getRowNode(rec.id),
+            storeRec = store.getById(rec.id);
+    
+        storeRec.indeterminate = false;
+        storeRec.enabled = rec.enabled;
+    
+        const childNodes = this.setChildren(agApi, storeRec, rec.enabled),
+            parentNodes = this.updateAncestors(agApi, storeRec);
+        return concat(parentNodes, childNodes, toggledNode);
     }
 
-    setChildren(rec, enabled) {
-        // For setting, consult only children currently showing
-        rec.children.forEach(r => {
-            r.enabled = enabled;
-            this.setChildren(r, enabled);
+    setChildren(agApi, storeRec, enabled, updatedNodes) {
+        updatedNodes = updatedNodes ? updatedNodes : [];
+    
+        if (!storeRec.children) return updatedNodes;
+    
+        storeRec.children.forEach(it => {
+            it.indeterminate = false;
+            it.enabled = enabled;
+    
+            const node = agApi.getRowNode(it.id);
+            node.setDataValue('enabled', enabled === null ? 'indeterminate' : enabled);
+            updatedNodes.push(node);
+            this.setChildren(agApi, it, enabled, updatedNodes);
         });
+    
+        return updatedNodes;
     }
 
-    updateAncestors(rec) {
-        const {parent} = rec;
-        if (parent) {
-            parent.enabled = this.calcAggregateEnabledState(parent);
-            this.updateAncestors(parent);
-        }
-    }
-
-    calcAggregateEnabledState(rec) {
-        const states = rec.allChildren.map(r => r.enabled);   // here consult *all* children (even filtered out)
-        if (states.every(s => s === true)) return true;
-        if (states.every(s => s === false)) return false;
-        return null;
+    updateAncestors(agApi, storeRec, updatedNodes) {
+        updatedNodes = updatedNodes ? updatedNodes : [];
+    
+        if (!storeRec.parent) return updatedNodes;
+    
+        const parent = storeRec.parent,
+            isAllEnabled = (rec) => rec.children.every(it => it.enabled && isAllEnabled(it)),
+            isAllDisabled = (rec) => rec.children.every(it => !it.enabled && isAllDisabled(it)),
+            allEnabled = isAllEnabled(parent),
+            allDisabled = isAllDisabled(parent);
+    
+        parent.enabled = allEnabled ? true : (allDisabled ? false : null);
+    
+        const node = agApi.getRowNode(parent.id);
+        node.setDataValue('enabled', parent.enabled === null ? 'indeterminate' : parent.enabled);
+        updatedNodes.push(node);
+    
+        this.updateAncestors(agApi, storeRec.parent, updatedNodes);
+        return updatedNodes;
     }
 }
 
