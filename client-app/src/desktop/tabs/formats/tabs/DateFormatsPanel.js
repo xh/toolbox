@@ -66,7 +66,7 @@ export const paramsPanel = hoistElemFactory(() => {
         items: [
             param({
                 bind: 'fnName',
-                item: radioInput({
+                input: radioInput({
                     alignIndicator: 'left',
                     inline: true,
                     options: [
@@ -83,17 +83,17 @@ export const paramsPanel = hoistElemFactory(() => {
                     param({
                         disabled: !model.enableFmt,
                         bind: 'fmt',
-                        item: textInput({commitOnChange: true}),
+                        input: textInput({commitOnChange: true}),
                         info: 'a moment.js format string.'
                     }),
                     param({
                         bind: 'nullDisplay',
-                        item: textInput({commitOnChange: true}),
+                        input: textInput({commitOnChange: true}),
                         info: 'format for null values'
                     }),
                     param({
                         bind: 'tooltip',
-                        item: switchInput(),
+                        input: switchInput(),
                         info: 'function to generate a tooltip string (enable for default)'
                     })
                 ]

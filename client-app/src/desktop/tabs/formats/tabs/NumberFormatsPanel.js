@@ -65,7 +65,7 @@ const params = hoistElemFactory(() => {
         items: [
             param({
                 bind: 'fnName',
-                item: radioInput({
+                input: radioInput({
                     alignIndicator: 'left',
                     inline: true,
                     options: [
@@ -84,47 +84,47 @@ const params = hoistElemFactory(() => {
                 items: [
                     param({
                         bind: 'precision',
-                        item: select({options: ['auto', 0, 1, 2, 3, 4, 5, 6], enableFilter: false, width: 75}),
+                        input: select({options: ['auto', 0, 1, 2, 3, 4, 5, 6], enableFilter: false, width: 75}),
                         info: 'precision'
                     }),
                     param({
                         bind: 'zeroPad',
-                        item: switchInput(),
+                        input: switchInput(),
                         info: 'pad with zeros out to fully specified precision'
                     }),
                     param({
                         bind: 'ledger',
-                        item: switchInput(),
+                        input: switchInput(),
                         info: 'use ledger formatting'
                     }),
                     param({
                         bind: 'forceLedgerAlign',
-                        item: switchInput(),
+                        input: switchInput(),
                         info: 'insert additional space to align numbers in ledger format'
                     }),
                     param({
                         bind: 'withPlusSign',
-                        item: switchInput(),
+                        input: switchInput(),
                         info: 'use explicit plus sign for positive numbers'
                     }),
                     param({
                         bind: 'withSignGlyph',
-                        item: switchInput(),
+                        input: switchInput(),
                         info: 'use up/down glyphs to indicate sign'
                     }),
                     param({
                         bind: 'colorSpec',
-                        item: switchInput(),
+                        input: switchInput(),
                         info: 'color positive and negative numbers (colors configurable)'
                     }),
                     param({
                         bind: 'label',
-                        item: textInput({commitOnChange: true, width: 50}),
+                        input: textInput({commitOnChange: true, width: 50}),
                         info: 'suffix characters, typically used for units'
                     }),
                     param({
                         bind: 'nullDisplay',
-                        item: textInput({commitOnChange: true, width: 50}),
+                        input: textInput({commitOnChange: true, width: 50}),
                         info: 'format for null values'
                     })
                 ]
