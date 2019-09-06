@@ -16,7 +16,7 @@ import {sampleGrid, wrapper} from '../../common';
 
 export const LoadingIndicatorPanel = hoistComponent({
 
-    model: localModel(Model),
+    model: localModel(() => new Model()),
 
     render() {
         const model = useModel();

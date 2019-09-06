@@ -15,7 +15,7 @@ import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {sampleGrid, wrapper} from '../../common';
 
 export const MaskPanel = hoistComponent({
-    model: localModel(Model),
+    model: localModel(() => new Model()),
 
     render() {
         const model = useModel(Model);

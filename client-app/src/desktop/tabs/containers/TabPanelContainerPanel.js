@@ -10,7 +10,7 @@ import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {find} from 'lodash';
 
 export const TabPanelContainerPanel = hoistComponent({
-    model: localModel(Model),
+    model: localModel(() => new Model()),
 
     render() {
         const model = useModel(),

@@ -8,7 +8,7 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {wrapper} from '../../common/Wrapper';
 
 export const PanelSizingPanel = hoistComponent({
-    model: localModel(Model),
+    model: localModel(() => new Model()),
 
     render() {
         const model = useModel();

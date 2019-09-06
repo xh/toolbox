@@ -13,7 +13,7 @@ import './DataViewItem.scss';
 import {shuffle, take} from 'lodash';
 
 export const DataViewPanel = hoistComponent({
-    model: localModel(Model),
+    model: localModel(() => new Model()),
 
     render()  {
         const model = useModel();

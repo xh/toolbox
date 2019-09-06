@@ -12,7 +12,7 @@ import {pluralize} from '@xh/hoist/utils/js';
 import {wrapper} from '../../common/Wrapper';
 
 export const FileChooserPanel = hoistComponent({
-    model: localModel(Model),
+    model: localModel(() => new Model()),
 
     render() {
         const {chooserModel, enableMulti, enableAddMulti, showFileGrid} = useModel(Model);

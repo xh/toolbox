@@ -9,7 +9,7 @@ import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
 
 export const RelativeTimestampPanel = hoistComponent({
-    model: localModel(Model),
+    model: localModel(() => new Model()),
 
     render() {
         const model = useModel();

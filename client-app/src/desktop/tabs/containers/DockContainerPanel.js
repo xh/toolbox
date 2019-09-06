@@ -8,7 +8,7 @@ import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
 import {wrapper, sampleGrid} from '../../common';
 
 export const DockContainerPanel = hoistComponent({
-    model: localModel(Model),
+    model: localModel(() => new Model()),
     render() {
         const model = useModel();
         return wrapper({

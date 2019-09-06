@@ -9,7 +9,7 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import data from './impl/LeftRightChooserData';
 
 export const LeftRightChooserPanel = hoistComponent({
-    model: localModel(Model),
+    model: localModel(() => new Model()),
 
     render() {
         const model = useModel();
