@@ -10,7 +10,7 @@ import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
 
 export const RestGridPanel = hoistComponent({
-    model: localModel(RestGridModel, () => createRestGridModel()),
+    model: localModel(() => createRestGridModel()),
 
     render() {
         const model = useModel();
