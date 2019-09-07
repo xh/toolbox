@@ -1,43 +1,51 @@
-import {hoistElemFactory} from '@xh/hoist/core';
+import {hoistElemFactory, providedModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-import {lineChart} from './LineChart';
-import {ohlcChart} from './OHLCChart';
+import {ChartsPanelModel} from './ChartsPanelModel';
+import {chart} from '@xh/hoist/desktop/cmp/chart';
 
-export const chartsPanel = hoistElemFactory(
-    ({model}) => panel({
-        title: `Charts: ${model.symbol ? model.symbol : ''}`,
-        icon: Icon.chartArea(),
-        mask: !model.symbol,
-        model: {
-            defaultSize: 700,
-            side: 'right',
-            collapsedRenderMode: 'unmountOnHide',
-            prefName: 'portfolioChartsPanelConfig'
-        },
-        item: tabContainer({
+export const chartsPanel = hoistElemFactory({
+    model: providedModel(ChartsPanelModel),
+
+    render({model}) {
+        return panel({
+            title: `Charts: ${model.symbol ? model.symbol : ''}`,
+            icon: Icon.chartArea(),
+            mask: !model.symbol,
             model: {
-                tabs: [
-                    {
-                        id: 'line',
-                        title: 'Trading Volume',
-                        content: () => lineChart({
-                            model: model.lineChartModel,
-                            flex: 1,
-                            className: 'xh-border-right'
-                        })
-                    },
-                    {
-                        id: 'ohlc',
-                        title: 'Price History',
-                        content: () => ohlcChart({
-                            model: model.ohlcChartModel,
-                            flex: 1
-                        })
-                    }
-                ]
-            }
-        })
-    })
+                defaultSize: 700,
+                side: 'right',
+                collapsedRenderMode: 'unmountOnHide',
+                prefName: 'portfolioChartsPanelConfig'
+            },
+            item: tabContainer({
+                model: {
+                    tabs: [
+                        {
+                            id: 'line',
+                            title: 'Trading Volume',
+                            content: () => chartPanel({model: model.lineChartModel})
+                        },
+                        {
+                            id: 'ohlc',
+                            title: 'Price History',
+                            content: () => chartPanel({model: model.ohlcChartModel})
+                        }
+                    ]
+                }
+            })
+        });
+    }
+});
+
+
+const chartPanel = hoistElemFactory(
+    ({model}) => {
+        return panel({
+            item: chart(model.chartModel),
+            mask: model.loadModel,
+            flex: 1
+        });
+    }
 );

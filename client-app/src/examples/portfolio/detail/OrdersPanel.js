@@ -1,3 +1,5 @@
+
+import {providedModel} from '@xh/hoist/core';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {hoistElemFactory} from '@xh/hoist/core/index';
@@ -6,25 +8,28 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {Icon} from '@xh/hoist/icon';
 
-export const ordersPanel = hoistElemFactory(
-    ({model, ...rest}) => {
-        const {gridModel} = model;
+import {OrdersPanelModel} from './OrdersPanelModel';
+
+export const ordersPanel = hoistElemFactory({
+    model: providedModel(OrdersPanelModel),
+
+    render({model}) {
+        const {gridModel, positionId} = model;
 
         return panel({
-            title: `Orders: ${formatPositionId(model.positionId)}`,
+            title: `Orders: ${formatPositionId(positionId)}`,
             icon: Icon.edit(),
             item: grid({model: gridModel}),
-            mask: model.positionId == null,
+            mask: positionId == null,
             bbar: [
                 filler(),
                 gridCountLabel({gridModel, unit: 'orders'}),
                 storeFilterField({gridModel}),
                 colChooserButton({gridModel})
-            ],
-            ...rest
+            ]
         });
     }
-);
+});
 
 //------------------
 // Implementation

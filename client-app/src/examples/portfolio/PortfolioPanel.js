@@ -1,4 +1,4 @@
-import {hoistElemFactory, localModel, useModel} from '@xh/hoist/core';
+import {hoistElemFactory, localModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {hbox, vframe} from '@xh/hoist/cmp/layout';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
@@ -11,8 +11,7 @@ import './PortfolioPanel.scss';
 export const portfolioPanel = hoistElemFactory({
     model: localModel(PortfolioPanelModel),
 
-    render() {
-        const model = useModel();
+    render({model}) {
         return panel({
             mask: model.loadModel,
             item: vframe(
@@ -23,7 +22,7 @@ export const portfolioPanel = hoistElemFactory({
                         mapPanel({model: model.mapPanelModel})
                     ]
                 }),
-                detailPanel({model: model.detailPanelModel})
+                detailPanel()
             )
         });
     }
