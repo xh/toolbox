@@ -1,6 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
-import {hoistComponent, localModel, hoistCmpFactory} from '@xh/hoist/core/index';
+import {hoistCmp, localModel, hoistCmpFactory} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
@@ -18,7 +18,7 @@ import './Styles.scss';
 import {resultsPanel} from './ResultsPanel';
 import {param} from './Util';
 
-export const NumberFormatsPanel = hoistComponent({
+export const NumberFormatsPanel = hoistCmp({
     model: localModel(NumberFormatsPanelModel),
 
     render() {

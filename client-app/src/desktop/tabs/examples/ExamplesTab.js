@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {a, code, hbox, p, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -7,7 +7,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
 import './ExamplesTab.scss';
 
-export const ExamplesTab = hoistComponent(
+export const ExamplesTab = hoistCmp(
     () => wrapper(
         hbox({
             className: 'example-tile-container',

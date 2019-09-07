@@ -1,4 +1,4 @@
-import {hoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {StandardGridPanel} from './StandardGridPanel';
@@ -9,7 +9,7 @@ import {TreeGridPanel} from './TreeGridPanel';
 import {TreeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
 import {AgGridView} from './AgGridView';
 
-export const GridsTab = hoistComponent(
+export const GridsTab = hoistCmp(
     () => tabContainer({
         model: {
             route: 'default.grids',

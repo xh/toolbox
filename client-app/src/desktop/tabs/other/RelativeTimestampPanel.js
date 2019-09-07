@@ -1,4 +1,4 @@
-import {hoistComponent, HoistModel, localModel, useModel} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, localModel, useModel} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
@@ -8,7 +8,7 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
 
-export const RelativeTimestampPanel = hoistComponent({
+export const RelativeTimestampPanel = hoistCmp({
     model: localModel(() => new Model()),
 
     render() {

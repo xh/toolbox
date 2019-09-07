@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {jsonInput} from '@xh/hoist/desktop/cmp/input';
@@ -8,7 +8,7 @@ import {wrapper} from '../../common';
 
 import './JsxPanel.scss';
 
-export const JsxPanel = hoistComponent(
+export const JsxPanel = hoistCmp(
     () => wrapper({
         description: [
             <p>

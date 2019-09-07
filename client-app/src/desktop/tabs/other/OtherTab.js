@@ -1,5 +1,5 @@
 import {tabContainer} from '@xh/hoist/cmp/tab';
-import {hoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {FileChooserPanel} from './FileChooserPanel';
 import {IconsPanel} from './IconsPanel';
 import {JsxPanel} from './JsxPanel';
@@ -7,7 +7,7 @@ import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {PopupsPanel} from './PopupsPanel';
 
-export const OtherTab = hoistComponent(
+export const OtherTab = hoistCmp(
     () => tabContainer({
         model: {
             route: 'default.other',

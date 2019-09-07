@@ -1,6 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
-import {hoistComponent, useModel, localModel, hoistCmpFactory} from '@xh/hoist/core/index';
+import {hoistCmp, useModel, localModel, hoistCmpFactory} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
@@ -18,7 +18,7 @@ import {param} from './Util';
 import './Styles.scss';
 
 
-export const DateFormatsPanel = hoistComponent({
+export const DateFormatsPanel = hoistCmp({
     model: localModel(DateFormatsPanelModel),
 
     render() {

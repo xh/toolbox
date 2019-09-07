@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, XH} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
@@ -7,7 +7,7 @@ import logo from '../../../core/img/xhio+hoist.png';
 import logoDark from '../../../core/img/xhio+hoist-dark.png';
 import './HomeTab.scss';
 
-export const HomeTab = hoistComponent(
+export const HomeTab = hoistCmp(
     () => {
         const link = (txt, url) => <a href={url} target="_blank">{txt}</a>;
 

@@ -1,11 +1,11 @@
 import React from 'react';
-import {hoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 
 import {wrapper, sampleColumnGroupsGrid} from '../../common';
 
-export const ColumnGroupsGridPanel = hoistComponent(
+export const ColumnGroupsGridPanel = hoistCmp(
     () => wrapper({
         description: [
             <p>

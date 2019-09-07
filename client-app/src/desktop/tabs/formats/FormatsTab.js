@@ -1,10 +1,10 @@
-import {hoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {NumberFormatsPanel} from './tabs/NumberFormatsPanel';
 import {DateFormatsPanel} from './tabs/DateFormatsPanel';
 
-export const FormatsTab = hoistComponent(
+export const FormatsTab = hoistCmp(
     () => tabContainer({
         model: {
             route: 'default.formats',
