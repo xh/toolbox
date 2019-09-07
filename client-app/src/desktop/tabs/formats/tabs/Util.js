@@ -1,10 +1,10 @@
 import {cloneElement} from 'react';
-import {hoistElemFactory} from '@xh/hoist/core';
+import {hoistCmpFactory} from '@xh/hoist/core';
 import {formGroup} from '@xh/hoist/kit/blueprint';
 import {code, span} from '@xh/hoist/cmp/layout';
 
 
-export const param = hoistElemFactory(
+export const param = hoistCmpFactory(
     ({label, bind, input, info, disabled}) => formGroup({
         label,
         item: cloneElement(input, {bind, disabled}),

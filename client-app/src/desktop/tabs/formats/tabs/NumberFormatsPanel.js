@@ -1,6 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
-import {hoistComponent, localModel, hoistElemFactory} from '@xh/hoist/core/index';
+import {hoistComponent, localModel, hoistCmpFactory} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
@@ -56,7 +56,7 @@ export const NumberFormatsPanel = hoistComponent({
     }
 });
 
-const params = hoistElemFactory(() => {
+const params = hoistCmpFactory(() => {
     return panel({
         title: 'Function + Options',
         compactHeader: true,

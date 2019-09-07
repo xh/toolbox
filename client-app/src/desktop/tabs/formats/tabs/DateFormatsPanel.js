@@ -1,6 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
-import {hoistComponent, useModel, localModel, hoistElemFactory} from '@xh/hoist/core/index';
+import {hoistComponent, useModel, localModel, hoistCmpFactory} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
@@ -56,7 +56,7 @@ export const DateFormatsPanel = hoistComponent({
     }
 });
 
-export const paramsPanel = hoistElemFactory(() => {
+export const paramsPanel = hoistCmpFactory(() => {
     const model = useModel();
     return panel({
         title: 'Function + Options',

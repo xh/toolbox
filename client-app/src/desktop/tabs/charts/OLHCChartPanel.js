@@ -1,4 +1,4 @@
-import {hoistComponent, localModel, useModel, hoistElemFactory} from '@xh/hoist/core';
+import {hoistComponent, localModel, useModel, hoistCmpFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, filler, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -52,7 +52,7 @@ export const OLHCChartPanel = hoistComponent({
     }
 });
 
-const example = hoistElemFactory(() => {
+const example = hoistCmpFactory(() => {
     const model = useModel();
     return vframe({
         className: 'toolbox-example-container',

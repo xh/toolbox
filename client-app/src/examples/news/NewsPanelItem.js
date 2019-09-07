@@ -1,9 +1,9 @@
-import {hoistElemFactory} from '@xh/hoist/core/index';
+import {hoistCmpFactory} from '@xh/hoist/core/index';
 import {hbox, box} from '@xh/hoist/cmp/layout/index';
 import stockPhoto from '../../core/img/stock-news.png';
 import React from 'react';
 
-export const newsPanelItem = hoistElemFactory(
+export const newsPanelItem = hoistCmpFactory(
     (props) => {
         const {title, text, imageUrl, published, source, author} = props.record;
 

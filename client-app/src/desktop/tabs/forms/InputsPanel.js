@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {form, FormContext} from '@xh/hoist/cmp/form';
 import {box, div, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
-import {hoistComponent, hoistElemFactory, localModel, useModel} from '@xh/hoist/core';
+import {hoistComponent, hoistCmpFactory, localModel, useModel} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
@@ -65,7 +65,7 @@ export const InputsPanel = hoistComponent({
 });
 
 
-const formContents = hoistElemFactory(() => {
+const formContents = hoistCmpFactory(() => {
     const model = useModel();
     return form({
         model: model.formModel,
@@ -316,7 +316,7 @@ const formContents = hoistElemFactory(() => {
     });
 });
 
-const row = hoistElemFactory(
+const row = hoistCmpFactory(
     ({label, field, info, readonlyRenderer, fmtVal, layout = {}, children}) => {
         const form = useContext(FormContext),
             fieldModel = form.model.fields[field];
@@ -340,7 +340,7 @@ const row = hoistElemFactory(
     }
 );
 
-const customerOption = hoistElemFactory(
+const customerOption = hoistCmpFactory(
     ({opt}) => hbox({
         items: [
             box({
@@ -363,7 +363,7 @@ const customerOption = hoistElemFactory(
 );
 
 
-const bbar = hoistElemFactory(() => {
+const bbar = hoistCmpFactory(() => {
     const model = useModel(),
         {formModel} = model;
 
@@ -389,7 +389,7 @@ const bbar = hoistElemFactory(() => {
     );
 });
 
-const fieldDisplay = hoistElemFactory(
+const fieldDisplay = hoistCmpFactory(
     ({fieldModel, fmtVal}) => {
         let displayVal = fieldModel.value;
         if (displayVal == null) {

@@ -2,13 +2,13 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {hoistElemFactory} from '@xh/hoist/core';
+import {hoistCmpFactory} from '@xh/hoist/core';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 
-export const gridPanel = hoistElemFactory(
+export const gridPanel = hoistCmpFactory(
     ({model}) => {
         const {parentModel} = model;
 

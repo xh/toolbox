@@ -2,7 +2,7 @@
 import {providedModel} from '@xh/hoist/core';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {hoistElemFactory} from '@xh/hoist/core/index';
+import {hoistCmpFactory} from '@xh/hoist/core/index';
 import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
@@ -10,7 +10,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {OrdersPanelModel} from './OrdersPanelModel';
 
-export const ordersPanel = hoistElemFactory({
+export const ordersPanel = hoistCmpFactory({
     model: providedModel(OrdersPanelModel),
 
     render({model}) {

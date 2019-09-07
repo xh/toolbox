@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, localModel, hoistElemFactory, useModel} from '@xh/hoist/core';
+import {hoistComponent, localModel, hoistCmpFactory, useModel} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -49,7 +49,7 @@ export const FormPanel = hoistComponent({
     }
 });
 
-const formContent = hoistElemFactory(() => {
+const formContent = hoistCmpFactory(() => {
     const {formModel, inline, minimal, commitOnChange} = useModel();
     return panel({
         flex: 1,
@@ -96,11 +96,11 @@ const formContent = hoistElemFactory(() => {
     });
 });
 
-const lastName = hoistElemFactory(
+const lastName = hoistCmpFactory(
     () => formField({field: 'lastName', item: textInput()})
 );
 
-const email = hoistElemFactory(
+const email = hoistCmpFactory(
     () => formField({
         field: 'email',
         item: textInput({
@@ -111,7 +111,7 @@ const email = hoistElemFactory(
     })
 );
 
-const region = hoistElemFactory(
+const region = hoistCmpFactory(
     () => formField({
         field: 'region',
         item: select({
@@ -120,7 +120,7 @@ const region = hoistElemFactory(
     })
 );
 
-const tags = hoistElemFactory(
+const tags = hoistCmpFactory(
     () => formField({
         field: 'tags',
         item: select({
@@ -130,7 +130,7 @@ const tags = hoistElemFactory(
     })
 );
 
-const startAndEndDate = hoistElemFactory(
+const startAndEndDate = hoistCmpFactory(
     () => hbox(
         formField({
             field: 'startDate',
@@ -152,7 +152,7 @@ const startAndEndDate = hoistElemFactory(
     )
 );
 
-const reasonForLeaving = hoistElemFactory(
+const reasonForLeaving = hoistCmpFactory(
     () => formField({
         field: 'reasonForLeaving',
         item: select({
@@ -161,7 +161,7 @@ const reasonForLeaving = hoistElemFactory(
     })
 );
 
-const managerAndYearsExperience = hoistElemFactory(() => {
+const managerAndYearsExperience = hoistCmpFactory(() => {
     const model = useModel();
     return hbox({
         items: [
@@ -179,14 +179,14 @@ const managerAndYearsExperience = hoistElemFactory(() => {
     });
 });
 
-const notes = hoistElemFactory(
+const notes = hoistCmpFactory(
     () => formField({
         field: 'notes',
         item: textArea({height: 100})
     })
 );
 
-const references = hoistElemFactory(() => {
+const references = hoistCmpFactory(() => {
     const model = useModel(),
         {references} = model.formModel.fields;
     const rows = references.value.map(refModel => {
@@ -240,7 +240,7 @@ const references = hoistElemFactory(() => {
     });
 });
 
-const displayOptions = hoistElemFactory(() => {
+const displayOptions = hoistCmpFactory(() => {
     const model = useModel(),
         {formModel} = model;
 
@@ -280,7 +280,7 @@ const displayOptions = hoistElemFactory(() => {
     });
 });
 
-const bbar = hoistElemFactory(() => {
+const bbar = hoistCmpFactory(() => {
     const model = useModel();
     return toolbar(
         button({

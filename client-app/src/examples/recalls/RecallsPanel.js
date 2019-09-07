@@ -1,7 +1,7 @@
 
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {a, filler, p, span, vframe} from '@xh/hoist/cmp/layout';
-import {hoistElemFactory, localModel, useModel, XH} from '@xh/hoist/core';
+import {hoistCmpFactory, localModel, useModel, XH} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -11,7 +11,7 @@ import {detailsPanel} from './DetailsPanel';
 import './RecallsPanel.scss';
 import {RecallsPanelModel} from './RecallsPanelModel';
 
-export const recallsPanel = hoistElemFactory({
+export const recallsPanel = hoistCmpFactory({
     model: localModel(RecallsPanelModel),
 
     render() {

@@ -1,9 +1,9 @@
-import {hoistElemFactory} from '@xh/hoist/core/index';
+import {hoistCmpFactory} from '@xh/hoist/core/index';
 import {vbox, box} from '@xh/hoist/cmp/layout/index';
 import {Icon} from '@xh/hoist/icon/index';
 import {fmtNumber} from '@xh/hoist/format';
 
-export const dataViewItem = hoistElemFactory(
+export const dataViewItem = hoistCmpFactory(
     (props) => {
         const {name, city, value} = props.record,
             loser = value < 0;

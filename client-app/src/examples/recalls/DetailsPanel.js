@@ -1,7 +1,7 @@
-import {hoistElemFactory} from '@xh/hoist/core';
+import {hoistCmpFactory} from '@xh/hoist/core';
 import {div, table, tbody, tr, th, td} from '@xh/hoist/cmp/layout';
 
-export const detailsPanel = hoistElemFactory(
+export const detailsPanel = hoistCmpFactory(
     ({model}) => {
         const {currentRecord} = model;
 
