@@ -1,18 +1,17 @@
 import React from 'react';
-import {hoistCmp, localAndPublished} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {restGrid, RestGridModel, RestStore, addAction, editAction, viewAction, deleteAction, cloneAction} from '@xh/hoist/desktop/cmp/rest';
+import {restGrid, addAction, editAction, viewAction, deleteAction, cloneAction} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
 import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
 
 export const RestGridPanel = hoistCmp({
-    model: localAndPublished(() => createRestGridModel()),
 
-    render({model}) {
+    render() {
         return wrapper({
             description: [
                 <p>
@@ -31,119 +30,117 @@ export const RestGridPanel = hoistCmp({
                 icon: Icon.edit(),
                 width: 900,
                 height: 500,
-                item: restGrid({model})
+                item: restGrid({model: modelSpec})
             })
         });
     }
 });
 
-function createRestGridModel() {
-    return new RestGridModel({
-        enableExport: true,
-        store: new RestStore({
-            url: 'rest/companyRest',
-            fields: [
-                {
-                    name: 'name',
-                    required: true
-                },
-                {
-                    name: 'type',
-                    lookupName: 'types',
-                    lookupStrict: true,
-                    required: true
-                },
-                {
-                    name: 'employees',
-                    label: 'Employees (#)',
-                    type: 'number',
-                    required: true
-                },
-                {
-                    name: 'isActive',
-                    label: 'Active?',
-                    type: 'bool',
-                    defaultValue: true
-                },
-                {
-                    name: 'cfg',
-                    label: 'JSON Config',
-                    type: 'json'
-                },
-                {
-                    name: 'earningsDate',
-                    type: 'localDate',
-                    required: true
-                },
-                {
-                    name: 'note'
-                },
-                {
-                    name: 'lastUpdated',
-                    type: 'date',
-                    editable: false
-                },
-                {
-                    name: 'lastUpdatedBy',
-                    editable: false
-                }
-            ]
-        }),
-        unit: 'company',
-        filterFields: ['name', 'type', 'note'],
-        sortBy: 'name',
-        columns: [
+const modelSpec = {
+    enableExport: true,
+    store: {
+        url: 'rest/companyRest',
+        fields: [
             {
-                field: 'name',
-                width: 200
+                name: 'name',
+                required: true
             },
             {
-                field: 'type',
-                width: 120
+                name: 'type',
+                lookupName: 'types',
+                lookupStrict: true,
+                required: true
             },
             {
-                field: 'employees',
-                ...numberCol,
-                headerName: 'Employees',
-                width: 120
+                name: 'employees',
+                label: 'Employees (#)',
+                type: 'number',
+                required: true
             },
             {
-                field: 'isActive',
-                ...boolCheckCol,
-                headerName: 'Active?',
-                width: 100
+                name: 'isActive',
+                label: 'Active?',
+                type: 'bool',
+                defaultValue: true
             },
             {
-                field: 'earningsDate',
-                renderer: dateRenderer(),
-                width: 140,
-                exportFormat: ExportFormat.DATE_FMT
+                name: 'cfg',
+                label: 'JSON Config',
+                type: 'json'
             },
             {
-                field: 'note',
-                width: 200
+                name: 'earningsDate',
+                type: 'localDate',
+                required: true
             },
-            {...emptyFlexCol}
-        ],
-        editors: [
-            {field: 'name'},
-            {field: 'type'},
-            {field: 'employees', formField: {item: numberInput({displayWithCommas: true})}},
-            {field: 'isActive', formField: {item: switchInput()}},
-            {field: 'cfg'},
-            {field: 'earningsDate'},
-            {field: 'note', formField: {item: textArea()}},
-            {field: 'lastUpdated'},
-            {field: 'lastUpdatedBy'}
-        ],
-        emptyText: 'No companies found - try adding one...',
-        menuActions: [
-            addAction,
-            editAction,
-            viewAction,
-            deleteAction,
-            cloneAction
-        ],
-        prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
-    });
-}
+            {
+                name: 'note'
+            },
+            {
+                name: 'lastUpdated',
+                type: 'date',
+                editable: false
+            },
+            {
+                name: 'lastUpdatedBy',
+                editable: false
+            }
+        ]
+    },
+    unit: 'company',
+    filterFields: ['name', 'type', 'note'],
+    sortBy: 'name',
+    columns: [
+        {
+            field: 'name',
+            width: 200
+        },
+        {
+            field: 'type',
+            width: 120
+        },
+        {
+            field: 'employees',
+            ...numberCol,
+            headerName: 'Employees',
+            width: 120
+        },
+        {
+            field: 'isActive',
+            ...boolCheckCol,
+            headerName: 'Active?',
+            width: 100
+        },
+        {
+            field: 'earningsDate',
+            renderer: dateRenderer(),
+            width: 140,
+            exportFormat: ExportFormat.DATE_FMT
+        },
+        {
+            field: 'note',
+            width: 200
+        },
+        {...emptyFlexCol}
+    ],
+    editors: [
+        {field: 'name'},
+        {field: 'type'},
+        {field: 'employees', formField: {item: numberInput({displayWithCommas: true})}},
+        {field: 'isActive', formField: {item: switchInput()}},
+        {field: 'cfg'},
+        {field: 'earningsDate'},
+        {field: 'note', formField: {item: textArea()}},
+        {field: 'lastUpdated'},
+        {field: 'lastUpdatedBy'}
+    ],
+    emptyText: 'No companies found - try adding one...',
+    menuActions: [
+        addAction,
+        editAction,
+        viewAction,
+        deleteAction,
+        cloneAction
+    ],
+    prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
+};
