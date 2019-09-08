@@ -1,5 +1,5 @@
 
-import {providedModel} from '@xh/hoist/core';
+import {providedAndPublished} from '@xh/hoist/core';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {hoistCmpFactory} from '@xh/hoist/core/index';
@@ -11,7 +11,7 @@ import {Icon} from '@xh/hoist/icon';
 import {OrdersPanelModel} from './OrdersPanelModel';
 
 export const ordersPanel = hoistCmpFactory({
-    model: providedModel(OrdersPanelModel),
+    model: providedAndPublished(OrdersPanelModel),
 
     render({model}) {
         const {gridModel, positionId} = model;

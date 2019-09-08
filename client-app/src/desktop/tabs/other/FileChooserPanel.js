@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import {hoistComponent, HoistModel, managed, useModel, localModel} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, managed, localAndPublished} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {span, filler} from '@xh/hoist/cmp/layout';
@@ -11,11 +11,11 @@ import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {pluralize} from '@xh/hoist/utils/js';
 import {wrapper} from '../../common/Wrapper';
 
-export const FileChooserPanel = hoistComponent({
-    model: localModel(() => new Model()),
+export const FileChooserPanel = hoistCmp({
+    model: localAndPublished(() => new Model()),
 
-    render() {
-        const {chooserModel, enableMulti, enableAddMulti, showFileGrid} = useModel(Model);
+    render({model}) {
+        const {chooserModel, enableMulti, enableAddMulti, showFileGrid} = model;
 
         return wrapper({
             description: [
@@ -36,10 +36,7 @@ export const FileChooserPanel = hoistComponent({
             ],
             links: [
                 {url: '$TB/client-app/src/desktop/tabs/other/FileChooserPanel.js', notes: 'This example.'},
-                {
-                    url: '$HR/desktop/cmp/filechooser/FileChooser.js',
-                    notes: 'Hoist component for selecting and queuing files for upload.'
-                }
+                {url: '$HR/desktop/cmp/filechooser/FileChooser.js', notes: 'Hoist component for selecting and queuing files for upload.'}
             ],
             item: panel({
                 title: 'Other › FileChooser',

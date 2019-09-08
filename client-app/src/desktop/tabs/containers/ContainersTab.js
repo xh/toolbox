@@ -1,4 +1,4 @@
-import {hoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {HBoxContainerPanel} from './HBoxContainerPanel';
@@ -8,7 +8,7 @@ import {DockContainerPanel} from './DockContainerPanel';
 
 import './ContainersTab.scss';
 
-export const ContainersTab = hoistComponent(
+export const ContainersTab = hoistCmp(
     () => tabContainer({
         model: {
             route: 'default.containers',

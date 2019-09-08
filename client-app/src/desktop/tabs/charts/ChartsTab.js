@@ -1,4 +1,4 @@
-import {hoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {OLHCChartPanel} from './OLHCChartPanel';
@@ -8,7 +8,7 @@ import {GridTreeMapPanel} from './GridTreeMapPanel';
 import {SplitTreeMapPanel} from './SplitTreeMapPanel';
 
 
-export const ChartsTab = hoistComponent(
+export const ChartsTab = hoistCmp(
     () => tabContainer({
         model: {
             route: 'default.charts',

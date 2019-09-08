@@ -1,25 +1,19 @@
 import React from 'react';
-import {hoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {box, hbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
 
-export const HBoxContainerPanel = hoistComponent(
+export const HBoxContainerPanel = hoistCmp(
     () => wrapper({
         description: <p>
             An HBox lays out its children horizontally, rendering a Box
             with <code>flexDirection:row</code>.
         </p>,
         links: [
-            {
-                url: '$HR/cmp/layout/Box.js',
-                notes: 'Hoist Box components.'
-            },
-            {
-                url: '$HR/core/mixins/LayoutSupport.js',
-                notes: 'Decorator to support core layout props.'
-            }
+            {url: '$HR/cmp/layout/Box.js', notes: 'Hoist Box components.'},
+            {url: '$HR/core/mixins/LayoutSupport.js', notes: 'Decorator to support core layout props.'}
         ],
         item: panel({
             title: 'Containers › HBox',

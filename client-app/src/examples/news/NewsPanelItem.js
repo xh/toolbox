@@ -3,9 +3,11 @@ import {hbox, box} from '@xh/hoist/cmp/layout/index';
 import stockPhoto from '../../core/img/stock-news.png';
 import React from 'react';
 
-export const newsPanelItem = hoistCmpFactory(
-    (props) => {
-        const {title, text, imageUrl, published, source, author} = props.record;
+export const newsPanelItem = hoistCmpFactory({
+    model: null,
+
+    render({record}) {
+        const {title, text, imageUrl, published, source, author} = record;
 
         return hbox(
             box({
@@ -31,4 +33,4 @@ export const newsPanelItem = hoistCmpFactory(
             })
         );
     }
-);
+});

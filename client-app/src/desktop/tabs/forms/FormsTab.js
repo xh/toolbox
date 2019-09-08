@@ -1,11 +1,11 @@
-import {hoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {InputsPanel} from './InputsPanel';
 import {FormPanel} from './FormPanel';
 import {ToolbarFormPanel} from './ToolbarFormPanel';
 
-export const FormsTab = hoistComponent(
+export const FormsTab = hoistCmp(
     () => tabContainer({
         model: {
             route: 'default.forms',

@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, useModel, localModel, managed, HoistModel} from '@xh/hoist/core';
+import {hoistCmp, local, managed, HoistModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
@@ -9,12 +9,11 @@ import {wrapper} from '../../common/Wrapper';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {find} from 'lodash';
 
-export const TabPanelContainerPanel = hoistComponent({
-    model: localModel(() => new Model()),
+export const TabPanelContainerPanel = hoistCmp({
+    model: local(() => new Model()),
 
-    render() {
-        const model = useModel(),
-            {stateTabModel, detachedTabModel} = model;
+    render({model}) {
+        const {stateTabModel, detachedTabModel} = model;
 
         return wrapper({
             description: [

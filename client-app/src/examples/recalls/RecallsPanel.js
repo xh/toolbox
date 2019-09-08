@@ -1,7 +1,6 @@
-
+import {hoistCmpFactory, localAndPublished, XH} from '@xh/hoist/core';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {a, filler, p, span, vframe} from '@xh/hoist/cmp/layout';
-import {hoistCmpFactory, localModel, useModel, XH} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -12,11 +11,10 @@ import './RecallsPanel.scss';
 import {RecallsPanelModel} from './RecallsPanelModel';
 
 export const recallsPanel = hoistCmpFactory({
-    model: localModel(RecallsPanelModel),
+    model: localAndPublished(RecallsPanelModel),
 
-    render() {
-        const model = useModel(),
-            {gridModel, detailsPanelModel} = model,
+    render({model}) {
+        const {gridModel, detailsPanelModel} = model,
             {currentRecord} = detailsPanelModel,
             fdaWebsite = 'https://open.fda.gov/apis/drug/enforcement/',
             aboutBlurb = 'This applet uses the openFDA drug enforcement reports API, ' +
@@ -29,7 +27,6 @@ export const recallsPanel = hoistCmpFactory({
                 mask: model.loadModel,
                 tbar: [
                     textInput({
-                        model,
                         bind: 'searchQuery',
                         placeholder: 'Keyword Search',
                         commitOnChange: true,
@@ -38,7 +35,6 @@ export const recallsPanel = hoistCmpFactory({
                     toolbarSep(),
                     span('Group By : '),
                     buttonGroupInput({
-                        model: model,
                         bind: 'groupBy',
                         enableClear: true,
                         items: [

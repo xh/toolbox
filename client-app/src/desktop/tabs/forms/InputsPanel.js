@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {form, FormContext} from '@xh/hoist/cmp/form';
 import {box, div, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
-import {hoistComponent, hoistCmpFactory, localModel, useModel} from '@xh/hoist/core';
+import {hoistCmp, hoistCmpFactory, localAndPublished} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
@@ -28,8 +28,8 @@ import {wrapper} from '../../common';
 import './InputsPanel.scss';
 import {InputsPanelModel} from './InputsPanelModel';
 
-export const InputsPanel = hoistComponent({
-    model: localModel(InputsPanelModel),
+export const InputsPanel = hoistCmp({
+    model: localAndPublished(InputsPanelModel),
 
     render() {
         return wrapper({
@@ -65,9 +65,8 @@ export const InputsPanel = hoistComponent({
 });
 
 
-const formContents = hoistCmpFactory(() => {
-    const model = useModel();
-    return form({
+const formContents = hoistCmpFactory(
+    ({model}) => form({
         model: model.formModel,
         fieldDefaults: {
             commitOnChange: model.commitOnChange
@@ -313,8 +312,8 @@ const formContents = hoistCmpFactory(() => {
                 ]
             })
         )
-    });
-});
+    })
+);
 
 const row = hoistCmpFactory(
     ({label, field, info, readonlyRenderer, fmtVal, layout = {}, children}) => {
@@ -362,32 +361,32 @@ const customerOption = hoistCmpFactory(
     })
 );
 
+const bbar = hoistCmpFactory(
+    ({model}) => {
+        const {formModel} = model;
 
-const bbar = hoistCmpFactory(() => {
-    const model = useModel(),
-        {formModel} = model;
-
-    return toolbar(
-        filler(),
-        switchInput({
-            model: formModel,
-            bind: 'readonly',
-            label: 'Read-only'
-        }),
-        toolbarSep(),
-        switchInput({
-            model: formModel,
-            bind: 'disabled',
-            label: 'Disabled'
-        }),
-        toolbarSep(),
-        switchInput({
-            model,
-            bind: 'commitOnChange',
-            label: 'Commit on change'
-        })
-    );
-});
+        return toolbar(
+            filler(),
+            switchInput({
+                model: formModel,
+                bind: 'readonly',
+                label: 'Read-only'
+            }),
+            toolbarSep(),
+            switchInput({
+                model: formModel,
+                bind: 'disabled',
+                label: 'Disabled'
+            }),
+            toolbarSep(),
+            switchInput({
+                model,
+                bind: 'commitOnChange',
+                label: 'Commit on change'
+            })
+        );
+    }
+);
 
 const fieldDisplay = hoistCmpFactory(
     ({fieldModel, fmtVal}) => {

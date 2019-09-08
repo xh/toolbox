@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, XH, useModel, localModel, HoistModel, managed} from '@xh/hoist/core';
+import {hoistCmp, XH, local, HoistModel, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
@@ -7,11 +7,10 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {wrapper} from '../../common/Wrapper';
 
-export const PanelSizingPanel = hoistComponent({
-    model: localModel(() => new Model()),
+export const PanelSizingPanel = hoistCmp({
+    model: local(() => new Model()),
 
-    render() {
-        const model = useModel();
+    render({model}) {
         return wrapper({
             description: (
                 <div>

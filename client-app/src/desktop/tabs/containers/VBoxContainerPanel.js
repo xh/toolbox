@@ -1,11 +1,11 @@
 import React from 'react';
-import {hoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {box, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
 
-export const VBoxContainerPanel = hoistComponent(
+export const VBoxContainerPanel = hoistCmp(
     () => wrapper({
         description: <p>
             A VBox lays out its children vertically, rendering a Box

@@ -1,22 +1,21 @@
 import React from 'react';
+import {XH, hoistCmp, localAndPublished} from '@xh/hoist/core';
 import {p, div} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import {XH, hoistComponent, useModel, localModel} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
-import {filler} from '@xh/hoist/cmp/layout/index';
-import {panel} from '@xh/hoist/desktop/cmp/panel/index';
+import {filler} from '@xh/hoist/cmp/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select} from '@xh/hoist/desktop/cmp/input';
-import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar/index';
-import {button} from '@xh/hoist/desktop/cmp/button/index';
-import {Icon} from '@xh/hoist/icon/index';
-import {usStates} from '../../../core/data/index';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {Icon} from '@xh/hoist/icon';
+import {usStates} from '../../../core/data';
 import {BasicPanelModel} from './BasicPanelModel';
 
-export const BasicPanel = hoistComponent({
-    model: localModel(BasicPanelModel),
+export const BasicPanel = hoistCmp({
+    model: localAndPublished(BasicPanelModel),
 
-    render() {
-        const model = useModel();
+    render({model}) {
         return wrapper({
             description: [
                 <p>

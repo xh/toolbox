@@ -1,4 +1,4 @@
-import {hoistCmpFactory, providedModel} from '@xh/hoist/core';
+import {hoistCmpFactory, provided} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {tabContainer} from '@xh/hoist/cmp/tab';
@@ -6,7 +6,7 @@ import {ChartsPanelModel} from './ChartsPanelModel';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
 
 export const chartsPanel = hoistCmpFactory({
-    model: providedModel(ChartsPanelModel),
+    model: provided(ChartsPanelModel),
 
     render({model}) {
         return panel({
@@ -41,11 +41,9 @@ export const chartsPanel = hoistCmpFactory({
 
 
 const chartPanel = hoistCmpFactory(
-    ({model}) => {
-        return panel({
-            item: chart({model: model.chartModel}),
-            mask: model.loadModel,
-            flex: 1
-        });
-    }
+    ({model}) =>  panel({
+        item: chart({model: model.chartModel}),
+        mask: model.loadModel,
+        flex: 1
+    })
 );

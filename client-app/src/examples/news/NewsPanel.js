@@ -1,14 +1,18 @@
 import {filler} from '@xh/hoist/cmp/layout';
 import {storeCountLabel} from '@xh/hoist/cmp/store';
-import {hoistCmpFactory} from '@xh/hoist/core';
+import {hoistCmpFactory, providedAndPublished} from '@xh/hoist/core';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+
+import {NewsPanelModel} from './NewsPanelModel';
 import './NewsPanelItem.scss';
 
-export const newsPanel = hoistCmpFactory(
-    ({model}) => {
+export const newsPanel = hoistCmpFactory({
+    model: providedAndPublished(NewsPanelModel),
+
+    render({model}) {
         const {viewModel} = model;
 
         return panel({
@@ -29,7 +33,6 @@ export const newsPanel = hoistCmpFactory(
                     placeholder: 'Filter by title...'
                 }),
                 select({
-                    model,
                     bind: 'sourceFilter',
                     options: model.sourceOptions,
                     enableMulti: true,
@@ -45,7 +48,7 @@ export const newsPanel = hoistCmpFactory(
             ]
         });
     }
-);
+});
 
 function onRowDoubleClicked(e) {
     if (e.data.url) window.open(e.data.url, '_blank');

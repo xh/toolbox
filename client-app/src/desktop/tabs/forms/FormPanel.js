@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, localModel, hoistCmpFactory, useModel} from '@xh/hoist/core';
+import {hoistCmp, localAndPublished, hoistCmpFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -13,8 +13,8 @@ import {FormPanelModel} from './FormPanelModel';
 
 import './FormPanel.scss';
 
-export const FormPanel = hoistComponent({
-    model: localModel(FormPanelModel),
+export const FormPanel = hoistCmp({
+    model: localAndPublished(FormPanelModel),
 
     render() {
         return wrapper({
@@ -49,16 +49,15 @@ export const FormPanel = hoistComponent({
     }
 });
 
-const formContent = hoistCmpFactory(() => {
-    const {formModel, inline, minimal, commitOnChange} = useModel();
-    return panel({
+const formContent = hoistCmpFactory(
+    ({model}) => panel({
         flex: 1,
         item: form({
-            model: formModel,
+            model: model.formModel,
             fieldDefaults: {
-                inline,
-                minimal,
-                commitOnChange
+                inline: model.inline,
+                minimal: model.minimal,
+                commitOnChange: model.commitOnChange
             },
             item: vframe({
                 padding: 10,
@@ -93,8 +92,8 @@ const formContent = hoistCmpFactory(() => {
             })
         }),
         bbar: bbar()
-    });
-});
+    })
+);
 
 const lastName = hoistCmpFactory(
     () => formField({field: 'lastName', item: textInput()})
@@ -161,9 +160,8 @@ const reasonForLeaving = hoistCmpFactory(
     })
 );
 
-const managerAndYearsExperience = hoistCmpFactory(() => {
-    const model = useModel();
-    return hbox({
+const managerAndYearsExperience = hoistCmpFactory(
+    ({model}) => hbox({
         items: [
             formField({
                 field: 'isManager',
@@ -176,8 +174,8 @@ const managerAndYearsExperience = hoistCmpFactory(() => {
             })
         ],
         alignItems: model.inline ? 'center' : 'top'
-    });
-});
+    })
+);
 
 const notes = hoistCmpFactory(
     () => formField({
@@ -186,103 +184,103 @@ const notes = hoistCmpFactory(
     })
 );
 
-const references = hoistCmpFactory(() => {
-    const model = useModel(),
-        {references} = model.formModel.fields;
-    const rows = references.value.map(refModel => {
-        return form({
-            model: refModel,
-            key: refModel.xhId,
-            fieldDefaults: {label: null},
-            item: hbox({
-                className: 'tbox-form-panel__reference-row',
-                items: [
-                    formField({
-                        field: 'name',
-                        flex: 1,
-                        item: textInput({placeholder: 'Full name'})
-                    }),
-                    formField({
-                        field: 'email',
-                        flex: 1,
-                        item: textInput({placeholder: 'Email'})
-                    }),
-                    formField({
-                        field: 'relationship',
-                        flex: 1,
-                        item: select({
-                            options: [
-                                {value: 'professional', label: 'Professional Contact'},
-                                {value: 'personal', label: 'Personal Contact'}
-                            ]
-                        })
-                    }),
-                    button({
-                        icon: Icon.delete(),
-                        intent: 'danger',
-                        onClick: () => references.remove(refModel)
+const references = hoistCmpFactory(
+    ({model}) => {
+        const {references} = model.formModel.fields,
+            rows = references.value.map(
+                refModel => form({
+                    model: refModel,
+                    key: refModel.xhId,
+                    fieldDefaults: {label: null},
+                    item: hbox({
+                        className: 'tbox-form-panel__reference-row',
+                        items: [
+                            formField({
+                                field: 'name',
+                                flex: 1,
+                                item: textInput({placeholder: 'Full name'})
+                            }),
+                            formField({
+                                field: 'email',
+                                flex: 1,
+                                item: textInput({placeholder: 'Email'})
+                            }),
+                            formField({
+                                field: 'relationship',
+                                flex: 1,
+                                item: select({
+                                    options: [
+                                        {value: 'professional', label: 'Professional Contact'},
+                                        {value: 'personal', label: 'Personal Contact'}
+                                    ]
+                                })
+                            }),
+                            button({
+                                icon: Icon.delete(),
+                                intent: 'danger',
+                                onClick: () => references.remove(refModel)
+                            })
+                        ]
                     })
-                ]
-            })
+                })
+            );
+
+        return vbox({
+            className: 'tbox-form-panel__references',
+            items: [
+                ...rows,
+                button({
+                    icon: Icon.add(),
+                    text: 'Add new reference...',
+                    onClick: () => references.add()
+                })
+            ]
         });
-    });
+    }
+);
 
-    return vbox({
-        className: 'tbox-form-panel__references',
-        items: [
-            ...rows,
-            button({
-                icon: Icon.add(),
-                text: 'Add new reference...',
-                onClick: () => references.add()
-            })
-        ]
-    });
-});
+const displayOptions = hoistCmpFactory(
+    ({model}) => {
+        const {formModel} = model;
+        return panel({
+            title: 'Display Options',
+            className: 'tbox-display-opts',
+            icon: Icon.settings(),
+            compactHeader: true,
+            model: {side: 'right', defaultSize: 220, resizable: false},
+            items: [
+                switchInput({
+                    model,
+                    bind: 'inline',
+                    label: 'Inline labels'
+                }),
+                switchInput({
+                    model,
+                    bind: 'minimal',
+                    label: 'Minimal validation display'
+                }),
+                switchInput({
+                    model,
+                    bind: 'commitOnChange',
+                    label: 'Commit on change'
+                }),
+                switchInput({
+                    model: formModel,
+                    bind: 'readonly',
+                    label: 'Read-only'
+                }),
+                switchInput({
+                    model: formModel,
+                    bind: 'disabled',
+                    label: 'Disabled'
+                })
+            ]
+        });
+    }
+);
 
-const displayOptions = hoistCmpFactory(() => {
-    const model = useModel(),
-        {formModel} = model;
-
-    return panel({
-        title: 'Display Options',
-        className: 'tbox-display-opts',
-        icon: Icon.settings(),
-        compactHeader: true,
-        model: {side: 'right', defaultSize: 220, resizable: false},
-        items: [
-            switchInput({
-                model,
-                bind: 'inline',
-                label: 'Inline labels'
-            }),
-            switchInput({
-                model,
-                bind: 'minimal',
-                label: 'Minimal validation display'
-            }),
-            switchInput({
-                model,
-                bind: 'commitOnChange',
-                label: 'Commit on change'
-            }),
-            switchInput({
-                model: formModel,
-                bind: 'readonly',
-                label: 'Read-only'
-            }),
-            switchInput({
-                model: formModel,
-                bind: 'disabled',
-                label: 'Disabled'
-            })
-        ]
-    });
-});
-
-const bbar = hoistCmpFactory(() => {
-    const model = useModel();
-    return toolbar(
+const bbar = hoistCmpFactory(
+    ({model}) => toolbar(
         button({
             text: 'Reset',
             icon: Icon.reset({className: 'xh-red'}),
@@ -297,5 +295,5 @@ const bbar = hoistCmpFactory(() => {
             intent: 'success',
             onClick: () => model.submitAsync()
         })
-    );
-});
+    )
+);

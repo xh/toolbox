@@ -1,6 +1,6 @@
-import {Icon} from '@xh/hoist/icon';
 import React from 'react';
-import {hoistCmp, useModel, localModel, hoistCmpFactory} from '@xh/hoist/core/index';
+import {hoistCmp, localAndPublished, hoistCmpFactory} from '@xh/hoist/core/index';
+import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
@@ -19,7 +19,7 @@ import './Styles.scss';
 
 
 export const DateFormatsPanel = hoistCmp({
-    model: localModel(DateFormatsPanelModel),
+    model: localAndPublished(DateFormatsPanelModel),
 
     render() {
         return wrapper({
@@ -56,9 +56,8 @@ export const DateFormatsPanel = hoistCmp({
     }
 });
 
-export const paramsPanel = hoistCmpFactory(() => {
-    const model = useModel();
-    return panel({
+export const paramsPanel = hoistCmpFactory(
+    ({model}) => panel({
         title: 'Function + Options',
         compactHeader: true,
         className: 'tbox-formats-tab__panel',
@@ -99,5 +98,5 @@ export const paramsPanel = hoistCmpFactory(() => {
                 ]
             })
         ]
-    });
-});
+    })
+);

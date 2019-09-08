@@ -1,4 +1,4 @@
-import {hoistComponent, localModel, useModel, hoistCmpFactory} from '@xh/hoist/core';
+import {hoistCmp, localAndPublished, hoistCmpFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, filler, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -10,12 +10,10 @@ import {OLHCChartModel} from './OLHCChartModel';
 import {wrapper} from '../../common/Wrapper';
 
 
-export const OLHCChartPanel = hoistComponent({
-    model: localModel(OLHCChartModel),
+export const OLHCChartPanel = hoistCmp({
+    model: localAndPublished(OLHCChartModel),
 
-    render() {
-        const model = useModel();
-
+    render({model}) {
         return wrapper({
             style: {paddingTop: 0},
             item: panel({
@@ -52,13 +50,11 @@ export const OLHCChartPanel = hoistComponent({
     }
 });
 
-const example = hoistCmpFactory(() => {
-    const model = useModel();
-    return vframe({
+const example = hoistCmpFactory(
+    ({model}) => vframe({
         className: 'toolbox-example-container',
         item: chart({
-            model: model.chartModel,
             aspectRatio: model.aspectRatio
         })
-    });
-});
+    })
+);

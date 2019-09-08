@@ -1,6 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
-import {hoistCmp, localModel, hoistCmpFactory} from '@xh/hoist/core/index';
+import {hoistCmp, localAndPublished, hoistCmpFactory} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
@@ -19,7 +19,7 @@ import {resultsPanel} from './ResultsPanel';
 import {param} from './Util';
 
 export const NumberFormatsPanel = hoistCmp({
-    model: localModel(NumberFormatsPanelModel),
+    model: localAndPublished(NumberFormatsPanelModel),
 
     render() {
         return wrapper({
@@ -56,8 +56,8 @@ export const NumberFormatsPanel = hoistCmp({
     }
 });
 
-const params = hoistCmpFactory(() => {
-    return panel({
+const params = hoistCmpFactory(
+    () => panel({
         title: 'Function + Options',
         compactHeader: true,
         className: 'tbox-formats-tab__panel',
@@ -130,5 +130,5 @@ const params = hoistCmpFactory(() => {
                 ]
             })
         ]
-    });
-});
+    })
+);

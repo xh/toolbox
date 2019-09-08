@@ -1,4 +1,4 @@
-import {hoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {PanelSizingPanel} from './PanelSizingPanel';
 import {BasicPanel} from './BasicPanel';
@@ -8,7 +8,7 @@ import {MaskPanel} from './MaskPanel';
 
 import './PanelsTab.scss';
 
-export const PanelsTab = hoistComponent(
+export const PanelsTab = hoistCmp(
     () => tabContainer({
         model: {
             route: 'default.panels',

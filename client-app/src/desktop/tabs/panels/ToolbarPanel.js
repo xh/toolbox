@@ -1,6 +1,6 @@
 import {span} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import {XH, hoistComponent, useModel, localModel} from '@xh/hoist/core/index';
+import {XH, hoistCmp, localAndPublished} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
 import {filler, frame, hframe} from '@xh/hoist/cmp/layout/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel/index';
@@ -11,13 +11,10 @@ import {Icon} from '@xh/hoist/icon/index';
 import {usStates} from '../../../core/data/index';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
-export const ToolbarPanel = hoistComponent({
+export const ToolbarPanel = hoistCmp({
+    model: localAndPublished(ToolbarPanelModel),
 
-    model: localModel(ToolbarPanelModel),
-
-    render() {
-        const model = useModel();
-
+    render({model}) {
         return wrapper({
             description: `
                 Toolbars (in case you have never seen one) are horizontal or vertical containers 

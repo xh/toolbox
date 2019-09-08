@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistComponent, HoistModel, useModel, localModel, managed} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, localAndPublished, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -14,11 +14,10 @@ import {mask} from '@xh/hoist/desktop/cmp/mask';
 
 import {sampleGrid, wrapper} from '../../common';
 
-export const MaskPanel = hoistComponent({
-    model: localModel(() => new Model()),
+export const MaskPanel = hoistCmp({
+    model: localAndPublished(() => new Model()),
 
-    render() {
-        const model = useModel(Model);
+    render({model}) {
         return wrapper({
             description: [
                 <p>
@@ -37,10 +36,7 @@ export const MaskPanel = hoistComponent({
             links: [
                 {url: '$TB/client-app/src/desktop/tabs/panels/MaskPanel.js', notes: 'This example.'},
                 {url: '$HR/desktop/cmp/mask/Mask.js', notes: 'Hoist component.'},
-                {
-                    url: '$HR/utils/async/PendingTaskModel.js',
-                    notes: 'Hoist model for tracking async tasks - can be linked to masks.'
-                }
+                {url: '$HR/utils/async/PendingTaskModel.js', notes: 'Hoist model for tracking async tasks - can be linked to masks.'}
             ],
             item: panel({
                 title: 'Panels › Mask',

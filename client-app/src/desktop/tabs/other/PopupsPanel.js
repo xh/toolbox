@@ -1,5 +1,5 @@
 import {box, code, div, li, p, span, table, tbody, td, th, tr, ul} from '@xh/hoist/cmp/layout';
-import {hoistComponent, XH} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
 import {required, lengthIs} from '@xh/hoist/cmp/form';
@@ -9,7 +9,7 @@ import {wrapper} from '../../common';
 
 import './PopupsPanel.scss';
 
-export const PopupsPanel = hoistComponent(
+export const PopupsPanel = hoistCmp(
     () => {
         const divRef = useRef(null),
             acceptRichTextReminder = getRichTextReminder(),

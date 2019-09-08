@@ -3,8 +3,10 @@ import {vbox, box} from '@xh/hoist/cmp/layout/index';
 import {Icon} from '@xh/hoist/icon/index';
 import {fmtNumber} from '@xh/hoist/format';
 
-export const dataViewItem = hoistCmpFactory(
-    (props) => {
+export const dataViewItem = hoistCmpFactory({
+    model: null,
+
+    render(props) {
         const {name, city, value} = props.record,
             loser = value < 0;
         return vbox(
@@ -30,4 +32,4 @@ export const dataViewItem = hoistCmpFactory(
                 Icon.rocket({size: '3x', className: 'xh-green', prefix: 'fal'})
         );
     }
-);
+});

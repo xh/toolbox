@@ -1,4 +1,4 @@
-import {hoistCmp, HoistModel, localModel, useModel} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, localAndPublished} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
@@ -9,11 +9,9 @@ import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
 
 export const RelativeTimestampPanel = hoistCmp({
-    model: localModel(() => new Model()),
+    model: localAndPublished(() => new Model()),
 
-    render() {
-        const model = useModel();
-
+    render({model}) {
         return wrapper({
             description: `
                 A relative timestamp will display a given timestamp in terms of how far long ago / 
@@ -74,7 +72,6 @@ export const RelativeTimestampPanel = hoistCmp({
                     switchInput({
                         label: 'Short',
                         labelAlign: 'left',
-                        model,
                         bind: 'useShortFmt'
                     })
                 ]
