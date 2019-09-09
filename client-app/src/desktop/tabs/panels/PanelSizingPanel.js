@@ -14,7 +14,13 @@ export class PanelSizingPanel extends Component {
     topPanelModel = new PanelModel({
         defaultSize: 150,
         side: 'top',
-        animateResize: true
+        animateResize: false
+    });
+
+    leftFixedSizeModel = new PanelModel({
+        resizable: false,
+        defaultSize: 100,
+        side: 'left'
     });
 
     leftPanelModel = new PanelModel({
@@ -24,6 +30,12 @@ export class PanelSizingPanel extends Component {
 
     rightPanelModel = new PanelModel({
         defaultSize: 150,
+        side: 'right'
+    });
+
+    rightFixedSizeModel = new PanelModel({
+        resizable: false,
+        defaultSize: 100,
         side: 'right'
     });
 
@@ -72,7 +84,7 @@ export class PanelSizingPanel extends Component {
                 title: 'Panels › Panel Sizing',
                 icon: Icon.window(),
                 height: 600,
-                width: 700,
+                width: 800,
                 items: [
                     panel({
                         title: 'Top Panel',
@@ -100,6 +112,16 @@ export class PanelSizingPanel extends Component {
                         flex: 1,
                         className: 'xh-border-top',
                         items: [
+                            panel({
+                                title: 'Not Resizeable',
+                                icon: Icon.disabled(),
+                                model: this.leftFixedSizeModel,
+                                compactHeader: true,
+                                item: box({
+                                    className: 'xh-pad',
+                                    item: 'Fixed Size'
+                                })
+                            }),
                             panel({
                                 title: 'Left Panel',
                                 icon: Icon.arrowToLeft(),
@@ -139,6 +161,16 @@ export class PanelSizingPanel extends Component {
                                 item: box({
                                     className: 'xh-pad',
                                     item: 'Collapsible Right'
+                                })
+                            }),
+                            panel({
+                                title: 'Not Resizeable',
+                                icon: Icon.disabled(),
+                                model: this.rightFixedSizeModel,
+                                compactHeader: true,
+                                item: box({
+                                    className: 'xh-pad',
+                                    item: 'Fixed Size'
                                 })
                             })
                         ]
