@@ -11,6 +11,11 @@ import {wrapper} from '../../common/Wrapper';
 @HoistComponent
 export class PanelSizingPanel extends Component {
 
+    topPanelModel = new PanelModel({
+        defaultSize: 150,
+        side: 'top'
+    });
+
     leftPanelModel = new PanelModel({
         defaultSize: 150,
         side: 'left'
@@ -65,9 +70,31 @@ export class PanelSizingPanel extends Component {
             item: panel({
                 title: 'Panels › Panel Sizing',
                 icon: Icon.window(),
-                height: 450,
+                height: 600,
                 width: 700,
                 items: [
+                    panel({
+                        title: 'Top Panel',
+                        icon: Icon.arrowToBottom(),
+                        model: this.topPanelModel,
+                        compactHeader: true,
+                        item: box({
+                            padding: 10,
+                            item: 'Collapsible Top'
+                        }),
+                        headerItems: [
+                            relativeTimestamp({
+                                options: {prefix: 'Rendered'},
+                                timestamp: Date.now(),
+                                marginLeft: 4
+                            }),
+                            button({
+                                icon: Icon.gear(),
+                                minimal: true,
+                                onClick: () => XH.toast({message: 'You clicked a Panel headerItem'})
+                            })
+                        ]
+                    }),
                     hbox({
                         flex: 1,
                         className: 'xh-border-top',
