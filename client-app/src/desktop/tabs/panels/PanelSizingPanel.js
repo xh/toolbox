@@ -13,7 +13,8 @@ export class PanelSizingPanel extends Component {
 
     topPanelModel = new PanelModel({
         defaultSize: 150,
-        side: 'top'
+        side: 'top',
+        animateResize: true
     });
 
     leftPanelModel = new PanelModel({
