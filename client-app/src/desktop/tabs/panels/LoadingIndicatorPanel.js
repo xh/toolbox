@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, HoistModel, localAndPublished, managed} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, create, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -15,7 +15,7 @@ import {loadingIndicator} from '@xh/hoist/desktop/cmp/loadingindicator';
 import {sampleGrid, wrapper} from '../../common';
 
 export const LoadingIndicatorPanel = hoistCmp({
-    model: localAndPublished(() => new Model()),
+    model: create(() => new Model()),
 
     render({model}) {
         return wrapper({

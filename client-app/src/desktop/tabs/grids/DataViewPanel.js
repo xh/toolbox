@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, HoistModel, LoadSupport, managed, XH, localAndPublished} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, LoadSupport, managed, XH, create} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -13,7 +13,7 @@ import './DataViewItem.scss';
 import {shuffle, take} from 'lodash';
 
 export const DataViewPanel = hoistCmp({
-    model: localAndPublished(() => new Model()),
+    model: create(() => new Model()),
 
     render({model})  {
         return wrapper({

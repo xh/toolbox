@@ -1,4 +1,4 @@
-import {hoistCmp, localAndPublished} from '@xh/hoist/core';
+import {hoistCmp, create} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -7,7 +7,7 @@ import {treeMap} from '@xh/hoist/desktop/cmp/treemap';
 import {SimpleTreeMapModel} from './SimpleTreeMapModel';
 
 export const SimpleTreeMapPanel = hoistCmp({
-    model: localAndPublished(SimpleTreeMapModel),
+    model: create(SimpleTreeMapModel),
 
     render({model}) {
         return wrapper(

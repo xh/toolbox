@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, localAndPublished, hoistCmpFactory} from '@xh/hoist/core';
+import {hoistCmp, create, hoistCmpFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -14,7 +14,7 @@ import {FormPanelModel} from './FormPanelModel';
 import './FormPanel.scss';
 
 export const FormPanel = hoistCmp({
-    model: localAndPublished(FormPanelModel),
+    model: create(FormPanelModel),
 
     render() {
         return wrapper({

@@ -1,5 +1,5 @@
 import React from 'react';
-import {XH, HoistModel, hoistCmp, localAndPublished, managed} from '@xh/hoist/core';
+import {XH, HoistModel, hoistCmp, create, managed} from '@xh/hoist/core';
 import {box, br, hbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -8,7 +8,7 @@ import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
 import {wrapper, sampleGrid} from '../../common';
 
 export const DockContainerPanel = hoistCmp({
-    model: localAndPublished(() => new Model()),
+    model: create(() => new Model()),
 
     render({model}) {
         return wrapper({

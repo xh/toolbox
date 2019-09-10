@@ -1,4 +1,4 @@
-import {hoistCmp, localAndPublished, hoistCmpFactory} from '@xh/hoist/core';
+import {hoistCmp, create, hoistCmpFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, filler, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -11,7 +11,7 @@ import {wrapper} from '../../common/Wrapper';
 
 
 export const OLHCChartPanel = hoistCmp({
-    model: localAndPublished(OLHCChartModel),
+    model: create(OLHCChartModel),
 
     render({model}) {
         return wrapper({

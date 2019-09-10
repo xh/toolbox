@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {form, FormContext} from '@xh/hoist/cmp/form';
 import {box, div, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
-import {hoistCmp, hoistCmpFactory, localAndPublished} from '@xh/hoist/core';
+import {hoistCmp, hoistCmpFactory, create} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
@@ -29,7 +29,7 @@ import './InputsPanel.scss';
 import {InputsPanelModel} from './InputsPanelModel';
 
 export const InputsPanel = hoistCmp({
-    model: localAndPublished(InputsPanelModel),
+    model: create(InputsPanelModel),
 
     render() {
         return wrapper({

@@ -1,6 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
-import {hoistCmp, localAndPublished, hoistCmpFactory} from '@xh/hoist/core/index';
+import {hoistCmp, create, hoistCmpFactory} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
@@ -19,7 +19,7 @@ import {resultsPanel} from './ResultsPanel';
 import {param} from './Util';
 
 export const NumberFormatsPanel = hoistCmp({
-    model: localAndPublished(NumberFormatsPanelModel),
+    model: create(NumberFormatsPanelModel),
 
     render() {
         return wrapper({
