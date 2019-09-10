@@ -2,76 +2,23 @@ import React, {Component} from 'react';
 import {HoistComponent, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
-import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar/index';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+import {switchInput} from '@xh/hoist/desktop/cmp/input';
+
 import {wrapper} from '../../common/Wrapper';
+import { PanelSizingModel } from './PanelSizingModel';
 
 @HoistComponent
 export class PanelSizingPanel extends Component {
 
-    resizablePanelNames = [
-        'topPanel1Model',
-        'topPanel2Model',
-        'leftPanel1Model',
-        'leftPanel2Model',
-        'rightPanel1Model',
-        'rightPanel2Model',
-        'bottomPanel1Model',
-        'bottomPanel2Model'
-    ];
-
-    topPanel1Model = new PanelModel({
-        defaultSize: 100,
-        side: 'top'
-    });
-
-    topPanel2Model = new PanelModel({
-        defaultSize: 100,
-        side: 'top'
-    });
-
-    leftPanel1Model = new PanelModel({
-        // resizable: false,
-        defaultSize: 100,
-        side: 'left'
-    });
-
-    leftPanel2Model = new PanelModel({
-        defaultSize: 150,
-        side: 'left'
-    });
-
-    rightPanel1Model = new PanelModel({
-        defaultSize: 100,
-        side: 'right'
-    });
-
-    rightPanel2Model = new PanelModel({
-        defaultSize: 150,
-        side: 'right'
-    });
-
-    bottomPanel1Model = new PanelModel({
-        defaultSize: 100,
-        side: 'bottom'
-    });
-
-    bottomPanel2Model = new PanelModel({
-        defaultSize: 100,
-        side: 'bottom'
-    });
-
-    get allExpanded() {
-        return this.resizablePanelNames.every(it => !this[it].collapsed);
-    }
-
-    get allCollapsed() {
-        return this.resizablePanelNames.every(it => this[it].collapsed);
-    }
+    model = new PanelSizingModel();
 
     render() {
+        const {model} = this;
+
         return wrapper({
             description: (
                 <div>
@@ -104,11 +51,19 @@ export class PanelSizingPanel extends Component {
                 icon: Icon.window(),
                 height: 600,
                 width: 800,
+                bbar: toolbar(
+                    filler(),
+                    switchInput({
+                        label: 'Animate Resize',
+                        onChange: () => model.setAnimateResizeAll(),
+                        value: model.animateResize
+                    })
+                ),
                 items: [
                     panel({
                         title: 'Top Panel 1',
                         icon: Icon.arrowToBottom(),
-                        model: this.topPanel1Model,
+                        model: model.topPanel1Model,
                         compactHeader: true,
                         item: box({
                             padding: 10,
@@ -130,7 +85,7 @@ export class PanelSizingPanel extends Component {
                     panel({
                         title: 'Top Panel 2',
                         icon: Icon.arrowToBottom(),
-                        model: this.topPanel2Model,
+                        model: model.topPanel2Model,
                         compactHeader: true,
                         item: box({
                             padding: 10,
@@ -144,7 +99,7 @@ export class PanelSizingPanel extends Component {
                             panel({
                                 title: 'Left Panel 1',
                                 icon: Icon.disabled(),
-                                model: this.leftPanel1Model,
+                                model: model.leftPanel1Model,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
@@ -154,7 +109,7 @@ export class PanelSizingPanel extends Component {
                             panel({
                                 title: 'Left Panel 2',
                                 icon: Icon.arrowToLeft(),
-                                model: this.leftPanel2Model,
+                                model: model.leftPanel2Model,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
@@ -172,20 +127,20 @@ export class PanelSizingPanel extends Component {
                                     filler(),
                                     button({
                                         text: 'Expand All',
-                                        disabled: this.allExpanded,
-                                        onClick: () => this.setCollapsedAll(false)
+                                        disabled: model.allExpanded,
+                                        onClick: () => model.setCollapsedAll(false)
                                     }),
                                     button({
                                         text: 'Collapse All',
-                                        disabled: this.allCollapsed,
-                                        onClick: () => this.setCollapsedAll(true)
+                                        disabled: model.allCollapsed,
+                                        onClick: () => model.setCollapsedAll(true)
                                     })
                                 )
                             }),
                             panel({
                                 title: 'Right Panel 2',
                                 icon: Icon.arrowToRight(),
-                                model: this.rightPanel2Model,
+                                model: model.rightPanel2Model,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
@@ -195,7 +150,7 @@ export class PanelSizingPanel extends Component {
                             panel({
                                 title: 'Right Panel 1',
                                 icon: Icon.disabled(),
-                                model: this.rightPanel1Model,
+                                model: model.rightPanel1Model,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
@@ -207,7 +162,7 @@ export class PanelSizingPanel extends Component {
                     panel({
                         title: 'Bottom Panel 2',
                         icon: Icon.arrowToBottom(),
-                        model: this.bottomPanel2Model,
+                        model: model.bottomPanel2Model,
                         compactHeader: true,
                         item: box({
                             padding: 10,
@@ -217,7 +172,7 @@ export class PanelSizingPanel extends Component {
                     panel({
                         title: 'Bottom Panel 1',
                         icon: Icon.arrowToBottom(),
-                        model: this.bottomPanel1Model,
+                        model: model.bottomPanel1Model,
                         compactHeader: true,
                         item: box({
                             padding: 10,
@@ -229,9 +184,6 @@ export class PanelSizingPanel extends Component {
         });
     }
 
-    setCollapsedAll(collapsed) {
-        this.resizablePanelNames.forEach(it => this[it].setCollapsed(collapsed));
-    }
 
     loremIpsum = [
         h3({
