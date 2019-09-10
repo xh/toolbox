@@ -1,5 +1,5 @@
 import {HoistModel, XH} from '@xh/hoist/core';
-import {dateIs, FormModel, lengthIs, numberIs, required, stringExcludesAll, applyToAll} from '@xh/hoist/cmp/form';
+import {dateIs, FormModel, lengthIs, numberIs, required, stringExcludesAll, constrainAll} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
 import {pre, vbox} from '@xh/hoist/cmp/layout';
 import {bindable} from '@xh/hoist/mobx';
@@ -93,7 +93,7 @@ export class FormPanelModel {
             },
             {
                 name: 'tags',
-                rules: [required, applyToAll(stringExcludesAll('/', '.', '\\', 'tag'))]
+                rules: [required, constrainAll(stringExcludesAll('/', '.', '\\', 'tag'))]
             },
             {
                 name: 'references',
