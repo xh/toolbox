@@ -11,14 +11,29 @@ import {wrapper} from '../../common/Wrapper';
 @HoistComponent
 export class PanelSizingPanel extends Component {
 
-    topPanelModel = new PanelModel({
-        defaultSize: 150,
-        side: 'top',
-        animateResize: false
+    resizablePanelNames = [
+        'topPanel1Model',
+        'topPanel2Model',
+        'leftPanel1Model',
+        'leftPanel2Model',
+        'rightPanel1Model',
+        'rightPanel2Model',
+        'bottomPanel1Model',
+        'bottomPanel2Model'
+    ];
+
+    topPanel1Model = new PanelModel({
+        defaultSize: 100,
+        side: 'top'
+    });
+
+    topPanel2Model = new PanelModel({
+        defaultSize: 100,
+        side: 'top'
     });
 
     leftPanel1Model = new PanelModel({
-        resizable: false,
+        // resizable: false,
         defaultSize: 100,
         side: 'left'
     });
@@ -28,36 +43,32 @@ export class PanelSizingPanel extends Component {
         side: 'left'
     });
 
+    rightPanel1Model = new PanelModel({
+        defaultSize: 100,
+        side: 'right'
+    });
+
     rightPanel2Model = new PanelModel({
         defaultSize: 150,
         side: 'right'
     });
 
-    rightPanel1Model = new PanelModel({
-        resizable: false,
+    bottomPanel1Model = new PanelModel({
         defaultSize: 100,
-        side: 'right'
+        side: 'bottom'
     });
 
-    bottomPanelModel = new PanelModel({
-        defaultSize: 130,
+    bottomPanel2Model = new PanelModel({
+        defaultSize: 100,
         side: 'bottom'
     });
 
     get allExpanded() {
-        return !this.leftPanel1Model.collapsed && 
-        !this.leftPanel2Model.collapsed && 
-        !this.rightPanel1Model.collapsed && 
-        !this.rightPanel2Model.collapsed && 
-        !this.bottomPanelModel.collapsed;
+        return this.resizablePanelNames.every(it => !this[it].collapsed);
     }
 
     get allCollapsed() {
-        return this.leftPanel1Model.collapsed && 
-        this.leftPanel2Model.collapsed && 
-        this.rightPanel1Model.collapsed && 
-        this.rightPanel2Model.collapsed && 
-        this.bottomPanelModel.collapsed;
+        return this.resizablePanelNames.every(it => this[it].collapsed);
     }
 
     render() {
@@ -95,9 +106,9 @@ export class PanelSizingPanel extends Component {
                 width: 800,
                 items: [
                     panel({
-                        title: 'Top Panel',
+                        title: 'Top Panel 1',
                         icon: Icon.arrowToBottom(),
-                        model: this.topPanelModel,
+                        model: this.topPanel1Model,
                         compactHeader: true,
                         item: box({
                             padding: 10,
@@ -116,6 +127,16 @@ export class PanelSizingPanel extends Component {
                             })
                         ]
                     }),
+                    panel({
+                        title: 'Top Panel 2',
+                        icon: Icon.arrowToBottom(),
+                        model: this.topPanel2Model,
+                        compactHeader: true,
+                        item: box({
+                            padding: 10,
+                            item: 'Collapsible Top'
+                        })
+                    }),
                     hbox({
                         flex: 1,
                         className: 'xh-border-top',
@@ -127,7 +148,7 @@ export class PanelSizingPanel extends Component {
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
-                                    item: 'Not resizeable, but still collapsible to the left.'
+                                    item: 'Collapsible Left'
                                 })
                             }),
                             panel({
@@ -137,7 +158,7 @@ export class PanelSizingPanel extends Component {
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
-                                    item: 'Resizeable and collapsible left.'
+                                    item: 'Collapsible Left'
                                 })
                             }),
                             panel({
@@ -168,7 +189,7 @@ export class PanelSizingPanel extends Component {
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
-                                    item: 'Resizable and collapsible right.'
+                                    item: 'Collapsible Right'
                                 })
                             }),
                             panel({
@@ -178,32 +199,30 @@ export class PanelSizingPanel extends Component {
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
-                                    item: 'Not resizeable, but still collapsible to the right.'
+                                    item: 'Collapsible Right'
                                 })
                             })
                         ]
                     }),
                     panel({
-                        title: 'Bottom Panel',
+                        title: 'Bottom Panel 2',
                         icon: Icon.arrowToBottom(),
-                        model: this.bottomPanelModel,
+                        model: this.bottomPanel2Model,
                         compactHeader: true,
                         item: box({
                             padding: 10,
                             item: 'Collapsible Bottom'
-                        }),
-                        headerItems: [
-                            relativeTimestamp({
-                                options: {prefix: 'Rendered'},
-                                timestamp: Date.now(),
-                                marginLeft: 4
-                            }),
-                            button({
-                                icon: Icon.gear(),
-                                minimal: true,
-                                onClick: () => XH.toast({message: 'You clicked a Panel headerItem'})
-                            })
-                        ]
+                        })
+                    }),
+                    panel({
+                        title: 'Bottom Panel 1',
+                        icon: Icon.arrowToBottom(),
+                        model: this.bottomPanel1Model,
+                        compactHeader: true,
+                        item: box({
+                            padding: 10,
+                            item: 'Collapsible Bottom'
+                        })
                     })
                 ]
             })
@@ -211,11 +230,7 @@ export class PanelSizingPanel extends Component {
     }
 
     setCollapsedAll(collapsed) {
-        this.leftPanel1Model.setCollapsed(collapsed);
-        this.leftPanel2Model.setCollapsed(collapsed);
-        this.rightPanel1Model.setCollapsed(collapsed);
-        this.rightPanel2Model.setCollapsed(collapsed);
-        this.bottomPanelModel.setCollapsed(collapsed);
+        this.resizablePanelNames.forEach(it => this[it].setCollapsed(collapsed));
     }
 
     loremIpsum = [
