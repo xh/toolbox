@@ -17,23 +17,23 @@ export class PanelSizingPanel extends Component {
         animateResize: false
     });
 
-    leftFixedSizeModel = new PanelModel({
+    leftPanel1Model = new PanelModel({
         resizable: false,
         defaultSize: 100,
         side: 'left'
     });
 
-    leftPanelModel = new PanelModel({
+    leftPanel2Model = new PanelModel({
         defaultSize: 150,
         side: 'left'
     });
 
-    rightPanelModel = new PanelModel({
+    rightPanel2Model = new PanelModel({
         defaultSize: 150,
         side: 'right'
     });
 
-    rightFixedSizeModel = new PanelModel({
+    rightPanel1Model = new PanelModel({
         resizable: false,
         defaultSize: 100,
         side: 'right'
@@ -45,11 +45,19 @@ export class PanelSizingPanel extends Component {
     });
 
     get allExpanded() {
-        return !this.leftPanelModel.collapsed && !this.rightPanelModel.collapsed && !this.bottomPanelModel.collapsed;
+        return !this.leftPanel1Model.collapsed && 
+        !this.leftPanel2Model.collapsed && 
+        !this.rightPanel1Model.collapsed && 
+        !this.rightPanel2Model.collapsed && 
+        !this.bottomPanelModel.collapsed;
     }
 
     get allCollapsed() {
-        return this.leftPanelModel.collapsed && this.rightPanelModel.collapsed && this.bottomPanelModel.collapsed;
+        return this.leftPanel1Model.collapsed && 
+        this.leftPanel2Model.collapsed && 
+        this.rightPanel1Model.collapsed && 
+        this.rightPanel2Model.collapsed && 
+        this.bottomPanelModel.collapsed;
     }
 
     render() {
@@ -113,23 +121,23 @@ export class PanelSizingPanel extends Component {
                         className: 'xh-border-top',
                         items: [
                             panel({
-                                title: 'Not Resizeable',
+                                title: 'Left Panel 1',
                                 icon: Icon.disabled(),
-                                model: this.leftFixedSizeModel,
+                                model: this.leftPanel1Model,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
-                                    item: 'Fixed Size'
+                                    item: 'Not resizeable, but still collapsible to the left.'
                                 })
                             }),
                             panel({
-                                title: 'Left Panel',
+                                title: 'Left Panel 2',
                                 icon: Icon.arrowToLeft(),
-                                model: this.leftPanelModel,
+                                model: this.leftPanel2Model,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
-                                    item: 'Collapsible Left'
+                                    item: 'Resizeable and collapsible left.'
                                 })
                             }),
                             panel({
@@ -154,23 +162,23 @@ export class PanelSizingPanel extends Component {
                                 )
                             }),
                             panel({
-                                title: 'Right Panel',
+                                title: 'Right Panel 2',
                                 icon: Icon.arrowToRight(),
-                                model: this.rightPanelModel,
+                                model: this.rightPanel2Model,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
-                                    item: 'Collapsible Right'
+                                    item: 'Resizable and collapsible right.'
                                 })
                             }),
                             panel({
-                                title: 'Not Resizeable',
+                                title: 'Right Panel 1',
                                 icon: Icon.disabled(),
-                                model: this.rightFixedSizeModel,
+                                model: this.rightPanel1Model,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
-                                    item: 'Fixed Size'
+                                    item: 'Not resizeable, but still collapsible to the right.'
                                 })
                             })
                         ]
@@ -203,8 +211,10 @@ export class PanelSizingPanel extends Component {
     }
 
     setCollapsedAll(collapsed) {
-        this.leftPanelModel.setCollapsed(collapsed);
-        this.rightPanelModel.setCollapsed(collapsed);
+        this.leftPanel1Model.setCollapsed(collapsed);
+        this.leftPanel2Model.setCollapsed(collapsed);
+        this.rightPanel1Model.setCollapsed(collapsed);
+        this.rightPanel2Model.setCollapsed(collapsed);
         this.bottomPanelModel.setCollapsed(collapsed);
     }
 
