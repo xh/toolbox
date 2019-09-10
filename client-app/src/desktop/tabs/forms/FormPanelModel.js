@@ -93,7 +93,7 @@ export class FormPanelModel {
             },
             {
                 name: 'tags',
-                rules: [required, constrainAll(stringExcludesAll('/', '.', '\\', 'tag'))]
+                rules: [required, constrainAll(stringExcludes('/', '.', '\\', 'tag'))]
             },
             {
                 name: 'references',
