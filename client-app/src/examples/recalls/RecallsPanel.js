@@ -23,7 +23,7 @@ export const recallsPanel = hoistCmpFactory({
 
         return vframe(
             panel({
-                item: grid({model: gridModel}),
+                item: grid(),
                 mask: model.loadModel,
                 tbar: [
                     textInput({
