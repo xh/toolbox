@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, create, HoistModel, managed} from '@xh/hoist/core';
+import {hoistCmp, creates, HoistModel, managed} from '@xh/hoist/core';
 import {wrapper} from '../../common/Wrapper';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
@@ -9,7 +9,7 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import data from './impl/LeftRightChooserData';
 
 export const LeftRightChooserPanel = hoistCmp({
-    model: create(() => new Model()),
+    model: creates(() => new Model()),
 
     render({model}) {
         return wrapper({

@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, XH, create, HoistModel, managed} from '@xh/hoist/core';
+import {hoistCmp, XH, creates, HoistModel, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
@@ -8,7 +8,7 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {wrapper} from '../../common/Wrapper';
 
 export const PanelSizingPanel = hoistCmp({
-    model: create(() => new Model()),
+    model: creates(() => new Model()),
 
     render({model}) {
         return wrapper({

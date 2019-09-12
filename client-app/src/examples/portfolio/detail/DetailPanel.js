@@ -1,4 +1,4 @@
-import {hoistCmpFactory, receive} from '@xh/hoist/core';
+import {hoistCmpFactory, uses} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {hbox} from '@xh/hoist/cmp/layout';
 import {ordersPanel} from './OrdersPanel';
@@ -7,7 +7,7 @@ import {DetailPanelModel} from './DetailPanelModel';
 
 export const detailPanel= hoistCmpFactory({
 
-    model: receive(DetailPanelModel),
+    model: uses(DetailPanelModel),
                           
     render({model}) {
         return panel({

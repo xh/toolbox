@@ -1,6 +1,6 @@
 import {filler} from '@xh/hoist/cmp/layout';
 import {storeCountLabel} from '@xh/hoist/cmp/store';
-import {hoistCmpFactory, receive} from '@xh/hoist/core';
+import {hoistCmpFactory, uses} from '@xh/hoist/core';
 import {dataView} from '@xh/hoist/desktop/cmp/dataview';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -10,7 +10,7 @@ import {NewsPanelModel} from './NewsPanelModel';
 import './NewsPanelItem.scss';
 
 export const newsPanel = hoistCmpFactory({
-    model: receive(NewsPanelModel),
+    model: uses(NewsPanelModel),
 
     render({model}) {
         const {viewModel} = model;

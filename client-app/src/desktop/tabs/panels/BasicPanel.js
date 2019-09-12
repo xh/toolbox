@@ -1,5 +1,5 @@
 import React from 'react';
-import {XH, hoistCmp, create} from '@xh/hoist/core';
+import {XH, hoistCmp, creates} from '@xh/hoist/core';
 import {p, div} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {wrapper} from '../../common/Wrapper';
@@ -13,7 +13,7 @@ import {usStates} from '../../../core/data';
 import {BasicPanelModel} from './BasicPanelModel';
 
 export const BasicPanel = hoistCmp({
-    model: create(BasicPanelModel),
+    model: creates(BasicPanelModel),
 
     render({model}) {
         return wrapper({

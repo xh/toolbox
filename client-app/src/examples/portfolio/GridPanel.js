@@ -1,4 +1,4 @@
-import {hoistCmpFactory, receive} from '@xh/hoist/core';
+import {hoistCmpFactory, uses} from '@xh/hoist/core';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
@@ -10,7 +10,7 @@ import {Icon} from '@xh/hoist/icon';
 import {GridPanelModel} from './GridPanelModel';
 
 export const gridPanel = hoistCmpFactory({
-    model: receive(GridPanelModel),
+    model: uses(GridPanelModel),
 
     render({model}) {
         const {parentModel} = model;  // This will be discoverable by contextd

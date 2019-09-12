@@ -1,11 +1,11 @@
-import {hoistCmpFactory, receive} from '@xh/hoist/core';
+import {hoistCmpFactory, uses} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
 
 import {MapPanelModel} from './MapPanelModel';
 
 export const mapPanel = hoistCmpFactory({
-    model: receive(MapPanelModel),
+    model: uses(MapPanelModel),
 
     render({model}) {
         const {splitTreeMapModel, panelSizingModel, loadModel} = model;

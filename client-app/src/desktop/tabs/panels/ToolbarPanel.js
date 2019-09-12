@@ -1,6 +1,6 @@
 import {span} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import {XH, hoistCmp, create} from '@xh/hoist/core/index';
+import {XH, hoistCmp, creates} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
 import {filler, frame, hframe} from '@xh/hoist/cmp/layout/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel/index';
@@ -12,7 +12,7 @@ import {usStates} from '../../../core/data/index';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
 export const ToolbarPanel = hoistCmp({
-    model: create(ToolbarPanelModel),
+    model: creates(ToolbarPanelModel),
 
     render({model}) {
         return wrapper({

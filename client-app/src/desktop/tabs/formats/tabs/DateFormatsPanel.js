@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, create, hoistCmpFactory} from '@xh/hoist/core';
+import {hoistCmp, creates, hoistCmpFactory} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
@@ -19,7 +19,7 @@ import './Styles.scss';
 
 
 export const DateFormatsPanel = hoistCmp({
-    model: create(DateFormatsPanelModel),
+    model: creates(DateFormatsPanelModel),
 
     render() {
         return wrapper({

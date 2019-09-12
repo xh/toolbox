@@ -1,4 +1,4 @@
-import {hoistCmp, HoistModel, create} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, creates} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
@@ -9,7 +9,7 @@ import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
 
 export const RelativeTimestampPanel = hoistCmp({
-    model: create(() => new Model()),
+    model: creates(() => new Model()),
 
     render({model}) {
         return wrapper({

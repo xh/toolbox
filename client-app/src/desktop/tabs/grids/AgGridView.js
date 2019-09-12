@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, create} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {agGrid} from '@xh/hoist/cmp/ag-grid';
 import {filler} from '@xh/hoist/cmp/layout';
@@ -8,7 +8,7 @@ import {gridStyleSwitches, wrapper} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';
 
 export const AgGridView = hoistCmp({
-    model: create(AgGridViewModel),
+    model: creates(AgGridViewModel),
 
     render({model}) {
         const {agGridModel, loadModel, columnDefs} = model;

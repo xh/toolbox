@@ -1,4 +1,4 @@
-import {hoistCmp, create} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -9,7 +9,7 @@ import {wrapper} from '../../common/Wrapper';
 import {LineChartModel} from './LineChartModel';
 
 export const LineChartPanel = hoistCmp({
-    model: create(LineChartModel),
+    model: creates(LineChartModel),
 
     render({model}) {
         return wrapper(

@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import {hoistCmp, HoistModel, managed, create} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, managed, creates} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {span, filler} from '@xh/hoist/cmp/layout';
@@ -12,7 +12,7 @@ import {pluralize} from '@xh/hoist/utils/js';
 import {wrapper} from '../../common/Wrapper';
 
 export const FileChooserPanel = hoistCmp({
-    model: create(() => new Model()),
+    model: creates(() => new Model()),
 
     render({model}) {
         const {chooserModel, enableMulti, enableAddMulti, showFileGrid} = model;
