@@ -18,8 +18,8 @@ export const portfolioPanel = hoistCmpFactory({
                 hbox({
                     flex: 1,
                     items: [
-                        gridPanel({model: model.gridPanelModel}),
-                        mapPanel({model: model.mapPanelModel})
+                        gridPanel(),
+                        mapPanel()
                     ]
                 }),
                 detailPanel()

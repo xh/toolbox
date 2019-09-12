@@ -13,18 +13,16 @@ export const gridPanel = hoistCmpFactory({
     model: uses(GridPanelModel),
 
     render({model}) {
-        const {parentModel} = model;  // This will be discoverable by contextd
-
         return panel({
             title: 'Positions',
             icon: Icon.portfolio(),
-            item: grid({model: model.gridModel}),
+            item: grid(),
             bbar: [
-                dimensionChooser({model: parentModel.dimChooserModel}),
+                dimensionChooser(),
                 gridCountLabel({gridModel: model.gridModel, unit: 'position'}),
                 filler(),
                 relativeTimestamp({timestamp: model.loadTimestamp}),
-                refreshButton({model: parentModel, intent: 'success'})
+                refreshButton({intent: 'success'})
             ]
         });
     }

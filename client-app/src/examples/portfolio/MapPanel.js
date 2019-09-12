@@ -8,15 +8,13 @@ export const mapPanel = hoistCmpFactory({
     model: uses(MapPanelModel),
 
     render({model}) {
-        const {splitTreeMapModel, panelSizingModel, loadModel} = model;
+        const {panelSizingModel, loadModel} = model;
 
         return panel({
             title: panelSizingModel.collapsed ? 'Treemap' : null,
             mask: loadModel,
             model: panelSizingModel,
-            item: splitTreeMap({
-                model: splitTreeMapModel
-            })
+            item: splitTreeMap()
         });
     }
 });
