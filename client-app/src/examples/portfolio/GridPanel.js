@@ -19,7 +19,7 @@ export const gridPanel = hoistCmpFactory({
             item: grid(),
             bbar: [
                 dimensionChooser(),
-                gridCountLabel({gridModel: model.gridModel, unit: 'position'}),
+                gridCountLabel({unit: 'position'}),
                 filler(),
                 relativeTimestamp({timestamp: model.loadTimestamp}),
                 refreshButton({intent: 'success'})

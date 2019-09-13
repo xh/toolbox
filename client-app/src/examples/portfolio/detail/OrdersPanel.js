@@ -23,7 +23,7 @@ export const ordersPanel = hoistCmpFactory({
             mask: positionId == null,
             bbar: [
                 filler(),
-                gridCountLabel({gridModel, unit: 'orders'}),
+                gridCountLabel({unit: 'orders'}),
                 storeFilterField({gridModel}),
                 colChooserButton()
             ]
