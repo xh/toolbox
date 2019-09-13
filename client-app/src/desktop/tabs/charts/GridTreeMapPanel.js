@@ -11,17 +11,15 @@ export const GridTreeMapPanel = hoistCmp({
     model: creates(GridTreeMapModel),
 
     render({model}) {
-        const {loadModel, dimChooserModel, gridModel, treeMapModel} = model;
-
         return panel({
-            mask: loadModel,
-            bbar: [dimensionChooser({model: dimChooserModel})],
+            mask: model.loadModel,
+            bbar: [dimensionChooser()],
             items: hframe(
                 panel({
                     model: {defaultSize: 480, side: 'left'},
-                    item: grid({model: gridModel})
+                    item: grid()
                 }),
-                treeMap({model: treeMapModel})
+                treeMap({model: model.treeMapModel})
             )
         });
     }

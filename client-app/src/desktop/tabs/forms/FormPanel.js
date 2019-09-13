@@ -250,17 +250,14 @@ const displayOptions = hoistCmpFactory(
             model: {side: 'right', defaultSize: 220, resizable: false},
             items: [
                 switchInput({
-                    model,
                     bind: 'inline',
                     label: 'Inline labels'
                 }),
                 switchInput({
-                    model,
                     bind: 'minimal',
                     label: 'Minimal validation display'
                 }),
                 switchInput({
-                    model,
                     bind: 'commitOnChange',
                     label: 'Commit on change'
                 }),

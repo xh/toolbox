@@ -5,7 +5,7 @@ import {ordersPanel} from './OrdersPanel';
 import {chartsPanel} from './ChartsPanel';
 import {DetailPanelModel} from './DetailPanelModel';
 
-export const detailPanel= hoistCmpFactory({
+export const detailPanel = hoistCmpFactory({
 
     model: uses(DetailPanelModel),
                           
