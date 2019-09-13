@@ -49,8 +49,8 @@ export class PanelSizingPanel extends Component {
             item: panel({
                 title: 'Panels › Panel Sizing',
                 icon: Icon.window(),
-                height: 600,
-                width: 800,
+                height: 'calc(100% - 160px)',
+                width: '80%',
                 bbar: toolbar(
                     filler(),
                     switchInput({
