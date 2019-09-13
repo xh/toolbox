@@ -42,7 +42,7 @@ export const chartsPanel = hoistCmpFactory({
 
 const chartPanel = hoistCmpFactory(
     ({model}) =>  panel({
-        item: chart({model: model.chartModel}),
+        item: chart(),
         mask: model.loadModel,
         flex: 1
     })

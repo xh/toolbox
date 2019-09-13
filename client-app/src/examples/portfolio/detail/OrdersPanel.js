@@ -19,13 +19,13 @@ export const ordersPanel = hoistCmpFactory({
         return panel({
             title: `Orders: ${formatPositionId(positionId)}`,
             icon: Icon.edit(),
-            item: grid({model: gridModel}),
+            item: grid(),
             mask: positionId == null,
             bbar: [
                 filler(),
                 gridCountLabel({gridModel, unit: 'orders'}),
                 storeFilterField({gridModel}),
-                colChooserButton({gridModel})
+                colChooserButton()
             ]
         });
     }
