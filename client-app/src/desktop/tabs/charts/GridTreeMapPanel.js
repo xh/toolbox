@@ -19,7 +19,7 @@ export const GridTreeMapPanel = hoistCmp({
                     model: {defaultSize: 480, side: 'left'},
                     item: grid()
                 }),
-                treeMap({model: model.treeMapModel})
+                treeMap()
             )
         });
     }

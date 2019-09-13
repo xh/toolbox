@@ -17,7 +17,7 @@ export const SimpleTreeMapPanel = hoistCmp({
                 mask: model.loadModel,
                 width: 800,
                 height: 600,
-                item: treeMap({model: model.treeMapModel})
+                item: treeMap()
             })
         );
     }

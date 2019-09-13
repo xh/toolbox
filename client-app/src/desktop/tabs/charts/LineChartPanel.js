@@ -21,7 +21,7 @@ export const LineChartPanel = hoistCmp({
                 height: 600,
                 item: vframe({
                     className: 'toolbox-example-container',
-                    item: chart({model: model.chartModel})
+                    item: chart()
                 }),
                 tbar: [
                     box('Symbol: '),
