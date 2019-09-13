@@ -28,6 +28,7 @@ export const newsPanel = hoistCmpFactory({
             mask: model.loadModel,
             bbar: [
                 storeFilterField({
+                    store: null,
                     onFilterChange: (f) => model.setTextFilter(f),
                     includeFields: model.SEARCH_FIELDS,
                     placeholder: 'Filter by title...'

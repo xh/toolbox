@@ -1,8 +1,12 @@
-import {hoistCmpFactory} from '@xh/hoist/core';
+import {hoistCmpFactory, uses} from '@xh/hoist/core';
 import {div, table, tbody, tr, th, td} from '@xh/hoist/cmp/layout';
 
-export const detailsPanel = hoistCmpFactory(
-    ({model}) => {
+import {DetailsPanelModel} from './DetailsPanelModel';
+
+export const detailsPanel = hoistCmpFactory({
+    model: uses(DetailsPanelModel),
+
+    render({model}) {
         const {currentRecord} = model;
 
         if (!currentRecord) return null;
@@ -21,4 +25,4 @@ export const detailsPanel = hoistCmpFactory(
             )
         });
     }
-);
+});

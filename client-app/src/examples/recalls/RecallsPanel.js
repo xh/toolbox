@@ -14,7 +14,7 @@ export const recallsPanel = hoistCmpFactory({
     model: creates(RecallsPanelModel),
 
     render({model}) {
-        const {gridModel, detailsPanelModel} = model,
+        const {detailsPanelModel} = model,
             {currentRecord} = detailsPanelModel,
             fdaWebsite = 'https://open.fda.gov/apis/drug/enforcement/',
             aboutBlurb = 'This applet uses the openFDA drug enforcement reports API, ' +
@@ -57,7 +57,7 @@ export const recallsPanel = hoistCmpFactory({
                         ]
                     }),
                     filler(),
-                    gridCountLabel({gridModel, unit: 'latest recall'}),
+                    gridCountLabel({unit: 'latest recall'}),
                     toolbarSep(),
                     button({
                         title: 'About the API',
@@ -68,13 +68,13 @@ export const recallsPanel = hoistCmpFactory({
                         })
                     }),
                     toolbarSep(),
-                    colChooserButton({gridModel})
+                    colChooserButton()
                 ]
             }),
             panel({
                 title: currentRecord ? currentRecord.brandName : 'Select a drug to see its details',
                 icon: Icon.detail(),
-                item: detailsPanel({model: detailsPanelModel}),
+                item: detailsPanel(),
                 className: 'toolbox-recalls-detail-panel',
                 compactHeader: true,
                 model: {

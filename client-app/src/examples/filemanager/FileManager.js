@@ -22,9 +22,8 @@ export const fileManager = hoistCmpFactory({
             width: 700,
             height: 500,
             items: [
-                grid({model: model.gridModel}),
+                grid(),
                 fileChooser({
-                    model: model.chooserModel,
                     accept: acceptedFileTypes,
                     showFileGrid: false,
                     targetText: fragment(
