@@ -14,7 +14,7 @@ export const ordersPanel = hoistCmpFactory({
     model: uses(OrdersPanelModel),
 
     render({model}) {
-        const {gridModel, positionId} = model;
+        const {positionId} = model;
 
         return panel({
             title: `Orders: ${formatPositionId(positionId)}`,
@@ -24,7 +24,7 @@ export const ordersPanel = hoistCmpFactory({
             bbar: [
                 filler(),
                 gridCountLabel({unit: 'orders'}),
-                storeFilterField({gridModel}),
+                storeFilterField(),
                 colChooserButton()
             ]
         });
