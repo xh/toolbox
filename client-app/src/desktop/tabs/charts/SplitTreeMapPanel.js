@@ -12,17 +12,15 @@ export const SplitTreeMapPanel = hoistCmp({
     model: creates(SplitTreeMapPanelModel),
 
     render({model}) {
-        const {loadModel, dimChooserModel, gridModel, splitTreeMapModel} = model;
-
         return panel({
-            mask: loadModel,
-            bbar: [dimensionChooser({model: dimChooserModel})],
+            mask: model.loadModel,
+            bbar: [dimensionChooser()],
             items: hframe(
                 panel({
                     model: {defaultSize: 480, side: 'left'},
-                    item: grid({model: gridModel})
+                    item: grid()
                 }),
-                splitTreeMap({model: splitTreeMapModel})
+                splitTreeMap()
             )
         });
     }

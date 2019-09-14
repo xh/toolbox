@@ -74,7 +74,7 @@ export const DockContainerPanel = hoistCmp({
                         })
                     ]
                 }),
-                dockContainer({model: model.dockContainerModel})
+                dockContainer()
             ]
         });
     }
