@@ -1,11 +1,11 @@
-import {hoistCmpFactory, uses} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {ChartsPanelModel} from './ChartsPanelModel';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
 
-export const chartsPanel = hoistCmpFactory({
+export const chartsPanel = hoistCmp.factory({
     model: uses(ChartsPanelModel),
 
     render({model}) {
@@ -40,7 +40,7 @@ export const chartsPanel = hoistCmpFactory({
 });
 
 
-const chartPanel = hoistCmpFactory(
+const chartPanel = hoistCmp.factory(
     ({model}) =>  panel({
         item: chart(),
         mask: model.loadModel,

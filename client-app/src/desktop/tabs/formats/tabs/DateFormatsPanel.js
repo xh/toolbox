@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, creates, hoistCmpFactory} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
@@ -56,7 +56,7 @@ export const DateFormatsPanel = hoistCmp({
     }
 });
 
-export const paramsPanel = hoistCmpFactory(
+export const paramsPanel = hoistCmp.factory(
     ({model}) => panel({
         title: 'Function + Options',
         compactHeader: true,

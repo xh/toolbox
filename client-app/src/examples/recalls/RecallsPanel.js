@@ -1,4 +1,4 @@
-import {hoistCmpFactory, creates, XH} from '@xh/hoist/core';
+import {hoistCmp, creates, XH} from '@xh/hoist/core';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {a, filler, p, span, vframe} from '@xh/hoist/cmp/layout';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
@@ -10,7 +10,7 @@ import {detailsPanel} from './DetailsPanel';
 import './RecallsPanel.scss';
 import {RecallsPanelModel} from './RecallsPanelModel';
 
-export const recallsPanel = hoistCmpFactory({
+export const recallsPanel = hoistCmp.factory({
     model: creates(RecallsPanelModel),
 
     render({model}) {

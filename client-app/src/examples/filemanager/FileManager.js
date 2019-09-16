@@ -1,6 +1,6 @@
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import React from 'react';
-import {hoistCmpFactory, creates} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -10,7 +10,7 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {FileManagerModel} from './FileManagerModel';
 import './FileManager.scss';
 
-export const fileManager = hoistCmpFactory({
+export const fileManager = hoistCmp.factory({
     model: creates(FileManagerModel),
 
     render({model}) {

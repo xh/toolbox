@@ -1,9 +1,9 @@
-import {hoistCmpFactory} from '@xh/hoist/core/index';
+import {hoistCmp} from '@xh/hoist/core/index';
 import {hbox, box} from '@xh/hoist/cmp/layout/index';
 import stockPhoto from '../../core/img/stock-news.png';
 import React from 'react';
 
-export const newsPanelItem = hoistCmpFactory({
+export const newsPanelItem = hoistCmp.factory({
     model: null,
 
     render({record}) {

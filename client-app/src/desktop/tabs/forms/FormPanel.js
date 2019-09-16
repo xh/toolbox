@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, creates, hoistCmpFactory} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -49,7 +49,7 @@ export const FormPanel = hoistCmp({
     }
 });
 
-const formContent = hoistCmpFactory(
+const formContent = hoistCmp.factory(
     ({model}) => panel({
         flex: 1,
         item: form({
@@ -95,11 +95,11 @@ const formContent = hoistCmpFactory(
     })
 );
 
-const lastName = hoistCmpFactory(
+const lastName = hoistCmp.factory(
     () => formField({field: 'lastName', item: textInput()})
 );
 
-const email = hoistCmpFactory(
+const email = hoistCmp.factory(
     () => formField({
         field: 'email',
         item: textInput({
@@ -110,7 +110,7 @@ const email = hoistCmpFactory(
     })
 );
 
-const region = hoistCmpFactory(
+const region = hoistCmp.factory(
     () => formField({
         field: 'region',
         item: select({
@@ -119,7 +119,7 @@ const region = hoistCmpFactory(
     })
 );
 
-const tags = hoistCmpFactory(
+const tags = hoistCmp.factory(
     () => formField({
         field: 'tags',
         item: select({
@@ -129,7 +129,7 @@ const tags = hoistCmpFactory(
     })
 );
 
-const startAndEndDate = hoistCmpFactory(
+const startAndEndDate = hoistCmp.factory(
     () => hbox(
         formField({
             field: 'startDate',
@@ -151,7 +151,7 @@ const startAndEndDate = hoistCmpFactory(
     )
 );
 
-const reasonForLeaving = hoistCmpFactory(
+const reasonForLeaving = hoistCmp.factory(
     () => formField({
         field: 'reasonForLeaving',
         item: select({
@@ -160,7 +160,7 @@ const reasonForLeaving = hoistCmpFactory(
     })
 );
 
-const managerAndYearsExperience = hoistCmpFactory(
+const managerAndYearsExperience = hoistCmp.factory(
     ({model}) => hbox({
         items: [
             formField({
@@ -177,14 +177,14 @@ const managerAndYearsExperience = hoistCmpFactory(
     })
 );
 
-const notes = hoistCmpFactory(
+const notes = hoistCmp.factory(
     () => formField({
         field: 'notes',
         item: textArea({height: 100})
     })
 );
 
-const references = hoistCmpFactory(
+const references = hoistCmp.factory(
     ({model}) => {
         const {references} = model.formModel.fields,
             rows = references.value.map(
@@ -239,7 +239,7 @@ const references = hoistCmpFactory(
     }
 );
 
-const displayOptions = hoistCmpFactory(
+const displayOptions = hoistCmp.factory(
     ({model}) => {
         const {formModel} = model;
         return panel({
@@ -276,7 +276,7 @@ const displayOptions = hoistCmpFactory(
     }
 );
 
-const bbar = hoistCmpFactory(
+const bbar = hoistCmp.factory(
     ({model}) => toolbar(
         button({
             text: 'Reset',

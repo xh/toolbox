@@ -1,4 +1,4 @@
-import {hoistCmpFactory, uses} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
@@ -9,7 +9,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {GridPanelModel} from './GridPanelModel';
 
-export const gridPanel = hoistCmpFactory({
+export const gridPanel = hoistCmp.factory({
     model: uses(GridPanelModel),
 
     render({model}) {

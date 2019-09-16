@@ -1,9 +1,9 @@
-import {hoistCmpFactory} from '@xh/hoist/core/index';
+import {hoistCmp} from '@xh/hoist/core/index';
 import {vbox, box} from '@xh/hoist/cmp/layout/index';
 import {Icon} from '@xh/hoist/icon/index';
 import {fmtNumber} from '@xh/hoist/format';
 
-export const dataViewItem = hoistCmpFactory({
+export const dataViewItem = hoistCmp.factory({
     model: null,
 
     render(props) {

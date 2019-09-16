@@ -1,10 +1,10 @@
 import {cloneElement} from 'react';
-import {hoistCmpFactory} from '@xh/hoist/core/index';
+import {hoistCmp} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {tbody, table, tr, td} from '@xh/hoist/cmp/layout';
 import './Styles.scss';
 
-export const resultsPanel = hoistCmpFactory(
+export const resultsPanel = hoistCmp.factory(
     ({model, tryItInput}) => {
         const tryItElem = cloneElement(tryItInput, {bind: 'tryItData'});
 
