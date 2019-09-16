@@ -14,9 +14,8 @@ import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-import {Ref} from '@xh/hoist/utils/react';
 import PT from 'prop-types';
-import {Component} from 'react';
+import {Component, createRef} from 'react';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
 
@@ -105,7 +104,7 @@ class SampleGrid extends Component {
                 ],
                 omit: props.omitGridTools
             }),
-            ref: model.panelRef.ref,
+            ref: model.panelRef,
             mask: props.externalLoadModel ? false : loadModel,
             className: this.getClassName(),
             ...this.getLayoutProps()
@@ -121,7 +120,7 @@ export const sampleGrid = elemFactory(SampleGrid);
 class Model {
     @observable groupBy = false;
 
-    panelRef = new Ref();
+    panelRef = createRef();
 
     constructor({loadModel}) {
         if (loadModel) {
@@ -295,7 +294,7 @@ class Model {
             ),
             icon: Icon.info(),
             intent: 'primary',
-            containerRef: this.panelRef.value
+            containerRef: this.panelRef.current
         });
     }
 
@@ -304,7 +303,7 @@ class Model {
             message: `You asked to terminate ${rec.company}. Sorry, ${rec.company}!`,
             icon: Icon.skull(),
             intent: 'danger',
-            containerRef: this.panelRef.value
+            containerRef: this.panelRef.current
         });
     }
 

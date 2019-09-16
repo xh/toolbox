@@ -89,6 +89,5 @@ export class ToolbarPage extends Component {
             ]
         });
     }
-
 }
 export const toolbarPage = elemFactory(ToolbarPage);

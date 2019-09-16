@@ -1,40 +1,16 @@
-import React, {Component} from 'react';
-import {HoistComponent, XH} from '@xh/hoist/core';
+import React from 'react';
+import {hoistCmp, XH, creates, HoistModel, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar/index';
-import {button} from '@xh/hoist/desktop/cmp/button/index';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {wrapper} from '../../common/Wrapper';
 
-@HoistComponent
-export class PanelSizingPanel extends Component {
+export const PanelSizingPanel = hoistCmp({
+    model: creates(() => new Model()),
 
-    leftPanelModel = new PanelModel({
-        defaultSize: 150,
-        side: 'left'
-    });
-
-    rightPanelModel = new PanelModel({
-        defaultSize: 150,
-        side: 'right'
-    });
-
-    bottomPanelModel = new PanelModel({
-        defaultSize: 130,
-        side: 'bottom'
-    });
-
-    get allExpanded() {
-        return !this.leftPanelModel.collapsed && !this.rightPanelModel.collapsed && !this.bottomPanelModel.collapsed;
-    }
-
-    get allCollapsed() {
-        return this.leftPanelModel.collapsed && this.rightPanelModel.collapsed && this.bottomPanelModel.collapsed;
-    }
-
-    render() {
+    render({model}) {
         return wrapper({
             description: (
                 <div>
@@ -49,18 +25,9 @@ export class PanelSizingPanel extends Component {
                 </div>
             ),
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/panel/Panel.js',
-                    notes: 'Hoist component.'
-                },
-                {
-                    url: '$HR/desktop/cmp/panel/PanelModel.js',
-                    notes: 'Hoist component model (for resize / collapse).'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/panel/Panel.js', notes: 'Hoist component.'},
+                {url: '$HR/desktop/cmp/panel/PanelModel.js', notes: 'Hoist component model (for resize / collapse).'}
             ],
             item: panel({
                 title: 'Panels › Panel Sizing',
@@ -75,7 +42,7 @@ export class PanelSizingPanel extends Component {
                             panel({
                                 title: 'Left Panel',
                                 icon: Icon.arrowToLeft(),
-                                model: this.leftPanelModel,
+                                model: model.leftPanelModel,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
@@ -84,29 +51,29 @@ export class PanelSizingPanel extends Component {
                             }),
                             panel({
                                 item: box({
-                                    items: this.loremIpsum,
+                                    items: loremIpsum,
                                     padding: '0 6 6 6',
                                     display: 'block',
                                     overflowY: 'auto'
                                 }),
-                                tbar: toolbar(
+                                tbar: [
                                     filler(),
                                     button({
                                         text: 'Expand All',
-                                        disabled: this.allExpanded,
-                                        onClick: () => this.setCollapsedAll(false)
+                                        disabled: model.allExpanded,
+                                        onClick: () => model.setCollapsedAll(false)
                                     }),
                                     button({
                                         text: 'Collapse All',
-                                        disabled: this.allCollapsed,
-                                        onClick: () => this.setCollapsedAll(true)
+                                        disabled: model.allCollapsed,
+                                        onClick: () => model.setCollapsedAll(true)
                                     })
-                                )
+                                ]
                             }),
                             panel({
                                 title: 'Right Panel',
                                 icon: Icon.arrowToRight(),
-                                model: this.rightPanelModel,
+                                model: model.rightPanelModel,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
@@ -118,7 +85,7 @@ export class PanelSizingPanel extends Component {
                     panel({
                         title: 'Bottom Panel',
                         icon: Icon.arrowToBottom(),
-                        model: this.bottomPanelModel,
+                        model: model.bottomPanelModel,
                         compactHeader: true,
                         item: box({
                             padding: 10,
@@ -141,22 +108,52 @@ export class PanelSizingPanel extends Component {
             })
         });
     }
+});
+
+const loremIpsum = [
+    h3({
+        className: 'xh-text-color-accent',
+        item: 'Some old-fashioned text content'
+    }),
+    p('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta velit varius augue fermentum, vulputate tempus magna tempus.)'),
+    p('Fusce consectetur malesuada vehicula. Aliquam commodo magna at porta sollicitudin. Sed laoreet vehicula leo vel aliquam. Aliquam auctor fringilla ex, nec iaculis felis tincidunt ac. Pellentesque blandit ipsum odio, vel lacinia arcu blandit non.'),
+    p('Vestibulum non libero sem. Mauris a ipsum elit. Donec vestibulum sodales dapibus. Mauris posuere facilisis mollis. Etiam nec mauris nunc. Praesent mauris libero, blandit gravida ullamcorper vel, condimentum et velit. Suspendisse fermentum odio ac dui aliquet semper. Duis arcu felis, accumsan in leo sit amet, vehicula imperdiet tellus. Nulla ut condimentum quam. Donec eget mauris vitae libero blandit facilisis efficitur id justo.'),
+    p('Nam et tincidunt risus, at faucibus enim. Aliquam tortor est, finibus ac metus id, eleifend auctor quam. Aenean purus odio, tempus interdum velit et, faucibus placerat nisi. Etiam eget nunc vehicula, eleifend justo quis, varius leo. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris bibendum mollis tempor.'),
+    p('Fusce ac sollicitudin nunc, at tempus sem. Fusce dapibus lorem malesuada vestibulum luctus. Etiam semper est in ligula sagittis facilisis. Phasellus accumsan placerat ex, eu fringilla mauris semper nec.')
+];
+
+
+@HoistModel
+class Model {
+    @managed
+    leftPanelModel = new PanelModel({
+        defaultSize: 150,
+        side: 'left'
+    });
+
+    @managed
+    rightPanelModel = new PanelModel({
+        defaultSize: 150,
+        side: 'right'
+    });
+
+    @managed
+    bottomPanelModel = new PanelModel({
+        defaultSize: 130,
+        side: 'bottom'
+    });
+
+    get allExpanded() {
+        return !this.leftPanelModel.collapsed && !this.rightPanelModel.collapsed && !this.bottomPanelModel.collapsed;
+    }
+
+    get allCollapsed() {
+        return this.leftPanelModel.collapsed && this.rightPanelModel.collapsed && this.bottomPanelModel.collapsed;
+    }
 
     setCollapsedAll(collapsed) {
         this.leftPanelModel.setCollapsed(collapsed);
         this.rightPanelModel.setCollapsed(collapsed);
         this.bottomPanelModel.setCollapsed(collapsed);
     }
-
-    loremIpsum = [
-        h3({
-            className: 'xh-text-color-accent',
-            item: 'Some old-fashioned text content'
-        }),
-        p('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta velit varius augue fermentum, vulputate tempus magna tempus.)'),
-        p('Fusce consectetur malesuada vehicula. Aliquam commodo magna at porta sollicitudin. Sed laoreet vehicula leo vel aliquam. Aliquam auctor fringilla ex, nec iaculis felis tincidunt ac. Pellentesque blandit ipsum odio, vel lacinia arcu blandit non.'),
-        p('Vestibulum non libero sem. Mauris a ipsum elit. Donec vestibulum sodales dapibus. Mauris posuere facilisis mollis. Etiam nec mauris nunc. Praesent mauris libero, blandit gravida ullamcorper vel, condimentum et velit. Suspendisse fermentum odio ac dui aliquet semper. Duis arcu felis, accumsan in leo sit amet, vehicula imperdiet tellus. Nulla ut condimentum quam. Donec eget mauris vitae libero blandit facilisis efficitur id justo.'),
-        p('Nam et tincidunt risus, at faucibus enim. Aliquam tortor est, finibus ac metus id, eleifend auctor quam. Aenean purus odio, tempus interdum velit et, faucibus placerat nisi. Etiam eget nunc vehicula, eleifend justo quis, varius leo. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris bibendum mollis tempor.'),
-        p('Fusce ac sollicitudin nunc, at tempus sem. Fusce dapibus lorem malesuada vestibulum luctus. Etiam semper est in ligula sagittis facilisis. Phasellus accumsan placerat ex, eu fringilla mauris semper nec.')
-    ]
 }

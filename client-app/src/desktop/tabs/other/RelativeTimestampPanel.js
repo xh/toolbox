@@ -1,25 +1,17 @@
-import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, creates} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
 
-@HoistComponent
-export class RelativeTimestampPanel extends Component {
+export const RelativeTimestampPanel = hoistCmp({
+    model: creates(() => new Model()),
 
-    @bindable
-    timestamp = new Date();
-
-    @bindable
-    useShortFmt = false;
-
-    render() {
+    render({model}) {
         return wrapper({
             description: `
                 A relative timestamp will display a given timestamp in terms of how far long ago / 
@@ -28,14 +20,8 @@ export class RelativeTimestampPanel extends Component {
                 in a friendly and readable manner. 
             `,
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/other/RelativeTimestampPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/cmp/relativetimestamp/RelativeTimestamp.js',
-                    notes: 'Hoist component.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/other/RelativeTimestampPanel.js', notes: 'This example.'},
+                {url: '$HR/cmp/relativetimestamp/RelativeTimestamp.js', notes: 'Hoist component.'}
             ],
             item: panel({
                 title: 'Other › Relative Timestamp',
@@ -45,66 +31,70 @@ export class RelativeTimestampPanel extends Component {
                     box({
                         margin: 10,
                         item: relativeTimestamp({
-                            timestamp: this.timestamp,
-                            options: {allowFuture: true, prefix: 'Latest timestamp:', short: this.useShortFmt},
+                            timestamp: model.timestamp,
+                            options: {allowFuture: true, prefix: 'Latest timestamp:', short: model.useShortFmt},
                             marginLeft: 10
                         })
                     }),
                     box({
                         margin: 10,
                         style: {opacity: 0.5},
-                        item: new Date(this.timestamp).toString()
+                        item: new Date(model.timestamp).toString()
                     })
                 ],
-                bbar: toolbar(
+                bbar: [
                     filler(),
-                    buttonGroup({
-                        items: [
-                            button({
-                                text: 'Set to past',
-                                icon: Icon.angleLeft(),
-                                minimal: false,
-                                width: 130,
-                                onClick: this.setToPast
-                            }),
-                            button({
-                                text: 'Set to now',
-                                intent: 'primary',
-                                icon: Icon.clock(),
-                                minimal: false,
-                                width: 130,
-                                onClick: this.setToNow
-                            }),
-                            button({
-                                text: 'Set to future',
-                                rightIcon: Icon.angleRight(),
-                                minimal: false,
-                                width: 130,
-                                onClick: this.setToFuture
-                            })
-                        ]
-                    }),
+                    buttonGroup(
+                        button({
+                            text: 'Set to past',
+                            icon: Icon.angleLeft(),
+                            minimal: false,
+                            width: 130,
+                            onClick: () => model.setToPast()
+                        }),
+                        button({
+                            text: 'Set to now',
+                            intent: 'primary',
+                            icon: Icon.clock(),
+                            minimal: false,
+                            width: 130,
+                            onClick: () => model.setToNow()
+                        }),
+                        button({
+                            text: 'Set to future',
+                            rightIcon: Icon.angleRight(),
+                            minimal: false,
+                            width: 130,
+                            onClick: () => model.setToFuture()
+                        })
+                    ),
                     filler(),
                     switchInput({
                         label: 'Short',
                         labelAlign: 'left',
-                        model: this,
                         bind: 'useShortFmt'
-                    }),
-                )
+                    })
+                ]
             })
         });
     }
+});
 
-    setToNow = () => {
+
+@HoistModel
+class Model {
+    @bindable timestamp = new Date();
+    @bindable useShortFmt = false;
+
+    setToNow() {
         this.setTimestamp(Date.now());
     }
 
-    setToPast = () => {
+    setToPast() {
         this.setTimestamp(Date.now() - this.randShift());
     }
 
-    setToFuture = () => {
+    setToFuture() {
         this.setTimestamp(Date.now() + this.randShift());
     }
 
