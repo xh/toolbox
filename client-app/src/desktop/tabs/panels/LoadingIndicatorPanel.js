@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {hoistCmp, HoistModel, creates, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {span} from '@xh/hoist/cmp/layout';
 import {numberInput, select, textInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {SECONDS} from '@xh/hoist/utils/datetime';
@@ -14,18 +14,10 @@ import {loadingIndicator} from '@xh/hoist/desktop/cmp/loadingindicator';
 
 import {sampleGrid, wrapper} from '../../common';
 
+export const LoadingIndicatorPanel = hoistCmp({
+    model: creates(() => new Model()),
 
-@HoistComponent
-export class LoadingIndicatorPanel extends Component {
-
-    @bindable seconds = 6;
-    @bindable message = '';
-    @bindable corner = 'br';
-    @bindable spinner = true;
-
-    loadingIndicatorModel = new PendingTaskModel();
-
-    render() {
+    render({model}) {
         return wrapper({
             description: [
                 <p>
@@ -41,84 +33,79 @@ export class LoadingIndicatorPanel extends Component {
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/panels/LoadingIndicatorPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/loadingindicator/LoadingIndicator.js',
-                    notes: 'Hoist component.'
-                },
-                {
-                    url: '$HR/utils/async/PendingTaskModel.js',
-                    notes: 'Hoist model for tracking async tasks - can be linked to indicators.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/panels/LoadingIndicatorPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/loadingindicator/LoadingIndicator.js', notes: 'Hoist component.'},
+                {url: '$HR/utils/async/PendingTaskModel.js', notes: 'Hoist model for tracking async tasks - can be linked to indicators.'}
             ],
             item: panel({
                 title: 'Panels › Loading Indicator',
                 icon: Icon.spinner(),
                 width: 800,
                 height: 400,
-                item: sampleGrid({omitGridTools: true, externalLoadModel: this.loadingIndicatorModel}),
-                bbar: toolbar({
-                    items: [
-                        span('Show for'),
-                        numberInput({
-                            model: this,
-                            bind: 'seconds',
-                            width: 40,
-                            min: 0,
-                            max: 10
-                        }),
-                        span('secs with'),
-                        textInput({
-                            model: this,
-                            bind: 'message',
-                            width: 150,
-                            placeholder: 'optional text'
-                        }),
-                        toolbarSep(),
-                        select({
-                            model: this,
-                            bind: 'corner',
-                            label: 'Corner:',
-                            labelAlign: 'left',
-                            enableFilter: false,
-                            options: ['tl', 'tr', 'bl', 'br'],
-                            width: 70
-                        }),
-                        toolbarSep(),
-                        switchInput({
-                            model: this,
-                            bind: 'spinner',
-                            label: 'Spinner:',
-                            labelAlign: 'left'
-                        }),
-                        toolbarSep(),
-                        button({
-                            text: 'Show Indicator',
-                            intent: 'success',
-                            onClick: this.showLoadingIndicator
-                        })
-                    ]
-                }),
+                item: sampleGrid({omitGridTools: true, externalLoadModel: model.loadingIndicatorModel}),
+                bbar: [
+                    span('Show for'),
+                    numberInput({
+                        bind: 'seconds',
+                        width: 40,
+                        min: 0,
+                        max: 10
+                    }),
+                    span('secs with'),
+                    textInput({
+                        bind: 'message',
+                        width: 150,
+                        placeholder: 'optional text'
+                    }),
+                    toolbarSep(),
+                    select({
+                        bind: 'corner',
+                        label: 'Corner:',
+                        labelAlign: 'left',
+                        enableFilter: false,
+                        options: ['tl', 'tr', 'bl', 'br'],
+                        width: 70
+                    }),
+                    toolbarSep(),
+                    switchInput({
+                        bind: 'spinner',
+                        label: 'Spinner:',
+                        labelAlign: 'left'
+                    }),
+                    toolbarSep(),
+                    button({
+                        text: 'Show Indicator',
+                        intent: 'success',
+                        onClick: () => model.showLoadingIndicator()
+                    })
+                ],
                 loadingIndicator: loadingIndicator({
-                    spinner: this.spinner,
-                    corner: this.corner,
-                    model: this.loadingIndicatorModel
+                    spinner: model.spinner,
+                    corner: model.corner,
+                    model: model.loadingIndicatorModel
                 })
             })
         });
     }
+});
 
-    showLoadingIndicator = () => {
+
+@HoistModel
+class Model {
+    @bindable seconds = 6;
+    @bindable message = '';
+    @bindable corner = 'br';
+    @bindable spinner = true;
+
+    @managed
+    loadingIndicatorModel = new PendingTaskModel();
+
+    showLoadingIndicator() {
         this.showLoadingIndicatorSequenceAsync().linkTo(this.loadingIndicatorModel);
-    };
+    }
 
-    @action
     async showLoadingIndicatorSequenceAsync() {
-        const {loadingIndicatorModel, message, seconds} = this;
-        loadingIndicatorModel.setMessage(message);
-        await wait(seconds * SECONDS);
+        this.loadingIndicatorModel.setMessage(this.message);
+        await wait(this.seconds * SECONDS);
     }
 }

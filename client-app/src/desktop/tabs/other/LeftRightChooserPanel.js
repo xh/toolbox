@@ -1,27 +1,17 @@
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {hoistCmp, creates, HoistModel, managed} from '@xh/hoist/core';
 import {wrapper} from '../../common/Wrapper';
-import {observable, runInAction} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@xh/hoist/desktop/cmp/leftrightchooser';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import data from './impl/LeftRightChooserData';
 
-@HoistComponent
-export class LeftRightChooserPanel extends Component {
+export const LeftRightChooserPanel = hoistCmp({
+    model: creates(() => new Model()),
 
-    model = new LeftRightChooserModel({
-        data,
-        ungroupedName: 'Others',
-        leftEmptyText: 'No more fruits to choose!',
-        rightGroupingEnabled: false
-    });
-
-    @observable anyMatch = false;
-
-    render() {
+    render({model}) {
         return wrapper({
             description: [
                 <p>
@@ -36,22 +26,10 @@ export class LeftRightChooserPanel extends Component {
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/other/LeftRightChooserPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooser.js',
-                    notes: 'Hoist component.'
-                },
-                {
-                    url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooserModel.js',
-                    notes: 'Hoist component model.'
-                },
-                {
-                    url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooserFilter.js',
-                    notes: 'Optional filter component.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/other/LeftRightChooserPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooser.js', notes: 'Hoist component.'},
+                {url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooserModel.js', notes: 'Hoist component model.'},
+                {url: '$HR/desktop/cmp/leftrightchooser/LeftRightChooserFilter.js', notes: 'Optional filter component.'}
             ],
             item: panel({
                 title: 'Other › LeftRightChooser',
@@ -59,25 +37,36 @@ export class LeftRightChooserPanel extends Component {
                 width: 700,
                 height: 400,
                 item: leftRightChooser({
-                    model: this.model,
+                    model: model.leftRightChooserModel,
                     flex: 1
                 }),
-                bbar: toolbar(
+                bbar: [
                     leftRightChooserFilter({
                         fields: ['text'],
-                        model: this.model,
-                        anyMatch: this.anyMatch
+                        model: model.leftRightChooserModel,
+                        anyMatch: model.anyMatch
                     }),
                     switchInput({
-                        value: this.anyMatch,
-                        onCommit: (val) => {
-                            runInAction(() => this.anyMatch = val);
-                        },
+                        bind: 'anyMatch',
                         label: 'match anywhere in the string'
                     })
-                )
+                ]
             })
         });
     }
+});
 
+
+@HoistModel
+class Model {
+
+    @managed
+    leftRightChooserModel = new LeftRightChooserModel({
+        data,
+        ungroupedName: 'Others',
+        leftEmptyText: 'No more fruits to choose!',
+        rightGroupingEnabled: false
+    });
+
+    @bindable anyMatch = false;
 }

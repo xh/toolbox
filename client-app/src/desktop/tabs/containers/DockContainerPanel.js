@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {XH, HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {XH, HoistModel, hoistCmp, creates, managed} from '@xh/hoist/core';
 import {box, br, hbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -7,20 +7,10 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
 import {wrapper, sampleGrid} from '../../common';
 
-@HoistComponent
-export class DockContainerPanel extends Component {
+export const DockContainerPanel = hoistCmp({
+    model: creates(() => new Model()),
 
-    dockContainerModel = new DockContainerModel();
-
-    render() {
-        const {dockContainerModel} = this,
-            btnCfg = {
-                icon: Icon.add(),
-                minimal: false,
-                flex: 1,
-                margin: 5
-            };
-
+    render({model}) {
         return wrapper({
             description: [
                 <p>
@@ -42,22 +32,10 @@ export class DockContainerPanel extends Component {
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/containers/DockContainerPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/cmp/dock/DockContainer.js',
-                    notes: 'Hoist container component.'
-                },
-                {
-                    url: '$HR/cmp/dock/DockContainerModel.js',
-                    notes: 'Hoist container model - primary API and configuration point for views.'
-                },
-                {
-                    url: '$HR/cmp/dock/DockViewModel.js',
-                    notes: 'Hoist view model - created by DockContainerModel in its ctor from provided configs.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/containers/DockContainerPanel.js', notes: 'This example.'},
+                {url: '$HR/cmp/dock/DockContainer.js', notes: 'Hoist container component.'},
+                {url: '$HR/cmp/dock/DockContainerModel.js', notes: 'Hoist container model - primary API and configuration point for views.'},
+                {url: '$HR/cmp/dock/DockViewModel.js', notes: 'Hoist view model - created by DockContainerModel in its ctor from provided configs.'}
             ],
             items: [
                 hbox({
@@ -67,13 +45,13 @@ export class DockContainerPanel extends Component {
                         button({
                             ...btnCfg,
                             text: 'Simple View',
-                            onClick: () => this.addNewDockedView(true, true)
+                            onClick: () => model.addNewDockedView(true, true)
                         }),
                         button({
                             ...btnCfg,
                             text: 'Complex View',
                             onClick: () => {
-                                dockContainerModel.addView({
+                                model.addView({
                                     id: 'gridView',
                                     title: 'A complex docked component',
                                     icon: Icon.gridPanel(),
@@ -87,18 +65,38 @@ export class DockContainerPanel extends Component {
                         button({
                             ...btnCfg,
                             text: 'w/Dialog disabled',
-                            onClick: () => this.addNewDockedView(false, true)
+                            onClick: () => model.addNewDockedView(false, true)
                         }),
                         button({
                             ...btnCfg,
                             text: 'w/Close disabled',
-                            onClick: () => this.addNewDockedView(true, false)
+                            onClick: () => model.addNewDockedView(true, false)
                         })
                     ]
                 }),
-                dockContainer({model: dockContainerModel})
+                dockContainer()
             ]
         });
+    }
+});
+
+
+const btnCfg = {
+    icon: Icon.add(),
+    minimal: false,
+    flex: 1,
+    margin: 5
+};
+
+
+@HoistModel
+class Model {
+
+    @managed
+    dockContainerModel = new DockContainerModel();
+
+    addView(...args) {
+        this.dockContainerModel.addView(...args);
     }
 
     addNewDockedView(allowDialog, allowClose) {
@@ -112,7 +110,7 @@ export class DockContainerPanel extends Component {
             textItems.push('This view is configured so it cannot be closed.');
         }
 
-        this.dockContainerModel.addView({
+        this.addView({
             id: XH.genId(),
             icon: Icon.window(),
             title: 'A simple docked panel',

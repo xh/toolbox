@@ -1,15 +1,12 @@
-import React, {Component} from 'react';
-import {HoistComponent, elemFactory} from '@xh/hoist/core/index';
+import {cloneElement} from 'react';
+import {hoistCmp} from '@xh/hoist/core/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {tbody, table, tr, td} from '@xh/hoist/cmp/layout';
 import './Styles.scss';
 
-@HoistComponent
-export class ResultsPanel extends Component {
-
-    render() {
-        const {model, props} = this,
-            tryItInput = React.cloneElement(props.tryItInput, {model, bind: 'tryItData'});
+export const resultsPanel = hoistCmp.factory(
+    ({model, tryItInput}) => {
+        const tryItElem = cloneElement(tryItInput, {bind: 'tryItData'});
 
         return panel({
             title: 'Input › Output',
@@ -27,13 +24,12 @@ export class ResultsPanel extends Component {
                         });
                     }),
                     tr(
-                        td(tryItInput),
+                        td(tryItElem),
                         td(model.tryItResult)
                     )
                 )
             )
         });
     }
-}
-export const resultsPanel = elemFactory(ResultsPanel);
+);
 

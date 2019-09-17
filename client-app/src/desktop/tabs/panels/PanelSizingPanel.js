@@ -1,24 +1,20 @@
-import React, {Component} from 'react';
-import {HoistComponent, XH} from '@xh/hoist/core';
+import React from 'react';
+import {hoistCmp, XH, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
+import {box, hbox, filler} from '@xh/hoist/cmp/layout';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar/index';
-import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 
 import {wrapper} from '../../common/Wrapper';
 import { PanelSizingModel } from './PanelSizingModel';
 
-@HoistComponent
-export class PanelSizingPanel extends Component {
+export const PanelSizingPanel = hoistCmp({
+    model: creates(() => new PanelSizingModel()),
 
-    model = new PanelSizingModel();
-
-    render() {
-        const {model} = this;
-
+    render({model}) {
         return wrapper({
             description: (
                 <div>
@@ -33,18 +29,9 @@ export class PanelSizingPanel extends Component {
                 </div>
             ),
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/panel/Panel.js',
-                    notes: 'Hoist component.'
-                },
-                {
-                    url: '$HR/desktop/cmp/panel/PanelModel.js',
-                    notes: 'Hoist component model (for resize / collapse).'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/panel/Panel.js', notes: 'Hoist component.'},
+                {url: '$HR/desktop/cmp/panel/PanelModel.js', notes: 'Hoist component model (for resize / collapse).'}
             ],
             item: panel({
                 title: 'Panels › Panel Sizing',
@@ -118,12 +105,12 @@ export class PanelSizingPanel extends Component {
                             }),
                             panel({
                                 item: box({
-                                    items: this.loremIpsum,
+                                    items: model.loremIpsum,
                                     padding: '0 6 6 6',
                                     display: 'block',
                                     overflowY: 'auto'
                                 }),
-                                tbar: toolbar(
+                                tbar: [
                                     filler(),
                                     button({
                                         text: 'Expand All',
@@ -135,7 +122,7 @@ export class PanelSizingPanel extends Component {
                                         disabled: model.allCollapsed,
                                         onClick: () => model.setCollapsedAll(true)
                                     })
-                                )
+                                ]
                             }),
                             panel({
                                 title: 'Right Panel 2',
@@ -183,17 +170,4 @@ export class PanelSizingPanel extends Component {
             })
         });
     }
-
-
-    loremIpsum = [
-        h3({
-            className: 'xh-text-color-accent',
-            item: 'Some old-fashioned text content'
-        }),
-        p('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta velit varius augue fermentum, vulputate tempus magna tempus.)'),
-        p('Fusce consectetur malesuada vehicula. Aliquam commodo magna at porta sollicitudin. Sed laoreet vehicula leo vel aliquam. Aliquam auctor fringilla ex, nec iaculis felis tincidunt ac. Pellentesque blandit ipsum odio, vel lacinia arcu blandit non.'),
-        p('Vestibulum non libero sem. Mauris a ipsum elit. Donec vestibulum sodales dapibus. Mauris posuere facilisis mollis. Etiam nec mauris nunc. Praesent mauris libero, blandit gravida ullamcorper vel, condimentum et velit. Suspendisse fermentum odio ac dui aliquet semper. Duis arcu felis, accumsan in leo sit amet, vehicula imperdiet tellus. Nulla ut condimentum quam. Donec eget mauris vitae libero blandit facilisis efficitur id justo.'),
-        p('Nam et tincidunt risus, at faucibus enim. Aliquam tortor est, finibus ac metus id, eleifend auctor quam. Aenean purus odio, tempus interdum velit et, faucibus placerat nisi. Etiam eget nunc vehicula, eleifend justo quis, varius leo. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris bibendum mollis tempor.'),
-        p('Fusce ac sollicitudin nunc, at tempus sem. Fusce dapibus lorem malesuada vestibulum luctus. Etiam semper est in ligula sagittis facilisis. Phasellus accumsan placerat ex, eu fringilla mauris semper nec.')
-    ]
-}
+});
