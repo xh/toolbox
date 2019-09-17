@@ -40,7 +40,7 @@ export const PanelSizingPanel = hoistCmp({
             item: panel({
                 title: 'Panels › Panel Sizing',
                 icon: Icon.window(),
-                height: 'calc(100% - 160px)',
+                height: 'calc(100% - 270px)',
                 width: '80%',
                 bbar: toolbar(
                     filler(),
