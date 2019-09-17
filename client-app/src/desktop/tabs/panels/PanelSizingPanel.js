@@ -19,8 +19,12 @@ export const PanelSizingPanel = hoistCmp({
             description: (
                 <div>
                     <p>
-                        Panels support collapsing and drag-and-drop resizing via their <code>model</code> config,
+                        Panels support collapsing and drag-and-drop resizing via their <code>PanelModel</code> config,
                         optionally saving their sizing state in a per-user preference.
+                    </p>
+                    <p>
+                        By default, resizing is not animated.  The panel content does not redraw until the resize bar is dropped.
+                        Resize animation can be turned on by setting PanelModel config <code>animateResize</code> to true.
                     </p>
                     <p>
                         Note that the child panels below are also configured with
