@@ -5,10 +5,19 @@ import {p, h3} from '@xh/hoist/cmp/layout';
 
 
 @HoistModel
-export class PanelSizingModel {
+export class PanelResizingTestModel {
 
 
     @observable animateResize = false;
+
+    @observable.ref topPanel1Model;
+    @observable.ref topPanel2Model;
+    @observable.ref leftPanel1Model;
+    @observable.ref leftPanel2Model;
+    @observable.ref rightPanel1Model;
+    @observable.ref rightPanel2Model;
+    @observable.ref bottomPanel1Model;
+    @observable.ref bottomPanel2Model;
 
     resizablePanelNames = [
         'topPanel1Model',
@@ -21,63 +30,77 @@ export class PanelSizingModel {
         'bottomPanel2Model'
     ];
 
-    topPanel1Model = new PanelModel({
-        defaultSize: 100,
-        side: 'top'
-    });
+    constructor() {
+        this.setPanelModels();
+    }
 
-    topPanel2Model = new PanelModel({
-        defaultSize: 100,
-        side: 'top'
-    });
-
-    leftPanel1Model = new PanelModel({
-        // resizable: false,
-        defaultSize: 100,
-        side: 'left'
-    });
-
-    leftPanel2Model = new PanelModel({
-        defaultSize: 150,
-        side: 'left'
-    });
-
-    rightPanel1Model = new PanelModel({
-        defaultSize: 100,
-        side: 'right'
-    });
-
-    rightPanel2Model = new PanelModel({
-        defaultSize: 150,
-        side: 'right'
-    });
-
-    bottomPanel1Model = new PanelModel({
-        defaultSize: 100,
-        side: 'bottom'
-    });
-
-    bottomPanel2Model = new PanelModel({
-        defaultSize: 100,
-        side: 'bottom'
-    });
+    @action
+    setPanelModels() {
+        this.topPanel1Model = new PanelModel({
+            animateResize: this.animateResize,
+            defaultSize: 100,
+            side: 'top'
+        });
+    
+        this.topPanel2Model = new PanelModel({
+            animateResize: this.animateResize,
+            defaultSize: 100,
+            side: 'top'
+        });
+    
+        this.leftPanel1Model = new PanelModel({
+            animateResize: this.animateResize,
+            defaultSize: 100,
+            side: 'left'
+        });
+    
+        this.leftPanel2Model = new PanelModel({
+            animateResize: this.animateResize,
+            defaultSize: 150,
+            side: 'left'
+        });
+    
+        this.rightPanel1Model = new PanelModel({
+            animateResize: this.animateResize,
+            defaultSize: 100,
+            side: 'right'
+        });
+    
+        this.rightPanel2Model = new PanelModel({
+            animateResize: this.animateResize,
+            defaultSize: 150,
+            side: 'right'
+        });
+    
+        this.bottomPanel1Model = new PanelModel({
+            animateResize: this.animateResize,
+            defaultSize: 100,
+            side: 'bottom'
+        });
+    
+        this.bottomPanel2Model = new PanelModel({
+            animateResize: this.animateResize,
+            defaultSize: 100,
+            side: 'bottom'
+        });
+    }
 
     setCollapsedAll(collapsed) {
         this.resizablePanelNames.forEach(it => this[it].setCollapsed(collapsed));
     }
 
     @action
-    setAnimateResizeAll() {
+    toggleAnimateResizeOnAll() {
         this.animateResize = !this.animateResize;
-        this.resizablePanelNames.forEach(it => this[it].setAnimateResize(this.animateResize));
+        this.setPanelModels();
     }
 
     get allExpanded() {
-        return this.resizablePanelNames.every(it => !this[it].collapsed);
+        return this.resizablePanelNames.every(it => this[it] && !this[it].collapsed);
     }
 
     get allCollapsed() {
-        return this.resizablePanelNames.every(it => this[it].collapsed);
+        return this.resizablePanelNames.every(it => this[it] && this[it].collapsed);
     }
 
     loremIpsum = [

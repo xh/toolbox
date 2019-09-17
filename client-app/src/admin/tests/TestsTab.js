@@ -13,6 +13,7 @@ import {GridTestPanel} from './grids/GridTestPanel';
 import {CubeDataPanel} from './cube/CubeDataPanel';
 import {WebSocketTestPanel} from './websocket/WebSocketTestPanel';
 import {LocalDateTestPanel} from './localDate/LocalDateTestPanel';
+import {PanelResizingTestPanel} from './panels/PanelResizingTestPanel';
 
 @HoistComponent
 export class TestsTab extends Component {
@@ -25,7 +26,8 @@ export class TestsTab extends Component {
                     {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
                     {id: 'performance', title: 'Grid Performance', content: GridTestPanel},
                     {id: 'cube', title: 'Cube Data', content: CubeDataPanel},
-                    {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel}
+                    {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel},
+                    {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel}
                 ],
                 switcherPosition: 'left'
             }

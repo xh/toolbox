@@ -1,18 +1,18 @@
 import React from 'react';
-import {hoistCmp, XH, creates} from '@xh/hoist/core';
+import {hoistCmp, XH, creates, HoistModel, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {box, hbox, filler} from '@xh/hoist/cmp/layout';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {action, observable} from '@xh/hoist/mobx';
+import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
+import { toolbar } from '@xh/hoist/desktop/cmp/toolbar';
+import { switchInput } from '@xh/hoist/desktop/cmp/input';
+import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
 
 import {wrapper} from '../../common/Wrapper';
-import { PanelSizingModel } from './PanelSizingModel';
 
 export const PanelSizingPanel = hoistCmp({
-    model: creates(() => new PanelSizingModel()),
+    model: creates(() => new Model()),
 
     render({model}) {
         return wrapper({
@@ -40,67 +40,26 @@ export const PanelSizingPanel = hoistCmp({
             item: panel({
                 title: 'Panels › Panel Sizing',
                 icon: Icon.window(),
-                height: 'calc(100% - 270px)',
+                height: '50vh',
                 width: '80%',
                 bbar: toolbar(
                     filler(),
                     switchInput({
                         label: 'Animate Resize',
-                        onChange: () => model.setAnimateResizeAll(),
+                        onChange: () => model.toggleAnimateResizeOnAll(),
                         value: model.animateResize
                     })
                 ),
                 items: [
-                    panel({
-                        title: 'Top Panel 1',
-                        icon: Icon.arrowToBottom(),
-                        model: model.topPanel1Model,
-                        compactHeader: true,
-                        item: box({
-                            padding: 10,
-                            item: 'Collapsible Top'
-                        }),
-                        headerItems: [
-                            relativeTimestamp({
-                                options: {prefix: 'Rendered'},
-                                timestamp: Date.now(),
-                                marginLeft: 4
-                            }),
-                            button({
-                                icon: Icon.gear(),
-                                minimal: true,
-                                onClick: () => XH.toast({message: 'You clicked a Panel headerItem'})
-                            })
-                        ]
-                    }),
-                    panel({
-                        title: 'Top Panel 2',
-                        icon: Icon.arrowToBottom(),
-                        model: model.topPanel2Model,
-                        compactHeader: true,
-                        item: box({
-                            padding: 10,
-                            item: 'Collapsible Top'
-                        })
-                    }),
                     hbox({
                         flex: 1,
                         className: 'xh-border-top',
                         items: [
                             panel({
-                                title: 'Left Panel 1',
-                                icon: Icon.disabled(),
-                                model: model.leftPanel1Model,
-                                compactHeader: true,
-                                item: box({
-                                    className: 'xh-pad',
-                                    item: 'Collapsible Left'
-                                })
-                            }),
-                            panel({
-                                title: 'Left Panel 2',
+                                title: 'Left Panel',
                                 icon: Icon.arrowToLeft(),
-                                model: model.leftPanel2Model,
+                                model: model.leftPanelModel,
+                                key: model.leftPanelModel.xhId,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
@@ -109,7 +68,7 @@ export const PanelSizingPanel = hoistCmp({
                             }),
                             panel({
                                 item: box({
-                                    items: model.loremIpsum,
+                                    items: loremIpsum,
                                     padding: '0 6 6 6',
                                     display: 'block',
                                     overflowY: 'auto'
@@ -129,19 +88,10 @@ export const PanelSizingPanel = hoistCmp({
                                 ]
                             }),
                             panel({
-                                title: 'Right Panel 2',
+                                title: 'Right Panel',
                                 icon: Icon.arrowToRight(),
-                                model: model.rightPanel2Model,
-                                compactHeader: true,
-                                item: box({
-                                    className: 'xh-pad',
-                                    item: 'Collapsible Right'
-                                })
-                            }),
-                            panel({
-                                title: 'Right Panel 1',
-                                icon: Icon.disabled(),
-                                model: model.rightPanel1Model,
+                                model: model.rightPanelModel,
+                                key: model.rightPanelModel.xhId,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
@@ -151,27 +101,107 @@ export const PanelSizingPanel = hoistCmp({
                         ]
                     }),
                     panel({
-                        title: 'Bottom Panel 2',
+                        title: 'Bottom Panel',
                         icon: Icon.arrowToBottom(),
-                        model: model.bottomPanel2Model,
+                        model: model.bottomPanelModel,
+                        key: model.bottomPanelModel.xhId,
                         compactHeader: true,
                         item: box({
                             padding: 10,
                             item: 'Collapsible Bottom'
-                        })
-                    }),
-                    panel({
-                        title: 'Bottom Panel 1',
-                        icon: Icon.arrowToBottom(),
-                        model: model.bottomPanel1Model,
-                        compactHeader: true,
-                        item: box({
-                            padding: 10,
-                            item: 'Collapsible Bottom'
-                        })
+                        }),
+                        headerItems: [
+                            relativeTimestamp({
+                                options: {prefix: 'Rendered'},
+                                timestamp: Date.now(),
+                                marginLeft: 4
+                            }),
+                            button({
+                                icon: Icon.gear(),
+                                minimal: true,
+                                onClick: () => XH.toast({message: 'You clicked a Panel headerItem'})
+                            })
+                        ]
                     })
                 ]
             })
         });
     }
 });
+
+const loremIpsum = [
+    h3({
+        className: 'xh-text-color-accent',
+        item: 'Some old-fashioned text content'
+    }),
+    p('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta velit varius augue fermentum, vulputate tempus magna tempus.)'),
+    p('Fusce consectetur malesuada vehicula. Aliquam commodo magna at porta sollicitudin. Sed laoreet vehicula leo vel aliquam. Aliquam auctor fringilla ex, nec iaculis felis tincidunt ac. Pellentesque blandit ipsum odio, vel lacinia arcu blandit non.'),
+    p('Vestibulum non libero sem. Mauris a ipsum elit. Donec vestibulum sodales dapibus. Mauris posuere facilisis mollis. Etiam nec mauris nunc. Praesent mauris libero, blandit gravida ullamcorper vel, condimentum et velit. Suspendisse fermentum odio ac dui aliquet semper. Duis arcu felis, accumsan in leo sit amet, vehicula imperdiet tellus. Nulla ut condimentum quam. Donec eget mauris vitae libero blandit facilisis efficitur id justo.'),
+    p('Nam et tincidunt risus, at faucibus enim. Aliquam tortor est, finibus ac metus id, eleifend auctor quam. Aenean purus odio, tempus interdum velit et, faucibus placerat nisi. Etiam eget nunc vehicula, eleifend justo quis, varius leo. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris bibendum mollis tempor.'),
+    p('Fusce ac sollicitudin nunc, at tempus sem. Fusce dapibus lorem malesuada vestibulum luctus. Etiam semper est in ligula sagittis facilisis. Phasellus accumsan placerat ex, eu fringilla mauris semper nec.')
+];
+
+
+@HoistModel
+class Model {
+
+    @observable animateResize = false;
+
+    @managed
+    @observable.ref
+    leftPanelModel;
+
+    @managed
+    @observable.ref
+    rightPanelModel;
+
+    @managed
+    @observable.ref
+    bottomPanelModel;
+
+
+    constructor() {
+        this.setPanelModels();
+    }
+
+    @action
+    setPanelModels() {
+        this.leftPanelModel = new PanelModel({
+            animateResize: this.animateResize,
+            defaultSize: 150,
+            side: 'left'
+        });
+
+        this.rightPanelModel = new PanelModel({
+            animateResize: this.animateResize,
+            defaultSize: 150,
+            side: 'right'
+        });
+
+        this.bottomPanelModel = new PanelModel({
+            animateResize: this.animateResize,
+            defaultSize: 130,
+            side: 'bottom'
+        });
+    }
+
+    @action
+    toggleAnimateResizeOnAll() {
+        this.animateResize = !this.animateResize;
+        this.setPanelModels();
+    }
+
+    get allExpanded() {
+        return !this.leftPanelModel.collapsed && !this.rightPanelModel.collapsed && !this.bottomPanelModel.collapsed;
+    }
+
+    get allCollapsed() {
+        return this.leftPanelModel.collapsed && this.rightPanelModel.collapsed && this.bottomPanelModel.collapsed;
+    }
+
+    setCollapsedAll(collapsed) {
+        this.leftPanelModel.setCollapsed(collapsed);
+        this.rightPanelModel.setCollapsed(collapsed);
+        this.bottomPanelModel.setCollapsed(collapsed);
+    }
+}
