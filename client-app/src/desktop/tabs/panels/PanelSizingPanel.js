@@ -24,7 +24,7 @@ export const PanelSizingPanel = hoistCmp({
                     </p>
                     <p>
                         By default, resizing is not animated.  The panel content does not redraw until the resize bar is dropped.
-                        Resize animation can be turned on by setting PanelModel config <code>animateResize</code> to true.
+                        Resize animation can be turned on by setting PanelModel config <code>resizeWhileDragging</code> to true.
                     </p>
                     <p>
                         Note that the child panels below are also configured with
@@ -45,9 +45,9 @@ export const PanelSizingPanel = hoistCmp({
                 bbar: toolbar(
                     filler(),
                     switchInput({
-                        label: 'Animate Resize',
-                        onChange: () => model.toggleAnimateResizeOnAll(),
-                        value: model.animateResize
+                        label: 'Resize While Dragging',
+                        onChange: () => model.toggleResizeWhileDraggingOnAll(),
+                        value: model.resizeWhileDragging
                     })
                 ),
                 items: [
@@ -145,7 +145,7 @@ const loremIpsum = [
 @HoistModel
 class Model {
 
-    @observable animateResize = false;
+    @observable resizeWhileDragging = false;
 
     @managed
     @observable.ref
@@ -167,27 +167,27 @@ class Model {
     @action
     setPanelModels() {
         this.leftPanelModel = new PanelModel({
-            animateResize: this.animateResize,
+            resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 150,
             side: 'left'
         });
 
         this.rightPanelModel = new PanelModel({
-            animateResize: this.animateResize,
+            resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 150,
             side: 'right'
         });
 
         this.bottomPanelModel = new PanelModel({
-            animateResize: this.animateResize,
+            resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 130,
             side: 'bottom'
         });
     }
 
     @action
-    toggleAnimateResizeOnAll() {
-        this.animateResize = !this.animateResize;
+    toggleResizeWhileDraggingOnAll() {
+        this.resizeWhileDragging = !this.resizeWhileDragging;
         this.setPanelModels();
     }
 

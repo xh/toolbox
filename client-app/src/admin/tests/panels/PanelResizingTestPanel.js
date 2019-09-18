@@ -19,9 +19,9 @@ export const PanelResizingTestPanel = hoistCmp({
             bbar: toolbar(
                 filler(),
                 switchInput({
-                    label: 'Animate Resize',
-                    onChange: () => model.toggleAnimateResizeOnAll(),
-                    value: model.animateResize
+                    label: 'Resize While Dragging',
+                    onChange: () => model.toggleResizeWhileDraggingOnAll(),
+                    value: model.resizeWhileDragging
                 })
             ),
             items: [

@@ -7,8 +7,7 @@ import {p, h3} from '@xh/hoist/cmp/layout';
 @HoistModel
 export class PanelResizingTestModel {
 
-
-    @observable animateResize = false;
+    @observable resizeWhileDragging = false;
 
     @observable.ref topPanel1Model;
     @observable.ref topPanel2Model;
@@ -37,49 +36,49 @@ export class PanelResizingTestModel {
     @action
     setPanelModels() {
         this.topPanel1Model = new PanelModel({
-            animateResize: this.animateResize,
+            resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
             side: 'top'
         });
     
         this.topPanel2Model = new PanelModel({
-            animateResize: this.animateResize,
+            resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
             side: 'top'
         });
     
         this.leftPanel1Model = new PanelModel({
-            animateResize: this.animateResize,
+            resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
             side: 'left'
         });
     
         this.leftPanel2Model = new PanelModel({
-            animateResize: this.animateResize,
+            resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 150,
             side: 'left'
         });
     
         this.rightPanel1Model = new PanelModel({
-            animateResize: this.animateResize,
+            resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
             side: 'right'
         });
     
         this.rightPanel2Model = new PanelModel({
-            animateResize: this.animateResize,
+            resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 150,
             side: 'right'
         });
     
         this.bottomPanel1Model = new PanelModel({
-            animateResize: this.animateResize,
+            resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
             side: 'bottom'
         });
     
         this.bottomPanel2Model = new PanelModel({
-            animateResize: this.animateResize,
+            resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
             side: 'bottom'
         });
@@ -90,8 +89,8 @@ export class PanelResizingTestModel {
     }
 
     @action
-    toggleAnimateResizeOnAll() {
-        this.animateResize = !this.animateResize;
+    toggleResizeWhileDraggingOnAll() {
+        this.resizeWhileDragging = !this.resizeWhileDragging;
         this.setPanelModels();
     }
 
