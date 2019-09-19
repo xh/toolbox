@@ -1,18 +1,14 @@
-import {Component} from 'react';
-import {HoistComponent, elemFactory} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-import {lineChart} from './LineChart';
-import {ohlcChart} from './OHLCChart';
+import {ChartsPanelModel} from './ChartsPanelModel';
+import {chart} from '@xh/hoist/desktop/cmp/chart';
 
-@HoistComponent
-export class ChartsPanel extends Component {
+export const chartsPanel = hoistCmp.factory({
+    model: uses(ChartsPanelModel),
 
-    render() {
-        const {model} = this,
-            {lineChartModel, ohlcChartModel} = model;
-
+    render({model}) {
         return panel({
             title: `Charts: ${model.symbol ? model.symbol : ''}`,
             icon: Icon.chartArea(),
@@ -29,25 +25,25 @@ export class ChartsPanel extends Component {
                         {
                             id: 'line',
                             title: 'Trading Volume',
-                            content: () => lineChart({
-                                model: lineChartModel,
-                                flex: 1,
-                                className: 'xh-border-right'
-                            })
+                            content: () => chartPanel({model: model.lineChartModel})
                         },
                         {
                             id: 'ohlc',
                             title: 'Price History',
-                            content: () => ohlcChart({
-                                model: ohlcChartModel,
-                                flex: 1
-                            })
+                            content: () => chartPanel({model: model.ohlcChartModel})
                         }
                     ]
                 }
             })
         });
     }
-}
+});
 
-export const chartsPanel = elemFactory(ChartsPanel);
+
+const chartPanel = hoistCmp.factory(
+    ({model}) =>  panel({
+        item: chart(),
+        mask: model.loadModel,
+        flex: 1
+    })
+);

@@ -1,14 +1,16 @@
-import React from 'react';
+import {cloneElement} from 'react';
+import {hoistCmp} from '@xh/hoist/core';
 import {formGroup} from '@xh/hoist/kit/blueprint';
 import {code, span} from '@xh/hoist/cmp/layout';
 
-export function param({label, bind, item, model, info, disabled}) {
-    return formGroup({
+
+export const param = hoistCmp.factory(
+    ({label, bind, input, info, disabled}) => formGroup({
         label,
-        item: React.cloneElement(item, {model, bind, disabled}),
+        item: cloneElement(input, {bind, disabled}),
         helperText: info ? span(code(bind), ' - ', info) : null
-    });
-}
+    })
+);
 
 export function nilAwareFormat(val, formatter) {
     if (val === undefined) return code('undefined');

@@ -24,8 +24,7 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
-import {Ref} from '@xh/hoist/utils/react';
-import {Component} from 'react';
+import {Component, createRef} from 'react';
 import {gridStyleSwitches} from './GridStyleSwitches';
 
 @HoistComponent
@@ -40,7 +39,7 @@ class SampleColumnGroupsGrid extends Component {
 
         return panel({
             item: grid({model: gridModel}),
-            ref: model.panelRef.ref,
+            ref: model.panelRef,
             mask: loadModel,
             tbar: toolbar(
                 refreshButton({model}),
@@ -73,7 +72,7 @@ export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
 @LoadSupport
 class Model {
 
-    panelRef = new Ref();
+    panelRef = createRef();
 
     @managed
     gridModel = new GridModel({
@@ -210,7 +209,7 @@ class Model {
             title: `${rec.firstName} ${rec.lastName}`,
             message: `You asked to see details for ${rec.firstName}. They sold ${rec.actualUnitsSold} last year.`,
             intent: 'primary',
-            containerRef: this.panelRef.value
+            containerRef: this.panelRef.current
         });
     }
 

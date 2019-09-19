@@ -1,25 +1,21 @@
-import {filler} from '@xh/hoist/cmp/layout';
-import {HoistComponent, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
-import {refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import React from 'react';
+import {hoistCmp, HoistModel, LoadSupport, managed, XH, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {shuffle, take} from 'lodash';
-import React, {Component} from 'react';
+import {filler} from '@xh/hoist/cmp/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {dataView, DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
+
 import {wrapper} from '../../common/Wrapper';
 import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
+import {shuffle, take} from 'lodash';
 
-@HoistComponent
-export class DataViewPanel extends Component {
+export const DataViewPanel = hoistCmp({
+    model: creates(() => new Model()),
 
-    model = new Model();
-
-    render() {
-        const {model} = this;
-
+    render({model})  {
         return wrapper({
             description: [
                 <p>
@@ -38,18 +34,18 @@ export class DataViewPanel extends Component {
                     rowCls: 'dataview-item',
                     itemHeight: 70
                 }),
-                bbar: toolbar(
+                bbar: [
                     refreshButton({
                         text: 'Load new (random) records',
                         model
                     }),
                     filler(),
                     storeFilterField({store: model.dataViewModel.store})
-                )
+                ]
             })
         });
     }
-}
+});
 
 @HoistModel
 @LoadSupport
