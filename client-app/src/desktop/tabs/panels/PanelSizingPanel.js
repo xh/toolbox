@@ -1,11 +1,11 @@
 import React from 'react';
 import {hoistCmp, XH, creates, HoistModel, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, observable, bindable} from '@xh/hoist/mobx';
 import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import { toolbar } from '@xh/hoist/desktop/cmp/toolbar';
-import { switchInput } from '@xh/hoist/desktop/cmp/input';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 
@@ -24,12 +24,13 @@ export const PanelSizingPanel = hoistCmp({
                         optionally saving their sizing state in a per-user preference.
                     </p>
                     <p>
-                        By default, resizing is not animated.  The panel content does not redraw until the resize bar is dropped.
-                        Resize animation can be turned on by setting PanelModel config <code>resizeWhileDragging</code> to true.
+                        By default the panel content does not re-layout until the resize bar is dropped.
+                        Immediate or 'animated' resizing can be turned on by setting the PanelModel config
+                        <code>resizeWhileDragging</code> to <code>true</code>.
                     </p>
                     <p>
                         Note that the child panels below are also configured with
-                        their <code>compactHeader</code> prop set to true.
+                        their <code>compactHeader</code> prop set to <code>true</code>.
                     </p>
                 </div>
             ),
@@ -47,8 +48,7 @@ export const PanelSizingPanel = hoistCmp({
                     filler(),
                     switchInput({
                         label: 'Resize While Dragging',
-                        onChange: () => model.toggleResizeWhileDraggingOnAll(),
-                        value: model.resizeWhileDragging
+                        bind: 'resizeWhileDragging'
                     })
                 ),
                 items: [
@@ -146,7 +146,7 @@ const loremIpsum = [
 @HoistModel
 class Model {
 
-    @observable resizeWhileDragging = false;
+    @bindable resizeWhileDragging = false;
 
     @managed
     @observable.ref
@@ -159,37 +159,35 @@ class Model {
     @managed
     @observable.ref
     bottomPanelModel;
-
-
+    
     constructor() {
-        this.setPanelModels();
+        this.addReaction({
+            track: () => this.resizeWhileDragging,
+            run: () => this.setPanelModels(),
+            fireImmediately: true
+        });
     }
 
     @action
     setPanelModels() {
+        const {resizeWhileDragging} = this;
         this.leftPanelModel = new PanelModel({
-            resizeWhileDragging: this.resizeWhileDragging,
+            resizeWhileDragging,
             defaultSize: 150,
             side: 'left'
         });
 
         this.rightPanelModel = new PanelModel({
-            resizeWhileDragging: this.resizeWhileDragging,
+            resizeWhileDragging,
             defaultSize: 150,
             side: 'right'
         });
 
         this.bottomPanelModel = new PanelModel({
-            resizeWhileDragging: this.resizeWhileDragging,
+            resizeWhileDragging,
             defaultSize: 130,
             side: 'bottom'
         });
-    }
-
-    @action
-    toggleResizeWhileDraggingOnAll() {
-        this.resizeWhileDragging = !this.resizeWhileDragging;
-        this.setPanelModels();
     }
 
     get allExpanded() {
