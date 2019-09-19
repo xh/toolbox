@@ -11,8 +11,8 @@ export const FormsTab = hoistCmp(
             route: 'default.forms',
             switcherPosition: 'left',
             tabs: [
-                {id: 'inputs', title: 'Hoist Inputs', content: InputsPanel},
                 {id: 'form', title: 'FormModel', content: FormPanel},
+                {id: 'inputs', title: 'Hoist Inputs', content: InputsPanel},
                 {id: 'toolbarForm', title: 'Toolbar Forms', content: ToolbarFormPanel}
             ]
         },
