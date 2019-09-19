@@ -42,7 +42,7 @@ export const LoadingIndicatorPanel = hoistCmp({
                 icon: Icon.spinner(),
                 width: 800,
                 height: 400,
-                item: sampleGrid({omitGridTools: true, externalLoadModel: model.loadingIndicatorModel}),
+                item: sampleGrid({omitGridTools: true, externalLoadModel: model.taskModel}),
                 bbar: [
                     span('Show for'),
                     numberInput({
@@ -82,7 +82,7 @@ export const LoadingIndicatorPanel = hoistCmp({
                 loadingIndicator: loadingIndicator({
                     spinner: model.spinner,
                     corner: model.corner,
-                    model: model.loadingIndicatorModel
+                    model: model.taskModel
                 })
             })
         });
@@ -92,20 +92,20 @@ export const LoadingIndicatorPanel = hoistCmp({
 
 @HoistModel
 class Model {
-    @bindable seconds = 6;
+    @bindable seconds = 3;
     @bindable message = '';
     @bindable corner = 'br';
     @bindable spinner = true;
 
     @managed
-    loadingIndicatorModel = new PendingTaskModel();
+    taskModel = new PendingTaskModel();
 
     showLoadingIndicator() {
-        this.showLoadingIndicatorSequenceAsync().linkTo(this.loadingIndicatorModel);
+        this.showLoadingIndicatorSequenceAsync().linkTo(this.taskModel);
     }
 
     async showLoadingIndicatorSequenceAsync() {
-        this.loadingIndicatorModel.setMessage(this.message);
+        this.taskModel.setMessage(this.message);
         await wait(this.seconds * SECONDS);
     }
 }

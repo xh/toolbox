@@ -90,7 +90,7 @@ export const MaskPanel = hoistCmp({
 @HoistModel
 class Model {
 
-    @bindable seconds = 6;
+    @bindable seconds = 3;
     @bindable message = '';
     @bindable inline = true;
     @bindable spinner = true;
