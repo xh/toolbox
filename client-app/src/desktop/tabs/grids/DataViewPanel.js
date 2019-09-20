@@ -53,7 +53,6 @@ class Model {
 
     @managed
     dataViewModel = new DataViewModel({
-        sortBy: 'name',
         store: {
             fields: ['name', 'city', 'value']
         },
