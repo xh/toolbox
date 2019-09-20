@@ -1,3 +1,3 @@
-FROM xhio/xh-nginx:latest
+FROM xhio/xh-nginx
 COPY app.conf $XH_NGINX_CONFIG_PATH/
 COPY build/ $XH_NGINX_CONTENT_PATH/
