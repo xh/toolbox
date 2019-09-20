@@ -7,7 +7,7 @@ import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 
-import {GridPanelModel} from './GridPanelModel';
+import {GridPanelModel} from '../../GridPanelModel';
 
 export const gridPanel = hoistCmp.factory({
     model: uses(GridPanelModel),
