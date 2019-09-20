@@ -56,7 +56,6 @@ class Model {
         store: {
             fields: ['name', 'city', 'value']
         },
-        sortBy: {colId: 'name', sort: 'asc'},
         emptyText: 'No companies found...',
         itemRenderer: (v, {record}) => dataViewItem({record})
     });

@@ -13,6 +13,7 @@ export class NewsPanelModel {
 
     @managed
     viewModel = new DataViewModel({
+        sortBy: 'published',
         store: {
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
             idSpec: 'url'
