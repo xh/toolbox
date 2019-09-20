@@ -82,8 +82,6 @@ class Model {
     gridModel = new GridModel({
         treeMode: true,
         store: {
-            // Store config fields can be partially specified to fully configure fields as needed,
-            // but allow gridModel to populate any missing fields based on its column definitions.
             fields: [{name: 'enabled', type: 'bool', defaultValue: false}]
         },
         sortBy: 'name',
