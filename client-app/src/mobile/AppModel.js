@@ -17,6 +17,7 @@ import {GridPage} from './grids/GridPage';
 import {GridDetailPage} from './grids/GridDetailPage';
 import {TreeGridPage} from './treegrids/TreeGridPage';
 import {TreeGridDetailPage} from './treegrids/TreeGridDetailPage';
+import {DataViewPage} from './dataview/DataViewPage';
 import {FormPage} from './form/FormPage';
 import {ContainersPage} from './containers/ContainersPage';
 import {PopupsPage} from './popups/PopupsPage';
@@ -50,6 +51,10 @@ export class AppModel {
             {
                 id: 'treeGridDetail',
                 content: TreeGridDetailPage
+            },
+            {
+                id: 'dataview',
+                content: DataViewPage
             },
             {
                 id: 'form',
@@ -91,6 +96,10 @@ export class AppModel {
                             name: 'treeGridDetail',
                             path: '/:id'
                         }]
+                    },
+                    {
+                        name: 'dataview',
+                        path: '/dataview'
                     },
                     {
                         name: 'form',
