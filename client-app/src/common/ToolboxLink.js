@@ -10,7 +10,7 @@ import PT from 'prop-types';
 import {Component} from 'react';
 
 @HoistComponent
-class ToolboxLink extends Component {
+export class ToolboxLink extends Component {
     
     static propTypes = {
         

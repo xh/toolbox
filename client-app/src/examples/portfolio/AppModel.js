@@ -6,12 +6,45 @@
  */
 import {HoistAppModel, XH} from '@xh/hoist/core';
 import {PortfolioService} from '../../core/svc/PortfolioService';
+import {bindable} from '@xh/hoist/mobx';
+
+import {buttonGroupInput} from  '@xh/hoist/desktop/cmp/input';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {Icon} from '@xh/hoist/icon';
+
 
 @HoistAppModel
 export class AppModel {
 
+    @bindable renderMode = 'factories';
+
     get useCompactGrids() {
         return XH.getPref('defaultGridMode') == 'COMPACT';
+    }
+
+    getAppOptions() {
+        return [{
+            name: 'renderMode',
+            formField: {
+                item: buttonGroupInput(
+                    button({value: 'jsx', text: 'JSX', icon: Icon.code()}),
+                    button({value: 'factories', text: 'Factories', icon: Icon.factory()})
+                )
+            },
+            valueGetter: () => this.renderMode,
+            valueSetter: (v) => this.setRenderMode(v)
+        }, {
+            name: 'defaultGridMode',
+            prefName: 'defaultGridMode',
+            formField: {
+                label: 'Default grid size',
+                item: buttonGroupInput(
+                    button({value: 'STANDARD', text: 'Standard', icon: Icon.gridLarge()}),
+                    button({value: 'COMPACT', text: 'Compact', icon: Icon.grid()})
+                )
+            },
+            reloadRequired: true
+        }];
     }
 
     async initAsync() {
