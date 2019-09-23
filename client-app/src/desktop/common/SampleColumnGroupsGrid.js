@@ -6,15 +6,7 @@
  */
 import {boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {
-    elemFactory,
-    HoistComponent,
-    HoistModel,
-    LayoutSupport,
-    LoadSupport,
-    managed,
-    XH
-} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, LoadSupport, managed, creates, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -24,49 +16,41 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
-import {Component, createRef} from 'react';
+import {createRef} from 'react';
+import {getLayoutProps} from '@xh/hoist/utils/react';
 import {gridStyleSwitches} from './GridStyleSwitches';
 
-@HoistComponent
-@LayoutSupport
-class SampleColumnGroupsGrid extends Component {
+export const sampleColumnGroupsGrid = hoistCmp.factory({
+    model: creates(() => new Model()),
 
-    model = new Model();
-
-    render() {
-        const {model} = this,
-            {gridModel, loadModel} = model;
-
+    render({model, className, ...props}) {
         return panel({
-            item: grid({model: gridModel}),
+            item: grid(),
             ref: model.panelRef,
-            mask: loadModel,
+            mask: model.loadModel,
             tbar: toolbar(
                 refreshButton({model}),
                 toolbarSep(),
                 switchInput({
-                    model: model,
                     bind: 'groupRows',
                     label: 'Group rows:',
                     labelAlign: 'left'
                 }),
                 filler(),
-                gridCountLabel({gridModel}),
-                storeFilterField({gridModel}),
-                colChooserButton({gridModel}),
-                exportButton({gridModel})
+                gridCountLabel(),
+                storeFilterField(),
+                colChooserButton(),
+                exportButton()
             ),
             bbar: toolbar(
                 filler(),
-                gridStyleSwitches({gridModel, forToolbar: true})
+                gridStyleSwitches({forToolbar: true})
             ),
-            className: this.getClassName(),
-            ...this.getLayoutProps()
+            className,
+            ...getLayoutProps(props)
         });
     }
-}
-export const sampleColumnGroupsGrid = elemFactory(SampleColumnGroupsGrid);
-
+});
 
 @HoistModel
 @LoadSupport

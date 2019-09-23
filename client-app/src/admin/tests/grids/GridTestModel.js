@@ -37,7 +37,7 @@ export class GridTestModel {
     _data;
 
     @managed
-    @observable
+    @observable.ref
     gridModel = this.createGridModel();
 
     @bindable gridUpdateTime = null;

@@ -1,59 +1,49 @@
 import {fragment} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {Component} from 'react';
+import {GridModel} from '@xh/hoist/cmp/grid';
 
-@HoistComponent
-export class GridStyleSwitches extends Component {
 
-    render() {
-        const {gridModel, forToolbar} = this.props;
+export const gridStyleSwitches = hoistCmp.factory({
+    model: uses(GridModel),
 
+    render({model, forToolbar}) {
+        const sep = () =>  forToolbar ? toolbarSep() : null;
         return fragment(
             switchInput({
-                model: gridModel,
                 bind: 'compact',
                 label: 'Compact',
                 labelAlign: 'left'
             }),
-            toolbarSep({omit: !forToolbar}),
             switchInput({
-                model: gridModel,
                 bind: 'stripeRows',
                 label: 'Striped',
                 labelAlign: 'left'
             }),
-            toolbarSep({omit: !forToolbar}),
+            sep(),
             switchInput({
-                model: gridModel,
                 bind: 'rowBorders',
                 label: 'Row Borders',
                 labelAlign: 'left'
             }),
-            toolbarSep({omit: !forToolbar}),
+            sep(),
             switchInput({
-                model: gridModel,
                 bind: 'cellBorders',
                 label: 'Cell Borders',
                 labelAlign: 'left'
             }),
-            toolbarSep({omit: !forToolbar}),
             switchInput({
-                model: gridModel,
                 bind: 'showHover',
                 label: 'Hover',
                 labelAlign: 'left'
             }),
-            toolbarSep({omit: !forToolbar}),
+            sep(),
             switchInput({
-                model: gridModel,
                 bind: 'showCellFocus',
                 label: 'Cell focus',
                 labelAlign: 'left'
             })
         );
     }
-}
-
-export const gridStyleSwitches = elemFactory(GridStyleSwitches);
+});

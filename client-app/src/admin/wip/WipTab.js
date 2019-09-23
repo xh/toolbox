@@ -6,12 +6,10 @@
  */
 import {box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 
-@HoistComponent
-export class WipTab extends Component {
+export const WipTab = hoistCmp({
 
     render() {
         const tabs = [];
@@ -24,14 +22,13 @@ export class WipTab extends Component {
                     tabs
                 }
             });
-        } else {
-            return panel(
-                box({
-                    margin: 20,
-                    item: 'No WIP examples at the moment...'
-                })
-            );
         }
-    }
 
-}
+        return panel(
+            box({
+                margin: 20,
+                item: 'No WIP examples at the moment...'
+            })
+        );
+    }
+});

@@ -1,13 +1,11 @@
-import {Component} from 'react';
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent} from '@xh/hoist/core';
-import {LayoutSupport} from '@xh/hoist/core/mixins';
+import {hoistCmp, useLocalModel, uses} from '@xh/hoist/core';
 import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon/Icon';
-
+import {DimensionManagerModel} from './DimensionManagerModel';
 
 /**
  * An example of a more stateful control for selecting and managing a set of dimensions.
@@ -17,58 +15,47 @@ import {Icon} from '@xh/hoist/icon/Icon';
  * This component and its backing model are incubating in Toolbox for possible inclusion in
  * the core Hoist toolkit in some form.
  */
-@HoistComponent
-@LayoutSupport
-export class DimensionManager extends Component {
+export const [DimensionManager, dimensionManager] = hoistCmp.withFactory({
+    displayName: 'DimensionManager',
+    model: uses(DimensionManagerModel),
+    className: 'xh-dim-manager',
 
-    baseClassName = 'xh-dim-manager';
+    render({model, className, ...rest}) {
 
-    render() {
-        const {model, agOptions} = this,
-            {model: ignored, ...rest} = this.props;
+        const panelModel = useLocalModel(
+            () => new PanelModel({
+                collapsible: true,
+                side: 'left',
+                defaultSize: 250
+            })
+        );
 
-        const title = this.panelModel.collapsed ? model.formattedDimensions : 'Dimensions';
+        const title = panelModel.collapsed ? model.formattedDimensions : 'Dimensions';
 
         return panel({
             item: grid({
-                model: model.gridModel,
                 hideHeaders: true,
-                agOptions
+                agOptions: {groupRowRendererParams: {suppressCount: true}}
             }),
-            bbar: this.renderToolbar(),
-            className: this.getClassName(),
-            model: this.panelModel,
+            bbar: bbar(),
+            className,
+            model: panelModel,
             title,
             ...rest
         });
     }
+});
 
-    panelModel = new PanelModel({
-        collapsible: true,
-        side: 'left',
-        defaultSize: 250
-    });
-
-    agOptions = {
-        groupRowRendererParams: {suppressCount: true}
-    };
-
-    renderToolbar() {
-        const {model} = this;
-
-        return toolbar(
-            filler(),
-            dimensionChooser({
-                model: model.dimChooserModel,
-                buttonText: 'Custom...',
-                buttonTitle: 'Select a new custom grouping',
-                buttonIcon: Icon.add(),
-                styleButtonAsInput: false,
-                buttonWidth: 100
-            })
-        );
-    }
-}
-
-export const dimensionManager = elemFactory(DimensionManager);
+const bbar = hoistCmp.factory(
+    () => toolbar(
+        filler(),
+        dimensionChooser({
+            buttonText: 'Custom...',
+            buttonTitle: 'Select a new custom grouping',
+            buttonIcon: Icon.add(),
+            styleButtonAsInput: false,
+            buttonWidth: 100
+        })
+    )
+);
 
