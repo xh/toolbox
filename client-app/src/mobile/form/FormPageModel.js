@@ -1,4 +1,4 @@
-import {HoistModel} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {FormModel, required, lengthIs} from '@xh/hoist/cmp/form';
 import {bindable} from '@xh/hoist/mobx';
 import {movies} from '../../core/data';
@@ -9,6 +9,7 @@ export class FormPageModel {
     @bindable minimal;
     @bindable readonly;
 
+    @managed
     formModel = new FormModel({
         fields: [
             {name: 'name', rules: [required, lengthIs({min: 8})]},
