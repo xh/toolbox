@@ -72,7 +72,7 @@ class SampleGrid extends Component {
                         icon: Icon.settings(),
                         className: 'tbox-display-opts',
                         compactHeader: true,
-                        items: gridStyleSwitches({gridModel}),
+                        items: gridStyleSwitches({model: gridModel}),
                         omit: props.omitGridTools,
                         model: {side: 'right', defaultSize: 170, resizable: false}
                     })
