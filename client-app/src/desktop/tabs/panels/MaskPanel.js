@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, HoistModel, creates, managed} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, creates, managed, LoadSupport} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -7,12 +7,11 @@ import {span} from '@xh/hoist/cmp/layout';
 import {numberInput, textInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 
-import {sampleGrid, wrapper} from '../../common';
+import {sampleGrid, SampleGridModel, wrapper} from '../../common';
 
 export const MaskPanel = hoistCmp({
     model: creates(() => new Model()),
@@ -43,7 +42,7 @@ export const MaskPanel = hoistCmp({
                 icon: Icon.mask({prefix: 'fas'}),
                 width: 800,
                 height: 400,
-                item: sampleGrid({omitGridTools: true}),
+                item: sampleGrid({omitGridTools: true, omitMask: true}),
                 bbar: [
                     span('Mask for'),
                     numberInput({
@@ -71,22 +70,19 @@ export const MaskPanel = hoistCmp({
                         labelAlign: 'left'
                     }),
                     toolbarSep(),
-                    button({
-                        text: 'Show Mask',
-                        intent: 'success',
-                        onClick: () => model.showMask()
-                    })
+                    refreshButton({text: 'Refresh Now'})
                 ],
                 mask: mask({
                     spinner: model.spinner,
                     inline: model.inline,
-                    model: model.maskModel
+                    model: model.loadModel
                 })
             })
         });
     }
 });
 
+@LoadSupport
 @HoistModel
 class Model {
 
@@ -96,20 +92,18 @@ class Model {
     @bindable spinner = true;
 
     @managed
-    maskModel = new PendingTaskModel();
+    sampleGridModel = new SampleGridModel()
 
-    showMask() {
-        this.showMaskSequenceAsync().linkTo(this.maskModel);
-    }
-
-    async showMaskSequenceAsync() {
-        const {maskModel, message, seconds} = this,
-            interval = seconds / 3 * SECONDS;
-        maskModel.setMessage(message);
+    async doLoadAsync(loadSpec) {
+        const {loadModel, message, seconds} = this,
+            interval = (seconds / 3) * SECONDS;
+        loadModel.setMessage(message);
+        await this.sampleGridModel.loadAsync(loadSpec);
         await wait(interval);
-        if (message) maskModel.setMessage(message + ' - Still Loading...');
+        if (message) loadModel.setMessage(message + ' - Still Loading...');
         await wait(interval);
-        if (message) maskModel.setMessage(message + ' - Almost Finished...');
+        if (message) loadModel.setMessage(message + ' - Almost Finished...');
         await wait(interval);
+        loadModel.setMessage(message);
     }
 }

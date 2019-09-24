@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, HoistModel, creates, managed} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, LoadSupport, creates, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -7,12 +7,11 @@ import {span} from '@xh/hoist/cmp/layout';
 import {numberInput, select, textInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {loadingIndicator} from '@xh/hoist/desktop/cmp/loadingindicator';
 
-import {sampleGrid, wrapper} from '../../common';
+import {sampleGrid, SampleGridModel, wrapper} from '../../common';
 
 export const LoadingIndicatorPanel = hoistCmp({
     model: creates(() => new Model()),
@@ -42,7 +41,7 @@ export const LoadingIndicatorPanel = hoistCmp({
                 icon: Icon.spinner(),
                 width: 800,
                 height: 400,
-                item: sampleGrid({omitGridTools: true, externalLoadModel: model.taskModel}),
+                item: sampleGrid({omitGridTools: true, omitMask: true}),
                 bbar: [
                     span('Show for'),
                     numberInput({
@@ -73,23 +72,19 @@ export const LoadingIndicatorPanel = hoistCmp({
                         labelAlign: 'left'
                     }),
                     toolbarSep(),
-                    button({
-                        text: 'Show Indicator',
-                        intent: 'success',
-                        onClick: () => model.showLoadingIndicator()
-                    })
+                    refreshButton({text: 'Refresh Now'})
                 ],
                 loadingIndicator: loadingIndicator({
                     spinner: model.spinner,
                     corner: model.corner,
-                    model: model.taskModel
+                    model: model.loadModel
                 })
             })
         });
     }
 });
 
-
+@LoadSupport
 @HoistModel
 class Model {
     @bindable seconds = 3;
@@ -98,14 +93,18 @@ class Model {
     @bindable spinner = true;
 
     @managed
-    taskModel = new PendingTaskModel();
+    sampleGridModel = new SampleGridModel()
 
-    showLoadingIndicator() {
-        this.showLoadingIndicatorSequenceAsync().linkTo(this.taskModel);
-    }
-
-    async showLoadingIndicatorSequenceAsync() {
-        this.taskModel.setMessage(this.message);
-        await wait(this.seconds * SECONDS);
+    async doLoadAsync(loadSpec) {
+        const {loadModel, message, seconds} = this,
+            interval = (seconds / 3) * SECONDS;
+        loadModel.setMessage(message);
+        await this.sampleGridModel.loadAsync(loadSpec);
+        await wait(interval);
+        if (message) loadModel.setMessage(message + ' - Still Loading...');
+        await wait(interval);
+        if (message) loadModel.setMessage(message + ' - Almost Finished...');
+        await wait(interval);
+        loadModel.setMessage(message);
     }
 }

@@ -29,7 +29,7 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
             ref: model.panelRef,
             mask: model.loadModel,
             tbar: toolbar(
-                refreshButton({model}),
+                refreshButton(),
                 toolbarSep(),
                 switchInput({
                     bind: 'groupRows',

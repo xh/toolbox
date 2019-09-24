@@ -6,15 +6,7 @@
  */
 import {emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
-import {
-    elemFactory,
-    HoistComponent,
-    HoistModel,
-    LayoutSupport,
-    LoadSupport,
-    managed,
-    XH
-} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, LoadSupport, managed, creates, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dimensionChooser, DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -24,50 +16,43 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable} from '@xh/hoist/mobx';
-import {Component} from 'react';
+import {getLayoutProps} from '@xh/hoist/utils/react';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
 
-@HoistComponent
-@LayoutSupport
-class SampleTreeGrid extends Component {
+export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
 
-    model = new Model();
+    model: creates(() => new Model()),
 
-    render() {
-        const {model} = this,
-            {gridModel} = model;
-
+    render({className, model, ...props}) {
         return panel({
             items: [
                 hframe(
-                    grid({model: gridModel}),
+                    grid(),
                     panel({
                         title: 'Display Options',
                         icon: Icon.settings(),
                         className: 'tbox-display-opts',
                         compactHeader: true,
-                        items: gridStyleSwitches({gridModel}),
+                        items: gridStyleSwitches(),
                         model: {side: 'right', defaultSize: 170, resizable: false}
                     })
                 )
             ],
             tbar: toolbar(
-                refreshButton({model}),
+                refreshButton(),
                 toolbarSep(),
-                dimensionChooser({
-                    model: model.dimChooserModel
-                }),
+                dimensionChooser(),
                 filler(),
-                gridCountLabel({gridModel, includeChildren: true}),
-                storeFilterField({gridModel, filterOptions: {includeChildren: model.filterIncludeChildren}}),
-                colChooserButton({gridModel}),
-                exportButton({gridModel})
+                gridCountLabel({includeChildren: true}),
+                storeFilterField({filterOptions: {includeChildren: model.filterIncludeChildren}}),
+                colChooserButton(),
+                exportButton()
             ),
             mask: model.loadModel,
             bbar: toolbar(
                 select({
-                    model: gridModel,
+                    model: model.gridModel,
                     bind: 'showSummary',
                     width: 130,
                     enableFilter: false,
@@ -79,19 +64,16 @@ class SampleTreeGrid extends Component {
                 }),
                 toolbarSep(),
                 switchInput({
-                    model,
                     bind: 'filterIncludeChildren',
                     label: 'Filter w/Children',
                     labelAlign: 'left'
                 })
             ),
-            className: this.getClassName(),
-            ...this.getLayoutProps()
+            className,
+            ...getLayoutProps(props)
         });
     }
-}
-export const sampleTreeGrid = elemFactory(SampleTreeGrid);
-
+});
 
 @HoistModel
 @LoadSupport
