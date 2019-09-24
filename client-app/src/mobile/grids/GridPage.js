@@ -56,7 +56,7 @@ export class GridPage extends Component {
                     options: {prefix: 'Loaded'}
                 }),
                 filler(),
-                colChooserButton({model: gridModel})
+                colChooserButton({gridModel})
             )
         });
     }

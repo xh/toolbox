@@ -39,7 +39,7 @@ export class TreeGridPage extends Component {
             bbar: toolbar(
                 dimensionChooser({model: dimensionChooserModel}),
                 filler(),
-                colChooserButton({model: gridModel})
+                colChooserButton({gridModel})
             )
         });
     }
