@@ -1,0 +1,29 @@
+.dataview-item {
+  &--name,
+  &--city,
+  &--value {
+    width: calc(100% - 60px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &--name {
+    margin: 7px 0 4px;
+    font-size: var(--xh-font-size-large-px);
+    line-height: calc(var(--xh-font-size-large) * 1.1px);
+  }
+
+  &--city,
+  &--value {
+    margin: 0 0 4px;
+    font-size: var(--xh-font-size-small-px);
+    line-height: calc(var(--xh-font-size-small) * 1.1px);
+  }
+
+  svg {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+  }
+}
