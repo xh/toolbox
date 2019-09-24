@@ -4,6 +4,7 @@ import {a, code, hbox, p, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {ToolboxLink} from '../../../common/ToolboxLink';
 import {wrapper} from '../../common';
 import './ExamplesTab.scss';
 
@@ -45,6 +46,11 @@ function getExamples() {
                 <p>
                     This example shows a synthetic portfolio analysis tool.  Includes examples of large data-set grids,
                     master-detail grids, charting, and dimensional analysis.
+                </p>,
+                <p>
+                    The view layer of this app has been implemented with both elem factories as well as the more standard
+                    JSX approach.  Toggle between the two in options, and compare the component
+                    source code <ToolboxLink url='$TB/client-app/src/examples/portfolio/ui' text='here'/>.
                 </p>
             ]
         },
