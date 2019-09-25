@@ -1,7 +1,7 @@
-import React, {useContext} from 'react';
-import {form, FormContext} from '@xh/hoist/cmp/form';
+import React from 'react';
+import {form, FormModel} from '@xh/hoist/cmp/form';
 import {box, div, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {hoistCmp, creates, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
@@ -67,7 +67,6 @@ export const InputsPanel = hoistCmp({
 
 const formContents = hoistCmp.factory(
     ({model}) => form({
-        model: model.formModel,
         fieldDefaults: {
             commitOnChange: model.commitOnChange
         },
@@ -315,10 +314,12 @@ const formContents = hoistCmp.factory(
     })
 );
 
-const row = hoistCmp.factory(
-    ({label, field, info, readonlyRenderer, fmtVal, layout = {}, children}) => {
-        const form = useContext(FormContext),
-            fieldModel = form.model.fields[field];
+const row = hoistCmp.factory({
+    model: uses(FormModel),
+    memo: false,
+
+    render({model, label, field, info, readonlyRenderer, fmtVal, layout = {}, children}) {
+        const fieldModel = model.fields[field];
 
         if (!layout.width) layout.flex = 1;
 
@@ -327,9 +328,9 @@ const row = hoistCmp.factory(
             items: [
                 fieldDisplay({fieldModel, fmtVal}),
                 formField({
+                    model: fieldModel,
                     item: children,
                     label,
-                    field,
                     info,
                     readonlyRenderer,
                     ...layout
@@ -337,7 +338,7 @@ const row = hoistCmp.factory(
             ]
         });
     }
-);
+});
 
 const customerOption = hoistCmp.factory(
     ({opt}) => hbox({

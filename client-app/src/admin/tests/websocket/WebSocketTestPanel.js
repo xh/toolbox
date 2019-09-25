@@ -1,19 +1,16 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {HoistComponent} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {Component} from 'react';
 import {WebSocketTestModel} from './WebSocketTestModel';
 
-@HoistComponent
-export class WebSocketTestPanel extends Component {
+export const WebSocketTestPanel = hoistCmp({
 
-    model = new WebSocketTestModel();
+    model: creates(WebSocketTestModel),
 
-    render() {
-        const {model} = this,
-            {subscribed, gridModel} = model;
+    render({model}) {
+        const {subscribed} = model;
 
         return panel({
             tbar: [
@@ -34,8 +31,7 @@ export class WebSocketTestPanel extends Component {
                     onClick: () => model.unsubscribeAsync()
                 })
             ],
-            item: grid({model: gridModel})
+            item: grid()
         });
     }
-
-}
+});

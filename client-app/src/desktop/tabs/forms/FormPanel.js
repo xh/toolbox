@@ -53,7 +53,6 @@ const formContent = hoistCmp.factory(
     ({model}) => panel({
         flex: 1,
         item: form({
-            model: model.formModel,
             fieldDefaults: {
                 inline: model.inline,
                 minimal: model.minimal,

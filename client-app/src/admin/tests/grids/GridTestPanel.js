@@ -1,7 +1,6 @@
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {fmtNumber} from '@xh/hoist/format';
-import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
@@ -13,27 +12,27 @@ import {tooltip} from '@xh/hoist/kit/blueprint';
 
 import {GridTestModel} from './GridTestModel';
 
-@HoistComponent
-export class GridTestPanel extends Component {
 
-    model = new GridTestModel();
+export const GridTestPanel = hoistCmp({
 
-    render() {
-        const {model} = this,
-            {gridModel} = model;
+    model: creates(GridTestModel),
+
+    render({model}) {
+        const {gridModel} = model;
+        
+        const formatRunTimes = () => {
+            const fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null}) : 'N/A';
+            return `Load: ${fmt(model.gridLoadTime)} • Update: ${fmt(model.gridUpdateTime)} `;
+        };
 
         return panel({
             mask: model.loadModel,
-            item: gridModel ? grid({
-                key: gridModel.xhId,
-                model: gridModel,
-                renderFlag: model.renderFlag
-            }) : null,
+            key: gridModel.xhId,
+            item: grid(),
             tbar: [
                 tooltip({
                     content: 'ID prefix',
                     item: numberInput({
-                        model,
                         bind: 'idSeed',
                         width: 40
                     })
@@ -41,7 +40,6 @@ export class GridTestPanel extends Component {
                 tooltip({
                     content: '# records to generate',
                     item: numberInput({
-                        model,
                         bind: 'recordCount',
                         enableShorthandUnits: true,
                         selectOnFocus: true,
@@ -72,7 +70,6 @@ export class GridTestPanel extends Component {
                 tooltip({
                     content: '# records to randomly change',
                     item: numberInput({
-                        model,
                         bind: 'twiddleCount',
                         enableShorthandUnits: true,
                         selectOnFocus: true,
@@ -86,38 +83,27 @@ export class GridTestPanel extends Component {
                     onClick: () => model.twiddleData()
                 }),
                 filler(),
-                span(this.formatRunTimes())
+                span(formatRunTimes())
             ],
             bbar: [
                 switchInput({
-                    model,
                     bind: 'tree',
                     label: 'Tree mode'
                 }),
                 switchInput({
-                    model,
                     bind: 'useTransactions',
                     label: 'Use Transactions'
                 }),
                 switchInput({
-                    model,
                     bind: 'useDeltaSort',
                     label: 'Use Delta Sort',
                     disabled: model.tree
                 }),
                 filler(),
                 storeFilterField({
-                    includeFields: ['symbol', 'trader'],
-                    gridModel
+                    includeFields: ['symbol', 'trader']
                 })
             ]
         });
     }
-
-    formatRunTimes() {
-        const {model} = this,
-            fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null}) : 'N/A';
-
-        return `Load: ${fmt(model.gridLoadTime)} • Update: ${fmt(model.gridUpdateTime)} `;
-    }
-}
+});

@@ -3,13 +3,15 @@ import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 
-import {wrapper, sampleTreeWithCheckboxGrid} from '../../common';
+import {wrapper, sampleTreeGrid} from '../../common';
 
 export const TreeGridWithCheckboxPanel = hoistCmp(
     () => wrapper({
         description: [
             <p>
-                This example is a copy of the Tree sample, but adds a checkbox component to every node via the treeColumn's "innerRendererFramework" property.
+                This example is a copy of the Tree sample, but adds a checkbox component to every node.
+                Custom checkboxes are added via a custom renderer, and the checkboxes values are synchronized
+                up and down the tree using the <code> Record </code> API.
             </p>
         ],
         item: panel({
@@ -17,7 +19,7 @@ export const TreeGridWithCheckboxPanel = hoistCmp(
             icon: Icon.grid(),
             width: 900,
             height: 500,
-            item: sampleTreeWithCheckboxGrid()
+            item: sampleTreeGrid({model: {includeCheckboxes: true}})
         })
     })
 );

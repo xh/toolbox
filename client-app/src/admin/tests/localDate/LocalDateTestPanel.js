@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {groupBy, forOwn, startCase} from 'lodash';
@@ -7,17 +7,16 @@ import {groupBy, forOwn, startCase} from 'lodash';
 import './LocalDateTestPanel.scss';
 import {LocalDateTestModel} from './LocalDateTestModel';
 
-@HoistComponent
-export class LocalDateTestPanel extends Component {
+export const LocalDateTestPanel = hoistCmp({
 
-    model = new LocalDateTestModel();
+    model: creates(LocalDateTestModel),
 
-    render() {
-        const results = groupBy(this.model.testResults, 'category'),
+    render({model}) {
+        const results = groupBy(model.testResults, 'category'),
             items = [];
 
         forOwn(results, (tests, title) => {
-            items.push(this.renderResultTable(title, tests));
+            items.push(renderResultTable(title, tests));
         });
 
         return panel({
@@ -25,43 +24,42 @@ export class LocalDateTestPanel extends Component {
             items
         });
     }
+});
 
-    renderResultTable(title, tests) {
-        return (
-            <div>
-                <p>{startCase(title)}</p>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>Title</th>
-                            <th>Input</th>
-                            <th>Expected</th>
-                            <th>Output</th>
-                            <th>Result</th>
-                            <th>Notes</th>
-                        </tr>
-                        {tests.map(test => this.renderTestResult(test))}
-                    </tbody>
-                </table>
-            </div>
-        );
-    }
+function renderResultTable(title, tests) {
+    return (
+        <div>
+            <p>{startCase(title)}</p>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Title</th>
+                        <th>Input</th>
+                        <th>Expected</th>
+                        <th>Output</th>
+                        <th>Result</th>
+                        <th>Notes</th>
+                    </tr>
+                    {tests.map(test => renderTestResult(test))}
+                </tbody>
+            </table>
+        </div>
+    );
+}
 
-    renderTestResult(test) {
-        const {title, input, expected, output, result, notes} = test;
+function renderTestResult(test) {
+    const {title, input, expected, output, result, notes} = test;
 
-        return (
-            <tr key={title}>
-                <td>{title}</td>
-                <td>{input}</td>
-                <td>{expected}</td>
-                <td>{output}</td>
-                <td style={{textAlign: 'center'}}>
-                    {result ? Icon.check({className: 'xh-green'}) : Icon.cross({className: 'xh-red'})}
-                </td>
-                <td>{notes}</td>
-            </tr>
-        );
-    }
-
+    return (
+        <tr key={title}>
+            <td>{title}</td>
+            <td>{input}</td>
+            <td>{expected}</td>
+            <td>{output}</td>
+            <td style={{textAlign: 'center'}}>
+                {result ? Icon.check({className: 'xh-green'}) : Icon.cross({className: 'xh-red'})}
+            </td>
+            <td>{notes}</td>
+        </tr>
+    );
 }
