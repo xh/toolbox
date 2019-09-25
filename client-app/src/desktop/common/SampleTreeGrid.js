@@ -49,7 +49,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 colChooserButton(),
                 exportButton()
             ),
-            mask: model.loadModel,
+            mask: 'onLoad',
             bbar: toolbar(
                 select({
                     model: model.gridModel,

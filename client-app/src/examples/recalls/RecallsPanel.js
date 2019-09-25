@@ -24,7 +24,7 @@ export const recallsPanel = hoistCmp.factory({
         return vframe(
             panel({
                 item: grid(),
-                mask: model.loadModel,
+                mask: 'onLoad',
                 tbar: [
                     textInput({
                         bind: 'searchQuery',

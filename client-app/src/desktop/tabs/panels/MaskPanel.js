@@ -44,7 +44,7 @@ export const MaskPanel = hoistCmp({
                 height: 400,
                 item: sampleGrid({omitGridTools: true, omitMask: true}),
                 bbar: [
-                    span('Mask for'),
+                    span('Load for'),
                     numberInput({
                         bind: 'seconds',
                         width: 40,
@@ -70,7 +70,7 @@ export const MaskPanel = hoistCmp({
                         labelAlign: 'left'
                     }),
                     toolbarSep(),
-                    refreshButton({text: 'Refresh Now'})
+                    refreshButton({text: 'Load Now'})
                 ],
                 mask: mask({
                     spinner: model.spinner,

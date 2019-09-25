@@ -26,7 +26,7 @@ export const GridTestPanel = hoistCmp({
         };
 
         return panel({
-            mask: model.loadModel,
+            mask: 'onLoad',
             key: gridModel.xhId,
             item: grid(),
             tbar: [

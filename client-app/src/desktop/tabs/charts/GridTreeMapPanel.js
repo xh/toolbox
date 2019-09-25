@@ -10,9 +10,9 @@ import {GridTreeMapModel} from './GridTreeMapModel';
 export const GridTreeMapPanel = hoistCmp({
     model: creates(GridTreeMapModel),
 
-    render({model}) {
+    render() {
         return panel({
-            mask: model.loadModel,
+            mask: 'onLoad',
             bbar: [dimensionChooser()],
             items: hframe(
                 panel({
