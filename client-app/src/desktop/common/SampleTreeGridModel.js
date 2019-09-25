@@ -34,7 +34,6 @@ export class SampleTreeGridModel {
     gridModel;
 
     constructor({includeCheckboxes}) {
-        console.log(includeCheckboxes);
         this.gridModel = this.createGridModel(includeCheckboxes);
 
         // Load data when dimensions change
