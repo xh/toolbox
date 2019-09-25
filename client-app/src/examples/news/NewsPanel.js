@@ -13,14 +13,11 @@ export const newsPanel = hoistCmp.factory({
     model: uses(NewsPanelModel),
 
     render({model}) {
-        const {viewModel} = model;
-
         return panel({
             className: 'toolbox-news-panel',
             width: '100%',
             height: '100%',
             item: dataView({
-                model: viewModel,
                 rowCls: 'news-item',
                 itemHeight: 120,
                 onRowDoubleClicked
@@ -43,7 +40,7 @@ export const newsPanel = hoistCmp.factory({
                 }),
                 filler(),
                 storeCountLabel({
-                    store: viewModel.store,
+                    store: model.viewModel.store,
                     unit: 'stories'
                 })
             ]
