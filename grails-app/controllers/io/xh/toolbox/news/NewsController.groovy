@@ -13,8 +13,4 @@ class NewsController extends BaseController {
         renderJSON(items)
     }
 
-    def dnsTTL() {
-        renderJSON(ttl: sun.net.InetAddressCachePolicy.get())
-    }
-
 }
