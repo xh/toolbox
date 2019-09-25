@@ -25,7 +25,7 @@ export const TreeGridPanel = hoistCmp(
             icon: Icon.grid(),
             width: 900,
             height: 500,
-            item: sampleTreeGrid()
+            item: sampleTreeGrid({model: {includeCheckboxes: false}})
         })
     })
 );

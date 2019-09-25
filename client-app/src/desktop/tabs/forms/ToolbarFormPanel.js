@@ -4,12 +4,11 @@
  *
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {frame, filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -28,13 +27,12 @@ import {usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import {ToolbarFormPanelModel} from './ToolbarFormPanelModel';
 
-@HoistComponent
-export class ToolbarFormPanel extends Component {
+export const ToolbarFormPanel = hoistCmp({
 
-    model = new ToolbarFormPanelModel();
+    model: creates(ToolbarFormPanelModel),
 
-    render() {
-        const {topFormModel, bottomFormModel} = this.model;
+    render({model}) {
+        const {topFormModel, bottomFormModel} = model;
 
         return wrapper({
             description: [
@@ -55,7 +53,7 @@ export class ToolbarFormPanel extends Component {
                 icon: Icon.edit(),
                 width: '90%',
                 height: 300,
-                tbar: toolbar(
+                tbar: [
                     form({
                         model: topFormModel,
                         fieldDefaults: {minimal: true},
@@ -64,7 +62,6 @@ export class ToolbarFormPanel extends Component {
                                 label: 'Inline label:',
                                 field: 'text1',
                                 commitOnChange: true,
-                                minimal: false,
                                 item: textInput()
                             }),
                             formField({
@@ -127,8 +124,8 @@ export class ToolbarFormPanel extends Component {
                             })
                         ]
                     })
-                ),
-                bbar: toolbar(
+                ],
+                bbar: [
                     form({
                         model: bottomFormModel,
                         fieldDefaults: {minimal: true},
@@ -170,7 +167,7 @@ export class ToolbarFormPanel extends Component {
                             })
                         ]
                     })
-                ),
+                ],
                 item: frame({
                     padding: 10,
                     item: 'Help, I am surrounded by toolbars!'
@@ -178,4 +175,4 @@ export class ToolbarFormPanel extends Component {
             })
         });
     }
-}
+});
