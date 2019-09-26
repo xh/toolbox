@@ -11,9 +11,9 @@ import {SplitTreeMapPanelModel} from './SplitTreeMapPanelModel';
 export const SplitTreeMapPanel = hoistCmp({
     model: creates(SplitTreeMapPanelModel),
 
-    render({model}) {
+    render() {
         return panel({
-            mask: model.loadModel,
+            mask: 'onLoad',
             bbar: [dimensionChooser()],
             items: hframe(
                 panel({

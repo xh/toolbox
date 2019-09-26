@@ -12,9 +12,9 @@ import '../PortfolioPanel.scss';
 export const portfolioPanel = hoistCmp.factory({
     model: creates(PortfolioPanelModel),
 
-    render({model}) {
+    render() {
         return panel({
-            mask: model.loadModel,
+            mask: 'onLoad',
             item: vframe(
                 hbox({
                     flex: 1,

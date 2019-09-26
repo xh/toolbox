@@ -27,7 +27,7 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
         return panel({
             item: grid(),
             ref: model.panelRef,
-            mask: model.loadModel,
+            mask: 'onLoad',
             tbar: toolbar(
                 refreshButton(),
                 toolbarSep(),

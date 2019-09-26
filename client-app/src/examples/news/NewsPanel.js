@@ -22,7 +22,7 @@ export const newsPanel = hoistCmp.factory({
                 itemHeight: 120,
                 onRowDoubleClicked
             }),
-            mask: model.loadModel,
+            mask: 'onLoad',
             bbar: [
                 storeFilterField({
                     store: null,

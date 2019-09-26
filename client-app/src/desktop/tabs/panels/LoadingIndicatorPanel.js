@@ -43,7 +43,7 @@ export const LoadingIndicatorPanel = hoistCmp({
                 height: 400,
                 item: sampleGrid({omitGridTools: true, omitMask: true}),
                 bbar: [
-                    span('Show for'),
+                    span('Load for'),
                     numberInput({
                         bind: 'seconds',
                         width: 40,
@@ -72,7 +72,7 @@ export const LoadingIndicatorPanel = hoistCmp({
                         labelAlign: 'left'
                     }),
                     toolbarSep(),
-                    refreshButton({text: 'Refresh Now'})
+                    refreshButton({text: 'Load Now'})
                 ],
                 loadingIndicator: loadingIndicator({
                     spinner: model.spinner,
