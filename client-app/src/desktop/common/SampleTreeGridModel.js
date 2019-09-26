@@ -183,11 +183,16 @@ export class SampleTreeGridModel {
     }
 
     toggleNode(rec) {
-        const updates = [];
-        this.setNode(rec, !rec.isChecked, updates);
-        this.setChildren(rec, !rec.isChecked, updates);
+        const updates = [],
+            isChecked = !rec.isChecked;
+
+        this.setNode(rec, isChecked, updates);
+
+        rec.forEachDescendant(it => this.setNode(it, isChecked, updates));
+
         rec.store.updateData({update: updates});
-        this.updateAncestors(rec);
+
+        rec.forEachAncestor(it => this.setNode(it, this.calcAggregateState(it)));
     }
 
     setNode(rec, isChecked, bulkUpdate) {
@@ -196,22 +201,6 @@ export class SampleTreeGridModel {
             bulkUpdate.push(update);
         } else {
             rec.store.updateData({update: [update]});
-        }
-    }
-
-    setChildren(rec, isChecked, updates) {
-        // For setting, consult only children currently showing
-        rec.children.forEach(r => {
-            this.setNode(r, isChecked, updates);
-            this.setChildren(r, isChecked, updates);
-        });
-    }
-
-    updateAncestors(rec) {
-        const {parent} = rec;
-        if (parent) {
-            this.setNode(parent, this.calcAggregateState(parent));
-            this.updateAncestors(parent);
         }
     }
 
