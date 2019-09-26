@@ -54,11 +54,12 @@ if (!dbHost) {
             // Pool sizing - number of connections tuned *down* from Tomcat pool defaults,
             initialSize = 5 // init with this many
             maxActive = 50 // create and allocate up to this many
-            maxAge = 4 * HOURS // max overall age of connection - drop/reconnect on borrow/return if older
+            maxAge = 2 * HOURS // max overall age of connection - drop/reconnect on borrow/return if older
             maxWait = 10 * SECONDS  // max time to wait for requested conn before throwing exception to app
 
             // Connection validation
-            testOnBorrow = true // test before handing to app...
+            testOnConnect = true // test after establishing a connection...
+            testOnBorrow = true // ...and before handing out an existing connection...
             validationInterval = 15 * SECONDS // ...but test each connection no more than once per this interval
             validationQuery = "SELECT 1" // test by issuing this query...
             validationQueryTimeout = 3  // ...giving it this long to complete (this one is in seconds!)
@@ -74,8 +75,9 @@ if (!dbHost) {
             removeAbandonedTimeout = 2 * MINUTES // ...meaning those in use longer than this value...
             abandonWhenPercentageFull = 90 // ...but don't necessarily abandon until we actually need them freed up.
 
-            // Other connection pool props sourced from Grails defaults.
+            // Other connection pool props sourced from Grails defaults / docs.
             defaultTransactionIsolation = TRANSACTION_READ_COMMITTED
+            ignoreExceptionOnPreLoad = true
             jdbcInterceptors = "ConnectionState;StatementCache(max=200)"
 
             // MySQL-specific settings - would *not* apply to other databases, so please do not
