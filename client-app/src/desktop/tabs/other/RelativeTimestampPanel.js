@@ -31,7 +31,7 @@ export const RelativeTimestampPanel = hoistCmp({
                     box({
                         margin: 10,
                         item: relativeTimestamp({
-                            timestamp: model.timestamp,
+                            bind: 'timestamp',
                             options: {allowFuture: true, prefix: 'Latest timestamp:', short: model.useShortFmt},
                             marginLeft: 10
                         })

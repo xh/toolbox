@@ -12,7 +12,7 @@ import {GridPanelModel} from '../../GridPanelModel';
 export const gridPanel = hoistCmp.factory({
     model: uses(GridPanelModel),
 
-    render({model}) {
+    render() {
         return panel({
             title: 'Positions',
             icon: Icon.portfolio(),
@@ -21,7 +21,7 @@ export const gridPanel = hoistCmp.factory({
                 dimensionChooser(),
                 gridCountLabel({unit: 'position'}),
                 filler(),
-                relativeTimestamp({timestamp: model.loadTimestamp}),
+                relativeTimestamp({bind: 'loadTimestamp'}),
                 refreshButton({intent: 'success'})
             ]
         });
