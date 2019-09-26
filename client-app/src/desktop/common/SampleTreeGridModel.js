@@ -10,7 +10,7 @@ import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, action} from '@xh/hoist/mobx';
 import {Component} from 'react';
 
 @HoistModel
@@ -182,6 +182,7 @@ export class SampleTreeGridModel {
         };
     }
 
+    @action
     toggleNode(rec) {
         const updates = [],
             isChecked = !rec.isChecked;
