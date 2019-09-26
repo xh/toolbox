@@ -47,7 +47,21 @@ export class SampleGridModel {
             return {
                 tooltip: `Terminate ${record.company}`
             };
-        }
+        },
+        items: [
+            {
+                text: 'via Hostile Takeover',
+                tooltip: 'This will send an aggressive sounding hostile takeover letter to their board.',
+                recordsRequired: 1,
+                actionFn: ({record}) => this.showTerminateToast(record, 'hostile takeover')
+            },
+            {
+                text: 'via Friendly Merger Proposal',
+                tooltip: 'This will send a dinner invitation to their CEO.',
+                recordsRequired: 1,
+                actionFn: ({record}) => this.showTerminateToast(record, 'friendly merger proposal')
+            }
+        ]
     };
 
     @managed
@@ -190,9 +204,13 @@ export class SampleGridModel {
         });
     }
 
-    showTerminateToast(rec) {
+    showTerminateToast(rec, terminationMethod) {
+        if (terminationMethod) {
+            terminationMethod = ' via ' + terminationMethod;
+        }
+        
         XH.toast({
-            message: `You asked to terminate ${rec.company}. Sorry, ${rec.company}!`,
+            message: `You asked to terminate ${rec.company}${terminationMethod}. Sorry, ${rec.company}!`,
             icon: Icon.skull(),
             intent: 'danger',
             containerRef: this.panelRef.current
