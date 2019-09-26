@@ -1,11 +1,13 @@
-import {hoistCmp, HoistModel, creates} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {bindable} from '@xh/hoist/mobx';
+import {random, sample} from 'lodash';
+import moment from 'moment';
 import {wrapper} from '../../common/Wrapper';
 
 export const RelativeTimestampPanel = hoistCmp({
@@ -32,8 +34,11 @@ export const RelativeTimestampPanel = hoistCmp({
                         margin: 10,
                         item: relativeTimestamp({
                             bind: 'timestamp',
-                            options: {allowFuture: true, prefix: 'Latest timestamp:', short: model.useShortFmt},
-                            marginLeft: 10
+                            options: {
+                                allowFuture: true,
+                                prefix: 'Refreshed',
+                                short: model.useShortFmt
+                            }
                         })
                     }),
                     box({
@@ -43,6 +48,11 @@ export const RelativeTimestampPanel = hoistCmp({
                     })
                 ],
                 bbar: [
+                    switchInput({
+                        label: 'Short',
+                        labelAlign: 'left',
+                        bind: 'useShortFmt'
+                    }),
                     filler(),
                     buttonGroup(
                         button({
@@ -67,13 +77,7 @@ export const RelativeTimestampPanel = hoistCmp({
                             width: 130,
                             onClick: () => model.setToFuture()
                         })
-                    ),
-                    filler(),
-                    switchInput({
-                        label: 'Short',
-                        labelAlign: 'left',
-                        bind: 'useShortFmt'
-                    })
+                    )
                 ]
             })
         });
@@ -91,14 +95,13 @@ class Model {
     }
 
     setToPast() {
-        this.setTimestamp(Date.now() - this.randShift());
+        this.setTimestamp(moment().subtract(randVal(), randUnit()).valueOf());
     }
 
     setToFuture() {
-        this.setTimestamp(Date.now() + this.randShift());
-    }
-
-    randShift() {
-        return Math.random() * 1000 * 60 * 60 * 24 * 4;
+        this.setTimestamp(moment().add(randVal(), randUnit()).valueOf());
     }
 }
+
+const randUnit = () => sample(['y', 'M', 'd', 'h', 'm', 's', 'ms']);
+const randVal = () => random(1, 10);
