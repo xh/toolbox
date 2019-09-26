@@ -210,7 +210,7 @@ export class SampleGridModel {
         }
         
         XH.toast({
-            message: `You asked to terminate ${rec.company} ${terminationMethod}. Sorry, ${rec.company}!`,
+            message: `You asked to terminate ${rec.company}${terminationMethod}. Sorry, ${rec.company}!`,
             icon: Icon.skull(),
             intent: 'danger',
             containerRef: this.panelRef.current
