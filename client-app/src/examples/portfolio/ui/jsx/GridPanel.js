@@ -21,7 +21,7 @@ export const GridPanel = hoistCmp({
                 <DimensionChooser/>,
                 <GridCountLabel unit='position'/>,
                 <Filler/>,
-                <RelativeTimestamp timestamp={model.loadTimestamp}/>,
+                <RelativeTimestamp bind='loadTimestamp'/>,
                 <RefreshButton intent='success'/>
             ]}
         >
