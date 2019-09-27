@@ -195,7 +195,7 @@ export class SampleTreeGridModel {
         if (bulkUpdate) {
             bulkUpdate.push(update);
         } else {
-            rec.store.updateData({update: [update]});
+            rec.store.updateRecordData(rec.id, {isChecked});
         }
     }
 
