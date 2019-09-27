@@ -17,9 +17,12 @@ export const app = hoistCmp.factory({
             contextMenu: [CM.reloadApp(), CM.about(), CM.logout()],
             tbar: appBar({
                 icon: Icon.portfolio({size: '2x', prefix: 'fal'}),
-                title: 'Portfolio (JS only)',
+                title: 'Portfolio',
                 rightItems: [
-                    Icon.factory({title: 'Rendered with JS Factories (No JSX)'}),
+                    Icon.factory({
+                        title: 'Components rendered via Hoist element factories (no JSX)',
+                        style: {cursor: 'help'}
+                    }),
                     webSocketIndicator({iconOnly: true, marginRight: 4}),
                     appBarSeparator()
                 ],
