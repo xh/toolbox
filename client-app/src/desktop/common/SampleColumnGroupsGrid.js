@@ -5,14 +5,14 @@
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 import {boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
-import {filler} from '@xh/hoist/cmp/layout';
+import {hframe, filler} from '@xh/hoist/cmp/layout';
 import {hoistCmp, HoistModel, LoadSupport, managed, creates, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
@@ -25,10 +25,10 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
 
     render({model, className, ...props}) {
         return panel({
-            item: grid(),
+            item: hframe(grid(), gridStyleSwitches()),
             ref: model.panelRef,
             mask: 'onLoad',
-            tbar: toolbar(
+            tbar: [
                 refreshButton(),
                 toolbarSep(),
                 switchInput({
@@ -41,11 +41,7 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
                 storeFilterField(),
                 colChooserButton(),
                 exportButton()
-            ),
-            bbar: toolbar(
-                filler(),
-                gridStyleSwitches({forToolbar: true})
-            ),
+            ],
             className,
             ...getLayoutProps(props)
         });
