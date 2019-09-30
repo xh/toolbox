@@ -11,6 +11,10 @@ body {
   .xh-panel-header {
     color: var(--xh-text-color);
     background-color: var(--xh-bg-alt);
+
+    .xh-button--minimal {
+      color: var(--xh-text-color) !important;
+    }
   }
   .xh-switch-input {
     margin: var(--xh-pad-px) var(--xh-pad-px) 0 var(--xh-pad-px);

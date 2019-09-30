@@ -2,7 +2,7 @@ import React from 'react';
 import {hoistCmp, creates} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {agGrid} from '@xh/hoist/cmp/ag-grid';
-import {filler} from '@xh/hoist/cmp/layout';
+import {hframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {gridStyleSwitches, wrapper} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';
@@ -11,7 +11,7 @@ export const AgGridView = hoistCmp({
     model: creates(AgGridViewModel),
 
     render({model}) {
-        const {agGridModel, loadModel, columnDefs} = model;
+        const {agGridModel, columnDefs} = model;
 
         return wrapper({
             description: [
@@ -35,25 +35,23 @@ export const AgGridView = hoistCmp({
                 flex: 1,
                 width: '95%',
                 marginBottom: 10,
-                mask: loadModel,
-                bbar: [filler(), gridStyleSwitches({gridModel: agGridModel, forToolbar: true})],
-                item: agGrid({
-                    key: agGridModel.xhId,
-                    model: agGridModel,
-
-                    columnDefs,
-                    rowData: [],
-
-                    defaultColDef: {
-                        sortable: true,
-                        resizable: true,
-                        filter: true
-                    },
-
-                    sideBar: true,
-
-                    rowSelection: 'single'
-                })
+                mask: 'onLoad',
+                item: hframe(
+                    agGrid({
+                        key: agGridModel.xhId,
+                        model: agGridModel,
+                        columnDefs,
+                        rowData: [],
+                        defaultColDef: {
+                            sortable: true,
+                            resizable: true,
+                            filter: true
+                        },
+                        sideBar: true,
+                        rowSelection: 'single'
+                    }),
+                    gridStyleSwitches({model: agGridModel})
+                )
             })
         });
     }

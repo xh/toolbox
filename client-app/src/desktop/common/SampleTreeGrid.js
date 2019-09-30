@@ -12,8 +12,7 @@ import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {Icon} from '@xh/hoist/icon/Icon';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {getLayoutProps} from '@xh/hoist/utils/react';
 
 import {SampleTreeGridModel} from './SampleTreeGridModel';
@@ -25,21 +24,10 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
     model: uses(SampleTreeGridModel),
 
     render({className, model, ...props}) {
+        const {gridModel} = model;
         return panel({
-            items: [
-                hframe(
-                    grid(),
-                    panel({
-                        title: 'Display Options',
-                        icon: Icon.settings(),
-                        className: 'tbox-display-opts',
-                        compactHeader: true,
-                        items: gridStyleSwitches(),
-                        model: {side: 'right', defaultSize: 170, resizable: false}
-                    })
-                )
-            ],
-            tbar: toolbar(
+            item: hframe(grid(), gridStyleSwitches({model: gridModel.agGridModel})),
+            tbar: [
                 refreshButton(),
                 toolbarSep(),
                 dimensionChooser(),
@@ -48,11 +36,11 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 storeFilterField({filterOptions: {includeChildren: model.filterIncludeChildren}}),
                 colChooserButton(),
                 exportButton()
-            ),
+            ],
             mask: 'onLoad',
-            bbar: toolbar(
+            bbar: [
                 select({
-                    model: model.gridModel,
+                    model: gridModel,
                     bind: 'showSummary',
                     width: 130,
                     enableFilter: false,
@@ -68,7 +56,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                     label: 'Filter w/Children',
                     labelAlign: 'left'
                 })
-            ),
+            ],
             className,
             ...getLayoutProps(props)
         });

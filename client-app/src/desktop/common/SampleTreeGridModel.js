@@ -10,7 +10,7 @@ import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, action} from '@xh/hoist/mobx';
 import {Component} from 'react';
 
 @HoistModel
@@ -182,12 +182,18 @@ export class SampleTreeGridModel {
         };
     }
 
+    @action
     toggleNode(rec) {
-        const updates = [];
-        this.setNode(rec, !rec.isChecked, updates);
-        this.setChildren(rec, !rec.isChecked, updates);
+        const updates = [],
+            isChecked = !rec.isChecked;
+
+        this.setNode(rec, isChecked, updates);
+
+        rec.forEachDescendant(it => this.setNode(it, isChecked, updates));
+
         rec.store.updateData({update: updates});
-        this.updateAncestors(rec);
+
+        rec.forEachAncestor(it => this.setNode(it, this.calcAggregateState(it)));
     }
 
     setNode(rec, isChecked, bulkUpdate) {
@@ -196,22 +202,6 @@ export class SampleTreeGridModel {
             bulkUpdate.push(update);
         } else {
             rec.store.updateRecordData(rec.id, {isChecked});
-        }
-    }
-
-    setChildren(rec, isChecked, updates) {
-        // For setting, consult only children currently showing
-        rec.children.forEach(r => {
-            this.setNode(r, isChecked, updates);
-            this.setChildren(r, isChecked, updates);
-        });
-    }
-
-    updateAncestors(rec) {
-        const {parent} = rec;
-        if (parent) {
-            this.setNode(parent, this.calcAggregateState(parent));
-            this.updateAncestors(parent);
         }
     }
 

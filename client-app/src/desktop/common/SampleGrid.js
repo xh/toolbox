@@ -5,7 +5,7 @@ import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/c
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import PT from 'prop-types';
 import {getLayoutProps} from '@xh/hoist/utils/react';
@@ -30,57 +30,53 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
             default: selText = `Selected ${selCount} companies`;
         }
 
+        if (omitGridTools) {
+            return panel({
+                ref: model.panelRef,
+                mask: omitMask ? null : 'onLoad',
+                item: grid(),
+                className,
+                ...getLayoutProps(props)
+            });
+        }
+
         return panel({
-            items: [
-                hframe(
-                    vframe(
-                        grid(),
-                        hbox({
-                            items: [Icon.info(), selText],
-                            className: 'tbox-samplegrid__selbar',
-                            omit: omitGridTools
-                        })
-                    ),
-                    panel({
-                        title: 'Display Options',
-                        icon: Icon.settings(),
-                        className: 'tbox-display-opts',
-                        compactHeader: true,
-                        items: gridStyleSwitches(),
-                        omit: omitGridTools,
-                        model: {side: 'right', defaultSize: 170, resizable: false}
-                    })
-                )
-            ],
-            tbar: toolbar({
-                items: [
-                    refreshButton(),
-                    toolbarSep(),
-                    span('Group by:'),
-                    select({
-                        bind: 'groupBy',
-                        options: [
-                            {value: 'city', label: 'City'},
-                            {value: 'winLose', label: 'Win/Lose'},
-                            {value: 'city,winLose', label: 'City › Win/Lose'},
-                            {value: 'winLose,city', label: 'Win/Lose › City'},
-                            {value: false, label: 'None'}
-                        ],
-                        width: 160,
-                        enableFilter: false
-                    }),
-                    filler(),
-                    gridCountLabel({unit: 'companies'}),
-                    storeFilterField(),
-                    colChooserButton(),
-                    exportButton()
-                ],
-                omit: omitGridTools
-            }),
             ref: model.panelRef,
-            mask: omitMask ? null : model.loadModel,
+            mask: omitMask ? null : 'onLoad',
             className,
-            ...getLayoutProps(props)
+            ...getLayoutProps(props),
+            item: hframe(
+                vframe(
+                    grid(),
+                    hbox({
+                        items: [Icon.info(), selText],
+                        className: 'tbox-samplegrid__selbar'
+                    })
+                ),
+                gridStyleSwitches({model: model.gridModel.agGridModel})
+            ),
+            tbar: [
+                refreshButton(),
+                toolbarSep(),
+                span('Group by:'),
+                select({
+                    bind: 'groupBy',
+                    options: [
+                        {value: 'city', label: 'City'},
+                        {value: 'winLose', label: 'Win/Lose'},
+                        {value: 'city,winLose', label: 'City › Win/Lose'},
+                        {value: 'winLose,city', label: 'Win/Lose › City'},
+                        {value: false, label: 'None'}
+                    ],
+                    width: 160,
+                    enableFilter: false
+                }),
+                filler(),
+                gridCountLabel({unit: 'companies'}),
+                storeFilterField(),
+                colChooserButton(),
+                exportButton()
+            ]
         });
     }
 });

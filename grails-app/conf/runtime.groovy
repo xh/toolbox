@@ -51,38 +51,66 @@ if (!dbHost) {
         // https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/PoolConfiguration.html
         //noinspection GroovyAssignabilityCheck
         properties {
-            // Pool sizing - number of connections tuned *down* from Tomcat pool defaults,
-            initialSize = 5 // init with this many
-            maxActive = 50 // create and allocate up to this many
-            maxAge = 2 * HOURS // max overall age of connection - drop/reconnect on borrow/return if older
-            maxWait = 10 * SECONDS  // max time to wait for requested conn before throwing exception to app
+            //------------------------
+            // Pool sizing
+            // Note number of connections tuned *down* from Tomcat pool defaults,
+            //------------------------
+            // Init with this many.
+            initialSize = 5
+            // Create/allocate up to this many.
+            maxActive = 50
+            // Max overall age of connection - drop/reconnect on borrow/return if older.
+            maxAge = 2 * HOURS
+            // Max time to wait for requested conn before throwing exception to app.
+            maxWait = 15 * SECONDS
 
+            //------------------------
             // Connection validation
-            testOnConnect = true // test after establishing a connection...
-            testOnBorrow = true // ...and before handing out an existing connection...
-            validationInterval = 15 * SECONDS // ...but test each connection no more than once per this interval
-            validationQuery = "SELECT 1" // test by issuing this query...
-            validationQueryTimeout = 3  // ...giving it this long to complete (this one is in seconds!)
+            //------------------------
+            // Test after establishing a connection...
+            testOnConnect = true
+            // ...and before handing out an existing connection...
+            testOnBorrow = true
+            // ...but test each connection no more than once per this interval...
+            validationInterval = 15 * SECONDS
+            // ...by issuing this query...
+            validationQuery = "/* ${appCode} connection validation */ SELECT 1"
+            // ...giving it this long to complete (this one is in seconds!)
+            validationQueryTimeout = 3
 
+            //------------------------
             // Idle connections (not in use)
-            maxIdle = 25 // keep up to this many idle connections in the pool
-            testWhileIdle = true // periodically validate idle (by default, unused for over a minute) connections
-            timeBetweenEvictionRunsMillis = 5 * SECONDS // sweep through connections this often - also applies to abandoned checks below.
+            //------------------------
+            // Keep up to this many idle connections in the pool.
+            maxIdle = 25
+            // Periodically validate idle (by default, unused for over a minute) connections.
+            testWhileIdle = true
+            // Sweep through connections this often - also applies to abandoned checks below.
+            timeBetweenEvictionRunsMillis = 5 * SECONDS
 
-            // Abandoned connections (in use w/o closing for a long time).
-            // Apps with very long running queries might need to adjust these (or their query...)
-            removeAbandoned = true // Remove connections considered to be abandoned...
-            removeAbandonedTimeout = 2 * MINUTES // ...meaning those in use longer than this value...
-            abandonWhenPercentageFull = 90 // ...but don't necessarily abandon until we actually need them freed up.
+            //------------------------
+            // Abandoned connections (in use w/o closing for a long time)
+            // Apps with long running queries might need to adjust (or fix their query...)
+            //------------------------
+            // Remove connections considered to be abandoned...
+            removeAbandoned = true
+            // ...meaning those in use longer than this value...
+            removeAbandonedTimeout = 3 * MINUTES
+            // ...but don't necessarily abandon until we actually need space in the pool.
+            abandonWhenPercentageFull = 90
 
-            // Other connection pool props sourced from Grails defaults / docs.
+            //------------------------
+            // Other  - sourced from Grails `create-app` defaults / docs
+            //------------------------
             defaultTransactionIsolation = TRANSACTION_READ_COMMITTED
             ignoreExceptionOnPreLoad = true
             jdbcInterceptors = "ConnectionState;StatementCache(max=200)"
 
+            //------------------------
             // MySQL-specific settings - would *not* apply to other databases, so please do not
             // leave these in place if you aren't using MySQL. Sourced from Grails docs example @
             // https://docs.grails.org/3.3.9/guide/conf.html#dataSource (admittedly w/o much review).
+            //------------------------
             dbProperties {
                 autoReconnect = false
                 jdbcCompliantTruncation = false
@@ -101,6 +129,8 @@ if (!dbHost) {
         }
     }
 
+    // Environment-specific JDBC URLs.
+    // Note these are also specific to MySQL and must be adjusted for projects using different DBs.
     environments {
         development {
             dataSource {
