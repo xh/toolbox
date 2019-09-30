@@ -9,12 +9,12 @@ import {SimpleTreeMapModel} from './SimpleTreeMapModel';
 export const SimpleTreeMapPanel = hoistCmp({
     model: creates(SimpleTreeMapModel),
 
-    render({model}) {
+    render() {
         return wrapper(
             panel({
                 icon: Icon.gridLarge(),
                 title: 'Simple TreeMap',
-                mask: model.loadModel,
+                mask: 'onLoad',
                 width: 800,
                 height: 600,
                 item: treeMap()

@@ -14,7 +14,7 @@ export const PortfolioPanel = hoistCmp({
     model: creates(PortfolioPanelModel),
 
     render({model}) {
-        return <Panel mask={model.loadMode}>
+        return <Panel mask='onLoad'>
             <VFrame>
                 <HBox flex={1}>
                     <GridPanel/>

@@ -18,7 +18,7 @@ export const fileManager = hoistCmp.factory({
             title: 'File Manager',
             icon: Icon.folder(),
             className: 'file-manager',
-            mask: model.loadModel,
+            mask: 'onLoad',
             width: 700,
             height: 500,
             items: [

@@ -20,7 +20,8 @@ export const App = hoistCmp({
                 hideRefreshButton: false,
                 rightItems: [
                     relativeTimestamp({
-                        timestamp: model.newsPanelModel.lastRefresh,
+                        model: model.newsPanelModel,
+                        bind: 'lastRefresh',
                         options: {prefix: 'Last Updated:'}
                     })
                 ]

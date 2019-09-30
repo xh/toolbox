@@ -1,4 +1,4 @@
-import {hoistCmp, useLocalModel, XH} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, useLocalModel, XH} from '@xh/hoist/core';
 import PT from 'prop-types';
 import {box, table, tbody, tr, td, th} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -58,6 +58,7 @@ Wrapper.propTypes = {
     links: PT.arrayOf(PT.object)
 };
 
+@HoistModel
 class Model {
 
     @managed

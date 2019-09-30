@@ -19,7 +19,10 @@ export const App = hoistCmp({
             title='Portfolio'
             hideRefreshButton={false}
             rightItems={[
-                Icon.code({title: 'Rendered with JSX'}),
+                Icon.code({
+                    title: 'Components rendered with JSX',
+                    style: {cursor: 'help'}
+                }),
                 <WebSocketIndicator iconOnly={true} marginRight={4}/>,
                 <AppBarSeparator/>
             ]}
