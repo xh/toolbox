@@ -1,10 +1,16 @@
-import React from 'react';
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faIcons} from '@fortawesome/pro-regular-svg-icons';
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common/Wrapper';
+import {fontAwesomeIcon, Icon} from '@xh/hoist/icon';
+import React from 'react';
 
+import {wrapper} from '../../common/Wrapper';
 import './IconsPanel.scss';
+
+// Register a custom icon - used within this app / not pre-imported by `Icon` - imported above.
+// @see https://www.npmjs.com/package/@fortawesome/react-fontawesome#build-a-library-to-reference-icons-throughout-your-app-more-conveniently
+library.add(faIcons);
 
 export const IconsPanel = hoistCmp(
     () => wrapper({
@@ -20,7 +26,8 @@ export const IconsPanel = hoistCmp(
             <p>
                 Apps are not limited to the set of FA icons imported by the framework.
                 Developers can use any icon from the library, as long as they import those
-                glyphs directly to include them in the bundled output.
+                glyphs directly and register them with FA to include them in the bundled output.
+                The icon used in the panel header below provides an example of this usage.
             </p>
         ],
         links: [
@@ -36,7 +43,7 @@ export const IconsPanel = hoistCmp(
         ],
         item: panel({
             title: 'Icons (regular, solid, and light variants)',
-            icon: Icon.thumbsUp(),
+            icon: fontAwesomeIcon({icon: ['far', 'icons']}),
             className: 'toolbox-icons-panel',
             width: 700,
             item: [
