@@ -17,13 +17,12 @@ import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
-import {getLayoutProps} from '@xh/hoist/utils/react';
 import {gridStyleSwitches} from './GridStyleSwitches';
 
 export const sampleColumnGroupsGrid = hoistCmp.factory({
     model: creates(() => new Model()),
 
-    render({model, className, ...props}) {
+    render({model, ...props}) {
         return panel({
             item: hframe(grid(), gridStyleSwitches()),
             ref: model.panelRef,
@@ -42,8 +41,7 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
                 colChooserButton(),
                 exportButton()
             ],
-            className,
-            ...getLayoutProps(props)
+            ...props
         });
     }
 });
