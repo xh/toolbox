@@ -1,9 +1,7 @@
-import {Component} from 'react';
-import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
+import {XH, hoistCmp, creates} from '@xh/hoist/core';
 
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {grid} from '@xh/hoist/cmp/grid';
-import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {filler} from '@xh/hoist/cmp/layout';
 import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -12,28 +10,23 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 
 import {GridPageModel} from './GridPageModel';
 
-@HoistComponent
-export class GridPage extends Component {
+export const GridPage = hoistCmp({
 
-    model = new GridPageModel();
-    timestamp = new Date();
+    model: creates(GridPageModel),
 
-    render() {
-        const {model} = this,
-            {gridModel, loadModel} = model;
-
+    render({model}) {
+        const {gridModel} = model;
         return page({
             title: 'Grids',
             icon: Icon.gridPanel(),
-            mask: loadModel,
+            mask: 'onLoad',
             item: grid({
-                model: gridModel,
                 onRowClicked: (e) => {
                     const {id} = e.data.raw;
                     XH.appendRoute('gridDetail', {id});
                 }
             }),
-            tbar: toolbar(
+            tbar: [
                 label('Compact:'),
                 switchInput({
                     model: gridModel,
@@ -49,16 +42,15 @@ export class GridPage extends Component {
                     model: gridModel,
                     bind: 'stripeRows'
                 })
-            ),
-            bbar: toolbar(
+            ],
+            bbar: [
                 relativeTimestamp({
-                    timestamp: this.timestamp,
+                    bind: 'lastLoadCompleted',
                     options: {prefix: 'Loaded'}
                 }),
                 filler(),
                 colChooserButton({gridModel})
-            )
+            ]
         });
     }
-}
-export const gridPage = elemFactory(GridPage);
+});

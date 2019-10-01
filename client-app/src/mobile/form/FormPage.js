@@ -1,5 +1,4 @@
-import {Component} from 'react';
-import {HoistComponent, elemFactory} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {div, filler, vbox} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
@@ -22,10 +21,9 @@ import {
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 
-@HoistComponent
-export class FormPage extends Component {
+export const FormPage = hoistCmp({
 
-    model = new FormPageModel();
+    model: creates(FormPageModel),
 
     render() {
         return page({
@@ -34,21 +32,21 @@ export class FormPage extends Component {
             scrollable: true,
             className: 'toolbox-page form-page xh-tiled-bg',
             items: [
-                this.renderForm(),
-                this.renderResults()
+                formCmp(),
+                results()
             ],
-            bbar: this.renderToolbar()
+            bbar: bbar()
         });
     }
+});
 
-    renderForm() {
-        const {model} = this,
-            {formModel, minimal, movies} = model;
+const formCmp = hoistCmp.factory(
+    ({model}) => {
+        const {minimal, movies} = model;
 
         return div({
             className: 'toolbox-card',
             items: form({
-                model: formModel,
                 fieldDefaults: {minimal},
                 items: vbox(
                     formField({
@@ -105,43 +103,40 @@ export class FormPage extends Component {
             })
         });
     }
+);
 
-    renderResults() {
-        const {model} = this;
+const results = hoistCmp.factory(
+    ({model}) => {
         return div({
             className: 'toolbox-card',
             items: [
-                fieldResultDisplay({model, field: 'name'}),
-                fieldResultDisplay({model, field: 'movie'}),
-                fieldResultDisplay({model, field: 'salary'}),
-                fieldResultDisplay({model, field: 'buttonGroup'}),
-                fieldResultDisplay({model, field: 'notes'}),
-                fieldResultDisplay({model, field: 'searchQuery'})
+                fieldResult({field: 'name'}),
+                fieldResult({field: 'movie'}),
+                fieldResult({field: 'salary'}),
+                fieldResult({field: 'buttonGroup'}),
+                fieldResult({field: 'notes'}),
+                fieldResult({field: 'searchQuery'})
             ]
         });
     }
+);
 
-    renderToolbar() {
-        const {model} = this;
-        return toolbar({
-            height: 38,
-            items: [
-                filler(),
-                label('Read-only'),
-                switchInput({model: model.formModel, bind: 'readonly'}),
-                label('Minimal validation'),
-                switchInput({model, bind: 'minimal'})
-            ]
-        });
-    }
-}
-export const formPage = elemFactory(FormPage);
+const bbar = hoistCmp.factory(
+    ({model}) => toolbar({
+        height: 38,
+        items: [
+            filler(),
+            label('Read-only'),
+            switchInput({model: model.formModel, bind: 'readonly'}),
+            label('Minimal validation'),
+            switchInput({bind: 'minimal'})
+        ]
+    })
+);
 
-
-@HoistComponent
-class FieldResultDisplay extends Component {
-    render() {
-        const {displayName, value} = this.model.formModel.fields[this.props.field];
+const fieldResult = hoistCmp.factory(
+    ({model, field}) => {
+        const {displayName, value} = model.formModel.fields[field];
         return div({
             className: 'form-field-result',
             items: [
@@ -150,5 +145,4 @@ class FieldResultDisplay extends Component {
             ]
         });
     }
-}
-const fieldResultDisplay = elemFactory(FieldResultDisplay);
+);
