@@ -49,7 +49,7 @@ export const GridPage = hoistCmp({
                     options: {prefix: 'Loaded'}
                 }),
                 filler(),
-                colChooserButton({gridModel})
+                colChooserButton()
             ]
         });
     }
