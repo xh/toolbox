@@ -1,13 +1,10 @@
-import {Component} from 'react';
-import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
+import {XH, hoistCmp} from '@xh/hoist/core';
 import {div, span, code} from '@xh/hoist/cmp/layout';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
-@HoistComponent
-export class PopupsPage extends Component {
-
+export const PopupsPage = hoistCmp({
     render() {
         return page({
             title: 'Popups',
@@ -15,13 +12,13 @@ export class PopupsPage extends Component {
             className: 'toolbox-page xh-tiled-bg',
             scrollable: true,
             items: [
-                this.renderCard('Alert', () => {
+                renderCard('Alert', () => {
                     XH.alert({
                         title: 'Alert',
                         message: 'This is an alert dialog.'
                     });
                 }),
-                this.renderCard('Confirm', () => {
+                renderCard('Confirm', () => {
                     XH.confirm({
                         title: 'Confirm',
                         message: 'This is a confirm dialog.'
@@ -30,7 +27,7 @@ export class PopupsPage extends Component {
                         intent: ret ? 'success' : 'danger'
                     }));
                 }),
-                this.renderCard('Prompt', () => {
+                renderCard('Prompt', () => {
                     XH.prompt({
                         title: 'Prompt',
                         message: 'This is a prompt dialog.'
@@ -38,7 +35,7 @@ export class PopupsPage extends Component {
                         message: span('That popup resolved to ', code(`${ret}`))
                     }));
                 }),
-                this.renderCard('Message', () => {
+                renderCard('Message', () => {
                     XH.confirm({
                         title: 'Message',
                         icon: Icon.comment(),
@@ -47,7 +44,7 @@ export class PopupsPage extends Component {
                         cancelProps: {text: 'Exit'}
                     });
                 }),
-                this.renderCard('Toast', () => {
+                renderCard('Toast', () => {
                     XH.toast({
                         message: 'This is a toast.',
                         icon: Icon.comment()
@@ -56,20 +53,17 @@ export class PopupsPage extends Component {
             ]
         });
     }
+});
 
-    renderCard(title, onClick) {
-        return div({
-            className: 'toolbox-card',
-            items: [
-                div({className: 'toolbox-card__title', item: title}),
-                button({
-                    text: `Show ${title}`,
-                    onClick: onClick
-                })
-            ]
-        });
-    }
-
+function renderCard(title, onClick) {
+    return div({
+        className: 'toolbox-card',
+        items: [
+            div({className: 'toolbox-card__title', item: title}),
+            button({
+                text: `Show ${title}`,
+                onClick
+            })
+        ]
+    });
 }
-
-export const popupsPage = elemFactory(PopupsPage);

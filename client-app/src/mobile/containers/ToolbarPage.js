@@ -1,5 +1,4 @@
-import {Component} from 'react';
-import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
+import {XH, hoistCmp, creates} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {toolbar, toolbarSep} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
@@ -9,13 +8,11 @@ import {Icon} from '@xh/hoist/icon';
 
 import {ToolbarPageModel} from './ToolbarPageModel';
 
-@HoistComponent
-export class ToolbarPage extends Component {
+export const ToolbarPage = hoistCmp({
 
-    model = new ToolbarPageModel();
+    model: creates(ToolbarPageModel),
 
-    render() {
-        const {model} = this;
+    render({model}) {
         return page({
             className: 'toolbox-toolbar-page',
             items: [
@@ -76,7 +73,6 @@ export class ToolbarPage extends Component {
                         width: 200,
                         placeholder: 'Select a State...',
                         options: model.options,
-                        model: model,
                         bind: 'state'
                     }),
                     button({
@@ -89,5 +85,4 @@ export class ToolbarPage extends Component {
             ]
         });
     }
-}
-export const toolbarPage = elemFactory(ToolbarPage);
+});
