@@ -11,7 +11,6 @@ import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {bindable, action} from '@xh/hoist/mobx';
-import {Component} from 'react';
 
 @HoistModel
 @LoadSupport
@@ -149,35 +148,18 @@ export class SampleTreeGridModel {
     // CheckBox support
     //----------------------------------------------
     createCheckboxTreeColumn() {
-        const me = this;
         return {
             rendererIsComplex: true,
-            agOptions: {
-                cellRendererParams: {
-                    suppressCount: true,
-                    innerRendererFramework:
-                        class extends Component {
-                            constructor(props) {
-                                super(props);
-                                props.reactContainer.style = 'display: inline-block';
-                            }
-
-                            render() {
-                                const rec = this.props.data;
-                                if (rec.xhIsSummary) return rec.name;
-                                return fragment(
-                                    checkbox({
-                                        displayUnsetState: true,
-                                        value: rec.isChecked,
-                                        onChange: () => me.toggleNode(rec)
-                                    }),
-                                    rec.name
-                                );
-                            }
-
-                            refresh() {return false}
-                        }
-                }
+            elementRenderer: (v, {record}) => {
+                if (record.xhIsSummary) return record.name;
+                return fragment(
+                    checkbox({
+                        displayUnsetState: true,
+                        value: record.isChecked,
+                        onChange: () => this.toggleNode(record)
+                    }),
+                    record.name
+                );
             }
         };
     }
