@@ -1,5 +1,4 @@
-import {Component} from 'react';
-import {HoistComponent, elemFactory} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {dataView} from '@xh/hoist/cmp/dataview';
@@ -9,33 +8,22 @@ import {Icon} from '@xh/hoist/icon';
 
 import {DataViewPageModel} from './DataViewPageModel';
 
-@HoistComponent
-export class DataViewPage extends Component {
-
-    model = new DataViewPageModel();
+export const DataViewPage = hoistCmp({
+    model: creates(DataViewPageModel),
 
     render() {
-        const {model} = this,
-            {dataViewModel, loadModel} = model;
-
         return page({
             title: 'DataView',
             icon: Icon.addressCard(),
-            mask: loadModel,
+            mask: 'onLoad',
             item: dataView({
-                model: dataViewModel,
                 rowCls: 'dataview-item',
                 itemHeight: 70
             }),
             bbar: [
                 filler(),
-                refreshButton({
-                    text: 'Load new (random) records',
-                    model
-                })
+                refreshButton({text: 'Load new (random) records'})
             ]
         });
     }
-}
-
-export const dataViewPage = elemFactory(DataViewPage);
+});

@@ -1,4 +1,4 @@
-import {HoistModel} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 
 import {HBoxPage} from './HBoxPage';
@@ -8,6 +8,7 @@ import {ToolbarPage} from './ToolbarPage';
 @HoistModel
 export class ContainersPageModel {
 
+    @managed
     tabContainerModel = new TabContainerModel({
         defaultTabId: 'hbox',
         tabs: [

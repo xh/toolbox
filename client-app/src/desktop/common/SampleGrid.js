@@ -8,7 +8,6 @@ import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import PT from 'prop-types';
-import {getLayoutProps} from '@xh/hoist/utils/react';
 import {gridStyleSwitches} from './GridStyleSwitches';
 
 import {SampleGridModel} from './SampleGridModel';
@@ -19,7 +18,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
     model: uses(SampleGridModel, {createDefault: true}),
     className: 'tbox-samplegrid',
     
-    render({model, className, omitMask, omitGridTools, ...props}) {
+    render({model, omitMask, omitGridTools, ...props}) {
         const {selection} = model.gridModel,
             selCount = selection.length;
 
@@ -35,16 +34,14 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
                 ref: model.panelRef,
                 mask: omitMask ? null : 'onLoad',
                 item: grid(),
-                className,
-                ...getLayoutProps(props)
+                ...props
             });
         }
 
         return panel({
             ref: model.panelRef,
             mask: omitMask ? null : 'onLoad',
-            className,
-            ...getLayoutProps(props),
+            ...props,
             item: hframe(
                 vframe(
                     grid(),

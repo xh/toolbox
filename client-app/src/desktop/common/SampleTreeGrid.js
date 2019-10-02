@@ -13,7 +13,6 @@ import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {getLayoutProps} from '@xh/hoist/utils/react';
 
 import {SampleTreeGridModel} from './SampleTreeGridModel';
 
@@ -23,7 +22,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
 
     model: uses(SampleTreeGridModel),
 
-    render({className, model, ...props}) {
+    render({model, ...props}) {
         const {gridModel} = model;
         return panel({
             item: hframe(grid(), gridStyleSwitches({model: gridModel.agGridModel})),
@@ -57,8 +56,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                     labelAlign: 'left'
                 })
             ],
-            className,
-            ...getLayoutProps(props)
+            ...props
         });
     }
 });
