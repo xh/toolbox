@@ -9,12 +9,9 @@ import {Icon} from '@xh/hoist/icon';
 import {TreeGridPageModel} from './TreeGridPageModel';
 
 export const TreeGridPage = hoistCmp({
-
     model: creates(TreeGridPageModel),
 
-    render({model}) {
-        const {gridModel, dimensionChooserModel} = model;
-
+    render() {
         return page({
             title: 'Tree Grids',
             icon: Icon.grid(),
@@ -26,9 +23,9 @@ export const TreeGridPage = hoistCmp({
                 }
             }),
             bbar: [
-                dimensionChooser({model: dimensionChooserModel}),
+                dimensionChooser(),
                 filler(),
-                colChooserButton({gridModel})
+                colChooserButton()
             ]
         });
     }

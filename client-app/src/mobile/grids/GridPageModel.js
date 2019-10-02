@@ -1,11 +1,15 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
 import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
+import {bindable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 
 @HoistModel
 @LoadSupport
 export class GridPageModel {
+
+    @bindable.ref
+    dateLoaded = null;
 
     @managed
     gridModel = new GridModel({
@@ -46,6 +50,7 @@ export class GridPageModel {
         await wait(500);
         const customers = await XH.fetchJson({url: 'customer'});
         this.gridModel.loadData(customers);
+        this.setDateLoaded(new Date());
     }
 
 }

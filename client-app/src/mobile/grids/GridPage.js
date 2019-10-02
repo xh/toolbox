@@ -45,11 +45,11 @@ export const GridPage = hoistCmp({
             ],
             bbar: [
                 relativeTimestamp({
-                    bind: 'lastLoadCompleted',
+                    bind: 'dateLoaded',
                     options: {prefix: 'Loaded'}
                 }),
                 filler(),
-                colChooserButton({gridModel})
+                colChooserButton()
             ]
         });
     }
