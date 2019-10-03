@@ -80,29 +80,58 @@ class Model {
         },
         columns: [
             {
-                headerName: 'Demographics',
-                groupId: 'DEMO',
+                headerName: ({gridModel}) => {
+                    const {selectedRecord} = gridModel;
+                    let ret = 'Demographics';
+                    if (selectedRecord) {
+                        ret += ` (${selectedRecord.firstName} ${selectedRecord.lastName})`;
+                    }
+                    return ret;
+                },
+                groupId: 'demographics',
                 children: [
+                    {
+                        colId: 'fullName',
+                        headerName: 'Name',
+                        width: 140,
+                        chooserName: 'Full Name',
+                        renderer: (v, {record}) => record ? `${record.firstName} ${record.lastName}` : '',
+                        agOptions: {
+                            columnGroupShow: 'closed'
+                        }
+                    },
                     {
                         field: 'firstName',
                         headerName: 'First',
                         width: 100,
-                        chooserName: 'First Name'
+                        chooserName: 'First Name',
+                        agOptions: {
+                            columnGroupShow: 'open'
+                        }
                     },
                     {
                         field: 'lastName',
                         headerName: 'Last',
                         width: 100,
-                        chooserName: 'Last Name'
+                        chooserName: 'Last Name',
+                        agOptions: {
+                            columnGroupShow: 'open'
+                        }
                     },
                     {
                         field: 'city',
                         width: 120,
-                        hidden: true
+                        hidden: true,
+                        agOptions: {
+                            columnGroupShow: 'open'
+                        }
                     },
                     {
                         field: 'state',
-                        width: 120
+                        width: 120,
+                        agOptions: {
+                            columnGroupShow: 'open'
+                        }
                     }
                 ]
             },
@@ -113,10 +142,10 @@ class Model {
                 renderer: numberRenderer({precision: 0})
             },
             {
-                headerName: 'Sales',
+                groupId: 'sales',
                 children: [
                     {
-                        headerName: 'Projected',
+                        groupId: 'projected',
                         children: [
                             {
                                 field: 'projectedUnitsSold',
@@ -138,7 +167,7 @@ class Model {
                         ]
                     },
                     {
-                        headerName: 'Actual',
+                        groupId: 'actual',
                         children: [
                             {
                                 field: 'actualUnitsSold',
