@@ -22,5 +22,8 @@
   "devDependencies": {
     "@xh/hoist-dev-utils": "~4.3.1",
     "cross-env": "~6.0.0"
+  },
+  "resolutions": {
+    "terser": "4.3.4"
   }
 }
