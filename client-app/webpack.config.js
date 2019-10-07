@@ -8,7 +8,6 @@ module.exports = (env = {}) => {
         agGridLicenseKey: 'Extreme_Heavy_Industries__Scout_3Devs3_April_2020__MTU4NTg2ODQwMDAwMA==8f836aa25989abb0db36231c347dd436',
         favicon: './public/favicon.png',
         devServerOpenPage: 'app/',
-        terserOptions: {keep_fnames: false},
         ...env
     });
 };
