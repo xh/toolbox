@@ -87,7 +87,7 @@ export const PanelResizingTestPanel = hoistCmp({
                         }),
                         panel({
                             item: box({
-                                items: model.loremIpsum,
+                                items: model.explanation,
                                 padding: '0 6 6 6',
                                 display: 'block',
                                 overflowY: 'auto'
