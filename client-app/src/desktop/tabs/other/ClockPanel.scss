@@ -1,0 +1,22 @@
+
+.clock-container {
+  padding: var(--xh-pad-px);
+  flex-wrap: wrap;
+
+  .clock-card {
+    width: 120px;
+    border: var(--xh-border-solid);
+    padding: var(--xh-pad-half-px);
+    background: var(--xh-bg-alt);
+
+    margin: var(--xh-pad-half-px);
+
+    align-items: center;
+
+    > div:first-child {
+      font-size: var(--xh-font-size-large-px);
+      color: var(--xh-orange);
+      margin-bottom: var(--xh-pad-half-px);
+    }
+  }
+}
