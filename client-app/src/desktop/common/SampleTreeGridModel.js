@@ -66,7 +66,7 @@ export class SampleTreeGridModel {
         return XH.portfolioService
             .getPositionsAsync(dims, true)
             .then(data => {
-                if (isRefresh || isAutoRefresh) {
+                if (isRefresh) {
                     gridModel.updateData({update: data});
                     if (isAutoRefresh) {
                         XH.toast({
