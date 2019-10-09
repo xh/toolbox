@@ -23,8 +23,10 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model, ...props}) {
+        const {gridModel} = model;
+
         return panel({
-            item: hframe(grid(), gridStyleSwitches()),
+            item: hframe(grid(), gridStyleSwitches({model: gridModel.agGridModel})),
             ref: model.panelRef,
             mask: 'onLoad',
             tbar: [
