@@ -98,7 +98,7 @@ export class RecallsPanelModel {
 
         this.addReaction({
             track: () => gridModel.selectedRecord,
-            run: (rec) => this.detailsPanelModel.setRecord(rec)
+            run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
         });
 
         this.addReaction({
