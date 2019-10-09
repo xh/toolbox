@@ -11,41 +11,32 @@ class FetchTestController extends BaseController {
 
     def index() {
         def status = params['status'],
-            statusInt = status.toInteger()
+            statusInt = status.toInteger(),
+            responseData = ['requestedStatus':  status]
 
         switch(status[0]) {
             case '1':
-            respond(status: statusInt)
-                switch(statusInt) {
-                    case 100:
-                        respond(null, status: statusInt)
-                    break
-                }
-                break;
+                // not quite right for the 1XX
+                // but maybe not worth figuring out right now
+                response.setStatus(statusInt)
+                responseData.put('outcome', 'good')
+                render responseData as JSON
+            break
             case '2':
-                respond(status: statusInt)
-                def responseData = [
-                    'outcome': 'good',
-                    'requestedStatus':  status
-                ]
+                response.setStatus(statusInt)
+                responseData.put('outcome', 'good')
                 render responseData as JSON
             break
             case '3':
                 response.setStatus(statusInt)
                 response.setHeader('Location', "/fetchTest/redirected?status=${status}")
-                def responseData = [
-                    'outcome': 'redirecting...',
-                    'requestedStatus':  status
-                ]
+                responseData.put('outcome', 'redirecting...')
                 render responseData as JSON
             break
             case '4':
             case '5':
                 response.setStatus(statusInt)
-                def responseData = [
-                    'outcome': 'error - as expected',
-                    'requestedStatus':  status
-                ]
+                responseData.put('outcome', 'error - as expected')
                 render responseData as JSON
             break
         }
