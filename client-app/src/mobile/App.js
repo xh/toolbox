@@ -9,17 +9,13 @@ import './App.scss';
 export const App = hoistCmp({
     displayName: 'App',
 
-    render({model}) {
-        const {appMenuModel, navigatorModel} = model;
-
+    render() {
         return panel({
             tbar: appBar({
                 icon: Icon.boxFull({size: 'lg', prefix: 'fal'}),
-                appMenuModel,
-                navigatorModel,
                 hideRefreshButton: false
             }),
-            item: navigator({model: navigatorModel})
+            item: navigator()
         });
     }
 });
