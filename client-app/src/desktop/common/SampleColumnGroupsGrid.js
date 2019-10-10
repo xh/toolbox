@@ -5,17 +5,17 @@
  * Copyright © 2019 Extremely Heavy Industries Inc.
  */
 import {boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
-import {hframe, filler} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistModel, LoadSupport, managed, creates, XH} from '@xh/hoist/core';
+import {filler, hframe} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {numberRenderer} from '@xh/hoist/format';
+import {fmtMillions, fmtNumber, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
 import {gridStyleSwitches} from './GridStyleSwitches';
 
@@ -37,6 +37,12 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
                     label: 'Group rows:',
                     labelAlign: 'left'
                 }),
+                toolbarSep(),
+                switchInput({
+                    bind: 'inMillions',
+                    label: 'Gross in millions:',
+                    labelAlign: 'left'
+                }),
                 filler(),
                 gridCountLabel(),
                 storeFilterField(),
@@ -52,135 +58,186 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
 @LoadSupport
 class Model {
 
+    @managed gridModel;
+    @observable groupRows;
+    @bindable inMillions = false;
+
     panelRef = createRef();
 
-    @managed
-    gridModel = new GridModel({
-        stateModel: 'toolboxGroupGrid',
-        store: {
-            idSpec: rec => `${rec.firstName}~${rec.lastName}~${rec.city}~${rec.state}`
-        },
-        sortBy: 'lastName',
-        emptyText: 'No records found...',
-        enableColChooser: true,
-        enableExport: true,
-        compact: XH.appModel.useCompactGrids,
-        contextMenuFn: () => {
-            return new StoreContextMenu({
-                items: [
-                    {
-                        text: 'View Details',
-                        icon: Icon.search(),
-                        recordsRequired: 1,
-                        actionFn: ({record}) => this.showRecToast(record)
-                    },
-                    '-',
-                    ...GridModel.defaultContextMenuTokens
-                ],
-                gridModel: this.gridModel
-            });
-        },
-        columns: [
-            {
-                headerName: 'Demographics',
-                groupId: 'DEMO',
-                children: [
-                    {
-                        field: 'firstName',
-                        headerName: 'First',
-                        width: 100,
-                        chooserName: 'First Name'
-                    },
-                    {
-                        field: 'lastName',
-                        headerName: 'Last',
-                        width: 100,
-                        chooserName: 'Last Name'
-                    },
-                    {
-                        field: 'city',
-                        width: 120,
-                        hidden: true
-                    },
-                    {
-                        field: 'state',
-                        width: 120
-                    }
-                ]
-            },
-            {
-                field: 'salary',
-                width: 90,
-                align: 'right',
-                renderer: numberRenderer({precision: 0})
-            },
-            {
-                headerName: 'Sales',
-                children: [
-                    {
-                        headerName: 'Projected',
-                        children: [
-                            {
-                                field: 'projectedUnitsSold',
-                                headerName: 'Units',
-                                align: 'right',
-                                width: 70,
-                                chooserName: 'Projected Units',
-                                exportName: 'Projected Units'
-                            },
-                            {
-                                field: 'projectedGross',
-                                headerName: 'Gross',
-                                align: 'right',
-                                width: 100,
-                                renderer: numberRenderer({precision: 0}),
-                                chooserName: 'Projected Gross',
-                                exportName: 'Projected Gross'
-                            }
-                        ]
-                    },
-                    {
-                        headerName: 'Actual',
-                        children: [
-                            {
-                                field: 'actualUnitsSold',
-                                headerName: 'Units',
-                                align: 'right',
-                                width: 70,
-                                chooserName: 'Actual Units',
-                                exportName: 'Actual Units'
-                            },
-                            {
-                                field: 'actualGross',
-                                headerName: 'Gross',
-                                align: 'right',
-                                width: 110,
-                                renderer: numberRenderer({precision: 0}),
-                                chooserName: 'Actual Gross',
-                                exportName: 'Actual Gross'
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                field: 'retain',
-                ...boolCheckCol,
-                width: 70
-            },
-            {...emptyFlexCol}
-        ]
-    });
+    constructor() {
+        this.gridModel = this.createGridModel();
+        this.setGroupRows(true);
 
-    @observable
-    groupRows = (this.gridModel.groupBy && this.gridModel.groupBy.length > 0);
+        this.addReaction({
+            track: () => [this.inMillions],
+            run: () => {
+                this.gridModel.agApi.refreshCells({
+                    columns: ['projectedGross', 'actualGross'],
+                    force: true
+                });
+            }
+        });
+    }
+
 
     //------------------------
     // Implementation
     //------------------------
+    createGridModel() {
+        const unitColOpts = {
+            headerName: 'Units',
+            align: 'right',
+            width: 70,
+            renderer: numberRenderer({precision: 0})
+        };
+
+        const grossColOpts = {
+            headerName: () => 'Gross' + (this.inMillions ? ' (m)' : ''),
+            align: 'right',
+            width: 100,
+            rendererIsComplex: true,
+            // Note this renderer will *not* auto-refresh just because the model observable changes.
+            // To ensure the grid redraws these cells, we add a custom reaction in our model ctor.
+            renderer: (v) => {
+                return this.inMillions ?
+                    fmtMillions(v, {label: true, precision: 2}) :
+                    fmtNumber(v, {precision: 0});
+            }
+        };
+
+        return new GridModel({
+            stateModel: 'toolboxGroupGrid',
+            store: {
+                idSpec: rec => `${rec.firstName}~${rec.lastName}~${rec.city}~${rec.state}`
+            },
+            sortBy: 'lastName',
+            emptyText: 'No records found...',
+            enableColChooser: true,
+            enableExport: true,
+            compact: XH.appModel.useCompactGrids,
+            contextMenuFn: () => {
+                return new StoreContextMenu({
+                    items: [
+                        {
+                            text: 'View Details',
+                            icon: Icon.search(),
+                            recordsRequired: 1,
+                            actionFn: ({record}) => this.showRecToast(record)
+                        },
+                        '-',
+                        ...GridModel.defaultContextMenuTokens
+                    ],
+                    gridModel: this.gridModel
+                });
+            },
+            columns: [
+                {
+                    groupId: 'demographics',
+                    children: [
+                        {
+                            colId: 'fullName',
+                            headerName: 'Name',
+                            width: 140,
+                            chooserName: 'Full Name',
+                            renderer: (v, {record}) => record ? `${record.firstName} ${record.lastName}` : '',
+                            rendererIsComplex: true,
+                            agOptions: {
+                                columnGroupShow: 'closed'
+                            }
+                        },
+                        {
+                            field: 'firstName',
+                            headerName: 'First',
+                            width: 100,
+                            chooserName: 'First Name',
+                            agOptions: {
+                                columnGroupShow: 'open'
+                            }
+                        },
+                        {
+                            field: 'lastName',
+                            headerName: 'Last',
+                            width: 100,
+                            chooserName: 'Last Name',
+                            agOptions: {
+                                columnGroupShow: 'open'
+                            }
+                        },
+                        {
+                            field: 'city',
+                            width: 120,
+                            hidden: true,
+                            agOptions: {
+                                columnGroupShow: 'open'
+                            }
+                        },
+                        {
+                            field: 'state',
+                            width: 120,
+                            agOptions: {
+                                columnGroupShow: 'open'
+                            }
+                        }
+                    ]
+                },
+                {
+                    field: 'salary',
+                    width: 90,
+                    align: 'right',
+                    renderer: numberRenderer({precision: 0, prefix: '$'})
+                },
+                {
+                    groupId: 'sales',
+                    headerName: () => 'Sales' + (this.inMillions ? ' (in millions)' : ''),
+                    children: [
+                        {
+                            groupId: 'projected',
+                            children: [
+                                {
+                                    field: 'projectedUnitsSold',
+                                    chooserName: 'Projected Units',
+                                    exportName: 'Projected Units',
+                                    ...unitColOpts
+                                },
+                                {
+                                    field: 'projectedGross',
+                                    chooserName: 'Projected Gross',
+                                    exportName: 'Projected Gross',
+                                    ...grossColOpts
+                                }
+                            ]
+                        },
+                        {
+                            groupId: 'actual',
+                            children: [
+                                {
+                                    field: 'actualUnitsSold',
+                                    chooserName: 'Actual Units',
+                                    exportName: 'Actual Units',
+                                    ...unitColOpts
+                                },
+                                {
+                                    field: 'actualGross',
+                                    chooserName: 'Actual Gross',
+                                    exportName: 'Actual Gross',
+                                    ...grossColOpts
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    field: 'retain',
+                    ...boolCheckCol,
+                    width: 70
+                },
+                {...emptyFlexCol}
+            ]
+        });
+    }
+
     async doLoadAsync(loadSpec) {
         const sales = await XH.fetchJson({url: 'sales'});
-
         this.gridModel.loadData(sales);
     }
 

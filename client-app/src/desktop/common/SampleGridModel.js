@@ -12,7 +12,6 @@ import {wait} from '@xh/hoist/promise';
 
 import './SampleGrid.scss';
 
-
 @HoistModel
 @LoadSupport
 export class SampleGridModel {
@@ -85,10 +84,11 @@ export class SampleGridModel {
                     ...r
                 };
             },
-            fields: [{
-                name: 'trade_date',
-                type: 'localDate'
-            }]
+            fields: [
+                {
+                    name: 'trade_date',
+                    type: 'localDate'
+                }]
         },
         contextMenuFn: (params, gridModel) => {
             return new StoreContextMenu({
@@ -127,7 +127,15 @@ export class SampleGridModel {
             {
                 field: 'company',
                 width: 200,
-                tooltip: true
+                tooltip: true,
+                headerName: ({gridModel}) => {
+                    let ret = 'Company';
+                    if (gridModel.selectedRecord) {
+                        ret += ` (${gridModel.selectedRecord.company})`;
+                    }
+
+                    return ret;
+                }
             },
             {
                 field: 'winLose',
@@ -183,7 +191,7 @@ export class SampleGridModel {
             {...emptyFlexCol}
         ]
     });
-    
+
     async doLoadAsync(loadSpec) {
         const {trades, summary} = await XH.fetchJson({url: 'trade'}),
             gridModel = this.gridModel;
@@ -208,7 +216,7 @@ export class SampleGridModel {
         if (terminationMethod) {
             terminationMethod = ' via ' + terminationMethod;
         }
-        
+
         XH.toast({
             message: `You asked to terminate ${rec.company}${terminationMethod}. Sorry, ${rec.company}!`,
             icon: Icon.skull(),
