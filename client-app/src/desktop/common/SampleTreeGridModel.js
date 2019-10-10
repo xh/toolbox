@@ -11,7 +11,7 @@ import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {bindable, action} from '@xh/hoist/mobx';
-import {Component, createRef} from 'react';
+import {createRef} from 'react';
 
 @HoistModel
 @LoadSupport
