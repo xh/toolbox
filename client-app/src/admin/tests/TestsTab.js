@@ -13,8 +13,7 @@ import {CubeDataPanel} from './cube/CubeDataPanel';
 import {WebSocketTestPanel} from './websocket/WebSocketTestPanel';
 import {LocalDateTestPanel} from './localDate/LocalDateTestPanel';
 import {PanelResizingTestPanel} from './panels/PanelResizingTestPanel';
-import { FetchApiTestPanel } from './fetch/FetchApiTestPanel';
-
+import {FetchApiTestPanel} from './fetch/FetchApiTestPanel';
 
 export const TestsTab = hoistCmp(
     () => tabContainer({

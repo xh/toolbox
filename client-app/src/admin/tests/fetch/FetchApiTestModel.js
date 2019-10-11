@@ -1,5 +1,5 @@
-import { HoistModel, XH} from '@xh/hoist/core';
-import { bindable } from '@xh/hoist/mobx';
+import {HoistModel, XH} from '@xh/hoist/core';
+import {bindable} from '@xh/hoist/mobx';
 
 
 @HoistModel
@@ -33,7 +33,7 @@ export class FetchApiTestModel {
 
     async requestCodeAsync(code) {
         switch (this.testMethod) {
-            case 'fetch': return this.doFetchASync(code);
+            case 'fetch': return this.doFetchAsync(code);
             default: return  XH.fetchService[this.testMethod]({
                 fetchOpts: {
                     credentials: this.useCreds ? 'include' : 'omit'
@@ -53,7 +53,7 @@ export class FetchApiTestModel {
         }
     }
 
-    async doFetchASync(code) {
+    async doFetchAsync(code) {
         XH.fetch({
             fetchOpts: {
                 credentials: this.useCreds ? 'include' : 'omit'

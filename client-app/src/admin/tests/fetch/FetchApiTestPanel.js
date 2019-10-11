@@ -1,19 +1,19 @@
-import { hoistCmp, creates } from '@xh/hoist/core';
-import { Icon } from '@xh/hoist/icon';
-import { box, hbox, p, vbox, hframe, vframe } from '@xh/hoist/cmp/layout';
-import { button } from '@xh/hoist/desktop/cmp/button';
-import { panel } from '@xh/hoist/desktop/cmp/panel';
-import { select, jsonInput} from '@xh/hoist/desktop/cmp/input';
+import {hoistCmp, creates} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
+import {box, hbox, p, vbox, hframe, vframe} from '@xh/hoist/cmp/layout';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {select, jsonInput} from '@xh/hoist/desktop/cmp/input';
 
-import { FetchApiTestModel } from './FetchApiTestModel';
+import {FetchApiTestModel} from './FetchApiTestModel';
 
 import './FetchApiTestStyles.scss';
 
 
 export const FetchApiTestPanel = hoistCmp({
-    model: creates(() => new FetchApiTestModel()),
+    model: creates(FetchApiTestModel),
 
-    render({ model }) {
+    render({model}) {
         return panel({
             title: 'Fetch API Tester',
             icon: Icon.rocket(),
