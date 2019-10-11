@@ -1,10 +1,11 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {hoistCmp, creates, uses} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, hbox, vbox, hframe, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select, jsonInput} from '@xh/hoist/desktop/cmp/input';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
+import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {FetchApiTestModel} from './FetchApiTestModel';
 
@@ -38,25 +39,21 @@ export const FetchApiTestPanel = hoistCmp({
                             width: 110
                         })
                     ],
-                    item: vbox({
-                        style: {overflowY: 'scroll'},
-                        items: model.codes.map(it => hframe({
-                            className: 'http-status-code-frame',
-                            overflow: 'unset',
-                            items: [
-                                button({
-                                    flexGrow: 1,
-                                    className: 'http-status-code-button',
-                                    text: `${it.code}: ${it.description}`,
-                                    onClick: () => model.requestCodeAsync(it.code),
-                                    minimal: false
-                                }),
-                                button({
-                                    icon: Icon.info(),
-                                    onClick: () => window.open(`${model.referenceSite}${it.code}`),
-                                    minimal: false
-                                })]
-                        }))
+                    item: tabContainer({
+                        model: {
+                            tabs: [
+                                {
+                                    id: 'individual', 
+                                    title: 'Individual Codes', 
+                                    content: individualBtns
+                                },
+                                {
+                                    id: 'groups',
+                                    title: 'Code Groups',
+                                    content: codeGroupBtns
+                                }
+                            ]
+                        }
                     })
                 }),
                 panel({
@@ -79,3 +76,50 @@ export const FetchApiTestPanel = hoistCmp({
         });
     }
 });
+
+const individualBtns = hoistCmp.factory(
+    {
+        model: uses(FetchApiTestModel),
+        render({model}) {
+            return vbox({
+                style: {overflowY: 'scroll'},
+                items: model.codes.map(it => hframe({
+                    className: 'http-status-code-frame',
+                    overflow: 'unset',
+                    items: [
+                        button({
+                            flexGrow: 1,
+                            className: 'http-status-code-button',
+                            text: `${it.code}: ${it.description}`,
+                            onClick: () => model.testCodeAsync(it.code),
+                            minimal: false
+                        }),
+                        button({
+                            icon: Icon.info(),
+                            onClick: () => window.open(`${model.referenceSite}${it.code}`),
+                            minimal: false
+                        })]
+                }))
+            });
+        }
+    }
+);
+
+const codeGroupBtns = hoistCmp.factory(
+    {
+        model: uses(FetchApiTestModel),
+        render({model}) {
+            return vframe({
+                style: {overflowY: 'scroll'},
+                items: model.codes
+                    .filter(it => !(it.code % 100))
+                    .map(it => button({
+                        className: 'http-status-code-group-button',
+                        text: `${it.code.toString().replace(/00$/, 'XX')}: Test all ${it.code}s`,
+                        onClick: () => model.testCodeGroupAsync(it.code),
+                        minimal: false
+                    }))
+            });
+        }
+    }
+);

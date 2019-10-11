@@ -1,7 +1,8 @@
 import {merge} from 'lodash';
 
 import {HoistModel, XH, managed} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {start} from '@xh/hoist/promise';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 
 
@@ -10,7 +11,7 @@ export class FetchApiTestModel {
 
     @bindable testServer;
     @bindable testMethod;
-    @bindable response = null;
+    @observable response = null;
     referenceSite = 'https://httpstatuses.com/';
     testServers = [
         {
@@ -37,44 +38,85 @@ export class FetchApiTestModel {
         this.setTestMethod(this.testMethods[0].value);
     }
 
-    async requestCodeAsync(code) {
-        switch (this.testMethod) {
-            case 'fetch': return this.doFetchAsync(code);
-            default: return  XH.fetchService[this.testMethod](this.requestOptions(code))
-                .then((resp) => this.setResponse(JSON.stringify(resp, undefined, 2)))
-                .catch((err) => this.handleError(err))
-                .linkTo(this.loadModel);
-        }
+    async testCodeGroupAsync(codeGroup) {
+        const testedCodes = [],
+            tests = this.codes
+                .filter(it => it.code >= codeGroup && it.code <= codeGroup + 99)
+                .map(it => {
+                    testedCodes.push(it.code);
+                    return this.doTestAsync(it.code);
+                });
+
+        Promise.all(tests)
+            .then(responses => {
+                this.setResponse(
+                    responses.map((response, idx) => {
+                        const code = testedCodes[idx];
+                        return this.formatResponse(response, code);
+                    })
+                );
+            })
+            .linkTo(this.loadModel);
+    }
+
+    async testCodeAsync(code) {
+        this.doTestAsync(code)
+            .then((resp) => this.setResponse(this.formatResponse(resp, code)))
+            .linkTo(this.loadModel);
+    }
+
+    async doTestAsync(code) {
+        return start(() => {
+            if (this.testMethod == 'fetch') return this.doFetchAsync(code);
+            return  XH.fetchService[this.testMethod](this.requestOptions(code));
+        })
+            .catch((err) => this.handleError(err));
     }
 
     async doFetchAsync(code) {
-        XH.fetch(this.requestOptions(code))
+        return XH.fetch(this.requestOptions(code))
             .then(async (resp) => {
                 const output = this.getResponseProps(resp);
                 output.headers = this.getResponseHeaders(resp);
                 output.body = await this.getResponseBodyAsync(resp);
-                this.setResponse(JSON.stringify(output, undefined, 2));
-            })
-            .catch((err) => this.handleError(err))
-            .linkTo(this.loadModel);
+                return output;
+            });
     }
 
     handleError(err) {
-        let str;
+        let ret;
         if (err.name.includes('HTTP Error')) {
-            try {
-                str = JSON.stringify(err, undefined, 2);
-            } catch (err) {
-                str = err;
-            }
+            ret = err;
         } else {
-            str = JSON.stringify({
+            ret = {
                 name: err.name,
                 message: err.message
-            }, undefined, 2);
+            };
         }
 
-        this.setResponse(str);   
+        return ret;   
+    }
+
+    formatResponse(response, code) {
+        const description = this.codes.find(it => it.code == code).description;
+
+        return {
+            code,
+            description,
+            response
+        };
+    }
+
+    @action 
+    setResponse(obj) {
+        let str;
+        try {
+            str = JSON.stringify(obj, undefined, 2);
+        } catch (err) {
+            str = err;
+        }
+
+        this.response = str;
     }
 
     requestOptions(code) {
