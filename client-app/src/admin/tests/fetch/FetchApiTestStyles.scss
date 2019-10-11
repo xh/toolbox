@@ -1,0 +1,20 @@
+.http-status-code-group-button,
+.http-status-code-frame {
+    margin: 5px 10px;
+    &:first-child {
+        margin-top: 10px;
+    }
+    &:last-child {
+        margin-bottom: 10px;
+    }
+}
+.http-status-code-group-button,
+.http-status-code-button {
+    justify-content: left;
+    margin-right: 1px;
+    span {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+}

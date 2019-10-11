@@ -4,11 +4,15 @@
 !/.idea/scopes/
 !/.idea/copyright/
 *.iml
+.settings
+.project
+.classpath
 
 # Compiled source #
 ###################
 .gradle/
 build/
+bin/
 out/
 /client-app/build/
 /client-app/node_modules/
