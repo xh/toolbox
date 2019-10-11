@@ -43,14 +43,14 @@ export const FetchApiTestPanel = hoistCmp({
                         model: {
                             tabs: [
                                 {
-                                    id: 'individual', 
-                                    title: 'Individual Codes', 
-                                    content: individualBtns
-                                },
-                                {
                                     id: 'groups',
                                     title: 'Code Groups',
                                     content: codeGroupBtns
+                                },
+                                {
+                                    id: 'individual', 
+                                    title: 'Individual Codes', 
+                                    content: individualBtns
                                 }
                             ]
                         }

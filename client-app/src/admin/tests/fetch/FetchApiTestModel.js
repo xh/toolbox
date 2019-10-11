@@ -109,14 +109,7 @@ export class FetchApiTestModel {
 
     @action 
     setResponse(obj) {
-        let str;
-        try {
-            str = JSON.stringify(obj, undefined, 2);
-        } catch (err) {
-            str = err;
-        }
-
-        this.response = str;
+        this.response = JSON.stringify(obj, undefined, 2);
     }
 
     requestOptions(code) {
