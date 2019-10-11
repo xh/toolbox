@@ -1,5 +1,8 @@
-import {HoistModel, XH} from '@xh/hoist/core';
+import {merge} from 'lodash';
+
+import {HoistModel, XH, managed} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
+import {PendingTaskModel} from '@xh/hoist/utils/async';
 
 
 @HoistModel
@@ -26,6 +29,9 @@ export class FetchApiTestModel {
         }, 'getJson', 'postJson', 'putJson', 'deleteJson'
     ]
 
+    @managed
+    loadModel = new PendingTaskModel();
+
     constructor() {
         this.setTestServer(this.testServers[0].value);
         this.setTestMethod(this.testMethods[0].value);
@@ -34,45 +40,23 @@ export class FetchApiTestModel {
     async requestCodeAsync(code) {
         switch (this.testMethod) {
             case 'fetch': return this.doFetchAsync(code);
-            default: return  XH.fetchService[this.testMethod]({
-                fetchOpts: {
-                    credentials: this.useCreds ? 'include' : 'omit'
-                },
-                url: `${this.testServer}${code}`,
-                headers: {
-                    'Expect': code == 100 ? '100-continue' : undefined
-                }
-            }).then(
-                (resp) => {
-                    console.log(resp);
-                    
-                    this.setResponse(JSON.stringify(resp, undefined, 2));
-                }, 
-                (err) => this.handleError(err)
-            );
+            default: return  XH.fetchService[this.testMethod](this.requestOptions(code))
+                .then((resp) => this.setResponse(JSON.stringify(resp, undefined, 2)))
+                .catch((err) => this.handleError(err))
+                .linkTo(this.loadModel);
         }
     }
 
     async doFetchAsync(code) {
-        XH.fetch({
-            fetchOpts: {
-                credentials: this.useCreds ? 'include' : 'omit'
-            },
-            url: `${this.testServer}${code}`,
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Expect': code == 100 ? '100-continue' : undefined
-            }
-        }).then(
-            async (resp) => {
+        XH.fetch(this.requestOptions(code))
+            .then(async (resp) => {
                 const output = this.getResponseProps(resp);
                 output.headers = this.getResponseHeaders(resp);
                 output.body = await this.getResponseBodyAsync(resp);
                 this.setResponse(JSON.stringify(output, undefined, 2));
-            }, 
-            (err) => this.handleError(err)
-        );
+            })
+            .catch((err) => this.handleError(err))
+            .linkTo(this.loadModel);
     }
 
     handleError(err) {
@@ -91,6 +75,29 @@ export class FetchApiTestModel {
         }
 
         this.setResponse(str);   
+    }
+
+    requestOptions(code) {
+        const ret = {
+            fetchOpts: {
+                credentials: this.useCreds ? 'include' : 'omit'
+            },
+            url: `${this.testServer}${code}`,
+            headers: {
+                'Expect': code == 100 ? '100-continue' : undefined
+            }
+        };
+
+        if (this.testMethod == 'fetch') {
+            merge(ret, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+        }
+
+        return ret;
     }
 
     get useCreds() {

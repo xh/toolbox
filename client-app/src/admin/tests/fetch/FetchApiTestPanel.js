@@ -4,6 +4,7 @@ import {box, hbox, p, vbox, hframe, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select, jsonInput} from '@xh/hoist/desktop/cmp/input';
+import {mask} from '@xh/hoist/desktop/cmp/mask';
 
 import {FetchApiTestModel} from './FetchApiTestModel';
 
@@ -81,6 +82,10 @@ export const FetchApiTestPanel = hoistCmp({
                                 }),
                                 padding: 10
                             })
+                        }),
+                        mask({
+                            model: model.loadModel,
+                            spinner: true
                         })
                     ]
                 })
