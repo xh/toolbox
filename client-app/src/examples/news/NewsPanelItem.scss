@@ -1,14 +1,16 @@
 .toolbox-news-panel {
-
   .ag-body-container {
-    .ag-row, .ag-cell, .ag-react-container, .xh-hbox {
+    .ag-row,
+    .ag-cell,
+    .ag-react-container,
+    .xh-hbox {
       height: 100%;
     }
   }
 
   .news-item {
-
-    p, span {
+    p,
+    span {
       /* BOTH of the following are required for text-overflow */
       white-space: nowrap;
       overflow: hidden;
@@ -18,8 +20,6 @@
       display: flex;
       flex-direction: column;
     }
-
-
 
     .overflow-ellipsis {
       text-overflow: ellipsis;
@@ -55,7 +55,5 @@
       margin-right: auto;
       display: block;
     }
-
   }
 }
-
