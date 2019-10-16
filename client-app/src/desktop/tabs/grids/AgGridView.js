@@ -32,9 +32,8 @@ export const AgGridView = hoistCmp({
             item: panel({
                 title: 'Grids › ag-Grid Wrapper',
                 icon: Icon.gridPanel(),
-                flex: 1,
+                className: 'tb-grid-wrapper-panel',
                 width: '95%',
-                marginBottom: 10,
                 mask: 'onLoad',
                 item: hframe(
                     agGrid({

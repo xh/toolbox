@@ -189,9 +189,12 @@ class Model {
                 {
                     groupId: 'sales',
                     headerName: () => 'Sales' + (this.inMillions ? ' (in millions)' : ''),
+                    align: 'center',
                     children: [
                         {
                             groupId: 'projected',
+                            align: 'center',
+                            headerClass: 'xh-blue',
                             children: [
                                 {
                                     field: 'projectedUnitsSold',
@@ -209,6 +212,8 @@ class Model {
                         },
                         {
                             groupId: 'actual',
+                            align: 'center',
+                            headerClass: 'xh-red',
                             children: [
                                 {
                                     field: 'actualUnitsSold',

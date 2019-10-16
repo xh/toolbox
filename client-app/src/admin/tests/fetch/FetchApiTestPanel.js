@@ -26,13 +26,13 @@ export const FetchApiTestPanel = hoistCmp({
                     margin: '0 1px 0 0',
                     flexShrink: 0,
                     tbar: [
-                        box('Svr:'),
+                        box('Server:'),
                         select({
                             bind: 'testServer',
                             options: model.testServers,
-                            width: 160
+                            width: 110
                         }),
-                        box('Mth:'),
+                        box('Method:'),
                         select({
                             bind: 'testMethod',
                             options: model.testMethods,

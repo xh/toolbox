@@ -26,8 +26,7 @@ export const ColumnGroupsGridPanel = hoistCmp(
         item: panel({
             title: 'Grids › Grouped Columns',
             icon: Icon.gridPanel(),
-            width: 900,
-            height: 500,
+            className: 'tb-grid-wrapper-panel',
             item: sampleColumnGroupsGrid()
         })
     })

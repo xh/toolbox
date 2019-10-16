@@ -15,8 +15,8 @@ export class FetchApiTestModel {
     referenceSite = 'https://httpstatuses.com/';
     testServers = [
         {
-            value: '//localhost:8080/fetchTest?status=',
-            label: 'Grails - Localhost'
+            value: 'fetchTest?status=',
+            label: 'Toolbox'
         },
         {
             value: 'https://httpstat.us/',
