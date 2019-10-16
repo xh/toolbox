@@ -1,11 +1,11 @@
 .tbox-samplegrid {
-
   &__selbar {
     font-size: var(--xh-font-size-small-px);
     padding: var(--xh-pad-half-px);
     border-top: var(--xh-border-solid);
+    background-color: var(--xh-bg-highlight);
     align-items: center;
-    svg {margin-right: 4px}
-  }
 
+    svg { margin-right: 4px; }
+  }
 }

@@ -8,6 +8,7 @@ import {DataViewPanel} from './DataViewPanel';
 import {TreeGridPanel} from './TreeGridPanel';
 import {TreeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
 import {AgGridView} from './AgGridView';
+import './GridsTab.scss';
 
 export const GridsTab = hoistCmp(
     () => tabContainer({
