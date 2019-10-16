@@ -9,3 +9,9 @@
   }
 
 }
+
+.ag-cell {
+  &.dirty {
+    background-color: var(--xh-intent-warning);
+  }
+}

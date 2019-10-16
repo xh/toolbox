@@ -117,17 +117,35 @@ export class SampleGridModel {
             },
             {
                 ...actionCol,
-                width: calcActionColWidth(2),
+                width: calcActionColWidth(3),
                 actionsShowOnHoverOnly: true,
                 actions: [
                     this.viewDetailsAction,
-                    this.terminateAction
+                    this.terminateAction,
+                    {
+                        icon: Icon.save(),
+                        intent: 'primary',
+                        displayFn: ({record}) => ({disabled: !record.isDirty}),
+                        actionFn: ({record}) => {
+                            console.debug('Record', record, 'has dirty fields', record.dirtyFields);
+                            record.store.updateRecordData(record, {company: record.company});
+                        }
+                    }
                 ]
             },
             {
                 field: 'company',
                 width: 200,
-                tooltip: true
+                tooltip: true,
+                agOptions: {
+                    editable: true,
+                    valueSetter: ({newValue, data: record}) => {
+                        this.gridModel.store.updateRecordFields(record, {company: newValue});
+                    },
+                    cellClassRules: {
+                        'dirty': ({data}) => data.isFieldDirty('company')
+                    }
+                }
             },
             {
                 field: 'winLose',
