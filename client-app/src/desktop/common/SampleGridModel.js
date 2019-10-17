@@ -117,20 +117,11 @@ export class SampleGridModel {
             },
             {
                 ...actionCol,
-                width: calcActionColWidth(3),
+                width: calcActionColWidth(2),
                 actionsShowOnHoverOnly: true,
                 actions: [
                     this.viewDetailsAction,
-                    this.terminateAction,
-                    {
-                        icon: Icon.save(),
-                        intent: 'primary',
-                        displayFn: ({record}) => ({disabled: !record.isDirty}),
-                        actionFn: ({record}) => {
-                            console.debug('Record', record, 'has dirty fields', record.dirtyFields);
-                            record.store.updateRecordData(record, {company: record.company});
-                        }
-                    }
+                    this.terminateAction
                 ]
             },
             {
@@ -144,15 +135,6 @@ export class SampleGridModel {
                     }
 
                     return ret;
-                },
-                agOptions: {
-                    editable: true,
-                    valueSetter: ({newValue, data: record}) => {
-                        this.gridModel.store.updateRecordFields(record, {company: newValue});
-                    },
-                    cellClassRules: {
-                        'dirty': ({data}) => data.isFieldDirty('company')
-                    }
                 }
             },
             {
