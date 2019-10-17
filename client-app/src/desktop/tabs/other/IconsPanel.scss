@@ -16,7 +16,8 @@
       height: 100%;
       width: 100%;
 
-      th, td {
+      th,
+      td {
         text-align: center;
         width: 25%;
         padding: 4px 0;
@@ -30,6 +31,7 @@
       tr {
         display: table;
         width: 100%;
+
         &:nth-child(even) {
           background-color: var(--xh-grid-bg-odd);
         }
@@ -40,5 +42,4 @@
       }
     }
   }
-
 }
