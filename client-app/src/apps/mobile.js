@@ -12,5 +12,5 @@ XH.renderApp({
     isMobile: true,
     isSSO: false,
     checkAccess: 'APP_READER',
-    loginMessage: '👤 toolbox@xh.io + 🔐 toolbox'
+    loginMessage: '👤 toolbox@xh.io + 🔑 toolbox'
 });
