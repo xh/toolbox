@@ -32,6 +32,7 @@ export class InputsPanelModel {
             {name: 'date1'},
             {name: 'date2', initialValue: moment().startOf('hour').toDate()},
             {name: 'localDate', initialValue: LocalDate.today()},
+            {name: 'time'},
             {name: 'bool1'},
             {name: 'bool2'},
             {name: 'buttonGroup1', initialValue: 'button2'}

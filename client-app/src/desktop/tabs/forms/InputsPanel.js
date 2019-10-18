@@ -15,7 +15,8 @@ import {
     slider,
     switchInput,
     textArea,
-    textInput
+    textInput,
+    timeInput
 } from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -208,6 +209,17 @@ const formContents = hoistCmp.factory(
                         layout: {width: 130},
                         item: dateInput({
                             valueType: 'localDate'
+                        })
+                    }),
+                    row({
+                        label: 'TimeInput',
+                        field: 'time',
+                        info: 'minTime, maxTime, showArrowButtons, useAmPm',
+                        item: timeInput({
+                            minTime: moment().set({'hour': 8, 'minute': 0, 'second': 0, 'millisecond': 0}).toDate(),
+                            maxTime: moment().set({'hour': 17, 'minute': 0, 'second': 0, 'millisecond': 0}).toDate(),
+                            showArrowButtons: true,
+                            useAmPm: true
                         })
                     })
                 ]
