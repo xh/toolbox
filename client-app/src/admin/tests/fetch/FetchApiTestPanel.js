@@ -1,4 +1,4 @@
-import {hoistCmp, creates, uses} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {box, hbox, vbox, hframe, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -78,48 +78,38 @@ export const FetchApiTestPanel = hoistCmp({
 });
 
 const individualBtns = hoistCmp.factory(
-    {
-        model: uses(FetchApiTestModel),
-        render({model}) {
-            return vbox({
-                style: {overflowY: 'scroll'},
-                items: model.codes.map(it => hframe({
-                    className: 'http-status-code-frame',
-                    overflow: 'unset',
-                    items: [
-                        button({
-                            flexGrow: 1,
-                            className: 'http-status-code-button',
-                            text: `${it.code}: ${it.description}`,
-                            onClick: () => model.testCodeAsync(it.code),
-                            minimal: false
-                        }),
-                        button({
-                            icon: Icon.info(),
-                            onClick: () => window.open(`${model.referenceSite}${it.code}`),
-                            minimal: false
-                        })]
-                }))
-            });
-        }
-    }
+    ({model}) => vbox({
+        style: {overflowY: 'scroll'},
+        items: model.codes.map(it => hframe({
+            className: 'http-status-code-frame',
+            overflow: 'unset',
+            items: [
+                button({
+                    flexGrow: 1,
+                    className: 'http-status-code-button',
+                    text: `${it.code}: ${it.description}`,
+                    onClick: () => model.testCodeAsync(it.code),
+                    minimal: false
+                }),
+                button({
+                    icon: Icon.info(),
+                    onClick: () => window.open(`${model.referenceSite}${it.code}`),
+                    minimal: false
+                })]
+        }))
+    })
 );
 
 const codeGroupBtns = hoistCmp.factory(
-    {
-        model: uses(FetchApiTestModel),
-        render({model}) {
-            return vframe({
-                style: {overflowY: 'scroll'},
-                items: model.codes
-                    .filter(it => !(it.code % 100))
-                    .map(it => button({
-                        className: 'http-status-code-group-button',
-                        text: `${it.code.toString().replace(/00$/, 'XX')}: Test all ${it.code}s`,
-                        onClick: () => model.testCodeGroupAsync(it.code),
-                        minimal: false
-                    }))
-            });
-        }
-    }
+    ({model}) => vframe({
+        style: {overflowY: 'scroll'},
+        items: model.codes
+            .filter(it => !(it.code % 100))
+            .map(it => button({
+                className: 'http-status-code-group-button',
+                text: `${it.code.toString().replace(/00$/, 'XX')}: Test all ${it.code}s`,
+                onClick: () => model.testCodeGroupAsync(it.code),
+                minimal: false
+            }))
+    })
 );
