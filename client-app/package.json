@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@xh/hoist": "28.1.0",
+    "@xh/hoist": "^29.0.0-SNAPSHOT",
     "react": "~16.8.6",
     "react-dom": "~16.8.6",
     "react-dom-factories": "~1.0.2"
