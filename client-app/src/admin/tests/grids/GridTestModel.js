@@ -95,7 +95,7 @@ export class GridTestModel {
     updateData(updates) {
         const loadStart = Date.now();
         return start(() => {
-            this.gridModel.updateData(updates);
+            this.gridModel.loadDataTransaction(updates);
         }).finally(() => {
             this.setGridUpdateTime(Date.now() - loadStart);
         });
