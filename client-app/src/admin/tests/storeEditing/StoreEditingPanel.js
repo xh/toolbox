@@ -17,6 +17,12 @@ export const StoreEditingPanel = hoistCmp({
                     text: 'Add',
                     intent: 'success',
                     onClick: () => model.add()
+                }),
+                button({
+                    icon: Icon.undo(),
+                    text: 'Revert Changes',
+                    intent: 'warning',
+                    onClick: () => model.revert()
                 })
             ],
             item: vframe(
