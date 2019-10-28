@@ -6,6 +6,8 @@ import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/mobile/cmp/form';
+import {fmtDate} from '@xh/hoist/format';
+import {LocalDate} from '@xh/hoist/utils/datetime';
 import {
     label,
     textInput,
@@ -13,6 +15,7 @@ import {
     numberInput,
     buttonGroupInput,
     checkbox,
+    dateInput,
     switchInput,
     textArea,
     searchInput
@@ -66,6 +69,19 @@ const formCmp = hoistCmp.factory(
                         })
                     }),
                     formField({
+                        field: 'date',
+                        item: dateInput()
+                    }),
+                    formField({
+                        field: 'localDate',
+                        item: dateInput({
+                            minDate: LocalDate.today().subtract(2),
+                            maxDate: LocalDate.today().add(1, 'month'),
+                            textAlign: 'right',
+                            valueType: 'localDate'
+                        })
+                    }),
+                    formField({
                         field: 'included',
                         item: checkbox()
                     }),
@@ -113,6 +129,10 @@ const results = hoistCmp.factory(
                 fieldResult({field: 'name'}),
                 fieldResult({field: 'movie'}),
                 fieldResult({field: 'salary'}),
+                fieldResult({field: 'date', renderer: v => fmtDate(v)}),
+                fieldResult({field: 'localDate', renderer: v => v.toString()}),
+                fieldResult({field: 'included'}),
+                fieldResult({field: 'enabled'}),
                 fieldResult({field: 'buttonGroup'}),
                 fieldResult({field: 'notes'}),
                 fieldResult({field: 'searchQuery'})
@@ -135,13 +155,13 @@ const bbar = hoistCmp.factory(
 );
 
 const fieldResult = hoistCmp.factory(
-    ({model, field}) => {
+    ({model, field, renderer}) => {
         const {displayName, value} = model.formModel.fields[field];
         return div({
             className: 'form-field-result',
             items: [
                 label(displayName),
-                div(value)
+                div(renderer ? renderer(value) : value)
             ]
         });
     }
