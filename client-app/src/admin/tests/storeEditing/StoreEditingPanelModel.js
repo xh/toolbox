@@ -3,7 +3,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns';
 import {Icon} from '@xh/hoist/icon';
 import {action} from '@xh/hoist/mobx';
-import {max} from 'lodash';
+import {max, isEmpty} from 'lodash';
 
 @HoistModel
 export class StoreEditingPanelModel {
@@ -131,7 +131,32 @@ export class StoreEditingPanelModel {
     }
 
     add() {
-        this.store.addRecords({name: 'My New Record!'});
+        this.store.addRecord();
+    }
+
+    addFive() {
+        this.store.addRecords([
+            {name: 'New Record 1'},
+            {name: 'New Record 2'},
+            {name: 'New Record 3'},
+            {name: 'New Record 4'},
+            {name: 'New Record 5'}
+        ]);
+    }
+
+    @action
+    commitAll() {
+        const {store} = this,
+            {addedRecords, updatedRecords, removedRecords} = store,
+            nextId = this.getNextId(),
+            transaction = {
+                add: addedRecords.map((it, idx) => ({id: nextId + idx, ...it.data})),
+                update: updatedRecords.map(it => ({id: it.id, ...it.data})),
+                remove: removedRecords.map(it => it.id)
+            };
+
+        store.removeRecords(addedRecords);
+        store.loadDataTransaction(transaction);
     }
 
     async revert() {
@@ -160,8 +185,7 @@ export class StoreEditingPanelModel {
             store.removeRecords(record);
 
             // 2. Construct new record raw data, with a valid assigned id
-            const id = max(store.originalRecords.map(it => it.id)) + 1;
-            store.loadDataTransaction({add: [{id, ...record.data}]});
+            store.loadDataTransaction({add: [{id: this.getNextId(), ...record.data}]});
         } else {
             store.loadDataTransaction({update: [{id: record.id, ...record.data}]});
         }
@@ -170,6 +194,14 @@ export class StoreEditingPanelModel {
     @action
     revertRecord(record) {
         this.store.revertRecords(record);
+    }
+
+    getNextId() {
+        const {store} = this,
+            {originalRecords} = store;
+
+        if (isEmpty(originalRecords)) return 0;
+        return max(originalRecords.map(it => it.id)) + 1;
     }
 
 }

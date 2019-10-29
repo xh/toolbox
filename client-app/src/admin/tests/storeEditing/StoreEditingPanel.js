@@ -19,9 +19,21 @@ export const StoreEditingPanel = hoistCmp({
                     onClick: () => model.add()
                 }),
                 button({
+                    icon: Icon.add(),
+                    text: 'Add 5',
+                    intent: 'success',
+                    onClick: () => model.addFive(0)
+                }),
+                button({
+                    icon: Icon.check(),
+                    text: 'Commit All',
+                    intent: 'success',
+                    onClick: () => model.commitAll()
+                }),
+                button({
                     icon: Icon.undo(),
-                    text: 'Revert Changes',
-                    intent: 'warning',
+                    text: 'Revert All',
+                    intent: 'primary',
                     onClick: () => model.revert()
                 })
             ],
