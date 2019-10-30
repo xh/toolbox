@@ -130,7 +130,7 @@ const results = hoistCmp.factory(
                 fieldResult({field: 'movie'}),
                 fieldResult({field: 'salary'}),
                 fieldResult({field: 'date', renderer: v => fmtDate(v)}),
-                fieldResult({field: 'localDate', renderer: v => v.toString()}),
+                fieldResult({field: 'localDate', renderer: v => v?.toString()}),
                 fieldResult({field: 'included'}),
                 fieldResult({field: 'enabled'}),
                 fieldResult({field: 'buttonGroup'}),
