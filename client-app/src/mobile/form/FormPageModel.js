@@ -1,8 +1,6 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {FormModel, required, lengthIs} from '@xh/hoist/cmp/form';
 import {bindable} from '@xh/hoist/mobx';
-import {LocalDate} from '@xh/hoist/utils/datetime';
-import moment from 'moment';
 
 import {movies} from '../../core/data';
 
@@ -18,8 +16,7 @@ export class FormPageModel {
             {name: 'name', rules: [required, lengthIs({min: 8})]},
             {name: 'movie', rules: [required]},
             {name: 'salary'},
-            {name: 'date', initialValue: moment().toDate(), rules: [required]},
-            {name: 'localDate', initialValue: LocalDate.today()},
+            {name: 'date', rules: [required]},
             {name: 'included'},
             {name: 'enabled'},
             {name: 'buttonGroup', initialValue: 'button2'},

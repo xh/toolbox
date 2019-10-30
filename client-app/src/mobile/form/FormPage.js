@@ -70,10 +70,6 @@ const formCmp = hoistCmp.factory(
                     }),
                     formField({
                         field: 'date',
-                        item: dateInput()
-                    }),
-                    formField({
-                        field: 'localDate',
                         item: dateInput({
                             minDate: LocalDate.today().subtract(2),
                             maxDate: LocalDate.today().add(1, 'month'),
@@ -129,8 +125,7 @@ const results = hoistCmp.factory(
                 fieldResult({field: 'name'}),
                 fieldResult({field: 'movie'}),
                 fieldResult({field: 'salary'}),
-                fieldResult({field: 'date', renderer: v => fmtDate(v)}),
-                fieldResult({field: 'localDate', renderer: v => v?.toString()}),
+                fieldResult({field: 'date', renderer: v => v?.toString()}),
                 fieldResult({field: 'included'}),
                 fieldResult({field: 'enabled'}),
                 fieldResult({field: 'buttonGroup'}),
