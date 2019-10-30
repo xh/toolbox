@@ -6,7 +6,6 @@ import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/mobile/cmp/form';
-import {fmtDate} from '@xh/hoist/format';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {
     label,
