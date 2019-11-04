@@ -33,7 +33,7 @@ export const PanelResizingTestPanel = hoistCmp({
                     compactHeader: true,
                     item: box({
                         padding: 10,
-                        item: 'Collapsible Top'
+                        item: `Collapsible Top (minSize: ${model.topPanel1Model.minSize}px)`
                     }),
                     headerItems: [
                         relativeTimestamp({
@@ -82,7 +82,7 @@ export const PanelResizingTestPanel = hoistCmp({
                             compactHeader: true,
                             item: box({
                                 className: 'xh-pad',
-                                item: 'Collapsible Left'
+                                item: `Collapsible Left (minSize: ${model.leftPanel2Model.minSize}px)`
                             })
                         }),
                         panel({
@@ -125,7 +125,7 @@ export const PanelResizingTestPanel = hoistCmp({
                             compactHeader: true,
                             item: box({
                                 className: 'xh-pad',
-                                item: 'Collapsible Right'
+                                item: `Collapsible Right (minSize: ${model.rightPanel1Model.minSize}px)`
                             })
                         })
                     ]
@@ -138,7 +138,7 @@ export const PanelResizingTestPanel = hoistCmp({
                     compactHeader: true,
                     item: box({
                         padding: 10,
-                        item: 'Collapsible Bottom'
+                        item: `Collapsible Bottom (minSize: ${model.bottomPanel2Model.minSize}px)`
                     })
                 }),
                 panel({
