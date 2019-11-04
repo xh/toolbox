@@ -38,6 +38,7 @@ export class PanelResizingTestModel {
         this.topPanel1Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
+            minSize: 50,
             side: 'top'
         });
     
@@ -56,12 +57,14 @@ export class PanelResizingTestModel {
         this.leftPanel2Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 150,
+            minSize: 50,
             side: 'left'
         });
     
         this.rightPanel1Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
+            minSize: 50,
             side: 'right'
         });
     
@@ -80,6 +83,7 @@ export class PanelResizingTestModel {
         this.bottomPanel2Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
+            minSize: 50,
             side: 'bottom'
         });
     }
