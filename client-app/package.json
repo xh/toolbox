@@ -24,18 +24,18 @@
     }
   },
   "dependencies": {
-    "@xh/hoist": "28.1.1",
+    "@xh/hoist": "28.2.0",
     "react": "~16.8.6",
     "react-dom": "~16.8.6",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "~4.3.3",
+    "@xh/hoist-dev-utils": "~4.3.4",
     "cross-env": "~6.0.0",
     "husky": "~3.0.9",
     "lint-staged": "~9.4.2",
     "stylelint": "~11.1.1",
     "stylelint-config-standard": "~19.0.0",
-    "stylelint-scss": "~3.11.1"
+    "stylelint-scss": "~3.12.0"
   }
 }

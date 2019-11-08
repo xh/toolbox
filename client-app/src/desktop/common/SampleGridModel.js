@@ -24,7 +24,7 @@ export class SampleGridModel {
         icon: Icon.search(),
         tooltip: 'View details on the selected company',
         recordsRequired: 1,
-        displayFn: ({record}) => ({tooltip: `View details for ${record.company}`}),
+        displayFn: ({record}) => record ? {tooltip: `View details for ${record.company}`} : null,
         actionFn: ({record}) => this.showInfoToast(record)
     };
 
@@ -36,6 +36,7 @@ export class SampleGridModel {
         recordsRequired: 1,
         actionFn: ({record}) => this.showTerminateToast(record),
         displayFn: ({record}) => {
+            if (!record) return null;
             if (record.city == 'New York') {
                 return {
                     disabled: true,
