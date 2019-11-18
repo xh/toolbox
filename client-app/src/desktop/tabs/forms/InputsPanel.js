@@ -219,7 +219,8 @@ const formContents = hoistCmp.factory(
                             minTime: moment().set({'hour': 8, 'minute': 0, 'second': 0, 'millisecond': 0}).toDate(),
                             maxTime: moment().set({'hour': 17, 'minute': 0, 'second': 0, 'millisecond': 0}).toDate(),
                             showArrowButtons: true,
-                            useAmPm: true
+                            useAmPm: true,
+                            paddingLeft: '200px'
                         })
                     })
                 ]
