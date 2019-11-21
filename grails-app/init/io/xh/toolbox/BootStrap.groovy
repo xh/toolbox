@@ -155,8 +155,10 @@ class BootStrap {
             portfolioDims: [
                 type: 'json',
                 defaultValue: [
-                        value: ["sector", "symbol"],
-                        history: [["sector", "symbol"], ["fund", "trader", "model"], ["region", "sector"]]
+                        value: ['sector', 'symbol'],
+                        history: [['sector', 'symbol'],
+                                  ['fund', 'trader', 'model'],
+                                  ['region', 'sector']]
                 ],
                 local: true,
                 groupName: 'Toolbox - Example Apps',
