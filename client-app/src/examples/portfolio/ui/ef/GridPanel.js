@@ -16,7 +16,7 @@ export const gridPanel = hoistCmp.factory({
         return panel({
             title: 'Positions',
             icon: Icon.portfolio(),
-            item: grid(),
+            item: grid({agOptions: {groupDefaultExpanded: 1}}),
             bbar: [
                 dimensionChooser(),
                 gridCountLabel({unit: 'position'}),
