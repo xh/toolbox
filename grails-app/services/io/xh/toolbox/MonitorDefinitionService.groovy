@@ -2,9 +2,6 @@ package io.xh.toolbox
 
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.MonitorResult
-import io.xh.toolbox.app.FileManagerService
-
-import java.math.MathContext
 
 import static io.xh.hoist.monitor.MonitorStatus.OK
 import static io.xh.hoist.monitor.MonitorStatus.FAIL
@@ -101,5 +98,10 @@ class MonitorDefinitionService extends BaseService {
         } else if (code >= 400) {
             result.status = FAIL
         }
+    }
+
+    def memoryUsage(MonitorResult result) {
+        result.metric = ((double)Runtime.getRuntime().freeMemory() / Runtime.getRuntime().totalMemory() * 100)
+                .setScale(2, BigDecimal.ROUND_HALF_UP)
     }
 }

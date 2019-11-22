@@ -238,6 +238,15 @@ class BootStrap {
                 metricUnit: '',
                 active: true
         )
+        createMonitorIfNeeded(
+                code: 'memoryUsage',
+                name: "Memory Usage of Server",
+                metricType: 'Ceil',
+                metricUnit: '%',
+                warnThreshold: 40,
+                failThreshold: 75,
+                active: true
+        )
     }
 
     private void createMonitorIfNeeded(Map data) {
