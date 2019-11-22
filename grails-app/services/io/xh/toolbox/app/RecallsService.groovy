@@ -6,13 +6,18 @@ import io.xh.hoist.json.JSON
 class RecallsService extends BaseService {
 
     def configService
-    def lastResponseCode;
-    def doneFetch = false;
+
+    //last time we tried to fetch data, did we successfully connect to the server?
     def connectedSuccessfully;
+    //last HTTP code from the server
+    def lastResponseCode;
+    //have we tried to fetch data so far in the lifetime of the server?
+    def doneFetch = false;
 
     List fetchRecalls(String searchQuery) {
         connectedSuccessfully = true;
         doneFetch = true;
+
         def host = configService.getString('recallsHost'),
             url = !searchQuery ?
                 // `_exists_:openfda` ensures all search hits includes a nested openfda object that contains essential data for frontend
@@ -30,6 +35,7 @@ class RecallsService extends BaseService {
                 return JSON.parse(inputStream, 'UTF-8').results
             }
         } catch (IOException e) {
+            //we got an exception, so our connection was not successful.
             connectedSuccessfully = false;
             return []
         } finally {

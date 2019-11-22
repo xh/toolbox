@@ -19,10 +19,21 @@ class MonitorDefinitionService extends BaseService {
     def fileManagerService
     def recallsService
 
+    /**
+     * Check the count of news stories loaded by NewsService
+     * @param result
+     * @return
+     */
     def newsStoryCount(MonitorResult result) {
         result.metric = newsService.itemCount
     }
 
+    /**
+     * Check when the last update to the news was fetched.
+     * If no news stories have been fetched at all, we consider that a failure.
+     * @param result
+     * @return
+     */
     def lastUpdateAgeMins(MonitorResult result) {
         if (newsService.lastTimestamp) {
             def diffMs = currentTimeMillis() - newsService.lastTimestamp.time,
@@ -35,11 +46,21 @@ class MonitorDefinitionService extends BaseService {
         }
     }
 
+    /**
+     * Check whether or not the NewsService has loaded stories from all its sources.
+     * @param result
+     * @return
+     */
     def loadedSourcesCount(MonitorResult result) {
         result.metric = newsService.loadedSourcesCount
         result.status = newsService.allSourcesLoaded ? OK : FAIL
     }
 
+    /**
+     * Check the storage space used by uploaded files in the FileManager app, in megabytes
+     * @param result
+     * @return
+     */
     def storageSpaceUsed(MonitorResult result) {
         //sum up the sizes of all uploaded files..
         def bytes = fileManagerService.list()
@@ -50,6 +71,11 @@ class MonitorDefinitionService extends BaseService {
         result.metric = MiB
     }
 
+    /**
+     * Check whether or not any files that look like executables have been uploaded.
+     * @param result
+     * @return
+     */
     def maliciousFilesFound(MonitorResult result) {
         //count how many uploaded files contain .sh or .exe (i.e. look like an executable)
         result.metric = fileManagerService.list()
@@ -57,6 +83,11 @@ class MonitorDefinitionService extends BaseService {
                 .size()
     }
 
+    /**
+     * Check whether or not we connected to the FDA server successfully for drug recall information.
+     * @param result
+     * @return
+     */
     def recallsFetchStatus(MonitorResult result) {
         def code = recallsService.getLastResponseCode()
         if (!recallsService.getDoneFetch()) {
