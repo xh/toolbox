@@ -9,12 +9,11 @@ export const MapPanel = hoistCmp({
     model: uses(MapPanelModel),
 
     render({model}) {
-        const {panelSizingModel, loadModel} = model;
+        const {loadModel} = model;
 
         return <Panel
-            title={panelSizingModel.collapsed ? 'Treemap' : null}
+            title='Treemap'
             mask={loadModel}
-            model={panelSizingModel}
         >
             <SplitTreeMap/>
         </Panel>;

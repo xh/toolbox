@@ -12,11 +12,14 @@ import {GridPanelModel} from '../../GridPanelModel';
 export const gridPanel = hoistCmp.factory({
     model: uses(GridPanelModel),
 
-    render() {
+    render({model}) {
+        const {panelSizingModel} = model;
+
         return panel({
             title: 'Positions',
             icon: Icon.portfolio(),
             item: grid({agOptions: {groupDefaultExpanded: 1}}),
+            model: panelSizingModel,
             bbar: [
                 dimensionChooser(),
                 gridCountLabel({unit: 'position'}),
