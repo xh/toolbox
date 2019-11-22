@@ -243,8 +243,8 @@ class BootStrap {
                 name: "Memory Usage of Server",
                 metricType: 'Ceil',
                 metricUnit: '%',
-                warnThreshold: 40,
-                failThreshold: 75,
+                warnThreshold: 50,
+                failThreshold: 85,
                 active: true
         )
     }

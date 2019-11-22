@@ -101,7 +101,7 @@ class MonitorDefinitionService extends BaseService {
     }
 
     def memoryUsage(MonitorResult result) {
-        result.metric = ((double)Runtime.getRuntime().freeMemory() / Runtime.getRuntime().totalMemory() * 100)
+        result.metric = (Runtime.getRuntime().freeMemory() / Runtime.getRuntime().totalMemory() * 100)
                 .setScale(2, BigDecimal.ROUND_HALF_UP)
     }
 }
