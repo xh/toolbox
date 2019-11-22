@@ -1,6 +1,7 @@
 package io.xh.toolbox
 
 import io.xh.hoist.config.AppConfig
+import io.xh.hoist.config.ConfigService
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
@@ -192,7 +193,7 @@ class BootStrap {
             code: 'newsStoryCount',
             name: 'Loaded Stories',
             metricType: 'Floor',
-            failThreshold: 0,
+            failThreshold: 1,
             metricUnit: 'stories',
             active: true
         )
@@ -211,6 +212,31 @@ class BootStrap {
             metricType: 'None',
             metricUnit: 'sources',
             active: true
+        )
+        createMonitorIfNeeded(
+                code: 'storageSpaceUsed',
+                name: 'Storage Space Used by Uploaded Files',
+                metricType: 'Ceil',
+                metricUnit: 'MiB',
+                warnThreshold: 16,
+                failThreshold: 32,
+                active: true
+        )
+        createMonitorIfNeeded(
+                code: 'maliciousFilesFound',
+                name: 'Malicious Files Uploaded',
+                metricType: 'Ceil',
+                metricUnit: 'potentially malicious files',
+                warnThreshold: 0,
+                failThreshold: 1,
+                active: true
+        )
+        createMonitorIfNeeded(
+                code: 'recallsFetchStatus',
+                name: "Connection status to ${configService.getString('recallsHost', 'api.fda.gov')}",
+                metricType: 'None',
+                metricUnit: '',
+                active: true
         )
     }
 
