@@ -223,15 +223,6 @@ class BootStrap {
                 active: true
         )
         createMonitorIfNeeded(
-                code: 'maliciousFilesFound',
-                name: 'Malicious Files Uploaded',
-                metricType: 'Ceil',
-                metricUnit: 'potentially malicious files',
-                warnThreshold: 0,
-                failThreshold: 1,
-                active: true
-        )
-        createMonitorIfNeeded(
                 code: 'recallsFetchStatus',
                 name: "Connection status to ${configService.getString('recallsHost', 'api.fda.gov')}",
                 metricType: 'None',

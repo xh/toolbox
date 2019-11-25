@@ -69,18 +69,6 @@ class MonitorDefinitionService extends BaseService {
     }
 
     /**
-     * Check whether or not any files that look like executables have been uploaded.
-     * @param result
-     * @return
-     */
-    def maliciousFilesFound(MonitorResult result) {
-        //count how many uploaded files contain .sh or .exe (i.e. look like an executable)
-        result.metric = fileManagerService.list()
-                .findAll {it.name.matches(".*\\.(sh|exe).*")}
-                .size()
-    }
-
-    /**
      * Check whether or not we connected to the FDA server successfully for drug recall information.
      * @param result
      * @return
