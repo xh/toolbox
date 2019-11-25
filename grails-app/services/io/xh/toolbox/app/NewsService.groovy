@@ -33,7 +33,7 @@ class NewsService extends BaseService {
     // For sample monitors
     //------------------------
     int getItemCount() {
-        return _newsItems ? newsItems.size() : 0
+        return newsItems.size()
     }
 
     int getLoadedSourcesCount() {
