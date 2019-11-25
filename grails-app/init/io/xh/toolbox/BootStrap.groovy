@@ -224,14 +224,14 @@ class BootStrap {
         )
         createMonitorIfNeeded(
                 code: 'recallsFetchStatus',
-                name: "Connection status to FDA API}",
+                name: 'Connection status to FDA API',
                 metricType: 'None',
                 metricUnit: '',
                 active: true
         )
         createMonitorIfNeeded(
                 code: 'memoryUsage',
-                name: "Memory Usage of Server",
+                name: 'Memory Usage of Server',
                 metricType: 'Ceil',
                 metricUnit: '%',
                 warnThreshold: 50,
