@@ -18,8 +18,6 @@ class MonitorDefinitionService extends BaseService {
 
     /**
      * Check the count of news stories loaded by NewsService
-     * @param result
-     * @return
      */
     def newsStoryCount(MonitorResult result) {
         result.metric = newsService.itemCount
@@ -28,8 +26,6 @@ class MonitorDefinitionService extends BaseService {
     /**
      * Check when the last update to the news was fetched.
      * If no news stories have been fetched at all, we consider that a failure.
-     * @param result
-     * @return
      */
     def lastUpdateAgeMins(MonitorResult result) {
         if (newsService.lastTimestamp) {
@@ -45,8 +41,6 @@ class MonitorDefinitionService extends BaseService {
 
     /**
      * Check whether or not the NewsService has loaded stories from all its sources.
-     * @param result
-     * @return
      */
     def loadedSourcesCount(MonitorResult result) {
         result.metric = newsService.loadedSourcesCount
@@ -54,9 +48,7 @@ class MonitorDefinitionService extends BaseService {
     }
 
     /**
-     * Check the storage space used by uploaded files in the FileManager app, in megabytes
-     * @param result
-     * @return
+     * Check the storage space used by uploaded files in the FileManager app, in megabytes\
      */
     def storageSpaceUsed(MonitorResult result) {
         //sum up the sizes of all uploaded files..
@@ -70,8 +62,6 @@ class MonitorDefinitionService extends BaseService {
 
     /**
      * Check whether or not we connected to the FDA server successfully for drug recall information.
-     * @param result
-     * @return
      */
     def recallsFetchStatus(MonitorResult result) {
         recallsService.fetchRecalls('')
@@ -86,6 +76,9 @@ class MonitorDefinitionService extends BaseService {
         }
     }
 
+    /**
+     * Check the current memory usage of the server machine (in %)
+     */
     def memoryUsage(MonitorResult result) {
         result.metric = (Runtime.getRuntime().freeMemory() / Runtime.getRuntime().totalMemory() * 100)
                 .setScale(2, BigDecimal.ROUND_HALF_UP)
