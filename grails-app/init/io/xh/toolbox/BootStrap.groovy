@@ -215,9 +215,9 @@ class BootStrap {
         )
         createMonitorIfNeeded(
                 code: 'storageSpaceUsed',
-                name: 'Storage Space Used by Uploaded Files',
+                name: 'Storage Space Used by File Manager Example App',
                 metricType: 'Ceil',
-                metricUnit: 'MiB',
+                metricUnit: 'MB',
                 warnThreshold: 16,
                 failThreshold: 32,
                 active: true
