@@ -48,7 +48,7 @@ class MonitorDefinitionService extends BaseService {
     }
 
     /**
-     * Check the storage space used by uploaded files in the FileManager app, in megabytes\
+     * Check the storage space used by uploaded files in the FileManager app, in megabytes
      */
     def storageSpaceUsed(MonitorResult result) {
         //sum up the sizes of all uploaded files..
