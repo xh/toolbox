@@ -224,7 +224,7 @@ class BootStrap {
         )
         createMonitorIfNeeded(
                 code: 'recallsFetchStatus',
-                name: "Connection status to ${configService.getString('recallsHost', 'api.fda.gov')}",
+                name: "Connection status to FDA API}",
                 metricType: 'None',
                 metricUnit: '',
                 active: true

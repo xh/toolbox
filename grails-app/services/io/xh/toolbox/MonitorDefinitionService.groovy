@@ -74,11 +74,9 @@ class MonitorDefinitionService extends BaseService {
      * @return
      */
     def recallsFetchStatus(MonitorResult result) {
+        recallsService.fetchRecalls('')
         def code = recallsService.getLastResponseCode()
-        if (!recallsService.getDoneFetch()) {
-            result.message = 'Have not yet tried to fetch recalls.'
-            result.status = OK
-        } else if (!recallsService.getConnectedSuccessfully()) {
+        if (recallsService.lastResponseCode == null) {
             result.message = 'Could not connect to server.'
             result.status = FAIL
         } else if (code >= 300 && code < 400) {

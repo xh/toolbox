@@ -6,13 +6,7 @@ import io.xh.hoist.json.JSON
 class RecallsService extends BaseService {
 
     def configService
-
-    //last time we tried to fetch data, did we successfully connect to the server?
-    def connectedSuccessfully;
-    //last HTTP code from the server
     def lastResponseCode;
-    //have we tried to fetch data so far in the lifetime of the server?
-    def doneFetch = false;
 
     List fetchRecalls(String searchQuery) {
         connectedSuccessfully = true;
@@ -36,7 +30,7 @@ class RecallsService extends BaseService {
             }
         } catch (IOException e) {
             //we got an exception, so our connection was not successful.
-            connectedSuccessfully = false;
+            lastResponseCode = null
             return []
         } finally {
             inputStream?.close()
