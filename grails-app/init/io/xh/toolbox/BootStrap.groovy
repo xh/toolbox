@@ -164,7 +164,7 @@ class BootStrap {
                 groupName: 'Toolbox - Example Apps',
                 note: 'Object containing user\'s dimension picker value & history'
             ],
-            portfolioMapPanelConfig: [
+            portfolioGridPanelConfig: [
                 type: 'json',
                 defaultValue: [:],
                 local: true,

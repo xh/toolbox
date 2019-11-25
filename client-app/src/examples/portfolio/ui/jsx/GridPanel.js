@@ -17,7 +17,7 @@ export const GridPanel = hoistCmp({
         const {panelSizingModel} = model;
 
         return <Panel
-            title={panelSizingModel.collapsed ? 'Treemap' : null}
+            title={panelSizingModel.collapsed ? 'Positions' : null}
             icon={Icon.portfolio()}
             bbar={[
                 <DimensionChooser/>,

@@ -11,7 +11,7 @@ export class GridPanelModel {
     @managed panelSizingModel = new PanelModel({
         defaultSize: 500,
         side: 'left',
-        prefName: 'portfolioMapPanelConfig'
+        prefName: 'portfolioGridPanelConfig'
     });
 
     @bindable loadTimestamp;
