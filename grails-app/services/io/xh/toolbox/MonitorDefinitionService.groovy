@@ -57,7 +57,7 @@ class MonitorDefinitionService extends BaseService {
                 .sum() ?: 0
         //and convert to megabytes rounded to two decimal places
         def MB = (bytes / (1024 * 1024)).setScale(2, BigDecimal.ROUND_HALF_UP)
-        result.metric = MiB
+        result.metric = MB
     }
 
     /**

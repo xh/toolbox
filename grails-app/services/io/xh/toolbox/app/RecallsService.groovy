@@ -9,8 +9,6 @@ class RecallsService extends BaseService {
     def lastResponseCode;
 
     List fetchRecalls(String searchQuery) {
-        connectedSuccessfully = true;
-        doneFetch = true;
 
         def host = configService.getString('recallsHost'),
             url = !searchQuery ?
