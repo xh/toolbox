@@ -102,7 +102,7 @@ class MonitorDefinitionService extends BaseService {
      * Check when the most recent prices in the Portfolio example were generated
      */
     def pricesAgeMs(MonitorResult result) {
-        result.metric = currentTimeMillis() - portfolioService.data.timeCreated
+        result.metric = currentTimeMillis() - portfolioService.data.timeCreated.time
     }
 
     /**
