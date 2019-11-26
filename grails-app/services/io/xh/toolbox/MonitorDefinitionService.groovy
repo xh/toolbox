@@ -1,5 +1,6 @@
 package io.xh.toolbox
 
+import groovy.time.TimeCategory
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.MonitorResult
 import io.xh.hoist.track.TrackLog
@@ -100,13 +101,15 @@ class MonitorDefinitionService extends BaseService {
     }
 
     /**
-     * Check the 99% latency of client page loads
+     * Check the longest page load time in the last hour
      */
-    def ninetyninthPercentileLatency(MonitorResult result) {
-        def latencies = TrackLog.findAll(max: 5000, sort: 'dateCreated', order: 'desc')
-                        .collect{it.elapsed}.sort()
-        def count = latencies.size()
-        def ninetyninth = (int)(count * 0.99)
-        result.metric = (count > 0) ? latencies.get(ninetyninth) : 0
+    def pageLoadTime(MonitorResult result) {
+        def now = new Date()
+        def earlier = null
+        use (TimeCategory) {
+            earlier = now - 1.hours
+        }
+        def worstLoadTime = TrackLog.withCriteria {between('dateCreated', earlier, now)}.collect{it.elapsed}.max()
+        result.metric = worstLoadTime ?: 0
     }
 }

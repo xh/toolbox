@@ -256,8 +256,8 @@ class BootStrap {
             active: true
         )
         createMonitorIfNeeded(
-            code: 'ninetyninthPercentileLatency',
-            name: '99th Percentile Page Load Time',
+            code: 'pageLoadTime',
+            name: 'Worst Page Load Time in Last Hour',
             metricType: 'Ceil',
             metricUnit: 'milliseconds',
             warnThreshold: 10000,
