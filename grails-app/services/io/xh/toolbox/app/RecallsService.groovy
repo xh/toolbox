@@ -6,8 +6,10 @@ import io.xh.hoist.json.JSON
 class RecallsService extends BaseService {
 
     def configService
+    def lastResponseCode
 
     List fetchRecalls(String searchQuery) {
+
         def host = configService.getString('recallsHost'),
             url = !searchQuery ?
                 // `_exists_:openfda` ensures all search hits includes a nested openfda object that contains essential data for frontend
@@ -17,17 +19,18 @@ class RecallsService extends BaseService {
         def connection = url.openConnection(),
             inputStream = null
         try {
+            lastResponseCode = connection.responseCode
             if (connection.responseCode == 404) {
                 return []
             } else {
                 inputStream = connection.getInputStream()
                 return JSON.parse(inputStream, 'UTF-8').results
             }
+        } catch (IOException e) {
+            lastResponseCode = null
+            return []
         } finally {
             inputStream?.close()
         }
-
     }
-
-
 }
