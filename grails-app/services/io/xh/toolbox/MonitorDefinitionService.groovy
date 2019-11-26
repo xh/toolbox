@@ -85,10 +85,16 @@ class MonitorDefinitionService extends BaseService {
                 .setScale(2, BigDecimal.ROUND_HALF_UP)
     }
 
+    /**
+     * Check the current number of positions in the Portfolio example
+     */
     def positionCount(MonitorResult result) {
         result.metric = portfolioService.data.rawPositions.size()
     }
 
+    /**
+     * Check the current number of instruments in the Portfolio example
+     */
     def instrumentCount(MonitorResult result) {
         result.metric = portfolioService.data.instruments.size()
     }
