@@ -257,7 +257,7 @@ class BootStrap {
         )
         createMonitorIfNeeded(
                 code: 'ninetyninthPercentileLatency',
-                name: '99th Percentile Page Load Latency',
+                name: '99th Percentile Page Load Time',
                 metricType: 'Ceil',
                 metricUnit: 'milliseconds',
                 warnThreshold: 10000,
