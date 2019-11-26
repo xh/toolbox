@@ -190,7 +190,7 @@ class BootStrap {
     private void ensureMonitorsCreated() {
         createMonitorIfNeeded(
             code: 'instrumentCount',
-            name: 'Number of Instruments',
+            name: 'Portfolio: Number of Instruments',
             metricType: 'Floor',
             metricUnit: 'instruments',
             warnThreshold: 50,
@@ -199,7 +199,7 @@ class BootStrap {
         )
         createMonitorIfNeeded(
             code: 'positionCount',
-            name: 'Number of Positions',
+            name: 'Portfolio: Number of Positions',
             metricType: 'Floor',
             metricUnit: 'positions',
             warnThreshold: 50,
@@ -208,7 +208,7 @@ class BootStrap {
         )
         createMonitorIfNeeded(
             code: 'newsStoryCount',
-            name: 'Loaded Stories',
+            name: 'News: Loaded Stories',
             metricType: 'Floor',
             failThreshold: 1,
             metricUnit: 'stories',
@@ -216,7 +216,7 @@ class BootStrap {
         )
         createMonitorIfNeeded(
             code: 'lastUpdateAgeMins',
-            name: 'Most Recent Story',
+            name: 'News: Most Recent Story',
             metricType: 'Ceil',
             metricUnit: 'minutes since last story',
             warnThreshold: 60,
@@ -225,14 +225,14 @@ class BootStrap {
         )
         createMonitorIfNeeded(
             code: 'loadedSourcesCount',
-            name: 'All Sources Loaded',
+            name: 'News: Sources Loaded',
             metricType: 'None',
             metricUnit: 'sources',
             active: true
         )
         createMonitorIfNeeded(
             code: 'storageSpaceUsed',
-            name: 'Storage Space Used by File Manager Example App',
+            name: 'FileManager: Storage Space',
             metricType: 'Ceil',
             metricUnit: 'MB',
             warnThreshold: 16,
@@ -241,7 +241,7 @@ class BootStrap {
         )
         createMonitorIfNeeded(
             code: 'recallsFetchStatus',
-            name: 'Connection status to FDA API',
+            name: 'Recalls: Connection to FDA API',
             metricType: 'None',
             metricUnit: '',
             active: true
@@ -256,10 +256,10 @@ class BootStrap {
             active: true
         )
         createMonitorIfNeeded(
-            code: 'pageLoadTime',
-            name: 'Worst Page Load Time in Last Hour',
+            code: 'longestPageLoadMs',
+            name: 'Longest Page Load in Last Hour',
             metricType: 'Ceil',
-            metricUnit: 'milliseconds',
+            metricUnit: 'ms',
             warnThreshold: 10000,
             failThreshold: 30000,
             active: true

@@ -6,7 +6,7 @@ import io.xh.hoist.json.JSON
 class RecallsService extends BaseService {
 
     def configService
-    def lastResponseCode;
+    def lastResponseCode
 
     List fetchRecalls(String searchQuery) {
 
@@ -27,7 +27,6 @@ class RecallsService extends BaseService {
                 return JSON.parse(inputStream, 'UTF-8').results
             }
         } catch (IOException e) {
-            //we got an exception, so our connection was not successful.
             lastResponseCode = null
             return []
         } finally {

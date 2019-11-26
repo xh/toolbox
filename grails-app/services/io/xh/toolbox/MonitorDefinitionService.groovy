@@ -10,6 +10,7 @@ import static io.xh.hoist.monitor.MonitorStatus.FAIL
 import static io.xh.hoist.monitor.MonitorStatus.UNKNOWN
 import static io.xh.hoist.monitor.MonitorStatus.WARN
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
+import static java.lang.Runtime.runtime
 import static java.lang.System.currentTimeMillis
 
 class MonitorDefinitionService extends BaseService {
@@ -54,12 +55,10 @@ class MonitorDefinitionService extends BaseService {
      * Check the storage space used by uploaded files in the FileManager app, in megabytes
      */
     def storageSpaceUsed(MonitorResult result) {
-        // sum up the sizes of all uploaded files..
+        // sum up the sizes of all uploaded files as MB
         def bytes = fileManagerService.list()
                 .sum {it.length()} ?: 0
-        // and convert to megabytes rounded to two decimal places
-        def MB = ((double)(bytes / (1024 * 1024))).round(2)
-        result.metric = MB
+        result.metric = ((double)(bytes / (1024 * 1024))).round(2)
     }
 
     /**
@@ -67,8 +66,8 @@ class MonitorDefinitionService extends BaseService {
      */
     def recallsFetchStatus(MonitorResult result) {
         recallsService.fetchRecalls('')
-        def code = recallsService.getLastResponseCode()
-        if (code == null) {
+        def code = recallsService.lastResponseCode
+        if (!code) {
             result.message = 'Could not connect to server.'
             result.status = FAIL
         } else if (code >= 300 && code < 400) {
@@ -82,7 +81,7 @@ class MonitorDefinitionService extends BaseService {
      * Check the current memory usage of the server machine (in %)
      */
     def memoryUsage(MonitorResult result) {
-        result.metric = ((double)(Runtime.runtime.freeMemory() / Runtime.runtime.totalMemory() * 100))
+        result.metric = ((double) (runtime.freeMemory() / runtime.totalMemory() * 100))
                 .round(2)
     }
 
@@ -103,13 +102,13 @@ class MonitorDefinitionService extends BaseService {
     /**
      * Check the longest page load time in the last hour
      */
-    def pageLoadTime(MonitorResult result) {
+    def longestPageLoadMs(MonitorResult result) {
         def now = new Date()
         def earlier = null
         use (TimeCategory) {
             earlier = now - 1.hours
         }
-        def worstLoadTime = TrackLog.withCriteria {between('dateCreated', earlier, now)}.collect{it.elapsed}.max()
+        def worstLoadTime = TrackLog.withCriteria {between('dateCreated', earlier, now)}.max{it.elapsed}?.elapsed
         result.metric = worstLoadTime ?: 0
     }
 }
