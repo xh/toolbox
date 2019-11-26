@@ -189,22 +189,22 @@ class BootStrap {
 
     private void ensureMonitorsCreated() {
         createMonitorIfNeeded(
-                code: 'instrumentCount',
-                name: 'Number of Instruments',
-                metricType: 'Floor',
-                metricUnit: 'instruments',
-                warnThreshold: 50,
-                failThreshold: 10,
-                active: true
+            code: 'instrumentCount',
+            name: 'Number of Instruments',
+            metricType: 'Floor',
+            metricUnit: 'instruments',
+            warnThreshold: 50,
+            failThreshold: 10,
+            active: true
         )
         createMonitorIfNeeded(
-                code: 'positionCount',
-                name: 'Number of Positions',
-                metricType: 'Floor',
-                metricUnit: 'positions',
-                warnThreshold: 50,
-                failThreshold: 10,
-                active: true
+            code: 'positionCount',
+            name: 'Number of Positions',
+            metricType: 'Floor',
+            metricUnit: 'positions',
+            warnThreshold: 50,
+            failThreshold: 10,
+            active: true
         )
         createMonitorIfNeeded(
             code: 'newsStoryCount',
@@ -231,38 +231,38 @@ class BootStrap {
             active: true
         )
         createMonitorIfNeeded(
-                code: 'storageSpaceUsed',
-                name: 'Storage Space Used by File Manager Example App',
-                metricType: 'Ceil',
-                metricUnit: 'MB',
-                warnThreshold: 16,
-                failThreshold: 32,
-                active: true
+            code: 'storageSpaceUsed',
+            name: 'Storage Space Used by File Manager Example App',
+            metricType: 'Ceil',
+            metricUnit: 'MB',
+            warnThreshold: 16,
+            failThreshold: 32,
+            active: true
         )
         createMonitorIfNeeded(
-                code: 'recallsFetchStatus',
-                name: 'Connection status to FDA API',
-                metricType: 'None',
-                metricUnit: '',
-                active: true
+            code: 'recallsFetchStatus',
+            name: 'Connection status to FDA API',
+            metricType: 'None',
+            metricUnit: '',
+            active: true
         )
         createMonitorIfNeeded(
-                code: 'memoryUsage',
-                name: 'Memory Usage of Server',
-                metricType: 'Ceil',
-                metricUnit: '%',
-                warnThreshold: 50,
-                failThreshold: 85,
-                active: true
+            code: 'memoryUsage',
+            name: 'Memory Usage of Server',
+            metricType: 'Ceil',
+            metricUnit: '%',
+            warnThreshold: 50,
+            failThreshold: 85,
+            active: true
         )
         createMonitorIfNeeded(
-                code: 'ninetyninthPercentileLatency',
-                name: '99th Percentile Page Load Time',
-                metricType: 'Ceil',
-                metricUnit: 'milliseconds',
-                warnThreshold: 10000,
-                failThreshold: 30000,
-                active: true
+            code: 'ninetyninthPercentileLatency',
+            name: '99th Percentile Page Load Time',
+            metricType: 'Ceil',
+            metricUnit: 'milliseconds',
+            warnThreshold: 10000,
+            failThreshold: 30000,
+            active: true
         )
     }
 

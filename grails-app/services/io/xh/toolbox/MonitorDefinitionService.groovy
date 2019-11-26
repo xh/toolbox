@@ -53,12 +53,11 @@ class MonitorDefinitionService extends BaseService {
      * Check the storage space used by uploaded files in the FileManager app, in megabytes
      */
     def storageSpaceUsed(MonitorResult result) {
-        //sum up the sizes of all uploaded files..
+        // sum up the sizes of all uploaded files..
         def bytes = fileManagerService.list()
-                .collect {it.length()}
-                .sum() ?: 0
-        //and convert to megabytes rounded to two decimal places
-        def MB = (bytes / (1024 * 1024)).setScale(2, BigDecimal.ROUND_HALF_UP)
+                .sum {it.length()} ?: 0
+        // and convert to megabytes rounded to two decimal places
+        def MB = ((double)(bytes / (1024 * 1024))).round(2)
         result.metric = MB
     }
 
@@ -68,7 +67,7 @@ class MonitorDefinitionService extends BaseService {
     def recallsFetchStatus(MonitorResult result) {
         recallsService.fetchRecalls('')
         def code = recallsService.getLastResponseCode()
-        if (recallsService.lastResponseCode == null) {
+        if (code == null) {
             result.message = 'Could not connect to server.'
             result.status = FAIL
         } else if (code >= 300 && code < 400) {
@@ -82,8 +81,8 @@ class MonitorDefinitionService extends BaseService {
      * Check the current memory usage of the server machine (in %)
      */
     def memoryUsage(MonitorResult result) {
-        result.metric = (Runtime.getRuntime().freeMemory() / Runtime.getRuntime().totalMemory() * 100)
-                .setScale(2, BigDecimal.ROUND_HALF_UP)
+        result.metric = ((double)(Runtime.runtime.freeMemory() / Runtime.runtime.totalMemory() * 100))
+                .round(2)
     }
 
     /**
