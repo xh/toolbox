@@ -7,7 +7,6 @@ import io.xh.hoist.track.TrackLog
 
 import static io.xh.hoist.monitor.MonitorStatus.OK
 import static io.xh.hoist.monitor.MonitorStatus.FAIL
-import static io.xh.hoist.monitor.MonitorStatus.UNKNOWN
 import static io.xh.hoist.monitor.MonitorStatus.WARN
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 import static java.lang.Runtime.runtime
@@ -103,10 +102,7 @@ class MonitorDefinitionService extends BaseService {
      * Check when the most recent prices in the Portfolio example were generated
      */
     def pricesAgeMs(MonitorResult result) {
-        def now = new Date()
-        use (TimeCategory) {
-            result.metric = (now - portfolioService.data.timeCreated).toMilliseconds()
-        }
+        result.metric = currentTimeMillis() - portfolioService.data.timeCreated
     }
 
     /**

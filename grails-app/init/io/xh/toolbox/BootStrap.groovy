@@ -189,6 +189,15 @@ class BootStrap {
 
     private void ensureMonitorsCreated() {
         createMonitorIfNeeded(
+            code: 'pricesAgeMs',
+            name: 'Portfolio: Last Price Update',
+            metricType: 'Ceil',
+            metricUnit: 'ms',
+            warnThreshold: 30000,
+            failThreshold: 60000,
+            active: true
+        )
+        createMonitorIfNeeded(
             code: 'instrumentCount',
             name: 'Portfolio: Number of Instruments',
             metricType: 'Floor',
@@ -204,15 +213,6 @@ class BootStrap {
             metricUnit: 'positions',
             warnThreshold: 50,
             failThreshold: 10,
-            active: true
-        )
-        createMonitorIfNeeded(
-            code: 'pricesAgeMs',
-            name: 'Portfolio: Age of Prices',
-            metricType: 'Ceil',
-            metricUnit: 'ms',
-            warnThreshold: 30000,
-            failThreshold: 60000,
             active: true
         )
         createMonitorIfNeeded(
