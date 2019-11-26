@@ -189,6 +189,24 @@ class BootStrap {
 
     private void ensureMonitorsCreated() {
         createMonitorIfNeeded(
+                code: 'instrumentCount',
+                name: 'Number of Instruments',
+                metricType: 'Floor',
+                metricUnit: 'instruments',
+                warnThreshold: 50,
+                failThreshold: 10,
+                active: true
+        )
+        createMonitorIfNeeded(
+                code: 'positionCount',
+                name: 'Number of Positions',
+                metricType: 'Floor',
+                metricUnit: 'positions',
+                warnThreshold: 50,
+                failThreshold: 10,
+                active: true
+        )
+        createMonitorIfNeeded(
             code: 'newsStoryCount',
             name: 'Loaded Stories',
             metricType: 'Floor',

@@ -15,6 +15,7 @@ class MonitorDefinitionService extends BaseService {
     def newsService
     def fileManagerService
     def recallsService
+    def portfolioService
 
     /**
      * Check the count of news stories loaded by NewsService
@@ -82,5 +83,13 @@ class MonitorDefinitionService extends BaseService {
     def memoryUsage(MonitorResult result) {
         result.metric = (Runtime.getRuntime().freeMemory() / Runtime.getRuntime().totalMemory() * 100)
                 .setScale(2, BigDecimal.ROUND_HALF_UP)
+    }
+
+    def positionCount(MonitorResult result) {
+        result.metric = portfolioService.data.rawPositions.size()
+    }
+
+    def instrumentCount(MonitorResult result) {
+        result.metric = portfolioService.data.instruments.size()
     }
 }
