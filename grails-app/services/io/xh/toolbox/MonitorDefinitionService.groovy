@@ -100,6 +100,16 @@ class MonitorDefinitionService extends BaseService {
     }
 
     /**
+     * Check when the most recent prices in the Portfolio example were generated
+     */
+    def pricesAgeMs(MonitorResult result) {
+        def now = new Date()
+        use (TimeCategory) {
+            result.metric = (now - portfolioService.data.timeCreated).toMilliseconds()
+        }
+    }
+
+    /**
      * Check the longest page load time in the last hour
      */
     def longestPageLoadMs(MonitorResult result) {

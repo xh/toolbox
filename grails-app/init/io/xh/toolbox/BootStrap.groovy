@@ -207,6 +207,15 @@ class BootStrap {
             active: true
         )
         createMonitorIfNeeded(
+            code: 'pricesAgeMs',
+            name: 'Portfolio: Age of Prices',
+            metricType: 'Ceil',
+            metricUnit: 'ms',
+            warnThreshold: 30000,
+            failThreshold: 60000,
+            active: true
+        )
+        createMonitorIfNeeded(
             code: 'newsStoryCount',
             name: 'News: Loaded Stories',
             metricType: 'Floor',
