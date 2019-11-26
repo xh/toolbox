@@ -2,6 +2,7 @@ package io.xh.toolbox
 
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.MonitorResult
+import io.xh.hoist.track.TrackLog
 
 import static io.xh.hoist.monitor.MonitorStatus.OK
 import static io.xh.hoist.monitor.MonitorStatus.FAIL
@@ -97,5 +98,16 @@ class MonitorDefinitionService extends BaseService {
      */
     def instrumentCount(MonitorResult result) {
         result.metric = portfolioService.data.instruments.size()
+    }
+
+    /**
+     * Check the 99% latency of client page loads
+     */
+    def ninetyninthPercentileLatency(MonitorResult result) {
+        def latencies = TrackLog.findAll(max: 5000, sort: 'dateCreated', order: 'desc')
+                        .collect{it.elapsed}.sort()
+        def count = latencies.size()
+        def ninetyninth = (int)(count * 0.99)
+        result.metric = (count > 0) ? latencies.get(ninetyninth) : 0
     }
 }

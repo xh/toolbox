@@ -255,6 +255,15 @@ class BootStrap {
                 failThreshold: 85,
                 active: true
         )
+        createMonitorIfNeeded(
+                code: 'ninetyninthPercentileLatency',
+                name: '99th Percentile Page Load Latency',
+                metricType: 'Ceil',
+                metricUnit: 'milliseconds',
+                warnThreshold: 10000,
+                failThreshold: 30000,
+                active: true
+        )
     }
 
     private void createMonitorIfNeeded(Map data) {
