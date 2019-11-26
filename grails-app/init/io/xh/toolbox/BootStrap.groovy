@@ -154,12 +154,17 @@ class BootStrap {
             ],
             portfolioDims: [
                 type: 'json',
-                defaultValue: [:],
+                defaultValue: [
+                        value: ['sector', 'symbol'],
+                        history: [['sector', 'symbol'],
+                                  ['fund', 'trader', 'model'],
+                                  ['region', 'sector']]
+                ],
                 local: true,
                 groupName: 'Toolbox - Example Apps',
                 note: 'Object containing user\'s dimension picker value & history'
             ],
-            portfolioMapPanelConfig: [
+            portfolioGridPanelConfig: [
                 type: 'json',
                 defaultValue: [:],
                 local: true,
