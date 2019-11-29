@@ -3,8 +3,8 @@ import {bindable} from '@xh/hoist/mobx';
 import {managed} from '@xh/hoist/core';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {OrdersPanelModel} from './OrdersPanelModel';
-import {ChartsPanelModel} from './ChartsPanelModel';
 import {loadAllAsync} from '@xh/hoist/core';
+import {ChartsPanelModel} from './ChartsPanelModel';
 
 @HoistModel
 @LoadSupport
