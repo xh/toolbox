@@ -6,6 +6,7 @@ import {ContextMenuItem as CM} from '@xh/hoist/desktop/cmp/contextmenu';
 import {newsPanel} from './NewsPanel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {AppModel} from './AppModel';
+import {a} from '@xh/hoist/cmp/layout';
 
 export const App = hoistCmp({
     displayName: 'App',
@@ -18,6 +19,12 @@ export const App = hoistCmp({
                 icon: Icon.news({size: '2x', prefix: 'fal'}),
                 title: 'News Feed',
                 hideRefreshButton: false,
+                leftItems: [
+                    a({
+                        item: 'powered by NewsAPI.org',
+                        href: 'https://newsapi.org/'
+                    })
+                ],
                 rightItems: [
                     relativeTimestamp({
                         model: model.newsPanelModel,
