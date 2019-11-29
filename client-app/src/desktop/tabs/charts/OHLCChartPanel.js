@@ -10,14 +10,14 @@ import {OLHCChartModel} from './OLHCChartModel';
 import {wrapper} from '../../common/Wrapper';
 
 
-export const OLHCChartPanel = hoistCmp({
+export const OHLCChartPanel = hoistCmp({
     model: creates(OLHCChartModel),
 
     render({model}) {
         return wrapper({
             style: {paddingTop: 0},
             item: panel({
-                className: 'toolbox-olhcchart-panel',
+                className: 'toolbox-ohlcchart-panel',
                 title: 'Charts › OHLC',
                 icon: Icon.chartLine(),
                 width: 800,

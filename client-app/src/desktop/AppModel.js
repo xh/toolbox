@@ -122,7 +122,7 @@ export class AppModel {
                         name: 'charts',
                         path: '/charts',
                         children: [
-                            {name: 'olhc', path: '/olhc'},
+                            {name: 'ohlc', path: '/ohlc'},
                             {name: 'line', path: '/line'},
                             {name: 'simpleTreeMap', path: '/simpleTreeMap'},
                             {name: 'gridTreeMap', path: '/gridTreeMap'},
