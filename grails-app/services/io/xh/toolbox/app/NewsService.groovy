@@ -14,19 +14,18 @@ class NewsService extends BaseService {
 
     static clearCachesConfigs = ['newsSources', 'newsApiKey']
     def configService
-
-    void init() {
-        createTimer(
-                runFn: this.&loadAllNews,
-                interval: 'newsRefreshMins',
-                intervalUnits: MINUTES,
-                delay: 'newsDelayMins',
-                delayUnits: MINUTES
-        )
-        super.init()
-    }
+    def timerStarted = false
 
     List<NewsItem> getNewsItems() {
+        if(!timerStarted) {
+            createTimer(
+                    runFn: this.&loadAllNews,
+                    interval: 'newsRefreshMins',
+                    intervalUnits: MINUTES,
+                    runImmediatelyAndBlock: true
+            )
+            timerStarted = true;
+        }
         return _newsItems ?  _newsItems : Collections.emptyList()
     }
 
