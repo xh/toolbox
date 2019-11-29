@@ -4,6 +4,7 @@ import io.xh.hoist.BaseService
 import io.xh.hoist.json.JSON
 import io.xh.toolbox.NewsItem
 import org.grails.web.json.JSONArray
+import io.xh.hoist.util.Timer
 
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 
