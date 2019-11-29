@@ -5,8 +5,7 @@ import {hbox} from '@xh/hoist/cmp/layout';
 
 import {ordersPanel} from './OrdersPanel';
 import {chartsPanel} from './ChartsPanel';
-
-import {DetailPanelModel} from '../../../detail/DetailPanelModel';
+import {DetailPanelModel} from './DetailPanelModel';
 
 export const detailPanel = hoistCmp.factory({
 

@@ -7,8 +7,7 @@ import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
 import {Icon} from '@xh/hoist/icon';
-
-import {OrdersPanelModel} from '../../../detail/OrdersPanelModel';
+import {OrdersPanelModel} from './OrdersPanelModel';
 
 export const ordersPanel = hoistCmp.factory({
     model: uses(OrdersPanelModel),

@@ -3,8 +3,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
-
-import {ChartsPanelModel} from '../../../detail/ChartsPanelModel';
+import {ChartsPanelModel} from './ChartsPanelModel';
 
 export const chartsPanel = hoistCmp.factory({
     model: uses(ChartsPanelModel),
