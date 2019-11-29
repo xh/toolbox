@@ -74,7 +74,7 @@ class BootStrap {
             ],
             newsDelayMins: [
                 valueType: 'int',
-                defaultValue: 10,
+                defaultValue: 5,
                 groupName: 'Toolbox - Example Apps',
             ],
             newsSources: [

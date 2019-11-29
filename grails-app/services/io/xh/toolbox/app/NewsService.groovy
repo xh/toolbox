@@ -20,7 +20,7 @@ class NewsService extends BaseService {
                 runFn: this.&loadAllNews,
                 interval: 'newsRefreshMins',
                 intervalUnits: MINUTES,
-                delay: 'newsRefreshMins',
+                delay: 'newsDelayMins',
                 delayUnits: MINUTES
         )
         super.init()
