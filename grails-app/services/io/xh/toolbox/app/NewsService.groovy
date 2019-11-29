@@ -74,7 +74,7 @@ class NewsService extends BaseService {
             response = JSON.parse(url.openStream(), 'UTF-8')
 
         if (response.status != 'ok') {
-            log.error("Unable to fetch news! ${response.message}")
+            log.error("Unable to fetch news: ${response.message}")
             return Collections.emptyList()
         }
 
@@ -97,8 +97,8 @@ class NewsService extends BaseService {
         }
 
         def grouped = response.articles.groupBy{it.source.id}
-        for(sourceCode in grouped.keySet()) {
-            log.debug("Loaded ${grouped[sourceCode].size} news items from ${sourceCode}")
+        grouped.each{ k, v ->
+            log.debug("Loaded ${v.size} news items from ${k}")
         }
 
         return ret
