@@ -54,14 +54,12 @@ class NewsService extends BaseService {
     // Implementation
     //------------------------
     private void loadAllNews() {
-        def sources = configService.getJSONObject('newsSources') as Map<String, String>
+        def sources = configService.getJSONObject('newsSources').keySet().toList()
 
         withShortInfo("Loading news from ${sources.size()} configured sources") {
             def items = []
 
-            sources.each{code, displayName ->
-                items.addAll(loadNewsForSource(code, displayName))
-            }
+            items.addAll(loadNewsForSources(sources));
 
             items.sort {-it.published.time}
 
@@ -69,13 +67,14 @@ class NewsService extends BaseService {
         }
     }
 
-    private List<NewsItem> loadNewsForSource(String sourceCode, String sourceDisplayName) {
+    private List<NewsItem> loadNewsForSources(List<String> sources) {
+        def sourcesParam = String.join(',', sources)
         def apiKey = configService.getString('newsApiKey'),
-            url = new URL("https://newsapi.org/v1/articles?source=${sourceCode}&apiKey=${apiKey}"),
+            url = new URL("https://newsapi.org/v2/top-headlines?sources=${sourcesParam}&apiKey=${apiKey}"),
             response = JSON.parse(url.openStream(), 'UTF-8')
 
         if (response.status != 'ok') {
-            log.error("Unable to fetch news for ${sourceCode}: ${response.message}")
+            log.error("Unable to fetch news! ${response.message}")
             return Collections.emptyList()
         }
 
@@ -86,7 +85,7 @@ class NewsService extends BaseService {
             if (it.publishedAt) {
                 def cleanPubString = it.publishedAt.take(19) + 'Z'
                 ret << new NewsItem(
-                        source: sourceDisplayName,
+                        source: it.source.name,
                         title: it.title,
                         author: it.author,
                         text: it.description,
@@ -97,7 +96,11 @@ class NewsService extends BaseService {
             }
         }
 
-        log.debug("Loaded ${ret.size()} news items from ${sourceCode}")
+        def grouped = response.articles.groupBy{it.source.id}
+        for(sourceCode in grouped.keySet()) {
+            log.debug("Loaded ${grouped[sourceCode].size} news items from ${sourceCode}")
+        }
+
         return ret
     }
 
@@ -106,5 +109,4 @@ class NewsService extends BaseService {
         _newsItems = []
         loadAllNews()
     }
-
 }
