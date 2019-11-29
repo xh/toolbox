@@ -19,7 +19,9 @@ class NewsService extends BaseService {
         createTimer(
                 runFn: this.&loadAllNews,
                 interval: 'newsRefreshMins',
-                intervalUnits: MINUTES
+                intervalUnits: MINUTES,
+                delay: 'newsRefreshMins',
+                delayUnits: MINUTES
         )
         super.init()
     }

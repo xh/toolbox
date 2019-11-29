@@ -72,6 +72,11 @@ class BootStrap {
                 defaultValue: 60,
                 groupName: 'Toolbox - Example Apps',
             ],
+            newsDelayMins: [
+                valueType: 'int',
+                defaultValue: 10,
+                groupName: 'Toolbox - Example Apps',
+            ],
             newsSources: [
                 valueType: 'json',
                 defaultValue: [
