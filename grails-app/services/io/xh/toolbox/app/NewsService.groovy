@@ -10,21 +10,21 @@ import static io.xh.hoist.util.DateTimeUtils.MINUTES
 
 class NewsService extends BaseService {
 
-    public List<NewsItem> _newsItems
+    private List<NewsItem> _newsItems
+    private Timer newsTimer
 
     static clearCachesConfigs = ['newsSources', 'newsApiKey']
     def configService
-    def timerStarted = false
 
     List<NewsItem> getNewsItems() {
-        if(!timerStarted) {
-            createTimer(
+        // to avoid hitting the API too frequently, we only start our timer when the NewsService is actually used.
+        if (!newsTimer) {
+            newsTimer = createTimer(
                     runFn: this.&loadAllNews,
                     interval: 'newsRefreshMins',
                     intervalUnits: MINUTES,
                     runImmediatelyAndBlock: true
             )
-            timerStarted = true;
         }
         return _newsItems ?  _newsItems : Collections.emptyList()
     }
@@ -38,7 +38,7 @@ class NewsService extends BaseService {
     }
 
     int getLoadedSourcesCount() {
-        return _newsItems.collect{it.source}.unique().size()
+        return newsItems.collect{it.source}.unique().size()
     }
 
     boolean getAllSourcesLoaded() {
@@ -46,8 +46,7 @@ class NewsService extends BaseService {
     }
 
     Date getLastTimestamp() {
-        if (!_newsItems) return null
-        return _newsItems.get(0).published
+        return newsItems ? newsItems[0].published : null
     }
 
 
