@@ -97,10 +97,7 @@ class NewsService extends BaseService {
             }
         }
 
-        def grouped = response.articles.groupBy{it.source.id}
-        grouped.each{ k, v ->
-            log.debug("Loaded ${v.size} news items from ${k}")
-        }
+        log.debug("Loaded ${articles.size()} news items.")
 
         return ret
     }
