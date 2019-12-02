@@ -216,6 +216,8 @@ export class SampleGridModel {
     showTerminateToast(rec, terminationMethod) {
         if (terminationMethod) {
             terminationMethod = ' via ' + terminationMethod;
+        } else {
+            terminationMethod = '';
         }
 
         XH.toast({
