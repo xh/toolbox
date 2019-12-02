@@ -9,12 +9,12 @@ useful as a starting point for application developers new to the framework.
 Please refer to the [Hoist Core](https://github.com/xh/hoist-core) and [Hoist React](https://github.com/xh/hoist-react)
 repos for detailed information and documentation on Hoist.
 
-Toolbox is (of course) itself a Hoist Application, and XH will aim keep it updated with the latest versions of the Hoist
+Toolbox is (of course) itself a Hoist Application, and XH will aim to keep it updated with the latest versions of the Hoist
 Framework.  In particular, the dev version -- https://toolbox-dev.xh.io -- will be deployed
 with CI using the current `develop` branches of Hoist, while the production version -- https://toolbox.xh.io -- will 
 typically be re-released with every new released version of Hoist. 
 
-Toolbox is designed to be highly portable, and optimized for easy checkout and development use.  To this end, no actual
+Toolbox is designed to be highly portable and optimized for easy checkout and development use.  To this end, no actual
 database is required for running the development version of the app:  The development app uses an in-memory H2 database
 with all default data provided.  In contrast, The deployed versions of the apps use a standard mySQL database, and can 
 be used  to test the full stateful behavior of Hoist applications including usage tracking, preferences, and 
