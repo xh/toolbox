@@ -6,12 +6,12 @@ import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {chart} from '@xh/hoist/desktop/cmp/chart';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {controlGroup} from '@xh/hoist/kit/blueprint';
-import {OLHCChartModel} from './OLHCChartModel';
+import {OHLCChartModel} from './OHLCChartModel';
 import {wrapper} from '../../common/Wrapper';
 
 
 export const OHLCChartPanel = hoistCmp({
-    model: creates(OLHCChartModel),
+    model: creates(OHLCChartModel),
 
     render({model}) {
         return wrapper({

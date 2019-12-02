@@ -5,7 +5,7 @@ import {fmtDate} from '@xh/hoist/format';
 
 @HoistModel
 @LoadSupport
-export class OLHCChartModel {
+export class OHLCChartModel {
     @bindable currentSymbol = '';
     @bindable.ref symbols = null;
     numCompanies = 3;
@@ -29,7 +29,7 @@ export class OLHCChartModel {
         if (!this.currentSymbol) {
             this.setCurrentSymbol(this.symbols[0]);
         }
-        let series = await XH.portfolioService.getOLHCChartSeriesAsync(this.currentSymbol);
+        let series = await XH.portfolioService.getOHLCChartSeriesAsync(this.currentSymbol);
 
         const groupPixelWidth = 5;
         Object.assign(series, {
