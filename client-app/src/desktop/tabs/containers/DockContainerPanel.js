@@ -5,7 +5,8 @@ import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
-import {wrapper, sampleGrid} from '../../common';
+import {wrapper, sampleGrid, SampleGridModel} from '../../common';
+import {LoadSupport} from '@xh/hoist/core/mixins';
 
 export const DockContainerPanel = hoistCmp({
     model: creates(() => new Model()),
@@ -85,12 +86,14 @@ const btnCfg = {
     margin: 5
 };
 
-
 @HoistModel
+@LoadSupport
 class Model {
 
     @managed
     dockContainerModel = new DockContainerModel();
+    @managed
+    sampleGridModel = new SampleGridModel();
 
     addView(...args) {
         this.dockContainerModel.addView(...args);
@@ -121,4 +124,7 @@ class Model {
         });
     }
 
+    async doLoadAsync(loadSpec) {
+        await this.sampleGridModel.loadAsync(loadSpec);
+    }
 }
