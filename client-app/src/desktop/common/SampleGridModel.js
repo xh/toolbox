@@ -213,11 +213,9 @@ export class SampleGridModel {
         });
     }
 
-    showTerminateToast(rec, terminationMethod) {
+    showTerminateToast(rec, terminationMethod='') {
         if (terminationMethod) {
             terminationMethod = ' via ' + terminationMethod;
-        } else {
-            terminationMethod = '';
         }
 
         XH.toast({
