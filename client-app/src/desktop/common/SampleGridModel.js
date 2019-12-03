@@ -90,7 +90,7 @@ export class SampleGridModel {
                     type: 'localDate'
                 }]
         },
-        contextMenuItems: [
+        contextMenu: [
             this.viewDetailsAction,
             this.terminateAction,
             '-',

@@ -115,7 +115,7 @@ class Model {
             enableColChooser: true,
             enableExport: true,
             compact: XH.appModel.useCompactGrids,
-            contextMenuFn: () => {
+            contextMenu: () => {
                 return new StoreContextMenu({
                     items: [
                         {
