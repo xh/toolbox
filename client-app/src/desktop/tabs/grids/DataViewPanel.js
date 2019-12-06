@@ -58,7 +58,10 @@ class Model {
         },
         sortBy: 'name',
         emptyText: 'No companies found...',
-        itemRenderer: (v, {record}) => dataViewItem({record})
+        itemRenderer: (v, {record}) => dataViewItem({record}),
+        contextMenu: [
+            'copyCell'
+        ]
     });
     
     async doLoadAsync(loadSpec) {

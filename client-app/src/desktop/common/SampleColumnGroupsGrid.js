@@ -115,7 +115,7 @@ class Model {
             enableColChooser: true,
             enableExport: true,
             compact: XH.appModel.useCompactGrids,
-            contextMenuFn: () => {
+            contextMenu: () => {
                 return new StoreContextMenu({
                     items: [
                         {
@@ -125,7 +125,7 @@ class Model {
                             actionFn: ({record}) => this.showRecToast(record)
                         },
                         '-',
-                        ...GridModel.defaultContextMenuTokens
+                        ...GridModel.defaultContextMenu
                     ],
                     gridModel: this.gridModel
                 });
