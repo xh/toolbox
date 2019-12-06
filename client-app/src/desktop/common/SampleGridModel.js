@@ -94,7 +94,7 @@ export class SampleGridModel {
             this.viewDetailsAction,
             this.terminateAction,
             '-',
-            ...GridModel.defaultContextMenuTokens
+            ...GridModel.defaultContextMenu
         ],
         groupSortFn: (a, b, groupField) => {
             if (a == b) return 0;

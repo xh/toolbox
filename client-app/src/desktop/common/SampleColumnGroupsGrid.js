@@ -125,7 +125,7 @@ class Model {
                             actionFn: ({record}) => this.showRecToast(record)
                         },
                         '-',
-                        ...GridModel.defaultContextMenuTokens
+                        ...GridModel.defaultContextMenu
                     ],
                     gridModel: this.gridModel
                 });
