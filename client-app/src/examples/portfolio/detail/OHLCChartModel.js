@@ -1,6 +1,6 @@
 import {HoistModel, XH, LoadSupport, managed} from '@xh/hoist/core';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
-import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
+import {ChartModel} from '@xh/hoist/cmp/chart';
 import {isNil} from 'lodash';
 import {bindable} from '@xh/hoist/mobx';
 
