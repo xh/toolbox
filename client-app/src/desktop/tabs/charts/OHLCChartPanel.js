@@ -3,7 +3,7 @@ import {Icon} from '@xh/hoist/icon';
 import {box, filler, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
-import {chart} from '@xh/hoist/desktop/cmp/chart';
+import {chart} from '@xh/hoist/cmp/chart';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {controlGroup} from '@xh/hoist/kit/blueprint';
 import {OHLCChartModel} from './OHLCChartModel';

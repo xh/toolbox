@@ -1,5 +1,5 @@
 import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
-import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
+import {ChartModel} from '@xh/hoist/cmp/chart';
 import {bindable} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
 
