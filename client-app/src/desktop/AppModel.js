@@ -21,6 +21,7 @@ import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
 import {OtherTab} from './tabs/other/OtherTab';
 import {PanelsTab} from './tabs/panels/PanelsTab';
+import {InputsTab} from './tabs/inputs/InputsTab';
 
 @HoistAppModel
 export class AppModel {
@@ -33,7 +34,8 @@ export class AppModel {
             {id: 'containers', icon: Icon.box(), content: ContainersTab},
             {id: 'panels', icon: Icon.window(), content: PanelsTab},
             {id: 'grids', icon: Icon.grid(), content: GridsTab},
-            {id: 'forms', icon: Icon.edit(), content: FormsTab},
+            {id: 'inputs', icon: Icon.edit(), content: InputsTab},
+            {id: 'forms', icon: Icon.clipboard(), content: FormsTab},
             {id: 'charts', icon: Icon.chartLine(), content: ChartsTab},
             {id: 'formats', icon: Icon.print(), content: FormatsTab},
             {id: 'other', icon: Icon.boxFull(), content: OtherTab},
@@ -93,6 +95,15 @@ export class AppModel {
                             {name: 'sizing', path: '/sizing'},
                             {name: 'mask', path: '/mask'},
                             {name: 'loadingIndicator', path: '/loadingIndicator'}
+                        ]
+                    },
+                    {
+                        name: 'inputs',
+                        path: '/inputs',
+                        children: [
+                            {name: 'dateInput', path: '/dateInput'},
+                            {name: 'numberInput', path: '/numberInput'},
+                            {name: 'slider', path: '/slider'}
                         ]
                     },
                     {

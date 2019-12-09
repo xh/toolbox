@@ -1,0 +1,13 @@
+.react-view-columns > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.react-view-columns > div > div {
+  margin: 0 !important;
+  background-color: var(--xh-grid-bg);
+
+  &:nth-child(odd) {
+    background-color: var(--xh-grid-bg-odd);
+  }
+}
