@@ -1,12 +1,13 @@
 import {Compiler, Error, Knobs, PropTypes as PT, useView} from 'react-view';
 import {wrapper} from '../../common';
-import {span, vbox} from '@xh/hoist/cmp/layout';
+import {span} from '@xh/hoist/cmp/layout';
 import {elemFactory, hoistCmp} from '@xh/hoist/core';
 import {uses} from '@xh/hoist/core/modelspec';
 import template from '@babel/template';
 import {forEach} from 'lodash';
 import {InputTestModel} from './InputTestModel';
 import './InputTestPanel.scss';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 
 export const inputTestPanel = hoistCmp.factory({
 
@@ -44,12 +45,15 @@ export const inputTestPanel = hoistCmp.factory({
         });
 
         return wrapper(
-            vbox(
-                span(String(model.value)),
-                compiler(viewParams.compilerProps),
-                knobs(viewParams.knobProps),
-                error(viewParams.errorProps)
-            )
+            panel({
+                title: model.componentName,
+                items: [
+                    span(String(model.value)),
+                    compiler(viewParams.compilerProps),
+                    knobs(viewParams.knobProps),
+                    error(viewParams.errorProps)
+                ]
+            })
         );
     }
 });

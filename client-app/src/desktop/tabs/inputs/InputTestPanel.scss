@@ -1,6 +1,8 @@
 .react-view-columns > div {
   display: flex;
+  margin-top: 5em;
   flex-direction: column;
+  width: 100%;
 }
 
 .react-view-columns > div > div {
