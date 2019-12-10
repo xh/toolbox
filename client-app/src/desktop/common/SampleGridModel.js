@@ -109,6 +109,7 @@ export class SampleGridModel {
             '-',
             ...GridModel.defaultContextMenu
         ],
+        enableContextMenuKeyNav: true,
         groupSortFn: (a, b, groupField) => {
             if (a == b) return 0;
             if (groupField == 'winLose') {
