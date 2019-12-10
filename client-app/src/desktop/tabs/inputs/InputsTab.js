@@ -3,6 +3,7 @@ import {tabContainer} from '@xh/hoist/cmp/tab';
 import {DateInputPanel} from './tabs/DateInputPanel';
 import {NumberInputPanel} from './tabs/NumberInputPanel';
 import {SliderPanel} from './tabs/SliderPanel';
+import {TextInputPanel} from './tabs/TextInputPanel';
 
 export const InputsTab = hoistCmp(
     () => tabContainer({
@@ -12,8 +13,8 @@ export const InputsTab = hoistCmp(
             tabs: [
                 {id: 'dateInput', title: 'DateInput', content: DateInputPanel},
                 {id: 'numberInput', title: 'NumberInput', content: NumberInputPanel},
-                {id: 'slider', title: 'Slider', content: SliderPanel}
-
+                {id: 'slider', title: 'Slider', content: SliderPanel},
+                {id: 'textInput', title: 'TextInput', content: TextInputPanel}
             ]
         },
         className: 'toolbox-tab'

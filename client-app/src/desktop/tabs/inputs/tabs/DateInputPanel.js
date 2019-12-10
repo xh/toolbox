@@ -141,6 +141,11 @@ function createModel() {
                 enumName: JSON.stringify(dateTypes),
                 options: dateTypes,
                 description: 'Type of value to publish. Defaults to \'date\'. '
+            },
+            selectOnFocus: {
+                value: false,
+                type: T.Boolean,
+                description: 'True to select contents when control receives focus. '
             }
         },
         scope: {

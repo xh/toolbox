@@ -103,7 +103,8 @@ export class AppModel {
                         children: [
                             {name: 'dateInput', path: '/dateInput'},
                             {name: 'numberInput', path: '/numberInput'},
-                            {name: 'slider', path: '/slider'}
+                            {name: 'slider', path: '/slider'},
+                            {name: 'textInput', path: '/textInput'}
                         ]
                     },
                     {
