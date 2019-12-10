@@ -56,9 +56,22 @@ export class SampleGridModel {
             },
             {
                 text: 'via Friendly Merger Proposal',
-                tooltip: 'This will send a dinner invitation to their CEO.',
+                tooltip: 'Try this first.',
                 recordsRequired: 1,
-                actionFn: ({record}) => this.showTerminateToast(record, 'friendly merger proposal')
+                items: [
+                    {
+                        text: 'over Lunch',
+                        tooltip: 'This will send a lunch invitation to their CEO.',
+                        recordsRequired: 1,
+                        actionFn: ({record}) => this.showTerminateToast(record, 'friendly merger proposal during lunch')
+                    },
+                    {
+                        text: 'at Golf',
+                        tooltip: 'This will send a golf outing invitation to their CEO.',
+                        recordsRequired: 1,
+                        actionFn: ({record}) => this.showTerminateToast(record, 'friendly merger proposal during golf')
+                    }
+                ]
             }
         ]
     };
