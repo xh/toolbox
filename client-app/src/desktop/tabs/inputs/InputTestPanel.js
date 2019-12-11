@@ -1,4 +1,4 @@
-import {Compiler, Editor, Error, Knobs, PropTypes as PT, useView} from 'react-view';
+import {Compiler, Error, Knobs, PropTypes as T, useView} from 'react-view';
 import {wrapper} from '../../common';
 import {div} from '@xh/hoist/cmp/layout';
 import {elemFactory, hoistCmp} from '@xh/hoist/core';
@@ -17,21 +17,21 @@ export const inputTestPanel = hoistCmp.factory({
         const props = {
             bind: {
                 value: 'value',
-                type: PT.Custom
+                type: T.Custom
             },
             disabled: {
                 value: false,
-                type: PT.Boolean,
+                type: T.Boolean,
                 description: 'True to disable user interaction. Can be set by parent FormField. '
             },
             onChange: {
                 value: null,
-                type: PT.Function,
+                type: T.Function,
                 description: 'Called when value changes - passed new and prior values. '
             },
             onCommit: {
                 value: null,
-                type: PT.Function,
+                type: T.Function,
                 description: 'Called when value is committed to backing model - passed new and prior values. '
             },
             ...model.props
@@ -39,7 +39,7 @@ export const inputTestPanel = hoistCmp.factory({
 
         // If we do not set stateful to true, then react-view will ignore false boolean props.
         // The input we are testing may use a default value of true, ignoring user input entirely.
-        forEach(props, (v) => {if (v.type == PT.Boolean) v.stateful = true;});
+        forEach(props, (v) => {if (v.type == T.Boolean) v.stateful = true;});
 
         const viewParams = useView({
             componentName: model.componentName,
@@ -64,14 +64,13 @@ export const inputTestPanel = hoistCmp.factory({
                 description: model.description,
                 items: [
                     div({className: 'input-test-example', items: [
-                        //TODO: move displayValue to top right
+                        // TODO: move displayValue to top right
                         div({className: 'input-test-example_value', item: displayValue(model.value)}),
                         div({className: 'input-test-example_input', item: compiler(viewParams.compilerProps)})
                     ]}),
-                    //TODO: put this in its own scrolling box
+                    // TODO: put this in its own scrolling box
                     div({className: 'input-test-error', item: error({...viewParams.errorProps})}),
-                    knobs(viewParams.knobProps),
-                    editor(viewParams.editorProps)
+                    knobs(viewParams.knobProps)
                 ]
             })
         );
@@ -91,4 +90,3 @@ function displayValue(value) {
 const compiler = elemFactory(Compiler);
 const knobs = elemFactory(Knobs);
 const error = elemFactory(Error);
-const editor = elemFactory(Editor);

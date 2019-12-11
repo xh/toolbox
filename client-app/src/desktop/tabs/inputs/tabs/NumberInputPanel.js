@@ -1,6 +1,6 @@
 import {useLocalModel} from '@xh/hoist/core/hooks';
 import {InputTestModel} from '../InputTestModel';
-import {PropTypes as PT} from 'react-view';
+import {PropTypes as T} from 'react-view';
 import {NumberInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
@@ -20,94 +20,94 @@ function createModel() {
         props: {
             autoFocus: {
                 value: true,
-                type: PT.Boolean,
+                type: T.Boolean,
                 description: 'True to focus the control on render.'
             },
             commitOnChange: {
                 value: false,
-                type: PT.Boolean,
+                type: T.Boolean,
                 description: 'True to commit on every change/keystroke, default false.'
             },
             displayWithCommas: {
                 value: false,
-                type: PT.Boolean,
+                type: T.Boolean,
                 description: 'True to insert commas in displayed value.'
             },
             enableShorthandUnits: {
                 value: false,
-                type: PT.Boolean,
+                type: T.Boolean,
                 description: 'True to convert entries suffixed with k/m/b to thousands/millions/billions.'
             },
             fill: {
                 value: true, type:
-                PT.Boolean,
+                T.Boolean,
                 description: 'True to take up the full width of container.'
             },
             leftIcon: {
                 value: null,
-                type: PT.ReactElement,
+                type: T.ReactElement,
                 description: 'Icon to display inline on the left side of the input.'
             },
             min: {
                 value: null,
-                type: PT.Number,
+                type: T.Number,
                 description: 'Minimum value for decrement'
             },
             majorStepSize: {
                 value: null,
-                type: PT.Number,
+                type: T.Number,
                 description: 'Major step size for increment/decrement handling.'
             },
             max: {
                 value: null,
-                type: PT.Number,
+                type: T.Number,
                 description: 'Maximum value for increment'
             },
             minorStepSize: {
                 value: null,
-                type: PT.Number,
+                type: T.Number,
                 description: 'Minor step size for increment/decrement handling.'
             },
             onKeyDown: {
                 value: null,
-                type: PT.Function,
+                type: T.Function,
                 description: 'Callback for normalized keydown event.'
             },
             placeholder: {
                 value: null,
-                type: PT.String,
+                type: T.String,
                 description: 'Text to display when control is empty.'
             },
             precision: {
                 value: 4,
-                type: PT.Number,
+                type: T.Number,
                 description: 'Max decimal precision of the value, defaults to 4.'
             },
             rightElement: {
                 value: null,
-                type: PT.ReactElement,
+                type: T.ReactElement,
                 description: 'Element to display inline on the right side of the input.'
             },
             selectOnFocus: {
                 value: false,
-                type: PT.Boolean,
+                type: T.Boolean,
                 description: 'True to select contents when control receives focus.'
             },
             stepSize: {
                 value: 1,
-                type: PT.Number,
+                type: T.Number,
                 description: 'Standard step size for increment/decrement handling.'
             },
             textAlign: {
                 value: null,
-                type: PT.Enum,
+                type: T.Enum,
                 enumName: JSON.stringify(alignments),
                 options: alignments,
                 description: 'Alignment of entry text within control, default \'right\'.'
             },
             zeroPad: {
                 value: false,
-                type: PT.Boolean,
+                type: T.Boolean,
                 description: 'True to pad with trailing zeros out to precision, default false.'
             }
         },

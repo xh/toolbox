@@ -16,11 +16,6 @@ export const DateInputPanel = hoistCmp({
 
 function createModel() {
     return new InputTestModel({
-        description:
-            'A Calendar Control for choosing a Date.\n' +
-            'By default this control emits dates with the time component cleared (set to midnight), but this\n' +
-            'can be customized via the timePrecision prop to support editing of a date and time together.\n' +
-            'The calendar popover can be opened via the built-in button or up/down arrow keyboard shortcuts.',
         componentName: 'DateInput',
         props: {
             dayPickerProps: {

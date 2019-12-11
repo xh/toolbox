@@ -26,33 +26,44 @@ function createModel() {
             'The calendar popover can be opened via the built-in button or up/down arrow keyboard shortcuts.',
         componentName: 'ButtonGroupInput',
         customProps: {
-            items: {
+            children: {
                 generate: () => {
-                    return (template.ast(
-                        '[' +
-                        '   button({' +
-                        '       text: \'Button 1\',' +
-                        '       value: \'button1\'' +
-                        '   }),' +
-                        '   button({' +
-                        '       icon: Icon.moon(),' +
-                        '       value: \'button2\'' +
-                        '   }),' +
-                        '   button({' +
-                        '       icon: Icon.skull(),' +
-                        '       text: \'Button 2\',' +
-                        '       value: \'button3\'' +
-                        '   })' +
-                        ']',
-                        {plugins: ['jsx']}))
+                    return (template.ast(children, {plugins: ['jsx']}))
                         .expression;
                 },
                 parse: (code) => {}
             }
         },
         props: {
-            items: {value: 'true', type: T.Custom},
-            minimal: {value: false, type: T.Boolean}
+            children: {
+                value: children,
+                type: T.Custom
+            },
+            fill: {
+                value: false,
+                type: T.Boolean,
+                description: 'True to have all buttons fill available width equally.'
+            },
+            minimal: {
+                value: false,
+                type: T.Boolean,
+                description: 'True to render each button with minimal surrounding chrome (default false).'
+            },
+            style: {
+                value: null,
+                type: T.Object,
+                description: 'Style block.'
+            },
+            vertical: {
+                value: false,
+                type: T.Boolean,
+                description: 'True to render in a vertical orientation.'
+            },
+            enableClear: {
+                value: false,
+                type: T.Boolean,
+                description: 'True to allow buttons to be unselected (aka inactivated). Defaults to false.'
+            }
         },
         scope: {
             button,
@@ -61,3 +72,23 @@ function createModel() {
         }
     });
 }
+
+const children =
+    '{[' +
+    '   button({' +
+    '       icon: Icon.moon(),' +
+    '       value: \'sleep\',' +
+    '       key: \'button1`\'' +
+    '   }),' +
+    '   button({' +
+    '       text: \'Create\',' +
+    '       value: \'create\',' +
+    '       key: \'button2\'' +
+    '   }),' +
+    '   button({' +
+    '       icon: Icon.skull(),' +
+    '       text: \'Delete\',' +
+    '       value: \'delete\',' +
+    '       key: \'button3\'' +
+    '   })' +
+    ']}';

@@ -5,6 +5,13 @@ import {NumberInputPanel} from './tabs/NumberInputPanel';
 import {SliderPanel} from './tabs/SliderPanel';
 import {TextInputPanel} from './tabs/TextInputPanel';
 import {ButtonGroupInputPanel} from './tabs/ButtonGroupInputPanel';
+import {CheckboxPanel} from './tabs/CheckboxPanel';
+import {JsonInputPanel} from './tabs/JsonInputPanel';
+import {RadioInputPanel} from './tabs/RadioInputPanel';
+import {SelectPanel} from './tabs/SelectPanel';
+import {SliderRangePanel} from './tabs/SliderRangePanel';
+import {SwitchInputPanel} from './tabs/SwitchInputPanel';
+import {TextAreaPanel} from './tabs/TextAreaPanel';
 
 export const InputsTab = hoistCmp(
     () => tabContainer({
@@ -13,7 +20,7 @@ export const InputsTab = hoistCmp(
             switcherPosition: 'left',
             tabs: [
                 {id: 'buttonGroupInput', title: 'ButtonGroupInput', content: ButtonGroupInputPanel},
-            /*    {id: 'checkbox', title: 'Checkbox', content: CheckboxPanel},
+                {id: 'checkbox', title: 'Checkbox', content: CheckboxPanel},
                 {id: 'dateInput', title: 'DateInput', content: DateInputPanel},
                 {id: 'jsonInput', title: 'JsonInput', content: JsonInputPanel},
                 {id: 'numberInput', title: 'NumberInput', content: NumberInputPanel},
@@ -23,7 +30,7 @@ export const InputsTab = hoistCmp(
                 {id: 'sliderRange', title: 'Slider (range)', content: SliderRangePanel},
                 {id: 'switchInput', title: 'SwitchInput', content: SwitchInputPanel},
                 {id: 'textArea', title: 'TextArea', content: TextAreaPanel},
-                {id: 'textInput', title: 'TextInput', content: TextInputPanel}*/
+                {id: 'textInput', title: 'TextInput', content: TextInputPanel}
             ]
         },
         className: 'toolbox-tab'

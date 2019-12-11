@@ -6,7 +6,7 @@ import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
 import {inputTestPanel} from '../InputTestPanel';
 
-export const SliderPanel = hoistCmp({
+export const SliderRangePanel = hoistCmp({
 
     render() {
         const model = useLocalModel(createModel);
@@ -63,6 +63,6 @@ function createModel() {
             Slider,
             Icon
         },
-        value: 0
+        value: [0, 1]
     });
 }
