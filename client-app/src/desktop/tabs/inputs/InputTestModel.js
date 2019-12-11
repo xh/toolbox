@@ -7,12 +7,16 @@ export class InputTestModel {
 
     componentName;
     props;
+    customProps;
     scope;
+    description;
 
-    constructor({componentName, props, scope, value}) {
+    constructor({componentName, props, customProps, scope, value, description}) {
         this.componentName = componentName;
         this.props = props;
+        this.customProps = customProps;
         this.scope = scope;
         this.value = value;
+        this.description = description;
     }
 }

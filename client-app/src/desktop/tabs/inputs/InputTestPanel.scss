@@ -1,15 +1,61 @@
-.react-view-columns > div {
-  display: flex;
-  margin-top: 5em;
-  flex-direction: column;
-  width: 100%;
+.react-view-columns {
+  padding: 0;
+  overflow-y: auto;
 }
 
 .react-view-columns > div > div {
-  margin: 0 !important;
   background-color: var(--xh-grid-bg);
+  padding-left: var(--xh-pad-px);
+  padding-right: var(--xh-pad-px);
+  height: 6em;
+  overflow-y: auto;
+  font-size: var(--xh-font-size-small-px) !important;
 
   &:nth-child(odd) {
     background-color: var(--xh-grid-bg-odd);
   }
+}
+
+.input-test-panel {
+  width: 75%;
+}
+
+.input-test-example {
+  position: relative;
+  margin: var(--xh-pad-px);
+  min-height: 6em;
+  margin-left: auto;
+  margin-right: auto;
+
+  &_value {
+    max-width: 300px;
+    font-size: var(--xh-font-size-small-px);
+    font-family: var(--xh-font-family-mono);
+    background-color: var(--xh-bg-alt);
+    border: var(--xh-border-solid);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: var(--xh-pad-px);
+    display: inline-block;
+
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+  }
+
+  &_input .xh-input {
+    margin: 0;
+    padding:  var(--xh-pad-px);
+  }
+}
+
+.react-tiny-popover-container {
+  white-space: pre-wrap;
+  width: 50em;
+}
+
+.input-test-error {
+  height: 5em;
+  overflow-y: scroll;
 }

@@ -32,8 +32,8 @@ function createModel() {
                 value: true,
                 type: PT.Function,
                 description:
-                    'Callback to render each label, passed the number value for that label point.' +
-                    'If true, labels will use number value formatted to labelStepSize decimal places.' +
+                    'Callback to render each label, passed the number value for that label point. \n' +
+                    'If true, labels will use number value formatted to labelStepSize decimal places. \n' +
                     'If false, labels will not be shown.'
             },
             labelStepSize: {
@@ -50,7 +50,7 @@ function createModel() {
                 value: false,
                 type: PT.Boolean,
                 description:
-                    'True to render a solid bar between min and current values (for simple slider) or between' +
+                    'True to render a solid bar between min and current values (for simple slider) or between ' +
                     'handles (for range slider). Defaults to true.'
             },
             vertical: {

@@ -16,6 +16,11 @@ export const DateInputPanel = hoistCmp({
 
 function createModel() {
     return new InputTestModel({
+        description:
+            'A Calendar Control for choosing a Date.\n' +
+            'By default this control emits dates with the time component cleared (set to midnight), but this\n' +
+            'can be customized via the timePrecision prop to support editing of a date and time together.\n' +
+            'The calendar popover can be opened via the built-in button or up/down arrow keyboard shortcuts.',
         componentName: 'DateInput',
         props: {
             dayPickerProps: {
@@ -81,7 +86,7 @@ function createModel() {
                 type: T.Date,
                 description:
                     'Minimum (inclusive) valid date. Controls which dates can be selected via the calendar ' +
-                    'picker. Will reset any out-of-bounds manually entered input to `null`. ' +
+                    'picker. Will reset any out-of-bounds manually entered input to `null`. \n' +
                     'See note re. validation on maxDate, above.'
             },
             placeholder: {
@@ -110,8 +115,8 @@ function createModel() {
                 value: false,
                 type: T.Boolean,
                 description:
-                    'True to parse any dates entered via the text input with moment\'s "strict" mode enabled. ' +
-                    'This ensures that the input entry matches the format specified by `formatString` exactly. ' +
+                    'True to parse any dates entered via the text input with moment\'s "strict" mode enabled. \n' +
+                    'This ensures that the input entry matches the format specified by `formatString` exactly. \n' +
                     'If it does not, the input will be considered invalid and the value set to `null`. '
             },
             textAlign: {
@@ -132,7 +137,7 @@ function createModel() {
                 enumName: JSON.stringify(precisions),
                 options: precisions,
                 description:
-                    'The precision of time selection that accompanies the calendar. ' +
+                    'The precision of time selection that accompanies the calendar.\n' +
                     'If undefined, control will not show time. Ignored when valueType is localDate. '
             },
             valueType: {

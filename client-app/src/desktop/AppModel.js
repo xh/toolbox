@@ -22,6 +22,10 @@ import {HomeTab} from './tabs/home/HomeTab';
 import {OtherTab} from './tabs/other/OtherTab';
 import {PanelsTab} from './tabs/panels/PanelsTab';
 import {InputsTab} from './tabs/inputs/InputsTab';
+import {DateInputPanel} from './tabs/inputs/tabs/DateInputPanel';
+import {NumberInputPanel} from './tabs/inputs/tabs/NumberInputPanel';
+import {SliderPanel} from './tabs/inputs/tabs/SliderPanel';
+import {TextInputPanel} from './tabs/inputs/tabs/TextInputPanel';
 
 @HoistAppModel
 export class AppModel {
@@ -101,9 +105,17 @@ export class AppModel {
                         name: 'inputs',
                         path: '/inputs',
                         children: [
+                            {name: 'buttonGroupInput', path: '/buttonGroupInput'},
+                            {name: 'checkbox', path: '/checkbox'},
                             {name: 'dateInput', path: '/dateInput'},
+                            {name: 'jsonInput', path: '/jsonInput'},
                             {name: 'numberInput', path: '/numberInput'},
+                            {name: 'radioInput', path: '/radioInput'},
+                            {name: 'select', path: '/select'},
                             {name: 'slider', path: '/slider'},
+                            {name: 'sliderRange', path: '/sliderRange'},
+                            {name: 'switchInput', path: '/switchInput'},
+                            {name: 'textArea', path: '/textArea'},
                             {name: 'textInput', path: '/textInput'}
                         ]
                     },
