@@ -114,7 +114,7 @@ function createModel() {
                 description: 'Standard step size for increment/decrement handling.'
             },
             textAlign: {
-                value: null,
+                value: JSON.stringify(alignments) + '.right',
                 type: T.Enum,
                 enumName: JSON.stringify(alignments),
                 options: alignments,

@@ -44,7 +44,7 @@ function createModel() {
                 description: 'True to display each radio button inline with each other.'
             },
             labelAlign: {
-                value: null,
+                value: JSON.stringify(alignments) + '.right',
                 type: T.Enum,
                 enumName: JSON.stringify(alignments),
                 options: alignments,

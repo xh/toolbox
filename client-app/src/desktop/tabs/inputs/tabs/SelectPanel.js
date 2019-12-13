@@ -80,7 +80,7 @@ function createModel() {
                 description: 'Function to return loading message during an async query. Passed current query input.'
             },
             menuPlacement: {
-                value: null,
+                value: JSON.stringify('positions') + '.auto',
                 type: T.Enum,
                 enumName: JSON.stringify(positions),
                 options: positions,

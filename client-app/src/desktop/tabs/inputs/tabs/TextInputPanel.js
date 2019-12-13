@@ -78,7 +78,7 @@ function createModel() {
                 description: 'True to select contents when control receives focus.'
             },
             textAlign: {
-                value: null,
+                value: JSON.stringify(alignments) + '.left',
                 type: T.Enum,
                 enumName: JSON.stringify(alignments),
                 options: alignments,
@@ -90,7 +90,7 @@ function createModel() {
                 description: 'True to allow browser spell check, default false.'
             },
             type: {
-                value: null,
+                value: JSON.stringify(elementTypes) + '.text',
                 type: T.Enum,
                 enumName: JSON.stringify(elementTypes),
                 options: elementTypes,
@@ -106,7 +106,7 @@ function createModel() {
 
 const elementTypes = {
     text: 'text',
-    possword: 'password'
+    password: 'password'
 };
 
 const alignments = {

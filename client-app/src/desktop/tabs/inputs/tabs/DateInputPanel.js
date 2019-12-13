@@ -135,7 +135,7 @@ function createModel() {
                     'If it does not, the input will be considered invalid and the value set to `null`. '
             },
             textAlign: {
-                value: null,
+                value: JSON.stringify(alignments) + '.left',
                 type: T.Enum,
                 enumName: JSON.stringify(alignments),
                 options: alignments,
@@ -147,7 +147,7 @@ function createModel() {
                 description: 'Props passed to the TimePicker, as per Blueprint docs. '
             },
             timePrecision: {
-                value: null,
+                value: JSON.stringify(precisions) + '.null',
                 type: T.Enum,
                 enumName: JSON.stringify(precisions),
                 options: precisions,
@@ -156,7 +156,7 @@ function createModel() {
                     'If undefined, control will not show time. Ignored when valueType is localDate. '
             },
             valueType: {
-                value: null,
+                value: JSON.stringify(dateTypes) + '.date',
                 type: T.Enum,
                 enumName: JSON.stringify(dateTypes),
                 options: dateTypes,

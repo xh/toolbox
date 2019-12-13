@@ -49,7 +49,7 @@ function createModel() {
                     'these values will appear unchecked and visually indistinct from false.'
             },
             labelAlign: {
-                value: null,
+                value: JSON.stringify(alignments) + '.right',
                 type: T.Enum,
                 enumName: JSON.stringify(alignments),
                 options: alignments,
