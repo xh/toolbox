@@ -114,9 +114,9 @@ function createModel() {
                 description: 'Standard step size for increment/decrement handling.'
             },
             textAlign: {
-                value: JSON.stringify(alignments) + '.right',
+                value: 'alignments.right',
                 type: T.Enum,
-                enumName: JSON.stringify(alignments),
+                enumName: 'alignments',
                 options: alignments,
                 description: 'Alignment of entry text within control, default \'right\'.'
             },
@@ -128,7 +128,8 @@ function createModel() {
         },
         scope: {
             NumberInput,
-            Icon
+            Icon,
+            alignments
         }
     });
 }

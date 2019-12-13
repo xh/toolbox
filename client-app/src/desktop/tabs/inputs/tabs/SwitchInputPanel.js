@@ -37,16 +37,17 @@ function createModel() {
                     'Can be used with or without an additional overall label as provided by FormField.'
             },
             labelAlign: {
-                value: JSON.stringify(alignments) + '.left',
+                value: 'alignments.left',
                 type: T.Enum,
-                enumName: JSON.stringify(alignments),
+                enumName: 'alignments',
                 options: alignments,
                 description: 'Alignment of the inline label relative to the control itself, default right.'
             }
         },
         scope: {
             SwitchInput,
-            Icon
+            Icon,
+            alignments
         }
     });
 }

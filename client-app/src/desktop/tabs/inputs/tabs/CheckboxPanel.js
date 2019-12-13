@@ -49,16 +49,17 @@ function createModel() {
                     'these values will appear unchecked and visually indistinct from false.'
             },
             labelAlign: {
-                value: JSON.stringify(alignments) + '.right',
+                value: 'alignments.right',
                 type: T.Enum,
-                enumName: JSON.stringify(alignments),
+                enumName: 'alignments',
                 options: alignments,
                 description: 'Alignment of the inline label relative to the control itself, default right.'
             }
         },
         scope: {
             Checkbox,
-            Icon
+            Icon,
+            alignments
         }
     });
 }

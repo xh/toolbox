@@ -27,7 +27,6 @@ export const inputTestPanel = hoistCmp.factory({
             onChange: {
                 value: null,
                 type: T.Function,
-                hidden: true,
                 description: 'Called when value changes - passed new and prior values. '
             },
             onCommit: {
@@ -64,7 +63,6 @@ export const inputTestPanel = hoistCmp.factory({
                 title: model.componentName,
                 className: 'input-test-panel',
                 items: [
-                    // TODO: add description to all panels
                     hframe(
                         div({
                             className: 'input-test-example',
@@ -72,6 +70,7 @@ export const inputTestPanel = hoistCmp.factory({
                                 div({
                                     className: 'input-test-example__container',
                                     items: [
+                                        // TODO: move this to top right
                                         div({className: 'input-test-example__value', item: displayValue(model.value)}),
                                         div({className: 'input-test-example__input', item: compiler(viewParams.compilerProps)})
                                     ]
@@ -80,6 +79,7 @@ export const inputTestPanel = hoistCmp.factory({
                             ]
                         }),
                         div({
+                            // TODO: add title to knobs
                             className: 'input-test-controls',
                             item: knobs(viewParams.knobProps)
                         })
@@ -97,6 +97,7 @@ function displayValue(value) {
     } else if (ret.trim() === '') {
         ret = ret.length === 0 ? '[Empty String]' : '[Blank String]';
     }
+    ret = 'Current Value: ' + ret;
     return ret;
 }
 

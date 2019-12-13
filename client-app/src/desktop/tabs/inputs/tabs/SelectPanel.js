@@ -80,9 +80,9 @@ function createModel() {
                 description: 'Function to return loading message during an async query. Passed current query input.'
             },
             menuPlacement: {
-                value: JSON.stringify('positions') + '.auto',
+                value: 'positions.auto',
                 type: T.Enum,
-                enumName: JSON.stringify(positions),
+                enumName: 'positions',
                 options: positions,
                 description: 'Placement of the dropdown menu relative to the input control.'
             },
@@ -152,7 +152,8 @@ function createModel() {
         },
         scope: {
             Select,
-            Icon
+            Icon,
+            positions
         }
     });
 }

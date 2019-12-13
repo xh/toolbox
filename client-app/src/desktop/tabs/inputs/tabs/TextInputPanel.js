@@ -78,9 +78,9 @@ function createModel() {
                 description: 'True to select contents when control receives focus.'
             },
             textAlign: {
-                value: JSON.stringify(alignments) + '.left',
+                value: 'alignments.left',
                 type: T.Enum,
-                enumName: JSON.stringify(alignments),
+                enumName: 'alignments',
                 options: alignments,
                 description: 'Alignment of entry text within control, default \'left\'.'
             },
@@ -90,16 +90,18 @@ function createModel() {
                 description: 'True to allow browser spell check, default false.'
             },
             type: {
-                value: JSON.stringify(elementTypes) + '.text',
+                value: 'elementTypes.text',
                 type: T.Enum,
-                enumName: JSON.stringify(elementTypes),
+                enumName: 'elementTypes',
                 options: elementTypes,
                 description: 'Underlying HTML <input> element type.'
             }
         },
         scope: {
             TextInput,
-            Icon
+            Icon,
+            alignments,
+            elementTypes
         }
     });
 }

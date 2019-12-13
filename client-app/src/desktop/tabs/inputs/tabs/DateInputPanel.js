@@ -135,9 +135,9 @@ function createModel() {
                     'If it does not, the input will be considered invalid and the value set to `null`. '
             },
             textAlign: {
-                value: JSON.stringify(alignments) + '.left',
+                value:  'alignments.left',
                 type: T.Enum,
-                enumName: JSON.stringify(alignments),
+                enumName: 'alignments',
                 options: alignments,
                 description: 'Alignment of entry text within control, default \'left\'. '
             },
@@ -147,18 +147,18 @@ function createModel() {
                 description: 'Props passed to the TimePicker, as per Blueprint docs. '
             },
             timePrecision: {
-                value: JSON.stringify(precisions) + '.null',
+                value: 'precisions.null',
                 type: T.Enum,
-                enumName: JSON.stringify(precisions),
+                enumName: 'precisions',
                 options: precisions,
                 description:
                     'The precision of time selection that accompanies the calendar.\n' +
                     'If undefined, control will not show time. Ignored when valueType is localDate. '
             },
             valueType: {
-                value: JSON.stringify(dateTypes) + '.date',
+                value: 'dateTypes.date',
                 type: T.Enum,
-                enumName: JSON.stringify(dateTypes),
+                enumName: 'dateTypes',
                 options: dateTypes,
                 description: 'Type of value to publish. Defaults to \'date\'. '
             },
@@ -170,7 +170,10 @@ function createModel() {
         },
         scope: {
             DateInput,
-            Icon
+            Icon,
+            alignments,
+            precisions,
+            dateTypes
         }
     });
 }
