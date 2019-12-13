@@ -1,6 +1,6 @@
 import {Compiler, Error, Knobs, PropTypes as T, useView} from 'react-view';
 import {wrapper} from '../../common';
-import {div} from '@xh/hoist/cmp/layout';
+import {div, hbox} from '@xh/hoist/cmp/layout';
 import {elemFactory, hoistCmp} from '@xh/hoist/core';
 import {uses} from '@xh/hoist/core/modelspec';
 import template from '@babel/template';
@@ -57,23 +57,29 @@ export const inputTestPanel = hoistCmp.factory({
             scope: model.scope
         });
 
-        return wrapper(
-            panel({
+        return wrapper({
+            description: model.description,
+            item: panel({
                 title: model.componentName,
                 className: 'input-test-panel',
-                description: model.description,
                 items: [
-                    div({className: 'input-test-example', items: [
-                        // TODO: move displayValue to top right
-                        div({className: 'input-test-example_value', item: displayValue(model.value)}),
-                        div({className: 'input-test-example_input', item: compiler(viewParams.compilerProps)})
-                    ]}),
-                    // TODO: put this in its own scrolling box
-                    div({className: 'input-test-error', item: error({...viewParams.errorProps})}),
-                    knobs(viewParams.knobProps)
+                    // TODO: move to two-column  format with input beside knobs
+                    // TODO: add description to all panels
+                    hbox(
+                        div({
+                            className: 'input-test-example',
+                            items: [
+                                // TODO: move displayValue to top right
+                                div({className: 'input-test-example_value', item: displayValue(model.value)}),
+                                div({className: 'input-test-example_input', item: compiler(viewParams.compilerProps)}),
+                                div({className: 'input-test-example_error', item: error({...viewParams.errorProps})})
+                            ]
+                        }),
+                        knobs(viewParams.knobProps)
+                    )
                 ]
             })
-        );
+        });
     }
 });
 

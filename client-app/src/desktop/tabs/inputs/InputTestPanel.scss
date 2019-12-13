@@ -1,19 +1,12 @@
 .react-view-columns {
-  padding: 0;
-  overflow-y: auto;
+  flex-direction: column;
+  overflow-y: scroll;
 }
 
 .react-view-columns > div > div {
   background-color: var(--xh-grid-bg);
   padding-left: var(--xh-pad-px);
   padding-right: var(--xh-pad-px);
-  height: 6em;
-  overflow-y: auto;
-  font-size: var(--xh-font-size-small-px) !important;
-
-  &:nth-child(odd) {
-    background-color: var(--xh-grid-bg-odd);
-  }
 }
 
 .input-test-panel {
@@ -38,7 +31,6 @@
     text-overflow: ellipsis;
     margin: var(--xh-pad-px);
     display: inline-block;
-
     position: relative;
     left: 50%;
     transform: translate(-50%);
@@ -46,16 +38,16 @@
 
   &_input .xh-input {
     margin: 0;
-    padding:  var(--xh-pad-px);
+    padding: var(--xh-pad-px);
+  }
+
+  &_error {
+    height: 5em;
+    overflow-y: scroll;
   }
 }
 
 .react-tiny-popover-container {
   white-space: pre-wrap;
   width: 50em;
-}
-
-.input-test-error {
-  height: 5em;
-  overflow-y: scroll;
 }

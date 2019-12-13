@@ -147,7 +147,7 @@ function createModel() {
 }
 
 const positions = {
-    ['auto']: 'auto',
-    ['top']: 'top',
-    ['bottom']: 'bottom'
+    auto: 'auto',
+    top: 'top',
+    bottom: 'bottom'
 };

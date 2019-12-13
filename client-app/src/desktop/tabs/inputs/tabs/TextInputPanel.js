@@ -100,11 +100,11 @@ function createModel() {
 }
 
 const elementTypes = {
-    ['text']: 'text',
-    ['possword']: 'password'
-}
+    text: 'text',
+    possword: 'password'
+};
 
 const alignments = {
-    ['left']: 'left',
-    ['right']: 'right'
+    left: 'left',
+    right: 'right'
 };

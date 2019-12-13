@@ -56,8 +56,7 @@ function createModel() {
 const options =
     "['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]";
 
-
 const alignments = {
-    ['left']: 'left',
-    ['right']: 'right'
+    left: 'left',
+    right: 'right'
 };

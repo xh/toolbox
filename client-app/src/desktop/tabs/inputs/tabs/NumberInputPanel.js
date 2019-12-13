@@ -119,6 +119,6 @@ function createModel() {
 }
 
 const alignments = {
-    ['left']: 'left',
-    ['right']: 'right'
+    left: 'left',
+    right: 'right'
 };

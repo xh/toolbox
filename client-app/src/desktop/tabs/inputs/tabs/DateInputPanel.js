@@ -89,12 +89,24 @@ function createModel() {
                 type: T.String,
                 description: 'Text to display when control is empty. '
             },
+            // TODO: see if I can sort this thing out
             popoverPosition: {
                 value: null,
-                type: T.Enum,
-                enumName: JSON.stringify(positions),
-                options: positions,
-                description: 'Position for calendar popover, as per Blueprint docs. '
+                type: T.String,
+                description: 'Position for calendar popover, as per Blueprint docs. Options are: \n' +
+                    'top-left\n' +
+                    'top\n' +
+                    'top-right\n' +
+                    'right-top\n' +
+                    'right\n' +
+                    'right-bottom\n' +
+                    'bottom-right\n'  +
+                    'bottom\n'  +
+                    'bottom-left\n' +
+                    'left-bottom\n' +
+                    'left\n' +
+                    'left-top\n' +
+                    'auto'
             },
             showActionsBar: {
                 value: true,
@@ -155,34 +167,18 @@ function createModel() {
     });
 }
 
-const positions = {
-    ['top-left']: 'top-left',
-    ['top']: 'top',
-    ['top-right']: 'top-right',
-    ['right-top']: 'right-top',
-    ['right']: 'right',
-    ['right-bottom']: 'right-bottom',
-    ['bottom-right']: 'bottom-right',
-    ['bottom']: 'bottom',
-    ['bottom-left']: 'bottom-left',
-    ['left-bottom']: 'left-bottom',
-    ['left']: 'left',
-    ['left-top']: 'left-top',
-    ['auto']: 'auto'
-};
-
 const alignments = {
-    ['left']: 'left',
-    ['right']: 'right'
+    left: 'left',
+    right: 'right'
 };
 
 const precisions = {
-    ['null']: null,
-    ['second']: 'second',
-    ['minute']: 'minute'
+    null: null,
+    second: 'second',
+    minute: 'minute'
 };
 
 const dateTypes = {
-    ['date']: 'date',
-    ['localDate']: 'localDate'
+    date: 'date',
+    localDate: 'localDate'
 };
