@@ -62,8 +62,11 @@
   white-space: pre-wrap;
   width: 50em;
 
-  & > div {
-    font-size: var(--xh-font-size-small-px) !important;
+  & > div > div {
+    color: var(--xh-text-color) !important;
+    background-color: var(--xh-bg) !important;
+    font-size: var(--xh-font-size-px) !important;
+    border-color: var(--xh-border-color) !important;
   }
 }
 
@@ -102,10 +105,25 @@
 
         div {
           color: var(--xh-input-text-color) !important;
-          background: var(--xh-input-bg) !important;
           font-size: 12px !important;
           font-family: var(--xh-font-family-mono) !important;
           font-weight: normal !important;
+          border: none !important;
+          background: transparent !important;
+        }
+
+        & > label + div {
+          box-shadow: var(--xh-form-field-box-shadow) !important;
+
+          &:focus-within {
+            // Note: Copied from Blueprint
+            box-shadow:
+              0 0 0 1px #137cbd,
+              0 0 0 1px #137cbd,
+              0 0 0 3px rgba(19, 124, 189, 0.3),
+              inset 0 0 0 1px rgba(16, 22, 26, 0.3),
+              inset 0 1px 1px rgba(16, 22, 26, 0.4) !important;
+          }
         }
       }
     }
