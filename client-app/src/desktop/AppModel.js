@@ -22,10 +22,6 @@ import {HomeTab} from './tabs/home/HomeTab';
 import {OtherTab} from './tabs/other/OtherTab';
 import {PanelsTab} from './tabs/panels/PanelsTab';
 import {InputsTab} from './tabs/inputs/InputsTab';
-import {DateInputPanel} from './tabs/inputs/tabs/DateInputPanel';
-import {NumberInputPanel} from './tabs/inputs/tabs/NumberInputPanel';
-import {SliderPanel} from './tabs/inputs/tabs/SliderPanel';
-import {TextInputPanel} from './tabs/inputs/tabs/TextInputPanel';
 
 @HoistAppModel
 export class AppModel {
