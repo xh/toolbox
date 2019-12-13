@@ -1,13 +1,13 @@
-import {Compiler, Error, Knobs, PropTypes as T, useView} from 'react-view';
-import {wrapper} from '../../common';
-import {div, hbox} from '@xh/hoist/cmp/layout';
-import {elemFactory, hoistCmp} from '@xh/hoist/core';
-import {uses} from '@xh/hoist/core/modelspec';
-import template from '@babel/template';
-import {forEach} from 'lodash';
-import {InputTestModel} from './InputTestModel';
-import './InputTestPanel.scss';
+import {elemFactory, hoistCmp, uses} from '@xh/hoist/core';
+import {div, hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import template from '@babel/template';
+import {Compiler, Error, Knobs, PropTypes as T, useView} from 'react-view';
+import {forEach} from 'lodash';
+
+import './InputTestPanel.scss';
+import {InputTestModel} from './InputTestModel';
+import {wrapper} from '../../common';
 
 export const inputTestPanel = hoistCmp.factory({
 
@@ -27,6 +27,7 @@ export const inputTestPanel = hoistCmp.factory({
             onChange: {
                 value: null,
                 type: T.Function,
+                hidden: true,
                 description: 'Called when value changes - passed new and prior values. '
             },
             onCommit: {
@@ -63,19 +64,25 @@ export const inputTestPanel = hoistCmp.factory({
                 title: model.componentName,
                 className: 'input-test-panel',
                 items: [
-                    // TODO: move to two-column  format with input beside knobs
                     // TODO: add description to all panels
-                    hbox(
+                    hframe(
                         div({
                             className: 'input-test-example',
                             items: [
-                                // TODO: move displayValue to top right
-                                div({className: 'input-test-example_value', item: displayValue(model.value)}),
-                                div({className: 'input-test-example_input', item: compiler(viewParams.compilerProps)}),
-                                div({className: 'input-test-example_error', item: error({...viewParams.errorProps})})
+                                div({
+                                    className: 'input-test-example__container',
+                                    items: [
+                                        div({className: 'input-test-example__value', item: displayValue(model.value)}),
+                                        div({className: 'input-test-example__input', item: compiler(viewParams.compilerProps)})
+                                    ]
+                                }),
+                                div({className: 'input-test-example__error', item: error({...viewParams.errorProps})})
                             ]
                         }),
-                        knobs(viewParams.knobProps)
+                        div({
+                            className: 'input-test-controls',
+                            item: knobs(viewParams.knobProps)
+                        })
                     )
                 ]
             })

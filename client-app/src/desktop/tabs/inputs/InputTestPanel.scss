@@ -1,53 +1,113 @@
-.react-view-columns {
-  flex-direction: column;
-  overflow-y: scroll;
-}
-
-.react-view-columns > div > div {
-  background-color: var(--xh-grid-bg);
-  padding-left: var(--xh-pad-px);
-  padding-right: var(--xh-pad-px);
-}
-
 .input-test-panel {
-  width: 75%;
+  width: 900px;
+  flex: 0 0 500px !important;
 }
 
 .input-test-example {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: var(--xh-bg-alt);
   position: relative;
-  margin: var(--xh-pad-px);
-  min-height: 6em;
-  margin-left: auto;
-  margin-right: auto;
 
-  &_value {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+  }
+
+  &__value {
+    margin: var(--xh-pad-px);
+    padding: var(--xh-pad-half-px);
     max-width: 300px;
+    align-self: center;
     font-size: var(--xh-font-size-small-px);
     font-family: var(--xh-font-family-mono);
-    background-color: var(--xh-bg-alt);
+    background-color: var(--xh-bg);
     border: var(--xh-border-solid);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  &__input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__error {
     margin: var(--xh-pad-px);
-    display: inline-block;
-    position: relative;
-    left: 50%;
-    transform: translate(-50%);
-  }
+    min-height: 30px;
 
-  &_input .xh-input {
-    margin: 0;
-    padding: var(--xh-pad-px);
-  }
-
-  &_error {
-    height: 5em;
-    overflow-y: scroll;
+    // Override error display
+    & > div {
+      margin: 0 !important;
+      font-family: var(--xh-font-family-mono) !important;
+      font-size: var(--xh-font-size-small-px) !important;
+      padding: var(--xh-pad-half-px) var(--xh-pad-px) !important;
+      background-color: var(--xh-red) !important;
+      overflow: hidden !important;
+      white-space: normal !important;
+      line-height: 1.5;
+    }
   }
 }
 
+// Override tooltips
 .react-tiny-popover-container {
   white-space: pre-wrap;
   width: 50em;
+
+  & > div {
+    font-size: var(--xh-font-size-small-px) !important;
+  }
+}
+
+// Override column layout display
+.input-test-controls {
+  padding: var(--xh-pad-px);
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-left: var(--xh-border-solid);
+
+  & > button {
+    flex: 0 0 21px;
+  }
+
+  .react-view-columns {
+    margin: 0 !important;
+    padding: 0;
+    flex-direction: column;
+
+    & > div {
+      flex-basis: auto !important;
+      padding: 0 !important;
+      background-color: var(--xh-bg);
+
+      & > div {
+        margin: 0 0 var(--xh-pad-px) !important;
+
+        label {
+          font-size: var(--xh-font-size-px);
+          font-family: var(--xh-font-family) !important;
+          font-weight: normal !important;
+        }
+
+        div {
+          color: var(--xh-input-text-color) !important;
+          background: var(--xh-input-bg) !important;
+          font-size: 12px !important;
+          font-family: var(--xh-font-family-mono) !important;
+          font-weight: normal !important;
+        }
+      }
+    }
+  }
 }
