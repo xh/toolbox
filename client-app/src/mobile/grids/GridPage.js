@@ -6,6 +6,7 @@ import {filler} from '@xh/hoist/cmp/layout';
 import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {label, switchInput} from '@xh/hoist/mobile/cmp/input';
+import {storeFilterField} from '@xh/hoist/mobile/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 
 import {GridPageModel} from './GridPageModel';
@@ -20,6 +21,12 @@ export const GridPage = hoistCmp({
             title: 'Grids',
             icon: Icon.gridPanel(),
             mask: 'onLoad',
+            headerItems: [
+                relativeTimestamp({
+                    bind: 'dateLoaded',
+                    options: {prefix: 'Loaded'}
+                })
+            ],
             item: grid({
                 onRowClicked: (e) => {
                     const {id} = e.data.raw;
@@ -44,10 +51,7 @@ export const GridPage = hoistCmp({
                 })
             ],
             bbar: [
-                relativeTimestamp({
-                    bind: 'dateLoaded',
-                    options: {prefix: 'Loaded'}
-                }),
+                storeFilterField(),
                 filler(),
                 colChooserButton()
             ]
