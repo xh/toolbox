@@ -38,11 +38,6 @@ function createModel() {
                 type: T.Boolean,
                 description: 'True to take up the full width of container.'
             },
-
-            inputRef: {
-                value: null,
-                type: T.Function
-            },
             onKeyDown: {
                 value: null,
                 type: T.Function,

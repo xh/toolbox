@@ -53,7 +53,8 @@ function createModel() {
         },
         scope: {
             RadioInput,
-            Icon
+            Icon,
+            alignments
         }
     });
 }
