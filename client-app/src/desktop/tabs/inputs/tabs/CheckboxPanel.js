@@ -5,6 +5,7 @@ import {Checkbox} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
 import {inputTestPanel} from '../InputTestPanel';
+import {p} from '@xh/hoist/cmp/layout';
 
 export const CheckboxPanel = hoistCmp({
 
@@ -16,6 +17,11 @@ export const CheckboxPanel = hoistCmp({
 
 function createModel() {
     return new InputTestModel({
+        description:
+            [
+                p('Checkbox control for boolean values.'),
+                p('Renders null with an "indeterminate" [-] display.')
+            ],
         componentName: 'Checkbox',
         props: {
             autoFocus: {

@@ -6,6 +6,7 @@ import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
 
 import {inputTestPanel} from '../InputTestPanel';
+import {li, p, ul} from '@xh/hoist/cmp/layout';
 
 export const SelectPanel = hoistCmp({
 
@@ -17,6 +18,16 @@ export const SelectPanel = hoistCmp({
 
 function createModel() {
     return new InputTestModel({
+        description:
+            [
+                p('A managed wrapper around the React-Select combobox/dropdown component.'),
+                p('Supports advanced options such as:'),
+                ul(
+                    li('Asynchronous queries'),
+                    li('Multiple selection'),
+                    li('User-created ad-hoc entries')
+                )
+            ],
         componentName: 'Select',
         props: {
             autoFocus: {

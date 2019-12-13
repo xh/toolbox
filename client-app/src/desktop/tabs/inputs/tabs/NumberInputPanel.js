@@ -5,6 +5,7 @@ import {NumberInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
 import {inputTestPanel} from '../InputTestPanel';
+import {li, p, ul} from '@xh/hoist/cmp/layout';
 
 export const NumberInputPanel = hoistCmp({
 
@@ -16,6 +17,20 @@ export const NumberInputPanel = hoistCmp({
 
 function createModel() {
     return new InputTestModel({
+        description:
+            [
+                p('Number input, with optional support for formatted of display value, shorthand units, and more.'),
+                p('This component is built on the Blueprint NumericInput and gets default increment/decrement ' +
+                    'functionality from that component, based on the three stepSize props. '),
+                p('This Hoist component hides the up/down buttons by default but keeps the keyboard handling.'),
+                p('Users can use the following keys to increment/decrement:'),
+                ul(
+                    li('↑/↓           by one step'),
+                    li('Shift + ↑/↓   by one major step'),
+                    li('Alt + ↑/↓     by one minor step')
+                ),
+                p('Set the corresponding stepSize prop(s) to null to disable this feature.')
+            ],
         componentName: 'NumberInput',
         props: {
             autoFocus: {

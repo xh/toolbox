@@ -7,6 +7,7 @@ import {hoistCmp} from '@xh/hoist/core';
 import template from '@babel/template';
 
 import {inputTestPanel} from '../InputTestPanel';
+import {p} from '@xh/hoist/cmp/layout';
 
 export const RadioInputPanel = hoistCmp({
 
@@ -18,6 +19,10 @@ export const RadioInputPanel = hoistCmp({
 
 function createModel() {
     return new InputTestModel({
+        description:
+            [
+                p('An input for managing Radio Buttons.')
+            ],
         componentName: 'RadioInput',
         customProps: {
             options: {

@@ -8,6 +8,7 @@ import template from '@babel/template';
 
 import {inputTestPanel} from '../InputTestPanel';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {p} from '@xh/hoist/cmp/layout';
 
 export const ButtonGroupInputPanel = hoistCmp({
 
@@ -19,6 +20,13 @@ export const ButtonGroupInputPanel = hoistCmp({
 
 function createModel() {
     return new InputTestModel({
+        description:
+            [
+                p('A segmented group of buttons, one of which is depressed to indicate the input\'s current value.'),
+                p('Should receive a list of Buttons as children. Each Button requires a \'value\' prop.' +
+                    'The buttons are automatically configured to set this value on click and appear pressed if the ' +
+                    'ButtonGroupInput\'s value matches.')
+            ],
         componentName: 'ButtonGroupInput',
         customProps: {
             children: {

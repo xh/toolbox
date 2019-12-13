@@ -5,6 +5,7 @@ import {TextInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
 import {inputTestPanel} from '../InputTestPanel';
+import {p} from '@xh/hoist/cmp/layout';
 
 export const TextInputPanel = hoistCmp({
 
@@ -16,6 +17,10 @@ export const TextInputPanel = hoistCmp({
 
 function createModel() {
     return new InputTestModel({
+        description:
+            [
+                p('A single-line text input with additional support for embedded icons/elements.')
+            ],
         componentName: 'TextInput',
         props: {
             autoComplete: {

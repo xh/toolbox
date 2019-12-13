@@ -5,6 +5,7 @@ import {Slider} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
 import {inputTestPanel} from '../InputTestPanel';
+import {p} from '@xh/hoist/cmp/layout';
 
 export const SliderRangePanel = hoistCmp({
 
@@ -16,6 +17,10 @@ export const SliderRangePanel = hoistCmp({
 
 function createModel() {
     return new InputTestModel({
+        description:
+            [
+                p('A slider input configured to edit an array of two numbers (for a range).')
+            ],
         componentName: 'Slider',
         props: {
             max: {

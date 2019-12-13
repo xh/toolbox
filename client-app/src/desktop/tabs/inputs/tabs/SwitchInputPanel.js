@@ -6,6 +6,7 @@ import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
 
 import {inputTestPanel} from '../InputTestPanel';
+import {p} from '@xh/hoist/cmp/layout';
 
 export const SwitchInputPanel = hoistCmp({
 
@@ -17,6 +18,10 @@ export const SwitchInputPanel = hoistCmp({
 
 function createModel() {
     return new InputTestModel({
+        description:
+            [
+                p('Switch (toggle) control for non-nullable boolean values.')
+            ],
         componentName: 'SwitchInput',
         props: {
             inline: {

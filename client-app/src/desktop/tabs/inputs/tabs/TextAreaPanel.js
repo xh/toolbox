@@ -5,6 +5,7 @@ import {TextArea} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
 import {inputTestPanel} from '../InputTestPanel';
+import {p} from '@xh/hoist/cmp/layout';
 
 export const TextAreaPanel = hoistCmp({
 
@@ -16,6 +17,10 @@ export const TextAreaPanel = hoistCmp({
 
 function createModel() {
     return new InputTestModel({
+        description:
+            [
+                p('A multi-line text input.')
+            ],
         componentName: 'TextArea',
         props: {
             autoFocus: {
