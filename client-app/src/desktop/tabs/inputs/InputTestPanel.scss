@@ -84,6 +84,7 @@
     flex: 0 0 21px;
   }
 
+  // Note: These tricky selectors are due to react-view not offering css classes to target overrides
   .react-view-columns {
     margin: 0 !important;
     padding: 0;
@@ -93,6 +94,21 @@
       flex-basis: auto !important;
       padding: 0 !important;
       background-color: var(--xh-bg);
+
+      // Apply border to input controls
+      & > div:not([data-testid="rv-knob-undefined"]) > label + div {
+        box-shadow: var(--xh-form-field-box-shadow) !important;
+
+        &:focus-within {
+          // Note: Focused border-style copied from Blueprint
+          box-shadow:
+            0 0 0 1px #137cbd,
+            0 0 0 1px #137cbd,
+            0 0 0 3px rgba(19, 124, 189, 0.3),
+            inset 0 0 0 1px rgba(16, 22, 26, 0.3),
+            inset 0 1px 1px rgba(16, 22, 26, 0.4) !important;
+        }
+      }
 
       & > div {
         margin: 0 0 var(--xh-pad-px) !important;
@@ -110,20 +126,6 @@
           font-weight: normal !important;
           border: none !important;
           background: transparent !important;
-        }
-
-        & > label + div {
-          box-shadow: var(--xh-form-field-box-shadow) !important;
-
-          &:focus-within {
-            // Note: Copied from Blueprint
-            box-shadow:
-              0 0 0 1px #137cbd,
-              0 0 0 1px #137cbd,
-              0 0 0 3px rgba(19, 124, 189, 0.3),
-              inset 0 0 0 1px rgba(16, 22, 26, 0.3),
-              inset 0 1px 1px rgba(16, 22, 26, 0.4) !important;
-          }
         }
       }
     }
