@@ -59,6 +59,16 @@ export const inputTestPanel = hoistCmp.factory({
 
         return wrapper({
             description: model.description,
+            links: [
+                {
+                    url: 'https://github.com/uber/react-view',
+                    notes: 'The library that powers this page.'
+                },
+                {
+                    url: 'https://github.com/uber/react-view/blob/master/LICENSE',
+                    notes: 'The license for react-view.'
+                }
+            ],
             item: panel({
                 title: model.componentName,
                 className: 'input-test-panel',
