@@ -108,6 +108,7 @@ export class AppModel {
                             {name: 'numberInput', path: '/numberInput'},
                             {name: 'radioInput', path: '/radioInput'},
                             {name: 'select', path: '/select'},
+                            {name: 'selectQuery', path: '/selectQuery'},
                             {name: 'slider', path: '/slider'},
                             {name: 'sliderRange', path: '/sliderRange'},
                             {name: 'switchInput', path: '/switchInput'},

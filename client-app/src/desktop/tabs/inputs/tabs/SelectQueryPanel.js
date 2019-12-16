@@ -4,11 +4,12 @@ import {PropTypes as T} from 'react-view';
 import {Select} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
+import {XH} from '@xh/hoist/core';
 
 import {inputTestPanel} from '../InputTestPanel';
-import {li, p, ul} from '@xh/hoist/cmp/layout';
+import {box, div, hbox, p} from '@xh/hoist/cmp/layout';
 
-export const SelectPanel = hoistCmp({
+export const SelectQueryPanel = hoistCmp({
 
     render() {
         const model = useLocalModel(createModel);
@@ -21,12 +22,7 @@ function createModel() {
         description:
             [
                 p('A managed wrapper around the React-Select combobox/dropdown component.'),
-                p('Supports advanced options such as:'),
-                ul(
-                    li('Asynchronous queries'),
-                    li('Multiple selection'),
-                    li('User-created ad-hoc entries')
-                )
+                p('This example is configured to for asynchronous queries.')
             ],
         componentName: 'Select',
         props: {
@@ -52,15 +48,8 @@ function createModel() {
                 type: T.Boolean,
                 description: 'True to accept and commit input values not present in options or returned by a query.'
             },
-            enableFilter: {
-                value: null,
-                type: T.Boolean,
-                description:
-                    'True (default) to enable type-to-search keyboard input. False to disable keyboard input, ' +
-                    'showing the dropdown menu on click.'
-            },
             enableMulti: {
-                value: null,
+                value: true,
                 type: T.Boolean,
                 description: 'True to allow entry/selection of multiple values - "tag picker" style.'
             },
@@ -68,6 +57,16 @@ function createModel() {
                 value: null,
                 type: T.Boolean,
                 description: 'True to suppress the default check icon rendered for the currently selected option.'
+            },
+            labelField: {
+                value: 'company',
+                type: T.String,
+                description: 'Field on provided options for sourcing each option\'s display text (default `label`).'
+            },
+            loadingMessageFn: {
+                value: null,
+                type: T.Function,
+                description: 'Function to return loading message during an async query. Passed current query input.'
             },
             menuPlacement: {
                 value: 'positions.auto',
@@ -86,20 +85,34 @@ function createModel() {
                 type: T.Boolean,
                 description: 'True to auto-open the dropdown menu on input focus.'
             },
-            options: {
-                value:
-                    `['No high school','Some high school','High school','Some college','Associate\\'s degree','Bachelor\\'s degree','Graduate degree']`,
-                type: T.Array,
+            optionRenderer: {
+                value: `(opt) => customerOption({opt})`,
+                type: T.Function,
                 description:
-                    'Preset list of options for selection. Objects must contain a `value` property; a `label` ' +
-                    'property will be used for the default display of each option. Other types will be taken ' +
-                    'as their value directly and displayed via PT.string().  See also `queryFn` to  supply ' +
-                    'options via an async query (i.e. from the server) instead of up-front in this prop.'
+                    'Function to render options in the dropdown list. Called for each option object (which ' +
+                    'will contain at minimum a value and label field, as well as any other fields present in ' +
+                    'the source objects). Returns a React.node.'
             },
             placeholder: {
-                value: null,
+                value: 'Search customers...',
                 type: T.String,
                 description: 'Text to display when control is empty.'
+            },
+            queryBuffer: {
+                value: null,
+                type: T.Number,
+                description: 'Delay (in ms) to buffer calls to the async queryFn. Defaults to 300.'
+            },
+            queryFn: {
+                value:
+                    '(query) => XH.fetchJson({\n' +
+                    '    url: \'customer\',\n' +
+                    '    params: {query}\n' +
+                    '})',
+                type: T.Function,
+                description:
+                    'Async function to return a list of options for a given query string input.\n' +
+                    'Replaces the `options` prop - use one or the other.'
             },
             rsOptions: {
                 value: null,
@@ -110,15 +123,26 @@ function createModel() {
                     'and providing them directly can interfere with the implementation of this class.'
             },
             selectOnFocus: {
-                value: null,
+                value: true,
                 type: T.Boolean,
                 description: 'True to select contents when control receives focus.'
+            },
+            valueField: {
+                value: 'id',
+                type: T.String,
+                description: 'Field on provided options for sourcing each option\'s value (default `value`).'
             }
         },
         scope: {
             Select,
             Icon,
-            positions
+            positions,
+            XH,
+            customerOption,
+            Promise,
+            hbox,
+            box,
+            div
         }
     });
 }
@@ -127,4 +151,26 @@ const positions = {
     auto: 'auto',
     top: 'top',
     bottom: 'bottom'
+};
+
+const customerOption = ({opt}) => {
+    return hbox({
+        items: [
+            box({
+                item: opt.isActive ?
+                    Icon.checkCircle({className: 'xh-green'}) :
+                    Icon.x({className: 'xh-red'}),
+                width: 32,
+                paddingLeft: 8
+            }),
+            div(
+                opt.company,
+                div({
+                    className: 'xh-text-color-muted xh-font-size-small',
+                    item: `${opt.city} · ID: ${opt.id}`
+                })
+            )
+        ],
+        alignItems: 'center'
+    });
 };

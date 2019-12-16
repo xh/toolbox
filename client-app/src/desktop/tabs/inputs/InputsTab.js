@@ -12,6 +12,7 @@ import {SelectPanel} from './tabs/SelectPanel';
 import {SliderRangePanel} from './tabs/SliderRangePanel';
 import {SwitchInputPanel} from './tabs/SwitchInputPanel';
 import {TextAreaPanel} from './tabs/TextAreaPanel';
+import {SelectQueryPanel} from './tabs/SelectQueryPanel';
 
 export const InputsTab = hoistCmp(
     () => tabContainer({
@@ -26,6 +27,7 @@ export const InputsTab = hoistCmp(
                 {id: 'numberInput', title: 'NumberInput', content: NumberInputPanel},
                 {id: 'radioInput', title: 'RadioInput', content: RadioInputPanel},
                 {id: 'select', title: 'Select', content: SelectPanel},
+                {id: 'selectQuery', title: 'Select (query)', content: SelectQueryPanel},
                 {id: 'slider', title: 'Slider', content: SliderPanel},
                 {id: 'sliderRange', title: 'Slider (range)', content: SliderRangePanel},
                 {id: 'switchInput', title: 'SwitchInput', content: SwitchInputPanel},
