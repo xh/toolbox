@@ -4,7 +4,7 @@ import {hoistCmp, uses} from '@xh/hoist/core';
 import {dataView} from '@xh/hoist/cmp/dataview';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 
 import {NewsPanelModel} from './NewsPanelModel';
 import './NewsPanelItem.scss';

@@ -5,7 +5,7 @@ import {filler} from '@xh/hoist/cmp/layout';
 import {hoistCmp} from '@xh/hoist/core/index';
 import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 import {Icon} from '@xh/hoist/icon';
 import {OrdersPanelModel} from './OrdersPanelModel';
 

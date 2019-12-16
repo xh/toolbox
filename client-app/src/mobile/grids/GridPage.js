@@ -6,7 +6,7 @@ import {filler} from '@xh/hoist/cmp/layout';
 import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {label, switchInput} from '@xh/hoist/mobile/cmp/input';
-import {storeFilterField} from '@xh/hoist/mobile/cmp/store';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 
 import {GridPageModel} from './GridPageModel';

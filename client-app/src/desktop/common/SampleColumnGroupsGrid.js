@@ -11,7 +11,7 @@ import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/c
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtMillions, fmtNumber, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
