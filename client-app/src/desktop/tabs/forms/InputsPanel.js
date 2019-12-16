@@ -139,12 +139,13 @@ const formContents = hoistCmp.factory(
                     row({
                         label: 'NumberInput',
                         field: 'number2',
-                        info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
+                        info: 'enableShorthandUnits, displayWithCommas, selectOnFocus, enforcePrecision',
                         item: numberInput({
                             fill: true,
                             enableShorthandUnits: true,
                             displayWithCommas: true,
-                            selectOnFocus: true
+                            selectOnFocus: true,
+                            enforcePrecision: true
                         })
                     }),
                     row({
