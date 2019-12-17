@@ -162,13 +162,7 @@ export class AppModel {
         return {
             track: () => this.tabModel.activeTab,
             run: (activeTab) => {
-                XH.track({
-                    msg: `Viewed ${activeTab.title}`,
-                    data: {
-                        id: activeTab.id
-                    },
-                    category: 'Tab'
-                });
+                XH.track({category: 'Tab', message: `Viewed ${activeTab.title}`});
             }
         };
     }
