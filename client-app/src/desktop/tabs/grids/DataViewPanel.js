@@ -4,7 +4,7 @@ import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 import {dataView, DataViewModel} from '@xh/hoist/cmp/dataview';
 
 import {wrapper} from '../../common/Wrapper';
