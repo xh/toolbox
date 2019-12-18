@@ -143,7 +143,8 @@ export class SampleGridModel {
                     }
 
                     return ret;
-                }
+                },
+                exportName: 'Company'
             },
             {
                 field: 'winLose',
