@@ -1,10 +1,17 @@
 import {createRef} from 'react';
 import {localDateCol, boolCheckCol, emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
-import {fragment, br} from '@xh/hoist/cmp/layout';
+import {fragment, br, vbox, div, hbox, filler} from '@xh/hoist/cmp/layout';
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {
+    fmtNumberTooltip,
+    millionsRenderer,
+    numberRenderer,
+    fmtDate,
+    fmtMillions,
+    fmtNumber
+} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
@@ -102,6 +109,41 @@ export class SampleGridModel {
                 return a == 'Winner' ? -1 : 1;
             } else {
                 return a < b ? -1 : 1;
+            }
+        },
+        colDefaults: {
+            tooltipElementRenderer: (v, {record}) => {
+                const {company, city, trade_date, profit_loss, trade_volume} = record;
+                return vbox({
+                    className: 'sample-grid-tooltip',
+                    items: [
+                        div({className: 'company', item: company}),
+                        hbox({
+                            className: 'city-and-date tooltip-row',
+                            items: [
+                                city,
+                                filler(),
+                                fmtDate(trade_date)
+                            ]
+                        }),
+                        hbox({
+                            className: 'tooltip-row',
+                            items: [
+                                'P&L',
+                                filler(),
+                                fmtNumber(profit_loss, {precision: 0, ledger: true, colorSpec: true, asElement: true})
+                            ]
+                        }),
+                        hbox({
+                            className: 'tooltip-row',
+                            items: [
+                                'Volume',
+                                filler(),
+                                fmtMillions(trade_volume, {precision: 1, label: true, asElement: true})
+                            ]
+                        })
+                    ]
+                });
             }
         },
         columns: [
@@ -207,7 +249,7 @@ export class SampleGridModel {
         });
     }
 
-    showTerminateToast(rec, terminationMethod='') {
+    showTerminateToast(rec, terminationMethod = '') {
         if (terminationMethod) {
             terminationMethod = ' via ' + terminationMethod;
         }

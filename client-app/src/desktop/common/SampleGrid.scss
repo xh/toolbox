@@ -6,6 +6,36 @@
     background-color: var(--xh-bg-highlight);
     align-items: center;
 
-    svg { margin-right: 4px; }
+    svg {
+      margin-right: 4px;
+    }
+  }
+}
+
+.sample-grid-tooltip {
+  min-width: 160px;
+  padding: var(--xh-pad-px);
+  background: var(--xh-bg-alt);
+  border: var(--xh-border-solid);
+
+  > *:not(:last-child) {
+    margin-bottom: var(--xh-pad-half-px);
+  }
+
+  .company {
+    font-size: var(--xh-font-size-large-px);
+    color: var(--xh-text-color-headings);
+  }
+
+  .city-and-date {
+    color: var(--xh-text-color-muted);
+    border-bottom: var(--xh-border-solid);
+    padding-bottom: var(--xh-pad-half-px);
+  }
+
+  .tooltip-row {
+    > *:first-child {
+      margin-right: var(--xh-pad-px);
+    }
   }
 }
