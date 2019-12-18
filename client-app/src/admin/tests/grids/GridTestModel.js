@@ -156,7 +156,7 @@ export class GridTestModel {
         times(this.twiddleCount, () => {
             const pos = sample(this.gridModel.store.allRecords);
             newPositions.push({
-                ...pos,
+                ...pos.raw,
                 day: random(-80000, 100000),
                 volume: random(1000, 1200000)
             });
