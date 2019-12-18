@@ -192,8 +192,7 @@ export class SampleGridModel {
             gridModel = this.gridModel;
 
         gridModel.loadData(trades, summary);
-        // if agApi is null, grid is not ready
-        if (gridModel.agApi && !gridModel.hasSelection) gridModel.selectFirst();
+        if (gridModel.agGridModel.isReady && !gridModel.hasSelection) gridModel.selectFirst();
     }
 
     showInfoToast(rec) {
