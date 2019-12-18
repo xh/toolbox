@@ -5,6 +5,7 @@ import java.time.LocalDate
 class PortfolioDataSet {
 
     LocalDate day
+    Date timeCreated = new Date()
 
     // Market Data
     // Map of symbol to instrument, marketPrices

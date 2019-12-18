@@ -135,7 +135,7 @@ export class FileManagerModel {
         const deletes = this.getFilesToDelete();
         if (deletes.length) {
             deletePromise = Promise.all(deletes.map(it => {
-                XH.fetchService
+                return XH.fetchService
                     .fetchJson({
                         url: 'fileManager/delete',
                         params: {filename: it.name}

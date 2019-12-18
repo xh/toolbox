@@ -2,11 +2,17 @@ import {HoistModel, XH, managed, LoadSupport} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-
+import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 
 @HoistModel
 @LoadSupport
 export class GridPanelModel {
+
+    @managed panelSizingModel = new PanelModel({
+        defaultSize: 500,
+        side: 'left',
+        prefName: 'portfolioGridPanelConfig'
+    });
 
     @bindable loadTimestamp;
 

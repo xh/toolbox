@@ -122,7 +122,7 @@ export class AppModel {
                         name: 'charts',
                         path: '/charts',
                         children: [
-                            {name: 'olhc', path: '/olhc'},
+                            {name: 'ohlc', path: '/ohlc'},
                             {name: 'line', path: '/line'},
                             {name: 'simpleTreeMap', path: '/simpleTreeMap'},
                             {name: 'gridTreeMap', path: '/gridTreeMap'},
@@ -162,13 +162,7 @@ export class AppModel {
         return {
             track: () => this.tabModel.activeTab,
             run: (activeTab) => {
-                XH.track({
-                    msg: `Viewed ${activeTab.title}`,
-                    data: {
-                        id: activeTab.id
-                    },
-                    category: 'Tab'
-                });
+                XH.track({category: 'Tab', message: `Viewed ${activeTab.title}`});
             }
         };
     }

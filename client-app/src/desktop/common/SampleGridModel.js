@@ -3,7 +3,6 @@ import {localDateCol, boolCheckCol, emptyFlexCol, GridModel} from '@xh/hoist/cmp
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
 import {fragment, br} from '@xh/hoist/cmp/layout';
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
-import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -91,17 +90,12 @@ export class SampleGridModel {
                     type: 'localDate'
                 }]
         },
-        contextMenuFn: (params, gridModel) => {
-            return new StoreContextMenu({
-                items: [
-                    this.viewDetailsAction,
-                    this.terminateAction,
-                    '-',
-                    ...GridModel.defaultContextMenuTokens
-                ],
-                gridModel
-            });
-        },
+        contextMenu: [
+            this.viewDetailsAction,
+            this.terminateAction,
+            '-',
+            ...GridModel.defaultContextMenu
+        ],
         groupSortFn: (a, b, groupField) => {
             if (a == b) return 0;
             if (groupField == 'winLose') {
@@ -213,7 +207,7 @@ export class SampleGridModel {
         });
     }
 
-    showTerminateToast(rec, terminationMethod) {
+    showTerminateToast(rec, terminationMethod='') {
         if (terminationMethod) {
             terminationMethod = ' via ' + terminationMethod;
         }

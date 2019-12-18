@@ -4,27 +4,29 @@ import io.xh.hoist.BaseService
 import io.xh.hoist.json.JSON
 import io.xh.toolbox.NewsItem
 import org.grails.web.json.JSONArray
+import io.xh.hoist.util.Timer
 
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 
 
 class NewsService extends BaseService {
 
-    public List<NewsItem> _newsItems
+    private List<NewsItem> _newsItems
+    private Timer newsTimer
 
     static clearCachesConfigs = ['newsSources', 'newsApiKey']
     def configService
 
-    void init() {
-        createTimer(
-                runFn: this.&loadAllNews,
-                interval: 'newsRefreshMins',
-                intervalUnits: MINUTES
-        )
-        super.init()
-    }
-
     List<NewsItem> getNewsItems() {
+        // to avoid hitting the API too frequently, we only start our timer when the NewsService is actually used.
+        if (!newsTimer) {
+            newsTimer = createTimer(
+                    runFn: this.&loadAllNews,
+                    interval: 'newsRefreshMins',
+                    intervalUnits: MINUTES,
+                    runImmediatelyAndBlock: true
+            )
+        }
         return _newsItems ?  _newsItems : Collections.emptyList()
     }
 
@@ -33,11 +35,11 @@ class NewsService extends BaseService {
     // For sample monitors
     //------------------------
     int getItemCount() {
-        return _newsItems.size()
+        return newsItems.size()
     }
 
     int getLoadedSourcesCount() {
-        return _newsItems.collect{it.source}.unique().size()
+        return newsItems.collect{it.source}.unique().size()
     }
 
     boolean getAllSourcesLoaded() {
@@ -45,8 +47,7 @@ class NewsService extends BaseService {
     }
 
     Date getLastTimestamp() {
-        if (!_newsItems) return null
-        return _newsItems.get(0).published
+        return newsItems ? newsItems[0].published : null
     }
 
 
@@ -54,14 +55,12 @@ class NewsService extends BaseService {
     // Implementation
     //------------------------
     private void loadAllNews() {
-        def sources = configService.getJSONObject('newsSources') as Map<String, String>
+        def sources = configService.getJSONObject('newsSources').keySet().toList()
 
         withShortInfo("Loading news from ${sources.size()} configured sources") {
             def items = []
 
-            sources.each{code, displayName ->
-                items.addAll(loadNewsForSource(code, displayName))
-            }
+            items.addAll(loadNewsForSources(sources));
 
             items.sort {-it.published.time}
 
@@ -69,13 +68,14 @@ class NewsService extends BaseService {
         }
     }
 
-    private List<NewsItem> loadNewsForSource(String sourceCode, String sourceDisplayName) {
+    private List<NewsItem> loadNewsForSources(List<String> sources) {
+        def sourcesParam = String.join(',', sources)
         def apiKey = configService.getString('newsApiKey'),
-            url = new URL("https://newsapi.org/v1/articles?source=${sourceCode}&apiKey=${apiKey}"),
+            url = new URL("https://newsapi.org/v2/top-headlines?sources=${sourcesParam}&apiKey=${apiKey}"),
             response = JSON.parse(url.openStream(), 'UTF-8')
 
         if (response.status != 'ok') {
-            log.error("Unable to fetch news for ${sourceCode}: ${response.message}")
+            log.error("Unable to fetch news: ${response.message}")
             return Collections.emptyList()
         }
 
@@ -86,7 +86,7 @@ class NewsService extends BaseService {
             if (it.publishedAt) {
                 def cleanPubString = it.publishedAt.take(19) + 'Z'
                 ret << new NewsItem(
-                        source: sourceDisplayName,
+                        source: it.source.name,
                         title: it.title,
                         author: it.author,
                         text: it.description,
@@ -97,7 +97,8 @@ class NewsService extends BaseService {
             }
         }
 
-        log.debug("Loaded ${ret.size()} news items from ${sourceCode}")
+        log.debug("Loaded ${articles.size()} news items.")
+
         return ret
     }
 
@@ -106,5 +107,4 @@ class NewsService extends BaseService {
         _newsItems = []
         loadAllNews()
     }
-
 }
