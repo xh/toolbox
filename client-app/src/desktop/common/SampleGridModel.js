@@ -205,7 +205,7 @@ export class SampleGridModel {
             gridModel = this.gridModel;
 
         gridModel.loadData(trades, summary);
-        if (!gridModel.hasSelection) gridModel.selectFirst();
+        if (gridModel.agGridModel.isReady && !gridModel.hasSelection) gridModel.selectFirst();
     }
 
     showInfoToast(rec) {
