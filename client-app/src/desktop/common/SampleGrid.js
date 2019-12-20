@@ -1,7 +1,7 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {button, colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
@@ -72,7 +72,12 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
                 gridCountLabel({unit: 'companies'}),
                 storeFilterField(),
                 colChooserButton(),
-                exportButton()
+                exportButton(),
+                button({
+                    onClick: () => {model.gridModel.scrollToSelected()},
+                    icon: Icon.crosshairs(),
+                    title: 'Scroll to selected row'
+                })
             ]
         });
     }
