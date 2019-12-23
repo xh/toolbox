@@ -3,7 +3,7 @@ import {hoistCmp, HoistModel, LoadSupport, managed, XH, creates} from '@xh/hoist
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {dataView, DataViewModel} from '@xh/hoist/cmp/dataview';
 
@@ -40,6 +40,11 @@ export const DataViewPanel = hoistCmp({
                         model
                     }),
                     filler(),
+                    button({
+                        onClick: () => {model.dataViewModel.gridModel.scrollToSelected()},
+                        icon: Icon.crosshairs(),
+                        title: 'Scroll to selected row'
+                    }),
                     storeFilterField({store: model.dataViewModel.store})
                 ]
             })

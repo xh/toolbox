@@ -3,15 +3,26 @@ import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {restGrid, addAction, editAction, viewAction, deleteAction, cloneAction} from '@xh/hoist/desktop/cmp/rest';
+import {
+    restGrid,
+    addAction,
+    editAction,
+    viewAction,
+    deleteAction,
+    cloneAction,
+    RestGridModel
+} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
 import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {useLocalModel} from '@xh/hoist/core/hooks';
 
 export const RestGridPanel = hoistCmp({
 
     render() {
+        const model = useLocalModel(() => new RestGridModel(modelSpec));
         return wrapper({
             description: [
                 <p>
@@ -29,7 +40,16 @@ export const RestGridPanel = hoistCmp({
                 title: 'Grids › REST Editor',
                 icon: Icon.edit(),
                 className: 'tb-grid-wrapper-panel',
-                item: restGrid({model: modelSpec})
+                item: restGrid({
+                    model: model,
+                    extraToolbarItems: [
+                        button({
+                            onClick: () => {model.gridModel.scrollToSelected()},
+                            icon: Icon.crosshairs(),
+                            title: 'Scroll to selected row'
+                        })
+                    ]
+                })
             })
         });
     }

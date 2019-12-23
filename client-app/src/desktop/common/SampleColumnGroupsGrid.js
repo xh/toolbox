@@ -7,7 +7,7 @@
 import {boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
-import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {button, colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -47,7 +47,12 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
                 gridCountLabel(),
                 storeFilterField(),
                 colChooserButton(),
-                exportButton()
+                exportButton(),
+                button({
+                    onClick: () => {model.gridModel.scrollToSelected()},
+                    icon: Icon.crosshairs(),
+                    title: 'Scroll to selected row'
+                })
             ],
             ...props
         });

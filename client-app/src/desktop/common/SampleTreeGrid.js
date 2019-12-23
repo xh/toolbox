@@ -7,7 +7,7 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {button, colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -17,6 +17,7 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {SampleTreeGridModel} from './SampleTreeGridModel';
 
 import {gridStyleSwitches} from './GridStyleSwitches';
+import {Icon} from '@xh/hoist/icon/Icon';
 
 export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
 
@@ -34,7 +35,12 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 gridCountLabel({includeChildren: true}),
                 storeFilterField({filterOptions: {includeChildren: model.filterIncludeChildren}}),
                 colChooserButton(),
-                exportButton()
+                exportButton(),
+                button({
+                    onClick: () => {model.gridModel.scrollToSelected()},
+                    icon: Icon.crosshairs(),
+                    title: 'Scroll to selected row'
+                })
             ],
             mask: 'onLoad',
             bbar: [
