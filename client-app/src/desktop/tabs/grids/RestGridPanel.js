@@ -22,7 +22,7 @@ import {useLocalModel} from '@xh/hoist/core/hooks';
 export const RestGridPanel = hoistCmp({
 
     render() {
-        const model = useLocalModel(() => new RestGridModel(modelSpec));
+        const restGridModel = useLocalModel(() => new RestGridModel(modelSpec));
         return wrapper({
             description: [
                 <p>
@@ -41,10 +41,10 @@ export const RestGridPanel = hoistCmp({
                 icon: Icon.edit(),
                 className: 'tb-grid-wrapper-panel',
                 item: restGrid({
-                    model: model,
+                    model: restGridModel,
                     extraToolbarItems: [
                         button({
-                            onClick: () => {model.gridModel.scrollToSelected()},
+                            onClick: () => {restGridModel.gridModel.scrollToSelected()},
                             icon: Icon.crosshairs(),
                             title: 'Scroll to selected row'
                         })
