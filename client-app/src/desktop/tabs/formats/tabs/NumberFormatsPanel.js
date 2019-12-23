@@ -75,7 +75,9 @@ const params = hoistCmp.factory(
                         {value: 'fmtPercent', label: code('fmtPercent')},
                         {value: 'fmtThousands', label: code('fmtThousands')},
                         {value: 'fmtMillions', label: code('fmtMillions')},
-                        {value: 'fmtBillions', label: code('fmtBillions')}
+                        {value: 'fmtBillions', label: code('fmtBillions')},
+                        {value: 'fmtLossless', label: code('fmtLossless')},
+                        {value: 'fmtShorthand', label: code('fmtShorthand')}
                     ]
                 })
             }),
