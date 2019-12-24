@@ -125,7 +125,7 @@ export class SampleGridModel {
             }
         },
         colDefaults: {
-            tooltipElementRenderer: (v, {record}) => {
+            tooltipElement: (v, {record}) => {
                 const {company, city, trade_date, profit_loss, trade_volume} = record;
                 return vbox({
                     className: 'sample-grid-tooltip',
