@@ -1,10 +1,17 @@
 import {createRef} from 'react';
 import {localDateCol, boolCheckCol, emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
-import {fragment, br} from '@xh/hoist/cmp/layout';
+import {fragment, br, vbox, div, hbox, filler} from '@xh/hoist/cmp/layout';
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {
+    fmtNumberTooltip,
+    millionsRenderer,
+    numberRenderer,
+    fmtDate,
+    fmtMillions,
+    fmtNumber
+} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
@@ -56,9 +63,22 @@ export class SampleGridModel {
             },
             {
                 text: 'via Friendly Merger Proposal',
-                tooltip: 'This will send a dinner invitation to their CEO.',
+                tooltip: 'Try this first.',
                 recordsRequired: 1,
-                actionFn: ({record}) => this.showTerminateToast(record, 'friendly merger proposal')
+                items: [
+                    {
+                        text: 'over Lunch',
+                        tooltip: 'This will send a lunch invitation to their CEO.',
+                        recordsRequired: 1,
+                        actionFn: ({record}) => this.showTerminateToast(record, 'friendly merger proposal during lunch')
+                    },
+                    {
+                        text: 'at Golf',
+                        tooltip: 'This will send a golf outing invitation to their CEO.',
+                        recordsRequired: 1,
+                        actionFn: ({record}) => this.showTerminateToast(record, 'friendly merger proposal during golf')
+                    }
+                ]
             }
         ]
     };
@@ -104,6 +124,41 @@ export class SampleGridModel {
                 return a < b ? -1 : 1;
             }
         },
+        colDefaults: {
+            tooltipElement: (v, {record}) => {
+                const {company, city, trade_date, profit_loss, trade_volume} = record;
+                return vbox({
+                    className: 'sample-grid-tooltip',
+                    items: [
+                        div({className: 'company', item: company}),
+                        hbox({
+                            className: 'city-and-date tooltip-row',
+                            items: [
+                                city,
+                                filler(),
+                                fmtDate(trade_date)
+                            ]
+                        }),
+                        hbox({
+                            className: 'tooltip-row',
+                            items: [
+                                'P&L',
+                                filler(),
+                                fmtNumber(profit_loss, {precision: 0, ledger: true, colorSpec: true, asElement: true})
+                            ]
+                        }),
+                        hbox({
+                            className: 'tooltip-row',
+                            items: [
+                                'Volume',
+                                filler(),
+                                fmtMillions(trade_volume, {precision: 1, label: true, asElement: true})
+                            ]
+                        })
+                    ]
+                });
+            }
+        },
         columns: [
             {
                 field: 'id',
@@ -130,7 +185,8 @@ export class SampleGridModel {
                     }
 
                     return ret;
-                }
+                },
+                exportName: 'Company'
             },
             {
                 field: 'winLose',
@@ -192,7 +248,7 @@ export class SampleGridModel {
             gridModel = this.gridModel;
 
         gridModel.loadData(trades, summary);
-        if (!gridModel.hasSelection) gridModel.selectFirst();
+        if (gridModel.agGridModel.isReady && !gridModel.hasSelection) gridModel.selectFirst();
     }
 
     showInfoToast(rec) {
@@ -207,7 +263,7 @@ export class SampleGridModel {
         });
     }
 
-    showTerminateToast(rec, terminationMethod='') {
+    showTerminateToast(rec, terminationMethod = '') {
         if (terminationMethod) {
             terminationMethod = ' via ' + terminationMethod;
         }
