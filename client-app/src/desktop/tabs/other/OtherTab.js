@@ -5,6 +5,7 @@ import {IconsPanel} from './IconsPanel';
 import {JsxPanel} from './JsxPanel';
 import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
+import {DialogsPanel} from './dialogs/DialogsPanel';
 import {PopupsPanel} from './PopupsPanel';
 
 export const OtherTab = hoistCmp(
@@ -13,6 +14,7 @@ export const OtherTab = hoistCmp(
             route: 'default.other',
             switcherPosition: 'left',
             tabs: [
+                {id: 'dialogs', content: DialogsPanel},
                 {id: 'popups', content: PopupsPanel},
                 {id: 'icons', title: 'Icons', content: IconsPanel},
                 {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},

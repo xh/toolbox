@@ -1,0 +1,29 @@
+.tbox-dialogs {
+  border: var(--xh-border-solid);
+  background-color: var(--xh-panel-bg);
+
+  table {
+    width: 700px;
+    height: 270px;
+    text-align: left;
+
+    th {
+      width: 20%;
+      padding: var(--xh-pad-px);
+
+      .tbox-dialogs__button {
+        width: 100%;
+      }
+    }
+
+    td {
+      width: 40%;
+      padding: var(--xh-pad-px);
+      text-align: center;
+
+      .tbox-dialogs__button {
+        width: 100%;
+      }
+    }
+  }
+}

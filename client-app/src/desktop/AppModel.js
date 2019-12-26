@@ -21,6 +21,8 @@ import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
 import {OtherTab} from './tabs/other/OtherTab';
 import {PanelsTab} from './tabs/panels/PanelsTab';
+import {DialogFixedModel} from './tabs/other/dialogs/DialogFixed';
+import {DialogDraggableModel} from './tabs/other/dialogs/DialogDraggable';
 
 @HoistAppModel
 export class AppModel {
@@ -41,6 +43,11 @@ export class AppModel {
         ],
         switcherPosition: 'none'
     });
+
+    @managed
+    dialogFixedModel = new DialogFixedModel();
+    @managed
+    dialogDraggableModel = new DialogDraggableModel();
 
     get useCompactGrids() {
         return XH.getPref('defaultGridMode') == 'COMPACT';
@@ -146,6 +153,7 @@ export class AppModel {
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'timestamp', path: '/timestamp'},
                             {name: 'jsx', path: '/jsx'},
+                            {name: 'dialogs', path: '/dialogs'},
                             {name: 'popups', path: '/popups'}
                         ]
                     },
