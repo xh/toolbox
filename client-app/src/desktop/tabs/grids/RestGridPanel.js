@@ -3,7 +3,14 @@ import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {restGrid, addAction, editAction, viewAction, deleteAction, cloneAction} from '@xh/hoist/desktop/cmp/rest';
+import {
+    restGrid,
+    addAction,
+    editAction,
+    viewAction,
+    deleteAction,
+    cloneAction
+} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
 import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -99,6 +106,12 @@ const modelSpec = {
                     intent: 'primary',
                     displayFn: ({record}) => ({disabled: !record.isDirty}),
                     actionFn: ({record, store}) => store.saveRecordAsync(record)
+                },
+                {
+                    icon: Icon.undo(),
+                    intent: 'warning',
+                    displayFn: ({record}) => ({disabled: !record.isDirty}),
+                    actionFn: ({record, store}) => store.revertRecords(record)
                 }
             ]
         },
@@ -152,7 +165,13 @@ const modelSpec = {
         editAction,
         viewAction,
         deleteAction,
-        cloneAction
+        cloneAction,
+        {
+            text: 'Log Dirty',
+            actionFn: ({record}) => {
+                console.debug(record.getDirtyFields());
+            }
+        }
     ],
     prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
 };
