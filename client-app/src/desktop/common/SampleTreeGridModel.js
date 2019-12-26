@@ -189,8 +189,8 @@ export class SampleTreeGridModel {
                 ...rec.allDescendants.map(({id}) => ({id, isChecked}))
             ];
 
-        store.loadDataTransaction({update: updates});
-        rec.forEachAncestor(it => store.updateRecordData(it, {isChecked: calcAggState(it)}));
+        store.updateRecords(updates);
+        rec.forEachAncestor(it => store.updateRecord(it, {isChecked: calcAggState(it)}));
     }
 }
 
