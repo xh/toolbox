@@ -1,7 +1,7 @@
 import React from 'react';
 import {hoistCmp, XH, creates, HoistModel, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {action, observable, bindable} from '@xh/hoist/mobx';
+import {observable, bindable} from '@xh/hoist/mobx';
 import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -10,7 +10,6 @@ import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 
 import {wrapper} from '../../common/Wrapper';
-
 
 export const PanelSizingPanel = hoistCmp({
     model: creates(() => new Model()),
@@ -109,7 +108,7 @@ export const PanelSizingPanel = hoistCmp({
                         compactHeader: true,
                         item: box({
                             padding: 10,
-                            item: 'Collapsible Bottom'
+                            item: 'Collapsible Bottom with minSize and maxSize'
                         }),
                         headerItems: [
                             relativeTimestamp({
@@ -150,43 +149,39 @@ class Model {
 
     @managed
     @observable.ref
-    leftPanelModel;
+    leftPanelModel = new PanelModel({
+        defaultSize: 150,
+        side: 'left'
+    });
 
     @managed
     @observable.ref
-    rightPanelModel;
+    rightPanelModel = new PanelModel({
+        defaultSize: 150,
+        side: 'right'
+    });
 
     @managed
     @observable.ref
-    bottomPanelModel;
+    bottomPanelModel = new PanelModel({
+        defaultSize: 130,
+        side: 'bottom',
+        maxSize: 350,
+        minSize: 100
+    });
     
     constructor() {
         this.addReaction({
             track: () => this.resizeWhileDragging,
-            run: () => this.setPanelModels(),
+            run: () => {
+                // resizeWhileDragging is documented as immutable, but for the purposes of this
+                // example it is easiest to just set the value directly instead of re-creating the
+                // models
+                this.leftPanelModel.resizeWhileDragging = this.resizeWhileDragging;
+                this.rightPanelModel.resizeWhileDragging = this.resizeWhileDragging;
+                this.bottomPanelModel.resizeWhileDragging = this.resizeWhileDragging;
+            },
             fireImmediately: true
-        });
-    }
-
-    @action
-    setPanelModels() {
-        const {resizeWhileDragging} = this;
-        this.leftPanelModel = new PanelModel({
-            resizeWhileDragging,
-            defaultSize: 150,
-            side: 'left'
-        });
-
-        this.rightPanelModel = new PanelModel({
-            resizeWhileDragging,
-            defaultSize: 150,
-            side: 'right'
-        });
-
-        this.bottomPanelModel = new PanelModel({
-            resizeWhileDragging,
-            defaultSize: 130,
-            side: 'bottom'
         });
     }
 
