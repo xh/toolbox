@@ -37,7 +37,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 colChooserButton(),
                 exportButton(),
                 button({
-                    onClick: () => {model.gridModel.scrollToSelected()},
+                    onClick: () => {model.gridModel.ensureSelectionVisible()},
                     icon: Icon.crosshairs(),
                     title: 'Scroll to selected row'
                 })

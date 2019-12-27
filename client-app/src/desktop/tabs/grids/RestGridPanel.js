@@ -44,7 +44,7 @@ export const RestGridPanel = hoistCmp({
                     model: restGridModel,
                     extraToolbarItems: [
                         button({
-                            onClick: () => {restGridModel.gridModel.scrollToSelected()},
+                            onClick: () => {restGridModel.gridModel.ensureSelectionVisible()},
                             icon: Icon.crosshairs(),
                             title: 'Scroll to selected row'
                         })

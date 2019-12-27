@@ -41,7 +41,7 @@ export const DataViewPanel = hoistCmp({
                     }),
                     filler(),
                     button({
-                        onClick: () => {model.dataViewModel.gridModel.scrollToSelected()},
+                        onClick: () => {model.dataViewModel.gridModel.ensureSelectionVisible()},
                         icon: Icon.crosshairs(),
                         title: 'Scroll to selected row'
                     }),
