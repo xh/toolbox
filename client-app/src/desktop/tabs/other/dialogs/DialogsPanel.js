@@ -31,12 +31,12 @@ export const DialogsPanel = hoistCmp(
                     table(tbody(
                         row(
                             button({
-                                ...dialogBtn(Icon.warning({className: 'xh-red'})),
+                                ...dialogBtn(Icon.lock()),
                                 text: 'Fixed Modal',
                                 onClick: () => openDialogFixed()
                             }),
                             button({
-                                ...dialogBtn(Icon.warning({className: 'xh-red-muted'})),
+                                ...dialogBtn(Icon.arrowsLeftRight()),
                                 text: 'Draggable',
                                 onClick: () => openDialogDraggable()
                             })

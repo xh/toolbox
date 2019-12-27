@@ -143,6 +143,7 @@ export class FormPanelModel {
                 )
             });
             this.reset();
+            return {isValid: true};
         } else {
             const errCount = filter(formModel.fields, f => f.isNotValid).length;
             XH.toast({
@@ -150,6 +151,7 @@ export class FormPanelModel {
                 intent: 'danger',
                 message: `Form is not valid. ${errCount} fields are still invalid!`
             });
+            return {isValid: false};
         }
     }
 }

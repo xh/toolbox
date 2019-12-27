@@ -1,4 +1,3 @@
-import React from 'react';
 import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
@@ -8,49 +7,36 @@ import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {checkbox, dateInput, numberInput, select, switchInput, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {wrapper} from '../../common';
+
 import {FormPanelModel} from './FormPanelModel';
 
 import './FormPanel.scss';
 
-export const FormPanel = hoistCmp({
+export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
 
-    render() {
-        return wrapper({
-            description: [
-                <p>
-                    Forms provide a standard way for validating and editing data. The <code>Form</code> component
-                    provides the ability to centrally control certain properties on all its
-                    contained <code>FormField</code>s
-                    and bind them to a <code>FormModel</code>. The <code>FormModel</code> provides an observable API
-                    for
-                    loading, validating, and submitting the data to back-end services.
-                </p>
-            ],
-            links: [
-                {url: '$TB/client-app/src/desktop/tabs/forms/FormPanel.js', notes: 'This example.'},
-                {url: '$HR/cmp/form/Form.js', notes: 'Form Component'},
-                {url: '$HR/cmp/form/FormModel.js', notes: 'Form Model'},
-                {url: '$HR/desktop/cmp/form/FormField.js', notes: 'Form Field'}
-            ],
-            item: panel({
-                title: 'Forms › FormModel',
-                className: 'tbox-form-panel',
-                icon: Icon.edit(),
-                width: 870,
-                height: 550,
-                item: hframe(
-                    formContent(),
-                    displayOptions()
-                )
-            })
+    render({inDialog, onCloseClick}) {
+        return panel({
+            title: 'Forms › FormModel',
+            className: 'tbox-form-panel',
+            icon: Icon.edit(),
+            headerItems: inDialog ? 
+                [button({
+                    icon: Icon.close(),
+                    onClick: onCloseClick
+                })] : null,
+            width: 870,
+            height: 550,
+            item: hframe(
+                formContent({inDialog, onCloseClick}),
+                displayOptions()
+            )
         });
     }
 });
 
 const formContent = hoistCmp.factory(
-    ({model}) => panel({
+    ({model, inDialog, onCloseClick}) => panel({
         flex: 1,
         item: form({
             fieldDefaults: {
@@ -90,12 +76,12 @@ const formContent = hoistCmp.factory(
                 ]
             })
         }),
-        bbar: bbar()
+        bbar: bbar({inDialog, onCloseClick})
     })
 );
 
 const lastName = hoistCmp.factory(
-    () => formField({field: 'lastName', item: textInput()})
+    () => formField({field: 'lastName', item: textInput({autoFocus: true})})
 );
 
 const email = hoistCmp.factory(
@@ -276,7 +262,7 @@ const displayOptions = hoistCmp.factory(
 );
 
 const bbar = hoistCmp.factory(
-    ({model}) => toolbar(
+    ({model, inDialog, onCloseClick}) => toolbar(
         button({
             text: 'Reset',
             icon: Icon.reset({className: 'xh-red'}),
@@ -289,7 +275,12 @@ const bbar = hoistCmp.factory(
             icon: Icon.check(),
             minimal: false,
             intent: 'success',
-            onClick: () => model.submitAsync()
+            onClick: () => {
+                model.submitAsync()
+                    .then(outcome => {
+                        if (inDialog && outcome.isValid) onCloseClick();
+                    });
+            }
         })
     )
 );
