@@ -59,7 +59,6 @@ export const PanelSizingPanel = hoistCmp({
                                 title: 'Left Panel',
                                 icon: Icon.arrowToLeft(),
                                 model: model.leftPanelModel,
-                                key: model.leftPanelModel.xhId,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
@@ -91,7 +90,6 @@ export const PanelSizingPanel = hoistCmp({
                                 title: 'Right Panel',
                                 icon: Icon.arrowToRight(),
                                 model: model.rightPanelModel,
-                                key: model.rightPanelModel.xhId,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
@@ -104,7 +102,6 @@ export const PanelSizingPanel = hoistCmp({
                         title: 'Bottom Panel',
                         icon: Icon.arrowToBottom(),
                         model: model.bottomPanelModel,
-                        key: model.bottomPanelModel.xhId,
                         compactHeader: true,
                         item: box({
                             padding: 10,
@@ -175,13 +172,10 @@ class Model {
     constructor() {
         this.addReaction({
             track: () => this.resizeWhileDragging,
-            run: () => {
-                // resizeWhileDragging is documented as immutable, but for the purposes of this
-                // example it is easiest to just set the value directly instead of re-creating the
-                // models
-                this.leftPanelModel.resizeWhileDragging = this.resizeWhileDragging;
-                this.rightPanelModel.resizeWhileDragging = this.resizeWhileDragging;
-                this.bottomPanelModel.resizeWhileDragging = this.resizeWhileDragging;
+            run: (resizeWhileDragging) => {
+                this.leftPanelModel.setResizeWhileDragging(resizeWhileDragging);
+                this.rightPanelModel.setResizeWhileDragging(resizeWhileDragging);
+                this.bottomPanelModel.setResizeWhileDragging(resizeWhileDragging);
             },
             fireImmediately: true
         });
