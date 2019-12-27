@@ -41,7 +41,7 @@ export const PanelSizingPanel = hoistCmp({
             item: panel({
                 title: 'Panels › Panel Sizing',
                 icon: Icon.window(),
-                height: '50vh',
+                height: '60vh',
                 width: '80%',
                 bbar: toolbar(
                     filler(),
@@ -95,7 +95,7 @@ export const PanelSizingPanel = hoistCmp({
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
-                                    item: 'Collapsible Right'
+                                    item: 'Collapsible Right with minSize and maxSize'
                                 })
                             })
                         ]
@@ -158,6 +158,8 @@ class Model {
     @observable.ref
     rightPanelModel = new PanelModel({
         defaultSize: 150,
+        maxSize: 300,
+        minSize: 150,
         side: 'right'
     });
 
