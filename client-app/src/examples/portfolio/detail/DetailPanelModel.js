@@ -16,6 +16,8 @@ export class DetailPanelModel {
 
     @managed panelSizingModel = new PanelModel({
         defaultSize: 400,
+        minSize: 250,
+        maxSize: 500,
         side: 'bottom',
         collapsedRenderMode: 'unmountOnHide',
         prefName: 'portfolioDetailPanelConfig'
