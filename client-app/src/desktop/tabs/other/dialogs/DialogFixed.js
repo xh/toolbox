@@ -18,7 +18,7 @@ export const dialogFixed = hoistCmp.factory({
             isOpen: model.isOpen,
             close: onCloseClick,
             canEscapeKeyClose: true,
-            item: formPanel({inDialog: true, onCloseClick})
+            item: formPanel({onCloseClick})
         });
     }
 });

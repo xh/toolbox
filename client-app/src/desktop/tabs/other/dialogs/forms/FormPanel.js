@@ -15,27 +15,26 @@ import './FormPanel.scss';
 export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
 
-    render({inDialog, onCloseClick}) {
+    render({onCloseClick}) {
         return panel({
             title: 'Forms › FormModel',
             className: 'tbox-form-panel',
             icon: Icon.edit(),
-            headerItems: inDialog ? 
-                [button({
-                    icon: Icon.close(),
-                    onClick: onCloseClick
-                })] : null,
+            headerItems: [button({
+                icon: Icon.close(),
+                onClick: onCloseClick
+            })],
             width: 870,
             height: 550,
             item: hframe(
-                formContent({inDialog, onCloseClick})
+                formContent({onCloseClick})
             )
         });
     }
 });
 
 const formContent = hoistCmp.factory(
-    ({model, inDialog, onCloseClick}) => panel({
+    ({model, onCloseClick}) => panel({
         flex: 1,
         item: form({
             fieldDefaults: {
@@ -75,7 +74,7 @@ const formContent = hoistCmp.factory(
                 ]
             })
         }),
-        bbar: bbar({inDialog, onCloseClick})
+        bbar: bbar({onCloseClick})
     })
 );
 
@@ -224,7 +223,7 @@ const references = hoistCmp.factory(
 );
 
 const bbar = hoistCmp.factory(
-    ({model, inDialog, onCloseClick}) => toolbar(
+    ({model, onCloseClick}) => toolbar(
         button({
             text: 'Reset',
             icon: Icon.reset({className: 'xh-red'}),
@@ -240,7 +239,7 @@ const bbar = hoistCmp.factory(
             onClick: () => {
                 model.submitAsync()
                     .then(outcome => {
-                        if (inDialog && outcome.isValid) onCloseClick();
+                        if (outcome.isValid) onCloseClick();
                     });
             }
         })
