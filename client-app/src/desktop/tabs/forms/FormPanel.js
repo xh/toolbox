@@ -95,7 +95,7 @@ const formContent = hoistCmp.factory(
 );
 
 const lastName = hoistCmp.factory(
-    () => formField({field: 'lastName', item: textInput()})
+    () => formField({field: 'lastName', item: textInput({autoFocus: true})})
 );
 
 const email = hoistCmp.factory(
