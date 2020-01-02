@@ -4,7 +4,7 @@ import {bindable} from '@xh/hoist/mobx';
 
 import {dialog} from '@xh/hoist/desktop/cmp/dialog';
 
-import {formPanel} from '../../forms/FormPanel';
+import {formPanel} from './forms/FormPanel';
 
 export const dialogFixed = hoistCmp.factory({
 
