@@ -18,6 +18,8 @@ export const dialogFixed = hoistCmp.factory({
             isOpen: model.isOpen,
             close: onCloseClick,
             canEscapeKeyClose: true,
+            width: 870,
+            height: 550,
             item: formPanel({onCloseClick})
         });
     }
