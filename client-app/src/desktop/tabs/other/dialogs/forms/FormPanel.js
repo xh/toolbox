@@ -5,7 +5,9 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {checkbox, dateInput, numberInput, select, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
+import {checkbox, dateInput, 
+    // numberInput, 
+    select, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 
 import {FormPanelModel} from './FormPanelModel';
@@ -17,15 +19,14 @@ export const formPanel = hoistCmp.factory({
 
     render({onCloseClick}) {
         return panel({
-            title: 'Forms › FormModel',
+            title: 'Dialogs',
             className: 'tbox-form-panel',
-            icon: Icon.edit(),
+            icon: Icon.box(),
             headerItems: [button({
                 icon: Icon.close(),
                 onClick: onCloseClick
             })],
-            width: 870,
-            height: 550,
+            height: '100%',
             item: hframe(
                 formContent({onCloseClick})
             )
@@ -150,11 +151,14 @@ const managerAndYearsExperience = hoistCmp.factory(
                 field: 'isManager',
                 label: 'Manager?',
                 item: checkbox()
-            }),
-            formField({
-                field: 'yearsExperience',
-                item: numberInput({width: 50})
             })
+            // number input buggy, 
+            // but works in Draggable modal 
+            // here: https://codesandbox.io/s/blueprint-numeric-input-in-draggabledialog-sgn2r?fontsize=14&hidenavigation=1&theme=dark
+            // formField({
+            //     field: 'yearsExperience',
+            //     item: numberInput({width: 50})
+            // })
         ],
         alignItems: model.inline ? 'center' : 'top'
     })
