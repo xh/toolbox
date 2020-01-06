@@ -66,6 +66,11 @@ export const GridTestPanel = hoistCmp({
                     icon: Icon.skull(),
                     onClick: () => model.tearDown()
                 }),
+                button({
+                    text: 'Scroll to Selected',
+                    icon: Icon.crosshairs(),
+                    onClick: () => model.gridModel.ensureSelectionVisible()
+                }),
                 toolbarSep(),
                 tooltip({
                     content: '# records to randomly change',
