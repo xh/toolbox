@@ -1,13 +1,13 @@
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
-import {vbox} from '@xh/hoist/cmp/layout';
+import {fragment} from '@xh/hoist/cmp/layout';
 
 export const agGridOptions = hoistCmp.factory({
     model: uses(AgGridModel),
 
     render() {
-        return vbox({
+        return fragment({
             items: [
                 switchInput({
                     bind: 'compact',
