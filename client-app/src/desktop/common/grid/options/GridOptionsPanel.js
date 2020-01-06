@@ -8,9 +8,7 @@ import {gridOptions} from './GridOptions';
 export const gridOptionsPanel = hoistCmp.factory({
     model: uses(GridModel),
 
-    render({model}) {
-        console.log(model);
-
+    render({model, extraItems}) {
         return panel({
             title: 'Display Options',
             icon: Icon.settings(),
@@ -19,7 +17,8 @@ export const gridOptionsPanel = hoistCmp.factory({
             model: {side: 'right', defaultSize: 160, resizable: false},
             items: [
                 agGridOptions({model: model.agGridModel}),
-                gridOptions({model: model})
+                gridOptions({model: model}),
+                extraItems
             ]
         });
     }

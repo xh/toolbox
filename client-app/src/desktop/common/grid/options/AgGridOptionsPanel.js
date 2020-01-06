@@ -8,8 +8,6 @@ export const agGridOptionsPanel = hoistCmp.factory({
     model: uses(AgGridModel),
 
     render({model}) {
-        console.log(model);
-
         return panel({
             title: 'Display Options',
             icon: Icon.settings(),
