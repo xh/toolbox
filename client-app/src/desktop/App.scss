@@ -17,7 +17,11 @@ body {
     }
   }
 
-  .xh-switch-input {
+  .xh-input {
+    margin: var(--xh-pad-px) var(--xh-pad-px) 0 var(--xh-pad-px);
+  }
+
+  span {
     margin: var(--xh-pad-px) var(--xh-pad-px) 0 var(--xh-pad-px);
   }
 }

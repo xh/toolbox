@@ -4,8 +4,9 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {agGrid} from '@xh/hoist/cmp/ag-grid';
 import {hframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {gridStyleSwitches, wrapper} from '../../common';
+import {wrapper} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';
+import {agGridOptionsPanel} from '../../common/grid/options/AgGridOptionsPanel';
 
 export const AgGridView = hoistCmp({
     model: creates(AgGridViewModel),
@@ -49,7 +50,7 @@ export const AgGridView = hoistCmp({
                         sideBar: true,
                         rowSelection: 'single'
                     }),
-                    gridStyleSwitches({model: agGridModel})
+                    agGridOptionsPanel({model: agGridModel})
                 )
             })
         });

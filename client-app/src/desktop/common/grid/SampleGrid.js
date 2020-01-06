@@ -8,7 +8,7 @@ import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import PT from 'prop-types';
-import {gridStyleSwitches} from './GridStyleSwitches';
+import {gridOptionsPanel} from './options/GridOptionsPanel';
 
 import {SampleGridModel} from './SampleGridModel';
 
@@ -50,7 +50,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
                         className: 'tbox-samplegrid__selbar'
                     })
                 ),
-                gridStyleSwitches({model: model.gridModel.agGridModel})
+                gridOptionsPanel({model: model.gridModel})
             ),
             tbar: [
                 refreshButton(),
