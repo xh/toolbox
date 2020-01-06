@@ -17,8 +17,7 @@ body {
     }
   }
 
-  .xh-input,
-  span {
-    margin: var(--xh-pad-px) var(--xh-pad-px) 0 var(--xh-pad-px);
+  .xh-vframe .xh-input {
+    margin: var(--xh-pad-half-px) var(--xh-pad-px) var(--xh-pad-half-px) var(--xh-pad-px);
   }
 }
