@@ -17,7 +17,15 @@ body {
     }
   }
 
-  .xh-vframe .xh-input {
-    margin: var(--xh-pad-half-px) var(--xh-pad-px) var(--xh-pad-half-px) var(--xh-pad-px);
+  .xh-vframe {
+    padding-top: var(--xh-pad-half-px);
+
+    .xh-input {
+      margin: var(--xh-pad-half-px) var(--xh-pad-px) var(--xh-pad-half-px) var(--xh-pad-px);
+    }
+
+    span {
+      margin: auto var(--xh-pad-px) auto var(--xh-pad-px);
+    }
   }
 }
