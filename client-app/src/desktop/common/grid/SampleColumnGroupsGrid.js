@@ -17,7 +17,7 @@ import {fmtMillions, fmtNumber, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, observable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
-import {gridStyleSwitches} from './GridStyleSwitches';
+import {gridOptionsPanel} from './options/GridOptionsPanel';
 
 export const sampleColumnGroupsGrid = hoistCmp.factory({
     model: creates(() => new Model()),
@@ -26,7 +26,7 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
         const {gridModel} = model;
 
         return panel({
-            item: hframe(grid(), gridStyleSwitches({model: gridModel.agGridModel})),
+            item: hframe(grid(), gridOptionsPanel({model: gridModel})),
             ref: model.panelRef,
             mask: 'onLoad',
             tbar: [

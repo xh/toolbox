@@ -16,7 +16,7 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 
 import {SampleTreeGridModel} from './SampleTreeGridModel';
 
-import {gridStyleSwitches} from './GridStyleSwitches';
+import {gridOptionsPanel} from './options/GridOptionsPanel';
 
 export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
 
@@ -25,7 +25,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
     render({model, ...props}) {
         const {gridModel} = model;
         return panel({
-            item: hframe(grid(), gridStyleSwitches({model: gridModel.agGridModel})),
+            item: hframe(grid(), gridOptionsPanel({model: gridModel})),
             tbar: [
                 refreshButton(),
                 toolbarSep(),
