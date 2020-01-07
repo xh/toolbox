@@ -18,13 +18,7 @@ export const formPanel = hoistCmp.factory({
 
     render({onCloseClick}) {
         return panel({
-            title: 'Dialogs',
             className: 'tbox-form-panel',
-            icon: Icon.box(),
-            headerItems: [button({
-                icon: Icon.close(),
-                onClick: onCloseClick
-            })],
             height: '100%',
             item: hframe(
                 formContent({onCloseClick})

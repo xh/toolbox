@@ -43,10 +43,14 @@ export const DialogsPanel = hoistCmp(
                         )
                     )),
                     dialog({
+                        icon: Icon.box(),
+                        title: 'Dialogs: NOT Draggable & NOT Resizable',
                         model: XH.appModel.dialogNotDraggableModel,
                         item: formPanel({onCloseClick: () => XH.appModel.dialogNotDraggableModel.hide()})
                     }),
                     dialog({
+                        icon: Icon.box(),
+                        title: 'Dialogs: Draggable & Resizable',
                         model: XH.appModel.dialogDraggableModel,
                         item: formPanel({onCloseClick: () => XH.appModel.dialogDraggableModel.hide()})
                     })
