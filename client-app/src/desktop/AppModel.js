@@ -43,10 +43,13 @@ export class AppModel {
         switcherPosition: 'none'
     });
 
+    // order important here for testing getting first 
+    // dialog model defined in context
     @managed
     dialogNotDraggableModel = dialogNotDraggableModel;
     @managed
     dialogDraggableModel = dialogDraggableModel;
+
 
     get useCompactGrids() {
         return XH.getPref('defaultGridMode') == 'COMPACT';
