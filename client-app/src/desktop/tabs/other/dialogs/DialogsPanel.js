@@ -32,12 +32,12 @@ export const DialogsPanel = hoistCmp(
                         row(
                             button({
                                 ...dialogBtn(Icon.lock()),
-                                text: 'Fixed Modal',
+                                text: 'Plain Dialog',
                                 onClick: () => XH.appModel.dialogNotDraggableModel.show()
                             }),
                             button({
                                 ...dialogBtn(Icon.arrowsLeftRight()),
-                                text: 'Draggable',
+                                text: 'Draggable & Resizable Dialog',
                                 onClick: () => XH.appModel.dialogDraggableModel.show()
                             })
                         )
@@ -45,8 +45,7 @@ export const DialogsPanel = hoistCmp(
                     dialog({
                         icon: Icon.box(),
                         title: 'Dialogs: NOT Draggable & NOT Resizable',
-                        model: XH.appModel.dialogNotDraggableModel,
-                        item: formPanel({onCloseClick: () => XH.appModel.dialogNotDraggableModel.hide()})
+                        item: formPanel()
                     }),
                     dialog({
                         icon: Icon.box(),
