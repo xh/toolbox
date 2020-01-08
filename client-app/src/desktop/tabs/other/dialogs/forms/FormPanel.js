@@ -1,4 +1,4 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {hoistCmp, creates, useContextModel} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -8,15 +8,21 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import {checkbox, dateInput, numberInput, 
     select, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {DialogModel} from '@xh/hoist/desktop/cmp/dialog/DialogModel';
 
 import {FormPanelModel} from './FormPanelModel';
 
 import './FormPanel.scss';
+import {withDefault} from '@xh/hoist/utils/js';
 
 export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
 
     render({onCloseClick}) {
+
+        const dialogModel = useContextModel(DialogModel);
+        onCloseClick = withDefault(onCloseClick, () => dialogModel.hide());
+
         return panel({
             className: 'tbox-form-panel',
             height: '100%',
