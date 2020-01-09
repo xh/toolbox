@@ -6,7 +6,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {chart} from '@xh/hoist/cmp/chart';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 
-import {wrapper, sampleGrid} from '../../common';
+import {wrapper, sampleGrid, sampleTreeGrid} from '../../common';
 import {LineChartModel} from '../charts/LineChartModel';
 import {select} from '@xh/hoist/desktop/cmp/input';
 
@@ -41,6 +41,12 @@ class Model {
                 unique: true,
                 allowClose: false,
                 content: () => sampleGrid({omitGridTools: true})
+            },
+            {
+                id: 'treeGrid',
+                title: 'Tree Grid',
+                icon: Icon.grid(),
+                content: () => sampleTreeGrid({model: {includeCheckboxes: false}})
             },
             {
                 id: 'chart',
