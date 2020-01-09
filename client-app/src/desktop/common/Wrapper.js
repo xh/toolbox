@@ -48,7 +48,7 @@ Wrapper.propTypes = {
     description: PT.oneOfType([PT.array, PT.element, PT.string]),
 
     /**
-     * Links to display for this tab, pointing either to relevant source code within ExHI
+     * Links to display for this tab, pointing either to relevant source code within XH
      * repos or to external sites (e.g. docs for key external components). Links should be
      * provided as objects with `url` and `text` properties for the link itself, as well as an
      * optional `notes` property for additional descriptive text.
