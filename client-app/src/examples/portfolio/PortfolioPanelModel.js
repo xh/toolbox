@@ -2,10 +2,9 @@ import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {MapPanelModel} from './MapPanelModel';
-import {DetailPanelModel} from './detail/DetailPanelModel';
 import {clamp, round} from 'lodash';
 import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
-
+import {DetailPanelModel} from './detail/DetailPanelModel';
 
 @HoistModel
 @LoadSupport

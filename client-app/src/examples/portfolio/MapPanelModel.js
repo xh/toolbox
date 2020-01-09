@@ -3,18 +3,11 @@ import {managed} from '@xh/hoist/core';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {fmtMillions} from '@xh/hoist/format';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
-import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 
 @HoistModel
 export class MapPanelModel {
 
     @managed splitTreeMapModel;
-
-    @managed panelSizingModel = new PanelModel({
-        defaultSize: 1000,
-        side: 'right',
-        prefName: 'portfolioMapPanelConfig'
-    });
 
     constructor({parentModel}) {
         this.splitTreeMapModel = new SplitTreeMapModel({

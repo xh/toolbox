@@ -30,10 +30,9 @@ export const StandardGridPanel = hoistCmp(
             {url: 'https://www.ag-grid.com/javascript-grid-reference-overview/', text: 'ag-Grid Docs', notes: 'API documentation and guides for the underlying ag-grid library.'}
         ],
         item: panel({
-            width: 900,
-            height: 500,
             title: 'Grids › Standard',
             icon: Icon.gridPanel(),
+            className: 'tb-grid-wrapper-panel',
             item: sampleGrid()
         })
     })

@@ -89,8 +89,8 @@ class BootStrap {
             sourceUrls: [
                 valueType: 'json',
                 defaultValue: [
-                    toolbox: 'https://github.com/exhi/toolbox/blob/develop',
-                    hoistReact: 'https://github.com/exhi/hoist-react/blob/develop'
+                    toolbox: 'https://github.com/xh/toolbox/blob/develop',
+                    hoistReact: 'https://github.com/xh/hoist-react/blob/develop'
                 ],
                 groupName: 'Toolbox',
                 clientVisible: true,
@@ -154,12 +154,17 @@ class BootStrap {
             ],
             portfolioDims: [
                 type: 'json',
-                defaultValue: [:],
+                defaultValue: [
+                        value: ['sector', 'symbol'],
+                        history: [['sector', 'symbol'],
+                                  ['fund', 'trader', 'model'],
+                                  ['region', 'sector']]
+                ],
                 local: true,
                 groupName: 'Toolbox - Example Apps',
                 note: 'Object containing user\'s dimension picker value & history'
             ],
-            portfolioMapPanelConfig: [
+            portfolioGridPanelConfig: [
                 type: 'json',
                 defaultValue: [:],
                 local: true,
@@ -189,16 +194,43 @@ class BootStrap {
 
     private void ensureMonitorsCreated() {
         createMonitorIfNeeded(
-            code: 'newsStoryCount',
-            name: 'Loaded Stories',
+            code: 'pricesAgeMs',
+            name: 'Portfolio: Last Price Update',
+            metricType: 'Ceil',
+            metricUnit: 'ms',
+            warnThreshold: 30000,
+            failThreshold: 60000,
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'instrumentCount',
+            name: 'Portfolio: Number of Instruments',
             metricType: 'Floor',
-            failThreshold: 0,
+            metricUnit: 'instruments',
+            warnThreshold: 50,
+            failThreshold: 10,
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'positionCount',
+            name: 'Portfolio: Number of Positions',
+            metricType: 'Floor',
+            metricUnit: 'positions',
+            warnThreshold: 50,
+            failThreshold: 10,
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'newsStoryCount',
+            name: 'News: Loaded Stories',
+            metricType: 'Floor',
+            failThreshold: 1,
             metricUnit: 'stories',
             active: true
         )
         createMonitorIfNeeded(
             code: 'lastUpdateAgeMins',
-            name: 'Most Recent Story',
+            name: 'News: Most Recent Story',
             metricType: 'Ceil',
             metricUnit: 'minutes since last story',
             warnThreshold: 60,
@@ -207,9 +239,43 @@ class BootStrap {
         )
         createMonitorIfNeeded(
             code: 'loadedSourcesCount',
-            name: 'All Sources Loaded',
+            name: 'News: Sources Loaded',
             metricType: 'None',
             metricUnit: 'sources',
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'storageSpaceUsed',
+            name: 'FileManager: Storage Space',
+            metricType: 'Ceil',
+            metricUnit: 'MB',
+            warnThreshold: 16,
+            failThreshold: 32,
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'recallsFetchStatus',
+            name: 'Recalls: Connection to FDA API',
+            metricType: 'None',
+            metricUnit: '',
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'memoryUsage',
+            name: 'Memory Usage of Server',
+            metricType: 'Ceil',
+            metricUnit: '%',
+            warnThreshold: 50,
+            failThreshold: 85,
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'longestPageLoadMs',
+            name: 'Longest Page Load in Last Hour',
+            metricType: 'Ceil',
+            metricUnit: 'ms',
+            warnThreshold: 10000,
+            failThreshold: 30000,
             active: true
         )
     }

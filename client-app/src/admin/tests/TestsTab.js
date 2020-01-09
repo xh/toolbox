@@ -13,7 +13,7 @@ import {CubeDataPanel} from './cube/CubeDataPanel';
 import {WebSocketTestPanel} from './websocket/WebSocketTestPanel';
 import {LocalDateTestPanel} from './localDate/LocalDateTestPanel';
 import {PanelResizingTestPanel} from './panels/PanelResizingTestPanel';
-
+import {FetchApiTestPanel} from './fetch/FetchApiTestPanel';
 
 export const TestsTab = hoistCmp(
     () => tabContainer({
@@ -21,10 +21,11 @@ export const TestsTab = hoistCmp(
             route: 'default.tests',
             tabs: [
                 {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
-                {id: 'performance', title: 'Grid Performance', content: GridTestPanel},
+                {id: 'grid', title: 'Grid', content: GridTestPanel},
                 {id: 'cube', title: 'Cube Data', content: CubeDataPanel},
                 {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel},
-                {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel}
+                {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel},
+                {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel}
             ],
             switcherPosition: 'left'
         }

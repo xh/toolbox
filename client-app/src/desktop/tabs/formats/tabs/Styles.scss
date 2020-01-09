@@ -12,6 +12,7 @@
 
       tr {
         background-color: var(--xh-grid-bg);
+
         &:nth-child(odd) {
           td {
             background-color: var(--xh-grid-bg-odd);
@@ -63,5 +64,3 @@
     }
   }
 }
-
-

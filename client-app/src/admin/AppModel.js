@@ -30,10 +30,11 @@ export class AppModel extends BaseAppModel {
                 path: '/tests',
                 children: [
                     {name: 'localDate', path: '/localDate'},
-                    {name: 'performance', path: '/performance'},
+                    {name: 'grid', path: '/grid'},
                     {name: 'cube', path: '/cube'},
                     {name: 'webSockets', path: '/webSockets'},
-                    {name: 'panelResizing', path: '/panelResizing'}
+                    {name: 'panelResizing', path: '/panelResizing'},
+                    {name: 'fetchAPI', path: '/fetchAPI'}
                 ]
             },
             {
