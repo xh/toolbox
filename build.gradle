@@ -173,7 +173,7 @@ buildProperties.doLast {
 //----------------------------
 task publishAppWar(dependsOn: "publishAppWarPublicationToMavenRepository") {
     group 'xhio'
-    description 'Publishes the built Grails server WAR to ExHI Nexus.'
+    description 'Publishes the built Grails server WAR to XH Nexus.'
 
     doLast {
         println "$appCode $version published to repo.xh.io!"
@@ -182,7 +182,7 @@ task publishAppWar(dependsOn: "publishAppWarPublicationToMavenRepository") {
 
 task publishAppWarAndClientAssets(dependsOn: ["checkForClientAssets", "publishAppWarAndClientAssetsPublicationToMavenRepository"]) {
     group 'xhio'
-    description 'Publishes a combined tarball with WAR and client assets to ExHI Nexus.'
+    description 'Publishes a combined tarball with WAR and client assets to XH Nexus.'
 
     doLast {
         println "$appCode $version published to repo.xh.io!"
