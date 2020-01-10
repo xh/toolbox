@@ -6,6 +6,7 @@ import {JsxPanel} from './JsxPanel';
 import {LeftRightChooserPanel} from './LeftRightChooserPanel';
 import {RelativeTimestampPanel} from './RelativeTimestampPanel';
 import {PopupsPanel} from './PopupsPanel';
+import {ClockPanel} from './ClockPanel';
 
 export const OtherTab = hoistCmp(
     () => tabContainer({
@@ -18,6 +19,7 @@ export const OtherTab = hoistCmp(
                 {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
                 {id: 'fileChooser', title: 'FileChooser', content: FileChooserPanel},
                 {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
+                {id: 'clock', title: 'Clock', content: ClockPanel},
                 {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel}
             ]
         },
