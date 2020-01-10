@@ -5,6 +5,7 @@ import {box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {chart} from '@xh/hoist/cmp/chart';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
+import {DashRenderMode, DashRefreshMode} from '@xh/hoist/enums';
 
 import {wrapper, sampleGrid, sampleTreeGrid} from '../../common';
 import {LineChartModel} from '../charts/LineChartModel';
@@ -33,7 +34,7 @@ export const DashContainerPanel = hoistCmp({
 class Model {
     @managed
     dashContainerModel = new DashContainerModel({
-        views: [
+        viewSpecs: [
             {
                 id: 'grid',
                 title: 'Grid',
@@ -53,11 +54,13 @@ class Model {
                 title: 'Chart',
                 icon: Icon.chartLine(),
                 unique: true,
+                refreshMode: DashRefreshMode.ON_SHOW_ALWAYS,
                 content: SimpleChartPanel
             },
             {
                 id: 'panel',
                 title: 'Panel',
+                renderMode: DashRenderMode.ALWAYS,
                 content: () => panel(
                     box({
                         item: 'Just a panel',
@@ -69,7 +72,13 @@ class Model {
         layout: {
             type: 'row',
             content: [
-                'grid',
+                {
+                    type: 'stack',
+                    content: [
+                        'grid',
+                        'treeGrid'
+                    ]
+                },
                 {
                     type: 'column',
                     content: [
