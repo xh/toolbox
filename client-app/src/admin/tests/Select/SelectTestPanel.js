@@ -2,8 +2,8 @@ import {XH, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {restaurants} from '../../../core/data';
 import {useLocalModel} from '@xh/hoist/core/hooks';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {select} from '@xh/hoist/desktop/cmp/input';
-import {box, div, hbox, label, p} from '@xh/hoist/cmp/layout';
+import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
+import {box, div, fragment, hbox, label, p, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
 import './SelectTestPanel.scss';
 import {bindable} from '@xh/hoist/mobx';
@@ -16,72 +16,124 @@ export const SelectTestPanel = hoistCmp({
         return panel({
             title: 'Select tests',
             className: 'select-test-panel xh-tiled-bg',
-            item: [
-                p('Select'),
-                label('value: ' + model.select1),
-                select({
-                    model,
-                    bind: 'select1',
-                    options: restaurants,
-                    enableClear: true,
-                    placeholder: 'Search restaurants...'
-                }),
-                p('Creatable'),
-                label('value: ' + model.select2),
-                select({
-                    model,
-                    bind: 'select2',
-                    options: restaurants,
-                    enableClear: true,
-                    enableCreate: true,
-                    selectOnFocus: true,
-                    placeholder: 'Search restaurants...'
-                }),
-                p('Async'),
-                label('value: ' + model.select3),
-                select({
-                    model,
-                    bind: 'select3',
-                    valueField: 'id',
-                    labelField: 'company',
-                    enableClear: true,
-                    selectOnFocus: true,
-                    queryFn: (q) => model.queryCustomersAsync(q),
-                    optionRenderer: (opt) => customerOption({opt}),
-                    placeholder: 'Search customers...'
-                }),
-                p('AsyncCreatable'),
-                label('value: ' + model.select4),
-                select({
-                    model,
-                    bind: 'select4',
-                    valueField: 'id',
-                    labelField: 'company',
-                    enableClear: true,
-                    enableCreate: true,
-                    selectOnFocus: true,
-                    queryFn: (q) => model.queryCustomersAsync(q),
-                    optionRenderer: (opt) => customerOption({opt}),
-                    placeholder: 'Search customers...'
-                }),
-                p('Normal with 10,000 options'),
-                label('value: ' + model.select5),
-                select({
-                    model,
-                    options: function() {
-                        let options = [];
-                        for (let i = 0; i < 10000; i++) {
-                            options.push(i);
-                        }
-                        return options;
-                    }(),
-                    enableClear: false,
-                    placeholder: 'Select a number...'
-                })
-            ]
+            item: hbox(
+                vbox(
+                    exampleSelect(model),
+                    exampleCreatable(model),
+                    exampleAsync(model),
+                    exampleAsyncCreatable(model),
+                    exampleBig(model)
+                ),
+                vbox(
+                    exampleSelect(model, true),
+                    exampleCreatable(model, true),
+                    exampleAsync(model, true),
+                    exampleAsyncCreatable(model, true),
+                    exampleBig(model, true)
+                )
+            )
         });
     }
 });
+
+function exampleSelect(model, windowed) {
+    const name = (windowed ? 'Windowed' : '') + 'Select';
+    return fragment(
+        p(name),
+        label('value: ' + model[name]),
+        select({
+            model,
+            bind: name,
+            options: restaurants,
+            enableClear: true,
+            placeholder: 'Search restaurants...'
+        })
+    );
+}
+
+function exampleCreatable(model, windowed) {
+    const name = (windowed ? 'Windowed' : '') + 'CreatableSelect';
+    return fragment(
+        p(name),
+        label('value: ' + model[name]),
+        select({
+            model,
+            bind: name,
+            options: restaurants,
+            enableClear: true,
+            enableCreate: true,
+            selectOnFocus: true,
+            placeholder: 'Search restaurants...'
+        })
+    );
+}
+
+function exampleAsync(model, windowed) {
+    const name = (windowed ? 'Windowed' : '') + 'AsyncSelect';
+    return fragment(
+        p(name),
+        label('value: ' + model[name]),
+        select({
+            model,
+            bind: name,
+            valueField: 'id',
+            labelField: 'company',
+            enableClear: true,
+            selectOnFocus: true,
+            queryFn: (q) => model.queryCustomersAsync(q),
+            optionRenderer: (opt) => customerOption({opt}),
+            placeholder: 'Search customers...'
+        })
+    );
+}
+
+function exampleAsyncCreatable(model, windowed) {
+    const name = (windowed ? 'Windowed' : '') + 'AsyncCreatableSelect';
+    return fragment(
+        p(name),
+        label('value: ' + model[name]),
+        select({
+            model,
+            bind: name,
+            valueField: 'id',
+            labelField: 'company',
+            enableClear: true,
+            enableCreate: true,
+            selectOnFocus: true,
+            queryFn: (q) => model.queryCustomersAsync(q),
+            optionRenderer: (opt) => customerOption({opt}),
+            placeholder: 'Search customers...'
+        })
+    );
+}
+
+function exampleBig(model, windowed) {
+    const name = (windowed ? 'Windowed' : '') + 'BigSelect';
+    return fragment(
+        p((windowed ? 'Windowed' : '') + 'Select with many options'),
+        label('value: ' + model[name]),
+        select({
+            model,
+            bind: name,
+            options: function() {
+                let options = [];
+                for (let i = 0; i < model.numOptions; i++) {
+                    options.push(i);
+                }
+                return options;
+            }(),
+            enableClear: false,
+            placeholder: 'Select a number...'
+        }),
+        hbox(
+            label('Number of options: '),
+            numberInput({
+                model,
+                bind: (windowed ? 'Windowed' : '') + 'NumOptions'
+            })
+        )
+    );
+}
 
 const customerOption = hoistCmp.factory(
     ({opt}) => hbox({
@@ -108,15 +160,30 @@ const customerOption = hoistCmp.factory(
 @HoistModel
 class LocalModel {
     @bindable
-    select1;
+    Select;
     @bindable
-    select2;
+    CreatableSelect;
     @bindable
-    select3;
+    AsyncSelect;
     @bindable
-    select4;
+    AsyncCreatableSelect;
     @bindable
-    select5;
+    BigSelect;
+    @bindable
+    NumOptions = 1000;
+
+    @bindable
+    WindowedSelect;
+    @bindable
+    WindowedCreatableSelect;
+    @bindable
+    WindowedAsyncSelect;
+    @bindable
+    WindowedAsyncCreatableSelect;
+    @bindable
+    WindowedBigSelect;
+    @bindable
+    WindowedNumOptions = 1000;
 
     queryCustomersAsync(query) {
         return XH.fetchJson({
