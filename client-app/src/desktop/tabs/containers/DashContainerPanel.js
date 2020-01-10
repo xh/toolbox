@@ -1,8 +1,10 @@
 import React from 'react';
-import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {XH, creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {box} from '@xh/hoist/cmp/layout';
+import {box, filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {chart} from '@xh/hoist/cmp/chart';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {DashRenderMode, DashRefreshMode} from '@xh/hoist/enums';
@@ -24,7 +26,25 @@ export const DashContainerPanel = hoistCmp({
                 icon: Icon.gridLarge(),
                 height: '80%',
                 width: '80%',
-                item: dashContainer({model: model.dashContainerModel})
+                item: dashContainer({model: model.dashContainerModel}),
+                bbar: [
+                    button({
+                        text: 'Reset State',
+                        onClick: () => model.resetState()
+                    }),
+                    filler(),
+                    button({
+                        text: 'Capture State',
+                        icon: Icon.save(),
+                        onClick: () => model.saveState()
+                    }),
+                    button({
+                        disabled: !model.state,
+                        text: 'Load Saved State',
+                        icon: Icon.upload(),
+                        onClick: () => model.loadState()
+                    })
+                ]
             })
         });
     }
@@ -69,26 +89,45 @@ class Model {
                 )
             }
         ],
-        layout: {
+        defaultState: [{
             type: 'row',
             content: [
                 {
                     type: 'stack',
                     content: [
-                        'grid',
-                        'treeGrid'
+                        {type: 'view', id: 'grid'},
+                        {type: 'view', id: 'treeGrid'}
                     ]
                 },
                 {
                     type: 'column',
                     content: [
-                        'chart',
-                        'panel'
+                        {type: 'view', id: 'chart'},
+                        {type: 'view', id: 'panel'}
                     ]
                 }
             ]
-        }
+        }]
     });
+
+    @bindable.ref state;
+
+    saveState() {
+        this.setState(this.dashContainerModel.state);
+        XH.toast({message: 'Dash state captured!'});
+    }
+
+    loadState() {
+        this.dashContainerModel.loadStateAsync(this.state).then(() => {
+            XH.toast({message: 'Dash state loaded!'});
+        });
+    }
+
+    resetState() {
+        this.dashContainerModel.resetStateAsync().then(() => {
+            XH.toast({message: 'Dash state reset to default'});
+        });
+    }
 }
 
 // Minimal chart component, reusing an existing ChartModel
