@@ -38,7 +38,7 @@ export class PortfolioPanelModel {
         store.loadData([session.initialPositions.root]);
         session.onUpdate = ({data}) => {
             gridPanelModel.setLoadTimestamp(Date.now());
-            store.loadDataTransaction(data);
+            store.loadDataUpdates(data);
         };
 
         this.session = session;

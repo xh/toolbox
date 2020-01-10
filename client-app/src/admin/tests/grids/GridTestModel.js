@@ -2,7 +2,7 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 import {millionsRenderer, numberRenderer, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
-import {random, sample, times} from 'lodash';
+import {random, sample, times, mean, takeRight} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {action, bindable, observable} from '@xh/hoist/mobx';
 
@@ -41,7 +41,12 @@ export class GridTestModel {
     gridModel = this.createGridModel();
 
     @bindable gridUpdateTime = null;
+    @bindable avgGridUpdateTime = null;
+    _gridUpdateTimes = [];
+
     @bindable gridLoadTime = null;
+    @bindable avgGridLoadTime = null;
+    _gridLoadTimes = [];
 
     constructor() {
         this.addReaction({
@@ -75,6 +80,7 @@ export class GridTestModel {
     }
 
     clearGrid() {
+        this._gridLoadTimes = [];
         this.loadData([]);
     }
 
@@ -87,7 +93,13 @@ export class GridTestModel {
             this.loadModel
         ).finally(() => {
             this.setGridLoadTime(Date.now() - loadStart);
+
+            this._gridLoadTimes = takeRight([...this._gridLoadTimes, this.gridLoadTime], 10);
+            this.setAvgGridLoadTime(mean(this._gridLoadTimes));
+
             this.setGridUpdateTime(null);
+            this.setAvgGridUpdateTime(null);
+            this._gridUpdateTimes = [];
 
         });
     }
@@ -95,9 +107,12 @@ export class GridTestModel {
     updateData(updates) {
         const loadStart = Date.now();
         return start(() => {
-            this.gridModel.loadDataTransaction(updates);
+            this.gridModel.loadDataUpdates(updates);
         }).finally(() => {
             this.setGridUpdateTime(Date.now() - loadStart);
+            this._gridUpdateTimes = takeRight([...this._gridUpdateTimes, this.gridUpdateTime], 10);
+
+            this.setAvgGridUpdateTime(mean(this._gridUpdateTimes));
         });
     }
 

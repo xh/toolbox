@@ -253,7 +253,7 @@ export class CubeDataModel {
     }
 
     addLoadTimes(times) {
-        this.loadTimesGridModel.loadDataTransaction({
+        this.loadTimesGridModel.loadDataUpdates({
             add: castArray(times)
         });
     }

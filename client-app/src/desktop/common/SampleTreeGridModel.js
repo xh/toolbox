@@ -67,7 +67,7 @@ export class SampleTreeGridModel {
             .getPositionsAsync(dims, true)
             .then(data => {
                 if (isRefresh) {
-                    gridModel.loadDataTransaction({update: data});
+                    gridModel.loadDataUpdates({update: data});
                     if (isAutoRefresh) {
                         XH.toast({
                             intent: 'primary',

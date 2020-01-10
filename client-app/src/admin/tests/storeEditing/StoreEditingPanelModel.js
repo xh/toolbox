@@ -156,7 +156,7 @@ export class StoreEditingPanelModel {
             };
 
         store.removeRecords(addedRecords);
-        store.loadDataTransaction(transaction);
+        store.loadDataUpdates(transaction);
     }
 
     async revert() {
@@ -185,9 +185,9 @@ export class StoreEditingPanelModel {
             store.removeRecords(record);
 
             // 2. Construct new record raw data, with a valid assigned id
-            store.loadDataTransaction({add: [{id: this.getNextId(), ...record.data}]});
+            store.loadDataUpdates({add: [{id: this.getNextId(), ...record.data}]});
         } else {
-            store.loadDataTransaction({update: [{id: record.id, ...record.data}]});
+            store.loadDataUpdates({update: [{id: record.id, ...record.data}]});
         }
     }
 
