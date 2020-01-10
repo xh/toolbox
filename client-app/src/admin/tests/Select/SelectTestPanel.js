@@ -36,13 +36,14 @@ export const SelectTestPanel = hoistCmp({
     }
 });
 
-function exampleSelect(model, windowed) {
-    const name = (windowed ? 'Windowed' : '') + 'Select';
+function exampleSelect(model, enableWindowed) {
+    const name = (enableWindowed ? 'Windowed' : '') + 'Select';
     return fragment(
         p(name),
         label('value: ' + model[name]),
         select({
             model,
+            enableWindowed,
             bind: name,
             options: restaurants,
             enableClear: true,
@@ -51,13 +52,14 @@ function exampleSelect(model, windowed) {
     );
 }
 
-function exampleCreatable(model, windowed) {
-    const name = (windowed ? 'Windowed' : '') + 'CreatableSelect';
+function exampleCreatable(model, enableWindowed) {
+    const name = (enableWindowed ? 'Windowed' : '') + 'CreatableSelect';
     return fragment(
         p(name),
         label('value: ' + model[name]),
         select({
             model,
+            enableWindowed,
             bind: name,
             options: restaurants,
             enableClear: true,
@@ -68,13 +70,14 @@ function exampleCreatable(model, windowed) {
     );
 }
 
-function exampleAsync(model, windowed) {
-    const name = (windowed ? 'Windowed' : '') + 'AsyncSelect';
+function exampleAsync(model, enableWindowed) {
+    const name = (enableWindowed ? 'Windowed' : '') + 'AsyncSelect';
     return fragment(
         p(name),
         label('value: ' + model[name]),
         select({
             model,
+            enableWindowed,
             bind: name,
             valueField: 'id',
             labelField: 'company',
@@ -87,13 +90,14 @@ function exampleAsync(model, windowed) {
     );
 }
 
-function exampleAsyncCreatable(model, windowed) {
-    const name = (windowed ? 'Windowed' : '') + 'AsyncCreatableSelect';
+function exampleAsyncCreatable(model, enableWindowed) {
+    const name = (enableWindowed ? 'Windowed' : '') + 'AsyncCreatableSelect';
     return fragment(
         p(name),
         label('value: ' + model[name]),
         select({
             model,
+            enableWindowed,
             bind: name,
             valueField: 'id',
             labelField: 'company',
@@ -107,17 +111,19 @@ function exampleAsyncCreatable(model, windowed) {
     );
 }
 
-function exampleBig(model, windowed) {
-    const name = (windowed ? 'Windowed' : '') + 'BigSelect';
+function exampleBig(model, enableWindowed) {
+    const name = (enableWindowed ? 'Windowed' : '') + 'BigSelect';
+    const numOptionsName = (enableWindowed ? 'Windowed' : '') + 'NumOptions';
     return fragment(
-        p((windowed ? 'Windowed' : '') + 'Select with many options'),
+        p((enableWindowed ? 'Windowed' : '') + 'Select with many options'),
         label('value: ' + model[name]),
         select({
             model,
+            enableWindowed,
             bind: name,
             options: function() {
                 let options = [];
-                for (let i = 0; i < model.numOptions; i++) {
+                for (let i = 0; i < model[numOptionsName]; i++) {
                     options.push(i);
                 }
                 return options;
@@ -129,7 +135,7 @@ function exampleBig(model, windowed) {
             label('Number of options: '),
             numberInput({
                 model,
-                bind: (windowed ? 'Windowed' : '') + 'NumOptions'
+                bind: numOptionsName
             })
         )
     );
