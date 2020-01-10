@@ -124,7 +124,7 @@ export class StoreEditingPanelModel {
         this.addReaction({
             track: () => this.store.records,
             run: () => {
-                this.addedGridModel.loadData(this.store.addedRecords.map(it => ({id: it.id, ...it.data})));
+                this.addedGridModel.loadData(this.store.newRecords.map(it => ({id: it.id, ...it.data})));
                 this.removedGridModel.loadData(this.store.removedRecords.map(it => ({id: it.id, ...it.data})));
             }
         });
@@ -147,15 +147,15 @@ export class StoreEditingPanelModel {
     @action
     commitAll() {
         const {store} = this,
-            {addedRecords, updatedRecords, removedRecords} = store,
+            {newRecords, dirtyRecords, removedRecords} = store,
             nextId = this.getNextId(),
             transaction = {
-                add: addedRecords.map((it, idx) => ({id: nextId + idx, ...it.data})),
-                update: updatedRecords.map(it => ({id: it.id, ...it.data})),
+                add: newRecords.map((it, idx) => ({id: nextId + idx, ...it.data})),
+                update: dirtyRecords.map(it => ({id: it.id, ...it.data})),
                 remove: removedRecords.map(it => it.id)
             };
 
-        store.removeRecords(addedRecords);
+        store.removeRecords(newRecords);
         store.loadDataUpdates(transaction);
     }
 
