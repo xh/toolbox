@@ -67,7 +67,7 @@ export class SampleTreeGridModel {
             .getPositionsAsync(dims, true)
             .then(data => {
                 if (isRefresh) {
-                    gridModel.loadDataUpdates({update: data});
+                    gridModel.updateData({update: data});
                     if (isAutoRefresh) {
                         XH.toast({
                             intent: 'primary',
@@ -189,8 +189,8 @@ export class SampleTreeGridModel {
                 ...rec.allDescendants.map(({id}) => ({id, isChecked}))
             ];
 
-        store.updateRecords(updates);
-        rec.forEachAncestor(it => store.updateRecord(it, {isChecked: calcAggState(it)}));
+        store.modifyRecords(updates);
+        rec.forEachAncestor(it => store.modifyRecords(it, {isChecked: calcAggState(it)}));
     }
 }
 

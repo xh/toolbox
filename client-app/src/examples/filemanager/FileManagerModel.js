@@ -212,7 +212,7 @@ export class FileManagerModel {
             rec = store.getById(id),
             newData = {...rec.raw, status: newStatus};
 
-        store.loadDataUpdates({update: [newData]});
+        store.updateData({update: [newData]});
     }
 
     syncWithChooser() {

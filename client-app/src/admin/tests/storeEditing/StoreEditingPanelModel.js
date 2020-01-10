@@ -32,7 +32,7 @@ export class StoreEditingPanelModel {
                         displayFn: ({record}) => {
                             return {
                                 icon: record.isNew ? Icon.add() : Icon.check(),
-                                disabled: !record.isDirty
+                                disabled: record.isCommitted
                             };
                         },
                         actionFn: ({record}) => this.commitRecord(record)
@@ -40,7 +40,7 @@ export class StoreEditingPanelModel {
                     {
                         icon: Icon.undo(),
                         intent: 'primary',
-                        displayFn: ({record}) => ({disabled: !record.isModified}),
+                        displayFn: ({record}) => ({disabled: record.isCommitted}),
                         actionFn: ({record}) => this.revertRecord(record)
                     },
                     {
@@ -59,40 +59,6 @@ export class StoreEditingPanelModel {
             {
                 field: 'description',
                 editable: true,
-                width: 300
-            }
-        ]
-    });
-
-    @managed
-    addedGridModel = new GridModel({
-        columns: [
-            {
-                field: 'id'
-            },
-            {
-                field: 'name',
-                width: 200
-            },
-            {
-                field: 'description',
-                width: 300
-            }
-        ]
-    });
-
-    @managed
-    removedGridModel = new GridModel({
-        columns: [
-            {
-                field: 'id'
-            },
-            {
-                field: 'name',
-                width: 200
-            },
-            {
-                field: 'description',
                 width: 300
             }
         ]
@@ -120,43 +86,35 @@ export class StoreEditingPanelModel {
                 description: 'This is a record'
             }
         ]);
-
-        this.addReaction({
-            track: () => this.store.records,
-            run: () => {
-                this.addedGridModel.loadData(this.store.newRecords.map(it => ({id: it.id, ...it.data})));
-                this.removedGridModel.loadData(this.store.removedRecords.map(it => ({id: it.id, ...it.data})));
-            }
-        });
     }
 
     add() {
-        this.store.addRecord();
+        this.store.addRecords({id: XH.genId()});
     }
 
     addFive() {
         this.store.addRecords([
-            {name: 'New Record 1'},
-            {name: 'New Record 2'},
-            {name: 'New Record 3'},
-            {name: 'New Record 4'},
-            {name: 'New Record 5'}
+            {id: XH.genId(), name: 'New Record 1'},
+            {id: XH.genId(), name: 'New Record 2'},
+            {id: XH.genId(), name: 'New Record 3'},
+            {id: XH.genId(), name: 'New Record 4'},
+            {id: XH.genId(), name: 'New Record 5'}
         ]);
     }
 
     @action
     commitAll() {
         const {store} = this,
-            {newRecords, dirtyRecords, removedRecords} = store,
+            {newRecords, modifiedRecords, removedRecords} = store,
             nextId = this.getNextId(),
             transaction = {
                 add: newRecords.map((it, idx) => ({id: nextId + idx, ...it.data})),
-                update: dirtyRecords.map(it => ({id: it.id, ...it.data})),
+                update: modifiedRecords.map(it => ({id: it.id, ...it.data})),
                 remove: removedRecords.map(it => it.id)
             };
 
         store.removeRecords(newRecords);
-        store.loadDataUpdates(transaction);
+        store.updateData(transaction);
     }
 
     async revert() {
@@ -185,9 +143,9 @@ export class StoreEditingPanelModel {
             store.removeRecords(record);
 
             // 2. Construct new record raw data, with a valid assigned id
-            store.loadDataUpdates({add: [{id: this.getNextId(), ...record.data}]});
+            store.updateData({add: [{id: this.getNextId(), ...record.data}]});
         } else {
-            store.loadDataUpdates({update: [{id: record.id, ...record.data}]});
+            store.updateData({update: [{id: record.id, ...record.data}]});
         }
     }
 
@@ -198,10 +156,10 @@ export class StoreEditingPanelModel {
 
     getNextId() {
         const {store} = this,
-            {originalRecords} = store;
+            {committedRecords} = store;
 
-        if (isEmpty(originalRecords)) return 0;
-        return max(originalRecords.map(it => it.id)) + 1;
+        if (isEmpty(committedRecords)) return 0;
+        return max(committedRecords.map(it => it.id)) + 1;
     }
 
 }

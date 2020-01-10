@@ -107,7 +107,7 @@ export class GridTestModel {
     updateData(updates) {
         const loadStart = Date.now();
         return start(() => {
-            this.gridModel.loadDataUpdates(updates);
+            this.gridModel.updateData(updates);
         }).finally(() => {
             this.setGridUpdateTime(Date.now() - loadStart);
             this._gridUpdateTimes = takeRight([...this._gridUpdateTimes, this.gridUpdateTime], 10);
