@@ -1,13 +1,14 @@
-import React from 'react';
-import {vbox, div, hframe, span} from '@xh/hoist/cmp/layout';
 import {clock} from '@xh/hoist/cmp/clock';
+import {div, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
-import {textInput, numberInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {Icon} from '@xh/hoist/icon';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {TIME_FMT} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
+import React from 'react';
 import {wrapper} from '../../common/Wrapper';
 
 import './ClockPanel.scss';
@@ -18,7 +19,9 @@ export const ClockPanel = hoistCmp({
     render({model}) {
         return wrapper({
             description: [
-                <p>A clock will display the current time for a given timezone.</p>
+                <p>A clock will display the current time, either for browser local time (the default)
+                    or for a configurable timezone. It fetches timezone offsets from the server to
+                    support any Java-style timezone ID.</p>
             ],
             links: [
                 {url: '$TB/client-app/src/desktop/tabs/other/ClockPanel.js', notes: 'This example.'},
@@ -29,7 +32,7 @@ export const ClockPanel = hoistCmp({
                 icon: Icon.clock(),
                 width: 700,
                 item: hframe({
-                    className: 'clock-container',
+                    className: 'tb-clock-container',
                     items: [
                         clockCard({label: 'Local', timezone: null}),
                         clockCard({label: 'New York', timezone: 'America/New_York'}),
@@ -40,16 +43,15 @@ export const ClockPanel = hoistCmp({
                         clockCard({label: 'Stockholm', timezone: 'Europe/Stockholm'}),
                         clockCard({label: 'Hong Kong', timezone: 'Asia/Hong_Kong'}),
                         clockCard({label: 'Tokyo', timezone: 'Asia/Tokyo'}),
-                        clockCard({label: 'Auckland', timezone: 'Pacific/Auckland'})
+                        clockCard({label: 'Bad Timezone', timezone: 'NoSuchZone'})
                     ]
                 }),
                 bbar: [
                     span('Format'),
                     textInput({
-                        model,
                         bind: 'format',
                         width: 120,
-                        placeholder: 'h:mm:ss a'
+                        placeholder: TIME_FMT
                     }),
                     toolbarSep(),
                     span('Update Interval (ms)'),
@@ -80,7 +82,7 @@ export const ClockPanel = hoistCmp({
 });
 
 const clockCard = hoistCmp.factory({
-    className: 'clock-card',
+    className: 'tb-clock-card',
     render({label, timezone, model, ...rest}) {
         const {format, prefix, suffix, updateInterval} = model;
         return vbox({

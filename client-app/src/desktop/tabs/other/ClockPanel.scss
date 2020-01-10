@@ -1,16 +1,13 @@
-
-.clock-container {
+.tb-clock-container {
   padding: var(--xh-pad-px);
   flex-wrap: wrap;
 
-  .clock-card {
+  .tb-clock-card {
     width: 120px;
     border: var(--xh-border-solid);
     padding: var(--xh-pad-half-px);
     background: var(--xh-bg-alt);
-
-    margin: var(--xh-pad-half-px);
-
+    margin: var(--xh-pad-half-px) auto;
     align-items: center;
 
     > div:first-child {
