@@ -16,21 +16,12 @@ export const SelectTestPanel = hoistCmp({
         return panel({
             title: 'Select tests',
             className: 'select-test-panel xh-tiled-bg',
-            item: hbox(
-                vbox(
-                    exampleSelect(model),
-                    exampleCreatable(model),
-                    exampleAsync(model),
-                    exampleAsyncCreatable(model),
-                    exampleBig(model)
-                ),
-                vbox(
-                    exampleSelect(model, true),
-                    exampleCreatable(model, true),
-                    exampleAsync(model, true),
-                    exampleAsyncCreatable(model, true),
-                    exampleBig(model, true)
-                )
+            item: vbox(
+                exampleSelect(model),
+                exampleCreatable(model),
+                exampleAsync(model),
+                exampleAsyncCreatable(model),
+                exampleBig(model, true)
             )
         });
     }
