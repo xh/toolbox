@@ -59,7 +59,7 @@ export const SelectTestPanel = hoistCmp({
                         model
                     }),
                     example({
-                        name: 'Select (with many options)',
+                        name: 'Select (with many options) enableWindowed=true',
                         bind: 'bigValue',
                         select: select({bind: 'bigValue', options: model.bigOptions, placeholder: 'Select a number...'}),
                         model
@@ -67,42 +67,6 @@ export const SelectTestPanel = hoistCmp({
                     hbox(
                         label('number of options: '),
                         numberInput({bind: 'numOptions', model})
-                    )
-                ),
-                vbox(
-                    example({
-                        name: 'Select enableWindowed=true',
-                        bind: 'windowedSelectValue',
-                        select: select({...restaurantProps, bind: 'windowedSelectValue'}),
-                        model
-                    }),
-                    example({
-                        name: 'Select enableCreate=true enableWindowed=true',
-                        bind: 'windowedCreatableValue',
-                        select: select({...restaurantProps, bind: 'windowedCreatableValue', creatable: true}),
-                        model
-                    }),
-                    example({
-                        name: 'Select enableAsync=true enableWindowed=true',
-                        bind: 'windowedAsyncValue',
-                        select: select({...customerProps, bind: 'windowedAsyncValue'}),
-                        model
-                    }),
-                    example({
-                        name: 'Select enableAsync=true creatable=true enableWindowed=true',
-                        bind: 'windowedAsyncCreatableValue',
-                        select: select({...customerProps, bind: 'windowedAsyncCreatableValue'}),
-                        model
-                    }),
-                    example({
-                        name: 'Select enableWindowed=true (with many options)',
-                        bind: 'windowedBigValue',
-                        select: select({bind: 'windowedBigValue', options: model.windowedBigOptions, placeholder: 'Select a number...'}),
-                        model
-                    }),
-                    hbox(
-                        label('number of options: '),
-                        numberInput({bind: 'windowedNumOptions', model})
                     )
                 )
             )
@@ -160,21 +124,6 @@ class LocalModel {
     @bindable
     bigOptions;
 
-    @bindable
-    windowedSelectValue;
-    @bindable
-    windowedCreatableValue;
-    @bindable
-    windowedAsyncValue;
-    @bindable
-    windowedAsyncCreatableValue;
-    @bindable
-    windowedBigValue;
-    @bindable
-    windowedNumOptions = 1000;
-    @bindable
-    windowedBigOptions;
-
     constructor() {
         this.addReaction({
             track: () => this.numOptions,
@@ -184,18 +133,6 @@ class LocalModel {
                     options.push(i);
                 }
                 this.setBigOptions(options);
-            },
-            fireImmediately: true
-        });
-
-        this.addReaction({
-            track: () => this.windowedNumOptions,
-            run: () => {
-                let options = [];
-                for (let i = 0; i < this.windowedNumOptions; i++) {
-                    options.push(i);
-                }
-                this.setWindowedBigOptions(options);
             },
             fireImmediately: true
         });
