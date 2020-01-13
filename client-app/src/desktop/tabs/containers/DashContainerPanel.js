@@ -1,5 +1,6 @@
 import React from 'react';
 import {XH, creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -32,10 +33,11 @@ export const DashContainerPanel = hoistCmp({
                     filler(),
                     button({
                         text: 'Capture State',
-                        icon: Icon.save(),
+                        icon: Icon.camera(),
                         onClick: () => model.saveState()
                     }),
                     button({
+                        disabled: !model.stateSnapshot,
                         text: 'Load Saved State',
                         icon: Icon.upload(),
                         onClick: () => model.loadState()
@@ -50,6 +52,8 @@ export const DashContainerPanel = hoistCmp({
 class Model {
 
     stateKey = 'dashContainerState';
+
+    @bindable.ref stateSnapshot;
 
     @managed
     dashContainerModel = new DashContainerModel({
@@ -119,20 +123,23 @@ class Model {
         initState: XH.localStorageService.get(this.stateKey, null)
     });
 
+    constructor() {
+        // Automatically save observable state using LocalStorageService
+        this.addReaction({
+            track: () => this.dashContainerModel.state,
+            run: () => XH.localStorageService.set(this.stateKey, this.dashContainerModel.state)
+        });
+    }
+
     saveState() {
-        XH.localStorageService.set(this.stateKey, this.dashContainerModel.state);
-        XH.toast({message: 'Dash state captured!'});
+        this.setStateSnapshot(this.dashContainerModel.state);
+        XH.toast({message: 'Dash state snapshot captured!'});
     }
 
     loadState() {
-        const state = XH.localStorageService.get(this.stateKey, null);
-        if (state) {
-            this.dashContainerModel.loadStateAsync(state).then(() => {
-                XH.toast({message: 'Dash state loaded!'});
-            });
-        } else {
-            XH.toast({message: 'No saved state found', intent: 'danger'});
-        }
+        this.dashContainerModel.loadStateAsync(this.stateSnapshot).then(() => {
+            XH.toast({message: 'Dash state snapshot loaded!'});
+        });
     }
 
     resetState() {

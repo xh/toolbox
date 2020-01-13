@@ -1,6 +1,6 @@
 import {hoistCmp, HoistModel, uses, creates, managed} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {box} from '@xh/hoist/cmp/layout';
+import {box, vbox, div} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -42,30 +42,36 @@ export const ButtonGroupPanel = hoistCmp({
     model: uses(ButtonGroupPanelModel),
     render() {
         return panel(
-            box({
+            vbox({
                 padding: 10,
-                item: form(
-                    formField({
-                        field: 'buttonGroup',
-                        item: buttonGroupInput(
-                            button({
-                                icon: Icon.chartLine(),
-                                text: 'Button 1',
-                                value: 'button1'
-                            }),
-                            button({
-                                icon: Icon.gear(),
-                                text: 'Button 2',
-                                value: 'button2'
-                            }),
-                            button({
-                                icon: Icon.skull(),
-                                text: 'Button 3',
-                                value: 'button3'
-                            })
-                        )
+                items: [
+                    form(
+                        formField({
+                            label: null,
+                            field: 'buttonGroup',
+                            item: buttonGroupInput(
+                                button({
+                                    icon: Icon.chartLine(),
+                                    text: 'Button 1',
+                                    value: 'button1'
+                                }),
+                                button({
+                                    icon: Icon.gear(),
+                                    text: 'Button 2',
+                                    value: 'button2'
+                                }),
+                                button({
+                                    icon: Icon.skull(),
+                                    text: 'Button 3',
+                                    value: 'button3'
+                                })
+                            )
+                        })
+                    ),
+                    div({
+                        item: 'A stateful ButtonGroupInput'
                     })
-                )
+                ]
             })
         );
     }
