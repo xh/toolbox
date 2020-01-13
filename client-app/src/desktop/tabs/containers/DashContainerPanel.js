@@ -6,7 +6,7 @@ import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
-import {DashRenderMode, DashRefreshMode} from '@xh/hoist/enums';
+import {RenderMode, RefreshMode} from '@xh/hoist/enums';
 
 import {SimplePanel, ButtonGroupPanel, ButtonGroupPanelModel, SimpleChartPanel} from './impl/DashViews';
 import {wrapper, sampleGrid, sampleTreeGrid} from '../../common';
@@ -24,7 +24,7 @@ export const DashContainerPanel = hoistCmp({
                 icon: Icon.gridLarge(),
                 height: '80%',
                 width: '80%',
-                item: dashContainer({model: model.dashContainerModel}),
+                item: dashContainer(),
                 bbar: [
                     button({
                         text: 'Reset & Clear State',
@@ -77,7 +77,7 @@ class Model {
                 title: 'Chart',
                 icon: Icon.chartLine(),
                 unique: true,
-                refreshMode: DashRefreshMode.ON_SHOW_ALWAYS,
+                refreshMode: RefreshMode.ON_SHOW_ALWAYS,
                 content: SimpleChartPanel
             },
             {
@@ -97,7 +97,7 @@ class Model {
             {
                 id: 'simple',
                 title: 'Simple Panel',
-                renderMode: DashRenderMode.ALWAYS,
+                renderMode: RenderMode.ALWAYS,
                 content: SimplePanel
             }
         ],
