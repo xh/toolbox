@@ -15,12 +15,12 @@ export const detailsPanel = hoistCmp.factory({
             className: 'recalls-detail-wrapper',
             item: table(
                 tbody(
-                    tr(th('Brand Name'), td(`${currentRecord.brandName}`)),
-                    tr(th('Generic Name'), td(`${currentRecord.genericName}`)),
+                    tr(th('Brand Name'), td(`${currentRecord.get('brandName')}`)),
+                    tr(th('Generic Name'), td(`${currentRecord.get('genericName')}`)),
                     tr(th('Classification'), td(`${model.classificationDetails}`)),
-                    tr(th('Description'), td(`${currentRecord.description}`)),
-                    tr(th('Recalling Firm'), td(`${currentRecord.recallingFirm}`)),
-                    tr(th('Reason For Recall'), td(`${currentRecord.reason}`))
+                    tr(th('Description'), td(`${currentRecord.get('description')}`)),
+                    tr(th('Recalling Firm'), td(`${currentRecord.get('recallingFirm')}`)),
+                    tr(th('Reason For Recall'), td(`${currentRecord.get('reason')}`))
                 )
             )
         });

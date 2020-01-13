@@ -7,7 +7,7 @@ export class DetailsPanelModel {
     @bindable.ref currentRecord = null;
 
     get classificationDetails() {
-        const {classification} = this.currentRecord;
+        const {classification} = this.currentRecord.data;
         switch (classification) {
             case 'Class I':
                 return 'Class I: A dangerous or defective product that could cause serious health problems or death.';
