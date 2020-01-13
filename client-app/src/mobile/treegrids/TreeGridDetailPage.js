@@ -36,8 +36,8 @@ function renderRecord(record) {
             return renderRow(capitalize(parts[0]), parts[1]);
         }),
 
-        renderRow('Market Value', record.mktVal, numberRenderer({precision: 0, ledger: true, asElement: true})),
-        renderRow('P&L', record.pnl, numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}))
+        renderRow('Market Value', record.get('mktVal'), numberRenderer({precision: 0, ledger: true, asElement: true})),
+        renderRow('P&L', record.get('pnl'), numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}))
     );
 }
 
