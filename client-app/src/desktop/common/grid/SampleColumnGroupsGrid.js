@@ -108,7 +108,7 @@ class Model {
         return new GridModel({
             stateModel: 'toolboxGroupGrid',
             store: {
-                idSpec: ({data}) => `${data.firstName}~${data.lastName}~${data.city}~${data.state}`
+                idSpec: data => `${data.firstName}~${data.lastName}~${data.city}~${data.state}`
             },
             sortBy: 'lastName',
             emptyText: 'No records found...',
