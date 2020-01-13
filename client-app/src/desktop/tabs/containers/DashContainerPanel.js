@@ -1,17 +1,14 @@
 import React from 'react';
 import {XH, creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {box, filler} from '@xh/hoist/cmp/layout';
+import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {chart} from '@xh/hoist/cmp/chart';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {DashRenderMode, DashRefreshMode} from '@xh/hoist/enums';
 
+import {SimplePanel, buttonGroupPanel, ButtonGroupPanelModel, SimpleChartPanel} from './impl/DashViews';
 import {wrapper, sampleGrid, sampleTreeGrid} from '../../common';
-import {LineChartModel} from '../charts/LineChartModel';
-import {select} from '@xh/hoist/desktop/cmp/input';
 
 export const DashContainerPanel = hoistCmp({
     model: creates(() => new Model()),
@@ -29,7 +26,7 @@ export const DashContainerPanel = hoistCmp({
                 item: dashContainer({model: model.dashContainerModel}),
                 bbar: [
                     button({
-                        text: 'Reset State',
+                        text: 'Reset & Clear State',
                         onClick: () => model.resetState()
                     }),
                     filler(),
@@ -39,7 +36,6 @@ export const DashContainerPanel = hoistCmp({
                         onClick: () => model.saveState()
                     }),
                     button({
-                        disabled: !model.state,
                         text: 'Load Saved State',
                         icon: Icon.upload(),
                         onClick: () => model.loadState()
@@ -52,6 +48,9 @@ export const DashContainerPanel = hoistCmp({
 
 @HoistModel
 class Model {
+
+    stateKey = 'dashContainerState';
+
     @managed
     dashContainerModel = new DashContainerModel({
         viewSpecs: [
@@ -78,15 +77,19 @@ class Model {
                 content: SimpleChartPanel
             },
             {
-                id: 'panel',
-                title: 'Panel',
+                id: 'buttonGroupPanel',
+                title: 'Button Group',
+                icon: Icon.skull(),
+                content: () => {
+                    const model = new ButtonGroupPanelModel();
+                    return buttonGroupPanel({model});
+                }
+            },
+            {
+                id: 'simple',
+                title: 'Simple Panel',
                 renderMode: DashRenderMode.ALWAYS,
-                content: () => panel(
-                    box({
-                        item: 'Just a panel',
-                        padding: 10
-                    })
-                )
+                content: SimplePanel
             }
         ],
         defaultState: [{
@@ -103,47 +106,34 @@ class Model {
                     type: 'column',
                     content: [
                         {type: 'view', id: 'chart'},
-                        {type: 'view', id: 'panel'}
+                        {type: 'view', id: 'buttonGroupPanel'}
                     ]
                 }
             ]
-        }]
+        }],
+        initState: XH.localStorageService.get(this.stateKey, null)
     });
 
-    @bindable.ref state;
-
     saveState() {
-        this.setState(this.dashContainerModel.state);
+        XH.localStorageService.set(this.stateKey, this.dashContainerModel.state);
         XH.toast({message: 'Dash state captured!'});
     }
 
     loadState() {
-        this.dashContainerModel.loadStateAsync(this.state).then(() => {
-            XH.toast({message: 'Dash state loaded!'});
-        });
+        const state = XH.localStorageService.get(this.stateKey, null);
+        if (state) {
+            this.dashContainerModel.loadStateAsync(state).then(() => {
+                XH.toast({message: 'Dash state loaded!'});
+            });
+        } else {
+            XH.toast({message: 'No saved state found', intent: 'danger'});
+        }
     }
 
     resetState() {
+        XH.localStorageService.remove(this.stateKey);
         this.dashContainerModel.resetStateAsync().then(() => {
             XH.toast({message: 'Dash state reset to default'});
         });
     }
 }
-
-// Minimal chart component, reusing an existing ChartModel
-const SimpleChartPanel = hoistCmp({
-    model: creates(LineChartModel),
-    render({model}) {
-        return panel({
-            item: chart(),
-            bbar: [
-                box('Symbol: '),
-                select({
-                    bind: 'currentSymbol',
-                    options: model.symbols,
-                    enableFilter: false
-                })
-            ]
-        });
-    }
-});
