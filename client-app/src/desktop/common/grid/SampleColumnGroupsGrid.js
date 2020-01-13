@@ -247,9 +247,10 @@ class Model {
     }
 
     showRecToast(rec) {
+        const {firstName, lastName, actualUnitsSold} = rec.data;
         XH.toast({
-            title: `${rec.firstName} ${rec.lastName}`,
-            message: `You asked to see details for ${rec.firstName}. They sold ${rec.actualUnitsSold} last year.`,
+            title: `${firstName} ${lastName}`,
+            message: `You asked to see details for ${firstName}. They sold ${actualUnitsSold} last year.`,
             intent: 'primary',
             containerRef: this.panelRef.current
         });
