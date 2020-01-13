@@ -146,13 +146,7 @@ const modelSpec = {
         editAction,
         viewAction,
         deleteAction,
-        cloneAction,
-        {
-            text: 'Log Dirty',
-            actionFn: ({record}) => {
-                console.debug(record.getDirtyFields());
-            }
-        }
+        cloneAction
     ],
     prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
 };
