@@ -38,9 +38,9 @@ export class ButtonGroupPanelModel {
     })
 }
 
-export const buttonGroupPanel = hoistCmp.factory({
+export const ButtonGroupPanel = hoistCmp({
     model: uses(ButtonGroupPanelModel),
-    render({model}) {
+    render() {
         return panel(
             box({
                 padding: 10,

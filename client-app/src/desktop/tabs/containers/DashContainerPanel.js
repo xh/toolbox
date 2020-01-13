@@ -7,7 +7,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {DashRenderMode, DashRefreshMode} from '@xh/hoist/enums';
 
-import {SimplePanel, buttonGroupPanel, ButtonGroupPanelModel, SimpleChartPanel} from './impl/DashViews';
+import {SimplePanel, ButtonGroupPanel, ButtonGroupPanelModel, SimpleChartPanel} from './impl/DashViews';
 import {wrapper, sampleGrid, sampleTreeGrid} from '../../common';
 
 export const DashContainerPanel = hoistCmp({
@@ -79,10 +79,15 @@ class Model {
             {
                 id: 'buttonGroupPanel',
                 title: 'Button Group',
-                icon: Icon.skull(),
-                content: () => {
-                    const model = new ButtonGroupPanelModel();
-                    return buttonGroupPanel({model});
+                icon: Icon.question(),
+                content: ButtonGroupPanel,
+                contentModelFn: () => new ButtonGroupPanelModel(),
+                getState: (contentModel) => {
+                    const {buttonGroup} = contentModel.formModel.values;
+                    return {buttonGroup};
+                },
+                setState: (state, contentModel) => {
+                    contentModel.formModel.init(state);
                 }
             },
             {
