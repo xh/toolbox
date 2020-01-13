@@ -79,7 +79,7 @@ const example = hoistCmp.factory({
     render({name, bind, select, model}) {
         return fragment(
             p(name),
-            label('value: ' + model.bind),
+            label('value: ' + model[bind]),
             select
         );
     }
