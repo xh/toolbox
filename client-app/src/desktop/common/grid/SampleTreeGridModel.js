@@ -167,14 +167,14 @@ export class SampleTreeGridModel {
         return {
             rendererIsComplex: true,
             elementRenderer: (v, {record}) => {
-                if (record.xhIsSummary) return record.name;
+                if (record.isSummary) return record.get('name');
                 return fragment(
                     checkbox({
                         displayUnsetState: true,
-                        value: record.isChecked,
+                        value: record.get('isChecked'),
                         onChange: () => this.toggleNode(record)
                     }),
-                    record.name
+                    record.get('name')
                 );
             }
         };
@@ -183,7 +183,7 @@ export class SampleTreeGridModel {
     @action
     toggleNode(rec) {
         const {store} = this,
-            isChecked = !rec.isChecked,
+            isChecked = !rec.get('isChecked'),
             updates = [
                 {id: rec.id, isChecked},
                 ...rec.allDescendants.map(({id}) => ({id, isChecked}))
@@ -196,8 +196,8 @@ export class SampleTreeGridModel {
 
 function calcAggState(rec) {
     const {allChildren} = rec;
-    if (allChildren.every(({isChecked}) => isChecked === true)) return true;
-    if (allChildren.every(({isChecked}) => isChecked === false)) return false;
+    if (allChildren.every(it => it.get('isChecked') === true)) return true;
+    if (allChildren.every(it => it.get('isChecked') === false)) return false;
     return null;
 }
 

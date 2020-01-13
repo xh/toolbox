@@ -108,7 +108,7 @@ class Model {
         return new GridModel({
             stateModel: 'toolboxGroupGrid',
             store: {
-                idSpec: rec => `${rec.firstName}~${rec.lastName}~${rec.city}~${rec.state}`
+                idSpec: ({data}) => `${data.firstName}~${data.lastName}~${data.city}~${data.state}`
             },
             sortBy: 'lastName',
             emptyText: 'No records found...',
@@ -139,7 +139,7 @@ class Model {
                             headerName: 'Name',
                             width: 140,
                             chooserName: 'Full Name',
-                            renderer: (v, {record}) => record ? `${record.firstName} ${record.lastName}` : '',
+                            renderer: (v, {record}) => record ? `${record.get('firstName')} ${record.get('lastName')}` : '',
                             rendererIsComplex: true,
                             agOptions: {
                                 columnGroupShow: 'closed'

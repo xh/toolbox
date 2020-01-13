@@ -15,7 +15,6 @@ import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
 import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
-import {actionCol} from '@xh/hoist/desktop/cmp/grid/columns';
 
 export const RestGridPanel = hoistCmp({
 
@@ -37,7 +36,7 @@ export const RestGridPanel = hoistCmp({
                 title: 'Grids › REST Editor',
                 icon: Icon.edit(),
                 className: 'tb-grid-wrapper-panel',
-                item: restGrid({model: modelSpec, onRowDoubleClicked: null})
+                item: restGrid({model: modelSpec})
             })
         });
     }
@@ -99,26 +98,8 @@ const modelSpec = {
     sortBy: 'name',
     columns: [
         {
-            ...actionCol,
-            actions: [
-                {
-                    icon: Icon.save(),
-                    intent: 'primary',
-                    displayFn: ({record}) => ({disabled: !record.isDirty}),
-                    actionFn: ({record, store}) => store.saveRecordAsync(record)
-                },
-                {
-                    icon: Icon.undo(),
-                    intent: 'warning',
-                    displayFn: ({record}) => ({disabled: !record.isDirty}),
-                    actionFn: ({record, store}) => store.revertRecords(record)
-                }
-            ]
-        },
-        {
             field: 'name',
-            width: 200,
-            editable: true
+            width: 200
         },
         {
             field: 'type',
