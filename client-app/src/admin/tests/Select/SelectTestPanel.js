@@ -41,25 +41,25 @@ export const SelectTestPanel = hoistCmp({
                         model
                     }),
                     example({
-                        name: 'Select enableCreate=true',
+                        name: 'Select enableCreate',
                         bind: 'creatableValue',
-                        select: select({...restaurantProps, bind: 'selectValue', creatable: true}),
+                        select: select({...restaurantProps, bind: 'creatableValue', creatable: true}),
                         model
                     }),
                     example({
-                        name: 'Select enableAsync=true',
+                        name: 'Select queryFn',
                         bind: 'asyncValue',
                         select: select({...customerProps, bind: 'asyncValue'}),
                         model
                     }),
                     example({
-                        name: 'Select enableAsync=true creatable=true',
+                        name: 'Select queryFn enableCreate',
                         bind: 'asyncCreatableValue',
-                        select: select({...customerProps, bind: 'asyncValue'}),
+                        select: select({...customerProps, bind: 'asyncCreatableValue'}),
                         model
                     }),
                     example({
-                        name: 'Select (with many options) enableWindowed=true',
+                        name: 'Select (with many options) enableWindowed',
                         bind: 'bigValue',
                         select: select({bind: 'bigValue', options: model.bigOptions, placeholder: 'Select a number...'}),
                         model
