@@ -43,7 +43,7 @@ export const SelectTestPanel = hoistCmp({
                     example({
                         name: 'Select enableCreate',
                         bind: 'creatableValue',
-                        select: select({...restaurantProps, bind: 'creatableValue', creatable: true})
+                        select: select({...restaurantProps, bind: 'creatableValue', enableCreate: true})
                     }),
                     example({
                         name: 'Select queryFn',
@@ -53,7 +53,7 @@ export const SelectTestPanel = hoistCmp({
                     example({
                         name: 'Select queryFn enableCreate',
                         bind: 'asyncCreatableValue',
-                        select: select({...customerProps, bind: 'asyncCreatableValue'})
+                        select: select({...customerProps,  bind: 'asyncCreatableValue', enableCreate: true})
                     }),
                     example({
                         name: 'Select (with grouped options)',
