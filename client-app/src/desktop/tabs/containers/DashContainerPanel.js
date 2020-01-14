@@ -16,9 +16,13 @@ export const DashContainerPanel = hoistCmp({
 
     render({model}) {
         return wrapper({
-            description: <p>
-                Todo
-            </p>,
+            description: [
+                <p>
+                    <code>DashContainer</code> is configured and managed via a <code>DashContainerModel</code>
+                    and support publishing observable state, managed mounting/unmounting of inactive tabs,
+                    and lazy refreshing of its active Tab.
+                </p>
+            ],
             item: panel({
                 title: 'Containers › Dash',
                 icon: Icon.gridLarge(),
@@ -120,16 +124,9 @@ class Model {
                 }
             ]
         }],
-        initState: XH.localStorageService.get(this.stateKey, null)
+        getInitState: () => XH.localStorageService.get(this.stateKey, null),
+        setState: (state) => XH.localStorageService.set(this.stateKey, state)
     });
-
-    constructor() {
-        // Automatically save observable state using LocalStorageService
-        this.addReaction({
-            track: () => this.dashContainerModel.state,
-            run: () => XH.localStorageService.set(this.stateKey, this.dashContainerModel.state)
-        });
-    }
 
     saveState() {
         this.setStateSnapshot(this.dashContainerModel.state);
