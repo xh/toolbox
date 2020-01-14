@@ -103,14 +103,8 @@ class Model {
                 icon: Icon.question(),
                 content: ButtonGroupPanel,
                 contentModelFn: () => new ButtonGroupPanelModel(),
-                getState: (model) => {
-                    const value = model.formModel.fields.buttonGroup.value;
-                    return {value};
-                },
-                setState: (state, model) => {
-                    const {value} = state;
-                    model.formModel.fields.buttonGroup.setValue(value);
-                }
+                getState: (model) => model.getState(),
+                setState: (state, model) => model.setState(state)
             },
             {
                 id: 'simple',
@@ -119,6 +113,7 @@ class Model {
                 content: SimplePanel
             }
         ],
+        // Todo: Maybe drop in favour of always using initialState? Discuss
         defaultState: [{
             type: 'row',
             content: [
@@ -138,7 +133,10 @@ class Model {
                 }
             ]
         }],
+        // Todo: rename initialState. Not a function - just a prop
         getInitState: () => XH.localStorageService.get(this.stateKey, null),
+
+        // Todo: Go back to using reaction here
         setState: (state) => XH.localStorageService.set(this.stateKey, state)
     });
 

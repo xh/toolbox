@@ -29,18 +29,50 @@ export const SimplePanel = hoistCmp({
 // ButtonGroupPanel - Used to demonstrate saving arbitrary component state
 @HoistModel
 export class ButtonGroupPanelModel {
+
     @managed
     formModel = new FormModel({
         fields: [{
             name: 'buttonGroup',
-            initialValue: 'button2'
+            initialValue: 'Button 2'
         }]
-    })
+    });
+
+    get value() {
+        return this.formModel.fields.buttonGroup.value;
+    }
+
+    getState() {
+        const {value} = this,
+            title = `Button Group: ${value}`,
+            icon = this.getIconForValue();
+
+        return {title, icon, value};
+    }
+
+    setState(state) {
+        const {value} = state;
+        this.formModel.fields.buttonGroup.setValue(value);
+    }
+
+    getIconForValue() {
+        switch (this.value) {
+            case 'Button 1':
+                return Icon.chartLine();
+            case 'Button 2':
+                return Icon.gear();
+            case 'Button 3':
+                return Icon.skull();
+            default:
+                return Icon.question();
+        }
+    }
 }
 
 export const ButtonGroupPanel = hoistCmp({
     model: uses(ButtonGroupPanelModel),
-    render() {
+    render({model}) {
+        const {value} = model;
         return panel(
             vbox({
                 padding: 10,
@@ -53,23 +85,23 @@ export const ButtonGroupPanel = hoistCmp({
                                 button({
                                     icon: Icon.chartLine(),
                                     text: 'Button 1',
-                                    value: 'button1'
+                                    value: 'Button 1'
                                 }),
                                 button({
                                     icon: Icon.gear(),
                                     text: 'Button 2',
-                                    value: 'button2'
+                                    value: 'Button 2'
                                 }),
                                 button({
                                     icon: Icon.skull(),
                                     text: 'Button 3',
-                                    value: 'button3'
+                                    value: 'Button 3'
                                 })
                             )
                         })
                     ),
                     div({
-                        item: 'A stateful ButtonGroupInput'
+                        item: `A stateful ButtonGroupInput. "${value}" is selected.`
                     })
                 ]
             })
