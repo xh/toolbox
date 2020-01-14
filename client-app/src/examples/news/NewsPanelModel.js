@@ -16,7 +16,14 @@ export class NewsPanelModel {
         sortBy: 'published',
         store: {
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
-            idSpec: 'url'
+            idSpec: 'url',
+            filter: (rec) => {
+                const {textFilter, sourceFilter} = this,
+                    searchMatch = !textFilter || textFilter.fn(rec),
+                    sourceMatch = isEmpty(sourceFilter) || sourceFilter.includes(rec.get('source'));
+
+                return sourceMatch && searchMatch;
+            }
         },
         itemRenderer: (v, {record}) => newsPanelItem({record})
     });
@@ -30,7 +37,7 @@ export class NewsPanelModel {
     constructor() {
         this.addReaction({
             track: () => [this.sourceFilter, this.textFilter, this.lastRefresh],
-            run: () => this.filterData(),
+            run: () => this.viewModel.store.applyFilter(),
             fireImmediately: true
         });
     }
@@ -61,18 +68,5 @@ export class NewsPanelModel {
         }));
         this.sourceOptions = uniq(store.records.map(story => story.get('source')));
         this.lastRefresh = new Date();
-    }
-
-    @action
-    filterData() {
-        const filter = (rec) => {
-            const {textFilter, sourceFilter} = this,
-                searchMatch = !textFilter || textFilter.fn(rec),
-                sourceMatch = isEmpty(sourceFilter) || sourceFilter.includes(rec.get('source'));
-
-            return sourceMatch && searchMatch;
-        };
-
-        this.viewModel.store.setFilter(filter);
     }
 }
