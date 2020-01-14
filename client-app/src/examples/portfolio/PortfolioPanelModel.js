@@ -33,7 +33,10 @@ export class PortfolioPanelModel {
 
         let {session} = this;
         if (session) session.destroy();
-        session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp');
+
+        session = await XH.portfolioService
+            .getLivePositionsAsync(dims, 'mainApp')
+            .catchDefault();
 
         store.loadData([session.initialPositions.root]);
         session.onUpdate = ({data}) => {
