@@ -9,7 +9,7 @@ import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {RenderMode, RefreshMode} from '@xh/hoist/enums';
 
 import {SimplePanel, ButtonGroupPanel, ButtonGroupPanelModel, SimpleChartPanel} from './impl/DashViews';
-import {wrapper, sampleGrid, sampleTreeGrid} from '../../common';
+import {wrapper, sampleGrid, SampleGridModel, sampleTreeGrid} from '../../common';
 
 export const DashContainerPanel = hoistCmp({
     model: creates(() => new Model()),
@@ -68,7 +68,20 @@ class Model {
                 icon: Icon.gridPanel(),
                 unique: true,
                 allowClose: false,
-                content: () => sampleGrid({omitGridTools: true})
+                content: () => sampleGrid({omitGridTools: true}),
+                contentModelFn: () => new SampleGridModel(),
+                getState: (model) => {
+                    const {columnState, sortBy, groupBy} = model.gridModel;
+                    return {columnState, sortBy, groupBy};
+                },
+                setState: (state, model) => {
+                    const {columnState, sortBy, groupBy} = state,
+                        {gridModel} = model;
+
+                    gridModel.applyColumnStateChanges(columnState);
+                    gridModel.setSortBy(sortBy);
+                    gridModel.setGroupBy(groupBy);
+                }
             },
             {
                 id: 'treeGrid',
@@ -90,12 +103,13 @@ class Model {
                 icon: Icon.question(),
                 content: ButtonGroupPanel,
                 contentModelFn: () => new ButtonGroupPanelModel(),
-                getState: (contentModel) => {
-                    const {buttonGroup} = contentModel.formModel.values;
-                    return {buttonGroup};
+                getState: (model) => {
+                    const value = model.formModel.fields.buttonGroup.value;
+                    return {value};
                 },
-                setState: (state, contentModel) => {
-                    contentModel.formModel.init(state);
+                setState: (state, model) => {
+                    const {value} = state;
+                    model.formModel.fields.buttonGroup.setValue(value);
                 }
             },
             {
