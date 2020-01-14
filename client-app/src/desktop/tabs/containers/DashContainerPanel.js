@@ -8,8 +8,17 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {RenderMode, RefreshMode} from '@xh/hoist/enums';
 
-import {SimplePanel, ButtonGroupPanel, ButtonGroupPanelModel, SimpleChartPanel} from './impl/DashViews';
-import {wrapper, sampleGrid, SampleGridModel, sampleTreeGrid} from '../../common';
+import {
+    ButtonWidget,
+    ButtonWidgetModel,
+    ChartWidget,
+    GridWidget,
+    GridWidgetModel,
+    PanelWidget,
+    TreeGridWidget
+} from './dashwidgets';
+
+import {wrapper} from '../../common';
 
 export const DashContainerPanel = hoistCmp({
     model: creates(() => new Model()),
@@ -73,7 +82,7 @@ class Model {
                 type: 'column',
                 content: [
                     {type: 'view', id: 'chart'},
-                    {type: 'view', id: 'buttonGroupPanel'}
+                    {type: 'view', id: 'buttons'}
                 ]
             }
         ]
@@ -89,26 +98,15 @@ class Model {
                 icon: Icon.gridPanel(),
                 unique: true,
                 allowClose: false,
-                content: () => sampleGrid({omitGridTools: true}),
-                contentModelFn: () => new SampleGridModel(),
-                getState: (model) => {
-                    const {columnState, sortBy, groupBy} = model.gridModel;
-                    return {columnState, sortBy, groupBy};
-                },
-                setState: (state, model) => {
-                    const {columnState, sortBy, groupBy} = state,
-                        {gridModel} = model;
-
-                    gridModel.applyColumnStateChanges(columnState);
-                    gridModel.setSortBy(sortBy);
-                    gridModel.setGroupBy(groupBy);
-                }
+                content: GridWidget,
+                contentModelFn: () => new GridWidgetModel()
             },
             {
-                id: 'treeGrid',
-                title: 'Tree Grid',
-                icon: Icon.grid(),
-                content: () => sampleTreeGrid({model: {includeCheckboxes: false}})
+                id: 'buttons',
+                title: 'Buttons',
+                icon: Icon.question(),
+                content: ButtonWidget,
+                contentModelFn: () => new ButtonWidgetModel()
             },
             {
                 id: 'chart',
@@ -116,22 +114,20 @@ class Model {
                 icon: Icon.chartLine(),
                 unique: true,
                 refreshMode: RefreshMode.ON_SHOW_ALWAYS,
-                content: SimpleChartPanel
+                content: ChartWidget
             },
             {
-                id: 'buttonGroupPanel',
-                title: 'Button Group',
-                icon: Icon.question(),
-                content: ButtonGroupPanel,
-                contentModelFn: () => new ButtonGroupPanelModel(),
-                getState: (model) => model.getState(),
-                setState: (state, model) => model.setState(state)
-            },
-            {
-                id: 'simple',
-                title: 'Simple Panel',
+                id: 'panel',
+                title: 'Panel',
+                icon: Icon.window(),
                 renderMode: RenderMode.ALWAYS,
-                content: SimplePanel
+                content: PanelWidget
+            },
+            {
+                id: 'treeGrid',
+                title: 'Tree Grid',
+                icon: Icon.grid(),
+                content: TreeGridWidget
             }
         ]
     });
