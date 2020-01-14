@@ -59,8 +59,29 @@ class Model {
 
     @bindable.ref stateSnapshot;
 
+    defaultState = [{
+        type: 'row',
+        content: [
+            {
+                type: 'stack',
+                content: [
+                    {type: 'view', id: 'grid'},
+                    {type: 'view', id: 'treeGrid'}
+                ]
+            },
+            {
+                type: 'column',
+                content: [
+                    {type: 'view', id: 'chart'},
+                    {type: 'view', id: 'buttonGroupPanel'}
+                ]
+            }
+        ]
+    }];
+
     @managed
     dashContainerModel = new DashContainerModel({
+        initialState: XH.localStorageService.get(this.stateKey, this.defaultState),
         viewSpecs: [
             {
                 id: 'grid',
@@ -112,33 +133,15 @@ class Model {
                 renderMode: RenderMode.ALWAYS,
                 content: SimplePanel
             }
-        ],
-        // Todo: Maybe drop in favour of always using initialState? Discuss
-        defaultState: [{
-            type: 'row',
-            content: [
-                {
-                    type: 'stack',
-                    content: [
-                        {type: 'view', id: 'grid'},
-                        {type: 'view', id: 'treeGrid'}
-                    ]
-                },
-                {
-                    type: 'column',
-                    content: [
-                        {type: 'view', id: 'chart'},
-                        {type: 'view', id: 'buttonGroupPanel'}
-                    ]
-                }
-            ]
-        }],
-        // Todo: rename initialState. Not a function - just a prop
-        getInitState: () => XH.localStorageService.get(this.stateKey, null),
-
-        // Todo: Go back to using reaction here
-        setState: (state) => XH.localStorageService.set(this.stateKey, state)
+        ]
     });
+
+    constructor() {
+        this.addReaction({
+            track: () => this.dashContainerModel.state,
+            run: (state) => XH.localStorageService.set(this.stateKey, state)
+        });
+    }
 
     saveState() {
         this.setStateSnapshot(this.dashContainerModel.state);
@@ -153,7 +156,7 @@ class Model {
 
     resetState() {
         XH.localStorageService.remove(this.stateKey);
-        this.dashContainerModel.resetStateAsync().then(() => {
+        this.dashContainerModel.loadStateAsync(this.defaultState).then(() => {
             XH.toast({message: 'Dash state reset to default'});
         });
     }
