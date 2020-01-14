@@ -1,17 +1,18 @@
-import {XH, hoistCmp, HoistModel} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {restaurants} from '../../../core/data';
-import {useLocalModel} from '@xh/hoist/core/hooks';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {box, div, fragment, hbox, label, p, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
+import {SelectTestModel} from './SelectTestModel.js';
 import './SelectTestPanel.scss';
-import {bindable} from '@xh/hoist/mobx';
+import {creates, uses} from '@xh/hoist/core/modelspec';
 
 export const SelectTestPanel = hoistCmp({
 
-    render() {
-        const model = useLocalModel(LocalModel);
+    model: creates(SelectTestModel),
+
+    render({model}) {
 
         const restaurantProps = {
             options: restaurants,
@@ -37,36 +38,48 @@ export const SelectTestPanel = hoistCmp({
                     example({
                         name: 'Select',
                         bind: 'selectValue',
-                        select: select({...restaurantProps, bind: 'selectValue'}),
-                        model
+                        select: select({...restaurantProps, bind: 'selectValue'})
                     }),
                     example({
                         name: 'Select enableCreate',
                         bind: 'creatableValue',
-                        select: select({...restaurantProps, bind: 'creatableValue', creatable: true}),
-                        model
+                        select: select({...restaurantProps, bind: 'creatableValue', creatable: true})
                     }),
                     example({
                         name: 'Select queryFn',
                         bind: 'asyncValue',
-                        select: select({...customerProps, bind: 'asyncValue'}),
-                        model
+                        select: select({...customerProps, bind: 'asyncValue'})
                     }),
                     example({
                         name: 'Select queryFn enableCreate',
                         bind: 'asyncCreatableValue',
-                        select: select({...customerProps, bind: 'asyncCreatableValue'}),
-                        model
+                        select: select({...customerProps, bind: 'asyncCreatableValue'})
+                    }),
+                    example({
+                        name: 'Select (with grouped options)',
+                        bind: 'groupedValue',
+                        select: select({
+                            bind: 'groupedValue',
+                            options: [
+                                {label: 'shapes', options: ['square', 'circle', 'triangle', 'rectangle', 'line', 'decagon']},
+                                {label: 'colors', options: ['red', 'orange', 'yellow', 'green', 'blue', 'purple']},
+                                {label: 'flavors', options: ['vanilla', 'chocolate', 'strawberry']}
+                            ]
+                        })
                     }),
                     example({
                         name: 'Select (with many options) enableWindowed',
                         bind: 'bigValue',
-                        select: select({bind: 'bigValue', options: model.bigOptions, placeholder: 'Select a number...'}),
-                        model
+                        select: select({
+                            bind: 'bigValue',
+                            options: model.bigOptions,
+                            enableWindowed: true,
+                            placeholder: 'Select a number...'
+                        })
                     }),
                     hbox(
                         label('number of options: '),
-                        numberInput({bind: 'numOptions', model})
+                        numberInput({bind: 'numOptions'})
                     )
                 )
             )
@@ -75,6 +88,8 @@ export const SelectTestPanel = hoistCmp({
 });
 
 const example = hoistCmp.factory({
+
+    model: uses(SelectTestModel),
 
     render({name, bind, select, model}) {
         return fragment(
@@ -106,42 +121,3 @@ const customerOption = hoistCmp.factory(
         alignItems: 'center'
     })
 );
-
-@HoistModel
-class LocalModel {
-    @bindable
-    selectValue;
-    @bindable
-    creatableValue;
-    @bindable
-    asyncValue;
-    @bindable
-    asyncCreatableValue;
-    @bindable
-    bigValue;
-    @bindable
-    numOptions = 1000;
-    @bindable
-    bigOptions;
-
-    constructor() {
-        this.addReaction({
-            track: () => this.numOptions,
-            run: () => {
-                let options = [];
-                for (let i = 0; i < this.numOptions; i++) {
-                    options.push(i);
-                }
-                this.setBigOptions(options);
-            },
-            fireImmediately: true
-        });
-    }
-
-    queryCustomersAsync(query) {
-        return XH.fetchJson({
-            url: 'customer',
-            params: {query}
-        });
-    }
-}
