@@ -13,7 +13,7 @@ import {CubeDataPanel} from './cube/CubeDataPanel';
 import {WebSocketTestPanel} from './websocket/WebSocketTestPanel';
 import {LocalDateTestPanel} from './localDate/LocalDateTestPanel';
 import {PanelResizingTestPanel} from './panels/PanelResizingTestPanel';
-import {FetchApiTestPanel} from './fetch/FetchApiTestPanel'
+import {FetchApiTestPanel} from './fetch/FetchApiTestPanel';
 import {StoreEditingPanel} from './storeEditing/StoreEditingPanel';
 import {SelectTestPanel} from './Select/SelectTestPanel';
 
