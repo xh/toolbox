@@ -70,7 +70,7 @@ function createModel() {
                 description: 'True to suppress the default check icon rendered for the currently selected option.'
             },
             menuPlacement: {
-                value: 'positions.auto',
+                value: 'auto',
                 type: T.Enum,
                 enumName: 'positions',
                 options: positions,

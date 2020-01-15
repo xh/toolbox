@@ -78,7 +78,7 @@ function createModel() {
                 description: 'True to select contents when control receives focus.'
             },
             textAlign: {
-                value: 'alignments.left',
+                value: 'left',
                 type: T.Enum,
                 enumName: 'alignments',
                 options: alignments,
@@ -90,7 +90,7 @@ function createModel() {
                 description: 'True to allow browser spell check, default false.'
             },
             type: {
-                value: 'elementTypes.text',
+                value: 'text',
                 type: T.Enum,
                 enumName: 'elementTypes',
                 options: elementTypes,

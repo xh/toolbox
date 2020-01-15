@@ -49,7 +49,7 @@ function createModel() {
                     'these values will appear unchecked and visually indistinct from false.'
             },
             labelAlign: {
-                value: 'alignments.right',
+                value: 'right',
                 type: T.Enum,
                 enumName: 'alignments',
                 options: alignments,

@@ -97,24 +97,13 @@ function createModel() {
                 type: T.String,
                 description: 'Text to display when control is empty. '
             },
-            // TODO: see if I can sort this thing out
             popoverPosition: {
-                value: null,
-                type: T.String,
-                description: 'Position for calendar popover, as per Blueprint docs. Options are: \n' +
-                    'top-left\n' +
-                    'top\n' +
-                    'top-right\n' +
-                    'right-top\n' +
-                    'right\n' +
-                    'right-bottom\n' +
-                    'bottom-right\n'  +
-                    'bottom\n'  +
-                    'bottom-left\n' +
-                    'left-bottom\n' +
-                    'left\n' +
-                    'left-top\n' +
-                    'auto'
+                value: 'positions.auto',
+                type: T.Enum,
+                enumName: 'positions',
+                options: positions,
+                description: 'Position for calendar popover, as per Blueprint docs.',
+                imports: true
             },
             showActionsBar: {
                 value: true,
@@ -135,7 +124,7 @@ function createModel() {
                     'If it does not, the input will be considered invalid and the value set to `null`. '
             },
             textAlign: {
-                value:  'alignments.left',
+                value:  'left',
                 type: T.Enum,
                 enumName: 'alignments',
                 options: alignments,
@@ -153,10 +142,11 @@ function createModel() {
                 options: precisions,
                 description:
                     'The precision of time selection that accompanies the calendar.\n' +
-                    'If undefined, control will not show time. Ignored when valueType is localDate. '
+                    'If undefined, control will not show time. Ignored when valueType is localDate.',
+                imports: true
             },
             valueType: {
-                value: 'dateTypes.date',
+                value: 'date',
                 type: T.Enum,
                 enumName: 'dateTypes',
                 options: dateTypes,
@@ -173,7 +163,8 @@ function createModel() {
             Icon,
             alignments,
             precisions,
-            dateTypes
+            dateTypes,
+            positions
         }
     });
 }
@@ -184,7 +175,7 @@ const alignments = {
 };
 
 const precisions = {
-    null: null,
+    'null': null,
     second: 'second',
     minute: 'minute'
 };
@@ -192,4 +183,20 @@ const precisions = {
 const dateTypes = {
     date: 'date',
     localDate: 'localDate'
+};
+
+const positions = {
+    ['top-left']: 'top-left',
+    ['top']: 'top',
+    ['top-right']: 'top-right',
+    ['right-top']: 'right-top',
+    ['right']: 'right',
+    ['right-bottom']: 'right-bottom',
+    ['bottom-right']: 'bottom-right',
+    ['bottom']: 'bottom',
+    ['bottom-left']: 'bottom-left',
+    ['left-bottom']: 'left-bottom',
+    ['left']: 'left',
+    ['left-top']: 'left-top',
+    ['auto']: 'auto'
 };

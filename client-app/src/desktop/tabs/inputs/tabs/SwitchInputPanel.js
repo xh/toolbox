@@ -37,7 +37,7 @@ function createModel() {
                     'Can be used with or without an additional overall label as provided by FormField.'
             },
             labelAlign: {
-                value: 'alignments.left',
+                value: 'left',
                 type: T.Enum,
                 enumName: 'alignments',
                 options: alignments,

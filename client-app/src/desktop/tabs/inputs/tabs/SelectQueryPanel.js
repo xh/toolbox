@@ -69,7 +69,7 @@ function createModel() {
                 description: 'Function to return loading message during an async query. Passed current query input.'
             },
             menuPlacement: {
-                value: 'positions.auto',
+                value: 'auto',
                 type: T.Enum,
                 enumName: 'positions',
                 options: positions,
