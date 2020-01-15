@@ -26,6 +26,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
         const {gridModel} = model;
         return panel({
             item: hframe(grid(), gridOptionsPanel({model: gridModel})),
+            ref: model.panelRef,
             tbar: [
                 refreshButton(),
                 toolbarSep(),

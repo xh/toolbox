@@ -12,7 +12,6 @@ import {tooltip} from '@xh/hoist/kit/blueprint';
 
 import {GridTestModel} from './GridTestModel';
 
-
 export const GridTestPanel = hoistCmp({
 
     model: creates(GridTestModel),
@@ -21,8 +20,9 @@ export const GridTestPanel = hoistCmp({
         const {gridModel} = model;
         
         const formatRunTimes = () => {
-            const fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null}) : 'N/A';
-            return `Load: ${fmt(model.gridLoadTime)} • Update: ${fmt(model.gridUpdateTime)} `;
+            const fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null}) : 'N/A',
+                {gridLoadTime: lt, avgGridLoadTime: avgLt, gridUpdateTime: ut, avgGridUpdateTime: avgUt} = model;
+            return `Load: ${fmt(lt)} ${avgLt ? `(${fmt(avgLt)}) ` : ''}• Update: ${fmt(ut)} ${avgUt ? `(${fmt(avgUt)}) ` : ''}`;
         };
 
         return panel({

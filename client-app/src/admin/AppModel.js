@@ -35,6 +35,7 @@ export class AppModel extends BaseAppModel {
                     {name: 'webSockets', path: '/webSockets'},
                     {name: 'panelResizing', path: '/panelResizing'},
                     {name: 'fetchAPI', path: '/fetchAPI'},
+                    {name: 'storeEditing', path: '/storeEditing'},
                     {name: 'select', path: '/select'}
                 ]
             },
