@@ -15,6 +15,7 @@ import {LocalDateTestPanel} from './localDate/LocalDateTestPanel';
 import {PanelResizingTestPanel} from './panels/PanelResizingTestPanel';
 import {FetchApiTestPanel} from './fetch/FetchApiTestPanel';
 import {StoreEditingPanel} from './storeEditing/StoreEditingPanel';
+import {SelectTestPanel} from './Select/SelectTestPanel';
 
 export const TestsTab = hoistCmp(
     () => tabContainer({
@@ -27,7 +28,8 @@ export const TestsTab = hoistCmp(
                 {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel},
                 {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel},
                 {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
-                {id: 'storeEditing', title: 'Store Editing', content: StoreEditingPanel}
+                {id: 'storeEditing', title: 'Store Editing', content: StoreEditingPanel},
+                {id: 'select', title: 'Select', content: SelectTestPanel}
             ],
             switcherPosition: 'left'
         }
