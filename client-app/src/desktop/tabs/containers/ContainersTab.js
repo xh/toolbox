@@ -5,6 +5,7 @@ import {HBoxContainerPanel} from './HBoxContainerPanel';
 import {VBoxContainerPanel} from './VBoxContainerPanel';
 import {TabPanelContainerPanel} from './TabPanelContainerPanel';
 import {DockContainerPanel} from './DockContainerPanel';
+import {DashContainerPanel} from './dash/DashContainerPanel';
 
 import './ContainersTab.scss';
 
@@ -17,7 +18,8 @@ export const ContainersTab = hoistCmp(
                 {id: 'hbox', title: 'HBox', content: HBoxContainerPanel},
                 {id: 'vbox', title: 'VBox', content: VBoxContainerPanel},
                 {id: 'tabPanel', title: 'TabContainer', content: TabPanelContainerPanel},
-                {id: 'dock', title: 'DockContainer', content: DockContainerPanel}
+                {id: 'dock', title: 'DockContainer', content: DockContainerPanel},
+                {id: 'dash', title: 'DashContainer', content: DashContainerPanel}
             ]
         },
         className: 'toolbox-tab'
