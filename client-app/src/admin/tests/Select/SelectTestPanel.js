@@ -40,13 +40,24 @@ export const SelectTestPanel = hoistCmp({
                         selectProps: {...customerProps, enableCreate: true}
                     }),
                     example({
-                        name: 'Select (with grouped options)',
+                        name: 'Select (with grouped options and object options)',
                         bind: 'groupedValue',
                         selectProps: {
                             options: [
-                                {label: 'shapes', options: ['square', 'circle', 'triangle', 'rectangle', 'line', 'decagon']},
-                                {label: 'colors', options: ['red', 'orange', 'yellow', 'green', 'blue', 'purple']},
-                                {label: 'flavors', options: ['vanilla', 'chocolate', 'strawberry']}
+                                {label: 'cookies', options: [
+                                    {label: 'HTTP', value: {id: 'a3fWa', expires: 'Wed, 21 Oct 2015 07:28:00 GMT', secure: true}},
+                                    'oatmeal',
+                                    'chocolate chip',
+                                    'peanut butter'
+                                ]},
+                                {label: 'cakes', options: [
+                                    'red velvet', 'tres leches', 'German\'s chocolate', 'cheesecake',
+                                    {label: 'yellowcake', value: {ingredients: 'uranium', edible: false}}
+                                ]},
+                                {label: 'ice cream', options: [
+                                    'vanilla', 'chocolate', 'strawberry',
+                                    {label: 'sundae', value: {flavor: 'coffee', syrup: 'chocolate', toppings: ['sprinkles', 'whipped cream']}}
+                                ]}
                             ]
                         }
                     }),
@@ -72,7 +83,7 @@ export const SelectTestPanel = hoistCmp({
 const example = hoistCmp.factory(
     ({name, bind, selectProps, model}) => fragment(
         p(name),
-        label('value: ' + model[bind]),
+        label('value: ' + JSON.stringify(model[bind])),
         select({...selectProps, bind})
     )
 );
