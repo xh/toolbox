@@ -1,6 +1,6 @@
 import {HoistModel, LoadSupport, managed} from '@xh/hoist/core';
 
-import {SampleGridModel} from '../../../common';
+import {SampleGridModel} from '../../../../common';
 
 @HoistModel
 @LoadSupport

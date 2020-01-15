@@ -5,7 +5,7 @@ import {HBoxContainerPanel} from './HBoxContainerPanel';
 import {VBoxContainerPanel} from './VBoxContainerPanel';
 import {TabPanelContainerPanel} from './TabPanelContainerPanel';
 import {DockContainerPanel} from './DockContainerPanel';
-import {DashContainerPanel} from './DashContainerPanel';
+import {DashContainerPanel} from './dash/DashContainerPanel';
 
 import './ContainersTab.scss';
 

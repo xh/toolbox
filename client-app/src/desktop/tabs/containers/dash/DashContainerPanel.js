@@ -1,12 +1,11 @@
 import React from 'react';
-import {XH, creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {XH, creates, hoistCmp, HoistModel, managed, RenderMode, RefreshMode} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
-import {RenderMode, RefreshMode} from '@xh/hoist/enums';
 
 import {
     ButtonWidget,
@@ -16,9 +15,9 @@ import {
     GridWidgetModel,
     PanelWidget,
     TreeGridWidget
-} from './dashwidgets';
+} from './widgets';
 
-import {wrapper} from '../../common';
+import {wrapper} from '../../../common';
 
 export const DashContainerPanel = hoistCmp({
     model: creates(() => new Model()),
@@ -28,8 +27,14 @@ export const DashContainerPanel = hoistCmp({
             description: [
                 <p>
                     <code>DashContainer</code> is configured and managed via a <code>DashContainerModel</code>
-                    and support publishing observable state, managed mounting/unmounting of inactive tabs,
-                    and lazy refreshing of its active Tab.
+                    and allows the user to drag-and-drop content into various tab, and split-pane layouts.
+
+                    This component also supports publishing observable state, managed mounting/unmounting of inactive
+                    tabs, and lazy refreshing of its active Tab.
+                </p>,
+                <p>
+                    <b> Note:  This component is currently in alpha release</b>.  Its functionality and API
+                    is still subject to change. Applications should use with care.
                 </p>
             ],
             item: panel({
@@ -56,7 +61,13 @@ export const DashContainerPanel = hoistCmp({
                         onClick: () => model.loadState()
                     })
                 ]
-            })
+            }),
+            links: [
+                {url: '$TB/client-app/src/desktop/tabs/containers/dash/DashContainerPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/dash/DashContainer.js', notes: 'Hoist container component.'},
+                {url: '$HR/desktop/cmp/dash/DashContainerModel.js', notes: 'Hoist container model - primary API.'},
+                {url: '$HR/desktop/cmp/dash/DashViewSpec.js', notes: 'Configuration for contained views.'}
+            ]
         });
     }
 });
