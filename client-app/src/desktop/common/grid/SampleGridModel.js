@@ -30,7 +30,7 @@ export class SampleGridModel {
         icon: Icon.search(),
         tooltip: 'View details on the selected company',
         recordsRequired: 1,
-        displayFn: ({record}) => record ? {tooltip: `View details for ${record.get('company')}`} : null,
+        displayFn: ({record}) => record ? {tooltip: `View details for ${record.data.company}`} : null,
         actionFn: ({record}) => this.showInfoToast(record)
     };
 
@@ -43,7 +43,7 @@ export class SampleGridModel {
         actionFn: ({record}) => this.showTerminateToast(record),
         displayFn: ({record}) => {
             if (!record) return null;
-            if (record.get('city') === 'New York') {
+            if (record.data.city === 'New York') {
                 return {
                     disabled: true,
                     tooltip: 'New York companies cannot be terminated at this time.'
@@ -51,7 +51,7 @@ export class SampleGridModel {
             }
 
             return {
-                tooltip: `Terminate ${record.get('company')}`
+                tooltip: `Terminate ${record.data.company}`
             };
         },
         items: [
@@ -181,7 +181,7 @@ export class SampleGridModel {
                 headerName: ({gridModel}) => {
                     let ret = 'Company';
                     if (gridModel.selectedRecord) {
-                        ret += ` (${gridModel.selectedRecord.get('company')})`;
+                        ret += ` (${gridModel.selectedRecord.data.company})`;
                     }
 
                     return ret;
@@ -196,7 +196,7 @@ export class SampleGridModel {
             {
                 field: 'city',
                 width: 140,
-                tooltip: (val, {record}) => `${record.get('company')} is located in ${val}`,
+                tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
                 cellClass: (val) => {
                     return val == 'New York' ? 'xh-text-color-accent' : '';
                 }
@@ -237,7 +237,7 @@ export class SampleGridModel {
                 ...boolCheckCol,
                 headerName: '',
                 chooserName: 'Active Status',
-                tooltip: (active, {record}) => active ? `${record.get('company')} is active` : ''
+                tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
             },
             {...emptyFlexCol}
         ]
@@ -254,8 +254,8 @@ export class SampleGridModel {
     showInfoToast(rec) {
         XH.toast({
             message: fragment(
-                `You asked for ${rec.get('company')} details.`, br(),
-                `They are based in ${rec.get('city')}.`
+                `You asked for ${rec.data.company} details.`, br(),
+                `They are based in ${rec.data.city}.`
             ),
             icon: Icon.info(),
             intent: 'primary',
@@ -269,7 +269,7 @@ export class SampleGridModel {
         }
 
         XH.toast({
-            message: `You asked to terminate ${rec.get('company')}${terminationMethod}. Sorry, ${rec.get('company')}!`,
+            message: `You asked to terminate ${rec.data.company}${terminationMethod}. Sorry, ${rec.data.company}!`,
             icon: Icon.skull(),
             intent: 'danger',
             containerRef: this.panelRef.current

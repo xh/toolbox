@@ -235,9 +235,9 @@ export class GridTestModel {
                     align: 'right',
                     width: 130,
                     renderer: (v, {record}) => {
-                        return fmtMillions(record.get('volume'), {precision: 2, label: true}) +
+                        return fmtMillions(record.data.volume, {precision: 2, label: true}) +
                             ' | ' +
-                            fmtNumber(record.get('day'), {colorSpec: true});
+                            fmtNumber(record.data.day, {colorSpec: true});
                     },
                     rendererIsComplex: true
                 },

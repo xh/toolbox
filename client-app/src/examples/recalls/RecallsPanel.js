@@ -72,7 +72,7 @@ export const recallsPanel = hoistCmp.factory({
                 ]
             }),
             panel({
-                title: currentRecord ? currentRecord.get('brandName') : 'Select a drug to see its details',
+                title: currentRecord ? currentRecord.data.brandName : 'Select a drug to see its details',
                 icon: Icon.detail(),
                 item: detailsPanel(),
                 className: 'toolbox-recalls-detail-panel',

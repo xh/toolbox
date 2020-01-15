@@ -52,7 +52,7 @@ export class FileManagerModel {
                         tooltip: 'Remove file',
                         intent: 'danger',
                         displayFn: ({record}) => {
-                            return {hidden: record.get('status') == 'Pending Delete'};
+                            return {hidden: record.data.status == 'Pending Delete'};
                         },
                         actionFn: ({record}) => {
                             this.removeFile(record);
@@ -63,7 +63,7 @@ export class FileManagerModel {
                         tooltip: 'Restore file',
                         intent: 'primary',
                         displayFn: ({record}) => {
-                            return {hidden: record.get('status') != 'Pending Delete'};
+                            return {hidden: record.data.status != 'Pending Delete'};
                         },
                         actionFn: ({record}) => {
                             this.restoreFile(record);
@@ -82,7 +82,7 @@ export class FileManagerModel {
     @computed
     get enableDownload() {
         const sel = this.gridModel.selectedRecord;
-        return sel && sel.get('status') != 'Pending Upload';
+        return sel && sel.data.status != 'Pending Upload';
     }
 
     constructor() {
@@ -196,13 +196,13 @@ export class FileManagerModel {
             this.setFileStatus(file.id, 'Pending Delete');
         } else if (status == 'Pending Upload') {
             // Ask chooser to remove - reaction on chooser files[] will update grid store.
-            this.chooserModel.removeFileByName(file.get('name'));
+            this.chooserModel.removeFileByName(file.data.name);
         }
     }
 
     // Restore a file marked as "Pending Delete" - i.e. cancel delete request.
     restoreFile(file) {
-        if (file.get('status') == 'Pending Delete') {
+        if (file.data.status == 'Pending Delete') {
             this.setFileStatus(file.id, 'Saved');
         }
     }

@@ -139,7 +139,7 @@ class Model {
                             headerName: 'Name',
                             width: 140,
                             chooserName: 'Full Name',
-                            renderer: (v, {record}) => record ? `${record.get('firstName')} ${record.get('lastName')}` : '',
+                            renderer: (v, {record}) => record ? `${record.data.firstName} ${record.data.lastName}` : '',
                             rendererIsComplex: true,
                             agOptions: {
                                 columnGroupShow: 'closed'

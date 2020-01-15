@@ -135,7 +135,7 @@ export class DimensionManagerModel {
                     icon: Icon.delete(),
                     actionFn: () => this.deleteSelected(),
                     displayFn: ({record}) => {
-                        return {disabled: !record || record.get('type') == 'Default'};
+                        return {disabled: !record || record.data.type == 'Default'};
                     }
                 }
             ],

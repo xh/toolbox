@@ -34,7 +34,7 @@ export class DetailPanelModel {
         this.addReaction({
             track: () => ordersPanelModel.selectedRecord,
             run: (order) => {
-                const symbol = order ? order.get('symbol') : null;
+                const symbol = order ? order.data.symbol : null;
                 chartsPanelModel.setSymbol(symbol);
             }
         });

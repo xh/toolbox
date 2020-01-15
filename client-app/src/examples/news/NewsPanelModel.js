@@ -20,7 +20,7 @@ export class NewsPanelModel {
             filter: (rec) => {
                 const {textFilter, sourceFilter} = this,
                     searchMatch = !textFilter || textFilter.fn(rec),
-                    sourceMatch = isEmpty(sourceFilter) || sourceFilter.includes(rec.get('source'));
+                    sourceMatch = isEmpty(sourceFilter) || sourceFilter.includes(rec.data.source);
 
                 return sourceMatch && searchMatch;
             }
@@ -66,7 +66,7 @@ export class NewsPanelModel {
                 author: s.author
             };
         }));
-        this.sourceOptions = uniq(store.records.map(story => story.get('source')));
+        this.sourceOptions = uniq(store.records.map(story => story.data.source));
         this.lastRefresh = new Date();
     }
 }
