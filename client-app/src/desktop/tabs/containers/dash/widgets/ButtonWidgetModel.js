@@ -1,41 +1,28 @@
-import {HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {FormModel} from '@xh/hoist/cmp/form';
+import {bindable} from '@xh/hoist/mobx';
 
 @HoistModel
 export class ButtonWidgetModel {
 
-    @managed
-    formModel = new FormModel({
-        fields: [{
-            name: 'buttonGroup',
-            initialValue: 'Button 2'
-        }]
-    });
+    @bindable value;
 
-    get value() {
-        return this.formModel.fields.buttonGroup.value;
-    }
-
-    //----------------------
-    // Dash container state
-    //----------------------
-    getState() {
-        const {value} = this,
-            title = `Button Group: ${value}`,
-            icon = this.getIconForValue();
-
-        return {title, icon, value};
-    }
-
-    setState(state) {
-        const {value} = state;
-        this.formModel.fields.buttonGroup.setValue(value);
+    constructor(viewState, setViewStateSource) {
+        this.value = viewState ? viewState.value : 'Button 1';
+        setViewStateSource(() => this.getViewState());
     }
 
     //----------------------
     // Implementation
     //----------------------
+    getViewState() {
+        return {
+            value: this.value,
+            title: `Button Group: ${this.value}`,
+            //icon: this.getIconForValue()
+        };
+    }
+
     getIconForValue() {
         switch (this.value) {
             case 'Button 1':

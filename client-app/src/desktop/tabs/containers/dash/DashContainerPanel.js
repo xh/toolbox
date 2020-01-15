@@ -109,15 +109,13 @@ class Model {
                 icon: Icon.gridPanel(),
                 unique: true,
                 allowClose: false,
-                content: GridWidget,
-                contentModelFn: () => new GridWidgetModel()
+                content: GridWidget
             },
             {
                 id: 'buttons',
                 title: 'Buttons',
                 icon: Icon.question(),
-                content: ButtonWidget,
-                contentModelFn: () => new ButtonWidgetModel()
+                content: ButtonWidget
             },
             {
                 id: 'chart',
@@ -146,7 +144,9 @@ class Model {
     constructor() {
         this.addReaction({
             track: () => this.dashContainerModel.state,
-            run: (state) => XH.localStorageService.set(this.stateKey, state)
+            run: (state) => {
+                XH.localStorageService.set(this.stateKey, state);
+            }
         });
     }
 

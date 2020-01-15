@@ -8,21 +8,22 @@ export class GridWidgetModel {
 
     @managed sampleGridModel = new SampleGridModel();
 
-    //----------------------
-    // Dash container state
-    //----------------------
-    getState() {
-        const {columnState, sortBy, groupBy} = this.sampleGridModel.gridModel;
-        return {columnState, sortBy, groupBy};
-    }
-
-    setState(state) {
-        const {columnState, sortBy, groupBy} = state,
+    constructor(viewState, setViewStateSource) {
+        const {columnState, sortBy, groupBy} = viewState,
             {gridModel} = this.sampleGridModel;
 
         gridModel.applyColumnStateChanges(columnState);
         gridModel.setSortBy(sortBy);
         gridModel.setGroupBy(groupBy);
+        setViewStateSource(() => this.getViewState());
+    }
+
+    //----------------------
+    // Dash container state
+    //----------------------
+    getViewState() {
+        const {columnState, sortBy, groupBy} = this.sampleGridModel.gridModel;
+        return {columnState, sortBy, groupBy};
     }
 
     async doLoadAsync(loadSpec) {
