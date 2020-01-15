@@ -38,44 +38,42 @@ export const SelectTestPanel = hoistCmp({
                     example({
                         name: 'Select',
                         bind: 'selectValue',
-                        select: select({...restaurantProps, bind: 'selectValue'})
+                        selectProps: restaurantProps
                     }),
                     example({
                         name: 'Select enableCreate',
                         bind: 'creatableValue',
-                        select: select({...restaurantProps, bind: 'creatableValue', enableCreate: true})
+                        selectProps: {...restaurantProps, enableCreate: true}
                     }),
                     example({
                         name: 'Select queryFn',
                         bind: 'asyncValue',
-                        select: select({...customerProps, bind: 'asyncValue'})
+                        selectProps: {...customerProps}
                     }),
                     example({
                         name: 'Select queryFn enableCreate',
                         bind: 'asyncCreatableValue',
-                        select: select({...customerProps,  bind: 'asyncCreatableValue', enableCreate: true})
+                        selectProps: {...customerProps, enableCreate: true}
                     }),
                     example({
                         name: 'Select (with grouped options)',
                         bind: 'groupedValue',
-                        select: select({
-                            bind: 'groupedValue',
+                        selectProps: {
                             options: [
                                 {label: 'shapes', options: ['square', 'circle', 'triangle', 'rectangle', 'line', 'decagon']},
                                 {label: 'colors', options: ['red', 'orange', 'yellow', 'green', 'blue', 'purple']},
                                 {label: 'flavors', options: ['vanilla', 'chocolate', 'strawberry']}
                             ]
-                        })
+                        }
                     }),
                     example({
                         name: 'Select (with many options) enableWindowed',
                         bind: 'bigValue',
-                        select: select({
-                            bind: 'bigValue',
+                        selectProps: {
                             options: model.bigOptions,
                             enableWindowed: true,
                             placeholder: 'Select a number...'
-                        })
+                        }
                     }),
                     hbox(
                         label('number of options: '),
@@ -91,11 +89,11 @@ const example = hoistCmp.factory({
 
     model: uses(SelectTestModel),
 
-    render({name, bind, select, model}) {
+    render({name, bind, selectProps, model}) {
         return fragment(
             p(name),
             label('value: ' + model[bind]),
-            select
+            select({...selectProps, bind})
         );
     }
 });
