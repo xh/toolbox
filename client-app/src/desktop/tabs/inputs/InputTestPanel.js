@@ -8,6 +8,8 @@ import {forEach} from 'lodash';
 import './InputTestPanel.scss';
 import {InputTestModel} from './InputTestModel';
 import {wrapper} from '../../common';
+import {Icon} from '@xh/hoist/icon';
+import {button} from '@xh/hoist/desktop/cmp/button';
 
 export const inputTestPanel = hoistCmp.factory({
 
@@ -54,7 +56,7 @@ export const inputTestPanel = hoistCmp.factory({
                 }
             },
             props,
-            scope: model.scope
+            scope: {...model.scope, Icon, button}
         });
 
         return wrapper({

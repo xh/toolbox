@@ -2,7 +2,6 @@ import {useLocalModel} from '@xh/hoist/core/hooks';
 import {InputTestModel} from '../InputTestModel';
 import {PropTypes as T} from 'react-view';
 import {ButtonGroupInput} from '@xh/hoist/desktop/cmp/input';
-import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
 import template from '@babel/template';
 
@@ -70,8 +69,7 @@ function createModel() {
         },
         scope: {
             button,
-            ButtonGroupInput,
-            Icon
+            ButtonGroupInput
         }
     });
 }

@@ -2,7 +2,6 @@ import {useLocalModel} from '@xh/hoist/core/hooks';
 import {InputTestModel} from '../InputTestModel';
 import {PropTypes as T} from 'react-view';
 import {SwitchInput} from '@xh/hoist/desktop/cmp/input';
-import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
 
 import {inputTestPanel} from '../InputTestPanel';
@@ -46,7 +45,6 @@ function createModel() {
         },
         scope: {
             SwitchInput,
-            Icon,
             alignments
         }
     });

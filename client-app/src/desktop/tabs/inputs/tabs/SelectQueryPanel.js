@@ -135,7 +135,6 @@ function createModel() {
         },
         scope: {
             Select,
-            Icon,
             positions,
             XH,
             customerOption,
