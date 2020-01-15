@@ -1,4 +1,4 @@
-import {hoistCmp} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import {restaurants} from '../../../core/data';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
@@ -6,29 +6,13 @@ import {box, div, fragment, hbox, label, p, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {SelectTestModel} from './SelectTestModel.js';
 import './SelectTestPanel.scss';
-import {creates, uses} from '@xh/hoist/core/modelspec';
+import {creates} from '@xh/hoist/core/modelspec';
 
 export const SelectTestPanel = hoistCmp({
 
     model: creates(SelectTestModel),
 
     render({model}) {
-
-        const restaurantProps = {
-            options: restaurants,
-            enableClear: true,
-            placeholder: 'Search restaurants...'
-        };
-
-        const customerProps = {
-            valueField: 'id',
-            labelField: 'company',
-            enableClear: true,
-            selectOnFocus: true,
-            queryFn: (q) => model.queryCustomersAsync(q),
-            optionRenderer: (opt) => customerOption({opt}),
-            placeholder: 'Search customers...'
-        };
 
         return panel({
             title: 'Select tests',
@@ -48,7 +32,7 @@ export const SelectTestPanel = hoistCmp({
                     example({
                         name: 'Select queryFn',
                         bind: 'asyncValue',
-                        selectProps: {...customerProps}
+                        selectProps: customerProps
                     }),
                     example({
                         name: 'Select queryFn enableCreate',
@@ -85,18 +69,13 @@ export const SelectTestPanel = hoistCmp({
     }
 });
 
-const example = hoistCmp.factory({
-
-    model: uses(SelectTestModel),
-
-    render({name, bind, selectProps, model}) {
-        return fragment(
-            p(name),
-            label('value: ' + model[bind]),
-            select({...selectProps, bind})
-        );
-    }
-});
+const example = hoistCmp.factory(
+    ({name, bind, selectProps, model}) => fragment(
+        p(name),
+        label('value: ' + model[bind]),
+        select({...selectProps, bind})
+    )
+);
 
 const customerOption = hoistCmp.factory(
     ({opt}) => hbox({
@@ -119,3 +98,26 @@ const customerOption = hoistCmp.factory(
         alignItems: 'center'
     })
 );
+
+const restaurantProps = {
+    options: restaurants,
+    enableClear: true,
+    placeholder: 'Search restaurants...'
+};
+
+const customerProps = {
+    valueField: 'id',
+    labelField: 'company',
+    enableClear: true,
+    selectOnFocus: true,
+    queryFn: (q) => queryCustomersAsync(q),
+    optionRenderer: (opt) => customerOption({opt}),
+    placeholder: 'Search customers...'
+};
+
+function queryCustomersAsync(query) {
+    return XH.fetchJson({
+        url: 'customer',
+        params: {query}
+    });
+}
