@@ -33,7 +33,7 @@ export class LineChartModel {
 
             rangeSelector: {
                 enabled: true,
-                selected: 1
+                selected: 1     // default to a 3-month zoom
             },
             navigator: {enabled: true},
             xAxis: {
