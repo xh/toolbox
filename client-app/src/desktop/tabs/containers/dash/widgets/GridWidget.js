@@ -1,27 +1,28 @@
-import {hoistCmp, creates, useLocalModel, HoistModel} from '@xh/hoist/core';
+import {hoistCmp, useLocalModel, HoistModel, LoadSupport, managed} from '@xh/hoist/core';
 
 import {sampleGrid, SampleGridModel} from '../../../../common';
 
 export const GridWidget = hoistCmp({
-    model: creates(SampleGridModel),
-    render({viewModel, model}) {
-        useLocalModel(() => new LocalModel(viewModel, model));
-        return sampleGrid({omitGridTools: true});
+    render({viewModel}) {
+        const model = useLocalModel(() => new LocalModel(viewModel));
+        return sampleGrid({
+            model: model.sampleGridModel,
+            omitGridTools: true
+        });
     }
 });
 
 @HoistModel
+@LoadSupport
 class LocalModel {
 
     viewModel;
-    sampleGridModel;
+    @managed sampleGridModel = new SampleGridModel();
 
-    constructor(viewModel, sampleGridModel) {
+    constructor(viewModel) {
         this.viewModel = viewModel;
-        this.sampleGridModel = sampleGridModel;
-
         const {columnState, sortBy, groupBy} = viewModel.viewState ?? {},
-            {gridModel} = sampleGridModel;
+            {gridModel} = this.sampleGridModel;
 
         if (columnState) gridModel.applyColumnStateChanges(columnState);
         if (sortBy) gridModel.setSortBy(sortBy);
@@ -34,6 +35,10 @@ class LocalModel {
             },
             run: (viewState) => this.viewModel.setViewState(viewState)
         });
+    }
+
+    async doLoadAsync(loadSpec) {
+        return this.sampleGridModel.doLoadAsync(loadSpec);
     }
 
 }
