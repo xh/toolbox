@@ -38,26 +38,38 @@ export const SelectTestPanel = hoistCmp({
                         name: 'Select queryFn enableCreate',
                         bind: 'asyncCreatableValue',
                         selectProps: {...customerProps, enableCreate: true}
-                    }),
+                    })
+                ),
+                vbox(
                     example({
-                        name: 'Select (with grouped options and object options)',
+                        name: 'Select (with grouped options)',
                         bind: 'groupedValue',
                         selectProps: {
                             options: [
                                 {label: 'cookies', options: [
-                                    {label: 'HTTP', value: {id: 'a3fWa', expires: 'Wed, 21 Oct 2015 07:28:00 GMT', secure: true}},
                                     'oatmeal',
                                     'chocolate chip',
                                     'peanut butter'
                                 ]},
                                 {label: 'cakes', options: [
-                                    'red velvet', 'tres leches', 'German\'s chocolate', 'cheesecake',
-                                    {label: 'yellowcake', value: {ingredients: 'uranium', edible: false}}
+                                    'red velvet', 'tres leches', 'German\'s chocolate', 'cheesecake'
                                 ]},
                                 {label: 'ice cream', options: [
-                                    'vanilla', 'chocolate', 'strawberry',
-                                    {label: 'sundae', value: {flavor: 'coffee', syrup: 'chocolate', toppings: ['sprinkles', 'whipped cream']}}
+                                    'vanilla', 'chocolate', 'strawberry'
                                 ]}
+                            ]
+                        }
+                    }),
+                    example({
+                        name: 'Select (with Object options)',
+                        bind: 'objectValue',
+                        selectProps: {
+                            options: [
+                                {label: 'Hot Tea', value: {ingredients: ['water', 'tea leaves'], warnings: ['hot'], price: 1.75}},
+                                {label: 'Iced Tea', value: {ingredients: ['water', 'tea leaves', 'ice', 'lemon'], price: 2.50}},
+                                {label: 'Coffee', value: {ingredients: ['coffee beans', 'water'], warnings: ['addictive', 'hot'], price: 3.25}},
+                                {label: 'Soda', value: {ingredients: 'unknown', warnings: ['sweet', 'acidic'], price: 1.50}},
+                                {label: 'Red Wine', value: {ingredients: ['grapes', 'water', 'yeast', 'time'], warnings: ['alcoholic', 'staining'], needId: true, price: 6.75}}
                             ]
                         }
                     }),
