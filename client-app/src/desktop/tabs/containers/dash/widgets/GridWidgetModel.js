@@ -6,24 +6,25 @@ import {SampleGridModel} from '../../../../common';
 @LoadSupport
 export class GridWidgetModel {
 
+    viewModel;
     @managed sampleGridModel = new SampleGridModel();
 
-    constructor(viewState, setViewStateSource) {
-        const {columnState, sortBy, groupBy} = viewState,
+    constructor(viewModel) {
+        this.viewModel = viewModel;
+        const {columnState, sortBy, groupBy} = viewModel.viewState ?? {},
             {gridModel} = this.sampleGridModel;
 
-        gridModel.applyColumnStateChanges(columnState);
-        gridModel.setSortBy(sortBy);
-        gridModel.setGroupBy(groupBy);
-        setViewStateSource(() => this.getViewState());
-    }
+        if (columnState) gridModel.applyColumnStateChanges(columnState);
+        if (sortBy) gridModel.setSortBy(sortBy);
+        if (groupBy) gridModel.setGroupBy(groupBy);
 
-    //----------------------
-    // Dash container state
-    //----------------------
-    getViewState() {
-        const {columnState, sortBy, groupBy} = this.sampleGridModel.gridModel;
-        return {columnState, sortBy, groupBy};
+        this.addReaction({
+            track: () => {
+                const {columnState, groupBy, sortBy} = gridModel;
+                return {columnState, groupBy, sortBy};
+            },
+            run: (viewState) => this.viewModel.setViewState(viewState)
+        });
     }
 
     async doLoadAsync(loadSpec) {

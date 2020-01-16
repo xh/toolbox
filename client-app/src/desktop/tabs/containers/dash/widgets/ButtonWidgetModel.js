@@ -5,24 +5,27 @@ import {bindable} from '@xh/hoist/mobx';
 @HoistModel
 export class ButtonWidgetModel {
 
+    viewModel;
     @bindable value;
 
-    constructor(viewState, setViewStateSource) {
-        this.value = viewState ? viewState.value : 'Button 1';
-        setViewStateSource(() => this.getViewState());
+    constructor(viewModel) {
+        this.viewModel = viewModel;
+        this.value = viewModel.viewState ? viewModel.viewState.value : 'Button 1';
+        this.addReaction({
+            track: () => this.value,
+            run: () => {
+                this.viewModel.setViewState({
+                    value: this.value,
+                    title: `Button Group: ${this.value}`,
+                    icon: this.getIconForValue()
+                });
+            }
+        });
     }
 
     //----------------------
     // Implementation
     //----------------------
-    getViewState() {
-        return {
-            value: this.value,
-            title: `Button Group: ${this.value}`,
-            //icon: this.getIconForValue()
-        };
-    }
-
     getIconForValue() {
         switch (this.value) {
             case 'Button 1':

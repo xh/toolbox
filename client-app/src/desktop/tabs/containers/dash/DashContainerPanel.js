@@ -9,10 +9,8 @@ import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 
 import {
     ButtonWidget,
-    ButtonWidgetModel,
     ChartWidget,
     GridWidget,
-    GridWidgetModel,
     PanelWidget,
     TreeGridWidget
 } from './widgets';
@@ -144,9 +142,7 @@ class Model {
     constructor() {
         this.addReaction({
             track: () => this.dashContainerModel.state,
-            run: (state) => {
-                XH.localStorageService.set(this.stateKey, state);
-            }
+            run: (state) => XH.localStorageService.set(this.stateKey, state)
         });
     }
 

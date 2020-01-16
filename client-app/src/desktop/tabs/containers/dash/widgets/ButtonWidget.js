@@ -1,4 +1,4 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {hoistCmp, useLocalModel} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {vbox, div} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -8,13 +8,14 @@ import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {ButtonWidgetModel} from './ButtonWidgetModel';
 
 export const ButtonWidget = hoistCmp({
-    model: creates(({viewState, setViewStateSource}) => new ButtonWidgetModel(viewState, setViewStateSource)),
-    render({model}) {
+    render({viewModel}) {
+        const model = useLocalModel(() => new ButtonWidgetModel(viewModel));
         return panel(
             vbox({
                 padding: 10,
                 items: [
                     buttonGroupInput({
+                        model,
                         bind: 'value',
                         items: [
                             button({

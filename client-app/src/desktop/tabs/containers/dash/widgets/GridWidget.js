@@ -1,11 +1,14 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {hoistCmp, useLocalModel} from '@xh/hoist/core';
 
 import {sampleGrid} from '../../../../common';
-import {ButtonWidgetModel} from './ButtonWidgetModel';
+import {GridWidgetModel} from './GridWidgetModel';
 
 export const GridWidget = hoistCmp({
-    model: creates(({viewState, setViewStateSource}) => new ButtonWidgetModel(viewState, setViewStateSource)),
-    render() {
-        return sampleGrid({omitGridTools: true});
+    render({viewModel}) {
+        const model = useLocalModel(() => new GridWidgetModel(viewModel));
+        return sampleGrid({
+            model: model.sampleGridModel,
+            omitGridTools: true
+        });
     }
 });
