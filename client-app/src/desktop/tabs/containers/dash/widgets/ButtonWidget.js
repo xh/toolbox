@@ -1,15 +1,14 @@
-import {hoistCmp, useLocalModel} from '@xh/hoist/core';
+import {hoistCmp, useLocalModel, HoistModel} from '@xh/hoist/core';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {vbox, div} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 
-import {ButtonWidgetModel} from './ButtonWidgetModel';
-
 export const ButtonWidget = hoistCmp({
     render({viewModel}) {
-        const model = useLocalModel(() => new ButtonWidgetModel(viewModel));
+        const model = useLocalModel(() => new LocalModel(viewModel));
         return panel(
             vbox({
                 padding: 10,
@@ -41,3 +40,40 @@ export const ButtonWidget = hoistCmp({
         );
     }
 });
+
+@HoistModel
+class LocalModel {
+    viewModel;
+    @bindable value;
+
+    constructor(viewModel) {
+        this.viewModel = viewModel;
+        this.value = viewModel.viewState ? viewModel.viewState.value : 'Button 1';
+        this.addReaction({
+            track: () => this.value,
+            run: () => {
+                this.viewModel.setViewState({
+                    value: this.value,
+                    title: `Button Group: ${this.value}`,
+                    icon: this.getIconForValue()
+                });
+            }
+        });
+    }
+
+    //----------------------
+    // Implementation
+    //----------------------
+    getIconForValue() {
+        switch (this.value) {
+            case 'Button 1':
+                return Icon.chartLine();
+            case 'Button 2':
+                return Icon.gear();
+            case 'Button 3':
+                return Icon.skull();
+            default:
+                return Icon.question();
+        }
+    }
+}

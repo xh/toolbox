@@ -1,14 +1,39 @@
-import {hoistCmp, useLocalModel} from '@xh/hoist/core';
+import {hoistCmp, creates, useLocalModel, HoistModel} from '@xh/hoist/core';
 
-import {sampleGrid} from '../../../../common';
-import {GridWidgetModel} from './GridWidgetModel';
+import {sampleGrid, SampleGridModel} from '../../../../common';
 
 export const GridWidget = hoistCmp({
-    render({viewModel}) {
-        const model = useLocalModel(() => new GridWidgetModel(viewModel));
-        return sampleGrid({
-            model: model.sampleGridModel,
-            omitGridTools: true
-        });
+    model: creates(SampleGridModel),
+    render({viewModel, model}) {
+        useLocalModel(() => new LocalModel(viewModel, model));
+        return sampleGrid({omitGridTools: true});
     }
 });
+
+@HoistModel
+class LocalModel {
+
+    viewModel;
+    sampleGridModel;
+
+    constructor(viewModel, sampleGridModel) {
+        this.viewModel = viewModel;
+        this.sampleGridModel = sampleGridModel;
+
+        const {columnState, sortBy, groupBy} = viewModel.viewState ?? {},
+            {gridModel} = sampleGridModel;
+
+        if (columnState) gridModel.applyColumnStateChanges(columnState);
+        if (sortBy) gridModel.setSortBy(sortBy);
+        if (groupBy) gridModel.setGroupBy(groupBy);
+
+        this.addReaction({
+            track: () => {
+                const {columnState, groupBy, sortBy} = gridModel;
+                return {columnState, groupBy, sortBy};
+            },
+            run: (viewState) => this.viewModel.setViewState(viewState)
+        });
+    }
+
+}
