@@ -9,10 +9,8 @@ import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 
 import {
     ButtonWidget,
-    ButtonWidgetModel,
     ChartWidget,
     GridWidget,
-    GridWidgetModel,
     PanelWidget,
     TreeGridWidget
 } from './widgets';
@@ -66,7 +64,8 @@ export const DashContainerPanel = hoistCmp({
                 {url: '$TB/client-app/src/desktop/tabs/containers/dash/DashContainerPanel.js', notes: 'This example.'},
                 {url: '$HR/desktop/cmp/dash/DashContainer.js', notes: 'Hoist container component.'},
                 {url: '$HR/desktop/cmp/dash/DashContainerModel.js', notes: 'Hoist container model - primary API.'},
-                {url: '$HR/desktop/cmp/dash/DashViewSpec.js', notes: 'Configuration for contained views.'}
+                {url: '$HR/desktop/cmp/dash/DashViewSpec.js', notes: 'Configuration template for contained views.'},
+                {url: '$HR/desktop/cmp/dash/DashViewModel.js', notes: 'Model for contained view instances. '}
             ]
         });
     }
@@ -109,15 +108,13 @@ class Model {
                 icon: Icon.gridPanel(),
                 unique: true,
                 allowClose: false,
-                content: GridWidget,
-                contentModelFn: () => new GridWidgetModel()
+                content: GridWidget
             },
             {
                 id: 'buttons',
                 title: 'Buttons',
                 icon: Icon.question(),
-                content: ButtonWidget,
-                contentModelFn: () => new ButtonWidgetModel()
+                content: ButtonWidget
             },
             {
                 id: 'chart',
