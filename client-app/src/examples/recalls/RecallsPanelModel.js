@@ -147,8 +147,8 @@ export class RecallsPanelModel {
         };
     }
 
-    createId(record) {
-        return record.brandName + record.recall_number;
+    createId(data) {
+        return data.brandName + data.recall_number;
     }
 
     classificationRenderer(val) {

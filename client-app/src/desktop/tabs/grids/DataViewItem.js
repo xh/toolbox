@@ -7,7 +7,7 @@ export const dataViewItem = hoistCmp.factory({
     model: null,
 
     render(props) {
-        const {name, city, value} = props.record,
+        const {name, city, value} = props.record.data,
             loser = value < 0;
         return vbox(
             box({
