@@ -38,7 +38,7 @@ class LocalModel {
     }
 
     async doLoadAsync(loadSpec) {
-        return this.sampleGridModel.doLoadAsync(loadSpec);
+        return this.sampleGridModel.loadAsync(loadSpec);
     }
 
 }
