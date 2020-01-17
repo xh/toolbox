@@ -54,7 +54,6 @@ class LocalModel {
             run: () => {
                 this.viewModel.setViewState({
                     value: this.value,
-                    title: `Button Group: ${this.value}`,
                     icon: this.getIconForValue()
                 });
             }
