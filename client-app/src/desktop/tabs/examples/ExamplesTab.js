@@ -8,7 +8,7 @@ import {ToolboxLink} from '../../../common/ToolboxLink';
 import {wrapper} from '../../common';
 import './ExamplesTab.scss';
 
-export const ExamplesTab = hoistCmp(
+export const examplesTab = hoistCmp.factory(
     () => wrapper(
         hbox({
             className: 'example-tile-container',

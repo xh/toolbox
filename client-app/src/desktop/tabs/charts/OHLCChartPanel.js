@@ -10,7 +10,7 @@ import {OHLCChartModel} from './OHLCChartModel';
 import {wrapper} from '../../common/Wrapper';
 
 
-export const OHLCChartPanel = hoistCmp({
+export const ohlcChartPanel = hoistCmp.factory({
     model: creates(OHLCChartModel),
 
     render({model}) {

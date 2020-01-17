@@ -13,7 +13,7 @@ import {FormPanelModel} from './FormPanelModel';
 
 import './FormPanel.scss';
 
-export const FormPanel = hoistCmp({
+export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
 
     render() {

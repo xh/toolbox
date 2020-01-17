@@ -27,7 +27,7 @@ import {usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import {ToolbarFormPanelModel} from './ToolbarFormPanelModel';
 
-export const ToolbarFormPanel = hoistCmp({
+export const toolbarFormPanel = hoistCmp.factory({
 
     model: creates(ToolbarFormPanelModel),
 

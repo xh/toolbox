@@ -5,7 +5,7 @@ import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
 
-export const HBoxContainerPanel = hoistCmp(
+export const hboxContainerPanel = hoistCmp.factory(
     () => wrapper({
         description: <p>
             An HBox lays out its children horizontally, rendering a Box

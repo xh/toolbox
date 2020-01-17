@@ -12,7 +12,7 @@ import {Icon} from '@xh/hoist/icon';
 import {usStates} from '../../../core/data';
 import {BasicPanelModel} from './BasicPanelModel';
 
-export const BasicPanel = hoistCmp({
+export const basicPanel = hoistCmp.factory({
     model: creates(BasicPanelModel),
 
     render({model}) {

@@ -18,7 +18,7 @@ import './Styles.scss';
 import {resultsPanel} from './ResultsPanel';
 import {param} from './Util';
 
-export const NumberFormatsPanel = hoistCmp({
+export const numberFormatsPanel = hoistCmp.factory({
     model: creates(NumberFormatsPanelModel),
 
     render() {

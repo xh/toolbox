@@ -13,7 +13,7 @@ import {wrapper} from '../../common/Wrapper';
 
 import './ClockPanel.scss';
 
-export const ClockPanel = hoistCmp({
+export const clockPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {

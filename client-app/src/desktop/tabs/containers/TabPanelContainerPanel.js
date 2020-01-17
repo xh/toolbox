@@ -9,7 +9,7 @@ import {wrapper} from '../../common/Wrapper';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {find} from 'lodash';
 
-export const TabPanelContainerPanel = hoistCmp({
+export const tabPanelContainerPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {

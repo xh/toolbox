@@ -10,7 +10,7 @@ import {random, sample} from 'lodash';
 import moment from 'moment';
 import {wrapper} from '../../common/Wrapper';
 
-export const RelativeTimestampPanel = hoistCmp({
+export const relativeTimestampPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {

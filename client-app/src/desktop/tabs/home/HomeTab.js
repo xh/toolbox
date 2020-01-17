@@ -7,7 +7,7 @@ import logo from '../../../core/img/xhio+hoist.png';
 import logoDark from '../../../core/img/xhio+hoist-dark.png';
 import './HomeTab.scss';
 
-export const HomeTab = hoistCmp(
+export const homeTab = hoistCmp.factory(
     () => {
         const link = (txt, url) => <a href={url} target="_blank">{txt}</a>;
 

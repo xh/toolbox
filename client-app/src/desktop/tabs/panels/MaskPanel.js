@@ -13,7 +13,7 @@ import {mask} from '@xh/hoist/desktop/cmp/mask';
 
 import {sampleGrid, SampleGridModel, wrapper} from '../../common';
 
-export const MaskPanel = hoistCmp({
+export const maskPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {

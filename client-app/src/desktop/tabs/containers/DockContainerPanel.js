@@ -8,7 +8,7 @@ import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
 import {wrapper, sampleGrid, SampleGridModel} from '../../common';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 
-export const DockContainerPanel = hoistCmp({
+export const dockContainerPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {

@@ -17,7 +17,7 @@ import {
 
 import {wrapper} from '../../../common';
 
-export const DashContainerPanel = hoistCmp({
+export const dashContainerPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {

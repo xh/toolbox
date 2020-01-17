@@ -16,7 +16,7 @@ import {wrapper} from '../../common/Wrapper';
 import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
 
-export const RestGridPanel = hoistCmp({
+export const restGridPanel = hoistCmp.factory({
 
     render() {
         return wrapper({
