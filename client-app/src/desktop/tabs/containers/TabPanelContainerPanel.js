@@ -1,7 +1,7 @@
 import React from 'react';
 import {hoistCmp, creates, managed, HoistModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {hspacer} from '@xh/hoist/cmp/layout';
+import {hspacer, div} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -46,10 +46,10 @@ export const TabPanelContainerPanel = hoistCmp({
                             {
                                 id: 'top',
                                 title: 'Top Tabs',
-                                content: () => `
-                                    This overall example is a standard TabContainer with its switcher located in the default,
-                                    top position. Change the tabs above to see examples of other TabContainer configurations.
-                                `
+                                content: () => div(
+                                    `This overall example is a standard TabContainer with its switcher located in the default,
+                                    top position. Change the tabs above to see examples of other TabContainer configurations.`
+                                )
                             },
                             {
                                 id: 'bottom',
@@ -137,7 +137,7 @@ class Model {
 
 
     createContainerModelConfig(args) {
-        const tabTxt = title => `This is the ${title} tab`;
+        const tabTxt = title => div(`This is the ${title} tab`);
         return {
             tabs: [
                 {

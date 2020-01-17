@@ -56,7 +56,7 @@ export const DockContainerPanel = hoistCmp({
                                     id: 'gridView',
                                     title: 'A complex docked component',
                                     icon: Icon.gridPanel(),
-                                    content: sampleGrid({omitGridTools: true, width: 500, height: 400})
+                                    content: () => sampleGrid({omitGridTools: true, width: 500, height: 400})
                                 });
                             }
                         }),
@@ -116,7 +116,7 @@ class Model {
             title: 'A simple docked panel',
             allowDialog,
             allowClose,
-            content: panel({
+            content: () => panel({
                 width: 250,
                 height: 120,
                 item: box({items: textItems, padding: 10})
