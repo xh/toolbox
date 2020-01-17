@@ -49,7 +49,7 @@ const formCmp = hoistCmp.factory(
         return div({
             className: 'toolbox-card',
             items: form({
-                fieldDefaults: {minimal},
+                fieldDefaults: {minimal, requiredIndicator: ' (required)'},
                 items: vbox(
                     formField({
                         field: 'name',
@@ -58,7 +58,8 @@ const formCmp = hoistCmp.factory(
                     }),
                     formField({
                         field: 'movie',
-                        item: select({options: movies})
+                        item: select({options: movies}),
+                        requiredIndicator: ' (needed)'
                     }),
                     formField({
                         field: 'salary',

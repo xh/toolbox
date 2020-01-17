@@ -1,7 +1,7 @@
 import React from 'react';
 import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {filler, hbox, hframe, p, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
@@ -56,7 +56,8 @@ const formContent = hoistCmp.factory(
             fieldDefaults: {
                 inline: model.inline,
                 minimal: model.minimal,
-                commitOnChange: model.commitOnChange
+                commitOnChange: model.commitOnChange,
+                requiredIndicator: ' (required)'
             },
             item: vframe({
                 padding: 10,
@@ -68,6 +69,7 @@ const formContent = hoistCmp.factory(
                                 flex: 1,
                                 marginRight: 30,
                                 items: [
+                                    firstName(),
                                     lastName(),
                                     region(),
                                     email(),
@@ -94,8 +96,12 @@ const formContent = hoistCmp.factory(
     })
 );
 
+const firstName = hoistCmp.factory(
+    () => formField({field: 'firstName', item: textInput(), requiredIndicator: ' (needed)'})
+);
+
 const lastName = hoistCmp.factory(
-    () => formField({field: 'lastName', item: textInput()})
+    () => formField({field: 'lastName', item: textInput(), requiredIndicator: ' (mandatory)'})
 );
 
 const email = hoistCmp.factory(

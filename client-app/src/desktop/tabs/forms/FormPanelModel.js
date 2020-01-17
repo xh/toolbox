@@ -1,7 +1,7 @@
 import {HoistModel, XH, managed} from '@xh/hoist/core';
 import {dateIs, FormModel, lengthIs, numberIs, required, stringExcludes, constrainAll} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
-import {pre, vbox} from '@xh/hoist/cmp/layout';
+import {pre, span, vbox} from '@xh/hoist/cmp/layout';
 import {bindable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalDate} from '@xh/hoist/utils/datetime';
@@ -35,7 +35,8 @@ export class FormPanelModel {
             {
                 name: 'firstName',
                 initialValue: 'Joe',
-                rules: [required, lengthIs({max: 20})]
+                rules: [required, lengthIs({max: 20})],
+                requiredIndicator: span(' (required)')
             },
             {
                 name: 'lastName',
