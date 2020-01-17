@@ -21,12 +21,7 @@ import {GridsTab} from './tabs/grids/GridsTab';
 import {HomeTab} from './tabs/home/HomeTab';
 import {OtherTab} from './tabs/other/OtherTab';
 import {PanelsTab} from './tabs/panels/PanelsTab';
-import {
-    dialogDraggableModel, 
-    dialogNotDraggableModel, 
-    dialogWithOHLCChartModel,
-    dialogWithTreeMapModel
-} from './tabs/other/dialogs/DialogModels';
+
 
 @HoistAppModel
 export class AppModel {
@@ -47,17 +42,6 @@ export class AppModel {
         ],
         switcherPosition: 'none'
     });
-
-    // order important here for testing getting first 
-    // dialog model defined in context
-    @managed
-    dialogNotDraggableModel = dialogNotDraggableModel;
-    @managed
-    dialogDraggableModel = dialogDraggableModel;
-    @managed
-    dialogWithOHLCChartModel = dialogWithOHLCChartModel;
-    @managed
-    dialogWithTreeMapModel = dialogWithTreeMapModel;
 
     get useCompactGrids() {
         return XH.getPref('defaultGridMode') == 'COMPACT';

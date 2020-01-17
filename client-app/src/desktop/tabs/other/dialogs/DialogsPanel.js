@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 
-import {box, div, p, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
-import {hoistCmp, XH} from '@xh/hoist/core';
+import {box, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dialog} from '@xh/hoist/desktop/cmp/dialog';
 import {Icon} from '@xh/hoist/icon';
@@ -10,11 +10,13 @@ import {wrapper} from '../../../common';
 import {formPanel} from './form/FormPanel';
 import {oHLCChartPanel} from './chart/OHLCChartPanel';
 import {simpleTreeMapPanel} from './chart/SimpleTreeMapPanel';
+import {DialogsPanelModel} from './DialogsPanelModel';
 
 import './DialogsPanel.scss';
 
-export const DialogsPanel = hoistCmp(
-    () => {
+export const DialogsPanel = hoistCmp({
+    model: creates(DialogsPanelModel),
+    render: ({model}) => {
         const divRef = useRef(null);
         
         return wrapper({
@@ -36,12 +38,12 @@ export const DialogsPanel = hoistCmp(
                             button({
                                 ...dialogBtn(Icon.lock()),
                                 text: 'Plain Dialog',
-                                onClick: () => XH.appModel.dialogNotDraggableModel.show()
+                                onClick: () => model.dialogNotDraggableModel.show()
                             }),
                             button({
                                 ...dialogBtn(Icon.arrowsLeftRight()),
                                 text: 'Draggable Dialog',
-                                onClick: () => XH.appModel.dialogDraggableModel.show()
+                                onClick: () => model.dialogDraggableModel.show()
                             })
                         ),
                         row(
@@ -49,13 +51,26 @@ export const DialogsPanel = hoistCmp(
                             button({
                                 ...dialogBtn(Icon.arrowsLeftRight()),
                                 text: 'Draggable & Resizable Dialog with OHLC Chart',
-                                onClick: () => XH.appModel.dialogWithOHLCChartModel.show()
+                                onClick: () => model.dialogWithOHLCChartModel.show()
                             }),
                             button({
                                 ...dialogBtn(Icon.arrowsLeftRight()),
                                 text: 'Draggable & Resizable Dialog with OHLC Chart',
-                                onClick: () => XH.appModel.dialogWithTreeMapModel.show()
+                                onClick: () => model.dialogWithTreeMapModel.show()
                             })
+                        ),
+                        row(
+                            'Stateful:',
+                            button({
+                                ...dialogBtn(Icon.arrowsLeftRight()),
+                                text: 'Stateful Draggable & Resizable Dialog with OHLC Chart',
+                                onClick: () => model.statefulDalogWithOHLCChartModel.show()
+                            })
+                            // button({
+                            //     ...dialogBtn(Icon.arrowsLeftRight()),
+                            //     text: 'Draggable & Resizable Dialog with OHLC Chart',
+                            //     onClick: () => model.dialogWithTreeMapModel.show()
+                            // })
                         )
                     )),
                     dialog({
@@ -67,13 +82,13 @@ export const DialogsPanel = hoistCmp(
                     dialog({
                         icon: Icon.box(),
                         title: 'Dialogs: Draggable Only',
-                        model: XH.appModel.dialogDraggableModel,
-                        item: formPanel({onCloseClick: () => XH.appModel.dialogDraggableModel.hide()})
+                        model: model.dialogDraggableModel,
+                        item: formPanel({onCloseClick: () => model.dialogDraggableModel.hide()})
                     }),
                     dialog({
                         icon: Icon.box(),
                         title: 'Dialogs: Draggable & Resizable OHLC',
-                        model: XH.appModel.dialogWithOHLCChartModel,
+                        model: model.dialogWithOHLCChartModel,
                         item: oHLCChartPanel(),
                         width: 600,
                         height: 400
@@ -81,8 +96,16 @@ export const DialogsPanel = hoistCmp(
                     dialog({
                         icon: Icon.box(),
                         title: 'Dialogs: Draggable & Resizable TreeMap',
-                        model: XH.appModel.dialogWithTreeMapModel,
+                        model: model.dialogWithTreeMapModel,
                         item: simpleTreeMapPanel(),
+                        width: 600,
+                        height: 400
+                    }),
+                    dialog({
+                        icon: Icon.box(),
+                        title: 'Dialogs: Stateful Draggable & Resizable OHLC',
+                        model: model.statefulDalogWithOHLCChartModel,
+                        item: oHLCChartPanel(),
                         width: 600,
                         height: 400
                     })
@@ -90,7 +113,7 @@ export const DialogsPanel = hoistCmp(
             })
         });
     }
-);
+});
 
 
 function dialogBtn(icon) {
