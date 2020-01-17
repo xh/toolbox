@@ -31,4 +31,12 @@ export class DialogsPanelModel {
         draggable: true,
         stateModel: 'stateFulDialogOHLC'
     });
+
+    statefulDalogWithFormModel = new DialogModel({
+        draggable: true,
+        stateModel: {
+            dialogId: 'stateFulDialogForm',
+            trackSize: false
+        }
+    });
 }

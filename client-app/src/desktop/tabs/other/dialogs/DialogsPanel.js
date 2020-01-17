@@ -65,12 +65,12 @@ export const DialogsPanel = hoistCmp({
                                 ...dialogBtn(Icon.arrowsLeftRight()),
                                 text: 'Stateful Draggable & Resizable Dialog with OHLC Chart',
                                 onClick: () => model.statefulDalogWithOHLCChartModel.show()
+                            }),
+                            button({
+                                ...dialogBtn(Icon.arrowsLeftRight()),
+                                text: 'Stateful Draggable only',
+                                onClick: () => model.statefulDalogWithFormModel.show()
                             })
-                            // button({
-                            //     ...dialogBtn(Icon.arrowsLeftRight()),
-                            //     text: 'Draggable & Resizable Dialog with OHLC Chart',
-                            //     onClick: () => model.dialogWithTreeMapModel.show()
-                            // })
                         )
                     )),
                     dialog({
@@ -108,6 +108,12 @@ export const DialogsPanel = hoistCmp({
                         item: oHLCChartPanel(),
                         width: 600,
                         height: 400
+                    }),
+                    dialog({
+                        icon: Icon.box(),
+                        title: 'Dialogs: Stateful Draggable Only',
+                        model: model.statefulDalogWithFormModel,
+                        item: formPanel({onCloseClick: () => model.statefulDalogWithFormModel.hide()})
                     })
                 ]
             })
