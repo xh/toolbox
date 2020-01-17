@@ -2,7 +2,7 @@ import {hoistCmp} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {div, vbox, box} from '@xh/hoist/cmp/layout';
 
-export const VBoxPage = hoistCmp({
+export const vboxPage = hoistCmp.factory({
 
     render() {
         const defaults = {padding: 10, className: 'toolbox-containers-box'};

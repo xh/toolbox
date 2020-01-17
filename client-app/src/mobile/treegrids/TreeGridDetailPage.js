@@ -6,7 +6,7 @@ import {capitalize} from 'lodash';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 
-export const TreeGridDetailPage = hoistCmp({
+export const treeGridDetailPage = hoistCmp.factory({
     render({id}) {
         const impl = useLocalModel(LocalModel);
         impl.setId(decodeURIComponent(id));

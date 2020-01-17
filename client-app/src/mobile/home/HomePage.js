@@ -4,7 +4,7 @@ import {page} from '@xh/hoist/mobile/cmp/page';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
-export const HomePage = hoistCmp({
+export const homePage = hoistCmp.factory({
     render() {
         return page({
             scrollable: true,

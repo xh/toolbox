@@ -8,7 +8,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {DataViewPageModel} from './DataViewPageModel';
 
-export const DataViewPage = hoistCmp({
+export const dataViewPage = hoistCmp.factory({
     model: creates(DataViewPageModel),
 
     render() {

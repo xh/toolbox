@@ -23,7 +23,7 @@ import {
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 
-export const FormPage = hoistCmp({
+export const formPage = hoistCmp.factory({
 
     model: creates(FormPageModel),
 
