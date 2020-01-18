@@ -55,7 +55,7 @@ export const DialogsPanel = hoistCmp({
                             }),
                             button({
                                 ...dialogBtn(Icon.arrowsLeftRight()),
-                                text: 'Draggable & Resizable Dialog with OHLC Chart',
+                                text: 'Draggable & Resizable Dialog with Tree Map',
                                 onClick: () => model.dialogWithTreeMapModel.show()
                             })
                         ),
@@ -91,7 +91,9 @@ export const DialogsPanel = hoistCmp({
                         model: model.dialogWithOHLCChartModel,
                         item: oHLCChartPanel(),
                         width: 600,
-                        height: 400
+                        height: 400,
+                        x: 100,
+                        y: 100
                     }),
                     dialog({
                         icon: Icon.box(),
