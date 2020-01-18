@@ -14,7 +14,7 @@ buildscript {
 def appCode = xhAppCode,
     appName = xhAppName,
     appVersion = xhAppVersion,
-    appBuild = findProperty('xhAppBuild') ?: 'NONE'
+    appBuild = findProperty('xhAppBuild') ?: 'UNKNOWN'
 
 version appVersion
 group 'io.xh'
