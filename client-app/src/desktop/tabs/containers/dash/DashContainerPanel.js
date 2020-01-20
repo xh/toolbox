@@ -28,7 +28,7 @@ export const dashContainerPanel = hoistCmp.factory({
                     and allows the user to drag-and-drop content into various tab, and split-pane layouts.
 
                     This component also supports publishing observable state, managed mounting/unmounting of inactive
-                    tabs, and lazy refreshing of its active Tab.
+                    tabs, and lazy refreshing of its active view.
                 </p>,
                 <p>
                     <b> Note:  This component is currently in alpha release</b>.  Its functionality and API
@@ -107,7 +107,7 @@ class Model {
                 title: 'Grid',
                 icon: Icon.gridPanel(),
                 unique: true,
-                allowClose: false,
+                allowRemove: false,
                 content: GridWidget
             },
             {
