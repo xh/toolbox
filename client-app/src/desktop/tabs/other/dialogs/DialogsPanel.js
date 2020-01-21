@@ -14,7 +14,7 @@ import {DialogsPanelModel} from './DialogsPanelModel';
 
 import './DialogsPanel.scss';
 
-export const DialogsPanel = hoistCmp({
+export const dialogsPanel = hoistCmp.factory({
     model: creates(DialogsPanelModel),
     render: ({model}) => {
         const divRef = useRef(null);
