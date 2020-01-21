@@ -5,7 +5,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {wrapper, sampleGrid} from '../../common';
 
-export const StandardGridPanel = hoistCmp(
+export const standardGridPanel = hoistCmp.factory(
     () => wrapper({
         description: [
             <p>

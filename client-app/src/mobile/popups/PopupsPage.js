@@ -4,7 +4,7 @@ import {page} from '@xh/hoist/mobile/cmp/page';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
-export const PopupsPage = hoistCmp({
+export const popupsPage = hoistCmp.factory({
     render() {
         return page({
             title: 'Popups',

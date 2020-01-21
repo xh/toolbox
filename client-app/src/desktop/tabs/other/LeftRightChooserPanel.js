@@ -8,7 +8,7 @@ import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import data from './impl/LeftRightChooserData';
 
-export const LeftRightChooserPanel = hoistCmp({
+export const leftRightChooserPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {

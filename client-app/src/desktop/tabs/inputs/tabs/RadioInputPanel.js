@@ -8,7 +8,7 @@ import template from '@babel/template';
 import {inputTestPanel} from '../InputTestPanel';
 import {p} from '@xh/hoist/cmp/layout';
 
-export const RadioInputPanel = hoistCmp({
+export const radioInputPanel = hoistCmp.factory({
 
     render() {
         const model = useLocalModel(createModel);

@@ -12,16 +12,16 @@ import {PortfolioService} from '../core/svc/PortfolioService';
 
 import {getAppOptions} from './AppOptions';
 
-import {ChartsTab} from './tabs/charts/ChartsTab';
-import {ContainersTab} from './tabs/containers/ContainersTab';
-import {ExamplesTab} from './tabs/examples/ExamplesTab';
-import {FormatsTab} from './tabs/formats/FormatsTab';
-import {FormsTab} from './tabs/forms/FormsTab';
-import {GridsTab} from './tabs/grids/GridsTab';
-import {HomeTab} from './tabs/home/HomeTab';
-import {OtherTab} from './tabs/other/OtherTab';
-import {PanelsTab} from './tabs/panels/PanelsTab';
-import {InputsTab} from './tabs/inputs/InputsTab';
+import {chartsTab} from './tabs/charts/ChartsTab';
+import {containersTab} from './tabs/containers/ContainersTab';
+import {examplesTab} from './tabs/examples/ExamplesTab';
+import {formatsTab} from './tabs/formats/FormatsTab';
+import {formsTab} from './tabs/forms/FormsTab';
+import {gridsTab} from './tabs/grids/GridsTab';
+import {homeTab} from './tabs/home/HomeTab';
+import {otherTab} from './tabs/other/OtherTab';
+import {panelsTab} from './tabs/panels/PanelsTab';
+import {inputsTab} from './tabs/inputs/InputsTab';
 
 @HoistAppModel
 export class AppModel {
@@ -30,16 +30,16 @@ export class AppModel {
     tabModel = new TabContainerModel({
         route: 'default',
         tabs: [
-            {id: 'home', icon: Icon.home(), content: HomeTab},
-            {id: 'containers', icon: Icon.box(), content: ContainersTab},
-            {id: 'panels', icon: Icon.window(), content: PanelsTab},
-            {id: 'grids', icon: Icon.grid(), content: GridsTab},
-            {id: 'inputs', icon: Icon.edit(), content: InputsTab},
-            {id: 'forms', icon: Icon.clipboard(), content: FormsTab},
-            {id: 'charts', icon: Icon.chartLine(), content: ChartsTab},
-            {id: 'formats', icon: Icon.print(), content: FormatsTab},
-            {id: 'other', icon: Icon.boxFull(), content: OtherTab},
-            {id: 'examples', icon: Icon.books(), content: ExamplesTab}
+            {id: 'home', icon: Icon.home(), content: homeTab},
+            {id: 'containers', icon: Icon.box(), content: containersTab},
+            {id: 'panels', icon: Icon.window(), content: panelsTab},
+            {id: 'grids', icon: Icon.grid(), content: gridsTab},
+            {id: 'inputs', icon: Icon.edit(), content: inputsTab},
+            {id: 'forms', icon: Icon.edit(), content: formsTab},
+            {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
+            {id: 'formats', icon: Icon.print(), content: formatsTab},
+            {id: 'other', icon: Icon.boxFull(), content: otherTab},
+            {id: 'examples', icon: Icon.books(), content: examplesTab}
         ],
         switcherPosition: 'none'
     });
@@ -83,7 +83,8 @@ export class AppModel {
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
                             {name: 'tabPanel', path: '/tabPanel'},
-                            {name: 'dock', path: '/dock'}
+                            {name: 'dock', path: '/dock'},
+                            {name: 'dash', path: '/dash'}
                         ]
                     },
                     {

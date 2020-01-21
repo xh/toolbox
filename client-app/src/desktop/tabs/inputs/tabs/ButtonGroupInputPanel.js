@@ -9,7 +9,7 @@ import {inputTestPanel} from '../InputTestPanel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {p} from '@xh/hoist/cmp/layout';
 
-export const ButtonGroupInputPanel = hoistCmp({
+export const buttonGroupInputPanel = hoistCmp.factory({
 
     render() {
         const model = useLocalModel(createModel);

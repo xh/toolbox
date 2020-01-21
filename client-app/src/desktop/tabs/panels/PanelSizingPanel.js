@@ -11,7 +11,7 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 
 import {wrapper} from '../../common/Wrapper';
 
-export const PanelSizingPanel = hoistCmp({
+export const panelSizingPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {

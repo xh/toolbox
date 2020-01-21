@@ -7,7 +7,7 @@ export const newsPanelItem = hoistCmp.factory({
     model: null,
 
     render({record}) {
-        const {title, text, imageUrl, published, source, author} = record;
+        const {title, text, imageUrl, published, source, author} = record.data;
 
         return hbox(
             box({

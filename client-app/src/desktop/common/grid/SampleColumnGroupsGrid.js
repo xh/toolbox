@@ -108,7 +108,7 @@ class Model {
         return new GridModel({
             stateModel: 'toolboxGroupGrid',
             store: {
-                idSpec: rec => `${rec.firstName}~${rec.lastName}~${rec.city}~${rec.state}`
+                idSpec: data => `${data.firstName}~${data.lastName}~${data.city}~${data.state}`
             },
             sortBy: 'lastName',
             emptyText: 'No records found...',
@@ -139,7 +139,7 @@ class Model {
                             headerName: 'Name',
                             width: 140,
                             chooserName: 'Full Name',
-                            renderer: (v, {record}) => record ? `${record.firstName} ${record.lastName}` : '',
+                            renderer: (v, {record}) => record ? `${record.data.firstName} ${record.data.lastName}` : '',
                             rendererIsComplex: true,
                             agOptions: {
                                 columnGroupShow: 'closed'
@@ -247,9 +247,10 @@ class Model {
     }
 
     showRecToast(rec) {
+        const {firstName, lastName, actualUnitsSold} = rec.data;
         XH.toast({
-            title: `${rec.firstName} ${rec.lastName}`,
-            message: `You asked to see details for ${rec.firstName}. They sold ${rec.actualUnitsSold} last year.`,
+            title: `${firstName} ${lastName}`,
+            message: `You asked to see details for ${firstName}. They sold ${actualUnitsSold} last year.`,
             intent: 'primary',
             containerRef: this.panelRef.current
         });

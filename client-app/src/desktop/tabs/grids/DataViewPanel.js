@@ -12,7 +12,7 @@ import {dataViewItem} from './DataViewItem';
 import './DataViewItem.scss';
 import {shuffle, take} from 'lodash';
 
-export const DataViewPanel = hoistCmp({
+export const dataViewPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model})  {

@@ -8,7 +8,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {ToolbarPageModel} from './ToolbarPageModel';
 
-export const ToolbarPage = hoistCmp({
+export const toolbarPage = hoistCmp.factory({
 
     model: creates(ToolbarPageModel),
 

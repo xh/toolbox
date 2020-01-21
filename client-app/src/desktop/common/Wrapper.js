@@ -73,7 +73,7 @@ class Model {
                 allowDialog: false,
                 allowClose: false,
                 collapsed: !XH.getPref('expandDockedLinks'),
-                content: panel({
+                content: () => panel({
                     className: 'tbox-wrapper__links',
                     item: this.createLinksWithNotes(links),
                     width: 400

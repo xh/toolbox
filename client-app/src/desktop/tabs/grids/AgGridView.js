@@ -8,7 +8,7 @@ import {wrapper} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';
 import {agGridOptionsPanel} from '../../common/grid/options/AgGridOptionsPanel';
 
-export const AgGridView = hoistCmp({
+export const agGridView = hoistCmp.factory({
     model: creates(AgGridViewModel),
 
     render({model}) {

@@ -11,6 +11,7 @@ import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {bindable, action} from '@xh/hoist/mobx';
+import {createRef} from 'react';
 
 @HoistModel
 @LoadSupport
@@ -18,7 +19,7 @@ export class SampleTreeGridModel {
 
     @bindable
     filterIncludeChildren = false;
-    
+
     @managed
     dimChooserModel = new DimensionChooserModel({
         dimensions: [
@@ -31,6 +32,10 @@ export class SampleTreeGridModel {
 
     @managed
     gridModel;
+
+    panelRef = createRef();
+
+    get store() {return this.gridModel.store}
 
     constructor({includeCheckboxes}) {
         this.gridModel = this.createGridModel(includeCheckboxes);
@@ -54,15 +59,26 @@ export class SampleTreeGridModel {
         });
     }
 
-    async doLoadAsync(loadSpec) {
+    async doLoadAsync({isRefresh, isAutoRefresh}) {
         const {gridModel, dimChooserModel} = this,
             dims = dimChooserModel.value;
 
         return XH.portfolioService
             .getPositionsAsync(dims, true)
             .then(data => {
-                gridModel.loadData(data);
-                gridModel.selectFirst();
+                if (isRefresh) {
+                    gridModel.updateData({update: data});
+                    if (isAutoRefresh) {
+                        XH.toast({
+                            intent: 'primary',
+                            message: 'Data Updated',
+                            containerRef: this.panelRef.current
+                        });
+                    }
+                } else {
+                    gridModel.loadData(data);
+                    gridModel.selectFirst();
+                }
             });
     }
 
@@ -151,14 +167,14 @@ export class SampleTreeGridModel {
         return {
             rendererIsComplex: true,
             elementRenderer: (v, {record}) => {
-                if (record.xhIsSummary) return record.name;
+                if (record.isSummary) return record.data.name;
                 return fragment(
                     checkbox({
                         displayUnsetState: true,
-                        value: record.isChecked,
+                        value: record.data.isChecked,
                         onChange: () => this.toggleNode(record)
                     }),
-                    record.name
+                    record.data.name
                 );
             }
         };
@@ -166,33 +182,22 @@ export class SampleTreeGridModel {
 
     @action
     toggleNode(rec) {
-        const updates = [],
-            isChecked = !rec.isChecked;
+        const {store} = this,
+            isChecked = !rec.data.isChecked,
+            updates = [
+                {id: rec.id, isChecked},
+                ...rec.allDescendants.map(({id}) => ({id, isChecked}))
+            ];
 
-        this.setNode(rec, isChecked, updates);
-
-        rec.forEachDescendant(it => this.setNode(it, isChecked, updates));
-
-        rec.store.updateData({update: updates});
-
-        rec.forEachAncestor(it => this.setNode(it, this.calcAggregateState(it)));
+        store.modifyRecords(updates);
+        rec.forEachAncestor(it => store.modifyRecords(it, {isChecked: calcAggState(it)}));
     }
+}
 
-    setNode(rec, isChecked, bulkUpdate) {
-        const update = {id: rec.id, ...rec.raw, isChecked};
-        if (bulkUpdate) {
-            bulkUpdate.push(update);
-        } else {
-            rec.store.updateData({update: [update]});
-        }
-    }
-
-    calcAggregateState(rec) {
-        const states = rec.allChildren.map(r => r.isChecked);   // here consult *all* children (even filtered out)
-        if (states.every(s => s === true)) return true;
-        if (states.every(s => s === false)) return false;
-        return null;
-    }
-
+function calcAggState(rec) {
+    const {allChildren} = rec;
+    if (allChildren.every(it => it.data.isChecked === true)) return true;
+    if (allChildren.every(it => it.data.isChecked === false)) return false;
+    return null;
 }
 

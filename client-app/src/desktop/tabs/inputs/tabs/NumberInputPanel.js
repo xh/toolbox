@@ -6,7 +6,7 @@ import {hoistCmp} from '@xh/hoist/core';
 import {inputTestPanel} from '../InputTestPanel';
 import {li, p, ul} from '@xh/hoist/cmp/layout';
 
-export const NumberInputPanel = hoistCmp({
+export const numberInputPanel = hoistCmp.factory({
 
     render() {
         const model = useLocalModel(createModel);

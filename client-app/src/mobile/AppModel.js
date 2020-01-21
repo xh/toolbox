@@ -12,16 +12,16 @@ import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
 
 import {PortfolioService} from '../core/svc/PortfolioService';
 
-import {HomePage} from './home/HomePage';
-import {GridPage} from './grids/GridPage';
-import {GridDetailPage} from './grids/GridDetailPage';
-import {TreeGridPage} from './treegrids/TreeGridPage';
-import {TreeGridDetailPage} from './treegrids/TreeGridDetailPage';
-import {DataViewPage} from './dataview/DataViewPage';
-import {FormPage} from './form/FormPage';
-import {ContainersPage} from './containers/ContainersPage';
-import {PopupsPage} from './popups/PopupsPage';
-import {IconPage} from './icons/IconPage';
+import {homePage} from './home/HomePage';
+import {gridPage} from './grids/GridPage';
+import {gridDetailPage} from './grids/GridDetailPage';
+import {treeGridPage} from './treegrids/TreeGridPage';
+import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
+import {dataViewPage} from './dataview/DataViewPage';
+import {formPage} from './form/FormPage';
+import {containersPage} from './containers/ContainersPage';
+import {popupsPage} from './popups/PopupsPage';
+import {iconPage} from './icons/IconPage';
 
 @HoistAppModel
 export class AppModel {
@@ -32,46 +32,16 @@ export class AppModel {
     @managed
     navigatorModel = new NavigatorModel({
         routes: [
-            {
-                id: 'default',
-                content: HomePage
-            },
-            {
-                id: 'grids',
-                content: GridPage
-            },
-            {
-                id: 'gridDetail',
-                content: GridDetailPage
-            },
-            {
-                id: 'treegrids',
-                content: TreeGridPage
-            },
-            {
-                id: 'treeGridDetail',
-                content: TreeGridDetailPage
-            },
-            {
-                id: 'dataview',
-                content: DataViewPage
-            },
-            {
-                id: 'form',
-                content: FormPage
-            },
-            {
-                id: 'containers',
-                content: ContainersPage
-            },
-            {
-                id: 'popups',
-                content: PopupsPage
-            },
-            {
-                id: 'icons',
-                content: IconPage
-            }
+            {id: 'default', content: homePage},
+            {id: 'grids', content: gridPage},
+            {id: 'gridDetail', content: gridDetailPage},
+            {id: 'treegrids', content: treeGridPage},
+            {id: 'treeGridDetail', content: treeGridDetailPage},
+            {id: 'dataview', content: dataViewPage},
+            {id: 'form', content: formPage},
+            {id: 'containers', content: containersPage},
+            {id: 'popups', content: popupsPage},
+            {id: 'icons', content: iconPage}
         ]
     });
 

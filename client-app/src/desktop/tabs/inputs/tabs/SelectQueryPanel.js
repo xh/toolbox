@@ -9,7 +9,7 @@ import {XH} from '@xh/hoist/core';
 import {inputTestPanel} from '../InputTestPanel';
 import {box, div, hbox, p} from '@xh/hoist/cmp/layout';
 
-export const SelectQueryPanel = hoistCmp({
+export const selectQueryPanel = hoistCmp.factory({
 
     render() {
         const model = useLocalModel(createModel);
