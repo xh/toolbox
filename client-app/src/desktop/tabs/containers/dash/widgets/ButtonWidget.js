@@ -51,11 +51,9 @@ class LocalModel {
         this.value = viewModel.viewState ? viewModel.viewState.value : 'Button 1';
         this.addReaction({
             track: () => this.value,
-            run: () => {
-                this.viewModel.setViewState({
-                    value: this.value,
-                    icon: this.getIconForValue()
-                });
+            run: value => {
+                this.viewModel.setIcon(this.getIconForValue(value));
+                this.viewModel.setViewState({value});
             }
         });
     }
@@ -63,8 +61,8 @@ class LocalModel {
     //----------------------
     // Implementation
     //----------------------
-    getIconForValue() {
-        switch (this.value) {
+    getIconForValue(value) {
+        switch (value) {
             case 'Button 1':
                 return Icon.chartLine();
             case 'Button 2':
