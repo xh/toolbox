@@ -8,7 +8,7 @@ import {chart} from '@xh/hoist/cmp/chart';
 import {wrapper} from '../../common/Wrapper';
 import {LineChartModel} from './LineChartModel';
 
-export const LineChartPanel = hoistCmp({
+export const lineChartPanel = hoistCmp.factory({
     model: creates(LineChartModel),
 
     render({model}) {

@@ -9,7 +9,7 @@ import {wrapper} from '../../common';
 
 import './PopupsPanel.scss';
 
-export const PopupsPanel = hoistCmp(
+export const popupsPanel = hoistCmp.factory(
     () => {
         const divRef = useRef(null),
             acceptRichTextReminder = getRichTextReminder(),

@@ -8,7 +8,7 @@ import {wrapper} from '../../common';
 
 import './JsxPanel.scss';
 
-export const JsxPanel = hoistCmp(
+export const jsxPanel = hoistCmp.factory(
     () => wrapper({
         description: [
             <p>

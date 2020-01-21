@@ -13,7 +13,7 @@ import {loadingIndicator} from '@xh/hoist/desktop/cmp/loadingindicator';
 
 import {sampleGrid, SampleGridModel, wrapper} from '../../common';
 
-export const LoadingIndicatorPanel = hoistCmp({
+export const loadingIndicatorPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {

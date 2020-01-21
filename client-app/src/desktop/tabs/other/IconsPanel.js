@@ -12,7 +12,7 @@ import './IconsPanel.scss';
 // @see https://www.npmjs.com/package/@fortawesome/react-fontawesome#build-a-library-to-reference-icons-throughout-your-app-more-conveniently
 library.add(faIcons);
 
-export const IconsPanel = hoistCmp(
+export const iconsPanel = hoistCmp.factory(
     () => wrapper({
         description: [
             <p>

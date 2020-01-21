@@ -5,7 +5,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import './IconPage.scss';
 
-export const IconPage = hoistCmp({
+export const iconPage = hoistCmp.factory({
     render() {
         return page({
             scrollable: true,

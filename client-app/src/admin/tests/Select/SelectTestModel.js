@@ -14,6 +14,8 @@ export class SelectTestModel {
     asyncCreatableValue;
     @bindable
     groupedValue;
+    @bindable.ref
+    objectValue
     @bindable
     bigValue;
     @bindable

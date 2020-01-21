@@ -11,7 +11,7 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 
 import {GridPageModel} from './GridPageModel';
 
-export const GridPage = hoistCmp({
+export const gridPage = hoistCmp.factory({
 
     model: creates(GridPageModel),
 

@@ -6,7 +6,7 @@ import {Icon} from '@xh/hoist/icon';
 import {isNil, find} from 'lodash';
 import {bindable, observable} from '@xh/hoist/mobx';
 
-export const GridDetailPage = hoistCmp({
+export const gridDetailPage = hoistCmp.factory({
     render({id}) {
         const impl = useLocalModel(LocalModel);
         impl.setId(id);

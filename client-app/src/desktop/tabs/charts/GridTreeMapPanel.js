@@ -7,7 +7,7 @@ import {treeMap} from '@xh/hoist/desktop/cmp/treemap';
 
 import {GridTreeMapModel} from './GridTreeMapModel';
 
-export const GridTreeMapPanel = hoistCmp({
+export const gridTreeMapPanel = hoistCmp.factory({
     model: creates(GridTreeMapModel),
 
     render() {
