@@ -28,7 +28,7 @@ import {wrapper} from '../../common';
 import './InputsPanel.scss';
 import {InputsPanelModel} from './InputsPanelModel';
 
-export const InputsPanel = hoistCmp({
+export const inputsPanel = hoistCmp.factory({
     model: creates(InputsPanelModel),
 
     render() {

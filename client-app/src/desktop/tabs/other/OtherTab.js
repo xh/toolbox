@@ -1,26 +1,28 @@
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {hoistCmp} from '@xh/hoist/core';
-import {FileChooserPanel} from './FileChooserPanel';
-import {IconsPanel} from './IconsPanel';
-import {JsxPanel} from './JsxPanel';
-import {LeftRightChooserPanel} from './LeftRightChooserPanel';
-import {RelativeTimestampPanel} from './RelativeTimestampPanel';
-import {DialogsPanel} from './dialogs/DialogsPanel';
-import {PopupsPanel} from './PopupsPanel';
+import {fileChooserPanel} from './FileChooserPanel';
+import {iconsPanel} from './IconsPanel';
+import {jsxPanel} from './JsxPanel';
+import {leftRightChooserPanel} from './LeftRightChooserPanel';
+import {relativeTimestampPanel} from './RelativeTimestampPanel';
+import {popupsPanel} from './PopupsPanel';
+import {dialogsPanel} from './dialogs/DialogsPanel';
+import {clockPanel} from './ClockPanel';
 
-export const OtherTab = hoistCmp(
+export const otherTab = hoistCmp.factory(
     () => tabContainer({
         model: {
             route: 'default.other',
             switcherPosition: 'left',
             tabs: [
-                {id: 'dialogs', content: DialogsPanel},
-                {id: 'popups', content: PopupsPanel},
-                {id: 'icons', title: 'Icons', content: IconsPanel},
-                {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
-                {id: 'fileChooser', title: 'FileChooser', content: FileChooserPanel},
-                {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
-                {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel}
+                {id: 'dialogs', content: dialogsPanel},
+                {id: 'popups', content: popupsPanel},
+                {id: 'icons', title: 'Icons', content: iconsPanel},
+                {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
+                {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
+                {id: 'timestamp', title: 'Timestamp', content: relativeTimestampPanel},
+                {id: 'clock', title: 'Clock', content: clockPanel},
+                {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel}
             ]
         },
         className: 'toolbox-tab'

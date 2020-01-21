@@ -18,7 +18,7 @@ import {param} from './Util';
 import './Styles.scss';
 
 
-export const DateFormatsPanel = hoistCmp({
+export const dateFormatsPanel = hoistCmp.factory({
     model: creates(DateFormatsPanelModel),
 
     render() {

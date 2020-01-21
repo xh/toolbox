@@ -8,7 +8,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {TreeGridPageModel} from './TreeGridPageModel';
 
-export const TreeGridPage = hoistCmp({
+export const treeGridPage = hoistCmp.factory({
     model: creates(TreeGridPageModel),
 
     render() {

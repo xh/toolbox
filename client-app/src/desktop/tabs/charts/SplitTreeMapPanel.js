@@ -8,7 +8,7 @@ import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
 import {SplitTreeMapPanelModel} from './SplitTreeMapPanelModel';
 
 
-export const SplitTreeMapPanel = hoistCmp({
+export const splitTreeMapPanel = hoistCmp.factory({
     model: creates(SplitTreeMapPanelModel),
 
     render() {

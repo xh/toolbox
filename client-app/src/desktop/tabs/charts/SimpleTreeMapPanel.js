@@ -6,7 +6,7 @@ import {treeMap} from '@xh/hoist/desktop/cmp/treemap';
 
 import {SimpleTreeMapModel} from './SimpleTreeMapModel';
 
-export const SimpleTreeMapPanel = hoistCmp({
+export const simpleTreeMapPanel = hoistCmp.factory({
     model: creates(SimpleTreeMapModel),
 
     render() {

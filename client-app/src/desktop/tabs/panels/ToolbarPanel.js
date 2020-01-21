@@ -11,7 +11,7 @@ import {Icon} from '@xh/hoist/icon/index';
 import {usStates} from '../../../core/data/index';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
-export const ToolbarPanel = hoistCmp({
+export const toolbarPanel = hoistCmp.factory({
     model: creates(ToolbarPanelModel),
 
     render({model}) {

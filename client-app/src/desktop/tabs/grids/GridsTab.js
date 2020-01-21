@@ -1,27 +1,27 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 
-import {StandardGridPanel} from './StandardGridPanel';
-import {ColumnGroupsGridPanel} from './ColumnGroupsGridPanel';
-import {RestGridPanel} from './RestGridPanel';
-import {DataViewPanel} from './DataViewPanel';
-import {TreeGridPanel} from './TreeGridPanel';
-import {TreeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
-import {AgGridView} from './AgGridView';
+import {standardGridPanel} from './StandardGridPanel';
+import {columnGroupsGridPanel} from './ColumnGroupsGridPanel';
+import {restGridPanel} from './RestGridPanel';
+import {dataViewPanel} from './DataViewPanel';
+import {treeGridPanel} from './TreeGridPanel';
+import {treeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
+import {agGridView} from './AgGridView';
 import './GridsTab.scss';
 
-export const GridsTab = hoistCmp(
+export const gridsTab = hoistCmp.factory(
     () => tabContainer({
         model: {
             route: 'default.grids',
             tabs: [
-                {id: 'standard', content: StandardGridPanel},
-                {id: 'tree', content: TreeGridPanel},
-                {id: 'treeWithCheckBox', title: 'Tree w/CheckBox', content: TreeGridWithCheckboxPanel},
-                {id: 'groupedCols', title: 'Grouped Columns', content: ColumnGroupsGridPanel},
-                {id: 'rest', title: 'REST Editor', content: RestGridPanel},
-                {id: 'dataview', title: 'DataView', content: DataViewPanel},
-                {id: 'agGrid', title: 'ag-Grid Wrapper', content: AgGridView}
+                {id: 'standard', content: standardGridPanel},
+                {id: 'tree', content: treeGridPanel},
+                {id: 'treeWithCheckBox', title: 'Tree w/CheckBox', content: treeGridWithCheckboxPanel},
+                {id: 'groupedCols', title: 'Grouped Columns', content: columnGroupsGridPanel},
+                {id: 'rest', title: 'REST Editor', content: restGridPanel},
+                {id: 'dataview', title: 'DataView', content: dataViewPanel},
+                {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
             ],
             switcherPosition: 'left'
         },

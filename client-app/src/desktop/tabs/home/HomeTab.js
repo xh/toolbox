@@ -7,7 +7,7 @@ import logo from '../../../core/img/xhio+hoist.png';
 import logoDark from '../../../core/img/xhio+hoist-dark.png';
 import './HomeTab.scss';
 
-export const HomeTab = hoistCmp(
+export const homeTab = hoistCmp.factory(
     () => {
         const link = (txt, url) => <a href={url} target="_blank">{txt}</a>;
 
@@ -21,13 +21,13 @@ export const HomeTab = hoistCmp(
                     <div className="toolbox-welcome">
                         <p>
                             Toolbox provides an inventory and examples of key components,
-                            code, and UI patterns available in {link('Hoist React', 'https://github.com/exhi/hoist-react/')},
+                            code, and UI patterns available in {link('Hoist React', 'https://github.com/xh/hoist-react/')},
                             a library created by {link('Extremely Heavy Industries', 'https://xh.io')} for
                             building and operating enterprise web applications.
                         </p>
                         <p>
                             Navigate using the tabs above to explore the available components. The Toolbox
-                            app itself is written using Hoist React, and its {link('source code', 'https://github.com/exhi/toolbox')} is
+                            app itself is written using Hoist React, and its {link('source code', 'https://github.com/xh/toolbox')} is
                             available on Github for review.
                         </p>
                         <div className="toolbox-welcome__logo">

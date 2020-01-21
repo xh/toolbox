@@ -5,7 +5,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {wrapper, sampleTreeGrid} from '../../common';
 
-export const TreeGridWithCheckboxPanel = hoistCmp(
+export const treeGridWithCheckboxPanel = hoistCmp.factory(
     () => wrapper({
         description: [
             <p>

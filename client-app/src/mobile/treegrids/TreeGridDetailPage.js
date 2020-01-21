@@ -6,7 +6,7 @@ import {capitalize} from 'lodash';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 
-export const TreeGridDetailPage = hoistCmp({
+export const treeGridDetailPage = hoistCmp.factory({
     render({id}) {
         const impl = useLocalModel(LocalModel);
         impl.setId(decodeURIComponent(id));
@@ -36,8 +36,8 @@ function renderRecord(record) {
             return renderRow(capitalize(parts[0]), parts[1]);
         }),
 
-        renderRow('Market Value', record.mktVal, numberRenderer({precision: 0, ledger: true, asElement: true})),
-        renderRow('P&L', record.pnl, numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}))
+        renderRow('Market Value', record.data.mktVal, numberRenderer({precision: 0, ledger: true, asElement: true})),
+        renderRow('P&L', record.data.pnl, numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}))
     );
 }
 
