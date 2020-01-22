@@ -342,13 +342,14 @@ const row = hoistCmp.factory({
 
 const customerOption = hoistCmp.factory(
     ({opt}) => hbox({
+        className: 'xh-pad-half xh-border-bottom',
         items: [
             box({
                 item: opt.isActive ?
                     Icon.checkCircle({className: 'xh-green'}) :
                     Icon.x({className: 'xh-red'}),
                 width: 32,
-                paddingLeft: 8
+                justifyContent: 'center'
             }),
             div(
                 opt.company,
@@ -358,7 +359,8 @@ const customerOption = hoistCmp.factory(
                 })
             )
         ],
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingLeft: 0
     })
 );
 
