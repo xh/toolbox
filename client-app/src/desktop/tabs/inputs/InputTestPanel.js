@@ -46,6 +46,8 @@ export const inputTestPanel = hoistCmp.factory({
         // The input we are testing may use a default value of true, ignoring user input entirely.
         forEach(props, (v) => {if (v.type == T.Boolean) v.stateful = true;});
 
+        // Put hidden props at the end of the list. This will avoid the existing list jumping around when hidden
+        // props are displayed.
         props = Object.keys(props).sort((a, b) => {
             const hiddenA = props[a].hidden;
             const hiddenB = props[b].hidden;
