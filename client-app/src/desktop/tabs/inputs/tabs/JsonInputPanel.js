@@ -33,10 +33,17 @@ function createModel() {
                 description: 'Configuration object with any properties supported by the CodeMirror API.',
                 hidden: true
             },
-            showActionButtons: {
+            showFormatButton: {
                 value: true,
                 type: T.Boolean,
-                description: 'True to show Fullscreen + Auto-format buttons at top-right of input.'
+                description:
+                    'True (default) to display autoformat button at top-right of input.\n ' +
+                    'Requires a `formatter` to be configured - button will never show otherwise.'
+            },
+            showFullscreenButton: {
+                value: true,
+                type: T.Boolean,
+                description: 'True (default) to display Fullscreen button at top-right of input.'
             }
         },
         scope: {

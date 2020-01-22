@@ -3,8 +3,6 @@ import {div, hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import template from '@babel/template';
 import {Compiler, Error, Knobs, PropTypes as T, useView} from 'react-view';
-import {forEach} from 'lodash';
-
 import './InputTestPanel.scss';
 import {InputTestModel} from './InputTestModel';
 import {wrapper} from '../../common';
@@ -44,20 +42,16 @@ export const inputTestPanel = hoistCmp.factory({
 
         // If we do not set stateful to true, then react-view will ignore false boolean props.
         // The input we are testing may use a default value of true, ignoring user input entirely.
-        forEach(props, (v) => {if (v.type == T.Boolean) v.stateful = true;});
+        for (const key in props) props[key].stateful = (props[key].type == T.Boolean);
 
         // Put hidden props at the end of the list. This will avoid the existing list jumping around when hidden
-        // props are displayed.
-        props = Object.keys(props).sort((a, b) => {
-            const hiddenA = props[a].hidden;
-            const hiddenB = props[b].hidden;
-            if (hiddenA == hiddenB) return 0;
-            if (hiddenA && !hiddenB) return 1;
-            return -1;
-        }).reduce((r, k) => {
-            r[k] = props[k];
-            return r;
-        }, {});
+        // props are displayed or hidden.
+        let basicProps = {},
+            hiddenProps = {};
+        for (const key in props) {
+            (props[key].hidden ? hiddenProps : basicProps)[key] = props[key];
+        }
+        props = {...basicProps, ...hiddenProps};
 
         const viewParams = useView({
             componentName: model.componentName,
