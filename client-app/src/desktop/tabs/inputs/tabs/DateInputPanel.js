@@ -152,7 +152,8 @@ function createModel() {
                 type: T.Enum,
                 enumName: 'dateTypes',
                 options: dateTypes,
-                description: 'Type of value to publish. Defaults to \'date\'. '
+                description: 'Type of value to publish. Defaults to \'date\'. ',
+                hidden: true
             },
             selectOnFocus: {
                 value: false,
