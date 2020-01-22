@@ -29,7 +29,8 @@ function createModel() {
                     'HTML `autocomplete` attribute to set on underlying <input> element. \n' +
                     'Defaults to non-valid value \'nope\' for fields of type text and \'new-password\' for fields ' +
                     'of type \'password\' to defeat browser auto-completion, which is typically not desired in ' +
-                    'Hoist applications. Set to \'on\' or a more specific autocomplete token to enable. '
+                    'Hoist applications. Set to \'on\' or a more specific autocomplete token to enable. ',
+                hidden: true
             },
             autoFocus: {
                 value: true,

@@ -54,7 +54,10 @@ export const inputTestPanel = hoistCmp.factory({
             if (hiddenA == hiddenB) return 0;
             if (hiddenA && !hiddenB) return 1;
             return -1;
-        }).reduce((r, k) => (r[k] = props[k], r), {});
+        }).reduce((r, k) => {
+            r[k] = props[k];
+            return r;
+        }, {});
 
         console.log(props);
 
