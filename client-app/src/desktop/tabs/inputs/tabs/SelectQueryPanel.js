@@ -50,7 +50,7 @@ function createModel() {
                 description: 'True to accept and commit input values not present in options or returned by a query.'
             },
             enableMulti: {
-                value: true,
+                value: false,
                 type: T.Boolean,
                 description: 'True to allow entry/selection of multiple values - "tag picker" style.'
             },
@@ -128,7 +128,7 @@ function createModel() {
                 hidden: true
             },
             selectOnFocus: {
-                value: true,
+                value: false,
                 type: T.Boolean,
                 description: 'True to select contents when control receives focus.'
             },

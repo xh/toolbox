@@ -51,7 +51,7 @@ function createModel() {
                 description: 'Increment between values. Must be greater than zero. Defaults to 1.'
             },
             showTrackFill: {
-                value: false,
+                value: true,
                 type: T.Boolean,
                 description:
                     'True to render a solid bar between min and current values (for simple slider) or between ' +

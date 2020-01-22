@@ -76,7 +76,7 @@ function createModel() {
                 hidden: true
             },
             maxDate: {
-                value: null,
+                value: '1/1/2030',
                 type: T.Date,
                 description:
                     'Maximum (inclusive) valid date. Controls which dates can be selected via the calendar ' +
@@ -86,7 +86,7 @@ function createModel() {
                     'possible to use FormField, that is often a better choice. '
             },
             minDate: {
-                value: null,
+                value: '1/1/2010',
                 type: T.Date,
                 description:
                     'Minimum (inclusive) valid date. Controls which dates can be selected via the calendar ' +
