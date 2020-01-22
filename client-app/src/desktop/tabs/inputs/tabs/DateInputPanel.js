@@ -28,7 +28,8 @@ function createModel() {
             dayPickerProps: {
                 value: null,
                 type: T.Object,
-                description: 'Props passed to ReactDayPicker component, as per DayPicker docs. '
+                description: 'Props passed to ReactDayPicker component, as per DayPicker docs. ',
+                hidden: true
             },
             enablePicker: {
                 value: true,
@@ -71,7 +72,8 @@ function createModel() {
                 type: T.ReactNode,
                 description:
                     'Element to display inline on the right side of the input. Note if provided, this will ' +
-                    'take the place of the (default) calendar-picker button and (optional) clear button. '
+                    'take the place of the (default) calendar-picker button and (optional) clear button. ',
+                hidden: true
             },
             maxDate: {
                 value: null,
@@ -132,7 +134,8 @@ function createModel() {
             timePickerProps: {
                 value: null,
                 type: T.Object,
-                description: 'Props passed to the TimePicker, as per Blueprint docs. '
+                description: 'Props passed to the TimePicker, as per Blueprint docs. ',
+                hidden: true
             },
             timePrecision: {
                 value: 'precisions.null',

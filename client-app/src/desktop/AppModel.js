@@ -35,7 +35,7 @@ export class AppModel {
             {id: 'panels', icon: Icon.window(), content: panelsTab},
             {id: 'grids', icon: Icon.grid(), content: gridsTab},
             {id: 'inputs', icon: Icon.edit(), content: inputsTab},
-            {id: 'forms', icon: Icon.edit(), content: formsTab},
+            {id: 'forms', icon: Icon.clipboard(), content: formsTab},
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
             {id: 'formats', icon: Icon.print(), content: formatsTab},
             {id: 'other', icon: Icon.boxFull(), content: otherTab},

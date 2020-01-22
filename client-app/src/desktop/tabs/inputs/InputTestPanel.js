@@ -16,7 +16,7 @@ export const inputTestPanel = hoistCmp.factory({
     model: uses(InputTestModel),
 
     render({model}) {
-        const props = {
+        let props = {
             bind: {
                 value: 'value',
                 type: T.Custom
@@ -24,17 +24,20 @@ export const inputTestPanel = hoistCmp.factory({
             disabled: {
                 value: false,
                 type: T.Boolean,
-                description: 'True to disable user interaction. Can be set by parent FormField. '
+                description: 'True to disable user interaction. Can be set by parent FormField. ',
+                hidden: true
             },
             onChange: {
                 value: null,
                 type: T.Function,
-                description: 'Called when value changes - passed new and prior values. '
+                description: 'Called when value changes - passed new and prior values. ',
+                hidden: true
             },
             onCommit: {
                 value: null,
                 type: T.Function,
-                description: 'Called when value is committed to backing model - passed new and prior values. '
+                description: 'Called when value is committed to backing model - passed new and prior values. ',
+                hidden: true
             },
             ...model.props
         };
@@ -42,6 +45,16 @@ export const inputTestPanel = hoistCmp.factory({
         // If we do not set stateful to true, then react-view will ignore false boolean props.
         // The input we are testing may use a default value of true, ignoring user input entirely.
         forEach(props, (v) => {if (v.type == T.Boolean) v.stateful = true;});
+
+        props = Object.keys(props).sort((a, b) => {
+            const hiddenA = props[a].hidden;
+            const hiddenB = props[b].hidden;
+            if (hiddenA == hiddenB) return 0;
+            if (hiddenA && !hiddenB) return 1;
+            return -1;
+        }).reduce((r, k) => (r[k] = props[k], r), {});
+
+        console.log(props);
 
         const viewParams = useView({
             componentName: model.componentName,

@@ -36,7 +36,8 @@ function createModel() {
                 type: T.Function,
                 description:
                     'Function to return a "create a new option" string prompt. Requires `allowCreate` true. \n' +
-                    'Passed current query input.'
+                    'Passed current query input.',
+                hidden: true
             },
             enableClear: {
                 value: null,
@@ -61,12 +62,14 @@ function createModel() {
             labelField: {
                 value: 'company',
                 type: T.String,
-                description: 'Field on provided options for sourcing each option\'s display text (default `label`).'
+                description: 'Field on provided options for sourcing each option\'s display text (default `label`).',
+                hidden: true
             },
             loadingMessageFn: {
                 value: null,
                 type: T.Function,
-                description: 'Function to return loading message during an async query. Passed current query input.'
+                description: 'Function to return loading message during an async query. Passed current query input.',
+                hidden: true
             },
             menuPlacement: {
                 value: 'auto',
@@ -78,7 +81,8 @@ function createModel() {
             noOptionsMessageFn: {
                 value: null,
                 type: T.Function,
-                description: 'Function to return message indicating no options loaded. Passed current query input.'
+                description: 'Function to return message indicating no options loaded. Passed current query input.',
+                hidden: true
             },
             openMenuOnFocus: {
                 value: null,
@@ -120,7 +124,8 @@ function createModel() {
                 description:
                     'Escape-hatch props passed directly to react-select. Use with care - not all props ' +
                     'in the react-select API are guaranteed to be supported by this Hoist component, ' +
-                    'and providing them directly can interfere with the implementation of this class.'
+                    'and providing them directly can interfere with the implementation of this class.',
+                hidden: true
             },
             selectOnFocus: {
                 value: true,
@@ -130,7 +135,8 @@ function createModel() {
             valueField: {
                 value: 'id',
                 type: T.String,
-                description: 'Field on provided options for sourcing each option\'s value (default `value`).'
+                description: 'Field on provided options for sourcing each option\'s value (default `value`).',
+                hidden: true
             }
         },
         scope: {

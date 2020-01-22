@@ -30,7 +30,8 @@ function createModel() {
             editorProps: {
                 value: null,
                 type: T.Object,
-                description: 'Configuration object with any properties supported by the CodeMirror API.'
+                description: 'Configuration object with any properties supported by the CodeMirror API.',
+                hidden: true
             },
             showActionButtons: {
                 value: true,

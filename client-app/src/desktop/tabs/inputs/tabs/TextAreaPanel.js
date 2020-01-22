@@ -40,7 +40,8 @@ function createModel() {
             onKeyDown: {
                 value: null,
                 type: T.Function,
-                description: 'Callback for normalized keydown event.'
+                description: 'Callback for normalized keydown event.',
+                hidden: true
             },
             placeholder: {
                 value: null,

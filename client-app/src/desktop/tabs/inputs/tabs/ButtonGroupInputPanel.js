@@ -54,7 +54,8 @@ function createModel() {
             style: {
                 value: null,
                 type: T.Object,
-                description: 'Style block.'
+                description: 'Style block.',
+                hidden: true
             },
             vertical: {
                 value: false,

@@ -48,13 +48,14 @@ function createModel() {
             },
             leftIcon: {
                 value: null,
-                type: T.ReactElement,
+                type: T.ReactNode,
                 description: 'Icon to display inline on the left side of the input.'
             },
             onKeyDown: {
                 value: null,
                 type: T.Function,
-                description: 'Callback for normalized keydown event.'
+                description: 'Callback for normalized keydown event.',
+                hidden: true
             },
             placeholder: {
                 value: null,
@@ -63,8 +64,9 @@ function createModel() {
             },
             rightElement: {
                 value: null,
-                type: T.ReactElement,
-                description: 'Element to display inline on the right side of the input.'
+                type: T.ReactNode,
+                description: 'Element to display inline on the right side of the input.',
+                hidden: true
             },
             round: {
                 value: false,
