@@ -59,8 +59,6 @@ export const inputTestPanel = hoistCmp.factory({
             return r;
         }, {});
 
-        console.log(props);
-
         const viewParams = useView({
             componentName: model.componentName,
             customProps: {
