@@ -1,5 +1,5 @@
 import {elemFactory, hoistCmp, uses} from '@xh/hoist/core';
-import {div, hframe} from '@xh/hoist/cmp/layout';
+import {div, hframe, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import template from '@babel/template';
 import {Compiler, Error, Knobs, PropTypes as T, useView} from 'react-view';
@@ -103,7 +103,16 @@ export const inputTestPanel = hoistCmp.factory({
                         div({
                             // TODO: add title to knobs
                             className: 'input-test-controls',
-                            item: knobs(viewParams.knobProps)
+                            items: [
+                                span({
+                                    className: 'input-test-controls_header',
+                                    items: [
+                                        Icon.code(),
+                                        ' Props'
+                                    ]
+                                }),
+                                knobs(viewParams.knobProps)
+                            ]
                         })
                     )
                 ]

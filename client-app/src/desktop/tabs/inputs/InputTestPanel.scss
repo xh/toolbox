@@ -72,13 +72,18 @@
 
 // Override column layout display
 .input-test-controls {
-  padding: var(--xh-pad-px);
   display: flex;
   flex-direction: column;
   width: 260px;
   overflow-x: hidden;
   overflow-y: auto;
   border-left: var(--xh-border-solid);
+
+  &_header {
+    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+    background-color: var(--xh-bg-alt);
+    border-bottom: var(--xh-border-solid);
+  }
 
   & > button {
     flex: 0 0 21px;
@@ -87,7 +92,7 @@
   // Note: These tricky selectors are due to react-view not offering css classes to target overrides
   .react-view-columns {
     margin: 0 !important;
-    padding: 0;
+    padding: var(--xh-pad-px);
     flex-direction: column;
 
     & > div {
