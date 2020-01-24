@@ -19,7 +19,6 @@ export const newsPanel = hoistCmp.factory({
             height: '100%',
             item: dataView({
                 rowCls: 'news-item',
-                itemHeight: 120,
                 onRowDoubleClicked
             }),
             mask: 'onLoad',

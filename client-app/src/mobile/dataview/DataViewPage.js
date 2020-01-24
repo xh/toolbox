@@ -17,8 +17,7 @@ export const dataViewPage = hoistCmp.factory({
             icon: Icon.addressCard(),
             mask: 'onLoad',
             item: dataView({
-                rowCls: 'dataview-item',
-                itemHeight: 70
+                rowCls: 'dataview-item'
             }),
             bbar: [
                 filler(),
