@@ -61,7 +61,8 @@ function renderCode(value, mode) {
         width: null,
         height: null,
         editorProps: {mode, readOnly: true},
-        value: value.trim()
+        value: value.trim(),
+        linter: null
     });
 }
 
