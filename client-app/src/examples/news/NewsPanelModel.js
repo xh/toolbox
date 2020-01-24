@@ -25,7 +25,8 @@ export class NewsPanelModel {
                 return sourceMatch && searchMatch;
             }
         },
-        itemRenderer: (v, {record}) => newsPanelItem({record})
+        itemRenderer: (v, {record}) => newsPanelItem({record}),
+        itemHeight: 120
     });
 
     @observable.ref sourceOptions = [];
