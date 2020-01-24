@@ -16,8 +16,12 @@ export const App = hoistCmp.factory({
         return panel({
             contextMenu: [CM.reloadApp(), CM.about(), CM.logout()],
             tbar: appBar({
-                icon: Icon.portfolio({size: '2x', prefix: 'fal'}),
                 title: 'Portfolio',
+                appMenuButtonProps: {
+                    icon: Icon.portfolio(),
+                    minimal: false
+                },
+                appMenuButtonPosition: 'left',
                 rightItems: [
                     webSocketIndicator({iconOnly: true, marginRight: 4}),
                     appBarSeparator()
