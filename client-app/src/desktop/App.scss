@@ -2,6 +2,11 @@ body {
   --panel-bg: var(--xh-bg);
 }
 
+// Tweak vertical alignment on custom Toolbox icon/logo title image.
+.xh-appbar-icon img {
+  display: block;
+}
+
 .toolbox-tab > .xh-tab-switcher--left > .bp3-tab-list {
   width: 140px;
   border-right: var(--xh-border-solid);
