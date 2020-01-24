@@ -19,7 +19,7 @@ export const App = hoistCmp({
         return panel({
             contextMenu: [CM.reloadApp(), CM.about(), CM.logout()],
             tbar: appBar({
-                icon: img({src: xhLogo, height: 30}),
+                icon: img({src: xhLogo}),
                 title: null,
                 leftItems: [
                     tabSwitcher()

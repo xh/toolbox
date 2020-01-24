@@ -1,13 +1,24 @@
 .toolbox-welcome {
   padding: var(--xh-pad-double-px);
-  font-size: var(--xh-font-size-large-px);
-  text-align: justify;
+
+  p {
+    font-size: var(--xh-font-size-large-px);
+
+    &.toolbox-welcome__signoff {
+      text-align: right;
+      margin: var(--xh-pad-double-px);
+    }
+  }
 
   &__logo {
-    text-align: center;
+    float: left;
+    margin-right: var(--xh-pad-double-px);
+    border-right: var(--xh-border-solid);
 
     img {
-      width: 600px;
+      width: 250px;
+      // Make our black logo source image orange!
+      filter: invert(64%) sepia(89%) saturate(1738%) hue-rotate(346deg) brightness(100%) contrast(95%);
     }
   }
 }
