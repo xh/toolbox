@@ -32,8 +32,8 @@ export const homeTab = hoistCmp.factory(
                             maintained by XH.
                         </p>
                         <p>
-                            The Toolbox app itself is written using Hoist, and its {link('source code', 'https://github.com/xh/toolbox')} is
-                            available on Github for review.
+                            The Toolbox app itself is written using Hoist, and
+                            its {link('source code', 'https://github.com/xh/toolbox')} is available for review.
                         </p>
                         <p>
                             {link('Contact us', 'https://xh.io/contact/')} with questions or for more information - we would love to hear from you!

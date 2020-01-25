@@ -16,9 +16,7 @@
     border-right: var(--xh-border-solid);
 
     img {
-      width: 250px;
-      // Make our black logo source image orange!
-      filter: invert(64%) sepia(89%) saturate(1738%) hue-rotate(346deg) brightness(100%) contrast(95%);
+      width: 250px;  // 0.25 * actual image size
     }
   }
 }
