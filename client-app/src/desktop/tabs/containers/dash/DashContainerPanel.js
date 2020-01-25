@@ -31,7 +31,7 @@ export const dashContainerPanel = hoistCmp.factory({
                     tabs, and lazy refreshing of its active view.
                 </p>,
                 <p>
-                    <b> Note:  This component is currently in alpha release</b>.  Its functionality and API
+                    <b> Note: This component is currently in beta release</b>.  Its functionality and API
                     is still subject to change. Applications should use with care.
                 </p>
             ],

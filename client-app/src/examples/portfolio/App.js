@@ -7,6 +7,7 @@ import {webSocketIndicator} from '@xh/hoist/cmp/websocket';
 
 import {AppModel} from './AppModel';
 import {portfolioPanel} from './PortfolioPanel';
+import './App.scss';
 
 export const App = hoistCmp.factory({
     displayName: 'App',

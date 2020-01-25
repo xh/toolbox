@@ -1,5 +1,18 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito:300,400,400i,600,700&display=swap');
+
 body {
+  --font-family: Nunito, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif;
+  --font-family-headings: Nunito, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif;
   --panel-bg: var(--xh-bg);
+}
+
+// Tweak vertical alignment on custom Toolbox icon/logo title image.
+.xh-appbar-icon {
+  img {
+    height: 25px;
+    display: block;
+    margin-left: var(--xh-pad-px);
+  }
 }
 
 .toolbox-tab > .xh-tab-switcher--left > .bp3-tab-list {
