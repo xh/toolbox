@@ -59,6 +59,7 @@ export const CubeDataPanel = hoistCmp({
                         icon: Icon.clock(),
                         model: {
                             side: 'right',
+                            defaultCollapsed: true,
                             defaultSize: 260
                         },
                         item: grid({model: loadTimesGridModel, hideHeaders: true}),

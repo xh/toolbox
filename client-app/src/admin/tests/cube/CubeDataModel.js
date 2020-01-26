@@ -3,11 +3,14 @@ import {timeCol} from '@xh/hoist/cmp/grid/columns';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 import {Cube} from '@xh/hoist/data/cube';
-import {fmtNumberTooltip, fmtThousands, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {fmtThousands, numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer} from '@xh/hoist/mobx';
 import {start} from '@xh/hoist/promise';
-import {castArray, isEmpty} from 'lodash';
+import {castArray, isEmpty, times} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
+import {SECONDS} from '@xh/hoist/utils/datetime';
+import {Timer} from '@xh/hoist/utils/async';
+
 
 @HoistModel
 @LoadSupport
@@ -49,6 +52,11 @@ export class CubeDataModel {
             },
             equals: comparer.structural
         });
+
+        Timer.create({
+            runFn: () => this.streamChanges(),
+            interval: 10 * SECONDS
+        });
     }
 
     clearLoadTimes() {
@@ -76,6 +84,7 @@ export class CubeDataModel {
         });
 
         await this.executeQueryAsync();
+        this.orders = orders;
         this._initialLoadComplete = true;
     }
 
@@ -165,19 +174,6 @@ export class CubeDataModel {
                     isTreeColumn: true
                 },
                 {
-                    field: 'mktVal',
-                    headerName: 'Mkt Value (m)',
-                    headerTooltip: 'Market value (in millions USD)',
-                    align: 'right',
-                    width: 130,
-                    absSort: true,
-                    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
-                    renderer: millionsRenderer({
-                        precision: 3,
-                        ledger: true
-                    })
-                },
-                {
                     field: 'quantity',
                     headerName: 'Qty',
                     align: 'right',
@@ -186,7 +182,8 @@ export class CubeDataModel {
                     renderer: numberRenderer({
                         precision: 0,
                         ledger: true
-                    })
+                    }),
+                    hidden: true
                 },
                 {
                     field: 'price',
@@ -194,7 +191,8 @@ export class CubeDataModel {
                     width: 130,
                     renderer: numberRenderer({
                         precision: 4
-                    })
+                    }),
+                    hidden: true
                 },
                 {
                     field: 'commission',
@@ -211,7 +209,8 @@ export class CubeDataModel {
                     width: 130,
                     renderer: numberRenderer({
                         precision: 0
-                    })
+                    }),
+                    hidden: true
                 },
                 {
                     field: 'minConfidence',
@@ -219,7 +218,8 @@ export class CubeDataModel {
                     width: 130,
                     renderer: numberRenderer({
                         precision: 0
-                    })
+                    }),
+                    hidden: true
                 },
                 {
                     field: 'time',
@@ -252,5 +252,21 @@ export class CubeDataModel {
         this.loadTimesGridModel.updateData({
             add: castArray(times)
         });
+    }
+
+
+    streamChanges() {
+        const updates = times(5, () => {
+            const random = Math.floor(Math.random() * this.orders.length),
+                order = this.orders[random];
+
+            order.commission = order.commission * (1 + (0.5 - Math.random()) * 0.01);
+
+            return {id: order.id, commission: order.commission};
+        });
+
+        // this.cube.loadUpdates(updates);
+
+        console.log(updates);
     }
 }
