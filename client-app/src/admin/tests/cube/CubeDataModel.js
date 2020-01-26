@@ -126,8 +126,7 @@ export class CubeDataModel {
                 {name: 'region', isDimension: true},
                 {name: 'trader', isDimension: true},
                 {name: 'dir', displayName: 'Direction', isDimension: true},
-                {name: 'mktVal', displayName: 'Market Value', aggregator: 'SUM'},
-
+               
                 {name: 'quantity', aggregator: 'SUM', canAggregateFn: isInstrument},
                 {name: 'price', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
 
@@ -144,9 +143,6 @@ export class CubeDataModel {
         return new GridModel({
             treeMode: true,
             showSummary: true,
-            store: {
-                loadRootAsSummary: true
-            },
             sortBy: 'time|desc',
             emptyText: 'No records found...',
             enableColChooser: true,
