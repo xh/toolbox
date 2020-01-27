@@ -1,6 +1,6 @@
 import {hoistCmp, creates, XH} from '@xh/hoist/core';
 import {grid} from '@xh/hoist/cmp/grid';
-import {filler, p, span} from '@xh/hoist/cmp/layout';
+import {a, filler, p, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -11,7 +11,8 @@ import {RoadmapPanelModel} from './RoadmapPanelModel'
 export const RoadmapPanel = hoistCmp.factory({
     model: creates(RoadmapPanelModel),
     render({model}) {
-        const {RoadmapPanelModel} = model;
+        const {RoadmapPanelModel} = model,
+            aboutBlurb = 'At XH, we strive to keep our roadmap of upcoming Hoist features up-to-date.';
 
         return panel({
             tbar: [
@@ -34,7 +35,10 @@ export const RoadmapPanel = hoistCmp.factory({
                 button({
                     title: 'About',
                     text: 'About the Roadmap',
-                    icon: Icon.questionCircle()
+                    icon: Icon.questionCircle(),
+                    onClick: () => XH.alert({
+                        message: p(aboutBlurb)
+                    })
                 })
             ],
             item: grid()
