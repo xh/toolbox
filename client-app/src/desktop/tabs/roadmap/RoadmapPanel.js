@@ -1,18 +1,17 @@
 import {hoistCmp, creates, XH} from '@xh/hoist/core';
 import {grid} from '@xh/hoist/cmp/grid';
-import {a, filler, p, span} from '@xh/hoist/cmp/layout';
+import {filler, p, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 
-import {RoadmapPanelModel} from './RoadmapPanelModel'
+import {RoadmapPanelModel} from './RoadmapPanelModel';
 
-export const RoadmapPanel = hoistCmp.factory({
+export const roadmapPanel = hoistCmp.factory({
     model: creates(RoadmapPanelModel),
     render({model}) {
-        const {RoadmapPanelModel} = model,
-            aboutBlurb = 'At XH, we strive to keep our roadmap of upcoming Hoist features up-to-date.';
+        const aboutBlurb = 'At XH, we strive to keep our roadmap of upcoming Hoist features up-to-date.';
 
         return panel({
             tbar: [
@@ -42,6 +41,6 @@ export const RoadmapPanel = hoistCmp.factory({
                 })
             ],
             item: grid()
-        })
+        });
     }
-})
+});

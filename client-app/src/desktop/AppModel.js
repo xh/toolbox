@@ -21,6 +21,8 @@ import {gridsTab} from './tabs/grids/GridsTab';
 import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
+import {roadmapPanel} from './tabs/roadmap/RoadmapPanel';
+
 
 @HoistAppModel
 export class AppModel {
@@ -37,7 +39,9 @@ export class AppModel {
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
             {id: 'formats', icon: Icon.print(), content: formatsTab},
             {id: 'other', icon: Icon.boxFull(), content: otherTab},
-            {id: 'examples', icon: Icon.books(), content: examplesTab}
+            {id: 'examples', icon: Icon.books(), content: examplesTab},
+            {id: 'roadmap', icon: Icon.mapSigns(), content: roadmapPanel}
+
         ],
         switcherPosition: 'none'
     });
@@ -154,6 +158,11 @@ export class AppModel {
                     {
                         name: 'examples',
                         path: '/examples'
+                    },
+                    {
+                        name: 'roadmap',
+                        path: '/roadmap'
+
                     }
                 ]
             }
