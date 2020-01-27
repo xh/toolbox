@@ -21,7 +21,7 @@ export const dataViewItem = hoistCmp.factory({
             box({
                 className: 'dataview-item--value',
                 item: fmtNumber(value, {
-                    asElement: true,
+              /**/      asElement: true,
                     withSignGlyph: true,
                     colorSpec: true,
                     precision: 2

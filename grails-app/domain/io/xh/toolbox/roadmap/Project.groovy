@@ -9,7 +9,7 @@ class Project implements JSONFormat {
     String name
     String category
     String description
-    String release
+    String releaseVersion
     String status
     String gitLink
     String lastUpdatedBy
@@ -32,7 +32,7 @@ class Project implements JSONFormat {
                 id: id,
                 name: name,
                 description: description,
-                release: release,
+                releaseVersion: releaseVersion,
                 status: status,
                 gitLink: gitLink,
                 lastUpdatedBy: lastUpdatedBy,
