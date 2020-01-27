@@ -18,21 +18,48 @@ import {dateTimeRenderer} from '@xh/hoist/format';
 export class RoadmapPanelModel {
     @bindable
     groupBy = 'phase';
-    data = {
-        title: 'Inline Grid Editing',
-        description: 'Adds ability to edit within the grid row',
-        phase: 'Q1 2020',
-        release: 'Hoist 30',
-        status: 'In Development',
-        github: 'www.github.com/xh',
-        lastUpdated: new Date(),
-        lastUpdatedBy: 'Petra'
-    }
+
+    data = [
+        {
+            id: 1,
+            title: 'Inline Grid Editing',
+            description: 'Adds ability to edit within the grid row. ADD A VERY LONG SENTENCE TO THIS DESCRIPTION.',
+            phase: 'Q1 2020',
+            release: 'Hoist 30',
+            status: 'In Development',
+            github: 'www.github.com/xh',
+            lastUpdated: new Date(),
+            lastUpdatedBy: 'Petra'
+        },
+        {
+            id: 2,
+            title: 'Rich Dashboards',
+            description: 'Enhanced dashboards with drag-and-drop capabilities',
+            phase: 'Q1 2020',
+            release: 'Hoist 30',
+            status: 'In Development',
+            github: 'www.github.com/xh',
+            lastUpdated: new Date(),
+            lastUpdatedBy: 'Petra'
+        },
+        {
+            id: 3,
+            title: 'Grid Views',
+            description: 'More view capabilities',
+            phase: 'Q2 2020',
+            release: '',
+            status: 'Planned',
+            github: 'www.github.com/xh',
+            lastUpdated: new Date(),
+            lastUpdatedBy: 'Petra'
+        }
+    ];
+
     @managed
     gridModel = new GridModel({
-        store: {
-            data: this.data,
-        },
+        // store: {
+        //     data: this.data,
+        // },
         rowBorders: true,
         showHover: true,
         compact: XH.appModel.useCompactGrids,
@@ -45,6 +72,7 @@ export class RoadmapPanelModel {
             {
                 field: 'description',
                 headerName: 'Description',
+                // tooltip: (desc) => desc,
                 width: 300
             },
             {
@@ -72,7 +100,7 @@ export class RoadmapPanelModel {
                 ...localDateCol,
                 headerName: 'Last Updated',
                 width: 150,
-                renderer: dateTimeRenderer
+                renderer: dateTimeRenderer('YYYY-MM-DD h:mma')
             },
             {
                 field: 'lastUpdatedBy',
@@ -83,6 +111,7 @@ export class RoadmapPanelModel {
     });
 
     constructor() {
+
         const {gridModel} = this;
 
         this.addReaction({
@@ -92,5 +121,6 @@ export class RoadmapPanelModel {
 
         const {groupBy} = gridModel;
         this.setGroupBy(groupBy && groupBy.length > 0 ? groupBy[0] : null);
+        gridModel.store.loadData(this.data);
     }
 }
