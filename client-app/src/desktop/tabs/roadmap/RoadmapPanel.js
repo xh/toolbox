@@ -17,7 +17,6 @@ export const roadmapPanel = hoistCmp.factory({
             title: 'Hoist Roadmap',
             icon: Icon.mapSigns(),
             mask: 'onLoad',
-            margin: 20,
             tbar: [
                 span('Group By: '),
                 buttonGroupInput({
@@ -51,7 +50,9 @@ export const roadmapPanel = hoistCmp.factory({
                     })
                 })
             ],
-            item: grid()
+            item: grid({
+                height: 300
+            })
         });
     }
 });
