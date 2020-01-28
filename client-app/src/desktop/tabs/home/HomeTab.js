@@ -29,8 +29,8 @@ export const homeTab = hoistCmp.factory(
                                 building and operating enterprise web applications.
                             </p>
                             <p>
-                                Hoist provides a curated selection of custom and third-party components, all pre-integrated to
-                                function as part of an overall full-stack framework for web application development.
+                                Hoist provides a curated selection of custom and third-party components, pre-integrated to
+                                function as a highly productive full-stack framework for web application development.
                             </p>
                             <p>
                                 The Toolbox app itself is written using Hoist, and
