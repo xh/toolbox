@@ -1,5 +1,5 @@
 import {cloneElement} from 'react';
-import {hoistCmp} from '@xh/hoist/core/index';
+import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {tbody, table, tr, td} from '@xh/hoist/cmp/layout';
 import './Styles.scss';
@@ -12,6 +12,7 @@ export const resultsPanel = hoistCmp.factory(
             title: 'Input › Output',
             compactHeader: true,
             width: 400,
+            flex: 'none',
             className: 'tbox-formats-tab__panel',
             item: table(
                 tbody(

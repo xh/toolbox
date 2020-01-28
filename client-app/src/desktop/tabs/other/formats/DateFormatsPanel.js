@@ -40,11 +40,10 @@ export const dateFormatsPanel = hoistCmp.factory({
                 </p>
             ],
             item: panel({
-                title: 'Formats › Dates',
+                title: 'Other › Date Formats',
                 icon: Icon.print(),
                 className: 'tbox-formats-tab',
-                width: 1100,
-                height: 350,
+                height: 300,
                 item: hframe(
                     paramsPanel(),
                     resultsPanel({
@@ -56,7 +55,7 @@ export const dateFormatsPanel = hoistCmp.factory({
     }
 });
 
-export const paramsPanel = hoistCmp.factory(
+const paramsPanel = hoistCmp.factory(
     ({model}) => panel({
         title: 'Function + Options',
         compactHeader: true,
@@ -83,7 +82,7 @@ export const paramsPanel = hoistCmp.factory(
                         disabled: !model.enableFmt,
                         bind: 'fmt',
                         input: textInput({commitOnChange: true}),
-                        info: 'a moment.js format string.'
+                        info: 'a moment.js format string'
                     }),
                     param({
                         bind: 'nullDisplay',
