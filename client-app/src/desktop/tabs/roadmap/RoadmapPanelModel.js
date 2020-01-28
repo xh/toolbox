@@ -22,6 +22,7 @@ export class RoadmapPanelModel {
     data = [
         {
             id: 1,
+            category: 'Grids',
             title: 'Inline Grid Editing',
             description: 'Adds ability to edit within the grid row. ADD A VERY LONG SENTENCE TO THIS DESCRIPTION.',
             phase: 'Q1 2020',
@@ -33,6 +34,7 @@ export class RoadmapPanelModel {
         },
         {
             id: 2,
+            category: 'Dashboards',
             title: 'Rich Dashboards',
             description: 'Enhanced dashboards with drag-and-drop capabilities',
             phase: 'Q1 2020',
@@ -44,6 +46,7 @@ export class RoadmapPanelModel {
         },
         {
             id: 3,
+            category: 'Grids',
             title: 'Grid Views',
             description: 'More view capabilities',
             phase: 'Q2 2020',
@@ -57,13 +60,20 @@ export class RoadmapPanelModel {
 
     @managed
     gridModel = new GridModel({
-        // store: {
-        //     data: this.data,
-        // },
         rowBorders: true,
         showHover: true,
         compact: XH.appModel.useCompactGrids,
         columns: [
+            {
+                field: 'status',
+                headerName: 'Status',
+                width: 100
+            },
+            {
+                field: 'category',
+                headerName: 'Category',
+                width: 100
+            },
             {
                 field: 'title',
                 headerName: 'Title',
@@ -83,11 +93,6 @@ export class RoadmapPanelModel {
             {
                 field: 'release',
                 headerName: 'Release',
-                width: 100
-            },
-            {
-                field: 'status',
-                headerName: 'Status',
                 width: 100
             },
             {

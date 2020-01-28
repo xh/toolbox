@@ -21,6 +21,10 @@ export const roadmapPanel = hoistCmp.factory({
                     enableClear: true,
                     items: [
                         button({
+                            text: 'Category',
+                            value: 'category'
+                        }),
+                        button({
                             text: 'Phase',
                             value: 'phase'
                         }),
