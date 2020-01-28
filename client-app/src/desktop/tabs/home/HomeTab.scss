@@ -11,7 +11,7 @@
   }
 
   &__logo {
-    margin: 40px 0;
+    margin: var(--xh-pad-double-px) 0;
     border-right: var(--xh-border-solid);
 
     img {
