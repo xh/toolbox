@@ -28,7 +28,13 @@ export const GridTestPanel = hoistCmp({
         return panel({
             mask: 'onLoad',
             key: gridModel.xhId,
-            item: grid(),
+            item: grid({
+                agOptions: {
+                    isRowSelectable: (row) => {
+                        return !model.disableSelect || row.data.data.day > 0;
+                    }
+                }
+            }),
             tbar: [
                 tooltip({
                     content: 'ID prefix',
@@ -103,6 +109,10 @@ export const GridTestPanel = hoistCmp({
                     bind: 'useDeltaSort',
                     label: 'Use Delta Sort',
                     disabled: model.tree
+                }),
+                switchInput({
+                    bind: 'disableSelect',
+                    label: 'Disable Day < 0 Selection'
                 }),
                 filler(),
                 storeFilterField({
