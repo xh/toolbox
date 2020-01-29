@@ -10,6 +10,7 @@ import {storeFilterField} from '@xh/hoist/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 
 import {GridPageModel} from './GridPageModel';
+import {select} from '@xh/hoist/desktop/cmp/input';
 
 export const gridPage = hoistCmp.factory({
 
@@ -34,10 +35,17 @@ export const gridPage = hoistCmp.factory({
                 }
             }),
             tbar: [
-                label('Compact:'),
-                switchInput({
+                label('Size:'),
+                select({
+                    width: 120,
                     model: gridModel,
-                    bind: 'compact'
+                    bind: 'sizingMode',
+                    options: [
+                        {label: 'Large', value: 'large'},
+                        {label: 'Standard', value: 'standard'},
+                        {label: 'Compact', value: 'compact'},
+                        {label: 'Tiny', value: 'tiny'}
+                    ]
                 }),
                 label('Borders:'),
                 switchInput({
