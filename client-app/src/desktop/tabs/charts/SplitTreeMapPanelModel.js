@@ -26,7 +26,7 @@ export class SplitTreeMapPanelModel {
         treeMode: true,
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
-        compact: XH.appModel.gridSizingMode,
+        sizingMode: XH.appModel.gridSizingMode,
         selModel: 'multiple',
         store: {
             processRawData: (r) => {

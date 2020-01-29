@@ -68,7 +68,7 @@ export class AgGridViewModel {
     ];
 
     agGridModel = new AgGridModel({
-        compact: XH.appModel.gridSizingMode
+        sizingMode: XH.appModel.gridSizingMode
     });
 
     constructor() {

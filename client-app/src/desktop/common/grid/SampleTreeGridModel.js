@@ -115,7 +115,7 @@ export class SampleTreeGridModel {
             emptyText: 'No records found...',
             enableColChooser: true,
             enableExport: true,
-            compact: XH.appModel.gridSizingMode,
+            sizingMode: XH.appModel.gridSizingMode,
             columns: [
                 {
                     headerName: 'Name',

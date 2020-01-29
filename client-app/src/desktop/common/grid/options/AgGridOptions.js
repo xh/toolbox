@@ -11,9 +11,13 @@ export const agGridOptions = hoistCmp.factory({
             items: [
                 'Sizing Mode',
                 select({
+                    width: null,
                     bind: 'sizingMode',
                     options: [
-                        'large', 'standard', 'compact', 'tiny'
+                        {label: 'Large', value: 'large'},
+                        {label: 'Standard', value: 'standard'},
+                        {label: 'Compact', value: 'compact'},
+                        {label: 'Tiny', value: 'tiny'}
                     ]
                 }),
                 switchInput({

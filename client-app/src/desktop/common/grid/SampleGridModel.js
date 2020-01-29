@@ -95,7 +95,7 @@ export class SampleGridModel {
             columns: ['id', 'company', 'VISIBLE'],
             filename: 'hoist-sample-export'
         },
-        compact: XH.appModel.gridSizingMode,
+        sizingMode: XH.appModel.gridSizingMode,
         store: {
             processRawData: (r) => {
                 const pnl = r.profit_loss;
