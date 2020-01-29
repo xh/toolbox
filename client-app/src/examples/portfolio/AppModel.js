@@ -14,8 +14,8 @@ import {PortfolioService} from '../../core/svc/PortfolioService';
 @HoistAppModel
 export class AppModel {
 
-    get useCompactGrids() {
-        return XH.getPref('defaultGridMode') == 'COMPACT';
+    get gridSizingMode() {
+        return XH.getPref('defaultGridMode');
     }
 
     getAppOptions() {
