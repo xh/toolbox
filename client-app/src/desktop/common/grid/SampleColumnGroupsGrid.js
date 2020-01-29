@@ -114,7 +114,7 @@ class Model {
             emptyText: 'No records found...',
             enableColChooser: true,
             enableExport: true,
-            compact: XH.appModel.useCompactGrids,
+            compact: XH.appModel.gridSizingMode,
             contextMenu: () => {
                 return new StoreContextMenu({
                     items: [

@@ -27,7 +27,7 @@ export class OrdersPanelModel {
         enableExport: true,
         rowBorders: true,
         showHover: true,
-        compact: XH.appModel.useCompactGrids,
+        compact: XH.appModel.gridSizingMode,
         stateModel: 'portfolio-orders-grid',
         columns: [
             {

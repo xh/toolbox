@@ -25,7 +25,7 @@ export class GridTreeMapModel {
         treeMode: true,
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
-        compact: XH.appModel.useCompactGrids,
+        compact: XH.appModel.gridSizingMode,
         selModel: 'multiple',
         store: {
             processRawData: (r) => {

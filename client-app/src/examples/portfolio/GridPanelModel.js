@@ -40,7 +40,7 @@ export class GridPanelModel {
             rowBorders: true,
             showHover: true,
             showSummary: true,
-            compact: XH.appModel.useCompactGrids,
+            compact: XH.appModel.gridSizingMode,
             stateModel: 'portfolio-positions-grid',
             store: this.parentModel.store,
             columns: [

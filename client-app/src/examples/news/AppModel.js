@@ -10,8 +10,8 @@ export class AppModel {
     @managed
     newsPanelModel = new NewsPanelModel();
 
-    get useCompactGrids() {
-        return XH.getPref('defaultGridMode') == 'COMPACT';
+    get gridSizingMode() {
+        return XH.getPref('defaultGridMode');
     }
     
     async initAsync() {
