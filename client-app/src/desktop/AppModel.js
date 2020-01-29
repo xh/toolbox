@@ -41,8 +41,8 @@ export class AppModel {
         switcherPosition: 'none'
     });
 
-    get useCompactGrids() {
-        return XH.getPref('defaultGridMode') == 'COMPACT';
+    get gridSizingMode() {
+        return XH.getPref('defaultGridMode');
     }
 
     constructor() {

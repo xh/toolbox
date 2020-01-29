@@ -134,7 +134,7 @@ class BootStrap {
             ],
             defaultGridMode: [
                 type: 'string',
-                defaultValue: 'STANDARD',
+                defaultValue: 'standard',
                 local: true,
                 groupName: 'Toolbox',
                 note: 'Grid sizing mode'
