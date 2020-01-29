@@ -10,34 +10,34 @@ export const treeGridDetailPage = hoistCmp.factory({
     render({id}) {
         const impl = useLocalModel(LocalModel);
         impl.setId(decodeURIComponent(id));
-        const {record} = impl;
+        const {position} = impl;
         
         return page({
-            title: record ? renderPageTitle(record) : null,
+            title: position ? renderPageTitle(position) : null,
             icon: Icon.portfolio(),
             mask: impl.loadModel,
             className: 'toolbox-detail-page',
-            item: record ? renderRecord(record) : null
+            item: position ? renderPosition(position) : null
         });
     }
 });
 
-function renderPageTitle(record) {
-    const lastPart = record.id.split('>>').pop();
+function renderPageTitle(position) {
+    const lastPart = position.id.split('>>').pop();
     return lastPart.split(':').pop();
 }
 
-function renderRecord(record) {
+function renderPosition(position) {
     return div(
         // Split id to extract drilldown information
-        ...record.id.split('>>').map(it => {
+        ...position.id.split('>>').map(it => {
             if (it === 'root') return null;
             const parts = it.split(':');
             return renderRow(capitalize(parts[0]), parts[1]);
         }),
 
-        renderRow('Market Value', record.mktVal, numberRenderer({precision: 0, ledger: true, asElement: true})),
-        renderRow('P&L', record.pnl, numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}))
+        renderRow('Market Value', position.mktVal, numberRenderer({precision: 0, ledger: true, asElement: true})),
+        renderRow('P&L', position.pnl, numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}))
     );
 }
 
@@ -56,7 +56,7 @@ function renderRow(title, value, renderer) {
 class LocalModel {
 
     @bindable id;
-    @bindable.ref record;
+    @bindable.ref position;
 
     constructor() {
         this.addReaction({
@@ -66,7 +66,7 @@ class LocalModel {
     }
 
     async doLoadAsync(loadSpec) {
-        const record = await (this.id ? XH.portfolioService.getPositionAsync(this.id) : null);
-        this.setRecord(record);
+        const position = await (this.id ? XH.portfolioService.getPositionAsync(this.id) : null);
+        this.setPosition(position);
     }
 }
