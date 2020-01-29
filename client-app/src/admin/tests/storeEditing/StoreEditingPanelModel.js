@@ -105,15 +105,15 @@ export class StoreEditingPanelModel {
     @action
     commitAll() {
         const {store} = this,
-            {newRecords, modifiedRecords, removedRecords} = store,
+            {addedRecords, modifiedRecords, removedRecords} = store,
             nextId = this.getNextId(),
             transaction = {
-                add: newRecords.map((it, idx) => ({id: nextId + idx, ...it.data})),
+                add: addedRecords.map((it, idx) => ({id: nextId + idx, ...it.data})),
                 update: modifiedRecords.map(it => ({id: it.id, ...it.data})),
                 remove: removedRecords.map(it => it.id)
             };
 
-        store.removeRecords(newRecords);
+        store.removeRecords(addedRecords);
         store.updateData(transaction);
     }
 

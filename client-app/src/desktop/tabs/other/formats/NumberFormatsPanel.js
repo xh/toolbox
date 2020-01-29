@@ -1,6 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
-import {hoistCmp, creates} from '@xh/hoist/core/index';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
@@ -41,12 +41,12 @@ export const numberFormatsPanel = hoistCmp.factory({
                 </p>
             ],
             item: panel({
-                title: 'Formats › Numbers',
+                title: 'Other › Number Formats',
                 icon: Icon.print(),
                 className: 'tbox-formats-tab',
-                width: 1000,
+                height: 550,
                 item: hframe(
-                    params(),
+                    paramsPanel(),
                     resultsPanel({
                         tryItInput: numberInput({selectOnFocus: true, placeholder: 'Enter a value to test'})
                     })
@@ -56,12 +56,11 @@ export const numberFormatsPanel = hoistCmp.factory({
     }
 });
 
-const params = hoistCmp.factory(
+const paramsPanel = hoistCmp.factory(
     () => panel({
         title: 'Function + Options',
         compactHeader: true,
         className: 'tbox-formats-tab__panel',
-        flex: 1,
         items: [
             param({
                 bind: 'fnName',
