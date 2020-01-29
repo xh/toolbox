@@ -14,6 +14,9 @@ export const roadmapPanel = hoistCmp.factory({
         const aboutBlurb = 'At XH, we strive to keep our roadmap of upcoming Hoist features up-to-date.';
 
         return panel({
+            title: 'Hoist Roadmap',
+            icon: Icon.mapSigns(),
+            mask: 'onLoad',
             tbar: [
                 span('Group By: '),
                 buttonGroupInput({
@@ -21,10 +24,17 @@ export const roadmapPanel = hoistCmp.factory({
                     enableClear: true,
                     items: [
                         button({
+                            icon: Icon.grip({className: 'xh-blue-muted'}),
+                            text: 'Category',
+                            value: 'category'
+                        }),
+                        button({
+                            icon: Icon.calendar({className: 'xh-orange-muted'}),
                             text: 'Phase',
                             value: 'phase'
                         }),
                         button({
+                            icon: Icon.gauge({className: 'xh-green-muted'}),
                             text: 'Status',
                             value: 'status'
                         })
@@ -40,7 +50,9 @@ export const roadmapPanel = hoistCmp.factory({
                     })
                 })
             ],
-            item: grid()
+            item: grid({
+                height: 300
+            })
         });
     }
 });

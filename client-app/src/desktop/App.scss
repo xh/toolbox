@@ -6,6 +6,11 @@ body {
   --panel-bg: var(--xh-bg);
 }
 
+.xh-viewport {
+  background-image: url('../core/img/xh-logo-bg.png');
+  background-size: 127px 50px;
+}
+
 // Tweak vertical alignment on custom Toolbox icon/logo title image.
 .xh-appbar-icon {
   img {
