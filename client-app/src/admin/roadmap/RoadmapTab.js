@@ -114,7 +114,8 @@ const modelSpec = {
         {
             field: 'lastUpdated',
             headerName: 'Last Updated',
-            width: 100
+            width: 120,
+            align: 'right'
         },
         {
             field: 'lastUpdatedBy',

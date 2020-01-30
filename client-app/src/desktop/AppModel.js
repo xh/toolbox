@@ -17,7 +17,7 @@ import {gridsTab} from './tabs/grids/GridsTab';
 import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
-import {roadmapPanel} from './tabs/roadmap/RoadmapPanel';
+import {roadmapDataViewPanel} from './tabs/roadmap/RoadmapDataViewPanel';
 
 
 @HoistAppModel
@@ -35,7 +35,7 @@ export class AppModel {
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
             {id: 'other', icon: Icon.boxFull(), content: otherTab},
             {id: 'examples', icon: Icon.books(), content: examplesTab},
-            {id: 'roadmap', icon: Icon.mapSigns(), content: roadmapPanel}
+            {id: 'roadmap', icon: Icon.mapSigns(), content: roadmapDataViewPanel}
 
         ],
         switcherPosition: 'none'

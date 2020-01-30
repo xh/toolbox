@@ -1,0 +1,21 @@
+.toolbox-dataview-panel {
+  .dataview-item {
+    &--name {
+      font-size: var(--xh-font-size-large-px);
+      font-weight: bold;
+    }
+
+    &--city {
+      opacity: 0.8;
+      font-size: var(--xh-font-size-small-px);
+      line-height: calc(var(--xh-font-size-small) * 1.1px);
+      margin-bottom: 4px;
+    }
+
+    svg {
+      position: absolute;
+      right: 10px;
+      top: 15px;
+    }
+  }
+}
