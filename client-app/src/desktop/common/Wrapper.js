@@ -5,7 +5,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {DockContainerModel, dockContainer} from '@xh/hoist/cmp/dock';
 import {managed} from '@xh/hoist/core/mixins';
-import {toolboxLink} from '../../common/ToolboxLink';
+import {toolboxLink} from '../../core/ToolboxLink';
 
 import './Wrapper.scss';
 

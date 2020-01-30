@@ -10,9 +10,8 @@ export const mapPanel = hoistCmp.factory({
         const {loadModel} = model;
 
         return panel({
-            title: 'Treemap',
             mask: loadModel,
-            item: splitTreeMap({className: 'xh-border-top'})
+            item: splitTreeMap()
         });
     }
 });

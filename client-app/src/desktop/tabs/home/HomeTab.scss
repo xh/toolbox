@@ -1,13 +1,21 @@
 .toolbox-welcome {
   padding: var(--xh-pad-double-px);
-  font-size: var(--xh-font-size-large-px);
-  text-align: justify;
+
+  p {
+    font-size: var(--xh-font-size-large-px);
+
+    &.toolbox-welcome__signoff {
+      text-align: right;
+      margin: var(--xh-pad-double-px);
+    }
+  }
 
   &__logo {
-    text-align: center;
+    margin: var(--xh-pad-double-px) 0;
+    border-right: var(--xh-border-solid);
 
     img {
-      width: 600px;
+      width: 250px;  // 0.25 * actual image size
     }
   }
 }

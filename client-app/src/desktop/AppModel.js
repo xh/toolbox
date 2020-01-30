@@ -7,15 +7,11 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-
 import {PortfolioService} from '../core/svc/PortfolioService';
-
 import {getAppOptions} from './AppOptions';
-
 import {chartsTab} from './tabs/charts/ChartsTab';
 import {containersTab} from './tabs/containers/ContainersTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
-import {formatsTab} from './tabs/formats/FormatsTab';
 import {formsTab} from './tabs/forms/FormsTab';
 import {gridsTab} from './tabs/grids/GridsTab';
 import {homeTab} from './tabs/home/HomeTab';
@@ -31,21 +27,20 @@ export class AppModel {
         route: 'default',
         tabs: [
             {id: 'home', icon: Icon.home(), content: homeTab},
-            {id: 'containers', icon: Icon.box(), content: containersTab},
-            {id: 'panels', icon: Icon.window(), content: panelsTab},
             {id: 'grids', icon: Icon.grid(), content: gridsTab},
-            {id: 'inputs', icon: Icon.edit(), content: inputsTab},
+            {id: 'panels', icon: Icon.window(), content: panelsTab},
+            {id: 'containers', icon: Icon.box(), content: containersTab},
             {id: 'forms', icon: Icon.clipboard(), content: formsTab},
+            {id: 'inputs', icon: Icon.edit(), content: inputsTab},
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
-            {id: 'formats', icon: Icon.print(), content: formatsTab},
             {id: 'other', icon: Icon.boxFull(), content: otherTab},
             {id: 'examples', icon: Icon.books(), content: examplesTab}
         ],
         switcherPosition: 'none'
     });
 
-    get useCompactGrids() {
-        return XH.getPref('defaultGridMode') == 'COMPACT';
+    get gridSizingMode() {
+        return XH.getPref('gridSizingMode');
     }
 
     constructor() {
@@ -152,24 +147,18 @@ export class AppModel {
                         ]
                     },
                     {
-                        name: 'formats',
-                        path: '/formats',
-                        children: [
-                            {name: 'number', path: '/number'},
-                            {name: 'date', path: '/date'}
-                        ]
-                    },
-                    {
                         name: 'other',
                         path: '/other',
                         children: [
-                            {name: 'icons', path: '/icons'},
-                            {name: 'leftRightChooser', path: '/leftRightChooser'},
-                            {name: 'fileChooser', path: '/fileChooser'},
-                            {name: 'timestamp', path: '/timestamp'},
                             {name: 'clock', path: '/clock'},
+                            {name: 'dateFormats', path: '/dateFormats'},
+                            {name: 'fileChooser', path: '/fileChooser'},
+                            {name: 'icons', path: '/icons'},
                             {name: 'jsx', path: '/jsx'},
-                            {name: 'popups', path: '/popups'}
+                            {name: 'leftRightChooser', path: '/leftRightChooser'},
+                            {name: 'numberFormats', path: '/numberFormats'},
+                            {name: 'popups', path: '/popups'},
+                            {name: 'timestamp', path: '/timestamp'}
                         ]
                     },
                     {
