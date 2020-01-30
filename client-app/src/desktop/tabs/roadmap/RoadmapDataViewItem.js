@@ -6,7 +6,23 @@ export const RoadmapDataViewItem = hoistCmp.factory({
     model: null,
 
     render(props) {
-        const {name, description, status} = props.record.data;
+        const {category, name, description, releaseVersion, status, gitLink, lastUpdated, lastUpdatedBy} = props.record.data;
+
+        let statusIcon;
+        switch (status) {
+            case 'MERGED':
+                statusIcon = Icon.check({size: '3x', className: 'xh-green', prefix: 'fal'});
+                break;
+            case 'DEVELOPMENT':
+                statusIcon = Icon.gear({size: '3x', className: 'xh-yellow', prefix: 'fal'});
+                break;
+            case 'RELEASE':
+                statusIcon = Icon.bullhorn({size: '3x', className: 'xh-green', prefix: 'fal'});
+                break;
+            case 'PLANNED':
+                statusIcon = Icon.clipboard({size: '3x', className: 'xh-blue', prefix: 'fal'});
+        }
+
 
         return vbox(
             box({
@@ -18,10 +34,10 @@ export const RoadmapDataViewItem = hoistCmp.factory({
                 item: description
             }),
             box({
-                className: 'dataview-item--status',
-                item: status
+                className: 'dataview-item--releaseVersion',
+                item: releaseVersion
             }),
-            Icon.check({size: '3x', className: 'xh-green', prefix: 'fal'})
+            statusIcon
         );
     }
 });

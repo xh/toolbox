@@ -40,7 +40,7 @@ class Model {
     @managed
     dataViewModel = new DataViewModel({
         store: {
-            fields: ['name', 'description', 'status']
+            fields: ['name', 'category', 'description', 'releaseVersion', 'status', 'gitLink', 'lastUpdated', 'lastUpdatedBy']
         },
         sortBy: 'name',
         emptyText: 'No projects found...',
@@ -50,7 +50,7 @@ class Model {
         ],
         groupBy: 'status',
         itemHeight: 70,
-        groupedItemHeight: 32
+        groupedItemHeight: 30
     });
 
     async doLoadAsync(loadSpec) {

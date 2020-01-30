@@ -7,9 +7,15 @@
 
     &--description {
       opacity: 0.8;
+      font-size: var(--xh-font-size-medium-px);
+      line-height: var(--xh-font-size-medium);
+    }
+
+    &--releaseVersion {
+      opacity: 0.8;
       font-size: var(--xh-font-size-small-px);
       line-height: calc(var(--xh-font-size-small) * 1.1px);
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     svg {
