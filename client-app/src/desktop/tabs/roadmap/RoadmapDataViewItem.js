@@ -1,6 +1,8 @@
 import {hoistCmp} from '@xh/hoist/core/index';
-import {vbox, box} from '@xh/hoist/cmp/layout/index';
+import {vbox, box, hbox} from '@xh/hoist/cmp/layout/index';
 import {Icon} from '@xh/hoist/icon/index';
+import {filler, span} from '@xh/hoist/cmp/layout';
+import {fmtCompactDate} from '@xh/hoist/format';
 
 export const RoadmapDataViewItem = hoistCmp.factory({
     model: null,
@@ -8,34 +10,49 @@ export const RoadmapDataViewItem = hoistCmp.factory({
     render(props) {
         const {category, name, description, releaseVersion, status, gitLink, lastUpdated, lastUpdatedBy} = props.record.data;
 
-        let statusIcon;
+        let statusIcon, categoryIcon;
         switch (status) {
             case 'MERGED':
-                statusIcon = Icon.check({size: '3x', className: 'xh-green', prefix: 'fal'});
+                statusIcon = Icon.check({size: '2x', className: 'xh-green-muted', prefix: 'fal'});
                 break;
             case 'DEVELOPMENT':
-                statusIcon = Icon.gear({size: '3x', className: 'xh-yellow', prefix: 'fal'});
+                statusIcon = Icon.gear({size: '2x', className: 'xh-yellow', prefix: 'fal'});
                 break;
-            case 'RELEASE':
-                statusIcon = Icon.bullhorn({size: '3x', className: 'xh-green', prefix: 'fal'});
+            case 'RELEASED':
+                statusIcon = Icon.bullhorn({size: '2x', className: 'xh-green', prefix: 'fal'});
                 break;
             case 'PLANNED':
-                statusIcon = Icon.clipboard({size: '3x', className: 'xh-blue', prefix: 'fal'});
+                statusIcon = Icon.clipboard({size: '2x', className: 'xh-blue', prefix: 'fal'});
+                break;
         }
-
+        switch (category) {
+            case 'Grids':
+                categoryIcon = Icon.grid({size: '1x', className: 'xh-blue', prefix: 'fal'});
+                break;
+            case 'Other':
+                categoryIcon = Icon.experiment({size: '1x', className: 'xh-blue', prefix: 'fal'});
+                break;
+        }
 
         return vbox(
             box({
                 className: 'dataview-item--name',
-                item: name
+                items: [
+                    categoryIcon,
+                    name
+                ]
             }),
             box({
                 className: 'dataview-item--description',
                 item: description
             }),
-            box({
-                className: 'dataview-item--releaseVersion',
-                item: releaseVersion
+            hbox({
+                className: 'dataview-item--footer',
+                items: [
+                    releaseVersion,
+                    filler(),
+                    span('Last updated: ' + fmtCompactDate(lastUpdated))
+                ]
             }),
             statusIcon
         );

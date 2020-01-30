@@ -8,7 +8,6 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {p} from '@xh/hoist/cmp/layout';
 import {
     restGrid,
     addAction,
@@ -24,9 +23,6 @@ export const RoadmapTab = hoistCmp.factory({
 
     render() {
         return wrapper({
-            description: [
-                p('Hoist Roadmap REST Grid Editor')
-            ],
             item: panel({
                 title: 'Hoist Roadmap REST Editor',
                 icon: Icon.edit(),
@@ -91,15 +87,18 @@ const modelSpec = {
         {
             field: 'name',
             headerName: 'Title',
+            tooltip: (name) => name,
             width: 120
         },
         {
             field: 'description',
+            tooltip: (desc) => desc,
             width: 200
         },
         {
             field: 'releaseVersion',
             headerName: 'Release',
+            tooltip: (release) => release,
             width: 100
         },
         {
@@ -115,6 +114,7 @@ const modelSpec = {
             field: 'lastUpdated',
             headerName: 'Last Updated',
             width: 120,
+            tooltip: (lastUpdated) => lastUpdated,
             align: 'right'
         },
         {

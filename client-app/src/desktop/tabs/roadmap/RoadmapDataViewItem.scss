@@ -3,6 +3,13 @@
     &--name {
       font-size: var(--xh-font-size-large-px);
       font-weight: bold;
+
+      & svg {
+        position: relative !important;
+        right: 0 !important;
+        top: 3px !important;
+        margin-right: 5px;
+      }
     }
 
     &--description {
@@ -11,7 +18,7 @@
       line-height: var(--xh-font-size-medium);
     }
 
-    &--releaseVersion {
+    &--footer {
       opacity: 0.8;
       font-size: var(--xh-font-size-small-px);
       line-height: calc(var(--xh-font-size-small) * 1.1px);

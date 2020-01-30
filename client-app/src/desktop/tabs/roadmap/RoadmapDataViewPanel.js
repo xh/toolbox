@@ -18,7 +18,7 @@ export const roadmapDataViewPanel = hoistCmp.factory({
                 className: 'toolbox-roadmap-dataview-panel',
                 title: 'Hoist Roadmap',
                 icon: Icon.mapSigns(),
-                width: 700,
+                width: 500,
                 height: 400,
                 item: dataView({
                     model: model.dataViewModel,
