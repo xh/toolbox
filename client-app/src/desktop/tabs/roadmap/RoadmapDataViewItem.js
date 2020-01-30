@@ -4,7 +4,7 @@ import {Icon} from '@xh/hoist/icon/index';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {fmtCompactDate} from '@xh/hoist/format';
 
-export const RoadmapDataViewItem = hoistCmp.factory({
+export const roadmapDataViewItem = hoistCmp.factory({
     model: null,
 
     render(props) {
@@ -28,6 +28,9 @@ export const RoadmapDataViewItem = hoistCmp.factory({
         switch (category) {
             case 'Grids':
                 categoryIcon = Icon.grid({size: '1x', className: 'xh-blue', prefix: 'fal'});
+                break;
+            case 'Dashboards':
+                categoryIcon = Icon.analytics({size: '1x', className: 'xh-blue', prefix: 'fal'});
                 break;
             case 'Other':
                 categoryIcon = Icon.experiment({size: '1x', className: 'xh-blue', prefix: 'fal'});
