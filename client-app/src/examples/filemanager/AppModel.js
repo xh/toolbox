@@ -10,7 +10,7 @@ import {HoistAppModel, XH} from '@xh/hoist/core';
 export class AppModel {
 
     get gridSizingMode() {
-        return XH.getPref('defaultGridMode');
+        return XH.getPref('gridSizingMode');
     }
     
     async initAsync() {
