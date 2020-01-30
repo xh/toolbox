@@ -1,48 +1,35 @@
-import React from 'react';
 import {hoistCmp, HoistModel, LoadSupport, managed, XH, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {dataView, DataViewModel} from '@xh/hoist/cmp/dataview';
 
 import {wrapper} from '../../common/Wrapper';
 import {RoadmapDataViewItem} from './RoadmapDataViewItem';
 import './RoadmapDataViewItem.scss';
-import {shuffle, take} from 'lodash';
 
 export const roadmapDataViewPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model})  {
         return wrapper({
-            description: [
-                <p>
-                The DataView component leverages an underlying Grid / GridModel instance to
-            display individual component "cards" for each rendered item.
-                </p>
-    ],
-        item: panel({
-            className: 'toolbox-dataview-panel',
-            title: 'Grids › DataView',
-            icon: Icon.addressCard(),
-            width: 700,
-            height: 400,
-            item: dataView({
-                model: model.dataViewModel,
-                rowCls: 'dataview-item'
-            }),
-            bbar: [
-                refreshButton({
-                    text: 'Load new (random) records',
-                    model
+            item: panel({
+                className: 'toolbox-roadmap-dataview-panel',
+                title: 'Hoist Roadmap',
+                icon: Icon.mapSigns(),
+                width: 700,
+                height: 400,
+                item: dataView({
+                    model: model.dataViewModel,
+                    rowCls: 'dataview-item'
                 }),
-                filler(),
-                storeFilterField({store: model.dataViewModel.store})
-            ]
-        })
-    });
+                bbar: [
+                    filler(),
+                    storeFilterField({store: model.dataViewModel.store})
+                ]
+            })
+        });
     }
 });
 
@@ -53,35 +40,23 @@ class Model {
     @managed
     dataViewModel = new DataViewModel({
         store: {
-            fields: ['name', 'city', 'value']
+            fields: ['name', 'description', 'status']
         },
         sortBy: 'name',
-        emptyText: 'No companies found...',
+        emptyText: 'No projects found...',
         itemRenderer: (v, {record}) => RoadmapDataViewItem({record}),
         contextMenu: [
             'copyCell'
         ],
-        itemHeight: 70
+        groupBy: 'status',
+        itemHeight: 70,
+        groupedItemHeight: 32
     });
 
     async doLoadAsync(loadSpec) {
         const {dataViewModel} = this,
-            allCustomers = await XH.fetchJson({url: 'customer'}),
-            customers = take(shuffle(allCustomers), 100);
-
-        const min = -1000,
-            max = 1000;
-
-        await dataViewModel.store.loadData(customers.map(it => {
-            const randVal = Math.random() * (max - min) + min;
-            return {
-                id: it.id,
-                name: it.company,
-                city: it.city,
-                value: randVal
-            };
-        }));
-
+            projects = await XH.fetchJson({url: 'rest/projectRest'});
+        dataViewModel.store.loadData(projects.data);
         dataViewModel.selectFirst();
     }
 }
