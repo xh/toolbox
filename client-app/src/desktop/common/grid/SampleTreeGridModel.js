@@ -189,7 +189,7 @@ export class SampleTreeGridModel {
             ];
 
         store.modifyRecords(updates);
-        rec.forEachAncestor(it => store.modifyRecords(it, {isChecked: calcAggState(it)}));
+        rec.forEachAncestor(it => store.modifyRecords({id: it.id, isChecked: calcAggState(it)}));
     }
 }
 
