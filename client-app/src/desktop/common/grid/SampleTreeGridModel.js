@@ -185,7 +185,6 @@ export class SampleTreeGridModel {
         const {store} = this,
             isChecked = !rec.data.isChecked,
             updates = [
-                {id: rec.id, isChecked},
                 ...rec.allDescendants.map(({id}) => ({id, isChecked}))
             ];
 
