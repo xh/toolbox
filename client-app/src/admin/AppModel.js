@@ -46,11 +46,7 @@ export class AppModel extends BaseAppModel {
             },
             {
                 name: 'roadmap',
-                path: '/roadmap',
-                children: [
-                    {name: 'update', path: '/update'},
-                    {name: 'updateLog', path: '/updateLog'}
-                ]
+                path: '/roadmap'
             }
         ];
     }

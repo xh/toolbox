@@ -30,6 +30,7 @@ class Project implements JSONFormat {
     Map formatForJSON() {
         return [
                 id: id,
+                category: category,
                 name: name,
                 description: description,
                 releaseVersion: releaseVersion,
