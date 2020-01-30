@@ -18,8 +18,8 @@ export function getAppOptions() {
             valueSetter: (v) => XH.setDarkTheme(v)
         },
         {
-            name: 'defaultGridMode',
-            prefName: 'defaultGridMode',
+            name: 'gridSizingMode',
+            prefName: 'gridSizingMode',
             formField: {
                 label: 'Default grid size',
                 item: buttonGroupInput(

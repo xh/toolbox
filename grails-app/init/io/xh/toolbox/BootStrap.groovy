@@ -132,7 +132,7 @@ class BootStrap {
                 groupName: 'Toolbox',
                 note: 'Nested arrays containing user\'s custom dimension choices'
             ],
-            defaultGridMode: [
+            gridSizingMode: [
                 type: 'string',
                 defaultValue: 'standard',
                 local: true,

@@ -11,7 +11,7 @@ export class AppModel {
     newsPanelModel = new NewsPanelModel();
 
     get gridSizingMode() {
-        return XH.getPref('defaultGridMode');
+        return XH.getPref('gridSizingMode');
     }
     
     async initAsync() {
