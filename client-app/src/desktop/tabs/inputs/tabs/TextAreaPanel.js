@@ -23,9 +23,10 @@ function createModel() {
         componentName: 'TextArea',
         props: {
             autoFocus: {
-                value: true,
+                value: false,
                 type: T.Boolean,
-                description: 'True to focus the control on render.'
+                description: 'True to focus the control on render.',
+                hidden: true
             },
             commitOnChange: {
                 value: false,
@@ -33,9 +34,10 @@ function createModel() {
                 description: 'True to commit on every change/keystroke, default false.'
             },
             fill: {
-                value: null,
+                value: false,
                 type: T.Boolean,
-                description: 'True to take up the full width of container.'
+                description: 'True to take up the full width of container.',
+                hidden: true
             },
             onKeyDown: {
                 value: null,

@@ -30,9 +30,10 @@ function createModel() {
         componentName: 'Select',
         props: {
             autoFocus: {
-                value: null,
+                value: false,
                 type: T.Boolean,
-                description: 'True to focus the control on render.'
+                description: 'True to focus the control on render.',
+                hidden: true
             },
             createMessageFn: {
                 value: null,

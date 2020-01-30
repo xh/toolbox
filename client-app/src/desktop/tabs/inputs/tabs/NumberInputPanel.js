@@ -33,9 +33,10 @@ function createModel() {
         componentName: 'NumberInput',
         props: {
             autoFocus: {
-                value: true,
+                value: false,
                 type: T.Boolean,
-                description: 'True to focus the control on render.'
+                description: 'True to focus the control on render.',
+                hidden: true
             },
             commitOnChange: {
                 value: false,
@@ -53,9 +54,10 @@ function createModel() {
                 description: 'True to convert entries suffixed with k/m/b to thousands/millions/billions.'
             },
             fill: {
-                value: true, type:
-                T.Boolean,
-                description: 'True to take up the full width of container.'
+                value: true,
+                type: T.Boolean,
+                description: 'True to take up the full width of container.',
+                hidden: true
             },
             leftIcon: {
                 value: null,

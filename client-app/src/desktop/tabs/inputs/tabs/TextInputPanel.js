@@ -33,9 +33,10 @@ function createModel() {
                 hidden: true
             },
             autoFocus: {
-                value: true,
+                value: false,
                 type: T.Boolean,
-                description: 'True to focus the control on render.'
+                description: 'True to focus the control on render.',
+                hidden: true
             },
             commitOnChange: {
                 value: false,

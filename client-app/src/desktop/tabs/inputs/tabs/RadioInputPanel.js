@@ -33,10 +33,6 @@ function createModel() {
             }
         },
         props: {
-            options: {
-                value: options,
-                type: T.Custom
-            },
             inline: {
                 value: true,
                 type: T.Boolean,
@@ -48,6 +44,15 @@ function createModel() {
                 enumName: 'alignments',
                 options: alignments,
                 description: 'Alignment of each option\'s label relative its radio button, default right.'
+            },
+            options: {
+                value: options,
+                type: T.Object,
+                description:
+                    'Array of available options, of the form:\n' +
+                    '      [{value: string, label: string, disabled: bool}, ...]\n' +
+                    '         - or -\n' +
+                    '      [val, val, ...]\n'
             }
         },
         scope: {

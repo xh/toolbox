@@ -24,9 +24,10 @@ function createModel() {
         componentName: 'SwitchInput',
         props: {
             inline: {
-                value: true,
+                value: false,
                 type: T.Boolean,
-                description: 'True (default) if the control should appear as an inline element.'
+                description: 'True (default) if the control should appear as an inline element.',
+                hidden: true
             },
             label: {
                 value: null,

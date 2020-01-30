@@ -44,7 +44,8 @@ function createModel() {
             fill: {
                 value: false,
                 type: T.Boolean,
-                description: 'True to have all buttons fill available width equally.'
+                description: 'True to have all buttons fill available width equally.',
+                hidden: true
             },
             minimal: {
                 value: false,
