@@ -11,10 +11,11 @@ class Project implements JSONFormat {
     String description
     String releaseVersion
     String status
-    String gitLink
+//    String gitLink
     String lastUpdatedBy
     Date lastUpdated
 
+    static hasMany = [gitLinks: GitLink]
     static mapping = {
         cache true
         description type: 'text'
@@ -35,7 +36,7 @@ class Project implements JSONFormat {
                 description: description,
                 releaseVersion: releaseVersion,
                 status: status,
-                gitLink: gitLink,
+                gitLinks: gitLinks,
                 lastUpdatedBy: lastUpdatedBy,
                 lastUpdated: lastUpdated
         ]
