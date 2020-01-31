@@ -2,6 +2,7 @@ package io.xh.toolbox
 
 import io.xh.hoist.config.AppConfig
 import io.xh.hoist.util.Utils
+import io.xh.toolbox.roadmap.Project
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.Monitor
@@ -22,6 +23,7 @@ class BootStrap {
         ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
         ensureMonitorsCreated()
+        ensureRoadMapItemsCreated()
         def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
         BaseService.parallelInit(services)
         ensureUsersCreated()
@@ -29,6 +31,29 @@ class BootStrap {
 
     def destroy = {}
 
+
+    private void ensureRoadMapItemsCreated() {
+        if (!Project.count) {
+
+            new Project(
+                    name: 'Inline Grid Editing',
+                    category: 'Grids',
+                    description: 'Ability to edit grids inline',
+                    status: 'DEVELOPMENT',
+                    gitLinks: [
+                            'https://github.com/xh/hoist-react/issues/1621',
+                            'https://github.com/xh/hoist-react/pull/1620'
+                    ]
+            ).save()
+
+            new Project(
+                    name: 'Rich Dashboards',
+                    category: 'Dashboards',
+                    description: 'Highly functional drag-drop dashboards',
+                    status: 'RELEASED'
+            ).save()
+        }
+    }
 
     //------------------------
     // Implementation

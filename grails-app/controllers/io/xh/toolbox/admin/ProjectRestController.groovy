@@ -23,4 +23,8 @@ class ProjectRestController extends RestController {
                 statuses: Project.STATUSES
         )
     }
+
+    protected void preprocessSubmit(JSONObject submit) {
+        submit.lastUpdatedBy = username
+    }
 }

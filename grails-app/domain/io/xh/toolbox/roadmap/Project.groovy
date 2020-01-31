@@ -1,6 +1,7 @@
 package io.xh.toolbox.roadmap
 
 import io.xh.hoist.json.JSONFormat
+import io.xh.hoist.util.Utils
 
 class Project implements JSONFormat {
 
@@ -11,20 +12,20 @@ class Project implements JSONFormat {
     String description
     String releaseVersion
     String status
-//    String gitLink
+    String gitLinks
     String lastUpdatedBy
     Date lastUpdated
 
-    static hasMany = [gitLinks: GitLink]
     static mapping = {
         cache true
         description type: 'text'
     }
 
     static constraints = {
-        name(nullable: false, blank: false, maxSize: 50)
+        name(blank: false, maxSize: 50)
         status(inList: Project.STATUSES)
         releaseVersion(nullable: true)
+        gitLinks(nullable: true, validator: {Utils.isJSON(it) ?: 'default.invalid.json.message'})
         lastUpdatedBy(nullable: true, maxSize: 50)
     }
 

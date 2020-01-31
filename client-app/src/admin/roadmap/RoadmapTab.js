@@ -28,6 +28,7 @@ export const RoadmapTab = hoistCmp.factory({
         });
     }
 });
+const tooltip = s => s;
 
 const modelSpec = {
     enableExport: true,
@@ -51,10 +52,6 @@ const modelSpec = {
                 required: false
             },
             {
-                name: 'gitLink',
-                required: true
-            },
-            {
                 name: 'status',
                 lookupName: 'statuses',
                 lookupStrict: true,
@@ -64,6 +61,10 @@ const modelSpec = {
                 name: 'lastUpdated',
                 type: 'date',
                 editable: false
+            },
+            {
+                field: 'gitLinks',
+                type: 'json'
             },
             {
                 name: 'lastUpdatedBy',
@@ -82,23 +83,18 @@ const modelSpec = {
         {
             field: 'name',
             headerName: 'Title',
-            tooltip: (name) => name,
+            tooltip,
             width: 250
         },
         {
             field: 'description',
-            tooltip: (desc) => desc,
+            tooltip,
             width: 650
         },
         {
             field: 'releaseVersion',
             headerName: 'Release',
-            tooltip: (release) => release,
-            width: 150
-        },
-        {
-            field: 'gitLink',
-            headerName: 'GitHub',
+            tooltip,
             width: 150
         },
         {
@@ -109,7 +105,7 @@ const modelSpec = {
             field: 'lastUpdated',
             headerName: 'Last Updated',
             width: 200,
-            tooltip: (lastUpdated) => lastUpdated,
+            tooltip,
             align: 'right'
         },
         {
@@ -124,8 +120,8 @@ const modelSpec = {
         {field: 'category'},
         {field: 'status'},
         {field: 'description'},
+        {field: 'gitLinks'},
         {field: 'releaseVersion'},
-        {field: 'gitLink'},
         {field: 'lastUpdatedBy', label: 'Last Updated By'}
     ],
     emptyText: 'No projects found - try adding one...',
