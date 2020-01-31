@@ -16,44 +16,7 @@ export const inputTestPanel = hoistCmp.factory({
     model: uses(InputTestModel),
 
     render({model}) {
-        let props = {
-            ...model.props,
-            bind: {
-                value: 'value',
-                type: T.Custom
-            },
-            disabled: {
-                value: false,
-                type: T.Boolean,
-                description: 'True to disable user interaction. Can be set by parent FormField. ',
-                hidden: true
-            },
-            onChange: {
-                value: null,
-                type: T.Function,
-                description: 'Called when value changes - passed new and prior values. ',
-                hidden: true
-            },
-            onCommit: {
-                value: null,
-                type: T.Function,
-                description: 'Called when value is committed to backing model - passed new and prior values. ',
-                hidden: true
-            }
-        };
-
-        // If we do not set stateful to true, then react-view will ignore false boolean props.
-        // The input we are testing may use a default value of true, ignoring user input entirely.
-        for (const key in props) props[key].stateful = (props[key].type == T.Boolean);
-
-        // Put hidden props at the end of the list. This will avoid the existing list jumping around when hidden
-        // props are displayed or hidden.
-        let basicProps = {},
-            hiddenProps = {};
-        for (const key in props) {
-            (props[key].hidden ? hiddenProps : basicProps)[key] = props[key];
-        }
-        props = {...basicProps, ...hiddenProps};
+        const props = cleanProps(model.props);
 
         for (const key in props) {
             warnIf(
@@ -135,6 +98,55 @@ export const inputTestPanel = hoistCmp.factory({
         });
     }
 });
+
+/**
+ * Puts props into alphabetical order, then adds HoistInput props, then moves all hidden props to the end.
+ */
+function cleanProps(inProps) {
+    let props = {};
+    Object.keys(inProps).sort().forEach((key) => props[key] = inProps[key]);
+
+    props = {
+        ...props,
+        bind: {
+            value: 'value',
+            type: T.Custom
+        },
+        disabled: {
+            value: false,
+            type: T.Boolean,
+            description: 'True to disable user interaction. Can be set by parent FormField. ',
+            hidden: true
+        },
+        onChange: {
+            value: null,
+            type: T.Function,
+            description: 'Called when value changes - passed new and prior values. ',
+            hidden: true
+        },
+        onCommit: {
+            value: null,
+            type: T.Function,
+            description: 'Called when value is committed to backing model - passed new and prior values. ',
+            hidden: true
+        }
+    };
+
+    // If we do not set stateful to true, then react-view will ignore false boolean props.
+    // The input we are testing may use a default value of true, ignoring user input entirely.
+    for (const key in props) props[key].stateful = (props[key].type == T.Boolean);
+
+    // Put hidden props at the end of the list. This will avoid the existing list jumping around when hidden
+    // props are displayed or hidden.
+    let basicProps = {},
+        hiddenProps = {};
+    for (const key in props) {
+        (props[key].hidden ? hiddenProps : basicProps)[key] = props[key];
+    }
+    props = {...basicProps, ...hiddenProps};
+
+    return props;
+}
 
 function displayValue(value) {
     let ret = String(value);
