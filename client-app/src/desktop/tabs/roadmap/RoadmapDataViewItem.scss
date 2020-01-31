@@ -28,11 +28,12 @@
     &--git {
       position: absolute !important;
       right: 40px !important;
+      top: 10px;
     }
 
-    svg {
-      position: absolute;
-      right: 10px;
+    &--statusIcon {
+      position: absolute !important;
+      right: 10px !important;
       top: 15px;
     }
   }

@@ -81,7 +81,11 @@ export const roadmapDataViewItem = hoistCmp.factory({
                     })
                 )
             }),
-            statusIcon
+            span({
+                className: 'dataview-item--statusIcon',
+                item: statusIcon
+            })
+
         );
     }
 });
