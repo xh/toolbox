@@ -57,6 +57,7 @@ export const roadmapDataViewItem = hoistCmp.factory({
                     span('Last updated: ' + fmtCompactDate(lastUpdated))
                 ]
             }),
+
             statusIcon
         );
     }
