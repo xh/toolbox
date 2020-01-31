@@ -8,6 +8,8 @@ import {InputTestModel} from './InputTestModel';
 import {wrapper} from '../../common';
 import {Icon} from '@xh/hoist/icon';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {HoistInput} from '@xh/hoist/cmp/input';
+import {warnIf} from '@xh/hoist/utils/js';
 
 export const inputTestPanel = hoistCmp.factory({
 
@@ -52,6 +54,20 @@ export const inputTestPanel = hoistCmp.factory({
             (props[key].hidden ? hiddenProps : basicProps)[key] = props[key];
         }
         props = {...basicProps, ...hiddenProps};
+
+        for (const key in props) {
+            warnIf(
+                !(model.scope[model.componentName].propTypes[key]),
+                `${key} found in react-view knobs but not found in ${model.componentName} propTypes.`
+            );
+        }
+
+        for (const key in model.scope[model.componentName].propTypes) {
+            warnIf(
+                !(props[key]) && !(HoistInput.propTypes[key]),
+                `${key} found in ${model.componentName} propTypes but not included in react-view knobs.`
+            );
+        }
 
         const viewParams = useView({
             componentName: model.componentName,
@@ -101,7 +117,6 @@ export const inputTestPanel = hoistCmp.factory({
                             ]
                         }),
                         div({
-                            // TODO: add title to knobs
                             className: 'input-test-controls',
                             items: [
                                 span({
