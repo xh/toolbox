@@ -25,6 +25,12 @@
       margin-bottom: 2px;
     }
 
+    &--git {
+      & svg {
+        right: 40px !important;
+      }
+    }
+
     svg {
       position: absolute;
       right: 10px;

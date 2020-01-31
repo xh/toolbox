@@ -3,6 +3,8 @@ import {vbox, box, hbox} from '@xh/hoist/cmp/layout/index';
 import {Icon} from '@xh/hoist/icon/index';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {fmtCompactDate} from '@xh/hoist/format';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 
 export const roadmapDataViewItem = hoistCmp.factory({
     model: null,
@@ -57,8 +59,23 @@ export const roadmapDataViewItem = hoistCmp.factory({
                     span('Last updated: ' + fmtCompactDate(lastUpdated))
                 ]
             }),
-
+            popover({
+                className: 'dataview-item--git',
+                position: 'top-left',
+                minimal: true,
+                target: button({
+                    icon: Icon.openExternal({size: '2x', className: 'xh-black', prefix: 'fal'})
+                }),
+                content: menu(
+                    menuItem({
+                        text: 'Github Link',
+                        icon: Icon.options(),
+                        onClick: () => window.open(gitLink)
+                    })
+                )
+            }),
             statusIcon
         );
     }
 });
+
