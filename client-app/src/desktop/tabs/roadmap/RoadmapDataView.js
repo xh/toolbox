@@ -10,7 +10,6 @@ import {RoadmapDataViewModel} from './RoadmapDataViewModel';
 import './RoadmapDataViewItem.scss';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 
-
 export const roadmapDataView = hoistCmp.factory({
     model: creates(RoadmapDataViewModel),
 

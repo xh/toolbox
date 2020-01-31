@@ -17,19 +17,14 @@ import {
     cloneAction
 } from '@xh/hoist/desktop/cmp/rest';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {wrapper} from '../../../src/desktop/common/Wrapper';
 
 export const RoadmapTab = hoistCmp.factory({
 
     render() {
-        return wrapper({
-            item: panel({
-                title: 'Hoist Roadmap REST Editor',
-                icon: Icon.edit(),
-                width: 900,
-                height: 600,
-                item: restGrid({model: modelSpec})
-            })
+        return panel({
+            title: 'Hoist Roadmap REST Editor',
+            icon: Icon.edit(),
+            item: restGrid({model: modelSpec})
         });
     }
 });
@@ -82,45 +77,45 @@ const modelSpec = {
     columns: [
         {
             field: 'category',
-            width: 80
+            width: 150
         },
         {
             field: 'name',
             headerName: 'Title',
             tooltip: (name) => name,
-            width: 120
+            width: 250
         },
         {
             field: 'description',
             tooltip: (desc) => desc,
-            width: 200
+            width: 650
         },
         {
             field: 'releaseVersion',
             headerName: 'Release',
             tooltip: (release) => release,
-            width: 100
+            width: 150
         },
         {
             field: 'gitLink',
             headerName: 'GitHub',
-            width: 100
+            width: 150
         },
         {
             field: 'status',
-            width: 100
+            width: 150
         },
         {
             field: 'lastUpdated',
             headerName: 'Last Updated',
-            width: 120,
+            width: 200,
             tooltip: (lastUpdated) => lastUpdated,
             align: 'right'
         },
         {
             field: 'lastUpdatedBy',
             headerName: 'By:',
-            width: 80
+            width: 100
         },
         {...emptyFlexCol}
     ],
