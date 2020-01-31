@@ -56,20 +56,27 @@ export const roadmapDataViewItem = hoistCmp.factory({
                 items: [
                     releaseVersion,
                     filler(),
-                    span('Last updated: ' + fmtCompactDate(lastUpdated))
+                    span('Last updated ' + fmtCompactDate(lastUpdated) + ' by: ' + lastUpdatedBy)
                 ]
             }),
             popover({
                 className: 'dataview-item--git',
-                position: 'top-left',
                 minimal: true,
+                interactionKind: 'hover',
                 target: button({
                     icon: Icon.openExternal({size: '2x', className: 'xh-black', prefix: 'fal'})
                 }),
                 content: menu(
+                    // map over array of gitLink to display text and get url for onClick.
+                    // should create new table for gitLink for one to many relationship for project
                     menuItem({
                         text: 'Github Link',
-                        icon: Icon.options(),
+                        icon: Icon.openExternal(),
+                        onClick: () => window.open(gitLink)
+                    }),
+                    menuItem({
+                        text: 'Github Link',
+                        icon: Icon.openExternal(),
                         onClick: () => window.open(gitLink)
                     })
                 )

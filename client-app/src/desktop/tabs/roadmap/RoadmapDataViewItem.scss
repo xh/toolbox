@@ -26,9 +26,8 @@
     }
 
     &--git {
-      & svg {
-        right: 40px !important;
-      }
+      position: absolute !important;
+      right: 40px !important;
     }
 
     svg {
