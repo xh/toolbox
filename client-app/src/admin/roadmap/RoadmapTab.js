@@ -72,7 +72,7 @@ const modelSpec = {
             },
             {
                 name: 'lastUpdatedBy',
-                editable: false
+                editable: true
             }
         ]
     },
@@ -125,14 +125,13 @@ const modelSpec = {
         {...emptyFlexCol}
     ],
     editors: [
-        {field: 'name'},
+        {field: 'name', label: 'Title'},
         {field: 'category'},
         {field: 'status'},
         {field: 'description'},
         {field: 'releaseVersion'},
         {field: 'gitLink'},
-        {field: 'lastUpdated'},
-        {field: 'lastUpdatedBy'}
+        {field: 'lastUpdatedBy', label: 'Last Updated By'}
     ],
     emptyText: 'No projects found - try adding one...',
     menuActions: [

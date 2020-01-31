@@ -22,8 +22,8 @@ class Project implements JSONFormat {
 
     static constraints = {
         name(nullable: false, blank: false, maxSize: 50)
-        description(nullable: false)
         status(inList: Project.STATUSES)
+        releaseVersion(nullable: true)
         lastUpdatedBy(nullable: true, maxSize: 50)
     }
 
