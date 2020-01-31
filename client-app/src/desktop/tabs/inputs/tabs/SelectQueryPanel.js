@@ -5,9 +5,9 @@ import {Select} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {hoistCmp} from '@xh/hoist/core';
 import {XH} from '@xh/hoist/core';
-
 import {inputTestPanel} from '../InputTestPanel';
 import {box, div, hbox, p} from '@xh/hoist/cmp/layout';
+import {selectProps} from './SelectPanel';
 
 export const selectQueryPanel = hoistCmp.factory({
 
@@ -26,12 +26,7 @@ function createModel() {
             ],
         componentName: 'Select',
         props: {
-            autoFocus: {
-                value: false,
-                type: T.Boolean,
-                description: 'True to focus the control on render.',
-                hidden: true
-            },
+            ...selectProps,
             createMessageFn: {
                 value: null,
                 type: T.Function,
@@ -39,26 +34,6 @@ function createModel() {
                     'Function to return a "create a new option" string prompt. Requires `allowCreate` true. \n' +
                     'Passed current query input.',
                 hidden: true
-            },
-            enableClear: {
-                value: null,
-                type: T.Boolean,
-                description: 'True to show a "clear" button at the right of the control.  Defaults to false.'
-            },
-            enableCreate: {
-                value: null,
-                type: T.Boolean,
-                description: 'True to accept and commit input values not present in options or returned by a query.'
-            },
-            enableMulti: {
-                value: false,
-                type: T.Boolean,
-                description: 'True to allow entry/selection of multiple values - "tag picker" style.'
-            },
-            hideSelectedOptionCheck: {
-                value: null,
-                type: T.Boolean,
-                description: 'True to suppress the default check icon rendered for the currently selected option.'
             },
             labelField: {
                 value: 'company',
@@ -72,23 +47,11 @@ function createModel() {
                 description: 'Function to return loading message during an async query. Passed current query input.',
                 hidden: true
             },
-            menuPlacement: {
-                value: 'auto',
-                type: T.Enum,
-                enumName: 'positions',
-                options: positions,
-                description: 'Placement of the dropdown menu relative to the input control.'
-            },
             noOptionsMessageFn: {
                 value: null,
                 type: T.Function,
                 description: 'Function to return message indicating no options loaded. Passed current query input.',
                 hidden: true
-            },
-            openMenuOnFocus: {
-                value: null,
-                type: T.Boolean,
-                description: 'True to auto-open the dropdown menu on input focus.'
             },
             optionRenderer: {
                 value: `(opt) => customerOption({opt})`,
@@ -118,20 +81,6 @@ function createModel() {
                 description:
                     'Async function to return a list of options for a given query string input.\n' +
                     'Replaces the `options` prop - use one or the other.'
-            },
-            rsOptions: {
-                value: null,
-                type: T.Object,
-                description:
-                    'Escape-hatch props passed directly to react-select. Use with care - not all props ' +
-                    'in the react-select API are guaranteed to be supported by this Hoist component, ' +
-                    'and providing them directly can interfere with the implementation of this class.',
-                hidden: true
-            },
-            selectOnFocus: {
-                value: false,
-                type: T.Boolean,
-                description: 'True to select contents when control receives focus.'
             },
             valueField: {
                 value: 'id',

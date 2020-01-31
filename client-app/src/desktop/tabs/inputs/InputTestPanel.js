@@ -17,6 +17,7 @@ export const inputTestPanel = hoistCmp.factory({
 
     render({model}) {
         let props = {
+            ...model.props,
             bind: {
                 value: 'value',
                 type: T.Custom
@@ -38,8 +39,7 @@ export const inputTestPanel = hoistCmp.factory({
                 type: T.Function,
                 description: 'Called when value is committed to backing model - passed new and prior values. ',
                 hidden: true
-            },
-            ...model.props
+            }
         };
 
         // If we do not set stateful to true, then react-view will ignore false boolean props.

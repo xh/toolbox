@@ -15,6 +15,93 @@ export const selectPanel = hoistCmp.factory({
     }
 });
 
+const positions = {
+    auto: 'auto',
+    top: 'top',
+    bottom: 'bottom'
+};
+
+export const selectProps = {
+    autoFocus: {
+        value: false,
+        type: T.Boolean,
+        description: 'True to focus the control on render.',
+        hidden: true
+    },
+    createMessageFn: {
+        value: null,
+        type: T.Function,
+        description:
+            'Function to return a "create a new option" string prompt. Requires `allowCreate` true. \n' +
+            'Passed current query input.',
+        hidden: true
+    },
+    enableClear: {
+        value: null,
+        type: T.Boolean,
+        description: 'True to show a "clear" button at the right of the control.  Defaults to false.'
+    },
+    enableCreate: {
+        value: null,
+        type: T.Boolean,
+        description: 'True to accept and commit input values not present in options or returned by a query.'
+    },
+    enableFilter: {
+        value: null,
+        type: T.Boolean,
+        description:
+            'True (default) to enable type-to-search keyboard input. False to disable keyboard input, ' +
+            'showing the dropdown menu on click.'
+    },
+    enableMulti: {
+        value: null,
+        type: T.Boolean,
+        description: 'True to allow entry/selection of multiple values - "tag picker" style.'
+    },
+    hideDropdownIndicator: {
+        value: false,
+        type: T.boolean,
+        description: 'True to hide the dropdown indicator, i.e. the down-facing arrow at the right of the Select.'
+    },
+    hideSelectedOptionCheck: {
+        value: null,
+        type: T.Boolean,
+        description: 'True to suppress the default check icon rendered for the currently selected option.'
+    },
+    menuPlacement: {
+        value: 'auto',
+        type: T.Enum,
+        enumName: 'positions',
+        options: positions,
+        description: 'Placement of the dropdown menu relative to the input control.'
+    },
+    noOptionsMessageFn: {
+        value: null,
+        type: T.Function,
+        description: 'Function to return message indicating no options loaded. Passed current query input.',
+        hidden: true
+    },
+    openMenuOnFocus: {
+        value: null,
+        type: T.Boolean,
+        description: 'True to auto-open the dropdown menu on input focus.'
+    },
+    rsOptions: {
+        value: null,
+        type: T.Object,
+        description:
+            'Escape-hatch props passed directly to react-select. Use with care - not all props ' +
+            'in the react-select API are guaranteed to be supported by this Hoist component, ' +
+            'and providing them directly can interfere with the implementation of this class.',
+        hidden: true
+    },
+    selectOnFocus: {
+        value: null,
+        type: T.Boolean,
+        description: 'True to select contents when control receives focus.'
+    }
+};
+
 function createModel() {
     return new InputTestModel({
         description:
@@ -29,64 +116,19 @@ function createModel() {
             ],
         componentName: 'Select',
         props: {
-            autoFocus: {
+            ...selectProps,
+            enableWindowed: {
                 value: false,
                 type: T.Boolean,
-                description: 'True to focus the control on render.',
-                hidden: true
-            },
-            createMessageFn: {
-                value: null,
-                type: T.Function,
                 description:
-                    'Function to return a "create a new option" string prompt. Requires `allowCreate` true. \n' +
-                    'Passed current query input.',
-                hidden: true
-            },
-            enableClear: {
-                value: null,
-                type: T.Boolean,
-                description: 'True to show a "clear" button at the right of the control.  Defaults to false.'
-            },
-            enableCreate: {
-                value: null,
-                type: T.Boolean,
-                description: 'True to accept and commit input values not present in options or returned by a query.'
-            },
-            enableFilter: {
-                value: null,
-                type: T.Boolean,
-                description:
-                    'True (default) to enable type-to-search keyboard input. False to disable keyboard input, ' +
-                    'showing the dropdown menu on click.'
-            },
-            enableMulti: {
-                value: null,
-                type: T.Boolean,
-                description: 'True to allow entry/selection of multiple values - "tag picker" style.'
-            },
-            hideSelectedOptionCheck: {
-                value: null,
-                type: T.Boolean,
-                description: 'True to suppress the default check icon rendered for the currently selected option.'
-            },
-            menuPlacement: {
-                value: 'auto',
-                type: T.Enum,
-                enumName: 'positions',
-                options: positions,
-                description: 'Placement of the dropdown menu relative to the input control.'
-            },
-            noOptionsMessageFn: {
-                value: null,
-                type: T.Function,
-                description: 'Function to return message indicating no options loaded. Passed current query input.',
-                hidden: true
-            },
-            openMenuOnFocus: {
-                value: null,
-                type: T.Boolean,
-                description: 'True to auto-open the dropdown menu on input focus.'
+                    'True to use react-windowed-select for improved performance on large option lists.\n' +
+                    'See https://github.com/jacobworrel/react-windowed-select/.  Defaults to false.\n' +
+                    '\n' +
+                    'Currently only supported when the enableCreate and queryFn props are not specified.\n' +
+                    'These options require the use of specialized \'Async\' or \'Creatable\' selects from the\n' +
+                    'underlying react-select library which are not fully implemented in react-windowed-select.\n' +
+                    '\n' +
+                    'Applications should use this option with care.\n'
             },
             options: {
                 value:
@@ -99,23 +141,9 @@ function createModel() {
                     'options via an async query (i.e. from the server) instead of up-front in this prop.'
             },
             placeholder: {
-                value: null,
+                value: 'Education: ',
                 type: T.String,
                 description: 'Text to display when control is empty.'
-            },
-            rsOptions: {
-                value: null,
-                type: T.Object,
-                description:
-                    'Escape-hatch props passed directly to react-select. Use with care - not all props ' +
-                    'in the react-select API are guaranteed to be supported by this Hoist component, ' +
-                    'and providing them directly can interfere with the implementation of this class.',
-                hidden: true
-            },
-            selectOnFocus: {
-                value: null,
-                type: T.Boolean,
-                description: 'True to select contents when control receives focus.'
             }
         },
         scope: {
@@ -124,9 +152,3 @@ function createModel() {
         }
     });
 }
-
-const positions = {
-    auto: 'auto',
-    top: 'top',
-    bottom: 'bottom'
-};
