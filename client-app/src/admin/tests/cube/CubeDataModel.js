@@ -20,6 +20,7 @@ export class CubeDataModel {
     @managed gridModel;
     @managed loadTimesGridModel;
     @managed dimManagerModel;
+    @managed orders = [];
 
     @bindable includeLeaves = false;
     @bindable includeRoot = false;
@@ -33,9 +34,10 @@ export class CubeDataModel {
         this.loadTimesGridModel = this.createLoadTimesGridModel();
         this.cube = this.createCube();
 
-        const cubeDims = this.cube.fieldList
+        console.log(this.cube);
+        const cubeDims = this.cube.store.fields
             .filter(it => it.isDimension)
-            .map(it => ({value: it.name, label: it.displayName}));
+            .map(it => ({value: it.name, label: it.label}));
 
         this.dimManagerModel = new DimensionManagerModel({
             dimensions: cubeDims,
@@ -80,7 +82,7 @@ export class CubeDataModel {
 
         const ocTxt = fmtThousands(orders.length) + 'k';
         await this.withLoadTime(`Loaded ${ocTxt} orders in Cube`, async () => {
-            await this.cube.loadDataAsync(orders, {});
+            await this.cube.loadData(orders, {});
         });
 
         await this.executeQueryAsync();
@@ -99,10 +101,11 @@ export class CubeDataModel {
         return start(async () => {
             let data;
             await this.withLoadTime(`Query | ${dimCount} dims | ${filterCount} fund filters`, async () => {
-                data = await this.cube.executeQueryAsync(this.getQuery()) ;
+                data = await this.cube.executeQuery(this.getQuery()) ;
             });
 
             await this.withLoadTime('Load Grid', () => {
+                console.log(data);
                 this.gridModel.loadData(data) ;
             });
         }).linkTo(this.loadModel);
@@ -126,7 +129,7 @@ export class CubeDataModel {
         };
 
         return new Cube({
-            idSpec: XH.genId,
+            idSpec: 'id',
             fields: [
                 {name: 'symbol', isDimension: true},
                 {name: 'sector', isDimension: true},
@@ -254,19 +257,16 @@ export class CubeDataModel {
         });
     }
 
-
     streamChanges() {
-        const updates = times(5, () => {
+        if (!this.orders.length) return;
+        const updates = times(100, () => {
             const random = Math.floor(Math.random() * this.orders.length),
                 order = this.orders[random];
 
-            order.commission = order.commission * (1 + (0.5 - Math.random()) * 0.01);
+            order.commission = order.commission * (1 + (0.5 - Math.random()) * 0.1);
 
-            return {id: order.id, commission: order.commission};
+            return order;
         });
-
-        // this.cube.loadUpdates(updates);
-
-        console.log(updates);
+        this.cube.updateData(updates);
     }
 }
