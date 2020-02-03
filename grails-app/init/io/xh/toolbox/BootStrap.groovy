@@ -3,6 +3,7 @@ package io.xh.toolbox
 import io.xh.hoist.config.AppConfig
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.roadmap.Project
+import io.xh.toolbox.roadmap.Phase
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.Monitor
@@ -66,6 +67,19 @@ class BootStrap {
                     description: 'Upgrade Hoist to be compatible with Java 11 and Grails 4',
                     status: 'DEVELOPMENT'
             ).save()
+        }
+        if (!Phase.count) {
+
+            new Phase(
+                    name: 'Q1 2020',
+                    sortOrder: 1
+            ).save()
+
+            new Phase(
+                    name: 'Q2 2020',
+                    sortOrder: 2
+            ).save()
+
         }
     }
 
