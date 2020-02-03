@@ -3,6 +3,7 @@ import {bindable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {roadmapDataViewItem} from './RoadmapDataViewItem';
 import {roadmapGroupItem} from './RoadmapGroupItem';
+import './RoadmapDataView.scss';
 
 @HoistModel
 @LoadSupport

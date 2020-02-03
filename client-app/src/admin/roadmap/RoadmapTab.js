@@ -120,7 +120,7 @@ const modelSpec = {
         {field: 'category'},
         {field: 'status'},
         {field: 'description'},
-        {field: 'gitLinks'},
+        {field: 'gitLinks', label: 'Enter Github Links as Text Separated by Commas'},
         {field: 'releaseVersion'},
         {field: 'lastUpdatedBy', label: 'Last Updated By'}
     ],

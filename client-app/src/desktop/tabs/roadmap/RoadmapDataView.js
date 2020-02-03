@@ -7,7 +7,7 @@ import {dataView} from '@xh/hoist/cmp/dataview';
 
 import {wrapper} from '../../common/Wrapper';
 import {RoadmapDataViewModel} from './RoadmapDataViewModel';
-import './RoadmapDataViewItem.scss';
+import './RoadmapDataView.scss';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 
 export const roadmapDataView = hoistCmp.factory({
