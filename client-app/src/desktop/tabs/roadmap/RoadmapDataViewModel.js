@@ -2,6 +2,7 @@ import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {roadmapDataViewItem} from './RoadmapDataViewItem';
+import {roadmapGroupItem} from './RoadmapGroupItem';
 
 @HoistModel
 @LoadSupport
@@ -39,7 +40,8 @@ export class RoadmapDataViewModel {
         ],
         groupBy: 'status',
         itemHeight: 70,
-        groupedItemHeight: 30
+        groupedItemHeight: 30,
+        groupRowRenderer: ({node}) => roadmapGroupItem({node})
     });
 
     async doLoadAsync(loadSpec) {

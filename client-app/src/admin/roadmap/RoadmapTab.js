@@ -18,7 +18,7 @@ import {
 } from '@xh/hoist/desktop/cmp/rest';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid';
 
-export const RoadmapTab = hoistCmp.factory({
+export const roadmapTab = hoistCmp.factory({
 
     render() {
         return panel({
