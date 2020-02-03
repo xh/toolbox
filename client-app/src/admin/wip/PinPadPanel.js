@@ -6,13 +6,13 @@ import {pinPad} from '@xh/hoist/mobile/cmp/auth/PinPad';
 
 export const pinPadPanel = hoistCmp.factory({
     model: creates(() => new PinPadModel({
-        numDigits: 4,
+        pinLength: 4,
         headerText: 'Enter your pin...',
-        onFinished: function(foo) {
-            this.setErrorText('checking pin...');
+        onPinComplete: function(res) {
+            this.setSubHeaderText('checking pin...');
             this.setDisabled(true);
             setTimeout(() => {
-                if (JSON.stringify(foo) == JSON.stringify([1, 2, 3, 4])) {
+                if (JSON.stringify(res) == JSON.stringify([1, 2, 3, 4])) {
                     this.setErrorText('');
                     this.setHeaderText('access granted');
                     this.setDisabled(false);
@@ -22,9 +22,7 @@ export const pinPadPanel = hoistCmp.factory({
                     this.setDisabled(false);
                 }
             }, 500);
-        },
-        disabled: false,
-        errorText: 'locked out'
+        }
     })),
 
     render() {
