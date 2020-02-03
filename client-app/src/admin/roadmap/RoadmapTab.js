@@ -37,6 +37,8 @@ const modelSpec = {
         fields: [
             {
                 name: 'category',
+                lookupName: 'categories',
+                lookupStrict: true,
                 required: true
             },
             {
@@ -48,8 +50,7 @@ const modelSpec = {
                 required: true
             },
             {
-                name: 'releaseVersion',
-                required: false
+                name: 'releaseVersion'
             },
             {
                 name: 'status',
@@ -63,12 +64,11 @@ const modelSpec = {
                 editable: false
             },
             {
-                field: 'gitLinks',
+                name: 'gitLinks',
                 type: 'json'
             },
             {
-                name: 'lastUpdatedBy',
-                editable: true
+                name: 'lastUpdatedBy'
             }
         ]
     },
@@ -78,28 +78,28 @@ const modelSpec = {
     columns: [
         {
             field: 'category',
-            width: 150
+            width: 100
         },
         {
             field: 'name',
             headerName: 'Title',
             tooltip,
-            width: 250
+            width: 200
         },
         {
             field: 'description',
             tooltip,
-            width: 650
+            width: 300
         },
         {
             field: 'releaseVersion',
             headerName: 'Release',
             tooltip,
-            width: 150
+            width: 100
         },
         {
             field: 'status',
-            width: 150
+            width: 100
         },
         {
             field: 'lastUpdated',

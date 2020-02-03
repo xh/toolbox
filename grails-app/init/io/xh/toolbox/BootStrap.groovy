@@ -37,9 +37,9 @@ class BootStrap {
 
             new Project(
                     name: 'Inline Grid Editing',
-                    category: 'Grids',
+                    category: 'GRIDS',
                     description: 'Ability to edit grids inline',
-                    status: 'DEVELOPMENT',
+                    status: 'MERGED',
                     gitLinks: [
                             'https://github.com/xh/hoist-react/issues/1621',
                             'https://github.com/xh/hoist-react/pull/1620'
@@ -48,9 +48,23 @@ class BootStrap {
 
             new Project(
                     name: 'Rich Dashboards',
-                    category: 'Dashboards',
+                    category: 'DASHBOARDS',
                     description: 'Highly functional drag-drop dashboards',
                     status: 'RELEASED'
+            ).save()
+
+            new Project(
+                    name: 'Progressive Web App',
+                    category: 'OTHER',
+                    description: 'Hoist PWAs for desktop apps',
+                    status: 'PLANNED'
+            ).save()
+
+            new Project(
+                    name: 'Java 11 / Grails 4',
+                    category: 'UPGRADES',
+                    description: 'Upgrade Hoist to be compatible with Java 11 and Grails 4',
+                    status: 'DEVELOPMENT'
             ).save()
         }
     }

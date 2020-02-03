@@ -28,13 +28,19 @@ export const roadmapDataViewItem = hoistCmp.factory({
                 break;
         }
         switch (category) {
-            case 'Grids':
+            case 'GRIDS':
                 categoryIcon = Icon.grid({size: '1x', className: 'xh-blue', prefix: 'fal'});
                 break;
-            case 'Dashboards':
+            case 'DASHBOARDS':
                 categoryIcon = Icon.analytics({size: '1x', className: 'xh-blue', prefix: 'fal'});
                 break;
-            case 'Other':
+            case 'UPGRADES':
+                categoryIcon = Icon.bolt({size: '1x', className: 'xh-blue', prefix: 'fal'});
+                break;
+            case 'NEW FEATURE':
+                categoryIcon = Icon.favorite({size: '1x', className: 'xh-blue', prefix: 'fal'});
+                break;
+            case 'OTHER':
                 categoryIcon = Icon.experiment({size: '1x', className: 'xh-blue', prefix: 'fal'});
                 break;
         }

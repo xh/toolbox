@@ -6,6 +6,7 @@ import io.xh.hoist.util.Utils
 class Project implements JSONFormat {
 
     static List STATUSES = ['RELEASED', 'MERGED', 'DEVELOPMENT', 'PLANNED']
+    static List CATEGORIES = ['GRIDS', 'DASHBOARDS', 'UPGRADES', 'NEW FEATURES', 'OTHER']
 
     String name
     String category
@@ -24,6 +25,7 @@ class Project implements JSONFormat {
     static constraints = {
         name(blank: false, maxSize: 50)
         status(inList: Project.STATUSES)
+        category(inList: Project.CATEGORIES)
         releaseVersion(nullable: true)
         gitLinks(nullable: true, validator: {Utils.isJSON(it) ?: 'default.invalid.json.message'})
         lastUpdatedBy(nullable: true, maxSize: 50)

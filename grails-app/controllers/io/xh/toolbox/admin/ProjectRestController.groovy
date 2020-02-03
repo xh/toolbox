@@ -20,7 +20,8 @@ class ProjectRestController extends RestController {
 
     def lookupData() {
         renderJSON (
-                statuses: Project.STATUSES
+                statuses: Project.STATUSES,
+                categories: Project.CATEGORIES
         )
     }
 
