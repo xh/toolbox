@@ -21,7 +21,7 @@ export class CubeModel {
         this.parent = parent;
 
         const timer = Timer.create({
-            runFn: () => this.streamChanges(),
+            runFn: () => this.streamChangesAsync(),
             interval: (parent.updateFreq ?? -1) * SECONDS
         });
 
@@ -79,10 +79,11 @@ export class CubeModel {
         });
     }
 
-    streamChanges() {
+    async streamChangesAsync() {
         const {orders} = this;
         if (!orders.length) return;
-        const updates = times(this.parent.updateCount, () => {
+        const {updateCount, loadTimesModel: LTM} = this.parent;
+        const updates = times(updateCount, () => {
             const random = Math.floor(Math.random() * orders.length),
                 order = orders[random];
 
@@ -90,6 +91,9 @@ export class CubeModel {
 
             return order;
         });
-        this.cube.updateData(updates);
+
+        await LTM.withLoadTime(`Updated ${updateCount} orders in Cube`, async () => {
+            this.cube.updateData(updates);
+        });
     }
 }
