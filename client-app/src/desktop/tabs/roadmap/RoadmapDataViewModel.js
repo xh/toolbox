@@ -30,7 +30,7 @@ export class RoadmapDataViewModel {
     @managed
     dataViewModel = new DataViewModel({
         store: {
-            fields: ['name', 'category', 'description', 'releaseVersion', 'status', 'gitLink', 'lastUpdated', 'lastUpdatedBy']
+            fields: ['name', 'category', 'description', 'releaseVersion', 'status', 'gitLinks', 'lastUpdated', 'lastUpdatedBy']
         },
         sortBy: 'name',
         emptyText: 'No projects found...',

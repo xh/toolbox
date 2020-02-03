@@ -10,9 +10,13 @@ export const roadmapDataViewItem = hoistCmp.factory({
     model: null,
 
     render(props) {
-        const {category, name, description, releaseVersion, status, gitLink, lastUpdated, lastUpdatedBy} = props.record.data;
-
+        const {category, name, description, releaseVersion, status, gitLinks, lastUpdated, lastUpdatedBy} = props.record.data;
+        let gitLinksMap;
+        if (gitLinks !== null) {
+            gitLinksMap = gitLinks.split(',');
+        }
         let statusIcon, categoryIcon;
+
         switch (status) {
             case 'MERGED':
                 statusIcon = Icon.check({size: '2x', className: 'xh-green-muted', prefix: 'fal'});
@@ -72,20 +76,17 @@ export const roadmapDataViewItem = hoistCmp.factory({
                 target: button({
                     icon: Icon.openExternal({size: '2x', className: 'xh-black', prefix: 'fal'})
                 }),
-                content: menu(
-                    // map over array of gitLink to display text and get url for onClick.
-                    // should create new table for gitLink for one to many relationship for project
-                    menuItem({
-                        text: 'Github Link',
-                        icon: Icon.openExternal(),
-                        onClick: () => window.open(gitLink)
-                    }),
-                    menuItem({
-                        text: 'Github Link',
-                        icon: Icon.openExternal(),
-                        onClick: () => window.open(gitLink)
+                content: menu({
+                    items: gitLinksMap ? gitLinksMap.map((link) => {
+                        return menuItem({
+                            text: link,
+                            icon: Icon.openExternal(),
+                            onClick: () => window.open(link)
+                        });
+                    }) : menuItem({
+                        text: 'No Github issue created yet ...'
                     })
-                )
+                })
             }),
             span({
                 className: 'dataview-item--statusIcon',
