@@ -6,11 +6,11 @@ import {Cube} from '@xh/hoist/data/cube';
 import {fmtThousands, numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer} from '@xh/hoist/mobx';
 import {start} from '@xh/hoist/promise';
-import {castArray, isEmpty, times} from 'lodash';
+import {isEmpty, times} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {Timer} from '@xh/hoist/utils/async';
-
+import {LoadTimesModel} from './LoadTimesModel';
 
 @HoistModel
 @LoadSupport
@@ -18,23 +18,22 @@ export class CubeDataModel {
 
     @managed cube;
     @managed gridModel;
-    @managed loadTimesGridModel;
     @managed dimManagerModel;
     @managed orders = [];
+    @managed loadTimesModel;
 
     @bindable includeLeaves = false;
-    @bindable includeRoot = false;
     @bindable fundFilter = null;
+    @bindable showSummary = false;
 
     // Flag to short-circuit initial/duplicate firing of query reaction (below).
     _initialLoadComplete = false;
 
     constructor() {
         this.gridModel = this.createGridModel();
-        this.loadTimesGridModel = this.createLoadTimesGridModel();
         this.cube = this.createCube();
+        this.loadTimesModel = new LoadTimesModel();
 
-        console.log(this.cube);
         const cubeDims = this.cube.store.fields
             .filter(it => it.isDimension)
             .map(it => ({value: it.name, label: it.label}));
@@ -61,27 +60,25 @@ export class CubeDataModel {
         });
     }
 
-    clearLoadTimes() {
-        this.loadTimesGridModel.store.loadData([]);
-    }
-
     getQuery() {
-        const {dimManagerModel, fundFilter, includeLeaves, includeRoot} = this,
+        const {dimManagerModel, fundFilter, includeLeaves} = this,
             dimensions = dimManagerModel.value,
-            filters = !isEmpty(fundFilter) ? [{name: 'fund', values: [...fundFilter]}] : null;
+            filters = !isEmpty(fundFilter) ? [{name: 'fund', values: [...fundFilter]}] : null,
+            includeRoot = this.showSummary;
 
         return {dimensions, filters, includeLeaves, includeRoot};
     }
 
     async doLoadAsync() {
-        let orders;
-        await this.withLoadTime('Fetch orders', async () => {
+        const LTM = this.loadTimesModel;
+        let orders = [];
+        await LTM.withLoadTime('Fetch orders', async () => {
             orders = await XH.portfolioService.getAllOrdersAsync();
             orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
         });
 
         const ocTxt = fmtThousands(orders.length) + 'k';
-        await this.withLoadTime(`Loaded ${ocTxt} orders in Cube`, async () => {
+        await LTM.withLoadTime(`Loaded ${ocTxt} orders in Cube`, async () => {
             await this.cube.loadData(orders, {});
         });
 
@@ -91,7 +88,9 @@ export class CubeDataModel {
     }
 
     async executeQueryAsync() {
-        const query = this.getQuery(),
+        const LTM = this.loadTimesModel,
+            {gridModel, loadModel, cube, showSummary} = this,
+            query = this.getQuery(),
             dimCount = query.dimensions.length,
             filterCount = !isEmpty(query.filters) ? query.filters[0].values.length : 0;
 
@@ -100,27 +99,17 @@ export class CubeDataModel {
 
         return start(async () => {
             let data;
-            await this.withLoadTime(`Query | ${dimCount} dims | ${filterCount} fund filters`, async () => {
-                data = await this.cube.executeQuery(this.getQuery()) ;
+            await LTM.withLoadTime(`Query | ${dimCount} dims | ${filterCount} fund filters`, async () => {
+                data = await cube.executeQuery(query) ;
             });
 
-            await this.withLoadTime('Load Grid', () => {
-                console.log(data);
-                this.gridModel.loadData(data) ;
+            gridModel.setShowSummary(showSummary);
+            gridModel.store.setLoadRootAsSummary(showSummary);
+
+            await LTM.withLoadTime('Load Grid', () => {
+                gridModel.loadData(data) ;
             });
-        }).linkTo(this.loadModel);
-    }
-
-    async withLoadTime(tag, fn) {
-        const start = Date.now();
-        await fn();
-        const end = Date.now();
-
-        this.addLoadTimes([{
-            timestamp: end,
-            took: end - start,
-            tag
-        }]);
+        }).linkTo(loadModel);
     }
 
     createCube() {
@@ -154,7 +143,10 @@ export class CubeDataModel {
     createGridModel() {
         return new GridModel({
             treeMode: true,
-            showSummary: true,
+            showSummary: this.showSummary,
+            store: {
+                loadRootAsSummary: this.showSummary
+            },
             sortBy: 'time|desc',
             emptyText: 'No records found...',
             enableColChooser: true,
@@ -233,30 +225,6 @@ export class CubeDataModel {
         });
     }
 
-    createLoadTimesGridModel() {
-        return new GridModel({
-            store: {idSpec: 'timestamp'},
-            sortBy: 'timestamp|desc',
-            emptyText: 'No actions recorded...',
-            columns: [
-                {field: 'timestamp', hidden: true},
-                {field: 'tag', flex: 1},
-                {
-                    field: 'took',
-                    width: 80,
-                    align: 'right',
-                    renderer: numberRenderer({precision: 0, label: 'ms'})
-                }
-            ]
-        });
-    }
-
-    addLoadTimes(times) {
-        this.loadTimesGridModel.updateData({
-            add: castArray(times)
-        });
-    }
-
     streamChanges() {
         if (!this.orders.length) return;
         const updates = times(100, () => {
@@ -267,6 +235,8 @@ export class CubeDataModel {
 
             return order;
         });
+
+        console.log(updates);
         this.cube.updateData(updates);
     }
 }

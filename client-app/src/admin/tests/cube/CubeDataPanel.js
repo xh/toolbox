@@ -1,5 +1,5 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {filler, hframe, span} from '@xh/hoist/cmp/layout';
+import {hframe, span} from '@xh/hoist/cmp/layout';
 import {hoistCmp, creates, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -10,72 +10,55 @@ import {Icon} from '@xh/hoist/icon';
 
 import {CubeDataModel} from './CubeDataModel';
 import {dimensionManager} from './dimensions/DimensionManager';
+import {loadTimesPanel} from './LoadTimesPanel';
 
 export const CubeDataPanel = hoistCmp({
     model: creates(CubeDataModel),
 
-    render({model}) {
-        const {gridModel, loadModel, dimManagerModel, loadTimesGridModel} = model;
-
-        return panel({
-            mask: loadModel,
-            item: hframe({
+    render() {
+        return panel(
+            hframe({
                 items: [
-                    dimensionManager({
-                        model: dimManagerModel,
-                        icon: Icon.cube()
-                    }),
+                    dimensionManager({icon: Icon.cube()}),
                     panel({
                         title: 'Grids › Cube Data',
                         icon: Icon.grid(),
                         flex: 1,
-                        item: grid({model: gridModel}),
-                        bbar: toolbar(
-                            span('Root:'),
-                            switchInput({bind: 'includeRoot'}),
-                            span('Leaves:'),
-                            switchInput({bind: 'includeLeaves'}),
-                            toolbarSep(),
-                            select({
-                                model,
-                                bind: 'fundFilter',
-                                options: XH.portfolioService.lookups.funds,
-                                placeholder: 'Fund filter...',
-                                enableClear: true,
-                                enableMulti: true,
-                                flex: 1
-                            }),
-                            button({
-                                title: 'Re-run query',
-                                icon: Icon.search(),
-                                onClick: () => model.executeQueryAsync()
-                            }),
-                            toolbarSep(),
-                            storeFilterField({gridModel})
-                        )
+                        item: grid(),
+                        mask: 'onLoad',
+                        bbar: bbar()
                     }),
-                    panel({
-                        title: 'Run Times',
-                        icon: Icon.clock(),
-                        model: {
-                            side: 'right',
-                            defaultCollapsed: true,
-                            defaultSize: 260
-                        },
-                        item: grid({model: loadTimesGridModel, hideHeaders: true}),
-                        bbar: [
-                            filler(),
-                            button({
-                                title: 'Clear timings',
-                                icon: Icon.reset({className: 'xh-red'}),
-                                onClick: () => model.clearLoadTimes()
-                            }),
-                            toolbarSep(),
-                            storeFilterField({gridModel: loadTimesGridModel})
-                        ]
-                    })
+                    loadTimesPanel()
                 ]
             })
-        });
+        );
     }
 });
+
+const bbar = hoistCmp.factory(
+    ({model}) => toolbar(
+        span('w/Summary:'),
+        switchInput({bind: 'showSummary'}),
+        span('Leaves:'),
+        switchInput({bind: 'includeLeaves'}),
+        toolbarSep(),
+        select({
+            model,
+            bind: 'fundFilter',
+            options: XH.portfolioService.lookups.funds,
+            placeholder: 'Fund filter...',
+            enableClear: true,
+            enableMulti: true,
+            flex: 1
+        }),
+        button({
+            title: 'Re-run query',
+            icon: Icon.search(),
+            onClick: () => model.executeQueryAsync()
+        }),
+        toolbarSep(),
+        storeFilterField()
+    )
+);
+
+
