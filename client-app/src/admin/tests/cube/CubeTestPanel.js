@@ -1,19 +1,20 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {hframe, span} from '@xh/hoist/cmp/layout';
+import {hframe, hspacer, filler} from '@xh/hoist/cmp/layout';
 import {hoistCmp, creates, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {gridCountLabel} from '@xh/hoist/cmp/grid';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 
-import {CubeDataModel} from './CubeDataModel';
+import {CubeTestModel} from './CubeTestModel';
 import {dimensionManager} from './dimensions/DimensionManager';
 import {loadTimesPanel} from './LoadTimesPanel';
+import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
 
-export const CubeDataPanel = hoistCmp({
-    model: creates(CubeDataModel),
+export const CubeTestPanel = hoistCmp({
+    model: creates(CubeTestModel),
 
     render() {
         return panel(
@@ -26,7 +27,8 @@ export const CubeDataPanel = hoistCmp({
                         flex: 1,
                         item: grid(),
                         mask: 'onLoad',
-                        bbar: bbar()
+                        tbar: tbar(),
+                        bbar: [gridCountLabel(), filler(), storeFilterField(), colChooserButton()]
                     }),
                     loadTimesPanel()
                 ]
@@ -35,29 +37,32 @@ export const CubeDataPanel = hoistCmp({
     }
 });
 
-const bbar = hoistCmp.factory(
-    ({model}) => toolbar(
-        span('w/Summary:'),
-        switchInput({bind: 'showSummary'}),
-        span('Leaves:'),
-        switchInput({bind: 'includeLeaves'}),
-        toolbarSep(),
+const tbar = hoistCmp.factory(
+    () => toolbar(
+        switchInput({bind: 'showSummary', label: 'Summary?', labelAlign: 'left'}),
+        switchInput({bind: 'includeLeaves', label: 'Leaves?', labelAlign: 'left'}),
         select({
-            model,
             bind: 'fundFilter',
             options: XH.portfolioService.lookups.funds,
             placeholder: 'Fund filter...',
             enableClear: true,
             enableMulti: true,
-            flex: 1
+            width: 300
         }),
-        button({
-            title: 'Re-run query',
-            icon: Icon.search(),
-            onClick: () => model.executeQueryAsync()
+        filler(),
+        'Update Secs: ',
+        select({
+            bind: 'updateFreq',
+            options: [-1, 2, 5, 10, 20],
+            width: 80
         }),
-        toolbarSep(),
-        storeFilterField()
+        hspacer(5),
+        'Update Rows: ',
+        select({
+            bind: 'updateCount',
+            options: [0, 5, 10, 100, 200],
+            width: 80
+        })
     )
 );
 

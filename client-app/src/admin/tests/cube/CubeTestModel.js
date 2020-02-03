@@ -2,39 +2,35 @@ import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
 import {timeCol} from '@xh/hoist/cmp/grid/columns';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
-import {Cube} from '@xh/hoist/data/cube';
-import {fmtThousands, numberRenderer} from '@xh/hoist/format';
+import {numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer} from '@xh/hoist/mobx';
 import {start} from '@xh/hoist/promise';
-import {isEmpty, times} from 'lodash';
+import {isEmpty} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
-import {SECONDS} from '@xh/hoist/utils/datetime';
-import {Timer} from '@xh/hoist/utils/async';
 import {LoadTimesModel} from './LoadTimesModel';
+import {CubeModel} from './CubeModel';
 
 @HoistModel
 @LoadSupport
-export class CubeDataModel {
+export class CubeTestModel {
 
-    @managed cube;
+    @managed cubeModel;
     @managed gridModel;
     @managed dimManagerModel;
-    @managed orders = [];
     @managed loadTimesModel;
 
     @bindable includeLeaves = false;
     @bindable fundFilter = null;
     @bindable showSummary = false;
-
-    // Flag to short-circuit initial/duplicate firing of query reaction (below).
-    _initialLoadComplete = false;
+    @bindable updateFreq = -1;
+    @bindable updateCount = 5;
 
     constructor() {
-        this.gridModel = this.createGridModel();
-        this.cube = this.createCube();
         this.loadTimesModel = new LoadTimesModel();
+        this.gridModel = this.createGridModel();
+        this.cubeModel = new CubeModel(this);
 
-        const cubeDims = this.cube.store.fields
+        const cubeDims = this.cubeModel.cube.store.fields
             .filter(it => it.isDimension)
             .map(it => ({value: it.name, label: it.label}));
 
@@ -45,18 +41,9 @@ export class CubeDataModel {
         });
 
         this.addReaction({
-            track: () => this.getQuery(),
-            run: () => {
-                if (this._initialLoadComplete) {
-                    this.executeQueryAsync();
-                }
-            },
+            track: () => [this.getQuery(), this.cubeModel.isLoaded],
+            run: () => this.executeQueryAsync(),
             equals: comparer.structural
-        });
-
-        Timer.create({
-            runFn: () => this.streamChanges(),
-            interval: 10 * SECONDS
         });
     }
 
@@ -70,26 +57,13 @@ export class CubeDataModel {
     }
 
     async doLoadAsync() {
-        const LTM = this.loadTimesModel;
-        let orders = [];
-        await LTM.withLoadTime('Fetch orders', async () => {
-            orders = await XH.portfolioService.getAllOrdersAsync();
-            orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
-        });
-
-        const ocTxt = fmtThousands(orders.length) + 'k';
-        await LTM.withLoadTime(`Loaded ${ocTxt} orders in Cube`, async () => {
-            await this.cube.loadData(orders, {});
-        });
-
-        await this.executeQueryAsync();
-        this.orders = orders;
-        this._initialLoadComplete = true;
+        await this.cubeModel.loadAsync();
     }
 
     async executeQueryAsync() {
+        if (!this.cubeModel.isLoaded) return;
         const LTM = this.loadTimesModel,
-            {gridModel, loadModel, cube, showSummary} = this,
+            {gridModel, loadModel, cubeModel, showSummary} = this,
             query = this.getQuery(),
             dimCount = query.dimensions.length,
             filterCount = !isEmpty(query.filters) ? query.filters[0].values.length : 0;
@@ -98,55 +72,22 @@ export class CubeDataModel {
         if (!dimCount) return;
 
         return start(async () => {
-            let data;
-            await LTM.withLoadTime(`Query | ${dimCount} dims | ${filterCount} fund filters`, async () => {
-                data = await cube.executeQuery(query) ;
-            });
-
+            const {store} = gridModel;
             gridModel.setShowSummary(showSummary);
-            gridModel.store.setLoadRootAsSummary(showSummary);
+            store.setLoadRootAsSummary(showSummary);
 
-            await LTM.withLoadTime('Load Grid', () => {
-                gridModel.loadData(data) ;
+            if (this.view) this.view.disconnect();
+            await LTM.withLoadTime(`Query | ${dimCount} dims | ${filterCount} fund filters`, async () => {
+                this.view = await cubeModel.cube.createView(query, store, true) ;
             });
         }).linkTo(loadModel);
-    }
-
-    createCube() {
-        const isInstrument = (dim, val, appliedDims) => {
-            return !!appliedDims['symbol'];
-        };
-
-        return new Cube({
-            idSpec: 'id',
-            fields: [
-                {name: 'symbol', isDimension: true},
-                {name: 'sector', isDimension: true},
-                {name: 'model', isDimension: true},
-                {name: 'fund', isDimension: true},
-                {name: 'region', isDimension: true},
-                {name: 'trader', isDimension: true},
-                {name: 'dir', displayName: 'Direction', isDimension: true},
-               
-                {name: 'quantity', aggregator: 'SUM', canAggregateFn: isInstrument},
-                {name: 'price', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
-
-                {name: 'commission', aggregator: 'SUM'},
-
-                {name: 'maxConfidence', aggregator: 'MAX'},
-                {name: 'minConfidence', aggregator: 'MIN'},
-                {name: 'time', aggregator: 'MAX'}
-            ]
-        });
     }
 
     createGridModel() {
         return new GridModel({
             treeMode: true,
             showSummary: this.showSummary,
-            store: {
-                loadRootAsSummary: this.showSummary
-            },
+            store: {loadRootAsSummary: this.showSummary},
             sortBy: 'time|desc',
             emptyText: 'No records found...',
             enableColChooser: true,
@@ -223,20 +164,5 @@ export class CubeDataModel {
                 {...emptyFlexCol}
             ]
         });
-    }
-
-    streamChanges() {
-        if (!this.orders.length) return;
-        const updates = times(100, () => {
-            const random = Math.floor(Math.random() * this.orders.length),
-                order = this.orders[random];
-
-            order.commission = order.commission * (1 + (0.5 - Math.random()) * 0.1);
-
-            return order;
-        });
-
-        console.log(updates);
-        this.cube.updateData(updates);
     }
 }
