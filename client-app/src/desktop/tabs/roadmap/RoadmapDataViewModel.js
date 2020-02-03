@@ -37,7 +37,9 @@ export class RoadmapDataViewModel {
         emptyText: 'No projects found...',
         itemRenderer: (v, {record}) => roadmapDataViewItem({record}),
         contextMenu: [
-            'copyCell'
+            'copyCell',
+            '-',
+            'expandCollapseAll'
         ],
         groupBy: 'status',
         itemHeight: 70,

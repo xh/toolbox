@@ -57,9 +57,14 @@ export const roadmapDataViewItem = hoistCmp.factory({
                     name
                 ]
             }),
-            box({
+            popover({
                 className: 'dataview-item--description',
-                item: description
+                minimal: true,
+                target:  box({
+                    item: description
+                }),
+                position: 'bottom',
+                content: description
             }),
             hbox({
                 className: 'dataview-item--footer',

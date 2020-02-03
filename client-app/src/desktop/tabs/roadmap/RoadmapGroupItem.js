@@ -3,7 +3,6 @@ import {box} from '@xh/hoist/cmp/layout/index';
 import {Icon} from '@xh/hoist/icon/index';
 import {span} from '@xh/hoist/cmp/layout';
 
-
 export const roadmapGroupItem = hoistCmp.factory(({node}) => {
 
     let statusIcon;
