@@ -16,6 +16,7 @@ export const roadmapDataViewItem = hoistCmp.factory({
             gitLinksMap = gitLinks.split(',');
         }
         let statusIcon, categoryIcon;
+        let iconName = XH.configService.get('roadmapCategories')[category];
 
         switch (status) {
             case 'MERGED':
@@ -32,19 +33,10 @@ export const roadmapDataViewItem = hoistCmp.factory({
                 break;
         }
         switch (category) {
-            case 'GRIDS':
-                categoryIcon = Icon.grid({size: '1x', className: 'xh-blue', prefix: 'fal'});
+            case category:
+                categoryIcon = Icon[iconName]({size: '1x', className: 'xh-blue', prefix: 'fal'});
                 break;
-            case 'DASHBOARDS':
-                categoryIcon = Icon.analytics({size: '1x', className: 'xh-blue', prefix: 'fal'});
-                break;
-            case 'UPGRADES':
-                categoryIcon = Icon.bolt({size: '1x', className: 'xh-blue', prefix: 'fal'});
-                break;
-            case 'NEW FEATURE':
-                categoryIcon = Icon.favorite({size: '1x', className: 'xh-blue', prefix: 'fal'});
-                break;
-            case 'OTHER':
+            default:
                 categoryIcon = Icon.experiment({size: '1x', className: 'xh-blue', prefix: 'fal'});
                 break;
         }
@@ -58,12 +50,12 @@ export const roadmapDataViewItem = hoistCmp.factory({
                 ]
             }),
             popover({
-                className: 'dataview-item--description',
                 minimal: true,
                 target:  box({
-                    item: description
+                    className: 'dataview-item--description',
+                    item: span(description)
                 }),
-                position: 'bottom',
+                position: 'bottom-left',
                 content: description
             }),
             hbox({

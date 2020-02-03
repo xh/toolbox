@@ -125,6 +125,18 @@ class BootStrap {
                 defaultValue: 'api.fda.gov',
                 groupName: 'Toolbox - Example Apps',
             ],
+            roadmapCategories: [
+                    valueType: 'json',
+                    defaultValue: [
+                            "DASHBOARDS": "analytics",
+                            "GRIDS": "grid",
+                            "UPGRADES": "bolt",
+                            "NEW FEATURE": "favorite",
+                            "OTHER": "experiment"
+                    ],
+                    groupName: 'Toolbox - Example Apps',
+                    clientVisible: true
+            ],
             sourceUrls: [
                 valueType: 'json',
                 defaultValue: [

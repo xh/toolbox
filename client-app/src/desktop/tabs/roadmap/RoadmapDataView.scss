@@ -16,6 +16,12 @@
       opacity: 0.8;
       font-size: var(--xh-font-size-medium-px);
       line-height: var(--xh-font-size-medium);
+      > span {
+        max-width: 390px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
     }
 
     &--footer {
@@ -54,3 +60,8 @@
     }
   }
 }
+.bp3-popover-content {
+  padding: 4px;
+  max-width: 380px;
+}
+

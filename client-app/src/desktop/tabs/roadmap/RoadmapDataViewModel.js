@@ -34,17 +34,17 @@ export class RoadmapDataViewModel {
             fields: ['name', 'category', 'description', 'releaseVersion', 'status', 'gitLinks', 'lastUpdated', 'lastUpdatedBy']
         },
         sortBy: 'name',
-        emptyText: 'No projects found...',
+        itemHeight: 70,
         itemRenderer: (v, {record}) => roadmapDataViewItem({record}),
+        groupBy: 'status',
+        groupedItemHeight: 30,
+        groupRowRenderer: ({node}) => roadmapGroupItem({node}),
         contextMenu: [
             'copyCell',
             '-',
             'expandCollapseAll'
         ],
-        groupBy: 'status',
-        itemHeight: 70,
-        groupedItemHeight: 30,
-        groupRowRenderer: ({node}) => roadmapGroupItem({node})
+        emptyText: 'No projects found...'
     });
 
     async doLoadAsync(loadSpec) {

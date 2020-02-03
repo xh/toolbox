@@ -1,7 +1,7 @@
 import {hoistCmp} from '@xh/hoist/core/index';
 import {box} from '@xh/hoist/cmp/layout/index';
 import {Icon} from '@xh/hoist/icon/index';
-import {span} from '@xh/hoist/cmp/layout';
+// import {span} from '@xh/hoist/cmp/layout';
 
 export const roadmapGroupItem = hoistCmp.factory(({node}) => {
 
@@ -24,14 +24,13 @@ export const roadmapGroupItem = hoistCmp.factory(({node}) => {
     return box(
         {
             className: 'roadmap-group-row',
+            onClick: () => node.setExpanded(!node.expanded),
             items: [
                 statusIcon,
-                node.key,
-                span(` (${node.allChildrenCount})`),
-                span({
-                    item: node.expanded ? Icon.angleDown() : Icon.angleUp(),
-                    onClick: () => node.setExpanded(!node.expanded)
-                })
+                node.key
+                // span({
+                //     item: node.expanded ? Icon.angleDown() : Icon.angleUp(),
+                // })
             ]
         }
     );

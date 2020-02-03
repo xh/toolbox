@@ -8,6 +8,7 @@
 package io.xh.toolbox.admin
 
 import io.xh.hoist.RestController
+import io.xh.hoist.config.AppConfig
 import io.xh.hoist.security.Access
 import io.xh.toolbox.roadmap.Project
 import org.grails.web.json.JSONObject
@@ -21,7 +22,8 @@ class ProjectRestController extends RestController {
     def lookupData() {
         renderJSON (
                 statuses: Project.STATUSES,
-                categories: Project.CATEGORIES
+                categories: Project.CATEGORIES,
+                releaseVersions: Project.list().collect{it.releaseVersion}.unique().sort()
         )
     }
 

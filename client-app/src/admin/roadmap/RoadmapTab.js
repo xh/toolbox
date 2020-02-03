@@ -17,6 +17,8 @@ import {
     cloneAction
 } from '@xh/hoist/desktop/cmp/rest';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid';
+import {dateTimeRenderer} from '@xh/hoist/format';
+import {textArea} from '@xh/hoist/desktop/cmp/input';
 
 export const roadmapTab = hoistCmp.factory({
 
@@ -50,7 +52,9 @@ const modelSpec = {
                 required: true
             },
             {
-                name: 'releaseVersion'
+                name: 'releaseVersion',
+                lookupName: 'releaseVersions',
+                lookupStrict: true
             },
             {
                 name: 'status',
@@ -68,7 +72,8 @@ const modelSpec = {
                 type: 'json'
             },
             {
-                name: 'lastUpdatedBy'
+                name: 'lastUpdatedBy',
+                editable: false
             }
         ]
     },
@@ -104,6 +109,7 @@ const modelSpec = {
         {
             field: 'lastUpdated',
             headerName: 'Last Updated',
+            renderer: dateTimeRenderer(),
             width: 200,
             tooltip,
             align: 'right'
@@ -119,9 +125,13 @@ const modelSpec = {
         {field: 'name', label: 'Title'},
         {field: 'category'},
         {field: 'status'},
-        {field: 'description'},
+        {field: 'description',
+            formField: {
+                item: textArea()
+            }},
         {field: 'gitLinks', label: 'Enter Github Links as Text Separated by Commas'},
         {field: 'releaseVersion'},
+        {field: 'lastUpdated', label: 'Last Updated'},
         {field: 'lastUpdatedBy', label: 'Last Updated By'}
     ],
     emptyText: 'No projects found - try adding one...',
