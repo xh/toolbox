@@ -54,8 +54,8 @@ export const homePage = hoistCmp.factory({
                 }),
                 summaryCard({
                     title: 'PinPad',
-                    icon: Icon.pin(),
-                    summary: 'pin pad',
+                    icon: Icon.unlock(),
+                    summary: 'A specialized PIN input, used for lightweight authentication of users.',
                     route: 'pinPad'
                 })
             ]
