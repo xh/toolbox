@@ -13,8 +13,8 @@ class Phase implements JSONFormat{
     static hasMany = [projects: Project]
 
     static mapping = {
+        projects lazy: false
         cache true
-        projects cache: true
     }
 
     static constraints = {
@@ -29,6 +29,7 @@ class Phase implements JSONFormat{
                 sortOrder: sortOrder,
                 lastUpdatedBy: lastUpdatedBy,
                 lastUpdated: lastUpdated,
+                projects: projects
         ]
     }
 }

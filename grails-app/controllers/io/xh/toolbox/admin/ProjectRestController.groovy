@@ -11,6 +11,7 @@ import io.xh.hoist.RestController
 import io.xh.hoist.config.AppConfig
 import io.xh.hoist.security.Access
 import io.xh.toolbox.roadmap.Project
+import io.xh.toolbox.roadmap.Phase
 import org.grails.web.json.JSONObject
 
 @Access(['HOIST_ADMIN'])
@@ -30,5 +31,12 @@ class ProjectRestController extends RestController {
 
     protected void preprocessSubmit(JSONObject submit) {
         submit.lastUpdatedBy = username
+
+        if (submit.phaseName) {
+            def phase = Phase.findByName(submit.phaseName)
+            def project = Project.get(submit.id)
+            phase.addToProjects(project)
+            phase.save()
+        }
     }
 }

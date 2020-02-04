@@ -36,7 +36,7 @@ export class RoadmapDataViewModel {
         sortBy: 'name',
         itemHeight: 70,
         itemRenderer: (v, {record}) => roadmapDataViewItem({record}),
-        groupBy: 'status',
+        groupBy: 'phaseName',
         groupedItemHeight: 30,
         groupRowRenderer: ({node}) => roadmapGroupItem({node}),
         contextMenu: [

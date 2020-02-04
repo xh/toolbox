@@ -17,7 +17,7 @@ class Project implements JSONFormat {
     String lastUpdatedBy
     Date lastUpdated
 
-    static belongsTo=[phase: Phase]
+    static belongsTo = [phase: Phase]
 
     static mapping = {
         cache true
@@ -43,7 +43,8 @@ class Project implements JSONFormat {
                 status: status,
                 gitLinks: gitLinks,
                 lastUpdatedBy: lastUpdatedBy,
-                lastUpdated: lastUpdated
+                lastUpdated: lastUpdated,
+                phaseName: phase.name
         ]
     }
 }

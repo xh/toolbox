@@ -2,7 +2,7 @@ import {hoistCmp} from '@xh/hoist/core/index';
 import {vbox, box, hbox} from '@xh/hoist/cmp/layout/index';
 import {Icon} from '@xh/hoist/icon/index';
 import {filler, span} from '@xh/hoist/cmp/layout';
-import {fmtCompactDate} from '@xh/hoist/format';
+import {capitalizeWords, fmtCompactDate} from '@xh/hoist/format';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 
@@ -85,10 +85,17 @@ export const roadmapDataViewItem = hoistCmp.factory({
                     })
                 })
             }),
-            span({
+            popover({
                 className: 'dataview-item--statusIcon',
-                item: statusIcon
+                minimal: true,
+                interactionKind: 'hover',
+                position: 'top',
+                target: span({
+                    item: statusIcon
+                }),
+                content: capitalizeWords(status)
             })
+
 
         );
     }

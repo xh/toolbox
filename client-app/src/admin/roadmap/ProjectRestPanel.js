@@ -38,7 +38,7 @@ const modelSpec = {
                 required: true
             },
             {
-                name: 'phase',
+                name: 'phaseName',
                 required: true,
                 lookupName: 'phases',
                 lookupStrict: true
@@ -90,7 +90,7 @@ const modelSpec = {
             width: 300
         },
         {
-            field: 'phase',
+            field: 'phaseName',
             width: 100
         },
         {
@@ -121,7 +121,7 @@ const modelSpec = {
     editors: [
         {field: 'name', label: 'Title'},
         {field: 'category'},
-        {field: 'phase'},
+        {field: 'phaseName'},
         {field: 'status'},
         {field: 'description',
             formField: {
