@@ -51,6 +51,7 @@ export const roadmapDataViewItem = hoistCmp.factory({
             }),
             popover({
                 minimal: true,
+                interactionKind: 'hover',
                 target:  box({
                     className: 'dataview-item--description',
                     item: span(description)
@@ -69,7 +70,6 @@ export const roadmapDataViewItem = hoistCmp.factory({
             popover({
                 className: 'dataview-item--git',
                 minimal: true,
-                interactionKind: 'hover',
                 target: button({
                     icon: Icon.openExternal({size: '2x', className: 'xh-black', prefix: 'fal'})
                 }),

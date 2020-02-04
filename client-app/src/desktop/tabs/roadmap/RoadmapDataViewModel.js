@@ -44,7 +44,11 @@ export class RoadmapDataViewModel {
             '-',
             'expandCollapseAll'
         ],
-        emptyText: 'No projects found...'
+        emptyText: 'No projects found...',
+        rowBorders: true,
+        showHover: true,
+        stripeRows: false,
+        sizingMode: 'standard'
     });
 
     async doLoadAsync(loadSpec) {
