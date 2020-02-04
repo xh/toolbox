@@ -34,6 +34,22 @@ class BootStrap {
 
 
     private void ensureRoadMapItemsCreated() {
+
+        if (!Phase.count) {
+
+            new Phase(
+                    name: 'Q1 2020',
+                    sortOrder: 1,
+                    lastUpdatedBy: 'admin@xh.io'
+            ).save()
+
+            new Phase(
+                    name: 'Q2 2020',
+                    sortOrder: 2,
+                    lastUpdatedBy: 'admin@xh.io'
+            ).save()
+        }
+
         if (!Project.count) {
 
             new Project(
@@ -44,42 +60,37 @@ class BootStrap {
                     gitLinks: [
                             'https://github.com/xh/hoist-react/issues/1621',
                             'https://github.com/xh/hoist-react/pull/1620'
-                    ]
+                    ],
+                    lastUpdatedBy: 'admin@xh.io',
+                    phase: 1
             ).save()
 
             new Project(
                     name: 'Rich Dashboards',
                     category: 'DASHBOARDS',
                     description: 'Highly functional drag-drop dashboards',
-                    status: 'RELEASED'
+                    status: 'RELEASED',
+                    lastUpdatedBy: 'admin@xh.io',
+                    phase: 1
             ).save()
 
             new Project(
                     name: 'Progressive Web App',
                     category: 'OTHER',
                     description: 'Hoist PWAs for desktop apps',
-                    status: 'PLANNED'
+                    status: 'PLANNED',
+                    lastUpdatedBy: 'admin@xh.io',
+                    phase: 2
             ).save()
 
             new Project(
                     name: 'Java 11 / Grails 4',
                     category: 'UPGRADES',
                     description: 'Upgrade Hoist to be compatible with Java 11 and Grails 4',
-                    status: 'DEVELOPMENT'
+                    status: 'DEVELOPMENT',
+                    lastUpdatedBy: 'admin@xh.io',
+                    phase: 2
             ).save()
-        }
-        if (!Phase.count) {
-
-            new Phase(
-                    name: 'Q1 2020',
-                    sortOrder: 1
-            ).save()
-
-            new Phase(
-                    name: 'Q2 2020',
-                    sortOrder: 2
-            ).save()
-
         }
     }
 

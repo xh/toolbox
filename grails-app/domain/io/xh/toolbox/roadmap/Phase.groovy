@@ -1,6 +1,7 @@
 package io.xh.toolbox.roadmap
 
 import io.xh.hoist.json.JSONFormat
+import io.xh.hoist.pref.UserPreference
 
 class Phase implements JSONFormat{
 
@@ -9,8 +10,11 @@ class Phase implements JSONFormat{
     String lastUpdatedBy
     Date lastUpdated
 
+    static hasMany = [projects: Project]
+
     static mapping = {
         cache true
+        projects cache: true
     }
 
     static constraints = {
@@ -24,7 +28,7 @@ class Phase implements JSONFormat{
                 name: name,
                 sortOrder: sortOrder,
                 lastUpdatedBy: lastUpdatedBy,
-                lastUpdated: lastUpdated
+                lastUpdated: lastUpdated,
         ]
     }
 }

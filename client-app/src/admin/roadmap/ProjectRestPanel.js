@@ -38,6 +38,12 @@ const modelSpec = {
                 required: true
             },
             {
+                name: 'phase',
+                required: true,
+                lookupName: 'phases',
+                lookupStrict: true
+            },
+            {
                 name: 'releaseVersion',
                 lookupName: 'releaseVersions',
                 lookupStrict: true,
@@ -84,6 +90,10 @@ const modelSpec = {
             width: 300
         },
         {
+            field: 'phase',
+            width: 100
+        },
+        {
             field: 'releaseVersion',
             headerName: 'Release',
             tooltip,
@@ -111,6 +121,7 @@ const modelSpec = {
     editors: [
         {field: 'name', label: 'Title'},
         {field: 'category'},
+        {field: 'phase'},
         {field: 'status'},
         {field: 'description',
             formField: {

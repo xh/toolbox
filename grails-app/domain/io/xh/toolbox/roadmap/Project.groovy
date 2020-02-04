@@ -17,6 +17,8 @@ class Project implements JSONFormat {
     String lastUpdatedBy
     Date lastUpdated
 
+    static belongsTo=[phase: Phase]
+
     static mapping = {
         cache true
         description type: 'text'
