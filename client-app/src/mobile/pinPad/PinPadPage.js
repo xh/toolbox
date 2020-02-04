@@ -38,7 +38,7 @@ class LocalModel {
                         model.setErrorText('');
                         model.setHeaderText('Access Granted.');
                         model.setSubHeaderText('Welcome to XH.io');
-                    } if (this.attempts >= 5) {
+                    } else if (this.attempts >= 5) {
                         model.setHeaderText('Account Locked.');
                         model.setSubHeaderText('Login disabled at this time.');
                         model.setErrorText('You have made too many attempts to log in. Contact support for help.');
