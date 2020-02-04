@@ -24,7 +24,7 @@ class ProjectRestController extends RestController {
         renderJSON (
                 statuses: Project.STATUSES,
                 categories: Project.CATEGORIES,
-                phases: Project.list().collect{it.phase.name}.unique().sort(),
+                phases: Phase.list().collect{it.name}.unique().sort(),
                 releaseVersions: Project.list().collect{it.releaseVersion}.unique().sort()
         )
     }
