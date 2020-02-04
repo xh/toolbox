@@ -32,6 +32,10 @@ const modelSpec = {
                 type: 'number'
             },
             {
+                name: 'projects',
+                editable: false
+            },
+            {
                 name: 'lastUpdated',
                 type: 'date',
                 editable: false
@@ -57,22 +61,27 @@ const modelSpec = {
             width: 150
         },
         {
+            field: 'projects',
+            width: 300
+        },
+        {
             field: 'lastUpdated',
             headerName: 'Last Updated',
             renderer: dateTimeRenderer(),
-            width: 200,
+            width: 150,
             align: 'right'
         },
         {
             field: 'lastUpdatedBy',
             headerName: 'By:',
-            width: 100
+            width: 150
         },
         {...emptyFlexCol}
     ],
     editors: [
         {field: 'name', label: 'Name'},
         {field: 'sortOrder'},
+        {field: 'projects'},
         {field: 'lastUpdated', label: 'Last Updated'},
         {field: 'lastUpdatedBy', label: 'Last Updated By'}
     ],

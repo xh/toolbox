@@ -29,7 +29,7 @@ class Phase implements JSONFormat{
                 sortOrder: sortOrder,
                 lastUpdatedBy: lastUpdatedBy,
                 lastUpdated: lastUpdated,
-                projects: projects
+                projects: projects.name
         ]
     }
 }
