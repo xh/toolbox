@@ -1,31 +1,56 @@
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {pinPad} from '@xh/hoist/mobile/cmp/auth/PinPad';
 import {PinPadModel} from '@xh/hoist/mobile/cmp/auth/PinPadModel';
-import {creates} from '@xh/hoist/core/modelspec';
-import {hoistCmp} from '@xh/hoist/core';
+import {hoistCmp, HoistModel} from '@xh/hoist/core';
+import {useLocalModel} from '@xh/hoist/core/hooks';
 
 export const pinPadPage = hoistCmp.factory({
-    model: creates(() => new PinPadModel({
-        pinLength: 5,
-        headerText: 'Enter PIN...',
-        onPinComplete: function(res) {
-            this.setSubHeaderText('Checking PIN...');
-            this.setDisabled(true);
-            setTimeout(() => {
-                if (JSON.stringify(res) == JSON.stringify([1, 2, 3, 4, 5])) {
-                    this.setErrorText('');
-                    this.setHeaderText('Access Granted.');
-                    this.setSubHeaderText('Welcome to XH.io');
-                } else {
-                    this.setErrorText('PIN incorrect. Try again.');
-                    this.clear();
-                    this.setDisabled(false);
-                }
-            }, 500);
-        }
-    })),
 
     render() {
-        return page(pinPad());
+
+        const model = useLocalModel(LocalModel);
+
+        return page(pinPad({model: model.model}));
     }
 });
+
+@HoistModel
+class LocalModel {
+    model;
+    attempts = 0;
+    constructor() {
+        this.model = new PinPadModel({
+            pinLength: 5,
+            headerText: 'Enter PIN...'
+        });
+
+        this.addReaction({
+            track: () => this.model.completedPin,
+            run: (completedPin) => {
+                const {model} = this;
+                if (!completedPin) {
+                    return;
+                }
+                model.setSubHeaderText('Checking PIN...');
+                model.setDisabled(true);
+                setTimeout(() => {
+                    if (completedPin == '12345') {
+                        model.setErrorText('');
+                        model.setHeaderText('Access Granted.');
+                        model.setSubHeaderText('Welcome to XH.io');
+                    } if (this.attempts >= 5) {
+                        model.setHeaderText('Account Locked.');
+                        model.setSubHeaderText('Login disabled at this time.');
+                        model.setErrorText('You have made too many attempts to log in. Contact support for help.');
+                    } else {
+                        model.setErrorText(`PIN not recognized. Try again. Account will be locked after ${5 - this.attempts} attempts.`);
+                        model.setSubHeaderText('Access Denied.');
+                        model.setDisabled(false);
+                        model.clear();
+                        this.attempts++;
+                    }
+                }, 500);
+            }
+        });
+    }
+}
