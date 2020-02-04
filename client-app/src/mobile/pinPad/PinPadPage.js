@@ -33,8 +33,8 @@ export const pinPadPage = hoistCmp.factory({
 class LocalModel {
     model;
     attempts = 0;
-    @bindable
-    loggedIn = false;
+    maxAttempts = 5;
+    @bindable loggedIn = false;
     constructor() {
         this.model = new PinPadModel({
             pinLength: 5,
@@ -59,20 +59,22 @@ class LocalModel {
 
     handleCompletedPin(completedPin) {
         const {model} = this;
-        if (completedPin == '12345') {
+        if (completedPin === '12345') {
             model.setErrorText('');
             model.setHeaderText('Access Granted.');
             model.setSubHeaderText('Welcome to XH.io');
             setTimeout(() => {
                 this.setLoggedIn(true);
             }, 1000);
-        } else if (this.attempts >= 5) {
+        } else if (this.attempts >= this.maxAttempts) {
             model.setHeaderText('Account Locked.');
             model.setSubHeaderText('Login disabled at this time.');
             model.setErrorText('You have made too many attempts to log in. Contact support for help.');
         } else {
             model.setErrorText(`PIN not recognized. Try again. Account will be locked after ${5 - this.attempts} attempts.`);
-            model.setSubHeaderText('Access Denied.');
+            model.setSubHeaderText('Access Denied.' +
+                (this.attempts === this.maxAttempts - 1 ? ' (try \'12345\')' : '')
+            );
             model.setDisabled(false);
             model.clear();
             this.attempts++;
