@@ -44,15 +44,17 @@ const modelSpec = {
     },
     unit: 'phase',
     filterFields: ['name', 'sortOrder'],
-    sortBy: 'name',
+    sortBy: 'sortOrder',
     columns: [
-        {
-            field: 'name',
-            width: 100
-        },
+
         {
             field: 'sortOrder',
-            width: 100
+            width: 120,
+            align: 'center'
+        },
+        {
+            field: 'name',
+            width: 150
         },
         {
             field: 'lastUpdated',
