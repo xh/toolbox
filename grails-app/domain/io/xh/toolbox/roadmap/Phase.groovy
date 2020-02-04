@@ -19,6 +19,7 @@ class Phase implements JSONFormat{
 
     static constraints = {
         name(blank: false, maxSize: 50)
+        sortOrder(max: 9)
         lastUpdatedBy(nullable: true, maxSize: 50)
     }
 
@@ -29,7 +30,7 @@ class Phase implements JSONFormat{
                 sortOrder: sortOrder,
                 lastUpdatedBy: lastUpdatedBy,
                 lastUpdated: lastUpdated,
-                projects: projects.name
+                projects: projects ? projects.name : null
         ]
     }
 }
