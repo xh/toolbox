@@ -58,7 +58,7 @@ class LocalModel {
     }
 
     handleCompletedPin(completedPin) {
-        const {model} = this;
+        const {model, attempts, maxAttempts} = this;
         if (completedPin === '12345') {
             model.setErrorText('');
             model.setHeaderText('Access Granted.');
@@ -66,17 +66,20 @@ class LocalModel {
             setTimeout(() => {
                 this.setLoggedIn(true);
             }, 1000);
-        } else if (this.attempts >= this.maxAttempts) {
+        } else if (attempts >= maxAttempts) {
             model.setHeaderText('Account Locked.');
             model.setSubHeaderText('Login disabled at this time.');
             model.setErrorText('You have made too many attempts to log in. Contact support for help.');
         } else {
-            model.setErrorText(`PIN not recognized. Try again. Account will be locked after ${5 - this.attempts} attempts.`);
-            model.setSubHeaderText('Access Denied.' +
-                (this.attempts === this.maxAttempts - 1 ? ' (try \'12345\')' : '')
+            model.setErrorText(`PIN not recognized. Try again. Account will be locked after ${5 - attempts} attempts.`);
+            model.setSubHeaderText(
+                attempts === maxAttempts - 2 ? 'Access Denied. (Use the Schwartz!)' :
+                    attempts === maxAttempts - 1 ? 'Access Denied. (Try \'12345\')' :
+                        'Access Denied'
             );
             model.setDisabled(false);
             model.clear();
+
             this.attempts++;
         }
     }
