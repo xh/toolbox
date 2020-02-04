@@ -22,9 +22,10 @@ const modelSpec = {
         fields: [
             {
                 name: 'name',
-                lookupName: 'name',
+                lookupName: 'names',
                 lookupStrict: true,
-                required: true
+                required: true,
+                enableCreate: true
             },
             {
                 name: 'sortOrder',
@@ -82,4 +83,4 @@ const modelSpec = {
         cloneAction
     ],
     prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
-}
+};

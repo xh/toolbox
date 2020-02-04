@@ -4,7 +4,7 @@ import io.xh.hoist.json.JSONFormat
 
 class Phase implements JSONFormat{
 
-    String name
+    String name = 'Q1 2020'
     Integer sortOrder
     String lastUpdatedBy
     Date lastUpdated

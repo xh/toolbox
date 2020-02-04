@@ -26,7 +26,8 @@ const modelSpec = {
                 name: 'category',
                 lookupName: 'categories',
                 lookupStrict: true,
-                required: true
+                required: true,
+                enableCreate: true
             },
             {
                 name: 'name',
@@ -39,7 +40,8 @@ const modelSpec = {
             {
                 name: 'releaseVersion',
                 lookupName: 'releaseVersions',
-                lookupStrict: true
+                lookupStrict: true,
+                enableCreate: true
             },
             {
                 name: 'status',
@@ -128,4 +130,4 @@ const modelSpec = {
         cloneAction
     ],
     prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
-}
+};

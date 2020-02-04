@@ -13,7 +13,7 @@ class PhaseRestController extends RestController {
 
     def lookupData() {
         renderJSON (
-                name: Project.list().collect{it.releaseVersion}.unique().sort()
+                names: Phase.list().collect{it.name}.unique().sort()
         )
     }
 
