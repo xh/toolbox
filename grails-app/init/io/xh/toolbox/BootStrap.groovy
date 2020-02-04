@@ -62,6 +62,7 @@ class BootStrap {
                             'https://github.com/xh/hoist-react/pull/1620'
                     ],
                     lastUpdatedBy: 'admin@xh.io',
+                    releaseVersion: 'Hoist 29.1',
                     phase: 1
             ).save()
 
@@ -71,6 +72,7 @@ class BootStrap {
                     description: 'Highly functional drag-drop dashboards',
                     status: 'RELEASED',
                     lastUpdatedBy: 'admin@xh.io',
+                    releaseVersion: 'Hoist 30.0',
                     phase: 1
             ).save()
 
