@@ -24,8 +24,8 @@ class ProjectRestController extends RestController {
         renderJSON (
                 statuses: Project.STATUSES,
                 categories: Project.CATEGORIES,
-                phases: Phase.list().collect{it.name}.unique().sort(),
-                releaseVersions: Project.list().collect{it.releaseVersion}.unique().sort()
+                phases: Phase.list().collect{it.name}.unique(),
+                releaseVersions: Project.list().collect{it.releaseVersion}.unique()
         )
     }
 
@@ -34,9 +34,7 @@ class ProjectRestController extends RestController {
 
         if (submit.phaseName) {
             def phase = Phase.findByName(submit.phaseName)
-            def project = Project.get(submit.id)
-            phase.addToProjects(project)
-            phase.save()
+            submit.phaseId = phase.id
         }
     }
 }

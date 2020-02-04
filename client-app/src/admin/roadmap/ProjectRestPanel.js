@@ -21,6 +21,7 @@ const modelSpec = {
     enableExport: true,
     store: {
         url: 'rest/projectRest',
+        reloadLookupsOnLoad: true,
         fields: [
             {
                 name: 'category',

@@ -21,7 +21,6 @@ class Project implements JSONFormat {
 
     static mapping = {
         cache true
-        phase lazy: false
         description type: 'text'
     }
 
@@ -45,8 +44,7 @@ class Project implements JSONFormat {
                 gitLinks: gitLinks,
                 lastUpdatedBy: lastUpdatedBy,
                 lastUpdated: lastUpdated,
-                phaseName: phase.name,
-                phaseOrder: phase.sortOrder + phase.name,
+                phaseName: phase.name
         ]
     }
 }

@@ -19,6 +19,7 @@ const modelSpec = {
     enableExport: true,
     store: {
         url: 'rest/phaseRest',
+        reloadLookupsOnLoad: true,
         fields: [
             {
                 name: 'name',
