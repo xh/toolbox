@@ -88,7 +88,7 @@ class BootStrap {
             new Project(
                     name: 'Java 11 / Grails 4',
                     category: 'UPGRADES',
-                    description: 'Upgrade Hoist to be compatible with Java 11 and Grails 4',
+                    description: 'Upgrade Hoist to be compatible with Java 11 and Grails 4. Our apps will no longer break!',
                     status: 'DEVELOPMENT',
                     lastUpdatedBy: 'admin@xh.io',
                     phase: 2
