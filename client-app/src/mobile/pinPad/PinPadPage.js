@@ -1,8 +1,7 @@
+import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
 import {pinPad} from '@xh/hoist/mobile/cmp/auth/PinPad';
 import {PinPadModel} from '@xh/hoist/mobile/cmp/auth/PinPadModel';
-import {hoistCmp, HoistModel} from '@xh/hoist/core';
-import {useLocalModel} from '@xh/hoist/core/hooks';
 import {bindable} from '@xh/hoist/mobx';
 import {p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
@@ -10,10 +9,8 @@ import {panel} from '@xh/hoist/mobile/cmp/panel';
 import './PinPadPage.scss';
 
 export const pinPadPage = hoistCmp.factory({
-
     render() {
         const model = useLocalModel(LocalModel);
-
         return page(
             model.loggedIn ?
                 panel({
