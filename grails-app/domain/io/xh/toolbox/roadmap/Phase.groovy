@@ -7,6 +7,7 @@ class Phase implements JSONFormat{
 
     String name = 'Q1 2020'
     Integer sortOrder
+    boolean clientVisible = true
     String lastUpdatedBy
     Date lastUpdated
 
@@ -28,8 +29,7 @@ class Phase implements JSONFormat{
                 id: id,
                 name: name,
                 sortOrder: sortOrder,
-                lastUpdatedBy: lastUpdatedBy,
-                lastUpdated: lastUpdated,
+                clientVisible: clientVisible,
                 projectNames: projects ? projects.name : null,
                 projects: projects
         ]
