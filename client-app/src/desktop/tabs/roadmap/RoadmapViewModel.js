@@ -1,13 +1,13 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
-import {roadmapDataViewItem} from './RoadmapDataViewItem';
+import {roadmapViewItem} from './RoadmapViewItem';
 import {roadmapGroupItem} from './RoadmapGroupItem';
-import './RoadmapDataView.scss';
+import './RoadmapView.scss';
 
 @HoistModel
 @LoadSupport
-export class RoadmapDataViewModel {
+export class RoadmapViewModel {
 
     constructor() {
         this.addReaction({
@@ -15,9 +15,9 @@ export class RoadmapDataViewModel {
             run: () => this.dataViewModel.store.setFilter(
                 (record) => {
                     if (this.showReleasedOnly) {
-                        return record.data.projects.filter((project) => project.status === 'RELEASED')
+                        return record.data.status === 'RELEASED';
                     } else {
-                        return record.data.projects
+                        return record.data.status !== 'RELEASED';
                     }
                 }
             ),
@@ -32,19 +32,12 @@ export class RoadmapDataViewModel {
     @managed
     dataViewModel = new DataViewModel({
         store: {
-            fields: ['name', 'sortOrder', 'clientVisible', 'projects']
+            fields: ['name', 'phaseOrder', 'category', 'description', 'releaseVersion', 'status', 'gitLinks', 'lastUpdated', 'lastUpdatedBy']
         },
-        sortBy: 'sortOrder',
-        itemHeight: 140,
-        itemRenderer: (v, {record}) => {
-            record.data.projects.forEach(project => new DataViewModel({
-                store: {fields: [
-                    'name', 'description'
-                    ]},
-                itemRenderer: (v, {record}) => roadmapDataViewItem({record})
-            }))
-        },
-        groupBy: 'name',
+        sortBy: 'name',
+        itemHeight: 70,
+        itemRenderer: (v, {record}) => roadmapViewItem({record}),
+        groupBy: 'phaseOrder',
         groupedItemHeight: 30,
         groupRowRenderer: ({node}) => roadmapGroupItem({node}),
         contextMenu: [
@@ -61,7 +54,23 @@ export class RoadmapDataViewModel {
 
     async doLoadAsync(loadSpec) {
         const {dataViewModel} = this,
-            phases = await XH.fetchJson({url: 'rest/phaseRest'});
-        dataViewModel.loadData(phases.data);
+            resp = await XH.fetchJson({url: 'roadmap/data'});
+
+        const projects = this.processData(resp.data);
+        console.log(projects);
+        dataViewModel.loadData(projects);
     }
+
+    processData(rawData) {
+        const ret = [];
+        rawData.forEach(phase => {
+            const projects = phase.projects;
+            projects.forEach(project => {
+                project.phaseOrder = phase.sortOrder + phase.name;
+                ret.push(project);
+            });
+        });
+        return ret;
+    }
+
 }

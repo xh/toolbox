@@ -6,12 +6,12 @@ import {storeFilterField} from '@xh/hoist/cmp/store';
 import {dataView} from '@xh/hoist/cmp/dataview';
 
 import {wrapper} from '../../common/Wrapper';
-import {RoadmapDataViewModel} from './RoadmapDataViewModel';
-import './RoadmapDataView.scss';
+import {RoadmapViewModel} from './RoadmapViewModel';
+import './RoadmapView.scss';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 
-export const roadmapDataView = hoistCmp.factory({
-    model: creates(RoadmapDataViewModel),
+export const roadmapView = hoistCmp.factory({
+    model: creates(RoadmapViewModel),
 
     render({model})  {
         return wrapper({

@@ -11,7 +11,7 @@ export const roadmapGroupItem = hoistCmp.factory(({node}) => {
             onClick: () => node.setExpanded(!node.expanded),
             items: [
                 Icon.calendar({ize: '1x', className: 'xh-white', prefix: 'fal'}),
-                node.key
+                node.key.slice(1)
             ]
         }
     );
