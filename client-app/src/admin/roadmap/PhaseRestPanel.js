@@ -1,7 +1,6 @@
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
-import {dateTimeRenderer} from '@xh/hoist/format';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {hoistCmp} from '@xh/hoist/core';
 
@@ -33,16 +32,7 @@ const modelSpec = {
                 type: 'number'
             },
             {
-                name: 'projects',
-                editable: false
-            },
-            {
-                name: 'lastUpdated',
-                type: 'date',
-                editable: false
-            },
-            {
-                name: 'lastUpdatedBy',
+                name: 'projectNames',
                 editable: false
             }
         ]
@@ -62,29 +52,16 @@ const modelSpec = {
             width: 150
         },
         {
-            field: 'projects',
-            width: 300
-        },
-        {
-            field: 'lastUpdated',
-            headerName: 'Last Updated',
-            renderer: dateTimeRenderer(),
-            width: 150,
-            align: 'right'
-        },
-        {
-            field: 'lastUpdatedBy',
-            headerName: 'By:',
-            width: 150
+            field: 'projectNames',
+            headerName: 'Projects',
+            width: 400
         },
         {...emptyFlexCol}
     ],
     editors: [
         {field: 'name', label: 'Name'},
         {field: 'sortOrder'},
-        {field: 'projects'},
-        {field: 'lastUpdated', label: 'Last Updated'},
-        {field: 'lastUpdatedBy', label: 'Last Updated By'}
+        {field: 'projectNames', label: 'Projects'}
     ],
     emptyText: 'No phases found - try adding one...',
     menuActions: [
