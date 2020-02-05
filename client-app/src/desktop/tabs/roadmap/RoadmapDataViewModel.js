@@ -15,14 +15,15 @@ export class RoadmapDataViewModel {
             run: () => this.dataViewModel.store.setFilter(
                 (record) => {
                     if (this.showReleasedOnly) {
-                        return record.data.status === 'RELEASED';
+                        return record.data.projects.filter((project) => project.status === 'RELEASED')
                     } else {
-                        return record.data.status !== 'RELEASED';
+                        return record.data.projects
                     }
                 }
             ),
             fireImmediately: true
         });
+
     }
 
     @bindable
@@ -31,12 +32,19 @@ export class RoadmapDataViewModel {
     @managed
     dataViewModel = new DataViewModel({
         store: {
-            fields: ['name', 'category', 'description', 'releaseVersion', 'status', 'gitLinks', 'lastUpdated', 'lastUpdatedBy']
+            fields: ['name', 'sortOrder', 'clientVisible', 'projects']
         },
-        sortBy: 'name',
-        itemHeight: 70,
-        itemRenderer: (v, {record}) => roadmapDataViewItem({record}),
-        groupBy: 'phaseName',
+        sortBy: 'sortOrder',
+        itemHeight: 140,
+        itemRenderer: (v, {record}) => {
+            record.data.projects.forEach(project => new DataViewModel({
+                store: {fields: [
+                    'name', 'description'
+                    ]},
+                itemRenderer: (v, {record}) => roadmapDataViewItem({record})
+            }))
+        },
+        groupBy: 'name',
         groupedItemHeight: 30,
         groupRowRenderer: ({node}) => roadmapGroupItem({node}),
         contextMenu: [
@@ -53,7 +61,7 @@ export class RoadmapDataViewModel {
 
     async doLoadAsync(loadSpec) {
         const {dataViewModel} = this,
-            projects = await XH.fetchJson({url: 'rest/projectRest'});
-        dataViewModel.loadData(projects.data);
+            phases = await XH.fetchJson({url: 'rest/phaseRest'});
+        dataViewModel.loadData(phases.data);
     }
 }
