@@ -22,6 +22,7 @@ import {formPage} from './form/FormPage';
 import {containersPage} from './containers/ContainersPage';
 import {popupsPage} from './popups/PopupsPage';
 import {iconPage} from './icons/IconPage';
+import {pinPadPage} from './pinPad/PinPadPage';
 
 @HoistAppModel
 export class AppModel {
@@ -41,7 +42,8 @@ export class AppModel {
             {id: 'form', content: formPage},
             {id: 'containers', content: containersPage},
             {id: 'popups', content: popupsPage},
-            {id: 'icons', content: iconPage}
+            {id: 'icons', content: iconPage},
+            {id: 'pinPad', content: pinPadPage}
         ]
     });
 
@@ -86,6 +88,10 @@ export class AppModel {
                     {
                         name: 'icons',
                         path: '/icons'
+                    },
+                    {
+                        name: 'pinPad',
+                        path: '/pinPad'
                     }
                 ]
             }
