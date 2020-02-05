@@ -70,7 +70,7 @@ export const roadmapViewItem = hoistCmp.factory({
                 className: 'dataview-item--git',
                 minimal: true,
                 target: button({
-                    icon: Icon.openExternal({size: '2x', className: 'xh-black', prefix: 'fal'})
+                    icon: Icon.openExternal({size: '2x', prefix: 'fal'})
                 }),
                 content: menu({
                     items: gitLinksMap ? gitLinksMap.map((link) => {
