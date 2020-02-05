@@ -78,7 +78,7 @@ export class CubeTestModel {
 
             if (this.view) this.view.disconnect();
             await LTM.withLoadTime(`Query | ${dimCount} dims | ${filterCount} fund filters`, async () => {
-                this.view = await cubeModel.cube.createView(query, store, true) ;
+                this.view = await cubeModel.cube.createView({query, store, connect: true}) ;
             });
         }).linkTo(loadModel);
     }
