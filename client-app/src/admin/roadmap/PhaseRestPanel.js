@@ -22,10 +22,7 @@ const modelSpec = {
         fields: [
             {
                 name: 'name',
-                lookupName: 'names',
-                lookupStrict: true,
-                required: true,
-                enableCreate: true
+                required: true
             },
             {
                 name: 'sortOrder',
