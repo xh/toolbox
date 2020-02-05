@@ -1,7 +1,6 @@
 import {hoistCmp, HoistModel, creates, managed} from '@xh/hoist/core';
 import {page} from '@xh/hoist/mobile/cmp/page';
-import {pinPad} from '@xh/hoist/mobile/cmp/pinpad/PinPad';
-import {PinPadModel} from '@xh/hoist/mobile/cmp/pinpad/PinPadModel';
+import {pinPad, PinPadModel} from '@xh/hoist/mobile/cmp/pinpad';
 import {bindable} from '@xh/hoist/mobx';
 import {p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
