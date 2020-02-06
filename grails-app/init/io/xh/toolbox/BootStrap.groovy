@@ -304,7 +304,7 @@ class BootStrap {
             email: 'toolbox@xh.io',
             firstName: 'Toolbox',
             lastName: 'Demo',
-            password: 'toolbox'
+            password: 'Hoist_Toolb0x'
         )
 
         createUserIfNeeded(
@@ -325,6 +325,7 @@ class BootStrap {
 
     private void createUserIfNeeded(Map data) {
         def user = User.findByEmail(data.email as String)
+        user.setPassword(data.password as String)
         if (!user) new User(data).save()
     }
 
