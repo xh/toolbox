@@ -57,7 +57,6 @@ export class RoadmapViewModel {
             resp = await XH.fetchJson({url: 'roadmap/data'});
 
         const projects = this.processData(resp.data);
-        console.log(projects);
         dataViewModel.loadData(projects);
     }
 
