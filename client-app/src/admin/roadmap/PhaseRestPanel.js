@@ -1,5 +1,4 @@
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {Icon} from '@xh/hoist/icon';
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {hoistCmp} from '@xh/hoist/core';
@@ -8,8 +7,6 @@ import {boolCheckCol} from '@xh/hoist/cmp/grid/columns';
 export const phaseRestPanel = hoistCmp.factory({
     render() {
         return panel({
-            title: 'Roadmap Phase REST Editor',
-            icon: Icon.edit(),
             item: restGrid({model: modelSpec})
         });
     }

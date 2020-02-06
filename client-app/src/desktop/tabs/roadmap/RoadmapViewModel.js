@@ -32,10 +32,10 @@ export class RoadmapViewModel {
     @managed
     dataViewModel = new DataViewModel({
         store: {
-            fields: ['name', 'phaseOrder', 'phaseName', 'category', 'description', 'releaseVersion', 'status', 'gitLinks', 'lastUpdated', 'lastUpdatedBy']
+            fields: ['name', 'phaseOrder', 'phaseName', 'category', 'description', 'releaseVersion', 'status', 'gitLinks', 'sortOrder', 'lastUpdated', 'lastUpdatedBy']
         },
-        sortBy: 'name',
-        itemHeight: 80,
+        sortBy: 'sortOrder',
+        itemHeight: 90,
         itemRenderer: (v, {record}) => roadmapViewItem({record}),
         groupBy: 'phaseOrder',
         groupedItemHeight: 30,

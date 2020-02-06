@@ -6,9 +6,9 @@
  */
 
 import {hoistCmp} from '@xh/hoist/core';
-import {tabContainer} from "@xh/hoist/cmp/tab";
-import {projectRestPanel} from "./ProjectRestPanel";
-import {phaseRestPanel} from "./PhaseRestPanel";
+import {tabContainer} from '@xh/hoist/cmp/tab';
+import {projectRestPanel} from './ProjectRestPanel';
+import {phaseRestPanel} from './PhaseRestPanel';
 
 
 export const roadmapTab = hoistCmp(
@@ -16,10 +16,10 @@ export const roadmapTab = hoistCmp(
         model: {
             route: 'default.roadmap',
             tabs: [
-                {id: 'project', title: 'Project REST Editor', content: projectRestPanel},
-                {id: 'phase', title: 'Phase REST Editor', content: phaseRestPanel},
+                {id: 'project', title: 'Projects', content: projectRestPanel},
+                {id: 'phase', title: 'Phases', content: phaseRestPanel}
             ],
             switcherPosition: 'left'
         }
     })
-)
+);

@@ -14,6 +14,7 @@ class Project implements JSONFormat {
     String releaseVersion
     String status
     String gitLinks
+    Integer sortOrder
     String lastUpdatedBy
     Date lastUpdated
 
@@ -42,6 +43,8 @@ class Project implements JSONFormat {
                 releaseVersion: releaseVersion,
                 status: status,
                 gitLinks: gitLinks,
+                sortOrder: sortOrder,
+                phaseName: phase.name,
                 lastUpdatedBy: lastUpdatedBy,
                 lastUpdated: lastUpdated,
         ]

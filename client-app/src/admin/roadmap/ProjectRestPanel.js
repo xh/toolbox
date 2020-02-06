@@ -1,16 +1,13 @@
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {Icon} from '@xh/hoist/icon';
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
 import {dateTimeRenderer} from '@xh/hoist/format';
 import {emptyFlexCol} from '@xh/hoist/cmp/grid';
-import {textArea} from '@xh/hoist/desktop/cmp/input';
+import {codeInput, textArea} from '@xh/hoist/desktop/cmp/input';
 import {hoistCmp} from '@xh/hoist/core';
 
 export const projectRestPanel = hoistCmp.factory({
     render() {
         return panel({
-            title: 'Roadmap Project REST Editor',
-            icon: Icon.edit(),
             item: restGrid({model: modelSpec})
         });
     }
@@ -66,6 +63,10 @@ const modelSpec = {
                 type: 'json'
             },
             {
+                name: 'sortOrder',
+                required: true
+            },
+            {
                 name: 'lastUpdatedBy',
                 editable: false
             }
@@ -75,6 +76,10 @@ const modelSpec = {
     filterFields: ['name', 'status', 'category'],
     sortBy: 'name',
     columns: [
+        {
+            field: 'sortOrder',
+            width: 100
+        },
         {
             field: 'category',
             width: 100
@@ -124,11 +129,17 @@ const modelSpec = {
         {field: 'category'},
         {field: 'phaseName'},
         {field: 'status'},
+        {field: 'sortOrder'},
         {field: 'description',
             formField: {
                 item: textArea()
             }},
-        {field: 'gitLinks', label: 'Enter Github Links as Text Separated by Commas'},
+        {field: 'gitLinks',
+            label: 'Enter Github Links as Text Separated by Commas',
+            formField: {
+                item: codeInput()
+            }
+        },
         {field: 'releaseVersion'},
         {field: 'lastUpdated', label: 'Last Updated'},
         {field: 'lastUpdatedBy', label: 'Last Updated By'}

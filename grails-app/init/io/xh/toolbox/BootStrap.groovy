@@ -61,6 +61,7 @@ class BootStrap {
                             'https://github.com/xh/hoist-react/issues/1621',
                             'https://github.com/xh/hoist-react/pull/1620'
                     ],
+                    sortOrder: 1,
                     lastUpdatedBy: 'admin@xh.io',
                     releaseVersion: 'Hoist 29.1',
                     phase: 1
@@ -71,6 +72,7 @@ class BootStrap {
                     category: 'DASHBOARDS',
                     description: 'Highly functional drag-drop dashboards',
                     status: 'RELEASED',
+                    sortOrder: 1,
                     lastUpdatedBy: 'admin@xh.io',
                     releaseVersion: 'Hoist 30.0',
                     phase: 1
@@ -81,6 +83,7 @@ class BootStrap {
                     category: 'OTHER',
                     description: 'Hoist PWAs for desktop apps',
                     status: 'PLANNED',
+                    sortOrder: 2,
                     lastUpdatedBy: 'admin@xh.io',
                     phase: 2
             ).save()
@@ -90,6 +93,7 @@ class BootStrap {
                     category: 'UPGRADES',
                     description: 'Upgrade Hoist to be compatible with Java 11 and Grails 4. Our apps will no longer break!',
                     status: 'DEVELOPMENT',
+                    sortOrder: 3,
                     lastUpdatedBy: 'admin@xh.io',
                     phase: 2
             ).save()
