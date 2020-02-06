@@ -32,7 +32,7 @@ export class RoadmapViewModel {
     @managed
     dataViewModel = new DataViewModel({
         store: {
-            fields: ['name', 'phaseOrder', 'category', 'description', 'releaseVersion', 'status', 'gitLinks', 'lastUpdated', 'lastUpdatedBy']
+            fields: ['name', 'phaseOrder', 'phaseName', 'category', 'description', 'releaseVersion', 'status', 'gitLinks', 'lastUpdated', 'lastUpdatedBy']
         },
         sortBy: 'name',
         itemHeight: 70,
@@ -61,15 +61,10 @@ export class RoadmapViewModel {
     }
 
     processData(rawData) {
-        const ret = [];
-        rawData.forEach(phase => {
-            const projects = phase.projects;
-            projects.forEach(project => {
-                project.phaseOrder = phase.sortOrder + phase.name;
-                ret.push(project);
+        return rawData.flatMap(phase => {
+            return phase.projects.map(project => {
+                return {...project, phaseOrder: phase.sortOrder, phaseName: phase.name};
             });
         });
-        return ret;
     }
-
 }
