@@ -14,5 +14,5 @@ XH.renderApp({
     webSocketsEnabled: true,
     idleDetectionEnabled: true,
     checkAccess: 'APP_READER',
-    loginMessage: '👤 toolbox@xh.io + 🔑 toolbox'
+    loginMessage: '👤 toolbox@xh.io + 🔑 Hoist_Toolb0x'
 });

@@ -304,7 +304,7 @@ class BootStrap {
             email: 'toolbox@xh.io',
             firstName: 'Toolbox',
             lastName: 'Demo',
-            password: 'toolbox'
+            password: 'Hoist_Toolb0x'
         )
 
         createUserIfNeeded(
