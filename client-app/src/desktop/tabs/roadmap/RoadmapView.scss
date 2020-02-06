@@ -3,12 +3,13 @@
     &--name {
       font-size: var(--xh-font-size-large-px);
       font-weight: bold;
+      margin-top: 1px;
 
       & svg {
         position: relative !important;
-        right: 0 !important;
-        top: 3px !important;
-        margin-right: 5px;
+        left: 5px !important;
+        top: 5px !important;
+        margin-right: 10px;
       }
     }
 
@@ -16,6 +17,7 @@
       opacity: 0.8;
       font-size: var(--xh-font-size-medium-px);
       line-height: var(--xh-font-size-medium);
+      margin-left: 5px;
 
       > span {
         max-width: 390px;
@@ -29,11 +31,13 @@
       font-size: var(--xh-font-size-small-px);
       line-height: calc(var(--xh-font-size-small) * 1.1px);
       margin-bottom: 2px;
+      margin-left: 5px;
+      margin-right: 5px;
     }
 
     &--git {
       position: absolute !important;
-      right: 40px !important;
+      right: 38px !important;
       top: 10px;
     }
 

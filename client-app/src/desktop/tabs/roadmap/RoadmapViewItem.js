@@ -1,10 +1,15 @@
 import {hoistCmp} from '@xh/hoist/core/index';
 import {vbox, box, hbox} from '@xh/hoist/cmp/layout/index';
-import {Icon} from '@xh/hoist/icon/index';
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faCodeMerge} from '@fortawesome/pro-regular-svg-icons';
+import {Icon, fontAwesomeIcon} from '@xh/hoist/icon/index';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {capitalizeWords, fmtCompactDate} from '@xh/hoist/format';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
+import {fab} from '@fortawesome/free-brands-svg-icons';
+
+library.add(fab, faCodeMerge);
 
 export const roadmapViewItem = hoistCmp.factory({
     model: null,
@@ -19,16 +24,16 @@ export const roadmapViewItem = hoistCmp.factory({
 
         switch (status) {
             case 'MERGED':
-                statusIcon = Icon.check({size: '2x', className: 'xh-green-muted', prefix: 'fal'});
+                statusIcon = fontAwesomeIcon({icon: faCodeMerge, className: 'xh-purple', size: '2x', prefix: 'fal'});
                 break;
             case 'DEVELOPMENT':
-                statusIcon = Icon.gear({size: '2x', className: 'xh-yellow', prefix: 'fal'});
+                statusIcon = Icon.gear({size: '2x', className: 'xh-orange', prefix: 'fal'});
                 break;
             case 'RELEASED':
-                statusIcon = Icon.bullhorn({size: '2x', className: 'xh-green', prefix: 'fal'});
+                statusIcon = Icon.check({size: '2x', className: 'xh-green', prefix: 'fal'});
                 break;
             case 'PLANNED':
-                statusIcon = Icon.clipboard({size: '2x', className: 'xh-blue', prefix: 'fal'});
+                statusIcon = Icon.clipboard({size: '2x', className: 'xh-blue-light', prefix: 'fal'});
                 break;
         }
         switch (category) {
@@ -70,13 +75,13 @@ export const roadmapViewItem = hoistCmp.factory({
                 className: 'dataview-item--git',
                 minimal: true,
                 target: button({
-                    icon: Icon.openExternal({size: '2x', prefix: 'fal'})
+                    icon: fontAwesomeIcon({icon: ['fab', 'github'], size: '2x', prefix: 'fal'})
                 }),
                 content: menu({
                     items: gitLinksMap ? gitLinksMap.map((link) => {
                         return menuItem({
                             text: link,
-                            icon: Icon.openExternal(),
+                            icon: fontAwesomeIcon({icon: ['fab', 'github']}),
                             onClick: () => window.open(link)
                         });
                     }) : menuItem({
