@@ -1,0 +1,26 @@
+.test-dialogs {
+  table {
+    // width: 700px;
+    height: 270px;
+    text-align: left;
+
+    th {
+      width: 20%;
+      padding: var(--xh-pad-px);
+
+      .test-dialogs__button {
+        width: 100%;
+      }
+    }
+
+    td {
+      width: 40%;
+      padding: var(--xh-pad-px);
+      text-align: center;
+
+      .test-dialogs__button {
+        width: 100%;
+      }
+    }
+  }
+}
