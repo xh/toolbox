@@ -16,21 +16,18 @@
     &--description {
       opacity: 0.8;
       font-size: var(--xh-font-size-medium-px);
-      line-height: var(--xh-font-size-medium);
+      white-space: normal !important;
       margin-left: 5px;
-
-      > div {
-        max-width: 390px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+      height: 45px;
+      line-height: calc(var(--xh-font-size-small) * 1.5px);
+      max-width: 390px;
     }
 
     &--footer {
       opacity: 0.8;
       font-size: var(--xh-font-size-small-px);
       line-height: calc(var(--xh-font-size-small) * 1.1px);
-      margin-top: 2px;
+      margin-top: 10px;
       margin-left: 5px;
       margin-right: 5px;
     }
@@ -64,5 +61,25 @@
     > svg {
       margin: 0;
     }
+  }
+}
+
+.popover--description {
+  max-width: 475px;
+  background-color: var(--xh-bg-alt);
+  padding: 10px;
+  line-height: calc(var(--xh-font-size-small) * 1.8px);
+
+  .bp3-popover-content {
+    background-color: var(--xh-bg-alt);
+  }
+}
+
+.popover--status {
+  background-color: var(--xh-bg-alt);
+  padding: 5px;
+
+  .bp3-popover-content {
+    background-color: var(--xh-bg-alt);
   }
 }

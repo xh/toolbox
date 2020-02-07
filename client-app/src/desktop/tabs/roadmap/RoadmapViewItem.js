@@ -3,9 +3,9 @@ import {vbox, box, hbox} from '@xh/hoist/cmp/layout/index';
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faCodeMerge} from '@fortawesome/pro-regular-svg-icons';
 import {Icon, fontAwesomeIcon} from '@xh/hoist/icon/index';
-import {div, filler, span} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {capitalizeWords} from '@xh/hoist/format';
-import {getRelativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {fab} from '@fortawesome/free-brands-svg-icons';
@@ -45,6 +45,13 @@ export const roadmapViewItem = hoistCmp.factory({
                 categoryIcon = Icon.experiment({size: '1x', className: 'xh-blue', prefix: 'fal'});
                 break;
         }
+        const truncateDescription = (text) => {
+            if (text.length > 194) {
+                return text.substring(0, 194) + '...';
+            } else {
+                return text;
+            }
+        };
 
         return vbox(
             box({
@@ -55,13 +62,14 @@ export const roadmapViewItem = hoistCmp.factory({
                 ]
             }),
             popover({
+                popoverClassName: 'popover--description',
                 minimal: true,
                 interactionKind: 'hover',
-                target: vbox({
+                target: hbox({
                     className: 'dataview-item--description',
-                    item: div(description)
+                    item: span(truncateDescription(description))
                 }),
-                position: 'bottom-left',
+                position: 'left-top',
                 content: description
             }),
             hbox({
@@ -69,7 +77,7 @@ export const roadmapViewItem = hoistCmp.factory({
                 items: [
                     releaseVersion,
                     filler(),
-                    span('Last updated ' + getRelativeTimestamp(lastUpdated))
+                    relativeTimestamp({timestamp: lastUpdated, options: {prefix: 'Last updated '}})
                 ]
             }),
             popover({
@@ -91,6 +99,7 @@ export const roadmapViewItem = hoistCmp.factory({
                 })
             }),
             popover({
+                popoverClassName: 'popover--status',
                 className: 'dataview-item--statusIcon',
                 minimal: true,
                 interactionKind: 'hover',

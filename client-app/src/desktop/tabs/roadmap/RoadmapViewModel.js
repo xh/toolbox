@@ -35,7 +35,7 @@ export class RoadmapViewModel {
             fields: ['name', 'phaseOrder', 'phaseName', 'category', 'description', 'releaseVersion', 'status', 'gitLinks', 'sortOrder', 'lastUpdated', 'lastUpdatedBy']
         },
         sortBy: 'sortOrder',
-        itemHeight: 90,
+        itemHeight: 115,
         itemRenderer: (v, {record}) => roadmapViewItem({record}),
         groupBy: 'phaseOrder',
         groupedItemHeight: 30,
