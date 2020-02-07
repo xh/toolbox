@@ -10,8 +10,8 @@ export const roadmapGroupItem = hoistCmp.factory(({node}) => {
             className: 'roadmap-group-row',
             onClick: () => node.setExpanded(!node.expanded),
             items: [
-                Icon.calendar({ize: '1x', className: 'xh-white', prefix: 'fal'}),
-                node.allLeafChildren[0].data.raw.phaseName
+                Icon.calendar({size: '1x', className: 'xh-white', prefix: 'fal'}),
+                node.allLeafChildren[0].data.data.phaseName
             ]
         }
     );
