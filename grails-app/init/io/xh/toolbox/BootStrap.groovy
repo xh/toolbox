@@ -24,6 +24,7 @@ class BootStrap {
         ensureMonitorsCreated()
         def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
         BaseService.parallelInit(services)
+        resetGuestUserPassword()
         ensureUsersCreated()
     }
 
@@ -304,7 +305,7 @@ class BootStrap {
             email: 'toolbox@xh.io',
             firstName: 'Toolbox',
             lastName: 'Demo',
-            password: 'Hoist_Toolb0x'
+            password: 'toolbox'
         )
 
         createUserIfNeeded(
@@ -325,8 +326,12 @@ class BootStrap {
 
     private void createUserIfNeeded(Map data) {
         def user = User.findByEmail(data.email as String)
-        user.setPassword(data.password as String)
         if (!user) new User(data).save()
+    }
+
+    private void resetGuestUserPassword () {
+        def user = User.findByEmail('toolbox@xh.io')
+        if (user) user.setPassword('Hoist_Toolb0x')
     }
 
     private void logStartupMsg() {
