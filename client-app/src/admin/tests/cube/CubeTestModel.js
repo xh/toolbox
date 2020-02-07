@@ -117,6 +117,14 @@ export class CubeTestModel {
                     isTreeColumn: true
                 },
                 {
+                    field: 'fund',
+                    width: 130
+                },
+                {
+                    field: 'trader',
+                    width: 130
+                },
+                {
                     field: 'quantity',
                     headerName: 'Qty',
                     align: 'right',
