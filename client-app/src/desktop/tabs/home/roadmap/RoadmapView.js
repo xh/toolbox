@@ -4,9 +4,10 @@ import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {dataView} from '@xh/hoist/cmp/dataview';
+import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {RoadmapViewModel} from './RoadmapViewModel';
 import './RoadmapView.scss';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
 
 export const roadmapView = hoistCmp.factory({
     model: creates(RoadmapViewModel),
@@ -16,10 +17,21 @@ export const roadmapView = hoistCmp.factory({
             className: 'toolbox-roadmap-dataview-panel',
             title: 'Hoist Roadmap',
             headerItems: [
-                switchInput({
-                    label: 'Show Released',
-                    labelAlign: 'right',
-                    bind: 'showReleasedOnly'
+                buttonGroupInput({
+                    enableClear: true,
+                    minimal: true,
+                    bind: 'statusFilter',
+                    items: [
+                        button({
+                            text: 'Show Pipeline',
+                            value: 'showPipeline'
+                        }),
+                        button({
+                            bind: 'statusFilter',
+                            text: 'Show Released',
+                            value: 'showReleased'
+                        })
+                    ]
                 })
             ],
             icon: Icon.mapSigns(),

@@ -11,13 +11,15 @@ export class RoadmapViewModel {
 
     constructor() {
         this.addReaction({
-            track: () => this.showReleased,
+            track: () => this.statusFilter,
             run: () => this.dataViewModel.store.setFilter(
                 (record) => {
-                    if (this.showReleasedOnly) {
+                    if (this.statusFilter === 'showReleased') {
                         return record.data.status === 'RELEASED';
-                    } else {
+                    } else if (this.statusFilter === 'showPipeline') {
                         return record.data.status !== 'RELEASED';
+                    } else {
+                        return record.data;
                     }
                 }
             ),
@@ -27,7 +29,7 @@ export class RoadmapViewModel {
     }
 
     @bindable
-    showReleasedOnly = false;
+    statusFilter = 'showPipeline';
 
     @managed
     dataViewModel = new DataViewModel({

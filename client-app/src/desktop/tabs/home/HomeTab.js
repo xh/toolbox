@@ -29,7 +29,7 @@ export const homeTab = hoistCmp.factory(
                                 </div>,
                                 <div className="toolbox-welcome">
                                     <p>
-                                        Toolbox demonstrates key components, code patterns, utilities, and other tooling included in {link('Hoist React', 'https://github.com/xh/hoist-react/')} and {link('Hoist Core', 'https://github.com/xh/hoist-core/')}, librariescreated by {link('Extremely Heavy', 'https://xh.io')} forbuilding and operating enterprise web applications. </p>
+                                        Toolbox demonstrates key components, code patterns, utilities, and other tooling included in {link('Hoist React', 'https://github.com/xh/hoist-react/')} and {link('Hoist Core', 'https://github.com/xh/hoist-core/')}, libraries created by {link('Extremely Heavy', 'https://xh.io')} for building and operating enterprise web applications. </p>
                                     <p>
                                         Hoist provides a curated selection of custom and third-party components, pre-integrated to function as a highly productive full-stack framework for web application development. </p>
                                     <p>
