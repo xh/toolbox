@@ -31,10 +31,6 @@ export class CubeModel {
         });
     }
 
-    get isLoaded() {
-        return this.cube.store.count > 0;
-    }
-
     async doLoadAsync() {
         const LTM = this.parent.loadTimesModel;
         let orders = [];
@@ -45,7 +41,7 @@ export class CubeModel {
 
         const ocTxt = fmtThousands(orders.length) + 'k';
         await LTM.withLoadTime(`Loaded ${ocTxt} orders in Cube`, async () => {
-            await this.cube.loadData(orders, {});
+            this.cube.loadData(orders, {asOf: Date.now()});
         });
 
         this.orders = orders;
@@ -93,7 +89,7 @@ export class CubeModel {
         });
 
         await LTM.withLoadTime(`Updated ${updateCount} orders in Cube`, async () => {
-            this.cube.updateData(updates);
+            this.cube.updateData(updates, {asOf: Date.now()});
         });
     }
 }

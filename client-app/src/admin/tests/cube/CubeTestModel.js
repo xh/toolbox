@@ -16,6 +16,7 @@ export class CubeTestModel {
 
     @managed cubeModel;
     @managed gridModel;
+    @managed view;
     @managed dimManagerModel;
     @managed loadTimesModel;
 
@@ -30,7 +31,9 @@ export class CubeTestModel {
         this.gridModel = this.createGridModel();
         this.cubeModel = new CubeModel(this);
 
-        const cubeDims = this.cubeModel.cube.store.fields
+        const {cube} = this.cubeModel;
+
+        const cubeDims = cube.fields
             .filter(it => it.isDimension)
             .map(it => ({value: it.name, label: it.label}));
 
@@ -40,8 +43,14 @@ export class CubeTestModel {
             userDimPref: 'cubeTestUserDims'
         });
 
+        this.view = cube.createView({
+            query: this.getQuery(),
+            store: this.gridModel.store,
+            connect: true
+        });
+
         this.addReaction({
-            track: () => [this.getQuery(), this.cubeModel.isLoaded],
+            track: () => this.getQuery(),
             run: () => this.executeQueryAsync(),
             equals: comparer.structural
         });
@@ -61,9 +70,8 @@ export class CubeTestModel {
     }
 
     async executeQueryAsync() {
-        if (!this.cubeModel.isLoaded) return;
         const LTM = this.loadTimesModel,
-            {gridModel, loadModel, cubeModel, showSummary} = this,
+            {gridModel, loadModel, showSummary} = this,
             query = this.getQuery(),
             dimCount = query.dimensions.length,
             filterCount = !isEmpty(query.filters) ? query.filters[0].values.length : 0;
@@ -76,9 +84,8 @@ export class CubeTestModel {
             gridModel.setShowSummary(showSummary);
             store.setLoadRootAsSummary(showSummary);
 
-            if (this.view) this.view.disconnect();
             await LTM.withLoadTime(`Query | ${dimCount} dims | ${filterCount} fund filters`, async () => {
-                this.view = await cubeModel.cube.createView({query, store, connect: true}) ;
+                this.view.updateQuery(this.getQuery());
             });
         }).linkTo(loadModel);
     }
