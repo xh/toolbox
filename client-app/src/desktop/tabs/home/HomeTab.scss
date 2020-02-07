@@ -1,3 +1,11 @@
+.toolbox-home {
+  overflow: auto !important;
+
+  > .xh-vbox {
+    margin: 15px;
+  }
+}
+
 .toolbox-welcome {
   padding: var(--xh-pad-double-px);
 

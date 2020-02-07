@@ -11,7 +11,7 @@ export class RoadmapViewModel {
 
     constructor() {
         this.addReaction({
-            track: () => this.showReleasedOnly,
+            track: () => this.showReleased,
             run: () => this.dataViewModel.store.setFilter(
                 (record) => {
                     if (this.showReleasedOnly) {
