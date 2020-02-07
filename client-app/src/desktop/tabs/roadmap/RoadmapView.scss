@@ -70,8 +70,8 @@
   padding: 10px;
   line-height: calc(var(--xh-font-size-small) * 1.8px);
 
-  .bp3-popover-content {
-    background-color: var(--xh-bg-alt);
+  & .bp3-popover-content {
+    background-color: var(--xh-bg-alt) !important;
   }
 }
 
@@ -79,7 +79,7 @@
   background-color: var(--xh-bg-alt);
   padding: 5px;
 
-  .bp3-popover-content {
-    background-color: var(--xh-bg-alt);
+  & .bp3-popover-content {
+    background-color: var(--xh-bg-alt) !important;
   }
 }
