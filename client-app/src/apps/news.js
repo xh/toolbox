@@ -1,7 +1,8 @@
 import {XH} from '@xh/hoist/core';
+import {AppContainer} from '@xh/hoist/desktop/appcontainer';
+import {guestUserLoginMsg} from '../core/guestUserLoginMsg';
 import {App} from '../examples/news/App';
 import {AppModel} from '../examples/news/AppModel';
-import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
 XH.renderApp({
     clientAppCode: 'news',
@@ -13,5 +14,5 @@ XH.renderApp({
     isSSO: false,
     idleDetectionEnabled: true,
     checkAccess: 'APP_READER',
-    loginMessage: '👤 toolbox@xh.io + 🔑 toolbox'
+    loginMessage: guestUserLoginMsg
 });
