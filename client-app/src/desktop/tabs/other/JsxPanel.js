@@ -31,7 +31,6 @@ export const jsxPanel = hoistCmp.factory(
             </p>
         ],
         item: hframe({
-            width: '90%',
             items: [
                 panel({
                     flex: 1,

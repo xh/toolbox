@@ -7,27 +7,29 @@
 import {HoistAppModel, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
-import {Icon} from '@xh/hoist/icon';
+import {startCase} from 'lodash';
 import {PortfolioService} from '../../core/svc/PortfolioService';
 
 
 @HoistAppModel
 export class AppModel {
 
-    get useCompactGrids() {
-        return XH.getPref('defaultGridMode') == 'COMPACT';
+    get gridSizingMode() {
+        return XH.getPref('gridSizingMode');
     }
 
     getAppOptions() {
         return [
             {
-                name: 'defaultGridMode',
-                prefName: 'defaultGridMode',
+                name: 'gridSizingMode',
+                prefName: 'gridSizingMode',
                 formField: {
                     label: 'Default grid size',
                     item: buttonGroupInput(
-                        button({value: 'STANDARD', text: 'Standard', icon: Icon.gridLarge()}),
-                        button({value: 'COMPACT', text: 'Compact', icon: Icon.grid()})
+                        getGridSizeModeButton('large'),
+                        getGridSizeModeButton('standard'),
+                        getGridSizeModeButton('compact'),
+                        getGridSizeModeButton('tiny')
                     )
                 },
                 reloadRequired: true
@@ -40,4 +42,15 @@ export class AppModel {
             PortfolioService
         );
     }
+}
+
+
+function getGridSizeModeButton(size) {
+    return button({
+        value: size,
+        text: startCase(size),
+        style: {
+            fontSize: `var(--xh-grid-${size}-font-size-px`
+        }
+    });
 }

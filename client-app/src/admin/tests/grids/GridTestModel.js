@@ -32,6 +32,7 @@ export class GridTestModel {
     @bindable tree = false;
     @bindable useTransactions = true;
     @bindable useDeltaSort = true;
+    @bindable disableSelect = false;
 
     // Generated data in tree
     _data;
@@ -50,7 +51,7 @@ export class GridTestModel {
 
     constructor() {
         this.addReaction({
-            track: () =>  [this.tree, this.useTransactions, this.useDeltaSort],
+            track: () =>  [this.tree, this.useTransactions, this.useDeltaSort, this.disableSelect],
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();

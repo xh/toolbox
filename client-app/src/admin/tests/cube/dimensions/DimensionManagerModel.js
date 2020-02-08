@@ -1,6 +1,5 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
@@ -33,7 +32,16 @@ export class DimensionManagerModel {
                 {field: 'displayName', flex: 1},
                 {field: 'type', hidden: true}
             ],
-            contextMenuFn: (gridModel) => this.gridContextMenuFn(gridModel)
+            contextMenu: [
+                {
+                    text: 'Delete custom grouping',
+                    icon: Icon.delete(),
+                    actionFn: () => this.deleteSelected(),
+                    displayFn: ({record}) => {
+                        return {disabled: !record || record.data.type == 'Default'};
+                    }
+                }
+            ]
         });
 
         this.addReaction({
@@ -125,22 +133,6 @@ export class DimensionManagerModel {
         if (this.userDimPref) {
             XH.setPref(this.userDimPref, dims);
         }
-    }
-
-    gridContextMenuFn(gridModel) {
-        return new StoreContextMenu({
-            items: [
-                {
-                    text: 'Delete custom grouping',
-                    icon: Icon.delete(),
-                    actionFn: () => this.deleteSelected(),
-                    displayFn: ({record}) => {
-                        return {disabled: !record || record.data.type == 'Default'};
-                    }
-                }
-            ],
-            gridModel
-        });
     }
 
     get defaultRowData() {

@@ -115,7 +115,7 @@ export class SampleTreeGridModel {
             emptyText: 'No records found...',
             enableColChooser: true,
             enableExport: true,
-            compact: XH.appModel.useCompactGrids,
+            sizingMode: XH.appModel.gridSizingMode,
             columns: [
                 {
                     headerName: 'Name',
@@ -185,12 +185,11 @@ export class SampleTreeGridModel {
         const {store} = this,
             isChecked = !rec.data.isChecked,
             updates = [
-                {id: rec.id, isChecked},
                 ...rec.allDescendants.map(({id}) => ({id, isChecked}))
             ];
 
         store.modifyRecords(updates);
-        rec.forEachAncestor(it => store.modifyRecords(it, {isChecked: calcAggState(it)}));
+        rec.forEachAncestor(it => store.modifyRecords({id: it.id, isChecked: calcAggState(it)}));
     }
 }
 

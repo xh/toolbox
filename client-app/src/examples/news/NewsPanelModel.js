@@ -16,7 +16,7 @@ export class NewsPanelModel {
         sortBy: 'published',
         store: {
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
-            idSpec: 'url',
+            idSpec: XH.genId,
             filter: (rec) => {
                 const {textFilter, sourceFilter} = this,
                     searchMatch = !textFilter || textFilter.fn(rec),
