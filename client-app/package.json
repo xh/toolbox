@@ -26,13 +26,13 @@
     }
   },
   "dependencies": {
-    "@xh/hoist": "29.1.0",
+    "@xh/hoist": "^30.0.0-SNAPSHOT",
     "react": "~16.8.6",
     "react-dom": "~16.8.6",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "~4.3.7",
+    "@xh/hoist-dev-utils": "^5.0.0-SNAPSHOT",
     "cross-env": "~7.0.0",
     "husky": "~4.2.1",
     "lint-staged": "~10.0.3",
