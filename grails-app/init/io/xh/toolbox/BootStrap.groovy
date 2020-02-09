@@ -37,71 +37,6 @@ class BootStrap {
 
     def destroy = {}
 
-
-    private void ensureRoadMapItemsCreated() {
-        if (!Phase.count) {
-            new Phase(
-                    name: 'Q1 2020',
-                    sortOrder: 1,
-                    lastUpdatedBy: 'admin@xh.io'
-            ).save()
-
-            new Phase(
-                    name: 'Q2 2020',
-                    sortOrder: 2,
-                    lastUpdatedBy: 'admin@xh.io'
-            ).save()
-        }
-
-        if (!Project.count) {
-            new Project(
-                    name: 'Inline Grid Editing',
-                    category: 'GRIDS',
-                    description: 'Ability to edit grids inline',
-                    status: 'MERGED',
-                    gitLinks: [
-                            'https://github.com/xh/hoist-react/issues/1621',
-                            'https://github.com/xh/hoist-react/pull/1620'
-                    ],
-                    sortOrder: 1,
-                    lastUpdatedBy: 'admin@xh.io',
-                    releaseVersion: 'Hoist 29.1',
-                    phase: 1
-            ).save()
-
-            new Project(
-                    name: 'Rich Dashboards',
-                    category: 'DASHBOARDS',
-                    description: 'Highly functional drag-drop dashboards',
-                    status: 'RELEASED',
-                    sortOrder: 1,
-                    lastUpdatedBy: 'admin@xh.io',
-                    releaseVersion: 'Hoist 30.0',
-                    phase: 1
-            ).save()
-
-            new Project(
-                    name: 'Progressive Web App',
-                    category: 'OTHER',
-                    description: 'Hoist PWAs for desktop apps',
-                    status: 'PLANNED',
-                    sortOrder: 2,
-                    lastUpdatedBy: 'admin@xh.io',
-                    phase: 2
-            ).save()
-
-            new Project(
-                    name: 'Java 11 / Grails 4',
-                    category: 'UPGRADES',
-                    description: 'Upgrade Hoist to be compatible with Java 11 and Grails 4. Our apps will no longer break!',
-                    status: 'DEVELOPMENT',
-                    sortOrder: 3,
-                    lastUpdatedBy: 'admin@xh.io',
-                    phase: 2
-            ).save()
-        }
-    }
-
     //------------------------
     // Implementation
     //------------------------
@@ -367,6 +302,68 @@ class BootStrap {
     private void createMonitorIfNeeded(Map data) {
         def monitor = Monitor.findByCode(data.code as String)
         if (!monitor) new Monitor(data).save()
+    }
+
+    private void ensureRoadMapItemsCreated() {
+        if (!Phase.count) {
+            def q1 = new Phase(
+                name: 'Q1 2020',
+                sortOrder: 1,
+                lastUpdatedBy: 'admin@xh.io'
+            ).save()
+
+            def q2 = new Phase(
+                name: 'Q2 2020',
+                sortOrder: 2,
+                lastUpdatedBy: 'admin@xh.io'
+            ).save()
+
+            new Project(
+                name: 'Inline Grid Editing',
+                category: 'GRIDS',
+                description: 'Ability to edit grids inline',
+                status: 'MERGED',
+                gitLinks: [
+                    'https://github.com/xh/hoist-react/issues/1621',
+                    'https://github.com/xh/hoist-react/pull/1620'
+                ],
+                sortOrder: 1,
+                lastUpdatedBy: 'admin@xh.io',
+                releaseVersion: 'Hoist 29.1',
+                phase: q1
+            ).save()
+
+            new Project(
+                name: 'Rich Dashboards',
+                category: 'DASHBOARDS',
+                description: 'Highly functional drag-drop dashboards',
+                status: 'RELEASED',
+                sortOrder: 1,
+                lastUpdatedBy: 'admin@xh.io',
+                releaseVersion: 'Hoist 30.0',
+                phase: q1
+            ).save()
+
+            new Project(
+                name: 'Progressive Web App',
+                category: 'OTHER',
+                description: 'Hoist PWAs for desktop apps',
+                status: 'PLANNED',
+                sortOrder: 2,
+                lastUpdatedBy: 'admin@xh.io',
+                phase: q2
+            ).save()
+
+            new Project(
+                name: 'Java 11 / Grails 4',
+                category: 'UPGRADES',
+                description: 'Upgrade Hoist to be compatible with Java 11 and Grails 4.',
+                status: 'DEVELOPMENT',
+                sortOrder: 3,
+                lastUpdatedBy: 'admin@xh.io',
+                phase: q2
+            ).save()
+        }
     }
 
     private void ensureUsersCreated() {
