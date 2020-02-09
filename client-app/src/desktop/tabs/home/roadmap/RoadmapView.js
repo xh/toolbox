@@ -1,50 +1,67 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
-import {filler} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/cmp/store';
 import {dataView} from '@xh/hoist/cmp/dataview';
-import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
+import {filler, hbox} from '@xh/hoist/cmp/layout';
+import {storeFilterField} from '@xh/hoist/cmp/store';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {RoadmapViewModel} from './RoadmapViewModel';
+import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {Icon} from '@xh/hoist/icon';
+import {RoadmapModel} from './RoadmapModel';
 import './RoadmapView.scss';
 
 export const roadmapView = hoistCmp.factory({
-    model: creates(RoadmapViewModel),
+    model: creates(RoadmapModel),
 
-    render({model})  {
+    render({model, ...props})  {
         return panel({
-            className: 'toolbox-roadmap-dataview-panel',
             title: 'Hoist Roadmap',
-            headerItems: [
-                buttonGroupInput({
-                    enableClear: true,
-                    minimal: true,
-                    bind: 'statusFilter',
-                    items: [
-                        button({
-                            text: 'Show Pipeline',
-                            value: 'showPipeline'
-                        }),
-                        button({
-                            bind: 'statusFilter',
-                            text: 'Show Released',
-                            value: 'showReleased'
-                        })
-                    ]
-                })
-            ],
             icon: Icon.mapSigns(),
-            width: 500,
-            height: 600,
-            item: dataView({
-                model: model.dataViewModel,
-                rowCls: 'dataview-item'
-            }),
-            bbar: [
-                filler(),
-                storeFilterField({store: model.dataViewModel.store})
-            ]
+            className: 'tb-roadmap',
+            item: dataView(),
+            bbar: bbar(),
+            ...props
         });
     }
 });
+
+const bbar = hoistCmp.factory(
+    ({model}) => toolbar(
+        buttonGroupInput({
+            bind: 'statusFilter',
+            items: [
+                button({
+                    text: 'Planned',
+                    icon: Icon.mapSigns(),
+                    value: 'showPipeline',
+                    width: 100
+                }),
+                button({
+                    text: 'Released',
+                    icon: Icon.checkCircle(),
+                    value: 'showReleased',
+                    width: 100
+                })
+            ]
+        }),
+        filler(),
+        storeFilterField({store: model.dataViewModel.store})
+    )
+);
+
+// Custom group renderer
+export const roadmapGroupRow = hoistCmp.factory(
+    ({node}) => {
+        const projectRec = node.allLeafChildren[0].data;
+        return hbox(
+            {
+                className: 'roadmap-group-row',
+                onClick: () => node.setExpanded(!node.expanded),
+                items: [
+                    Icon.calendar({className: 'xh-white', prefix: 'fal'}),
+                    projectRec.data.phaseName
+                ]
+            }
+        );
+    }
+);

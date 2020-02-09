@@ -1,114 +1,99 @@
-import {hoistCmp} from '@xh/hoist/core/index';
-import {vbox, box, hbox} from '@xh/hoist/cmp/layout/index';
 import {library} from '@fortawesome/fontawesome-svg-core';
-import {faCodeMerge} from '@fortawesome/pro-regular-svg-icons';
-import {Icon, fontAwesomeIcon} from '@xh/hoist/icon/index';
-import {filler, span} from '@xh/hoist/cmp/layout';
-import {capitalizeWords} from '@xh/hoist/format';
-import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {fab} from '@fortawesome/free-brands-svg-icons';
+import {faCodeMerge} from '@fortawesome/pro-regular-svg-icons';
+import {div, filler} from '@xh/hoist/cmp/layout';
+import {hbox, vbox} from '@xh/hoist/cmp/layout/index';
+import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+import {hoistCmp, XH} from '@xh/hoist/core/index';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {capitalizeWords} from '@xh/hoist/format';
+import {fontAwesomeIcon, Icon} from '@xh/hoist/icon/index';
+import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
+import {truncate} from 'lodash';
 
 library.add(fab, faCodeMerge);
 
 export const roadmapViewItem = hoistCmp.factory({
     model: null,
-    render(props) {
-        const {category, name, description, releaseVersion, status, gitLinks, lastUpdated} = props.record.data;
-        let gitLinksMap;
-        if (gitLinks !== null) {
-            gitLinksMap = gitLinks.split(',');
-        }
-        let statusIcon, categoryIcon;
-        let iconName = XH.configService.get('roadmapCategories')[category];
 
-        switch (status) {
-            case 'MERGED':
-                statusIcon = fontAwesomeIcon({icon: faCodeMerge, size: '2x', prefix: 'fal'});
-                break;
-            case 'DEVELOPMENT':
-                statusIcon = Icon.gear({size: '2x', className: 'xh-orange', prefix: 'fal'});
-                break;
-            case 'RELEASED':
-                statusIcon = Icon.check({size: '2x', className: 'xh-green', prefix: 'fal'});
-                break;
-            case 'PLANNED':
-                statusIcon = Icon.clipboard({size: '2x', className: 'xh-blue-light', prefix: 'fal'});
-                break;
-        }
-        switch (category) {
-            case category:
-                categoryIcon = Icon[iconName]({size: '1x', className: 'xh-blue', prefix: 'fal'});
-                break;
-            default:
-                categoryIcon = Icon.experiment({size: '1x', className: 'xh-blue', prefix: 'fal'});
-                break;
-        }
-        const truncateDescription = (text) => {
-            if (text.length > 194) {
-                return text.substring(0, 194) + '...';
-            } else {
-                return text;
-            }
-        };
+    render({record}) {
+        const {category, name, description, releaseVersion, status, gitLinks, lastUpdated} = record.data,
+            gitIcon = fontAwesomeIcon({icon: ['fab', 'github'], size: '2x', prefix: 'fal'});
 
-        return vbox(
-            box({
-                className: 'dataview-item--name',
-                items: [
-                    categoryIcon,
-                    name
-                ]
-            }),
-            popover({
-                popoverClassName: 'popover--description',
-                minimal: true,
-                interactionKind: 'hover',
-                target: hbox({
-                    className: 'dataview-item--description',
-                    item: span(truncateDescription(description))
-                }),
-                position: 'left-top',
-                content: description
-            }),
-            hbox({
-                className: 'dataview-item--footer',
-                items: [
-                    releaseVersion,
+        return vbox({
+            className: 'tb-roadmap-item',
+            items: [
+                hbox(
+                    div({
+                        className: 'tb-roadmap-item__title',
+                        items: [getCategoryIcon(category), name]
+                    }),
                     filler(),
-                    relativeTimestamp({timestamp: lastUpdated, options: {prefix: 'Last updated '}})
-                ]
-            }),
-            popover({
-                className: 'dataview-item--git',
-                minimal: true,
-                target: button({
-                    icon: fontAwesomeIcon({icon: ['fab', 'github'], size: '2x', prefix: 'fal'})
-                }),
-                content: menu({
-                    items: gitLinksMap ? gitLinksMap.map((link) => {
-                        return menuItem({
-                            text: link,
-                            icon: fontAwesomeIcon({icon: ['fab', 'github']}),
-                            onClick: () => window.open(link)
-                        });
-                    }) : menuItem({
-                        text: 'No Github issue created yet ...'
+                    popover({
+                        minimal: true,
+                        target: button({icon: gitIcon}),
+                        content: menu({items: getGitMenuItems(gitLinks)})
+                    }),
+                    popover({
+                        popoverClassName: 'tb-roadmap__popover',
+                        minimal: true,
+                        interactionKind: 'hover',
+                        position: 'top',
+                        target: div({
+                            className: 'tb-roadmap-item__statusIcon',
+                            item: getStatusIcon(status)
+                        }),
+                        content: capitalizeWords(status)
                     })
-                })
-            }),
-            popover({
-                popoverClassName: 'popover--status',
-                className: 'dataview-item--statusIcon',
-                minimal: true,
-                interactionKind: 'hover',
-                position: 'top',
-                target: span({
-                    item: statusIcon
+                ),
+                popover({
+                    className: 'tb-roadmap-item__description',
+                    popoverClassName: 'tb-roadmap__popover tb-roadmap__popover--description',
+                    minimal: true,
+                    interactionKind: 'hover',
+                    position: 'left-top',
+                    target: truncate(description, {length: 300}),
+                    content: description
                 }),
-                content: capitalizeWords(status)
-            })
-        );
+                hbox({
+                    className: 'tb-roadmap-item__footer',
+                    items: [
+                        releaseVersion,
+                        filler(),
+                        relativeTimestamp({timestamp: lastUpdated, options: {prefix: 'Last updated'}})
+                    ]
+                })
+            ]
+        });
     }
 });
+
+const getStatusIcon = (status) => {
+    const prefix = 'fal', size = '2x';
+    switch (status) {
+        case 'DEVELOPMENT': return Icon.gear({className: 'xh-orange', prefix, size});
+        case 'RELEASED': return Icon.checkCircle({className: 'xh-green', prefix, size});
+        case 'PLANNED': return Icon.clipboard({className: 'xh-blue-light', prefix, size});
+        case 'MERGED': return fontAwesomeIcon({icon: faCodeMerge, className: 'xh-green', prefix, size});
+        default: return Icon.questionCircle({prefix, size});
+    }
+};
+
+const getCategoryIcon = (category) => {
+    const iconName = XH.getConf('roadmapCategories')[category] ?? 'experiment';
+    return Icon[iconName]({className: 'xh-blue', prefix: 'fal'});
+};
+
+const getGitMenuItems = (gitLinks) => {
+    if (!gitLinks) {
+        return [menuItem({text: 'No linked Github issues yet.'})];
+    }
+
+    return gitLinks.split(',').map((link) => {
+        return menuItem({
+            text: link,
+            icon: fontAwesomeIcon({icon: ['fab', 'github']}),
+            onClick: () => window.open(link)
+        });
+    });
+};

@@ -29,10 +29,7 @@ export const dataViewPanel = hoistCmp.factory({
                 icon: Icon.addressCard(),
                 width: 700,
                 height: 400,
-                item: dataView({
-                    model: model.dataViewModel,
-                    rowCls: 'dataview-item'
-                }),
+                item: dataView({model: model.dataViewModel}),
                 bbar: [
                     refreshButton({
                         text: 'Load new (random) records',
@@ -61,7 +58,8 @@ class Model {
         contextMenu: [
             'copyCell'
         ],
-        itemHeight: 70
+        itemHeight: 70,
+        rowClsFn: () => 'dataview-item'
     });
     
     async doLoadAsync(loadSpec) {

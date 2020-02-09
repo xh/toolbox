@@ -9,41 +9,55 @@ import {roadmapView} from './roadmap/RoadmapView';
 import './HomeTab.scss';
 
 export const homeTab = hoistCmp.factory(
+    () => wrapper(
+        box({
+            className: 'tb-home',
+            items: [
+                welcomePanel(),
+                roadmapView()
+            ]
+        })
+    )
+);
+
+const welcomePanel = hoistCmp.factory(
     () => {
         const link = (txt, url) => <a href={url} target="_blank">{txt}</a>;
-
-        return wrapper(
-            box({
-                className: 'toolbox-home',
-                items: [
-                    roadmapView(),
-                    panel({
-                        width: 650,
-                        height: 400,
-                        title: 'Welcome to Toolbox',
-                        icon: Icon.home(),
-                        items: [
-                            hframe(
-                                <div className="toolbox-welcome__logo">
-                                    <img src={xhHoist} alt="xh.io + Hoist"/>
-                                </div>,
-                                <div className="toolbox-welcome">
-                                    <p>
-                                        Toolbox demonstrates key components, code patterns, utilities, and other tooling included in {link('Hoist React', 'https://github.com/xh/hoist-react/')} and {link('Hoist Core', 'https://github.com/xh/hoist-core/')}, libraries created by {link('Extremely Heavy', 'https://xh.io')} for building and operating enterprise web applications. </p>
-                                    <p>
-                                        Hoist provides a curated selection of custom and third-party components, pre-integrated to function as a highly productive full-stack framework for web application development. </p>
-                                    <p>
-                                        The Toolbox app itself is written using Hoist, and its {link('source code', 'https://github.com/xh/toolbox')} is available for review. </p>
-                                    <p>
-                                        {link('Contact us', 'https://xh.io/contact/')} with questions or for more information - we would love to hear from you!</p>
-                                    <p className="toolbox-welcome__signoff">
-                                        {link('- The XH Team', 'https://xh.io/team/')}</p>
-                                </div>
-                            )
-                        ]
-                    })
-                ]
-            })
-        );
+        return panel({
+            title: 'Welcome to Toolbox',
+            icon: Icon.home(),
+            className: 'tb-welcome',
+            items: [
+                hframe(
+                    <div className="tb-welcome__logo">
+                        <img src={xhHoist} alt="xh.io + Hoist"/>
+                    </div>,
+                    <div className="tb-welcome__greeting">
+                        <p>
+                            Toolbox demonstrates key components, code patterns, utilities, and
+                            other tooling included in {link('Hoist React', 'https://github.com/xh/hoist-react/')} and {link('Hoist Core', 'https://github.com/xh/hoist-core/')},
+                            libraries created by {link('Extremely Heavy', 'https://xh.io')} for
+                            building and operating enterprise web applications.
+                        </p>
+                        <p>
+                            Hoist provides a curated selection of custom and third-party components,
+                            pre-integrated to function as a highly productive full-stack framework
+                            for web application development.
+                        </p>
+                        <p>
+                            The Toolbox app itself is written using Hoist, and
+                            its {link('source code', 'https://github.com/xh/toolbox')} is
+                            available for review.
+                        </p>
+                        <p>
+                            {link('Contact us', 'https://xh.io/contact/')} with questions
+                            or for more information - we would love to hear from you!
+                        </p>
+                        <p className="tb-welcome__signoff">
+                            {link('- The XH Team', 'https://xh.io/team/')}</p>
+                    </div>
+                )
+            ]
+        });
     }
 );

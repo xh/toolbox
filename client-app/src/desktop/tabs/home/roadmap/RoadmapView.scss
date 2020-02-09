@@ -1,85 +1,65 @@
-.toolbox-roadmap-dataview-panel {
-  :not(.ag-row-group).dataview-item {
-    &--name {
+.tb-roadmap {
+  width: 500px;
+  height: 500px;
+
+  .tb-roadmap-item {
+    flex: 1;
+    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+
+    // Title row.
+    > .xh-hbox {
+      flex: none;
+    }
+
+    &__title {
       font-size: var(--xh-font-size-large-px);
       font-weight: bold;
-      margin-top: 5px;
+      margin: auto 0;
 
-      & svg {
-        position: relative !important;
-        left: 5px !important;
-        top: 5px !important;
-        margin-right: 10px;
+      svg {
+        margin-right: var(--xh-pad-px);
       }
     }
 
-    &--description {
-      opacity: 0.8;
-      font-size: var(--xh-font-size-medium-px);
-      white-space: normal !important;
-      margin-left: 5px;
-      height: 45px;
-      line-height: calc(var(--xh-font-size-small) * 1.5px);
-      max-width: 390px;
+    &__statusIcon {
+      // Margin tweak to align with GitHub icon in button.
+      margin: 5px 0 0 var(--xh-pad-half-px);
     }
 
-    &--footer {
+    &__description {
+      opacity: 0.8;
+      flex: 1;
+      min-height: 0;
+      margin: 0 0 var(--xh-pad-px) 0;
+      overflow: hidden;
+    }
+
+    &__footer {
+      flex: none;
       opacity: 0.8;
       font-size: var(--xh-font-size-small-px);
-      line-height: calc(var(--xh-font-size-small) * 1.1px);
-      margin-top: 10px;
-      margin-left: 5px;
-      margin-right: 5px;
-    }
-
-    &--git {
-      position: absolute !important;
-      right: 38px !important;
-      top: 10px;
-    }
-
-    &--statusIcon {
-      position: absolute !important;
-      right: 10px !important;
-      top: 15px;
-      color: purple;
     }
   }
 }
 
 .roadmap-group-row {
-  margin-top: 7px;
-  margin-left: 5px;
+  width: 100%;  // ensure entire group row surface takes click handler
+  align-items: center;
 
-  > svg {
-    margin: 1px 4px 8px 8px;
-  }
-
-  span {
-    margin-left: 2px;
-
-    > svg {
-      margin: 0;
-    }
+  svg {
+    margin: 0 var(--xh-pad-half-px) 0 var(--xh-pad-px);
   }
 }
 
-.popover--description {
-  max-width: 475px;
+.tb-roadmap__popover {
   background-color: var(--xh-bg-alt);
-  padding: 10px;
-  line-height: calc(var(--xh-font-size-small) * 1.8px);
+  padding: var(--xh-pad-half-px);
 
-  & .bp3-popover-content {
-    background-color: var(--xh-bg-alt) !important;
+  .bp3-popover-content {
+    background-color: var(--xh-bg-alt);
   }
-}
 
-.popover--status {
-  background-color: var(--xh-bg-alt);
-  padding: 5px;
-
-  & .bp3-popover-content {
-    background-color: var(--xh-bg-alt) !important;
+  &--description {
+    max-width: 300px;
   }
 }
