@@ -3,8 +3,7 @@ import {hframe, hspacer, filler} from '@xh/hoist/cmp/layout';
 import {hoistCmp, creates, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/cmp/store';
-import {gridCountLabel} from '@xh/hoist/cmp/grid';
+import {storeFilterField, storeCountLabel} from '@xh/hoist/cmp/store';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 
@@ -12,6 +11,7 @@ import {CubeTestModel} from './CubeTestModel';
 import {dimensionManager} from './dimensions/DimensionManager';
 import {loadTimesPanel} from './LoadTimesPanel';
 import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 
 export const CubeTestPanel = hoistCmp({
     model: creates(CubeTestModel),
@@ -28,7 +28,7 @@ export const CubeTestPanel = hoistCmp({
                         item: grid(),
                         mask: 'onLoad',
                         tbar: tbar(),
-                        bbar: [gridCountLabel(), filler(), storeFilterField(), colChooserButton()]
+                        bbar: bbar()
                     }),
                     loadTimesPanel()
                 ]
@@ -64,6 +64,21 @@ const tbar = hoistCmp.factory(
             width: 80
         })
     )
+);
+
+const bbar = hoistCmp.factory(
+    ({model}) => {
+        const {view} = model;
+        return toolbar(
+            storeCountLabel({store: view.cube.store, unit: 'cube facts'}),
+            hspacer(2),
+            'Last Updated:',
+            relativeTimestamp({timestamp: view.info.asOf}),
+            filler(),
+            storeFilterField(),
+            colChooserButton()
+        );
+    }
 );
 
 

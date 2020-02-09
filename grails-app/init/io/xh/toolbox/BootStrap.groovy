@@ -25,18 +25,21 @@ class BootStrap {
         ensureRequiredPrefsCreated()
         ensureMonitorsCreated()
         ensureRoadMapItemsCreated()
-        def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
+
+        def services = Utils.xhServices.findAll {
+            it.class.canonicalName.startsWith(this.class.package.name)
+        }
         BaseService.parallelInit(services)
+
         ensureUsersCreated()
+        resetGuestUserPassword()
     }
 
     def destroy = {}
 
 
     private void ensureRoadMapItemsCreated() {
-
         if (!Phase.count) {
-
             new Phase(
                     name: 'Q1 2020',
                     sortOrder: 1,
@@ -51,7 +54,6 @@ class BootStrap {
         }
 
         if (!Project.count) {
-
             new Project(
                     name: 'Inline Grid Editing',
                     category: 'GRIDS',
@@ -374,33 +376,33 @@ class BootStrap {
         if (adminUsername && adminPassword) {
             createUserIfNeeded(
                 email: adminUsername,
+                password: adminPassword,
                 firstName: 'Toolbox',
-                lastName: 'Admin',
-                password: adminPassword
+                lastName: 'Admin'
             )
         } else {
             log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
 
         createUserIfNeeded(
-            email: 'toolbox@xh.io',
+            email: guestUserEmail,
+            password: guestUserPwd,
             firstName: 'Toolbox',
-            lastName: 'Demo',
-            password: 'toolbox'
+            lastName: 'Demo'
         )
 
         createUserIfNeeded(
             email: 'norole@xh.io',
+            password: 'password',
             firstName: 'No',
             lastName: 'Role',
-            password: 'password'
         )
 
         createUserIfNeeded(
             email: 'inactive@xh.io',
+            password: 'password',
             firstName: 'Not',
             lastName: 'Active',
-            password: 'password',
             enabled: false
         )
     }
@@ -408,6 +410,12 @@ class BootStrap {
     private void createUserIfNeeded(Map data) {
         def user = User.findByEmail(data.email as String)
         if (!user) new User(data).save()
+    }
+
+    private void resetGuestUserPassword () {
+        def user = User.findByEmail(guestUserEmail)
+        user.setPassword(guestUserPwd)
+        user.save()
     }
 
     private void logStartupMsg() {
@@ -423,4 +431,7 @@ class BootStrap {
 \n
         """)
     }
+
+    private guestUserEmail = 'toolbox@xh.io'
+    private guestUserPwd = 'Hoist_Toolb0x'
 }
