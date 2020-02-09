@@ -85,7 +85,23 @@ export const dialogsPanel = hoistCmp.factory({
                         button({
                             ...dialogBtn(Icon.arrowsLeftRight()),
                             text: 'Dialog That Can Open a Child Dialog',
-                            onClick: () => model.zIndexParentDialogModel.show()
+                            onClick: () => model.parentDialogModel.show()
+                        })
+                    ),
+                    row(
+                        'zIndex:',
+                        button({
+                            ...dialogBtn(Icon.arrowsLeftRight()),
+                            text: 'Dialog with zIndex set to 100',
+                            onClick: () => model.customZIndexDialogModel.show()
+                        })
+                    ),
+                    row(
+                        '"style" prop:',
+                        button({
+                            ...dialogBtn(Icon.arrowsLeftRight()),
+                            text: 'Dialog with custom style prop setting',
+                            onClick: () => model.customStylePropDialogModel.show()
                         })
                     )
                 )),
@@ -150,7 +166,7 @@ export const dialogsPanel = hoistCmp.factory({
                     title: 'Parent Dialog',
                     mask: withMask,
                     closeOnOutsideClick,
-                    model: model.zIndexParentDialogModel,
+                    model: model.parentDialogModel,
                     item: panel({
                         style: {padding: '10px'},
                         width: 300,
@@ -174,6 +190,30 @@ export const dialogsPanel = hoistCmp.factory({
                     item: oHLCChartPanel(),
                     width: 600,
                     height: 400
+                }),
+                dialog({
+                    icon: Icon.box(),
+                    title: 'Dialog with zIndex 100',
+                    mask: withMask,
+                    closeOnOutsideClick,
+                    model: model.customZIndexDialogModel,
+                    item: oHLCChartPanel(),
+                    width: 600,
+                    height: 400,
+                    zIndex: 100
+                }),
+                dialog({
+                    icon: Icon.box(),
+                    title: 'Dialog with custom style prop',
+                    mask: withMask,
+                    closeOnOutsideClick,
+                    model: model.customStylePropDialogModel,
+                    item: oHLCChartPanel(),
+                    width: 600,
+                    height: 400,
+                    style: {
+                        boxShadow: '0px 0px 10px 5px green'
+                    }
                 })
             ]
         });

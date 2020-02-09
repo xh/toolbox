@@ -47,7 +47,7 @@ export class DialogsPanelModel {
     });
 
     @managed
-    zIndexParentDialogModel = new DialogModel({
+    parentDialogModel = new DialogModel({
         draggable: true,
         stateModel: {
             dialogId: 'zIndexParentDialog'
@@ -59,5 +59,18 @@ export class DialogsPanelModel {
         resizable: true,
         draggable: true,
         stateModel: 'childDialogOHLC'
+    });
+
+    @managed
+    customZIndexDialogModel = new DialogModel({
+        resizable: true,
+        draggable: true,
+        stateModel: 'customZIndexDialog'
+    });
+
+    @managed
+    customStylePropDialogModel = new DialogModel({
+        resizable: true,
+        draggable: true
     });
 }
