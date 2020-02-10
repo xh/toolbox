@@ -25,7 +25,7 @@ export class RoadmapModel {
     }
 
     @bindable
-    statusFilter = 'showPipeline';
+    statusFilter = 'showUpcoming';
 
     @managed
     dataViewModel = new DataViewModel({
@@ -61,7 +61,7 @@ export class RoadmapModel {
     processData(rawData) {
         return rawData.flatMap(phase => {
             return phase.projects.map(project => {
-                return {...project, phaseOrder: phase.sortOrder, phaseName: phase.name};
+                return {...project, phaseOrder: phase.sortOrder};
             });
         });
     }

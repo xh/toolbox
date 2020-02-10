@@ -33,7 +33,7 @@ const bbar = hoistCmp.factory(
                 button({
                     text: 'Upcoming',
                     icon: Icon.calendar(),
-                    value: 'showPipeline',
+                    value: 'showUpcoming',
                     width: 100
                 }),
                 button({

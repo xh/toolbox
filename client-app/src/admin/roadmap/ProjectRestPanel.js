@@ -64,6 +64,7 @@ const modelSpec = {
             },
             {
                 name: 'sortOrder',
+                type: 'int',
                 required: true
             },
             {
