@@ -73,7 +73,7 @@ const getStatusIcon = (status) => {
     switch (status) {
         case 'DEVELOPMENT': return Icon.gear({className: 'xh-orange', prefix, size});
         case 'RELEASED': return Icon.checkCircle({className: 'xh-green', prefix, size});
-        case 'PLANNED': return Icon.clipboard({className: 'xh-blue-light', prefix, size});
+        case 'PLANNED': return Icon.clock({className: 'xh-blue-light', prefix, size});
         case 'MERGED': return fontAwesomeIcon({icon: faCodeMerge, className: 'xh-green fa-fw', prefix, size});
         default: return Icon.questionCircle({prefix, size});
     }
