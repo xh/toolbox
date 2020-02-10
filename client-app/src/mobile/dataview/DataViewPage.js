@@ -16,9 +16,7 @@ export const dataViewPage = hoistCmp.factory({
             title: 'DataView',
             icon: Icon.addressCard(),
             mask: 'onLoad',
-            item: dataView({
-                rowCls: 'dataview-item'
-            }),
+            item: dataView(),
             bbar: [
                 filler(),
                 refreshButton({text: 'Load new (random) records'})
