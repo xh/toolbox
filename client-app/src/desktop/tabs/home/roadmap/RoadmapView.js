@@ -31,7 +31,7 @@ const bbar = hoistCmp.factory(
             bind: 'statusFilter',
             items: [
                 button({
-                    text: 'Planned',
+                    text: 'Upcoming',
                     icon: Icon.mapSigns(),
                     value: 'showPipeline',
                     width: 100

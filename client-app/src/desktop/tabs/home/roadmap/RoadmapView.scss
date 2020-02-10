@@ -52,11 +52,11 @@
 }
 
 .tb-roadmap__popover {
-  background-color: var(--xh-bg-alt);
+  background-color: var(--xh-bg-alt) !important;
   padding: var(--xh-pad-half-px);
 
   .bp3-popover-content {
-    background-color: var(--xh-bg-alt);
+    background-color: var(--xh-bg-alt) !important;
   }
 
   &--description {

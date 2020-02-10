@@ -18,7 +18,7 @@ export const roadmapViewItem = hoistCmp.factory({
 
     render({record}) {
         const {category, name, description, releaseVersion, status, gitLinks, lastUpdated} = record.data,
-            gitIcon = fontAwesomeIcon({icon: ['fab', 'github'], size: '2x', prefix: 'fal'});
+            gitIcon = fontAwesomeIcon({icon: ['fab', 'github'], size: '2x', prefix: 'fal', className: 'fa-fw'});
 
         return vbox({
             className: 'tb-roadmap-item',
@@ -74,7 +74,7 @@ const getStatusIcon = (status) => {
         case 'DEVELOPMENT': return Icon.gear({className: 'xh-orange', prefix, size});
         case 'RELEASED': return Icon.checkCircle({className: 'xh-green', prefix, size});
         case 'PLANNED': return Icon.clipboard({className: 'xh-blue-light', prefix, size});
-        case 'MERGED': return fontAwesomeIcon({icon: faCodeMerge, className: 'xh-green', prefix, size});
+        case 'MERGED': return fontAwesomeIcon({icon: faCodeMerge, className: 'xh-green fa-fw', prefix, size});
         default: return Icon.questionCircle({prefix, size});
     }
 };
