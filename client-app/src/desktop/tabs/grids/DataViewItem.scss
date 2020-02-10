@@ -1,10 +1,10 @@
 .toolbox-dataview-panel {
-  .xh-vbox {
-    flex: 1;
-    padding: var(--xh-pad-half-px) var(--xh-pad-px);
-  }
-
   .dataview-item {
+    .xh-vbox {
+      flex: 1;
+      padding: var(--xh-pad-half-px) var(--xh-pad-px);
+    }
+
     &--name {
       font-size: var(--xh-font-size-large-px);
       font-weight: bold;
