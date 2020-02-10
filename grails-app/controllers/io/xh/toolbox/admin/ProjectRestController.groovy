@@ -34,7 +34,8 @@ class ProjectRestController extends RestController {
 
         if (submit.phaseName) {
             def phase = Phase.findByName(submit.phaseName)
-            submit.phaseId = phase.id
+            def project = Project.findById(submit.id)
+            phase.addToProjects(project)
         }
     }
 }
