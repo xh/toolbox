@@ -92,8 +92,13 @@ export const dialogsPanel = hoistCmp.factory({
                         'zIndex:',
                         button({
                             ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Dialog with zIndex set to 100',
+                            text: 'Dialog with style.zIndex set to 100',
                             onClick: () => model.customZIndexDialogModel.show()
+                        }),
+                        button({
+                            ...dialogBtn(Icon.arrowsLeftRight()),
+                            text: 'Dialog with RnDOptions.style.zIndex set to 100',
+                            onClick: () => model.customZIndexRndoDialogModel.show()
                         })
                     ),
                     row(
@@ -193,14 +198,31 @@ export const dialogsPanel = hoistCmp.factory({
                 }),
                 dialog({
                     icon: Icon.box(),
-                    title: 'Dialog with zIndex 100',
+                    title: 'Dialog with style.zIndex 100',
                     mask: withMask,
                     closeOnOutsideClick,
                     model: model.customZIndexDialogModel,
                     item: oHLCChartPanel(),
                     width: 600,
                     height: 400,
-                    zIndex: 100
+                    style: {
+                        zIndex: 100
+                    }
+                }),
+                dialog({
+                    icon: Icon.box(),
+                    title: 'Dialog with RnDOptions.style.zIndex 100',
+                    mask: withMask,
+                    closeOnOutsideClick,
+                    model: model.customZIndexRndoDialogModel,
+                    item: oHLCChartPanel(),
+                    width: 600,
+                    height: 400,
+                    RnDOptions: {
+                        style: {
+                            zIndex: 100
+                        }
+                    }
                 }),
                 dialog({
                     icon: Icon.box(),

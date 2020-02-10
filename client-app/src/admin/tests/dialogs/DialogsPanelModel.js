@@ -69,6 +69,12 @@ export class DialogsPanelModel {
     });
 
     @managed
+    customZIndexRndoDialogModel = new DialogModel({
+        resizable: true,
+        draggable: true
+    });
+
+    @managed
     customStylePropDialogModel = new DialogModel({
         resizable: true,
         draggable: true
