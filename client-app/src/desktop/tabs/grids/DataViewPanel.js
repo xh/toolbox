@@ -30,8 +30,7 @@ export const dataViewPanel = hoistCmp.factory({
                 width: 700,
                 height: 400,
                 item: dataView({
-                    model: model.dataViewModel,
-                    rowCls: 'dataview-item'
+                    model: model.dataViewModel
                 }),
                 bbar: [
                     refreshButton({
@@ -61,7 +60,9 @@ class Model {
         contextMenu: [
             'copyCell'
         ],
-        itemHeight: 70
+        itemHeight: 70,
+        rowClassFn: () => 'dataview-item',
+        stripeRows: true
     });
     
     async doLoadAsync(loadSpec) {

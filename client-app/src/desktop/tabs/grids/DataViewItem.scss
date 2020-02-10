@@ -1,4 +1,9 @@
 .toolbox-dataview-panel {
+  .xh-vbox {
+    flex: 1;
+    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+  }
+
   .dataview-item {
     &--name {
       font-size: var(--xh-font-size-large-px);
@@ -9,12 +14,12 @@
       opacity: 0.8;
       font-size: var(--xh-font-size-small-px);
       line-height: calc(var(--xh-font-size-small) * 1.1px);
-      margin-bottom: 4px;
+      padding-bottom: 8px;
     }
 
     svg {
       position: absolute;
-      right: 10px;
+      right: 20px;
       top: 15px;
     }
   }
