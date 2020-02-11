@@ -52,7 +52,7 @@ export const roadmapViewItem = hoistCmp.factory({
                     minimal: true,
                     interactionKind: 'hover',
                     position: 'left-top',
-                    target: truncate(description, {length: 235}),
+                    target: truncate(description, {length: 220}),
                     content: description
                 }),
                 hbox({
