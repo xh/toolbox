@@ -7,7 +7,7 @@ class Phase implements JSONFormat{
 
     String name = 'Q1 2020'
     Integer sortOrder
-    boolean clientVisible = true
+    boolean displayed = true
     String lastUpdatedBy
     Date lastUpdated
 
@@ -20,7 +20,6 @@ class Phase implements JSONFormat{
 
     static constraints = {
         name(blank: false, maxSize: 50)
-        sortOrder(unique: true)
         lastUpdatedBy(nullable: true, maxSize: 50)
     }
 
@@ -29,8 +28,7 @@ class Phase implements JSONFormat{
                 id: id,
                 name: name,
                 sortOrder: sortOrder,
-                clientVisible: clientVisible,
-                projectNames: projects ? projects.name : null,
+                displayed: displayed,
                 projects: projects
         ]
     }

@@ -68,7 +68,7 @@ export const roadmapViewItem = hoistCmp.factory({
     }
 });
 
-const getStatusIcon = (status) => {
+function getStatusIcon(status) {
     const prefix = 'fal', size = '2x';
     switch (status) {
         case 'DEVELOPMENT': return Icon.gear({className: 'xh-orange', prefix, size});
@@ -77,23 +77,25 @@ const getStatusIcon = (status) => {
         case 'MERGED': return fontAwesomeIcon({icon: faCodeMerge, className: 'xh-green fa-fw', prefix, size});
         default: return Icon.questionCircle({prefix, size});
     }
-};
+}
 
-const getCategoryIcon = (category) => {
-    const iconName = XH.getConf('roadmapCategories')[category] ?? 'experiment';
+function getCategoryIcon(category) {
+    let iconName = XH.getConf('roadmapCategories')[category];
+    iconName = iconName && Icon[iconName] ? iconName : 'experiment';
+
     return Icon[iconName]({className: 'xh-blue', prefix: 'fal'});
-};
+}
 
-const getGitMenuItems = (gitLinks) => {
+function getGitMenuItems(gitLinks) {
     if (!gitLinks) {
         return [menuItem({text: 'No linked Github issues yet.'})];
     }
 
-    return gitLinks.split(',').map((link) => {
+    return gitLinks.split(',').map(link => {
         return menuItem({
             text: link,
             icon: fontAwesomeIcon({icon: ['fab', 'github']}),
             onClick: () => window.open(link)
         });
     });
-};
+}

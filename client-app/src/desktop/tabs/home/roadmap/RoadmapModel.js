@@ -9,21 +9,6 @@ import './RoadmapView.scss';
 @LoadSupport
 export class RoadmapModel {
 
-    constructor() {
-        this.addReaction({
-            track: () => this.statusFilter,
-            run: (filter) => this.dataViewModel.store.setFilter(
-                (record) => {
-                    const {status} = record.data,
-                        showReleased = filter == 'showReleased';
-                    return showReleased ? status == 'RELEASED' : status != 'RELEASED';
-                }
-            ),
-            fireImmediately: true
-        });
-
-    }
-
     @bindable
     statusFilter = 'showUpcoming';
 
@@ -31,14 +16,14 @@ export class RoadmapModel {
     dataViewModel = new DataViewModel({
         store: {
             fields: [
-                'name', 'phaseOrder', 'phaseName', 'category', 'description', 'releaseVersion',
+                'name', 'sortedPhase', 'phaseName', 'category', 'description', 'releaseVersion',
                 'status', 'gitLinks', 'sortOrder', 'lastUpdated', 'lastUpdatedBy'
             ]
         },
-        sortBy: 'sortOrder',
         itemHeight: 130,
         itemRenderer: (v, {record}) => roadmapViewItem({record}),
-        groupBy: 'phaseOrder',
+        sortBy: 'sortOrder',
+        groupBy: 'sortedPhase',
         groupRowHeight: 32,
         groupRowRenderer: ({node}) => roadmapGroupRow({node}),
         emptyText: 'No projects found...',
@@ -46,6 +31,21 @@ export class RoadmapModel {
         rowBorders: true,
         showHover: true
     });
+
+    constructor() {
+        this.addReaction({
+            track: () => this.statusFilter,
+            run: (filter) => this.dataViewModel.store.setFilter(
+                (record) => {
+                    const {status} = record.data,
+                        showReleased = filter === 'showReleased';
+                    return showReleased ? status === 'RELEASED' : status !== 'RELEASED';
+                }
+            ),
+            fireImmediately: true
+        });
+
+    }
 
     async doLoadAsync(loadSpec) {
         const {dataViewModel} = this,
@@ -61,7 +61,7 @@ export class RoadmapModel {
     processData(rawData) {
         return rawData.flatMap(phase => {
             return phase.projects.map(project => {
-                return {...project, phaseOrder: phase.sortOrder};
+                return {...project, sortedPhase: phase.sortOrder + '_' + phase.name};
             });
         });
     }

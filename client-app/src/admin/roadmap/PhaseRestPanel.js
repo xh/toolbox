@@ -26,7 +26,7 @@ const modelSpec = {
                 name: 'sortOrder',
                 type: 'number'
             },
-            {   name: 'clientVisible',
+            {   name: 'displayed',
                 type: 'bool',
                 defaultValue: true,
                 required: true
@@ -35,7 +35,13 @@ const modelSpec = {
                 name: 'projectNames',
                 editable: false
             }
-        ]
+        ],
+        processRawData: (raw) => {
+            return {
+                ...raw,
+                projectNames: raw.projects.map(it => it.name).join(', ')
+            };
+        }
     },
     unit: 'phase',
     filterFields: ['name', 'sortOrder'],
@@ -52,8 +58,8 @@ const modelSpec = {
             width: 150
         },
         {
-            field: 'clientVisible',
-            headerName: 'Display to Client?',
+            field: 'displayed',
+            headerName: 'Display?',
             ...boolCheckCol,
             width: 150
         },
@@ -67,7 +73,7 @@ const modelSpec = {
     editors: [
         {field: 'name', label: 'Name'},
         {field: 'sortOrder'},
-        {field: 'clientVisible'},
+        {field: 'displayed'},
         {field: 'projectNames', label: 'Projects'}
     ],
     emptyText: 'No phases found - try adding one...',
