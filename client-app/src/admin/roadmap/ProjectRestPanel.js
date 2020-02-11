@@ -75,7 +75,7 @@ const modelSpec = {
     },
     unit: 'project',
     filterFields: ['name', 'status', 'category'],
-    sortBy: 'name',
+    sortBy: 'sortOrder',
     columns: [
         {
             field: 'sortOrder',
