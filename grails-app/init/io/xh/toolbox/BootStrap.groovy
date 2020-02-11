@@ -99,7 +99,7 @@ class BootStrap {
                             "DASHBOARDS": "analytics",
                             "GRIDS": "grid",
                             "UPGRADES": "bolt",
-                            "NEW FEATURE": "favorite",
+                            "NEW FEATURES": "favorite",
                             "OTHER": "experiment"
                     ],
                     groupName: 'Toolbox - Example Apps',
