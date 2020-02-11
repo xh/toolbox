@@ -34,8 +34,17 @@ class ProjectRestController extends RestController {
 
         if (submit.phaseName) {
             def phase = Phase.findByName(submit.phaseName)
-            def project = Project.findById(submit.id)
+            def project = Project.findOrSaveWhere(
+                name: submit.name,
+                description: submit.description,
+                category: submit.category,
+                releaseVersion: submit.releaseVersion,
+                status: submit.status,
+                gitLinks: submit.gitLinks,
+                sortOrder: submit.sortOrder,
+            )
             phase.addToProjects(project)
+
         }
     }
 }

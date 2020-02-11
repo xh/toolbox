@@ -17,8 +17,9 @@ class Project implements JSONFormat {
     Integer sortOrder
     String lastUpdatedBy
     Date lastUpdated
+    Phase phase
 
-    static belongsTo = [phase: Phase]
+//    static belongsTo = [phase: Phase]
 
     static mapping = {
         cache true
@@ -32,6 +33,7 @@ class Project implements JSONFormat {
         releaseVersion(nullable: true)
         gitLinks(nullable: true, validator: {Utils.isJSON(it) ?: 'default.invalid.json.message'})
         lastUpdatedBy(nullable: true, maxSize: 50)
+        phase(nullable: true)
     }
 
     Map formatForJSON() {
