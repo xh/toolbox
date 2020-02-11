@@ -136,7 +136,7 @@ const modelSpec = {
                 item: textArea()
             }},
         {field: 'gitLinks',
-            label: 'Enter Github Links as Text Separated by Commas',
+            label: 'Github Links as Text Separated by Commas',
             formField: {
                 item: codeInput()
             }
