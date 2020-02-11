@@ -31,20 +31,9 @@ class ProjectRestController extends RestController {
 
     protected void preprocessSubmit(JSONObject submit) {
         submit.lastUpdatedBy = username
-
         if (submit.phaseName) {
             def phase = Phase.findByName(submit.phaseName)
-            def project = Project.findOrSaveWhere(
-                name: submit.name,
-                description: submit.description,
-                category: submit.category,
-                releaseVersion: submit.releaseVersion,
-                status: submit.status,
-                gitLinks: submit.gitLinks,
-                sortOrder: submit.sortOrder,
-            )
-            phase.addToProjects(project)
-
+            submit.phase = phase
         }
     }
 }
