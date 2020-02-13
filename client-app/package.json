@@ -33,7 +33,7 @@
     "react-view": "~2.1.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "^5.0.0-SNAPSHOT",
+    "@xh/hoist-dev-utils": "4.4.0",
     "cross-env": "~7.0.0",
     "husky": "~4.2.1",
     "lint-staged": "~10.0.3",

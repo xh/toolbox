@@ -51,6 +51,12 @@ export const homePage = hoistCmp.factory({
                     icon: Icon.rocket(),
                     summary: 'A collection of FontAwesome SVG icons, available in 3 variants.',
                     route: 'icons'
+                }),
+                summaryCard({
+                    title: 'PinPad',
+                    icon: Icon.unlock(),
+                    summary: 'A specialized PIN input, used for lightweight authentication of users.',
+                    route: 'pinPad'
                 })
             ]
         });
