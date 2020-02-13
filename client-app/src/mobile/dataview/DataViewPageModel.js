@@ -17,7 +17,7 @@ export class DataViewPageModel {
         emptyText: 'No companies found...',
         itemRenderer: (v, {record}) => dataViewItem({record}),
         itemHeight: 70,
-        rowClsFn: () => 'dataview-item'
+        rowClassFn: () => 'dataview-item'
     });
 
     async doLoadAsync(loadSpec) {

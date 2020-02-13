@@ -1,7 +1,13 @@
 .dataview-item {
+  .xh-vbox {
+    flex: 1;
+    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+  }
+
   &--name,
   &--city,
   &--value {
+    padding: 0 0 var(--xh-pad-half-px);
     width: calc(100% - 60px);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -9,14 +15,12 @@
   }
 
   &--name {
-    margin: 7px 0 4px;
     font-size: var(--xh-font-size-large-px);
     line-height: calc(var(--xh-font-size-large) * 1.1px);
   }
 
   &--city,
   &--value {
-    margin: 0 0 4px;
     font-size: var(--xh-font-size-small-px);
     line-height: calc(var(--xh-font-size-small) * 1.1px);
   }

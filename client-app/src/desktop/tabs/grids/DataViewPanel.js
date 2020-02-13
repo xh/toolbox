@@ -59,7 +59,7 @@ class Model {
             'copyCell'
         ],
         itemHeight: 70,
-        rowClsFn: () => 'dataview-item'
+        rowClassFn: () => 'dataview-item'
     });
     
     async doLoadAsync(loadSpec) {
