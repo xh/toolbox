@@ -10,8 +10,9 @@ import './AppNotificationsPanel.scss';
 export const appNotificationsPanel = hoistCmp.factory(
     () => wrapper({
         links: [
-            {url: '$HR/desktop/appcontainer/UpdateBar.js', notes: 'Update Bar '},
-            {url: '$HR/svc/IdleService.js', notes: 'Idle Service'}
+            {url: '$HR/desktop/appcontainer/UpdateBar.js', notes: 'Update Bar Component'},
+            {url: '$HR/svc/IdleService.js', notes: 'Idle Service'},
+            {url: '$HR/desktop/appcontainer/IdleDialog.js', notes: 'Idle Dialog Component'}
         ],
         item: box({
             className: 'tb-app-notifications',
