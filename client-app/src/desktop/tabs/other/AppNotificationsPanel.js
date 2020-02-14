@@ -8,15 +8,19 @@ import {XH} from '@xh/hoist/core';
 import './AppNotificationsPanel.scss';
 
 export const appNotificationsPanel = hoistCmp.factory(
-    () => wrapper(
-        box({
+    () => wrapper({
+        links: [
+            {url: '$HR/desktop/appcontainer/UpdateBar.js', notes: 'Update Bar '},
+            {url: '$HR/svc/IdleService.js', notes: 'Idle Service'}
+        ],
+        item: box({
             className: 'tb-app-notifications',
             items: [
                 updateBarTile(),
                 idleServiceTile()
             ]
         })
-    )
+    })
 );
 
 const updateBarTile = hoistCmp.factory(
@@ -30,7 +34,7 @@ const updateBarTile = hoistCmp.factory(
                     ' version without being interrupted by a sudden browser refresh.'),
                 p('The server will communicate any version updates to the app and trigger a banner notification' +
                     ', which will appear at the top of the app\'s container to prompt the user to refresh the app.'),
-                p('Click on the button below for a demo.'),
+                p('Click on the button below for a demo of the App Update banner.'),
                 filler(),
                 button({
                     minimal: false,
@@ -54,7 +58,7 @@ const idleServiceTile = hoistCmp.factory(
                 p('The app will notify and prompt the user to reload the app. Any unsaved actions will be lost.'),
                 p('Idle session monitoring and the length of time can be specified by the admin config. ' +
                     'This Toolbox, for example, goes idle after 15 minutes of inactivity.'),
-                p('Click on the button below for a demo.'),
+                p('Click on the button below for a demo of the Sleep Mode notification.'),
                 filler(),
                 button({
                     minimal: false,
