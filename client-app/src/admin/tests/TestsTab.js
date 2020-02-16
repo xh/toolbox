@@ -9,7 +9,7 @@ import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 
 import {GridTestPanel} from './grids/GridTestPanel';
-import {CubeDataPanel} from './cube/CubeDataPanel';
+import {CubeTestPanel} from './cube/CubeTestPanel';
 import {WebSocketTestPanel} from './websocket/WebSocketTestPanel';
 import {LocalDateTestPanel} from './localDate/LocalDateTestPanel';
 import {PanelResizingTestPanel} from './panels/PanelResizingTestPanel';
@@ -25,7 +25,7 @@ export const TestsTab = hoistCmp(
             tabs: [
                 {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
                 {id: 'grid', title: 'Grid', content: GridTestPanel},
-                {id: 'cube', title: 'Cube Data', content: CubeDataPanel},
+                {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
                 {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel},
                 {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel},
                 {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},

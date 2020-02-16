@@ -16,7 +16,7 @@ export class NewsPanelModel {
         sortBy: 'published',
         store: {
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
-            idSpec: 'url',
+            idSpec: XH.genId,
             filter: (rec) => {
                 const {textFilter, sourceFilter} = this,
                     searchMatch = !textFilter || textFilter.fn(rec),
@@ -25,7 +25,8 @@ export class NewsPanelModel {
                 return sourceMatch && searchMatch;
             }
         },
-        itemRenderer: (v, {record}) => newsPanelItem({record})
+        itemRenderer: (v, {record}) => newsPanelItem({record}),
+        itemHeight: 120
     });
 
     @observable.ref sourceOptions = [];

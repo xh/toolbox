@@ -1,10 +1,10 @@
+import {hframe} from '@xh/hoist/cmp/layout';
 import React from 'react';
-import {hoistCmp, XH} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
-import logo from '../../../core/img/xhio+hoist.png';
-import logoDark from '../../../core/img/xhio+hoist-dark.png';
+import xhHoist from '../../../core/img/xh+hoist.png';
 import './HomeTab.scss';
 
 export const homeTab = hoistCmp.factory(
@@ -13,31 +13,37 @@ export const homeTab = hoistCmp.factory(
 
         return wrapper(
             panel({
-                width: 700,
-                height: 400,
+                width: 750,
                 title: 'Welcome to Toolbox',
                 icon: Icon.home(),
-                item: [
-                    <div className="toolbox-welcome">
-                        <p>
-                            Toolbox provides an inventory and examples of key components,
-                            code, and UI patterns available in {link('Hoist React', 'https://github.com/xh/hoist-react/')},
-                            a library created by {link('Extremely Heavy Industries', 'https://xh.io')} for
-                            building and operating enterprise web applications.
-                        </p>
-                        <p>
-                            Navigate using the tabs above to explore the available components. The Toolbox
-                            app itself is written using Hoist React, and its {link('source code', 'https://github.com/xh/toolbox')} is
-                            available on Github for review.
-                        </p>
+                items: [
+                    hframe(
                         <div className="toolbox-welcome__logo">
-                            <img src={XH.darkTheme ? logoDark : logo} alt="xh.io + Hoist"/>
+                            <img src={xhHoist} alt="xh.io + Hoist"/>
+                        </div>,
+                        <div className="toolbox-welcome">
                             <p>
-                                Please {link('contact us', 'https://xh.io/contact/')} with
-                                questions or for more information.
+                                Toolbox demonstrates key components, code patterns, utilities, and other tooling included
+                                in {link('Hoist React', 'https://github.com/xh/hoist-react/')} and {link('Hoist Core', 'https://github.com/xh/hoist-core/')}, libraries
+                                created by {link('Extremely Heavy', 'https://xh.io')} for
+                                building and operating enterprise web applications.
+                            </p>
+                            <p>
+                                Hoist provides a curated selection of custom and third-party components, pre-integrated to
+                                function as a highly productive full-stack framework for web application development.
+                            </p>
+                            <p>
+                                The Toolbox app itself is written using Hoist, and
+                                its {link('source code', 'https://github.com/xh/toolbox')} is available for review.
+                            </p>
+                            <p>
+                                {link('Contact us', 'https://xh.io/contact/')} with questions or for more information - we would love to hear from you!
+                            </p>
+                            <p className="toolbox-welcome__signoff">
+                                {link('- The XH Team', 'https://xh.io/team/')}
                             </p>
                         </div>
-                    </div>
+                    )
                 ]
             })
         );

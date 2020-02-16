@@ -44,7 +44,7 @@ export class RecallsPanelModel {
         enableExport: true,
         rowBorders: true,
         showHover: true,
-        compact: XH.appModel.useCompactGrids,
+        sizingMode: XH.appModel.gridSizingMode,
         stateModel: 'recalls-main-grid',
         columns: [
             {
@@ -147,8 +147,8 @@ export class RecallsPanelModel {
         };
     }
 
-    createId(data) {
-        return data.brandName + data.recall_number;
+    createId(rawRec) {
+        return rawRec.openfda.brand_name[0] + rawRec.recall_number;
     }
 
     classificationRenderer(val) {

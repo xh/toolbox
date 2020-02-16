@@ -19,7 +19,6 @@ export const newsPanel = hoistCmp.factory({
             height: '100%',
             item: dataView({
                 rowCls: 'news-item',
-                itemHeight: 120,
                 onRowDoubleClicked
             }),
             mask: 'onLoad',
@@ -49,5 +48,7 @@ export const newsPanel = hoistCmp.factory({
 });
 
 function onRowDoubleClicked(e) {
-    if (e.data.url) window.open(e.data.url, '_blank');
+    if (e.data.data.url) {
+        window.open(e.data.data.url, '_blank');
+    }
 }

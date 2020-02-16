@@ -1,5 +1,5 @@
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {switchInput, select} from '@xh/hoist/desktop/cmp/input';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
 import {fragment} from '@xh/hoist/cmp/layout';
 
@@ -9,10 +9,16 @@ export const agGridOptions = hoistCmp.factory({
     render() {
         return fragment({
             items: [
-                switchInput({
-                    bind: 'compact',
-                    label: 'Compact',
-                    labelAlign: 'left'
+                'Sizing Mode',
+                select({
+                    width: null,
+                    bind: 'sizingMode',
+                    options: [
+                        {label: 'Large', value: 'large'},
+                        {label: 'Standard', value: 'standard'},
+                        {label: 'Compact', value: 'compact'},
+                        {label: 'Tiny', value: 'tiny'}
+                    ]
                 }),
                 switchInput({
                     bind: 'stripeRows',

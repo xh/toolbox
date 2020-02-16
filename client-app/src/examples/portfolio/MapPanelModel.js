@@ -24,11 +24,10 @@ export class MapPanelModel {
                     })
                 ];
             },
-
             labelField: 'name',
             valueField: 'pnl',
             heatField: 'pnlMktVal',
-            orientation: 'horizontal'
+            orientation: 'vertical'
         });
     }
 }

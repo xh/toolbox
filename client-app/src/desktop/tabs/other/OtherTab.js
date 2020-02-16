@@ -1,13 +1,15 @@
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {hoistCmp} from '@xh/hoist/core';
+import {clockPanel} from './ClockPanel';
 import {fileChooserPanel} from './FileChooserPanel';
+import {dateFormatsPanel} from './formats/DateFormatsPanel';
+import {numberFormatsPanel} from './formats/NumberFormatsPanel';
 import {iconsPanel} from './IconsPanel';
 import {jsxPanel} from './JsxPanel';
 import {leftRightChooserPanel} from './LeftRightChooserPanel';
-import {relativeTimestampPanel} from './RelativeTimestampPanel';
 import {popupsPanel} from './PopupsPanel';
 import {dialogsPanel} from './dialogs/DialogsPanel';
-import {clockPanel} from './ClockPanel';
+import {relativeTimestampPanel} from './RelativeTimestampPanel';
 
 export const otherTab = hoistCmp.factory(
     () => tabContainer({
@@ -17,11 +19,13 @@ export const otherTab = hoistCmp.factory(
             tabs: [
                 {id: 'dialogs', content: dialogsPanel},
                 {id: 'popups', content: popupsPanel},
-                {id: 'icons', title: 'Icons', content: iconsPanel},
-                {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
                 {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
-                {id: 'timestamp', title: 'Timestamp', content: relativeTimestampPanel},
-                {id: 'clock', title: 'Clock', content: clockPanel},
+                {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
+                {id: 'numberFormats', content: numberFormatsPanel},
+                {id: 'dateFormats', content: dateFormatsPanel},
+                {id: 'timestamp', content: relativeTimestampPanel},
+                {id: 'clock', content: clockPanel},
+                {id: 'icons', content: iconsPanel},
                 {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel}
             ]
         },
