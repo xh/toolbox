@@ -92,12 +92,12 @@ export const dialogsPanel = hoistCmp.factory({
                         'zIndex:',
                         button({
                             ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Dialog with style.zIndex set to 100',
+                            text: 'Dialog with style.zIndex set to 100 (stateful)',
                             onClick: () => model.customZIndexDialogModel.show()
                         }),
                         button({
                             ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Dialog with RnDOptions.style.zIndex set to 100',
+                            text: 'Dialog with RnDOptions.style.zIndex set to 100 (not stateful)',
                             onClick: () => model.customZIndexRndoDialogModel.show()
                         })
                     ),
