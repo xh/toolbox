@@ -42,11 +42,29 @@ export const dialogsPanel = hoistCmp.factory({
             items: [
                 table(tbody(
                     row(
+                        'Header Tests:',
+                        button({
+                            ...dialogBtn(Icon.learn()),
+                            text: 'Default',
+                            onClick: () => model.dialogDefaultHeaderModel.show()
+                        }),
+                        button({
+                            ...dialogBtn(Icon.stopCircle()),
+                            text: 'No Header',
+                            onClick: () => model.dialogNoHeaderModel.show()
+                        }),
+                        button({
+                            ...dialogBtn(Icon.stopCircle()),
+                            text: 'No Close Button',
+                            onClick: () => model.dialogNoCloseButtonModel.show()
+                        })
+                    ),
+                    row(
                         'Forms:',
                         button({
                             ...dialogBtn(Icon.lock()),
                             text: 'Plain Dialog',
-                            onClick: () => model.dialogNotDraggableModel.show()
+                            onClick: () => model.dialogModelThatWillBeFoundFromContextLookup.show()
                         }),
                         button({
                             ...dialogBtn(Icon.arrowsLeftRight()),
@@ -58,12 +76,12 @@ export const dialogsPanel = hoistCmp.factory({
                         'Charts:',
                         button({
                             ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Draggable & Resizable Dialog with OHLC Chart',
+                            text: 'Draggable & Resizable with OHLC Chart',
                             onClick: () => model.dialogWithOHLCChartModel.show()
                         }),
                         button({
                             ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Draggable & Resizable Dialog with Tree Map',
+                            text: 'Draggable & Resizable with Tree Map',
                             onClick: () => model.dialogWithTreeMapModel.show()
                         })
                     ),
@@ -71,7 +89,7 @@ export const dialogsPanel = hoistCmp.factory({
                         'Stateful:',
                         button({
                             ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Stateful Draggable & Resizable Dialog with OHLC Chart',
+                            text: 'Stateful Draggable & Resizable with OHLC Chart',
                             onClick: () => model.statefulDalogWithOHLCChartModel.show()
                         }),
                         button({
@@ -84,7 +102,7 @@ export const dialogsPanel = hoistCmp.factory({
                         'Parent/Child Dialogs:',
                         button({
                             ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Dialog That Can Open a Child Dialog',
+                            text: 'Dialog That Opens a Child Dialog',
                             onClick: () => model.parentDialogModel.show()
                         })
                     ),
@@ -92,12 +110,12 @@ export const dialogsPanel = hoistCmp.factory({
                         'zIndex:',
                         button({
                             ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Dialog with style.zIndex set to 100 (stateful)',
+                            text: 'style.zIndex = 100 (stateful)',
                             onClick: () => model.customZIndexDialogModel.show()
                         }),
                         button({
                             ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Dialog with RnDOptions.style.zIndex set to 100 (not stateful)',
+                            text: 'RnDOptions.style.zIndex = 100 (not stateful)',
                             onClick: () => model.customZIndexRndoDialogModel.show()
                         })
                     ),
@@ -111,12 +129,34 @@ export const dialogsPanel = hoistCmp.factory({
                     )
                 )),
                 dialog({
+                    model: model.dialogDefaultHeaderModel,
+                    mask: withMask,
+                    closeOnOutsideClick,
+                    item: formPanel({onCloseClick: () => model.dialogDefaultHeaderModel.hide()})
+                }),
+                dialog({
+                    model: model.dialogNoHeaderModel,
+                    showCloseButton: false,
+                    mask: withMask,
+                    closeOnOutsideClick,
+                    item: formPanel({onCloseClick: () => model.dialogNoHeaderModel.hide()})
+                }),
+                dialog({
+                    model: model.dialogNoCloseButtonModel,
+                    icon: Icon.box(),
+                    title: 'Dialogs: NO Close Button in Header',
+                    showCloseButton: false,
+                    mask: withMask,
+                    closeOnOutsideClick,
+                    item: formPanel({onCloseClick: () => model.dialogNoCloseButtonModel.hide()})
+                }),
+                dialog({
                     icon: Icon.box(),
                     title: 'Dialogs: NOT Draggable & NOT Resizable',
                     mask: withMask,
                     closeOnOutsideClick,
                     // model found from context
-                    item: formPanel()
+                    item: formPanel({onCloseClick: () => model.dialogModelThatWillBeFoundFromContextLookup.hide()})
                 }),
                 dialog({
                     icon: Icon.box(),
@@ -251,6 +291,6 @@ function dialogBtn(icon) {
     });
 }
 
-function row(col1, col2, col3) {
-    return tr(th(col1), td(col2), td(col3));
+function row(col1, col2, col3, col4) {
+    return tr(th(col1), td(col2), td(col3), td(col4));
 }

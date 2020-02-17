@@ -12,12 +12,22 @@ export class DialogsPanelModel {
     // order important here for testing getting first 
     // dialog model defined in context
     @managed
-    dialogNotDraggableModel = new DialogModel();
+    dialogModelThatWillBeFoundFromContextLookup = new DialogModel();
 
+    @managed
+    dialogDefaultHeaderModel = new DialogModel();
+
+    @managed
+    dialogNoHeaderModel = new DialogModel();
+
+    @managed
+    dialogNoCloseButtonModel = new DialogModel();
+    
     @managed
     dialogDraggableModel = new DialogModel({
         draggable: true
     });
+
     @managed
     dialogWithOHLCChartModel = new DialogModel({
         resizable: true,
