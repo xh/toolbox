@@ -9,7 +9,6 @@ import {dataView, DataViewModel} from '@xh/hoist/cmp/dataview';
 
 import {wrapper} from '../../common/Wrapper';
 import {dataViewItem} from './DataViewItem';
-import './DataViewItem.scss';
 import {shuffle, take} from 'lodash';
 
 export const dataViewPanel = hoistCmp.factory({
@@ -29,9 +28,7 @@ export const dataViewPanel = hoistCmp.factory({
                 icon: Icon.addressCard(),
                 width: 700,
                 height: 400,
-                item: dataView({
-                    model: model.dataViewModel
-                }),
+                item: dataView(),
                 bbar: [
                     refreshButton({
                         text: 'Load new (random) records',
@@ -64,7 +61,7 @@ class Model {
         rowClassFn: () => 'dataview-item',
         stripeRows: true
     });
-    
+
     async doLoadAsync(loadSpec) {
         const {dataViewModel} = this,
             allCustomers = await XH.fetchJson({url: 'customer'}),
