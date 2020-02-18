@@ -15,7 +15,7 @@ export class DataViewPageModel {
         },
         sortBy: 'name',
         emptyText: 'No companies found...',
-        itemRenderer: (v, {record}) => dataViewItem({record}),
+        elementRenderer: (v, {record}) => dataViewItem({record}),
         itemHeight: 70,
         rowClassFn: () => 'dataview-item',
         stripeRows: true
