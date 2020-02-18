@@ -1,6 +1,6 @@
 import {useRef} from 'react';
 
-import {table, tbody, td, th, tr, filler, p} from '@xh/hoist/cmp/layout';
+import {table, tbody, td, th, tr, filler, p, fragment} from '@xh/hoist/cmp/layout';
 import {hoistCmp, creates} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dialog} from '@xh/hoist/desktop/cmp/dialog';
@@ -15,6 +15,7 @@ import {simpleTreeMapPanel} from './chart/SimpleTreeMapPanel';
 import {DialogsPanelModel} from './DialogsPanelModel';
 
 import './DialogsPanel.scss';
+import {DialogModel} from '../../../../../../hoist-react/desktop/cmp/dialog/DialogModel';
 
 export const dialogsPanel = hoistCmp.factory({
     model: creates(DialogsPanelModel),
@@ -43,47 +44,116 @@ export const dialogsPanel = hoistCmp.factory({
                 table(tbody(
                     row(
                         'Header Tests:',
-                        button({
-                            ...dialogBtn(Icon.learn()),
-                            text: 'Default',
-                            onClick: () => model.dialogDefaultHeaderModel.show()
-                        }),
-                        button({
-                            ...dialogBtn(Icon.stopCircle()),
-                            text: 'No Header',
-                            onClick: () => model.dialogNoHeaderModel.show()
-                        }),
-                        button({
-                            ...dialogBtn(Icon.stopCircle()),
-                            text: 'No Close Button',
-                            onClick: () => model.dialogNoCloseButtonModel.show()
-                        })
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.learn()),
+                                text: 'Defaults',
+                                onClick: () => model.setIsOpen1(true)
+                            }),
+                            dialog({
+                                isOpen: model.isOpen1,
+                                onClose: () => model.setIsOpen1(false),
+                                mask: withMask,
+                                closeOnOutsideClick,
+                                item: formPanel({onCloseClick: () => model.setIsOpen1(false)})
+                            })
+                        ),
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.stopCircle()),
+                                text: 'No Icon, No Title',
+                                onClick: () => model.setIsOpen2(true)    
+                            }),
+                            dialog({
+                                isOpen: model.isOpen2,
+                                onClose: () => model.setIsOpen2(false),
+                                showCloseButton: true,
+                                mask: withMask,
+                                closeOnOutsideClick,
+                                item: formPanel({onCloseClick: () => model.setIsOpen2(false)})
+                            })
+                        ),
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.stopCircle()),
+                                text: 'No Close Button',
+                                onClick: () => model.setIsOpen3(true)    
+                            }),
+                            dialog({
+                                isOpen: model.isOpen3,
+                                onClose: () => model.setIsOpen3(false),
+                                icon: Icon.box(),
+                                title: 'Dialogs: NO Close Button in Header',
+                                mask: withMask,
+                                closeOnOutsideClick,
+                                item: formPanel({onCloseClick: () => model.setIsOpen3(false)})
+                            })
+                        )
                     ),
                     row(
-                        'Forms:',
-                        button({
-                            ...dialogBtn(Icon.lock()),
-                            text: 'Plain Dialog',
-                            onClick: () => model.dialogModelThatWillBeFoundFromContextLookup.show()
-                        }),
-                        button({
-                            ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Draggable Dialog',
-                            onClick: () => model.dialogDraggableModel.show()
-                        })
+                        'Draggable',
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.arrowsLeftRight()),
+                                text: 'Draggable Dialog',
+                                onClick: () => model.setIsOpen4(true)    
+                            }),
+                            dialog({
+                                isOpen: model.isOpen4,
+                                icon: Icon.box(),
+                                title: 'Draggable Only',
+                                onClose: () => model.setIsOpen4(false),
+                                mask: withMask,
+                                closeOnOutsideClick,
+                                model: new DialogModel({draggable: true}),
+                                item: formPanel({onCloseClick: () => model.setIsOpen4(false)})
+                            })
+                        )
                     ),
                     row(
-                        'Charts:',
-                        button({
-                            ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Draggable & Resizable with OHLC Chart',
-                            onClick: () => model.dialogWithOHLCChartModel.show()
-                        }),
-                        button({
-                            ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Draggable & Resizable with Tree Map',
-                            onClick: () => model.dialogWithTreeMapModel.show()
-                        })
+                        'Resizable:',
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.chartLine()),
+                                text: 'Resizable Dialog with OHLC Chart',
+                                onClick: () => model.setIsOpen5(true)    
+                            }),
+                            dialog({
+                                isOpen: model.isOpen5,
+                                icon: Icon.chartLine(),
+                                title: 'Resizable Dialog with OHLC Chart',
+                                onClose: () => model.setIsOpen5(false),
+                                mask: withMask,
+                                closeOnOutsideClick,
+                                showCloseButton: true,
+                                model: new DialogModel({resizable: true}),
+                                item: oHLCChartPanel(),
+                                width: 600,
+                                height: 400,
+                                x: 100,
+                                y: 100
+                            })
+                        ),
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.chartLine()),
+                                text: 'Resizable Dialog with TreeMap Chart',
+                                onClick: () => model.setIsOpen6(true)    
+                            }),
+                            dialog({
+                                isOpen: model.isOpen6,
+                                icon: Icon.chartLine(),
+                                title: 'Resizable Dialog with TreeMap Chart',
+                                onClose: () => model.setIsOpen6(false),
+                                mask: withMask,
+                                closeOnOutsideClick,
+                                showCloseButton: true,
+                                model: new DialogModel({resizable: true}),
+                                item: simpleTreeMapPanel(),
+                                width: 600,
+                                height: 400
+                            })
+                        )
                     ),
                     row(
                         'Stateful:',
@@ -128,66 +198,8 @@ export const dialogsPanel = hoistCmp.factory({
                         })
                     )
                 )),
-                dialog({
-                    model: model.dialogDefaultHeaderModel,
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    item: formPanel({onCloseClick: () => model.dialogDefaultHeaderModel.hide()})
-                }),
-                dialog({
-                    model: model.dialogNoHeaderModel,
-                    showCloseButton: false,
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    item: formPanel({onCloseClick: () => model.dialogNoHeaderModel.hide()})
-                }),
-                dialog({
-                    model: model.dialogNoCloseButtonModel,
-                    icon: Icon.box(),
-                    title: 'Dialogs: NO Close Button in Header',
-                    showCloseButton: false,
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    item: formPanel({onCloseClick: () => model.dialogNoCloseButtonModel.hide()})
-                }),
-                dialog({
-                    icon: Icon.box(),
-                    title: 'Dialogs: NOT Draggable & NOT Resizable',
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    // model found from context
-                    item: formPanel({onCloseClick: () => model.dialogModelThatWillBeFoundFromContextLookup.hide()})
-                }),
-                dialog({
-                    icon: Icon.box(),
-                    title: 'Dialogs: Draggable Only',
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    model: model.dialogDraggableModel,
-                    item: formPanel({onCloseClick: () => model.dialogDraggableModel.hide()})
-                }),
-                dialog({
-                    icon: Icon.box(),
-                    title: 'Dialogs: Draggable & Resizable OHLC',
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    model: model.dialogWithOHLCChartModel,
-                    item: oHLCChartPanel(),
-                    width: 600,
-                    height: 400,
-                    x: 100,
-                    y: 100
-                }),
-                dialog({
-                    icon: Icon.box(),
-                    title: 'Dialogs: Draggable & Resizable TreeMap',
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    model: model.dialogWithTreeMapModel,
-                    item: simpleTreeMapPanel(),
-                    width: 600,
-                    height: 400
-                }),
+
+
                 dialog({
                     icon: Icon.box(),
                     title: 'Dialogs: Stateful Draggable & Resizable OHLC',

@@ -9,36 +9,17 @@ export class DialogsPanelModel {
     @bindable withMask = false;
     @bindable closeOnOutsideClick = true;
 
+    @bindable isOpen1 = false;
+    @bindable isOpen2 = false;
+    @bindable isOpen3 = false;
+    @bindable isOpen4 = false;
+    @bindable isOpen5 = false;
+    @bindable isOpen6 = false;
+
     // order important here for testing getting first 
     // dialog model defined in context
     @managed
     dialogModelThatWillBeFoundFromContextLookup = new DialogModel();
-
-    @managed
-    dialogDefaultHeaderModel = new DialogModel();
-
-    @managed
-    dialogNoHeaderModel = new DialogModel();
-
-    @managed
-    dialogNoCloseButtonModel = new DialogModel();
-    
-    @managed
-    dialogDraggableModel = new DialogModel({
-        draggable: true
-    });
-
-    @managed
-    dialogWithOHLCChartModel = new DialogModel({
-        resizable: true,
-        draggable: true
-    });
-
-    @managed
-    dialogWithTreeMapModel = new DialogModel({
-        resizable: true,
-        draggable: true
-    });
 
     @managed
     statefulDalogWithOHLCChartModel = new DialogModel({
