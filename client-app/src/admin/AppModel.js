@@ -31,13 +31,13 @@ export class AppModel extends BaseAppModel {
                 children: [
                     {name: 'localDate', path: '/localDate'},
                     {name: 'grid', path: '/grid'},
+                    {name: 'dataView', path: '/dataView'},
                     {name: 'cube', path: '/cube'},
                     {name: 'webSockets', path: '/webSockets'},
                     {name: 'panelResizing', path: '/panelResizing'},
                     {name: 'fetchAPI', path: '/fetchAPI'},
                     {name: 'storeEditing', path: '/storeEditing'},
-                    {name: 'select', path: '/select'},
-                    {name: 'dataViewResizing', path: '/dataViewResizing'}
+                    {name: 'select', path: '/select'}
                 ]
             },
             {

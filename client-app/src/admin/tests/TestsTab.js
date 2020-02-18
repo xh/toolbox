@@ -16,7 +16,7 @@ import {PanelResizingTestPanel} from './panels/PanelResizingTestPanel';
 import {FetchApiTestPanel} from './fetch/FetchApiTestPanel';
 import {StoreEditingPanel} from './storeEditing/StoreEditingPanel';
 import {SelectTestPanel} from './Select/SelectTestPanel';
-import {dataViewResizingTestPanel} from './dataview/DataViewResizingTestPanel';
+import {dataViewTestPanel} from './dataview/DataViewTestPanel';
 
 export const TestsTab = hoistCmp(
     () => tabContainer({
@@ -25,13 +25,13 @@ export const TestsTab = hoistCmp(
             tabs: [
                 {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
                 {id: 'grid', title: 'Grid', content: GridTestPanel},
+                {id: 'dataView', title: 'Data View', content: dataViewTestPanel},
                 {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
                 {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel},
                 {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel},
                 {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
                 {id: 'storeEditing', title: 'Store Editing', content: StoreEditingPanel},
-                {id: 'select', title: 'Select', content: SelectTestPanel},
-                {id: 'dataViewResizing', title: 'Data View Resizing', content: dataViewResizingTestPanel}
+                {id: 'select', title: 'Select', content: SelectTestPanel}
             ],
             switcherPosition: 'left'
         }

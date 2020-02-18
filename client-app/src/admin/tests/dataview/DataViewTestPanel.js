@@ -1,30 +1,28 @@
 import {hoistCmp, HoistModel, LoadSupport, managed, XH, creates} from '@xh/hoist/core';
-import {label, p, span, vbox} from '@xh/hoist/cmp/layout';
+import {label, span, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dataView, DataViewModel} from '@xh/hoist/cmp/dataview';
 
 import {shuffle, take} from 'lodash';
 import {slider} from '@xh/hoist/desktop/cmp/input';
-import './DataViewResizingTestPanel.scss';
+import './DataViewTestPanel.scss';
 
-export const dataViewResizingTestPanel = hoistCmp.factory({
+export const dataViewTestPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model})  {
+        const {dataViewModel} = model;
         return panel({
-            className: 'dataview-resizing-test xh-tiled-bg',
-            title: 'Data View Resizing',
+            className: 'dataview-test xh-tiled-bg',
+            title: 'Data View',
             items: [
-                p('It should be possible to dynamically resize the rows of a DataView.'),
-                dataView({
-                    model: model.dataViewModel
-                })
+                dataView({model: dataViewModel})
             ],
             bbar: [
                 label('itemHeight'),
-                slider({bind: 'itemHeight', model: model.dataViewModel, min: 0, max: 100, labelStepSize: 20}),
+                slider({bind: 'itemHeight', model: dataViewModel, min: 0, max: 100, labelStepSize: 20}),
                 label('groupRowHeight'),
-                slider({bind: 'groupRowHeight', model: model.dataViewModel, min: 0, max: 100, labelStepSize: 20})
+                slider({bind: 'groupRowHeight', model: dataViewModel, min: 0, max: 100, labelStepSize: 20})
             ]
         });
     }
@@ -54,6 +52,6 @@ class Model {
             allCustomers = await XH.fetchJson({url: 'customer'}),
             customers = take(shuffle(allCustomers), 100);
 
-        await dataViewModel.store.loadData(customers);
+        await dataViewModel.loadData(customers);
     }
 }
