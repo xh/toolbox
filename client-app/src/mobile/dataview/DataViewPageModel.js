@@ -15,9 +15,10 @@ export class DataViewPageModel {
         },
         sortBy: 'name',
         emptyText: 'No companies found...',
-        itemRenderer: (v, {record}) => dataViewItem({record}),
+        elementRenderer: (v, {record}) => dataViewItem({record}),
         itemHeight: 70,
-        rowClsFn: () => 'dataview-item'
+        rowClassFn: () => 'dataview-item',
+        stripeRows: true
     });
 
     async doLoadAsync(loadSpec) {

@@ -25,9 +25,10 @@ export class NewsPanelModel {
                 return sourceMatch && searchMatch;
             }
         },
-        itemRenderer: (v, {record}) => newsPanelItem({record}),
+        elementRenderer: (v, {record}) => newsPanelItem({record}),
         itemHeight: 120,
-        rowClassFn: () => 'news-item'
+        rowClassFn: () => 'news-item',
+        stripeRows: true
     });
 
     @observable.ref sourceOptions = [];

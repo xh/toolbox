@@ -1,0 +1,16 @@
+.dataview-test {
+  p {
+    text-align: center;
+    padding: var(--xh-pad-px);
+  }
+
+  & .xh-data-view {
+    width: 700px;
+    margin: auto;
+    border: var(--xh-border-solid);
+
+    & .ag-react-container {
+      padding: var(--xh-pad-px);
+    }
+  }
+}
