@@ -11,7 +11,6 @@ export const newsPanelItem = hoistCmp.factory({
 
         return hbox(
             box({
-                flex: 4,
                 className: 'text-container',
                 item: [
                     <div>
@@ -23,7 +22,6 @@ export const newsPanelItem = hoistCmp.factory({
                 ]
             }),
             box({
-                flex: 2,
                 className: 'img-container',
                 item: [
                     <div className='news-item--img'>
