@@ -21,11 +21,11 @@ export class RoadmapModel {
             ]
         },
         itemHeight: 130,
-        itemRenderer: (v, {record}) => roadmapViewItem({record}),
+        elementRenderer: (v, {record}) => roadmapViewItem({record}),
         sortBy: 'sortOrder',
         groupBy: 'sortedPhase',
         groupRowHeight: 32,
-        groupRowRenderer: ({node}) => roadmapGroupRow({node}),
+        groupRowElementRenderer: ({node}) => roadmapGroupRow({node}),
         emptyText: 'No projects found...',
         selModel: 'disabled',
         rowBorders: true,
