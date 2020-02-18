@@ -1,8 +1,10 @@
+import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {toolbarSeparator} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
 import {XH, creates, hoistCmp, HoistModel, managed, RenderMode, RefreshMode} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {filler} from '@xh/hoist/cmp/layout';
+import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
@@ -40,13 +42,18 @@ export const dashContainerPanel = hoistCmp.factory({
                 icon: Icon.gridLarge(),
                 height: '80%',
                 width: '80%',
-                item: dashContainer(),
+                item: model.renderDashboard ? dashContainer() : frame({item: 'The Dashboard is not rendered now.', padding: 10}),
                 bbar: [
                     button({
                         text: 'Reset & Clear State',
                         onClick: () => model.resetState()
                     }),
                     filler(),
+                    switchInput({
+                        label: 'Render Dashboard',
+                        bind: 'renderDashboard'
+                    }),
+                    toolbarSeparator(),
                     button({
                         text: 'Capture State',
                         icon: Icon.camera(),
@@ -77,6 +84,7 @@ class Model {
     stateKey = 'dashContainerState';
 
     @bindable.ref stateSnapshot;
+    @bindable renderDashboard = true;
 
     defaultState = [{
         type: 'row',
