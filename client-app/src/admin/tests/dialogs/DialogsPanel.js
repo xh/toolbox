@@ -20,7 +20,7 @@ import {DialogModel} from '../../../../../../hoist-react/desktop/cmp/dialog/Dial
 export const dialogsPanel = hoistCmp.factory({
     model: creates(DialogsPanelModel),
     render: ({model}) => {
-        const {withMask, closeOnOutsideClick} = model;
+        const {withMask, closeOnOutsideClick, showCloseButton} = model;
         const divRef = useRef(null);
         
         return panel({
@@ -29,6 +29,11 @@ export const dialogsPanel = hoistCmp.factory({
             ref: divRef,
             bbar: [
                 filler(),
+                switchInput({
+                    bind: 'showCloseButton',
+                    label: 'show close button in dialog header',
+                    alignIndicator: 'right'
+                }),
                 switchInput({
                     bind: 'closeOnOutsideClick',
                     label: 'close on outside click',
@@ -102,6 +107,7 @@ export const dialogsPanel = hoistCmp.factory({
                                 isOpen: model.isOpen4,
                                 icon: Icon.box(),
                                 title: 'Draggable Only',
+                                showCloseButton,
                                 onClose: () => model.setIsOpen4(false),
                                 mask: withMask,
                                 closeOnOutsideClick,
@@ -125,7 +131,7 @@ export const dialogsPanel = hoistCmp.factory({
                                 onClose: () => model.setIsOpen5(false),
                                 mask: withMask,
                                 closeOnOutsideClick,
-                                showCloseButton: true,
+                                showCloseButton,
                                 model: new DialogModel({resizable: true}),
                                 item: oHLCChartPanel(),
                                 width: 600,
@@ -147,7 +153,7 @@ export const dialogsPanel = hoistCmp.factory({
                                 onClose: () => model.setIsOpen6(false),
                                 mask: withMask,
                                 closeOnOutsideClick,
-                                showCloseButton: true,
+                                showCloseButton,
                                 model: new DialogModel({resizable: true}),
                                 item: simpleTreeMapPanel(),
                                 width: 600,
@@ -157,16 +163,51 @@ export const dialogsPanel = hoistCmp.factory({
                     ),
                     row(
                         'Stateful:',
-                        button({
-                            ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Stateful Draggable & Resizable with OHLC Chart',
-                            onClick: () => model.statefulDalogWithOHLCChartModel.show()
-                        }),
-                        button({
-                            ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Stateful Draggable only',
-                            onClick: () => model.statefulDalogWithFormModel.show()
-                        })
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.arrowsLeftRight()),
+                                text: 'Stateful Draggable & Resizable with OHLC Chart',
+                                onClick: () => model.setIsOpen7(true)   
+                            }),
+                            dialog({
+                                isOpen: model.isOpen7,
+                                icon: Icon.box(),
+                                title: 'Stateful Draggable & Resizable OHLC',
+                                onClose: () => model.setIsOpen7(false),
+                                mask: withMask,
+                                closeOnOutsideClick,
+                                showCloseButton,
+                                model: new DialogModel({
+                                    resizable: true, 
+                                    draggable: true,
+                                    stateModel: 'stateFulDialogOHLC'
+                                }),
+                                item: oHLCChartPanel(),
+                                width: 600,
+                                height: 400
+                            })
+                        ),
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.arrowsLeftRight()),
+                                text: 'Stateful Draggable Only',
+                                onClick: () => model.setIsOpen8(true)   
+                            }),
+                            dialog({
+                                isOpen: model.isOpen8,
+                                icon: Icon.box(),
+                                title: 'Stateful Draggable Only',
+                                onClose: () => model.setIsOpen8(false),
+                                mask: withMask,
+                                closeOnOutsideClick,
+                                showCloseButton,
+                                model: new DialogModel({
+                                    draggable: true,
+                                    stateModel: 'stateFulDialogForm'
+                                }),
+                                item: formPanel({onCloseClick: () => model.setIsOpen8(false)})
+                            })
+                        )
                     ),
                     row(
                         'Parent/Child Dialogs:',
@@ -199,25 +240,6 @@ export const dialogsPanel = hoistCmp.factory({
                     )
                 )),
 
-
-                dialog({
-                    icon: Icon.box(),
-                    title: 'Dialogs: Stateful Draggable & Resizable OHLC',
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    model: model.statefulDalogWithOHLCChartModel,
-                    item: oHLCChartPanel(),
-                    width: 600,
-                    height: 400
-                }),
-                dialog({
-                    icon: Icon.box(),
-                    title: 'Dialogs: Stateful Draggable Only',
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    model: model.statefulDalogWithFormModel,
-                    item: formPanel({onCloseClick: () => model.statefulDalogWithFormModel.hide()})
-                }),
                 dialog({
                     icon: Icon.box(),
                     title: 'Parent Dialog',

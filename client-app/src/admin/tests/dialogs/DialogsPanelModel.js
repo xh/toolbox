@@ -8,6 +8,7 @@ export class DialogsPanelModel {
 
     @bindable withMask = false;
     @bindable closeOnOutsideClick = true;
+    @bindable showCloseButton = true;
 
     @bindable isOpen1 = false;
     @bindable isOpen2 = false;
@@ -15,18 +16,13 @@ export class DialogsPanelModel {
     @bindable isOpen4 = false;
     @bindable isOpen5 = false;
     @bindable isOpen6 = false;
+    @bindable isOpen7 = false;
+    @bindable isOpen8 = false;
 
     // order important here for testing getting first 
     // dialog model defined in context
     @managed
     dialogModelThatWillBeFoundFromContextLookup = new DialogModel();
-
-    @managed
-    statefulDalogWithOHLCChartModel = new DialogModel({
-        resizable: true,
-        draggable: true,
-        stateModel: 'stateFulDialogOHLC'
-    });
 
     @managed
     statefulDalogWithFormModel = new DialogModel({
