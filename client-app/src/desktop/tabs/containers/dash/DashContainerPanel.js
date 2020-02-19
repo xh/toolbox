@@ -1,9 +1,12 @@
+import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {toolbarSeparator} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
 import {XH, creates, hoistCmp, HoistModel, managed, RenderMode, RefreshMode} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {filler} from '@xh/hoist/cmp/layout';
+import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 
@@ -40,25 +43,13 @@ export const dashContainerPanel = hoistCmp.factory({
                 icon: Icon.gridLarge(),
                 height: '80%',
                 width: '80%',
-                item: dashContainer(),
-                bbar: [
-                    button({
-                        text: 'Reset & Clear State',
-                        onClick: () => model.resetState()
+                item: model.renderDashboard ?
+                    dashContainer() :
+                    frame({
+                        item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
+                        padding: 10
                     }),
-                    filler(),
-                    button({
-                        text: 'Capture State',
-                        icon: Icon.camera(),
-                        onClick: () => model.saveState()
-                    }),
-                    button({
-                        disabled: !model.stateSnapshot,
-                        text: 'Load Saved State',
-                        icon: Icon.upload(),
-                        onClick: () => model.loadState()
-                    })
-                ]
+                bbar: bbar()
             }),
             links: [
                 {url: '$TB/client-app/src/desktop/tabs/containers/dash/DashContainerPanel.js', notes: 'This example.'},
@@ -71,12 +62,40 @@ export const dashContainerPanel = hoistCmp.factory({
     }
 });
 
+const bbar = hoistCmp.factory(
+    ({model}) => toolbar(
+        switchInput({
+            label: 'Render Dashboard',
+            bind: 'renderDashboard'
+        }),
+        filler(),
+        button({
+            text: 'Capture State',
+            icon: Icon.camera(),
+            onClick: () => model.saveState()
+        }),
+        button({
+            disabled: !model.stateSnapshot,
+            text: 'Load Saved State',
+            icon: Icon.download(),
+            onClick: () => model.loadState()
+        }),
+        toolbarSeparator(),
+        button({
+            text: 'Reset & Clear State',
+            icon: Icon.reset(),
+            onClick: () => model.resetState()
+        })
+    )
+);
+
 @HoistModel
 class Model {
 
     stateKey = 'dashContainerState';
 
     @bindable.ref stateSnapshot;
+    @bindable renderDashboard = true;
 
     defaultState = [{
         type: 'row',
