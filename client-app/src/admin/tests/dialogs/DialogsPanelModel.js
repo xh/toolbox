@@ -9,6 +9,7 @@ export class DialogsPanelModel {
     @bindable withMask = false;
     @bindable closeOnOutsideClick = true;
     @bindable showCloseButton = true;
+    @bindable closeOnEscape = true;
 
     @bindable isOpen1 = false;
     @bindable isOpen2 = false;

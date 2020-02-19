@@ -17,10 +17,13 @@ import {DialogsPanelModel} from './DialogsPanelModel';
 import './DialogsPanel.scss';
 import {DialogModel} from '../../../../../../hoist-react/desktop/cmp/dialog/DialogModel';
 
+// todo: 
+// get rid of scroll bars on maximized state of dialog
+// write close tests:  close on escape
 export const dialogsPanel = hoistCmp.factory({
     model: creates(DialogsPanelModel),
     render: ({model}) => {
-        const {withMask, closeOnOutsideClick, showCloseButton} = model;
+        const {withMask, closeOnOutsideClick, closeOnEscape, showCloseButton} = model;
         const divRef = useRef(null);
         
         return panel({
@@ -37,6 +40,11 @@ export const dialogsPanel = hoistCmp.factory({
                 switchInput({
                     bind: 'closeOnOutsideClick',
                     label: 'close on outside click',
+                    alignIndicator: 'right'
+                }),
+                switchInput({
+                    bind: 'closeOnEscape',
+                    label: 'close on escape key',
                     alignIndicator: 'right'
                 }),
                 switchInput({
@@ -59,6 +67,7 @@ export const dialogsPanel = hoistCmp.factory({
                                 isOpen: model.isOpen1,
                                 onClose: () => model.setIsOpen1(false),
                                 mask: withMask,
+                                closeOnEscape,
                                 closeOnOutsideClick,
                                 item: formPanel({onCloseClick: () => model.setIsOpen1(false)})
                             })
@@ -74,6 +83,7 @@ export const dialogsPanel = hoistCmp.factory({
                                 onClose: () => model.setIsOpen2(false),
                                 showCloseButton: true,
                                 mask: withMask,
+                                closeOnEscape,
                                 closeOnOutsideClick,
                                 item: formPanel({onCloseClick: () => model.setIsOpen2(false)})
                             })
@@ -90,6 +100,7 @@ export const dialogsPanel = hoistCmp.factory({
                                 icon: Icon.box(),
                                 title: 'Dialogs: NO Close Button in Header',
                                 mask: withMask,
+                                closeOnEscape,
                                 closeOnOutsideClick,
                                 item: formPanel({onCloseClick: () => model.setIsOpen3(false)})
                             })
@@ -110,6 +121,7 @@ export const dialogsPanel = hoistCmp.factory({
                                 showCloseButton,
                                 onClose: () => model.setIsOpen4(false),
                                 mask: withMask,
+                                closeOnEscape,
                                 closeOnOutsideClick,
                                 model: new DialogModel({draggable: true}),
                                 item: formPanel({onCloseClick: () => model.setIsOpen4(false)})
@@ -130,6 +142,7 @@ export const dialogsPanel = hoistCmp.factory({
                                 title: 'Resizable Dialog with OHLC Chart',
                                 onClose: () => model.setIsOpen5(false),
                                 mask: withMask,
+                                closeOnEscape,
                                 closeOnOutsideClick,
                                 showCloseButton,
                                 model: new DialogModel({resizable: true}),
@@ -152,6 +165,7 @@ export const dialogsPanel = hoistCmp.factory({
                                 title: 'Resizable Dialog with TreeMap Chart',
                                 onClose: () => model.setIsOpen6(false),
                                 mask: withMask,
+                                closeOnEscape,
                                 closeOnOutsideClick,
                                 showCloseButton,
                                 model: new DialogModel({resizable: true}),
@@ -175,6 +189,7 @@ export const dialogsPanel = hoistCmp.factory({
                                 title: 'Stateful Draggable & Resizable OHLC',
                                 onClose: () => model.setIsOpen7(false),
                                 mask: withMask,
+                                closeOnEscape,
                                 closeOnOutsideClick,
                                 showCloseButton,
                                 model: new DialogModel({
@@ -199,6 +214,7 @@ export const dialogsPanel = hoistCmp.factory({
                                 title: 'Stateful Draggable Only',
                                 onClose: () => model.setIsOpen8(false),
                                 mask: withMask,
+                                closeOnEscape,
                                 closeOnOutsideClick,
                                 showCloseButton,
                                 model: new DialogModel({
