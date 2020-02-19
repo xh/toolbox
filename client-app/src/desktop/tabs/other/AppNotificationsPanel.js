@@ -46,8 +46,8 @@ const updateBarTile = hoistCmp.factory(
                 button({
                     minimal: false,
                     icon: Icon.bullhorn(),
-                    text: 'Release New Toolbox Version 3.0',
-                    onClick: () => XH.acm.showUpdateBar('Toolbox Version 3.0')
+                    text: 'Release New Toolbox Version 99.0.0',
+                    onClick: () => XH.acm.showUpdateBar('99.0.0')
                 })
             ]
         });
