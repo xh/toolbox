@@ -30,7 +30,7 @@ class Project implements JSONFormat {
         status(inList: Project.STATUSES)
         category(inList: Project.CATEGORIES)
         releaseVersion(nullable: true)
-        gitLinks(nullable: true, validator: {Utils.isJSON(it) ?: 'default.invalid.json.message'})
+        gitLinks(nullable: true)
         lastUpdatedBy(nullable: true, maxSize: 50)
     }
 

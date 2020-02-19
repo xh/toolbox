@@ -39,7 +39,7 @@ const modelSpec = {
         processRawData: (raw) => {
             return {
                 ...raw,
-                projectNames: raw.projects.map(it => it.name).join(', ')
+                projectNames: raw.projects ? raw.projects.map(it => it.name).join(', ') : null
             };
         }
     },
