@@ -10,9 +10,10 @@ import './AppNotificationsPanel.scss';
 export const appNotificationsPanel = hoistCmp.factory(
     () => wrapper({
         links: [
-            {url: '$HR/desktop/appcontainer/UpdateBar.js', notes: 'Update Bar Component'},
-            {url: '$HR/svc/IdleService.js', notes: 'Idle Service'},
-            {url: '$HR/desktop/appcontainer/IdleDialog.js', notes: 'Idle Dialog Component'}
+            {url: '$HR/svc/EnvironmentService.js', notes: 'EnvironmentService checks for updated versions and alerts after a new release, if enabled.'},
+            {url: '$HR/desktop/appcontainer/UpdateBar.js', notes: 'UpdateBar Component'},
+            {url: '$HR/svc/IdleService.js', notes: 'Idle Service listens for user interactions and triggers the IdleDialog, if enabled.'},
+            {url: '$HR/desktop/appcontainer/IdleDialog.js', notes: 'IdleDialog Component'}
         ],
         item: box({
             className: 'tb-app-notifications',
@@ -28,14 +29,19 @@ const updateBarTile = hoistCmp.factory(
     () => {
         return panel({
             title: 'App Update',
-            icon: Icon.bolt(),
-            className: 'tb-update',
+            icon: Icon.rocket(),
             items: [
-                p('In the event of an app update, users may continue to browse or complete actions on their current app' +
-                    ' version without being interrupted by a sudden browser refresh.'),
-                p('The server will communicate any version updates to the app and trigger a banner notification' +
-                    ', which will appear at the top of the app\'s container to prompt the user to refresh the app.'),
-                p('Click on the button below for a demo of the App Update banner.'),
+                p(
+                    `In the event of an app update, users may continue to browse or complete 
+                    actions on their current app version without being interrupted by a sudden 
+                    browser refresh.`
+                ),
+                p(
+                    `The server will communicate any version updates to the app and trigger a 
+                    banner notification, which will appear at the top of the app's container to 
+                    prompt the user to refresh the app.`
+                ),
+                p(`Click below for a demo of the App Update banner.`),
                 filler(),
                 button({
                     minimal: false,
@@ -52,14 +58,20 @@ const idleServiceTile = hoistCmp.factory(
     () => {
         return panel({
             title: 'Sleep Mode',
-            className: 'tb-idle',
             icon: Icon.moon(),
             items: [
-                p('After a period of inactivity, the app will enter "sleep mode", suspending background requests.'),
-                p('The app will notify and prompt the user to reload the app. Any unsaved actions will be lost.'),
-                p('Idle session monitoring and the length of time can be specified by the admin config. ' +
-                    'This Toolbox, for example, goes idle after 15 minutes of inactivity.'),
-                p('Click on the button below for a demo of the Sleep Mode notification.'),
+                p(`
+                    After a period of inactivity, apps can enter "sleep mode", suspending 
+                    background requests and prompting the user to reload the app to resume.
+                `),
+                p(`
+                    This feature is recommended for apps that are rapidly polling or receiving 
+                    updates from the server that generate load on back-end APIs.
+                `),
+                p(`
+                    Idle detection is enabled and its time limit configured on a per-app basis.
+                `),
+                p('Click below to put Toolbox into Sleep Mode.'),
                 filler(),
                 button({
                     minimal: false,
