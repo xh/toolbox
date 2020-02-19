@@ -134,7 +134,8 @@ export class AppModel {
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'numberFormats', path: '/numberFormats'},
                             {name: 'popups', path: '/popups'},
-                            {name: 'timestamp', path: '/timestamp'}
+                            {name: 'timestamp', path: '/timestamp'},
+                            {name: 'appNotifications', path: '/appNotifications'}
                         ]
                     },
                     {
