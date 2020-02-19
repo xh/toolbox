@@ -27,7 +27,7 @@ export class SampleGridModel {
 
     viewDetailsAction = {
         text: 'View Details',
-        icon: Icon.search(),
+        icon: Icon.search({asSvg: true}),
         tooltip: 'View details on the selected company',
         recordsRequired: 1,
         displayFn: ({record}) => record ? {tooltip: `View details for ${record.data.company}`} : null,
@@ -36,7 +36,7 @@ export class SampleGridModel {
 
     terminateAction = {
         text: 'Terminate',
-        icon: Icon.skull(),
+        icon: Icon.skull({asSvg: true}),
         intent: 'danger',
         tooltip: 'Terminate this company.',
         recordsRequired: 1,

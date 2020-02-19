@@ -1,7 +1,7 @@
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import React from 'react';
 import {hoistCmp, creates} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon/';
+import {Icon, fileIcon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -16,7 +16,7 @@ export const fileManager = hoistCmp.factory({
     render({model}) {
         return panel({
             title: 'File Manager',
-            icon: Icon.folder(),
+            icon: fileIcon({extension: 'eml', tooltip: 'email'}),
             className: 'file-manager',
             mask: 'onLoad',
             width: 700,

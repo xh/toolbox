@@ -48,7 +48,7 @@ export class FileManagerModel {
                 width: calcActionColWidth(1),
                 actions: [
                     {
-                        icon: Icon.delete(),
+                        icon: Icon.delete({asSvg: true}),
                         tooltip: 'Remove file',
                         intent: 'danger',
                         displayFn: ({record}) => {
@@ -59,7 +59,7 @@ export class FileManagerModel {
                         }
                     },
                     {
-                        icon: Icon.undo(),
+                        icon: Icon.undo({asSvg: true}),
                         tooltip: 'Restore file',
                         intent: 'primary',
                         displayFn: ({record}) => {
