@@ -6,6 +6,7 @@ import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 
@@ -42,30 +43,13 @@ export const dashContainerPanel = hoistCmp.factory({
                 icon: Icon.gridLarge(),
                 height: '80%',
                 width: '80%',
-                item: model.renderDashboard ? dashContainer() : frame({item: 'The Dashboard is not rendered now.', padding: 10}),
-                bbar: [
-                    button({
-                        text: 'Reset & Clear State',
-                        onClick: () => model.resetState()
+                item: model.renderDashboard ?
+                    dashContainer() :
+                    frame({
+                        item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
+                        padding: 10
                     }),
-                    filler(),
-                    switchInput({
-                        label: 'Render Dashboard',
-                        bind: 'renderDashboard'
-                    }),
-                    toolbarSeparator(),
-                    button({
-                        text: 'Capture State',
-                        icon: Icon.camera(),
-                        onClick: () => model.saveState()
-                    }),
-                    button({
-                        disabled: !model.stateSnapshot,
-                        text: 'Load Saved State',
-                        icon: Icon.upload(),
-                        onClick: () => model.loadState()
-                    })
-                ]
+                bbar: bbar()
             }),
             links: [
                 {url: '$TB/client-app/src/desktop/tabs/containers/dash/DashContainerPanel.js', notes: 'This example.'},
@@ -77,6 +61,33 @@ export const dashContainerPanel = hoistCmp.factory({
         });
     }
 });
+
+const bbar = hoistCmp.factory(
+    ({model}) => toolbar(
+        switchInput({
+            label: 'Render Dashboard',
+            bind: 'renderDashboard'
+        }),
+        filler(),
+        button({
+            text: 'Capture State',
+            icon: Icon.camera(),
+            onClick: () => model.saveState()
+        }),
+        button({
+            disabled: !model.stateSnapshot,
+            text: 'Load Saved State',
+            icon: Icon.download(),
+            onClick: () => model.loadState()
+        }),
+        toolbarSeparator(),
+        button({
+            text: 'Reset & Clear State',
+            icon: Icon.reset(),
+            onClick: () => model.resetState()
+        })
+    )
+);
 
 @HoistModel
 class Model {
