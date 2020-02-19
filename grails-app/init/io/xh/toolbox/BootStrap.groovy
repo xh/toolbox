@@ -2,6 +2,8 @@ package io.xh.toolbox
 
 import io.xh.hoist.config.AppConfig
 import io.xh.hoist.util.Utils
+import io.xh.toolbox.roadmap.Project
+import io.xh.toolbox.roadmap.Phase
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.Monitor
@@ -33,7 +35,6 @@ class BootStrap {
     }
 
     def destroy = {}
-
 
     //------------------------
     // Implementation
@@ -90,6 +91,18 @@ class BootStrap {
                 valueType: 'string',
                 defaultValue: 'api.fda.gov',
                 groupName: 'Toolbox - Example Apps',
+            ],
+            roadmapCategories: [
+                    valueType: 'json',
+                    defaultValue: [
+                            "DASHBOARDS": "analytics",
+                            "GRIDS": "grid",
+                            "UPGRADES": "bolt",
+                            "NEW FEATURES": "favorite",
+                            "OTHER": "experiment"
+                    ],
+                    groupName: 'Toolbox - Example Apps',
+                    clientVisible: true
             ],
             sourceUrls: [
                 valueType: 'json',
