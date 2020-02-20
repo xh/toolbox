@@ -1,9 +1,9 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
-import {roadmapGroupRow} from './RoadmapView';
 import {roadmapViewItem} from './RoadmapViewItem';
 import './RoadmapView.scss';
+import {convertIconToSvg, Icon} from '@xh/hoist/icon';
 
 @HoistModel
 @LoadSupport
@@ -25,7 +25,17 @@ export class RoadmapModel {
         sortBy: 'sortOrder',
         groupBy: 'sortedPhase',
         groupRowHeight: 32,
-        groupRowElementRenderer: ({node}) => roadmapGroupRow({node}),
+        groupSortFn: (a, b) => {
+            if (this.statusFilter === 'showUpcoming') {
+                return a >= b ? 1 : -1;
+            } else {
+                return a >= b ? -1 : 1;
+            }
+        },
+        groupRowRenderer: ({node}) => {
+            const projectRec = node.allLeafChildren[0].data;
+            return convertIconToSvg(Icon.calendar()) + ' ' + projectRec.data.phaseName;
+        },
         emptyText: 'No projects found...',
         selModel: 'disabled',
         rowBorders: true,
@@ -55,7 +65,7 @@ export class RoadmapModel {
         const showReleased = this.statusFilter === 'showReleased';
         const projects = rawData.flatMap(phase => {
             return phase.projects.map(project => {
-                return {...project, sortedPhase: showReleased ? 1000 - phase.sortOrder : phase.sortOrder};
+                return {...project, sortedPhase: phase.sortOrder};
             });
         });
 

@@ -48,15 +48,6 @@
   }
 }
 
-.roadmap-group-row {
-  width: 100%;  // ensure entire group row surface takes click handler
-  align-items: center;
-
-  svg {
-    margin: 0 var(--xh-pad-half-px) 0 var(--xh-pad-px);
-  }
-}
-
 .tb-roadmap__popover {
   background-color: var(--xh-bg-alt);
   padding: var(--xh-pad-half-px);
