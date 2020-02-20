@@ -36,7 +36,9 @@
       > span {
         color: var(--xh-blue-gray);
         background-color: var(--xh-blue-gray-light);
+        border: var(--xh-border-solid);
         border-radius: calc(var(--xh-border-radius) * 1px);
+        padding: 0 4px;
       }
     }
 
@@ -45,6 +47,10 @@
       opacity: 0.8;
       font-size: var(--xh-font-size-small-px);
     }
+  }
+
+  .ag-group-child-count {
+    display: none;
   }
 }
 
