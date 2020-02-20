@@ -35,14 +35,7 @@ export class RoadmapModel {
     constructor() {
         this.addReaction({
             track: () => this.statusFilter,
-            run: (filter) => this.dataViewModel.store.setFilter(
-                (record) => {
-                    const {status} = record.data,
-                        showReleased = filter === 'showReleased';
-                    return showReleased ? status === 'RELEASED' : status !== 'RELEASED';
-                }
-            ),
-            fireImmediately: true
+            run: () => this.loadAsync()
         });
 
     }
@@ -59,10 +52,16 @@ export class RoadmapModel {
     }
 
     processData(rawData) {
-        return rawData.flatMap(phase => {
+        const showReleased = this.statusFilter === 'showReleased';
+        const projects = rawData.flatMap(phase => {
             return phase.projects.map(project => {
-                return {...project, sortedPhase: phase.sortOrder + '_' + phase.name};
+                return {...project, sortedPhase: showReleased ? 1000 - phase.sortOrder : phase.sortOrder};
             });
+        });
+
+        return projects.filter(project => {
+            const {status} = project;
+            return showReleased ? status === 'RELEASED' : status !== 'RELEASED';
         });
     }
 }
