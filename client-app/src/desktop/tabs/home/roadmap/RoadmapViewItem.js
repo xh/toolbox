@@ -1,7 +1,7 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {fab} from '@fortawesome/free-brands-svg-icons';
 import {faCodeMerge} from '@fortawesome/pro-regular-svg-icons';
-import {div, filler, span} from '@xh/hoist/cmp/layout';
+import {br, div, filler, span} from '@xh/hoist/cmp/layout';
 import {hbox, vbox} from '@xh/hoist/cmp/layout/index';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {hoistCmp, XH} from '@xh/hoist/core/index';
@@ -64,7 +64,9 @@ export const roadmapViewItem = hoistCmp.factory({
                             interactionKind: 'hover',
                             position: 'left-top',
                             target: span(' [...]'),
-                            content: description
+                            content: div({
+                                items: breakUpDescription(description)
+                            })
                         })
                     ]
                 }),
@@ -111,4 +113,12 @@ function getGitMenuItems(gitLinks) {
             onClick: () => window.open(link)
         });
     });
+}
+
+function breakUpDescription(description) {
+    return description.split('\n')
+        .reduce((ret, newLine) => {
+            ret.push(span(newLine), br());
+            return ret;
+        }, []);
 }
