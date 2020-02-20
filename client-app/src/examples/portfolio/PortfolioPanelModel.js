@@ -62,7 +62,7 @@ export class PortfolioPanelModel {
             run: (position) => {
                 this.detailPanelModel.setPositionId(position ? position.id : null);
             },
-            debounce: 500
+            debounce: 300
         };
     }
 
