@@ -58,8 +58,8 @@ export const roadmapViewItem = hoistCmp.factory({
                 span({
                     className: 'tb-roadmap-item__description',
                     items: [
-                        truncate(description, {length: 230, omission: ' '}),
-                        description.length > 230 ? popover({
+                        truncate(description, {length: 255, omission: ' '}),
+                        description.length > 255 ? popover({
                             popoverClassName: 'tb-roadmap__popover tb-roadmap__popover--description',
                             minimal: true,
                             interactionKind: 'hover',
