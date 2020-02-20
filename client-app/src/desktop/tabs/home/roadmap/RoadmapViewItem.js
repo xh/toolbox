@@ -26,7 +26,16 @@ export const roadmapViewItem = hoistCmp.factory({
                 hbox(
                     div({
                         className: 'tb-roadmap-item__title',
-                        items: [getCategoryIcon(category), name]
+                        items: [
+                            getCategoryIcon(category),
+                            name.length > 55 ?
+                                popover({
+                                    popoverClassName: 'tb-roadmap__popover',
+                                    minimal: true,
+                                    target: truncate(name, {length: 55, omission: ' ...'}),
+                                    content: name
+                                }) : name
+                        ]
                     }),
                     filler(),
                     popover({
