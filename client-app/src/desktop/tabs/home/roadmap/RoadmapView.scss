@@ -33,6 +33,12 @@
       min-height: 0;
       margin: 0 0 var(--xh-pad-px) 0;
       overflow: hidden;
+
+      > span {
+        color: var(--xh-blue-gray);
+        background-color: var(--xh-blue-gray-light);
+        border-radius: calc(var(--xh-border-radius) * 1px);
+      }
     }
 
     &__footer {

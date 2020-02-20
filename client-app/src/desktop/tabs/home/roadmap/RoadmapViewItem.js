@@ -1,7 +1,7 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {fab} from '@fortawesome/free-brands-svg-icons';
 import {faCodeMerge} from '@fortawesome/pro-regular-svg-icons';
-import {div, filler} from '@xh/hoist/cmp/layout';
+import {div, filler, span} from '@xh/hoist/cmp/layout';
 import {hbox, vbox} from '@xh/hoist/cmp/layout/index';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {hoistCmp, XH} from '@xh/hoist/core/index';
@@ -46,14 +46,18 @@ export const roadmapViewItem = hoistCmp.factory({
                         content: capitalizeWords(status)
                     })
                 ),
-                popover({
+                span({
                     className: 'tb-roadmap-item__description',
-                    popoverClassName: 'tb-roadmap__popover tb-roadmap__popover--description',
-                    minimal: true,
-                    interactionKind: 'hover',
-                    position: 'left-top',
-                    target: truncate(description, {length: 230, omission: ' [...]'}),
-                    content: description
+                    items: [truncate(description, {length: 230, omission: ' '}),
+                        popover({
+                            popoverClassName: 'tb-roadmap__popover tb-roadmap__popover--description',
+                            minimal: true,
+                            interactionKind: 'hover',
+                            position: 'left-top',
+                            target: span(' [...]'),
+                            content: description
+                        })
+                    ]
                 }),
                 hbox({
                     className: 'tb-roadmap-item__footer',
