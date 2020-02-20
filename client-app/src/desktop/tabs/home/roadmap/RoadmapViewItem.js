@@ -52,7 +52,7 @@ export const roadmapViewItem = hoistCmp.factory({
                     minimal: true,
                     interactionKind: 'hover',
                     position: 'left-top',
-                    target: truncate(description, {length: 220}),
+                    target: truncate(description, {length: 230, omission: ' [...]'}),
                     content: description
                 }),
                 hbox({
@@ -91,7 +91,7 @@ function getGitMenuItems(gitLinks) {
         return [menuItem({text: 'No linked Github issues yet.'})];
     }
 
-    return gitLinks.split(',').map(link => {
+    return gitLinks.split('\n').map(link => {
         return menuItem({
             text: link,
             icon: fontAwesomeIcon({icon: ['fab', 'github']}),

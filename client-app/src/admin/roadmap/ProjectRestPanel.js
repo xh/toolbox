@@ -76,6 +76,7 @@ const modelSpec = {
     unit: 'project',
     filterFields: ['name', 'status', 'category'],
     sortBy: 'sortOrder',
+    groupBy: 'phaseName',
     columns: [
         {
             field: 'sortOrder',
@@ -133,10 +134,12 @@ const modelSpec = {
         {field: 'sortOrder'},
         {field: 'description',
             formField: {
-                item: textArea()
+                item: textArea({
+                    height: 150
+                })
             }},
         {field: 'gitLinks',
-            label: 'Github Links as Text Separated by Commas',
+            label: 'Github Links (Enter One Per New Line, As Text Not String)',
             formField: {
                 item: codeInput()
             }
