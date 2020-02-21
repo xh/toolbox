@@ -120,11 +120,13 @@ class Model {
     @managed
     dashContainerModel = new DashContainerModel({
         initialState: XH.localStorageService.get(this.stateKey, this.defaultState),
+        viewSpecDefaults: {
+            icon: Icon.grid()
+        },
         viewSpecs: [
             {
                 id: 'grid',
                 title: 'Grid',
-                icon: Icon.gridPanel(),
                 unique: true,
                 allowRemove: false,
                 content: GridWidget
@@ -153,7 +155,6 @@ class Model {
             {
                 id: 'treeGrid',
                 title: 'Tree Grid',
-                icon: Icon.grid(),
                 content: TreeGridWidget
             }
         ]
