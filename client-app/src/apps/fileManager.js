@@ -5,7 +5,7 @@ import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
 XH.renderApp({
     clientAppCode: 'fileManager',
-    clientAppName: 'File Manager',
+    clientAppName: 'XH File Manager',
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,

@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Nunito:300,400,400i,600,700&display=swap');
+
+body {
+  --font-family: nunito, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif;
+  --font-family-headings: nunito, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Open Sans", "Helvetica Neue", sans-serif;
+  --panel-bg: var(--xh-bg);
+}
+
+.xh-viewport {
+  background-image: url('./img/xh-logo-bg.png');
+  background-size: 127px 50px;
+}

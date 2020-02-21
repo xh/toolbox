@@ -10,6 +10,7 @@ import {leftRightChooserPanel} from './LeftRightChooserPanel';
 import {popupsPanel} from './PopupsPanel';
 import {dialogsPanel} from './dialogs/DialogsPanel';
 import {relativeTimestampPanel} from './RelativeTimestampPanel';
+import {appNotificationsPanel} from './AppNotificationsPanel';
 
 export const otherTab = hoistCmp.factory(
     () => tabContainer({
@@ -26,6 +27,7 @@ export const otherTab = hoistCmp.factory(
                 {id: 'timestamp', content: relativeTimestampPanel},
                 {id: 'clock', content: clockPanel},
                 {id: 'icons', content: iconsPanel},
+                {id: 'appNotifications', content: appNotificationsPanel},
                 {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel}
             ]
         },

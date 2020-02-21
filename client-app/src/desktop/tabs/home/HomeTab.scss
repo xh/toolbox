@@ -1,14 +1,13 @@
-.toolbox-welcome {
-  padding: var(--xh-pad-double-px);
-
-  p {
-    font-size: var(--xh-font-size-large-px);
-
-    &.toolbox-welcome__signoff {
-      text-align: right;
-      margin: var(--xh-pad-double-px);
-    }
+.tb-home {
+  > .xh-panel {
+    border: var(--xh-border-solid);
+    margin: var(--xh-pad-double-px);
   }
+}
+
+.tb-welcome {
+  width: 625px;
+  height: 525px;
 
   &__logo {
     margin: var(--xh-pad-double-px) 0;
@@ -16,6 +15,20 @@
 
     img {
       width: 250px;  // 0.25 * actual image size
+    }
+  }
+
+  &__greeting {
+    overflow-y: auto;
+    padding: var(--xh-pad-double-px);
+
+    p {
+      font-size: var(--xh-font-size-large-px);
+
+      &.tb-welcome__signoff {
+        text-align: right;
+        margin: var(--xh-pad-double-px);
+      }
     }
   }
 }

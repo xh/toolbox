@@ -11,6 +11,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {WipTab} from './wip/WipTab';
 import {TestsTab} from './tests/TestsTab';
+import {roadmapTab} from './roadmap/RoadmapTab';
 import {PortfolioService} from '../core/svc/PortfolioService';
 
 export class AppModel extends BaseAppModel {
@@ -31,6 +32,7 @@ export class AppModel extends BaseAppModel {
                 children: [
                     {name: 'localDate', path: '/localDate'},
                     {name: 'grid', path: '/grid'},
+                    {name: 'dataView', path: '/dataView'},
                     {name: 'cube', path: '/cube'},
                     {name: 'webSockets', path: '/webSockets'},
                     {name: 'panelResizing', path: '/panelResizing'},
@@ -44,6 +46,14 @@ export class AppModel extends BaseAppModel {
             {
                 name: 'wip',
                 path: '/wip'
+            },
+            {
+                name: 'roadmap',
+                path: '/roadmap',
+                children: [
+                    {name: 'project', path: '/project'},
+                    {name: 'phase', path: '/phase'}
+                ]
             }
         ];
     }
@@ -52,7 +62,8 @@ export class AppModel extends BaseAppModel {
         return [
             ...super.createTabs(),
             {id: 'tests', icon: Icon.stopwatch(), content: TestsTab},
-            {id: 'wip', title: 'WIP', icon: Icon.experiment(), content: WipTab}
+            {id: 'wip', title: 'WIP', icon: Icon.experiment(), content: WipTab},
+            {id: 'roadmap', title: 'Roadmap', icon: Icon.mapSigns(), content: roadmapTab}
         ];
     }
 }

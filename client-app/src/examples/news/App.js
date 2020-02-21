@@ -1,12 +1,13 @@
+import {a} from '@xh/hoist/cmp/layout';
+import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {hoistCmp, uses} from '@xh/hoist/core';
+import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
+import {ContextMenuItem as CM} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {appBar} from '@xh/hoist/desktop/cmp/appbar';
-import {ContextMenuItem as CM} from '@xh/hoist/desktop/cmp/contextmenu';
-import {newsPanel} from './NewsPanel';
-import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {AppModel} from './AppModel';
-import {a} from '@xh/hoist/cmp/layout';
+import {newsPanel} from './NewsPanel';
+import '../../core/Toolbox.scss';
 
 export const App = hoistCmp({
     displayName: 'App',
@@ -17,8 +18,6 @@ export const App = hoistCmp({
             contextMenu: [CM.reloadApp(), CM.about(), CM.logout()],
             tbar: appBar({
                 icon: Icon.news({size: '2x', prefix: 'fal'}),
-                title: 'News Feed',
-                hideRefreshButton: false,
                 leftItems: [
                     a({
                         item: 'powered by NewsAPI.org',
@@ -30,7 +29,8 @@ export const App = hoistCmp({
                         model: model.newsPanelModel,
                         bind: 'lastRefresh',
                         options: {prefix: 'Last Updated:'}
-                    })
+                    }),
+                    appBarSeparator()
                 ]
             }),
             item: newsPanel()
