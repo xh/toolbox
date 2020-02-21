@@ -3,7 +3,7 @@ import {useRef} from 'react';
 import {table, tbody, td, th, tr, filler, p, fragment} from '@xh/hoist/cmp/layout';
 import {hoistCmp, creates} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {dialog} from '@xh/hoist/desktop/cmp/dialog';
+import {dialog, DialogModel} from '@xh/hoist/desktop/cmp/dialog';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 
@@ -15,7 +15,6 @@ import {simpleTreeMapPanel} from './chart/SimpleTreeMapPanel';
 import {DialogsPanelModel} from './DialogsPanelModel';
 
 import './DialogsPanel.scss';
-import {DialogModel} from '../../../../../../hoist-react/desktop/cmp/dialog/DialogModel';
 
 // todo: 
 // get rid of scroll bars on maximized state of dialog
