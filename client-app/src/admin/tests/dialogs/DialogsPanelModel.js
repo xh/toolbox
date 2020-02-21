@@ -19,52 +19,15 @@ export class DialogsPanelModel {
     @bindable isOpen6 = false;
     @bindable isOpen7 = false;
     @bindable isOpen8 = false;
+    @bindable isOpen9 = false;
+    @bindable isOpen10 = false;
+    @bindable isOpen11 = false;
+    @bindable isOpen12 = false;
+    @bindable isOpen13 = false;
 
     // order important here for testing getting first 
     // dialog model defined in context
     @managed
     dialogModelThatWillBeFoundFromContextLookup = new DialogModel();
 
-    @managed
-    statefulDalogWithFormModel = new DialogModel({
-        draggable: true,
-        stateModel: {
-            dialogId: 'stateFulDialogForm',
-            trackSize: false
-        }
-    });
-
-    @managed
-    parentDialogModel = new DialogModel({
-        draggable: true,
-        stateModel: {
-            dialogId: 'zIndexParentDialog'
-        }
-    });
-
-    @managed
-    childDalogWithOHLCChartModel = new DialogModel({
-        resizable: true,
-        draggable: true,
-        stateModel: 'childDialogOHLC'
-    });
-
-    @managed
-    customZIndexDialogModel = new DialogModel({
-        resizable: true,
-        draggable: true,
-        stateModel: 'customZIndexDialog'
-    });
-
-    @managed
-    customZIndexRndoDialogModel = new DialogModel({
-        resizable: true,
-        draggable: true
-    });
-
-    @managed
-    customStylePropDialogModel = new DialogModel({
-        resizable: true,
-        draggable: true
-    });
 }

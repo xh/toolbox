@@ -227,106 +227,141 @@ export const dialogsPanel = hoistCmp.factory({
                     ),
                     row(
                         'Parent/Child Dialogs:',
-                        button({
-                            ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Dialog That Opens a Child Dialog',
-                            onClick: () => model.parentDialogModel.show()
-                        })
+                        fragment(
+                            button({
+                                ...dialogBtn(),
+                                text: 'Dialog That Opens a Child Dialog',
+                                onClick: () => model.setIsOpen9(true)   
+                            }),
+                            dialog({
+                                isOpen: model.isOpen9,
+                                icon: Icon.box(),
+                                title: 'Parent Dialog',
+                                onClose: () => model.setIsOpen9(false),
+                                mask: withMask,
+                                closeOnEscape,
+                                closeOnOutsideClick,
+                                showCloseButton,
+                                model: new DialogModel({
+                                    draggable: true,
+                                    stateModel: 'parentDialog'
+                                }),
+                                item: panel({
+                                    style: {padding: '10px'},
+                                    width: 300,
+                                    items: [
+                                        p(`The "child" dialog must be defined outside of this dialog if the two 
+                                  dialogs are to be dragged independently.`),
+                                        button({
+                                            ...dialogBtn(),
+                                            text: 'Open a Child Dialog',
+                                            onClick: () => model.setIsOpen10(true)   
+                                        })
+                                    ]
+                                })
+                            }),
+                            dialog({
+                                isOpen: model.isOpen10,
+                                onClose: () => model.setIsOpen10(false),
+                                icon: Icon.box(),
+                                title: 'A Child Dialog',
+                                closeOnEscape,
+                                closeOnOutsideClick,
+                                showCloseButton,
+                                mask: withMask,
+                                model: new DialogModel({
+                                    resizable: true,
+                                    draggable: true,
+                                    stateModel: 'childDialogOHLC'
+                                }),
+                                item: oHLCChartPanel(),
+                                width: 600,
+                                height: 400
+                            })
+                        )
                     ),
                     row(
                         'zIndex:',
-                        button({
-                            ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'style.zIndex = 100 (stateful)',
-                            onClick: () => model.customZIndexDialogModel.show()
-                        }),
-                        button({
-                            ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'RnDOptions.style.zIndex = 100 (not stateful)',
-                            onClick: () => model.customZIndexRndoDialogModel.show()
-                        })
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.arrowUp()),
+                                text: 'style.zIndex = 100 (stateful)',
+                                onClick: () => model.setIsOpen11(true)   
+                            }),
+                            dialog({
+                                isOpen: model.isOpen11,
+                                onClose: () => model.setIsOpen11(false),
+                                icon: Icon.box(),
+                                title: 'Dialog with style.zIndex 100',
+                                closeOnEscape,
+                                closeOnOutsideClick,
+                                showCloseButton,
+                                mask: withMask,
+                                model: new DialogModel({
+                                    resizable: true,
+                                    draggable: true,
+                                    stateModel: 'customZIndexDialog'
+                                }),
+                                item: oHLCChartPanel(),
+                                width: 600,
+                                height: 400,
+                                style: {
+                                    zIndex: 100
+                                }
+                            })
+                        ),
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.arrowUp()),
+                                text: 'RnDOptions.style.zIndex = 100 (not stateful) - note issue with datepicker',
+                                onClick: () => model.setIsOpen12(true)    
+                            }),
+                            dialog({
+                                isOpen: model.isOpen12,
+                                icon: Icon.box(),
+                                title: 'Dialog with RnDOptions.style.zIndex 100',
+                                showCloseButton,
+                                onClose: () => model.setIsOpen12(false),
+                                mask: withMask,
+                                closeOnEscape,
+                                closeOnOutsideClick,
+                                RnDOptions: {
+                                    style: {
+                                        zIndex: 100
+                                    }
+                                },
+                                model: new DialogModel({draggable: true}),
+                                item: formPanel({onCloseClick: () => model.setIsOpen12(false)})
+                            })
+                        )
                     ),
                     row(
                         '"style" prop:',
-                        button({
-                            ...dialogBtn(Icon.arrowsLeftRight()),
-                            text: 'Dialog with custom style prop setting',
-                            onClick: () => model.customStylePropDialogModel.show()
-                        })
-                    )
-                )),
-
-                dialog({
-                    icon: Icon.box(),
-                    title: 'Parent Dialog',
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    model: model.parentDialogModel,
-                    item: panel({
-                        style: {padding: '10px'},
-                        width: 300,
-                        items: [
-                            p(`The "child" dialog must be defined outside of this dialog if the two 
-                          dialogs are to be dragged independently.`),
+                        fragment(
                             button({
-                                ...dialogBtn(Icon.arrowsLeftRight()),
-                                text: 'Open a Child Dialog',
-                                onClick: () => model.childDalogWithOHLCChartModel.show()
+                                ...dialogBtn(),
+                                text: 'custom style prop setting (should show with green shadow)',
+                                onClick: () => model.setIsOpen13(true)    
+                            }),
+                            dialog({
+                                isOpen: model.isOpen13,
+                                icon: Icon.box(),
+                                title: 'Dialog with custom green shadow',
+                                showCloseButton,
+                                onClose: () => model.setIsOpen13(false),
+                                mask: withMask,
+                                closeOnEscape,
+                                closeOnOutsideClick,
+                                item: oHLCChartPanel(),
+                                width: 600,
+                                height: 400,
+                                style: {
+                                    boxShadow: '0px 0px 10px 5px green'
+                                }
                             })
-                        ]
-                    })
-                }),
-                dialog({
-                    icon: Icon.box(),
-                    title: 'A Child Dialog',
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    model: model.childDalogWithOHLCChartModel,
-                    item: oHLCChartPanel(),
-                    width: 600,
-                    height: 400
-                }),
-                dialog({
-                    icon: Icon.box(),
-                    title: 'Dialog with style.zIndex 100',
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    model: model.customZIndexDialogModel,
-                    item: oHLCChartPanel(),
-                    width: 600,
-                    height: 400,
-                    style: {
-                        zIndex: 100
-                    }
-                }),
-                dialog({
-                    icon: Icon.box(),
-                    title: 'Dialog with RnDOptions.style.zIndex 100',
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    model: model.customZIndexRndoDialogModel,
-                    item: oHLCChartPanel(),
-                    width: 600,
-                    height: 400,
-                    RnDOptions: {
-                        style: {
-                            zIndex: 100
-                        }
-                    }
-                }),
-                dialog({
-                    icon: Icon.box(),
-                    title: 'Dialog with custom style prop',
-                    mask: withMask,
-                    closeOnOutsideClick,
-                    model: model.customStylePropDialogModel,
-                    item: oHLCChartPanel(),
-                    width: 600,
-                    height: 400,
-                    style: {
-                        boxShadow: '0px 0px 10px 5px green'
-                    }
-                })
+                        )
+                    )
+                ))
             ]
         });
     }
