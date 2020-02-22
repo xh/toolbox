@@ -7,6 +7,7 @@
 
 import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
+import {Icon} from '@xh/hoist/icon/Icon';
 import {projectRestPanel} from './ProjectRestPanel';
 import {phaseRestPanel} from './PhaseRestPanel';
 
@@ -16,8 +17,8 @@ export const roadmapTab = hoistCmp(
         model: {
             route: 'default.roadmap',
             tabs: [
-                {id: 'project', title: 'Projects', content: projectRestPanel},
-                {id: 'phase', title: 'Phases', content: phaseRestPanel}
+                {id: 'projects', icon: Icon.checkCircle(), content: projectRestPanel},
+                {id: 'phases', icon: Icon.calendar(), content: phaseRestPanel}
             ],
             switcherPosition: 'left'
         }

@@ -30,8 +30,8 @@ export class AppModel extends BaseAppModel {
                 name: 'roadmap',
                 path: '/roadmap',
                 children: [
-                    {name: 'project', path: '/project'},
-                    {name: 'phase', path: '/phase'}
+                    {name: 'projects', path: '/projects'},
+                    {name: 'phases', path: '/phases'}
                 ]
             },
             {
