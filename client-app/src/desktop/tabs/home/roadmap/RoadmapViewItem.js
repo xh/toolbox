@@ -1,7 +1,7 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {fab} from '@fortawesome/free-brands-svg-icons';
 import {faCodeMerge} from '@fortawesome/pro-regular-svg-icons';
-import {div, filler} from '@xh/hoist/cmp/layout';
+import {br, div, filler, span} from '@xh/hoist/cmp/layout';
 import {hbox, vbox} from '@xh/hoist/cmp/layout/index';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {hoistCmp, XH} from '@xh/hoist/core/index';
@@ -26,7 +26,16 @@ export const roadmapViewItem = hoistCmp.factory({
                 hbox(
                     div({
                         className: 'tb-roadmap-item__title',
-                        items: [getCategoryIcon(category), name]
+                        items: [
+                            getCategoryIcon(category),
+                            name.length > 55 ?
+                                popover({
+                                    popoverClassName: 'tb-roadmap__popover',
+                                    minimal: true,
+                                    target: truncate(name, {length: 55, omission: ' ...'}),
+                                    content: name
+                                }) : name
+                        ]
                     }),
                     filler(),
                     popover({
@@ -46,14 +55,21 @@ export const roadmapViewItem = hoistCmp.factory({
                         content: capitalizeWords(status)
                     })
                 ),
-                popover({
+                span({
                     className: 'tb-roadmap-item__description',
-                    popoverClassName: 'tb-roadmap__popover tb-roadmap__popover--description',
-                    minimal: true,
-                    interactionKind: 'hover',
-                    position: 'left-top',
-                    target: truncate(description, {length: 220}),
-                    content: description
+                    items: [
+                        truncate(description, {length: 290, separator: ' ', omission: ' '}),
+                        description.length > 290 ? popover({
+                            popoverClassName: 'tb-roadmap__popover tb-roadmap__popover--description',
+                            minimal: true,
+                            interactionKind: 'hover',
+                            position: 'left-top',
+                            target: span(' ...'),
+                            content: div({
+                                items: breakUpDescription(description)
+                            })
+                        }) : ''
+                    ]
                 }),
                 hbox({
                     className: 'tb-roadmap-item__footer',
@@ -91,11 +107,19 @@ function getGitMenuItems(gitLinks) {
         return [menuItem({text: 'No linked Github issues yet.'})];
     }
 
-    return gitLinks.split(',').map(link => {
+    return gitLinks.split('\n').map(link => {
         return menuItem({
             text: link,
             icon: fontAwesomeIcon({icon: ['fab', 'github']}),
             onClick: () => window.open(link)
         });
     });
+}
+
+function breakUpDescription(description) {
+    return description.split('\n')
+        .reduce((ret, newLine) => {
+            ret.push(span(newLine), br());
+            return ret;
+        }, []);
 }
