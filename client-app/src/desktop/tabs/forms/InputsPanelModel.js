@@ -1,4 +1,4 @@
-import {HoistModel} from '@xh/hoist/core';
+import {HoistModel, XH} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
@@ -37,4 +37,11 @@ export class InputsPanelModel {
             {name: 'buttonGroup1', initialValue: 'button2'}
         ]
     });
+
+    queryCustomersAsync(query) {
+        return XH.fetchJson({
+            url: 'customer',
+            params: {query}
+        });
+    }
 }

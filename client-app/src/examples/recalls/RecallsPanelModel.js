@@ -44,7 +44,7 @@ export class RecallsPanelModel {
         enableExport: true,
         rowBorders: true,
         showHover: true,
-        compact: XH.appModel.useCompactGrids,
+        sizingMode: XH.appModel.gridSizingMode,
         stateModel: 'recalls-main-grid',
         columns: [
             {
@@ -98,13 +98,13 @@ export class RecallsPanelModel {
 
         this.addReaction({
             track: () => gridModel.selectedRecord,
-            run: (rec) => this.detailsPanelModel.setRecord(rec)
+            run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
         });
 
         this.addReaction({
             track: () => this.searchQuery,
             run: () => this.loadAsync(),
-            delay: ONE_SECOND
+            debounce: ONE_SECOND
         });
 
         this.addReaction({
@@ -147,8 +147,8 @@ export class RecallsPanelModel {
         };
     }
 
-    createId(record) {
-        return record.brandName + record.recall_number;
+    createId(rawRec) {
+        return rawRec.openfda.brand_name[0] + rawRec.recall_number;
     }
 
     classificationRenderer(val) {

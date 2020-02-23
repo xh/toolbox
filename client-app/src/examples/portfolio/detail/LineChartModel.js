@@ -1,5 +1,5 @@
 import {HoistModel, XH, managed, LoadSupport} from '@xh/hoist/core';
-import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
+import {ChartModel} from '@xh/hoist/cmp/chart';
 import {fmtDate} from '@xh/hoist/format';
 import {Highcharts} from '@xh/hoist/kit/highcharts';
 import {isNil} from 'lodash';
@@ -23,13 +23,18 @@ export class LineChartModel {
         highchartsConfig: {
             chart: {
                 zoomType: 'x',
-                animation: false
+                animation: false,
+                marginLeft: 50
             },
             title: {text: null},
             tooltip: {outside: true},
             legend: {enabled: false},
             scrollbar: {enabled: false},
-            rangeSelector: {enabled: false},
+
+            rangeSelector: {
+                enabled: true,
+                selected: 1     // default to a 3-month zoom
+            },
             navigator: {enabled: true},
             xAxis: {
                 type: 'datetime',

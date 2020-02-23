@@ -2,7 +2,7 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {LoadSupport} from '@xh/hoist/core/mixins';
 import {millionsRenderer, numberRenderer, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
-import {random, sample, times} from 'lodash';
+import {random, sample, times, mean, takeRight} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {action, bindable, observable} from '@xh/hoist/mobx';
 
@@ -32,20 +32,26 @@ export class GridTestModel {
     @bindable tree = false;
     @bindable useTransactions = true;
     @bindable useDeltaSort = true;
+    @bindable disableSelect = false;
 
     // Generated data in tree
     _data;
 
     @managed
-    @observable
+    @observable.ref
     gridModel = this.createGridModel();
 
     @bindable gridUpdateTime = null;
+    @bindable avgGridUpdateTime = null;
+    _gridUpdateTimes = [];
+
     @bindable gridLoadTime = null;
+    @bindable avgGridLoadTime = null;
+    _gridLoadTimes = [];
 
     constructor() {
         this.addReaction({
-            track: () =>  [this.tree, this.useTransactions, this.useDeltaSort],
+            track: () =>  [this.tree, this.useTransactions, this.useDeltaSort, this.disableSelect],
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
@@ -75,6 +81,7 @@ export class GridTestModel {
     }
 
     clearGrid() {
+        this._gridLoadTimes = [];
         this.loadData([]);
     }
 
@@ -87,7 +94,13 @@ export class GridTestModel {
             this.loadModel
         ).finally(() => {
             this.setGridLoadTime(Date.now() - loadStart);
+
+            this._gridLoadTimes = takeRight([...this._gridLoadTimes, this.gridLoadTime], 10);
+            this.setAvgGridLoadTime(mean(this._gridLoadTimes));
+
             this.setGridUpdateTime(null);
+            this.setAvgGridUpdateTime(null);
+            this._gridUpdateTimes = [];
 
         });
     }
@@ -98,6 +111,9 @@ export class GridTestModel {
             this.gridModel.updateData(updates);
         }).finally(() => {
             this.setGridUpdateTime(Date.now() - loadStart);
+            this._gridUpdateTimes = takeRight([...this._gridUpdateTimes, this.gridUpdateTime], 10);
+
+            this.setAvgGridUpdateTime(mean(this._gridUpdateTimes));
         });
     }
 
@@ -156,7 +172,7 @@ export class GridTestModel {
         times(this.twiddleCount, () => {
             const pos = sample(this.gridModel.store.allRecords);
             newPositions.push({
-                ...pos,
+                ...pos.raw,
                 day: random(-80000, 100000),
                 volume: random(1000, 1200000)
             });
@@ -220,9 +236,9 @@ export class GridTestModel {
                     align: 'right',
                     width: 130,
                     renderer: (v, {record}) => {
-                        return fmtMillions(record.volume, {precision: 2, label: true}) +
+                        return fmtMillions(record.data.volume, {precision: 2, label: true}) +
                             ' | ' +
-                            fmtNumber(record.day, {colorSpec: true});
+                            fmtNumber(record.data.day, {colorSpec: true});
                     },
                     rendererIsComplex: true
                 },

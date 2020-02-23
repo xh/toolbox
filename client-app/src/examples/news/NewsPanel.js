@@ -1,73 +1,53 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2019 Extremely Heavy Industries Inc.
- */
-
 import {filler} from '@xh/hoist/cmp/layout';
 import {storeCountLabel} from '@xh/hoist/cmp/store';
-import {elemFactory, HoistComponent} from '@xh/hoist/core';
-import {dataView} from '@xh/hoist/desktop/cmp/dataview';
+import {hoistCmp, uses} from '@xh/hoist/core';
+import {dataView} from '@xh/hoist/cmp/dataview';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {Component} from 'react';
+import {storeFilterField} from '@xh/hoist/cmp/store';
+
+import {NewsPanelModel} from './NewsPanelModel';
 import './NewsPanelItem.scss';
 
-@HoistComponent
-export class NewsPanel extends Component {
+export const newsPanel = hoistCmp.factory({
+    model: uses(NewsPanelModel),
 
-    render() {
-        const {model} = this,
-            {viewModel} = model;
-
+    render({model}) {
         return panel({
             className: 'toolbox-news-panel',
             width: '100%',
             height: '100%',
             item: dataView({
-                model: viewModel,
-                rowCls: 'news-item',
-                itemHeight: 120,
-                onRowDoubleClicked: this.onRowDoubleClicked
+                onRowDoubleClicked
             }),
-            mask: model.loadModel,
-            bbar: toolbar({
-                items: [
-                    storeFilterField({
-                        onFilterChange: this.onFilterChange,
-                        includeFields: model.SEARCH_FIELDS,
-                        placeholder: 'Filter by title...'
-                    }),
-                    select({
-                        model,
-                        bind: 'sourceFilter',
-                        options: model.sourceOptions,
-                        enableMulti: true,
-                        placeholder: 'Filter by source...',
-                        menuPlacement: 'top',
-                        width: 380
-                    }),
-                    filler(),
-                    storeCountLabel({
-                        store: viewModel.store,
-                        unit: 'stories'
-                    })
-                ]
-            })
+            mask: 'onLoad',
+            bbar: [
+                storeFilterField({
+                    store: null,
+                    onFilterChange: (f) => model.setTextFilter(f),
+                    includeFields: model.SEARCH_FIELDS,
+                    placeholder: 'Filter by title...'
+                }),
+                select({
+                    bind: 'sourceFilter',
+                    options: model.sourceOptions,
+                    enableMulti: true,
+                    placeholder: 'Filter by source...',
+                    menuPlacement: 'top',
+                    width: 380
+                }),
+                filler(),
+                storeCountLabel({
+                    store: model.viewModel.store,
+                    unit: 'stories'
+                })
+            ]
         });
     }
+});
 
-    onRowDoubleClicked = (e) => {
-        if (e.data.url) window.open(e.data.url, '_blank');
-    };
-
-    onFilterChange = (f) => {
-        this.model.setTextFilter(f);
-    };
+function onRowDoubleClicked(e) {
+    if (e.data.data.url) {
+        window.open(e.data.data.url, '_blank');
+    }
 }
-
-export const newsPanel = elemFactory(NewsPanel);
-

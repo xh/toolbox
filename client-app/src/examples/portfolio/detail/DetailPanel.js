@@ -1,33 +1,27 @@
-import {Component} from 'react';
-import {elemFactory, HoistComponent} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {hbox} from '@xh/hoist/cmp/layout';
+
+
 import {ordersPanel} from './OrdersPanel';
 import {chartsPanel} from './ChartsPanel';
+import {DetailPanelModel} from './DetailPanelModel';
 
-@HoistComponent
-export class DetailPanel extends Component {
+export const detailPanel = hoistCmp.factory({
 
-    render() {
-        const {model} = this,
-            {ordersPanelModel, chartsPanelModel} = model;
-
+    model: uses(DetailPanelModel),
+                          
+    render({model}) {
         return panel({
             model: model.panelSizingModel,
             mask: !model.positionId,
             item: hbox({
                 flex: 1,
                 items: [
-                    ordersPanel({
-                        model: ordersPanelModel
-                    }),
-                    chartsPanel({
-                        model: chartsPanelModel
-                    })
+                    ordersPanel(),
+                    chartsPanel()
                 ]
             })
         });
     }
-}
-
-export const detailPanel = elemFactory(DetailPanel);
+});

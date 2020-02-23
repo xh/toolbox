@@ -1,29 +1,25 @@
-import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-
-import {HBoxContainerPanel} from './HBoxContainerPanel';
-import {VBoxContainerPanel} from './VBoxContainerPanel';
-import {TabPanelContainerPanel} from './TabPanelContainerPanel';
-import {DockContainerPanel} from './DockContainerPanel';
-
+import {hoistCmp} from '@xh/hoist/core';
+import {dashContainerPanel} from './dash/DashContainerPanel';
+import {dockContainerPanel} from './DockContainerPanel';
+import {hboxContainerPanel} from './HBoxContainerPanel';
+import {tabPanelContainerPanel} from './TabPanelContainerPanel';
+import {vboxContainerPanel} from './VBoxContainerPanel';
 import './ContainersTab.scss';
 
-@HoistComponent
-export class ContainersTab extends Component {
-    render() {
-        return tabContainer({
-            model: {
-                route: 'default.containers',
-                switcherPosition: 'left',
-                tabs: [
-                    {id: 'hbox', title: 'HBox', content: HBoxContainerPanel},
-                    {id: 'vbox', title: 'VBox', content: VBoxContainerPanel},
-                    {id: 'tabPanel', title: 'TabContainer', content: TabPanelContainerPanel},
-                    {id: 'dock', title: 'DockContainer', content: DockContainerPanel}
-                ]
-            },
-            className: 'toolbox-tab'
-        });
-    }
-}
+export const containersTab = hoistCmp.factory(
+    () => tabContainer({
+        model: {
+            route: 'default.containers',
+            switcherPosition: 'left',
+            tabs: [
+                {id: 'tabPanel', title: 'TabContainer', content: tabPanelContainerPanel},
+                {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
+                {id: 'dash', title: 'DashContainer', content: dashContainerPanel},
+                {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
+                {id: 'vbox', title: 'VBox', content: vboxContainerPanel}
+            ]
+        },
+        className: 'toolbox-tab'
+    })
+);

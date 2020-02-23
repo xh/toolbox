@@ -1,10 +1,9 @@
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {fmtNumber} from '@xh/hoist/format';
-import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/desktop/cmp/store';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
@@ -13,27 +12,33 @@ import {tooltip} from '@xh/hoist/kit/blueprint';
 
 import {GridTestModel} from './GridTestModel';
 
-@HoistComponent
-export class GridTestPanel extends Component {
+export const GridTestPanel = hoistCmp({
 
-    model = new GridTestModel();
+    model: creates(GridTestModel),
 
-    render() {
-        const {model} = this,
-            {gridModel} = model;
+    render({model}) {
+        const {gridModel} = model;
+        
+        const formatRunTimes = () => {
+            const fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null}) : 'N/A',
+                {gridLoadTime: lt, avgGridLoadTime: avgLt, gridUpdateTime: ut, avgGridUpdateTime: avgUt} = model;
+            return `Load: ${fmt(lt)} ${avgLt ? `(${fmt(avgLt)}) ` : ''}• Update: ${fmt(ut)} ${avgUt ? `(${fmt(avgUt)}) ` : ''}`;
+        };
 
         return panel({
-            mask: model.loadModel,
-            item: gridModel ? grid({
-                key: gridModel.xhId,
-                model: gridModel,
-                renderFlag: model.renderFlag
-            }) : null,
+            mask: 'onLoad',
+            key: gridModel.xhId,
+            item: grid({
+                agOptions: {
+                    isRowSelectable: (row) => {
+                        return !model.disableSelect || row.data.data.day > 0;
+                    }
+                }
+            }),
             tbar: [
                 tooltip({
                     content: 'ID prefix',
                     item: numberInput({
-                        model,
                         bind: 'idSeed',
                         width: 40
                     })
@@ -41,7 +46,6 @@ export class GridTestPanel extends Component {
                 tooltip({
                     content: '# records to generate',
                     item: numberInput({
-                        model,
                         bind: 'recordCount',
                         enableShorthandUnits: true,
                         selectOnFocus: true,
@@ -68,11 +72,15 @@ export class GridTestPanel extends Component {
                     icon: Icon.skull(),
                     onClick: () => model.tearDown()
                 }),
+                button({
+                    text: 'Scroll to Selected',
+                    icon: Icon.crosshairs(),
+                    onClick: () => model.gridModel.ensureSelectionVisible()
+                }),
                 toolbarSep(),
                 tooltip({
                     content: '# records to randomly change',
                     item: numberInput({
-                        model,
                         bind: 'twiddleCount',
                         enableShorthandUnits: true,
                         selectOnFocus: true,
@@ -86,38 +94,31 @@ export class GridTestPanel extends Component {
                     onClick: () => model.twiddleData()
                 }),
                 filler(),
-                span(this.formatRunTimes())
+                span(formatRunTimes())
             ],
             bbar: [
                 switchInput({
-                    model,
                     bind: 'tree',
                     label: 'Tree mode'
                 }),
                 switchInput({
-                    model,
                     bind: 'useTransactions',
                     label: 'Use Transactions'
                 }),
                 switchInput({
-                    model,
                     bind: 'useDeltaSort',
                     label: 'Use Delta Sort',
                     disabled: model.tree
                 }),
+                switchInput({
+                    bind: 'disableSelect',
+                    label: 'Disable Day < 0 Selection'
+                }),
                 filler(),
                 storeFilterField({
-                    includeFields: ['symbol', 'trader'],
-                    gridModel
+                    includeFields: ['symbol', 'trader']
                 })
             ]
         });
     }
-
-    formatRunTimes() {
-        const {model} = this,
-            fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null}) : 'N/A';
-
-        return `Load: ${fmt(model.gridLoadTime)} • Update: ${fmt(model.gridUpdateTime)} `;
-    }
-}
+});

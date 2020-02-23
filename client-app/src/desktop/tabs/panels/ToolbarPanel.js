@@ -1,7 +1,6 @@
-import {Component} from 'react';
 import {span} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import {XH, HoistComponent} from '@xh/hoist/core/index';
+import {XH, hoistCmp, creates} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
 import {filler, frame, hframe} from '@xh/hoist/cmp/layout/index';
 import {panel} from '@xh/hoist/desktop/cmp/panel/index';
@@ -12,13 +11,10 @@ import {Icon} from '@xh/hoist/icon/index';
 import {usStates} from '../../../core/data/index';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
-@HoistComponent
-export class ToolbarPanel extends Component {
-    toolBarModel = new ToolbarPanelModel();
+export const toolbarPanel = hoistCmp.factory({
+    model: creates(ToolbarPanelModel),
 
-    render() {
-        const model = this.toolBarModel;
-
+    render({model}) {
         return wrapper({
             description: `
                 Toolbars (in case you have never seen one) are horizontal or vertical containers 
@@ -27,20 +23,14 @@ export class ToolbarPanel extends Component {
                 own and can be displayed in a vertical configuration as well. 
             `,
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/panels/ToolbarPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/toolbar/Toolbar.js',
-                    notes: 'Hoist component.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/panels/ToolbarPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/toolbar/Toolbar.js', notes: 'Hoist component.'}
             ],
             item: panel({
                 title: 'Panels › Toolbar',
                 height: 400,
                 width: 700,
-                tbar: toolbar(
+                tbar: [
                     button({
                         icon: Icon.add(),
                         text: 'New',
@@ -67,7 +57,6 @@ export class ToolbarPanel extends Component {
                     }),
                     filler(),
                     switchInput({
-                        model,
                         bind: 'enableTerminate',
                         label: 'Danger mode',
                         alignIndicator: 'right'
@@ -77,9 +66,9 @@ export class ToolbarPanel extends Component {
                         text: 'Terminate',
                         intent: 'danger',
                         disabled: !model.enableTerminate,
-                        onClick: this.onTerminateClick
+                        onClick: () => XH.toast({message: 'Game over!', icon: Icon.skull(), intent: 'danger'})
                     })
-                ),
+                ],
                 items: [
                     hframe(
                         toolbar({
@@ -110,9 +99,8 @@ export class ToolbarPanel extends Component {
                         })
                     )
                 ],
-                bbar: toolbar(
+                bbar: [
                     buttonGroupInput({
-                        model,
                         bind: 'visible',
                         items: [
                             button({icon: Icon.eye(), text: 'Show', value: true}),
@@ -125,7 +113,6 @@ export class ToolbarPanel extends Component {
                     }),
                     filler(),
                     select({
-                        model,
                         bind: 'state',
                         options: usStates,
                         placeholder: 'Select a State...'
@@ -133,20 +120,10 @@ export class ToolbarPanel extends Component {
                     toolbarSep(),
                     button({
                         text: 'Show Toast',
-                        onClick: this.onShowToastClick
+                        onClick: () => XH.toast({message: `Currently selected State: ${model.state || 'None'}`})
                     })
-                )
+                ]
             })
         });
     }
-
-    onTerminateClick = () => {
-        XH.toast({message: 'Game over!', icon: Icon.skull(), intent: 'danger'});
-    }
-
-    onShowToastClick = () => {
-        XH.toast({
-            message: `Currently selected State: ${this.toolBarModel.state || 'None'}`
-        });
-    }
-}
+});

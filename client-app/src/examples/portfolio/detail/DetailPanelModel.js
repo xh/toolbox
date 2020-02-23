@@ -1,10 +1,8 @@
-import {HoistModel, LoadSupport} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, loadAllAsync} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
-import {managed} from '@xh/hoist/core';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {OrdersPanelModel} from './OrdersPanelModel';
 import {ChartsPanelModel} from './ChartsPanelModel';
-import {loadAllAsync} from '@xh/hoist/core';
 
 @HoistModel
 @LoadSupport
@@ -16,6 +14,8 @@ export class DetailPanelModel {
 
     @managed panelSizingModel = new PanelModel({
         defaultSize: 400,
+        minSize: 250,
+        maxSize: 500,
         side: 'bottom',
         collapsedRenderMode: 'unmountOnHide',
         prefName: 'portfolioDetailPanelConfig'
@@ -34,7 +34,7 @@ export class DetailPanelModel {
         this.addReaction({
             track: () => ordersPanelModel.selectedRecord,
             run: (order) => {
-                const symbol = order ? order.symbol : null;
+                const symbol = order ? order.data.symbol : null;
                 chartsPanelModel.setSymbol(symbol);
             }
         });

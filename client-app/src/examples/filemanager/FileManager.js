@@ -1,36 +1,30 @@
 import {filler, fragment} from '@xh/hoist/cmp/layout';
-import React, {Component} from 'react';
-import {elemFactory, HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {fileChooser} from '@xh/hoist/desktop/cmp/filechooser';
 import {grid} from '@xh/hoist/cmp/grid';
 import {FileManagerModel} from './FileManagerModel';
 import './FileManager.scss';
 
-@HoistComponent
-export class FileManager extends Component {
+export const fileManager = hoistCmp.factory({
+    model: creates(FileManagerModel),
 
-    model = new FileManagerModel();
-
-    render() {
-        const {model} = this,
-            {gridModel, chooserModel} = model;
-
+    render({model}) {
         return panel({
             title: 'File Manager',
             icon: Icon.folder(),
             className: 'file-manager',
-            mask: model.loadModel,
+            mask: 'onLoad',
             width: 700,
             height: 500,
             items: [
-                grid({model: gridModel}),
+                grid(),
                 fileChooser({
-                    model: chooserModel,
-                    accept: this.getAcceptedFileTypes(),
+                    accept: acceptedFileTypes,
                     showFileGrid: false,
                     targetText: fragment(
                         <p>Drag-and-drop new files here to queue for upload, or click to browse.</p>,
@@ -39,7 +33,7 @@ export class FileManager extends Component {
                     height: 150
                 })
             ],
-            bbar: toolbar(
+            bbar: [
                 button({
                     text: 'Reset',
                     icon: Icon.reset(),
@@ -61,27 +55,24 @@ export class FileManager extends Component {
                     disabled: !model.pendingChangeCount,
                     onClick: () => model.saveAsync()
                 })
-            )
+            ]
         });
     }
+});
 
-    // Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
-    // accepted file types for sanity (and to demo the `accepts` prop).
-    getAcceptedFileTypes() {
-        return [
-            '.txt',
-            '.png',
-            '.gif',
-            '.jpg',
-            '.doc',
-            '.docx',
-            '.xls',
-            '.xlsx',
-            '.ppt',
-            '.pptx',
-            '.pdf'
-        ];
-    }
-}
+// Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
+// accepted file types for sanity (and to demo the `accepts` prop).
+const acceptedFileTypes = [
+    '.txt',
+    '.png',
+    '.gif',
+    '.jpg',
+    '.doc',
+    '.docx',
+    '.xls',
+    '.xlsx',
+    '.ppt',
+    '.pptx',
+    '.pdf'
+];
 
-export const fileManager = elemFactory(FileManager);

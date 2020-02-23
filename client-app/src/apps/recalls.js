@@ -1,11 +1,12 @@
 import {XH} from '@xh/hoist/core';
+import {AppContainer} from '@xh/hoist/desktop/appcontainer';
+import {guestUserLoginMsg} from '../core/guestUserLoginMsg';
 import {App} from '../examples/recalls/App';
 import {AppModel} from '../examples/recalls/AppModel';
-import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
 XH.renderApp({
     clientAppCode: 'recalls',
-    clientAppName: 'Recalls',
+    clientAppName: 'XH FDA Recalls',
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,
@@ -13,5 +14,5 @@ XH.renderApp({
     isSSO: false,
     idleDetectionEnabled: true,
     checkAccess: 'APP_READER',
-    loginMessage: "User: 'toolbox@xh.io' / Password: 'toolbox'"
+    loginMessage: guestUserLoginMsg
 });

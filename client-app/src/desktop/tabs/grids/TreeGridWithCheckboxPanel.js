@@ -1,33 +1,24 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2019 Extremely Heavy Industries Inc.
- */
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 
-import {wrapper, sampleTreeWithCheckboxGrid} from '../../common';
+import {wrapper, sampleTreeGrid} from '../../common';
 
-@HoistComponent
-export class TreeGridWithCheckboxPanel extends Component {
-
-    render() {
-        return wrapper({
-            description: [
-                <p>
-                    This example is a copy of the Tree sample, but adds a checkbox component to every node via the treeColumn's "innerRendererFramework" property.
-                </p>
-            ],
-            item: panel({
-                title: 'Grids › Tree w/CheckBox',
-                icon: Icon.grid(),
-                width: 900,
-                height: 500,
-                item: sampleTreeWithCheckboxGrid()
-            })
-        });
-    }
-}
+export const treeGridWithCheckboxPanel = hoistCmp.factory(
+    () => wrapper({
+        description: [
+            <p>
+                This example is a copy of the Tree sample, but adds a checkbox component to every node.
+                Custom checkboxes are added via a custom renderer, and the checkboxes values are
+                synchronized up and down the tree using the <code>Record</code> API.
+            </p>
+        ],
+        item: panel({
+            title: 'Grids › Tree w/CheckBox',
+            icon: Icon.grid(),
+            className: 'tb-grid-wrapper-panel',
+            item: sampleTreeGrid({model: {includeCheckboxes: true}})
+        })
+    })
+);

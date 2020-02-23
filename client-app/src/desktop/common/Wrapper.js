@@ -1,66 +1,28 @@
-import {Component} from 'react';
-import {HoistComponent, elemFactory, XH} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, useLocalModel, XH} from '@xh/hoist/core';
 import PT from 'prop-types';
 import {box, table, tbody, tr, td, th} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {DockContainerModel, dockContainer} from '@xh/hoist/cmp/dock';
 import {managed} from '@xh/hoist/core/mixins';
-import {toolboxLink} from '../../common/ToolboxLink';
+import {toolboxLink} from '../../core/ToolboxLink';
 
 import './Wrapper.scss';
 
 /**
  * A styled panel used to wrap component examples within Toolbox.
  */
-@HoistComponent
-class Wrapper extends Component {
-    
-    static propTypes = {
-        /**
-         * Intro text or description for the Component/pattern demo'd by this tab.
-         */
-        description: PT.oneOfType([PT.array, PT.element, PT.string]),
-        
-        /**
-         * Links to display for this tab, pointing either to relevant source code within ExHI
-         * repos or to external sites (e.g. docs for key external components). Links should be
-         * provided as objects with `url` and `text` properties for the link itself, as well as an
-         * optional `notes` property for additional descriptive text.
-         *
-         * @see ToolboxLink for additional details.
-         */
-        links: PT.arrayOf(PT.object)
-    };
-    
-    @managed
-    dockContainerModel = new DockContainerModel();
-    
-    constructor(props) {
-        super(props);
+export const [Wrapper, wrapper] = hoistCmp.withFactory({
+    displayName: 'Wrapper',
+    className: 'tbox-wrapper xh-tiled-bg',
+    model: false, memo: false,
 
-        if (this.props.links) {
-            this.dockContainerModel.addView({
-                id: XH.genId(),
-                icon: Icon.link(),
-                title: 'Links',
-                allowDialog: false,
-                allowClose: false,
-                collapsed: !XH.getPref('expandDockedLinks'),
-                content: panel({
-                    className: 'tbox-wrapper__links',
-                    item: this.createLinksWithNotes(),
-                    width: 400
-                })
-            });
-        }
-    }
-    
-    render() {
-        const {description, links, children, ...rest} = this.props;
-        
+    render({className, description, links, children, ...rest}) {
+
+        const localModel = useLocalModel(() => new Model(links));
+
         return box({
-            className: 'tbox-wrapper xh-tiled-bg',
+            className,
             items: [
                 panel({
                     className: 'tbox-wrapper__description',
@@ -69,7 +31,7 @@ class Wrapper extends Component {
                 }),
                 children,
                 dockContainer({
-                    model: this.dockContainerModel,
+                    model: localModel.dockContainerModel,
                     compactHeaders: true,
                     omit: !links
                 })
@@ -77,10 +39,50 @@ class Wrapper extends Component {
             ...rest
         });
     }
-    
-    createLinksWithNotes() {
-        const {links} = this.props;
+});
 
+Wrapper.propTypes = {
+    /**
+     * Intro text or description for the Component/pattern demo'd by this tab.
+     */
+    description: PT.oneOfType([PT.array, PT.element, PT.string]),
+
+    /**
+     * Links to display for this tab, pointing either to relevant source code within XH
+     * repos or to external sites (e.g. docs for key external components). Links should be
+     * provided as objects with `url` and `text` properties for the link itself, as well as an
+     * optional `notes` property for additional descriptive text.
+     *
+     * @see ToolboxLink for additional details.
+     */
+    links: PT.arrayOf(PT.object)
+};
+
+@HoistModel
+class Model {
+
+    @managed
+    dockContainerModel = new DockContainerModel();
+
+    constructor(links) {
+        if (links) {
+            this.dockContainerModel.addView({
+                id: XH.genId(),
+                icon: Icon.link(),
+                title: 'Links',
+                allowDialog: false,
+                allowClose: false,
+                collapsed: !XH.getPref('expandDockedLinks'),
+                content: () => panel({
+                    className: 'tbox-wrapper__links',
+                    item: this.createLinksWithNotes(links),
+                    width: 400
+                })
+            });
+        }
+    }
+
+    createLinksWithNotes(links) {
         return table(
             tbody(
                 links.map(link => {
@@ -92,6 +94,4 @@ class Wrapper extends Component {
             )
         );
     }
-
 }
-export const wrapper = elemFactory(Wrapper);

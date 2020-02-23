@@ -2,10 +2,9 @@ import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {MapPanelModel} from './MapPanelModel';
-import {DetailPanelModel} from './detail/DetailPanelModel';
 import {clamp, round} from 'lodash';
 import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
-
+import {DetailPanelModel} from './detail/DetailPanelModel';
 
 @HoistModel
 @LoadSupport
@@ -34,7 +33,10 @@ export class PortfolioPanelModel {
 
         let {session} = this;
         if (session) session.destroy();
-        session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp');
+
+        session = await XH.portfolioService
+            .getLivePositionsAsync(dims, 'mainApp')
+            .catchDefault();
 
         store.loadData([session.initialPositions.root]);
         session.onUpdate = ({data}) => {
@@ -60,7 +62,7 @@ export class PortfolioPanelModel {
             run: (position) => {
                 this.detailPanelModel.setPositionId(position ? position.id : null);
             },
-            delay: 500
+            debounce: 300
         };
     }
 
