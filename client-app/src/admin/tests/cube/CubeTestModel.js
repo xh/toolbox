@@ -45,7 +45,7 @@ export class CubeTestModel {
 
         this.view = cube.createView({
             query: this.getQuery(),
-            stores: this.gridModel.store,
+            store: this.gridModel.store,
             connect: true
         });
 
