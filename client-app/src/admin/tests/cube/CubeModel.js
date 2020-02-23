@@ -41,7 +41,7 @@ export class CubeModel {
 
         const ocTxt = fmtThousands(orders.length) + 'k';
         await LTM.withLoadTime(`Loaded ${ocTxt} orders in Cube`, async () => {
-            this.cube.loadData(orders, {asOf: Date.now()});
+            await this.cube.loadDataAsync(orders, {asOf: Date.now()});
         });
 
         this.orders = orders;
@@ -89,7 +89,7 @@ export class CubeModel {
         });
 
         await LTM.withLoadTime(`Updated ${updateCount} orders in Cube`, async () => {
-            this.cube.updateData(updates, {asOf: Date.now()});
+            await this.cube.updateDataAsync(updates, {asOf: Date.now()});
         });
     }
 }
