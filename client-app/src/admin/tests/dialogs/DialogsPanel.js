@@ -6,11 +6,8 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {dialog} from '@xh/hoist/desktop/cmp/dialog';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
-
 import {Icon} from '@xh/hoist/icon';
 
-// import {oHLCChartPanel} from './chart/OHLCChartPanel';
-// import {simpleTreeMapPanel} from './chart/SimpleTreeMapPanel';
 import {DialogsPanelModel} from './DialogsPanelModel';
 
 import './DialogsPanel.scss';
@@ -21,7 +18,6 @@ import './DialogsPanel.scss';
 export const dialogsPanel = hoistCmp.factory({
     model: creates(DialogsPanelModel),
     render: ({model}) => {
-        // const {withMask, closeOnOutsideClick, closeOnEscape, showCloseButton} = model;
         const divRef = useRef(null);
         
         return panel({
@@ -46,7 +42,7 @@ export const dialogsPanel = hoistCmp.factory({
                     alignIndicator: 'right'
                 }),
                 switchInput({
-                    bind: 'withMask',
+                    bind: 'showBackgroundMask',
                     label: 'with mask',
                     alignIndicator: 'right'
                 })
@@ -62,108 +58,64 @@ export const dialogsPanel = hoistCmp.factory({
                                 onClick: () => model.dialogModel1.open()
                             }),
                             dialog({model: model.dialogModel1})
-                        )
-                        /*
-                        fragment(
-                            button({
-                                ...dialogBtn(Icon.stopCircle()),
-                                text: 'No Icon, No Title',
-                                onClick: () => model.setIsOpen2(true)    
-                            }),
-                            dialog({
-                                isOpen: model.isOpen2,
-                                onClose: () => model.setIsOpen2(false),
-                                showCloseButton: true,
-                                mask: withMask,
-                                closeOnEscape,
-                                closeOnOutsideClick,
-                                item: formPanel({onCloseClick: () => model.setIsOpen2(false)})
-                            })
                         ),
                         fragment(
                             button({
                                 ...dialogBtn(Icon.stopCircle()),
-                                text: 'No Close Button',
-                                onClick: () => model.setIsOpen3(true)    
+                                text: 'No Icon, No Title, No Close Button',
+                                onClick: () => model.dialogModel2.open() 
+                            }),
+                            dialog({model: model.dialogModel2})
+                        ),
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.stopCircle()),
+                                text: 'Icon, Title, and Close Button',
+                                onClick: () => model.dialogModel3.open() 
                             }),
                             dialog({
-                                isOpen: model.isOpen3,
-                                onClose: () => model.setIsOpen3(false),
+                                model: model.dialogModel3,
                                 icon: Icon.box(),
-                                title: 'Dialogs: NO Close Button in Header',
-                                mask: withMask,
-                                closeOnEscape,
-                                closeOnOutsideClick,
-                                item: formPanel({onCloseClick: () => model.setIsOpen3(false)})
+                                title: 'Icon, Title and Close Btn in Header'
                             })
                         )
                     ),
                     row(
-                        'Draggable',
+                        'RnD:',
                         fragment(
                             button({
                                 ...dialogBtn(Icon.arrowsLeftRight()),
                                 text: 'Draggable Dialog',
-                                onClick: () => model.setIsOpen4(true)    
+                                onClick: () => model.dialogModel4.open() 
                             }),
                             dialog({
-                                isOpen: model.isOpen4,
-                                icon: Icon.box(),
-                                title: 'Draggable Only',
-                                showCloseButton,
-                                onClose: () => model.setIsOpen4(false),
-                                mask: withMask,
-                                closeOnEscape,
-                                closeOnOutsideClick,
-                                model: new DialogModel({draggable: true}),
-                                item: formPanel({onCloseClick: () => model.setIsOpen4(false)})
-                            })
-                        )
-                    ),
-                    row(
-                        'Resizable:',
-                        fragment(
-                            button({
-                                ...dialogBtn(Icon.chartLine()),
-                                text: 'Resizable Dialog with OHLC Chart',
-                                onClick: () => model.setIsOpen5(true)    
-                            }),
-                            dialog({
-                                isOpen: model.isOpen5,
-                                icon: Icon.chartLine(),
-                                title: 'Resizable Dialog with OHLC Chart',
-                                onClose: () => model.setIsOpen5(false),
-                                mask: withMask,
-                                closeOnEscape,
-                                closeOnOutsideClick,
-                                showCloseButton,
-                                model: new DialogModel({resizable: true}),
-                                item: oHLCChartPanel(),
-                                width: 600,
-                                height: 400,
-                                x: 100,
-                                y: 100
+                                model: model.dialogModel4,
+                                icon: Icon.arrowsLeftRight(),
+                                title: 'Draggable Only'
                             })
                         ),
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
-                                text: 'Resizable Dialog with TreeMap Chart',
-                                onClick: () => model.setIsOpen6(true)    
+                                text: 'Resizable Dialog with OHLC Chart',
+                                onClick: () => model.dialogModel5.open() 
                             }),
                             dialog({
-                                isOpen: model.isOpen6,
+                                model: model.dialogModel5,
                                 icon: Icon.chartLine(),
-                                title: 'Resizable Dialog with TreeMap Chart',
-                                onClose: () => model.setIsOpen6(false),
-                                mask: withMask,
-                                closeOnEscape,
-                                closeOnOutsideClick,
-                                showCloseButton,
-                                model: new DialogModel({resizable: true}),
-                                item: simpleTreeMapPanel(),
-                                width: 600,
-                                height: 400
+                                title: 'Resizable Dialog with OHLC Chart'
+                            })
+                        ),
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.chartLine()),
+                                text: 'Resizable & Draggable Dialog with Tree Map',
+                                onClick: () => model.dialogModel6.open() 
+                            }),
+                            dialog({
+                                model: model.dialogModel6,
+                                icon: Icon.chartLine(),
+                                title: 'Resizable & Draggable Dialog with Tree Map'
                             })
                         )
                     ),
@@ -171,52 +123,42 @@ export const dialogsPanel = hoistCmp.factory({
                         'Stateful:',
                         fragment(
                             button({
-                                ...dialogBtn(Icon.arrowsLeftRight()),
-                                text: 'Stateful Draggable & Resizable with OHLC Chart',
-                                onClick: () => model.setIsOpen7(true)   
+                                ...dialogBtn(Icon.chartLine()),
+                                text: 'Stateful Draggable Only',
+                                onClick: () => model.dialogModel7.open() 
                             }),
                             dialog({
-                                isOpen: model.isOpen7,
-                                icon: Icon.box(),
-                                title: 'Stateful Draggable & Resizable OHLC',
-                                onClose: () => model.setIsOpen7(false),
-                                mask: withMask,
-                                closeOnEscape,
-                                closeOnOutsideClick,
-                                showCloseButton,
-                                model: new DialogModel({
-                                    resizable: true, 
-                                    draggable: true,
-                                    stateModel: 'stateFulDialogOHLC'
-                                }),
-                                item: oHLCChartPanel(),
-                                width: 600,
-                                height: 400
+                                model: model.dialogModel7,
+                                icon: Icon.chartLine(),
+                                title: 'Stateful Draggable Only'
                             })
                         ),
                         fragment(
                             button({
-                                ...dialogBtn(Icon.arrowsLeftRight()),
-                                text: 'Stateful Draggable Only',
-                                onClick: () => model.setIsOpen8(true)   
+                                ...dialogBtn(Icon.chartLine()),
+                                text: 'Stateful Resizable Only',
+                                onClick: () => model.dialogModel8.open() 
                             }),
                             dialog({
-                                isOpen: model.isOpen8,
-                                icon: Icon.box(),
-                                title: 'Stateful Draggable Only',
-                                onClose: () => model.setIsOpen8(false),
-                                mask: withMask,
-                                closeOnEscape,
-                                closeOnOutsideClick,
-                                showCloseButton,
-                                model: new DialogModel({
-                                    draggable: true,
-                                    stateModel: 'stateFulDialogForm'
-                                }),
-                                item: formPanel({onCloseClick: () => model.setIsOpen8(false)})
+                                model: model.dialogModel8,
+                                icon: Icon.chartLine(),
+                                title: 'Stateful Resizable Only'
+                            })
+                        ),
+                        fragment(
+                            button({
+                                ...dialogBtn(Icon.chartLine()),
+                                text: 'Stateful Resizable & Draggable',
+                                onClick: () => model.dialogModel9.open() 
+                            }),
+                            dialog({
+                                model: model.dialogModel9,
+                                icon: Icon.chartLine(),
+                                title: 'Stateful Resizable & Draggable'
                             })
                         )
-                    ),
+                    )
+                    /*
                     row(
                         'Parent/Child Dialogs:',
                         fragment(
@@ -352,8 +294,8 @@ export const dialogsPanel = hoistCmp.factory({
                                 }
                             })
                         )
-                    */
                     )
+                    */
                 ))
             ]
         });
