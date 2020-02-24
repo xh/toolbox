@@ -9,7 +9,6 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 
 import {Icon} from '@xh/hoist/icon';
 
-import {formPanel} from './form/FormPanel';
 // import {oHLCChartPanel} from './chart/OHLCChartPanel';
 // import {simpleTreeMapPanel} from './chart/SimpleTreeMapPanel';
 import {DialogsPanelModel} from './DialogsPanelModel';
@@ -60,11 +59,9 @@ export const dialogsPanel = hoistCmp.factory({
                             button({
                                 ...dialogBtn(Icon.learn()),
                                 text: 'Defaults',
-                                onClick: () => model.setIsOpen1(true)
+                                onClick: () => model.dialogModel1.open()
                             }),
-                            model.isOpen1 ? dialog({
-                                item: formPanel({onCloseClick: () => model.setIsOpen1(false)})
-                            }) : null
+                            dialog({model: model.dialogModel1})
                         )
                         /*
                         fragment(
