@@ -15,6 +15,7 @@ import {PortfolioService} from '../core/svc/PortfolioService';
 import {homePage} from './home/HomePage';
 import {gridPage} from './grids/GridPage';
 import {gridDetailPage} from './grids/GridDetailPage';
+import {panelsPage} from './panels/PanelsPage';
 import {treeGridPage} from './treegrids/TreeGridPage';
 import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
 import {dataViewPage} from './dataview/DataViewPage';
@@ -41,6 +42,7 @@ export class AppModel {
             {id: 'dataview', content: dataViewPage},
             {id: 'form', content: formPage},
             {id: 'containers', content: containersPage},
+            {id: 'panels', content: panelsPage},
             {id: 'popups', content: popupsPage},
             {id: 'icons', content: iconPage},
             {id: 'pinPad', content: pinPadPage}
@@ -80,6 +82,10 @@ export class AppModel {
                     {
                         name: 'containers',
                         path: '/containers'
+                    },
+                    {
+                        name: 'panels',
+                        path: '/panels'
                     },
                     {
                         name: 'popups',
