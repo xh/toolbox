@@ -1,5 +1,5 @@
 import {managed, HoistModel, LoadSupport, XH} from '@xh/hoist/core';
-import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
+import {ChartModel} from '@xh/hoist/cmp/chart';
 import {bindable} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
 
@@ -10,12 +10,10 @@ export class OHLCChartModel {
     @bindable.ref symbols = null;
     numCompanies = 3;
 
-    @managed chartModel;
+    @managed chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
     @bindable aspectRatio = null;
     
     constructor() {
-        this.chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
-
         this.addReaction({
             track: () => this.currentSymbol,
             run: () => this.loadAsync()
