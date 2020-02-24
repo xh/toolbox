@@ -1,4 +1,4 @@
-import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
+import {managed, HoistModel, LoadSupport, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {bindable} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
@@ -9,8 +9,8 @@ export class OHLCChartModel {
     @bindable currentSymbol = '';
     @bindable.ref symbols = null;
     numCompanies = 3;
-    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
+    @managed chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
     @bindable aspectRatio = null;
     
     constructor() {
