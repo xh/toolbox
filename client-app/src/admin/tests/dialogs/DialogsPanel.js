@@ -1,17 +1,17 @@
 import {useRef} from 'react';
 
-import {table, tbody, td, th, tr, filler, p, fragment} from '@xh/hoist/cmp/layout';
+import {table, tbody, td, th, tr, filler, /* p,*/ fragment} from '@xh/hoist/cmp/layout';
 import {hoistCmp, creates} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {dialog, DialogModel} from '@xh/hoist/desktop/cmp/dialog';
+import {dialog} from '@xh/hoist/desktop/cmp/dialog';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 
 import {Icon} from '@xh/hoist/icon';
 
 import {formPanel} from './form/FormPanel';
-import {oHLCChartPanel} from './chart/OHLCChartPanel';
-import {simpleTreeMapPanel} from './chart/SimpleTreeMapPanel';
+// import {oHLCChartPanel} from './chart/OHLCChartPanel';
+// import {simpleTreeMapPanel} from './chart/SimpleTreeMapPanel';
 import {DialogsPanelModel} from './DialogsPanelModel';
 
 import './DialogsPanel.scss';
@@ -22,7 +22,7 @@ import './DialogsPanel.scss';
 export const dialogsPanel = hoistCmp.factory({
     model: creates(DialogsPanelModel),
     render: ({model}) => {
-        const {withMask, closeOnOutsideClick, closeOnEscape, showCloseButton} = model;
+        // const {withMask, closeOnOutsideClick, closeOnEscape, showCloseButton} = model;
         const divRef = useRef(null);
         
         return panel({
@@ -62,15 +62,11 @@ export const dialogsPanel = hoistCmp.factory({
                                 text: 'Defaults',
                                 onClick: () => model.setIsOpen1(true)
                             }),
-                            dialog({
-                                isOpen: model.isOpen1,
-                                onClose: () => model.setIsOpen1(false),
-                                mask: withMask,
-                                closeOnEscape,
-                                closeOnOutsideClick,
+                            model.isOpen1 ? dialog({
                                 item: formPanel({onCloseClick: () => model.setIsOpen1(false)})
-                            })
-                        ),
+                            }) : null
+                        )
+                        /*
                         fragment(
                             button({
                                 ...dialogBtn(Icon.stopCircle()),
@@ -312,19 +308,19 @@ export const dialogsPanel = hoistCmp.factory({
                         fragment(
                             button({
                                 ...dialogBtn(Icon.arrowUp()),
-                                text: 'RnDOptions.style.zIndex = 100 (not stateful) - note issue with datepicker',
+                                text: 'rndOptions.style.zIndex = 100 (not stateful) - note issue with datepicker',
                                 onClick: () => model.setIsOpen12(true)    
                             }),
                             dialog({
                                 isOpen: model.isOpen12,
                                 icon: Icon.box(),
-                                title: 'Dialog with RnDOptions.style.zIndex 100',
+                                title: 'Dialog with rndOptions.style.zIndex 100',
                                 showCloseButton,
                                 onClose: () => model.setIsOpen12(false),
                                 mask: withMask,
                                 closeOnEscape,
                                 closeOnOutsideClick,
-                                RnDOptions: {
+                                rndOptions: {
                                     style: {
                                         zIndex: 100
                                     }
@@ -359,6 +355,7 @@ export const dialogsPanel = hoistCmp.factory({
                                 }
                             })
                         )
+                    */
                     )
                 ))
             ]

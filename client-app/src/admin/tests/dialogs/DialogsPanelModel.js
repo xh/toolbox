@@ -1,5 +1,5 @@
-import {HoistModel, managed} from '@xh/hoist/core';
-import { DialogModel } from '@xh/hoist/desktop/cmp/dialog';
+import {HoistModel /* managed*/} from '@xh/hoist/core';
+// import { DialogModel } from '@xh/hoist/desktop/cmp/dialog';
 import {bindable} from '@xh/hoist/mobx';
 
 
@@ -27,7 +27,7 @@ export class DialogsPanelModel {
 
     // order important here for testing getting first 
     // dialog model defined in context
-    @managed
-    dialogModelThatWillBeFoundFromContextLookup = new DialogModel();
+    // @managed
+    // dialogModelThatWillBeFoundFromContextLookup = new DialogModel();
 
 }
