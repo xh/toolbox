@@ -1,5 +1,5 @@
 import {HoistModel, managed} from '@xh/hoist/core';
-import { DialogModel } from '@xh/hoist/desktop/cmp/dialog';
+import {DialogModel} from '@xh/hoist/desktop/cmp/dialog';
 import {bindable} from '@xh/hoist/mobx';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
