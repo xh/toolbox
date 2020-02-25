@@ -1,0 +1,11 @@
+.tb-panels-standard-panel {
+  .xh-panel__content {
+    padding: var(--xh-pad-px);
+  }
+}
+
+.tb-panels-scrollable-panel {
+  .xh-panel__content {
+    padding: 0 var(--xh-pad-px);
+  }
+}

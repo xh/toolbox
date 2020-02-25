@@ -20,7 +20,7 @@ export class ChartsPanelModel {
                 this.lineChartModel.setSymbol(symbol);
                 this.ohlcChartModel.setSymbol(symbol);
             },
-            delay: 500
+            debounce: 500
         });
     }
 
