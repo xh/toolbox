@@ -217,8 +217,31 @@ export const dialogsPanel = hoistCmp.factory({
                                 }
                             })
                         )
+                    ),
+                    row(
+                        'Container',
+                        button({
+                            ...dialogBtn(Icon.chartLine()),
+                            text: 'Dialog not in "portal',
+                            onClick: () => model.dialogModel14.open() 
+                        }),
+                        button({
+                            ...dialogBtn(Icon.chartLine()),
+                            text: 'Dialog not in "portal (self-centering)',
+                            onClick: () => model.dialogModel15.open() 
+                        })
                     )
-                ))
+                )),               
+                dialog({
+                    model: model.dialogModel14,
+                    icon: Icon.chartLine(),
+                    title: 'Dialog not in "portal'
+                }),
+                dialog({
+                    model: model.dialogModel15,
+                    icon: Icon.chartLine(),
+                    title: 'Dialog not in "portal (self-centering)'
+                })
             ]
         });
     }

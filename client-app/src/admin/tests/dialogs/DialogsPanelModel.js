@@ -18,7 +18,7 @@ export class DialogsPanelModel {
     @bindable showCloseButton = true;
     @bindable closeOnEscape = true;
 
-    switchable = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+    switchable = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
     constructor() {
         this.addReaction({
@@ -168,6 +168,24 @@ export class DialogsPanelModel {
         content: oHLCChartPanel,
         draggable: true,
         resizable: true,
+        width: 600,
+        height: 400
+    });
+
+    @managed
+    dialogModel14 = new DialogModel({
+        inPortal: false,
+        content: oHLCChartPanel,
+        draggable: true,
+        resizable: true,
+        width: 600,
+        height: 400
+    });
+
+    @managed
+    dialogModel15 = new DialogModel({
+        inPortal: false,
+        content: oHLCChartPanel,
         width: 600,
         height: 400
     });
