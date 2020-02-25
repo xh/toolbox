@@ -55,11 +55,6 @@ export class DialogsPanelModel {
         });
     }
 
-    @bindable isOpen10 = false;
-    @bindable isOpen11 = false;
-    @bindable isOpen12 = false;
-    @bindable isOpen13 = false;
-
     @managed
     dialogModel1 = new DialogModel({
         content: () => formPanel({onCloseClick: () => this.dialogModel1.close()})
