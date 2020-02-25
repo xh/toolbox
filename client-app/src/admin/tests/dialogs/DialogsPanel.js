@@ -157,60 +157,24 @@ export const dialogsPanel = hoistCmp.factory({
                                 title: 'Stateful Resizable & Draggable'
                             })
                         )
-                    )
-                    /*
+                    ),
                     row(
                         'Parent/Child Dialogs:',
                         fragment(
                             button({
-                                ...dialogBtn(),
+                                ...dialogBtn(Icon.chartLine()),
                                 text: 'Dialog That Opens a Child Dialog',
-                                onClick: () => model.setIsOpen9(true)   
+                                onClick: () => model.dialogModel10.open() 
                             }),
                             dialog({
-                                isOpen: model.isOpen9,
+                                model: model.dialogModel10,
                                 icon: Icon.box(),
-                                title: 'Parent Dialog',
-                                onClose: () => model.setIsOpen9(false),
-                                mask: withMask,
-                                closeOnEscape,
-                                closeOnOutsideClick,
-                                showCloseButton,
-                                model: new DialogModel({
-                                    draggable: true,
-                                    stateModel: 'parentDialog'
-                                }),
-                                item: panel({
-                                    style: {padding: '10px'},
-                                    width: 300,
-                                    items: [
-                                        p(`The "child" dialog must be defined outside of this dialog if the two 
-                                  dialogs are to be dragged independently.`),
-                                        button({
-                                            ...dialogBtn(),
-                                            text: 'Open a Child Dialog',
-                                            onClick: () => model.setIsOpen10(true)   
-                                        })
-                                    ]
-                                })
+                                title: 'Parent Dialog'
                             }),
                             dialog({
-                                isOpen: model.isOpen10,
-                                onClose: () => model.setIsOpen10(false),
+                                model: model.dialogModel11,
                                 icon: Icon.box(),
-                                title: 'A Child Dialog',
-                                closeOnEscape,
-                                closeOnOutsideClick,
-                                showCloseButton,
-                                mask: withMask,
-                                model: new DialogModel({
-                                    resizable: true,
-                                    draggable: true,
-                                    stateModel: 'childDialogOHLC'
-                                }),
-                                item: oHLCChartPanel(),
-                                width: 600,
-                                height: 400
+                                title: 'A Child Dialog'
                             })
                         )
                     ),
@@ -218,54 +182,19 @@ export const dialogsPanel = hoistCmp.factory({
                         'zIndex:',
                         fragment(
                             button({
-                                ...dialogBtn(Icon.arrowUp()),
+                                ...dialogBtn(Icon.chartLine()),
                                 text: 'style.zIndex = 100 (stateful)',
-                                onClick: () => model.setIsOpen11(true)   
+                                onClick: () => model.dialogModel12.open() 
                             }),
                             dialog({
-                                isOpen: model.isOpen11,
-                                onClose: () => model.setIsOpen11(false),
-                                icon: Icon.box(),
+                                model: model.dialogModel12,
+                                icon: Icon.chartLine(),
                                 title: 'Dialog with style.zIndex 100',
-                                closeOnEscape,
-                                closeOnOutsideClick,
-                                showCloseButton,
-                                mask: withMask,
-                                model: new DialogModel({
-                                    resizable: true,
-                                    draggable: true,
-                                    stateModel: 'customZIndexDialog'
-                                }),
-                                item: oHLCChartPanel(),
-                                width: 600,
-                                height: 400,
-                                style: {
-                                    zIndex: 100
-                                }
-                            })
-                        ),
-                        fragment(
-                            button({
-                                ...dialogBtn(Icon.arrowUp()),
-                                text: 'rndOptions.style.zIndex = 100 (not stateful) - note issue with datepicker',
-                                onClick: () => model.setIsOpen12(true)    
-                            }),
-                            dialog({
-                                isOpen: model.isOpen12,
-                                icon: Icon.box(),
-                                title: 'Dialog with rndOptions.style.zIndex 100',
-                                showCloseButton,
-                                onClose: () => model.setIsOpen12(false),
-                                mask: withMask,
-                                closeOnEscape,
-                                closeOnOutsideClick,
                                 rndOptions: {
                                     style: {
                                         zIndex: 100
                                     }
-                                },
-                                model: new DialogModel({draggable: true}),
-                                item: formPanel({onCloseClick: () => model.setIsOpen12(false)})
+                                }
                             })
                         )
                     ),
@@ -273,29 +202,22 @@ export const dialogsPanel = hoistCmp.factory({
                         '"style" prop:',
                         fragment(
                             button({
-                                ...dialogBtn(),
+                                ...dialogBtn(Icon.chartLine()),
                                 text: 'custom style prop setting (should show with green shadow)',
-                                onClick: () => model.setIsOpen13(true)    
+                                onClick: () => model.dialogModel13.open() 
                             }),
                             dialog({
-                                isOpen: model.isOpen13,
-                                icon: Icon.box(),
+                                model: model.dialogModel13,
+                                icon: Icon.chartLine(),
                                 title: 'Dialog with custom green shadow',
-                                showCloseButton,
-                                onClose: () => model.setIsOpen13(false),
-                                mask: withMask,
-                                closeOnEscape,
-                                closeOnOutsideClick,
-                                item: oHLCChartPanel(),
-                                width: 600,
-                                height: 400,
-                                style: {
-                                    boxShadow: '0px 0px 10px 5px green'
+                                rndOptions: {
+                                    style: {
+                                        boxShadow: '0px 0px 10px 5px green'
+                                    }
                                 }
                             })
                         )
                     )
-                    */
                 ))
             ]
         });

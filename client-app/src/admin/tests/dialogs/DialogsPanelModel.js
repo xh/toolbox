@@ -1,6 +1,9 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import { DialogModel } from '@xh/hoist/desktop/cmp/dialog';
 import {bindable} from '@xh/hoist/mobx';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {p} from '@xh/hoist/cmp/layout';
 
 import {formPanel} from './form/FormPanel';
 import {oHLCChartPanel} from './chart/OHLCChartPanel';
@@ -9,12 +12,13 @@ import {simpleTreeMapPanel} from './chart/SimpleTreeMapPanel';
 @HoistModel
 export class DialogsPanelModel {
 
+    // dialog model defaults
     @bindable showBackgroundMask = true;
     @bindable closeOnOutsideClick = true;
     @bindable showCloseButton = true;
     @bindable closeOnEscape = true;
 
-    switchable = [4, 5, 6, 7, 8, 9];
+    switchable = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
     constructor() {
         this.addReaction({
@@ -123,5 +127,62 @@ export class DialogsPanelModel {
         width: 600,
         height: 400,
         stateModel: 'stateFul_DM9'
+    });
+
+    @managed
+    dialogModel10 = new DialogModel({
+        x: 100,
+        y: 100,
+        content: () => panel({
+            style: {padding: '10px'},
+            width: 300,
+            items: [
+                p(`The "child" dialog must be defined outside of this dialog if the two 
+        dialogs are to be dragged independently.`),
+                button({
+                    ...dialogBtn(),
+                    text: 'Open a Child Dialog',
+                    onClick: () => this.dialogModel11.open()   
+                })
+            ]
+        })
+    });
+
+    @managed
+    dialogModel11 = new DialogModel({
+        content: oHLCChartPanel,
+        draggable: true,
+        resizable: true,
+        x: 300,
+        y: 300,
+        width: 600,
+        height: 400
+    });
+
+    @managed
+    dialogModel12 = new DialogModel({
+        content: oHLCChartPanel,
+        draggable: true,
+        resizable: true,
+        width: 600,
+        height: 400
+    });
+
+    @managed
+    dialogModel13 = new DialogModel({
+        content: oHLCChartPanel,
+        draggable: true,
+        resizable: true,
+        width: 600,
+        height: 400
+    });
+}
+
+
+function dialogBtn(icon) {
+    return ({
+        className: 'tbox-dialogs__button',
+        icon: icon,
+        minimal: false
     });
 }
