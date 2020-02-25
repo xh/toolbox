@@ -1,5 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core/index';
-import {hbox, box} from '@xh/hoist/cmp/layout/index';
+import {box, hframe} from '@xh/hoist/cmp/layout/index';
 import stockPhoto from '../../core/img/stock-news.png';
 import React from 'react';
 
@@ -9,7 +9,7 @@ export const newsPanelItem = hoistCmp.factory({
     render({record}) {
         const {title, text, imageUrl, published, source, author} = record.data;
 
-        return hbox({
+        return hframe({
             className: 'news-item',
             items: [
                 box({
