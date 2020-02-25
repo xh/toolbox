@@ -175,7 +175,7 @@ export class DialogsPanelModel {
     @managed
     dialogModel14 = new DialogModel({
         inPortal: false,
-        content: oHLCChartPanel,
+        content: () => formPanel({onCloseClick: () => this.dialogModel14.close()}),
         draggable: true,
         resizable: true,
         width: 600,

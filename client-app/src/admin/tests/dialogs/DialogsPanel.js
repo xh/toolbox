@@ -221,7 +221,7 @@ export const dialogsPanel = hoistCmp.factory({
                     row(
                         'Container',
                         button({
-                            ...dialogBtn(Icon.chartLine()),
+                            ...dialogBtn(Icon.addressCard()),
                             text: 'Dialog not in "portal',
                             onClick: () => model.dialogModel14.open() 
                         }),
@@ -234,7 +234,7 @@ export const dialogsPanel = hoistCmp.factory({
                 )),               
                 dialog({
                     model: model.dialogModel14,
-                    icon: Icon.chartLine(),
+                    icon: Icon.addressCard(),
                     title: 'Dialog not in "portal'
                 }),
                 dialog({
