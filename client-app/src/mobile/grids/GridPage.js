@@ -5,12 +5,11 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-import {label, switchInput} from '@xh/hoist/mobile/cmp/input';
+import {label, select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 
 import {GridPageModel} from './GridPageModel';
-import {select} from '@xh/hoist/desktop/cmp/input';
 
 export const gridPage = hoistCmp.factory({
 

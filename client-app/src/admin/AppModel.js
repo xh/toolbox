@@ -27,6 +27,14 @@ export class AppModel extends BaseAppModel {
         return [
             ...super.getTabRoutes(),
             {
+                name: 'roadmap',
+                path: '/roadmap',
+                children: [
+                    {name: 'projects', path: '/projects'},
+                    {name: 'phases', path: '/phases'}
+                ]
+            },
+            {
                 name: 'tests',
                 path: '/tests',
                 children: [
@@ -46,14 +54,6 @@ export class AppModel extends BaseAppModel {
             {
                 name: 'wip',
                 path: '/wip'
-            },
-            {
-                name: 'roadmap',
-                path: '/roadmap',
-                children: [
-                    {name: 'project', path: '/project'},
-                    {name: 'phase', path: '/phase'}
-                ]
             }
         ];
     }
@@ -61,9 +61,9 @@ export class AppModel extends BaseAppModel {
     createTabs() {
         return [
             ...super.createTabs(),
+            {id: 'roadmap', title: 'Roadmap', icon: Icon.mapSigns(), content: roadmapTab},
             {id: 'tests', icon: Icon.stopwatch(), content: TestsTab},
-            {id: 'wip', title: 'WIP', icon: Icon.experiment(), content: WipTab},
-            {id: 'roadmap', title: 'Roadmap', icon: Icon.mapSigns(), content: roadmapTab}
+            {id: 'wip', title: 'WIP', icon: Icon.experiment(), content: WipTab}
         ];
     }
 }

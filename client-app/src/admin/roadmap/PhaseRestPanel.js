@@ -1,6 +1,5 @@
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
-import {emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {hoistCmp} from '@xh/hoist/core';
 import {boolCheckCol} from '@xh/hoist/cmp/grid/columns';
 
@@ -47,11 +46,11 @@ const modelSpec = {
     filterFields: ['name', 'sortOrder'],
     sortBy: 'sortOrder',
     columns: [
-
         {
             field: 'sortOrder',
-            width: 120,
-            align: 'center'
+            headerName: 'Sort',
+            align: 'right',
+            width: 80
         },
         {
             field: 'name',
@@ -61,14 +60,13 @@ const modelSpec = {
             field: 'displayed',
             headerName: 'Display?',
             ...boolCheckCol,
-            width: 150
+            width: 100
         },
         {
             field: 'projectNames',
             headerName: 'Projects',
-            width: 400
-        },
-        {...emptyFlexCol}
+            flex: 1
+        }
     ],
     editors: [
         {field: 'name', label: 'Name'},

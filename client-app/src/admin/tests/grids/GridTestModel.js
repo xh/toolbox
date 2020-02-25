@@ -58,7 +58,7 @@ export class GridTestModel {
                 this.clearData();
                 this.loadAsync();
             },
-            delay: 100
+            debounce: 100
         });
 
         this.addReaction({

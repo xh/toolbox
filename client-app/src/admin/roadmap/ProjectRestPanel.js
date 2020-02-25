@@ -1,7 +1,6 @@
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
 import {dateTimeRenderer} from '@xh/hoist/format';
-import {emptyFlexCol} from '@xh/hoist/cmp/grid';
 import {codeInput, textArea} from '@xh/hoist/desktop/cmp/input';
 import {hoistCmp} from '@xh/hoist/core';
 
@@ -76,54 +75,55 @@ const modelSpec = {
     unit: 'project',
     filterFields: ['name', 'status', 'category'],
     sortBy: 'sortOrder',
+    groupBy: 'phaseName',
     columns: [
         {
             field: 'sortOrder',
-            width: 100
+            headerName: 'Sort',
+            align: 'right',
+            width: 80
         },
         {
             field: 'category',
-            width: 100
+            width: 150
         },
         {
             field: 'name',
             headerName: 'Title',
             tooltip,
-            width: 200
+            width: 300
         },
         {
             field: 'description',
             tooltip,
-            width: 300
+            flex: 1
         },
         {
             field: 'phaseName',
-            width: 100
+            width: 100,
+            hidden: true
         },
         {
             field: 'releaseVersion',
             headerName: 'Release',
             tooltip,
-            width: 100
+            width: 150
         },
         {
             field: 'status',
-            width: 100
+            width: 150
         },
         {
             field: 'lastUpdated',
-            headerName: 'Last Updated',
             renderer: dateTimeRenderer(),
-            width: 200,
+            width: 150,
             tooltip,
             align: 'right'
         },
         {
             field: 'lastUpdatedBy',
-            headerName: 'By:',
-            width: 100
-        },
-        {...emptyFlexCol}
+            width: 150
+        }
     ],
     editors: [
         {field: 'name', label: 'Title'},
@@ -131,15 +131,16 @@ const modelSpec = {
         {field: 'phaseName'},
         {field: 'status'},
         {field: 'sortOrder'},
-        {field: 'description',
+        {
+            field: 'description',
             formField: {
-                item: textArea()
-            }},
-        {field: 'gitLinks',
-            label: 'Github Links as Text Separated by Commas',
-            formField: {
-                item: codeInput()
+                item: textArea({height: 150})
             }
+        },
+        {
+            field: 'gitLinks',
+            label: 'Github Links (one per line)',
+            formField: {item: codeInput()}
         },
         {field: 'releaseVersion'},
         {field: 'lastUpdated', label: 'Last Updated'},

@@ -1,4 +1,7 @@
 .tb-home {
+  width: 100%;
+  justify-content: center;
+
   > .xh-panel {
     border: var(--xh-border-solid);
     margin: var(--xh-pad-double-px);
@@ -6,7 +9,8 @@
 }
 
 .tb-welcome {
-  width: 625px;
+  flex: 1;
+  max-width: 575px;
   height: 525px;
 
   &__logo {
