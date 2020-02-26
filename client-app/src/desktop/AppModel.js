@@ -24,6 +24,7 @@ export class AppModel {
     @managed
     tabModel = new TabContainerModel({
         route: 'default',
+        track: true,
         tabs: [
             {id: 'home', icon: Icon.home(), content: homeTab},
             {id: 'grids', icon: Icon.grid(), content: gridsTab},
@@ -39,10 +40,6 @@ export class AppModel {
 
     get gridSizingMode() {
         return XH.getPref('gridSizingMode');
-    }
-
-    constructor() {
-        this.addReaction(this.trackTabReaction());
     }
 
     async initAsync() {
@@ -138,6 +135,7 @@ export class AppModel {
                             {name: 'numberFormats', path: '/numberFormats'},
                             {name: 'popups', path: '/popups'},
                             {name: 'timestamp', path: '/timestamp'},
+                            {name: 'appNotifications', path: '/appNotifications'},
                             {name: 'exceptions', path: '/exceptions'}
                         ]
                     },
@@ -148,14 +146,5 @@ export class AppModel {
                 ]
             }
         ];
-    }
-
-    trackTabReaction() {
-        return {
-            track: () => this.tabModel.activeTab,
-            run: (activeTab) => {
-                XH.track({category: 'Tab', message: `Viewed ${activeTab.title}`});
-            }
-        };
     }
 }

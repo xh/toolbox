@@ -104,7 +104,7 @@ export class RecallsPanelModel {
         this.addReaction({
             track: () => this.searchQuery,
             run: () => this.loadAsync(),
-            delay: ONE_SECOND
+            debounce: ONE_SECOND
         });
 
         this.addReaction({

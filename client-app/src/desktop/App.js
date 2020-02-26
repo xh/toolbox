@@ -9,6 +9,7 @@ import {ContextMenuItem as CM} from '@xh/hoist/desktop/cmp/contextmenu';
 
 import {AppModel} from './AppModel';
 import xhLogo from '../core/img/xh-toolbox-logo.png';
+import '../core/Toolbox.scss';
 import './App.scss';
 
 export const App = hoistCmp({

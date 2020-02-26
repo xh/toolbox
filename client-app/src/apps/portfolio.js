@@ -6,7 +6,7 @@ import {AppModel} from '../examples/portfolio/AppModel';
 
 XH.renderApp({
     clientAppCode: 'portfolio',
-    clientAppName: 'Portfolio',
+    clientAppName: 'XH Portfolio',
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,
