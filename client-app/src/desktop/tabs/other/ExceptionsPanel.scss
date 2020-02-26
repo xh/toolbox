@@ -1,0 +1,16 @@
+.tb-exceptions {
+  > .xh-panel {
+    border: var(--xh-border-solid);
+    margin: var(--xh-pad-double-px);
+    width: 400px;
+    height: 325px;
+
+    p {
+      margin: var(--xh-pad-px);
+    }
+
+    button {
+      padding: var(--xh-pad-px);
+    }
+  }
+}
