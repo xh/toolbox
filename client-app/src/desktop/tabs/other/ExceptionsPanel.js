@@ -28,13 +28,6 @@ export const exceptionsPanel = hoistCmp.factory(
                         // XH.handleException('You threw an error!', {title: 'Invalid request', message: 'Continue to use app without refreshing', logOnServer: false})
                     }),
                     button({
-                        text: 'User Error - Does Not Require Reload',
-                        className: 'xh-button',
-                        minimal: false,
-                        icon: Icon.skull({className: 'xh-red'}),
-                        onClick: () => XH.handleException('Bad request', {title: 'Bad Request', message: 'Validation Exception Message', logOnServer: false, requireReload: false})
-                    }),
-                    button({
                         text: 'Server Unavailable - Requires Reload',
                         className: 'xh-button',
                         minimal: false,
@@ -45,7 +38,22 @@ export const exceptionsPanel = hoistCmp.factory(
                             logOnServer: false,
                             requireReload: true
                         })
-                    })]
+                    }),
+                    button({
+                        text: 'Exception - Does Not Require Reload',
+                        className: 'xh-button',
+                        minimal: false,
+                        icon: Icon.skull({className: 'xh-red'}),
+                        onClick: () => XH.handleException('Bad request', {title: 'Bad Request', message: 'Validation Exception Message', logOnServer: false, requireReload: false})
+                    }),
+                    button({
+                        text: 'User Error - isRoutine',
+                        className: 'xh-button',
+                        minimal: false,
+                        icon: Icon.warningSquare({className: 'xh-red'}),
+                        onClick: () => XH.handleException('Bad request', {title: 'Message', message: 'Validation Exception Message', showAsError: false})
+                    })
+                ]
             })
         })
     })
