@@ -2,15 +2,18 @@
   > .xh-panel {
     border: var(--xh-border-solid);
     margin: var(--xh-pad-double-px);
-    width: 400px;
     height: 325px;
+    width: 500px;
 
     p {
       margin: var(--xh-pad-px);
     }
 
-    button {
+    .xh-button {
       padding: var(--xh-pad-px);
+      margin: var(--xh-pad-px) auto;
+      border: var(--xh-border-solid);
+      max-width: 300px;
     }
   }
 }

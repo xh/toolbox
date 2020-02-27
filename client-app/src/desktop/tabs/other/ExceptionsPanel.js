@@ -10,18 +10,41 @@ import {XH} from '@xh/hoist/core';
 export const exceptionsPanel = hoistCmp.factory(
     () => wrapper({
         description: [p('Exception')],
-        links: [],
+        links: [{url: '$HR/core/ExceptionHandler.js', notes: 'Exception Handler'},
+            {url: '$HR/exception/Exception.js', notes: 'Exceptions'}],
         item: box({
             className: 'tb-exceptions',
             item: panel({
                 title: 'Exception Handling',
                 icon: Icon.warning(),
-
-                item: button({
-                    text: 'Click me to throw an error',
-                    icon: Icon.error(),
-                    onClick: () => XH.handleException('You threw an error!', {logOnServer: false})
-                })
+                items: [
+                    p('Exception Handling is an important feature of any app. Hoist makes error and exception handling informative yet simple for clients and logs all exception details to the server.'),
+                    button({
+                        text: 'Authorization Error - Requires Re-Login',
+                        className: 'xh-button',
+                        minimal: false,
+                        icon: Icon.error({className: 'xh-red'}),
+                        onClick: () => window.open('/admin')
+                        // XH.handleException('You threw an error!', {title: 'Invalid request', message: 'Continue to use app without refreshing', logOnServer: false})
+                    }),
+                    button({
+                        text: 'Error requires refresh',
+                        className: 'xh-button',
+                        minimal: false,
+                        icon: Icon.skull({className: 'xh-red'}),
+                        onClick: () => XH.handleException('Bad request', {title: 'Fatal Error', message: 'Refresh app to continue', logOnServer: false, requireReload: true})
+                    }),
+                    button({
+                        text: 'Server unavailable message',
+                        className: 'xh-button',
+                        minimal: false,
+                        icon: Icon.warningCircle({className: 'xh-red'}),
+                        onClick: () => XH.handleException('Server Unavailable', {
+                            name: 'Server Unavailable',
+                            message: `Unable to contact the server at ${window.location.origin}`,
+                            logOnServer: false
+                        })
+                    })]
             })
         })
     })
