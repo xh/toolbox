@@ -20,7 +20,7 @@ export const exceptionsPanel = hoistCmp.factory(
                 items: [
                     p('Exception Handling is an important feature of any app. Hoist makes error and exception handling informative yet simple for clients and logs all exception details to the server.'),
                     button({
-                        text: 'Authorization Error - Requires Re-Login',
+                        text: 'Authorization Error - Requires Re-Login \n (Opens in new window)',
                         className: 'xh-button',
                         minimal: false,
                         icon: Icon.error({className: 'xh-red'}),
@@ -28,21 +28,22 @@ export const exceptionsPanel = hoistCmp.factory(
                         // XH.handleException('You threw an error!', {title: 'Invalid request', message: 'Continue to use app without refreshing', logOnServer: false})
                     }),
                     button({
-                        text: 'Error requires refresh',
+                        text: 'User Error - Does Not Require Reload',
                         className: 'xh-button',
                         minimal: false,
                         icon: Icon.skull({className: 'xh-red'}),
-                        onClick: () => XH.handleException('Bad request', {title: 'Fatal Error', message: 'Refresh app to continue', logOnServer: false, requireReload: true})
+                        onClick: () => XH.handleException('Bad request', {title: 'Bad Request', message: 'Validation Exception Message', logOnServer: false, requireReload: false})
                     }),
                     button({
-                        text: 'Server unavailable message',
+                        text: 'Server Unavailable - Requires Reload',
                         className: 'xh-button',
                         minimal: false,
                         icon: Icon.warningCircle({className: 'xh-red'}),
                         onClick: () => XH.handleException('Server Unavailable', {
                             name: 'Server Unavailable',
                             message: `Unable to contact the server at ${window.location.origin}`,
-                            logOnServer: false
+                            logOnServer: false,
+                            requireReload: true
                         })
                     })]
             })
