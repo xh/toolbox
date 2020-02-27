@@ -11,6 +11,7 @@ import {Icon} from '@xh/hoist/icon';
 
 import {WipTab} from './wip/WipTab';
 import {TestsTab} from './tests/TestsTab';
+import {roadmapTab} from './roadmap/RoadmapTab';
 import {PortfolioService} from '../core/svc/PortfolioService';
 
 export class AppModel extends BaseAppModel {
@@ -25,6 +26,14 @@ export class AppModel extends BaseAppModel {
     getTabRoutes() {
         return [
             ...super.getTabRoutes(),
+            {
+                name: 'roadmap',
+                path: '/roadmap',
+                children: [
+                    {name: 'projects', path: '/projects'},
+                    {name: 'phases', path: '/phases'}
+                ]
+            },
             {
                 name: 'tests',
                 path: '/tests',
@@ -50,6 +59,7 @@ export class AppModel extends BaseAppModel {
     createTabs() {
         return [
             ...super.createTabs(),
+            {id: 'roadmap', title: 'Roadmap', icon: Icon.mapSigns(), content: roadmapTab},
             {id: 'tests', icon: Icon.stopwatch(), content: TestsTab},
             {id: 'wip', title: 'WIP', icon: Icon.experiment(), content: WipTab}
         ];

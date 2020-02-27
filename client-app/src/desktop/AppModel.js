@@ -18,6 +18,7 @@ import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
 
+
 @HoistAppModel
 export class AppModel {
 

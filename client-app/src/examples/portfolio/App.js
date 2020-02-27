@@ -1,13 +1,12 @@
+import {webSocketIndicator} from '@xh/hoist/cmp/websocket';
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {Icon} from '@xh/hoist/icon';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
 import {ContextMenuItem as CM} from '@xh/hoist/desktop/cmp/contextmenu';
-import {webSocketIndicator} from '@xh/hoist/cmp/websocket';
-
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
 import {AppModel} from './AppModel';
 import {portfolioPanel} from './PortfolioPanel';
-import './App.scss';
+import '../../core/Toolbox.scss';
 
 export const App = hoistCmp.factory({
     displayName: 'App',
@@ -17,7 +16,6 @@ export const App = hoistCmp.factory({
         return panel({
             contextMenu: [CM.reloadApp(), CM.about(), CM.logout()],
             tbar: appBar({
-                title: 'Portfolio',
                 appMenuButtonProps: {
                     icon: Icon.portfolio(),
                     minimal: false
@@ -26,8 +24,7 @@ export const App = hoistCmp.factory({
                 rightItems: [
                     webSocketIndicator({iconOnly: true, marginRight: 4}),
                     appBarSeparator()
-                ],
-                hideRefreshButton: false
+                ]
             }),
             item: portfolioPanel()
         });

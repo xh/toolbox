@@ -26,18 +26,19 @@
     }
   },
   "dependencies": {
+    "@fortawesome/free-brands-svg-icons": "^5.12.1",
     "@xh/hoist": "^30.0.0-SNAPSHOT",
     "react": "~16.8.6",
     "react-dom": "~16.8.6",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "4.4.0",
+    "@xh/hoist-dev-utils": "~4.4.1",
     "cross-env": "~7.0.0",
     "husky": "~4.2.1",
-    "lint-staged": "~10.0.3",
-    "stylelint": "~13.0.0",
-    "stylelint-config-standard": "~19.0.0",
+    "lint-staged": "~10.0.8",
+    "stylelint": "~13.2.0",
+    "stylelint-config-standard": "~20.0.0",
     "stylelint-scss": "~3.14.0"
   }
 }

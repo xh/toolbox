@@ -41,6 +41,12 @@ export const homePage = hoistCmp.factory({
                     route: 'containers'
                 }),
                 summaryCard({
+                    title: 'Panels',
+                    icon: Icon.window(),
+                    summary: 'Core building block component with support for header and toolbars.',
+                    route: 'panels'
+                }),
+                summaryCard({
                     title: 'Popups',
                     icon: Icon.comment(),
                     summary: 'Dialogs and Toasts.',

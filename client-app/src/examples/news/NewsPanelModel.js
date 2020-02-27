@@ -27,7 +27,7 @@ export class NewsPanelModel {
         },
         elementRenderer: (v, {record}) => newsPanelItem({record}),
         itemHeight: 120,
-        rowClassFn: () => 'news-item',
+        rowBorders: true,
         stripeRows: true
     });
 
