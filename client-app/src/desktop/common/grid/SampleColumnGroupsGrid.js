@@ -120,7 +120,7 @@ class Model {
                     items: [
                         {
                             text: 'View Details',
-                            icon: Icon.search({asSvg: true}),
+                            icon: Icon.search(),
                             recordsRequired: 1,
                             actionFn: ({record}) => this.showRecToast(record)
                         },
