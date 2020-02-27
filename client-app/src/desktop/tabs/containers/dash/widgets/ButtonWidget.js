@@ -64,13 +64,13 @@ class LocalModel {
     getIconForValue(value) {
         switch (value) {
             case 'Button 1':
-                return Icon.chartLine({asSvg: true});
+                return Icon.chartLine();
             case 'Button 2':
-                return Icon.gear({asSvg: true});
+                return Icon.gear();
             case 'Button 3':
-                return Icon.skull({asSvg: true});
+                return Icon.skull();
             default:
-                return Icon.question({asSvg: true});
+                return Icon.question();
         }
     }
 }
