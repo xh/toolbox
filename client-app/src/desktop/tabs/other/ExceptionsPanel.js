@@ -21,43 +21,41 @@ export const exceptionsPanel = hoistCmp.factory(
                         title: 'Exception Handling',
                         icon: Icon.warning(),
                         items: [
-                            p('Reference errors like the one below are typically treated as routine and will not normally trigger an Exception Dialog. '),
-                            p('Here, we are explicitly using the XH.handleException method to catch the error to display to the user.'),
+                            p('Hoist\'s Exception Handler can render an Exception Dialog that presents the error in a readable format and offer more details, like the stack trace.'),
+                            p('Users also have the option to send a message to support@xh.io to report additional information about the error.'),
                             codeInput({
                                 width: 'fill',
                                 height: 150,
-                                mode: 'javascript',
                                 editorProps: {
                                     readOnly: true
                                 },
-                                value: `function fooBar { \n    const foo = {name: 'foo'}; \n    return foo.name + bar;\n}\n// bar has not been defined and\n// therefore will return a ReferenceError.`
+                                mode: 'javascript',
+                                value: fooBar.toString()
                             }),
                             button({
                                 text: 'Run fooBar()',
                                 className: 'xh-button',
                                 minimal: false,
-                                icon: Icon.warningSquare({className: 'xh-red'}),
+                                icon: Icon.warningCircle({className: 'xh-red'}),
                                 onClick: () => {
-                                    const foo = {name: 'bar'};
                                     try {
-                                        return foo.name + bar;
+                                        fooBar();
                                     } catch (e) {
                                         XH.handleException(e, {logOnServer: false});
                                     }
                                 }
-                                // onClick: () => XH.handleException('Bad request', {title: 'Message', message: 'Validation Exception Message', showAsError: false})
                             })]
                     }),
                     panel({
-                        title: 'Reload Required Exceptions',
+                        title: 'Server Exceptions',
                         icon: Icon.warning(),
                         items: [
-                            p('Exception Handling is an important feature of any app. Hoist makes error and exception handling informative yet simple for clients and logs all exception details to the server.'),
+                            p('When a fetch request does not receive a server response, Hoist will throw an exception and require an app reload. By default, these errors are tracked in our admin logger.'),
                             button({
-                                text: 'Server Unavailable - Requires Reload',
+                                text: 'Kill the server',
                                 className: 'xh-button',
                                 minimal: false,
-                                icon: Icon.warningCircle({className: 'xh-red'}),
+                                icon: Icon.skull({className: 'xh-red'}),
                                 onClick: () => XH.handleException('Server Unavailable', {
                                     name: 'Server Unavailable',
                                     message: `Unable to contact the server at ${window.location.origin}`,
@@ -65,12 +63,13 @@ export const exceptionsPanel = hoistCmp.factory(
                                     requireReload: true
                                 })
                             }),
+                            p('When a fetch call goes bad, Hoist can mark them as routine and smart decode HTTP responses. In the call to route \'/badRequest\', the 404 error code is parsed by the exception handler and does not provide a detailed stack trace.'),
                             button({
-                                text: 'Exception - Does Not Require Reload',
+                                text: 'Visit xh.io/badRequest',
                                 className: 'xh-button',
                                 minimal: false,
-                                icon: Icon.skull({className: 'xh-red'}),
-                                onClick: () => XH.handleException('Bad request', {title: 'Bad Request', message: 'Validation Exception Message', logOnServer: false, requireReload: false})
+                                icon: Icon.warningCircle({className: 'xh-red'}),
+                                onClick: () => XH.fetch({url: 'badRequest'}).catchDefault()
                             })
                         ]
                     })
@@ -79,3 +78,9 @@ export const exceptionsPanel = hoistCmp.factory(
         ]
     })
 );
+
+
+function fooBar () {
+    const foo = {name: 'foo'};
+    return foo.name + bar;
+} // bar has not been defined and\n// therefore will return a ReferenceError.`
