@@ -20,14 +20,6 @@ export const exceptionsPanel = hoistCmp.factory(
                 items: [
                     p('Exception Handling is an important feature of any app. Hoist makes error and exception handling informative yet simple for clients and logs all exception details to the server.'),
                     button({
-                        text: 'Authorization Error - Requires Re-Login \n (Opens in new window)',
-                        className: 'xh-button',
-                        minimal: false,
-                        icon: Icon.error({className: 'xh-red'}),
-                        onClick: () => window.open('/admin')
-                        // XH.handleException('You threw an error!', {title: 'Invalid request', message: 'Continue to use app without refreshing', logOnServer: false})
-                    }),
-                    button({
                         text: 'Server Unavailable - Requires Reload',
                         className: 'xh-button',
                         minimal: false,
