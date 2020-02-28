@@ -6,15 +6,14 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
 import './ExceptionsPanel.scss';
 import {XH} from '@xh/hoist/core';
-import {Field} from "@xh/hoist/data";
-import {codeInput} from "@xh/hoist/desktop/cmp/input";
+import {codeInput} from '@xh/hoist/desktop/cmp/input';
 
 export const exceptionsPanel = hoistCmp.factory(
     () => wrapper({
         description: [p('Exception')],
         links: [{url: '$HR/core/ExceptionHandler.js', notes: 'Exception Handler'},
             {url: '$HR/exception/Exception.js', notes: 'Exceptions'}],
-        items : [
+        items: [
             box({
                 className: 'tb-exceptions',
                 items: [
@@ -22,12 +21,16 @@ export const exceptionsPanel = hoistCmp.factory(
                         title: 'Exception Handling',
                         icon: Icon.warning(),
                         items: [
-                            p('ReferenceErrors like the one below are typically treated as routine and will not normally trigger an Exception Dialog. However, we are explicitly using the XH.handleException method to show the error to the client.'
-                            ),
+                            p('Reference errors like the one below are typically treated as routine and will not normally trigger an Exception Dialog. '),
+                            p('Here, we are explicitly using the XH.handleException method to catch the error to display to the user.'),
                             codeInput({
                                 width: 'fill',
                                 height: 150,
-                                value: `function fooBar { \n    const foo = {name: 'foo'}; \n    return foo.name + bar; // bar is not initialized.\n}`
+                                mode: 'javascript',
+                                editorProps: {
+                                    readOnly: true
+                                },
+                                value: `function fooBar { \n    const foo = {name: 'foo'}; \n    return foo.name + bar;\n}\n// bar has not been defined and\n// therefore will return a ReferenceError.`
                             }),
                             button({
                                 text: 'Run fooBar()',
@@ -47,6 +50,7 @@ export const exceptionsPanel = hoistCmp.factory(
                     }),
                     panel({
                         title: 'Reload Required Exceptions',
+                        icon: Icon.warning(),
                         items: [
                             p('Exception Handling is an important feature of any app. Hoist makes error and exception handling informative yet simple for clients and logs all exception details to the server.'),
                             button({

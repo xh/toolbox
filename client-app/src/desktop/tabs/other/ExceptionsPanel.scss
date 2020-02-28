@@ -3,10 +3,14 @@
     border: var(--xh-border-solid);
     margin: var(--xh-pad-double-px);
     height: 400px;
-    width: 500px;
+    width: 400px;
 
     p {
       margin: var(--xh-pad-px);
+    }
+
+    .xh-code-input {
+      margin: var(--xh-pad-px) 0;
     }
 
     .xh-button {
