@@ -32,10 +32,6 @@ export const dashContainerPanel = hoistCmp.factory({
 
                     This component also supports publishing observable state, managed mounting/unmounting of inactive
                     tabs, and lazy refreshing of its active view.
-                </p>,
-                <p>
-                    <b> Note: This component is currently in beta release</b>.  Its functionality and API
-                    is still subject to change. Applications should use with care.
                 </p>
             ],
             item: panel({
