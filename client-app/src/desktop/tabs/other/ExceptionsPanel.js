@@ -1,21 +1,26 @@
 import {wrapper} from '../../common';
-import {hoistCmp} from '@xh/hoist/core';
-import {box, filler, p} from '@xh/hoist/cmp/layout';
+import {hoistCmp, HoistModel} from '@xh/hoist/core';
+import {box, filler, hbox, p} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
 import './ExceptionsPanel.scss';
 import {XH} from '@xh/hoist/core';
-import {codeInput, jsonInput} from '@xh/hoist/desktop/cmp/input';
-import {roadmapViewItem} from "../home/roadmap/RoadmapViewItem";
-import {bindable} from "@xh/hoist/mobx";
+import {codeInput} from '@xh/hoist/desktop/cmp/input';
+import {bindable, action} from '@xh/hoist/mobx';
+import {creates} from '@xh/hoist/core/modelspec';
 
-export const exceptionsPanel = hoistCmp.factory(
-    () => wrapper({
-        description: [p('Hoist\'s Exception Handler can render an Exception Dialog that presents the error in a readable format and offer more details, like the http status code, error message, and stack trace.'),
-            p('Users also have the option to send a message to support@xh.io to report additional information about the error.'),],
-        links: [{url: '$HR/core/ExceptionHandler.js', notes: 'Exception Handler'},
-            {url: '$HR/exception/Exception.js', notes: 'Exceptions'}],
+export const exceptionsPanel = hoistCmp.factory({
+    model: creates(() => new Model()),
+    render: ({model}) => wrapper({
+        description: [
+            p('Hoist\'s Exception Handler can render an Exception Dialog that presents the error in a readable format and offer more details, like the http status code, error message, and stack trace.'),
+            p('Users also have the option to send a message to support@xh.io to report additional information about the error.')
+        ],
+        links: [
+            {url: '$HR/core/ExceptionHandler.js', notes: 'Exception Handler'},
+            {url: '$HR/exception/Exception.js', notes: 'Exceptions'}
+        ],
         items: [
             box({
                 className: 'tb-exceptions',
@@ -27,7 +32,7 @@ export const exceptionsPanel = hoistCmp.factory(
                             p('In the `fooBar` function below, the Exception Handler catches the error and returns the error message in a readable format. Since `bar` has not been defined, a Reference Error will be thrown.'),
                             codeInput({
                                 width: 'fill',
-                                height: 100,
+                                height: 120,
                                 editorProps: {
                                     readOnly: true
                                 },
@@ -50,36 +55,42 @@ export const exceptionsPanel = hoistCmp.factory(
                             })]
                     }),
                     panel({
-                        title: 'Server Down',
+                        title: 'Server Unresponsive',
                         icon: Icon.warning(),
                         items: [
-                            p('When a fetch request does not receive a server response, Hoist will throw an exception and require an app reload. By default, these errors are tracked in our admin logger.'),
+                            p('When the server is unresponsive, Hoist will throw an exception and require an app reload. By default, these errors are tracked in our admin logger and are reported in our monitoring activity.'),
                             codeInput({
-                                value: null,
+                                model: model,
+                                bind: 'pingResponse',
+                                height: 120,
                                 editorProps: {
                                     readOnly: true
                                 },
-                                mode: 'javascript'
+                                mode: {name: 'javascript', json: true}
                             }),
-                            button({
-                                text: 'Ping Server',
-                                className: 'xh-button',
-                                minimal: false,
-                                icon: Icon.checkCircle({className: 'xh-green'}),
-                                onClick: async () => console.log(await XH.fetchService.getJson({url: pingURL}))
-                            }),
-                            button({
-                                text: 'Kill Server',
-                                className: 'xh-button',
-                                minimal: false,
-                                icon: Icon.skull({className: 'xh-red'}),
-                                onClick: () => XH.handleException('Server Unavailable', {
-                                    name: 'Server Unavailable',
-                                    message: `Unable to contact the server at ${window.location.origin}`,
-                                    logOnServer: false,
-                                    requireReload: true
-                                })
-                            })]
+                            filler(),
+                            hbox({
+                                items: [
+                                    button({
+                                        text: 'Check Server',
+                                        minimal: false,
+                                        icon: Icon.checkCircle({className: 'xh-green'}),
+                                        onClick: () => model.onPingClicked()
+                                    }),
+                                    button({
+                                        text: 'Server Down',
+                                        minimal: false,
+                                        icon: Icon.skull({className: 'xh-red'}),
+                                        onClick: () => XH.handleException('Server Unavailable', {
+                                            name: 'Server Unavailable',
+                                            message: `Unable to contact the server at ${window.location.origin}`,
+                                            logOnServer: false,
+                                            requireReload: true
+                                        })
+                                    })
+                                ]
+                            })
+                        ]
                     }),
                     panel({
                         title: 'Promise Exceptions',
@@ -101,7 +112,7 @@ export const exceptionsPanel = hoistCmp.factory(
             })
         ]
     })
-);
+});
 
 
 function fooBar() {
@@ -109,7 +120,22 @@ function fooBar() {
     return foo + bar;
 }
 
+@HoistModel
+class Model {
+    @bindable
+    pingResponse = '/*\nPing or kill the Toolbox server\nby clicking one of the buttons \nbelow.\n*/';
 
-const pingURL = XH.isDevelopmentMode ?
-    `${XH.baseUrl}ping` :
-    `${window.location.origin}${XH.baseUrl}ping`;
+    @action
+    setPing(ping) {
+        this.pingResponse = ping;
+    }
+
+    async onPingClicked() {
+        const pingURL = XH.isDevelopmentMode ?
+            `${XH.baseUrl}ping` :
+            `${window.location.origin}${XH.baseUrl}ping`;
+        await XH.fetchJson({url: pingURL}).then(
+            (res) => this.setPing(JSON.stringify(res, null, '  '))
+        );
+    }
+}
