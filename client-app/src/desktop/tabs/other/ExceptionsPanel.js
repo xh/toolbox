@@ -33,6 +33,7 @@ export const exceptionsPanel = hoistCmp.factory({
                             codeInput({
                                 width: 'fill',
                                 height: 120,
+                                showFullscreenButton: false,
                                 editorProps: {
                                     readOnly: true
                                 },
@@ -62,6 +63,7 @@ export const exceptionsPanel = hoistCmp.factory({
                             codeInput({
                                 bind: 'pingResponse',
                                 height: 120,
+                                showFullscreenButton: false,
                                 editorProps: {
                                     readOnly: true
                                 },
