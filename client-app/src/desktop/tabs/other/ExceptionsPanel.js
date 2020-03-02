@@ -14,12 +14,13 @@ export const exceptionsPanel = hoistCmp.factory({
     model: creates(() => new Model()),
     render: ({model}) => wrapper({
         description: [
-            p('Hoist\'s Exception Handler can render an Exception Dialog that presents the error in a readable format and offer more details, like the HTTP status code, error message, and stack trace.'),
+            p('Hoist\'s Exception Handler standardizes and facilitates catching exceptions and errors on server and client sides. When an exception is caught, the Exception Dialog component is able to present the error in a stringified, human-readable format and offer more details, like the HTTP status code, error message, and stack trace. Some errors may require an app refresh, while others do not. Errors can also be marked as routine and need not reveal further details to the user beyond the stringified error message.'),
             p('Users also have the option to send a message to support@xh.io to report additional information about the error.')
         ],
         links: [
             {url: '$HR/core/ExceptionHandler.js', notes: 'Exception Handler'},
-            {url: '$HR/exception/Exception.js', notes: 'Exceptions'}
+            {url: '$HR/exception/Exception.js', notes: 'Standardized Hoist Exception/Error Class'},
+            {url: '$HR/promise/Promise.js', notes: 'See Error Handling methods like catchDefault() or catchDefaultWhen()'}
         ],
         items: [
             box({
@@ -97,8 +98,8 @@ export const exceptionsPanel = hoistCmp.factory({
                         title: 'Promise Exceptions',
                         icon: Icon.warning(),
                         items: [
-                            p('Instead of wrapping fetch requests in try/catch blocks, Hoist provides a .catchDefault() method that will handle exceptions and smart decode HTTP responses.'),
-                            p('In the call to route \'/badRequest\', the 404 error code is parsed by the exception handler and does not provide a detailed stack trace because it is marked as a routine client-side error.'),
+                            p('Hoist provides a neat .catchDefault() method that will handle exceptions and smart decode HTTP responses. (No need to wrap in try/catch logic!)'),
+                            p('In this example, a call to the route \'/badRequest\' will throw a client-side error. The 404 error code is parsed by the exception handler and marks the error as routine, leaving out unnecessarily worrying or irrelevant details for the user.'),
                             filler(),
                             button({
                                 text: 'Visit xh.io/badRequest',
