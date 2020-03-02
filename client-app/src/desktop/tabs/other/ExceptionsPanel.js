@@ -7,6 +7,8 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import './ExceptionsPanel.scss';
 import {XH} from '@xh/hoist/core';
 import {codeInput, jsonInput} from '@xh/hoist/desktop/cmp/input';
+import {roadmapViewItem} from "../home/roadmap/RoadmapViewItem";
+import {bindable} from "@xh/hoist/mobx";
 
 export const exceptionsPanel = hoistCmp.factory(
     () => wrapper({
@@ -53,12 +55,21 @@ export const exceptionsPanel = hoistCmp.factory(
                         items: [
                             p('When a fetch request does not receive a server response, Hoist will throw an exception and require an app reload. By default, these errors are tracked in our admin logger.'),
                             codeInput({
-                                // value: XH.fetchJson({url: '/api/ping'})
-                                value: XH.fetchService.getJson({url: 'localhost:8080/ping'})
+                                value: null,
+                                editorProps: {
+                                    readOnly: true
+                                },
+                                mode: 'javascript'
                             }),
-                            filler(),
                             button({
-                                text: 'Kill the server',
+                                text: 'Ping Server',
+                                className: 'xh-button',
+                                minimal: false,
+                                icon: Icon.checkCircle({className: 'xh-green'}),
+                                onClick: async () => console.log(await XH.fetchService.getJson({url: pingURL}))
+                            }),
+                            button({
+                                text: 'Kill Server',
                                 className: 'xh-button',
                                 minimal: false,
                                 icon: Icon.skull({className: 'xh-red'}),
@@ -97,3 +108,8 @@ function fooBar() {
     const foo = 'foo';
     return foo + bar;
 }
+
+
+const pingURL = XH.isDevelopmentMode ?
+    `${XH.baseUrl}ping` :
+    `${window.location.origin}${XH.baseUrl}ping`;
