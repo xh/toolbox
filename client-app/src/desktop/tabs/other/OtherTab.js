@@ -27,7 +27,7 @@ export const otherTab = hoistCmp.factory(
                 {id: 'clock', content: clockPanel},
                 {id: 'icons', content: iconsPanel},
                 {id: 'appNotifications', content: appNotificationsPanel},
-                {id: 'exceptions', content: exceptionsPanel},
+                {id: 'exceptions', title: 'Exception Handler', content: exceptionsPanel},
                 {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel}
             ]
         },
