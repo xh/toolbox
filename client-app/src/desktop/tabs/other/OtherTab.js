@@ -10,6 +10,7 @@ import {leftRightChooserPanel} from './LeftRightChooserPanel';
 import {popupsPanel} from './PopupsPanel';
 import {relativeTimestampPanel} from './RelativeTimestampPanel';
 import {appNotificationsPanel} from './AppNotificationsPanel';
+import {preferenceExamplePanel} from './PreferenceExamplePanel';
 
 export const otherTab = hoistCmp.factory(
     () => tabContainer({
@@ -18,6 +19,7 @@ export const otherTab = hoistCmp.factory(
             switcherPosition: 'left',
             tabs: [
                 {id: 'popups', content: popupsPanel},
+                {id: 'preferences', content: preferenceExamplePanel},
                 {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
                 {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
                 {id: 'numberFormats', content: numberFormatsPanel},
