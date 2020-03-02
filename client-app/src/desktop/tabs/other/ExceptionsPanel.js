@@ -14,7 +14,7 @@ export const exceptionsPanel = hoistCmp.factory({
     model: creates(() => new Model()),
     render: ({model}) => wrapper({
         description: [
-            p('Hoist\'s Exception Handler can render an Exception Dialog that presents the error in a readable format and offer more details, like the http status code, error message, and stack trace.'),
+            p('Hoist\'s Exception Handler can render an Exception Dialog that presents the error in a readable format and offer more details, like the HTTP status code, error message, and stack trace.'),
             p('Users also have the option to send a message to support@xh.io to report additional information about the error.')
         ],
         links: [
@@ -60,7 +60,6 @@ export const exceptionsPanel = hoistCmp.factory({
                         items: [
                             p('When the server is unresponsive, Hoist will throw an exception and require an app reload. By default, these errors are tracked in our admin logger and are reported in our monitoring activity.'),
                             codeInput({
-                                model: model,
                                 bind: 'pingResponse',
                                 height: 120,
                                 editorProps: {
