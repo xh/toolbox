@@ -101,10 +101,10 @@ const exceptionOptions = hoistCmp.factory(
 const promisePanel = hoistCmp.factory(
     ({model}) => {
         return panel({
-            title: 'Promise Exception Catching',
+            title: 'Promise Error Catching',
             icon: Icon.warning(),
             items: [
-                p('Hoist provides neat .catchDefault() and .catchDefaultWhen() methods that will handle exceptions and smart decode HTTP responses. (No need to wrap in try/catch logic!)'),
+                p('Hoist provides neat .catchDefault() and .catchDefaultWhen() methods that will handle errors thrown when promises are rejected. (No need to wrap in try/catch logic!)'),
                 codeInput({
                     height: 150,
                     width: 'fill',
