@@ -1,43 +1,74 @@
 import {wrapper} from '../../common';
 import {hoistCmp, HoistModel} from '@xh/hoist/core';
-import {box, filler, hbox, p} from '@xh/hoist/cmp/layout';
+import {box, code, p, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
 import './PreferenceExamplePanel.scss';
-import {XH} from '@xh/hoist/core';
-import {codeInput} from '@xh/hoist/desktop/cmp/input';
-import {bindable, action} from '@xh/hoist/mobx';
+// import {XH} from '@xh/hoist/core';
+import {codeInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {bindable} from '@xh/hoist/mobx';
 import {creates} from '@xh/hoist/core/modelspec';
 
 export const preferenceExamplePanel = hoistCmp.factory({
     model: creates(() => new Model()),
     render: ({model}) => wrapper({
         description: [
-            p('Preferences can be set on the admin panel.')
+            p({
+                items: ['Here in Toolbox, users are able to set local user app preferences in App Menu Options via ',
+                    code('PrefService'),
+                    '. Preferences are created by admin and can be extended to the user to set in Local Storage, where they persist until cleared.']
+            }),
+            p('In the toy app below, you can experiment with setting preferences and refresh the browser to check that they stick. The Application tab in Chrome Dev Tools will also expose all preferences in Local Storage according to readable key-value pairs.')
         ],
         links: [
-            {url: '$HR/admin/tabs/preferences/PreferencePanel.js', notes: 'Preferences Panel'},
+            {url: '$HR/admin/tabs/preferences/PreferencePanel.js', notes: 'Preferences Panel'}
         ],
         item: box({
             className: 'tb-preferences',
-            item: panel({
-                title: 'User Preferences',
-                icon: Icon.options(),
-                items: [
-                    p('In the `fooBar` function below, the Exception Handler catches the error and returns the error message in a readable format. Since `bar` has not been defined, a Reference Error will be thrown.'),
-                    codeInput({
-                        width: 'fill',
-                        height: 120,
-                        showFullscreenButton: false,
-                        editorProps: {
-                            readOnly: true
-                        },
-                        mode: 'javascript',
-                    }),
-                    filler()
-                ]
-            })
+            items: [
+                panel({
+                    title: 'User Preferences',
+                    icon: Icon.options(),
+                    items: [
+                        vframe(
+                            panel({
+                                mask: model.mask
+                            })
+                        )],
+                    bbar: [
+                        panel({
+                            flex: 1,
+                            height: 250,
+                            title: 'PrefService at Work',
+                            icon: Icon.gears(),
+                            compactHeader: true,
+                            items: [
+                                select(),
+                                select(),
+                                switchInput({
+                                    bind: 'mask',
+                                    label: 'Mask Component'
+                                }),
+                                button({
+                                    text: 'Show something',
+                                    minimal: false
+                                })
+                            ]
+                        }),
+                        panel({
+                            compactHeader: true,
+                            height: 250,
+                            title: 'Output',
+                            icon: Icon.code(),
+                            model: {side: 'right', defaultSize: 300},
+                            item: codeInput({
+                                height: 240
+                            })
+                        })
+                    ]
+                })
+            ]
         })
     })
 });
@@ -45,20 +76,6 @@ export const preferenceExamplePanel = hoistCmp.factory({
 
 @HoistModel
 class Model {
-    @bindable
-    pingResponse = '/*\nPing or kill the Toolbox server\nby clicking one of the buttons \nbelow.\n*/';
+    @bindable mask = false
 
-    @action
-    setPing(ping) {
-        this.pingResponse = ping;
-    }
-
-    async onPingClicked() {
-        const pingURL = XH.isDevelopmentMode ?
-            `${XH.baseUrl}ping` :
-            `${window.location.origin}${XH.baseUrl}ping`;
-        await XH.fetchJson({url: pingURL}).then(
-            (res) => this.setPing(JSON.stringify(res, null, '  '))
-        );
-    }
 }

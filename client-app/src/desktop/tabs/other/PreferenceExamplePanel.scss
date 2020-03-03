@@ -1,16 +1,16 @@
-.tb-preferences{
+.tb-preferences {
   > .xh-panel {
     border: var(--xh-border-solid);
     margin: var(--xh-pad-double-px);
-    height: 400px;
-    width: 700px;
+    height: 600px;
+    width: 800px;
 
     p {
       margin: var(--xh-pad-px);
     }
 
     .xh-code-input {
-      margin: var(--xh-pad-px) 0;
+      margin: 0;
     }
 
     .xh-button {
