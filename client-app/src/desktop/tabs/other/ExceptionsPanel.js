@@ -27,124 +27,44 @@ export const exceptionsPanel = hoistCmp.factory({
             box({
                 className: 'tb-exceptions',
                 items: [
-                    panel({
-                        title: 'Exception Handling',
-                        icon: Icon.warning(),
-                        items: [
-                            p('In the `fooBar` function below, the Exception Handler catches the error and returns a readable error message in the Exception Dialog. Toggle the options below to customize exception handling on this Reference Error below.'),
-                            codeInput({
-                                width: 'fill',
-                                height: 135,
-                                showFullscreenButton: false,
-                                editorProps: {
-                                    readOnly: true,
-                                    indentUnit: 4
-                                },
-                                mode: 'javascript',
-                                value: fooBarString
-                            }),
-                            exceptionOptions(),
-                            button({
-                                text: 'Run fooBar()',
-                                className: 'xh-button',
-                                minimal: false,
-                                icon: Icon.warningCircle({className: 'xh-red'}),
-                                onClick: () => model.onFooBarClicked()
-                            })]
-                    }),
-                    panel({
-                        title: 'Promise Exception Catching',
-                        icon: Icon.warning(),
-                        items: [
-                            p('Hoist provides neat .catchDefault() and .catchDefaultWhen() methods that will handle exceptions and smart decode HTTP responses. (No need to wrap in try/catch logic!)'),
-                            codeInput({
-                                height: 150,
-                                width: 'fill',
-                                showFullscreenButton: false,
-                                editorProps: {
-                                    readOnly: true
-                                },
-                                mode: 'javascript',
-                                bind: 'catchMethod'
-                            }),
-                            filler(),
-                            vbox({
-                                items: [
-                                    button({
-                                        text: 'Fetch promise with catchDefault()',
-                                        minimal: false,
-                                        icon: Icon.warningCircle({className: 'xh-red'}),
-                                        onClick: () => model.onCatchDefaultClicked()
-                                    }),
-                                    button({
-                                        text: 'Fetch promise with catchDefaultWhen()',
-                                        minimal: false,
-                                        icon: Icon.warningCircle({className: 'xh-red'}),
-                                        onClick: () => model.onCatchDefaultWhenClicked()
-                                    })
-                                ]
-                            })
-                        ]
-                    })
+                    exceptionPanel(),
+                    promisePanel()
                 ]
             })
         ]
     })
 });
 
-/* eslint-disable */
-function fooBar() {
-    const foo = 'foo';
-    return foo + bar;
-}
-
-const fooBarString = `function fooBar() {
-    const foo = 'foo';
-    return foo + bar;
-}`
-/* eslint-enable */
-@HoistModel
-class Model {
-    @bindable catchMethod = `/*\n  Make a bad fetch request to \n  xh.io/badRequest with these methods!\n\n  The 404 error will appear in a dialog\n  by default, or not shown when specified\n  in the catchDefaultWhen() selector.\n*/`;
-    @bindable showAlert = true;
-    @bindable showAsError = false;
-    @bindable logOnServer = false;
-    @bindable requireReload = false;
-    @bindable disabled = false;
-
-    disableOptions() {
-        if (!this.showAlert) {
-            this.setShowAsError(false);
-            this.setRequireReload(false);
-            this.setDisabled(true);
-        } else {
-            this.setDisabled(false);
-        }
+const exceptionPanel = hoistCmp.factory(
+    ({model}) => {
+        return panel({
+            title: 'Exception Handling',
+            icon: Icon.warning(),
+            items: [
+                p('In the `fooBar` function below, the Exception Handler catches the error and returns a readable error message in the Exception Dialog. Toggle the options below to customize exception handling on this Reference Error below.'),
+                codeInput({
+                    width: 'fill',
+                    height: 135,
+                    showFullscreenButton: false,
+                    editorProps: {
+                        readOnly: true,
+                        indentUnit: 4
+                    },
+                    mode: 'javascript',
+                    value: model.fooBarString
+                }),
+                exceptionOptions(),
+                button({
+                    text: 'Run fooBar()',
+                    className: 'xh-button',
+                    minimal: false,
+                    icon: Icon.warningCircle({className: 'xh-red'}),
+                    onClick: () => model.onFooBarClicked()
+                })
+            ]
+        });
     }
-    onFooBarClicked() {
-        try {
-            this.setLogOnServer(this.logOnServer);
-            this.setShowAlert(this.showAlert);
-            this.setShowAsError(this.showAsError);
-
-            this.setRequireReload(this.requireReload);
-            fooBar();
-        } catch (e) {
-            XH.handleException(e, {showAlert: this.showAlert, showAsError: this.showAsError, logOnServer: this.logOnServer, requireReload: this.requireReload});
-        }
-    }
-    onCatchDefaultClicked() {
-        this.setCatchMethod(this.catchDefault);
-        XH.fetch({url: 'badRequest'}).catchDefault();
-    }
-    onCatchDefaultWhenClicked() {
-        this.setCatchMethod(this.catchDefaultWhen);
-        XH.fetch({url: 'badRequest'}).catchDefaultWhen(e => e.httpStatus !== 404);
-    }
-
-    catchDefault = `function badRequest() {\n    XH.fetch({url: 'badRequest'})\n    .catchDefault();\n}`;
-    catchDefaultWhen = `function badRequest() {\n    XH.fetch({url: 'badRequest'})\n    .catchDefaultWhen(e => {\n        e.httpStatus !== 404\n    })\n}`;
-}
+);
 
 const exceptionOptions = hoistCmp.factory(
     ({model}) => {
@@ -157,7 +77,7 @@ const exceptionOptions = hoistCmp.factory(
                 switchInput({
                     bind: 'showAlert',
                     label: 'Show Dialog',
-                    onChange: model.disableOptions()
+                    onChange: model.disableWhenShowAlertFalse()
                 }),
                 switchInput({
                     bind: 'showAsError',
@@ -177,3 +97,101 @@ const exceptionOptions = hoistCmp.factory(
         });
     }
 );
+
+const promisePanel = hoistCmp.factory(
+    ({model}) => {
+        return panel({
+            title: 'Promise Exception Catching',
+            icon: Icon.warning(),
+            items: [
+                p('Hoist provides neat .catchDefault() and .catchDefaultWhen() methods that will handle exceptions and smart decode HTTP responses. (No need to wrap in try/catch logic!)'),
+                codeInput({
+                    height: 150,
+                    width: 'fill',
+                    showFullscreenButton: false,
+                    editorProps: {
+                        readOnly: true
+                    },
+                    mode: 'javascript',
+                    bind: 'catchMethod'
+                }),
+                filler(),
+                vbox({
+                    items: [
+                        button({
+                            text: 'Fetch promise with catchDefault()',
+                            minimal: false,
+                            icon: Icon.warningCircle({className: 'xh-red'}),
+                            onClick: () => model.onCatchDefaultClicked()
+                        }),
+                        button({
+                            text: 'Fetch promise with catchDefaultWhen()',
+                            minimal: false,
+                            icon: Icon.warningCircle({className: 'xh-red'}),
+                            onClick: () => model.onCatchDefaultWhenClicked()
+                        })
+                    ]
+                })
+            ]
+        });
+    }
+);
+
+@HoistModel
+class Model {
+    @bindable catchMethod = `/*\n  Make a bad fetch request to \n  xh.io/badRequest with these methods!\n\n  The 404 error will appear in a dialog\n  by default, or not shown when specified\n  in the catchDefaultWhen() selector.\n*/`;
+    @bindable showAlert = true;
+    @bindable showAsError = false;
+    @bindable logOnServer = false;
+    @bindable requireReload = false;
+    @bindable disabled = false;
+
+    disableWhenShowAlertFalse() {
+        if (!this.showAlert) {
+            this.setShowAsError(false);
+            this.setRequireReload(false);
+            this.setDisabled(true);
+        } else {
+            this.setDisabled(false);
+        }
+    }
+
+    onFooBarClicked() {
+        try {
+            this.setLogOnServer(this.logOnServer);
+            this.setShowAlert(this.showAlert);
+            this.setShowAsError(this.showAsError);
+
+            this.setRequireReload(this.requireReload);
+            this.fooBar();
+        } catch (e) {
+            XH.handleException(e, {showAlert: this.showAlert, showAsError: this.showAsError, logOnServer: this.logOnServer, requireReload: this.requireReload});
+        }
+    }
+
+    onCatchDefaultClicked() {
+        this.setCatchMethod(this.catchDefault);
+        XH.fetch({url: 'badRequest'}).catchDefault();
+    }
+
+    onCatchDefaultWhenClicked() {
+        this.setCatchMethod(this.catchDefaultWhen);
+        XH.fetch({url: 'badRequest'}).catchDefaultWhen(e => e.httpStatus !== 404);
+    }
+
+    catchDefault = `function badRequest() {\n    XH.fetch({url: 'badRequest'})\n    .catchDefault();\n}`;
+
+    catchDefaultWhen = `function badRequest() {\n    XH.fetch({url: 'badRequest'})\n    .catchDefaultWhen(e => {\n        e.httpStatus !== 404\n    })\n}`;
+
+    fooBarString = `function fooBar() {
+    const foo = 'foo';
+    return foo + bar;
+}`
+
+    /* eslint-disable */
+    fooBar() {
+        const foo = 'foo';
+        return foo + bar;
+    }
+    /* eslint-enable */
+}
