@@ -1,13 +1,13 @@
 import {wrapper} from '../../common';
 import {hoistCmp, HoistModel} from '@xh/hoist/core';
-import {box, filler, hbox, p} from '@xh/hoist/cmp/layout';
+import {box, filler, p, vbox} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
 import './ExceptionsPanel.scss';
 import {XH} from '@xh/hoist/core';
 import {codeInput} from '@xh/hoist/desktop/cmp/input';
-import {bindable, action} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {creates} from '@xh/hoist/core/modelspec';
 
 export const exceptionsPanel = hoistCmp.factory({
@@ -47,66 +47,38 @@ export const exceptionsPanel = hoistCmp.factory({
                                 className: 'xh-button',
                                 minimal: false,
                                 icon: Icon.warningCircle({className: 'xh-red'}),
-                                onClick: () => {
-                                    try {
-                                        fooBar();
-                                    } catch (e) {
-                                        XH.handleException(e, {logOnServer: false});
-                                    }
-                                }
+                                onClick: () => model.onFooBarClicked()
                             })]
-                    }),
-                    panel({
-                        title: 'Server Unresponsive',
-                        icon: Icon.warning(),
-                        items: [
-                            p('When the server is unresponsive, Hoist will throw an exception and require an app reload. By default, these errors are tracked in our admin logger and are reported in our monitoring activity.'),
-                            codeInput({
-                                bind: 'pingResponse',
-                                height: 120,
-                                showFullscreenButton: false,
-                                editorProps: {
-                                    readOnly: true
-                                },
-                                mode: {name: 'javascript', json: true}
-                            }),
-                            filler(),
-                            hbox({
-                                items: [
-                                    button({
-                                        text: 'Check Server',
-                                        minimal: false,
-                                        icon: Icon.checkCircle({className: 'xh-green'}),
-                                        onClick: () => model.onPingClicked()
-                                    }),
-                                    button({
-                                        text: 'Server Down',
-                                        minimal: false,
-                                        icon: Icon.skull({className: 'xh-red'}),
-                                        onClick: () => XH.handleException('Server Unavailable', {
-                                            name: 'Server Unavailable',
-                                            message: `Unable to contact the server at ${window.location.origin}`,
-                                            logOnServer: false,
-                                            requireReload: true
-                                        })
-                                    })
-                                ]
-                            })
-                        ]
                     }),
                     panel({
                         title: 'Promise Exceptions',
                         icon: Icon.warning(),
                         items: [
-                            p('Hoist provides a neat .catchDefault() method that will handle exceptions and smart decode HTTP responses. (No need to wrap in try/catch logic!)'),
-                            p('In this example, a call to the route \'/badRequest\' will throw a client-side error. The 404 error code is parsed by the exception handler and marks the error as routine, leaving out unnecessarily worrying or irrelevant details for the user.'),
-                            filler(),
-                            button({
-                                text: 'Visit xh.io/badRequest',
-                                className: 'xh-button',
-                                minimal: false,
-                                icon: Icon.warningCircle({className: 'xh-red'}),
-                                onClick: () => XH.fetch({url: 'badRequest'}).catchDefault()
+                            p('Hoist provides neat .catchDefault() and .catchDefaultWhen() methods that will handle exceptions and smart decode HTTP responses. (No need to wrap in try/catch logic!)'),
+                            codeInput({
+                                height: 120,
+                                showFullscreenButton: false,
+                                editorProps: {
+                                    readOnly: true
+                                },
+                                mode: 'javascript',
+                                bind: 'catchMethod'
+                            }),
+                            vbox({
+                                items: [
+                                    button({
+                                        text: 'catchDefault()',
+                                        minimal: false,
+                                        icon: Icon.warningCircle({className: 'xh-red'}),
+                                        onClick: () => model.onCatchDefaultClicked()
+                                    }),
+                                    button({
+                                        text: 'catchDefaultWhen()',
+                                        minimal: false,
+                                        icon: Icon.warningCircle({className: 'xh-red'}),
+                                        onClick: () => model.onCatchDefaultWhenClicked()
+                                    })
+                                ]
                             })
                         ]
                     })
@@ -116,21 +88,16 @@ export const exceptionsPanel = hoistCmp.factory({
     })
 });
 
-
+/* eslint-disable */
 function fooBar() {
     const foo = 'foo';
     return foo + bar;
 }
-
+/* eslint-enable */
 @HoistModel
 class Model {
     @bindable
-    pingResponse = '/*\nPing or kill the Toolbox server\nby clicking one of the buttons \nbelow.\n*/';
-
-    @action
-    setPing(ping) {
-        this.pingResponse = ping;
-    }
+    catchMethod = `// See what happens when you make a bad request`;
 
     async onPingClicked() {
         const pingURL = XH.isDevelopmentMode ?
@@ -140,4 +107,22 @@ class Model {
             (res) => this.setPing(JSON.stringify(res, null, '  '))
         );
     }
+    onFooBarClicked() {
+        try {
+            fooBar();
+        } catch (e) {
+            XH.handleException(e, {logOnServer: false});
+        }
+    }
+    onCatchDefaultClicked() {
+        this.setCatchMethod(this.catchDefault);
+        XH.fetch({url: 'badRequest'}).catchDefault();
+    }
+    onCatchDefaultWhenClicked() {
+        this.setCatchMethod(this.catchDefaultWhen);
+        XH.fetch({url: 'badRequest'}).catchDefaultWhen(e => e.message !=='Not Found');
+    }
+
+    catchDefault = `function badRequest() {\n  XH.fetch({url: 'badRequest'})\n  .catchDefault();\n}`;
+    catchDefaultWhen = `function badRequest() {\n  XH.fetch({url: 'badRequest'})\n  .catchDefaultWhen(e => {\n    e.message !== 'Not Found'\n  })\n}`;
 }
