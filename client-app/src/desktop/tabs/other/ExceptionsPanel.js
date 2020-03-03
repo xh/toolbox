@@ -96,7 +96,7 @@ const exceptionOptions = hoistCmp.factory(
                 switchInput({
                     bind: 'showAsError',
                     disabled: model.disabled,
-                    label: 'Show As Error'
+                    label: 'Show as Error'
                 }),
                 switchInput({
                     bind: 'logOnServer',
