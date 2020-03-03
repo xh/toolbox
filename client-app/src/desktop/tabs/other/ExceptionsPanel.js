@@ -166,6 +166,12 @@ class Model {
             this.fooBar();
         } catch (e) {
             XH.handleException(e, {showAlert: this.showAlert, showAsError: this.showAsError, logOnServer: this.logOnServer, requireReload: this.requireReload});
+            if (!this.showAlert) {
+                XH.toast({message: 'Exception handled. Use Chrome Dev Tools\' console to view the exception message.'});
+            }
+            if (this.logOnServer) {
+                XH.toast({message: 'Exception logged on server.'});
+            }
         }
     }
 
@@ -177,6 +183,7 @@ class Model {
     onCatchDefaultWhenClicked() {
         this.setCatchMethod(this.catchDefaultWhen);
         XH.fetch({url: 'badRequest'}).catchDefaultWhen(e => e.httpStatus !== 404);
+        XH.toast({message: 'Error was not selectively caught. Use Chrome Dev Tools\' console to inspect the uncaught error.'});
     }
 
     catchDefault = `function badRequest() {\n    XH.fetch({url: 'badRequest'})\n    .catchDefault();\n}`;
