@@ -100,8 +100,8 @@ export const preferenceExamplePanel = hoistCmp.factory({
 @HoistModel
 class Model {
     @bindable mask = false
-    @bindable color = 'red'
-    @bindable userIcon = 'user'
+    @bindable color = XH.getPref('textColor');
+    @bindable userIcon;
 
     setTextColor() {
         this.setColor(this.color);
@@ -121,6 +121,4 @@ class Model {
                 return '';
         }
     }
-
-
 }
