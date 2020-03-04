@@ -49,14 +49,15 @@
 
       .xh-hbox {
         margin: var(--xh-pad-px);
+        justify-content: center;
 
         p {
           padding: var(--xh-pad-px);
         }
 
         .icon-button-group {
-          justify-content: center;
           flex-wrap: wrap;
+          justify-content: center;
         }
       }
     }
