@@ -5,6 +5,22 @@
     height: 550px;
     width: 800px;
 
+    .xh-vframe {
+      justify-content: center;
+      align-items: center;
+
+      .user-profile {
+        background-color: var(--xh-bg);
+        width: 400px;
+        border: var(--xh-border-solid);
+        margin: var(--xh-pad-px);
+
+        &--card {
+          border-right: var(--xh-border-solid);
+        }
+      }
+    }
+
     p {
       margin: var(--xh-pad-px);
     }
@@ -22,6 +38,10 @@
       white-space: normal;
       overflow: hidden;
       text-align: center;
+    }
+
+    .xh-hbox {
+      padding: var(--xh-pad-half-px);
     }
   }
 }
