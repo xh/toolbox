@@ -66,7 +66,6 @@ export const preferenceExamplePanel = hoistCmp.factory({
                                         p('Set Text Color:'),
                                         select({
                                             bind: 'color',
-                                            onChange: model.setTextColor(),
                                             options: [
                                                 {label: 'Red', value: 'red'},
                                                 {label: 'Blue', value: 'blue'},
@@ -79,7 +78,6 @@ export const preferenceExamplePanel = hoistCmp.factory({
                                     p('Set User Icon:'),
                                     select({
                                         bind: 'userIcon',
-                                        onChange: model.setIcon(),
                                         options: [
                                             {label: 'User', value: 'user'},
                                             {label: 'Chess Knight', value: 'knight'},
@@ -90,15 +88,14 @@ export const preferenceExamplePanel = hoistCmp.factory({
                                 hbox(
                                     switchInput({
                                         bind: 'showBackground',
-                                        label: 'Show Background Image',
-                                        onChange: model.setBackground()
+                                        label: 'Show Background Image'
                                     })
                                 ),
                                 button({
                                     icon: Icon.refresh(),
                                     text: 'Save Preferences and Reload',
                                     minimal: false,
-                                    onClick: () => XH.reloadApp()
+                                    onClick: () => model.saveAndReload()
                                 })
                             ]
                         }),
@@ -127,29 +124,41 @@ class Model {
     @bindable showBackground = XH.getPref('showBackground');
     @bindable key = '';
     @bindable value = '';
-    @bindable codeOutput = `XH.setPref(${this.key}, ${this.value})`;
+    @bindable codeOutput = '';
+
+    constructor() {
+        this.addReaction({
+            track: () => this.color,
+            run: () => this.setTextColor()
+        });
+        this.addReaction({
+            track: () => this.userIcon,
+            run: () => this.setIcon()
+        });
+        this.addReaction({
+            track: () => this.showBackground,
+            run: () => this.setBackground()
+        });
+    }
 
     setTextColor() {
         this.setColor(this.color);
         this.setKey('color');
         this.setValue(this.color);
-        console.log('setColor called');
-        XH.setPref('textColor', this.color);
+        this.setCodeOutput(this.codeOutput + '\n' + `XH.setPref(${this.key}, ${this.value})`);
     }
 
     setIcon() {
         this.setUserIcon(this.userIcon);
         this.setKey('userIcon');
         this.setValue(this.userIcon);
-        console.log('setIcon called');
-        XH.setPref('userIcon', this.userIcon);
+        this.setCodeOutput(this.codeOutput + '\n' + `XH.setPref(${this.key}, ${this.value})`);
     }
 
     setBackground() {
         this.setKey('showBackground');
         this.setValue(this.showBackground);
-        console.log('setBackground called');
-        XH.setPref('showBackground', this.showBackground);
+        this.setCodeOutput(this.codeOutput + '\n' + `XH.setPref(${this.key}, ${this.value})`);
     }
 
     get className() {
@@ -186,5 +195,11 @@ class Model {
         } else {
             return '';
         }
+    }
+    saveAndReload() {
+        XH.setPref('textColor', this.color);
+        XH.setPref('userIcon', this.userIcon);
+        XH.setPref('showBackground', this.showBackground);
+        XH.reloadApp();
     }
 }
