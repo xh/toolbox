@@ -62,7 +62,8 @@ export const preferenceExamplePanel = hoistCmp.factory({
                             items: [
                                 hbox({
                                     width: 'fill',
-                                    items: [p('Set Text Color:'),
+                                    items: [
+                                        p('Set Text Color:'),
                                         select({
                                             bind: 'color',
                                             onChange: model.setTextColor(),
@@ -71,7 +72,8 @@ export const preferenceExamplePanel = hoistCmp.factory({
                                                 {label: 'Blue', value: 'blue'},
                                                 {label: 'Green', value: 'green'}
                                             ]
-                                        })]
+                                        })
+                                    ]
                                 }),
                                 hbox(
                                     p('Set User Icon:'),
@@ -89,7 +91,7 @@ export const preferenceExamplePanel = hoistCmp.factory({
                                     switchInput({
                                         bind: 'showBackground',
                                         label: 'Show Background Image',
-                                        onChange: () => model.setBackground()
+                                        onChange: model.setBackground()
                                     })
                                 ),
                                 button({
@@ -107,7 +109,8 @@ export const preferenceExamplePanel = hoistCmp.factory({
                             icon: Icon.code(),
                             model: {side: 'right', defaultSize: 300},
                             item: codeInput({
-                                height: 230
+                                height: 230,
+                                bind: 'codeOutput'
                             })
                         })
                     ]
@@ -117,25 +120,35 @@ export const preferenceExamplePanel = hoistCmp.factory({
     })
 });
 
-
 @HoistModel
 class Model {
     @bindable color = XH.getPref('textColor');
     @bindable userIcon = XH.getPref('userIcon');
     @bindable showBackground = XH.getPref('showBackground');
+    @bindable key = '';
+    @bindable value = '';
+    @bindable codeOutput = `XH.setPref(${this.key}, ${this.value})`;
 
     setTextColor() {
         this.setColor(this.color);
+        this.setKey('color');
+        this.setValue(this.color);
+        console.log('setColor called');
         XH.setPref('textColor', this.color);
     }
 
     setIcon() {
         this.setUserIcon(this.userIcon);
+        this.setKey('userIcon');
+        this.setValue(this.userIcon);
+        console.log('setIcon called');
         XH.setPref('userIcon', this.userIcon);
     }
 
     setBackground() {
-        this.setShowBackground(!this.showBackground);
+        this.setKey('showBackground');
+        this.setValue(this.showBackground);
+        console.log('setBackground called');
         XH.setPref('showBackground', this.showBackground);
     }
 
