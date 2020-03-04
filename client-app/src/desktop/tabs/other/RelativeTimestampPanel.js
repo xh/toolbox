@@ -5,7 +5,7 @@ import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {observable, action} from '@xh/hoist/mobx';
 import {random, sample} from 'lodash';
 import moment from 'moment';
 import {wrapper} from '../../common/Wrapper';
@@ -36,7 +36,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                             bind: 'timestamp',
                             options: {
                                 allowFuture: true,
-                                prefix: 'Refreshed',
+                                prefix: model.prefix,
                                 short: model.useShortFmt
                             }
                         })
@@ -87,19 +87,25 @@ export const relativeTimestampPanel = hoistCmp.factory({
 
 @HoistModel
 class Model {
-    @bindable timestamp = new Date();
-    @bindable useShortFmt = false;
+    @observable prefix = 'Refreshed';
+    @observable timestamp = Date.now();
+    @observable useShortFmt = false;
 
+    @action
     setToNow() {
-        this.setTimestamp(Date.now());
+        this.timestamp = Date.now();
     }
 
+    @action
     setToPast() {
-        this.setTimestamp(moment().subtract(randVal(), randUnit()).valueOf());
+        this.prefix = 'Refreshed';
+        this.timestamp = moment().subtract(randVal(), randUnit()).valueOf();
     }
 
+    @action
     setToFuture() {
-        this.setTimestamp(moment().add(randVal(), randUnit()).valueOf());
+        this.prefix = 'Scheduled';
+        this.timestamp = moment().add(randVal(), randUnit()).valueOf();
     }
 }
 

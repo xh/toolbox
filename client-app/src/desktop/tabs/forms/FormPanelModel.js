@@ -44,7 +44,6 @@ export class FormPanelModel {
             },
             {
                 name: 'email',
-                initialValue: 'jbloggs@gmail.com',
                 rules: [required, this.validEmail]
             },
             {
