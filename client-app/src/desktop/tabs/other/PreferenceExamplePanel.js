@@ -1,14 +1,18 @@
 import {wrapper} from '../../common';
 import {hoistCmp, HoistModel} from '@xh/hoist/core';
 import {code, h3, hbox, hframe, p, vbox, vframe} from '@xh/hoist/cmp/layout';
-// import {button} from '@xh/hoist/desktop/cmp/button';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
 import './PreferenceExamplePanel.scss';
 import {XH} from '@xh/hoist/core';
-import {codeInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, codeInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {bindable} from '@xh/hoist/mobx';
 import {creates} from '@xh/hoist/core/modelspec';
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faCat, faDog, faCrow, faElephant, faFish, faDragon, faUnicorn, faWhale} from '@fortawesome/pro-regular-svg-icons';
+import {fontAwesomeIcon} from '@xh/hoist/icon';
+library.add(faCat, faDog, faCrow, faElephant, faFish, faDragon, faUnicorn, faWhale);
 
 export const preferenceExamplePanel = hoistCmp.factory({
     model: creates(() => new Model()),
@@ -88,36 +92,89 @@ const preferenceEditor = hoistCmp.factory(
             compactHeader: true,
             items: [
                 hbox({
+                    flex: 1,
                     width: 'fill',
                     items: [
                         p('Set Text Color:'),
                         select({
+                            width: 100,
                             bind: 'color',
                             options: [
                                 {label: 'Red', value: 'red'},
+                                {label: 'Orange', value: 'orange'},
+                                {label: 'Green', value: 'green'},
                                 {label: 'Blue', value: 'blue'},
-                                {label: 'Green', value: 'green'}
+                                {label: 'Black', value: 'black'}
                             ]
                         })
                     ]
                 }),
-                hbox(
-                    p('Set User Icon:'),
-                    select({
-                        bind: 'userIcon',
-                        options: [
-                            {label: 'User', value: 'user'},
-                            {label: 'Chess Knight', value: 'knight'},
-                            {label: 'Sun', value: 'sun'}
-                        ]
-                    })
-                ),
-                hbox(
-                    switchInput({
+                hbox({
+                    flex: 2,
+                    items: [
+                        p('Set User Icon:'),
+                        buttonGroupInput({
+                            className: 'icon-button-group',
+                            bind: 'userIcon',
+                            height: 25,
+                            items: [
+                                button({
+                                    text: 'User',
+                                    icon: Icon.user(),
+                                    value: 'user'
+                                }),
+                                button({
+                                    text: 'Cat',
+                                    icon: fontAwesomeIcon({icon: faCat}),
+                                    value: 'cat'
+                                }),
+                                button({
+                                    text: 'Dog',
+                                    icon: fontAwesomeIcon({icon: faDog}),
+                                    value: 'dog'
+                                }),
+                                button({
+                                    text: 'Fish',
+                                    icon: fontAwesomeIcon({icon: faFish}),
+                                    value: 'fish'
+                                }),
+                                button({
+                                    text: 'Bird',
+                                    icon: fontAwesomeIcon({icon: faCrow}),
+                                    value: 'bird'
+                                }),
+                                button({
+                                    text: 'Dragon',
+                                    icon: fontAwesomeIcon({icon: faDragon}),
+                                    value: 'dragon'
+                                }),
+                                button({
+                                    text: 'Whale',
+                                    icon: fontAwesomeIcon({icon: faWhale}),
+                                    value: 'whale'
+                                }),
+                                button({
+                                    text: 'Elephant',
+                                    icon: fontAwesomeIcon({icon: faElephant}),
+                                    value: 'elephant'
+                                }),
+                                button({
+                                    text: 'Unicorn',
+                                    icon: fontAwesomeIcon({icon: faUnicorn}),
+                                    value: 'unicorn'
+                                })
+                            ]
+                        })
+                    ]
+                }),
+                hbox({
+                    flex: 1,
+                    item: switchInput({
                         bind: 'showBackground',
-                        label: 'Show Background Image'
+                        label: 'Show Background Image',
+                        labelAlign: 'left'
                     })
-                )
+                })
             ]
         });
     }
@@ -126,6 +183,7 @@ const preferenceEditor = hoistCmp.factory(
 const codeOutput = hoistCmp.factory(
     () => {
         return panel({
+            flex: 1,
             compactHeader: true,
             height: 240,
             title: 'Output',
@@ -133,6 +191,7 @@ const codeOutput = hoistCmp.factory(
             model: {side: 'right', defaultSize: 300},
             item: codeInput({
                 height: 230,
+                flex: 1,
                 bind: 'codeOutput',
                 mode: 'javascript'
             })
@@ -176,10 +235,14 @@ class Model {
         switch (color) {
             case 'red':
                 return 'xh-red';
+            case 'orange':
+                return 'xh-orange';
             case 'blue':
                 return 'xh-blue';
             case 'green':
                 return 'xh-green';
+            case 'black':
+                return 'xh-black';
             default:
                 return '';
         }
@@ -192,8 +255,22 @@ class Model {
                 return Icon.user({size: '5x'});
             case 'knight':
                 return Icon.chessKnight({size: '5x'});
-            case 'sun':
-                return Icon.sun(({size: '5x'}));
+            case 'dog':
+                return fontAwesomeIcon({icon: faDog, size: '5x'});
+            case 'cat':
+                return fontAwesomeIcon({icon: faCat, size: '5x'});
+            case 'fish':
+                return fontAwesomeIcon({icon: faFish, size: '5x'});
+            case 'bird':
+                return fontAwesomeIcon({icon: faCrow, size: '5x'});
+            case 'dragon':
+                return fontAwesomeIcon({icon: faDragon, size: '5x'});
+            case 'whale':
+                return fontAwesomeIcon({icon: faWhale, size: '5x'});
+            case 'elephant':
+                return fontAwesomeIcon({icon: faElephant, size: '5x'});
+            case 'unicorn':
+                return fontAwesomeIcon({icon: faUnicorn, size: '5x'});
             default:
                 return 'Please select an icon.';
         }

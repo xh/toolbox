@@ -1,8 +1,7 @@
 .tb-preferences {
   > .xh-panel {
     border: var(--xh-border-solid);
-    margin: var(--xh-pad-double-px);
-    height: 550px;
+    height: 300px;
     width: 800px;
 
     .xh-vframe {
@@ -25,10 +24,6 @@
       margin: var(--xh-pad-px);
     }
 
-    .xh-code-input {
-      margin: 0;
-    }
-
     .xh-button {
       padding: var(--xh-pad-px);
       margin: var(--xh-pad-px) auto;
@@ -42,6 +37,28 @@
 
     .xh-hbox {
       padding: var(--xh-pad-half-px);
+    }
+  }
+
+  > .xh-hbox {
+    width: 800px;
+
+    .xh-vframe {
+      justify-content: center;
+      align-items: center;
+
+      .xh-hbox {
+        margin: var(--xh-pad-px);
+
+        p {
+          padding: var(--xh-pad-px);
+        }
+
+        .icon-button-group {
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+      }
     }
   }
 }
