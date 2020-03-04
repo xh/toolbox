@@ -5,7 +5,8 @@ import {hoistCmp, creates} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dialog} from '@xh/hoist/desktop/cmp/dialog';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {label} from '@xh/hoist/cmp/layout';
+import {switchInput, numberInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 
 import {DialogsPanelModel} from './DialogsPanelModel';
@@ -25,10 +26,24 @@ export const dialogsPanel = hoistCmp.factory({
             className: 'test-dialogs',
             ref: divRef,
             bbar: [
+                label('x:'),
+                numberInput({
+                    bind: 'x',
+                    min: 0,
+                    width: 60,
+                    commitOnChange: true
+                }),
+                label('y:'),
+                numberInput({
+                    bind: 'y',
+                    min: 0,
+                    width: 60,
+                    commitOnChange: true
+                }),
                 filler(),
                 switchInput({
                     bind: 'showCloseButton',
-                    label: 'show close button in dialog header',
+                    label: 'close button in header',
                     alignIndicator: 'right'
                 }),
                 switchInput({
@@ -51,6 +66,7 @@ export const dialogsPanel = hoistCmp.factory({
                 table(tbody(
                     row(
                         'Header Tests:',
+                        'These "Header Tests" do not respond to the controls in the toolbar below.',
                         fragment(
                             button({
                                 ...dialogBtn(Icon.learn()),
@@ -82,6 +98,7 @@ export const dialogsPanel = hoistCmp.factory({
                     ),
                     row(
                         'RnD:',
+                        null,
                         fragment(
                             button({
                                 ...dialogBtn(Icon.arrowsLeftRight()),
@@ -121,6 +138,7 @@ export const dialogsPanel = hoistCmp.factory({
                     ),
                     row(
                         'Stateful:',
+                        null,
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
@@ -160,6 +178,7 @@ export const dialogsPanel = hoistCmp.factory({
                     ),
                     row(
                         'Parent/Child Dialogs:',
+                        null,
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
@@ -180,6 +199,7 @@ export const dialogsPanel = hoistCmp.factory({
                     ),
                     row(
                         'zIndex:',
+                        null,
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
@@ -200,6 +220,7 @@ export const dialogsPanel = hoistCmp.factory({
                     ),
                     row(
                         '"style" prop:',
+                        null,
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
@@ -220,6 +241,7 @@ export const dialogsPanel = hoistCmp.factory({
                     ),
                     row(
                         'Container',
+                        null,
                         button({
                             ...dialogBtn(Icon.addressCard()),
                             text: 'Dialog not in "portal',
@@ -256,6 +278,9 @@ function dialogBtn(icon) {
     });
 }
 
-function row(col1, col2, col3, col4) {
-    return tr(th(col1), td(col2), td(col3), td(col4));
+function row(rowHeader, explanation, col2, col3, col4) {
+    return fragment(
+        tr(th({className: 'explanation', colSpan: 4, items: explanation})),
+        tr(th({className: 'row-header', items: rowHeader}), td(col2), td(col3), td(col4))
+    );
 }

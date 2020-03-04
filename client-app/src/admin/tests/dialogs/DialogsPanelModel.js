@@ -1,3 +1,5 @@
+import {flatten, upperFirst} from 'lodash';
+
 import {HoistModel, managed} from '@xh/hoist/core';
 import {DialogModel} from '@xh/hoist/desktop/cmp/dialog';
 import {bindable} from '@xh/hoist/mobx';
@@ -9,6 +11,7 @@ import {formPanel} from './form/FormPanel';
 import {oHLCChartPanel} from './chart/OHLCChartPanel';
 import {simpleTreeMapPanel} from './chart/SimpleTreeMapPanel';
 
+
 @HoistModel
 export class DialogsPanelModel {
 
@@ -17,42 +20,85 @@ export class DialogsPanelModel {
     @bindable closeOnOutsideClick = true;
     @bindable showCloseButton = true;
     @bindable closeOnEscape = true;
+    @bindable x = null;
+    @bindable y = null;
 
     switchable = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+    switches = [
+        'showBackgroundMask', 'closeOnOutsideClick', 'showCloseButton', 'closeOnEscape'
+    ];
+    dynamics = ['x', 'y']
+
+    disposers = [];
 
     constructor() {
-        this.addReaction({
-            track: () => this.showCloseButton,
-            run: (v) => {
-                this.switchable.forEach(n => {
-                    this['dialogModel' + n].setShowCloseButton(v);
-                });
-            }
+        this.switches.forEach(prop => {
+            this.addReaction({
+                track: () => this[prop],
+                run: (v) => {
+                    this.switchable.forEach(n => {
+                        const dm = this['dialogModel' + n];
+                        const method = 'set' + upperFirst(prop);
+                        dm[method](v);
+                    });
+                }
+            });
         });
-        this.addReaction({
-            track: () => this.showBackgroundMask,
-            run: (v) => {
-                this.switchable.forEach(n => {
-                    this['dialogModel' + n].setShowBackgroundMask(v);
-                });
-            }
+
+        this.switchable.forEach(n => {
+            const dialogName = 'dialogModel' + n,
+                dialogModel = this[dialogName];
+
+            this.addReaction({
+                track: () => dialogModel.isOpen,
+                run: (isOpen) => {
+                    if (isOpen) {
+                        this.trackDynamics(dialogModel);
+                        setTimeout(() => {
+                            this.setX(dialogModel.x);
+                            this.setY(dialogModel.y);
+                        }, 100);
+                    } else {
+                        this.disposers.forEach(it => it());
+                        this.disposers = [];
+                        this.switchable.forEach(n => {
+                            const dm = this['dialogModel' + n];
+                            if (dm.isOpen) {
+                                this.trackDynamics(dm);
+                                this.setX(dm.x);
+                                this.setY(dm.y);
+                            }
+                        });
+                        if (this.switchable.map(n => this['dialogModel' + n]).every(dm => !dm.isOpen)) {
+                            this.setX(null);
+                            this.setY(null);
+                        }
+                    }
+                }
+            });
         });
-        this.addReaction({
-            track: () => this.closeOnOutsideClick,
-            run: (v) => {
-                this.switchable.forEach(n => {
-                    this['dialogModel' + n].setCloseOnOutsideClick(v);
-                });
-            }
-        });
-        this.addReaction({
-            track: () => this.closeOnEscape,
-            run: (v) => {
-                this.switchable.forEach(n => {
-                    this['dialogModel' + n].setCloseOnEscape(v);
-                });
-            }
-        });
+    }
+
+    trackDynamics(dialogModel) {
+        this.disposers.forEach(it => it());
+        this.disposers = flatten(this.dynamics.map(prop => {
+            return [
+                this.addReaction({
+                    track: () => this[prop],
+                    run: (v) => {
+                        const method = 'set' + upperFirst(prop);
+                        dialogModel[method](v);
+                    }
+                }),
+                this.addReaction({
+                    track: () => dialogModel[prop],
+                    run: (v) => {
+                        const method = 'set' + upperFirst(prop);
+                        this[method](v);
+                    }
+                })
+            ];
+        }));
     }
 
     @managed
