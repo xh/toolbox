@@ -45,11 +45,11 @@
 
     .xh-vframe {
       justify-content: center;
-      align-items: center;
 
       .xh-hbox {
         margin: var(--xh-pad-px);
         justify-content: center;
+        align-content: center;
 
         p {
           padding: var(--xh-pad-px);

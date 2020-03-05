@@ -10,9 +10,9 @@ import {buttonGroupInput, codeInput, select, switchInput} from '@xh/hoist/deskto
 import {bindable} from '@xh/hoist/mobx';
 import {creates} from '@xh/hoist/core/modelspec';
 import {library} from '@fortawesome/fontawesome-svg-core';
-import {faCat, faDog, faCrow, faElephant, faFish, faDragon, faUnicorn, faWhale} from '@fortawesome/pro-regular-svg-icons';
+import {faCat, faDog, faCrow, faFish, faDuck, faRam, faWhale} from '@fortawesome/pro-regular-svg-icons';
 import {fontAwesomeIcon} from '@xh/hoist/icon';
-library.add(faCat, faDog, faCrow, faElephant, faFish, faDragon, faUnicorn, faWhale);
+library.add(faCat, faDog, faCrow, faFish, faDuck, faRam, faWhale);
 
 export const preferenceExamplePanel = hoistCmp.factory({
     model: creates(() => new Model()),
@@ -92,7 +92,6 @@ const preferenceEditor = hoistCmp.factory(
             compactHeader: true,
             items: [
                 hbox({
-                    flex: 1,
                     width: 'fill',
                     items: [
                         p('Set Text Color:'),
@@ -110,7 +109,6 @@ const preferenceEditor = hoistCmp.factory(
                     ]
                 }),
                 hbox({
-                    flex: 2,
                     items: [
                         p('Set User Icon:'),
                         buttonGroupInput({
@@ -144,31 +142,25 @@ const preferenceEditor = hoistCmp.factory(
                                     value: 'bird'
                                 }),
                                 button({
-                                    text: 'Dragon',
-                                    icon: fontAwesomeIcon({icon: faDragon}),
-                                    value: 'dragon'
+                                    text: 'Duck',
+                                    icon: fontAwesomeIcon({icon: faDuck}),
+                                    value: 'duck'
+                                }),
+                                button({
+                                    text: 'Ram',
+                                    icon: fontAwesomeIcon({icon: faRam}),
+                                    value: 'ram'
                                 }),
                                 button({
                                     text: 'Whale',
                                     icon: fontAwesomeIcon({icon: faWhale}),
                                     value: 'whale'
-                                }),
-                                button({
-                                    text: 'Elephant',
-                                    icon: fontAwesomeIcon({icon: faElephant}),
-                                    value: 'elephant'
-                                }),
-                                button({
-                                    text: 'Unicorn',
-                                    icon: fontAwesomeIcon({icon: faUnicorn}),
-                                    value: 'unicorn'
                                 })
                             ]
                         })
                     ]
                 }),
                 hbox({
-                    flex: 1,
                     item: switchInput({
                         bind: 'showBackground',
                         label: 'Show Background Image',
@@ -183,15 +175,15 @@ const preferenceEditor = hoistCmp.factory(
 const codeOutput = hoistCmp.factory(
     () => {
         return panel({
-            flex: 1,
+            flex: 'auto',
             compactHeader: true,
             height: 240,
             title: 'Output',
             icon: Icon.code(),
-            model: {side: 'right', defaultSize: 300},
+            model: {side: 'right', defaultSize: 350},
             item: codeInput({
                 height: 230,
-                flex: 1,
+                width: 'fill',
                 bind: 'codeOutput',
                 mode: 'javascript'
             })
@@ -204,7 +196,7 @@ class Model {
     @bindable color = XH.getPref('prefExampleColor');
     @bindable userIcon = XH.getPref('prefExampleIcon');
     @bindable showBackground = XH.getPref('prefExampleShowBackground');
-    @bindable codeOutput = '// XH.setPref()';
+    @bindable codeOutput = '// XH.setPref() in action';
 
     constructor() {
         this.addReaction({
@@ -263,16 +255,14 @@ class Model {
                 return fontAwesomeIcon({icon: faFish, size: '5x'});
             case 'bird':
                 return fontAwesomeIcon({icon: faCrow, size: '5x'});
-            case 'dragon':
-                return fontAwesomeIcon({icon: faDragon, size: '5x'});
+            case 'duck':
+                return fontAwesomeIcon({icon: faDuck, size: '5x'});
+            case 'ram':
+                return fontAwesomeIcon({icon: faRam, size: '5x'});
             case 'whale':
                 return fontAwesomeIcon({icon: faWhale, size: '5x'});
-            case 'elephant':
-                return fontAwesomeIcon({icon: faElephant, size: '5x'});
-            case 'unicorn':
-                return fontAwesomeIcon({icon: faUnicorn, size: '5x'});
             default:
-                return 'Please select an icon.';
+                return Icon.user({size: '5x'});
         }
     }
 
