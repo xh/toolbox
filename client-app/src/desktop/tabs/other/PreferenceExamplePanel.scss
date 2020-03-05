@@ -24,17 +24,6 @@
       margin: var(--xh-pad-px);
     }
 
-    .xh-button {
-      padding: var(--xh-pad-px);
-      margin: var(--xh-pad-px) auto;
-      border: var(--xh-border-solid);
-      max-width: 300px;
-      word-wrap: break-word;
-      white-space: normal;
-      overflow: hidden;
-      text-align: center;
-    }
-
     .xh-hbox {
       padding: var(--xh-pad-half-px);
     }
@@ -58,6 +47,10 @@
         .icon-button-group {
           flex-wrap: wrap;
           justify-content: center;
+
+          .xh-button {
+            border-radius: var(--xh-border-radius-px);
+          }
         }
       }
     }
