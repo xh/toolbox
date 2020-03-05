@@ -124,7 +124,6 @@ class Model {
                 id: 'grid',
                 title: 'Grid',
                 unique: true,
-                allowRemove: false,
                 content: GridWidget
             },
             {

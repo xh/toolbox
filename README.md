@@ -32,4 +32,4 @@ admin tooling may be accessed with additional credentials which we will be happy
                                                                                   
 📫☎️🌎 info@xh.io | <https://xh.io/contact>
 
-Copyright © 2019 Extremely Heavy Industries Inc.
+Copyright © 2020 Extremely Heavy Industries Inc.
