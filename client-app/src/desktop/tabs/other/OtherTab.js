@@ -19,7 +19,6 @@ export const otherTab = hoistCmp.factory(
             switcherPosition: 'left',
             tabs: [
                 {id: 'popups', content: popupsPanel},
-                {id: 'preferences', content: preferenceExamplePanel},
                 {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
                 {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
                 {id: 'numberFormats', content: numberFormatsPanel},
@@ -28,6 +27,7 @@ export const otherTab = hoistCmp.factory(
                 {id: 'clock', content: clockPanel},
                 {id: 'icons', content: iconsPanel},
                 {id: 'appNotifications', content: appNotificationsPanel},
+                {id: 'preferences', title: 'User Preferences', content: preferenceExamplePanel},
                 {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel}
             ]
         },
