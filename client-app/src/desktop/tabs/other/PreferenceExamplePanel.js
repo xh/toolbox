@@ -103,7 +103,7 @@ const preferenceEditor = hoistCmp.factory(
                                 {label: 'Red', value: 'red'},
                                 {label: 'Green', value: 'green'},
                                 {label: 'Blue', value: 'blue'},
-                                {label: 'Black', value: 'black'}
+                                {label: 'Default', value: 'default'}
                             ]
                         })
                     ]
@@ -233,8 +233,8 @@ class Model {
                 return 'xh-blue';
             case 'green':
                 return 'xh-green';
-            case 'black':
-                return 'xh-black';
+            case 'default':
+                return '';
             default:
                 return '';
         }
