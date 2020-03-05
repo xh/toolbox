@@ -6,7 +6,9 @@
  */
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
+import {fontAwesomeIcon, Icon} from '@xh/hoist/icon';
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {faMobileAlt} from '@fortawesome/pro-regular-svg-icons';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {getAppOptions} from './AppOptions';
 import {chartsTab} from './tabs/charts/ChartsTab';
@@ -17,7 +19,9 @@ import {gridsTab} from './tabs/grids/GridsTab';
 import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
+import {mobileTab} from './tabs/mobile/MobileTab';
 
+library.add(faMobileAlt);
 
 @HoistAppModel
 export class AppModel {
@@ -34,7 +38,8 @@ export class AppModel {
             {id: 'forms', icon: Icon.edit(), content: formsTab},
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
             {id: 'other', icon: Icon.boxFull(), content: otherTab},
-            {id: 'examples', icon: Icon.books(), content: examplesTab}
+            {id: 'examples', icon: Icon.books(), content: examplesTab},
+            {id: 'mobile', icon: fontAwesomeIcon({icon: faMobileAlt}), content: mobileTab}
         ],
         switcherPosition: 'none'
     });
@@ -142,6 +147,10 @@ export class AppModel {
                     {
                         name: 'examples',
                         path: '/examples'
+                    },
+                    {
+                        name: 'mobile',
+                        path: '/mobile'
                     }
                 ]
             }
