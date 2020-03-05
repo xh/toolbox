@@ -99,8 +99,8 @@ const preferenceEditor = hoistCmp.factory(
                             width: 100,
                             bind: 'color',
                             options: [
-                                {label: 'Red', value: 'red'},
                                 {label: 'Orange', value: 'orange'},
+                                {label: 'Red', value: 'red'},
                                 {label: 'Green', value: 'green'},
                                 {label: 'Blue', value: 'blue'},
                                 {label: 'Black', value: 'black'}

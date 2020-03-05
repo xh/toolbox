@@ -170,6 +170,27 @@ class BootStrap {
                 groupName: 'Toolbox',
                 note: 'Object containing user\'s dimension picker value & history'
             ],
+            prefExampleColor: [
+                type: 'string',
+                defaultValue: 'orange',
+                local: true,
+                groupName: 'Toolbox',
+                note: 'For use in User Preferences Example'
+            ],
+            prefExampleIcon: [
+                    type: 'string',
+                    defaultValue: 'user',
+                    local: true,
+                    groupName: 'Toolbox',
+                    note: 'For use in User Preferences Example'
+            ],
+            prefExampleShowBackground: [
+                    type: 'bool',
+                    defaultValue: true,
+                    local: true,
+                    groupName: 'Toolbox',
+                    note: 'For use in User Preferences Example'
+            ],
             portfolioDims: [
                 type: 'json',
                 defaultValue: [
