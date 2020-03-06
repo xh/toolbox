@@ -42,12 +42,12 @@ export const mobileTab = hoistCmp.factory(
                 width: 800,
                 height: 540,
                 items: [
-                    p('Mobile apps are themeable and also offer a host of app configuration and preference options. ' +
-                        'Visit Toolbox Mobile by clicking on the button below and using Chrome Dev Tools to simulate ' +
-                        'a mobile device. Note that Chrome\'s Device Mode has certain limitations and does not yet support ' +
-                        'certain features like switch inputs.'),
                     p({
                         items: [
+                            'Mobile apps are themeable and also offer a host of app configuration and preference options. ',
+                            'Visit Toolbox Mobile by clicking on the button below and using Chrome Dev Tools to simulate ',
+                            'a mobile device. Note that Chrome\'s Device Mode has certain limitations and does not yet support ',
+                            'certain features like switch inputs. ',
                             'See their website for more information and instructions: ',
                             a({
                                 items: [Icon.openExternal(), ' Chrome Dev Tools Device Mode'],
