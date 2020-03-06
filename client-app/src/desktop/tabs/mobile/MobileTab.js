@@ -1,6 +1,6 @@
 import React from 'react';
 import {hoistCmp} from '@xh/hoist/core';
-import {a, hbox, hframe, img, p} from '@xh/hoist/cmp/layout';
+import {a, code, hbox, hframe, img, p} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {fontAwesomeIcon, Icon} from '@xh/hoist/icon';
 import {library} from '@fortawesome/fontawesome-svg-core';
@@ -17,17 +17,17 @@ export const mobileTab = hoistCmp.factory(
     () => wrapper({
         description: [
             <p>
-                Hoist Components are also the building blocks for mobile apps, with additional native mobile features
-                supported by the open source <a href={'http://onsen.io'}>Onsen</a> framework and
-                <a href={'https://react-beautiful-dnd.netlify.com/'}><code>react-beautiful-dnd</code></a>. Ag-Grid also
-                supports native touch gestures like dragging and tapping for mobile devices.
+                Hoist Components are also the same building blocks for mobile apps, with additional native mobile components
+                supported by the open source <a href={'http://onsen.io'}>Onsen</a> framework and <code>
+                    <a href={'https://react-beautiful-dnd.netlify.com/'}>react-beautiful-dnd</a></code>.
+                Ag-Grid also provides built-in native touch gestures like dragging and tapping for mobile devices.
             </p>,
             <p>
-                On mobile, the <code>App</code> component renders Onsen's top-level <code>Navigator</code> component,
-                which uses stack management and navigation for the <code>Page</code> component, while on desktop, the
-                top-level navigation component is <code>TabContainer</code>, which provides routes to each <code>Tab</code>.
-                Another unique feature of Hoist mobile apps is the <code>PinPad</code>, which allows for streamlined
-                handling of PIN entry for access.
+                Our mobile apps rely on Onsen's top-level <code>Navigator</code> component for stack management and navigation
+                to render each <code>Page</code> component, analogous to desktop's <code>TabContainer</code> and <code>Tab</code>.
+                Mobile apps otherwise share many of the same components and logic as their desktop counterparts, with a few differences of
+                using mobile-specific Hoist components, like the touch-enabled <code>ColumnChooser</code> below, to improve the
+                native mobile UI experience.
             </p>
         ],
         links: [
@@ -45,6 +45,9 @@ export const mobileTab = hoistCmp.factory(
                     p({
                         items: [
                             'Mobile apps are themeable and also offer a host of app configuration and preference options. ',
+                            'Another unique feature of Hoist mobile includes ',
+                            code('PinPad'),
+                            ', which provides streamlined handling of PIN entry for access. ',
                             'Visit Toolbox Mobile by clicking on the button below and using Chrome Dev Tools to simulate ',
                             'a mobile device. Note that Chrome\'s Device Mode has certain limitations and does not yet support ',
                             'certain features like switch inputs. ',
