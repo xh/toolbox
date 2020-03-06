@@ -36,12 +36,17 @@
       justify-content: center;
 
       .xh-hbox {
-        margin: var(--xh-pad-px);
+        padding: var(--xh-pad-px);
         justify-content: center;
         align-content: center;
+        flex: 1 1 auto;
 
         p {
-          padding: var(--xh-pad-px);
+          margin: var(--xh-pad-px);
+        }
+
+        &.set-user-icon {
+          flex: 2 1 auto;
         }
 
         .icon-button-group {

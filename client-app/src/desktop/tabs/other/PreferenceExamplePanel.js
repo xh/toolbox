@@ -109,6 +109,7 @@ const preferenceEditor = hoistCmp.factory(
                     ]
                 }),
                 hbox({
+                    className: 'set-user-icon',
                     items: [
                         p('Set User Icon:'),
                         buttonGroupInput({
