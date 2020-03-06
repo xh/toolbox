@@ -200,11 +200,10 @@ class Model {
                     requireReload: this.requireReload
                 }
             );
-            if (!this.showAlert && !this.logOnServer) {
+            if (!this.showAlert && this.logOnServer) {
                 XH.toast({message: 'In this example, the exception has been handled and logged on the server but the Exception Dialog is ' +
                         'not shown. Use Chrome Dev Tools\' console to view the exception message.', position: 'top-center'});
-            }
-            if (!this.showAlert) {
+            } else if (!this.showAlert) {
                 XH.toast({message: 'In this example, the exception has been handled but the Exception Dialog is not shown. ' +
                         'Use Chrome Dev Tools\' console to view the exception message.', position: 'top-center'});
             }
