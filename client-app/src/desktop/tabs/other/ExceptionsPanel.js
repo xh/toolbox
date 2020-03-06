@@ -87,6 +87,7 @@ const exceptionHandlingPanel = hoistCmp.factory(
 
 const exceptionOptions = hoistCmp.factory(
     ({model}) => {
+        const {disabled} = model;
         return panel({
             title: 'Exception Dialog Options',
             className: 'tbox-display-opts',
@@ -100,8 +101,8 @@ const exceptionOptions = hoistCmp.factory(
                 }),
                 switchInput({
                     bind: 'showAsError',
-                    disabled: model.disabled,
-                    label: 'Show as Error'
+                    label: 'Show as Error',
+                    disabled
                 }),
                 switchInput({
                     bind: 'logOnServer',
@@ -109,8 +110,8 @@ const exceptionOptions = hoistCmp.factory(
                 }),
                 switchInput({
                     bind: 'requireReload',
-                    disabled: model.disabled,
-                    label: 'Require Reload'
+                    label: 'Require Reload',
+                    disabled
                 })
             )
         });
@@ -144,22 +145,20 @@ const promiseErrorPanel = hoistCmp.factory(
                     mode: 'javascript'
                 }),
                 filler(),
-                vbox({
-                    items: [
-                        button({
-                            text: 'Fetch promise with catchDefault()',
-                            minimal: false,
-                            icon: Icon.warningCircle({className: 'xh-red'}),
-                            onClick: () => model.onCatchDefaultClicked()
-                        }),
-                        button({
-                            text: 'Fetch promise with catchDefaultWhen()',
-                            minimal: false,
-                            icon: Icon.warningCircle({className: 'xh-red'}),
-                            onClick: () => model.onCatchDefaultWhenClicked()
-                        })
-                    ]
-                })
+                vbox(
+                    button({
+                        text: 'Fetch promise with catchDefault()',
+                        minimal: false,
+                        icon: Icon.warningCircle({className: 'xh-red'}),
+                        onClick: () => model.onCatchDefaultClicked()
+                    }),
+                    button({
+                        text: 'Fetch promise with catchDefaultWhen()',
+                        minimal: false,
+                        icon: Icon.warningCircle({className: 'xh-red'}),
+                        onClick: () => model.onCatchDefaultWhenClicked()
+                    })
+                )
             ]
         });
     }
@@ -201,11 +200,13 @@ class Model {
                     requireReload: this.requireReload
                 }
             );
-            if (!this.showAlert) {
-                XH.toast({message: 'Exception handled. Use Chrome Dev Tools\' console to view the exception message.', position: 'top-center'});
+            if (!this.showAlert && !this.logOnServer) {
+                XH.toast({message: 'In this example, the exception has been handled and logged on the server but the Exception Dialog is ' +
+                        'not shown. Use Chrome Dev Tools\' console to view the exception message.', position: 'top-center'});
             }
-            if (this.logOnServer) {
-                XH.toast({message: 'Exception logged on server.', position: 'top-center'});
+            if (!this.showAlert) {
+                XH.toast({message: 'In this example, the exception has been handled but the Exception Dialog is not shown. ' +
+                        'Use Chrome Dev Tools\' console to view the exception message.', position: 'top-center'});
             }
         }
     }
