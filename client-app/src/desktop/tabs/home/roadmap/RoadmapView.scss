@@ -40,11 +40,11 @@
       overflow: hidden;
 
       > span {
-        color: var(--xh-blue-gray);
-        background-color: var(--xh-blue-gray-light);
+        color: var(--xh-button-active-text-color);
+        background-color: var(--xh-button-active-bg);
         border: var(--xh-border-solid);
         border-radius: calc(var(--xh-border-radius) * 1px);
-        padding: 0 4px;
+        padding: 0 var(--xh-pad-half-px);
       }
     }
 
