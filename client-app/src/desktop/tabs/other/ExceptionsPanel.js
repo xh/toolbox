@@ -185,11 +185,11 @@ class Model {
     }
 
     onFooBarClicked() {
-        const {logOnServer, showAlert, showAsError, requireReload} = this;
+        const {showAlert, showAsError, logOnServer, requireReload} = this;
         try {
-            this.setLogOnServer(logOnServer);
             this.setShowAlert(showAlert);
             this.setShowAsError(showAsError);
+            this.setLogOnServer(logOnServer);
             this.setRequireReload(requireReload);
             this.fooBar();
         } catch (err) {
