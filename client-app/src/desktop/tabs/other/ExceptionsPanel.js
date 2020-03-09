@@ -218,7 +218,7 @@ class Model {
     onCatchDefaultWhenClicked() {
         this.setCatchMethod(this.catchDefaultWhen);
         XH.fetch({url: 'badRequest'}).catchDefaultWhen(err => err.httpStatus !== 404);
-        XH.toast({message: 'Error was selectively uncaught.\nUse Chrome Dev Tools\' console to inspect the error.', position: 'top-center'});
+        XH.toast({message: 'Error was selectively uncaught. Use Chrome Dev Tools\' console to inspect the error.', position: 'top-center'});
     }
 
     catchDefault = `function badRequest() {
