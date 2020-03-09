@@ -185,26 +185,20 @@ class Model {
     }
 
     onFooBarClicked() {
+        const {logOnServer, showAlert, showAsError, requireReload} = this;
         try {
-            this.setLogOnServer(this.logOnServer);
-            this.setShowAlert(this.showAlert);
-            this.setShowAsError(this.showAsError);
-            this.setRequireReload(this.requireReload);
+            this.setLogOnServer(logOnServer);
+            this.setShowAlert(showAlert);
+            this.setShowAsError(showAsError);
+            this.setRequireReload(requireReload);
             this.fooBar();
         } catch (err) {
-            XH.handleException(err,
-                {
-                    showAlert: this.showAlert,
-                    showAsError: this.showAsError,
-                    logOnServer: this.logOnServer,
-                    requireReload: this.requireReload
-                }
-            );
-            if (!this.showAlert && this.logOnServer) {
-                XH.toast({message: 'In this example, the exception has been handled and logged on the server but the Exception Dialog is ' +
+            XH.handleException(err, {showAlert, showAsError, logOnServer, requireReload});
+            if (!showAlert && logOnServer) {
+                XH.toast({message: 'In this example, the exception has been handled and logged on the server, but the Exception Dialog is ' +
                         'not shown. Use Chrome Dev Tools\' console to view the exception message.', position: 'top-center'});
-            } else if (!this.showAlert) {
-                XH.toast({message: 'In this example, the exception has been handled but the Exception Dialog is not shown. ' +
+            } else if (!showAlert) {
+                XH.toast({message: 'In this example, the exception has been handled, but the Exception Dialog is not shown. ' +
                         'Use Chrome Dev Tools\' console to view the exception message.', position: 'top-center'});
             }
         }
