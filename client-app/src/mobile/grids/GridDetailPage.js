@@ -1,6 +1,6 @@
 import {hoistCmp, HoistModel, LoadSupport, useLocalModel, XH} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {isNil, find} from 'lodash';
@@ -20,7 +20,7 @@ export const gridDetailPage = hoistCmp.factory({
             ]
         });
 
-        return page({
+        return panel({
             title: record?.company ?? '',
             mask: impl.loadModel,
             icon: Icon.fund(),

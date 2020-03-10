@@ -1,6 +1,6 @@
 import {XH, hoistCmp, creates} from '@xh/hoist/core';
 
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
@@ -17,7 +17,7 @@ export const gridPage = hoistCmp.factory({
 
     render({model}) {
         const {gridModel} = model;
-        return page({
+        return panel({
             title: 'Grids',
             icon: Icon.gridPanel(),
             mask: 'onLoad',

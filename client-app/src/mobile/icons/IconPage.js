@@ -1,5 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {table, tbody, tr, th, td} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 
@@ -7,7 +7,7 @@ import './IconPage.scss';
 
 export const iconPage = hoistCmp.factory({
     render() {
-        return page({
+        return panel({
             scrollable: true,
             className: 'icon-page',
             item: table(
