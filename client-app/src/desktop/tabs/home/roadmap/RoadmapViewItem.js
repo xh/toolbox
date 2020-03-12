@@ -1,5 +1,5 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
-import {fab} from '@fortawesome/free-brands-svg-icons';
+import {faGithub} from '@fortawesome/free-brands-svg-icons';
 import {faCodeMerge} from '@fortawesome/pro-regular-svg-icons';
 import {br, div, filler, span} from '@xh/hoist/cmp/layout';
 import {hbox, vbox} from '@xh/hoist/cmp/layout/index';
@@ -11,14 +11,14 @@ import {Icon} from '@xh/hoist/icon/index';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {truncate} from 'lodash';
 
-library.add(fab, faCodeMerge);
+library.add(faGithub, faCodeMerge);
 
 export const roadmapViewItem = hoistCmp.factory({
     model: null,
 
     render({record}) {
         const {category, name, description, releaseVersion, status, gitLinks, lastUpdated} = record.data,
-            gitIcon = XH.icon({iconName: 'github', prefix: 'fal', size: '2x'});
+            gitIcon = Icon.icon({iconName: 'github', prefix: 'fab', size: '2x'});
 
         return vbox({
             className: 'tb-roadmap-item',
@@ -90,7 +90,7 @@ function getStatusIcon(status) {
         case 'DEVELOPMENT': return Icon.gear({className: 'xh-orange', prefix, size});
         case 'RELEASED': return Icon.checkCircle({className: 'xh-green', prefix, size});
         case 'PLANNED': return Icon.clock({className: 'xh-blue-light', prefix, size});
-        case 'MERGED': return Icon.icon({iconName: 'code-merge', className: 'xh-green', prefix, size});
+        case 'MERGED': return Icon.icon({iconName: 'code-merge', className: 'xh-green', size});
         default: return Icon.questionCircle({prefix, size});
     }
 }
