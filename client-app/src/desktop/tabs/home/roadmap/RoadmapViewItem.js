@@ -7,7 +7,7 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {hoistCmp, XH} from '@xh/hoist/core/index';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {capitalizeWords} from '@xh/hoist/format';
-import {fontAwesomeIcon, Icon} from '@xh/hoist/icon/index';
+import {Icon} from '@xh/hoist/icon/index';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {truncate} from 'lodash';
 
@@ -18,7 +18,7 @@ export const roadmapViewItem = hoistCmp.factory({
 
     render({record}) {
         const {category, name, description, releaseVersion, status, gitLinks, lastUpdated} = record.data,
-            gitIcon = fontAwesomeIcon({icon: ['fab', 'github'], size: '2x', prefix: 'fal', className: 'fa-fw'});
+            gitIcon = XH.icon({iconName: 'github', prefix: 'fal', size: '2x'});
 
         return vbox({
             className: 'tb-roadmap-item',
@@ -90,7 +90,7 @@ function getStatusIcon(status) {
         case 'DEVELOPMENT': return Icon.gear({className: 'xh-orange', prefix, size});
         case 'RELEASED': return Icon.checkCircle({className: 'xh-green', prefix, size});
         case 'PLANNED': return Icon.clock({className: 'xh-blue-light', prefix, size});
-        case 'MERGED': return fontAwesomeIcon({icon: faCodeMerge, className: 'xh-green fa-fw', prefix, size});
+        case 'MERGED': return Icon.icon({iconName: 'code-merge', className: 'xh-green', prefix, size});
         default: return Icon.questionCircle({prefix, size});
     }
 }
@@ -110,7 +110,7 @@ function getGitMenuItems(gitLinks) {
     return gitLinks.split('\n').map(link => {
         return menuItem({
             text: link,
-            icon: fontAwesomeIcon({icon: ['fab', 'github']}),
+            icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
             onClick: () => window.open(link)
         });
     });
