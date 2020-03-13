@@ -33,7 +33,7 @@ export class AppModel {
 
     @managed
     navigatorModel = new NavigatorModel({
-        routes: [
+        pages: [
             {id: 'default', content: homePage},
             {id: 'grids', content: gridPage},
             {id: 'gridDetail', content: gridDetailPage},

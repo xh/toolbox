@@ -1,5 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {div, hbox, box} from '@xh/hoist/cmp/layout';
 
 export const hboxPage = hoistCmp.factory({
@@ -7,7 +7,7 @@ export const hboxPage = hoistCmp.factory({
 
         const defaults = {padding: 10, className: 'toolbox-containers-box'};
 
-        return page({
+        return panel({
             className: 'toolbox-containers-page',
             items: [
                 div({

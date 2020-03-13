@@ -1,6 +1,6 @@
 import {hoistCmp, creates} from '@xh/hoist/core';
 import {div, filler, vbox} from '@xh/hoist/cmp/layout';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -28,7 +28,7 @@ export const formPage = hoistCmp.factory({
     model: creates(FormPageModel),
 
     render() {
-        return page({
+        return panel({
             title: 'Form',
             icon: Icon.edit(),
             scrollable: true,
