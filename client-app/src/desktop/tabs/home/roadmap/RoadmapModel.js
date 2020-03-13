@@ -34,7 +34,7 @@ export class RoadmapModel {
         },
         groupRowRenderer: ({node}) => {
             const projectRec = node.allLeafChildren[0].data;
-            return Icon.calendar({asSvg: true}) + ' ' + projectRec.data.phaseName;
+            return Icon.calendar({asHtml: true}) + ' ' + projectRec.data.phaseName;
         },
         emptyText: 'No projects found...',
         selModel: 'disabled',
