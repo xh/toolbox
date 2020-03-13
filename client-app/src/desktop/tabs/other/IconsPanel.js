@@ -74,7 +74,7 @@ function row(icon) {
 
 
 function getAllIcons() {
-    const factories = without(Object.keys(Icon), ['icon', 'fileIcon']);
+    const factories = without(Object.keys(Icon), 'icon', 'fileIcon');
 
     return factories.map(key => ({
         name:       key,

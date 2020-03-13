@@ -26,7 +26,7 @@ export const iconPage = hoistCmp.factory({
 });
 
 function allIcons() {
-    const factories = without(Object.keys(Icon), ['icon', 'fileIcon']);
+    const factories = without(Object.keys(Icon), 'icon', 'fileIcon');
 
     return factories.map(key => ({
         name: key,
