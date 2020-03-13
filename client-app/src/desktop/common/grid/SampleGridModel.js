@@ -84,164 +84,11 @@ export class SampleGridModel {
     };
 
     @managed
-    gridModel = new GridModel({
-        showSummary: 'bottom',
-        selModel: {mode: 'multiple'},
-        sortBy: 'profit_loss|desc|abs',
-        emptyText: 'No records found...',
-        enableColChooser: true,
-        enableExport: true,
-        exportOptions: {
-            columns: ['id', 'company', 'VISIBLE'],
-            filename: 'hoist-sample-export'
-        },
-        sizingMode: XH.appModel.gridSizingMode,
-        store: {
-            processRawData: (r) => {
-                const pnl = r.profit_loss;
-                return {
-                    winLose: pnl > 0 ? 'Winner' : (pnl < 0 ? 'Loser' : 'Flat'),
-                    ...r
-                };
-            },
-            fields: [
-                {
-                    name: 'trade_date',
-                    type: 'localDate'
-                }]
-        },
-        contextMenu: [
-            this.viewDetailsAction,
-            this.terminateAction,
-            '-',
-            ...GridModel.defaultContextMenu
-        ],
-        groupSortFn: (a, b, groupField) => {
-            if (a == b) return 0;
-            if (groupField == 'winLose') {
-                return a == 'Winner' ? -1 : 1;
-            } else {
-                return a < b ? -1 : 1;
-            }
-        },
-        colDefaults: {
-            tooltipElement: (v, {record}) => {
-                const {company, city, trade_date, profit_loss, trade_volume} = record.data;
-                return vbox({
-                    className: 'sample-grid-tooltip',
-                    items: [
-                        div({className: 'company', item: company}),
-                        hbox({
-                            className: 'city-and-date tooltip-row',
-                            items: [
-                                city,
-                                filler(),
-                                fmtDate(trade_date)
-                            ]
-                        }),
-                        hbox({
-                            className: 'tooltip-row',
-                            items: [
-                                'P&L',
-                                filler(),
-                                fmtNumber(profit_loss, {precision: 0, ledger: true, colorSpec: true, asElement: true})
-                            ]
-                        }),
-                        hbox({
-                            className: 'tooltip-row',
-                            items: [
-                                'Volume',
-                                filler(),
-                                fmtMillions(trade_volume, {precision: 1, label: true, asElement: true})
-                            ]
-                        })
-                    ]
-                });
-            }
-        },
-        columns: [
-            {
-                field: 'id',
-                headerName: 'ID',
-                hidden: true
-            },
-            {
-                ...actionCol,
-                width: calcActionColWidth(2),
-                actionsShowOnHoverOnly: true,
-                actions: [
-                    this.viewDetailsAction,
-                    this.terminateAction
-                ]
-            },
-            {
-                field: 'company',
-                width: 200,
-                tooltip: true,
-                headerName: ({gridModel}) => {
-                    let ret = 'Company';
-                    if (gridModel.selectedRecord) {
-                        ret += ` (${gridModel.selectedRecord.data.company})`;
-                    }
+    gridModel;
 
-                    return ret;
-                },
-                exportName: 'Company'
-            },
-            {
-                field: 'winLose',
-                hidden: true,
-                excludeFromChooser: true
-            },
-            {
-                field: 'city',
-                width: 140,
-                tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
-                cellClass: (val) => {
-                    return val == 'New York' ? 'xh-text-color-accent' : '';
-                }
-            },
-            {
-                headerName: 'Volume',
-                field: 'trade_volume',
-                align: 'right',
-                width: 110,
-                tooltip: (val) => fmtNumberTooltip(val),
-                renderer: millionsRenderer({
-                    precision: 1,
-                    label: true
-                }),
-                exportFormat: ExportFormat.NUM_DELIMITED
-            },
-            {
-                headerName: 'P&L',
-                field: 'profit_loss',
-                align: 'right',
-                width: 130,
-                absSort: true,
-                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
-                renderer: numberRenderer({
-                    precision: 0,
-                    ledger: true,
-                    colorSpec: true
-                }),
-                exportFormat: ExportFormat.LEDGER_COLOR
-            },
-            {
-                headerName: 'Date',
-                field: 'trade_date',
-                ...localDateCol
-            },
-            {
-                field: 'active',
-                ...boolCheckCol,
-                headerName: '',
-                chooserName: 'Active Status',
-                tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
-            },
-            {...emptyFlexCol}
-        ]
-    });
+    constructor({experimental} = {}) {
+        this.gridModel = this.createGridModel(experimental);
+    }
 
     async doLoadAsync(loadSpec) {
         const {trades, summary} = await XH.fetchJson({url: 'trade'}),
@@ -249,6 +96,168 @@ export class SampleGridModel {
 
         gridModel.loadData(trades, summary);
         if (gridModel.agGridModel.isReady && !gridModel.hasSelection) gridModel.selectFirst();
+    }
+
+    createGridModel(experimental) {
+        return new GridModel({
+            experimental,
+            showSummary: 'bottom',
+            selModel: {mode: 'multiple'},
+            sortBy: 'profit_loss|desc|abs',
+            emptyText: 'No records found...',
+            enableColChooser: true,
+            enableExport: true,
+            exportOptions: {
+                columns: ['id', 'company', 'VISIBLE'],
+                filename: 'hoist-sample-export'
+            },
+            sizingMode: XH.appModel.gridSizingMode,
+            store: {
+                processRawData: (r) => {
+                    const pnl = r.profit_loss;
+                    return {
+                        winLose: pnl > 0 ? 'Winner' : (pnl < 0 ? 'Loser' : 'Flat'),
+                        ...r
+                    };
+                },
+                fields: [
+                    {
+                        name: 'trade_date',
+                        type: 'localDate'
+                    }]
+            },
+            contextMenu: [
+                this.viewDetailsAction,
+                this.terminateAction,
+                '-',
+                ...GridModel.defaultContextMenu
+            ],
+            groupSortFn: (a, b, groupField) => {
+                if (a == b) return 0;
+                if (groupField == 'winLose') {
+                    return a == 'Winner' ? -1 : 1;
+                } else {
+                    return a < b ? -1 : 1;
+                }
+            },
+            colDefaults: {
+                tooltipElement: (v, {record}) => {
+                    const {company, city, trade_date, profit_loss, trade_volume} = record.data;
+                    return vbox({
+                        className: 'sample-grid-tooltip',
+                        items: [
+                            div({className: 'company', item: company}),
+                            hbox({
+                                className: 'city-and-date tooltip-row',
+                                items: [
+                                    city,
+                                    filler(),
+                                    fmtDate(trade_date)
+                                ]
+                            }),
+                            hbox({
+                                className: 'tooltip-row',
+                                items: [
+                                    'P&L',
+                                    filler(),
+                                    fmtNumber(profit_loss, {precision: 0, ledger: true, colorSpec: true, asElement: true})
+                                ]
+                            }),
+                            hbox({
+                                className: 'tooltip-row',
+                                items: [
+                                    'Volume',
+                                    filler(),
+                                    fmtMillions(trade_volume, {precision: 1, label: true, asElement: true})
+                                ]
+                            })
+                        ]
+                    });
+                }
+            },
+            columns: [
+                {
+                    field: 'id',
+                    headerName: 'ID',
+                    hidden: true
+                },
+                {
+                    ...actionCol,
+                    width: calcActionColWidth(2),
+                    actionsShowOnHoverOnly: true,
+                    actions: [
+                        this.viewDetailsAction,
+                        this.terminateAction
+                    ]
+                },
+                {
+                    field: 'company',
+                    width: 200,
+                    tooltip: true,
+                    headerName: ({gridModel}) => {
+                        let ret = 'Company';
+                        if (gridModel.selectedRecord) {
+                            ret += ` (${gridModel.selectedRecord.data.company})`;
+                        }
+
+                        return ret;
+                    },
+                    exportName: 'Company'
+                },
+                {
+                    field: 'winLose',
+                    hidden: true,
+                    excludeFromChooser: true
+                },
+                {
+                    field: 'city',
+                    width: 140,
+                    tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
+                    cellClass: (val) => {
+                        return val == 'New York' ? 'xh-text-color-accent' : '';
+                    }
+                },
+                {
+                    headerName: 'Volume',
+                    field: 'trade_volume',
+                    align: 'right',
+                    width: 110,
+                    tooltip: (val) => fmtNumberTooltip(val),
+                    renderer: millionsRenderer({
+                        precision: 1,
+                        label: true
+                    }),
+                    exportFormat: ExportFormat.NUM_DELIMITED
+                },
+                {
+                    headerName: 'P&L',
+                    field: 'profit_loss',
+                    align: 'right',
+                    width: 130,
+                    absSort: true,
+                    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
+                    renderer: numberRenderer({
+                        precision: 0,
+                        ledger: true,
+                        colorSpec: true
+                    }),
+                    exportFormat: ExportFormat.LEDGER_COLOR
+                },
+                {
+                    headerName: 'Date',
+                    field: 'trade_date',
+                    ...localDateCol
+                },
+                {
+                    field: 'active',
+                    ...boolCheckCol,
+                    headerName: '',
+                    chooserName: 'Active Status',
+                    tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
+                },
+                {...emptyFlexCol}
+            ]
+        });
     }
 
     showInfoToast(rec) {
