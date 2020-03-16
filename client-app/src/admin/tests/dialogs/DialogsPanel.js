@@ -92,7 +92,7 @@ export const dialogsPanel = hoistCmp.factory({
                         fragment(
                             button({
                                 ...dialogBtn(Icon.learn()),
-                                text: 'Defaults',
+                                text: 'Defaults  (m1)',
                                 onClick: () => model.dialogModel1.open()
                             }),
                             dialog({model: model.dialogModel1})
@@ -100,7 +100,7 @@ export const dialogsPanel = hoistCmp.factory({
                         fragment(
                             button({
                                 ...dialogBtn(Icon.stopCircle()),
-                                text: 'No Icon, No Title, No Close Button',
+                                text: 'No Icon, No Title, No Close Button (m2)',
                                 onClick: () => model.dialogModel2.open() 
                             }),
                             dialog({model: model.dialogModel2})
@@ -108,13 +108,13 @@ export const dialogsPanel = hoistCmp.factory({
                         fragment(
                             button({
                                 ...dialogBtn(Icon.stopCircle()),
-                                text: 'Icon, Title, and Close Button',
+                                text: 'Icon, Title, and Close Button (m3)',
                                 onClick: () => model.dialogModel3.open() 
                             }),
                             dialog({
                                 model: model.dialogModel3,
                                 icon: Icon.box(),
-                                title: 'Icon, Title and Close Btn in Header'
+                                title: 'Icon, Title and Close Btn in Header (m3)'
                             })
                         )
                     ),
@@ -124,13 +124,13 @@ export const dialogsPanel = hoistCmp.factory({
                         fragment(
                             button({
                                 ...dialogBtn(Icon.arrowsLeftRight()),
-                                text: 'Draggable Dialog',
+                                text: 'Draggable Dialog (m4)',
                                 onClick: () => model.dialogModel4.open() 
                             }),
                             dialog({
                                 model: model.dialogModel4,
                                 icon: Icon.arrowsLeftRight(),
-                                title: 'Draggable Only'
+                                title: 'Draggable Only (m4)'
                             })
                         ),
                         fragment(
@@ -148,13 +148,13 @@ export const dialogsPanel = hoistCmp.factory({
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
-                                text: 'Resizable & Draggable Dialog with Tree Map',
+                                text: 'Resizable & Draggable Dialog with Tree Map (m6)',
                                 onClick: () => model.dialogModel6.open() 
                             }),
                             dialog({
                                 model: model.dialogModel6,
                                 icon: Icon.chartLine(),
-                                title: 'Resizable & Draggable Dialog with Tree Map'
+                                title: 'Resizable & Draggable Dialog with Tree Map (m6)'
                             })
                         )
                     ),
@@ -170,31 +170,31 @@ export const dialogsPanel = hoistCmp.factory({
                             dialog({
                                 model: model.dialogModel7,
                                 icon: Icon.chartLine(),
-                                title: 'Stateful Draggable Only'
+                                title: 'Stateful Draggable Only (m7)'
                             })
                         ),
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
-                                text: 'Stateful Resizable Only',
+                                text: 'Stateful Resizable Only (m8)',
                                 onClick: () => model.dialogModel8.open() 
                             }),
                             dialog({
                                 model: model.dialogModel8,
                                 icon: Icon.chartLine(),
-                                title: 'Stateful Resizable Only'
+                                title: 'Stateful Resizable Only (m8)'
                             })
                         ),
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
-                                text: 'Stateful Resizable & Draggable',
+                                text: 'Stateful Resizable & Draggable (m9)',
                                 onClick: () => model.dialogModel9.open() 
                             }),
                             dialog({
                                 model: model.dialogModel9,
                                 icon: Icon.chartLine(),
-                                title: 'Stateful Resizable & Draggable'
+                                title: 'Stateful Resizable & Draggable (m9)'
                             })
                         )
                     ),
@@ -204,18 +204,18 @@ export const dialogsPanel = hoistCmp.factory({
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
-                                text: 'Dialog That Opens a Child Dialog',
+                                text: 'Dialog That Opens a Child Dialog (m10)',
                                 onClick: () => model.dialogModel10.open() 
                             }),
                             dialog({
                                 model: model.dialogModel10,
                                 icon: Icon.box(),
-                                title: 'Parent Dialog'
+                                title: 'Parent Dialog (m10)'
                             }),
                             dialog({
                                 model: model.dialogModel11,
                                 icon: Icon.box(),
-                                title: 'A Child Dialog'
+                                title: 'A Child Dialog (m11)'
                             })
                         )
                     ),
@@ -225,13 +225,13 @@ export const dialogsPanel = hoistCmp.factory({
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
-                                text: 'style.zIndex = 100 (stateful)',
+                                text: 'style.zIndex = 100 (stateful)  (m12)',
                                 onClick: () => model.dialogModel12.open() 
                             }),
                             dialog({
                                 model: model.dialogModel12,
                                 icon: Icon.chartLine(),
-                                title: 'Dialog with style.zIndex 100',
+                                title: 'Dialog with style.zIndex 100 (m12)',
                                 rndOptions: {
                                     style: {
                                         zIndex: 100
@@ -279,12 +279,12 @@ export const dialogsPanel = hoistCmp.factory({
                 dialog({
                     model: model.dialogModel14,
                     icon: Icon.addressCard(),
-                    title: 'Dialog not in "portal'
+                    title: 'Dialog not in "portal (m14)'
                 }),
                 dialog({
                     model: model.dialogModel15,
                     icon: Icon.chartLine(),
-                    title: 'Dialog not in "portal (self-centering)'
+                    title: 'Dialog not in "portal (self-centering) (m15)'
                 })
             ]
         });
