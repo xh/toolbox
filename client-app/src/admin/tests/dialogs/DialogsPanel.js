@@ -114,7 +114,7 @@ export const dialogsPanel = hoistCmp.factory({
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
-                                text: 'Resizable Dialog with OHLC Chart',
+                                text: 'Resizable Dialog with OHLC Chart (m5)',
                                 onClick: () => model.dialogModel5.open() 
                             }),
                             dialog({
@@ -142,7 +142,7 @@ export const dialogsPanel = hoistCmp.factory({
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
-                                text: 'Stateful Draggable Only',
+                                text: 'Stateful Draggable Only (m7)',
                                 onClick: () => model.dialogModel7.open() 
                             }),
                             dialog({
@@ -224,13 +224,13 @@ export const dialogsPanel = hoistCmp.factory({
                         fragment(
                             button({
                                 ...dialogBtn(Icon.chartLine()),
-                                text: 'custom style prop setting (should show with green shadow)',
+                                text: 'custom style prop setting (should show with green shadow) (m13)',
                                 onClick: () => model.dialogModel13.open() 
                             }),
                             dialog({
                                 model: model.dialogModel13,
                                 icon: Icon.chartLine(),
-                                title: 'Dialog with custom green shadow',
+                                title: 'Dialog with custom green shadow (m13)',
                                 rndOptions: {
                                     style: {
                                         boxShadow: '0px 0px 10px 5px green'
@@ -244,12 +244,12 @@ export const dialogsPanel = hoistCmp.factory({
                         null,
                         button({
                             ...dialogBtn(Icon.addressCard()),
-                            text: 'Dialog not in "portal',
+                            text: 'Dialog not in "portal (m14)',
                             onClick: () => model.dialogModel14.open() 
                         }),
                         button({
                             ...dialogBtn(Icon.chartLine()),
-                            text: 'Dialog not in "portal (self-centering)',
+                            text: 'Dialog not in "portal (self-centering) (m15)',
                             onClick: () => model.dialogModel15.open() 
                         })
                     )
