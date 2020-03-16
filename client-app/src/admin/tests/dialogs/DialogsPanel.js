@@ -26,19 +26,41 @@ export const dialogsPanel = hoistCmp.factory({
             className: 'test-dialogs',
             ref: divRef,
             bbar: [
+                switchInput({
+                    bind: 'controllSizePos',
+                    alignIndicator: 'right'
+                }),
                 label('x:'),
                 numberInput({
                     bind: 'x',
                     min: 0,
                     width: 60,
-                    commitOnChange: true
+                    commitOnChange: true,
+                    disabled: !model.controllSizePos
                 }),
                 label('y:'),
                 numberInput({
                     bind: 'y',
                     min: 0,
                     width: 60,
-                    commitOnChange: true
+                    commitOnChange: true,
+                    disabled: !model.controllSizePos
+                }),
+                label('width:'),
+                numberInput({
+                    bind: 'width',
+                    min: 0,
+                    width: 60,
+                    commitOnChange: true,
+                    disabled: !model.controllSizePos
+                }),
+                label('height:'),
+                numberInput({
+                    bind: 'height',
+                    min: 0,
+                    width: 60,
+                    commitOnChange: true,
+                    disabled: !model.controllSizePos
                 }),
                 filler(),
                 switchInput({
@@ -120,7 +142,7 @@ export const dialogsPanel = hoistCmp.factory({
                             dialog({
                                 model: model.dialogModel5,
                                 icon: Icon.chartLine(),
-                                title: 'Resizable Dialog with OHLC Chart'
+                                title: 'Resizable Dialog with OHLC Chart (m5)'
                             })
                         ),
                         fragment(
