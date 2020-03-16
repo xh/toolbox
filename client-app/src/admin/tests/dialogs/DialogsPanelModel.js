@@ -127,20 +127,18 @@ export class DialogsPanelModel {
                     track: () => this[prop],
                     run: (v) => {
                         if (['x', 'y'].includes(prop)) {
-                            const method = 'setPosition',
-                                pos = {
-                                    ...{x: this.x, y: this.y},
-                                    ...{[prop]: v}
-                                };
-                            dialogModel[method](pos);
+                            const pos = {
+                                ...{x: this.x, y: this.y},
+                                ...{[prop]: v}
+                            };
+                            dialogModel.setPosition(pos);
                         } 
                         if (['width', 'height'].includes(prop)) {
-                            const method = 'setSize',
-                                size = {
-                                    ...{width: this.width, height: this.height},
-                                    ...{[prop]: v}
-                                };
-                            dialogModel[method](size);
+                            const size = {
+                                ...{width: this.width, height: this.height},
+                                ...{[prop]: v}
+                            };
+                            dialogModel.setSize(size);
                         } 
                     }
                 }),
