@@ -36,7 +36,7 @@ export class SampleGridModel {
 
     terminateAction = {
         text: 'Terminate',
-        icon: Icon.skull(),
+        icon: Icon.skull({className: 'xh-red'}),
         intent: 'danger',
         tooltip: 'Terminate this company.',
         recordsRequired: 1,

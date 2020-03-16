@@ -1,6 +1,6 @@
 import {hoistCmp, creates} from '@xh/hoist/core';
 
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {dataView} from '@xh/hoist/cmp/dataview';
 import {refreshButton} from '@xh/hoist/mobile/cmp/button';
 import {filler} from '@xh/hoist/cmp/layout';
@@ -12,7 +12,7 @@ export const dataViewPage = hoistCmp.factory({
     model: creates(DataViewPageModel),
 
     render() {
-        return page({
+        return panel({
             title: 'DataView',
             icon: Icon.addressCard(),
             mask: 'onLoad',

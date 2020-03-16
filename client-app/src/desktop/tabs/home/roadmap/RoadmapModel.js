@@ -3,7 +3,7 @@ import {bindable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {roadmapViewItem} from './RoadmapViewItem';
 import './RoadmapView.scss';
-import {convertIconToSvg, Icon} from '@xh/hoist/icon';
+import {Icon} from '@xh/hoist/icon';
 
 @HoistModel
 @LoadSupport
@@ -34,7 +34,7 @@ export class RoadmapModel {
         },
         groupRowRenderer: ({node}) => {
             const projectRec = node.allLeafChildren[0].data;
-            return convertIconToSvg(Icon.calendar()) + ' ' + projectRec.data.phaseName;
+            return Icon.calendar({asHtml: true}) + ' ' + projectRec.data.phaseName;
         },
         emptyText: 'No projects found...',
         selModel: 'disabled',
