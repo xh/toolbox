@@ -67,6 +67,18 @@ export const toolbarPanel = hoistCmp.factory({
                         intent: 'danger',
                         disabled: !model.enableTerminate,
                         onClick: () => XH.toast({message: 'Game over!', icon: Icon.skull(), intent: 'danger'})
+                    }),
+                    button({
+                        icon: Icon.add(),
+                        text: 'Extra Button'
+                    }),
+                    button({
+                        icon: Icon.chevronRight(),
+                        text: 'Overflowing Button 1'
+                    }),
+                    button({
+                        icon: Icon.arrowRight(),
+                        text: 'Overflowing Button 2'
                     })
                 ],
                 items: [
