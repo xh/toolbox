@@ -22,7 +22,7 @@ export const FetchApiTestPanel = hoistCmp({
                 panel({
                     title: 'Send Request with Status Code',
                     className: 'xh-border-right',
-                    width: 350,
+                    width: 360,
                     margin: '0 1px 0 0',
                     flexShrink: 0,
                     tbar: [

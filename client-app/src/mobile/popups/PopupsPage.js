@@ -1,12 +1,12 @@
 import {XH, hoistCmp} from '@xh/hoist/core';
 import {div, span, code} from '@xh/hoist/cmp/layout';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
 export const popupsPage = hoistCmp.factory({
     render() {
-        return page({
+        return panel({
             title: 'Popups',
             icon: Icon.comment(),
             className: 'toolbox-page xh-tiled-bg',

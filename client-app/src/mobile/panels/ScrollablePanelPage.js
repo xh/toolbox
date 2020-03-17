@@ -1,9 +1,8 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {switchInput} from '@xh/hoist/mobile/cmp/input';
-import {page} from '@xh/hoist/mobile/cmp/page';
-import {filler, p, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {filler, p, span} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {ScrollablePanelPageModel} from './ScrollablePanelPageModel';
 
@@ -22,19 +21,17 @@ export const scrollablePanelPage = hoistCmp.factory({
             );
         }
 
-        return page(
-            panel({
-                scrollable: true,
-                title: 'Scrollable Panel',
-                icon: Icon.favorite(),
-                className: 'tb-panels-scrollable-panel',
-                items,
-                bbar: toolbar(
-                    filler(),
-                    span('Add lots of content'),
-                    switchInput({bind: 'showLongContent'})
-                )
-            })
-        );
+        return panel({
+            scrollable: true,
+            title: 'Scrollable Panel',
+            icon: Icon.favorite(),
+            className: 'tb-panels-scrollable-panel',
+            items,
+            bbar: toolbar(
+                filler(),
+                span('Add lots of content'),
+                switchInput({bind: 'showLongContent'})
+            )
+        });
     }
 });
