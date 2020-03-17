@@ -2,7 +2,7 @@ import React from 'react';
 import {hoistCmp} from '@xh/hoist/core';
 import {a, code, hbox, hframe, img, p} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {fontAwesomeIcon, Icon} from '@xh/hoist/icon';
+import {Icon} from '@xh/hoist/icon';
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faPhoneLaptop, faMobile} from '@fortawesome/pro-regular-svg-icons';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -38,7 +38,7 @@ export const mobileTab = hoistCmp.factory(
             className: 'tb-mobile',
             items: panel({
                 title: 'Mobile Support',
-                icon: fontAwesomeIcon({icon: faPhoneLaptop}),
+                icon: Icon.icon({iconName: 'phone-laptop'}),
                 width: 800,
                 height: 540,
                 items: [
@@ -62,7 +62,7 @@ export const mobileTab = hoistCmp.factory(
                     button({
                         minimal: false,
                         text: 'Launch Toolbox Mobile Site',
-                        icon: fontAwesomeIcon({icon: faMobile}),
+                        icon: Icon.icon({iconName: 'mobile'}),
                         onClick: () => window.open('/mobile')
                     }),
                     hframe(

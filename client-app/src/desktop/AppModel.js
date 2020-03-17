@@ -6,7 +6,7 @@
  */
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
-import {fontAwesomeIcon, Icon} from '@xh/hoist/icon';
+import {Icon} from '@xh/hoist/icon';
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faMobileAlt} from '@fortawesome/pro-regular-svg-icons';
 import {PortfolioService} from '../core/svc/PortfolioService';
@@ -39,7 +39,7 @@ export class AppModel {
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
             {id: 'other', icon: Icon.boxFull(), content: otherTab},
             {id: 'examples', icon: Icon.books(), content: examplesTab},
-            {id: 'mobile', icon: fontAwesomeIcon({icon: faMobileAlt}), content: mobileTab}
+            {id: 'mobile', icon: Icon.icon({iconName: 'mobile-alt'}), content: mobileTab}
         ],
         switcherPosition: 'none'
     });
