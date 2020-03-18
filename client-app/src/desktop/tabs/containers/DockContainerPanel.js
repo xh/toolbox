@@ -110,13 +110,14 @@ class Model {
             id: XH.genId(),
             icon: Icon.window(),
             title: 'A simple docked panel',
+            width: 300,
+            height: 150,
+            collapsedWidth: 200,
             allowDialog,
             allowClose,
-            content: () => panel({
-                width: 250,
-                height: 120,
-                item: box({items: textItems, padding: 10})
-            })
+            content: () => panel(
+                box({items: textItems, padding: 10})
+            )
         });
     }
 
