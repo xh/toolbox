@@ -17,7 +17,7 @@ export class DetailPanelModel {
         minSize: 250,
         maxSize: 500,
         side: 'bottom',
-        renderMode: 'unmountOnHide',
+        collapsedRenderMode: 'unmountOnHide',
         prefName: 'portfolioDetailPanelConfig'
     });
 
