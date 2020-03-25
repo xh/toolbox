@@ -2,7 +2,7 @@ import {useRef} from 'react';
 
 import {table, tbody, td, th, tr, filler, /* p,*/ fragment} from '@xh/hoist/cmp/layout';
 import {hoistCmp, creates} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {button, menuButton} from '@xh/hoist/desktop/cmp/button';
 import {dialog} from '@xh/hoist/desktop/cmp/dialog';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {label} from '@xh/hoist/cmp/layout';
@@ -134,15 +134,61 @@ export const dialogsPanel = hoistCmp.factory({
                             })
                         ),
                         fragment(
-                            button({
-                                ...dialogBtn(Icon.chartLine()),
-                                text: 'Resizable Dialog with OHLC Chart (m5)',
-                                onClick: () => model.dialogModel5.open() 
+                            menuButton({
+                                minimal: false,
+                                primaryButtonConf: {
+                                    icon: Icon.expand(),
+                                    text: 'Resizable with Size & Width (m5)',
+                                    onClick: () => model.dialogModel5.open() 
+                                },
+                                menuItemConfs: [
+                                    {
+                                        key: 1,
+                                        text: '... with just Width (content: form) (m16)',
+                                        onClick: () => model.dialogModel16.open()
+                                    },
+                                    {
+                                        key: 2,
+                                        text: '... with just Width (content: OHLC Chart) (m17)  ** Illustrates issue with chart that has no width',
+                                        onClick: () => model.dialogModel17.open()
+                                    },
+                                    {
+                                        key: 3,
+                                        text: '... with just Height (content: OHLC Chart) (m18)',
+                                        onClick: () => model.dialogModel18.open()
+                                    },
+                                    {
+                                        key: 4,
+                                        text: '... with no Width or Height (content: form) (m19)',
+                                        onClick: () => model.dialogModel19.open()
+                                    }
+                                    // todo: add form with no width no height
+                                ]
                             }),
                             dialog({
                                 model: model.dialogModel5,
                                 icon: Icon.chartLine(),
-                                title: 'Resizable Dialog with OHLC Chart (m5)'
+                                title: 'Resizable with Size & Width (m5)'
+                            }),
+                            dialog({
+                                model: model.dialogModel16,
+                                icon: Icon.expand(),
+                                title: 'Resizable with just Width (m16)'
+                            }),
+                            dialog({
+                                model: model.dialogModel17,
+                                icon: Icon.expand(),
+                                title: 'Resizable with just Width (content: OHLC Chart) (m17)'
+                            }),
+                            dialog({
+                                model: model.dialogModel18,
+                                icon: Icon.expand(),
+                                title: 'Resizable with just Height (content: OHLC Chart) (m18)'
+                            }),
+                            dialog({
+                                model: model.dialogModel19,
+                                icon: Icon.expand(),
+                                title: 'Resizable with no width or height (content: form) (m19)'
                             })
                         ),
                         fragment(

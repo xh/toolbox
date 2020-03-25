@@ -28,7 +28,7 @@ export class DialogsPanelModel {
     @bindable width = null;
     @bindable height = null;
 
-    switchableDialogModels = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+    switchableDialogModels = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
     switches = [
         'showBackgroundMask', 'closeOnOutsideClick', 'showCloseButton', 'closeOnEscape'
     ];
@@ -287,6 +287,33 @@ export class DialogsPanelModel {
         content: oHLCChartPanel,
         width: 600,
         height: 400
+    });
+
+    @managed
+    dialogModel16 = new DialogModel({
+        content: () => formPanel({onCloseClick: () => this.dialogModel16.close()}),
+        resizable: true,
+        width: 600
+    });
+
+    @managed
+    dialogModel17 = new DialogModel({
+        content: oHLCChartPanel,
+        resizable: true,
+        width: 600
+    });
+
+    @managed
+    dialogModel18 = new DialogModel({
+        content: oHLCChartPanel,
+        resizable: true,
+        height: 400
+    });
+
+    @managed
+    dialogModel19 = new DialogModel({
+        content: () => formPanel({onCloseClick: () => this.dialogModel19.close()}),
+        resizable: true
     });
 }
 
