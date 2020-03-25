@@ -157,7 +157,8 @@ export class SampleGridModel {
                         })
                     ]
                 });
-            }
+            },
+            allowedSorts: ['asc', 'desc', null]
         },
         columns: [
             {
