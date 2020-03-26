@@ -2,7 +2,7 @@ import {useRef} from 'react';
 
 import {table, tbody, td, th, tr, filler, /* p,*/ fragment} from '@xh/hoist/cmp/layout';
 import {hoistCmp, creates} from '@xh/hoist/core';
-import {button, menuButton} from '@xh/hoist/desktop/cmp/button';
+import {button, splitButton} from '@xh/hoist/desktop/cmp/button';
 import {dialog} from '@xh/hoist/desktop/cmp/dialog';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {label} from '@xh/hoist/cmp/layout';
@@ -134,7 +134,7 @@ export const dialogsPanel = hoistCmp.factory({
                             })
                         ),
                         fragment(
-                            menuButton({
+                            splitButton({
                                 minimal: false,
                                 primaryButtonConf: {
                                     icon: Icon.expand(),
@@ -143,26 +143,21 @@ export const dialogsPanel = hoistCmp.factory({
                                 },
                                 menuItemConfs: [
                                     {
-                                        key: 1,
                                         text: '... with just Width (content: form) (m16)',
                                         onClick: () => model.dialogModel16.open()
                                     },
                                     {
-                                        key: 2,
                                         text: '... with just Width (content: OHLC Chart) (m17)  ** Illustrates issue with chart that has no width',
                                         onClick: () => model.dialogModel17.open()
                                     },
                                     {
-                                        key: 3,
                                         text: '... with just Height (content: OHLC Chart) (m18)',
                                         onClick: () => model.dialogModel18.open()
                                     },
                                     {
-                                        key: 4,
                                         text: '... with no Width or Height (content: form) (m19)',
                                         onClick: () => model.dialogModel19.open()
                                     }
-                                    // todo: add form with no width no height
                                 ]
                             }),
                             dialog({
@@ -208,34 +203,34 @@ export const dialogsPanel = hoistCmp.factory({
                         'Stateful:',
                         null,
                         fragment(
-                            button({
-                                ...dialogBtn(Icon.chartLine()),
-                                text: 'Stateful Draggable Only (m7)',
-                                onClick: () => model.dialogModel7.open() 
+                            splitButton({
+                                minimal: false,
+                                primaryButtonConf: {
+                                    icon: Icon.save(),
+                                    text: 'Stateful Resizable & Draggable (m9)',
+                                    onClick: () => model.dialogModel9.open() 
+                                },
+                                menuItemConfs: [
+                                    {
+                                        text: '... Draggable Only (m7)',
+                                        onClick: () => model.dialogModel7.open() 
+                                    },
+                                    {
+                                        text: '... Resizable Only (m8)',
+                                        onClick: () => model.dialogModel8.open() 
+                                    }
+                                ]
                             }),
+
                             dialog({
                                 model: model.dialogModel7,
                                 icon: Icon.chartLine(),
                                 title: 'Stateful Draggable Only (m7)'
-                            })
-                        ),
-                        fragment(
-                            button({
-                                ...dialogBtn(Icon.chartLine()),
-                                text: 'Stateful Resizable Only (m8)',
-                                onClick: () => model.dialogModel8.open() 
                             }),
                             dialog({
                                 model: model.dialogModel8,
                                 icon: Icon.chartLine(),
                                 title: 'Stateful Resizable Only (m8)'
-                            })
-                        ),
-                        fragment(
-                            button({
-                                ...dialogBtn(Icon.chartLine()),
-                                text: 'Stateful Resizable & Draggable (m9)',
-                                onClick: () => model.dialogModel9.open() 
                             }),
                             dialog({
                                 model: model.dialogModel9,
