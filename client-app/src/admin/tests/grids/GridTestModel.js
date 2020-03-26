@@ -39,7 +39,7 @@ export class GridTestModel {
 
     @managed
     @observable.ref
-    gridModel = this.createGridModel();
+    gridModel;
 
     @bindable gridUpdateTime = null;
     @bindable avgGridUpdateTime = null;
@@ -50,6 +50,7 @@ export class GridTestModel {
     _gridLoadTimes = [];
 
     constructor() {
+        this.gridModel = this.createGridModel();
         this.addReaction({
             track: () =>  [this.tree, this.useTransactions, this.useDeltaSort, this.disableSelect],
             run: () => {
@@ -189,8 +190,7 @@ export class GridTestModel {
             treeMode: this.tree,
             experimental: {
                 useTransactions: this.useTransactions,
-                useDeltaSort: this.useDeltaSort,
-                suppressUpdateExpandStateOnDataLoad: true
+                useDeltaSort: this.useDeltaSort
             },
             columns: [
                 {
