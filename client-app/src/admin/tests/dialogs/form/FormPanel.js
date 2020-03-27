@@ -13,28 +13,21 @@ import {DialogModel} from '@xh/hoist/desktop/cmp/dialog/DialogModel';
 import {FormPanelModel} from './FormPanelModel';
 
 import './FormPanel.scss';
-import {withDefault} from '@xh/hoist/utils/js';
 
 export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
 
-    render({onCloseClick}) {
-
-        const dialogModel = useContextModel(DialogModel);
-        onCloseClick = withDefault(onCloseClick, () => dialogModel.hide());
-
+    render() {
         return panel({
             className: 'tbox-form-panel',
             height: '100%',
-            item: hframe(
-                formContent({onCloseClick})
-            )
+            item: hframe(formContent())
         });
     }
 });
 
 const formContent = hoistCmp.factory(
-    ({model, onCloseClick}) => panel({
+    ({model}) => panel({
         flex: 1,
         item: form({
             fieldDefaults: {
@@ -74,7 +67,7 @@ const formContent = hoistCmp.factory(
                 ]
             })
         }),
-        bbar: bbar({onCloseClick})
+        bbar: bbar()
     })
 );
 
@@ -222,26 +215,29 @@ const references = hoistCmp.factory(
     }
 );
 
-const bbar = hoistCmp.factory(
-    ({model, onCloseClick}) => toolbar(
-        button({
-            text: 'Reset',
-            icon: Icon.reset({className: 'xh-red'}),
-            onClick: () => model.reset(),
-            disabled: !model.formModel.isDirty
-        }),
-        filler(),
-        button({
-            text: 'Submit',
-            icon: Icon.check(),
-            minimal: false,
-            intent: 'success',
-            onClick: () => {
-                model.submitAsync()
-                    .then(outcome => {
-                        if (outcome.isValid) onCloseClick();
-                    });
-            }
-        })
-    )
-);
+const bbar = hoistCmp.factory({
+    render({model}) {
+        const dialogModel = useContextModel(DialogModel);
+        return toolbar(
+            button({
+                text: 'Reset',
+                icon: Icon.reset({className: 'xh-red'}),
+                onClick: () => model.reset(),
+                disabled: !model.formModel.isDirty
+            }),
+            filler(),
+            button({
+                text: 'Submit',
+                icon: Icon.check(),
+                minimal: false,
+                intent: 'success',
+                onClick: () => {
+                    model.submitAsync()
+                        .then(outcome => {
+                            if (outcome.isValid) dialogModel.close();
+                        });
+                }
+            })
+        );
+    }
+});
