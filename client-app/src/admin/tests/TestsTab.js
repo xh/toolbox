@@ -17,6 +17,8 @@ import {FetchApiTestPanel} from './fetch/FetchApiTestPanel';
 import {StoreEditingPanel} from './storeEditing/StoreEditingPanel';
 import {SelectTestPanel} from './Select/SelectTestPanel';
 import {dataViewTestPanel} from './dataview/DataViewTestPanel';
+import {buttonTestPanel} from './button/ButtonTestPanel';
+
 
 export const TestsTab = hoistCmp(
     () => tabContainer({
@@ -31,7 +33,9 @@ export const TestsTab = hoistCmp(
                 {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel},
                 {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
                 {id: 'storeEditing', title: 'Store Editing', content: StoreEditingPanel},
-                {id: 'select', title: 'Select', content: SelectTestPanel}
+                {id: 'select', title: 'Select', content: SelectTestPanel},
+                {id: 'button', title: 'Buttons', content: buttonTestPanel}
+
             ],
             switcherPosition: 'left'
         }

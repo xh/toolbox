@@ -1,0 +1,24 @@
+.split-button-test-panel {
+  margin: var(--xh-pad-px);
+  padding: var(--xh-pad-px);
+  border: var(--xh-border-solid);
+  background: var(--xh-bg);
+
+  .xh-vframe {
+    overflow-y: auto !important;
+  }
+}
+
+.button-example {
+  border: var(--xh-border-dotted);
+  padding: 10px;
+  margin: 10px;
+}
+
+.special-split-button {
+  .xh-split-button__menu__menu-item,
+  .xh-split-button__primary-button {
+    font-weight: bold;
+    font-style: italic;
+  }
+}
