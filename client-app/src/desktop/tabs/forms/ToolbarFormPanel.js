@@ -9,7 +9,7 @@ import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {frame, filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {button, splitButton} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -155,6 +155,52 @@ export const toolbarFormPanel = hoistCmp.factory({
                             item: radioInput({
                                 options: ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]
                             })
+                        }),
+                        splitButton({
+                            text: 'Hoist Apps',
+                            menuTriggerSide: 'left',
+                            minimal: false,
+                            onClick: () => window.open('/app/examples', '_blank'),
+                            menuItemConfs: [
+                                {
+                                    text: 'Portfolio App',
+                                    onClick: () => window.open('/portfolio', '_blank')
+                                },
+                                {
+                                    text: 'News App',
+                                    onClick: () => window.open('/news', '_blank')
+                                }
+                            ]
+                        }),
+                        splitButton({
+                            text: 'More Hoist Apps',
+                            minimal: false,
+                            onClick: () => window.open('/app/examples', '_blank'),
+                            menuItemConfs: [
+                                {
+                                    text: 'FDA Recalls App',
+                                    onClick: () => window.open('/recalls', '_blank')
+                                },
+                                {
+                                    text: 'File Manager App',
+                                    onClick: () => window.open('/fileManager', '_blank')
+                                }
+                            ]
+                        }),
+                        splitButton({
+                            text: 'Disabled Split Button',
+                            disabled: true,                          minimal: false,
+                            onClick: () => window.open('/app/examples', '_blank'),
+                            menuItemConfs: [
+                                {
+                                    text: 'FDA Recalls App',
+                                    onClick: () => window.open('/recalls', '_blank')
+                                },
+                                {
+                                    text: 'File Manager App',
+                                    onClick: () => window.open('/fileManager', '_blank')
+                                }
+                            ]
                         }),
                         filler(),
                         button({
