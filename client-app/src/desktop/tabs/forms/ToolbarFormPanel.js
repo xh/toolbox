@@ -159,7 +159,6 @@ export const toolbarFormPanel = hoistCmp.factory({
                         splitButton({
                             text: 'Hoist Apps',
                             menuTriggerSide: 'left',
-                            minimal: false,
                             onClick: () => window.open('/app/examples', '_blank'),
                             menuItemConfs: [
                                 {
@@ -174,7 +173,8 @@ export const toolbarFormPanel = hoistCmp.factory({
                         }),
                         splitButton({
                             text: 'More Hoist Apps',
-                            minimal: false,
+                            minimal: true,
+                            intent: 'primary',
                             onClick: () => window.open('/app/examples', '_blank'),
                             menuItemConfs: [
                                 {
