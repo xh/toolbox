@@ -1,23 +1,42 @@
-.split-button-test-panel {
-  margin: var(--xh-pad-px);
-  padding: var(--xh-pad-px);
-  border: var(--xh-border-solid);
+.tb-split-button-test-panel {
   background: var(--xh-bg);
+  border: var(--xh-border-solid);
+  margin: var(--xh-pad-px);
 
-  .xh-vframe {
-    overflow-y: auto !important;
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    align-content: flex-start;
+
+    .tb-button-example {
+      border: var(--xh-border-solid);
+      margin: var(--xh-pad-px);
+      width: 250px;
+
+      .xh-split-button {
+        margin: var(--xh-pad-px);
+      }
+
+      ul {
+        border-top: var(--xh-border-solid);
+        margin: var(--xh-pad-px) var(--xh-pad-half-px) 0 0;
+        padding: var(--xh-pad-half-px);
+
+        li {
+          list-style: none;
+          font-family: var(--xh-font-family-mono);
+          font-size: var(--xh-font-size-small-px);
+        }
+      }
+    }
   }
 }
 
-.button-example {
-  border: var(--xh-border-dotted);
-  padding: 10px;
-  margin: 10px;
-}
-
 .special-split-button {
-  .xh-split-button__menu__menu-item,
-  .xh-split-button__primary-button {
+  .xh-split-button__menu-item,
+  .xh-split-button__primary {
     font-weight: bold;
     font-style: italic;
   }

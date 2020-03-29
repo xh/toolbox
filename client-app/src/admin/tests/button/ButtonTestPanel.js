@@ -1,210 +1,109 @@
-import {castArray} from 'lodash';
-
+import {div, li, ul} from '@xh/hoist/cmp/layout';
 import {hoistCmp} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {elementFromContent} from '@xh/hoist/utils/react';
 import {splitButton} from '@xh/hoist/desktop/cmp/button';
-import {div, fragment, hbox, p, h4, br} from '@xh/hoist/cmp/layout';
-
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
+import {elementFromContent} from '@xh/hoist/utils/react';
+import {castArray} from 'lodash';
 import './ButtonTestPanel.scss';
 
 
-export const buttonTestPanel = hoistCmp.factory({
-
-    // model: creates(SelectTestModel),
-
-    render({model}) {
-
+export const buttonTestPanel = hoistCmp.factory(
+    () => {
         return panel({
-            title: 'Button tests',
             className: 'xh-tiled-bg',
-            item: hbox(
-                panel({
-                    title: 'Split Button',
-                    className: 'split-button-test-panel',
-                    overflow: 'auto',
-                    width: 250,
-                    items: [
-                        example({
-                            features: [
-                                'defaults:', 
-                                'menuTriggerSide: \'right\'', 
-                                'minimal: false', 
-                                'disabled: false'
-                            ],
-                            content: () => splitButton({
-                                text: 'Hoist Apps',
-                                onClick: () => window.open('/app/examples', '_blank'),
-                                menuItemConfs: [
-                                    {
-                                        text: 'FDA Recalls App',
-                                        onClick: () => window.open('/recalls', '_blank')
-                                    },
-                                    {
-                                        text: 'File Manager App',
-                                        onClick: () => window.open('/fileManager', '_blank')
-                                    }
-                                ]
-                            })
-                        }),
-                        example({
-                            features: `menuTriggerSide: 'left'`,
-                            content: () => splitButton({
-                                text: 'More Hoist Apps',
-                                menuTriggerSide: 'left',
-                                onClick: () => window.open('/app/examples', '_blank'),
-                                menuItemConfs: [
-                                    {
-                                        text: 'Portfolio App',
-                                        onClick: () => window.open('/portfolio', '_blank')
-                                    },
-                                    {
-                                        text: 'News App',
-                                        onClick: () => window.open('/news', '_blank')
-                                    }
-                                ]
-                            })
-                        }),
-                        example({
-                            features: `minimal: true`,
-                            content: () => splitButton({
-                                text: 'More Hoist Apps',
-                                minimal: true,
-                                onClick: () => window.open('/app/examples', '_blank'),
-                                menuItemConfs: [
-                                    {
-                                        text: 'FDA Recalls App',
-                                        onClick: () => window.open('/recalls', '_blank')
-                                    },
-                                    {
-                                        text: 'File Manager App',
-                                        onClick: () => window.open('/fileManager', '_blank')
-                                    }
-                                ]
-                            })
-                        }),
-                        example({
-                            features: ['minimal: true', 'intent: \'primary\''],
-                            content: () => splitButton({
-                                text: 'More Hoist Apps',
-                                minimal: true,
-                                intent: 'primary',
-                                onClick: () => window.open('/app/examples', '_blank'),
-                                menuItemConfs: [
-                                    {
-                                        text: 'FDA Recalls App',
-                                        onClick: () => window.open('/recalls', '_blank')
-                                    },
-                                    {
-                                        text: 'File Manager App',
-                                        onClick: () => window.open('/fileManager', '_blank')
-                                    }
-                                ]
-                            })
-                        }),
-                        example({
-                            features: `intent: 'success'`,
-                            content: () => splitButton({
-                                text: 'More Hoist Apps',
-                                intent: 'success',
-                                onClick: () => window.open('/app/examples', '_blank'),
-                                menuItemConfs: [
-                                    {
-                                        text: 'FDA Recalls App',
-                                        onClick: () => window.open('/recalls', '_blank')
-                                    },
-                                    {
-                                        text: 'File Manager App',
-                                        onClick: () => window.open('/fileManager', '_blank')
-                                    }
-                                ]
-                            })
-                        }),
-                        example({
-                            features: 'disabled: true',
-                            content: () => splitButton({
-                                text: 'More Hoist Apps',
-                                disabled: true,
-                                onClick: () => window.open('/app/examples', '_blank'),
-                                menuItemConfs: [
-                                    {
-                                        text: 'FDA Recalls App',
-                                        onClick: () => window.open('/recalls', '_blank')
-                                    },
-                                    {
-                                        text: 'File Manager App',
-                                        onClick: () => window.open('/fileManager', '_blank')
-                                    }
-                                ]
-                            })
-                        }),
-                        example({
-                            features: 'no menuItemConfs []',
-                            content: () => splitButton({
-                                text: 'No Hoist Apps Below',
-                                onClick: () => window.open('/app/examples', '_blank'),
-                                menuItemConfs: []
-                            })
-                        }),
-                        example({
-                            features: 'no menuItemConfs (undefined)',
-                            content: () => splitButton({
-                                text: 'No Hoist Apps Below',
-                                onClick: () => window.open('/app/examples', '_blank')
-                            })
-                        }),
-                        example({
-                            features: 'intent:\'primary\' on a menu item',
-                            content: () => splitButton({
-                                text: 'More Hoist Apps',
-                                onClick: () => window.open('/app/examples', '_blank'),
-                                menuItemConfs: [
-                                    {
-                                        text: 'FDA Recalls App',
-                                        onClick: () => window.open('/recalls', '_blank'),
-                                        intent: 'primary'
-                                    },
-                                    {
-                                        text: 'File Manager App',
-                                        onClick: () => window.open('/fileManager', '_blank')
-                                    }
-                                ]
-                            })
-                        }),
-                        example({
-                            features: [
-                                'styled with className: \'special-split-button\''
-                            ],
-                            content: () => splitButton({
-                                text: 'Hoist Apps',
-                                onClick: () => window.open('/app/examples', '_blank'),
-                                className: 'special-split-button',
-                                menuItemConfs: [
-                                    {
-                                        text: 'FDA Recalls App',
-                                        onClick: () => window.open('/recalls', '_blank')
-                                    },
-                                    {
-                                        text: 'File Manager App',
-                                        onClick: () => window.open('/fileManager', '_blank')
-                                    }
-                                ]
-                            })
-                        })
-                    ]
-                })
-            )
+            items: [splitButtonPanel()]
         });
     }
-});
+);
+
+const splitButtonPanel = hoistCmp.factory(
+    () => {
+        const text = 'Hoist Apps',
+            recalls = {
+                text: 'FDA Recalls',
+                icon: Icon.health(),
+                onClick: () => window.open('/recalls', '_blank')
+            },
+            news = {
+                text: 'News',
+                icon: Icon.news(),
+                onClick: () => window.open('/news', '_blank')
+            },
+            portfolio = {
+                text: 'Portfolio',
+                icon: Icon.portfolio(),
+                onClick: () => window.open('/portfolio', '_blank')
+            },
+            menuItems = [portfolio, recalls, news],
+            defaultConf = {
+                text, menuItems, onClick: () => window.open('/app/examples', '_blank')
+            };
+
+        return panel({
+            title: 'SplitButton',
+            className: 'tb-split-button-test-panel',
+            item: div({
+                className: 'tb-split-button-test-panel__inner',
+                items: [
+                    example({
+                        content: () => splitButton({...defaultConf})
+                    }),
+                    example({
+                        features: `menuSide: 'left'`,
+                        content: () => splitButton({...defaultConf, menuSide: 'left'})
+                    }),
+                    example({
+                        features: `minimal: true`,
+                        content: () => splitButton({...defaultConf, minimal: true})
+                    }),
+                    example({
+                        features: ['minimal: true', `intent: 'primary'`],
+                        content: () => splitButton({...defaultConf,  minimal: true, intent: 'primary'})
+                    }),
+                    example({
+                        features: ['icon', `intent: 'success'`],
+                        content: () => splitButton({...defaultConf, icon: Icon.books(), intent: 'success'})
+                    }),
+                    example({
+                        features: 'disabled: true',
+                        content: () => splitButton({...defaultConf, disabled: true})
+                    }),
+                    example({
+                        features: 'menuItems: []',
+                        content: () => splitButton({...defaultConf, menuItems: []})
+                    }),
+                    example({
+                        features: 'menuItems: undefined',
+                        content: () => splitButton({...defaultConf, menuItems: undefined})
+                    }),
+                    example({
+                        features: `menuItem props`,
+                        content: () => splitButton({
+                            ...defaultConf,
+                            menuItems: [
+                                {...portfolio, intent: 'primary'},
+                                {...news, disabled: true},
+                                {...recalls}
+                            ]
+                        })
+                    }),
+                    example({
+                        features: [`custom className`],
+                        content: () => splitButton({...defaultConf, className: 'special-split-button'})
+                    })
+                ]
+            })
+        });
+    }
+);
 
 const example = hoistCmp.factory(
     ({features, content}) => div({
-        className: 'button-example',
+        className: 'tb-button-example',
         items: [
-            h4('Features'),
-            p(castArray(features).map(it => fragment(it, br()))),
-            elementFromContent(content)
+            elementFromContent(content),
+            features ? ul(castArray(features).map(it => li(it))) : null
         ]
     })
 );

@@ -1,4 +1,5 @@
 import {span} from '@xh/hoist/cmp/layout';
+import {splitButton} from '@xh/hoist/desktop/cmp/button';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {XH, hoistCmp, creates} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
@@ -37,11 +38,6 @@ export const toolbarPanel = hoistCmp.factory({
                         intent: 'success'
                     }),
                     toolbarSep(),
-                    button({
-                        icon: Icon.edit(),
-                        text: 'Edit',
-                        intent: 'primary'
-                    }),
                     popover({
                         position: 'bottom-left',
                         minimal: true,
@@ -55,7 +51,25 @@ export const toolbarPanel = hoistCmp.factory({
                             menuItem({text: 'Menu Item 3'})
                         )
                     }),
-                    filler(),
+                    toolbarSep(),
+                    splitButton({
+                        text: 'Split Button',
+                        icon: Icon.books(),
+                        onClick: () => window.open('/app/examples', '_blank'),
+                        menuItems: [
+                            {
+                                text: 'Portfolio App',
+                                icon: Icon.portfolio(),
+                                onClick: () => window.open('/portfolio', '_blank')
+                            },
+                            {
+                                text: 'News App',
+                                icon: Icon.news(),
+                                onClick: () => window.open('/news', '_blank')
+                            }
+                        ]
+                    }),
+                    toolbarSep(),
                     switchInput({
                         bind: 'enableTerminate',
                         label: 'Danger mode',
@@ -68,10 +82,7 @@ export const toolbarPanel = hoistCmp.factory({
                         disabled: !model.enableTerminate,
                         onClick: () => XH.toast({message: 'Game over!', icon: Icon.skull(), intent: 'danger'})
                     }),
-                    button({
-                        icon: Icon.add(),
-                        text: 'Extra Button'
-                    }),
+                    filler(),
                     button({
                         icon: Icon.chevronRight(),
                         text: 'Overflowing Button 1'
