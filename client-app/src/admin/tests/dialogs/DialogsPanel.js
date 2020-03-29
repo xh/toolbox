@@ -28,7 +28,7 @@ const managePanel = hoistCmp.factory({
             title: 'Create/Manage',
             model: {
                 showSplitter: true,
-                defaultSize: 350,
+                defaultSize: 400,
                 side: 'left',
                 resizable: false,
                 collapsible: false

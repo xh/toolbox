@@ -13,25 +13,57 @@ export const stubPanel = hoistCmp.factory({
     render({model}) {
         const parentModel = useContextModel(DialogsPanelModel),
             {dialogModel} = model,
-            {isOpen, position, size, isMaximized} = dialogModel;
+            {isOpen, position, size, isMaximized, renderedPosition: rPosition, renderedSize: rSize} = dialogModel;
         return vbox(
-            toolbar(model.xhId,
-                filler(),
-                `(${position.x ?? ''}, ${position.y ?? ''}, ${size.width ?? ''},  ${size.height ?? ''})`),
             toolbar(
+                button({
+                    icon: Icon.arrowLeft(),
+                    disabled: isMaximized,
+                    onClick: () => dialogModel.setPosition({x: rPosition.x -10})
+                }),
+                button({
+                    icon: Icon.arrowRight(),
+                    disabled: isMaximized,
+                    onClick: () => dialogModel.setPosition({x: rPosition.x + 10})
+                }),
+                button({
+                    icon: Icon.arrowUp(),
+                    disabled: isMaximized,
+                    onClick: () => dialogModel.setPosition({y: rPosition.y -10})
+                }),
+                button({
+                    icon: Icon.arrowDown(),
+                    disabled: isMaximized,
+                    onClick: () => dialogModel.setPosition({y: rPosition.y + 10})
+                }),
+                button({
+                    icon: isOpen ? Icon.close() : Icon.openExternal(),
+                    onClick: () => isOpen ? dialogModel.close() : dialogModel.open()
+                }),
                 filler(),
+                `rend: (${rPosition?.x ?? ''}, ${rPosition?.y ?? ''}, ${rSize?.width ?? ''},  ${rSize?.height ?? ''})`
+            ),
+            toolbar(
+                button({
+                    icon: Icon.arrowsLeftRight(),
+                    disabled: isMaximized,
+                    onClick: () => dialogModel.setSize({width: rSize.width + 10})
+                }),
+                button({
+                    icon: Icon.arrowsUpDown(),
+                    disabled: isMaximized,
+                    onClick: () => dialogModel.setSize({height: rSize.height + 10})
+                }),
                 button({
                     icon: isMaximized ? Icon.collapse() : Icon.expand(),
                     onClick: () => dialogModel.toggleMaximized()
                 }),
                 button({
-                    text: isOpen ? 'Close' : 'Open',
-                    onClick: () => isOpen ? dialogModel.close() : dialogModel.open()
-                }),
-                button({
-                    text: 'Destroy',
+                    icon: Icon.delete(),
                     onClick: () => parentModel.removeStub(model)
-                })
+                }),
+                filler(),
+                `spec: (${position.x ?? ''}, ${position.y ?? ''}, ${size.width ?? ''},  ${size.height ?? ''})`
             ),
             vspacer(5)
         );
