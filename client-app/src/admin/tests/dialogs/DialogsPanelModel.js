@@ -18,13 +18,11 @@ export class DialogsPanelModel {
         showCloseButton: true,
         closeOnEscape: true,
         draggable: true,
-        width: 600,
-        height: 400,
-        x: 100,
-        y: 100,
+        resizable: true,
+        position: {x: 100, y: 100},
+        size: {width: 400, height: 600},
         isOpen: true,
-        inPortal: false,
-        zIndex: true
+        inPortal: false
     };
 
     @managed
