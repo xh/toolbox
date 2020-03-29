@@ -176,7 +176,9 @@ export class SampleGridModel {
             },
             {
                 field: 'company',
-                width: 200,
+                flex: 2,
+                minWidth: 200,
+                maxWidth: 350,
                 tooltip: true,
                 headerName: ({gridModel}) => {
                     let ret = 'Company';
@@ -195,7 +197,9 @@ export class SampleGridModel {
             },
             {
                 field: 'city',
-                width: 140,
+                flex: 1,
+                minWidth: 110,
+                maxWidth: 175,
                 tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
                 cellClass: (val) => {
                     return val == 'New York' ? 'xh-text-color-accent' : '';
