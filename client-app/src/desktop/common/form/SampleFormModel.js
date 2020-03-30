@@ -9,7 +9,7 @@ import {Icon} from '@xh/hoist/icon';
 import {filter, isEmpty, isNil} from 'lodash';
 
 @HoistModel
-export class FormPanelModel {
+export class SampleFormModel {
 
     @managed
     validateTask = new PendingTaskModel();
@@ -44,7 +44,6 @@ export class FormPanelModel {
             },
             {
                 name: 'email',
-                initialValue: 'jbloggs@gmail.com',
                 rules: [required, this.validEmail]
             },
             {
@@ -143,7 +142,6 @@ export class FormPanelModel {
                 )
             });
             this.reset();
-            return {isValid: true};
         } else {
             const errCount = filter(formModel.fields, f => f.isNotValid).length;
             XH.toast({
@@ -151,7 +149,6 @@ export class FormPanelModel {
                 intent: 'danger',
                 message: `Form is not valid. ${errCount} fields are still invalid!`
             });
-            return {isValid: false};
         }
     }
 }

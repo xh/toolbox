@@ -1,27 +1,26 @@
-import {hoistCmp, creates, useContextModel} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {checkbox, dateInput, numberInput, 
-    select, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
+import {checkbox, dateInput, numberInput, select, switchInput, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {DialogModel} from '@xh/hoist/desktop/cmp/dialog/DialogModel';
+import {SampleFormModel} from './SampleFormModel';
 
-import {FormPanelModel} from './FormPanelModel';
+import './SampleForm.scss';
 
-import './FormPanel.scss';
+export const sampleForm = hoistCmp.factory({
+    model: creates(SampleFormModel),
 
-export const formPanel = hoistCmp.factory({
-    model: creates(FormPanelModel),
-
-    render() {
-        return panel({
+    render({showOptions = false}) {
+        return hframe({
             className: 'tbox-form-panel',
-            height: '100%',
-            item: hframe(formContent())
+            items: [
+                formContent(),
+                displayOptions({omit: !showOptions})
+            ]
         });
     }
 });
@@ -215,29 +214,58 @@ const references = hoistCmp.factory(
     }
 );
 
-const bbar = hoistCmp.factory({
-    render({model}) {
-        const dialogModel = useContextModel(DialogModel);
-        return toolbar(
-            button({
-                text: 'Reset',
-                icon: Icon.reset({className: 'xh-red'}),
-                onClick: () => model.reset(),
-                disabled: !model.formModel.isDirty
-            }),
-            filler(),
-            button({
-                text: 'Submit',
-                icon: Icon.check(),
-                minimal: false,
-                intent: 'success',
-                onClick: () => {
-                    model.submitAsync()
-                        .then(outcome => {
-                            if (outcome.isValid) dialogModel.close();
-                        });
-                }
-            })
-        );
+const displayOptions = hoistCmp.factory(
+    ({model}) => {
+        const {formModel} = model;
+        return panel({
+            title: 'Display Options',
+            className: 'tbox-display-opts',
+            icon: Icon.settings(),
+            compactHeader: true,
+            model: {side: 'right', defaultSize: 220, resizable: false},
+            items: [
+                switchInput({
+                    bind: 'inline',
+                    label: 'Inline labels'
+                }),
+                switchInput({
+                    bind: 'minimal',
+                    label: 'Minimal validation display'
+                }),
+                switchInput({
+                    bind: 'commitOnChange',
+                    label: 'Commit on change'
+                }),
+                switchInput({
+                    model: formModel,
+                    bind: 'readonly',
+                    label: 'Read-only'
+                }),
+                switchInput({
+                    model: formModel,
+                    bind: 'disabled',
+                    label: 'Disabled'
+                })
+            ]
+        });
     }
-});
+);
+
+const bbar = hoistCmp.factory(
+    ({model}) => toolbar(
+        button({
+            text: 'Reset',
+            icon: Icon.reset({className: 'xh-red'}),
+            onClick: () => model.reset(),
+            disabled: !model.formModel.isDirty
+        }),
+        filler(),
+        button({
+            text: 'Submit',
+            icon: Icon.check(),
+            minimal: false,
+            intent: 'success',
+            onClick: () => model.submitAsync()
+        })
+    )
+);

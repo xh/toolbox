@@ -6,9 +6,9 @@ import {without} from 'lodash';
 import {StubModel} from './StubModel';
 import {FormModel} from '@xh/hoist/cmp/form';
 
-import {formPanel} from './form/FormPanel';
-import {oHLCChartPanel} from './chart/OHLCChartPanel';
-import {simpleTreeMapPanel} from './chart/SimpleTreeMapPanel';
+import {formPanel} from './content/FormPanel';
+import {chartPanel} from './content/ChartPanel';
+import {treeMapPanel} from './content/TreeMapPanel';
 
 @HoistModel
 export class DialogsPanelModel {
@@ -67,8 +67,8 @@ export class DialogsPanelModel {
     getContent() {
         switch (this.formModel.values.content) {
             case 'form': return formPanel;
-            case 'chart': return oHLCChartPanel;
-            case 'treeMap': return simpleTreeMapPanel;
+            case 'chart': return chartPanel;
+            case 'treeMap': return treeMapPanel;
         }
         return null;
     }

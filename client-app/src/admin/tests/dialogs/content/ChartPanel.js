@@ -1,35 +1,27 @@
-import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
-import {ChartModel} from '@xh/hoist/cmp/chart';
-import {bindable} from '@xh/hoist/mobx';
+import {hoistCmp, creates, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {chart, ChartModel} from '@xh/hoist/cmp/chart';
 import {fmtDate} from '@xh/hoist/format';
+
+
+export const chartPanel = hoistCmp.factory({
+    model: creates(() => new Model()),
+
+    render({model}) {
+        return chart();
+    }
+});
 
 @HoistModel
 @LoadSupport
-export class OHLCChartModel {
-    @bindable currentSymbol = '';
-    @bindable.ref symbols = null;
-    numCompanies = 3;
+class Model {
+
+    @managed
     chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
-    @bindable aspectRatio = null;
-    
-    constructor() {
-        this.addReaction({
-            track: () => this.currentSymbol,
-            run: () => this.loadAsync()
-        });
-    }
-    
     async doLoadAsync(loadSpec) {
-        if (!this.symbols) {
-            let symbols = await XH.portfolioService.getSymbolsAsync();
-            symbols = symbols.slice(0, this.numCompanies);
-            this.setSymbols(symbols);
-        }
-        if (!this.currentSymbol) {
-            this.setCurrentSymbol(this.symbols[0]);
-        }
-        let series = await XH.portfolioService.getOHLCChartSeriesAsync(this.currentSymbol);
+        const symbols = await XH.portfolioService.getSymbolsAsync(),
+            symbol = symbols[0],
+            series = await XH.portfolioService.getOHLCChartSeriesAsync(symbol);
 
         const groupPixelWidth = 5;
         Object.assign(series, {

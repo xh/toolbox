@@ -1,12 +1,20 @@
-import {XH, HoistModel, managed} from '@xh/hoist/core';
-import {LoadSupport} from '@xh/hoist/core/mixins';
+import {XH, HoistModel, managed, hoistCmp, creates, LoadSupport} from '@xh/hoist/core';
+import {treeMap} from '@xh/hoist/desktop/cmp/treemap';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {Store} from '@xh/hoist/data';
 import {clamp} from 'lodash';
 
+export const treeMapPanel = hoistCmp.factory({
+    model: creates(() => new Model()),
+
+    render() {
+        return treeMap({width: '100%', height: '100%'});
+    }
+});
+
 @HoistModel
 @LoadSupport
-export class SimpleTreeMapModel {
+class Model {
 
     @managed
     store = new Store({
@@ -36,5 +44,4 @@ export class SimpleTreeMapModel {
         const data = await XH.portfolioService.getPositionsAsync(['symbol']);
         this.store.loadData(data);
     }
-
 }
