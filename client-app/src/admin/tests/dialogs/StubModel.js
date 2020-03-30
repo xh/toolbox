@@ -6,9 +6,10 @@ export class StubModel {
     icon;
     dialogModel;
 
-    constructor(title, icon, dialogModel) {
+    constructor(title, icon, content, dialogModel) {
         this.title = title;
         this.icon = icon;
+        this.content = content;
         this.dialogModel = dialogModel;
     }
 

@@ -111,12 +111,13 @@ const hostPanel = hoistCmp.factory({
             item: vframe({
                 items: [
                     ...model.stubs.map(stub => {
-                        const {dialogModel, title, icon} = stub,
+                        const {dialogModel, title, icon, content} = stub,
                             props = {
                                 key: dialogModel.key,
-                                title,
                                 icon: icon ? Icon[icon]() : null,
-                                model: dialogModel
+                                title,
+                                model: dialogModel,
+                                item: content
                             };
                         return dialog(pickBy(props));
                     })

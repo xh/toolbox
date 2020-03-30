@@ -47,10 +47,8 @@ export class DialogsPanelModel {
         const newStub = new StubModel(
             values.title,
             values.icon,
-            new DialogModel({
-                ...JSON.parse(values.modelConfig),
-                content: this.getContent()
-            })
+            this.getContent(values.content),
+            new DialogModel(JSON.parse(values.modelConfig))
         );
         this.stubs = [...this.stubs, newStub];
     }
@@ -66,9 +64,9 @@ export class DialogsPanelModel {
     //----------------------
     getContent() {
         switch (this.formModel.values.content) {
-            case 'form': return formPanel;
-            case 'chart': return chartPanel;
-            case 'treeMap': return treeMapPanel;
+            case 'form': return formPanel();
+            case 'chart': return chartPanel();
+            case 'treeMap': return treeMapPanel();
         }
         return null;
     }

@@ -8,7 +8,6 @@ import {iconsPanel} from './IconsPanel';
 import {jsxPanel} from './JsxPanel';
 import {leftRightChooserPanel} from './LeftRightChooserPanel';
 import {popupsPanel} from './PopupsPanel';
-import {dialogsPanel} from './dialogs/DialogsPanel';
 import {relativeTimestampPanel} from './RelativeTimestampPanel';
 import {appNotificationsPanel} from './AppNotificationsPanel';
 
@@ -18,7 +17,6 @@ export const otherTab = hoistCmp.factory(
             route: 'default.other',
             switcherPosition: 'left',
             tabs: [
-                {id: 'dialogs', content: dialogsPanel},
                 {id: 'popups', content: popupsPanel},
                 {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
                 {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
