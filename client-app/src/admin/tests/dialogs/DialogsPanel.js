@@ -5,18 +5,20 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {pickBy} from 'lodash';
 import {jsonInput, select, textInput} from '@xh/hoist/desktop/cmp/input';
-import {dialog} from '@xh/hoist/desktop/cmp/dialog';
+import {dialog, DialogModel} from '@xh/hoist/desktop/cmp/dialog';
 import {Icon} from '@xh/hoist/icon';
 import {DialogsPanelModel} from './DialogsPanelModel';
 import {stubPanel} from './StubPanel';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-
+// import {formPanel} from './content/FormPanel';
+import {chartPanel} from './content/ChartPanel';
+import {treeMapPanel} from './content/TreeMapPanel';
 
 export const dialogsPanel = hoistCmp.factory({
     model: creates(DialogsPanelModel),
     render() {
-        return hframe(managePanel(), hostPanel());
+        return hframe(managePanel(), presetsPanel(), hostPanel());
     }
 });
 
@@ -124,4 +126,57 @@ const hostPanel = hoistCmp.factory({
             })
         });
     }
+});
+
+const presetsPanel = hoistCmp.factory({
+    render({model}) {
+        return panel({
+            title: 'Presets Panel',
+            flex: '0 0 auto',
+            item: vframe({
+                items: [
+                    button({
+                        text: 'Resizable Chart (d1)',
+                        minimal: false,
+                        icon: Icon.chartLine(),
+                        onClick: () => d1.open()
+                    }),
+                    dialog({
+                        title: 'Resizable Chart (d1)',
+                        icon: Icon.chartLine(),
+                        model: d1
+                    }),
+                    button({
+                        text: 'Resizable TreeMap (d2)',
+                        minimal: false,
+                        icon: Icon.box(),
+                        onClick: () => d2.open()
+                    }),
+                    dialog({
+                        title: 'Resizable TreeMap (d2)',
+                        icon: Icon.box(),
+                        model: d2
+                    })
+                ]
+            })
+        });
+    }
+});
+
+const d1 = new DialogModel({
+    'resizable': true,
+    'size': {
+        'width': 400,
+        'height': 600
+    },
+    content: () => chartPanel()
+});
+
+const d2 = new DialogModel({
+    'resizable': true,
+    'size': {
+        'width': 400,
+        'height': 600
+    },
+    content: () => treeMapPanel()
 });
