@@ -113,12 +113,13 @@ const hostPanel = hoistCmp.factory({
             item: vframe({
                 items: [
                     ...model.stubs.map(stub => {
-                        const {dialogModel, title, icon} = stub,
+                        const {dialogModel, title, icon, content} = stub,
                             props = {
                                 key: dialogModel.key,
-                                title,
                                 icon: icon ? Icon[icon]() : null,
-                                model: dialogModel
+                                title,
+                                model: dialogModel,
+                                item: content
                             };
                         return dialog(pickBy(props));
                     })
@@ -144,7 +145,8 @@ const presetsPanel = hoistCmp.factory({
                     dialog({
                         title: 'Resizable Chart (d1)',
                         icon: Icon.chartLine(),
-                        model: d1
+                        model: d1,
+                        item: chartPanel()
                     }),
                     button({
                         text: 'Resizable TreeMap (d2)',
@@ -155,7 +157,8 @@ const presetsPanel = hoistCmp.factory({
                     dialog({
                         title: 'Resizable TreeMap (d2)',
                         icon: Icon.box(),
-                        model: d2
+                        model: d2,
+                        item: treeMapPanel()
                     })
                 ]
             })
@@ -164,19 +167,19 @@ const presetsPanel = hoistCmp.factory({
 });
 
 const d1 = new DialogModel({
-    'resizable': true,
-    'size': {
-        'width': 400,
-        'height': 600
-    },
-    content: () => chartPanel()
+    isOpen: false,
+    resizable: true,
+    size: {
+        width: 400,
+        height: 600
+    }
 });
 
 const d2 = new DialogModel({
-    'resizable': true,
-    'size': {
-        'width': 400,
-        'height': 600
-    },
-    content: () => treeMapPanel()
+    isOpen: false,
+    resizable: true,
+    size: {
+        width: 400,
+        height: 600
+    }
 });
