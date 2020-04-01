@@ -1,4 +1,4 @@
-import {hoistCmp, uses} from '@xh/hoist/core';
+import {XH, hoistCmp, uses} from '@xh/hoist/core';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
@@ -21,7 +21,7 @@ export const gridPanel = hoistCmp.factory({
                 gridCountLabel({unit: 'position'}),
                 filler(),
                 relativeTimestamp({bind: 'loadTimestamp'}),
-                refreshButton({intent: 'success'})
+                refreshButton({model: XH.refreshContextModel, intent: 'success'})
             ]
         });
     }
