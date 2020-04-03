@@ -1,9 +1,9 @@
-import {XH, hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {select} from '@xh/hoist/mobile/cmp/input';
-import {div, hframe, filler, frame} from '@xh/hoist/cmp/layout';
+import {div, filler, frame, hframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 
 import {ToolbarPageModel} from './ToolbarPageModel';

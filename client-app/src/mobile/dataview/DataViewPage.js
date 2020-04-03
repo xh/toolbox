@@ -1,4 +1,4 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {dataView} from '@xh/hoist/cmp/dataview';

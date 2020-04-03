@@ -1,4 +1,4 @@
-import {HoistModel, XH, LoadSupport, managed} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {isNil} from 'lodash';

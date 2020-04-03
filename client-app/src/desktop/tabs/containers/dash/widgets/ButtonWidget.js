@@ -1,7 +1,7 @@
-import {hoistCmp, useLocalModel, HoistModel} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {vbox, div} from '@xh/hoist/cmp/layout';
+import {div, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';

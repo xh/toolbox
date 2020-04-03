@@ -1,5 +1,5 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';

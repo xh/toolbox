@@ -5,23 +5,23 @@
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
 import React from 'react';
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {frame, filler} from '@xh/hoist/cmp/layout';
+import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {
+    buttonGroupInput,
     checkbox,
     dateInput,
-    textInput,
     numberInput,
     radioInput,
     select,
     switchInput,
-    buttonGroupInput
+    textInput
 } from '@xh/hoist/desktop/cmp/input';
 
 import {usStates} from '../../../core/data';

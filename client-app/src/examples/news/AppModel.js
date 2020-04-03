@@ -1,6 +1,4 @@
-import {HoistAppModel, XH} from '@xh/hoist/core';
-
-import {managed} from '@xh/hoist/core';
+import {HoistAppModel, managed, XH} from '@xh/hoist/core';
 import {NewsPanelModel} from './NewsPanelModel';
 
 

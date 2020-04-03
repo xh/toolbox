@@ -1,7 +1,7 @@
 import React from 'react';
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {box, div, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
-import {hoistCmp, creates, uses} from '@xh/hoist/core';
+import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {

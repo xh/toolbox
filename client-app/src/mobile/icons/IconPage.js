@@ -1,6 +1,6 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {table, tbody, tr, th, td} from '@xh/hoist/cmp/layout';
+import {table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 
 import './IconPage.scss';

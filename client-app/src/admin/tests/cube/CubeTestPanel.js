@@ -1,9 +1,9 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {hframe, hspacer, filler} from '@xh/hoist/cmp/layout';
-import {hoistCmp, creates, XH} from '@xh/hoist/core';
+import {filler, hframe, hspacer} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField, storeCountLabel} from '@xh/hoist/cmp/store';
+import {storeCountLabel, storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 

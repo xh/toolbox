@@ -1,4 +1,4 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {hframe} from '@xh/hoist/cmp/layout';
 import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';

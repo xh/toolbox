@@ -1,5 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core/index';
-import {vbox, div} from '@xh/hoist/cmp/layout/index';
+import {div, vbox} from '@xh/hoist/cmp/layout/index';
 import {Icon} from '@xh/hoist/icon/index';
 import {fmtNumber} from '@xh/hoist/format';
 

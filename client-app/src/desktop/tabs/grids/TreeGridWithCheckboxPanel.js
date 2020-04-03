@@ -3,7 +3,7 @@ import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 
-import {wrapper, sampleTreeGrid} from '../../common';
+import {sampleTreeGrid, wrapper} from '../../common';
 
 export const treeGridWithCheckboxPanel = hoistCmp.factory(
     () => wrapper({

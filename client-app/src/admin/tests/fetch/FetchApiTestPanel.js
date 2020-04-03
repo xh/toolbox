@@ -1,9 +1,9 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {box, hbox, vbox, hframe, vframe} from '@xh/hoist/cmp/layout';
+import {box, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {select, jsonInput} from '@xh/hoist/desktop/cmp/input';
+import {jsonInput, select} from '@xh/hoist/desktop/cmp/input';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 

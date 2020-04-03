@@ -1,6 +1,6 @@
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {fmtNumber} from '@xh/hoist/format';
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';

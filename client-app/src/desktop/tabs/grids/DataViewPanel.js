@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, HoistModel, LoadSupport, managed, XH, creates} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';

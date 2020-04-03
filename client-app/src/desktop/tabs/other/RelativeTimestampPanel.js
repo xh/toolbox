@@ -5,7 +5,7 @@ import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {observable, action} from '@xh/hoist/mobx';
+import {action, observable} from '@xh/hoist/mobx';
 import {random, sample} from 'lodash';
 import moment from 'moment';
 import {wrapper} from '../../common/Wrapper';

@@ -1,6 +1,5 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed} from '@xh/hoist/core';
-import {LoadSupport} from '@xh/hoist/core/mixins';
+import {HoistModel, LoadSupport, managed} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 import {castArray} from 'lodash';
 

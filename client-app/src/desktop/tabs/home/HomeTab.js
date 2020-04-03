@@ -1,4 +1,4 @@
-import {hframe, box} from '@xh/hoist/cmp/layout';
+import {box, hframe} from '@xh/hoist/cmp/layout';
 import React from 'react';
 import {hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';

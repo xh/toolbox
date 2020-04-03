@@ -1,7 +1,7 @@
 import {cloneElement} from 'react';
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {tbody, table, tr, td} from '@xh/hoist/cmp/layout';
+import {table, tbody, td, tr} from '@xh/hoist/cmp/layout';
 import './Styles.scss';
 
 export const resultsPanel = hoistCmp.factory(

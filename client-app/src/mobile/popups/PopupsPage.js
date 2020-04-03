@@ -1,5 +1,5 @@
-import {XH, hoistCmp} from '@xh/hoist/core';
-import {div, span, code} from '@xh/hoist/cmp/layout';
+import {hoistCmp, XH} from '@xh/hoist/core';
+import {code, div, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';

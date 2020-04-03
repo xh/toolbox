@@ -3,18 +3,10 @@ import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {
-    restGrid,
-    addAction,
-    editAction,
-    viewAction,
-    deleteAction,
-    cloneAction
-} from '@xh/hoist/desktop/cmp/rest';
-import {boolCheckCol, numberCol, emptyFlexCol} from '@xh/hoist/cmp/grid';
+import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
+import {boolCheckCol, emptyFlexCol, ExportFormat, numberCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
-import {numberInput, textArea, switchInput} from '@xh/hoist/desktop/cmp/input';
-import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
+import {numberInput, switchInput, textArea} from '@xh/hoist/desktop/cmp/input';
 
 export const restGridPanel = hoistCmp.factory({
 

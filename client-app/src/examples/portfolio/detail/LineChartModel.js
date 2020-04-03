@@ -1,4 +1,4 @@
-import {HoistModel, XH, managed, LoadSupport} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {fmtDate} from '@xh/hoist/format';
 import {Highcharts} from '@xh/hoist/kit/highcharts';

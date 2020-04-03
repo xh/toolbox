@@ -1,4 +1,3 @@
-
 import {uses} from '@xh/hoist/core';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';

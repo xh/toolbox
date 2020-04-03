@@ -1,4 +1,4 @@
-import {hoistCmp, creates, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, span, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
