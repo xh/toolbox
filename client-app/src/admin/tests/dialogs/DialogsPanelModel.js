@@ -13,17 +13,20 @@ import {treeMapPanel} from './content/TreeMapPanel';
 @HoistModel
 export class DialogsPanelModel {
 
-    initialConfig = {
-        closeOnOutsideClick: true,
-        showCloseButton: true,
-        closeOnEscape: true,
-        draggable: true,
-        resizable: true,
-        position: {x: 100, y: 100},
-        size: {width: 400, height: 600},
-        isOpen: true,
-        inPortal: false
-    };
+    initialModelConfig = `{
+        // resizable: true,
+        // draggable: true,
+        // closeOnOutsideClick: false,
+        // closeOnEscape: false,
+        // showCloseButton: false,
+        // showBackgroundMask: false,
+        // inPortal: false, 
+       
+        // size: {width: 400, height: 600},     
+        // position: {x: 100, y: 100},
+        // isOpen: false,
+        // isMaximized: true
+}`;
 
     @managed
     formModel = new FormModel({
@@ -33,7 +36,7 @@ export class DialogsPanelModel {
             {name: 'title', initialValue: 'My Dialog'},
             {
                 name: 'modelConfig',
-                initialValue: JSON.stringify(this.initialConfig, null, '\t')
+                initialValue: this.initialModelConfig
             }
         ]
     });
@@ -41,22 +44,60 @@ export class DialogsPanelModel {
     @observable.ref
     stubs = [];
 
-    @action
-    addStub() {
+    addFormStub() {
         const {values} = this.formModel;
-        const newStub = new StubModel(
+        this.addStub(
             values.title,
             values.icon,
             this.getContent(values.content),
-            new DialogModel(JSON.parse(values.modelConfig))
+            new DialogModel(eval('('+ values.modelConfig + ')'))
         );
-        this.stubs = [...this.stubs, newStub];
+    }
+
+    @action
+    addStub(...args) {
+        this.stubs = [...this.stubs, new StubModel(...args)];
     }
 
     @action
     removeStub(stub) {
         this.stubs = without(this.stubs, stub);
         XH.safeDestroy(stub);
+    }
+
+    //--------------------
+    // Some Useful presets
+    //--------------------
+    addStub1() {
+        this.addStub(
+            'Resizable TreeMap (s1)',
+            'box',
+            treeMapPanel(),
+            new DialogModel({
+                resizable: true,
+                inPortal: false,
+                size: {
+                    width: 400,
+                    height: 600
+                }
+            })
+        );
+    }
+
+    addStub2() {
+        this.addStub(
+            'Resizable Chart (s1)',
+            'chartLine',
+            chartPanel(),
+            new DialogModel({
+                resizable: true,
+                inPortal: false,
+                size: {
+                    width: 400,
+                    height: 600
+                }
+            })
+        );
     }
 
     //----------------------
