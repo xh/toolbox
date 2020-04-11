@@ -69,7 +69,7 @@ class Model {
         this.setGroupRows(true);
 
         this.addReaction({
-            track: () => [this.inMillions],
+            track: () => this.inMillions,
             run: () => {
                 this.gridModel.agApi.refreshCells({
                     columns: ['projectedGross', 'actualGross'],
