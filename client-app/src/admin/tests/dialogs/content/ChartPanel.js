@@ -7,7 +7,7 @@ export const chartPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {
-        return chart();
+        return chart({minWidth: 200, minHeight: 200});
     }
 });
 

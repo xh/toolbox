@@ -14,13 +14,13 @@ import {treeMapPanel} from './content/TreeMapPanel';
 export class DialogsPanelModel {
 
     initialModelConfig = `{
-        // resizable: true,
-        // draggable: true,
+        resizable: true,
+        draggable: true,
         // closeOnOutsideClick: false,
         // closeOnEscape: false,
         // showCloseButton: false,
         // showBackgroundMask: false,
-        // inPortal: false, 
+        inPortal: false, 
        
         // size: {width: 400, height: 600},     
         // position: {x: 100, y: 100},

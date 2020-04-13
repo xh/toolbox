@@ -8,7 +8,7 @@ export const treeMapPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render() {
-        return treeMap({width: '100%', height: '100%'});
+        return treeMap({minWidth: 200, minHeight: 200});
     }
 });
 
