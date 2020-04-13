@@ -12,6 +12,9 @@ grails {
 //-------------------------------------------------------------
 private void hoistDefaults() {
 
+    // Uncomment to enable built-in spring boot admin endpoints (beans, metrics, etc)
+    // management.security.enabled = false
+
     grails {
         cors.enabled = true
         spring {
@@ -21,6 +24,7 @@ private void hoistDefaults() {
         }
 
         endpoints {
+            // Set to true to enable built-in spring boot admin endpoints (beans, metrics, etc)
             enabled = false
         }
 
