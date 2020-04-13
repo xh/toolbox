@@ -1,8 +1,7 @@
 import {HoistModel} from '@xh/hoist/core';
 import {action, observable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
-import {ol, li, p, h3} from '@xh/hoist/cmp/layout';
-
+import {h3, li, ol, p} from '@xh/hoist/cmp/layout';
 
 @HoistModel
 export class PanelResizingTestModel {

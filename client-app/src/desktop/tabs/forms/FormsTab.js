@@ -1,6 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-
 import {inputsPanel} from './InputsPanel';
 import {formPanel} from './FormPanel';
 import {toolbarFormPanel} from './ToolbarFormPanel';

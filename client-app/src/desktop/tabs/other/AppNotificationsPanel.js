@@ -1,10 +1,9 @@
-import {box, p, filler} from '@xh/hoist/cmp/layout';
-import {hoistCmp} from '@xh/hoist/core';
+import {box, filler, p} from '@xh/hoist/cmp/layout';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common/Wrapper';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {XH} from '@xh/hoist/core';
 import './AppNotificationsPanel.scss';
 
 export const appNotificationsPanel = hoistCmp.factory(

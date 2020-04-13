@@ -6,7 +6,6 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-
 import {LoadTimesModel} from './LoadTimesModel';
 
 export const loadTimesPanel = hoistCmp.factory({

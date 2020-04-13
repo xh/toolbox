@@ -1,5 +1,4 @@
-import {hoistCmp, useLocalModel, HoistModel, LoadSupport, managed} from '@xh/hoist/core';
-
+import {hoistCmp, HoistModel, LoadSupport, managed, useLocalModel} from '@xh/hoist/core';
 import {sampleGrid, SampleGridModel} from '../../../../common';
 
 export const GridWidget = hoistCmp({

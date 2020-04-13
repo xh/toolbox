@@ -7,8 +7,6 @@
 import {XH} from '@xh/hoist/core';
 import {AppModel as BaseAppModel} from '@xh/hoist/admin/AppModel';
 import {Icon} from '@xh/hoist/icon';
-
-
 import {WipTab} from './wip/WipTab';
 import {TestsTab} from './tests/TestsTab';
 import {roadmapTab} from './roadmap/RoadmapTab';

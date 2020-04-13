@@ -1,4 +1,4 @@
-import {hoistCmp, creates, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {a, filler, p, span, vframe} from '@xh/hoist/cmp/layout';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
