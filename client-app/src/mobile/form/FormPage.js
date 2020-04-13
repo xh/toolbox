@@ -19,7 +19,6 @@ import {
     textArea,
     textInput
 } from '@xh/hoist/mobile/cmp/input';
-
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 

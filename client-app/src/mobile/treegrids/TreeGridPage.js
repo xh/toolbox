@@ -5,7 +5,6 @@ import {filler} from '@xh/hoist/cmp/layout';
 import {dimensionChooser} from '@xh/hoist/mobile/cmp/dimensionchooser';
 import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-
 import {TreeGridPageModel} from './TreeGridPageModel';
 
 export const treeGridPage = hoistCmp.factory({

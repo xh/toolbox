@@ -5,7 +5,6 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
 import {numberInput, radioInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
-
 import {card} from '@xh/hoist/kit/blueprint';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 import './Styles.scss';

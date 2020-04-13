@@ -5,7 +5,6 @@ import {basicPanel} from './BasicPanel';
 import {toolbarPanel} from './ToolbarPanel';
 import {loadingIndicatorPanel} from './LoadingIndicatorPanel';
 import {maskPanel} from './MaskPanel';
-
 import './PanelsTab.scss';
 
 export const panelsTab = hoistCmp.factory(

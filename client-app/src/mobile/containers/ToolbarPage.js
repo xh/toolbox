@@ -5,7 +5,6 @@ import {button} from '@xh/hoist/mobile/cmp/button';
 import {select} from '@xh/hoist/mobile/cmp/input';
 import {div, filler, frame, hframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
-
 import {ToolbarPageModel} from './ToolbarPageModel';
 
 export const toolbarPage = hoistCmp.factory({

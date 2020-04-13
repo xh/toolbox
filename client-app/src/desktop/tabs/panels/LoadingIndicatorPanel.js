@@ -10,7 +10,6 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {loadingIndicator} from '@xh/hoist/desktop/cmp/loadingindicator';
-
 import {sampleGrid, SampleGridModel, wrapper} from '../../common';
 
 export const loadingIndicatorPanel = hoistCmp.factory({

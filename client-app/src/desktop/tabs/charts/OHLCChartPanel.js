@@ -9,7 +9,6 @@ import {OHLCChartModel} from './OHLCChartModel';
 import {wrapper} from '../../common/Wrapper';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 
-
 export const ohlcChartPanel = hoistCmp.factory({
     model: creates(OHLCChartModel),
 

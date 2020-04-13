@@ -1,5 +1,4 @@
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
-
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
@@ -8,7 +7,6 @@ import {Icon} from '@xh/hoist/icon';
 import {label, select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-
 import {GridPageModel} from './GridPageModel';
 
 export const gridPage = hoistCmp.factory({

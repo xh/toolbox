@@ -2,7 +2,6 @@ import {creates, hoistCmp, HoistModel, LoadSupport, managed, XH} from '@xh/hoist
 import {label, span, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dataView, DataViewModel} from '@xh/hoist/cmp/dataview';
-
 import {shuffle, take} from 'lodash';
 import {slider} from '@xh/hoist/desktop/cmp/input';
 import './DataViewTestPanel.scss';

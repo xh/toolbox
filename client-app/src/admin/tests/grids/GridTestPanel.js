@@ -9,7 +9,6 @@ import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {grid} from '@xh/hoist/cmp/grid';
 import {tooltip} from '@xh/hoist/kit/blueprint';
-
 import {GridTestModel} from './GridTestModel';
 
 export const GridTestPanel = hoistCmp({

@@ -6,11 +6,8 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {jsonInput, select} from '@xh/hoist/desktop/cmp/input';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-
 import {FetchApiTestModel} from './FetchApiTestModel';
-
 import './FetchApiTestStyles.scss';
-
 
 export const FetchApiTestPanel = hoistCmp({
     model: creates(FetchApiTestModel),

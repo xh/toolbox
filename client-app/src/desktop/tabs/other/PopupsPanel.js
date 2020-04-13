@@ -6,7 +6,6 @@ import {lengthIs, required} from '@xh/hoist/cmp/form';
 import {Icon} from '@xh/hoist/icon';
 import React, {useRef} from 'react';
 import {wrapper} from '../../common';
-
 import './PopupsPanel.scss';
 
 export const popupsPanel = hoistCmp.factory(

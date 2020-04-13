@@ -22,7 +22,6 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtDateTime, fmtNumber, fmtThousands} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import moment from 'moment';
-
 import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import './InputsPanel.scss';

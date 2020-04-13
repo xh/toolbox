@@ -11,7 +11,6 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import {projectRestPanel} from './ProjectRestPanel';
 import {phaseRestPanel} from './PhaseRestPanel';
 
-
 export const roadmapTab = hoistCmp(
     () => tabContainer({
         model: {

@@ -6,7 +6,6 @@ import {Icon} from '@xh/hoist/icon';
 import {div, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {without} from 'lodash';
 import React from 'react';
-
 import {wrapper} from '../../common/Wrapper';
 import './IconsPanel.scss';
 

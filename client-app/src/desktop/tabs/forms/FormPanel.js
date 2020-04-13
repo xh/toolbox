@@ -10,7 +10,6 @@ import {checkbox, dateInput, numberInput, select, switchInput, textArea, textInp
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {wrapper} from '../../common';
 import {FormPanelModel} from './FormPanelModel';
-
 import './FormPanel.scss';
 
 export const formPanel = hoistCmp.factory({

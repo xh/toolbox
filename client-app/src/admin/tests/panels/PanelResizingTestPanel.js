@@ -6,7 +6,6 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
-
 import {PanelResizingTestModel} from './PanelResizingTestModel';
 
 export const PanelResizingTestPanel = hoistCmp({

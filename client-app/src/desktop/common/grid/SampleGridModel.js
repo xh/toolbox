@@ -7,7 +7,6 @@ import {fmtDate, fmtMillions, fmtNumber, fmtNumberTooltip, millionsRenderer, num
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-
 import './SampleGrid.scss';
 
 @HoistModel

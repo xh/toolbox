@@ -3,7 +3,6 @@ import {HoistModel, LoadSupport, managed} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 import {castArray} from 'lodash';
 
-
 @HoistModel
 @LoadSupport
 export class LoadTimesModel {

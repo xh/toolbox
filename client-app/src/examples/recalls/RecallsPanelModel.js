@@ -11,7 +11,6 @@ import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
-
 import {DetailsPanelModel} from './DetailsPanelModel';
 
 @HoistModel

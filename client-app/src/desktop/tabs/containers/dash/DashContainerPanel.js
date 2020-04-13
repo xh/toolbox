@@ -8,9 +8,7 @@ import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
-
 import {ButtonWidget, ChartWidget, GridWidget, PanelWidget, TreeGridWidget} from './widgets';
-
 import {wrapper} from '../../../common';
 
 export const dashContainerPanel = hoistCmp.factory({

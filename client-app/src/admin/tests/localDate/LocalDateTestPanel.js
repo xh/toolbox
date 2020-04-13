@@ -3,7 +3,6 @@ import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {forOwn, groupBy, startCase} from 'lodash';
-
 import './LocalDateTestPanel.scss';
 import {LocalDateTestModel} from './LocalDateTestModel';
 

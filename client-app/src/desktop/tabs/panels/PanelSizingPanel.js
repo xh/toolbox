@@ -8,7 +8,6 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-
 import {wrapper} from '../../common/Wrapper';
 
 export const panelSizingPanel = hoistCmp.factory({

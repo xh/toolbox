@@ -9,9 +9,7 @@ import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
 import {required} from '@xh/hoist/cmp/form';
 import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
-
 import {PortfolioService} from '../core/svc/PortfolioService';
-
 import {homePage} from './home/HomePage';
 import {gridPage} from './grids/GridPage';
 import {gridDetailPage} from './grids/GridDetailPage';

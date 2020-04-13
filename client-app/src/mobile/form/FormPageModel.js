@@ -1,7 +1,6 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {FormModel, lengthIs, required} from '@xh/hoist/cmp/form';
 import {bindable} from '@xh/hoist/mobx';
-
 import {movies} from '../../core/data';
 
 @HoistModel

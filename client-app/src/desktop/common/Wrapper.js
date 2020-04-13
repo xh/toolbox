@@ -5,7 +5,6 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
 import {toolboxLink} from '../../core/ToolboxLink';
-
 import './Wrapper.scss';
 
 /**

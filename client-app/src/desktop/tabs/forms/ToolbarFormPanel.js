@@ -23,7 +23,6 @@ import {
     switchInput,
     textInput
 } from '@xh/hoist/desktop/cmp/input';
-
 import {usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import {ToolbarFormPanelModel} from './ToolbarFormPanelModel';
