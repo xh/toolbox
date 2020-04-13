@@ -1,8 +1,7 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {LoadSupport} from '@xh/hoist/core/mixins';
-import {millionsRenderer, numberRenderer, fmtMillions, fmtNumber} from '@xh/hoist/format';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
-import {random, sample, times, mean, takeRight} from 'lodash';
+import {mean, random, sample, takeRight, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {action, bindable, observable} from '@xh/hoist/mobx';
 

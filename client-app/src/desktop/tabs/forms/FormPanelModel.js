@@ -1,5 +1,5 @@
-import {HoistModel, XH, managed} from '@xh/hoist/core';
-import {dateIs, FormModel, lengthIs, numberIs, required, stringExcludes, constrainAll} from '@xh/hoist/cmp/form';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {constrainAll, dateIs, FormModel, lengthIs, numberIs, required, stringExcludes} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
 import {pre, vbox} from '@xh/hoist/cmp/layout';
 import {bindable} from '@xh/hoist/mobx';

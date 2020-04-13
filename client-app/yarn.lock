@@ -1886,10 +1886,10 @@
     webpack-dev-server "~3.10.3"
     webpackbar "~4.0.0"
 
-"@xh/hoist@32.0.2":
-  version "32.0.2"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-32.0.2.tgz#f3e3517021bfa0d1bd748b1740194354b695b01f"
-  integrity sha512-kci0Q1hKf5KCxi0D9pb75Ah4idXJQSylz9369s25IXHClVrkcFrhwdhgryIARTNVbsjdT92Wj+RfXmlwM3U6XQ==
+"@xh/hoist@^33.0.0-SNAPSHOT":
+  version "33.0.0-SNAPSHOT.1585942125054"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-33.0.0-SNAPSHOT.1585942125054.tgz#e3262c1e3297c50f3b05b389edd0ee98e77d5ed6"
+  integrity sha512-tGXuvtx8KK8goBdZjmxr83NxDtPOX0GMyrwreyfXX3UGflaIbSZOzu0N3V4Uh8ggL2rd/4z1QwlfHE7pzkN4ug==
   dependencies:
     "@ag-grid-community/react" "~23.0.2"
     "@ag-grid-enterprise/all-modules" "~23.0.2"

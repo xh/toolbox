@@ -1,5 +1,4 @@
-import {XH, HoistModel, managed} from '@xh/hoist/core';
-import {LoadSupport} from '@xh/hoist/core/mixins';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {Store} from '@xh/hoist/data';
 import {clamp} from 'lodash';

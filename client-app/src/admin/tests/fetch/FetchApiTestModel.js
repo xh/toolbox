@@ -1,10 +1,8 @@
 import {merge} from 'lodash';
-
-import {HoistModel, XH, managed} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {start} from '@xh/hoist/promise';
 import {action, bindable, observable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
-
 
 @HoistModel
 export class FetchApiTestModel {

@@ -1,7 +1,7 @@
 import React from 'react';
-import {hoistCmp, creates, managed, HoistModel} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {hspacer, div} from '@xh/hoist/cmp/layout';
+import {div, hspacer} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';

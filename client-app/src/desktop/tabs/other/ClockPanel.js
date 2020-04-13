@@ -10,7 +10,6 @@ import {bindable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import React from 'react';
 import {wrapper} from '../../common/Wrapper';
-
 import './ClockPanel.scss';
 
 export const clockPanel = hoistCmp.factory({

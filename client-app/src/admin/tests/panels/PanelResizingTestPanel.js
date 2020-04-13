@@ -1,13 +1,12 @@
-import { hoistCmp, XH, creates } from '@xh/hoist/core';
-import { Icon } from '@xh/hoist/icon';
-import { box, hbox, filler } from '@xh/hoist/cmp/layout';
-import { toolbar } from '@xh/hoist/desktop/cmp/toolbar';
-import { button } from '@xh/hoist/desktop/cmp/button';
-import { panel } from '@xh/hoist/desktop/cmp/panel';
-import { relativeTimestamp } from '@xh/hoist/cmp/relativetimestamp';
-import { switchInput } from '@xh/hoist/desktop/cmp/input';
-
-import { PanelResizingTestModel } from './PanelResizingTestModel';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
+import {box, filler, hbox} from '@xh/hoist/cmp/layout';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {PanelResizingTestModel} from './PanelResizingTestModel';
 
 export const PanelResizingTestPanel = hoistCmp({
     model: creates(() => new PanelResizingTestModel()),

@@ -1,4 +1,4 @@
-import {HoistModel, LoadSupport, managed, loadAllAsync} from '@xh/hoist/core';
+import {HoistModel, loadAllAsync, LoadSupport, managed} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {OrdersPanelModel} from './OrdersPanelModel';
