@@ -143,9 +143,9 @@ export class StoreEditingPanelModel {
             store.removeRecords(record);
 
             // 2. Construct new record raw data, with a valid assigned id
-            store.updateData({add: [{id: this.getNextId(), ...record.data}]});
+            store.updateData({add: [{...record.data, id: this.getNextId()}]});
         } else {
-            store.updateData({update: [{id: record.id, ...record.data}]});
+            store.updateData({update: [record.data]});
         }
     }
 
