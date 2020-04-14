@@ -21,6 +21,8 @@ export class DialogsPanelModel {
         // showCloseButton: false,
         // showBackgroundMask: false,
         inPortal: false, 
+        // renderMode: 'unmountOnHide',
+        // refreshMode: 'onShowAlways' 
        
         // size: {width: 400, height: 600},     
         // position: {x: 100, y: 100},

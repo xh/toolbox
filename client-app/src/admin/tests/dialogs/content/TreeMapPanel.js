@@ -3,12 +3,19 @@ import {treeMap} from '@xh/hoist/desktop/cmp/treemap';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {Store} from '@xh/hoist/data';
 import {clamp} from 'lodash';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {wait} from '@xh/hoist/promise';
 
 export const treeMapPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render() {
-        return treeMap({minWidth: 200, minHeight: 200});
+        return panel({
+            minWidth: 200,
+            minHeight: 200,
+            item: treeMap(),
+            mask: 'onLoad'
+        });
     }
 });
 
@@ -41,6 +48,7 @@ class Model {
     });
 
     async doLoadAsync() {
+        await wait(1000);
         const data = await XH.portfolioService.getPositionsAsync(['symbol']);
         this.store.loadData(data);
     }

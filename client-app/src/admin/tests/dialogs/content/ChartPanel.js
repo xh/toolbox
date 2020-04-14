@@ -1,13 +1,20 @@
 import {hoistCmp, creates, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {fmtDate} from '@xh/hoist/format';
+import {wait} from '@xh/hoist/promise';
 
 
 export const chartPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
-    render({model}) {
-        return chart({minWidth: 200, minHeight: 200});
+    render() {
+        return panel({
+            minWidth: 200,
+            minHeight: 200,
+            item: chart(),
+            mask: 'onLoad'
+        });
     }
 });
 
@@ -19,6 +26,8 @@ class Model {
     chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
     async doLoadAsync(loadSpec) {
+        await wait(1000);
+
         const symbols = await XH.portfolioService.getSymbolsAsync(),
             symbol = symbols[0],
             series = await XH.portfolioService.getOHLCChartSeriesAsync(symbol);
