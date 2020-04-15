@@ -1,7 +1,7 @@
 package io.xh.toolbox.app
 
 import io.xh.hoist.BaseService
-import io.xh.hoist.json.JSON
+import io.xh.hoist.json.JSONParser
 
 class RecallsService extends BaseService {
 
@@ -24,7 +24,7 @@ class RecallsService extends BaseService {
                 return []
             } else {
                 inputStream = connection.getInputStream()
-                return JSON.parse(inputStream, 'UTF-8').results
+                return JSONParser.parseObject(inputStream.text).results
             }
         } catch (IOException e) {
             lastResponseCode = null

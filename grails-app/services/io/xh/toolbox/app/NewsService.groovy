@@ -1,7 +1,7 @@
 package io.xh.toolbox.app
 
 import io.xh.hoist.BaseService
-import io.xh.hoist.json.JSON
+import io.xh.hoist.json.JSONParser
 import io.xh.toolbox.NewsItem
 import org.grails.web.json.JSONArray
 import io.xh.hoist.util.Timer
@@ -72,7 +72,7 @@ class NewsService extends BaseService {
         def sourcesParam = String.join(',', sources)
         def apiKey = configService.getString('newsApiKey'),
             url = new URL("https://newsapi.org/v2/top-headlines?sources=${sourcesParam}&apiKey=${apiKey}"),
-            response = JSON.parse(url.openStream(), 'UTF-8')
+            response = JSONParser.parseObject(url.openStream().text)
 
         if (response.status != 'ok') {
             log.error("Unable to fetch news: ${response.message}")
