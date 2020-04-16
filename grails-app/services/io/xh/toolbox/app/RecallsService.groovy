@@ -1,14 +1,17 @@
 package io.xh.toolbox.app
 
 import io.xh.hoist.BaseService
+import io.xh.hoist.exception.HttpException
 import io.xh.hoist.http.JSONClient
 import org.apache.http.client.methods.HttpGet
+import static org.apache.http.HttpStatus.SC_OK
 
 class RecallsService extends BaseService {
 
     def configService
+
+    Integer lastResponseCode
     private JSONClient _jsonClient
-    def lastResponseCode
 
     List fetchRecalls(String searchQuery) {
         def host = configService.getString('recallsHost'),
@@ -17,20 +20,18 @@ class RecallsService extends BaseService {
                 "https://$host/drug/enforcement.json?search=_exists_:openfda&sort=recall_initiation_date:desc&limit=99" :
                 "https://$host/drug/enforcement.json?search=($searchQuery)+AND+_exists_:openfda&sort=recall_initiation_date:desc&limit=99"
 
-        def results
         try {
             def response = client.executeAsJSONObject(new HttpGet(uri))
-            results = response.results || []
-        } catch (e) {
-            // TODO - this is unfortunate, and ideally something we could extract in a structured way from the exception thrown out of JSONClient.
-            if (e.message.endsWith('404')) {
-                results = []
-            } else {
-                throw e
-            }
+            lastResponseCode = SC_OK
+            return response.results ?: []
+        } catch (HttpException e) {
+            lastResponseCode = e.statusCode
+            if (e.statusCode == 404) return []
+            throw e
+        } catch (Exception e) {
+            lastResponseCode = null
+            throw e
         }
-
-        return results
     }
 
 
