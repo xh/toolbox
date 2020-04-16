@@ -8,6 +8,7 @@ class RecallsService extends BaseService {
 
     def configService
     private JSONClient _jsonClient
+    def lastResponseCode
 
     List fetchRecalls(String searchQuery) {
         def host = configService.getString('recallsHost'),

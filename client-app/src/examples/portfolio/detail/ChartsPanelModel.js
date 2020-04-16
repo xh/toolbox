@@ -1,6 +1,5 @@
-import {HoistModel, loadAllAsync, LoadSupport} from '@xh/hoist/core';
+import {HoistModel, loadAllAsync, LoadSupport, managed} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
-import {managed} from '@xh/hoist/core';
 import {LineChartModel} from './LineChartModel';
 import {OHLCChartModel} from './OHLCChartModel';
 
@@ -20,7 +19,7 @@ export class ChartsPanelModel {
                 this.lineChartModel.setSymbol(symbol);
                 this.ohlcChartModel.setSymbol(symbol);
             },
-            delay: 500
+            debounce: 500
         });
     }
 

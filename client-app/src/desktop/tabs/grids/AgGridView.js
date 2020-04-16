@@ -1,20 +1,18 @@
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {agGrid} from '@xh/hoist/cmp/ag-grid';
-import {filler} from '@xh/hoist/cmp/layout';
+import {hframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {gridStyleSwitches, wrapper} from '../../common';
+import {wrapper} from '../../common';
 import {AgGridViewModel} from './AgGridViewModel';
+import {agGridOptionsPanel} from '../../common/grid/options/AgGridOptionsPanel';
 
-@HoistComponent
-export class AgGridView extends Component {
-    model = new AgGridViewModel();
+export const agGridView = hoistCmp.factory({
+    model: creates(AgGridViewModel),
 
-    render() {
-        const {model} = this,
-            {agGridModel, loadModel, columnDefs} = model;
+    render({model}) {
+        const {agGridModel, columnDefs} = model;
 
         return wrapper({
             description: [
@@ -35,29 +33,26 @@ export class AgGridView extends Component {
             item: panel({
                 title: 'Grids › ag-Grid Wrapper',
                 icon: Icon.gridPanel(),
-                flex: 1,
+                className: 'tb-grid-wrapper-panel',
                 width: '95%',
-                marginBottom: 10,
-                mask: loadModel,
-                bbar: toolbar(filler(), gridStyleSwitches({gridModel: agGridModel, forToolbar: true})),
-                item: agGrid({
-                    key: agGridModel.xhId,
-                    model: agGridModel,
-
-                    columnDefs,
-                    rowData: [],
-
-                    defaultColDef: {
-                        sortable: true,
-                        resizable: true,
-                        filter: true
-                    },
-
-                    sideBar: true,
-
-                    rowSelection: 'single'
-                })
+                mask: 'onLoad',
+                item: hframe(
+                    agGrid({
+                        key: agGridModel.xhId,
+                        model: agGridModel,
+                        columnDefs,
+                        rowData: [],
+                        defaultColDef: {
+                            sortable: true,
+                            resizable: true,
+                            filter: true
+                        },
+                        sideBar: true,
+                        rowSelection: 'single'
+                    }),
+                    agGridOptionsPanel({model: agGridModel})
+                )
             })
         });
     }
-}
+});

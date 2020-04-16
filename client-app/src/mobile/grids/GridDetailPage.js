@@ -1,45 +1,62 @@
-import {Component} from 'react';
-import {HoistComponent, elemFactory} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, LoadSupport, useLocalModel, XH} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import {find, isNil} from 'lodash';
+import {bindable, observable} from '@xh/hoist/mobx';
 
-import {GridDetailPageModel} from './GridDetailPageModel';
+export const gridDetailPage = hoistCmp.factory({
+    render({id}) {
+        const impl = useLocalModel(LocalModel);
+        impl.setId(id);
+        const {record} = impl;
 
-@HoistComponent
-export class GridDetailPage extends Component {
-
-    model = new GridDetailPageModel({id: this.props.id});
-
-    render() {
-        const {record} = this.model;
-
-        if (!record) return null;
-        
-        return page({
-            title: record.company,
-            icon: Icon.fund(),
-            className: 'toolbox-detail-page',
-            items: [
-                this.renderRow('ID', record.id),
-                this.renderRow('Company', record.company),
-                this.renderRow('City', record.city),
-                this.renderRow('P&L', record.profit_loss, numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true})),
-                this.renderRow('Volume', record.trade_volume, numberRenderer({precision: 0, asElement: true}))
-            ]
-        });
-    }
-
-    renderRow(title, value, renderer) {
-        return div({
+        const row = (title, value, renderer) => div({
             className: 'toolbox-detail-row',
             items: [
                 div(title),
-                div(renderer ? renderer(value) : value)
+                div(renderer && !isNil(value) ? renderer(value) : value)
+            ]
+        });
+
+        return panel({
+            title: record?.company ?? '',
+            mask: impl.loadModel,
+            icon: Icon.fund(),
+            className: 'toolbox-detail-page',
+            items: [
+                row('ID', record?.id),
+                row('Company', record?.company),
+                row('City', record?.city),
+                row('P&L', record?.profit_loss, numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true})),
+                row('Volume', record?.trade_volume, numberRenderer({precision: 0, asElement: true}))
             ]
         });
     }
+});
+
+@HoistModel
+@LoadSupport
+class LocalModel {
+
+    @bindable id = null;
+    @observable.ref record = null;
+    @bindable.ref customers = null;
+
+    constructor() {
+        this.addReaction({
+            track: () => [this.customers, this.id],
+            run: ([customers, id]) => {
+                if (customers && id) {
+                    this.record = find(customers, {id: parseInt(id)});
+                }
+            }
+        });
+    }
+
+    async doLoadAsync() {
+        this.setCustomers(await XH.fetchJson({url: 'customer'}));
+    }
 }
 
-export const gridDetailPage = elemFactory(GridDetailPage);

@@ -5,7 +5,7 @@ import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
 XH.renderApp({
     clientAppCode: 'fileManager',
-    clientAppName: 'File Manager',
+    clientAppName: 'XH File Manager',
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,
@@ -13,5 +13,6 @@ XH.renderApp({
     isSSO: false,
     idleDetectionEnabled: true,
     checkAccess: 'HOIST_ADMIN',
-    loginMessage: "User: 'admin@xh.io' / Contact us for Access"
+    loginMessage: 'Contact support@xh.io for information on this demo application.',
+    lockoutMessage: 'Contact support@xh.io for information on this demo application.'
 });

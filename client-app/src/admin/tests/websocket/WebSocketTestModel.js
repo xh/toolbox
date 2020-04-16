@@ -1,7 +1,5 @@
-import {GridModel} from '@xh/hoist/cmp/grid';
-import {emptyFlexCol} from '@xh/hoist/cmp/grid/columns';
-import {HoistModel, XH} from '@xh/hoist/core';
-import {managed} from '@xh/hoist/core/mixins';
+import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateRenderer} from '@xh/hoist/format';
 import {bindable} from '@xh/hoist/mobx';
 

@@ -1,25 +1,19 @@
 .toolbox-news-panel {
-
-  .ag-body-container {
-    .ag-row, .ag-cell, .ag-react-container, .xh-hbox {
-      height: 100%;
-    }
-  }
-
   .news-item {
-
-    p, span {
+    p,
+    span {
       /* BOTH of the following are required for text-overflow */
       white-space: nowrap;
       overflow: hidden;
     }
 
     .text-container {
+      margin-left: var(--xh-pad-px);
       display: flex;
+      flex: 2;
       flex-direction: column;
+      line-height: 26px;
     }
-
-
 
     .overflow-ellipsis {
       text-overflow: ellipsis;
@@ -34,17 +28,18 @@
 
     &--text {
       opacity: 0.8;
-      font-size: var(--xh-font-size-small-px);
+      color: var(--xh-grid-text-color);
       margin-bottom: 0;
     }
 
     .img-container {
-      padding: 5px 10px 5px 15px;
+      flex: 1;
+      padding: var(--xh-pad-half-px) var(--xh-pad-px);
     }
 
     &--img {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       overflow: hidden;
     }
 
@@ -55,7 +50,5 @@
       margin-right: auto;
       display: block;
     }
-
   }
 }
-

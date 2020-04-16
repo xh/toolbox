@@ -1,6 +1,5 @@
 import {HoistService, XH} from '@xh/hoist/core';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-
 import {PositionSession} from '../positions/PositionSession';
 
 @HoistService
@@ -100,7 +99,7 @@ export class PortfolioService {
         };
     }
 
-    async getOLHCChartSeriesAsync(symbol) {
+    async getOHLCChartSeriesAsync(symbol) {
         const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`});
         return {
             name: symbol,

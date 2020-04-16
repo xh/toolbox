@@ -1,32 +1,20 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2019 Extremely Heavy Industries Inc.
- */
-
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {a, filler, p, span, vframe} from '@xh/hoist/cmp/layout';
-import {elemFactory, HoistComponent, XH} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {Component} from 'react';
 import {detailsPanel} from './DetailsPanel';
 import './RecallsPanel.scss';
-
 import {RecallsPanelModel} from './RecallsPanelModel';
 
-@HoistComponent
-export class RecallsPanel extends Component {
+export const recallsPanel = hoistCmp.factory({
+    model: creates(RecallsPanelModel),
 
-    model = new RecallsPanelModel();
-    
-    render() {
-        const {model} = this,
-            {gridModel, detailsPanelModel} = model,
+    render({model}) {
+        const {detailsPanelModel} = model,
             {currentRecord} = detailsPanelModel,
             fdaWebsite = 'https://open.fda.gov/apis/drug/enforcement/',
             aboutBlurb = 'This applet uses the openFDA drug enforcement reports API, ' +
@@ -35,11 +23,10 @@ export class RecallsPanel extends Component {
 
         return vframe(
             panel({
-                item: grid({model: gridModel}),
-                mask: model.loadModel,
-                tbar: toolbar(
+                item: grid(),
+                mask: 'onLoad',
+                tbar: [
                     textInput({
-                        model,
                         bind: 'searchQuery',
                         placeholder: 'Keyword Search',
                         commitOnChange: true,
@@ -48,7 +35,6 @@ export class RecallsPanel extends Component {
                     toolbarSep(),
                     span('Group By : '),
                     buttonGroupInput({
-                        model: model,
                         bind: 'groupBy',
                         enableClear: true,
                         items: [
@@ -71,7 +57,7 @@ export class RecallsPanel extends Component {
                         ]
                     }),
                     filler(),
-                    gridCountLabel({gridModel, unit: 'latest recall'}),
+                    gridCountLabel({unit: 'latest recall'}),
                     toolbarSep(),
                     button({
                         title: 'About the API',
@@ -82,13 +68,13 @@ export class RecallsPanel extends Component {
                         })
                     }),
                     toolbarSep(),
-                    colChooserButton({gridModel})
-                )
+                    colChooserButton()
+                ]
             }),
             panel({
-                title: currentRecord ? currentRecord.brandName : 'Select a drug to see its details',
+                title: currentRecord ? currentRecord.data.brandName : 'Select a drug to see its details',
                 icon: Icon.detail(),
-                item: detailsPanel({model: detailsPanelModel}),
+                item: detailsPanel(),
                 className: 'toolbox-recalls-detail-panel',
                 compactHeader: true,
                 model: {
@@ -99,7 +85,4 @@ export class RecallsPanel extends Component {
             })
         );
     }
-}
-
-export const recallsPanel = elemFactory(RecallsPanel);
-
+});

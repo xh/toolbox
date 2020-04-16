@@ -1,24 +1,20 @@
-import React, {Component} from 'react';
-import {p, div} from '@xh/hoist/cmp/layout';
+import React from 'react';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {div, filler, p} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import {XH, HoistComponent} from '@xh/hoist/core/index';
 import {wrapper} from '../../common/Wrapper';
-import {filler} from '@xh/hoist/cmp/layout/index';
-import {panel} from '@xh/hoist/desktop/cmp/panel/index';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select} from '@xh/hoist/desktop/cmp/input';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar/index';
-import {button} from '@xh/hoist/desktop/cmp/button/index';
-import {Icon} from '@xh/hoist/icon/index';
-import {usStates} from '../../../core/data/index';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {Icon} from '@xh/hoist/icon';
+import {usStates} from '../../../core/data';
 import {BasicPanelModel} from './BasicPanelModel';
 
-@HoistComponent
-export class BasicPanel extends Component {
-    basicPanelModel = new BasicPanelModel();
+export const basicPanel = hoistCmp.factory({
+    model: creates(BasicPanelModel),
 
-    render() {
-        const model = this.basicPanelModel;
-
+    render({model}) {
         return wrapper({
             description: [
                 <p>
@@ -30,25 +26,16 @@ export class BasicPanel extends Component {
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/panels/BasicPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/panel/Panel.js',
-                    notes: 'Hoist component.'
-                },
-                {
-                    url: '$HR/desktop/cmp/panel/PanelModel.js',
-                    notes: 'Hoist component model (for resize / collapse).'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/panels/BasicPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/panel/Panel.js', notes: 'Hoist component.'},
+                {url: '$HR/desktop/cmp/panel/PanelModel.js', notes: 'Hoist component model (for resize / collapse).'}
             ],
             item: panel({
                 icon: Icon.window(),
                 title: 'Panels › Intro',
                 height: 400,
                 width: 700,
-                tbar: toolbar(
+                tbar: [
                     popover({
                         position: 'bottom-left',
                         minimal: true,
@@ -62,15 +49,14 @@ export class BasicPanel extends Component {
                             menuItem({text: 'Menu Item 3'})
                         )
                     })
-                ),
+                ],
                 item: div({
                     className: 'toolbox-panel-text-reader',
                     items: model.demoText.map(it => p(it))
                 }),
-                bbar: toolbar(
+                bbar: [
                     filler(),
                     select({
-                        model,
                         bind: 'state',
                         options: usStates,
                         placeholder: 'Select a State...'
@@ -78,16 +64,12 @@ export class BasicPanel extends Component {
                     toolbarSep(),
                     button({
                         text: 'Show Toast',
-                        onClick: this.onShowToastClick
+                        onClick: () => XH.toast({
+                            message: `Currently selected State: ${model.state || 'None'}`
+                        })
                     })
-                )
+                ]
             })
         });
     }
-
-    onShowToastClick = () => {
-        XH.toast({
-            message: `Currently selected State: ${this.basicPanelModel.state || 'None'}`
-        });
-    }
-}
+});

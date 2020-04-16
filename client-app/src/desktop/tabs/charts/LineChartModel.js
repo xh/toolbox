@@ -1,5 +1,5 @@
 import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
-import {ChartModel} from '@xh/hoist/desktop/cmp/chart';
+import {ChartModel} from '@xh/hoist/cmp/chart';
 import {bindable} from '@xh/hoist/mobx';
 import Highcharts from 'highcharts/highstock';
 
@@ -79,7 +79,7 @@ export class LineChartModel {
                         },
                         stops: [
                             [0, Highcharts.getOptions().colors[0]],
-                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                            [1, new Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
                         ]
                     },
                     marker: {

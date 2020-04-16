@@ -1,22 +1,18 @@
-import {Component} from 'react';
-import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {select} from '@xh/hoist/mobile/cmp/input';
-import {div, hframe, filler, frame} from '@xh/hoist/cmp/layout';
+import {div, filler, frame, hframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
-
 import {ToolbarPageModel} from './ToolbarPageModel';
 
-@HoistComponent
-export class ToolbarPage extends Component {
+export const toolbarPage = hoistCmp.factory({
 
-    model = new ToolbarPageModel();
+    model: creates(ToolbarPageModel),
 
-    render() {
-        const {model} = this;
-        return page({
+    render({model}) {
+        return panel({
             className: 'toolbox-toolbar-page',
             items: [
                 div({
@@ -76,7 +72,6 @@ export class ToolbarPage extends Component {
                         width: 200,
                         placeholder: 'Select a State...',
                         options: model.options,
-                        model: model,
                         bind: 'state'
                     }),
                     button({
@@ -89,6 +84,4 @@ export class ToolbarPage extends Component {
             ]
         });
     }
-
-}
-export const toolbarPage = elemFactory(ToolbarPage);
+});

@@ -2,18 +2,14 @@
  * This file belongs to Hoist, an application development toolkit
  * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
  *
- * Copyright © 2019 Extremely Heavy Industries Inc.
+ * Copyright © 2020 Extremely Heavy Industries Inc.
  */
-
-import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
-import {managed} from '@xh/hoist/core/mixins';
-import {GridModel} from '@xh/hoist/cmp/grid';
-import {localDateCol} from '@xh/hoist/cmp/grid/columns';
+import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
-
 import {DetailsPanelModel} from './DetailsPanelModel';
 
 @HoistModel
@@ -44,7 +40,7 @@ export class RecallsPanelModel {
         enableExport: true,
         rowBorders: true,
         showHover: true,
-        compact: XH.appModel.useCompactGrids,
+        sizingMode: XH.appModel.gridSizingMode,
         stateModel: 'recalls-main-grid',
         columns: [
             {
@@ -98,13 +94,13 @@ export class RecallsPanelModel {
 
         this.addReaction({
             track: () => gridModel.selectedRecord,
-            run: (rec) => this.detailsPanelModel.setRecord(rec)
+            run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
         });
 
         this.addReaction({
             track: () => this.searchQuery,
             run: () => this.loadAsync(),
-            delay: ONE_SECOND
+            debounce: ONE_SECOND
         });
 
         this.addReaction({
@@ -147,8 +143,8 @@ export class RecallsPanelModel {
         };
     }
 
-    createId(record) {
-        return record.brandName + record.recall_number;
+    createId(rawRec) {
+        return rawRec.openfda.brand_name[0] + rawRec.recall_number;
     }
 
     classificationRenderer(val) {

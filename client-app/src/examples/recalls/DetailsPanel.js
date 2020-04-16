@@ -1,20 +1,12 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2019 Extremely Heavy Industries Inc.
- */
+import {hoistCmp, uses} from '@xh/hoist/core';
+import {div, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
+import {DetailsPanelModel} from './DetailsPanelModel';
 
-import {Component} from 'react';
-import {elemFactory, HoistComponent} from '@xh/hoist/core';
-import {div, table, tbody, tr, th, td} from '@xh/hoist/cmp/layout';
+export const detailsPanel = hoistCmp.factory({
+    model: uses(DetailsPanelModel),
 
-@HoistComponent
-class DetailsPanel extends Component {
-
-    render() {
-        const {model} = this,
-            {currentRecord} = model;
+    render({model}) {
+        const {currentRecord} = model;
 
         if (!currentRecord) return null;
 
@@ -22,17 +14,14 @@ class DetailsPanel extends Component {
             className: 'recalls-detail-wrapper',
             item: table(
                 tbody(
-                    tr(th('Brand Name'), td(`${currentRecord.brandName}`)),
-                    tr(th('Generic Name'), td(`${currentRecord.genericName}`)),
+                    tr(th('Brand Name'), td(`${currentRecord.data.brandName}`)),
+                    tr(th('Generic Name'), td(`${currentRecord.data.genericName}`)),
                     tr(th('Classification'), td(`${model.classificationDetails}`)),
-                    tr(th('Description'), td(`${currentRecord.description}`)),
-                    tr(th('Recalling Firm'), td(`${currentRecord.recallingFirm}`)),
-                    tr(th('Reason For Recall'), td(`${currentRecord.reason}`))
+                    tr(th('Description'), td(`${currentRecord.data.description}`)),
+                    tr(th('Recalling Firm'), td(`${currentRecord.data.recallingFirm}`)),
+                    tr(th('Reason For Recall'), td(`${currentRecord.data.reason}`))
                 )
             )
         });
     }
-
-}
-
-export const detailsPanel = elemFactory(DetailsPanel);
+});

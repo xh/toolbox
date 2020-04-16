@@ -1,5 +1,4 @@
 .toolbox-recalls-detail-panel {
-
   overflow: scroll;
 
   table {
@@ -24,11 +23,9 @@
       text-align: left;
       padding: var(--xh-pad-px);
     }
-
   }
 
   .recalls-detail-wrapper {
     overflow-y: auto;
   }
-
 }

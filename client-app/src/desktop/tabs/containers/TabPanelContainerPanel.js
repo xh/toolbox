@@ -1,22 +1,19 @@
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {hspacer} from '@xh/hoist/cmp/layout';
+import {div, hspacer} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common/Wrapper';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {find} from 'lodash';
 
-@HoistComponent
-export class TabPanelContainerPanel extends Component {
-    detachedTabModel = new TabContainerModel(this.createContainerModelConfig({switcherPosition: 'none'}));
-    stateTabModel = new TabContainerModel(this.createContainerModelConfig());
+export const tabPanelContainerPanel = hoistCmp.factory({
+    model: creates(() => new Model()),
 
-    render() {
-        const {detachedTabModel, stateTabModel} = this;
+    render({model}) {
+        const {stateTabModel, detachedTabModel} = model;
 
         return wrapper({
             description: [
@@ -31,26 +28,11 @@ export class TabPanelContainerPanel extends Component {
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/containers/TabPanelContainerPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$TB/client-app/src/desktop/AppModel.js',
-                    notes: 'Toolbox AppModel with top-level TabContainerModel.'
-                },
-                {
-                    url: '$HR/cmp/tab/TabContainer.js',
-                    notes: 'Hoist container component.'
-                },
-                {
-                    url: '$HR/cmp/tab/TabContainerModel.js',
-                    notes: 'Hoist container model - primary API and configuration point for tabs.'
-                },
-                {
-                    url: '$HR/cmp/tab/TabModel.js',
-                    notes: 'Hoist tab model - created by TabContainerModel in its ctor from provided configs.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/containers/TabPanelContainerPanel.js', notes: 'This example.'},
+                {url: '$TB/client-app/src/desktop/AppModel.js', notes: 'Toolbox AppModel with top-level TabContainerModel.'},
+                {url: '$HR/cmp/tab/TabContainer.js', notes: 'Hoist container component.'},
+                {url: '$HR/cmp/tab/TabContainerModel.js', notes: 'Hoist container model - primary API and configuration point for tabs.'},
+                {url: '$HR/cmp/tab/TabModel.js', notes: 'Hoist tab model - created by TabContainerModel in its ctor from provided configs.'}
             ],
             item: panel({
                 title: 'Containers › Tabs',
@@ -64,17 +46,17 @@ export class TabPanelContainerPanel extends Component {
                             {
                                 id: 'top',
                                 title: 'Top Tabs',
-                                content: () => `
-                                    This overall example is a standard TabContainer with its switcher located in the default,
-                                    top position. Change the tabs above to see examples of other TabContainer configurations.
-                                `
+                                content: () => div(
+                                    `This overall example is a standard TabContainer with its switcher located in the default,
+                                    top position. Change the tabs above to see examples of other TabContainer configurations.`
+                                )
                             },
                             {
                                 id: 'bottom',
                                 title: 'Bottom Tabs',
                                 content: () => tabContainer({
                                     className: 'child-tabcontainer',
-                                    model: this.createContainerModelConfig({switcherPosition: 'bottom'})
+                                    model: model.createContainerModelConfig({switcherPosition: 'bottom'})
                                 })
                             },
                             {
@@ -82,7 +64,7 @@ export class TabPanelContainerPanel extends Component {
                                 title: 'Left Tabs',
                                 content: () => tabContainer({
                                     className: 'child-tabcontainer',
-                                    model: this.createContainerModelConfig({switcherPosition: 'left'})
+                                    model: model.createContainerModelConfig({switcherPosition: 'left'})
                                 })
                             },
                             {
@@ -90,7 +72,7 @@ export class TabPanelContainerPanel extends Component {
                                 title: 'Right Tabs',
                                 content: () => tabContainer({
                                     className: 'child-tabcontainer',
-                                    model: this.createContainerModelConfig({switcherPosition: 'right'})
+                                    model: model.createContainerModelConfig({switcherPosition: 'right'})
                                 })
                             },
                             {
@@ -98,15 +80,13 @@ export class TabPanelContainerPanel extends Component {
                                 title: 'Custom Switcher',
                                 content: () => panel({
                                     className: 'child-tabcontainer',
-                                    tbar: toolbar(
-                                        detachedTabModel.tabs.map(childModel => button({
-                                            intent: childModel.isActive ? 'primary' : 'default',
-                                            text: childModel.title,
-                                            onClick: () => {
-                                                detachedTabModel.setActiveTabId(childModel.id);
-                                            }
-                                        }))
-                                    ),
+                                    tbar: model.detachedTabModel.tabs.map(childModel => button({
+                                        intent: childModel.isActive ? 'primary' : 'default',
+                                        text: childModel.title,
+                                        onClick: () => {
+                                            detachedTabModel.setActiveTabId(childModel.id);
+                                        }
+                                    })),
                                     item: tabContainer({model: detachedTabModel})
                                 })
                             },
@@ -120,7 +100,7 @@ export class TabPanelContainerPanel extends Component {
 
                                     return panel({
                                         className: 'child-tabcontainer',
-                                        bbar: toolbar(
+                                        bbar: [
                                             switchInput({
                                                 model: peopleTab,
                                                 bind: 'disabled',
@@ -132,7 +112,7 @@ export class TabPanelContainerPanel extends Component {
                                                 model: placesTab,
                                                 bind: 'title'
                                             })
-                                        ),
+                                        ],
                                         item: tabContainer({model: stateTabModel})
                                     });
                                 }
@@ -143,9 +123,21 @@ export class TabPanelContainerPanel extends Component {
             })
         });
     }
+});
 
-    createContainerModelConfig(args = {}) {
-        const tabTxt = title => `This is the ${title} tab`;
+
+@HoistModel
+class Model {
+
+    @managed
+    detachedTabModel = new TabContainerModel(this.createContainerModelConfig({switcherPosition: 'none'}));
+
+    @managed
+    stateTabModel = new TabContainerModel(this.createContainerModelConfig({}));
+
+
+    createContainerModelConfig(args) {
+        const tabTxt = title => div(`This is the ${title} tab`);
         return {
             tabs: [
                 {

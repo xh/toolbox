@@ -2,6 +2,8 @@ package io.xh.toolbox
 
 import io.xh.hoist.config.AppConfig
 import io.xh.hoist.util.Utils
+import io.xh.toolbox.roadmap.Project
+import io.xh.toolbox.roadmap.Phase
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.Monitor
@@ -22,13 +24,17 @@ class BootStrap {
         ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
         ensureMonitorsCreated()
-        def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
+
+        def services = Utils.xhServices.findAll {
+            it.class.canonicalName.startsWith(this.class.package.name)
+        }
         BaseService.parallelInit(services)
+
         ensureUsersCreated()
+        resetGuestUserPassword()
     }
 
     def destroy = {}
-
 
     //------------------------
     // Implementation
@@ -86,11 +92,23 @@ class BootStrap {
                 defaultValue: 'api.fda.gov',
                 groupName: 'Toolbox - Example Apps',
             ],
+            roadmapCategories: [
+                    valueType: 'json',
+                    defaultValue: [
+                            "DASHBOARDS": "analytics",
+                            "GRIDS": "grid",
+                            "UPGRADES": "bolt",
+                            "NEW FEATURES": "favorite",
+                            "OTHER": "experiment"
+                    ],
+                    groupName: 'Toolbox - Example Apps',
+                    clientVisible: true
+            ],
             sourceUrls: [
                 valueType: 'json',
                 defaultValue: [
-                    toolbox: 'https://github.com/exhi/toolbox/blob/develop',
-                    hoistReact: 'https://github.com/exhi/hoist-react/blob/develop'
+                    toolbox: 'https://github.com/xh/toolbox/blob/develop',
+                    hoistReact: 'https://github.com/xh/hoist-react/blob/develop'
                 ],
                 groupName: 'Toolbox',
                 clientVisible: true,
@@ -132,9 +150,9 @@ class BootStrap {
                 groupName: 'Toolbox',
                 note: 'Nested arrays containing user\'s custom dimension choices'
             ],
-            defaultGridMode: [
+            gridSizingMode: [
                 type: 'string',
-                defaultValue: 'STANDARD',
+                defaultValue: 'standard',
                 local: true,
                 groupName: 'Toolbox',
                 note: 'Grid sizing mode'
@@ -154,12 +172,17 @@ class BootStrap {
             ],
             portfolioDims: [
                 type: 'json',
-                defaultValue: [:],
+                defaultValue: [
+                        value: ['sector', 'symbol'],
+                        history: [['sector', 'symbol'],
+                                  ['fund', 'trader', 'model'],
+                                  ['region', 'sector']]
+                ],
                 local: true,
                 groupName: 'Toolbox - Example Apps',
                 note: 'Object containing user\'s dimension picker value & history'
             ],
-            portfolioMapPanelConfig: [
+            portfolioGridPanelConfig: [
                 type: 'json',
                 defaultValue: [:],
                 local: true,
@@ -189,16 +212,43 @@ class BootStrap {
 
     private void ensureMonitorsCreated() {
         createMonitorIfNeeded(
-            code: 'newsStoryCount',
-            name: 'Loaded Stories',
+            code: 'pricesAgeMs',
+            name: 'Portfolio: Last Price Update',
+            metricType: 'Ceil',
+            metricUnit: 'ms',
+            warnThreshold: 30000,
+            failThreshold: 60000,
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'instrumentCount',
+            name: 'Portfolio: Number of Instruments',
             metricType: 'Floor',
-            failThreshold: 0,
+            metricUnit: 'instruments',
+            warnThreshold: 50,
+            failThreshold: 10,
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'positionCount',
+            name: 'Portfolio: Number of Positions',
+            metricType: 'Floor',
+            metricUnit: 'positions',
+            warnThreshold: 50,
+            failThreshold: 10,
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'newsStoryCount',
+            name: 'News: Loaded Stories',
+            metricType: 'Floor',
+            failThreshold: 1,
             metricUnit: 'stories',
             active: true
         )
         createMonitorIfNeeded(
             code: 'lastUpdateAgeMins',
-            name: 'Most Recent Story',
+            name: 'News: Most Recent Story',
             metricType: 'Ceil',
             metricUnit: 'minutes since last story',
             warnThreshold: 60,
@@ -207,9 +257,43 @@ class BootStrap {
         )
         createMonitorIfNeeded(
             code: 'loadedSourcesCount',
-            name: 'All Sources Loaded',
+            name: 'News: Sources Loaded',
             metricType: 'None',
             metricUnit: 'sources',
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'storageSpaceUsed',
+            name: 'FileManager: Storage Space',
+            metricType: 'Ceil',
+            metricUnit: 'MB',
+            warnThreshold: 16,
+            failThreshold: 32,
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'recallsFetchStatus',
+            name: 'Recalls: Connection to FDA API',
+            metricType: 'None',
+            metricUnit: '',
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'memoryUsage',
+            name: 'Memory Usage of Server',
+            metricType: 'Ceil',
+            metricUnit: '%',
+            warnThreshold: 50,
+            failThreshold: 85,
+            active: true
+        )
+        createMonitorIfNeeded(
+            code: 'longestPageLoadMs',
+            name: 'Longest Page Load in Last Hour',
+            metricType: 'Ceil',
+            metricUnit: 'ms',
+            warnThreshold: 10000,
+            failThreshold: 30000,
             active: true
         )
     }
@@ -226,33 +310,33 @@ class BootStrap {
         if (adminUsername && adminPassword) {
             createUserIfNeeded(
                 email: adminUsername,
+                password: adminPassword,
                 firstName: 'Toolbox',
-                lastName: 'Admin',
-                password: adminPassword
+                lastName: 'Admin'
             )
         } else {
             log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
 
         createUserIfNeeded(
-            email: 'toolbox@xh.io',
+            email: guestUserEmail,
+            password: guestUserPwd,
             firstName: 'Toolbox',
-            lastName: 'Demo',
-            password: 'toolbox'
+            lastName: 'Demo'
         )
 
         createUserIfNeeded(
             email: 'norole@xh.io',
+            password: 'password',
             firstName: 'No',
             lastName: 'Role',
-            password: 'password'
         )
 
         createUserIfNeeded(
             email: 'inactive@xh.io',
+            password: 'password',
             firstName: 'Not',
             lastName: 'Active',
-            password: 'password',
             enabled: false
         )
     }
@@ -260,6 +344,12 @@ class BootStrap {
     private void createUserIfNeeded(Map data) {
         def user = User.findByEmail(data.email as String)
         if (!user) new User(data).save()
+    }
+
+    private void resetGuestUserPassword () {
+        def user = User.findByEmail(guestUserEmail)
+        user.setPassword(guestUserPwd)
+        user.save()
     }
 
     private void logStartupMsg() {
@@ -275,4 +365,7 @@ class BootStrap {
 \n
         """)
     }
+
+    private guestUserEmail = 'toolbox@xh.io'
+    private guestUserPwd = 'Hoist_Toolb0x'
 }

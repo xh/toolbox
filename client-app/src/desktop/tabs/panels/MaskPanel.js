@@ -1,31 +1,21 @@
-import React, {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
+import React from 'react';
+import {creates, hoistCmp, HoistModel, LoadSupport, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {span} from '@xh/hoist/cmp/layout';
-import {numberInput, textInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
+import {sampleGrid, SampleGridModel, wrapper} from '../../common';
 
-import {sampleGrid, wrapper} from '../../common';
+export const maskPanel = hoistCmp.factory({
+    model: creates(() => new Model()),
 
-
-@HoistComponent
-export class MaskPanel extends Component {
-
-    @bindable seconds = 6;
-    @bindable message = '';
-    @bindable inline = true;
-    @bindable spinner = true;
-
-    maskModel = new PendingTaskModel();
-
-    render() {
+    render({model}) {
         return wrapper({
             description: [
                 <p>
@@ -42,86 +32,77 @@ export class MaskPanel extends Component {
                 </p>
             ],
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/panels/MaskPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/desktop/cmp/mask/Mask.js',
-                    notes: 'Hoist component.'
-                },
-                {
-                    url: '$HR/utils/async/PendingTaskModel.js',
-                    notes: 'Hoist model for tracking async tasks - can be linked to masks.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/panels/MaskPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/mask/Mask.js', notes: 'Hoist component.'},
+                {url: '$HR/utils/async/PendingTaskModel.js', notes: 'Hoist model for tracking async tasks - can be linked to masks.'}
             ],
             item: panel({
                 title: 'Panels › Mask',
                 icon: Icon.mask({prefix: 'fas'}),
                 width: 800,
                 height: 400,
-                item: sampleGrid({omitGridTools: true}),
-                bbar: toolbar({
-                    items: [
-                        span('Mask for'),
-                        numberInput({
-                            model: this,
-                            bind: 'seconds',
-                            width: 40,
-                            min: 0,
-                            max: 10
-                        }),
-                        span('secs with'),
-                        textInput({
-                            model: this,
-                            bind: 'message',
-                            width: 120,
-                            placeholder: 'optional text'
-                        }),
-                        toolbarSep(),
-                        switchInput({
-                            model: this,
-                            bind: 'inline',
-                            label: 'Inline:',
-                            labelAlign: 'left'
-                        }),
-                        toolbarSep(),
-                        switchInput({
-                            model: this,
-                            bind: 'spinner',
-                            label: 'Spinner:',
-                            labelAlign: 'left'
-                        }),
-                        toolbarSep(),
-                        button({
-                            text: 'Show Mask',
-                            intent: 'success',
-                            onClick: this.showMask
-                        })
-                    ]
-                }),
+                item: sampleGrid({omitGridTools: true, omitMask: true}),
+                bbar: [
+                    span('Load for'),
+                    numberInput({
+                        bind: 'seconds',
+                        width: 40,
+                        min: 0,
+                        max: 10
+                    }),
+                    span('secs with'),
+                    textInput({
+                        bind: 'message',
+                        width: 120,
+                        placeholder: 'optional text'
+                    }),
+                    toolbarSep(),
+                    switchInput({
+                        bind: 'inline',
+                        label: 'Inline:',
+                        labelAlign: 'left'
+                    }),
+                    toolbarSep(),
+                    switchInput({
+                        bind: 'spinner',
+                        label: 'Spinner:',
+                        labelAlign: 'left'
+                    }),
+                    toolbarSep(),
+                    refreshButton({text: 'Load Now'})
+                ],
                 mask: mask({
-                    spinner: this.spinner,
-                    inline: this.inline,
-                    model: this.maskModel
+                    spinner: model.spinner,
+                    inline: model.inline,
+                    model: model.loadModel
                 })
             })
         });
     }
+});
 
-    showMask = () => {
-        this.showMaskSequenceAsync().linkTo(this.maskModel);
-    }
+@LoadSupport
+@HoistModel
+class Model {
 
-    @action
-    async showMaskSequenceAsync() {
-        const {maskModel, message, seconds} = this,
-            interval = seconds / 3 * SECONDS;
-        maskModel.setMessage(message);
+    @bindable seconds = 3;
+    @bindable message = '';
+    @bindable inline = true;
+    @bindable spinner = true;
+
+    @managed
+    sampleGridModel = new SampleGridModel()
+
+    async doLoadAsync(loadSpec) {
+        const {loadModel, message, seconds} = this,
+            interval = (seconds / 3) * SECONDS;
+        loadModel.setMessage(message);
+        await this.sampleGridModel.loadAsync(loadSpec);
         await wait(interval);
-        if (message) maskModel.setMessage(message + ' - Still Loading...');
+        if (message) loadModel.setMessage(message + ' - Still Loading...');
         await wait(interval);
-        if (message) maskModel.setMessage(message + ' - Almost Finished...');
+        if (message) loadModel.setMessage(message + ' - Almost Finished...');
         await wait(interval);
+        loadModel.setMessage(message);
     }
 }

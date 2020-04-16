@@ -1,5 +1,5 @@
-import {HoistModel, XH} from '@xh/hoist/core';
-import {dateIs, FormModel, lengthIs, numberIs, required} from '@xh/hoist/cmp/form';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {constrainAll, dateIs, FormModel, lengthIs, numberIs, required, stringExcludes} from '@xh/hoist/cmp/form';
 import {wait} from '@xh/hoist/promise';
 import {pre, vbox} from '@xh/hoist/cmp/layout';
 import {bindable} from '@xh/hoist/mobx';
@@ -11,6 +11,7 @@ import {filter, isEmpty, isNil} from 'lodash';
 @HoistModel
 export class FormPanelModel {
 
+    @managed
     validateTask = new PendingTaskModel();
 
     // For meta controls below example.
@@ -28,6 +29,7 @@ export class FormPanelModel {
         });
     };
 
+    @managed
     formModel = new FormModel({
         fields: [
             {
@@ -42,7 +44,6 @@ export class FormPanelModel {
             },
             {
                 name: 'email',
-                initialValue: 'jbloggs@gmail.com',
                 rules: [required, this.validEmail]
             },
             {
@@ -93,7 +94,7 @@ export class FormPanelModel {
             },
             {
                 name: 'tags',
-                rules: [required]
+                rules: [required, constrainAll(stringExcludes('/', '.', '\\', 'tag'))]
             },
             {
                 name: 'references',

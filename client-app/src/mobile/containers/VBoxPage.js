@@ -1,13 +1,13 @@
-import {Component} from 'react';
-import {HoistComponent, elemFactory} from '@xh/hoist/core';
-import {page} from '@xh/hoist/mobile/cmp/page';
-import {div, vbox, box} from '@xh/hoist/cmp/layout';
+import {hoistCmp} from '@xh/hoist/core';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {box, div, vbox} from '@xh/hoist/cmp/layout';
 
-@HoistComponent
-export class VBoxPage extends Component {
+export const vboxPage = hoistCmp.factory({
 
     render() {
-        return page({
+        const defaults = {padding: 10, className: 'toolbox-containers-box'};
+
+        return panel({
             className: 'toolbox-containers-page',
             items: [
                 div({
@@ -18,21 +18,11 @@ export class VBoxPage extends Component {
                     `
                 }),
                 vbox(
-                    this.renderBox({flex: 1, item: 'flex: 1'}),
-                    this.renderBox({height: 80, item: 'height: 80'}),
-                    this.renderBox({flex: 2, item: 'flex: 2'})
+                    box({...defaults, flex: 1, item: 'flex: 1'}),
+                    box({...defaults, height: 80, item: 'height: 80'}),
+                    box({...defaults, flex: 2, item: 'flex: 2'})
                 )
             ]
         });
     }
-
-    renderBox(args) {
-        return box({
-            padding: 10,
-            className: 'toolbox-containers-box',
-            ...args
-        });
-    }
-}
-
-export const vBoxPage = elemFactory(VBoxPage);
+});

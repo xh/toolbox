@@ -1,43 +1,48 @@
-import {Component} from 'react';
-import {XH, HoistComponent, elemFactory} from '@xh/hoist/core';
-
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
-import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {filler} from '@xh/hoist/cmp/layout';
 import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-import {label, switchInput} from '@xh/hoist/mobile/cmp/input';
+import {label, select, switchInput} from '@xh/hoist/mobile/cmp/input';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-
 import {GridPageModel} from './GridPageModel';
 
-@HoistComponent
-export class GridPage extends Component {
+export const gridPage = hoistCmp.factory({
 
-    model = new GridPageModel();
-    timestamp = new Date();
+    model: creates(GridPageModel),
 
-    render() {
-        const {model} = this,
-            {gridModel, loadModel} = model;
-
-        return page({
+    render({model}) {
+        const {gridModel} = model;
+        return panel({
             title: 'Grids',
             icon: Icon.gridPanel(),
-            mask: loadModel,
+            mask: 'onLoad',
+            headerItems: [
+                relativeTimestamp({
+                    bind: 'dateLoaded',
+                    options: {prefix: 'Loaded'}
+                })
+            ],
             item: grid({
-                model: gridModel,
                 onRowClicked: (e) => {
                     const {id} = e.data.raw;
                     XH.appendRoute('gridDetail', {id});
                 }
             }),
-            tbar: toolbar(
-                label('Compact:'),
-                switchInput({
+            tbar: [
+                label('Size:'),
+                select({
+                    width: 120,
                     model: gridModel,
-                    bind: 'compact'
+                    bind: 'sizingMode',
+                    options: [
+                        {label: 'Large', value: 'large'},
+                        {label: 'Standard', value: 'standard'},
+                        {label: 'Compact', value: 'compact'},
+                        {label: 'Tiny', value: 'tiny'}
+                    ]
                 }),
                 label('Borders:'),
                 switchInput({
@@ -49,16 +54,12 @@ export class GridPage extends Component {
                     model: gridModel,
                     bind: 'stripeRows'
                 })
-            ),
-            bbar: toolbar(
-                relativeTimestamp({
-                    timestamp: this.timestamp,
-                    options: {prefix: 'Loaded'}
-                }),
+            ],
+            bbar: [
+                storeFilterField(),
                 filler(),
-                colChooserButton({model: gridModel})
-            )
+                colChooserButton()
+            ]
         });
     }
-}
-export const gridPage = elemFactory(GridPage);
+});

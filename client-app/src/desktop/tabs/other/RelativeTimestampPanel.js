@@ -1,25 +1,19 @@
-import {Component} from 'react';
-import {HoistComponent} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
 import {box, filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {action, observable} from '@xh/hoist/mobx';
+import {random, sample} from 'lodash';
+import moment from 'moment';
 import {wrapper} from '../../common/Wrapper';
 
-@HoistComponent
-export class RelativeTimestampPanel extends Component {
+export const relativeTimestampPanel = hoistCmp.factory({
+    model: creates(() => new Model()),
 
-    @bindable
-    timestamp = new Date();
-
-    @bindable
-    useShortFmt = false;
-
-    render() {
+    render({model}) {
         return wrapper({
             description: `
                 A relative timestamp will display a given timestamp in terms of how far long ago / 
@@ -28,14 +22,8 @@ export class RelativeTimestampPanel extends Component {
                 in a friendly and readable manner. 
             `,
             links: [
-                {
-                    url: '$TB/client-app/src/desktop/tabs/other/RelativeTimestampPanel.js',
-                    notes: 'This example.'
-                },
-                {
-                    url: '$HR/cmp/relativetimestamp/RelativeTimestamp.js',
-                    notes: 'Hoist component.'
-                }
+                {url: '$TB/client-app/src/desktop/tabs/other/RelativeTimestampPanel.js', notes: 'This example.'},
+                {url: '$HR/cmp/relativetimestamp/RelativeTimestamp.js', notes: 'Hoist component.'}
             ],
             item: panel({
                 title: 'Other › Relative Timestamp',
@@ -45,70 +33,81 @@ export class RelativeTimestampPanel extends Component {
                     box({
                         margin: 10,
                         item: relativeTimestamp({
-                            timestamp: this.timestamp,
-                            options: {allowFuture: true, prefix: 'Latest timestamp:', short: this.useShortFmt},
-                            marginLeft: 10
+                            bind: 'timestamp',
+                            options: {
+                                allowFuture: true,
+                                prefix: model.prefix,
+                                short: model.useShortFmt
+                            }
                         })
                     }),
                     box({
                         margin: 10,
                         style: {opacity: 0.5},
-                        item: new Date(this.timestamp).toString()
+                        item: new Date(model.timestamp).toString()
                     })
                 ],
-                bbar: toolbar(
-                    filler(),
-                    buttonGroup({
-                        items: [
-                            button({
-                                text: 'Set to past',
-                                icon: Icon.angleLeft(),
-                                minimal: false,
-                                width: 130,
-                                onClick: this.setToPast
-                            }),
-                            button({
-                                text: 'Set to now',
-                                intent: 'primary',
-                                icon: Icon.clock(),
-                                minimal: false,
-                                width: 130,
-                                onClick: this.setToNow
-                            }),
-                            button({
-                                text: 'Set to future',
-                                rightIcon: Icon.angleRight(),
-                                minimal: false,
-                                width: 130,
-                                onClick: this.setToFuture
-                            })
-                        ]
-                    }),
-                    filler(),
+                bbar: [
                     switchInput({
                         label: 'Short',
                         labelAlign: 'left',
-                        model: this,
                         bind: 'useShortFmt'
                     }),
-                )
+                    filler(),
+                    buttonGroup(
+                        button({
+                            text: 'Set to past',
+                            icon: Icon.angleLeft(),
+                            minimal: false,
+                            width: 130,
+                            onClick: () => model.setToPast()
+                        }),
+                        button({
+                            text: 'Set to now',
+                            intent: 'primary',
+                            icon: Icon.clock(),
+                            minimal: false,
+                            width: 130,
+                            onClick: () => model.setToNow()
+                        }),
+                        button({
+                            text: 'Set to future',
+                            rightIcon: Icon.angleRight(),
+                            minimal: false,
+                            width: 130,
+                            onClick: () => model.setToFuture()
+                        })
+                    )
+                ]
             })
         });
     }
+});
 
-    setToNow = () => {
-        this.setTimestamp(Date.now());
+
+@HoistModel
+class Model {
+    @observable prefix = 'Refreshed';
+    @observable timestamp = Date.now();
+    @observable useShortFmt = false;
+
+    @action
+    setToNow() {
+        this.timestamp = Date.now();
     }
 
-    setToPast = () => {
-        this.setTimestamp(Date.now() - this.randShift());
+    @action
+    setToPast() {
+        this.prefix = 'Refreshed';
+        this.timestamp = moment().subtract(randVal(), randUnit()).valueOf();
     }
 
-    setToFuture = () => {
-        this.setTimestamp(Date.now() + this.randShift());
-    }
-
-    randShift() {
-        return Math.random() * 1000 * 60 * 60 * 24 * 4;
+    @action
+    setToFuture() {
+        this.prefix = 'Scheduled';
+        this.timestamp = moment().add(randVal(), randUnit()).valueOf();
     }
 }
+
+const randUnit = () => sample(['y', 'M', 'd', 'h', 'm', 's', 'ms']);
+const randVal = () => random(1, 10);

@@ -1,14 +1,7 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2019 Extremely Heavy Industries Inc.
- */
-
-import {XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
-import {action, observable, bindable} from '@xh/hoist/mobx';
-import {uniq, isEmpty} from 'lodash';
-import {DataViewModel} from '@xh/hoist/desktop/cmp/dataview';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {action, bindable, observable} from '@xh/hoist/mobx';
+import {isEmpty, uniq} from 'lodash';
+import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {newsPanelItem} from './NewsPanelItem';
 import {fmtCompactDate} from '@xh/hoist/format';
 
@@ -20,11 +13,22 @@ export class NewsPanelModel {
 
     @managed
     viewModel = new DataViewModel({
+        sortBy: 'published',
         store: {
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
-            idSpec: 'url'
+            idSpec: XH.genId,
+            filter: (rec) => {
+                const {textFilter, sourceFilter} = this,
+                    searchMatch = !textFilter || textFilter.fn(rec),
+                    sourceMatch = isEmpty(sourceFilter) || sourceFilter.includes(rec.data.source);
+
+                return sourceMatch && searchMatch;
+            }
         },
-        itemRenderer: (v, {record}) => newsPanelItem({record})
+        elementRenderer: (v, {record}) => newsPanelItem({record}),
+        itemHeight: 120,
+        rowBorders: true,
+        stripeRows: true
     });
 
     @observable.ref sourceOptions = [];
@@ -36,7 +40,7 @@ export class NewsPanelModel {
     constructor() {
         this.addReaction({
             track: () => [this.sourceFilter, this.textFilter, this.lastRefresh],
-            run: () => this.filterData(),
+            run: () => this.viewModel.store.refreshFilter(),
             fireImmediately: true
         });
     }
@@ -65,20 +69,7 @@ export class NewsPanelModel {
                 author: s.author
             };
         }));
-        this.sourceOptions = uniq(store.records.map(story => story.source));
+        this.sourceOptions = uniq(store.records.map(story => story.data.source));
         this.lastRefresh = new Date();
-    }
-
-    @action
-    filterData() {
-        const filter = (rec) => {
-            const {textFilter, sourceFilter} = this,
-                searchMatch = !textFilter || textFilter.fn(rec),
-                sourceMatch = isEmpty(sourceFilter) || sourceFilter.includes(rec.source);
-
-            return sourceMatch && searchMatch;
-        };
-
-        this.viewModel.store.setFilter(filter);
     }
 }

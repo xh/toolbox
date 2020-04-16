@@ -6,22 +6,39 @@
     "build": "webpack --env.prodBuild",
     "buildAndAnalyze": "webpack --env.prodBuild --env.analyzeBundles",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
-    "lint": "eslint .",
-    "refreshHoist": "rimraf -rf node_modules/@xh/hoist && yarn upgrade @xh/hoist && yarn install --check-files",
-    "refreshHoistDevUtils": "rimraf -rf node_modules/@xh/hoist-dev-utils && yarn upgrade @xh/hoist-dev-utils && yarn install --check-files",
+    "lint": "yarn lint:js",
+    "lint:all": "yarn lint:js && yarn lint:styles",
+    "lint:js": "eslint --ext .js,.jsx .",
+    "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
+    "refreshHoist": "echo 'This script has been removed - run `yarn upgrade` instead to get the latest snapshot.'",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
     "startOnDevice": "yarn install && webpack-dev-server --env.inlineHoist --env.devHost=$(hostname)",
     "startAndAnalyze": "yarn install && webpack-dev-server --env.analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env.inlineHoist"
   },
+  "lint-staged": {
+    "*.{js,jsx}": "eslint",
+    "*.s?(a|c)ss": "stylelint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "dependencies": {
-    "@xh/hoist": "^28.0.0-SNAPSHOT",
+    "@fortawesome/free-brands-svg-icons": "~5.13.0",
+    "@xh/hoist": "^33.0.0-SNAPSHOT",
     "react": "~16.8.6",
     "react-dom": "~16.8.6",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "3.8.1",
-    "cross-env": "~5.2.0"
+    "@xh/hoist-dev-utils": "^5.0.0-SNAPSHOT",
+    "cross-env": "~7.0.2",
+    "husky": "~4.2.1",
+    "lint-staged": "~10.0.9",
+    "stylelint": "~13.2.1",
+    "stylelint-config-standard": "~20.0.0",
+    "stylelint-scss": "~3.16.0"
   }
 }

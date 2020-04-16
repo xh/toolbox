@@ -1,56 +1,36 @@
-import {Component} from 'react';
-import {HoistComponent, elemFactory} from '@xh/hoist/core';
-import {page} from '@xh/hoist/mobile/cmp/page';
-import {table, tbody, tr, th, td} from '@xh/hoist/cmp/layout';
+import {hoistCmp} from '@xh/hoist/core';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
-
 import './IconPage.scss';
+import {without} from 'lodash';
 
-@HoistComponent
-export class IconPage extends Component {
-
+export const iconPage = hoistCmp.factory({
     render() {
-        return page({
+        return panel({
             scrollable: true,
             className: 'icon-page',
             item: table(
                 tbody({
                     items: [
-                        this.renderHeaderRow(),
-                        ...this.getAllIcons().map(icon => this.renderRow(icon))
+                        tr(th('name'), th('regular'), th('solid'), th('light')),
+                        ...allIcons().map(
+                            it => tr(td(it.name), td(it.regular), td(it.solid), td(it.light))
+                        )
                     ]
                 })
             )
         });
     }
+});
 
-    renderHeaderRow() {
-        return tr(
-            th('name'),
-            th('regular'),
-            th('solid'),
-            th('light')
-        );
-    }
+function allIcons() {
+    const factories = without(Object.keys(Icon), 'icon', 'fileIcon');
 
-    renderRow(icon) {
-        return tr(
-            td(icon.name),
-            td(icon.regular),
-            td(icon.solid),
-            td(icon.light)
-        );
-    }
-
-    getAllIcons() {
-        return Object.keys(Icon).map(key => ({
-            name: key,
-            regular: Icon[key]({size: '2x'}),
-            solid: Icon[key]({prefix: 'fas', size: '2x'}),
-            light: Icon[key]({prefix: 'fal', size: '2x'})
-        }));
-    }
-
+    return factories.map(key => ({
+        name: key,
+        regular:    Icon[key]({prefix: 'far', size: '2x'}),
+        solid:      Icon[key]({prefix: 'fas', size: '2x'}),
+        light:      Icon[key]({prefix: 'fal', size: '2x'})
+    }));
 }
-
-export const iconPage = elemFactory(IconPage);
