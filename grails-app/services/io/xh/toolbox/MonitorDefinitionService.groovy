@@ -5,7 +5,6 @@ import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.MonitorResult
 import io.xh.hoist.track.TrackLog
 
-import grails.gorm.transactions.Transactional
 
 import static io.xh.hoist.monitor.MonitorStatus.OK
 import static io.xh.hoist.monitor.MonitorStatus.FAIL
@@ -110,7 +109,6 @@ class MonitorDefinitionService extends BaseService {
     /**
      * Check the longest page load time in the last hour
      */
-    @Transactional(readOnly = true)
     def longestPageLoadMs(MonitorResult result) {
         def now = new Date()
         def earlier = null

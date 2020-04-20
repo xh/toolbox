@@ -1,5 +1,6 @@
 package io.xh.toolbox
 
+import grails.gorm.transactions.Transactional
 import io.xh.hoist.config.AppConfig
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.user.User
@@ -37,6 +38,7 @@ class BootStrap {
     //------------------------
     // Implementation
     //------------------------
+    @Transactional
     private void ensureRequiredConfigsCreated() {
         def adminUsername = getInstanceConfig('adminUsername')
 
@@ -126,12 +128,10 @@ class BootStrap {
         ])
 
         // Edit Hoist-installed auto-refresh config to enable default refresh for TB.
-        AppConfig.withTransaction {
-            def autoRefreshConfig = AppConfig.findByName('xhAutoRefreshIntervals')
-            if (autoRefreshConfig && autoRefreshConfig.lastUpdatedBy == 'hoist-bootstrap') {
-                autoRefreshConfig.value = serializePretty([app: 30, mobile: 60])
-                autoRefreshConfig.save()
-            }
+        def autoRefreshConfig = AppConfig.findByName('xhAutoRefreshIntervals')
+        if (autoRefreshConfig && autoRefreshConfig.lastUpdatedBy == 'hoist-bootstrap') {
+            autoRefreshConfig.value = serializePretty([app: 30, mobile: 60])
+            autoRefreshConfig.save()
         }
     }
 
@@ -209,6 +209,7 @@ class BootStrap {
         ])
     }
 
+    @Transactional
     private void ensureMonitorsCreated() {
         createMonitorIfNeeded(
             code: 'pricesAgeMs',
@@ -298,12 +299,11 @@ class BootStrap {
     }
 
     private void createMonitorIfNeeded(Map data) {
-        Monitor.withTransaction {
-            def monitor = Monitor.findByCode(data.code as String)
-            if (!monitor) new Monitor(data).save()
-        }
+        def monitor = Monitor.findByCode(data.code as String)
+        if (!monitor) new Monitor(data).save()
     }
 
+    @Transactional
     private void ensureUsersCreated() {
         String adminUsername = getInstanceConfig('adminUsername')
         String adminPassword = getInstanceConfig('adminPassword')
@@ -343,18 +343,15 @@ class BootStrap {
     }
 
     private void createUserIfNeeded(Map data) {
-        User.withTransaction {
-            def user = User.findByEmail(data.email as String)
-            if (!user) new User(data).save()
-        }
+        def user = User.findByEmail(data.email as String)
+        if (!user) new User(data).save()
     }
 
+    @Transactional
     private void resetGuestUserPassword () {
-        User.withTransaction {
-            def user = User.findByEmail(guestUserEmail)
-            user.setPassword(guestUserPwd)
-            user.save()
-        }
+        def user = User.findByEmail(guestUserEmail)
+        user.setPassword(guestUserPwd)
+        user.save()
     }
 
     private void logStartupMsg() {
