@@ -12,20 +12,20 @@ grails {
 //-------------------------------------------------------------
 private void hoistDefaults() {
 
-    // Uncomment to enable built-in spring boot admin endpoints (beans, metrics, etc)
-    // management.security.enabled = false
-
     grails {
-        cors.enabled = true
-        spring {
-            transactionManagement.proxies = false // use @Transaction for services
-            groovy.template.'check-template-location' = false
-            bean.packages = []
+        profile = 'rest-api'
+        cors {
+            enabled = true
+            allowCredentials = true
         }
 
-        endpoints {
-            // Set to true to enable built-in spring boot admin endpoints (beans, metrics, etc)
-            enabled = false
+        spring {
+            groovy.template.'check-template-location' = false
+            devtools.restart.exclude = ['grails-app/conf/**']
+        }
+
+        management {
+            endpoints.'enabled-by-default' = false
         }
 
         mime {
@@ -58,9 +58,6 @@ private void hoistDefaults() {
             }
         }
 
-        views.default.codec = 'none'
-        views.gsp.encoding = 'UTF-8'
-
         urlmapping.cache.maxsize = 1000
         converters.encoding = 'UTF-8'
         enable.native2ascii = true
@@ -68,6 +65,7 @@ private void hoistDefaults() {
         exceptionresolver.params.exclude = ['password', 'pin']
 
         gorm {
+            reactor.events =  false
             failOnError = true
             flushMode = 'AUTO'
         }

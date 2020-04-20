@@ -2,8 +2,6 @@ package io.xh.toolbox
 
 import io.xh.hoist.config.AppConfig
 import io.xh.hoist.util.Utils
-import io.xh.toolbox.roadmap.Project
-import io.xh.toolbox.roadmap.Phase
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.Monitor
@@ -128,12 +126,13 @@ class BootStrap {
         ])
 
         // Edit Hoist-installed auto-refresh config to enable default refresh for TB.
-        def autoRefreshConfig = AppConfig.findByName('xhAutoRefreshIntervals')
-        if (autoRefreshConfig && autoRefreshConfig.lastUpdatedBy == 'hoist-bootstrap') {
-            autoRefreshConfig.value = serializePretty([app: 30, mobile: 60])
-            autoRefreshConfig.save()
+        AppConfig.withTransaction {
+            def autoRefreshConfig = AppConfig.findByName('xhAutoRefreshIntervals')
+            if (autoRefreshConfig && autoRefreshConfig.lastUpdatedBy == 'hoist-bootstrap') {
+                autoRefreshConfig.value = serializePretty([app: 30, mobile: 60])
+                autoRefreshConfig.save()
+            }
         }
-
     }
 
     private void ensureRequiredPrefsCreated() {
@@ -299,8 +298,10 @@ class BootStrap {
     }
 
     private void createMonitorIfNeeded(Map data) {
-        def monitor = Monitor.findByCode(data.code as String)
-        if (!monitor) new Monitor(data).save()
+        Monitor.withTransaction {
+            def monitor = Monitor.findByCode(data.code as String)
+            if (!monitor) new Monitor(data).save()
+        }
     }
 
     private void ensureUsersCreated() {
@@ -342,14 +343,18 @@ class BootStrap {
     }
 
     private void createUserIfNeeded(Map data) {
-        def user = User.findByEmail(data.email as String)
-        if (!user) new User(data).save()
+        User.withTransaction {
+            def user = User.findByEmail(data.email as String)
+            if (!user) new User(data).save()
+        }
     }
 
     private void resetGuestUserPassword () {
-        def user = User.findByEmail(guestUserEmail)
-        user.setPassword(guestUserPwd)
-        user.save()
+        User.withTransaction {
+            def user = User.findByEmail(guestUserEmail)
+            user.setPassword(guestUserPwd)
+            user.save()
+        }
     }
 
     private void logStartupMsg() {
