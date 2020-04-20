@@ -94,38 +94,6 @@ if (inlineHoist) {
     }
 }
 
-apply plugin:'maven-publish'
-publishing {
-    publications {
-        // Classic Maven publication of the Grails server WAR only (with fully spec'd POM file).
-        appWar(MavenPublication) {
-            from components.java
-            artifactId appCode
-            artifact war
-        }
-        // TAR distro with both the Grails WAR + client-side assets.
-        appWarAndClientAssets(MavenPublication) {
-            artifactId appCode + '-all'
-            // artifact appWarAndClientAssetsDistTar
-        }
-        // TAR distro with client-side assets only.
-        clientAssets(MavenPublication) {
-            artifactId appCode + '-client-assets'
-            // artifact clientAssetsDistTar
-        }
-    }
-    repositories {
-        maven {
-            def repoEndpoint = version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'
-            url "https://repo.xh.io/content/repositories/$repoEndpoint/"
-            credentials {
-                username project.findProperty('xhRepoDeployUser')
-                password project.findProperty('xhRepoDeployPassword')
-            }
-        }
-    }
-}
-
 // Tasks to create distribution bundles that include built client-assets, as well as (for the
 // first task) the WAR. This creates a self-contained archive with both sides of the build output.
 // NOTE - these rely on the client-side build having been completed (outside of Gradle) by Yarn and
@@ -145,6 +113,38 @@ distributions {
     clientAssets {
         contents {
             from { 'client-app/build' }
+        }
+    }
+}
+
+apply plugin:'maven-publish'
+publishing {
+    publications {
+        // Classic Maven publication of the Grails server WAR only (with fully spec'd POM file).
+        appWar(MavenPublication) {
+            from components.java
+            artifactId appCode
+            artifact war
+        }
+        // TAR distro with both the Grails WAR + client-side assets.
+        appWarAndClientAssets(MavenPublication) {
+            artifactId appCode + '-all'
+            artifact appWarAndClientAssetsDistTar
+        }
+        // TAR distro with client-side assets only.
+        clientAssets(MavenPublication) {
+            artifactId appCode + '-client-assets'
+            artifact clientAssetsDistTar
+        }
+    }
+    repositories {
+        maven {
+            def repoEndpoint = version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'
+            url "https://repo.xh.io/content/repositories/$repoEndpoint/"
+            credentials {
+                username project.findProperty('xhRepoDeployUser')
+                password project.findProperty('xhRepoDeployPassword')
+            }
         }
     }
 }
