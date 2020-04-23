@@ -31,7 +31,7 @@ export class StoreEditingPanelModel {
                         intent: 'success',
                         displayFn: ({record}) => {
                             return {
-                                icon: record.isNew ? Icon.add() : Icon.check(),
+                                icon: record.isAdd ? Icon.add() : Icon.check(),
                                 disabled: record.isCommitted
                             };
                         },
@@ -40,13 +40,13 @@ export class StoreEditingPanelModel {
                     {
                         icon: Icon.undo(),
                         intent: 'primary',
-                        displayFn: ({record}) => ({disabled: record.isCommitted}),
+                        displayFn: ({record}) => ({disabled: !record.isModified}),
                         actionFn: ({record}) => this.revertRecord(record)
                     },
                     {
                         icon: Icon.delete(),
                         intent: 'danger',
-                        displayFn: ({record}) => ({icon: record.isNew ? Icon.close() : Icon.delete()}),
+                        displayFn: ({record}) => ({icon: record.isAdd ? Icon.close() : Icon.delete()}),
                         actionFn: ({record}) => this.store.removeRecords(record)
                     }
                 ]
@@ -136,16 +136,16 @@ export class StoreEditingPanelModel {
     commitRecord(record) {
         const {store} = this;
 
-        if (record.isNew) {
+        if (record.isAdd) {
             // If it is a new record then we need to:
 
             // 1. Remove the temporary un-committed record from the store
             store.removeRecords(record);
 
             // 2. Construct new record raw data, with a valid assigned id
-            store.updateData({add: [{id: this.getNextId(), ...record.data}]});
+            store.updateData({add: [{...record.data, id: this.getNextId()}]});
         } else {
-            store.updateData({update: [{id: record.id, ...record.data}]});
+            store.updateData({update: [record.data]});
         }
     }
 

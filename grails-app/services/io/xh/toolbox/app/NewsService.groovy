@@ -1,9 +1,9 @@
 package io.xh.toolbox.app
 
 import io.xh.hoist.BaseService
-import io.xh.hoist.json.JSONParser
+import io.xh.hoist.http.JSONClient
 import io.xh.toolbox.NewsItem
-import org.grails.web.json.JSONArray
+import org.apache.http.client.methods.HttpGet
 import io.xh.hoist.util.Timer
 
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
@@ -13,6 +13,7 @@ class NewsService extends BaseService {
 
     private List<NewsItem> _newsItems
     private Timer newsTimer
+    private JSONClient _jsonClient
 
     static clearCachesConfigs = ['newsSources', 'newsApiKey']
     def configService
@@ -59,30 +60,23 @@ class NewsService extends BaseService {
 
         withShortInfo("Loading news from ${sources.size()} configured sources") {
             def items = []
-
-            items.addAll(loadNewsForSources(sources));
-
-            items.sort {-it.published.time}
-
-            _newsItems = items
+            try {
+                items = loadNewsForSources(sources)
+            } finally {
+                _newsItems = items
+            }
         }
     }
 
     private List<NewsItem> loadNewsForSources(List<String> sources) {
         def sourcesParam = String.join(',', sources)
         def apiKey = configService.getString('newsApiKey'),
-            url = new URL("https://newsapi.org/v2/top-headlines?sources=${sourcesParam}&apiKey=${apiKey}"),
-            response = JSONParser.parseObject(url.openStream().text)
+            url = "https://newsapi.org/v2/top-headlines?sources=${sourcesParam}&apiKey=${apiKey}",
+            response = client.executeAsJSONObject(new HttpGet(url))
 
-        if (response.status != 'ok') {
-            log.error("Unable to fetch news: ${response.message}")
-            return Collections.emptyList()
-        }
-
-        def articles = response.articles as JSONArray,
+        def articles = response.articles,
             ret = []
-
-        articles.forEach{it ->
+        articles.forEach { it ->
             if (it.publishedAt) {
                 def cleanPubString = it.publishedAt.take(19) + 'Z'
                 ret << new NewsItem(
@@ -97,13 +91,21 @@ class NewsService extends BaseService {
             }
         }
 
-        log.debug("Loaded ${articles.size()} news items.")
+        log.debug("Loaded ${ret.size()} news items.")
 
-        return ret
+        return ret.sort { -it.published.time }
+    }
+
+    private JSONClient getClient() {
+        if (!_jsonClient) {
+            _jsonClient = new JSONClient()
+        }
+        return _jsonClient
     }
 
     void clearCaches() {
         super.clearCaches()
+        _jsonClient = null
         _newsItems = []
         loadAllNews()
     }
