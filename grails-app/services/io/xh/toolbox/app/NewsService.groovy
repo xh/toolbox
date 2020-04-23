@@ -44,7 +44,7 @@ class NewsService extends BaseService {
     }
 
     boolean getAllSourcesLoaded() {
-        return loadedSourcesCount == configService.getJSONObject('newsSources').size()
+        return loadedSourcesCount == configService.getMap('newsSources').size()
     }
 
     Date getLastTimestamp() {
@@ -56,7 +56,7 @@ class NewsService extends BaseService {
     // Implementation
     //------------------------
     private void loadAllNews() {
-        def sources = configService.getJSONObject('newsSources').keySet().toList()
+        def sources = configService.getMap('newsSources').keySet().toList()
 
         withShortInfo("Loading news from ${sources.size()} configured sources") {
             def items = []
@@ -72,7 +72,7 @@ class NewsService extends BaseService {
         def sourcesParam = String.join(',', sources)
         def apiKey = configService.getString('newsApiKey'),
             url = "https://newsapi.org/v2/top-headlines?sources=${sourcesParam}&apiKey=${apiKey}",
-            response = client.executeAsJSONObject(new HttpGet(url))
+            response = client.executeAsMap(new HttpGet(url))
 
         def articles = response.articles,
             ret = []
