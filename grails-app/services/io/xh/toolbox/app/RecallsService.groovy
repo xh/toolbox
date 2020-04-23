@@ -1,36 +1,53 @@
 package io.xh.toolbox.app
 
 import io.xh.hoist.BaseService
-import io.xh.hoist.json.JSON
+import io.xh.hoist.exception.HttpException
+import io.xh.hoist.http.JSONClient
+import org.apache.http.client.methods.HttpGet
+import static org.apache.http.HttpStatus.SC_OK
 
 class RecallsService extends BaseService {
 
     def configService
-    def lastResponseCode
+
+    Integer lastResponseCode
+    private JSONClient _jsonClient
 
     List fetchRecalls(String searchQuery) {
-
         def host = configService.getString('recallsHost'),
-            url = !searchQuery ?
+            uri = !searchQuery ?
                 // `_exists_:openfda` ensures all search hits includes a nested openfda object that contains essential data for frontend
-                new URL("https://$host/drug/enforcement.json?search=_exists_:openfda&sort=recall_initiation_date:desc&limit=99") :
-                new URL("https://$host/drug/enforcement.json?search=($searchQuery)+AND+_exists_:openfda&sort=recall_initiation_date:desc&limit=99")
+                "https://$host/drug/enforcement.json?search=_exists_:openfda&sort=recall_initiation_date:desc&limit=99" :
+                "https://$host/drug/enforcement.json?search=($searchQuery)+AND+_exists_:openfda&sort=recall_initiation_date:desc&limit=99"
 
-        def connection = url.openConnection(),
-            inputStream = null
         try {
-            lastResponseCode = connection.responseCode
-            if (connection.responseCode == 404) {
-                return []
-            } else {
-                inputStream = connection.getInputStream()
-                return JSON.parse(inputStream, 'UTF-8').results
-            }
-        } catch (IOException e) {
+            def response = client.executeAsJSONObject(new HttpGet(uri))
+            lastResponseCode = SC_OK
+            return response.results ?: []
+        } catch (HttpException e) {
+            lastResponseCode = e.statusCode
+            if (e.statusCode == 404) return []
+            throw e
+        } catch (Exception e) {
             lastResponseCode = null
-            return []
-        } finally {
-            inputStream?.close()
+            throw e
         }
     }
+
+
+    //------------------------
+    // Implementation
+    //------------------------
+    private JSONClient getClient() {
+        if (!_jsonClient) {
+            _jsonClient = new JSONClient()
+        }
+        return _jsonClient
+    }
+
+    void clearCaches() {
+        _jsonClient = null
+        super.clearCaches()
+    }
+
 }
