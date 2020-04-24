@@ -1,13 +1,13 @@
 package io.xh.toolbox.security
 
+import grails.gorm.transactions.ReadOnly
 import io.xh.hoist.security.BaseAuthenticationService
 import io.xh.hoist.user.HoistUser
 import io.xh.toolbox.user.User
+import net.bytebuddy.asm.Advice
 
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
-
-import static io.xh.hoist.util.Utils.withNewSession
 
 class AuthenticationService extends BaseAuthenticationService  {
 
@@ -38,11 +38,10 @@ class AuthenticationService extends BaseAuthenticationService  {
     //------------------------
     // Implementation
     //------------------------
+    @ReadOnly
     private HoistUser lookupUser(String username, String password) {
-        (HoistUser) withNewSession {
-            def user = User.findByEmailAndEnabled(username, true)
-            return user?.checkPassword(password) ? user : null
-        }
+        def user = User.findByEmailAndEnabled(username, true)
+        return user?.checkPassword(password) ? user : null
     }
 
     private static boolean isAjax(HttpServletRequest request) {

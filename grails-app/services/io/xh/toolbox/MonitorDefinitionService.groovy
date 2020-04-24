@@ -1,5 +1,6 @@
 package io.xh.toolbox
 
+import grails.gorm.transactions.ReadOnly
 import groovy.time.TimeCategory
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.MonitorResult
@@ -109,6 +110,7 @@ class MonitorDefinitionService extends BaseService {
     /**
      * Check the longest page load time in the last hour
      */
+    @ReadOnly
     def longestPageLoadMs(MonitorResult result) {
         def now = new Date()
         def earlier = null

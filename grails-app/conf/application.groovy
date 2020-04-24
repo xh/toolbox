@@ -67,7 +67,6 @@ private void hoistDefaults() {
         gorm {
             reactor.events =  false
             failOnError = true
-            flushMode = 'AUTO'
         }
     }
 
@@ -77,9 +76,6 @@ private void hoistDefaults() {
             queries = true
             use_query_cache = true
             region.factory_class = 'org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory'
-        }
-        flush {
-            mode = 'AUTO'
         }
         show_sql = false
     }
