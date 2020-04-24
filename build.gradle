@@ -151,6 +151,12 @@ publishing {
     }
 }
 
+Map hoistMetaData = [
+        'info.xh.appCode': appCode,
+        'info.xh.appName': appName,
+        'info.xh.appBuild': appBuild
+]
+
 bootRun {
     ignoreExitValue true
     systemProperties System.properties
@@ -162,6 +168,7 @@ bootRun {
     sourceResources sourceSets.main
     String springProfilesActive = 'spring.profiles.active'
     systemProperty springProfilesActive, System.getProperty(springProfilesActive)
+    systemProperties hoistMetaData
 }
 
 tasks.withType(GroovyCompile) {
@@ -180,9 +187,7 @@ buildProperties.doLast {
 
     Properties properties = new Properties()
     grailsBuildInfoFile.withInputStream {properties.load(it)}
-    properties.setProperty('info.xh.appCode', appCode)
-    properties.setProperty('info.xh.appName', appName)
-    properties.setProperty('info.xh.appBuild', appBuild)
+    properties.putAll(hoistMetaData)
     grailsBuildInfoFile.withOutputStream {properties.store(it, null)}
 }
 
