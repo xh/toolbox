@@ -2,7 +2,6 @@ package io.xh.toolbox.data
 
 import io.xh.hoist.RestController
 import io.xh.hoist.security.Access
-import org.grails.web.json.JSONObject
 
 @Access(['APP_READER'])
 class CompanyRestController extends RestController {
@@ -16,7 +15,7 @@ class CompanyRestController extends RestController {
         )
     }
 
-    protected void preprocessSubmit(JSONObject submit) {
+    protected void preprocessSubmit(Map submit) {
         submit.lastUpdatedBy = username
     }
 

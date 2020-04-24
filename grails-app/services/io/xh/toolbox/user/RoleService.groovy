@@ -11,7 +11,7 @@ class RoleService extends BaseRoleService {
 
     Map<String, Set<String>> getAllRoleAssignments() {
         def ret = new HashMap<>()
-        def confRoles = configService.getJSONObject('roles')
+        def confRoles = configService.getMap('roles')
         confRoles.each{role, users ->
             ret[role] = users.toSet()
         }
