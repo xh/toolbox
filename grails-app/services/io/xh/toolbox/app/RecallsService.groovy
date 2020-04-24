@@ -21,7 +21,7 @@ class RecallsService extends BaseService {
                 "https://$host/drug/enforcement.json?search=($searchQuery)+AND+_exists_:openfda&sort=recall_initiation_date:desc&limit=99"
 
         try {
-            def response = client.executeAsJSONObject(new HttpGet(uri))
+            def response = client.executeAsMap(new HttpGet(uri))
             lastResponseCode = SC_OK
             return response.results ?: []
         } catch (HttpException e) {

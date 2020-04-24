@@ -138,7 +138,7 @@ class PortfolioService extends BaseService {
 
 
     private Map getConfig() {
-        configService.getJSONObject('portfolioConfigs')
+        configService.getMap('portfolioConfigs')
     }
 
     void clearCaches() {
