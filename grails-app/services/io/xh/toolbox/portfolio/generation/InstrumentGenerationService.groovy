@@ -41,6 +41,6 @@ class InstrumentGenerationService extends BaseService {
     }
 
     private Map getConfig() {
-        configService.getJSONObject('portfolioConfigs')
+        configService.getMap('portfolioConfigs')
     }
 }

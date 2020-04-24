@@ -1,6 +1,5 @@
 package io.xh.toolbox.admin
 
-import grails.converters.JSON
 import io.xh.toolbox.BaseController
 import io.xh.hoist.security.Access
 

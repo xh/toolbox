@@ -1,8 +1,8 @@
 package io.xh.toolbox.data
 
-import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
+import io.xh.hoist.json.JSONParser
 
 @Slf4j
 class CustomerService extends BaseService {
@@ -31,7 +31,7 @@ class CustomerService extends BaseService {
         def ret = []
         try {
             def mockData = applicationContext.getResource('classpath:MockTradesData.json')
-            ret = new JsonSlurper().parse(mockData.inputStream)
+            ret = JSONParser.parseArray(mockData.inputStream)
             ret.each{it -> it.isActive = (it.id % 3 != 0)}
             ret = ret.unique{it.company}
         } catch (Exception e) {
