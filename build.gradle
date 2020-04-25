@@ -48,9 +48,20 @@ if (inlineHoist) {
     println "${appName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
 }
 
+boolean hotReload = true
+
 dependencies {
-    // Grails 4.0.3 REST Plugin Defaults
-    developmentOnly "org.springframework.boot:spring-boot-devtools"
+
+    if  (hotReload) {
+        // Incremental - for java 8 only -- see https://github.com/grails/grails-core/pull/11441
+        agent "org.springframework:springloaded:1.2.8.RELEASE"
+        runtimeOnly "io.methvin:directory-watcher:0.9.6"
+    } else {
+        // Spring boot full-reload of entire app
+        developmentOnly "org.springframework.boot:spring-boot-devtools"
+    }
+
+    // Grails 4.0.3 REST Defaults
     compile "org.springframework.boot:spring-boot-starter-logging"
     compile "org.springframework.boot:spring-boot-autoconfigure"
     compile "org.grails:grails-core"

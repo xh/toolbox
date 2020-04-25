@@ -13,7 +13,6 @@ class TradeService extends BaseService {
 
     void init() {
         trades = loadTradesFromFile()
-        super.init()
     }
 
     Map getTrades() {

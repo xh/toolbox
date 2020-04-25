@@ -22,7 +22,6 @@ class PositionService extends BaseService {
                 intervalUnits: SECONDS,
                 delay: true
         )
-        super.init()
     }
 
 

@@ -31,7 +31,6 @@ class PortfolioService extends BaseService {
                 intervalUnits: SECONDS,
                 delay: true
         )
-        super.init()
     }
 
     PortfolioDataSet getData() {
