@@ -1,6 +1,5 @@
 import {HoistService, XH} from '@xh/hoist/core';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-
 import {PositionSession} from '../positions/PositionSession';
 
 @HoistService

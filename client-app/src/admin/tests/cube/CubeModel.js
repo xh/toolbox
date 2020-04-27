@@ -1,6 +1,5 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {LoadSupport} from '@xh/hoist/core/mixins';
-import {Cube} from '@xh/hoist/data/cube';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {Cube} from '@xh/hoist/data';
 import {fmtThousands} from '@xh/hoist/format';
 import {times} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';

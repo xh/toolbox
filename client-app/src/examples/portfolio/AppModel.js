@@ -10,7 +10,6 @@ import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {startCase} from 'lodash';
 import {PortfolioService} from '../../core/svc/PortfolioService';
 
-
 @HoistAppModel
 export class AppModel {
 

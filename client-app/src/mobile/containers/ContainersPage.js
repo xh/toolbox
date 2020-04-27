@@ -1,4 +1,4 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {ContainersPageModel} from './ContainersPageModel';
 

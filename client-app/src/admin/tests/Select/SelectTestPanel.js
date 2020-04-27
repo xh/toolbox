@@ -1,4 +1,4 @@
-import {hoistCmp, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {restaurants} from '../../../core/data';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
@@ -6,7 +6,6 @@ import {box, div, fragment, hbox, label, p, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {SelectTestModel} from './SelectTestModel.js';
 import './SelectTestPanel.scss';
-import {creates} from '@xh/hoist/core/modelspec';
 
 export const SelectTestPanel = hoistCmp({
 

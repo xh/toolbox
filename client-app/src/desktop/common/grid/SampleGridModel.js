@@ -1,21 +1,12 @@
 import {createRef} from 'react';
-import {localDateCol, boolCheckCol, emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
-import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
-import {fragment, br, vbox, div, hbox, filler} from '@xh/hoist/cmp/layout';
+import {boolCheckCol, emptyFlexCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {
-    fmtNumberTooltip,
-    millionsRenderer,
-    numberRenderer,
-    fmtDate,
-    fmtMillions,
-    fmtNumber
-} from '@xh/hoist/format';
+import {fmtDate, fmtMillions, fmtNumber, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-
 import './SampleGrid.scss';
 
 @HoistModel

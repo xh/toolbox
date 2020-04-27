@@ -1,7 +1,7 @@
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
 import {hoistCmp} from '@xh/hoist/core';
-import {boolCheckCol} from '@xh/hoist/cmp/grid/columns';
+import {boolCheckCol} from '@xh/hoist/cmp/grid';
 
 export const phaseRestPanel = hoistCmp.factory({
     render() {

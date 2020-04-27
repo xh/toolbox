@@ -1,4 +1,4 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {div, filler, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
@@ -8,18 +8,17 @@ import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/mobile/cmp/form';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {
-    label,
-    textInput,
-    select,
-    numberInput,
     buttonGroupInput,
     checkbox,
     dateInput,
+    label,
+    numberInput,
+    searchInput,
+    select,
     switchInput,
     textArea,
-    searchInput
+    textInput
 } from '@xh/hoist/mobile/cmp/input';
-
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 

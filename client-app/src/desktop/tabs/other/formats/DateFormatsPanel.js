@@ -1,22 +1,15 @@
 import React from 'react';
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common/Wrapper';
 import {code, hframe} from '@xh/hoist/cmp/layout';
-import {
-    radioInput,
-    switchInput,
-    textInput,
-    dateInput
-} from '@xh/hoist/desktop/cmp/input';
-
+import {dateInput, radioInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {card} from '@xh/hoist/kit/blueprint';
 import {DateFormatsPanelModel} from './DateFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
 import {param} from './Util';
 import './Styles.scss';
-
 
 export const dateFormatsPanel = hoistCmp.factory({
     model: creates(DateFormatsPanelModel),

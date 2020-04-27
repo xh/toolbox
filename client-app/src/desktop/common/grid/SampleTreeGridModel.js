@@ -10,7 +10,7 @@ import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {bindable, action} from '@xh/hoist/mobx';
+import {action, bindable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
 
 @HoistModel
