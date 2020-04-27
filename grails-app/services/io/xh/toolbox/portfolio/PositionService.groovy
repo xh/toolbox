@@ -16,11 +16,11 @@ class PositionService extends BaseService {
         configService
 
     void init() {
-        def pushUpdatesIntervalSecs = config.pushUpdatesIntervalSecs
         createTimer(
                 runFn: this.&pushUpdatesToAllSessions,
-                interval: pushUpdatesIntervalSecs,
-                intervalUnits: SECONDS
+                interval: {config.pushUpdatesIntervalSecs},
+                intervalUnits: SECONDS,
+                delay: true
         )
         super.init()
     }
@@ -257,6 +257,6 @@ class PositionService extends BaseService {
     }
 
     private Map getConfig() {
-        configService.getJSONObject('portfolioConfigs')
+        configService.getMap('portfolioConfigs')
     }
 }
