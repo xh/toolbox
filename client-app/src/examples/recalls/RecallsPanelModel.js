@@ -4,16 +4,12 @@
  *
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
-
-import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
-import {managed} from '@xh/hoist/core/mixins';
-import {GridModel} from '@xh/hoist/cmp/grid';
-import {localDateCol} from '@xh/hoist/cmp/grid/columns';
+import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
-
 import {DetailsPanelModel} from './DetailsPanelModel';
 
 @HoistModel

@@ -1,6 +1,5 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {LoadSupport} from '@xh/hoist/core/mixins';
-import {Cube} from '@xh/hoist/data/cube';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {Cube} from '@xh/hoist/data';
 import {fmtThousands} from '@xh/hoist/format';
 import {times} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';
@@ -20,14 +19,10 @@ export class CubeModel {
         this.cube = this.createCube();
         this.parent = parent;
 
-        const timer = Timer.create({
+        this.timer = Timer.create({
             runFn: () => this.streamChangesAsync(),
-            interval: (parent.updateFreq ?? -1) * SECONDS
-        });
-
-        this.addReaction({
-            track: () => parent.updateFreq,
-            run: () => timer.setInterval((parent.updateFreq ?? -1) * SECONDS)
+            interval: () => parent.updateFreq ?? -1,
+            intervalUnits: SECONDS
         });
     }
 

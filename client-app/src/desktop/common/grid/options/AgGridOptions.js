@@ -1,5 +1,5 @@
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {switchInput, select} from '@xh/hoist/desktop/cmp/input';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
 import {fragment} from '@xh/hoist/cmp/layout';
 

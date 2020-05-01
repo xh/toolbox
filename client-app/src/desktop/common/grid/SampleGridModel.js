@@ -1,21 +1,12 @@
 import {createRef} from 'react';
-import {localDateCol, boolCheckCol, emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
-import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
-import {fragment, br, vbox, div, hbox, filler} from '@xh/hoist/cmp/layout';
+import {boolCheckCol, emptyFlexCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {
-    fmtNumberTooltip,
-    millionsRenderer,
-    numberRenderer,
-    fmtDate,
-    fmtMillions,
-    fmtNumber
-} from '@xh/hoist/format';
+import {fmtDate, fmtMillions, fmtNumber, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-
 import './SampleGrid.scss';
 
 @HoistModel
@@ -176,7 +167,9 @@ export class SampleGridModel {
             },
             {
                 field: 'company',
-                width: 200,
+                flex: 2,
+                minWidth: 200,
+                maxWidth: 350,
                 tooltip: true,
                 headerName: ({gridModel}) => {
                     let ret = 'Company';
@@ -195,7 +188,9 @@ export class SampleGridModel {
             },
             {
                 field: 'city',
-                width: 140,
+                flex: 1,
+                minWidth: 110,
+                maxWidth: 175,
                 tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
                 cellClass: (val) => {
                     return val == 'New York' ? 'xh-text-color-accent' : '';

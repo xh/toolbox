@@ -2,8 +2,7 @@ import React from 'react';
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-
-import {wrapper, sampleGrid} from '../../common';
+import {sampleGrid, wrapper} from '../../common';
 
 export const standardGridPanel = hoistCmp.factory(
     () => wrapper({

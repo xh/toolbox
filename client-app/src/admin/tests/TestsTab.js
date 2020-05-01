@@ -4,10 +4,8 @@
  *
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
-
 import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-
 import {GridTestPanel} from './grids/GridTestPanel';
 import {CubeTestPanel} from './cube/CubeTestPanel';
 import {WebSocketTestPanel} from './websocket/WebSocketTestPanel';

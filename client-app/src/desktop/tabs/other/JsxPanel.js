@@ -5,7 +5,6 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {jsonInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common';
-
 import './JsxPanel.scss';
 
 export const jsxPanel = hoistCmp.factory(

@@ -4,10 +4,13 @@
  *
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
-import {form} from '@xh/hoist/cmp/form';
-import {filler, frame} from '@xh/hoist/cmp/layout';
+import React from 'react';
 import {creates, hoistCmp} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
+import {filler, frame} from '@xh/hoist/cmp/layout';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
     buttonGroupInput,
@@ -19,10 +22,7 @@ import {
     switchInput,
     textInput
 } from '@xh/hoist/desktop/cmp/input';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {Icon} from '@xh/hoist/icon';
-import React from 'react';
 
 import {usStates} from '../../../core/data';
 import {wrapper} from '../../common';

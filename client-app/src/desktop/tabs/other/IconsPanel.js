@@ -3,10 +3,9 @@ import {faIcons} from '@fortawesome/pro-regular-svg-icons';
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {div, td, tr, table, tbody, th} from '@xh/hoist/cmp/layout';
+import {div, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {without} from 'lodash';
 import React from 'react';
-
 import {wrapper} from '../../common/Wrapper';
 import './IconsPanel.scss';
 

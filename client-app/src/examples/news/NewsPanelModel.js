@@ -1,6 +1,6 @@
-import {XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
-import {action, observable, bindable} from '@xh/hoist/mobx';
-import {uniq, isEmpty} from 'lodash';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {action, bindable, observable} from '@xh/hoist/mobx';
+import {isEmpty, uniq} from 'lodash';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {newsPanelItem} from './NewsPanelItem';
 import {fmtCompactDate} from '@xh/hoist/format';
@@ -10,6 +10,8 @@ import {fmtCompactDate} from '@xh/hoist/format';
 export class NewsPanelModel {
 
     SEARCH_FIELDS = ['title', 'text'];
+
+    @bindable storeFilterRaw = null;
 
     @managed
     viewModel = new DataViewModel({

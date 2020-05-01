@@ -3,7 +3,7 @@ import {div} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {isNil, find} from 'lodash';
+import {find, isNil} from 'lodash';
 import {bindable, observable} from '@xh/hoist/mobx';
 
 export const gridDetailPage = hoistCmp.factory({

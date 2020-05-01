@@ -1,12 +1,10 @@
-import {hoistCmp, HoistModel, useLocalModel, XH} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, managed, useLocalModel, XH} from '@xh/hoist/core';
 import PT from 'prop-types';
-import {box, table, tbody, tr, td, th} from '@xh/hoist/cmp/layout';
+import {box, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {DockContainerModel, dockContainer} from '@xh/hoist/cmp/dock';
-import {managed} from '@xh/hoist/core/mixins';
+import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
 import {toolboxLink} from '../../core/ToolboxLink';
-
 import './Wrapper.scss';
 
 /**
