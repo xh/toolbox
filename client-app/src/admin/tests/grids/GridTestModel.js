@@ -22,7 +22,7 @@ const pnlColumn = {
 export class GridTestModel {
 
     // Total count (approx) of all nodes generated (parents + children).
-    @bindable recordCount = 750;
+    @bindable recordCount = 5000;
     // Loop x times over nodes, randomly selecting a note and twiddling data.
     @bindable twiddleCount = Math.round(this.recordCount * .10);
     // Prefix for all IDs - change to ensure no IDs re-used across data gens.
@@ -32,6 +32,7 @@ export class GridTestModel {
     @bindable useTransactions = true;
     @bindable useDeltaSort = true;
     @bindable disableSelect = false;
+    @bindable useHoistAutosize = true;
 
     // Generated data in tree
     _data;
@@ -51,7 +52,7 @@ export class GridTestModel {
     constructor() {
         this.gridModel = this.createGridModel();
         this.addReaction({
-            track: () =>  [this.tree, this.useTransactions, this.useDeltaSort, this.disableSelect],
+            track: () =>  [this.tree, this.useTransactions, this.useDeltaSort, this.disableSelect, this.useHoistAutosize],
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
@@ -189,7 +190,8 @@ export class GridTestModel {
             treeMode: this.tree,
             experimental: {
                 useTransactions: this.useTransactions,
-                useDeltaSort: this.useDeltaSort
+                useDeltaSort: this.useDeltaSort,
+                useHoistAutosize: this.useHoistAutosize
             },
             columns: [
                 {

@@ -98,20 +98,33 @@ export const GridTestPanel = hoistCmp({
             bbar: [
                 switchInput({
                     bind: 'tree',
-                    label: 'Tree mode'
+                    label: 'Tree mode',
+                    labelAlign: 'left'
                 }),
+                toolbarSep(),
                 switchInput({
                     bind: 'useTransactions',
-                    label: 'Use Transactions'
+                    label: 'Transactions',
+                    labelAlign: 'left'
                 }),
+                toolbarSep(),
+                switchInput({
+                    bind: 'useHoistAutosize',
+                    label: 'Hoist Autosize',
+                    labelAlign: 'left'
+                }),
+                toolbarSep(),
                 switchInput({
                     bind: 'useDeltaSort',
-                    label: 'Use Delta Sort',
-                    disabled: model.tree
+                    label: 'Delta Sort',
+                    disabled: model.tree,
+                    labelAlign: 'left'
                 }),
+                toolbarSep(),
                 switchInput({
                     bind: 'disableSelect',
-                    label: 'Disable Day < 0 Selection'
+                    label: 'Disable Day < 0 Selection',
+                    labelAlign: 'left'
                 }),
                 filler(),
                 storeFilterField({
