@@ -109,8 +109,8 @@ export class SampleGridModel {
         ],
         groupSortFn: (a, b, groupField) => {
             if (a == b) return 0;
-            if (groupField == 'winLose') {
-                return a == 'Winner' ? -1 : 1;
+            if (groupField === 'winLose') {
+                return a === 'Winner' ? -1 : 1;
             } else {
                 return a < b ? -1 : 1;
             }
@@ -188,12 +188,11 @@ export class SampleGridModel {
             },
             {
                 field: 'city',
-                flex: 1,
-                minWidth: 110,
-                maxWidth: 175,
+                minWidth: 150,
+                maxWidth: 200,
                 tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
                 cellClass: (val) => {
-                    return val == 'New York' ? 'xh-text-color-accent' : '';
+                    return val === 'New York' ? 'xh-text-color-accent' : '';
                 }
             },
             {
