@@ -21,7 +21,6 @@ export const newsPanel = hoistCmp.factory({
             mask: 'onLoad',
             bbar: [
                 storeFilterField({
-                    store: null,
                     bind: 'storeFilterRaw',
                     onFilterChange: (f) => model.setTextFilter(f),
                     includeFields: model.SEARCH_FIELDS,
