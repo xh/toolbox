@@ -170,7 +170,6 @@ export class SampleGridModel {
                 flex: 2,
                 minWidth: 200,
                 maxWidth: 350,
-                tooltip: true,
                 headerName: ({gridModel}) => {
                     let ret = 'Company';
                     if (gridModel.selectedRecord) {
