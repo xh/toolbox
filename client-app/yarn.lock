@@ -1927,10 +1927,10 @@
     webpack-dev-server "~3.10.3"
     webpackbar "~4.0.0"
 
-"@xh/hoist@^34.0.0-SNAPSHOT":
-  version "34.0.0-SNAPSHOT.1588798520123"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-34.0.0-SNAPSHOT.1588798520123.tgz#de7457ae6687d086d7fe31c3d02c9809acfcc018"
-  integrity sha512-aNTzFLfQAfgqOICPg9M2RdKdooVsQz9qMKfK+LTE0f8xhzLOaANqxoiuw3PNXdCfT/isfCE+txXhFvVjo5pynw==
+"@xh/hoist@33.3.0":
+  version "33.3.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-33.3.0.tgz#2b5c5786df49d4d428ec9637b3d5b59b96d62ae1"
+  integrity sha512-hNX8/F4Q+OsEMBzm0Ueqfnu6XXS6feM7vClZFokHQrYjAgijWvj4IYEkYEeF6EFZB9bhprckjx4DxV/JYMes1Q==
   dependencies:
     "@ag-grid-community/react" "~23.0.3"
     "@ag-grid-enterprise/all-modules" "~23.0.2"
@@ -1943,6 +1943,8 @@
     "@fortawesome/pro-solid-svg-icons" "~5.13.0"
     "@fortawesome/react-fontawesome" "~0.1.9"
     "@seznam/compose-react-refs" "~1.0.4"
+    "@xh/onsenui" "~0.1.2"
+    "@xh/react-onsenui" "~0.1.2"
     classnames "~2.2.6"
     clipboard-copy "~3.1.0"
     codemirror "~5.53.2"
@@ -1960,13 +1962,11 @@
     mobx-react "~6.2.2"
     moment "~2.24.0"
     numbro "~2.2.0"
-    onsenui "~2.10.10"
     prop-types "~15.7.2"
     qs "~6.9.3"
     react-beautiful-dnd "~13.0.0"
     react-dates "~21.8.0"
     react-dropzone "~10.2.2"
-    react-onsenui "~1.11.2"
     react-select "3.0.8"
     react-transition-group "~4.3.0"
     react-windowed-select "~2.0.2"
@@ -1975,6 +1975,25 @@
     router5 "~7.0.2"
     router5-plugin-browser "~7.0.2"
     store2 "~2.11.1"
+
+"@xh/onsenui@~0.1.2":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@xh/onsenui/-/onsenui-0.1.3.tgz#be3cc3dc8abda1149868297ab56cb3dcfee067d8"
+  integrity sha512-+IhJ+lPOO6BGOmsj6hW92DwESqEeH3XcDkIo3ZveViAZMyBs2Z3ZfoGcOky9eosLmTl3yKyqxOeXvFIsJrTkWg==
+  dependencies:
+    "@onsenui/custom-elements" "1.0.0"
+    "@onsenui/fastclick" "1.1.1"
+    core-js "^2.5.1"
+    gulp-protractor "^4.1.1"
+
+"@xh/react-onsenui@~0.1.2":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@xh/react-onsenui/-/react-onsenui-0.1.3.tgz#dcb58f1719be2f5e3e3267f994fbe9e1d051a7a1"
+  integrity sha512-X1woSaH5Z5jAEiKEznozoqcRsvTfr6XsziN8ISQHsvZSWCMm5bPqReQT2zF0U5jo+BRak0459kRTDSI+BekHuA==
+  dependencies:
+    enzyme "^3.3.0"
+    enzyme-adapter-react-16 "^1.1.1"
+    prop-types "^15.6.0"
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -2979,9 +2998,9 @@ camelcase@^5.0.0, camelcase@^5.3.1:
   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
 
 caniuse-lite@^1.0.30001039, caniuse-lite@^1.0.30001043:
-  version "1.0.30001052"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001052.tgz#33a5ddd13783cfe2c8a6a846ab983387d4edff75"
-  integrity sha512-b2/oWZwkpWzEB1+Azr2Z4FcpdDkH+9R4dn+bkwk/6eH9mRSrnZjhA6v32+zsV+TSqC0pp2Rxush2yUVTJ0dJTQ==
+  version "1.0.30001054"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001054.tgz#7e82fc42d927980b0ce1426c4813df12381e1a75"
+  integrity sha512-jiKlTI6Ur8Kjfj8z0muGrV6FscpRvefcQVPSuMuXnvRCfExU7zlVLNjmOz1TnurWgUrAY7MMmjyy+uTgIl1XHw==
 
 case-sensitive-paths-webpack-plugin@~2.3.0:
   version "2.3.0"
@@ -3403,9 +3422,9 @@ connect-history-api-fallback@^1.6.0:
   integrity sha512-e54B99q/OUoH64zYYRf3HBP5z24G38h5D3qXu23JGRoigpX5Ss4r9ZnDk3g0Z8uQC2x2lPaJ+UlWBc1ZWBWdLg==
 
 consola@^2.10.0:
-  version "2.11.3"
-  resolved "https://registry.yarnpkg.com/consola/-/consola-2.11.3.tgz#f7315836224c143ac5094b47fd4c816c2cd1560e"
-  integrity sha512-aoW0YIIAmeftGR8GSpw6CGQluNdkWMWh3yEFjH/hmynTYnMtibXszii3lxCXmk8YxJtI3FAK5aTiquA5VH68Gw==
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/consola/-/consola-2.12.1.tgz#88e9311a02cb88a7f6f9488239dd30b6ba99cbb0"
+  integrity sha512-aEkkju9ZcEa9y2MhzNhfmTUws/CEZZ0LKu0FxftSU3HygPfVMMIMSYyYct+xBN6XNRhsaDZjw2HAv3m2ammXSA==
 
 console-browserify@^1.1.0:
   version "1.2.0"
@@ -4103,9 +4122,9 @@ ejs@^2.6.1:
   integrity sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==
 
 electron-to-chromium@^1.3.413:
-  version "1.3.429"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.429.tgz#0d1ef6710ba84de3710615280c1f6f79c8205b47"
-  integrity sha512-YW8rXMJx33FalISp0uP0+AkvBx9gfzzQ4NotblGga6Z8ZX00bg2e5FNWV8fyDD/VN3WLhEtjFXNwzdJrdaAHEQ==
+  version "1.3.431"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.431.tgz#705dd8ef46200415ba837b31d927cdc1e43db303"
+  integrity sha512-2okqkXCIda7qDwjYhUFxPcQdZDIZZ/zBLDzVOif7WW/TSNfEhdT6SO07O1x/sFteEHX189Z//UwjbZKKCOn2Fg==
 
 elegant-spinner@^1.0.1:
   version "1.0.1"
@@ -7693,16 +7712,6 @@ onetime@^5.1.0:
   dependencies:
     mimic-fn "^2.1.0"
 
-onsenui@~2.10.10:
-  version "2.10.10"
-  resolved "https://registry.yarnpkg.com/onsenui/-/onsenui-2.10.10.tgz#6ef924e1bc29f0c44c07cc0bddc83092d9403bc3"
-  integrity sha512-TEWRsUQsi8XXmAiwEeAbA14tncxyVwdZyqC145HfXL1zIS8oqWleijkkZEjADESobIWiOR2CDkeA6CzpTjGk4w==
-  dependencies:
-    "@onsenui/custom-elements" "1.0.0"
-    "@onsenui/fastclick" "1.1.1"
-    core-js "^2.5.1"
-    gulp-protractor "^4.1.1"
-
 opencollective-postinstall@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/opencollective-postinstall/-/opencollective-postinstall-2.0.2.tgz#5657f1bede69b6e33a45939b061eb53d3c6c3a89"
@@ -8771,15 +8780,6 @@ react-moment-proptypes@^1.6.0:
   integrity sha512-ZbOn/P4u469WEGAw5hgkS/E+g1YZqdves2BjYsLluJobzUZCtManhjHiZKjniBVT7MSHM6D/iKtRVzlXVv3ikA==
   dependencies:
     moment ">=1.6.0"
-
-react-onsenui@~1.11.2:
-  version "1.11.2"
-  resolved "https://registry.yarnpkg.com/react-onsenui/-/react-onsenui-1.11.2.tgz#796b222afe532df1785aaa3f73a63bfa77d71a60"
-  integrity sha512-k4suMaKjkzEXuMgS7E2yLM0yHM5PYeig431MbXNfwX5+T4w7C6uoviwY+jawfUeEtNkRF9K/j/i7iZFv/rKiLw==
-  dependencies:
-    enzyme "^3.3.0"
-    enzyme-adapter-react-16 "^1.1.1"
-    prop-types "^15.6.0"
 
 react-outside-click-handler@^1.2.4:
   version "1.3.0"
