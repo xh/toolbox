@@ -22,7 +22,7 @@ export class GridPageModel {
                 pinned: true,
                 hideable: false,
                 width: 170,
-                autosizeMaxWidth: 200,
+                autosizeMaxWidth: 200
             },
             {
                 field: 'city',
