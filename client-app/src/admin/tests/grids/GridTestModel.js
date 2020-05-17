@@ -1,6 +1,6 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {mean, random, sample, takeRight, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {action, bindable, observable} from '@xh/hoist/mobx';
@@ -33,6 +33,7 @@ export class GridTestModel {
     @bindable useDeltaSort = true;
     @bindable disableSelect = false;
     @bindable useHoistAutosize = true;
+    @bindable providerType = 'transient';
 
     // Generated data in tree
     _data;
@@ -52,7 +53,14 @@ export class GridTestModel {
     constructor() {
         this.gridModel = this.createGridModel();
         this.addReaction({
-            track: () =>  [this.tree, this.useTransactions, this.useDeltaSort, this.disableSelect, this.useHoistAutosize],
+            track: () =>  [
+                this.tree,
+                this.useTransactions,
+                this.useDeltaSort,
+                this.disableSelect,
+                this.useHoistAutosize,
+                this.providerType
+            ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
@@ -193,6 +201,9 @@ export class GridTestModel {
                 useDeltaSort: this.useDeltaSort,
                 useHoistAutosize: this.useHoistAutosize
             },
+            stateModel: {
+                provider: {type: this.providerType, key: 'stateTest', subKey: 'gridState'}
+            },
             columns: [
                 {
                     field: 'id',
@@ -242,10 +253,7 @@ export class GridTestModel {
                             fmtNumber(record.data.day, {colorSpec: true});
                     },
                     rendererIsComplex: true
-                },
-
-
-                {...emptyFlexCol}
+                }
             ]
         });
     }
