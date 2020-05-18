@@ -1,6 +1,6 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {mean, random, sample, takeRight, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {action, bindable, observable} from '@xh/hoist/mobx';
@@ -242,10 +242,7 @@ export class GridTestModel {
                             fmtNumber(record.data.day, {colorSpec: true});
                     },
                     rendererIsComplex: true
-                },
-
-
-                {...emptyFlexCol}
+                }
             ]
         });
     }

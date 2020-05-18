@@ -1,5 +1,5 @@
 import {createRef} from 'react';
-import {boolCheckCol, emptyFlexCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {boolCheckCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
@@ -231,8 +231,7 @@ export class SampleGridModel {
                 headerName: '',
                 chooserName: 'Active Status',
                 tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
-            },
-            {...emptyFlexCol}
+            }
         ]
     });
 
