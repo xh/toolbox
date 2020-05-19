@@ -4,7 +4,7 @@
  *
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
-import {boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
+import {boolCheckCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
@@ -235,8 +235,7 @@ class Model {
                     field: 'retain',
                     ...boolCheckCol,
                     width: 70
-                },
-                {...emptyFlexCol}
+                }
             ]
         });
     }

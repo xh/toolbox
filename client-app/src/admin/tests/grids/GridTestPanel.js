@@ -5,7 +5,7 @@ import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, switchInput, select} from '@xh/hoist/desktop/cmp/input';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {grid} from '@xh/hoist/cmp/grid';
 import {tooltip} from '@xh/hoist/kit/blueprint';
@@ -108,10 +108,12 @@ export const GridTestPanel = hoistCmp({
                     labelAlign: 'left'
                 }),
                 toolbarSep(),
-                switchInput({
-                    bind: 'useHoistAutosize',
-                    label: 'Hoist Autosize',
-                    labelAlign: 'left'
+                tooltip({
+                    content: 'Autosize Mode',
+                    item: select({
+                        bind: 'autosizeMode',
+                        options: ['disabled', 'onDemand']
+                    })
                 }),
                 toolbarSep(),
                 switchInput({
