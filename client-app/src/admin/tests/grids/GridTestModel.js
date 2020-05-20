@@ -32,8 +32,7 @@ export class GridTestModel {
     @bindable useTransactions = true;
     @bindable useDeltaSort = true;
     @bindable disableSelect = false;
-    @bindable useHoistAutosize = true;
-    @bindable providerType = 'transient';
+    @bindable autosizeMode = 'onDemand';
 
     // Generated data in tree
     _data;
@@ -58,8 +57,7 @@ export class GridTestModel {
                 this.useTransactions,
                 this.useDeltaSort,
                 this.disableSelect,
-                this.useHoistAutosize,
-                this.providerType
+                this.autosizeMode
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -198,11 +196,10 @@ export class GridTestModel {
             treeMode: this.tree,
             experimental: {
                 useTransactions: this.useTransactions,
-                useDeltaSort: this.useDeltaSort,
-                useHoistAutosize: this.useHoistAutosize
+                useDeltaSort: this.useDeltaSort
             },
-            stateModel: {
-                provider: {type: this.providerType, key: 'stateTest', subKey: 'gridState'}
+            autosizeOptions: {
+                mode: this.autosizeMode
             },
             columns: [
                 {

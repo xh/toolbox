@@ -108,10 +108,12 @@ const bbar = hoistCmp.factory(
             labelAlign: 'left'
         }),
         toolbarSep(),
-        switchInput({
-            bind: 'useHoistAutosize',
-            label: 'Hoist Autosize',
-            labelAlign: 'left'
+        tooltip({
+            content: 'Autosize Mode',
+            item: select({
+                bind: 'autosizeMode',
+                options: ['disabled', 'onDemand']
+            })
         }),
         toolbarSep(),
         switchInput({
