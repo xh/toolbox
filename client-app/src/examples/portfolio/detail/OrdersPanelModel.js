@@ -1,5 +1,5 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
-import {dateTimeCol, emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
+import {dateTimeCol, GridModel} from '@xh/hoist/cmp/grid';
 import {numberRenderer} from '@xh/hoist/format';
 import {isNil} from 'lodash';
 import {bindable} from '@xh/hoist/mobx';
@@ -96,8 +96,7 @@ export class OrdersPanelModel {
                 headerName: 'Exec Time',
                 ...dateTimeCol,
                 align: 'left'
-            },
-            {...emptyFlexCol}
+            }
         ]
     });
 
