@@ -2,7 +2,7 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar, toolbarSeparator} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
 import {creates, hoistCmp, HoistModel, managed, RefreshMode, RenderMode, XH} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, runInAction} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -55,6 +55,14 @@ const bbar = hoistCmp.factory(
             label: 'Render Dashboard',
             bind: 'renderDashboard'
         }),
+        switchInput({
+            label: 'Layout Locked',
+            bind: 'layoutLocked'
+        }),
+        switchInput({
+            label: 'Content Locked',
+            bind: 'contentLocked'
+        }),
         filler(),
         button({
             text: 'Capture State',
@@ -83,6 +91,8 @@ class Model {
 
     @bindable.ref stateSnapshot;
     @bindable renderDashboard = true;
+    @bindable layoutLocked = false;
+    @bindable contentLocked = false;
 
     defaultState = [{
         type: 'row',
@@ -150,6 +160,22 @@ class Model {
         this.addReaction({
             track: () => this.dashContainerModel.state,
             run: (state) => XH.localStorageService.set(this.stateKey, state)
+        });
+        this.addReaction({
+            track: () => this.layoutLocked,
+            run: (layoutLocked) => {
+                runInAction(() => {
+                    this.dashContainerModel.layoutLocked = layoutLocked;
+                });
+            }
+        });
+        this.addReaction({
+            track: () => this.contentLocked,
+            run: (contentLocked) => {
+                runInAction(() => {
+                    this.dashContainerModel.contentLocked = contentLocked;
+                });
+            }
         });
     }
 
