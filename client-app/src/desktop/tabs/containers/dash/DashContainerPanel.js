@@ -55,6 +55,21 @@ const bbar = hoistCmp.factory(
             label: 'Render Dashboard',
             bind: 'renderDashboard'
         }),
+        switchInput({
+            label: 'Layout Locked',
+            bind: 'layoutLocked',
+            model: model.dashContainerModel
+        }),
+        switchInput({
+            label: 'Content Locked',
+            bind: 'contentLocked',
+            model: model.dashContainerModel
+        }),
+        switchInput({
+            label: 'Rename Locked',
+            bind: 'renameLocked',
+            model: model.dashContainerModel
+        }),
         filler(),
         button({
             text: 'Capture State',
