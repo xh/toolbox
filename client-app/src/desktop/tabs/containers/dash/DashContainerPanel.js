@@ -2,7 +2,7 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar, toolbarSeparator} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
 import {creates, hoistCmp, HoistModel, managed, RefreshMode, RenderMode, XH} from '@xh/hoist/core';
-import {bindable, runInAction} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -57,11 +57,18 @@ const bbar = hoistCmp.factory(
         }),
         switchInput({
             label: 'Layout Locked',
-            bind: 'layoutLocked'
+            bind: 'layoutLocked',
+            model: model.dashContainerModel
         }),
         switchInput({
             label: 'Content Locked',
-            bind: 'contentLocked'
+            bind: 'contentLocked',
+            model: model.dashContainerModel
+        }),
+        switchInput({
+            label: 'Rename Locked',
+            bind: 'renameLocked',
+            model: model.dashContainerModel
         }),
         filler(),
         button({
@@ -91,8 +98,6 @@ class Model {
 
     @bindable.ref stateSnapshot;
     @bindable renderDashboard = true;
-    @bindable layoutLocked = false;
-    @bindable contentLocked = false;
 
     defaultState = [{
         type: 'row',
@@ -160,22 +165,6 @@ class Model {
         this.addReaction({
             track: () => this.dashContainerModel.state,
             run: (state) => XH.localStorageService.set(this.stateKey, state)
-        });
-        this.addReaction({
-            track: () => this.layoutLocked,
-            run: (layoutLocked) => {
-                runInAction(() => {
-                    this.dashContainerModel.layoutLocked = layoutLocked;
-                });
-            }
-        });
-        this.addReaction({
-            track: () => this.contentLocked,
-            run: (contentLocked) => {
-                runInAction(() => {
-                    this.dashContainerModel.contentLocked = contentLocked;
-                });
-            }
         });
     }
 
