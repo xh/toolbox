@@ -1,4 +1,4 @@
-import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateRenderer} from '@xh/hoist/format';
 import {bindable} from '@xh/hoist/mobx';
@@ -16,8 +16,7 @@ export class WebSocketTestModel {
             emptyText: 'No updates received',
             columns: [
                 {field: 'id', headerName: 'ID', width: 80},
-                {field: 'timestamp', width: 200, renderer: dateRenderer({fmt: 'h:mm:ssa'})},
-                {...emptyFlexCol}
+                {field: 'timestamp', width: 200, renderer: dateRenderer({fmt: 'h:mm:ssa'})}
             ]
         });
 

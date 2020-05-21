@@ -1,5 +1,5 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
-import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
@@ -67,8 +67,7 @@ export class GridTreeMapModel {
                     ledger: true,
                     colorSpec: true
                 })
-            },
-            {...emptyFlexCol}
+            }
         ]
     });
 
