@@ -44,8 +44,9 @@ export const newsPanel = hoistCmp.factory({
     }
 });
 
-function onRowDoubleClicked(e) {
-    if (e.data.data.url) {
-        window.open(e.data.data.url, '_blank');
+function onRowDoubleClicked({data: record}) {
+    const url = record.get('url');
+    if (url) {
+        window.open(url, '_blank');
     }
 }
