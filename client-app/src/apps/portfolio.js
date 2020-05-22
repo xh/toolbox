@@ -10,7 +10,7 @@ XH.renderApp({
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,
-    isMobile: false,
+    isMobileApp: false,
     isSSO: false,
     webSocketsEnabled: true,
     idleDetectionEnabled: true,
