@@ -27,7 +27,7 @@ class LocalModel {
             store: {
                 fields: [{name: 'trade_date', type: 'localDate'}]
             },
-            stateModel: {provider: {type: 'dashView', dashViewModel: viewModel, key: 'grid'}},
+            persistWith: {type: 'dashView', dashViewModel: viewModel},
             columns: [
                 {
                     field: 'id',

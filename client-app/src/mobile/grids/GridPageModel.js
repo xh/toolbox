@@ -13,7 +13,7 @@ export class GridPageModel {
 
     @managed
     gridModel = new GridModel({
-        stateModel: 'toolboxSampleGrid',
+        persistWith: 'toolboxSampleGrid',
         sortBy: ['profit_loss|desc|abs'],
         enableColChooser: true,
         columns: [

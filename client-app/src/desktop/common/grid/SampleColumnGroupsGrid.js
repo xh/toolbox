@@ -106,7 +106,7 @@ class Model {
         };
 
         return new GridModel({
-            stateModel: 'toolboxGroupGrid',
+            persistWith: 'toolboxGroupGrid',
             store: {
                 idSpec: data => `${data.firstName}~${data.lastName}~${data.city}~${data.state}`
             },
