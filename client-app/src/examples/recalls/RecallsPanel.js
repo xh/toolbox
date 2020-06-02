@@ -80,7 +80,7 @@ export const recallsPanel = hoistCmp.factory({
                 model: {
                     side: 'bottom',
                     defaultSize: 325,
-                    prefName: 'recallsPanelConfig'
+                    persistWith: {prefKey: 'recallsPanelConfig'}
                 }
             })
         );

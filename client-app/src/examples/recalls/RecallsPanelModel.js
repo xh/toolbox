@@ -41,7 +41,7 @@ export class RecallsPanelModel {
         rowBorders: true,
         showHover: true,
         sizingMode: XH.appModel.gridSizingMode,
-        persistWith: 'recalls-main-grid',
+        persistWith: {localStorageKey: 'recalls-main-grid'},
         columns: [
             {
                 field: 'classification',

@@ -18,7 +18,7 @@ export class DetailPanelModel {
         maxSize: 500,
         side: 'bottom',
         renderMode: 'unmountOnHide',
-        prefName: 'portfolioDetailPanelConfig'
+        persistWith: {prefKey: 'portfolioDetailPanelConfig'}
     });
 
     constructor() {

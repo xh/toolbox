@@ -17,7 +17,7 @@ export const chartsPanel = hoistCmp.factory({
                 defaultSize: 700,
                 side: 'right',
                 collapsedRenderMode: 'unmountOnHide',
-                prefName: 'portfolioChartsPanelConfig'
+                persistWith: {prefKey: 'portfolioChartsPanelConfig'}
             },
             item: tabContainer({
                 model: {

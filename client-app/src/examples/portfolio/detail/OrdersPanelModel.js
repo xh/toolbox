@@ -27,7 +27,7 @@ export class OrdersPanelModel {
         rowBorders: true,
         showHover: true,
         sizingMode: XH.appModel.gridSizingMode,
-        persistWith: 'portfolio-orders-grid',
+        persistWith: {localStorageKey: 'portfolio-orders-grid'},
         columns: [
             {
                 field: 'symbol',

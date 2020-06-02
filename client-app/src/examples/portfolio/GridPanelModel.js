@@ -8,10 +8,13 @@ import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 @LoadSupport
 export class GridPanelModel {
 
-    @managed panelSizingModel = new PanelModel({
+    persistWith = {prefKey: 'portfolioGridPanelConfig'};
+
+    @managed
+    panelSizingModel = new PanelModel({
         defaultSize: 500,
         side: 'left',
-        prefName: 'portfolioGridPanelConfig'
+        persistWith: this.persistWith
     });
 
     @bindable loadTimestamp;
@@ -41,7 +44,7 @@ export class GridPanelModel {
             showHover: true,
             showSummary: true,
             sizingMode: XH.appModel.gridSizingMode,
-            persistWith: 'portfolio-positions-grid',
+            persistWith: this.persistWith,
             store: this.parentModel.store,
             columns: [
                 {
