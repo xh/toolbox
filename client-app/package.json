@@ -27,9 +27,9 @@
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "~5.13.0",
-    "@xh/hoist": "^33.0.0-SNAPSHOT",
-    "react": "~16.8.6",
-    "react-dom": "~16.8.6",
+    "@xh/hoist": "^35.0.0-SNAPSHOT",
+    "react": "~16.13.1",
+    "react-dom": "~16.13.1",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {

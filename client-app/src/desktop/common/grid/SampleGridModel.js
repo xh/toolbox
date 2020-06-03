@@ -1,5 +1,5 @@
 import {createRef} from 'react';
-import {boolCheckCol, emptyFlexCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {boolCheckCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
@@ -109,8 +109,8 @@ export class SampleGridModel {
         ],
         groupSortFn: (a, b, groupField) => {
             if (a == b) return 0;
-            if (groupField == 'winLose') {
-                return a == 'Winner' ? -1 : 1;
+            if (groupField === 'winLose') {
+                return a === 'Winner' ? -1 : 1;
             } else {
                 return a < b ? -1 : 1;
             }
@@ -170,7 +170,6 @@ export class SampleGridModel {
                 flex: 2,
                 minWidth: 200,
                 maxWidth: 350,
-                tooltip: true,
                 headerName: ({gridModel}) => {
                     let ret = 'Company';
                     if (gridModel.selectedRecord) {
@@ -188,12 +187,11 @@ export class SampleGridModel {
             },
             {
                 field: 'city',
-                flex: 1,
-                minWidth: 110,
-                maxWidth: 175,
+                minWidth: 150,
+                maxWidth: 200,
                 tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
                 cellClass: (val) => {
-                    return val == 'New York' ? 'xh-text-color-accent' : '';
+                    return val === 'New York' ? 'xh-text-color-accent' : '';
                 }
             },
             {
@@ -233,8 +231,7 @@ export class SampleGridModel {
                 headerName: '',
                 chooserName: 'Active Status',
                 tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
-            },
-            {...emptyFlexCol}
+            }
         ]
     });
 

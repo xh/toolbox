@@ -10,7 +10,8 @@ XH.renderApp({
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,
-    isMobile: true,
+    isMobileApp: true,
+    idleDetectionEnabled: true,
     isSSO: false,
     checkAccess: 'APP_READER',
     loginMessage: guestUserLoginMsg

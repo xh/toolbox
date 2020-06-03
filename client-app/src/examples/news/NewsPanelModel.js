@@ -11,6 +11,8 @@ export class NewsPanelModel {
 
     SEARCH_FIELDS = ['title', 'text'];
 
+    @bindable storeFilterRaw = null;
+
     @managed
     viewModel = new DataViewModel({
         sortBy: 'published',

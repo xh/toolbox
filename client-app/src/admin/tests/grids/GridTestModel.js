@@ -1,6 +1,6 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {mean, random, sample, takeRight, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {action, bindable, observable} from '@xh/hoist/mobx';
@@ -22,7 +22,7 @@ const pnlColumn = {
 export class GridTestModel {
 
     // Total count (approx) of all nodes generated (parents + children).
-    @bindable recordCount = 750;
+    @bindable recordCount = 5000;
     // Loop x times over nodes, randomly selecting a note and twiddling data.
     @bindable twiddleCount = Math.round(this.recordCount * .10);
     // Prefix for all IDs - change to ensure no IDs re-used across data gens.
@@ -32,6 +32,7 @@ export class GridTestModel {
     @bindable useTransactions = true;
     @bindable useDeltaSort = true;
     @bindable disableSelect = false;
+    @bindable autosizeMode = 'onDemand';
 
     // Generated data in tree
     _data;
@@ -51,7 +52,13 @@ export class GridTestModel {
     constructor() {
         this.gridModel = this.createGridModel();
         this.addReaction({
-            track: () =>  [this.tree, this.useTransactions, this.useDeltaSort, this.disableSelect],
+            track: () =>  [
+                this.tree,
+                this.useTransactions,
+                this.useDeltaSort,
+                this.disableSelect,
+                this.autosizeMode
+            ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
@@ -191,6 +198,9 @@ export class GridTestModel {
                 useTransactions: this.useTransactions,
                 useDeltaSort: this.useDeltaSort
             },
+            autosizeOptions: {
+                mode: this.autosizeMode
+            },
             columns: [
                 {
                     field: 'id',
@@ -240,10 +250,7 @@ export class GridTestModel {
                             fmtNumber(record.data.day, {colorSpec: true});
                     },
                     rendererIsComplex: true
-                },
-
-
-                {...emptyFlexCol}
+                }
             ]
         });
     }

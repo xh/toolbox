@@ -5,7 +5,7 @@ import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, switchInput, select} from '@xh/hoist/desktop/cmp/input';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {grid} from '@xh/hoist/cmp/grid';
 import {tooltip} from '@xh/hoist/kit/blueprint';
@@ -29,8 +29,8 @@ export const GridTestPanel = hoistCmp({
             key: gridModel.xhId,
             item: grid({
                 agOptions: {
-                    isRowSelectable: (row) => {
-                        return !model.disableSelect || row.data.data.day > 0;
+                    isRowSelectable: ({data: record}) => {
+                        return !model.disableSelect || record.get('day') > 0;
                     }
                 }
             }),
@@ -98,20 +98,35 @@ export const GridTestPanel = hoistCmp({
             bbar: [
                 switchInput({
                     bind: 'tree',
-                    label: 'Tree mode'
+                    label: 'Tree mode',
+                    labelAlign: 'left'
                 }),
+                toolbarSep(),
                 switchInput({
                     bind: 'useTransactions',
-                    label: 'Use Transactions'
+                    label: 'Transactions',
+                    labelAlign: 'left'
                 }),
+                toolbarSep(),
+                tooltip({
+                    content: 'Autosize Mode',
+                    item: select({
+                        bind: 'autosizeMode',
+                        options: ['disabled', 'onDemand']
+                    })
+                }),
+                toolbarSep(),
                 switchInput({
                     bind: 'useDeltaSort',
-                    label: 'Use Delta Sort',
-                    disabled: model.tree
+                    label: 'Delta Sort',
+                    disabled: model.tree,
+                    labelAlign: 'left'
                 }),
+                toolbarSep(),
                 switchInput({
                     bind: 'disableSelect',
-                    label: 'Disable Day < 0 Selection'
+                    label: 'Disable Day < 0 Selection',
+                    labelAlign: 'left'
                 }),
                 filler(),
                 storeFilterField({

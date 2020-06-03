@@ -19,14 +19,10 @@ export class CubeModel {
         this.cube = this.createCube();
         this.parent = parent;
 
-        const timer = Timer.create({
+        this.timer = Timer.create({
             runFn: () => this.streamChangesAsync(),
-            interval: (parent.updateFreq ?? -1) * SECONDS
-        });
-
-        this.addReaction({
-            track: () => parent.updateFreq,
-            run: () => timer.setInterval((parent.updateFreq ?? -1) * SECONDS)
+            interval: () => parent.updateFreq ?? -1,
+            intervalUnits: SECONDS
         });
     }
 

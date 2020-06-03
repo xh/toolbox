@@ -133,6 +133,7 @@ export class AppModel {
                             {name: 'jsx', path: '/jsx'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'numberFormats', path: '/numberFormats'},
+                            {name: 'pinPad', path: '/pinPad'},
                             {name: 'popups', path: '/popups'},
                             {name: 'dialogs', path: '/dialogs'},
                             {name: 'timestamp', path: '/timestamp'},
