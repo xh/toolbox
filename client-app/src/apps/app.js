@@ -13,7 +13,6 @@ XH.renderApp({
     isMobileApp: false,
     isSSO: false,
     webSocketsEnabled: true,
-    idleDetectionEnabled: true,
     checkAccess: 'APP_READER',
     loginMessage: guestUserLoginMsg
 });

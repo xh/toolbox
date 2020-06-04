@@ -11,7 +11,6 @@ XH.renderApp({
     containerClass: AppContainer,
     isMobileApp: false,
     isSSO: false,
-    idleDetectionEnabled: true,
     checkAccess: 'HOIST_ADMIN',
     loginMessage: 'Contact support@xh.io for information on this demo application.',
     lockoutMessage: 'Contact support@xh.io for information on this demo application.'
