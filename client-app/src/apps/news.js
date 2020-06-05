@@ -12,7 +12,6 @@ XH.renderApp({
     containerClass: AppContainer,
     isMobileApp: false,
     isSSO: false,
-    idleDetectionEnabled: true,
     checkAccess: 'APP_READER',
     loginMessage: guestUserLoginMsg
 });
