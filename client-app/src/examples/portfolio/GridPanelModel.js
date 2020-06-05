@@ -8,7 +8,7 @@ import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 @LoadSupport
 export class GridPanelModel {
 
-    persistWith = {prefKey: 'portfolioGridPanelConfig'};
+    static persistWith = {prefKey: 'portfolioGridPanelConfig'};
 
     @managed
     panelSizingModel = new PanelModel({
