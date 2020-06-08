@@ -3,7 +3,7 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {boolCheckCol,  GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 
-export const GridWidget = hoistCmp({
+export const gridWidget = hoistCmp.factory({
     render({viewModel}) {
         const model = useLocalModel(() => new LocalModel(viewModel));
         return grid({model: model.gridModel});
