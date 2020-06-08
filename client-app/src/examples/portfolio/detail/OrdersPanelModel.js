@@ -3,7 +3,7 @@ import {dateTimeCol, GridModel} from '@xh/hoist/cmp/grid';
 import {numberRenderer} from '@xh/hoist/format';
 import {isNil} from 'lodash';
 import {bindable} from '@xh/hoist/mobx';
-import {DetailPanelModel} from './DetailPanelModel';
+import {PERSIST_DETAIL} from '../AppModel';
 
 @HoistModel
 @LoadSupport
@@ -28,10 +28,7 @@ export class OrdersPanelModel {
         rowBorders: true,
         showHover: true,
         sizingMode: XH.appModel.gridSizingMode,
-        persistWith: {
-            ...DetailPanelModel.persistWith,
-            path: 'ordersGrid'
-        },
+        persistWith: {...PERSIST_DETAIL, path: 'ordersGrid'},
         columns: [
             {
                 field: 'symbol',

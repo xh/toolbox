@@ -81,14 +81,11 @@ const bbar = hoistCmp.factory(
 
 @HoistModel
 class Model {
-
-    static persistWith = {localStorageKey: 'dashContainerState'};
-
     @bindable renderDashboard = true;
 
     @managed
     dashContainerModel = new DashContainerModel({
-        persistWith: this.persistWith,
+        persistWith: {localStorageKey: 'dashContainerState'},
         initialState: [{
             type: 'row',
             content: [

@@ -9,6 +9,7 @@ import {Icon} from '@xh/hoist/icon';
 import {detailsPanel} from './DetailsPanel';
 import './RecallsPanel.scss';
 import {RecallsPanelModel} from './RecallsPanelModel';
+import {PERSIST_APP} from './AppModel';
 
 export const recallsPanel = hoistCmp.factory({
     model: creates(RecallsPanelModel),
@@ -80,7 +81,7 @@ export const recallsPanel = hoistCmp.factory({
                 model: {
                     side: 'bottom',
                     defaultSize: 325,
-                    persistWith: RecallsPanelModel.persistWith
+                    persistWith: PERSIST_APP
                 }
             })
         );

@@ -24,7 +24,7 @@ export class TreeGridPageModel {
             {value: 'trader', label: 'Trader'}
         ],
         initialValue: ['trader'],
-        persistWith: {prefKey: 'portfolioDims'}
+        persistWith: {localStorageKey: 'toolboxTreeGridSample'}
     });
 
     @managed

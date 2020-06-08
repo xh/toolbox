@@ -3,13 +3,13 @@ import {bindable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {OrdersPanelModel} from './OrdersPanelModel';
 import {ChartsPanelModel} from './ChartsPanelModel';
+import {PERSIST_DETAIL} from '../AppModel';
+
 
 @HoistModel
 @LoadSupport
 export class DetailPanelModel {
     @bindable positionId = null;
-
-    static persistWith = {localStorageKey: 'portfolioDetailState'};
 
     @managed ordersPanelModel = new OrdersPanelModel();
     @managed chartsPanelModel = new ChartsPanelModel();
@@ -20,7 +20,7 @@ export class DetailPanelModel {
         maxSize: 500,
         side: 'bottom',
         renderMode: 'unmountOnHide',
-        persistWith: this.persistWith
+        persistWith: PERSIST_DETAIL
     });
 
     constructor() {

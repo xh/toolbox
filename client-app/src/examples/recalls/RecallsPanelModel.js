@@ -12,12 +12,13 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {DetailsPanelModel} from './DetailsPanelModel';
 import {persist} from '@xh/hoist/persist';
+import {PERSIST_APP} from './AppModel';
 
 @HoistModel
 @LoadSupport
 export class RecallsPanelModel {
 
-    static persistWith = {localStorageKey: 'recallsAppState'};
+    persistWith = PERSIST_APP;
 
     @bindable
     searchQuery = '';
