@@ -102,7 +102,7 @@ export class PortfolioPanelModel {
                 {value: 'symbol', label: 'Symbol'},
                 {value: 'trader', label: 'Trader'}
             ],
-            preference: 'portfolioDims'
+            persistWith: {prefKey: 'portfolioDims'}
         });
     }
 }

@@ -24,7 +24,7 @@ export class TreeGridPageModel {
             {value: 'trader', label: 'Trader'}
         ],
         initialValue: ['trader'],
-        preference: 'mobileDims'
+        persistWith: {prefKey: 'portfolioDims'}
     });
 
     @managed
