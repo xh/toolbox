@@ -11,15 +11,19 @@ import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {DetailsPanelModel} from './DetailsPanelModel';
+import {persist} from '@xh/hoist/persist';
 
 @HoistModel
 @LoadSupport
 export class RecallsPanelModel {
 
+    static persistWith = {localStorageKey: 'recallsAppState'};
+
     @bindable
     searchQuery = '';
 
     @bindable
+    @persist
     groupBy = null;
 
     @managed
@@ -41,7 +45,7 @@ export class RecallsPanelModel {
         rowBorders: true,
         showHover: true,
         sizingMode: XH.appModel.gridSizingMode,
-        persistWith: {localStorageKey: 'recalls-main-grid'},
+        persistWith: this.persistWith,
         columns: [
             {
                 field: 'classification',

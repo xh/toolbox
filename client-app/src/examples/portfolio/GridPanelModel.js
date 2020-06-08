@@ -3,18 +3,20 @@ import {bindable} from '@xh/hoist/mobx';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
+import {PortfolioPanelModel} from './PortfolioPanelModel';
 
 @HoistModel
 @LoadSupport
 export class GridPanelModel {
 
-    static persistWith = {prefKey: 'portfolioGridPanelConfig'};
-
     @managed
     panelSizingModel = new PanelModel({
         defaultSize: 500,
         side: 'left',
-        persistWith: this.persistWith
+        persistWith: {
+            ...PortfolioPanelModel.persistWith,
+            path: 'positionsPanel'
+        }
     });
 
     @bindable loadTimestamp;
@@ -35,6 +37,7 @@ export class GridPanelModel {
 
     createGridModel() {
         return new GridModel({
+            persistWith: PortfolioPanelModel.persistWith,
             treeMode: true,
             sortBy: 'pnl|desc|abs',
             emptyText: 'No records found...',
@@ -44,7 +47,6 @@ export class GridPanelModel {
             showHover: true,
             showSummary: true,
             sizingMode: XH.appModel.gridSizingMode,
-            persistWith: this.persistWith,
             store: this.parentModel.store,
             columns: [
                 {

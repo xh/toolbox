@@ -10,6 +10,8 @@ import {DetailPanelModel} from './detail/DetailPanelModel';
 @LoadSupport
 export class PortfolioPanelModel {
 
+    static persistWith = {localStorageKey: 'portfolioAppState'};
+
     @managed session;
 
     @managed dimChooserModel = this.createDimChooserModel();
@@ -102,7 +104,7 @@ export class PortfolioPanelModel {
                 {value: 'symbol', label: 'Symbol'},
                 {value: 'trader', label: 'Trader'}
             ],
-            persistWith: {prefKey: 'portfolioDims'}
+            persistWith: this.persistWith
         });
     }
 }

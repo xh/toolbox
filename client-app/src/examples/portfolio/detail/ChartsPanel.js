@@ -4,6 +4,7 @@ import {Icon} from '@xh/hoist/icon';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {chart} from '@xh/hoist/cmp/chart';
 import {ChartsPanelModel} from './ChartsPanelModel';
+import {DetailPanelModel} from './DetailPanelModel';
 
 export const chartsPanel = hoistCmp.factory({
     model: uses(ChartsPanelModel),
@@ -17,7 +18,10 @@ export const chartsPanel = hoistCmp.factory({
                 defaultSize: 700,
                 side: 'right',
                 collapsedRenderMode: 'unmountOnHide',
-                persistWith: {prefKey: 'portfolioChartsPanelConfig'}
+                persistWith: {
+                    ...DetailPanelModel.persistWith,
+                    path: 'chartPanel'
+                }
             },
             item: tabContainer({
                 model: {

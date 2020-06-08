@@ -9,6 +9,8 @@ import {ChartsPanelModel} from './ChartsPanelModel';
 export class DetailPanelModel {
     @bindable positionId = null;
 
+    static persistWith = {localStorageKey: 'portfolioDetailState'};
+
     @managed ordersPanelModel = new OrdersPanelModel();
     @managed chartsPanelModel = new ChartsPanelModel();
 
@@ -18,7 +20,7 @@ export class DetailPanelModel {
         maxSize: 500,
         side: 'bottom',
         renderMode: 'unmountOnHide',
-        persistWith: {prefKey: 'portfolioDetailPanelConfig'}
+        persistWith: this.persistWith
     });
 
     constructor() {
