@@ -134,11 +134,15 @@ const bbar = hoistCmp.factory(
             labelAlign: 'left'
         }),
         tooltip({
-            content: 'stateProvider',
+            content: 'persistWith',
             item: select({
-                bind: 'providerType',
-                label: 'State provider',
-                options: ['pref', 'localStorage', 'transient']
+                bind: 'persistType',
+                enableClear: true,
+                options: [
+                    {label: 'Pref', value: 'prefKey'},
+                    {label: 'Local Storage', value: 'localStorageKey'},
+                    {label: 'Bad Provider', value: 'badKey'}
+                ]
             })
         }),
         filler(),
