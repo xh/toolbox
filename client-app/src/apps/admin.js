@@ -1,3 +1,4 @@
+import '../agGrid';
 import {XH} from '@xh/hoist/core';
 import {App} from '@xh/hoist/admin/App';
 import {AppModel} from '../admin/AppModel';

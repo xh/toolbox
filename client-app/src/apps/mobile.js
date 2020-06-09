@@ -1,3 +1,4 @@
+import '../agGrid';
 import {XH} from '@xh/hoist/core';
 import {AppContainer} from '@xh/hoist/mobile/appcontainer';
 import {guestUserLoginMsg} from '../core/guestUserLoginMsg';

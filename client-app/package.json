@@ -26,6 +26,7 @@
     }
   },
   "dependencies": {
+    "@ag-grid-enterprise/all-modules": "~23.0.2",
     "@fortawesome/free-brands-svg-icons": "~5.13.0",
     "@xh/hoist": "^35.0.0-SNAPSHOT",
     "react": "~16.13.1",
