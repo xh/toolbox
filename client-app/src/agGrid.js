@@ -14,7 +14,9 @@ import {version} from '@ag-grid-enterprise/all-modules/package.json';
 import {installAgGridImpls} from '@xh/hoist/dynamics/agGrid';
 
 ModuleRegistry.registerModules(AllModules);
-LicenseManager.setLicenseKey(xhAgGridLicenseKey); // See webpack.DefinePlugin in @xh/hoist-dev-utils/configureWebpack
+LicenseManager.setLicenseKey(
+    'CompanyName=Extremely Heavy Industries,LicensedApplication=Toolbox,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=6,LicensedProductionInstancesCount=1,AssetReference=AG-008400,ExpiryDate=4_June_2021_[v2]_MTYyMjc2MTIwMDAwMA==e5556393a62b122c439b49dfe11f26d9'
+);
 
 installAgGridImpls(AgGridReact, Utils, version);
 

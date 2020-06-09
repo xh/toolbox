@@ -5,6 +5,8 @@ import {guestUserLoginMsg} from '../core/guestUserLoginMsg';
 import {App} from '../mobile/App';
 import {AppModel} from '../mobile/AppModel';
 
+import '../agGrid';
+
 XH.renderApp({
     clientAppCode: 'mobile',
     clientAppName: 'Toolbox Mobile',

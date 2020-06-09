@@ -5,6 +5,8 @@ import {guestUserLoginMsg} from '../core/guestUserLoginMsg';
 import {App} from '../examples/news/App';
 import {AppModel} from '../examples/news/AppModel';
 
+import '../agGrid';
+
 XH.renderApp({
     clientAppCode: 'news',
     clientAppName: 'XH News Feed',
