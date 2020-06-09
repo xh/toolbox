@@ -6,7 +6,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 
-export const ButtonWidget = hoistCmp({
+export const buttonWidget = hoistCmp.factory({
     render({viewModel}) {
         const model = useLocalModel(() => new LocalModel(viewModel));
         return panel(
