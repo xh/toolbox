@@ -146,16 +146,17 @@ class Model {
     @managed
     @observable.ref
     leftPanelModel = new PanelModel({
-        defaultSize: 150,
-        side: 'left'
+        defaultSize: '30%',
+        side: 'left',
+        persistWith: {localStorageKey: 'leftResizablePanel'}
     });
 
     @managed
     @observable.ref
     rightPanelModel = new PanelModel({
-        defaultSize: 150,
-        maxSize: 300,
-        minSize: 150,
+        defaultSize: '30%',
+        maxSize: '50%',
+        minSize: '10%',
         side: 'right'
     });
 

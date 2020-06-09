@@ -7,6 +7,7 @@ import {h3, li, ol, p} from '@xh/hoist/cmp/layout';
 export class PanelResizingTestModel {
 
     @observable resizeWhileDragging = false;
+    @observable persisted = false;
 
     @observable.ref topPanel1Model;
     @observable.ref topPanel2Model;
@@ -43,7 +44,9 @@ export class PanelResizingTestModel {
     
         this.topPanel2Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
+            persistWith: {localStorageKey: 'adminPanelSizing', path: 'topPanel2'},
             defaultSize: 100,
+            maxSize: 150,
             side: 'top'
         });
     
@@ -69,7 +72,7 @@ export class PanelResizingTestModel {
     
         this.rightPanel2Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
-            defaultSize: 150,
+            defaultSize: '20%',
             side: 'right'
         });
     
@@ -81,8 +84,10 @@ export class PanelResizingTestModel {
     
         this.bottomPanel2Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
-            defaultSize: 100,
-            minSize: 50,
+            persistWith: {localStorageKey: 'adminPanelSizing', path: 'bottomPanel2'},
+            defaultSize: '15%',
+            minSize: '5%',
+            maxSize: '30%',
             side: 'bottom'
         });
     }
@@ -118,6 +123,7 @@ export class PanelResizingTestModel {
                 li('Resize while dragging.')
             ]}),
         p('In default "Resize after Drag" mode, the drag bar should only be draggable as far as the next sibling\'s far side.  Also, if the next sibling is itself resizable, it will not shrink, but get pushed over.'),
-        p('Panels that specify a minSize should not be resizable smaller than that specified size.')
+        p('Panels that specify a minSize should not be resizable smaller than that specified size.'),
+        p('Panels that specify a maxSize should not be resizable larger than that specified size.')
     ]
 }
