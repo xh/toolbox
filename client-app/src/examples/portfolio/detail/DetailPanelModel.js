@@ -3,6 +3,8 @@ import {bindable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {OrdersPanelModel} from './OrdersPanelModel';
 import {ChartsPanelModel} from './ChartsPanelModel';
+import {PERSIST_DETAIL} from '../AppModel';
+
 
 @HoistModel
 @LoadSupport
@@ -18,7 +20,7 @@ export class DetailPanelModel {
         maxSize: 500,
         side: 'bottom',
         renderMode: 'unmountOnHide',
-        prefName: 'portfolioDetailPanelConfig'
+        persistWith: PERSIST_DETAIL
     });
 
     constructor() {
