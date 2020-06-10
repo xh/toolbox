@@ -1,10 +1,10 @@
+import '../Bootstrap';
+
 import {XH} from '@xh/hoist/core';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 import {guestUserLoginMsg} from '../core/guestUserLoginMsg';
 import {App} from '../desktop/App';
 import {AppModel} from '../desktop/AppModel';
-
-import '../agGrid';
 
 XH.renderApp({
     clientAppCode: 'app',

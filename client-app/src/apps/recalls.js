@@ -1,5 +1,4 @@
-
-import '../agGrid';
+import '../Bootstrap';
 
 import {XH} from '@xh/hoist/core';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
