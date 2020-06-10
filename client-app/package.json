@@ -26,10 +26,12 @@
     }
   },
   "dependencies": {
+    "@xh/hoist": "^35.0.0-SNAPSHOT",
+
     "@ag-grid-community/react": "~23.0.3",
     "@ag-grid-enterprise/all-modules": "~23.0.2",
     "@fortawesome/free-brands-svg-icons": "~5.13.0",
-    "@xh/hoist": "^35.0.0-SNAPSHOT",
+    "highcharts": "~8.1.0",
     "react": "~16.13.1",
     "react-dom": "~16.13.1",
     "react-dom-factories": "~1.0.2"
