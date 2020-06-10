@@ -1236,7 +1236,7 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.28"
 
-"@fortawesome/react-fontawesome@~0.1.9":
+"@fortawesome/react-fontawesome@~0.1.10":
   version "0.1.10"
   resolved "https://npm.fontawesome.com/@fortawesome/react-fontawesome/-/0.1.10/react-fontawesome-0.1.10.tgz#7ba2bd300036f95e2ac084000ba8ba26cd269c96"
   integrity sha512-UGdpJiLBIqR/8xcLrCarf2pChqQFKjDTD02C7ZS/odpOVVl2YuHYRCLEOQ0GpfOk6jtYhmouSFOFoC8qNCe5cg==
@@ -1636,9 +1636,9 @@
     "@types/node" "*"
 
 "@types/json-schema@^7.0.4":
-  version "7.0.4"
-  resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.4.tgz#38fd73ddfd9b55abb1e1b2ed578cb55bd7b7d339"
-  integrity sha512-8+KAKzEvSUdeo+kmqnKrqgeE+LcA0tjYWFY7RPProVYwnqDjukzO+3b6dLD56rYX5TdWejnEOLJYOIeh4CXKuA==
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.5.tgz#dcce4430e64b443ba8945f0290fb564ad5bac6dd"
+  integrity sha512-7+2BITlgjgDhH0vvwZU/HZJVyk+2XUlvxXe8dFMedNX/aMkaOq++rMAFXc0tM7ij15QaWlbdQASBR9dihi+bDQ==
 
 "@types/lodash@~4.14.149":
   version "4.14.155"
@@ -1656,9 +1656,9 @@
   integrity sha1-aaI6OtKcrwCX8G7aWbNh7i8GOfY=
 
 "@types/node@*":
-  version "14.0.12"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.12.tgz#9c1d8ffb8084e8936603a6122a7649e40e68e04b"
-  integrity sha512-/sjzehvjkkpvLpYtN6/2dv5kg41otMGuHQUt9T2aiAuIfleCQRQHXXzF1eAw/qkZTj5Kcf4JSTf7EIizHocy6Q==
+  version "14.0.13"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.13.tgz#ee1128e881b874c371374c1f72201893616417c9"
+  integrity sha512-rouEWBImiRaSJsVA+ITTFM6ZxibuAlTuNOCyxVbwreu6k6+ujs7DfnU9o+PShFhET78pMBl3eH+AGSI5eOTkPA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -1949,12 +1949,10 @@
     webpackbar "~4.0.0"
 
 "@xh/hoist@^35.0.0-SNAPSHOT":
-  version "35.0.0-SNAPSHOT.1591671086542"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-35.0.0-SNAPSHOT.1591671086542.tgz#972e0ed830d41ff20d59189bc5bde1e9643635d1"
-  integrity sha512-2G2O6lCTJ+TGiGhwOea5ofrWo09lDgwunJxAktm3R7Fv1ieiIakiQCAmgVRG3SaePK307yngYcBCYz9gLVcn+Q==
+  version "35.0.0-SNAPSHOT.1591765864434"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-35.0.0-SNAPSHOT.1591765864434.tgz#5c9a19e0c2918eea01961b1575de278322163cfc"
+  integrity sha512-jGM+PV1t2ye2EWO5rMVu7yTG6b5GSszFXNIoa02rjkaOTXcaR9LkBwwSpfSax1xkuOfWfqcJ0RFIJvj/NYy4ow==
   dependencies:
-    "@ag-grid-community/react" "~23.0.3"
-    "@ag-grid-enterprise/all-modules" "~23.0.2"
     "@blueprintjs/core" "~3.28.0"
     "@blueprintjs/datetime" "~3.18.0"
     "@fortawesome/fontawesome-pro" "~5.13.0"
@@ -1962,13 +1960,14 @@
     "@fortawesome/pro-light-svg-icons" "~5.13.0"
     "@fortawesome/pro-regular-svg-icons" "~5.13.0"
     "@fortawesome/pro-solid-svg-icons" "~5.13.0"
-    "@fortawesome/react-fontawesome" "~0.1.9"
+    "@fortawesome/react-fontawesome" "~0.1.10"
     "@seznam/compose-react-refs" "~1.0.4"
     "@xh/onsenui" "~0.1.2"
     "@xh/react-onsenui" "~0.1.2"
     classnames "~2.2.6"
     clipboard-copy "~3.1.0"
     codemirror "~5.54.0"
+    compare-versions "~3.6.0"
     core-js "~3.6.5"
     debounce-promise "~3.1.0"
     downloadjs "~1.4.7"
@@ -3047,9 +3046,9 @@ camelcase@^5.0.0, camelcase@^5.3.1:
   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
 
 caniuse-lite@^1.0.30001039, caniuse-lite@^1.0.30001043, caniuse-lite@^1.0.30001061:
-  version "1.0.30001079"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001079.tgz#ed3e5225cd9a6850984fdd88bf24ce45d69b9c22"
-  integrity sha512-2KaYheg0iOY+CMmDuAB3DHehrXhhb4OZU4KBVGDr/YKyYAcpudaiUQ9PJ9rxrPlKEoJ3ATasQ5AN48MqpwS43Q==
+  version "1.0.30001081"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001081.tgz#40615a3c416a047c5a4d45673e5257bf128eb3b5"
+  integrity sha512-iZdh3lu09jsUtLE6Bp8NAbJskco4Y3UDtkR3GTCJGsbMowBU5IWDFF79sV2ws7lSqTzWyKazxam2thasHymENQ==
 
 case-sensitive-paths-webpack-plugin@~2.3.0:
   version "2.3.0"
@@ -3435,7 +3434,7 @@ commondir@^1.0.1:
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
   integrity sha1-3dgA2gxmEnOTzKWVDqloo6rxJTs=
 
-compare-versions@^3.6.0:
+compare-versions@^3.6.0, compare-versions@~3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/compare-versions/-/compare-versions-3.6.0.tgz#1a5689913685e5a87637b8d3ffca75514ec41d62"
   integrity sha512-W6Af2Iw1z4CB7q4uU4hv646dW9GQuBM+YpC0UvUCWSD8w90SJjp+ujJuXaEMtAXBtSqGfMPuFOVn4/+FlaqfBA==
@@ -4186,9 +4185,9 @@ ejs@^2.6.1:
   integrity sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==
 
 electron-to-chromium@^1.3.413:
-  version "1.3.465"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.465.tgz#d692e5c383317570c2bd82092a24a0308c6ccf29"
-  integrity sha512-K/lUeT3NLAsJ5SHRDhK3/zd0tw7OUllYD8w+fTOXm6ljCPsp2qq+vMzxpLo8u1M27ZjZAjRbsA6rirvne2nAMQ==
+  version "1.3.466"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.466.tgz#89f716db3afc4bb482ea2aaaa16c4808f89f762a"
+  integrity sha512-eieqkoM2hCkZZRhETKyCouMziDV3l4XEKHRLuzcHG+HV+P7PeODU/z9HAmBgMQkzvHg2DoyQhfIDmmeguLZT/Q==
 
 elegant-spinner@^1.0.1:
   version "1.0.1"
