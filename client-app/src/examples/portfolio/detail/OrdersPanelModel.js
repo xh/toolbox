@@ -20,7 +20,7 @@ export class OrdersPanelModel {
 
     @managed
     gridModel = new GridModel({
-        groupBy: ['dir', 'trader'],
+        groupBy: 'dir',
         sortBy: [{colId: 'time', sort: 'desc'}],
         emptyText: 'No records found...',
         enableColChooser: true,
