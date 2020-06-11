@@ -17,18 +17,7 @@ export const ordersPanel = hoistCmp.factory({
         return panel({
             title: `Orders: ${formatPositionId(positionId)}`,
             icon: Icon.edit(),
-            item: grid({
-                agOptions: {
-                    groupUseEntireRow: false,
-                    autoGroupColumnDef: {
-                        suppressMenu: false,
-                        filter: true,
-                        headerName: 'B/S',
-                        minWidth: 200,
-                        field: 'trader'
-                    }
-                }
-            }),
+            item: grid(),
             mask: positionId == null,
             bbar: [
                 filler(),

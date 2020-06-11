@@ -2,7 +2,7 @@ import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -10,6 +10,7 @@ import {Icon} from '@xh/hoist/icon';
 import PT from 'prop-types';
 import {gridOptionsPanel} from './options/GridOptionsPanel';
 import {SampleGridModel} from './SampleGridModel';
+import {capitalize} from 'lodash';
 import './SampleGrid.scss';
 
 export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
@@ -43,7 +44,20 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
             ...props,
             item: hframe(
                 vframe(
-                    grid(),
+                    grid({
+                        key: model.gridKey, // needed to trigger re-render when agOptions change
+                        agOptions: {
+                            groupUseEntireRow: model.groupsUseEntireRow,
+                            autoGroupColumnDef: {
+                                headerName: model.groupBy ? 
+                                    model.groupBy
+                                        .split(',')
+                                        .map(it => capitalize(it).replace(/winLose/i, 'Win/Lose'))
+                                        .join(' > ') :
+                                    null
+                            }
+                        }
+                    }),
                     hbox({
                         items: [Icon.info(), selText],
                         className: 'tbox-samplegrid__selbar'
@@ -66,6 +80,12 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
                     ],
                     width: 160,
                     enableFilter: false
+                }),
+                switchInput({
+                    bind: 'groupsUseEntireRow',
+                    label: 'Groups Use Entire Row:',
+                    labelAlign: 'left',
+                    omit: !model.groupBy
                 }),
                 filler(),
                 gridCountLabel({unit: 'companies'}),

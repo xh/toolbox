@@ -20,7 +20,7 @@ export class OrdersPanelModel {
 
     @managed
     gridModel = new GridModel({
-        groupBy: 'dir',
+        groupBy: ['dir', 'trader'],
         sortBy: [{colId: 'time', sort: 'desc'}],
         emptyText: 'No records found...',
         enableColChooser: true,
@@ -71,8 +71,7 @@ export class OrdersPanelModel {
                 headerTooltip: 'Direction (Buy/Sell)',
                 chooserName: 'Direction',
                 align: 'center',
-                width: 60,
-                hidden: true
+                width: 60
             },
             {
                 field: 'quantity',

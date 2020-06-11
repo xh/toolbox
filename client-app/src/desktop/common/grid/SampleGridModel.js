@@ -5,7 +5,7 @@ import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {fmtDate, fmtMillions, fmtNumber, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import './SampleGrid.scss';
 
@@ -13,6 +13,8 @@ import './SampleGrid.scss';
 @LoadSupport
 export class SampleGridModel {
     @observable groupBy = false;
+    @bindable groupsUseEntireRow = true;
+    @observable gridKey = XH.genId();
 
     panelRef = createRef();
 
@@ -189,7 +191,7 @@ export class SampleGridModel {
                 field: 'city',
                 minWidth: 150,
                 maxWidth: 200,
-                tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
+                tooltip: (val, {record}) => record ? `${record.data.company} is located in ${val}` : null,
                 cellClass: (val) => {
                     return val === 'New York' ? 'xh-text-color-accent' : '';
                 }
@@ -276,5 +278,11 @@ export class SampleGridModel {
         const groupByArr = groupBy ? groupBy.split(',') : [];
         this.gridModel.setGroupBy(groupByArr);
         wait(1).then(() => this.gridModel.selectFirst());
+    }
+
+    @action
+    setGroupsUseEntireRow(val) {
+        this.gridKey = XH.genId();
+        this.groupsUseEntireRow = val;
     }
 }
