@@ -1,3 +1,5 @@
+import '../Bootstrap';
+
 import {XH} from '@xh/hoist/core';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 import {guestUserLoginMsg} from '../core/guestUserLoginMsg';
