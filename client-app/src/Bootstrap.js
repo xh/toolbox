@@ -13,21 +13,23 @@ import {installHighcharts} from '@xh/hoist/kit/highcharts';
 // If you are using enterprise version, you must provide a license
 //-----------------------------------------------------------------
 // Community edition.
-// import {AllCommunityModules, ModuleRegistry, Utils} from '@ag-grid-community/all-modules';
+// import {AllCommunityModules, ModuleRegistry} from '@ag-grid-community/all-modules';
 // import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 // import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham-dark.css';
 // import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
 // import {AgGridReact} from '@ag-grid-community/react';
+// import {_ as Utils} from '@ag-grid-community/core';
 // import {version} from '@ag-grid-community/all-modules/package.json';
 // ModuleRegistry.registerModules(AllCommunityModules);
 // installAgGridImpls(AgGridReact, Utils, version);
 
 // Enterprise edition (w/license for Toolbox).
-import {AllModules, LicenseManager, ModuleRegistry, Utils} from '@ag-grid-enterprise/all-modules';
+import {AllModules, LicenseManager, ModuleRegistry} from '@ag-grid-enterprise/all-modules';
 import '@ag-grid-enterprise/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-enterprise/all-modules/dist/styles/ag-theme-balham-dark.css';
 import '@ag-grid-enterprise/all-modules/dist/styles/ag-theme-balham.css';
 import {AgGridReact} from '@ag-grid-community/react';
+import {_ as Utils} from '@ag-grid-community/core';
 import {version} from '@ag-grid-enterprise/all-modules/package.json';
 ModuleRegistry.registerModules(AllModules);
 LicenseManager.setLicenseKey(
