@@ -47,7 +47,8 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
                     grid({
                         key: model.gridKey, // needed to trigger re-render when agOptions change
                         agOptions: {
-                            groupUseEntireRow: model.groupsUseEntireRow,
+                            groupUseEntireRow: model.groupUseEntireRow,
+                            groupMultiAutoColumn: model.groupMultiAutoColumn,
                             autoGroupColumnDef: {
                                 headerName: model.groupBy ? 
                                     model.groupBy
@@ -82,10 +83,16 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
                     enableFilter: false
                 }),
                 switchInput({
-                    bind: 'groupsUseEntireRow',
+                    bind: 'groupUseEntireRow',
                     label: 'Groups Use Entire Row:',
                     labelAlign: 'left',
                     omit: !model.groupBy
+                }),
+                switchInput({
+                    bind: 'groupMultiAutoColumn',
+                    label: 'One Column Per Group:',
+                    labelAlign: 'left',
+                    omit: !model.groupBy || model.groupUseEntireRow
                 }),
                 filler(),
                 gridCountLabel({unit: 'companies'}),

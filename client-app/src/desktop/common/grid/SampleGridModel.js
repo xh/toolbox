@@ -13,7 +13,8 @@ import './SampleGrid.scss';
 @LoadSupport
 export class SampleGridModel {
     @observable groupBy = false;
-    @bindable groupsUseEntireRow = true;
+    @bindable groupUseEntireRow = true;
+    @bindable groupMultiAutoColumn = false;
     @observable gridKey = XH.genId();
 
     panelRef = createRef();
@@ -281,8 +282,14 @@ export class SampleGridModel {
     }
 
     @action
-    setGroupsUseEntireRow(val) {
+    setGroupUseEntireRow(val) {
         this.gridKey = XH.genId();
-        this.groupsUseEntireRow = val;
+        this.groupUseEntireRow = val;
+    }
+
+    @action
+    setGroupMultiAutoColumn(val) {
+        this.gridKey = XH.genId();
+        this.groupMultiAutoColumn = val;
     }
 }
