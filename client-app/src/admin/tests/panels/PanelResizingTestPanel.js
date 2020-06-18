@@ -142,8 +142,8 @@ export const PanelResizingTestPanel = hoistCmp({
                         padding: 10,
                         item: `Collapsible Bottom (
                           defaultSize: ${model.bottomPanel2Model.defaultSize}, 
-                          minSize: ${model.bottomPanel2Model.minSize}, 
-                          maxSize: ${model.bottomPanel2Model.maxSize}, 
+                          minSize: ${model.bottomPanel2Model.minSize}px, 
+                          maxSize: ${model.bottomPanel2Model.maxSize}px, 
                           persistWith: {localStorageKey: 'adminPanelSizing', path: 'bottomPanel2'}
                           )`
                     })

@@ -155,8 +155,8 @@ class Model {
     @observable.ref
     rightPanelModel = new PanelModel({
         defaultSize: '30%',
-        maxSize: '50%',
-        minSize: '10%',
+        maxSize: 300,
+        minSize: 30,
         side: 'right'
     });
 

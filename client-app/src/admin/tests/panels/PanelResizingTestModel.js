@@ -86,8 +86,8 @@ export class PanelResizingTestModel {
             resizeWhileDragging: this.resizeWhileDragging,
             persistWith: {localStorageKey: 'adminPanelSizing', path: 'bottomPanel2'},
             defaultSize: '15%',
-            minSize: '5%',
-            maxSize: '30%',
+            minSize: 50,
+            maxSize: 300,
             side: 'bottom'
         });
     }
