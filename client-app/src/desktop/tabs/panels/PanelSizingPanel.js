@@ -163,7 +163,7 @@ class Model {
     @managed
     @observable.ref
     bottomPanelModel = new PanelModel({
-        defaultSize: 130,
+        defaultSize: 150,
         side: 'bottom',
         maxSize: 350,
         minSize: 100
