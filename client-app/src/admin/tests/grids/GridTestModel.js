@@ -1,10 +1,9 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, persist, XH} from '@xh/hoist/core';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {mean, random, sample, takeRight, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {action, bindable, observable} from '@xh/hoist/mobx';
-import {persist} from '@xh/hoist/persist';
 
 const pnlColumn = {
     absSort: true,
@@ -36,12 +35,12 @@ export class GridTestModel {
     @bindable useDeltaSort = true;
     @bindable disableSelect = false;
 
-    @bindable
     @persist
+    @bindable
     autosizeMode = 'onDemand';
 
-    @bindable
     @persist.with({path: 'gridPersistType', buffer: 500})  // test persist.with!
+    @bindable
     persistType = null;
 
     // Generated data in tree
