@@ -23,8 +23,8 @@ export class RecallsPanelModel {
     searchQuery = '';
 
 
-    @persist
     @bindable
+    @persist
     groupBy = null;
 
     @managed
