@@ -20,6 +20,7 @@ class RecallsService extends BaseService {
                 "https://$host/drug/enforcement.json?search=_exists_:openfda&sort=recall_initiation_date:desc&limit=99" :
                 "https://$host/drug/enforcement.json?search=($searchQuery)+AND+_exists_:openfda&sort=recall_initiation_date:desc&limit=99"
 
+        // if running on localhost, you must have the host's root cert in your java truststore
         try {
             def response = client.executeAsMap(new HttpGet(uri))
             lastResponseCode = SC_OK
