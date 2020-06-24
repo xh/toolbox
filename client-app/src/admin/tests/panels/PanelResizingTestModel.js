@@ -7,7 +7,6 @@ import {h3, li, ol, p} from '@xh/hoist/cmp/layout';
 export class PanelResizingTestModel {
 
     @observable resizeWhileDragging = false;
-    @observable persisted = false;
 
     @observable.ref topPanel1Model;
     @observable.ref topPanel2Model;

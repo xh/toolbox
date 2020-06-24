@@ -1,7 +1,7 @@
 import React from 'react';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, observable} from '@xh/hoist/mobx';
+import {bindable} from '@xh/hoist/mobx';
 import {box, filler, h3, hbox, p} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -144,7 +144,6 @@ class Model {
     @bindable resizeWhileDragging = false;
 
     @managed
-    @observable.ref
     leftPanelModel = new PanelModel({
         defaultSize: '30%',
         side: 'left',
@@ -152,16 +151,14 @@ class Model {
     });
 
     @managed
-    @observable.ref
     rightPanelModel = new PanelModel({
-        defaultSize: '30%',
+        defaultSize: '100%',
         maxSize: 300,
         minSize: 30,
         side: 'right'
     });
 
     @managed
-    @observable.ref
     bottomPanelModel = new PanelModel({
         defaultSize: 150,
         side: 'bottom',
