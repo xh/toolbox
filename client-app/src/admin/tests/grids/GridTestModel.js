@@ -35,12 +35,12 @@ export class GridTestModel {
     @bindable useDeltaSort = true;
     @bindable disableSelect = false;
 
-    @persist
     @bindable
+    @persist
     autosizeMode = 'onDemand';
 
-    @persist.with({path: 'gridPersistType', buffer: 500})  // test persist.with!
     @bindable
+    @persist.with({path: 'gridPersistType', buffer: 500})  // test persist.with!
     persistType = null;
 
     // Generated data in tree
@@ -59,6 +59,7 @@ export class GridTestModel {
     _gridLoadTimes = [];
 
     constructor() {
+        this.markPersist('tree');
         this.gridModel = this.createGridModel();
         this.addReaction({
             track: () =>  [
