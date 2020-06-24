@@ -146,8 +146,7 @@ class Model {
     @managed
     leftPanelModel = new PanelModel({
         defaultSize: '30%',
-        side: 'left',
-        persistWith: {localStorageKey: 'leftResizablePanel'}
+        side: 'left'
     });
 
     @managed
