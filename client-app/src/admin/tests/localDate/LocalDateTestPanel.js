@@ -20,6 +20,7 @@ export const LocalDateTestPanel = hoistCmp({
 
         return panel({
             className: 'local-date-test-panel xh-tiled-bg',
+            overflowY: 'auto',
             items
         });
     }

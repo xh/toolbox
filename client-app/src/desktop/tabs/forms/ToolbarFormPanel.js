@@ -7,7 +7,7 @@
 import React from 'react';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame} from '@xh/hoist/cmp/layout';
+import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
@@ -53,6 +53,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                 icon: Icon.edit(),
                 width: '90%',
                 height: 300,
+                padding: 10,
                 tbar: form({
                     model: topFormModel,
                     fieldDefaults: {minimal: true},
@@ -164,10 +165,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                         })
                     )
                 }),
-                item: frame({
-                    padding: 10,
-                    item: 'Help, I am surrounded by toolbars!'
-                })
+                item: 'Help, I am surrounded by toolbars!'
             })
         });
     }

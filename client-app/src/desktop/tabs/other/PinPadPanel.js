@@ -8,7 +8,6 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 
-import './PinPadPanel.scss';
 import {wrapper} from '../../common/Wrapper';
 
 export const pinPadPanel = hoistCmp.factory({
@@ -29,7 +28,6 @@ export const pinPadPanel = hoistCmp.factory({
                 icon: Icon.unlock(),
                 width: 380,
                 height: 500,
-                className: 'tb-pinpad-container',
                 item: !model.loggedIn ? pinPad() : secretPlans(),
                 bbar: [
                     button({
@@ -45,7 +43,8 @@ export const pinPadPanel = hoistCmp.factory({
 
 const secretPlans = hoistCmp.factory(
     () => panel({
-        className: 'tb-pinpad-container__secrets',
+        padding: 10,
+        overflowY: 'auto',
         items: [
             h3('Secret plans'),
             p('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta velit varius augue fermentum, vulputate tempus magna tempus.'),

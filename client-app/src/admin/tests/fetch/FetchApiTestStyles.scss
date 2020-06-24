@@ -11,7 +11,6 @@
   }
 }
 
-.http-status-code-group-button,
 .http-status-code-button {
   justify-content: left;
   margin-right: 1px;
@@ -21,4 +20,8 @@
     overflow: hidden;
     white-space: nowrap;
   }
+}
+
+.http-status-code-group-button {
+  justify-content: left;
 }

@@ -37,6 +37,7 @@ export const dateFormatsPanel = hoistCmp.factory({
                 icon: Icon.print(),
                 className: 'tbox-formats-tab',
                 height: 300,
+                padding: 10,
                 item: hframe(
                     paramsPanel(),
                     resultsPanel({
@@ -53,6 +54,7 @@ const paramsPanel = hoistCmp.factory(
         title: 'Function + Options',
         compactHeader: true,
         className: 'tbox-formats-tab__panel',
+        padding: 10,
         flex: 1,
         items: [
             param({

@@ -1,6 +1,6 @@
 import React from 'react';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {div, filler, p} from '@xh/hoist/cmp/layout';
+import {filler, p} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {wrapper} from '../../common/Wrapper';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -35,6 +35,8 @@ export const basicPanel = hoistCmp.factory({
                 title: 'Panels › Intro',
                 height: 400,
                 width: 700,
+                padding: 10,
+                overflowY: 'scroll',
                 tbar: [
                     popover({
                         position: 'bottom-left',
@@ -50,10 +52,7 @@ export const basicPanel = hoistCmp.factory({
                         )
                     })
                 ],
-                item: div({
-                    className: 'toolbox-panel-text-reader',
-                    items: model.demoText.map(it => p(it))
-                }),
+                items: model.demoText.map(it => p(it)),
                 bbar: [
                     filler(),
                     select({

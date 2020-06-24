@@ -10,7 +10,7 @@ import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
-import {DetailsPanelModel} from './DetailsPanelModel';
+import {DetailsTableModel} from './DetailsTableModel';
 import {PERSIST_APP} from './AppModel';
 
 @HoistModel
@@ -28,7 +28,7 @@ export class RecallsPanelModel {
     groupBy = null;
 
     @managed
-    detailsPanelModel = new DetailsPanelModel();
+    detailsTableModel = new DetailsTableModel();
 
     @managed
     gridModel = new GridModel({
@@ -99,7 +99,7 @@ export class RecallsPanelModel {
 
         this.addReaction({
             track: () => gridModel.selectedRecord,
-            run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
+            run: (rec) => this.detailsTableModel.setCurrentRecord(rec)
         });
 
         this.addReaction({

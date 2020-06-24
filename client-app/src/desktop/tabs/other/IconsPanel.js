@@ -3,7 +3,7 @@ import {faIcons} from '@fortawesome/pro-regular-svg-icons';
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {div, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
+import {table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {without} from 'lodash';
 import React from 'react';
 import {wrapper} from '../../common/Wrapper';
@@ -48,12 +48,10 @@ export const iconsPanel = hoistCmp.factory(
             icon: Icon.icon({iconName: 'icons'}),
             className: 'toolbox-icons-panel',
             width: 700,
-            item: div({
-                className: 'toolbox-icons-table-scroller',
-                item: table(
-                    tbody(getAllIcons().map(icon => row(icon)))
-                )
-            })
+            overflowY: 'auto',
+            item: table(
+                tbody(getAllIcons().map(icon => row(icon)))
+            )
         })
     })
 );

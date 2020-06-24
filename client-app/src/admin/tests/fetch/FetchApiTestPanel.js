@@ -56,13 +56,10 @@ export const FetchApiTestPanel = hoistCmp({
                 panel({
                     title: 'Response',
                     className: 'xh-border-left',
-                    item: vframe({
-                        item: jsonInput({
-                            flex: 1,
-                            width: '100%',
-                            value: model.response
-                        }),
-                        padding: 10
+                    item: jsonInput({
+                        flex: 1,
+                        width: '100%',
+                        value: model.response
                     })
                 }),
                 mask({
@@ -76,7 +73,7 @@ export const FetchApiTestPanel = hoistCmp({
 
 const individualBtns = hoistCmp.factory(
     ({model}) => vbox({
-        style: {overflowY: 'scroll'},
+        style: {overflowY: 'auto'},
         items: model.codes.map(it => hframe({
             className: 'http-status-code-frame',
             overflow: 'unset',
@@ -99,7 +96,7 @@ const individualBtns = hoistCmp.factory(
 
 const codeGroupBtns = hoistCmp.factory(
     ({model}) => vframe({
-        style: {overflowY: 'scroll'},
+        style: {overflowY: 'auto'},
         items: model.codes
             .filter(it => !(it.code % 100))
             .map(it => button({

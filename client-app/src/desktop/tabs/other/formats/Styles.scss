@@ -1,12 +1,11 @@
 .tbox-formats-tab {
   margin: 0 var(--xh-pad-double-px) var(--xh-pad-px) var(--xh-pad-double-px);
 
-  > .xh-vframe {
-    padding-left: var(--xh-pad-px);
-  }
-
   &__panel {
-    margin: var(--xh-pad-px) var(--xh-pad-px) var(--xh-pad-px) 0;
+    &:first-child {
+      margin-right: var(--xh-pad-px);
+    }
+
     border: var(--xh-border-solid);
 
     table {

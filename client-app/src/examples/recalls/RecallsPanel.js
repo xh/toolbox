@@ -6,7 +6,7 @@ import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
-import {detailsPanel} from './DetailsPanel';
+import {detailsTable} from './DetailsTable';
 import './RecallsPanel.scss';
 import {RecallsPanelModel} from './RecallsPanelModel';
 import {PERSIST_APP} from './AppModel';
@@ -15,8 +15,7 @@ export const recallsPanel = hoistCmp.factory({
     model: creates(RecallsPanelModel),
 
     render({model}) {
-        const {detailsPanelModel} = model,
-            {currentRecord} = detailsPanelModel,
+        const {currentRecord} = model.detailsTableModel,
             fdaWebsite = 'https://open.fda.gov/apis/drug/enforcement/',
             aboutBlurb = 'This applet uses the openFDA drug enforcement reports API, ' +
                 'which provides information on drug recall events since 2004. ' +
@@ -75,8 +74,9 @@ export const recallsPanel = hoistCmp.factory({
             panel({
                 title: currentRecord ? currentRecord.data.brandName : 'Select a drug to see its details',
                 icon: Icon.detail(),
-                item: detailsPanel(),
+                item: detailsTable(),
                 className: 'toolbox-recalls-detail-panel',
+                overflow: 'auto',
                 compactHeader: true,
                 model: {
                     side: 'bottom',

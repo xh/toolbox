@@ -1,8 +1,4 @@
 .local-date-test-panel {
-  & > .xh-vframe {
-    overflow-y: auto !important;
-  }
-
   p {
     margin: var(--xh-pad-px);
     font-size: var(--xh-font-size-large-px);

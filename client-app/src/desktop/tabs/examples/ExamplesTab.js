@@ -1,6 +1,6 @@
 import React from 'react';
 import {hoistCmp} from '@xh/hoist/core';
-import {a, code, hbox, p, vframe} from '@xh/hoist/cmp/layout';
+import {a, code, hbox, p} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -19,10 +19,9 @@ export const examplesTab = hoistCmp.factory(
                 width: 300,
                 height: 300,
                 margin: 20,
-                item: vframe({
-                    className: 'example-tile-text',
-                    items: e.text
-                }),
+                padding: 10,
+                overflowY: 'auto',
+                item: e.text,
                 bbar: [
                     button({
                         text: 'Launch app',

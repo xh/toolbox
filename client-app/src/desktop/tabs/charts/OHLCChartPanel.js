@@ -1,6 +1,6 @@
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, span, vframe} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {chart} from '@xh/hoist/cmp/chart';
@@ -29,11 +29,8 @@ export const ohlcChartPanel = hoistCmp.factory({
 });
 
 const example = hoistCmp.factory(
-    ({model}) => vframe({
-        className: 'toolbox-example-container',
-        item: chart({
-            aspectRatio: model.aspectRatio
-        })
+    ({model}) => chart({
+        aspectRatio: model.aspectRatio
     })
 );
 

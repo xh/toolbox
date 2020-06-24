@@ -1,7 +1,7 @@
 import React from 'react';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {filler, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
@@ -51,43 +51,41 @@ export const formPanel = hoistCmp.factory({
 const formContent = hoistCmp.factory(
     ({model}) => panel({
         flex: 1,
+        padding: 10,
         item: form({
             fieldDefaults: {
                 inline: model.inline,
                 minimal: model.minimal,
                 commitOnChange: model.commitOnChange
             },
-            item: vframe({
-                padding: 10,
-                items: [
-                    hbox({
-                        flex: 'none',
-                        items: [
-                            vbox({
-                                flex: 1,
-                                marginRight: 30,
-                                items: [
-                                    lastName(),
-                                    region(),
-                                    email(),
-                                    tags()
-                                ]
-                            }),
-                            vbox({
-                                flex: 1,
-                                items: [
-                                    startAndEndDate(),
-                                    reasonForLeaving(),
-                                    managerAndYearsExperience(),
-                                    notes()
-                                ]
-                            })
-                        ]
-                    }),
-                    'References',
-                    references()
-                ]
-            })
+            items: [
+                hbox({
+                    flex: 'none',
+                    items: [
+                        vbox({
+                            flex: 1,
+                            marginRight: 30,
+                            items: [
+                                lastName(),
+                                region(),
+                                email(),
+                                tags()
+                            ]
+                        }),
+                        vbox({
+                            flex: 1,
+                            items: [
+                                startAndEndDate(),
+                                reasonForLeaving(),
+                                managerAndYearsExperience(),
+                                notes()
+                            ]
+                        })
+                    ]
+                }),
+                'References',
+                references()
+            ]
         }),
         bbar: bbar()
     })

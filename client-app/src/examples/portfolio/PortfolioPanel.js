@@ -1,6 +1,6 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {hbox, vframe} from '@xh/hoist/cmp/layout';
+import {hbox} from '@xh/hoist/cmp/layout';
 import {gridPanel} from './GridPanel';
 import {detailPanel} from './detail/DetailPanel';
 import {mapPanel} from './MapPanel';
@@ -13,7 +13,7 @@ export const portfolioPanel = hoistCmp.factory({
     render() {
         return panel({
             mask: 'onLoad',
-            item: vframe(
+            items: [
                 hbox({
                     flex: 1,
                     items: [
@@ -22,7 +22,7 @@ export const portfolioPanel = hoistCmp.factory({
                     ]
                 }),
                 detailPanel()
-            )
+            ]
         });
     }
 });

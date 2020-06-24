@@ -2,7 +2,7 @@ import React from 'react';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, observable} from '@xh/hoist/mobx';
-import {box, filler, h3, hbox, p} from '@xh/hoist/cmp/layout';
+import {filler, h3, hbox, p} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -55,22 +55,17 @@ export const panelSizingPanel = hoistCmp.factory({
                         className: 'xh-border-top',
                         items: [
                             panel({
+                                padding: 10,
                                 title: 'Left Panel',
                                 icon: Icon.arrowToLeft(),
                                 model: model.leftPanelModel,
                                 compactHeader: true,
-                                item: box({
-                                    className: 'xh-pad',
-                                    item: 'Collapsible Left'
-                                })
+                                item: 'Collapsible Left'
                             }),
                             panel({
-                                item: box({
-                                    items: loremIpsum,
-                                    padding: '0 6 6 6',
-                                    display: 'block',
-                                    overflowY: 'auto'
-                                }),
+                                padding: '0 10 10',
+                                overflowY: 'auto',
+                                items: loremIpsum,
                                 tbar: [
                                     filler(),
                                     button({
@@ -90,10 +85,8 @@ export const panelSizingPanel = hoistCmp.factory({
                                 icon: Icon.arrowToRight(),
                                 model: model.rightPanelModel,
                                 compactHeader: true,
-                                item: box({
-                                    className: 'xh-pad',
-                                    item: 'Collapsible Right with minSize and maxSize'
-                                })
+                                padding: 10,
+                                item: 'Collapsible Right with minSize and maxSize'
                             })
                         ]
                     }),
@@ -102,10 +95,8 @@ export const panelSizingPanel = hoistCmp.factory({
                         icon: Icon.arrowToBottom(),
                         model: model.bottomPanelModel,
                         compactHeader: true,
-                        item: box({
-                            padding: 10,
-                            item: 'Collapsible Bottom with minSize and maxSize'
-                        }),
+                        padding: 10,
+                        item: 'Collapsible Bottom with minSize and maxSize',
                         headerItems: [
                             relativeTimestamp({
                                 options: {prefix: 'Rendered'},

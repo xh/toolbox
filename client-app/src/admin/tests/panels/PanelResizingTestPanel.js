@@ -1,6 +1,6 @@
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {box, filler, hbox} from '@xh/hoist/cmp/layout';
+import {filler, hbox} from '@xh/hoist/cmp/layout';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -30,10 +30,8 @@ export const PanelResizingTestPanel = hoistCmp({
                     model: model.topPanel1Model,
                     key: model.topPanel1Model.xhId,
                     compactHeader: true,
-                    item: box({
-                        padding: 10,
-                        item: `Collapsible Top (minSize: ${model.topPanel1Model.minSize}px)`
-                    }),
+                    padding: 10,
+                    item: `Collapsible Top (minSize: ${model.topPanel1Model.minSize}px)`,
                     headerItems: [
                         relativeTimestamp({
                             options: { prefix: 'Rendered' },
@@ -53,10 +51,8 @@ export const PanelResizingTestPanel = hoistCmp({
                     model: model.topPanel2Model,
                     key: model.topPanel2Model.xhId,
                     compactHeader: true,
-                    item: box({
-                        padding: 10,
-                        item: 'Collapsible Top'
-                    })
+                    padding: 10,
+                    item: 'Collapsible Top'
                 }),
                 hbox({
                     flex: 1,
@@ -68,10 +64,8 @@ export const PanelResizingTestPanel = hoistCmp({
                             model: model.leftPanel1Model,
                             key: model.leftPanel1Model.xhId,
                             compactHeader: true,
-                            item: box({
-                                className: 'xh-pad',
-                                item: 'Collapsible Left'
-                            })
+                            padding: 10,
+                            item: 'Collapsible Left'
                         }),
                         panel({
                             title: 'Left Panel 2',
@@ -79,18 +73,13 @@ export const PanelResizingTestPanel = hoistCmp({
                             model: model.leftPanel2Model,
                             key: model.leftPanel2Model.xhId,
                             compactHeader: true,
-                            item: box({
-                                className: 'xh-pad',
-                                item: `Collapsible Left (minSize: ${model.leftPanel2Model.minSize}px)`
-                            })
+                            padding: 10,
+                            item: `Collapsible Left (minSize: ${model.leftPanel2Model.minSize}px)`
                         }),
                         panel({
-                            item: box({
-                                items: model.explanation,
-                                padding: '0 6 6 6',
-                                display: 'block',
-                                overflowY: 'auto'
-                            }),
+                            items: model.explanation,
+                            padding: '0 10 10',
+                            overflowY: 'auto',
                             tbar: [
                                 filler(),
                                 button({
@@ -111,10 +100,8 @@ export const PanelResizingTestPanel = hoistCmp({
                             model: model.rightPanel2Model,
                             key: model.rightPanel2Model.xhId,
                             compactHeader: true,
-                            item: box({
-                                className: 'xh-pad',
-                                item: 'Collapsible Right'
-                            })
+                            padding: 10,
+                            item: 'Collapsible Right'
                         }),
                         panel({
                             title: 'Right Panel 1',
@@ -122,10 +109,8 @@ export const PanelResizingTestPanel = hoistCmp({
                             model: model.rightPanel1Model,
                             key: model.rightPanel1Model.xhId,
                             compactHeader: true,
-                            item: box({
-                                className: 'xh-pad',
-                                item: `Collapsible Right (minSize: ${model.rightPanel1Model.minSize}px)`
-                            })
+                            padding: 10,
+                            item: `Collapsible Right (minSize: ${model.rightPanel1Model.minSize}px)`
                         })
                     ]
                 }),
@@ -135,10 +120,8 @@ export const PanelResizingTestPanel = hoistCmp({
                     model: model.bottomPanel2Model,
                     key: model.bottomPanel2Model.xhId,
                     compactHeader: true,
-                    item: box({
-                        padding: 10,
-                        item: `Collapsible Bottom (minSize: ${model.bottomPanel2Model.minSize}px)`
-                    })
+                    padding: 10,
+                    item: `Collapsible Bottom (minSize: ${model.bottomPanel2Model.minSize}px)`
                 }),
                 panel({
                     title: 'Bottom Panel 1',
@@ -146,10 +129,8 @@ export const PanelResizingTestPanel = hoistCmp({
                     model: model.bottomPanel1Model,
                     key: model.bottomPanel1Model.xhId,
                     compactHeader: true,
-                    item: box({
-                        padding: 10,
-                        item: 'Collapsible Bottom'
-                    })
+                    padding: 10,
+                    item: 'Collapsible Bottom'
                 })
             ]
         });

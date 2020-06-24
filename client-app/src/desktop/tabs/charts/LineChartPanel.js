@@ -1,6 +1,6 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {box, vframe} from '@xh/hoist/cmp/layout';
+import {box} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {chart} from '@xh/hoist/cmp/chart';
@@ -18,10 +18,7 @@ export const lineChartPanel = hoistCmp.factory({
                 icon: Icon.chartLine(),
                 width: 800,
                 height: 600,
-                item: vframe({
-                    className: 'toolbox-example-container',
-                    item: chart()
-                }),
+                item: chart(),
                 tbar: [
                     box('Symbol: '),
                     select({
