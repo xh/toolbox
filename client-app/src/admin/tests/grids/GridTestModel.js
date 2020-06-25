@@ -1,10 +1,9 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, persist, XH} from '@xh/hoist/core';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {mean, random, sample, takeRight, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {action, bindable, observable} from '@xh/hoist/mobx';
-import {persist} from '@xh/hoist/persist';
 
 const pnlColumn = {
     absSort: true,
@@ -60,6 +59,7 @@ export class GridTestModel {
     _gridLoadTimes = [];
 
     constructor() {
+        this.markPersist('tree');
         this.gridModel = this.createGridModel();
         this.addReaction({
             track: () =>  [

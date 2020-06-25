@@ -26,23 +26,22 @@
     }
   },
   "dependencies": {
-    "@xh/hoist": "^35.0.0-SNAPSHOT",
-
-    "@ag-grid-community/react": "~23.0.3",
-    "@ag-grid-enterprise/all-modules": "~23.0.2",
+    "@ag-grid-community/react": "~23.2.0",
+    "@ag-grid-enterprise/all-modules": "~23.2.0",
     "@fortawesome/free-brands-svg-icons": "~5.13.0",
-    "highcharts": "~8.1.0",
+    "@xh/hoist": "^35.0.0-SNAPSHOT",
+    "highcharts": "~8.1.1",
     "react": "~16.13.1",
     "react-dom": "~16.13.1",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "^5.0.0-SNAPSHOT",
+    "@xh/hoist-dev-utils": "~5.0.0",
     "cross-env": "~7.0.2",
     "husky": "~4.2.1",
-    "lint-staged": "~10.0.9",
-    "stylelint": "~13.2.1",
+    "lint-staged": "~10.2.10",
+    "stylelint": "~13.6.0",
     "stylelint-config-standard": "~20.0.0",
-    "stylelint-scss": "~3.16.0"
+    "stylelint-scss": "~3.18.0"
   }
 }
