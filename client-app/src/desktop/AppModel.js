@@ -135,6 +135,7 @@ export class AppModel {
                             {name: 'numberFormats', path: '/numberFormats'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'popups', path: '/popups'},
+                            {name: 'dialogs', path: '/dialogs'},
                             {name: 'timestamp', path: '/timestamp'},
                             {name: 'appNotifications', path: '/appNotifications'}
                         ]

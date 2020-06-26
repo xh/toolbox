@@ -44,7 +44,9 @@ export class AppModel extends BaseAppModel {
                     {name: 'panelResizing', path: '/panelResizing'},
                     {name: 'fetchAPI', path: '/fetchAPI'},
                     {name: 'storeEditing', path: '/storeEditing'},
-                    {name: 'select', path: '/select'}
+                    {name: 'select', path: '/select'},
+                    {name: 'dialogs', path: '/dialogs'}
+
                 ]
             },
             {
