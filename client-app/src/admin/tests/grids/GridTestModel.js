@@ -1,4 +1,4 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, persist, XH} from '@xh/hoist/core';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {mean, random, sample, takeRight, times} from 'lodash';
@@ -21,6 +21,8 @@ const pnlColumn = {
 @LoadSupport
 export class GridTestModel {
 
+    persistWith = {localStorageKey: 'persistTest'};
+
     // Total count (approx) of all nodes generated (parents + children).
     @bindable recordCount = 5000;
     // Loop x times over nodes, randomly selecting a note and twiddling data.
@@ -32,7 +34,14 @@ export class GridTestModel {
     @bindable useTransactions = true;
     @bindable useDeltaSort = true;
     @bindable disableSelect = false;
-    @bindable autosizeMode = 'onDemand';
+
+    @bindable
+    @persist
+    autosizeMode = 'onDemand';
+
+    @bindable
+    @persist.with({path: 'gridPersistType', buffer: 500})  // test persist.with!
+    persistType = null;
 
     // Generated data in tree
     _data;
@@ -50,6 +59,7 @@ export class GridTestModel {
     _gridLoadTimes = [];
 
     constructor() {
+        this.markPersist('tree');
         this.gridModel = this.createGridModel();
         this.addReaction({
             track: () =>  [
@@ -57,7 +67,8 @@ export class GridTestModel {
                 this.useTransactions,
                 this.useDeltaSort,
                 this.disableSelect,
-                this.autosizeMode
+                this.autosizeMode,
+                this.persistType
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -189,7 +200,9 @@ export class GridTestModel {
     }
 
     createGridModel() {
+        const {persistType} = this;
         return new GridModel({
+            persistWith: persistType ? {[persistType]: 'persistTest'} : null,
             selModel: {mode: 'multiple'},
             sortBy: 'id',
             emptyText: 'No records found...',

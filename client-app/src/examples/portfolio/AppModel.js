@@ -10,6 +10,9 @@ import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {startCase} from 'lodash';
 import {PortfolioService} from '../../core/svc/PortfolioService';
 
+export const PERSIST_MAIN = {localStorageKey: 'portfolioAppMainState'};
+export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
+
 @HoistAppModel
 export class AppModel {
 
