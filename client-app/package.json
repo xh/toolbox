@@ -29,7 +29,7 @@
     "@ag-grid-community/react": "~23.2.0",
     "@ag-grid-enterprise/all-modules": "~23.2.0",
     "@fortawesome/free-brands-svg-icons": "~5.13.0",
-    "@xh/hoist": "35.0.0",
+    "@xh/hoist": "^36.0.0-SNAPSHOT",
     "highcharts": "~8.1.1",
     "react": "~16.13.1",
     "react-dom": "~16.13.1",
