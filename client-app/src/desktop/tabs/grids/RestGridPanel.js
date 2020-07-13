@@ -4,7 +4,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
-import {boolCheckCol, emptyFlexCol, ExportFormat, numberCol} from '@xh/hoist/cmp/grid';
+import {boolCheckCol, ExportFormat, numberCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
 import {numberInput, switchInput, textArea} from '@xh/hoist/desktop/cmp/input';
 
@@ -118,8 +118,7 @@ const modelSpec = {
         {
             field: 'note',
             width: 200
-        },
-        {...emptyFlexCol}
+        }
     ],
     editors: [
         {field: 'name'},

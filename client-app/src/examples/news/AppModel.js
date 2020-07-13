@@ -5,14 +5,16 @@ import {NewsPanelModel} from './NewsPanelModel';
 export class AppModel {
 
     @managed
-    newsPanelModel = new NewsPanelModel();
+    newsPanelModel;
 
     get gridSizingMode() {
         return XH.getPref('gridSizingMode');
     }
     
     async initAsync() {
+        this.newsPanelModel = new NewsPanelModel();
         this.loadAsync();
+
     }
 
     async doLoadAsync(loadSpec) {

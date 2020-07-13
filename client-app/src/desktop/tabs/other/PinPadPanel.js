@@ -1,25 +1,53 @@
+import React from 'react';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
+import {h3, p} from '@xh/hoist/cmp/layout';
 import {bindable} from '@xh/hoist/mobx';
-import {p} from '@xh/hoist/cmp/layout';
+import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
-import './PinPadPage.scss';
 
-export const pinPadPage = hoistCmp.factory({
+import './PinPadPanel.scss';
+import {wrapper} from '../../common/Wrapper';
 
+export const pinPadPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {
-        return !model.loggedIn ? pinPad() : secretPlans();
+        return wrapper({
+            description: [
+                <p>A specialized PIN input, used for lightweight authentication of users.</p>
+            ],
+            links: [
+                {url: '$TB/client-app/src/desktop/tabs/other/PinPadPanel.js', notes: 'This example.'},
+                {url: '$HR/cmp/pinpad/PinPad.js', notes: 'Hoist component.'},
+                {url: '$HR/cmp/pinpad/PinPadModel.js', notes: 'Hoist component model - primary API and configuration point for pin pads.'}
+            ],
+            item: panel({
+                title: 'Other › PinPad',
+                icon: Icon.unlock(),
+                width: 380,
+                height: 500,
+                className: 'tb-pinpad-container',
+                item: !model.loggedIn ? pinPad() : secretPlans(),
+                bbar: [
+                    button({
+                        text: 'Reset',
+                        icon: Icon.reset(),
+                        onClick: () => model.reset()
+                    })
+                ]
+            })
+        });
     }
 });
 
 const secretPlans = hoistCmp.factory(
     () => panel({
-        className: 'toolbox-page pinpad-page-secrets',
-        title: 'Secret plans',
+        className: 'tb-pinpad-container__secrets',
         items: [
+            h3('Secret plans'),
             p('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam porta velit varius augue fermentum, vulputate tempus magna tempus.'),
             p('Fusce consectetur malesuada vehicula. Aliquam commodo magna at porta sollicitudin. Sed laoreet vehicula leo vel aliquam. Aliquam auctor fringilla ex, nec iaculis felis tincidunt ac. Pellentesque blandit ipsum odio, vel lacinia arcu blandit non.'),
             p('Vestibulum non libero sem. Mauris a ipsum elit. Donec vestibulum sodales dapibus. Mauris posuere facilisis mollis. Etiam nec mauris nunc. Praesent mauris libero, blandit gravida ullamcorper vel, condimentum et velit. Suspendisse fermentum odio ac dui aliquet semper. Duis arcu felis, accumsan in leo sit amet, vehicula imperdiet tellus. Nulla ut condimentum quam. Donec eget mauris vitae libero blandit facilisis efficitur id justo.'),
@@ -80,5 +108,18 @@ class Model {
 
             this.attempts++;
         }
+    }
+
+    reset() {
+        const {pinPadModel: pad} = this;
+
+        pad.setHeaderText('Enter PIN...');
+        pad.setSubHeaderText('');
+        pad.setErrorText('');
+        pad.setDisabled(false);
+        pad.clear();
+
+        this.attempts = 0;
+        this.setLoggedIn(false);
     }
 }

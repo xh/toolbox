@@ -5,6 +5,7 @@ import {MapPanelModel} from './MapPanelModel';
 import {clamp, round} from 'lodash';
 import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
 import {DetailPanelModel} from './detail/DetailPanelModel';
+import {PERSIST_MAIN} from './AppModel';
 
 @HoistModel
 @LoadSupport
@@ -102,7 +103,7 @@ export class PortfolioPanelModel {
                 {value: 'symbol', label: 'Symbol'},
                 {value: 'trader', label: 'Trader'}
             ],
-            preference: 'portfolioDims'
+            persistWith: PERSIST_MAIN
         });
     }
 }

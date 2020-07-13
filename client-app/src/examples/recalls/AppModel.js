@@ -6,6 +6,8 @@
  */
 import {HoistAppModel, XH} from '@xh/hoist/core';
 
+export const PERSIST_APP = {localStorageKey: 'recallsAppState'};
+
 @HoistAppModel
 export class AppModel {
 
