@@ -42,6 +42,7 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                 height: 400,
                 item: tabContainer({
                     model: {
+                        persistWith: {localStorageKey: 'toolboxContainerTabs'},
                         tabs: [
                             {
                                 id: 'top',
