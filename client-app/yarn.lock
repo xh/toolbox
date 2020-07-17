@@ -1934,9 +1934,9 @@
     eslint-plugin-react-hooks "~2.5.1"
 
 "@xh/hoist-dev-utils@^6.0.0-SNAPSHOT":
-  version "6.0.0-SNAPSHOT.1594395058457"
-  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-6.0.0-SNAPSHOT.1594395058457.tgz#acc6011888b07d78cf167886738b848b06472297"
-  integrity sha512-r7AMjrSZvT82jRfmmEOIbEydt5Wz6ckAsHOUOhtxF7NLte3kHT6V6IEKGNZAw7KOY8r4I4LMdesOQXXq0aAfWg==
+  version "6.0.0-SNAPSHOT.1595012833818"
+  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-6.0.0-SNAPSHOT.1595012833818.tgz#0a826dd1160158f4605b7626fb63b0eec7525dcc"
+  integrity sha512-/H5kdl+FtipbqNLBSME+kPecmv5A4oDNK/1AVKqCFUPeBCENZRxNhpotNyx5N5s2yJFhWET5OL7DQwz6cO+KwA==
   dependencies:
     "@babel/core" "~7.10.4"
     "@babel/plugin-proposal-class-properties" "~7.10.4"
@@ -1975,9 +1975,9 @@
     webpackbar "~4.0.0"
 
 "@xh/hoist@^36.0.0-SNAPSHOT":
-  version "36.0.0-SNAPSHOT.1595010746729"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-36.0.0-SNAPSHOT.1595010746729.tgz#16ec6bfdcbacff6f119250be08a5a827e1c65b5b"
-  integrity sha512-ipjn+XTFGY83gbnDnV/bw3LXUAqr4chBBr+qIh/1SJIKdu67+rOua3U2A43A6YkPWc5NJ1H8AUqOp5S6Y09y+g==
+  version "36.0.0-SNAPSHOT.1595013806791"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-36.0.0-SNAPSHOT.1595013806791.tgz#4daff5642bc81b898ed501a7ed872eea98728c19"
+  integrity sha512-sE1lUWBxpqnIS8QLnx9TqrBliuddJt01w1H7SwkijAW5vBnbO9mwYS0OK13CNq/6jiuPcEtGjxPIp8pbrnlojg==
   dependencies:
     "@blueprintjs/core" "~3.30.0"
     "@blueprintjs/datetime" "~3.18.4"
