@@ -14,11 +14,11 @@ export const App = hoistCmp({
     displayName: 'App',
     model: uses(AppModel),
 
-    render() {
+    render({model}) {
         return panel({
             contextMenu: null,
             tbar: appBar({
-                icon: img({src: xhLogo}),
+                icon: img({src: xhLogo, onClick: () => model.goHome()}),
                 title: null,
                 leftItems: [
                     tabSwitcher()
