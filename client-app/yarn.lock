@@ -1933,10 +1933,10 @@
     eslint-plugin-react "~7.20.3"
     eslint-plugin-react-hooks "~2.5.1"
 
-"@xh/hoist-dev-utils@^6.0.0-SNAPSHOT":
-  version "6.0.0-SNAPSHOT.1595367900222"
-  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-6.0.0-SNAPSHOT.1595367900222.tgz#02af4c072e502fd7a5fcf51ec11f93d878de32b5"
-  integrity sha512-pdCfui6cwiA9wKnqWX5vbXbNgKgSn405OlY2czH5IsbSCHhEB3JmIhTGC1oqoBsfoN2rFNw2lEMD56t22/sv3w==
+"@xh/hoist-dev-utils@~5.2.2":
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-5.2.2.tgz#28907b0dbeda110cee437d9761899ad027abbeb7"
+  integrity sha512-KGUuNcv0XXKrIjTKYaikiOgAmNvFYXVUoC3LTLa6SIJiCWLAncGF21Pd1uVNpggBJDX14BNhg+IH73u/sb1otw==
   dependencies:
     "@babel/core" "~7.10.5"
     "@babel/plugin-proposal-class-properties" "~7.10.4"
@@ -1974,10 +1974,10 @@
     webpack-dev-server "~3.11.0"
     webpackbar "~4.0.0"
 
-"@xh/hoist@^36.0.0-SNAPSHOT":
-  version "36.0.0-SNAPSHOT.1595367390534"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-36.0.0-SNAPSHOT.1595367390534.tgz#280df0f9a9a9cf880b12a2850a24658290e355bc"
-  integrity sha512-CVbpF2Q2qeiyLZsT6pVpOe9DQ+8F3BODxMm5VUiCTfwXkrSSzJ9YVyojtjGsYgPdsGAYtGiAxP3oNZ5mx0l2Rw==
+"@xh/hoist@~35.2.0":
+  version "35.2.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-35.2.0.tgz#40d74dc9252856ec922f054219f01462976236f1"
+  integrity sha512-shHRTVKtyplWa7IGLzq7WUtadIyE9PingJ6j6wkjTqy1y7iw/RHikh63hFcbGBM6K2buUJvqKlwSqgTB1gbdEg==
   dependencies:
     "@blueprintjs/core" "~3.30.0"
     "@blueprintjs/datetime" "~3.18.4"
@@ -1992,7 +1992,7 @@
     "@xh/react-onsenui" "~0.1.2"
     classnames "~2.2.6"
     clipboard-copy "~3.1.0"
-    codemirror "~5.55.0"
+    codemirror "~5.56.0"
     compare-versions "~3.6.0"
     core-js "~3.6.5"
     debounce-promise "~3.1.0"
@@ -3297,10 +3297,10 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codemirror@~5.55.0:
-  version "5.55.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.55.0.tgz#23731f641288f202a6858fdc878f3149e0e04363"
-  integrity sha512-TumikSANlwiGkdF/Blnu/rqovZ0Y3Jh8yy9TqrPbSM0xxSucq3RgnpVDQ+mD9q6JERJEIT2FMuF/fBGfkhIR/g==
+codemirror@~5.56.0:
+  version "5.56.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.56.0.tgz#675640fcc780105cd22d3faa738b5d7ea6426f61"
+  integrity sha512-MfKVmYgifXjQpLSgpETuih7A7WTTIsxvKfSLGseTY5+qt0E1UD1wblZGM6WLenORo8sgmf+3X+WTe2WF7mufyw==
 
 collapse-white-space@^1.0.2:
   version "1.0.6"
