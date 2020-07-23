@@ -74,6 +74,7 @@ const buttonPanel = hoistCmp.factory(
                     items: renderButtons(intent, model.disableButtons)
                 }),
                 hbox({
+                    omit: intent,
                     className: 'tbox-buttons__panel__row',
                     items: renderButtonGroupInputs(intent, model.disableButtons)
                 })
@@ -146,6 +147,7 @@ function renderButtons(intent, disabled) {
 }
 
 function renderButtonGroupInputs(intent, disabled) {
+    if (intent) return null;
     return [
         buttonGroupInput({
             bind: 'activeButton',
