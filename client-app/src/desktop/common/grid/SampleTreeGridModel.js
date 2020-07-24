@@ -40,6 +40,11 @@ export class SampleTreeGridModel {
     constructor({includeCheckboxes}) {
         this.gridModel = this.createGridModel(includeCheckboxes);
 
+        this.addReaction({
+            track: () => this.filterIncludeChildren,
+            run: (val) => this.gridModel.store.filterModel.setIncludeChildren(val)
+        });
+
         // Load data when dimensions change
         this.addReaction({
             track: () => this.dimChooserModel.value,
