@@ -10,7 +10,7 @@
     &__row {
       padding: var(--xh-pad-px);
 
-      .xh-button:not(:last-child) {
+      > .xh-button:not(:last-child) {
         margin-right: var(--xh-tbar-item-pad-px);
       }
     }
