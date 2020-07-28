@@ -12,12 +12,12 @@ import './Buttons.scss';
 @HoistModel
 class ButtonsModel {
     @bindable disableButtons = false;
-    @bindable activeButton = 'one';
+    @bindable activeButton = 'v1';
 }
 
 export const buttonsPanel = hoistCmp.factory({
     model: creates(ButtonsModel),
-    render() {
+    render({model}) {
         return wrapper({
             description: (
                 <div>
@@ -65,7 +65,7 @@ export const buttonsPanel = hoistCmp.factory({
 const buttonPanel = hoistCmp.factory(
     ({model, intent, headerItems}) => {
         return panel({
-            title: `Intent: ${intent ?? 'undefined'}`,
+            title: `Intent: ${intent ?? 'none (default)'}`,
             className: 'tbox-buttons__panel',
             headerItems,
             items: [
@@ -153,8 +153,9 @@ function renderButtonGroupInputs(intent, disabled) {
             intent,
             disabled,
             items: [
-                button({text: 'Minimal 1', icon: Icon.checkCircle(), value: 'one'}),
-                button({text: 'Minimal 2', icon: Icon.xCircle(), value: 'two'})
+                button({text: 'v1', icon: Icon.checkCircle(), value: 'v1'}),
+                button({text: 'v2', icon: Icon.xCircle(), value: 'v2'}),
+                button({text: 'v3', icon: Icon.users(), value: 'v3'})
             ]
         }),
         filler(),
@@ -164,8 +165,9 @@ function renderButtonGroupInputs(intent, disabled) {
             intent,
             disabled,
             items: [
-                button({text: 'Default 1', icon: Icon.checkCircle(), value: 'one'}),
-                button({text: 'Default 2', icon: Icon.xCircle(), value: 'two'})
+                button({text: 'v1', icon: Icon.checkCircle(), value: 'v1'}),
+                button({text: 'v2', icon: Icon.xCircle(), value: 'v2'}),
+                button({text: 'v3', icon: Icon.users(), value: 'v3'})
             ]
         }),
         filler(),
@@ -175,8 +177,9 @@ function renderButtonGroupInputs(intent, disabled) {
             intent,
             disabled,
             items: [
-                button({text: 'Outlined 1', icon: Icon.checkCircle(), value: 'one'}),
-                button({text: 'Outlined 2', icon: Icon.xCircle(), value: 'two'})
+                button({text: 'v1', icon: Icon.checkCircle(), value: 'v1'}),
+                button({text: 'v2', icon: Icon.xCircle(), value: 'v2'}),
+                button({text: 'v3', icon: Icon.users(), value: 'v3'})
             ]
         })
     ];
