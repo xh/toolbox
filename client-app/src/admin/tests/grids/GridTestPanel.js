@@ -73,6 +73,11 @@ const tbar = hoistCmp.factory(
             icon: Icon.crosshairs(),
             onClick: () => model.gridModel.ensureSelectionVisible()
         }),
+        button({
+            text: 'Autosize Columns',
+            icon: Icon.arrowsLeftRight(),
+            onClick: () => model.gridModel.autosizeAsync()
+        }),
         toolbarSep(),
         tooltip({
             content: '# records to randomly change',
