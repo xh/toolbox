@@ -73,6 +73,11 @@ const tbar = hoistCmp.factory(
             icon: Icon.crosshairs(),
             onClick: () => model.gridModel.ensureSelectionVisible()
         }),
+        button({
+            text: 'Autosize Columns',
+            icon: Icon.arrowsLeftRight(),
+            onClick: () => model.gridModel.autosizeAsync()
+        }),
         toolbarSep(),
         tooltip({
             content: '# records to randomly change',
@@ -97,8 +102,21 @@ const tbar = hoistCmp.factory(
 const bbar = hoistCmp.factory(
     ({model}) => toolbar(
         switchInput({
+            bind: 'showSummary',
+            label: 'Summary Row',
+            labelAlign: 'left'
+        }),
+        toolbarSep(),
+        switchInput({
             bind: 'tree',
             label: 'Tree mode',
+            labelAlign: 'left'
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'loadRootAsSummary',
+            label: 'Load Root As Summary',
+            disabled: !(model.tree && model.showSummary),
             labelAlign: 'left'
         }),
         toolbarSep(),

@@ -1,7 +1,7 @@
 import {code, div, filler, hbox, p} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -12,11 +12,12 @@ import './Buttons.scss';
 @HoistModel
 class ButtonsModel {
     @bindable disableButtons = false;
+    @bindable activeButton = 'v1';
 }
 
 export const buttonsPanel = hoistCmp.factory({
     model: creates(ButtonsModel),
-    render() {
+    render({model}) {
         return wrapper({
             description: (
                 <div>
@@ -64,19 +65,26 @@ export const buttonsPanel = hoistCmp.factory({
 const buttonPanel = hoistCmp.factory(
     ({model, intent, headerItems}) => {
         return panel({
-            title: `Intent: ${intent ?? 'undefined'}`,
+            title: `Intent: ${intent ?? 'none (default)'}`,
             className: 'tbox-buttons__panel',
             headerItems,
-            item: hbox({
-                className: 'tbox-buttons__panel__row',
-                items: buttonBar(intent, model.disableButtons)
-            }),
-            bbar: buttonBar(intent, model.disableButtons)
+            items: [
+                hbox({
+                    className: 'tbox-buttons__panel__row',
+                    items: renderButtons(intent, model.disableButtons)
+                }),
+                hbox({
+                    className: 'tbox-buttons__panel__row',
+                    items: renderButtonGroupInputs(intent, model.disableButtons)
+                })
+            ],
+            tbar: renderButtons(intent, model.disableButtons),
+            bbar: renderButtonGroupInputs(intent, model.disableButtons)
         });
     }
 );
 
-function buttonBar(intent, disabled) {
+function renderButtons(intent, disabled) {
     return [
         button({
             text: 'Default',
@@ -133,6 +141,46 @@ function buttonBar(intent, disabled) {
             outlined: true,
             intent,
             disabled
+        })
+    ];
+}
+
+function renderButtonGroupInputs(intent, disabled) {
+    return [
+        buttonGroupInput({
+            bind: 'activeButton',
+            minimal: true,
+            intent,
+            disabled,
+            items: [
+                button({text: 'v1', icon: Icon.checkCircle(), value: 'v1'}),
+                button({text: 'v2', icon: Icon.xCircle(), value: 'v2'}),
+                button({text: 'v3', icon: Icon.users(), value: 'v3'})
+            ]
+        }),
+        filler(),
+        buttonGroupInput({
+            bind: 'activeButton',
+            minimal: false,
+            intent,
+            disabled,
+            items: [
+                button({text: 'v1', icon: Icon.checkCircle(), value: 'v1'}),
+                button({text: 'v2', icon: Icon.xCircle(), value: 'v2'}),
+                button({text: 'v3', icon: Icon.users(), value: 'v3'})
+            ]
+        }),
+        filler(),
+        buttonGroupInput({
+            bind: 'activeButton',
+            outlined: true,
+            intent,
+            disabled,
+            items: [
+                button({text: 'v1', icon: Icon.checkCircle(), value: 'v1'}),
+                button({text: 'v2', icon: Icon.xCircle(), value: 'v2'}),
+                button({text: 'v3', icon: Icon.users(), value: 'v3'})
+            ]
         })
     ];
 }
