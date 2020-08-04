@@ -31,12 +31,8 @@ export class CubeTestModel {
 
         const {cube} = this.cubeModel;
 
-        const cubeDims = cube.fields
-            .filter(it => it.isDimension)
-            .map(it => ({value: it.name, label: it.label}));
-
         this.dimManagerModel = new DimensionManagerModel({
-            dimensions: cubeDims,
+            dimensions: cube.dimensions,
             defaultDimConfig: 'cubeTestDefaultDims',
             userDimPref: 'cubeTestUserDims'
         });

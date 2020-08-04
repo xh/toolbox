@@ -22,12 +22,13 @@ export class SampleTreeGridModel {
 
     @managed
     dimChooserModel = new DimensionChooserModel({
-        dimensions: [
-            {value: 'region', label: 'Region'},
-            {value: 'sector', label: 'Sector'},
-            {value: 'symbol', label: 'Symbol'}
-        ],
-        initialValue: ['sector', 'symbol']
+        dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],
+        initialValue: ['sector', 'symbol'],
+        initialHistory: [
+            ['region', 'sector'],
+            ['region', 'symbol'],
+            ['sector']
+        ]
     });
 
     @managed
