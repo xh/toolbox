@@ -195,7 +195,7 @@ export class SampleGridModel {
                 }
             },
             {
-                headerName: 'Volume',
+                headerName: 'Volume (Sales Quantity)',
                 field: 'trade_volume',
                 align: 'right',
                 width: 110,
