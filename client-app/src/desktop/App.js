@@ -16,7 +16,6 @@ export const App = hoistCmp({
 
     render({model}) {
         return panel({
-            contextMenu: null,
             tbar: appBar({
                 icon: img({src: xhLogo, onClick: () => model.goHome()}),
                 title: null,
