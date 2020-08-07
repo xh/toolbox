@@ -117,15 +117,6 @@ export class SampleGridModel {
         },
         colDefaults: {
             tooltipElement: (v, {record, gridModel}) => {
-                if (!record) {
-                    // if no record, this must be the column header
-                    const count = gridModel.selection.length;
-                    return vbox({
-                        className: 'sample-grid-tooltip',
-                        item: count ? `${count} compan${count > 1 ? 'ies' : 'y'} selected` : v
-                    });
-                }
-
                 const {company, city, trade_date, profit_loss, trade_volume} = record.data;
                 return vbox({
                     className: 'sample-grid-tooltip',
@@ -188,7 +179,7 @@ export class SampleGridModel {
                     return ret;
                 },
                 exportName: 'Company',
-                headerTooltip: 'Select a company to proceed'
+                headerTooltip: 'Select a company & continue'
             },
             {
                 field: 'winLose',
