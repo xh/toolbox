@@ -116,7 +116,7 @@ export class SampleGridModel {
             }
         },
         colDefaults: {
-            tooltipElement: (v, {record}) => {
+            tooltipElement: (v, {record, gridModel}) => {
                 const {company, city, trade_date, profit_loss, trade_volume} = record.data;
                 return vbox({
                     className: 'sample-grid-tooltip',
@@ -178,7 +178,8 @@ export class SampleGridModel {
 
                     return ret;
                 },
-                exportName: 'Company'
+                exportName: 'Company',
+                headerTooltip: 'Select a company & continue'
             },
             {
                 field: 'winLose',
@@ -195,7 +196,7 @@ export class SampleGridModel {
                 }
             },
             {
-                headerName: 'Volume',
+                headerName: 'Volume (Sales Quantity)',
                 field: 'trade_volume',
                 align: 'right',
                 width: 110,
