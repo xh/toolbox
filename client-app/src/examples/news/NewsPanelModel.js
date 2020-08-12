@@ -19,17 +19,12 @@ export class NewsPanelModel {
         store: {
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
             idSpec: XH.genId,
-            filterModel: {
-                filters: [{
-                    id: XH.genId(),
-                    testFn: (rec) => {
-                        const {textFilter, sourceFilter} = this,
-                            searchMatch = !textFilter || textFilter.test(rec),
-                            sourceMatch = isEmpty(sourceFilter) || sourceFilter.includes(rec.data.source);
+            filter: (rec) => {
+                const {textFilter, sourceFilter} = this,
+                    searchMatch = !textFilter || textFilter.test(rec),
+                    sourceMatch = isEmpty(sourceFilter) || sourceFilter.includes(rec.data.source);
 
-                        return sourceMatch && searchMatch;
-                    }
-                }]
+                return sourceMatch && searchMatch;
             }
         },
         elementRenderer: (v, {record}) => newsPanelItem({record}),
