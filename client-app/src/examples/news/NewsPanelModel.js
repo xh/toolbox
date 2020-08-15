@@ -1,6 +1,6 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {action, bindable, observable} from '@xh/hoist/mobx';
-import {isEmpty, uniq} from 'lodash';
+import {uniq} from 'lodash';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {newsPanelItem} from './NewsPanelItem';
 import {fmtCompactDate} from '@xh/hoist/format';
@@ -19,13 +19,7 @@ export class NewsPanelModel {
         store: {
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
             idSpec: XH.genId,
-            filter: (rec) => {
-                const {textFilter, sourceFilter} = this,
-                    searchMatch = !textFilter || textFilter.test(rec),
-                    sourceMatch = isEmpty(sourceFilter) || sourceFilter.includes(rec.data.source);
-
-                return sourceMatch && searchMatch;
-            }
+            filter: this.createFilters()
         },
         elementRenderer: (v, {record}) => newsPanelItem({record}),
         itemHeight: 120,
@@ -36,13 +30,13 @@ export class NewsPanelModel {
     @observable.ref sourceOptions = [];
     @observable lastRefresh = null;
 
-    @bindable sourceFilter = null;
+    @bindable.ref sourceFilterValues = null;
     @bindable.ref textFilter = null;
 
     constructor() {
         this.addReaction({
-            track: () => [this.sourceFilter, this.textFilter, this.lastRefresh],
-            run: () => this.viewModel.store.refreshFilter(),
+            track: () => [this.sourceFilterValues, this.textFilter, this.lastRefresh],
+            run: () => this.viewModel.store.setFilter(this.createFilters()),
             fireImmediately: true
         });
     }
@@ -57,6 +51,14 @@ export class NewsPanelModel {
     //------------------------
     // Implementation
     //------------------------
+    createFilters() {
+        const {textFilter, sourceFilterValues} = this;
+        return [
+            textFilter,
+            sourceFilterValues ? {field: 'source', op: '=', value: sourceFilterValues} : null
+        ];
+    }
+
     @action
     completeLoad(stories) {
         const {store} = this.viewModel;

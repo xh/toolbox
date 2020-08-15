@@ -27,7 +27,7 @@ export const newsPanel = hoistCmp.factory({
                     placeholder: 'Filter by title...'
                 }),
                 select({
-                    bind: 'sourceFilter',
+                    bind: 'sourceFilterValues',
                     options: model.sourceOptions,
                     enableMulti: true,
                     placeholder: 'Filter by source...',

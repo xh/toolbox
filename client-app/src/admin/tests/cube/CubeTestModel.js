@@ -53,7 +53,7 @@ export class CubeTestModel {
     getQuery() {
         const {dimManagerModel, fundFilter, includeLeaves} = this,
             dimensions = dimManagerModel.value,
-            filters = !isEmpty(fundFilter) ? [{name: 'fund', values: [...fundFilter]}] : null,
+            filters = !isEmpty(fundFilter) ? [{field: 'fund', value: [...fundFilter]}] : null,
             includeRoot = this.showSummary;
 
         return {dimensions, filters, includeLeaves, includeRoot};
@@ -68,7 +68,7 @@ export class CubeTestModel {
             {gridModel, loadModel, showSummary} = this,
             query = this.getQuery(),
             dimCount = query.dimensions.length,
-            filterCount = !isEmpty(query.filters) ? query.filters[0].values.length : 0;
+            filterCount = !isEmpty(query.filters) ? query.filters[0].value.length : 0;
 
         // Query is initialized with empty dims and is triggering an initial run we don't need.
         if (!dimCount) return;
