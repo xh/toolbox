@@ -53,10 +53,10 @@ export class CubeTestModel {
     getQuery() {
         const {dimManagerModel, fundFilter, includeLeaves} = this,
             dimensions = dimManagerModel.value,
-            filters = !isEmpty(fundFilter) ? [{field: 'fund', op: '=', value: fundFilter}] : null,
+            filter = !isEmpty(fundFilter) ? {field: 'fund', op: '=', value: fundFilter} : null,
             includeRoot = this.showSummary;
 
-        return {dimensions, filters, includeLeaves, includeRoot};
+        return {dimensions, filter, includeLeaves, includeRoot};
     }
 
     async doLoadAsync() {
@@ -68,7 +68,7 @@ export class CubeTestModel {
             {gridModel, loadModel, showSummary} = this,
             query = this.getQuery(),
             dimCount = query.dimensions.length,
-            filterCount = !isEmpty(query.filters) ? query.filters[0].value.length : 0;
+            filterCount = !isEmpty(query.filter) ? query.filter.value.length : 0;
 
         // Query is initialized with empty dims and is triggering an initial run we don't need.
         if (!dimCount) return;
