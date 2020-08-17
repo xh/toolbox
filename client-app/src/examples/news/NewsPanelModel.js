@@ -19,7 +19,7 @@ export class NewsPanelModel {
         store: {
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
             idSpec: XH.genId,
-            filter: this.createFilters()
+            filter: this.createFilter()
         },
         elementRenderer: (v, {record}) => newsPanelItem({record}),
         itemHeight: 120,
@@ -36,7 +36,7 @@ export class NewsPanelModel {
     constructor() {
         this.addReaction({
             track: () => [this.sourceFilterValues, this.textFilter, this.lastRefresh],
-            run: () => this.viewModel.store.setFilter(this.createFilters()),
+            run: () => this.viewModel.setFilter(this.createFilter()),
             fireImmediately: true
         });
     }
@@ -51,7 +51,7 @@ export class NewsPanelModel {
     //------------------------
     // Implementation
     //------------------------
-    createFilters() {
+    createFilter() {
         const {textFilter, sourceFilterValues} = this;
         return [
             textFilter,
