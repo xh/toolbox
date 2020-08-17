@@ -36,7 +36,7 @@ export class NewsPanelModel {
     constructor() {
         this.addReaction({
             track: () => [this.sourceFilterValues, this.textFilter, this.lastRefresh],
-            run: () => this.viewModel.store.setFilter(this.createFilters()),
+            run: () => this.viewModel.setFilter(this.createFilter()),
             fireImmediately: true
         });
     }
@@ -51,7 +51,7 @@ export class NewsPanelModel {
     //------------------------
     // Implementation
     //------------------------
-    createFilters() {
+    createFilter() {
         const {textFilter, sourceFilterValues} = this;
         return [
             textFilter,

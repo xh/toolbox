@@ -18,7 +18,7 @@ import {createRef} from 'react';
 export class SampleTreeGridModel {
 
     @bindable
-    filterIncludeChildren = false;
+    filterIncludesChildren = false;
 
     @managed
     dimChooserModel = new DimensionChooserModel({
@@ -42,8 +42,8 @@ export class SampleTreeGridModel {
         this.gridModel = this.createGridModel(includeCheckboxes);
 
         this.addReaction({
-            track: () => this.filterIncludeChildren,
-            run: (val) => this.gridModel.store.filterModel.setIncludeChildren(val)
+            track: () => this.filterIncludesChildren,
+            run: (val) => this.gridModel.store.setFilterIncludesChildren(val)
         });
 
         // Load data when dimensions change
