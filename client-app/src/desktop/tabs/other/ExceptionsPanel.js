@@ -1,14 +1,13 @@
 import {wrapper} from '../../common';
-import {hoistCmp, HoistModel} from '@xh/hoist/core';
-import {box, code, filler, hframe, p, vbox} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
+import {box, code, hframe, p, vbox} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
 import './ExceptionsPanel.scss';
-import {XH} from '@xh/hoist/core';
 import {codeInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {bindable} from '@xh/hoist/mobx';
-import {creates} from '@xh/hoist/core/modelspec';
+import {wait} from '@xh/hoist/promise';
 
 export const exceptionsPanel = hoistCmp.factory({
     model: creates(() => new Model()),
@@ -53,17 +52,14 @@ const exceptionHandlingPanel = hoistCmp.factory(
             title: 'Exception Handling',
             icon: Icon.warning(),
             items: [
-                p({
-                    items: [
-                        'In the ',
-                        code('fooBar'),
-                        ' function below, the Exception Handler catches the error and returns a readable error message in ',
-                        'the Exception Dialog. Toggle the options below to customize exception handling on this Reference Error below.'
-                    ]
-                }),
+                p(
+                    'In the ', code('fooBar'), ' function below, the Exception Handler catches the error and returns ' +
+                    'an error message in the Exception Dialog.'
+                ),
+                p('Toggle the options below to customize exception handling on this Reference Error below.'),
                 codeInput({
                     width: 'fill',
-                    height: 135,
+                    height: 110,
                     showFullscreenButton: false,
                     editorProps: {
                         readOnly: true,
@@ -75,9 +71,9 @@ const exceptionHandlingPanel = hoistCmp.factory(
                 exceptionOptions(),
                 button({
                     text: 'Run fooBar()',
-                    className: 'xh-button',
-                    minimal: false,
-                    icon: Icon.warningCircle({className: 'xh-red'}),
+                    width: 250,
+                    intent: 'danger',
+                    outlined: true,
                     onClick: () => model.onFooBarClicked()
                 })
             ]
@@ -90,14 +86,14 @@ const exceptionOptions = hoistCmp.factory(
         const {disabled} = model;
         return panel({
             title: 'Exception Dialog Options',
-            className: 'tbox-display-opts',
+            className: 'tb-exceptions__display-opts',
             icon: Icon.settings(),
             compactHeader: true,
             item: hframe(
                 switchInput({
                     bind: 'showAlert',
                     label: 'Show Dialog',
-                    onChange: model.disableWhenShowAlertFalse()
+                    onChange: () => model.disableWhenShowAlertFalse()
                 }),
                 switchInput({
                     bind: 'showAsError',
@@ -121,22 +117,18 @@ const exceptionOptions = hoistCmp.factory(
 const promiseErrorPanel = hoistCmp.factory(
     ({model}) => {
         return panel({
-            title: 'Promise Error Catching',
+            title: 'Promise Exception Handling',
             icon: Icon.warning(),
             items: [
-                p({
-                    items: [
-                        'Hoist provides useful ',
-                        code('.catchDefault()'),
-                        ' and ',
-                        code('.catchDefaultWhen()'),
-                        ' methods that will handle errors when promises are rejected. (No need to wrap in try/catch logic!)'
-                    ]
-                }),
-                filler(),
+                p(
+                    'Hoist provides useful convenience methods such as ',
+                    code('.catchDefault()'), ' that will handle errors when promises are rejected. ' +
+                    '(No need to wrap in try/catch logic!)'
+                ),
+                p('Compare the two functionally equivalent code snippets below.'),
                 codeInput({
                     bind: 'catchMethod',
-                    height: 155,
+                    height: 150,
                     width: 'fill',
                     showFullscreenButton: false,
                     editorProps: {
@@ -144,19 +136,20 @@ const promiseErrorPanel = hoistCmp.factory(
                     },
                     mode: 'javascript'
                 }),
-                filler(),
                 vbox(
                     button({
-                        text: 'Fetch promise with catchDefault()',
-                        minimal: false,
-                        icon: Icon.warningCircle({className: 'xh-red'}),
+                        text: 'Fetch request with catchDefault()',
+                        intent: 'danger',
+                        outlined: true,
+                        width: 250,
                         onClick: () => model.onCatchDefaultClicked()
                     }),
                     button({
-                        text: 'Fetch promise with catchDefaultWhen()',
-                        minimal: false,
-                        icon: Icon.warningCircle({className: 'xh-red'}),
-                        onClick: () => model.onCatchDefaultWhenClicked()
+                        text: 'Fetch request with XH.handleException()',
+                        intent: 'danger',
+                        outlined: true,
+                        width: 250,
+                        onClick: () => model.onHandleExceptionClicked()
                     })
                 )
             ]
@@ -171,8 +164,7 @@ class Model {
     @bindable logOnServer = false;
     @bindable requireReload = false;
     @bindable disabled = false;
-    @bindable catchMethod = `/*\n  Make a bad fetch request to \n  xh.io/badRequest with these methods!\n\n  The 404 error` +
-        ` will appear in a dialog\n  by default, or not shown when specified\n  in the catchDefaultWhen() selector.\n*/`;
+    @bindable catchMethod = this.catchDefault;
 
     disableWhenShowAlertFalse() {
         if (!this.showAlert) {
@@ -206,25 +198,29 @@ class Model {
 
     onCatchDefaultClicked() {
         this.setCatchMethod(this.catchDefault);
-        XH.fetch({url: 'badRequest'}).catchDefault();
+        wait(1000).then(() => XH.fetch({url: 'badRequest'}).catchDefault());
     }
 
-    onCatchDefaultWhenClicked() {
-        this.setCatchMethod(this.catchDefaultWhen);
-        XH.fetch({url: 'badRequest'}).catchDefaultWhen(err => err.httpStatus !== 404);
-        XH.toast({message: 'Error was selectively uncaught. Use Chrome Dev Tools\' console to inspect the error.', position: 'top-center'});
+    async onHandleExceptionClicked() {
+        this.setCatchMethod(this.handleException);
+        try {
+            await wait(1000).then(() => XH.fetch({url: 'badRequest'}));
+        } catch (e) {
+            XH.handleException(e);
+        }
     }
 
-    catchDefault = `function badRequest() {
-    XH.fetch({url: 'badRequest'});
+    catchDefault = `async function badRequest() {
+    await XH.fetch({url: 'badRequest'})
     .catchDefault();
 }`;
 
-    catchDefaultWhen = `function badRequest() {
-    XH.fetch({url: 'badRequest'})
-    .catchDefaultWhen(err => {
-        err.httpStatus !== 404
-    });
+    handleException = `async function badRequest() {
+    try {
+        await XH.fetch({url: 'badRequest'});
+    } catch (err) {
+        XH.handleException(err);
+    }
 }`;
 
     fooBarString = `function fooBar() {

@@ -2,17 +2,40 @@
   > .xh-panel {
     border: var(--xh-border-solid);
     margin: 0 var(--xh-pad-double-px);
-    height: 400px;
+    height: 380px;
     width: 400px;
 
     p {
-      margin: var(--xh-pad-px);
+      margin: var(--xh-pad-px) var(--xh-pad-px);
     }
 
     .xh-button {
       padding: var(--xh-pad-px);
-      margin: var(--xh-pad-px) auto;
-      border: var(--xh-border-solid);
+      align-self: center;
+      margin-bottom: var(--xh-pad-px);
+
+      &:first-child {
+        margin-top: var(--xh-pad-px);
+      }
+    }
+  }
+
+  &__display-opts {
+    .xh-panel-header {
+      color: var(--xh-text-color);
+      background-color: var(--xh-bg-alt);
+    }
+
+    .xh-hframe {
+      padding: var(--xh-pad-half-px);
+
+      .xh-input {
+        margin: var(--xh-pad-half-px);
+      }
+
+      label {
+        margin: 0 var(--xh-pad-half-px);
+      }
     }
   }
 }
