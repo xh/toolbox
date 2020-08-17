@@ -1,7 +1,7 @@
 .tb-preferences {
   > .xh-panel {
     border: var(--xh-border-solid);
-    height: 300px;
+    height: 240px;
     width: 800px;
 
     .xh-vframe {
@@ -36,22 +36,13 @@
       justify-content: center;
 
       .xh-hbox {
+        align-items: center;
         padding: var(--xh-pad-px);
-        justify-content: center;
-        align-content: center;
-        flex: 1 1 auto;
-
-        p {
-          margin: var(--xh-pad-px);
-        }
-
-        &.set-user-icon {
-          flex: 2 1 auto;
-        }
 
         .icon-button-group {
           flex-wrap: wrap;
           justify-content: center;
+          margin-bottom: var(--xh-pad-px);
 
           .xh-button {
             border-radius: var(--xh-border-radius-px);

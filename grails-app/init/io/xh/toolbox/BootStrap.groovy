@@ -163,7 +163,7 @@ class BootStrap {
             ],
             prefExampleColor: [
                     type: 'string',
-                    defaultValue: 'orange',
+                    defaultValue: 'default',
                     local: true,
                     groupName: 'Toolbox',
                     note: 'For use in User Preferences Example'
@@ -175,9 +175,9 @@ class BootStrap {
                     groupName: 'Toolbox',
                     note: 'For use in User Preferences Example'
             ],
-            prefExampleShowBackground: [
-                    type: 'bool',
-                    defaultValue: true,
+            prefExamplePanelState: [
+                    type: 'json',
+                    defaultValue: [:],
                     local: true,
                     groupName: 'Toolbox',
                     note: 'For use in User Preferences Example'
