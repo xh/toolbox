@@ -19,7 +19,7 @@ export class NewsPanelModel {
         store: {
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
             idSpec: XH.genId,
-            filter: this.createFilters()
+            filter: this.createFilter()
         },
         elementRenderer: (v, {record}) => newsPanelItem({record}),
         itemHeight: 120,

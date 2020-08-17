@@ -53,7 +53,7 @@ export class CubeTestModel {
     getQuery() {
         const {dimManagerModel, fundFilter, includeLeaves} = this,
             dimensions = dimManagerModel.value,
-            filters = !isEmpty(fundFilter) ? [{field: 'fund', value: [...fundFilter]}] : null,
+            filters = !isEmpty(fundFilter) ? [{field: 'fund', op: '=', value: fundFilter}] : null,
             includeRoot = this.showSummary;
 
         return {dimensions, filters, includeLeaves, includeRoot};
