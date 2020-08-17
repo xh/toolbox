@@ -1,8 +1,8 @@
 package io.xh.toolbox.data
 
-import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
+import io.xh.hoist.json.JSONParser
 
 @Slf4j
 class SalesService extends BaseService {
@@ -26,7 +26,7 @@ class SalesService extends BaseService {
         def ret = []
         try {
             def mockData = applicationContext.getResource('classpath:MockSalesData.json')
-            ret = new JsonSlurper().parse(mockData.inputStream)
+            ret = JSONParser.parseArray(mockData.inputStream)
 
             ret.each { it ->
                 it.salary = Math.round(it.salary / 100) * 100

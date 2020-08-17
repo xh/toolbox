@@ -18,7 +18,6 @@ import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
 
-
 @HoistAppModel
 export class AppModel {
 
@@ -51,6 +50,10 @@ export class AppModel {
 
     async doLoadAsync(loadSpec) {
         await loadAllAsync([], loadSpec);
+    }
+
+    goHome() {
+        this.tabModel.setActiveTabId('home');
     }
 
     getAppOptions() {
@@ -127,17 +130,19 @@ export class AppModel {
                         name: 'other',
                         path: '/other',
                         children: [
+                            {name: 'appNotifications', path: '/appNotifications'},
+                            {name: 'buttons', path: '/buttons'},
                             {name: 'clock', path: '/clock'},
                             {name: 'dateFormats', path: '/dateFormats'},
+                            {name: 'jsx', path: '/jsx'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'icons', path: '/icons'},
-                            {name: 'jsx', path: '/jsx'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'numberFormats', path: '/numberFormats'},
+                            {name: 'pinPad', path: '/pinPad'},
                             {name: 'popups', path: '/popups'},
-                            {name: 'timestamp', path: '/timestamp'},
-                            {name: 'appNotifications', path: '/appNotifications'},
-                            {name: 'preferences', path: '/preferences'}
+                            {name: 'preferences', path: '/preferences'},
+                            {name: 'timestamp', path: '/timestamp'}
                         ]
                     },
                     {

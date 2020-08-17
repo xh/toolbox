@@ -1,21 +1,12 @@
 import {createRef} from 'react';
-import {localDateCol, boolCheckCol, emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
-import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
-import {fragment, br, vbox, div, hbox, filler} from '@xh/hoist/cmp/layout';
+import {boolCheckCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {
-    fmtNumberTooltip,
-    millionsRenderer,
-    numberRenderer,
-    fmtDate,
-    fmtMillions,
-    fmtNumber
-} from '@xh/hoist/format';
+import {fmtDate, fmtMillions, fmtNumber, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-
 import './SampleGrid.scss';
 
 @HoistModel
@@ -36,7 +27,7 @@ export class SampleGridModel {
 
     terminateAction = {
         text: 'Terminate',
-        icon: Icon.skull(),
+        icon: Icon.skull({className: 'xh-red'}),
         intent: 'danger',
         tooltip: 'Terminate this company.',
         recordsRequired: 1,
@@ -118,14 +109,14 @@ export class SampleGridModel {
         ],
         groupSortFn: (a, b, groupField) => {
             if (a == b) return 0;
-            if (groupField == 'winLose') {
-                return a == 'Winner' ? -1 : 1;
+            if (groupField === 'winLose') {
+                return a === 'Winner' ? -1 : 1;
             } else {
                 return a < b ? -1 : 1;
             }
         },
         colDefaults: {
-            tooltipElement: (v, {record}) => {
+            tooltipElement: (v, {record, gridModel}) => {
                 const {company, city, trade_date, profit_loss, trade_volume} = record.data;
                 return vbox({
                     className: 'sample-grid-tooltip',
@@ -176,8 +167,9 @@ export class SampleGridModel {
             },
             {
                 field: 'company',
-                width: 200,
-                tooltip: true,
+                flex: 2,
+                minWidth: 200,
+                maxWidth: 350,
                 headerName: ({gridModel}) => {
                     let ret = 'Company';
                     if (gridModel.selectedRecord) {
@@ -186,7 +178,8 @@ export class SampleGridModel {
 
                     return ret;
                 },
-                exportName: 'Company'
+                exportName: 'Company',
+                headerTooltip: 'Select a company & continue'
             },
             {
                 field: 'winLose',
@@ -195,14 +188,15 @@ export class SampleGridModel {
             },
             {
                 field: 'city',
-                width: 140,
+                minWidth: 150,
+                maxWidth: 200,
                 tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
                 cellClass: (val) => {
-                    return val == 'New York' ? 'xh-text-color-accent' : '';
+                    return val === 'New York' ? 'xh-text-color-accent' : '';
                 }
             },
             {
-                headerName: 'Volume',
+                headerName: 'Volume (Sales Quantity)',
                 field: 'trade_volume',
                 align: 'right',
                 width: 110,
@@ -238,8 +232,7 @@ export class SampleGridModel {
                 headerName: '',
                 chooserName: 'Active Status',
                 tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
-            },
-            {...emptyFlexCol}
+            }
         ]
     });
 
@@ -248,7 +241,7 @@ export class SampleGridModel {
             gridModel = this.gridModel;
 
         gridModel.loadData(trades, summary);
-        if (gridModel.agGridModel.isReady && !gridModel.hasSelection) gridModel.selectFirst();
+        if (gridModel.isReady && !gridModel.hasSelection) gridModel.selectFirst();
     }
 
     showInfoToast(rec) {

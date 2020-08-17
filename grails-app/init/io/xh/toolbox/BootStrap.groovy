@@ -2,8 +2,6 @@ package io.xh.toolbox
 
 import io.xh.hoist.config.AppConfig
 import io.xh.hoist.util.Utils
-import io.xh.toolbox.roadmap.Project
-import io.xh.toolbox.roadmap.Phase
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
 import io.xh.hoist.monitor.Monitor
@@ -163,19 +161,12 @@ class BootStrap {
                 groupName: 'Toolbox',
                 note: 'True to expand the docked linked panel by default, false to start collapsed.'
             ],
-            mobileDims: [
-                type: 'json',
-                defaultValue: [:],
-                local: true,
-                groupName: 'Toolbox',
-                note: 'Object containing user\'s dimension picker value & history'
-            ],
             prefExampleColor: [
-                type: 'string',
-                defaultValue: 'orange',
-                local: true,
-                groupName: 'Toolbox',
-                note: 'For use in User Preferences Example'
+                    type: 'string',
+                    defaultValue: 'orange',
+                    local: true,
+                    groupName: 'Toolbox',
+                    note: 'For use in User Preferences Example'
             ],
             prefExampleIcon: [
                     type: 'string',
@@ -190,43 +181,6 @@ class BootStrap {
                     local: true,
                     groupName: 'Toolbox',
                     note: 'For use in User Preferences Example'
-            ],
-            portfolioDims: [
-                type: 'json',
-                defaultValue: [
-                        value: ['sector', 'symbol'],
-                        history: [['sector', 'symbol'],
-                                  ['fund', 'trader', 'model'],
-                                  ['region', 'sector']]
-                ],
-                local: true,
-                groupName: 'Toolbox - Example Apps',
-                note: 'Object containing user\'s dimension picker value & history'
-            ],
-            portfolioGridPanelConfig: [
-                type: 'json',
-                defaultValue: [:],
-                local: true,
-                groupName: 'Toolbox - Example Apps'
-            ],
-            portfolioDetailPanelConfig: [
-                type: 'json',
-                defaultValue: [:],
-                local: true,
-                groupName: 'Toolbox - Example Apps'
-            ],
-            portfolioChartsPanelConfig: [
-                type: 'json',
-                defaultValue: [:],
-                local: true,
-                groupName: 'Toolbox - Example Apps'
-            ],
-            recallsPanelConfig: [
-                type: 'json',
-                defaultValue: [:],
-                local: false,
-                groupName: 'Toolbox - Example Apps',
-                note: 'Size of Panel Model'
             ]
         ])
     }

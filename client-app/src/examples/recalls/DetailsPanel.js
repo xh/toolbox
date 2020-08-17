@@ -1,6 +1,5 @@
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {div, table, tbody, tr, th, td} from '@xh/hoist/cmp/layout';
-
+import {div, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {DetailsPanelModel} from './DetailsPanelModel';
 
 export const detailsPanel = hoistCmp.factory({

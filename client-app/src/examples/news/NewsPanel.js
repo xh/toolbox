@@ -1,11 +1,9 @@
 import {filler} from '@xh/hoist/cmp/layout';
-import {storeCountLabel} from '@xh/hoist/cmp/store';
+import {storeCountLabel, storeFilterField} from '@xh/hoist/cmp/store';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {dataView} from '@xh/hoist/cmp/dataview';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/cmp/store';
-
 import {NewsPanelModel} from './NewsPanelModel';
 import './NewsPanelItem.scss';
 
@@ -23,7 +21,7 @@ export const newsPanel = hoistCmp.factory({
             mask: 'onLoad',
             bbar: [
                 storeFilterField({
-                    store: null,
+                    bind: 'storeFilterRaw',
                     onFilterChange: (f) => model.setTextFilter(f),
                     includeFields: model.SEARCH_FIELDS,
                     placeholder: 'Filter by title...'
@@ -46,8 +44,9 @@ export const newsPanel = hoistCmp.factory({
     }
 });
 
-function onRowDoubleClicked(e) {
-    if (e.data.data.url) {
-        window.open(e.data.data.url, '_blank');
+function onRowDoubleClicked({data: record}) {
+    const url = record.get('url');
+    if (url) {
+        window.open(url, '_blank');
     }
 }

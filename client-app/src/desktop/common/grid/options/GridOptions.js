@@ -5,7 +5,6 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {sample} from 'lodash';
-
 import {agGridOptions} from './AgGridOptions';
 
 export const gridOptions = hoistCmp.factory({

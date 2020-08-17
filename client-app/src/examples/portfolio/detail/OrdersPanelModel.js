@@ -1,9 +1,9 @@
-import {HoistModel, XH, LoadSupport, managed} from '@xh/hoist/core';
-import {GridModel} from '@xh/hoist/cmp/grid';
-import {emptyFlexCol, dateTimeCol} from '@xh/hoist/cmp/grid';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {dateTimeCol, GridModel} from '@xh/hoist/cmp/grid';
 import {numberRenderer} from '@xh/hoist/format';
 import {isNil} from 'lodash';
 import {bindable} from '@xh/hoist/mobx';
+import {PERSIST_DETAIL} from '../AppModel';
 
 @HoistModel
 @LoadSupport
@@ -28,7 +28,7 @@ export class OrdersPanelModel {
         rowBorders: true,
         showHover: true,
         sizingMode: XH.appModel.gridSizingMode,
-        stateModel: 'portfolio-orders-grid',
+        persistWith: {...PERSIST_DETAIL, path: 'ordersGrid'},
         columns: [
             {
                 field: 'symbol',
@@ -97,8 +97,7 @@ export class OrdersPanelModel {
                 headerName: 'Exec Time',
                 ...dateTimeCol,
                 align: 'left'
-            },
-            {...emptyFlexCol}
+            }
         ]
     });
 

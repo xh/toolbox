@@ -1,11 +1,10 @@
-import {XH, hoistCmp, creates} from '@xh/hoist/core';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {select} from '@xh/hoist/mobile/cmp/input';
-import {div, hframe, filler, frame} from '@xh/hoist/cmp/layout';
+import {div, filler, frame, hframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
-
 import {ToolbarPageModel} from './ToolbarPageModel';
 
 export const toolbarPage = hoistCmp.factory({
@@ -13,7 +12,7 @@ export const toolbarPage = hoistCmp.factory({
     model: creates(ToolbarPageModel),
 
     render({model}) {
-        return page({
+        return panel({
             className: 'toolbox-toolbar-page',
             items: [
                 div({

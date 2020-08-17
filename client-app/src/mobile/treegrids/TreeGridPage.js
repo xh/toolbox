@@ -1,18 +1,17 @@
-import {XH, hoistCmp, creates} from '@xh/hoist/core';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {dimensionChooser} from '@xh/hoist/mobile/cmp/dimensionchooser';
-import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
+import {colAutosizeButton, colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-
 import {TreeGridPageModel} from './TreeGridPageModel';
 
 export const treeGridPage = hoistCmp.factory({
     model: creates(TreeGridPageModel),
 
     render() {
-        return page({
+        return panel({
             title: 'Tree Grids',
             icon: Icon.grid(),
             mask: 'onLoad',
@@ -25,6 +24,7 @@ export const treeGridPage = hoistCmp.factory({
             bbar: [
                 dimensionChooser(),
                 filler(),
+                colAutosizeButton(),
                 colChooserButton()
             ]
         });

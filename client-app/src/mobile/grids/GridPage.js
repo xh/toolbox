@@ -1,14 +1,12 @@
-import {XH, hoistCmp, creates} from '@xh/hoist/core';
-
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
+import {colAutosizeButton, colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {label, select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-
 import {GridPageModel} from './GridPageModel';
 
 export const gridPage = hoistCmp.factory({
@@ -17,7 +15,7 @@ export const gridPage = hoistCmp.factory({
 
     render({model}) {
         const {gridModel} = model;
-        return page({
+        return panel({
             title: 'Grids',
             icon: Icon.gridPanel(),
             mask: 'onLoad',
@@ -60,6 +58,7 @@ export const gridPage = hoistCmp.factory({
             bbar: [
                 storeFilterField(),
                 filler(),
+                colAutosizeButton(),
                 colChooserButton()
             ]
         });

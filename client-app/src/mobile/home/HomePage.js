@@ -1,12 +1,12 @@
-import {XH, hoistCmp} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
 export const homePage = hoistCmp.factory({
     render() {
-        return page({
+        return panel({
             scrollable: true,
             className: 'toolbox-page xh-tiled-bg',
             items: [

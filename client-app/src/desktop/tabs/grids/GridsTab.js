@@ -1,6 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-
 import {standardGridPanel} from './StandardGridPanel';
 import {columnGroupsGridPanel} from './ColumnGroupsGridPanel';
 import {restGridPanel} from './RestGridPanel';
