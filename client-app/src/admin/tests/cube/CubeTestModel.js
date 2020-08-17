@@ -19,7 +19,7 @@ export class CubeTestModel {
     @managed loadTimesModel;
 
     @bindable includeLeaves = false;
-    @bindable fundFilter = null;
+    @bindable.ref fundFilter = null;
     @bindable showSummary = false;
     @bindable updateFreq = -1;
     @bindable updateCount = 5;
