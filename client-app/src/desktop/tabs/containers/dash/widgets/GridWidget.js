@@ -1,14 +1,12 @@
-import {hoistCmp, useLocalModel, HoistModel, LoadSupport, managed} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, LoadSupport, managed, useLocalModel, XH} from '@xh/hoist/core';
+import {grid} from '@xh/hoist/cmp/grid';
+import {boolCheckCol,  GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 
-import {sampleGrid, SampleGridModel} from '../../../../common';
-
-export const GridWidget = hoistCmp({
+export const gridWidget = hoistCmp.factory({
     render({viewModel}) {
         const model = useLocalModel(() => new LocalModel(viewModel));
-        return sampleGrid({
-            model: model.sampleGridModel,
-            omitGridTools: true
-        });
+        return grid({model: model.gridModel});
     }
 });
 
@@ -17,28 +15,84 @@ export const GridWidget = hoistCmp({
 class LocalModel {
 
     viewModel;
-    @managed sampleGridModel = new SampleGridModel();
+    @managed gridModel;
 
     constructor(viewModel) {
         this.viewModel = viewModel;
-        const {columnState, sortBy, groupBy} = viewModel.viewState ?? {},
-            {gridModel} = this.sampleGridModel;
 
-        if (columnState) gridModel.applyColumnStateChanges(columnState);
-        if (sortBy) gridModel.setSortBy(sortBy);
-        if (groupBy) gridModel.setGroupBy(groupBy);
-
-        this.addReaction({
-            track: () => {
-                const {columnState, groupBy, sortBy} = gridModel;
-                return {columnState, groupBy, sortBy};
+        this.gridModel = new GridModel({
+            sortBy: 'profit_loss|desc|abs',
+            enableColChooser: true,
+            sizingMode: XH.appModel.gridSizingMode,
+            store: {
+                fields: [{name: 'trade_date', type: 'localDate'}]
             },
-            run: (viewState) => this.viewModel.setViewState(viewState)
+            persistWith: {dashViewModel: viewModel},
+            columns: [
+                {
+                    field: 'id',
+                    headerName: 'ID',
+                    hidden: true
+                },
+                {
+                    field: 'company',
+                    flex: 2,
+                    minWidth: 200,
+                    maxWidth: 350,
+                    exportName: 'Company'
+                },
+                {
+                    field: 'winLose',
+                    hidden: true,
+                    excludeFromChooser: true
+                },
+                {
+                    field: 'city',
+                    minWidth: 150,
+                    maxWidth: 200
+                },
+                {
+                    headerName: 'Volume',
+                    field: 'trade_volume',
+                    align: 'right',
+                    width: 110,
+                    tooltip: (val) => fmtNumberTooltip(val),
+                    renderer: millionsRenderer({
+                        precision: 1,
+                        label: true
+                    })
+                },
+                {
+                    headerName: 'P&L',
+                    field: 'profit_loss',
+                    align: 'right',
+                    width: 130,
+                    absSort: true,
+                    renderer: numberRenderer({
+                        precision: 0,
+                        ledger: true,
+                        colorSpec: true
+                    })
+                },
+                {
+                    headerName: 'Date',
+                    field: 'trade_date',
+                    ...localDateCol
+                },
+                {
+                    field: 'active',
+                    ...boolCheckCol,
+                    headerName: '',
+                    chooserName: 'Active Status'
+                }
+            ]
         });
+
     }
 
     async doLoadAsync(loadSpec) {
-        return this.sampleGridModel.loadAsync(loadSpec);
-    }
+        const {trades} = await XH.fetchJson({url: 'trade'});
 
+        this.gridModel.loadData(trades);
+    }
 }

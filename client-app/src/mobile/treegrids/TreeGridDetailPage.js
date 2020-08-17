@@ -1,6 +1,6 @@
 import {hoistCmp, HoistModel, LoadSupport, useLocalModel, XH} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
 import {capitalize} from 'lodash';
 import {Icon} from '@xh/hoist/icon';
@@ -12,7 +12,7 @@ export const treeGridDetailPage = hoistCmp.factory({
         impl.setId(decodeURIComponent(id));
         const {position} = impl;
         
-        return page({
+        return panel({
             title: position ? renderPageTitle(position) : null,
             icon: Icon.portfolio(),
             mask: impl.loadModel,

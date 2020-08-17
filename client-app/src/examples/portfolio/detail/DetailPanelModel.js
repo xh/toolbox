@@ -1,8 +1,10 @@
-import {HoistModel, LoadSupport, managed, loadAllAsync} from '@xh/hoist/core';
+import {HoistModel, loadAllAsync, LoadSupport, managed} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {OrdersPanelModel} from './OrdersPanelModel';
 import {ChartsPanelModel} from './ChartsPanelModel';
+import {PERSIST_DETAIL} from '../AppModel';
+
 
 @HoistModel
 @LoadSupport
@@ -17,8 +19,8 @@ export class DetailPanelModel {
         minSize: 250,
         maxSize: 500,
         side: 'bottom',
-        collapsedRenderMode: 'unmountOnHide',
-        prefName: 'portfolioDetailPanelConfig'
+        renderMode: 'unmountOnHide',
+        persistWith: PERSIST_DETAIL
     });
 
     constructor() {

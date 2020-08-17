@@ -1,7 +1,5 @@
-import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
-import {timeCol} from '@xh/hoist/cmp/grid/columns';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {LoadSupport} from '@xh/hoist/core/mixins';
+import {GridModel, timeCol} from '@xh/hoist/cmp/grid';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer} from '@xh/hoist/mobx';
 import {start} from '@xh/hoist/promise';
@@ -175,8 +173,7 @@ export class CubeTestModel {
                 {
                     field: 'time',
                     ...timeCol
-                },
-                {...emptyFlexCol}
+                }
             ]
         });
     }

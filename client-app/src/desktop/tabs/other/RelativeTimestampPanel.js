@@ -5,7 +5,7 @@ import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {observable, action} from '@xh/hoist/mobx';
+import {action, observable, bindable} from '@xh/hoist/mobx';
 import {random, sample} from 'lodash';
 import moment from 'moment';
 import {wrapper} from '../../common/Wrapper';
@@ -42,7 +42,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                         })
                     }),
                     box({
-                        margin: 10,
+                        margin: '10 10 40 10',
                         style: {opacity: 0.5},
                         item: new Date(model.timestamp).toString()
                     })
@@ -89,7 +89,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
 class Model {
     @observable prefix = 'Refreshed';
     @observable timestamp = Date.now();
-    @observable useShortFmt = false;
+    @bindable useShortFmt = false;
 
     @action
     setToNow() {

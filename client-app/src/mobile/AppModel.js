@@ -4,14 +4,12 @@
  *
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
-import {XH, HoistAppModel, managed, loadAllAsync} from '@xh/hoist/core';
+import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
 import {required} from '@xh/hoist/cmp/form';
 import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
-
 import {PortfolioService} from '../core/svc/PortfolioService';
-
 import {homePage} from './home/HomePage';
 import {gridPage} from './grids/GridPage';
 import {gridDetailPage} from './grids/GridDetailPage';
@@ -33,7 +31,7 @@ export class AppModel {
 
     @managed
     navigatorModel = new NavigatorModel({
-        routes: [
+        pages: [
             {id: 'default', content: homePage},
             {id: 'grids', content: gridPage},
             {id: 'gridDetail', content: gridDetailPage},

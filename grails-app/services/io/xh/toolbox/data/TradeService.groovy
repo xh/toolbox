@@ -1,8 +1,8 @@
 package io.xh.toolbox.data
 
-import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
+import io.xh.hoist.json.JSONParser
 
 import java.time.LocalDate
 
@@ -28,7 +28,7 @@ class TradeService extends BaseService {
         def ret = [:]
         try {
             def mockData = applicationContext.getResource('classpath:MockTradesData.json'),
-                trades = new JsonSlurper().parse(mockData.inputStream),
+                trades = JSONParser.parseArray(mockData.inputStream),
                 dateRange = 30
 
             trades.each {it ->

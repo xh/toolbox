@@ -1,12 +1,11 @@
 import React from 'react';
-import {XH, HoistModel, hoistCmp, creates, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {box, br, hbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
-import {wrapper, sampleGrid, SampleGridModel} from '../../common';
-import {LoadSupport} from '@xh/hoist/core/mixins';
+import {sampleGrid, wrapper} from '../../common';
 
 export const dockContainerPanel = hoistCmp.factory({
     model: creates(() => new Model()),
@@ -87,13 +86,10 @@ const btnCfg = {
 };
 
 @HoistModel
-@LoadSupport
 class Model {
 
     @managed
     dockContainerModel = new DockContainerModel();
-    @managed
-    sampleGridModel = new SampleGridModel();
 
     addView(...args) {
         this.dockContainerModel.addView(...args);
@@ -114,17 +110,15 @@ class Model {
             id: XH.genId(),
             icon: Icon.window(),
             title: 'A simple docked panel',
+            width: 300,
+            height: 150,
+            collapsedWidth: 200,
             allowDialog,
             allowClose,
-            content: () => panel({
-                width: 250,
-                height: 120,
-                item: box({items: textItems, padding: 10})
-            })
+            content: () => panel(
+                box({items: textItems, padding: 10})
+            )
         });
     }
 
-    async doLoadAsync(loadSpec) {
-        await this.sampleGridModel.loadAsync(loadSpec);
-    }
 }

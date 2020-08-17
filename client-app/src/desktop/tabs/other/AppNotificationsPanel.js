@@ -1,19 +1,19 @@
-import {box, p, filler} from '@xh/hoist/cmp/layout';
-import {hoistCmp} from '@xh/hoist/core';
+import {box, filler, p} from '@xh/hoist/cmp/layout';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../common/Wrapper';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {XH} from '@xh/hoist/core';
+
 import './AppNotificationsPanel.scss';
+import {wrapper} from '../../common/Wrapper';
 
 export const appNotificationsPanel = hoistCmp.factory(
     () => wrapper({
         links: [
             {url: '$HR/svc/EnvironmentService.js', notes: 'EnvironmentService checks for updated versions and alerts after a new release, if enabled.'},
             {url: '$HR/desktop/appcontainer/UpdateBar.js', notes: 'UpdateBar Component'},
-            {url: '$HR/svc/IdleService.js', notes: 'Idle Service listens for user interactions and triggers the IdleDialog, if enabled.'},
-            {url: '$HR/desktop/appcontainer/IdleDialog.js', notes: 'IdleDialog Component'}
+            {url: '$HR/svc/IdleService.js', notes: 'Idle Service listens for user interactions and triggers the IdlePanel, if enabled.'},
+            {url: '$HR/desktop/appcontainer/IdlePanel.js', notes: 'IdlePanel Component'}
         ],
         item: box({
             className: 'tb-app-notifications',

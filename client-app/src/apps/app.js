@@ -1,3 +1,5 @@
+import '../Bootstrap';
+
 import {XH} from '@xh/hoist/core';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 import {guestUserLoginMsg} from '../core/guestUserLoginMsg';
@@ -10,10 +12,9 @@ XH.renderApp({
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,
-    isMobile: false,
+    isMobileApp: false,
     isSSO: false,
     webSocketsEnabled: true,
-    idleDetectionEnabled: true,
     checkAccess: 'APP_READER',
     loginMessage: guestUserLoginMsg
 });
