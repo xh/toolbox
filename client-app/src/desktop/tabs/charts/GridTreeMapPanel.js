@@ -12,7 +12,7 @@ export const gridTreeMapPanel = hoistCmp.factory({
     render() {
         return panel({
             mask: 'onLoad',
-            bbar: [dimensionChooser()],
+            tbar: [dimensionChooser()],
             items: hframe(
                 panel({
                     model: {defaultSize: 480, side: 'left'},
