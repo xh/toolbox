@@ -35,6 +35,10 @@ const modelSpec = {
                 required: true
             },
             {
+                name: 'phaseOrder',
+                editable: false
+            },
+            {
                 name: 'phaseName',
                 required: true,
                 lookupName: 'phases',
@@ -74,8 +78,15 @@ const modelSpec = {
     },
     unit: 'project',
     filterFields: ['name', 'status', 'category'],
-    sortBy: 'sortOrder',
-    groupBy: 'phaseName',
+    sortBy: ['phaseOrder', 'sortOrder'],
+    groupBy: 'phaseOrder',
+    groupSortFn: (a, b) => {
+        return parseInt(a, 10) >= parseInt(b, 10) ? 1 : -1;
+    },
+    groupRowRenderer: ({node}) => {
+        const projectRec = node.allLeafChildren[0].data;
+        return projectRec.data.phaseName;
+    },
     columns: [
         {
             field: 'sortOrder',
@@ -100,7 +111,10 @@ const modelSpec = {
         },
         {
             field: 'phaseName',
-            width: 100,
+            hidden: true
+        },
+        {
+            field: 'phaseOrder',
             hidden: true
         },
         {

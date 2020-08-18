@@ -26,6 +26,8 @@ export class RoadmapModel {
         groupBy: 'sortedPhase',
         groupRowHeight: 32,
         groupSortFn: (a, b) => {
+            a = parseInt(a, 10);
+            b = parseInt(b, 10);
             if (this.statusFilter === 'showUpcoming') {
                 return a >= b ? 1 : -1;
             } else {
