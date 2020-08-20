@@ -97,9 +97,21 @@ export class SampleGridModel {
             },
             fields: [
                 {
+                    name: 'profit_loss',
+                    displayName: 'P&L',
+                    type: 'number'
+                },
+                {
                     name: 'trade_date',
+                    displayName: 'Date',
                     type: 'localDate'
-                }]
+                },
+                {
+                    name: 'trade_volume',
+                    headerName: 'Volume (Sales Quantity)',
+                    type: 'number'
+                }
+            ]
         },
         contextMenu: [
             this.viewDetailsAction,
@@ -153,7 +165,6 @@ export class SampleGridModel {
         columns: [
             {
                 field: 'id',
-                headerName: 'ID',
                 hidden: true
             },
             {
@@ -196,9 +207,7 @@ export class SampleGridModel {
                 }
             },
             {
-                headerName: 'Volume (Sales Quantity)',
                 field: 'trade_volume',
-                align: 'right',
                 width: 110,
                 tooltip: (val) => fmtNumberTooltip(val),
                 renderer: millionsRenderer({
@@ -208,9 +217,7 @@ export class SampleGridModel {
                 exportFormat: ExportFormat.NUM_DELIMITED
             },
             {
-                headerName: 'P&L',
                 field: 'profit_loss',
-                align: 'right',
                 width: 130,
                 absSort: true,
                 tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
@@ -222,7 +229,6 @@ export class SampleGridModel {
                 exportFormat: ExportFormat.LEDGER_COLOR
             },
             {
-                headerName: 'Date',
                 field: 'trade_date',
                 ...localDateCol
             },
