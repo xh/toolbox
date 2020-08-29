@@ -22,14 +22,19 @@ export class OHLCChartModel {
     
     async doLoadAsync(loadSpec) {
         if (!this.symbols) {
-            let symbols = await XH.portfolioService.getSymbolsAsync();
+            let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
             symbols = symbols.slice(0, this.numCompanies);
             this.setSymbols(symbols);
         }
+
         if (!this.currentSymbol) {
             this.setCurrentSymbol(this.symbols[0]);
         }
-        let series = await XH.portfolioService.getOHLCChartSeriesAsync(this.currentSymbol);
+
+        let series = await XH.portfolioService.getOHLCChartSeriesAsync({
+            symbol: this.currentSymbol,
+            loadSpec
+        }).catchDefault() ?? {};
 
         const groupPixelWidth = 5;
         Object.assign(series, {
