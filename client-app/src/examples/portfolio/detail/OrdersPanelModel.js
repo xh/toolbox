@@ -75,12 +75,8 @@ export class OrdersPanelModel {
         });
 
         this.filterChooserModel = new FilterChooserModel({
-            store: this.gridModel.store
-        });
-
-        this.addReaction({
-            track: () => this.filterChooserModel.value,
-            run: (filter) => this.gridModel.store.setFilter(filter)
+            sourceStore: this.gridModel.store,
+            targetStore: this.gridModel.store
         });
 
         this.addReaction({
