@@ -29,14 +29,14 @@
     "@ag-grid-community/react": "~23.2.0",
     "@ag-grid-enterprise/all-modules": "~23.2.0",
     "@fortawesome/free-brands-svg-icons": "~5.14.0",
-    "@xh/hoist": "^36.0.0-SNAPSHOT",
-    "highcharts": "~8.1.1",
+    "@xh/hoist": "^37.0.0-SNAPSHOT",
+    "highcharts": "~8.2.0",
     "react": "~16.13.1",
     "react-dom": "~16.13.1",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "^6.0.0-SNAPSHOT",
+    "@xh/hoist-dev-utils": "~5.3.0",
     "cross-env": "~7.0.2",
     "husky": "~4.2.1",
     "lint-staged": "~10.2.10",
