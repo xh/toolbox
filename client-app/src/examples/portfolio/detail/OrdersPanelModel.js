@@ -76,7 +76,21 @@ export class OrdersPanelModel {
 
         this.filterChooserModel = new FilterChooserModel({
             sourceStore: this.gridModel.store,
-            targetStore: this.gridModel.store
+            targetStore: this.gridModel.store,
+            fieldSpecs: [
+                'symbol',
+                'trader',
+                'fund',
+                'model',
+                'region',
+                {
+                    field: 'dir',
+                    forceSelection: true,
+                    values: ['Buy', 'Sell']
+                },
+                'quantity',
+                'price'
+            ]
         });
 
         this.addReaction({
