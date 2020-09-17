@@ -17,6 +17,7 @@ import {gridsTab} from './tabs/grids/GridsTab';
 import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
+import {bindable} from '@xh/hoist/mobx';
 
 @HoistAppModel
 export class AppModel {
@@ -152,4 +153,21 @@ export class AppModel {
             }
         ];
     }
+
+    @bindable
+    globalSearchSelection;
+
+    get globalSearchOptions() {
+        const toLabel = str => str.replace('default.', '')
+            .replace('.', ' > ');
+        
+        return XH.routerModel.getRouteNames(XH.routerModel.router.rootNode)
+            .filter(it => it.split('.').length > 2)
+            .map(it => ({value: it, label: toLabel(it)}));
+    }
+
+    forwardToTopic(val) {
+        if (val) XH.navigate(val);
+    }
+
 }

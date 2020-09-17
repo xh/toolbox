@@ -6,6 +6,8 @@ import {tabSwitcher} from '@xh/hoist/desktop/cmp/tab';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
 import {AppModel} from './AppModel';
+import {select} from '@xh/hoist/desktop/cmp/input';
+import {Icon} from '@xh/hoist/icon';
 import xhLogo from '../core/img/xh-toolbox-logo.png';
 import '../core/Toolbox.scss';
 import './App.scss';
@@ -23,6 +25,16 @@ export const App = hoistCmp({
                     tabSwitcher()
                 ],
                 rightItems: [
+                    select({
+                        width: 300,
+                        leftIcon: Icon.search(), 
+                        bind: 'globalSearchSelection', 
+                        options: model.globalSearchOptions,
+                        placeholder: 'Search for a component...',
+                        hideDropdownIndicator: true,
+                        enableClear: true,
+                        onChange: (val) => model.forwardToTopic(val)
+                    }),
                     webSocketIndicator({iconOnly: true, marginRight: 4}),
                     appBarSeparator()
                 ],
