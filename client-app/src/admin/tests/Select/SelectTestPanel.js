@@ -44,32 +44,14 @@ export const SelectTestPanel = hoistCmp({
                         name: 'Select (with grouped options)',
                         bind: 'groupedValue',
                         selectProps: {
-                            options: [
-                                {label: 'cookies', options: [
-                                    'oatmeal',
-                                    'chocolate chip',
-                                    'peanut butter'
-                                ]},
-                                {label: 'cakes', options: [
-                                    'red velvet', 'tres leches', 'German\'s chocolate', 'cheesecake'
-                                ]},
-                                {label: 'ice cream', options: [
-                                    'vanilla', 'chocolate', 'strawberry'
-                                ]}
-                            ]
+                            options: desserts
                         }
                     }),
                     example({
                         name: 'Select (with Object options)',
                         bind: 'objectValue',
                         selectProps: {
-                            options: [
-                                {label: 'Hot Tea', value: {ingredients: ['water', 'tea leaves'], warnings: ['hot'], price: 1.75}},
-                                {label: 'Iced Tea', value: {ingredients: ['water', 'tea leaves', 'ice', 'lemon'], price: 2.50}},
-                                {label: 'Coffee', value: {ingredients: ['coffee beans', 'water'], warnings: ['addictive', 'hot'], price: 3.25}},
-                                {label: 'Soda', value: {ingredients: 'unknown', warnings: ['sweet', 'acidic'], price: 1.50}},
-                                {label: 'Red Wine', value: {ingredients: ['grapes', 'water', 'yeast', 'time'], warnings: ['alcoholic', 'staining'], needId: true, price: 6.75}}
-                            ]
+                            options: recipes
                         }
                     }),
                     example({
@@ -92,14 +74,7 @@ export const SelectTestPanel = hoistCmp({
                         selectProps: {
                             leftIcon: Icon.search(),
                             hideDropdownIndicator: true,
-                            // options: ['test', 'fail']
-                            options: [
-                                {label: 'Hot Tea', value: {ingredients: ['water', 'tea leaves'], warnings: ['hot'], price: 1.75}},
-                                {label: 'Iced Tea', value: {ingredients: ['water', 'tea leaves', 'ice', 'lemon'], price: 2.50}},
-                                {label: 'Coffee', value: {ingredients: ['coffee beans', 'water'], warnings: ['addictive', 'hot'], price: 3.25}},
-                                {label: 'Soda', value: {ingredients: 'unknown', warnings: ['sweet', 'acidic'], price: 1.50}},
-                                {label: 'Red Wine', value: {ingredients: ['grapes', 'water', 'yeast', 'time'], warnings: ['alcoholic', 'staining'], needId: true, price: 6.75}}
-                            ]
+                            options: recipes
                         }
                     }),
                     example({
@@ -171,3 +146,25 @@ function queryCustomersAsync(query) {
         params: {query}
     });
 }
+
+const recipes = [
+    {label: 'Hot Tea', value: {ingredients: ['water', 'tea leaves'], warnings: ['hot'], price: 1.75}},
+    {label: 'Iced Tea', value: {ingredients: ['water', 'tea leaves', 'ice', 'lemon'], price: 2.50}},
+    {label: 'Coffee', value: {ingredients: ['coffee beans', 'water'], warnings: ['addictive', 'hot'], price: 3.25}},
+    {label: 'Soda', value: {ingredients: 'unknown', warnings: ['sweet', 'acidic'], price: 1.50}},
+    {label: 'Red Wine', value: {ingredients: ['grapes', 'water', 'yeast', 'time'], warnings: ['alcoholic', 'staining'], needId: true, price: 6.75}}
+];
+
+const desserts = [
+    {label: 'cookies', options: [
+        'oatmeal',
+        'chocolate chip',
+        'peanut butter'
+    ]},
+    {label: 'cakes', options: [
+        'red velvet', 'tres leches', 'German\'s chocolate', 'cheesecake'
+    ]},
+    {label: 'ice cream', options: [
+        'vanilla', 'chocolate', 'strawberry'
+    ]}
+];
