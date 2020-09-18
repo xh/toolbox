@@ -1,5 +1,5 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
-import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {hspacer} from '@xh/hoist/cmp/layout';
@@ -12,12 +12,15 @@ export class SplitTreeMapPanelModel {
 
     @managed
     dimChooserModel = new DimensionChooserModel({
-        dimensions: [
-            {value: 'region', label: 'Region'},
-            {value: 'sector', label: 'Sector'},
-            {value: 'symbol', label: 'Symbol'}
-        ],
-        initialValue: ['sector', 'symbol']
+        dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],
+        initialValue: ['sector', 'symbol'],
+        initialHistory: [
+            ['sector', 'symbol'],
+            ['region', 'sector', 'symbol'],
+            ['region', 'symbol'],
+            ['sector'],
+            ['symbol']
+        ]
     });
 
     @managed
@@ -68,8 +71,7 @@ export class SplitTreeMapPanelModel {
                     ledger: true,
                     colorSpec: true
                 })
-            },
-            {...emptyFlexCol}
+            }
         ]
     });
 

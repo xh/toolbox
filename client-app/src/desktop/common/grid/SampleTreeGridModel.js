@@ -18,16 +18,17 @@ import {createRef} from 'react';
 export class SampleTreeGridModel {
 
     @bindable
-    filterIncludeChildren = false;
+    filterIncludesChildren = false;
 
     @managed
     dimChooserModel = new DimensionChooserModel({
-        dimensions: [
-            {value: 'region', label: 'Region'},
-            {value: 'sector', label: 'Sector'},
-            {value: 'symbol', label: 'Symbol'}
-        ],
-        initialValue: ['sector', 'symbol']
+        dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],
+        initialValue: ['sector', 'symbol'],
+        initialHistory: [
+            ['region', 'sector'],
+            ['region', 'symbol'],
+            ['sector']
+        ]
     });
 
     @managed
@@ -39,6 +40,11 @@ export class SampleTreeGridModel {
 
     constructor({includeCheckboxes}) {
         this.gridModel = this.createGridModel(includeCheckboxes);
+
+        this.addReaction({
+            track: () => this.filterIncludesChildren,
+            run: (val) => this.gridModel.store.setFilterIncludesChildren(val)
+        });
 
         // Load data when dimensions change
         this.addReaction({

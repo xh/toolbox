@@ -5,7 +5,7 @@ import {select} from '@xh/hoist/desktop/cmp/input';
 import {chart} from '@xh/hoist/cmp/chart';
 import {LineChartModel} from '../../../charts/LineChartModel';
 
-export const ChartWidget = hoistCmp({
+export const chartWidget = hoistCmp.factory({
     model: creates(LineChartModel),
     render({model}) {
         return panel({

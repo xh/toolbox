@@ -4,7 +4,7 @@
  *
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
-import {boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
+import {boolCheckCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
@@ -106,7 +106,7 @@ class Model {
         };
 
         return new GridModel({
-            stateModel: 'toolboxGroupGrid',
+            persistWith: {localStorageKey: 'toolboxGroupGrid'},
             store: {
                 idSpec: data => `${data.firstName}~${data.lastName}~${data.city}~${data.state}`
             },
@@ -114,7 +114,7 @@ class Model {
             emptyText: 'No records found...',
             enableColChooser: true,
             enableExport: true,
-            compact: true,
+            sizingMode: XH.appModel.gridSizingMode,
             contextMenu: () => {
                 return new StoreContextMenu({
                     items: [
@@ -235,8 +235,7 @@ class Model {
                     field: 'retain',
                     ...boolCheckCol,
                     width: 70
-                },
-                {...emptyFlexCol}
+                }
             ]
         });
     }

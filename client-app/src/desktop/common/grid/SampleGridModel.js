@@ -1,5 +1,5 @@
 import {createRef} from 'react';
-import {boolCheckCol, emptyFlexCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {boolCheckCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
@@ -97,9 +97,21 @@ export class SampleGridModel {
             },
             fields: [
                 {
+                    name: 'profit_loss',
+                    displayName: 'P&L',
+                    type: 'number'
+                },
+                {
                     name: 'trade_date',
+                    displayName: 'Date',
                     type: 'localDate'
-                }]
+                },
+                {
+                    name: 'trade_volume',
+                    headerName: 'Volume (Sales Quantity)',
+                    type: 'number'
+                }
+            ]
         },
         contextMenu: [
             this.viewDetailsAction,
@@ -109,14 +121,14 @@ export class SampleGridModel {
         ],
         groupSortFn: (a, b, groupField) => {
             if (a == b) return 0;
-            if (groupField == 'winLose') {
-                return a == 'Winner' ? -1 : 1;
+            if (groupField === 'winLose') {
+                return a === 'Winner' ? -1 : 1;
             } else {
                 return a < b ? -1 : 1;
             }
         },
         colDefaults: {
-            tooltipElement: (v, {record}) => {
+            tooltipElement: (v, {record, gridModel}) => {
                 const {company, city, trade_date, profit_loss, trade_volume} = record.data;
                 return vbox({
                     className: 'sample-grid-tooltip',
@@ -153,7 +165,6 @@ export class SampleGridModel {
         columns: [
             {
                 field: 'id',
-                headerName: 'ID',
                 hidden: true
             },
             {
@@ -170,7 +181,6 @@ export class SampleGridModel {
                 flex: 2,
                 minWidth: 200,
                 maxWidth: 350,
-                tooltip: true,
                 headerName: ({gridModel}) => {
                     let ret = 'Company';
                     if (gridModel.selectedRecord) {
@@ -179,7 +189,8 @@ export class SampleGridModel {
 
                     return ret;
                 },
-                exportName: 'Company'
+                exportName: 'Company',
+                headerTooltip: 'Select a company & continue'
             },
             {
                 field: 'winLose',
@@ -188,18 +199,15 @@ export class SampleGridModel {
             },
             {
                 field: 'city',
-                flex: 1,
-                minWidth: 110,
-                maxWidth: 175,
+                minWidth: 150,
+                maxWidth: 200,
                 tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
                 cellClass: (val) => {
-                    return val == 'New York' ? 'xh-text-color-accent' : '';
+                    return val === 'New York' ? 'xh-text-color-accent' : '';
                 }
             },
             {
-                headerName: 'Volume',
                 field: 'trade_volume',
-                align: 'right',
                 width: 110,
                 tooltip: (val) => fmtNumberTooltip(val),
                 renderer: millionsRenderer({
@@ -209,9 +217,7 @@ export class SampleGridModel {
                 exportFormat: ExportFormat.NUM_DELIMITED
             },
             {
-                headerName: 'P&L',
                 field: 'profit_loss',
-                align: 'right',
                 width: 130,
                 absSort: true,
                 tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
@@ -223,7 +229,6 @@ export class SampleGridModel {
                 exportFormat: ExportFormat.LEDGER_COLOR
             },
             {
-                headerName: 'Date',
                 field: 'trade_date',
                 ...localDateCol
             },
@@ -233,8 +238,7 @@ export class SampleGridModel {
                 headerName: '',
                 chooserName: 'Active Status',
                 tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
-            },
-            {...emptyFlexCol}
+            }
         ]
     });
 

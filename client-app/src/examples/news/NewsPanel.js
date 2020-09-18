@@ -21,14 +21,13 @@ export const newsPanel = hoistCmp.factory({
             mask: 'onLoad',
             bbar: [
                 storeFilterField({
-                    store: null,
                     bind: 'storeFilterRaw',
                     onFilterChange: (f) => model.setTextFilter(f),
                     includeFields: model.SEARCH_FIELDS,
                     placeholder: 'Filter by title...'
                 }),
                 select({
-                    bind: 'sourceFilter',
+                    bind: 'sourceFilterValues',
                     options: model.sourceOptions,
                     enableMulti: true,
                     placeholder: 'Filter by source...',
@@ -45,8 +44,9 @@ export const newsPanel = hoistCmp.factory({
     }
 });
 
-function onRowDoubleClicked(e) {
-    if (e.data.data.url) {
-        window.open(e.data.data.url, '_blank');
+function onRowDoubleClicked({data: record}) {
+    const url = record.get('url');
+    if (url) {
+        window.open(url, '_blank');
     }
 }

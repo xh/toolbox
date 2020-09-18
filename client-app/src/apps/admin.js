@@ -1,3 +1,5 @@
+import '../Bootstrap';
+
 import {XH} from '@xh/hoist/core';
 import {App} from '@xh/hoist/admin/App';
 import {AppModel} from '../admin/AppModel';
@@ -9,7 +11,7 @@ XH.renderApp({
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,
-    isMobile: false,
+    isMobileApp: false,
     isSSO: false,
     webSocketsEnabled: true,
     checkAccess: 'HOIST_ADMIN',
