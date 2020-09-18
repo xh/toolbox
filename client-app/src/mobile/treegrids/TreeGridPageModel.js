@@ -15,15 +15,14 @@ export class TreeGridPageModel {
 
     @managed
     dimensionChooserModel = new DimensionChooserModel({
-        dimensions: [
-            {value: 'fund', label: 'Fund'},
-            {value: 'model', label: 'Model'},
-            {value: 'region', label: 'Region'},
-            {value: 'sector', label: 'Sector'},
-            {value: 'symbol', label: 'Symbol'},
-            {value: 'trader', label: 'Trader'}
+        dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
+        initialValue: ['sector', 'symbol'],
+        initialHistory: [
+            ['sector', 'symbol'],
+            ['fund', 'trader'],
+            ['fund', 'trader', 'sector', 'symbol'],
+            ['region']
         ],
-        initialValue: ['trader'],
         persistWith: {localStorageKey: 'toolboxTreeGridSample'}
     });
 
@@ -44,17 +43,6 @@ export class TreeGridPageModel {
                 flex: true
             },
             {
-                headerName: 'P&L',
-                field: 'pnl',
-                align: 'right',
-                width: 120,
-                absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
-            },
-            {
                 headerName: 'Mkt Value (m)',
                 chooserName: 'Market Value',
                 field: 'mktVal',
@@ -68,6 +56,17 @@ export class TreeGridPageModel {
                     precision: 3,
                     ledger: true
                 })
+            },
+            {
+                headerName: 'P&L',
+                field: 'pnl',
+                align: 'right',
+                width: 120,
+                absSort: true,
+                agOptions: {
+                    aggFunc: 'sum'
+                },
+                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
             }
         ]
     });

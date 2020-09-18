@@ -31,7 +31,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 dimensionChooser(),
                 filler(),
                 gridCountLabel({includeChildren: true}),
-                storeFilterField({filterOptions: {includeChildren: model.filterIncludeChildren}}),
+                storeFilterField(),
                 colChooserButton(),
                 exportButton()
             ],
@@ -50,7 +50,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 }),
                 toolbarSep(),
                 switchInput({
-                    bind: 'filterIncludeChildren',
+                    bind: 'filterIncludesChildren',
                     label: 'Filter w/Children',
                     labelAlign: 'left'
                 })
