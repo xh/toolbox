@@ -30,7 +30,7 @@ class Model {
 
         const symbols = await XH.portfolioService.getSymbolsAsync(),
             symbol = symbols[0],
-            series = await XH.portfolioService.getOHLCChartSeriesAsync(symbol);
+            series = await XH.portfolioService.getOHLCChartSeriesAsync({symbol});
 
         const groupPixelWidth = 5;
         Object.assign(series, {
