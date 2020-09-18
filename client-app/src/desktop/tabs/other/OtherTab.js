@@ -1,5 +1,6 @@
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {hoistCmp} from '@xh/hoist/core';
+import {buttonsPanel} from './Buttons';
 import {clockPanel} from './ClockPanel';
 import {fileChooserPanel} from './FileChooserPanel';
 import {dateFormatsPanel} from './formats/DateFormatsPanel';
@@ -18,17 +19,18 @@ export const otherTab = hoistCmp.factory(
             route: 'default.other',
             switcherPosition: 'left',
             tabs: [
-                {id: 'popups', content: popupsPanel},
+                {id: 'appNotifications', content: appNotificationsPanel},
+                {id: 'buttons', content: buttonsPanel},
+                {id: 'clock', content: clockPanel},
+                {id: 'dateFormats', content: dateFormatsPanel},
+                {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
                 {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
+                {id: 'icons', content: iconsPanel},
                 {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
                 {id: 'numberFormats', content: numberFormatsPanel},
-                {id: 'dateFormats', content: dateFormatsPanel},
-                {id: 'timestamp', content: relativeTimestampPanel},
-                {id: 'clock', content: clockPanel},
-                {id: 'pinPad', content: pinPadPanel},
-                {id: 'icons', content: iconsPanel},
-                {id: 'appNotifications', content: appNotificationsPanel},
-                {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel}
+                {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
+                {id: 'popups', content: popupsPanel},
+                {id: 'timestamp', content: relativeTimestampPanel}
             ]
         },
         className: 'toolbox-tab'

@@ -3,7 +3,6 @@ import {filler} from '@xh/hoist/cmp/layout';
 import {hoistCmp, useLocalModel, uses} from '@xh/hoist/core';
 import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {DimensionManagerModel} from './DimensionManagerModel';
 
@@ -37,7 +36,17 @@ export const [DimensionManager, dimensionManager] = hoistCmp.withFactory({
                 hideHeaders: true,
                 agOptions: {groupRowRendererParams: {suppressCount: true}}
             }),
-            bbar: bbar(),
+            bbar: [
+                filler(),
+                dimensionChooser({
+                    buttonText: 'New Grouping...',
+                    buttonTitle: 'Select a new custom grouping',
+                    buttonIcon: Icon.add(),
+                    styleButtonAsInput: false,
+                    buttonWidth: 160
+                }),
+                filler()
+            ],
             className,
             model: panelModel,
             title,
@@ -45,17 +54,4 @@ export const [DimensionManager, dimensionManager] = hoistCmp.withFactory({
         });
     }
 });
-
-const bbar = hoistCmp.factory(
-    () => toolbar(
-        filler(),
-        dimensionChooser({
-            buttonText: 'Custom...',
-            buttonTitle: 'Select a new custom grouping',
-            buttonIcon: Icon.add(),
-            styleButtonAsInput: false,
-            buttonWidth: 100
-        })
-    )
-);
 

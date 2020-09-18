@@ -81,8 +81,8 @@ export class AgGridViewModel {
         });
     }
 
-    async doLoadAsync() {
-        const data = await XH.portfolioService.getRawPositionsAsync();
+    async doLoadAsync(loadSpec) {
+        const data = await XH.portfolioService.getRawPositionsAsync({loadSpec});
         this.setData(data);
     }
 }
