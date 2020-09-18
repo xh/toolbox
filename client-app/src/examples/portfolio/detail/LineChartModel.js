@@ -89,7 +89,11 @@ export class LineChartModel {
             return;
         }
 
-        const series = await XH.portfolioService.getLineChartSeriesAsync(symbol);
+        const series = await XH.portfolioService.getLineChartSeriesAsync({
+            symbol,
+            loadSpec
+        }).catchDefault() ?? {};
+
         this.chartModel.setSeries([series]);
     }
 }

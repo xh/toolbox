@@ -81,7 +81,11 @@ export class OHLCChartModel {
             return;
         }
 
-        const series = await XH.portfolioService.getOHLCChartSeriesAsync(symbol);
+        const series = await XH.portfolioService.getOHLCChartSeriesAsync({
+            symbol,
+            loadSpec
+        }).catchDefault() ?? {};
+
         this.chartModel.setSeries([series]);
     }
 }

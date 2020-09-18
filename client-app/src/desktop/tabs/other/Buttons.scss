@@ -1,0 +1,25 @@
+.tbox-buttons {
+  overflow-y: auto;
+  width: 700px;
+
+  &__panel {
+    border: var(--xh-border-solid);
+    flex: none !important;
+    margin-bottom: var(--xh-pad-px);
+
+    &__row {
+      padding: var(--xh-pad-px);
+
+      > .xh-button:not(:last-child) {
+        margin-right: var(--xh-tbar-item-pad-px);
+      }
+    }
+  }
+
+  .xh-panel-header__items {
+    .xh-input {
+      color: var(--xh-title-text-color);
+      margin: 0 var(--xh-tbar-item-pad-px);
+    }
+  }
+}
