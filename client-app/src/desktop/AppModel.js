@@ -52,6 +52,10 @@ export class AppModel {
         await loadAllAsync([], loadSpec);
     }
 
+    goHome() {
+        this.tabModel.setActiveTabId('home');
+    }
+
     getAppOptions() {
         return getAppOptions();
     }
@@ -126,17 +130,18 @@ export class AppModel {
                         name: 'other',
                         path: '/other',
                         children: [
+                            {name: 'appNotifications', path: '/appNotifications'},
+                            {name: 'buttons', path: '/buttons'},
                             {name: 'clock', path: '/clock'},
                             {name: 'dateFormats', path: '/dateFormats'},
+                            {name: 'jsx', path: '/jsx'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'icons', path: '/icons'},
-                            {name: 'jsx', path: '/jsx'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'numberFormats', path: '/numberFormats'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'popups', path: '/popups'},
-                            {name: 'timestamp', path: '/timestamp'},
-                            {name: 'appNotifications', path: '/appNotifications'}
+                            {name: 'timestamp', path: '/timestamp'}
                         ]
                     },
                     {

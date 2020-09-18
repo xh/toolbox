@@ -1,10 +1,10 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
-import {cloneDeep, isEmpty, isEqual, pullAllWith, startCase, unionWith} from 'lodash';
+import {cloneDeep, isEmpty, isEqual, pullAllWith, unionWith} from 'lodash';
 
 @HoistModel
 export class DimensionManagerModel {
@@ -164,7 +164,8 @@ export class DimensionManagerModel {
     }
 
     formatDimensions(dims) {
-        return dims.map(dim => startCase(dim)).join(' › ');
+        const {dimChooserModel} = this;
+        return dims.map(dim => dimChooserModel.getDimDisplayName(dim)).join(' › ');
     }
 
 }
