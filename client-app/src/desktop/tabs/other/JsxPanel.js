@@ -1,14 +1,13 @@
-import React from 'react';
-import {hoistCmp} from '@xh/hoist/core';
 import {hframe} from '@xh/hoist/cmp/layout';
+import {hoistCmp} from '@xh/hoist/core';
+import {codeInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {jsonInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
+import React from 'react';
 import {wrapper} from '../../common';
-
 import './JsxPanel.scss';
 
-export const JsxPanel = hoistCmp(
+export const jsxPanel = hoistCmp.factory(
     () => wrapper({
         description: [
             <p>
@@ -31,21 +30,20 @@ export const JsxPanel = hoistCmp(
             </p>
         ],
         item: hframe({
-            width: '90%',
             items: [
                 panel({
                     flex: 1,
                     className: 'toolbox-jsx-example',
                     icon: Icon.factory({prefix: 'fas', size: 'lg'}),
                     title: 'Using Factories',
-                    item: renderCode(getElemExample(), 'text/javascript')
+                    item: renderCode(getElemExample())
                 }),
                 panel({
                     flex: 1,
                     className: 'toolbox-jsx-example',
                     icon: Icon.code({size: 'lg'}),
                     title: 'Using JSX',
-                    item: renderCode(getJsxExample(), 'text/typescript-jsx')
+                    item: renderCode(getJsxExample())
                 })
             ]
         })
@@ -55,12 +53,12 @@ export const JsxPanel = hoistCmp(
 //------------------------
 // Implementation
 //------------------------
-function renderCode(value, mode) {
-    return jsonInput({
+function renderCode(value) {
+    return codeInput({
         flex: 1,
         width: null,
         height: null,
-        editorProps: {mode, readOnly: true},
+        readonly: true,
         value: value.trim()
     });
 }
@@ -78,9 +76,7 @@ render() {
                     ...buttonCfgs.map(props => button(props)),
                     deleteButton({
                         omit: !XH.getUser().isHoistAdmin,
-                        onClick: () => {
-                            this.doDelete();
-                        }
+                        onClick: () => this.doDelete()
                     }),
                     filler(),
                     storeFilterField({gridModel: files})
@@ -113,11 +109,7 @@ render() {
                         {
                             XH.getUser().isHoistAdmin &&
                                 <DeleteButton
-                                    onClick={
-                                        () => {
-                                            this.doDelete();
-                                        }
-                                    }
+                                    onClick={() => this.doDelete()}}
                                 />
                         }
                         <Filler />

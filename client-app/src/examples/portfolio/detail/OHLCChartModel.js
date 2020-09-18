@@ -1,4 +1,4 @@
-import {HoistModel, XH, LoadSupport, managed} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {isNil} from 'lodash';
@@ -25,11 +25,17 @@ export class OHLCChartModel {
                 spacingLeft: 3,
                 spacingBottom: 5,
                 zoomType: 'x',
-                animation: false
+                animation: false,
+                marginLeft: 50
             },
             title: {text: null},
             legend: {enabled: false},
             scrollbar: {enabled: false},
+            rangeSelector: {
+                enabled: true,
+                selected: 1     // default to a 3-month zoom
+            },
+            navigator: {enabled: true},
             xAxis: {
                 labels: {
                     formatter: function() {
@@ -42,12 +48,7 @@ export class OHLCChartModel {
                 opposite: false,
                 endOnTick: true,
                 showLastLabel: true,
-                tickPixelInterval: 40,
-                maxPadding: 0,
-                labels: {
-                    y: 3,
-                    x: -8
-                }
+                tickPixelInterval: 40
             },
             tooltip: {
                 split: false,
@@ -80,7 +81,11 @@ export class OHLCChartModel {
             return;
         }
 
-        const series = await XH.portfolioService.getOHLCChartSeriesAsync(symbol);
+        const series = await XH.portfolioService.getOHLCChartSeriesAsync({
+            symbol,
+            loadSpec
+        }).catchDefault() ?? {};
+
         this.chartModel.setSeries([series]);
     }
 }

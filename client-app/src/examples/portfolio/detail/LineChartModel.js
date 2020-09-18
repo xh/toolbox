@@ -1,4 +1,4 @@
-import {HoistModel, XH, managed, LoadSupport} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {fmtDate} from '@xh/hoist/format';
 import {Highcharts} from '@xh/hoist/kit/highcharts';
@@ -23,13 +23,18 @@ export class LineChartModel {
         highchartsConfig: {
             chart: {
                 zoomType: 'x',
-                animation: false
+                animation: false,
+                marginLeft: 50
             },
             title: {text: null},
             tooltip: {outside: true},
             legend: {enabled: false},
             scrollbar: {enabled: false},
-            rangeSelector: {enabled: false},
+
+            rangeSelector: {
+                enabled: true,
+                selected: 1     // default to a 3-month zoom
+            },
             navigator: {enabled: true},
             xAxis: {
                 type: 'datetime',
@@ -56,7 +61,7 @@ export class LineChartModel {
                         },
                         stops: [
                             [0, Highcharts.getOptions().colors[0]],
-                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                            [1, new Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
                         ]
                     },
                     marker: {
@@ -84,7 +89,11 @@ export class LineChartModel {
             return;
         }
 
-        const series = await XH.portfolioService.getLineChartSeriesAsync(symbol);
+        const series = await XH.portfolioService.getLineChartSeriesAsync({
+            symbol,
+            loadSpec
+        }).catchDefault() ?? {};
+
         this.chartModel.setSeries([series]);
     }
 }

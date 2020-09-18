@@ -1,7 +1,6 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {shuffle, take} from 'lodash';
-
 import {dataViewItem} from './DataViewItem';
 
 @HoistModel
@@ -15,7 +14,10 @@ export class DataViewPageModel {
         },
         sortBy: 'name',
         emptyText: 'No companies found...',
-        itemRenderer: (v, {record}) => dataViewItem({record})
+        elementRenderer: (v, {record}) => dataViewItem({record}),
+        itemHeight: 70,
+        rowClassFn: () => 'dataview-item',
+        stripeRows: true
     });
 
     async doLoadAsync(loadSpec) {

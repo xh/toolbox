@@ -1,7 +1,10 @@
+import '../Bootstrap';
+
 import {XH} from '@xh/hoist/core';
+import {AppContainer} from '@xh/hoist/mobile/appcontainer';
+import {guestUserLoginMsg} from '../core/guestUserLoginMsg';
 import {App} from '../mobile/App';
 import {AppModel} from '../mobile/AppModel';
-import {AppContainer} from '@xh/hoist/mobile/appcontainer';
 
 XH.renderApp({
     clientAppCode: 'mobile',
@@ -9,8 +12,8 @@ XH.renderApp({
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,
-    isMobile: true,
+    isMobileApp: true,
     isSSO: false,
     checkAccess: 'APP_READER',
-    loginMessage: '👤 toolbox@xh.io + 🔑 toolbox'
+    loginMessage: guestUserLoginMsg
 });

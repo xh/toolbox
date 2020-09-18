@@ -2,10 +2,9 @@ import React from 'react';
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {sampleTreeGrid, wrapper} from '../../common';
 
-import {wrapper, sampleTreeGrid} from '../../common';
-
-export const TreeGridWithCheckboxPanel = hoistCmp(
+export const treeGridWithCheckboxPanel = hoistCmp.factory(
     () => wrapper({
         description: [
             <p>

@@ -1,24 +1,36 @@
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {hoistCmp} from '@xh/hoist/core';
-import {FileChooserPanel} from './FileChooserPanel';
-import {IconsPanel} from './IconsPanel';
-import {JsxPanel} from './JsxPanel';
-import {LeftRightChooserPanel} from './LeftRightChooserPanel';
-import {RelativeTimestampPanel} from './RelativeTimestampPanel';
-import {PopupsPanel} from './PopupsPanel';
+import {buttonsPanel} from './Buttons';
+import {clockPanel} from './ClockPanel';
+import {fileChooserPanel} from './FileChooserPanel';
+import {dateFormatsPanel} from './formats/DateFormatsPanel';
+import {numberFormatsPanel} from './formats/NumberFormatsPanel';
+import {iconsPanel} from './IconsPanel';
+import {jsxPanel} from './JsxPanel';
+import {leftRightChooserPanel} from './LeftRightChooserPanel';
+import {pinPadPanel} from './PinPadPanel';
+import {popupsPanel} from './PopupsPanel';
+import {relativeTimestampPanel} from './RelativeTimestampPanel';
+import {appNotificationsPanel} from './AppNotificationsPanel';
 
-export const OtherTab = hoistCmp(
+export const otherTab = hoistCmp.factory(
     () => tabContainer({
         model: {
             route: 'default.other',
             switcherPosition: 'left',
             tabs: [
-                {id: 'popups', content: PopupsPanel},
-                {id: 'icons', title: 'Icons', content: IconsPanel},
-                {id: 'leftRightChooser', title: 'LeftRightChooser', content: LeftRightChooserPanel},
-                {id: 'fileChooser', title: 'FileChooser', content: FileChooserPanel},
-                {id: 'timestamp', title: 'Timestamp', content: RelativeTimestampPanel},
-                {id: 'jsx', title: 'Factories vs. JSX', content: JsxPanel}
+                {id: 'appNotifications', content: appNotificationsPanel},
+                {id: 'buttons', content: buttonsPanel},
+                {id: 'clock', content: clockPanel},
+                {id: 'dateFormats', content: dateFormatsPanel},
+                {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
+                {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
+                {id: 'icons', content: iconsPanel},
+                {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
+                {id: 'numberFormats', content: numberFormatsPanel},
+                {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
+                {id: 'popups', content: popupsPanel},
+                {id: 'timestamp', content: relativeTimestampPanel}
             ]
         },
         className: 'toolbox-tab'

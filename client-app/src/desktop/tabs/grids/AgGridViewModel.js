@@ -68,7 +68,7 @@ export class AgGridViewModel {
     ];
 
     agGridModel = new AgGridModel({
-        compact: XH.appModel.useCompactGrids
+        sizingMode: XH.appModel.gridSizingMode
     });
 
     constructor() {
@@ -81,8 +81,8 @@ export class AgGridViewModel {
         });
     }
 
-    async doLoadAsync() {
-        const data = await XH.portfolioService.getRawPositionsAsync();
+    async doLoadAsync(loadSpec) {
+        const data = await XH.portfolioService.getRawPositionsAsync({loadSpec});
         this.setData(data);
     }
 }

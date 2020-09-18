@@ -5,6 +5,7 @@ import {MapPanelModel} from './MapPanelModel';
 import {clamp, round} from 'lodash';
 import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
 import {DetailPanelModel} from './detail/DetailPanelModel';
+import {PERSIST_MAIN} from './AppModel';
 
 @HoistModel
 @LoadSupport
@@ -33,7 +34,10 @@ export class PortfolioPanelModel {
 
         let {session} = this;
         if (session) session.destroy();
-        session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp');
+
+        session = await XH.portfolioService
+            .getLivePositionsAsync(dims, 'mainApp')
+            .catchDefault();
 
         store.loadData([session.initialPositions.root]);
         session.onUpdate = ({data}) => {
@@ -50,16 +54,16 @@ export class PortfolioPanelModel {
         await this.detailPanelModel.doLoadAsync();
     }
 
-    //----------------------------------------
-    // Implementations
-    //----------------------------------------
+    //------------------------
+    // Implementation
+    //------------------------
     selectedPositionReaction() {
         return {
             track: () => this.selectedPosition,
             run: (position) => {
                 this.detailPanelModel.setPositionId(position ? position.id : null);
             },
-            delay: 500
+            debounce: 300
         };
     }
 
@@ -82,8 +86,8 @@ export class PortfolioPanelModel {
             fields: [
                 {name: 'name'},
                 {name: 'mktVal'},
-                {name: 'pnl', label: 'P&L'},
-                {name: 'pnlMktVal', label: 'P&L / Mkt Val'}
+                {name: 'pnl', displayName: 'P&L'},
+                {name: 'pnlMktVal', displayName: 'P&L / Mkt Val'}
             ],
             loadRootAsSummary: true
         });
@@ -91,15 +95,15 @@ export class PortfolioPanelModel {
 
     createDimChooserModel() {
         return new DimensionChooserModel({
-            dimensions: [
-                {value: 'fund', label: 'Fund'},
-                {value: 'model', label: 'Model'},
-                {value: 'region', label: 'Region'},
-                {value: 'sector', label: 'Sector'},
-                {value: 'symbol', label: 'Symbol'},
-                {value: 'trader', label: 'Trader'}
+            dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
+            initialValue: ['sector', 'symbol'],
+            initialHistory: [
+                ['sector', 'symbol'],
+                ['fund', 'trader'],
+                ['fund', 'trader', 'sector', 'symbol'],
+                ['region']
             ],
-            preference: 'portfolioDims'
+            persistWith: PERSIST_MAIN
         });
     }
 }

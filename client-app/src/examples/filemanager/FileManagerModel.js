@@ -6,7 +6,7 @@ import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import filesize from 'filesize';
 import download from 'downloadjs';
-import {filter, find, last, pull} from 'lodash';
+import {filter, find, pull} from 'lodash';
 
 @HoistModel
 @LoadSupport
@@ -19,7 +19,7 @@ export class FileManagerModel {
     gridModel = new GridModel({
         store: {
             fields: [
-                'name', 'extension', 'size', 'status', 'file'
+                'name', 'size', 'status', 'file'
             ],
             idSpec: 'name'
         },
@@ -28,7 +28,8 @@ export class FileManagerModel {
         emptyText: 'No files uploaded or queued for upload...',
         columns: [
             {
-                field: 'extension',
+                colId: 'icon',
+                field: 'name',
                 ...fileExtCol
             },
             {field: 'name', flex: 1},
@@ -52,7 +53,7 @@ export class FileManagerModel {
                         tooltip: 'Remove file',
                         intent: 'danger',
                         displayFn: ({record}) => {
-                            return {hidden: record.status == 'Pending Delete'};
+                            return {hidden: record.data.status === 'Pending Delete'};
                         },
                         actionFn: ({record}) => {
                             this.removeFile(record);
@@ -63,7 +64,7 @@ export class FileManagerModel {
                         tooltip: 'Restore file',
                         intent: 'primary',
                         displayFn: ({record}) => {
-                            return {hidden: record.status != 'Pending Delete'};
+                            return {hidden: record.data.status !== 'Pending Delete'};
                         },
                         actionFn: ({record}) => {
                             this.restoreFile(record);
@@ -82,7 +83,7 @@ export class FileManagerModel {
     @computed
     get enableDownload() {
         const sel = this.gridModel.selectedRecord;
-        return sel && sel.status != 'Pending Upload';
+        return sel && sel.data.status !== 'Pending Upload';
     }
 
     constructor() {
@@ -106,7 +107,6 @@ export class FileManagerModel {
             .catchDefault();
 
         files.forEach(file => {
-            file.extension = this.getExtension(file.name);
             file.status = 'Saved';
         });
 
@@ -172,13 +172,14 @@ export class FileManagerModel {
         if (!this.enableDownload) return;
 
         const sel = this.gridModel.selectedRecord,
+            {name} = sel.data,
             response = await XH.fetch({
                 url: 'fileManager/download',
-                params: {filename: sel.name}
+                params: {filename: name}
             }).catchDefault();
 
         const blob = await response.blob();
-        download(blob, sel.name);
+        download(blob, name);
         XH.toast({
             icon: Icon.download(),
             message: 'Download complete.'
@@ -188,20 +189,20 @@ export class FileManagerModel {
     // Mark already-uploaded file as pending deletion on save, or immediately remove a
     // not-yet-uploaded file from the chooser.
     removeFile(file) {
-        const {status} = file;
+        const {status} = file.data;
 
-        if (status == 'Saved') {
+        if (status === 'Saved') {
             // Already uploaded record - change status directly in grid store.
             this.setFileStatus(file.id, 'Pending Delete');
-        } else if (status == 'Pending Upload') {
+        } else if (status === 'Pending Upload') {
             // Ask chooser to remove - reaction on chooser files[] will update grid store.
-            this.chooserModel.removeFileByName(file.name);
+            this.chooserModel.removeFileByName(file.data.name);
         }
     }
 
     // Restore a file marked as "Pending Delete" - i.e. cancel delete request.
     restoreFile(file) {
-        if (file.status == 'Pending Delete') {
+        if (file.data.status === 'Pending Delete') {
             this.setFileStatus(file.id, 'Saved');
         }
     }
@@ -229,7 +230,6 @@ export class FileManagerModel {
 
             newData.push({
                 name: newFile.name,
-                extension: this.getExtension(newFile.name),
                 size: newFile.size,
                 status: 'Pending Upload',
                 file: newFile
@@ -245,7 +245,7 @@ export class FileManagerModel {
     }
 
     getServerSideFiles() {
-        return filter(this.getAllData(), (it) => it.status != 'Pending Upload');
+        return filter(this.getAllData(), (it) => it.status !== 'Pending Upload');
     }
 
     getAllData() {
@@ -255,9 +255,4 @@ export class FileManagerModel {
     getStore() {
         return this.gridModel.store;
     }
-
-    getExtension(filename) {
-        return last(filename.split('.'));
-    }
-
 }

@@ -1,5 +1,4 @@
-import {HoistModel} from '@xh/hoist/core';
-import {managed} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {fmtMillions} from '@xh/hoist/format';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
@@ -24,11 +23,10 @@ export class MapPanelModel {
                     })
                 ];
             },
-
             labelField: 'name',
             valueField: 'pnl',
             heatField: 'pnlMktVal',
-            orientation: 'horizontal'
+            orientation: 'vertical'
         });
     }
 }

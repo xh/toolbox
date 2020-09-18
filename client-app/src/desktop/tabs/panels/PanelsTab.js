@@ -1,24 +1,23 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-import {PanelSizingPanel} from './PanelSizingPanel';
-import {BasicPanel} from './BasicPanel';
-import {ToolbarPanel} from './ToolbarPanel';
-import {LoadingIndicatorPanel} from './LoadingIndicatorPanel';
-import {MaskPanel} from './MaskPanel';
-
+import {panelSizingPanel} from './PanelSizingPanel';
+import {basicPanel} from './BasicPanel';
+import {toolbarPanel} from './ToolbarPanel';
+import {loadingIndicatorPanel} from './LoadingIndicatorPanel';
+import {maskPanel} from './MaskPanel';
 import './PanelsTab.scss';
 
-export const PanelsTab = hoistCmp(
+export const panelsTab = hoistCmp.factory(
     () => tabContainer({
         model: {
             route: 'default.panels',
             switcherPosition: 'left',
             tabs: [
-                {id: 'intro', content: BasicPanel},
-                {id: 'toolbars', content: ToolbarPanel},
-                {id: 'sizing', content: PanelSizingPanel},
-                {id: 'mask', content: MaskPanel},
-                {id: 'loadingIndicator', content: LoadingIndicatorPanel}
+                {id: 'intro', content: basicPanel},
+                {id: 'toolbars', content: toolbarPanel},
+                {id: 'sizing', content: panelSizingPanel},
+                {id: 'mask', content: maskPanel},
+                {id: 'loadingIndicator', content: loadingIndicatorPanel}
             ]
         },
         className: 'toolbox-tab'

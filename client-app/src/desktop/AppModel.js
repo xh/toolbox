@@ -2,25 +2,21 @@
  * This file belongs to Hoist, an application development toolkit
  * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
  *
- * Copyright © 2019 Extremely Heavy Industries Inc.
+ * Copyright © 2020 Extremely Heavy Industries Inc.
  */
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-
 import {PortfolioService} from '../core/svc/PortfolioService';
-
 import {getAppOptions} from './AppOptions';
-
-import {ChartsTab} from './tabs/charts/ChartsTab';
-import {ContainersTab} from './tabs/containers/ContainersTab';
-import {ExamplesTab} from './tabs/examples/ExamplesTab';
-import {FormatsTab} from './tabs/formats/FormatsTab';
-import {FormsTab} from './tabs/forms/FormsTab';
-import {GridsTab} from './tabs/grids/GridsTab';
-import {HomeTab} from './tabs/home/HomeTab';
-import {OtherTab} from './tabs/other/OtherTab';
-import {PanelsTab} from './tabs/panels/PanelsTab';
+import {chartsTab} from './tabs/charts/ChartsTab';
+import {containersTab} from './tabs/containers/ContainersTab';
+import {examplesTab} from './tabs/examples/ExamplesTab';
+import {formsTab} from './tabs/forms/FormsTab';
+import {gridsTab} from './tabs/grids/GridsTab';
+import {homeTab} from './tabs/home/HomeTab';
+import {otherTab} from './tabs/other/OtherTab';
+import {panelsTab} from './tabs/panels/PanelsTab';
 
 @HoistAppModel
 export class AppModel {
@@ -28,26 +24,22 @@ export class AppModel {
     @managed
     tabModel = new TabContainerModel({
         route: 'default',
+        track: true,
         tabs: [
-            {id: 'home', icon: Icon.home(), content: HomeTab},
-            {id: 'containers', icon: Icon.box(), content: ContainersTab},
-            {id: 'panels', icon: Icon.window(), content: PanelsTab},
-            {id: 'grids', icon: Icon.grid(), content: GridsTab},
-            {id: 'forms', icon: Icon.edit(), content: FormsTab},
-            {id: 'charts', icon: Icon.chartLine(), content: ChartsTab},
-            {id: 'formats', icon: Icon.print(), content: FormatsTab},
-            {id: 'other', icon: Icon.boxFull(), content: OtherTab},
-            {id: 'examples', icon: Icon.books(), content: ExamplesTab}
+            {id: 'home', icon: Icon.home(), content: homeTab},
+            {id: 'grids', icon: Icon.grid(), content: gridsTab},
+            {id: 'panels', icon: Icon.window(), content: panelsTab},
+            {id: 'containers', icon: Icon.box(), content: containersTab},
+            {id: 'forms', icon: Icon.edit(), content: formsTab},
+            {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
+            {id: 'other', icon: Icon.boxFull(), content: otherTab},
+            {id: 'examples', icon: Icon.books(), content: examplesTab}
         ],
         switcherPosition: 'none'
     });
 
-    get useCompactGrids() {
-        return XH.getPref('defaultGridMode') == 'COMPACT';
-    }
-
-    constructor() {
-        this.addReaction(this.trackTabReaction());
+    get gridSizingMode() {
+        return XH.getPref('gridSizingMode');
     }
 
     async initAsync() {
@@ -58,6 +50,10 @@ export class AppModel {
 
     async doLoadAsync(loadSpec) {
         await loadAllAsync([], loadSpec);
+    }
+
+    goHome() {
+        this.tabModel.setActiveTabId('home');
     }
 
     getAppOptions() {
@@ -81,7 +77,8 @@ export class AppModel {
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
                             {name: 'tabPanel', path: '/tabPanel'},
-                            {name: 'dock', path: '/dock'}
+                            {name: 'dock', path: '/dock'},
+                            {name: 'dash', path: '/dash'}
                         ]
                     },
                     {
@@ -130,23 +127,21 @@ export class AppModel {
                         ]
                     },
                     {
-                        name: 'formats',
-                        path: '/formats',
-                        children: [
-                            {name: 'number', path: '/number'},
-                            {name: 'date', path: '/date'}
-                        ]
-                    },
-                    {
                         name: 'other',
                         path: '/other',
                         children: [
+                            {name: 'appNotifications', path: '/appNotifications'},
+                            {name: 'buttons', path: '/buttons'},
+                            {name: 'clock', path: '/clock'},
+                            {name: 'dateFormats', path: '/dateFormats'},
+                            {name: 'jsx', path: '/jsx'},
+                            {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'icons', path: '/icons'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
-                            {name: 'fileChooser', path: '/fileChooser'},
-                            {name: 'timestamp', path: '/timestamp'},
-                            {name: 'jsx', path: '/jsx'},
-                            {name: 'popups', path: '/popups'}
+                            {name: 'numberFormats', path: '/numberFormats'},
+                            {name: 'pinPad', path: '/pinPad'},
+                            {name: 'popups', path: '/popups'},
+                            {name: 'timestamp', path: '/timestamp'}
                         ]
                     },
                     {
@@ -156,14 +151,5 @@ export class AppModel {
                 ]
             }
         ];
-    }
-
-    trackTabReaction() {
-        return {
-            track: () => this.tabModel.activeTab,
-            run: (activeTab) => {
-                XH.track({category: 'Tab', message: `Viewed ${activeTab.title}`});
-            }
-        };
     }
 }

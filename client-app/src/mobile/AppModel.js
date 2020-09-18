@@ -2,26 +2,26 @@
  * This file belongs to Hoist, an application development toolkit
  * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
  *
- * Copyright © 2019 Extremely Heavy Industries Inc.
+ * Copyright © 2020 Extremely Heavy Industries Inc.
  */
-import {XH, HoistAppModel, managed, loadAllAsync} from '@xh/hoist/core';
+import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
 import {required} from '@xh/hoist/cmp/form';
 import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
-
 import {PortfolioService} from '../core/svc/PortfolioService';
-
-import {HomePage} from './home/HomePage';
-import {GridPage} from './grids/GridPage';
-import {GridDetailPage} from './grids/GridDetailPage';
-import {TreeGridPage} from './treegrids/TreeGridPage';
-import {TreeGridDetailPage} from './treegrids/TreeGridDetailPage';
-import {DataViewPage} from './dataview/DataViewPage';
-import {FormPage} from './form/FormPage';
-import {ContainersPage} from './containers/ContainersPage';
-import {PopupsPage} from './popups/PopupsPage';
-import {IconPage} from './icons/IconPage';
+import {homePage} from './home/HomePage';
+import {gridPage} from './grids/GridPage';
+import {gridDetailPage} from './grids/GridDetailPage';
+import {panelsPage} from './panels/PanelsPage';
+import {treeGridPage} from './treegrids/TreeGridPage';
+import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
+import {dataViewPage} from './dataview/DataViewPage';
+import {formPage} from './form/FormPage';
+import {containersPage} from './containers/ContainersPage';
+import {popupsPage} from './popups/PopupsPage';
+import {iconPage} from './icons/IconPage';
+import {pinPadPage} from './pinPad/PinPadPage';
 
 @HoistAppModel
 export class AppModel {
@@ -31,47 +31,19 @@ export class AppModel {
 
     @managed
     navigatorModel = new NavigatorModel({
-        routes: [
-            {
-                id: 'default',
-                content: HomePage
-            },
-            {
-                id: 'grids',
-                content: GridPage
-            },
-            {
-                id: 'gridDetail',
-                content: GridDetailPage
-            },
-            {
-                id: 'treegrids',
-                content: TreeGridPage
-            },
-            {
-                id: 'treeGridDetail',
-                content: TreeGridDetailPage
-            },
-            {
-                id: 'dataview',
-                content: DataViewPage
-            },
-            {
-                id: 'form',
-                content: FormPage
-            },
-            {
-                id: 'containers',
-                content: ContainersPage
-            },
-            {
-                id: 'popups',
-                content: PopupsPage
-            },
-            {
-                id: 'icons',
-                content: IconPage
-            }
+        pages: [
+            {id: 'default', content: homePage},
+            {id: 'grids', content: gridPage},
+            {id: 'gridDetail', content: gridDetailPage},
+            {id: 'treegrids', content: treeGridPage},
+            {id: 'treeGridDetail', content: treeGridDetailPage},
+            {id: 'dataview', content: dataViewPage},
+            {id: 'form', content: formPage},
+            {id: 'containers', content: containersPage},
+            {id: 'panels', content: panelsPage},
+            {id: 'popups', content: popupsPage},
+            {id: 'icons', content: iconPage},
+            {id: 'pinPad', content: pinPadPage}
         ]
     });
 
@@ -110,12 +82,20 @@ export class AppModel {
                         path: '/containers'
                     },
                     {
+                        name: 'panels',
+                        path: '/panels'
+                    },
+                    {
                         name: 'popups',
                         path: '/popups'
                     },
                     {
                         name: 'icons',
                         path: '/icons'
+                    },
+                    {
+                        name: 'pinPad',
+                        path: '/pinPad'
                     }
                 ]
             }

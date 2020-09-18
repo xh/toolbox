@@ -1,19 +1,18 @@
 import React from 'react';
-import {hoistCmp, HoistModel, LoadSupport, creates, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, LoadSupport, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
 import {span} from '@xh/hoist/cmp/layout';
-import {numberInput, select, textInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {loadingIndicator} from '@xh/hoist/desktop/cmp/loadingindicator';
-
 import {sampleGrid, SampleGridModel, wrapper} from '../../common';
 
-export const LoadingIndicatorPanel = hoistCmp({
+export const loadingIndicatorPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {

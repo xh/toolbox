@@ -2,9 +2,10 @@ import {library} from '@fortawesome/fontawesome-svg-core';
 import {faIcons} from '@fortawesome/pro-regular-svg-icons';
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {fontAwesomeIcon, Icon} from '@xh/hoist/icon';
+import {Icon} from '@xh/hoist/icon';
+import {div, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
+import {without} from 'lodash';
 import React from 'react';
-
 import {wrapper} from '../../common/Wrapper';
 import './IconsPanel.scss';
 
@@ -12,7 +13,7 @@ import './IconsPanel.scss';
 // @see https://www.npmjs.com/package/@fortawesome/react-fontawesome#build-a-library-to-reference-icons-throughout-your-app-more-conveniently
 library.add(faIcons);
 
-export const IconsPanel = hoistCmp(
+export const iconsPanel = hoistCmp.factory(
     () => wrapper({
         description: [
             <p>
@@ -38,43 +39,46 @@ export const IconsPanel = hoistCmp(
             {
                 url: 'https://fontawesome.com/icons',
                 text: 'FontAwesome',
-                notes: 'The library used by Hoist to provide enumerated icons. Note that not all icons are included in the Hoist Icon class, but can be easily added.'
+                notes: 'The library used by Hoist to provide enumerated icons. Note that not all icons are included ' +
+                    'in the Hoist Icon class, but can be easily added.'
             }
         ],
         item: panel({
             title: 'Icons (regular, solid, and light variants)',
-            icon: fontAwesomeIcon({icon: ['far', 'icons']}),
+            icon: Icon.icon({iconName: 'icons'}),
             className: 'toolbox-icons-panel',
             width: 700,
-            item: [
-                <div className="toolbox-icons-table-scroller">
-                    <table>
-                        <tbody>
-                            {getAllIcons().map(icon => row(icon))}
-                        </tbody>
-                    </table>
-                </div>
-            ]
+            item: div({
+                className: 'toolbox-icons-table-scroller',
+                item: table(
+                    tbody(getAllIcons().map(icon => row(icon)))
+                )
+            })
         })
     })
 );
 
 
 function row(icon) {
-    return <tr key={icon.name}>
-        <th>{icon.name}</th>
-        <td>{icon.regular}</td>
-        <td>{icon.solid}</td>
-        <td>{icon.light}</td>
-    </tr>;
+    return tr({
+        key: icon.name,
+        items: [
+            th(icon.name),
+            td(icon.regular),
+            td(icon.solid),
+            td(icon.light)
+        ]
+    });
 }
 
 
 function getAllIcons() {
-    return Object.keys(Icon).map(key => ({
-        regular: Icon[key]({size: '2x'}),
-        solid: Icon[key]({prefix: 'fas', size: '2x'}),
-        light: Icon[key]({prefix: 'fal', size: '2x'}),
-        name: key
+    const factories = without(Object.keys(Icon), 'icon', 'fileIcon');
+
+    return factories.map(key => ({
+        name:       key,
+        regular:    Icon[key]({prefix: 'far', size: '2x'}),
+        solid:      Icon[key]({prefix: 'fas', size: '2x'}),
+        light:      Icon[key]({prefix: 'fal', size: '2x'})
     }));
 }

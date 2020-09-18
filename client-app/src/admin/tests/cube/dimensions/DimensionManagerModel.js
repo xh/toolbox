@@ -1,11 +1,10 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
-import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
-import {cloneDeep, isEmpty, isEqual, pullAllWith, startCase, unionWith} from 'lodash';
+import {cloneDeep, isEmpty, isEqual, pullAllWith, unionWith} from 'lodash';
 
 @HoistModel
 export class DimensionManagerModel {
@@ -33,7 +32,16 @@ export class DimensionManagerModel {
                 {field: 'displayName', flex: 1},
                 {field: 'type', hidden: true}
             ],
-            contextMenuFn: (gridModel) => this.gridContextMenuFn(gridModel)
+            contextMenu: [
+                {
+                    text: 'Delete custom grouping',
+                    icon: Icon.delete(),
+                    actionFn: () => this.deleteSelected(),
+                    displayFn: ({record}) => {
+                        return {disabled: !record || record.data.type == 'Default'};
+                    }
+                }
+            ]
         });
 
         this.addReaction({
@@ -127,22 +135,6 @@ export class DimensionManagerModel {
         }
     }
 
-    gridContextMenuFn(gridModel) {
-        return new StoreContextMenu({
-            items: [
-                {
-                    text: 'Delete custom grouping',
-                    icon: Icon.delete(),
-                    actionFn: () => this.deleteSelected(),
-                    displayFn: ({record}) => {
-                        return {disabled: !record || record.type == 'Default'};
-                    }
-                }
-            ],
-            gridModel
-        });
-    }
-
     get defaultRowData() {
         return this.defaultDims.map(dims => {
             return {
@@ -172,7 +164,8 @@ export class DimensionManagerModel {
     }
 
     formatDimensions(dims) {
-        return dims.map(dim => startCase(dim)).join(' › ');
+        const {dimChooserModel} = this;
+        return dims.map(dim => dimChooserModel.getDimDisplayName(dim)).join(' › ');
     }
 
 }

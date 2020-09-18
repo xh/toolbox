@@ -1,9 +1,8 @@
 import React from 'react';
-import {XH, hoistCmp, creates} from '@xh/hoist/core';
-import {p, div} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {div, filler, p} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {wrapper} from '../../common/Wrapper';
-import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -12,7 +11,7 @@ import {Icon} from '@xh/hoist/icon';
 import {usStates} from '../../../core/data';
 import {BasicPanelModel} from './BasicPanelModel';
 
-export const BasicPanel = hoistCmp({
+export const basicPanel = hoistCmp.factory({
     model: creates(BasicPanelModel),
 
     render({model}) {

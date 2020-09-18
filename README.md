@@ -23,7 +23,7 @@ configuration.
 Also note that Toolbox uses a simple authentication adapter to provide forms-based authentication.  It is important to 
 note that actual Hoist applications will typically use enterprise Single Sign-On (SSO) instead, a usage for which Hoist
 is optimized.  The forms-based authentication used here is specific to Toolbox, and the fact that we are publishing it 
-on the internet for public usage.  The core of the app can be accessed by logging in as 'toolbox@xh.io' (pwd: 'toolbox');
+on the internet for public usage.  The core of the app can be accessed by logging in as 'toolbox@xh.io' (pwd: 'Hoist_Toolb0x');
 admin tooling may be accessed with additional credentials which we will be happy to provide as necessary.   
 
 🙏 Thanks for your patience as we continue to build out this application.  All suggestions are welcome!
@@ -32,4 +32,4 @@ admin tooling may be accessed with additional credentials which we will be happy
                                                                                   
 📫☎️🌎 info@xh.io | <https://xh.io/contact>
 
-Copyright © 2019 Extremely Heavy Industries Inc.
+Copyright © 2020 Extremely Heavy Industries Inc.

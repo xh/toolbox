@@ -1,12 +1,12 @@
 import {hoistCmp, HoistModel, LoadSupport, useLocalModel, XH} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {isNil, find} from 'lodash';
+import {find, isNil} from 'lodash';
 import {bindable, observable} from '@xh/hoist/mobx';
 
-export const GridDetailPage = hoistCmp({
+export const gridDetailPage = hoistCmp.factory({
     render({id}) {
         const impl = useLocalModel(LocalModel);
         impl.setId(id);
@@ -20,7 +20,7 @@ export const GridDetailPage = hoistCmp({
             ]
         });
 
-        return page({
+        return panel({
             title: record?.company ?? '',
             mask: impl.loadModel,
             icon: Icon.fund(),

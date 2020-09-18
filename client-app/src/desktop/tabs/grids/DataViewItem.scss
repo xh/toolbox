@@ -1,20 +1,22 @@
 .toolbox-dataview-panel {
-  .dataview-item {
-    &--name {
+  .tb-dataview-item {
+    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+
+    &__name {
       font-size: var(--xh-font-size-large-px);
       font-weight: bold;
     }
 
-    &--city {
+    &__city {
       opacity: 0.8;
       font-size: var(--xh-font-size-small-px);
       line-height: calc(var(--xh-font-size-small) * 1.1px);
-      margin-bottom: 4px;
+      padding-bottom: var(--xh-pad-half-px);
     }
 
     svg {
       position: absolute;
-      right: 10px;
+      right: 20px;
       top: 15px;
     }
   }

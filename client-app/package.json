@@ -6,7 +6,9 @@
     "build": "webpack --env.prodBuild",
     "buildAndAnalyze": "webpack --env.prodBuild --env.analyzeBundles",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
-    "lint": "eslint --ext .js,.jsx .",
+    "lint": "yarn lint:js",
+    "lint:all": "yarn lint:js && yarn lint:styles",
+    "lint:js": "eslint --ext .js,.jsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
     "refreshHoist": "echo 'This script has been removed - run `yarn upgrade` instead to get the latest snapshot.'",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
@@ -24,18 +26,22 @@
     }
   },
   "dependencies": {
-    "@xh/hoist": "^29.0.0-SNAPSHOT",
-    "react": "~16.8.6",
-    "react-dom": "~16.8.6",
+    "@ag-grid-community/react": "~23.2.0",
+    "@ag-grid-enterprise/all-modules": "~23.2.0",
+    "@fortawesome/free-brands-svg-icons": "~5.14.0",
+    "@xh/hoist": "^37.0.0-SNAPSHOT",
+    "highcharts": "~8.2.0",
+    "react": "~16.13.1",
+    "react-dom": "~16.13.1",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "~4.3.7",
-    "cross-env": "~6.0.0",
-    "husky": "~3.1.0",
-    "lint-staged": "~9.5.0",
-    "stylelint": "~12.0.0",
-    "stylelint-config-standard": "~19.0.0",
-    "stylelint-scss": "~3.13.0"
+    "@xh/hoist-dev-utils": "^6.0.0-SNAPSHOT",
+    "cross-env": "~7.0.2",
+    "husky": "~4.2.1",
+    "lint-staged": "~10.2.10",
+    "stylelint": "~13.6.0",
+    "stylelint-config-standard": "~20.0.0",
+    "stylelint-scss": "~3.18.0"
   }
 }

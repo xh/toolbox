@@ -1,19 +1,19 @@
-import React from 'react';
-import {hoistCmp, creates, managed, HoistModel} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {hspacer} from '@xh/hoist/cmp/layout';
+import {div, hspacer, span} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
+import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common/Wrapper';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
 import {find} from 'lodash';
+import React from 'react';
+import {wrapper} from '../../common/Wrapper';
 
-export const TabPanelContainerPanel = hoistCmp({
+export const tabPanelContainerPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {
-        const {stateTabModel, detachedTabModel} = model;
+        const {stateTabModel, detachedTabModel, noTabsModel} = model;
 
         return wrapper({
             description: [
@@ -46,10 +46,10 @@ export const TabPanelContainerPanel = hoistCmp({
                             {
                                 id: 'top',
                                 title: 'Top Tabs',
-                                content: () => `
-                                    This overall example is a standard TabContainer with its switcher located in the default,
-                                    top position. Change the tabs above to see examples of other TabContainer configurations.
-                                `
+                                content: () => div(
+                                    `This overall example is a standard TabContainer with its switcher located in the default,
+                                    top position. Change the tabs above to see examples of other TabContainer configurations.`
+                                )
                             },
                             {
                                 id: 'bottom',
@@ -116,6 +116,19 @@ export const TabPanelContainerPanel = hoistCmp({
                                         item: tabContainer({model: stateTabModel})
                                     });
                                 }
+                            },
+                            {
+                                id: 'empty',
+                                title: 'Empty (no tabs)',
+                                content: () => {
+                                    return panel({
+                                        className: 'child-tabcontainer',
+                                        bbar: [
+                                            span('In this example, all tabs have been omitted and the default emptyText is shown.')
+                                        ],
+                                        item: tabContainer({model: noTabsModel})
+                                    });
+                                }
                             }
                         ]
                     }
@@ -135,9 +148,16 @@ class Model {
     @managed
     stateTabModel = new TabContainerModel(this.createContainerModelConfig({}));
 
+    @managed
+    noTabsModel = new TabContainerModel({
+        tabs: [
+            {id: 'omitted1', content: () => 'Not rendered!', omit: true},
+            {id: 'omitted2', content: () => 'Not rendered!', omit: true}
+        ]
+    });
 
     createContainerModelConfig(args) {
-        const tabTxt = title => `This is the ${title} tab`;
+        const tabTxt = title => div(`This is the ${title} tab`);
         return {
             tabs: [
                 {

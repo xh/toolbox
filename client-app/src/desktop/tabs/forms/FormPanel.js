@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -10,10 +10,9 @@ import {checkbox, dateInput, numberInput, select, switchInput, textArea, textInp
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {wrapper} from '../../common';
 import {FormPanelModel} from './FormPanelModel';
-
 import './FormPanel.scss';
 
-export const FormPanel = hoistCmp({
+export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
 
     render() {

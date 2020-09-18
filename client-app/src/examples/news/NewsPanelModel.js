@@ -1,6 +1,6 @@
-import {XH, HoistModel, managed, LoadSupport} from '@xh/hoist/core';
-import {action, observable, bindable} from '@xh/hoist/mobx';
-import {uniq, isEmpty} from 'lodash';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {action, bindable, observable} from '@xh/hoist/mobx';
+import {uniq} from 'lodash';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {newsPanelItem} from './NewsPanelItem';
 import {fmtCompactDate} from '@xh/hoist/format';
@@ -11,26 +11,32 @@ export class NewsPanelModel {
 
     SEARCH_FIELDS = ['title', 'text'];
 
+    @bindable storeFilterRaw = null;
+
     @managed
     viewModel = new DataViewModel({
         sortBy: 'published',
         store: {
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
-            idSpec: 'url'
+            idSpec: XH.genId,
+            filter: this.createFilter()
         },
-        itemRenderer: (v, {record}) => newsPanelItem({record})
+        elementRenderer: (v, {record}) => newsPanelItem({record}),
+        itemHeight: 120,
+        rowBorders: true,
+        stripeRows: true
     });
 
     @observable.ref sourceOptions = [];
     @observable lastRefresh = null;
 
-    @bindable sourceFilter = null;
+    @bindable.ref sourceFilterValues = null;
     @bindable.ref textFilter = null;
 
     constructor() {
         this.addReaction({
-            track: () => [this.sourceFilter, this.textFilter, this.lastRefresh],
-            run: () => this.filterData(),
+            track: () => [this.sourceFilterValues, this.textFilter, this.lastRefresh],
+            run: () => this.viewModel.setFilter(this.createFilter()),
             fireImmediately: true
         });
     }
@@ -45,6 +51,14 @@ export class NewsPanelModel {
     //------------------------
     // Implementation
     //------------------------
+    createFilter() {
+        const {textFilter, sourceFilterValues} = this;
+        return [
+            textFilter,
+            sourceFilterValues ? {field: 'source', op: '=', value: sourceFilterValues} : null
+        ];
+    }
+
     @action
     completeLoad(stories) {
         const {store} = this.viewModel;
@@ -59,20 +73,7 @@ export class NewsPanelModel {
                 author: s.author
             };
         }));
-        this.sourceOptions = uniq(store.records.map(story => story.source));
+        this.sourceOptions = uniq(store.records.map(story => story.data.source));
         this.lastRefresh = new Date();
-    }
-
-    @action
-    filterData() {
-        const filter = (rec) => {
-            const {textFilter, sourceFilter} = this,
-                searchMatch = !textFilter || textFilter.fn(rec),
-                sourceMatch = isEmpty(sourceFilter) || sourceFilter.includes(rec.source);
-
-            return sourceMatch && searchMatch;
-        };
-
-        this.viewModel.store.setFilter(filter);
     }
 }

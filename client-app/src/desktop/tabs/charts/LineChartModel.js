@@ -20,15 +20,21 @@ export class LineChartModel {
     
     async doLoadAsync(loadSpec) {
         if (!this.symbols) {
-            let symbols = await XH.portfolioService.getSymbolsAsync();
+            let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
             symbols = symbols.slice(0, this.numCompanies);
             this.setSymbols(symbols);
         }
+
         if (!this.currentSymbol) {
             this.setCurrentSymbol(this.symbols[0]);
         }
 
-        let series = await XH.portfolioService.getLineChartSeriesAsync(this.currentSymbol, 'close');
+        let series = await XH.portfolioService.getLineChartSeriesAsync({
+            symbol: this.currentSymbol,
+            dimension: 'close',
+            loadSpec
+        }).catchDefault() ?? {};
+
         Object.assign(series, {
             type: 'area',
             animation: true
@@ -79,7 +85,7 @@ export class LineChartModel {
                         },
                         stops: [
                             [0, Highcharts.getOptions().colors[0]],
-                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                            [1, new Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
                         ]
                     },
                     marker: {

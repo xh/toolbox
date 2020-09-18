@@ -1,9 +1,8 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-
-import {HBoxPage} from './HBoxPage';
-import {VBoxPage} from './VBoxPage';
-import {ToolbarPage} from './ToolbarPage';
+import {hboxPage} from './HBoxPage';
+import {vboxPage} from './VBoxPage';
+import {toolbarPage} from './ToolbarPage';
 
 @HoistModel
 export class ContainersPageModel {
@@ -14,17 +13,17 @@ export class ContainersPageModel {
         tabs: [
             {
                 id: 'hbox',
-                content: HBoxPage,
+                content: hboxPage,
                 title: 'HBox'
             },
             {
                 id: 'vbox',
-                content: VBoxPage,
+                content: vboxPage,
                 title: 'VBox'
             },
             {
                 id: 'toolbars',
-                content: ToolbarPage
+                content: toolbarPage
             }
         ]
     });

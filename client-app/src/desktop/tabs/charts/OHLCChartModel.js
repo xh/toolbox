@@ -1,4 +1,4 @@
-import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {bindable} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
@@ -9,8 +9,8 @@ export class OHLCChartModel {
     @bindable currentSymbol = '';
     @bindable.ref symbols = null;
     numCompanies = 3;
-    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
+    @managed chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
     @bindable aspectRatio = null;
     
     constructor() {
@@ -22,14 +22,19 @@ export class OHLCChartModel {
     
     async doLoadAsync(loadSpec) {
         if (!this.symbols) {
-            let symbols = await XH.portfolioService.getSymbolsAsync();
+            let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
             symbols = symbols.slice(0, this.numCompanies);
             this.setSymbols(symbols);
         }
+
         if (!this.currentSymbol) {
             this.setCurrentSymbol(this.symbols[0]);
         }
-        let series = await XH.portfolioService.getOHLCChartSeriesAsync(this.currentSymbol);
+
+        let series = await XH.portfolioService.getOHLCChartSeriesAsync({
+            symbol: this.currentSymbol,
+            loadSpec
+        }).catchDefault() ?? {};
 
         const groupPixelWidth = 5;
         Object.assign(series, {

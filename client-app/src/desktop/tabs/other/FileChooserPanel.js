@@ -1,8 +1,8 @@
 import React, {Fragment} from 'react';
-import {hoistCmp, HoistModel, managed, creates} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {span, filler} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -11,7 +11,7 @@ import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {pluralize} from '@xh/hoist/utils/js';
 import {wrapper} from '../../common/Wrapper';
 
-export const FileChooserPanel = hoistCmp({
+export const fileChooserPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {

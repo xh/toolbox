@@ -22,13 +22,17 @@ class BootStrap {
         ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
         ensureMonitorsCreated()
-        def services = Utils.xhServices.findAll {it.class.canonicalName.startsWith('io.xh.toolbox')}
+
+        def services = Utils.xhServices.findAll {
+            it.class.canonicalName.startsWith(this.class.package.name)
+        }
         BaseService.parallelInit(services)
+
         ensureUsersCreated()
+        resetGuestUserPassword()
     }
 
     def destroy = {}
-
 
     //------------------------
     // Implementation
@@ -86,11 +90,23 @@ class BootStrap {
                 defaultValue: 'api.fda.gov',
                 groupName: 'Toolbox - Example Apps',
             ],
+            roadmapCategories: [
+                    valueType: 'json',
+                    defaultValue: [
+                            "DASHBOARDS": "analytics",
+                            "GRIDS": "grid",
+                            "UPGRADES": "bolt",
+                            "NEW FEATURES": "favorite",
+                            "OTHER": "experiment"
+                    ],
+                    groupName: 'Toolbox - Example Apps',
+                    clientVisible: true
+            ],
             sourceUrls: [
                 valueType: 'json',
                 defaultValue: [
-                    toolbox: 'https://github.com/exhi/toolbox/blob/develop',
-                    hoistReact: 'https://github.com/exhi/hoist-react/blob/develop'
+                    toolbox: 'https://github.com/xh/toolbox/blob/develop',
+                    hoistReact: 'https://github.com/xh/hoist-react/blob/develop'
                 ],
                 groupName: 'Toolbox',
                 clientVisible: true,
@@ -132,9 +148,9 @@ class BootStrap {
                 groupName: 'Toolbox',
                 note: 'Nested arrays containing user\'s custom dimension choices'
             ],
-            defaultGridMode: [
+            gridSizingMode: [
                 type: 'string',
-                defaultValue: 'STANDARD',
+                defaultValue: 'standard',
                 local: true,
                 groupName: 'Toolbox',
                 note: 'Grid sizing mode'
@@ -144,50 +160,6 @@ class BootStrap {
                 defaultValue: false,
                 groupName: 'Toolbox',
                 note: 'True to expand the docked linked panel by default, false to start collapsed.'
-            ],
-            mobileDims: [
-                type: 'json',
-                defaultValue: [:],
-                local: true,
-                groupName: 'Toolbox',
-                note: 'Object containing user\'s dimension picker value & history'
-            ],
-            portfolioDims: [
-                type: 'json',
-                defaultValue: [
-                        value: ['sector', 'symbol'],
-                        history: [['sector', 'symbol'],
-                                  ['fund', 'trader', 'model'],
-                                  ['region', 'sector']]
-                ],
-                local: true,
-                groupName: 'Toolbox - Example Apps',
-                note: 'Object containing user\'s dimension picker value & history'
-            ],
-            portfolioGridPanelConfig: [
-                type: 'json',
-                defaultValue: [:],
-                local: true,
-                groupName: 'Toolbox - Example Apps'
-            ],
-            portfolioDetailPanelConfig: [
-                type: 'json',
-                defaultValue: [:],
-                local: true,
-                groupName: 'Toolbox - Example Apps'
-            ],
-            portfolioChartsPanelConfig: [
-                type: 'json',
-                defaultValue: [:],
-                local: true,
-                groupName: 'Toolbox - Example Apps'
-            ],
-            recallsPanelConfig: [
-                type: 'json',
-                defaultValue: [:],
-                local: false,
-                groupName: 'Toolbox - Example Apps',
-                note: 'Size of Panel Model'
             ]
         ])
     }
@@ -292,33 +264,33 @@ class BootStrap {
         if (adminUsername && adminPassword) {
             createUserIfNeeded(
                 email: adminUsername,
+                password: adminPassword,
                 firstName: 'Toolbox',
-                lastName: 'Admin',
-                password: adminPassword
+                lastName: 'Admin'
             )
         } else {
             log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
 
         createUserIfNeeded(
-            email: 'toolbox@xh.io',
+            email: guestUserEmail,
+            password: guestUserPwd,
             firstName: 'Toolbox',
-            lastName: 'Demo',
-            password: 'toolbox'
+            lastName: 'Demo'
         )
 
         createUserIfNeeded(
             email: 'norole@xh.io',
+            password: 'password',
             firstName: 'No',
             lastName: 'Role',
-            password: 'password'
         )
 
         createUserIfNeeded(
             email: 'inactive@xh.io',
+            password: 'password',
             firstName: 'Not',
             lastName: 'Active',
-            password: 'password',
             enabled: false
         )
     }
@@ -326,6 +298,12 @@ class BootStrap {
     private void createUserIfNeeded(Map data) {
         def user = User.findByEmail(data.email as String)
         if (!user) new User(data).save()
+    }
+
+    private void resetGuestUserPassword () {
+        def user = User.findByEmail(guestUserEmail)
+        user.setPassword(guestUserPwd)
+        user.save()
     }
 
     private void logStartupMsg() {
@@ -341,4 +319,7 @@ class BootStrap {
 \n
         """)
     }
+
+    private guestUserEmail = 'toolbox@xh.io'
+    private guestUserPwd = 'Hoist_Toolb0x'
 }

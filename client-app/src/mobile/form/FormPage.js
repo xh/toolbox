@@ -1,6 +1,6 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {div, filler, vbox} from '@xh/hoist/cmp/layout';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -8,27 +8,26 @@ import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/mobile/cmp/form';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {
-    label,
-    textInput,
-    select,
-    numberInput,
     buttonGroupInput,
     checkbox,
     dateInput,
+    label,
+    numberInput,
+    searchInput,
+    select,
     switchInput,
     textArea,
-    searchInput
+    textInput
 } from '@xh/hoist/mobile/cmp/input';
-
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 
-export const FormPage = hoistCmp({
+export const formPage = hoistCmp.factory({
 
     model: creates(FormPageModel),
 
     render() {
-        return page({
+        return panel({
             title: 'Form',
             icon: Icon.edit(),
             scrollable: true,

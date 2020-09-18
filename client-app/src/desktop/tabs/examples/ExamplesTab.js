@@ -4,11 +4,11 @@ import {a, code, hbox, p, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {ToolboxLink} from '../../../common/ToolboxLink';
+import {ToolboxLink} from '../../../core/ToolboxLink';
 import {wrapper} from '../../common';
 import './ExamplesTab.scss';
 
-export const ExamplesTab = hoistCmp(
+export const examplesTab = hoistCmp.factory(
     () => wrapper(
         hbox({
             className: 'example-tile-container',

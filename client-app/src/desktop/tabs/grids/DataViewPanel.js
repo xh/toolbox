@@ -1,18 +1,16 @@
 import React from 'react';
-import {hoistCmp, HoistModel, LoadSupport, managed, XH, creates} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {dataView, DataViewModel} from '@xh/hoist/cmp/dataview';
-
 import {wrapper} from '../../common/Wrapper';
 import {dataViewItem} from './DataViewItem';
-import './DataViewItem.scss';
 import {shuffle, take} from 'lodash';
 
-export const DataViewPanel = hoistCmp({
+export const dataViewPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model})  {
@@ -29,11 +27,7 @@ export const DataViewPanel = hoistCmp({
                 icon: Icon.addressCard(),
                 width: 700,
                 height: 400,
-                item: dataView({
-                    model: model.dataViewModel,
-                    rowCls: 'dataview-item',
-                    itemHeight: 70
-                }),
+                item: dataView(),
                 bbar: [
                     refreshButton({
                         text: 'Load new (random) records',
@@ -58,12 +52,15 @@ class Model {
         },
         sortBy: 'name',
         emptyText: 'No companies found...',
-        itemRenderer: (v, {record}) => dataViewItem({record}),
+        elementRenderer: (v, {record}) => dataViewItem({record}),
         contextMenu: [
             'copyCell'
-        ]
+        ],
+        itemHeight: 70,
+        rowClassFn: () => 'dataview-item',
+        stripeRows: true
     });
-    
+
     async doLoadAsync(loadSpec) {
         const {dataViewModel} = this,
             allCustomers = await XH.fetchJson({url: 'customer'}),

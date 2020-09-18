@@ -1,12 +1,12 @@
-import {XH, hoistCmp} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
-import {page} from '@xh/hoist/mobile/cmp/page';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 
-export const HomePage = hoistCmp({
+export const homePage = hoistCmp.factory({
     render() {
-        return page({
+        return panel({
             scrollable: true,
             className: 'toolbox-page xh-tiled-bg',
             items: [
@@ -41,6 +41,12 @@ export const HomePage = hoistCmp({
                     route: 'containers'
                 }),
                 summaryCard({
+                    title: 'Panels',
+                    icon: Icon.window(),
+                    summary: 'Core building block component with support for header and toolbars.',
+                    route: 'panels'
+                }),
+                summaryCard({
                     title: 'Popups',
                     icon: Icon.comment(),
                     summary: 'Dialogs and Toasts.',
@@ -51,6 +57,12 @@ export const HomePage = hoistCmp({
                     icon: Icon.rocket(),
                     summary: 'A collection of FontAwesome SVG icons, available in 3 variants.',
                     route: 'icons'
+                }),
+                summaryCard({
+                    title: 'PinPad',
+                    icon: Icon.unlock(),
+                    summary: 'A specialized PIN input, used for lightweight authentication of users.',
+                    route: 'pinPad'
                 })
             ]
         });

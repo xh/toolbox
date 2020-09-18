@@ -1,18 +1,16 @@
 import React from 'react';
-import {hoistCmp, XH, creates, HoistModel, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {action, observable, bindable} from '@xh/hoist/mobx';
-import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
+import {bindable, observable} from '@xh/hoist/mobx';
+import {box, filler, h3, hbox, p} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-
 import {wrapper} from '../../common/Wrapper';
 
-
-export const PanelSizingPanel = hoistCmp({
+export const panelSizingPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {
@@ -42,7 +40,7 @@ export const PanelSizingPanel = hoistCmp({
             item: panel({
                 title: 'Panels › Panel Sizing',
                 icon: Icon.window(),
-                height: '50vh',
+                height: '60vh',
                 width: '80%',
                 bbar: toolbar(
                     filler(),
@@ -60,7 +58,6 @@ export const PanelSizingPanel = hoistCmp({
                                 title: 'Left Panel',
                                 icon: Icon.arrowToLeft(),
                                 model: model.leftPanelModel,
-                                key: model.leftPanelModel.xhId,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
@@ -92,11 +89,10 @@ export const PanelSizingPanel = hoistCmp({
                                 title: 'Right Panel',
                                 icon: Icon.arrowToRight(),
                                 model: model.rightPanelModel,
-                                key: model.rightPanelModel.xhId,
                                 compactHeader: true,
                                 item: box({
                                     className: 'xh-pad',
-                                    item: 'Collapsible Right'
+                                    item: 'Collapsible Right with minSize and maxSize'
                                 })
                             })
                         ]
@@ -105,11 +101,10 @@ export const PanelSizingPanel = hoistCmp({
                         title: 'Bottom Panel',
                         icon: Icon.arrowToBottom(),
                         model: model.bottomPanelModel,
-                        key: model.bottomPanelModel.xhId,
                         compactHeader: true,
                         item: box({
                             padding: 10,
-                            item: 'Collapsible Bottom'
+                            item: 'Collapsible Bottom with minSize and maxSize'
                         }),
                         headerItems: [
                             relativeTimestamp({
@@ -150,43 +145,38 @@ class Model {
 
     @managed
     @observable.ref
-    leftPanelModel;
+    leftPanelModel = new PanelModel({
+        defaultSize: 150,
+        side: 'left'
+    });
 
     @managed
     @observable.ref
-    rightPanelModel;
+    rightPanelModel = new PanelModel({
+        defaultSize: 150,
+        maxSize: 300,
+        minSize: 150,
+        side: 'right'
+    });
 
     @managed
     @observable.ref
-    bottomPanelModel;
+    bottomPanelModel = new PanelModel({
+        defaultSize: 130,
+        side: 'bottom',
+        maxSize: 350,
+        minSize: 100
+    });
     
     constructor() {
         this.addReaction({
             track: () => this.resizeWhileDragging,
-            run: () => this.setPanelModels(),
+            run: (resizeWhileDragging) => {
+                this.leftPanelModel.setResizeWhileDragging(resizeWhileDragging);
+                this.rightPanelModel.setResizeWhileDragging(resizeWhileDragging);
+                this.bottomPanelModel.setResizeWhileDragging(resizeWhileDragging);
+            },
             fireImmediately: true
-        });
-    }
-
-    @action
-    setPanelModels() {
-        const {resizeWhileDragging} = this;
-        this.leftPanelModel = new PanelModel({
-            resizeWhileDragging,
-            defaultSize: 150,
-            side: 'left'
-        });
-
-        this.rightPanelModel = new PanelModel({
-            resizeWhileDragging,
-            defaultSize: 150,
-            side: 'right'
-        });
-
-        this.bottomPanelModel = new PanelModel({
-            resizeWhileDragging,
-            defaultSize: 130,
-            side: 'bottom'
         });
     }
 

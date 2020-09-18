@@ -1,7 +1,7 @@
 import React from 'react';
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {box, div, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
-import {hoistCmp, creates, uses} from '@xh/hoist/core';
+import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
@@ -22,13 +22,12 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtDateTime, fmtNumber, fmtThousands} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import moment from 'moment';
-
 import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import './InputsPanel.scss';
 import {InputsPanelModel} from './InputsPanelModel';
 
-export const InputsPanel = hoistCmp({
+export const inputsPanel = hoistCmp.factory({
     model: creates(InputsPanelModel),
 
     render() {
@@ -343,13 +342,14 @@ const row = hoistCmp.factory({
 
 const customerOption = hoistCmp.factory(
     ({opt}) => hbox({
+        className: 'xh-pad-half xh-border-bottom',
         items: [
             box({
                 item: opt.isActive ?
                     Icon.checkCircle({className: 'xh-green'}) :
                     Icon.x({className: 'xh-red'}),
                 width: 32,
-                paddingLeft: 8
+                justifyContent: 'center'
             }),
             div(
                 opt.company,
@@ -359,7 +359,8 @@ const customerOption = hoistCmp.factory(
                 })
             )
         ],
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingLeft: 0
     })
 );
 

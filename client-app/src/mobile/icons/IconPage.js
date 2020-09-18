@@ -1,13 +1,13 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {page} from '@xh/hoist/mobile/cmp/page';
-import {table, tbody, tr, th, td} from '@xh/hoist/cmp/layout';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
-
 import './IconPage.scss';
+import {without} from 'lodash';
 
-export const IconPage = hoistCmp({
+export const iconPage = hoistCmp.factory({
     render() {
-        return page({
+        return panel({
             scrollable: true,
             className: 'icon-page',
             item: table(
@@ -25,10 +25,12 @@ export const IconPage = hoistCmp({
 });
 
 function allIcons() {
-    return Object.keys(Icon).map(key => ({
+    const factories = without(Object.keys(Icon), 'icon', 'fileIcon');
+
+    return factories.map(key => ({
         name: key,
-        regular: Icon[key]({size: '2x'}),
-        solid: Icon[key]({prefix: 'fas', size: '2x'}),
-        light: Icon[key]({prefix: 'fal', size: '2x'})
+        regular:    Icon[key]({prefix: 'far', size: '2x'}),
+        solid:      Icon[key]({prefix: 'fas', size: '2x'}),
+        light:      Icon[key]({prefix: 'fal', size: '2x'})
     }));
 }

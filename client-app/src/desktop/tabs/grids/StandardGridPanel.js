@@ -2,10 +2,9 @@ import React from 'react';
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {sampleGrid, wrapper} from '../../common';
 
-import {wrapper, sampleGrid} from '../../common';
-
-export const StandardGridPanel = hoistCmp(
+export const standardGridPanel = hoistCmp.factory(
     () => wrapper({
         description: [
             <p>

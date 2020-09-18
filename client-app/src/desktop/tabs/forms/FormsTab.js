@@ -1,19 +1,18 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
+import {inputsPanel} from './InputsPanel';
+import {formPanel} from './FormPanel';
+import {toolbarFormPanel} from './ToolbarFormPanel';
 
-import {InputsPanel} from './InputsPanel';
-import {FormPanel} from './FormPanel';
-import {ToolbarFormPanel} from './ToolbarFormPanel';
-
-export const FormsTab = hoistCmp(
+export const formsTab = hoistCmp.factory(
     () => tabContainer({
         model: {
             route: 'default.forms',
             switcherPosition: 'left',
             tabs: [
-                {id: 'form', title: 'FormModel', content: FormPanel},
-                {id: 'inputs', title: 'Hoist Inputs', content: InputsPanel},
-                {id: 'toolbarForm', title: 'Toolbar Forms', content: ToolbarFormPanel}
+                {id: 'form', title: 'FormModel', content: formPanel},
+                {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
+                {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
             ]
         },
         className: 'toolbox-tab'

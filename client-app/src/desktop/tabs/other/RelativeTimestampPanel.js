@@ -5,12 +5,12 @@ import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {action, observable, bindable} from '@xh/hoist/mobx';
 import {random, sample} from 'lodash';
 import moment from 'moment';
 import {wrapper} from '../../common/Wrapper';
 
-export const RelativeTimestampPanel = hoistCmp({
+export const relativeTimestampPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {
@@ -36,13 +36,13 @@ export const RelativeTimestampPanel = hoistCmp({
                             bind: 'timestamp',
                             options: {
                                 allowFuture: true,
-                                prefix: 'Refreshed',
+                                prefix: model.prefix,
                                 short: model.useShortFmt
                             }
                         })
                     }),
                     box({
-                        margin: 10,
+                        margin: '10 10 40 10',
                         style: {opacity: 0.5},
                         item: new Date(model.timestamp).toString()
                     })
@@ -87,19 +87,25 @@ export const RelativeTimestampPanel = hoistCmp({
 
 @HoistModel
 class Model {
-    @bindable timestamp = new Date();
+    @observable prefix = 'Refreshed';
+    @observable timestamp = Date.now();
     @bindable useShortFmt = false;
 
+    @action
     setToNow() {
-        this.setTimestamp(Date.now());
+        this.timestamp = Date.now();
     }
 
+    @action
     setToPast() {
-        this.setTimestamp(moment().subtract(randVal(), randUnit()).valueOf());
+        this.prefix = 'Refreshed';
+        this.timestamp = moment().subtract(randVal(), randUnit()).valueOf();
     }
 
+    @action
     setToFuture() {
-        this.setTimestamp(moment().add(randVal(), randUnit()).valueOf());
+        this.prefix = 'Scheduled';
+        this.timestamp = moment().add(randVal(), randUnit()).valueOf();
     }
 }
 

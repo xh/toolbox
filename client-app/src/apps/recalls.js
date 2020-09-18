@@ -1,17 +1,19 @@
+import '../Bootstrap';
+
 import {XH} from '@xh/hoist/core';
+import {AppContainer} from '@xh/hoist/desktop/appcontainer';
+import {guestUserLoginMsg} from '../core/guestUserLoginMsg';
 import {App} from '../examples/recalls/App';
 import {AppModel} from '../examples/recalls/AppModel';
-import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
 XH.renderApp({
     clientAppCode: 'recalls',
-    clientAppName: 'Recalls',
+    clientAppName: 'XH FDA Recalls',
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,
-    isMobile: false,
+    isMobileApp: false,
     isSSO: false,
-    idleDetectionEnabled: true,
     checkAccess: 'APP_READER',
-    loginMessage: '👤 toolbox@xh.io + 🔑 toolbox'
+    loginMessage: guestUserLoginMsg
 });

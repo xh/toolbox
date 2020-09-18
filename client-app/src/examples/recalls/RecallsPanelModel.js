@@ -2,28 +2,30 @@
  * This file belongs to Hoist, an application development toolkit
  * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
  *
- * Copyright © 2019 Extremely Heavy Industries Inc.
+ * Copyright © 2020 Extremely Heavy Industries Inc.
  */
-
-import {XH, HoistModel, LoadSupport} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, persist, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
-import {managed} from '@xh/hoist/core/mixins';
-import {GridModel} from '@xh/hoist/cmp/grid';
-import {localDateCol} from '@xh/hoist/cmp/grid/columns';
+import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
-
 import {DetailsPanelModel} from './DetailsPanelModel';
+import {PERSIST_APP} from './AppModel';
+import {uniqBy} from 'lodash';
 
 @HoistModel
 @LoadSupport
 export class RecallsPanelModel {
 
+    persistWith = PERSIST_APP;
+
     @bindable
     searchQuery = '';
 
+
     @bindable
+    @persist
     groupBy = null;
 
     @managed
@@ -32,7 +34,6 @@ export class RecallsPanelModel {
     @managed
     gridModel = new GridModel({
         store: {
-            idSpec: this.createId,
             processRawData: this.processRecord,
             fields: [{
                 name: 'recallDate',
@@ -44,8 +45,8 @@ export class RecallsPanelModel {
         enableExport: true,
         rowBorders: true,
         showHover: true,
-        compact: XH.appModel.useCompactGrids,
-        stateModel: 'recalls-main-grid',
+        sizingMode: XH.appModel.gridSizingMode,
+        persistWith: this.persistWith,
         columns: [
             {
                 field: 'classification',
@@ -104,7 +105,7 @@ export class RecallsPanelModel {
         this.addReaction({
             track: () => this.searchQuery,
             run: () => this.loadAsync(),
-            delay: ONE_SECOND
+            debounce: ONE_SECOND
         });
 
         this.addReaction({
@@ -127,9 +128,12 @@ export class RecallsPanelModel {
                 params: {searchQuery: this.searchQuery},
                 loadSpec
             })
-            .then(rxRecallEntries => {
+            .then(entries => {
+                // Approximate (and enforce) a unique id for this rather opaque API
+                entries.forEach(it => {it.id = it.openfda.brand_name[0] + it.recall_number});
+                entries = uniqBy(entries, 'id');
                 const {gridModel} = this;
-                gridModel.loadData(rxRecallEntries);
+                gridModel.loadData(entries);
                 if (!gridModel.hasSelection) gridModel.selectFirst();
             })
             .catchDefault();
@@ -145,10 +149,6 @@ export class RecallsPanelModel {
             recallingFirm: rawRec.recalling_firm,
             reason: rawRec.reason_for_recall
         };
-    }
-
-    createId(record) {
-        return record.brandName + record.recall_number;
     }
 
     classificationRenderer(val) {
