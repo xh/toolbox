@@ -12,6 +12,7 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {DetailsTableModel} from './DetailsTableModel';
 import {PERSIST_APP} from './AppModel';
+import {uniqBy} from 'lodash';
 
 @HoistModel
 @LoadSupport
@@ -33,7 +34,6 @@ export class RecallsPanelModel {
     @managed
     gridModel = new GridModel({
         store: {
-            idSpec: this.createId,
             processRawData: this.processRecord,
             fields: [{
                 name: 'recallDate',
@@ -128,9 +128,12 @@ export class RecallsPanelModel {
                 params: {searchQuery: this.searchQuery},
                 loadSpec
             })
-            .then(rxRecallEntries => {
+            .then(entries => {
+                // Approximate (and enforce) a unique id for this rather opaque API
+                entries.forEach(it => {it.id = it.openfda.brand_name[0] + it.recall_number});
+                entries = uniqBy(entries, 'id');
                 const {gridModel} = this;
-                gridModel.loadData(rxRecallEntries);
+                gridModel.loadData(entries);
                 if (!gridModel.hasSelection) gridModel.selectFirst();
             })
             .catchDefault();
@@ -146,10 +149,6 @@ export class RecallsPanelModel {
             recallingFirm: rawRec.recalling_firm,
             reason: rawRec.reason_for_recall
         };
-    }
-
-    createId(rawRec) {
-        return rawRec.openfda.brand_name[0] + rawRec.recall_number;
     }
 
     classificationRenderer(val) {
