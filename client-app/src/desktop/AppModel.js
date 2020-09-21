@@ -158,16 +158,38 @@ export class AppModel {
     globalSearchSelection;
 
     get globalSearchOptions() {
-        const toLabel = str => str.replace('default.', '')
-            .replace('.', ' > ');
-        
-        return XH.routerModel.getRouteNames(XH.routerModel.router.rootNode)
-            .filter(it => it.split('.').length > 2)
-            .map(it => ({value: it, label: toLabel(it)}));
+        const {rootNode} = XH.routerModel.router,
+            groupedRoutes = this.getRoutesAsGroupedOptions(rootNode),
+            unNested = groupedRoutes[0].options[0].options;
+
+        return unNested;
     }
 
     forwardToTopic(val) {
         if (val) XH.navigate(val);
+    }
+
+    getRoutesAsGroupedOptions(node, value = '') {
+        const option = {
+                label: node.name,
+                value: value + node.name
+            },
+            ret = [];
+
+        if (node.children?.length) {
+            option.options = [];
+        }
+
+        node.children.forEach(child => {
+            const value = option.value ? option.value + '.' : '';
+            this.getRoutesAsGroupedOptions(child, value)
+                .forEach(it => {
+                    option.options.push(it);
+                });
+        });
+
+        ret.push(option);
+        return ret;
     }
 
 }
