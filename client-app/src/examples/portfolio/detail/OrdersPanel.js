@@ -20,7 +20,6 @@ export const ordersPanel = hoistCmp.factory({
             mask: (positionId == null || loadModel.isPending),
             bbar: [
                 filterChooser({
-                    leftIcon: Icon.filter(),
                     placeholder: 'Filter orders...',
                     enableClear: true,
                     flex: 10,
