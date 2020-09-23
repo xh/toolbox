@@ -17,9 +17,7 @@ export const roadmapViewItem = hoistCmp.factory({
     model: null,
 
     render({record}) {
-        const {category, name, description, releaseVersion, status, gitLinks, lastUpdated} = record.data,
-            gitIcon = Icon.icon({iconName: 'github', prefix: 'fab', size: '2x'});
-
+        const {category, name, description, releaseVersion, status, gitLinks, lastUpdated} = record.data;
         return vbox({
             className: 'tb-roadmap-item',
             items: [
@@ -38,11 +36,7 @@ export const roadmapViewItem = hoistCmp.factory({
                         ]
                     }),
                     filler(),
-                    popover({
-                        minimal: true,
-                        target: button({icon: gitIcon}),
-                        content: menu({items: getGitMenuItems(gitLinks)})
-                    }),
+                    getGitIcon(gitLinks),
                     popover({
                         popoverClassName: 'tb-roadmap__popover',
                         minimal: true,
@@ -102,10 +96,24 @@ function getCategoryIcon(category) {
     return Icon[iconName]({className: 'xh-blue', prefix: 'fal'});
 }
 
-function getGitMenuItems(gitLinks) {
-    if (!gitLinks) {
-        return [menuItem({text: 'No linked Github issues yet.'})];
+function getGitIcon(gitLinks) {
+    if (!gitLinks) return null;
+    const gitLinksList = gitLinks.split('\n'),
+        gitIcon = Icon.icon({iconName: 'github', prefix: 'fab', size: '2x'});
+
+    if (gitLinksList.length === 1) {
+        return button({icon: gitIcon, onClick: () => window.open(gitLinksList[0])});
+    } else {
+        return popover({
+            minimal: true,
+            target: button({icon: gitIcon}),
+            content: menu({items: getGitMenuItems(gitLinks)})
+        });
     }
+}
+
+function getGitMenuItems(gitLinks) {
+    if (!gitLinks) return;
 
     return gitLinks.split('\n').map(link => {
         return menuItem({
