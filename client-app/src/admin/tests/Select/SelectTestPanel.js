@@ -4,6 +4,8 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {box, div, fragment, hbox, label, p, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
+
+import {usStates} from '../../../core/data';
 import {SelectTestModel} from './SelectTestModel.js';
 import './SelectTestPanel.scss';
 
@@ -37,9 +39,7 @@ export const SelectTestPanel = hoistCmp({
                         name: 'Select queryFn & enableCreate & optionRenderer',
                         bind: 'asyncCreatableValue',
                         selectProps: {...customerProps, enableCreate: true}
-                    })
-                ),
-                vbox(
+                    }),
                     example({
                         name: 'Select (with grouped options)',
                         bind: 'groupedValue',
@@ -53,7 +53,9 @@ export const SelectTestPanel = hoistCmp({
                         selectProps: {
                             options: recipes
                         }
-                    }),
+                    })
+                ),
+                vbox(
                     example({
                         name: 'Select (with many options) enableWindowed & leftIcon',
                         bind: 'bigValue',
@@ -84,6 +86,17 @@ export const SelectTestPanel = hoistCmp({
                             ...customerProps, 
                             leftIcon: Icon.office(),
                             enableCreate: true
+                        }
+                    }),
+                    example({
+                        name: 'Select with leftIcon & enableMulti',
+                        bind: 'enableMulitLeftIcon',
+                        selectProps: {
+                            width: 350,
+                            options: usStates,
+                            leftIcon: Icon.globe(),
+                            enableMulti: true,
+                            placeholder: 'Select state(s)...'
                         }
                     })
                 )

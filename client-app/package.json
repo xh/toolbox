@@ -36,10 +36,10 @@
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "^6.0.0-SNAPSHOT",
+    "@xh/hoist-dev-utils": "~5.4.0",
     "cross-env": "~7.0.2",
-    "husky": "~4.2.1",
-    "lint-staged": "~10.2.10",
+    "husky": "~4.3.0",
+    "lint-staged": "~10.4.0",
     "stylelint": "~13.6.0",
     "stylelint-config-standard": "~20.0.0",
     "stylelint-scss": "~3.18.0"
