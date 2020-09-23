@@ -26,11 +26,11 @@ export class CubeModel {
         });
     }
 
-    async doLoadAsync() {
+    async doLoadAsync(loadSpec) {
         const LTM = this.parent.loadTimesModel;
         let orders = [];
         await LTM.withLoadTime('Fetch orders', async () => {
-            orders = await XH.portfolioService.getAllOrdersAsync();
+            orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
             orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
         });
 

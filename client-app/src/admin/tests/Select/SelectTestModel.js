@@ -6,23 +6,40 @@ import {times} from 'lodash';
 export class SelectTestModel {
     @bindable
     selectValue;
+
     @bindable
     creatableValue;
+
     @bindable
     asyncValue;
+
     @bindable
     asyncCreatableValue;
+
     @bindable
     groupedValue;
+
     @bindable.ref
     objectValue
+
     @bindable
     bigValue;
+
     @bindable
     numOptions = 1000;
+
     @bindable
     bigOptions;
 
+    @bindable
+    asyncCreatableValue2;
+
+    @bindable.ref
+    objectValue2
+
+    @bindable.ref
+    enableMulitLeftIcon
+    
     constructor() {
         this.addReaction({
             track: () => this.numOptions,
