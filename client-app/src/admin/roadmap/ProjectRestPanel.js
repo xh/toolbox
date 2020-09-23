@@ -3,6 +3,7 @@ import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} 
 import {dateTimeRenderer} from '@xh/hoist/format';
 import {codeInput, textArea} from '@xh/hoist/desktop/cmp/input';
 import {hoistCmp} from '@xh/hoist/core';
+import {toNumber} from 'lodash';
 
 export const projectRestPanel = hoistCmp.factory({
     render() {
@@ -33,6 +34,10 @@ const modelSpec = {
             {
                 name: 'description',
                 required: true
+            },
+            {
+                name: 'phaseOrder',
+                editable: false
             },
             {
                 name: 'phaseName',
@@ -74,8 +79,13 @@ const modelSpec = {
     },
     unit: 'project',
     filterFields: ['name', 'status', 'category'],
-    sortBy: 'sortOrder',
-    groupBy: 'phaseName',
+    sortBy: ['phaseOrder', 'sortOrder'],
+    groupBy: 'phaseOrder',
+    groupSortFn: (a, b) => toNumber(a) - toNumber(b),
+    groupRowRenderer: ({node}) => {
+        const projectRec = node.allLeafChildren[0].data;
+        return projectRec.data.phaseName;
+    },
     columns: [
         {
             field: 'sortOrder',
@@ -100,7 +110,10 @@ const modelSpec = {
         },
         {
             field: 'phaseName',
-            width: 100,
+            hidden: true
+        },
+        {
+            field: 'phaseOrder',
             hidden: true
         },
         {

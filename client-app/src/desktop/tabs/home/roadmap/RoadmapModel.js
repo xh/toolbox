@@ -4,6 +4,7 @@ import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {roadmapViewItem} from './RoadmapViewItem';
 import './RoadmapView.scss';
 import {Icon} from '@xh/hoist/icon';
+import {toNumber} from 'lodash';
 
 @HoistModel
 @LoadSupport
@@ -26,11 +27,9 @@ export class RoadmapModel {
         groupBy: 'sortedPhase',
         groupRowHeight: 32,
         groupSortFn: (a, b) => {
-            if (this.statusFilter === 'showUpcoming') {
-                return a >= b ? 1 : -1;
-            } else {
-                return a >= b ? -1 : 1;
-            }
+            a = toNumber(a);
+            b = toNumber(b);
+            return this.statusFilter === 'showUpcoming' ? a - b : b - a;
         },
         groupRowRenderer: ({node}) => {
             const projectRec = node.allLeafChildren[0].data;
