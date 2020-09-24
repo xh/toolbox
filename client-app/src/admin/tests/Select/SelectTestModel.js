@@ -37,6 +37,8 @@ export class SelectTestModel {
     @bindable.ref
     objectValue2
 
+    @bindable.ref
+    enableMulitLeftIcon
     
     constructor() {
         this.addReaction({
