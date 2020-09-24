@@ -8,9 +8,13 @@ import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
 import {AppModel} from './AppModel';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
+import {useHotkeys} from '@xh/hoist/desktop/hooks';
+
 import xhLogo from '../core/img/xh-toolbox-logo.png';
+
 import '../core/Toolbox.scss';
 import './App.scss';
+
 
 export const App = hoistCmp({
     displayName: 'App',
@@ -25,16 +29,27 @@ export const App = hoistCmp({
                     tabSwitcher()
                 ],
                 rightItems: [
-                    select({
-                        width: 300,
-                        leftIcon: Icon.search(), 
-                        bind: 'globalSearchSelection', 
-                        options: model.globalSearchOptions,
-                        placeholder: 'Search for a component...',
-                        hideDropdownIndicator: true,
-                        enableClear: true,
-                        onChange: (val) => model.forwardToTopic(val)
-                    }),
+                    useHotkeys(
+                        select({
+                            ref: model.globalSearchSelectRef,
+                            width: 300,
+                            leftIcon: Icon.search(), 
+                            bind: 'globalSearchSelection', 
+                            options: model.globalSearchOptions,
+                            placeholder: 'Search for a component...(s)',
+                            hideDropdownIndicator: true,
+                            enableClear: true,
+                            onChange: (val) => model.forwardToTopic(val)
+                        }),
+                        [
+                            {
+                                global: true,
+                                combo: 's',
+                                label: 'Go to search',
+                                onKeyUp: () => model.focus()
+                            }
+                        ]
+                    ),
                     webSocketIndicator({iconOnly: true, marginRight: 4}),
                     appBarSeparator()
                 ],

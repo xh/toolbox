@@ -18,6 +18,8 @@ import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
 import {bindable} from '@xh/hoist/mobx';
+import {createRef} from 'react';
+import {wait} from '@xh/hoist/promise';
 
 @HoistAppModel
 export class AppModel {
@@ -157,6 +159,8 @@ export class AppModel {
     @bindable
     globalSearchSelection;
 
+    globalSearchSelectRef = createRef();
+
     get globalSearchOptions() {
         const {rootNode} = XH.routerModel.router,
             groupedRoutes = this.getRoutesAsGroupedOptions(rootNode),
@@ -167,6 +171,8 @@ export class AppModel {
 
     forwardToTopic(val) {
         if (val) XH.navigate(val);
+        this.blur();
+        wait(100).then(() => this.focus());
     }
 
     getRoutesAsGroupedOptions(node, value = '') {
@@ -190,6 +196,14 @@ export class AppModel {
 
         ret.push(option);
         return ret;
+    }
+
+    focus() {
+      this.globalSearchSelectRef.current?.reactSelectRef?.current?.focus();
+    }
+
+    blur() {
+      this.globalSearchSelectRef.current?.reactSelectRef?.current?.blur();
     }
 
 }
