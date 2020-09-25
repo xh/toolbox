@@ -38,7 +38,11 @@ export class GridTestModel {
     @bindable useTransactions = true;
     @bindable useDeltaSort = true;
     @bindable disableSelect = false;
+
     @bindable colChooserCommitOnChange = true;
+    @bindable colChooserShowRestoreDefaults = true;
+    @bindable colChooserWidth = 520;
+    @bindable colChooserHeight = 300;
 
     @bindable
     @persist
@@ -78,7 +82,10 @@ export class GridTestModel {
                 this.disableSelect,
                 this.autosizeMode,
                 this.persistType,
-                this.colChooserCommitOnChange
+                this.colChooserCommitOnChange,
+                this.colChooserShowRestoreDefaults,
+                this.colChooserWidth,
+                this.colChooserHeight
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -243,6 +250,7 @@ export class GridTestModel {
 
     createGridModel() {
         const {persistType} = this;
+
         return new GridModel({
             persistWith: persistType ? {[persistType]: 'persistTest'} : null,
             selModel: {mode: 'multiple'},
@@ -258,7 +266,10 @@ export class GridTestModel {
                 useDeltaSort: this.useDeltaSort
             },
             colChooserModel: {
-                commitOnChange: this.colChooserCommitOnChange
+                commitOnChange: this.colChooserCommitOnChange,
+                showRestoreDefaults: this.colChooserShowRestoreDefaults,
+                width: this.colChooserWidth,
+                height: this.colChooserHeight
             },
             autosizeOptions: {
                 mode: this.autosizeMode

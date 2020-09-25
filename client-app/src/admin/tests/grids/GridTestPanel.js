@@ -1,4 +1,4 @@
-import {filler, span, vbox} from '@xh/hoist/cmp/layout';
+import {filler, label, span, vbox} from '@xh/hoist/cmp/layout';
 import {fmtNumber} from '@xh/hoist/format';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
@@ -30,7 +30,8 @@ export const GridTestPanel = hoistCmp({
                     })
                 }),
                 bbar1(),
-                bbar2()
+                bbar2(),
+                bbar3()
             ]
         });
     }
@@ -158,13 +159,6 @@ const bbar2 = hoistCmp.factory(
             labelAlign: 'left'
         }),
         toolbarSep(),
-        switchInput({
-            bind: 'colChooserCommitOnChange',
-            label: 'Chooser CommitOnChange',
-            labelAlign: 'left'
-        }),
-        colChooserButton(),
-        toolbarSep(),
         tooltip({
             content: 'persistWith',
             item: select({
@@ -179,6 +173,35 @@ const bbar2 = hoistCmp.factory(
         }),
         storeFilterField({
             includeFields: ['symbol', 'trader']
+        })
+    )
+);
+
+const bbar3 = hoistCmp.factory(
+    ({model}) => toolbar(
+        switchInput({
+            bind: 'colChooserCommitOnChange',
+            label: 'Chooser CommitOnChange',
+            labelAlign: 'left'
+        }),
+        switchInput({
+            bind: 'colChooserShowRestoreDefaults',
+            label: 'Chooser ShowRestoreDefaults',
+            labelAlign: 'left'
+        }),
+        toolbarSep(),
+        label('Width'),
+        numberInput({
+            bind: 'colChooserWidth',
+            width: 60
+        }),
+        label('Height'),
+        numberInput({
+            bind: 'colChooserHeight',
+            width: 60
+        }),
+        colChooserButton({
+            key: model.gridModel.xhId
         })
     )
 );
