@@ -21,6 +21,11 @@ export const agGridOptions = hoistCmp.factory({
                     ]
                 }),
                 switchInput({
+                    bind: 'hideHeaders',
+                    label: 'Hide Headers',
+                    labelAlign: 'left'
+                }),
+                switchInput({
                     bind: 'stripeRows',
                     label: 'Striped',
                     labelAlign: 'left'
