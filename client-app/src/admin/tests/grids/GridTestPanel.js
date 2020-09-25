@@ -1,12 +1,12 @@
-import {filler, span, vbox} from '@xh/hoist/cmp/layout';
+import {filler, label, span, vbox} from '@xh/hoist/cmp/layout';
 import {fmtNumber} from '@xh/hoist/format';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {numberInput, switchInput, select} from '@xh/hoist/desktop/cmp/input';
-import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {numberInput, switchInput, select, textInput} from '@xh/hoist/desktop/cmp/input';
+import {button, refreshButton, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {grid} from '@xh/hoist/cmp/grid';
 import {tooltip} from '@xh/hoist/kit/blueprint';
 import {GridTestModel} from './GridTestModel';
@@ -30,7 +30,8 @@ export const GridTestPanel = hoistCmp({
                     })
                 }),
                 bbar1(),
-                bbar2()
+                bbar2(),
+                bbar3()
             ]
         });
     }
@@ -157,6 +158,7 @@ const bbar2 = hoistCmp.factory(
             label: 'Disable Day < 0 Selection',
             labelAlign: 'left'
         }),
+        toolbarSep(),
         tooltip({
             content: 'persistWith',
             item: select({
@@ -171,6 +173,45 @@ const bbar2 = hoistCmp.factory(
         }),
         storeFilterField({
             includeFields: ['symbol', 'trader']
+        }),
+        toolbarSep(),
+        label('Restore Warning'),
+        textInput({
+            bind: 'restoreDefaultsWarning',
+            enableClear: true,
+            width: 300
+        })
+    )
+);
+
+const bbar3 = hoistCmp.factory(
+    ({model}) => toolbar(
+        'Chooser:',
+        colChooserButton({
+            gridModel: model.gridModel
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'colChooserCommitOnChange',
+            label: 'CommitOnChange',
+            labelAlign: 'left'
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'colChooserShowRestoreDefaults',
+            label: 'ShowRestoreDefaults',
+            labelAlign: 'left'
+        }),
+        toolbarSep(),
+        label('Width'),
+        numberInput({
+            bind: 'colChooserWidth',
+            width: 60
+        }),
+        label('Height'),
+        numberInput({
+            bind: 'colChooserHeight',
+            width: 60
         })
     )
 );

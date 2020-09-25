@@ -119,7 +119,7 @@ export class SampleTreeGridModel {
             selModel: {mode: 'multiple'},
             sortBy: 'pnl|desc|abs',
             emptyText: 'No records found...',
-            enableColChooser: true,
+            colChooserModel: true,
             enableExport: true,
             sizingMode: XH.appModel.gridSizingMode,
             columns: [

@@ -20,7 +20,7 @@ export class OrdersPanelModel {
             groupBy: 'dir',
             sortBy: 'time|desc',
             emptyText: 'No orders found...',
-            enableColChooser: true,
+            colChooserModel: true,
             enableExport: true,
             rowBorders: true,
             showHover: true,
