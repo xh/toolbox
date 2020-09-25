@@ -17,9 +17,7 @@ import {gridsTab} from './tabs/grids/GridsTab';
 import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
-import {bindable} from '@xh/hoist/mobx';
-import {createRef} from 'react';
-import {wait} from '@xh/hoist/promise';
+
 
 @HoistAppModel
 export class AppModel {
@@ -155,55 +153,4 @@ export class AppModel {
             }
         ];
     }
-
-    @bindable
-    globalSearchSelection;
-
-    globalSearchSelectRef = createRef();
-
-    get globalSearchOptions() {
-        const {rootNode} = XH.routerModel.router,
-            groupedRoutes = this.getRoutesAsGroupedOptions(rootNode),
-            unNested = groupedRoutes[0].options[0].options;
-
-        return unNested;
-    }
-
-    forwardToTopic(val) {
-        if (val) XH.navigate(val);
-        this.blur();
-        wait(100).then(() => this.focus());
-    }
-
-    getRoutesAsGroupedOptions(node, value = '') {
-        const option = {
-                label: node.name,
-                value: value + node.name
-            },
-            ret = [];
-
-        if (node.children?.length) {
-            option.options = [];
-        }
-
-        node.children.forEach(child => {
-            const value = option.value ? option.value + '.' : '';
-            this.getRoutesAsGroupedOptions(child, value)
-                .forEach(it => {
-                    option.options.push(it);
-                });
-        });
-
-        ret.push(option);
-        return ret;
-    }
-
-    focus() {
-      this.globalSearchSelectRef.current?.reactSelectRef?.current?.focus();
-    }
-
-    blur() {
-      this.globalSearchSelectRef.current?.reactSelectRef?.current?.blur();
-    }
-
 }
