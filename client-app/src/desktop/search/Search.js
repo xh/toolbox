@@ -55,7 +55,14 @@ class Model {
   }
 
   forwardToTopic(val) {
-      if (val) XH.navigate(val);
+      if (val) {
+          XH.navigate(val);
+          XH.track({
+              category: 'Global Search',
+              message: 'Selected result',
+              data: {topic: val}
+          });
+      }
       this.blur();
       wait(100).then(() => this.focus());
   }
