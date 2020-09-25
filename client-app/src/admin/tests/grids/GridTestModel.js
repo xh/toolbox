@@ -41,8 +41,10 @@ export class GridTestModel {
 
     @bindable colChooserCommitOnChange = true;
     @bindable colChooserShowRestoreDefaults = true;
-    @bindable colChooserWidth = 520;
-    @bindable colChooserHeight = 300;
+    @bindable colChooserWidth = null;
+    @bindable colChooserHeight = null;
+
+    @bindable restoreDefaultsMessage = 'Restoring grid defaults will take place immediately. Do you wish to proceed?';
 
     @bindable
     @persist
@@ -85,7 +87,8 @@ export class GridTestModel {
                 this.colChooserCommitOnChange,
                 this.colChooserShowRestoreDefaults,
                 this.colChooserWidth,
-                this.colChooserHeight
+                this.colChooserHeight,
+                this.restoreDefaultsMessage
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -256,6 +259,7 @@ export class GridTestModel {
             selModel: {mode: 'multiple'},
             sortBy: 'id',
             emptyText: 'No records found...',
+            restoreDefaultsMessage: this.restoreDefaultsMessage,
             store: this.tree && this.showSummary && this.loadRootAsSummary ? {
                 loadRootAsSummary: true
             }: undefined,
@@ -268,8 +272,8 @@ export class GridTestModel {
             colChooserModel: {
                 commitOnChange: this.colChooserCommitOnChange,
                 showRestoreDefaults: this.colChooserShowRestoreDefaults,
-                width: this.colChooserWidth,
-                height: this.colChooserHeight
+                width: this.colChooserWidth ?? undefined,
+                height: this.colChooserHeight ?? undefined
             },
             autosizeOptions: {
                 mode: this.autosizeMode
@@ -326,6 +330,11 @@ export class GridTestModel {
                 }
             ]
         });
+    }
+
+    @action
+    resetRestoreDefaultsMessage() {
+        this.restoreDefaultsMessage = 'Restoring grid defaults will take place immediately. Do you wish to proceed?';
     }
 
     @action

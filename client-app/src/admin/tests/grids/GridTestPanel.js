@@ -5,7 +5,7 @@ import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {numberInput, switchInput, select} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, switchInput, select, textInput} from '@xh/hoist/desktop/cmp/input';
 import {button, refreshButton, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {grid} from '@xh/hoist/cmp/grid';
 import {tooltip} from '@xh/hoist/kit/blueprint';
@@ -173,6 +173,18 @@ const bbar2 = hoistCmp.factory(
         }),
         storeFilterField({
             includeFields: ['symbol', 'trader']
+        }),
+        toolbarSep(),
+        label('Grid RestoreDefaultsMessage'),
+        textInput({
+            bind: 'restoreDefaultsMessage',
+            enableClear: true,
+            flex: 1
+        }),
+        button({
+            icon: Icon.reset(),
+            tooltip: 'Reset to default message',
+            onClick: () => model.resetRestoreDefaultsMessage()
         })
     )
 );
@@ -201,7 +213,7 @@ const bbar3 = hoistCmp.factory(
             width: 60
         }),
         colChooserButton({
-            key: model.gridModel.xhId
+            gridModel: model.gridModel
         })
     )
 );
