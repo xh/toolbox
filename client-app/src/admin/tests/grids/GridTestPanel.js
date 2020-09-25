@@ -1,4 +1,4 @@
-import {filler, span} from '@xh/hoist/cmp/layout';
+import {filler, span, vbox} from '@xh/hoist/cmp/layout';
 import {fmtNumber} from '@xh/hoist/format';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
@@ -16,16 +16,22 @@ export const GridTestPanel = hoistCmp({
     model: creates(GridTestModel),
 
     render({model}) {
-        return panel({
-            mask: 'onLoad',
-            key: model.gridModel.xhId,
-            item: grid({
-                agOptions: {
-                    isRowSelectable: ({data: record}) => !model.disableSelect || record.get('day') > 0
-                }
-            }),
-            tbar: tbar(),
-            bbar: bbar()
+        return vbox({
+            flex: 1,
+            items: [
+                tbar(),
+                panel({
+                    mask: 'onLoad',
+                    key: model.gridModel.xhId,
+                    item: grid({
+                        agOptions: {
+                            isRowSelectable: ({data: record}) => !model.disableSelect || record.get('day') > 0
+                        }
+                    })
+                }),
+                bbar1(),
+                bbar2()
+            ]
         });
     }
 });
@@ -99,7 +105,7 @@ const tbar = hoistCmp.factory(
     )
 );
 
-const bbar = hoistCmp.factory(
+const bbar1 = hoistCmp.factory(
     ({model}) => toolbar(
         switchInput({
             bind: 'showSummary',
@@ -139,13 +145,13 @@ const bbar = hoistCmp.factory(
             label: 'Delta Sort',
             disabled: model.tree,
             labelAlign: 'left'
-        }),
+        })
+    )
+);
+
+const bbar2 = hoistCmp.factory(
+    ({model}) => toolbar(
         toolbarSep(),
-        switchInput({
-            bind: 'disableSelect',
-            label: 'Disable Day < 0 Selection',
-            labelAlign: 'left'
-        }),
         switchInput({
             bind: 'disableSelect',
             label: 'Disable Day < 0 Selection',
@@ -163,7 +169,6 @@ const bbar = hoistCmp.factory(
                 ]
             })
         }),
-        filler(),
         storeFilterField({
             includeFields: ['symbol', 'trader']
         })

@@ -33,7 +33,6 @@ export const [DimensionManager, dimensionManager] = hoistCmp.withFactory({
 
         return panel({
             item: grid({
-                hideHeaders: true,
                 agOptions: {groupRowRendererParams: {suppressCount: true}}
             }),
             bbar: [
