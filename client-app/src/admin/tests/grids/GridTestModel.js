@@ -44,7 +44,7 @@ export class GridTestModel {
     @bindable colChooserWidth = null;
     @bindable colChooserHeight = null;
 
-    @bindable restoreDefaultsMessage = 'Restoring grid defaults will take place immediately. Do you wish to proceed?';
+    @bindable restoreDefaultsWarning = GridModel.DEFAULT_RESTORE_DEFAULTS_WARNING;
 
     @bindable
     @persist
@@ -88,7 +88,7 @@ export class GridTestModel {
                 this.colChooserShowRestoreDefaults,
                 this.colChooserWidth,
                 this.colChooserHeight,
-                this.restoreDefaultsMessage
+                this.restoreDefaultsWarning
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -259,7 +259,7 @@ export class GridTestModel {
             selModel: {mode: 'multiple'},
             sortBy: 'id',
             emptyText: 'No records found...',
-            restoreDefaultsMessage: this.restoreDefaultsMessage,
+            restoreDefaultsWarning: this.restoreDefaultsWarning,
             store: this.tree && this.showSummary && this.loadRootAsSummary ? {
                 loadRootAsSummary: true
             }: undefined,
@@ -330,11 +330,6 @@ export class GridTestModel {
                 }
             ]
         });
-    }
-
-    @action
-    resetRestoreDefaultsMessage() {
-        this.restoreDefaultsMessage = 'Restoring grid defaults will take place immediately. Do you wish to proceed?';
     }
 
     @action

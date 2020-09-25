@@ -175,30 +175,31 @@ const bbar2 = hoistCmp.factory(
             includeFields: ['symbol', 'trader']
         }),
         toolbarSep(),
-        label('Grid RestoreDefaultsMessage'),
+        label('Restore Warning'),
         textInput({
-            bind: 'restoreDefaultsMessage',
+            bind: 'restoreDefaultsWarning',
             enableClear: true,
-            flex: 1
-        }),
-        button({
-            icon: Icon.reset(),
-            tooltip: 'Reset to default message',
-            onClick: () => model.resetRestoreDefaultsMessage()
+            width: 300
         })
     )
 );
 
 const bbar3 = hoistCmp.factory(
     ({model}) => toolbar(
+        'Chooser:',
+        colChooserButton({
+            gridModel: model.gridModel
+        }),
+        toolbarSep(),
         switchInput({
             bind: 'colChooserCommitOnChange',
-            label: 'Chooser CommitOnChange',
+            label: 'CommitOnChange',
             labelAlign: 'left'
         }),
+        toolbarSep(),
         switchInput({
             bind: 'colChooserShowRestoreDefaults',
-            label: 'Chooser ShowRestoreDefaults',
+            label: 'ShowRestoreDefaults',
             labelAlign: 'left'
         }),
         toolbarSep(),
@@ -211,9 +212,6 @@ const bbar3 = hoistCmp.factory(
         numberInput({
             bind: 'colChooserHeight',
             width: 60
-        }),
-        colChooserButton({
-            gridModel: model.gridModel
         })
     )
 );
