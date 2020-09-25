@@ -38,6 +38,7 @@ export class GridTestModel {
     @bindable useTransactions = true;
     @bindable useDeltaSort = true;
     @bindable disableSelect = false;
+    @bindable colChooserCommitOnChange = true;
 
     @bindable
     @persist
@@ -76,7 +77,8 @@ export class GridTestModel {
                 this.useDeltaSort,
                 this.disableSelect,
                 this.autosizeMode,
-                this.persistType
+                this.persistType,
+                this.colChooserCommitOnChange
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -254,6 +256,9 @@ export class GridTestModel {
             experimental: {
                 useTransactions: this.useTransactions,
                 useDeltaSort: this.useDeltaSort
+            },
+            colChooserModel: {
+                commitOnChange: this.colChooserCommitOnChange
             },
             autosizeOptions: {
                 mode: this.autosizeMode

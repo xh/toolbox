@@ -6,7 +6,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {numberInput, switchInput, select} from '@xh/hoist/desktop/cmp/input';
-import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {button, refreshButton, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {grid} from '@xh/hoist/cmp/grid';
 import {tooltip} from '@xh/hoist/kit/blueprint';
 import {GridTestModel} from './GridTestModel';
@@ -157,6 +157,14 @@ const bbar2 = hoistCmp.factory(
             label: 'Disable Day < 0 Selection',
             labelAlign: 'left'
         }),
+        toolbarSep(),
+        switchInput({
+            bind: 'colChooserCommitOnChange',
+            label: 'Chooser CommitOnChange',
+            labelAlign: 'left'
+        }),
+        colChooserButton(),
+        toolbarSep(),
         tooltip({
             content: 'persistWith',
             item: select({
