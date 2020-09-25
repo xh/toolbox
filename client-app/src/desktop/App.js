@@ -6,13 +6,10 @@ import {tabSwitcher} from '@xh/hoist/desktop/cmp/tab';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
 import {AppModel} from './AppModel';
-
 import {search} from './search/Search';
 import xhLogo from '../core/img/xh-toolbox-logo.png';
-
 import '../core/Toolbox.scss';
 import './App.scss';
-
 
 export const App = hoistCmp({
     displayName: 'App',
