@@ -40,6 +40,7 @@ export const search = hoistCmp.factory({
 
 @HoistModel
 class Model {
+  
   @bindable
   globalSearchSelection;
 
@@ -82,12 +83,16 @@ class Model {
       return ret;
   }
 
+  get selectElem() {
+      return this.selectRef.current?.reactSelectRef?.current;
+  }
+
   focus() {
-    this.selectRef.current?.reactSelectRef?.current?.focus();
+    this.selectElem?.focus();
   }
 
   blur() {
-    this.selectRef.current?.reactSelectRef?.current?.blur();
+    this.selectElem?.blur();
   }
 
 }
