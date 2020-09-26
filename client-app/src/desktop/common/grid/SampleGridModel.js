@@ -80,7 +80,7 @@ export class SampleGridModel {
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
-        enableColChooser: true,
+        colChooserModel: true,
         enableExport: true,
         exportOptions: {
             columns: ['id', 'company', 'VISIBLE'],

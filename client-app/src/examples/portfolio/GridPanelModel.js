@@ -38,7 +38,7 @@ export class GridPanelModel {
             treeMode: true,
             sortBy: 'pnl|desc|abs',
             emptyText: 'No records found...',
-            enableColChooser: true,
+            colChooserModel: true,
             enableExport: true,
             rowBorders: true,
             showHover: true,

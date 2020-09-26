@@ -11,6 +11,7 @@ export class LoadTimesModel {
         store: {idSpec: 'timestamp'},
         sortBy: 'timestamp|desc',
         emptyText: 'No actions recorded...',
+        hideHeaders: true,
         columns: [
             {field: 'timestamp', hidden: true},
             {field: 'tag', flex: 1},

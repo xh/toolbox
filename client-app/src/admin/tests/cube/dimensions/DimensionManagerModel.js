@@ -28,6 +28,7 @@ export class DimensionManagerModel {
         this.gridModel = new GridModel({
             groupBy: 'type',
             sortBy: 'displayName',
+            hideHeaders: true,
             columns: [
                 {field: 'displayName', flex: 1},
                 {field: 'type', hidden: true}

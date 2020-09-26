@@ -41,7 +41,7 @@ export class RecallsPanelModel {
             }]
         },
         emptyText: 'No records found...',
-        enableColChooser: true,
+        colChooserModel: true,
         enableExport: true,
         rowBorders: true,
         showHover: true,
