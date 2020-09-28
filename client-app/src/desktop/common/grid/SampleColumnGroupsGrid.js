@@ -112,7 +112,7 @@ class Model {
             },
             sortBy: 'lastName',
             emptyText: 'No records found...',
-            enableColChooser: true,
+            colChooserModel: true,
             enableExport: true,
             sizingMode: XH.appModel.gridSizingMode,
             contextMenu: () => {

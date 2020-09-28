@@ -1,12 +1,12 @@
-import {filler, span} from '@xh/hoist/cmp/layout';
+import {filler, label, span, vbox} from '@xh/hoist/cmp/layout';
 import {fmtNumber} from '@xh/hoist/format';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {numberInput, switchInput, select} from '@xh/hoist/desktop/cmp/input';
-import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {numberInput, switchInput, select, textInput} from '@xh/hoist/desktop/cmp/input';
+import {button, refreshButton, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {grid} from '@xh/hoist/cmp/grid';
 import {tooltip} from '@xh/hoist/kit/blueprint';
 import {GridTestModel} from './GridTestModel';
@@ -16,16 +16,23 @@ export const GridTestPanel = hoistCmp({
     model: creates(GridTestModel),
 
     render({model}) {
-        return panel({
-            mask: 'onLoad',
-            key: model.gridModel.xhId,
-            item: grid({
-                agOptions: {
-                    isRowSelectable: ({data: record}) => !model.disableSelect || record.get('day') > 0
-                }
-            }),
-            tbar: tbar(),
-            bbar: bbar()
+        return vbox({
+            flex: 1,
+            items: [
+                tbar(),
+                panel({
+                    mask: 'onLoad',
+                    key: model.gridModel.xhId,
+                    item: grid({
+                        agOptions: {
+                            isRowSelectable: ({data: record}) => !model.disableSelect || record.get('day') > 0
+                        }
+                    })
+                }),
+                bbar1(),
+                bbar2(),
+                bbar3()
+            ]
         });
     }
 });
@@ -99,7 +106,7 @@ const tbar = hoistCmp.factory(
     )
 );
 
-const bbar = hoistCmp.factory(
+const bbar1 = hoistCmp.factory(
     ({model}) => toolbar(
         switchInput({
             bind: 'showSummary',
@@ -139,18 +146,19 @@ const bbar = hoistCmp.factory(
             label: 'Delta Sort',
             disabled: model.tree,
             labelAlign: 'left'
-        }),
+        })
+    )
+);
+
+const bbar2 = hoistCmp.factory(
+    ({model}) => toolbar(
         toolbarSep(),
         switchInput({
             bind: 'disableSelect',
             label: 'Disable Day < 0 Selection',
             labelAlign: 'left'
         }),
-        switchInput({
-            bind: 'disableSelect',
-            label: 'Disable Day < 0 Selection',
-            labelAlign: 'left'
-        }),
+        toolbarSep(),
         tooltip({
             content: 'persistWith',
             item: select({
@@ -163,9 +171,47 @@ const bbar = hoistCmp.factory(
                 ]
             })
         }),
-        filler(),
         storeFilterField({
             includeFields: ['symbol', 'trader']
+        }),
+        toolbarSep(),
+        label('Restore Warning'),
+        textInput({
+            bind: 'restoreDefaultsWarning',
+            enableClear: true,
+            width: 300
+        })
+    )
+);
+
+const bbar3 = hoistCmp.factory(
+    ({model}) => toolbar(
+        'Chooser:',
+        colChooserButton({
+            gridModel: model.gridModel
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'colChooserCommitOnChange',
+            label: 'CommitOnChange',
+            labelAlign: 'left'
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'colChooserShowRestoreDefaults',
+            label: 'ShowRestoreDefaults',
+            labelAlign: 'left'
+        }),
+        toolbarSep(),
+        label('Width'),
+        numberInput({
+            bind: 'colChooserWidth',
+            width: 60
+        }),
+        label('Height'),
+        numberInput({
+            bind: 'colChooserHeight',
+            width: 60
         })
     )
 );
