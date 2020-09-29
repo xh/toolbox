@@ -1,5 +1,5 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
@@ -11,7 +11,7 @@ export class GridPanelModel {
 
     @managed
     panelSizingModel = new PanelModel({
-        defaultSize: 500,
+        defaultSize: 1000,
         side: 'left',
         persistWith: {...PERSIST_MAIN, path: 'positionsPanel'}
     });
@@ -22,6 +22,15 @@ export class GridPanelModel {
     gridModel;
 
     parentModel;
+
+    @observable
+    treeGridStyleMode = 'gradient'
+
+    @action
+    setTreeGridStyleMode(mode) {
+        this.treeGridStyleMode = mode;
+        this.gridModel.setTreeGridStyleMode(mode);
+    }
 
     get selectedRecord() {
         return this.gridModel.selectedRecord;
@@ -44,6 +53,7 @@ export class GridPanelModel {
             showHover: true,
             showSummary: true,
             sizingMode: XH.appModel.gridSizingMode,
+            treeGridStyleMode: this.treeGridStyleMode,
             store: this.parentModel.store,
             columns: [
                 {

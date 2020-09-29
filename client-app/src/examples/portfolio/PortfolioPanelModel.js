@@ -103,7 +103,8 @@ export class PortfolioPanelModel {
                 ['fund', 'trader', 'sector', 'symbol'],
                 ['region']
             ],
-            persistWith: PERSIST_MAIN
+            persistWith: PERSIST_MAIN,
+            maxDepth: 6
         });
     }
 }
