@@ -102,7 +102,7 @@ export const SelectTestPanel = hoistCmp({
                         }
                     }),
                     example({
-                        name: 'Select with leftIcon & enableMulti & !hideSelectedOptionCheck & enableClear & rsOptions: {hideSelectedOptions: false, loseMenuOnSelect: false}',
+                        name: 'Select with leftIcon & enableMulti & enableClear & rsOptions: {hideSelectedOptions: false, closeMenuOnSelect: false}',
                         bind: 'enableMultiMenuOpen',
                         selectProps: {
                             width: 350,
