@@ -111,10 +111,8 @@ export const SelectTestPanel = hoistCmp({
                             enableMulti: true,
                             placeholder: 'Select state(s)...',
                             enableClear: true,
-                            rsOptions: {
-                                closeMenuOnSelect: false,
-                                hideSelectedOptions: false
-                            }
+                            hideSelectedOptions: false,
+                            closeMenuOnSelect: false
                         }
                     })
                 )
