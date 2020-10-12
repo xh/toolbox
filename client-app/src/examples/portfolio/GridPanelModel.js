@@ -24,7 +24,7 @@ export class GridPanelModel {
     parentModel;
 
     @observable
-    treeGridStyleMode = 'gradient'
+    treeGridStyleMode = 'highlightGroupsWithBorders'
 
     @action
     setTreeGridStyleMode(mode) {

@@ -26,9 +26,8 @@ export const gridPanel = hoistCmp.factory({
                     bind: 'treeGridStyleMode',
                     options: [
                         {value: 'none', label: 'None'},
-                        {value: 'gradient', label: 'Gradient'},
-                        {value: 'top-two-levels', label: 'Top Two Levels'},
-                        {value: 'tricolor', label: 'Tricolor'}
+                        {value: 'highlightGroups', label: 'Highlight Groups'},
+                        {value: 'highlightGroupsWithBorders', label: 'Highlight Groups w/Borders'}
                     ]
                 }),
                 filler(),
