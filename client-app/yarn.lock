@@ -2018,9 +2018,9 @@
     webpackbar "~4.0.0"
 
 "@xh/hoist@^37.0.0-SNAPSHOT":
-  version "37.0.0-SNAPSHOT.1600748655846"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-37.0.0-SNAPSHOT.1600748655846.tgz#c1099824897f3d5e3de27f5f79858c8aee018a74"
-  integrity sha512-oWPmDWT9U91Kiyg70ekanbK+2HDUjseZLqv/5A2JIAbXIXDH7eyrRjmphzmLvMfYNVVdSZefAAtaXSAi6qA2GQ==
+  version "37.0.0-SNAPSHOT.1602102064984"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-37.0.0-SNAPSHOT.1602102064984.tgz#03aa5347878107ebe7f4f1628d2852c0664b07a6"
+  integrity sha512-SuN7Lk5oU/6Xe1y4xT9GAPZXVTL9tCVVbxjcO4sq7ZHlCEeurHlIHG1/Ay936UgkkjIVo9bu4J1SQ3lFwq2GGA==
   dependencies:
     "@blueprintjs/core" "~3.31.0"
     "@blueprintjs/datetime" "~3.18.6"

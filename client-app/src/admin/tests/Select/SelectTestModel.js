@@ -38,8 +38,11 @@ export class SelectTestModel {
     objectValue2
 
     @bindable.ref
-    enableMulitLeftIcon
+    enableMultiLeftIcon
     
+    @bindable.ref
+    enableMultiMenuOpen
+
     constructor() {
         this.addReaction({
             track: () => this.numOptions,
