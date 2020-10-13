@@ -8,36 +8,42 @@ class User implements HoistUser {
 
     private static encryptor = new BasicPasswordEncryptor()
 
-    String firstName
-    String lastName
-    String email
+    // Local username (in email format) or OAuth-provided sub (unique user ID).
+    String username
+    // Nullable password - set for local (non-Oauth) users only.
     String password
+    // First/last displayName.
+    String name
+    String email
+    String profilePicUrl
     boolean enabled = true
 
     static constraints = {
-        email email: true, blank: false, unique: true, validator: {
+        username blank: false, unique: true, validator: {
             return validateUsername(it) ?: 'toolbox.user.custom.validation.fail.message'
         }
-        password blank: false
+        email email: true, nullable: true
+        name blank: false
+        password nullable: true
+        profilePicUrl nullable: true
     }
 
     static mapping = {
         cache true
+        username index: 'idx_xh_user_username'
         password column: '`password`'
     }
 
     boolean checkPassword(String plainPassword) {
-        encryptor.checkPassword(plainPassword, password)
+        password ? encryptor.checkPassword(plainPassword, password) : false
     }
 
     //------------------------------
     // HoistUser overrides
     //-------------------------------
     boolean isActive()      {enabled}
-    String getUsername()    {email}
     String getEmail()       {email}
-    String getDisplayName() {firstName + ' ' + lastName}
-
+    String getDisplayName() {name}
 
     //---------------------
     // Implementation
@@ -53,15 +59,14 @@ class User implements HoistUser {
     }
 
     private encodePassword() {
-        password = encryptor.encryptPassword(password)
+        password = password ? encryptor.encryptPassword(password) : null
     }
 
     Map formatForJSON() {
         return HoistUser.super.formatForJSON() + [
-                id: id,
-                firstName: firstName,
-                lastName: lastName,
-                password: '**********'
+            id: id,
+            password: password ? '**********' : 'NONE',
+            profilePicUrl: profilePicUrl
         ]
     }
 }

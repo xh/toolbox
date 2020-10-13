@@ -1,10 +1,13 @@
 import createAuth0Client from '@auth0/auth0-spa-js';
 import {HoistService, XH} from '@xh/hoist/core';
+import {never} from '@xh/hoist/promise';
 
 @HoistService
 export class OauthService {
 
     auth0;
+    user;
+    token;
 
     config = {
         domain: 'xhio.us.auth0.com',
@@ -20,33 +23,32 @@ export class OauthService {
         let isAuthenticated = await this.checkAuthAsync();
         console.log('isAuthenticated | initial check', isAuthenticated);
 
-        if (!isAuthenticated) {
+        // Presence of query params used here as an indicator that we *might* be returning from
+        // an Auth0 redirect. Safely call handler to see if we have had a successful auth.
+        if (!isAuthenticated && window.location.search) {
             try {
-                // TODO - auth0 throws if this is called when we are *not* handling a redirect -
-                //      could look @ query params to determine if we should even try.
                 const redirectResult = await auth0.handleRedirectCallback();
-                console.log('redirectResult', redirectResult);
+                console.debug('redirectResult', redirectResult);
                 isAuthenticated = await this.checkAuthAsync();
-                console.log('isAuthenticated | post redirect handle', isAuthenticated);
+                console.debug('isAuthenticated | post redirect handle', isAuthenticated);
             } catch (e) {
                 console.log(`Caught while attempting to get redirectResults`, e);
             }
-
-            if (!isAuthenticated) {
-                console.log(`Not authenticated - logging in....`);
-                await auth0.loginWithRedirect();
-            }
         }
 
-        isAuthenticated = await this.checkAuthAsync();
-        if (isAuthenticated) {
-            console.log(`Authenticated OK | getting user + tokens`);
-            await this.getUserAsync();
-            await this.getTokenAsync();
+        if (!isAuthenticated) {
+            // If still not authenticated, we are either coming in fresh or were unable to confirm a
+            // successful auth via redirect handler. Trigger interactive login.
+            console.log(`Not authenticated - logging in....`);
+            await auth0.loginWithRedirect();
+            await never();
         } else {
-            console.error('Did NOT authenticate.');
+            // Otherwise we should be able to ask Auth0 for user and token info.
+            this.user = await this.getUserAsync();
+            this.token = await this.getTokenAsync();
+            console.log(`Authenticated OK | token: ${this.token} | user`, this.user);
+            this.installDefaultFetchServiceHeaders();
         }
-
     }
 
     async getUserAsync() {
@@ -61,9 +63,23 @@ export class OauthService {
         return token;
     }
 
-
     async checkAuthAsync() {
         return await this.auth0.isAuthenticated();
+    }
+
+    async logoutAsync() {
+        return this.auth0.logout({returnTo: 'https://xh.io'});
+    }
+
+    installDefaultFetchServiceHeaders() {
+        XH.fetchService.setDefaultHeaders((opts) => {
+            const {token} = this,
+                relativeHoistUrl = !opts.url.startsWith('http');
+
+            // Send XH ID token headers for requests to the Hoist server only - used to identify
+            // our Hoist User via handling in server-side AuthenticationService.
+            return relativeHoistUrl ? {'x-xh-idt': token} : {};
+        });
     }
 
 }

@@ -41,13 +41,10 @@ class BootStrap {
         def adminUsername = getInstanceConfig('adminUsername')
 
         configService.ensureRequiredConfigsCreated([
-            roles: [
-                valueType: 'json',
-                defaultValue: [
-                    APP_READER: ['toolbox@xh.io', 'inactive@xh.io', adminUsername].findAll {it},
-                    HOIST_ADMIN: [adminUsername].findAll {it}
-                ],
-                groupName: 'Permissions'
+            auth0Host: [
+                valueType: 'string',
+                defaultValue: 'xhio.us.auth0.com',
+                groupName: 'Auth0'
             ],
             cubeTestDefaultDims: [
                 valueType: 'json',
@@ -85,6 +82,18 @@ class BootStrap {
                 ],
                 groupName: 'Toolbox - Example Apps',
             ],
+            portfolioConfigs: [
+                valueType: 'json',
+                defaultValue: [
+                    instrumentCount: 500,
+                    orderCount: 20000,
+                    updateIntervalSecs: 5,
+                    updatePctInstruments: 20,
+                    updatePctPriceRange: 0.025,
+                    pushUpdatesIntervalSecs: 5
+                ],
+                groupName: 'Toolbox - Example Apps'
+            ],
             recallsHost: [
                 valueType: 'string',
                 defaultValue: 'api.fda.gov',
@@ -102,6 +111,14 @@ class BootStrap {
                     groupName: 'Toolbox - Example Apps',
                     clientVisible: true
             ],
+            roles: [
+                valueType: 'json',
+                defaultValue: [
+                    APP_READER: ['toolbox@xh.io', 'inactive@xh.io', adminUsername].findAll {it},
+                    HOIST_ADMIN: [adminUsername].findAll {it}
+                ],
+                groupName: 'Permissions'
+            ],
             sourceUrls: [
                 valueType: 'json',
                 defaultValue: [
@@ -110,18 +127,6 @@ class BootStrap {
                 ],
                 groupName: 'Toolbox',
                 clientVisible: true,
-            ],
-            portfolioConfigs: [
-                valueType: 'json',
-                defaultValue: [
-                    instrumentCount: 500,
-                    orderCount: 20000,
-                    updateIntervalSecs: 5,
-                    updatePctInstruments: 20,
-                    updatePctPriceRange: 0.025,
-                    pushUpdatesIntervalSecs: 5
-                ],
-                groupName: 'Toolbox - Example Apps'
             ]
         ])
 
@@ -265,8 +270,7 @@ class BootStrap {
             createUserIfNeeded(
                 email: adminUsername,
                 password: adminPassword,
-                firstName: 'Toolbox',
-                lastName: 'Admin'
+                name: 'Toolbox Admin'
             )
         } else {
             log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
@@ -275,29 +279,29 @@ class BootStrap {
         createUserIfNeeded(
             email: guestUserEmail,
             password: guestUserPwd,
-            firstName: 'Toolbox',
-            lastName: 'Demo'
+            name: 'Toolbox Demo'
         )
 
         createUserIfNeeded(
             email: 'norole@xh.io',
             password: 'password',
-            firstName: 'No',
-            lastName: 'Role',
+            name: 'No Role User'
         )
 
         createUserIfNeeded(
             email: 'inactive@xh.io',
             password: 'password',
-            firstName: 'Not',
-            lastName: 'Active',
+            name: 'Inactive User',
             enabled: false
         )
     }
 
     private void createUserIfNeeded(Map data) {
-        def user = User.findByEmail(data.email as String)
-        if (!user) new User(data).save()
+        def username = data.email as String
+        def user = User.findByUsername(username)
+        if (!user) {
+            new User([username: username, *:data]).save()
+        }
     }
 
     private void resetGuestUserPassword () {

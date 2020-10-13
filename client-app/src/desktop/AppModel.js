@@ -7,6 +7,8 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
+import {wait} from '@xh/hoist/promise';
+import {SECONDS} from '@xh/hoist/utils/datetime';
 import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {getAppOptions} from './AppOptions';
@@ -57,6 +59,25 @@ export class AppModel {
 
     async doLoadAsync(loadSpec) {
         await loadAllAsync([], loadSpec);
+    }
+
+    // If authenticated via OAuth - first log out of Hoist here to clear our Hoist-side
+    // session, then call Oauth logout. That will redirect away from the app, which is why
+    // we must implement this special handling - `XH.identityService.logoutAsync()` will not
+    // return from its call to us and have a chance to process the Hoist logout.
+    async logoutAsync() {
+        try  {
+            const hasOauth = await XH.oauthService.checkAuthAsync();
+            if (hasOauth) {
+                await XH.fetchJson({url: 'xh/logout'});
+                await XH.oauthService.logoutAsync();
+                // Wait enough time for Auth0 logout to redirect us away - if we return too soon
+                // XH.identityService will reload the app first before Oauth logout complete.
+                await wait(10 * SECONDS);
+            }
+        } catch (e) {
+            console.error('Error during logout request', e);
+        }
     }
 
     goHome() {
@@ -160,3 +181,9 @@ export class AppModel {
         ];
     }
 }
+
+/**
+ * @typedef XH
+ * @property {OauthService} oauthService
+ * @property {PortfolioService} portfolioService
+ */

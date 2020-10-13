@@ -1,5 +1,6 @@
 package io.xh.toolbox.security
 
+import groovy.util.logging.Slf4j
 import io.xh.hoist.security.BaseAuthenticationService
 import io.xh.hoist.user.HoistUser
 import io.xh.toolbox.user.User
@@ -9,17 +10,37 @@ import javax.servlet.http.HttpServletRequest
 
 import static io.xh.hoist.util.Utils.withNewSession
 
+@Slf4j
 class AuthenticationService extends BaseAuthenticationService  {
 
-    // TODO - clarify this implementation - I'm still not sure as to why it's setup as it is - ATM
+    Auth0Service auth0Service
+
+    /**
+     * Evaluate a request to determine if an auth token can be extracted from headers installed by
+     * the client and used to lookup/create and set an app User. This should transparently login
+     * a user who has already authenticated via OAuth on the client when the UI goes to make its
+     * first identity check back to the server.
+     */
     protected boolean completeAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        // Don't attempt to authorize non-html/whitelisted requests (might handle ajax re-auth at some point)
-        if (isAjax(request) || !acceptHtml(request) || isWhitelistFile(request.requestURI)) {
-            return true
+        def token = request.getHeader('x-xh-idt')
+
+        // No token found - TODO - summarize why we are returning true under these conditions.
+        if (!token) {
+            return (isAjax(request) || !acceptHtml(request) || isWhitelistFile(request.requestURI))
         }
-        return false
+
+        def user = auth0Service.getOrCreateUser(token)
+        if (user) {
+            setUser(request, user)
+            log.debug("User read from token and set on request | username: ${user.username} | token: ${token}")
+        }
+
+        return true
     }
 
+    /**
+     * Process an interactive password-driven login - not for use by Oauth-sourced users.
+     */
     boolean login(HttpServletRequest request, String username, String password) {
         def user = lookupUser(username, password)
         if (user) {
@@ -40,7 +61,7 @@ class AuthenticationService extends BaseAuthenticationService  {
     //------------------------
     private HoistUser lookupUser(String username, String password) {
         (HoistUser) withNewSession {
-            def user = User.findByEmailAndEnabled(username, true)
+            def user = User.findByUsernameAndEnabled(username, true)
             return user?.checkPassword(password) ? user : null
         }
     }
