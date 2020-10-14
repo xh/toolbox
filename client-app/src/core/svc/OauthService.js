@@ -1,6 +1,7 @@
 import createAuth0Client from '@auth0/auth0-spa-js';
 import {HoistService, XH} from '@xh/hoist/core';
-import {never} from '@xh/hoist/promise';
+import {never, wait} from '@xh/hoist/promise';
+import {SECONDS} from '@xh/hoist/utils/datetime';
 
 @HoistService
 export class OauthService {
@@ -10,7 +11,7 @@ export class OauthService {
     token;
 
     config = {
-        domain: 'xhio.us.auth0.com',
+        domain: 'login.xh.io',
         client_id: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB'
     }
 
@@ -67,8 +68,27 @@ export class OauthService {
         return await this.auth0.isAuthenticated();
     }
 
+    /**
+     * Logout of both Hoist session and Auth0 Oauth session (if active).
+     * @return {Promise<void>}
+     */
     async logoutAsync() {
-        return this.auth0.logout({returnTo: 'https://xh.io'});
+        try  {
+            const hasOauth = await this.checkAuthAsync();
+            if (hasOauth) {
+                // Logout of Hoist session here, as the auth0 logout will redirect us away, so
+                // calling code from XH.identityService won't get a chance to do the Hoist logout.
+                // If we are NOT logged into Oauth for some reason, this will return and the
+                // standard identityService logout flow will resume.
+                await XH.fetchJson({url: 'xh/logout'});
+                await this.auth0.logout({returnTo: 'https://xh.io'});
+                // Wait enough time for Auth0 logout to redirect us away - if we return *too* soon
+                // XH.identityService will reload the app first before Oauth logout complete.
+                await wait(10 * SECONDS);
+            }
+        } catch (e) {
+            console.error('Error during logout request', e);
+        }
     }
 
     installDefaultFetchServiceHeaders() {

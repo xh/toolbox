@@ -30,7 +30,8 @@ class User implements HoistUser {
 
     static mapping = {
         cache true
-        username index: 'idx_xh_user_username'
+        table 'tb_user'
+        username index: 'idx_tb_user_username'
         password column: '`password`'
     }
 

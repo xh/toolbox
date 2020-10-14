@@ -33,6 +33,15 @@ class Auth0Service extends BaseService {
                     profilePicUrl: ui.picture
                 ).save()
                 log.info("Created new user from token | username: ${user.username} | email: ${user.email}")
+            } else if (
+                user.name != ui.name ||
+                user.email != ui.email ||
+                user.profilePicUrl != ui.picture
+            ) {
+                user.name = ui.name
+                user.email = ui.email
+                user.profilePicUrl = ui.picture
+                user.save()
             }
 
             return user
@@ -44,8 +53,18 @@ class Auth0Service extends BaseService {
             get = new HttpGet(url)
 
         get.addHeader('Authorization', "Bearer ${token}")
-        def resp = jsonClient.executeAsMap(get)
-        log.debug("Fetched user info for ${resp.email} | sub: ${resp.sub} | token: ${token}")
+
+        // TODO - look for / investigate periodic connection resets on this HTTP call.
+        def resp
+        try {
+            resp = jsonClient.executeAsMap(get)
+            log.debug("Fetched user info for ${resp.email} | sub: ${resp.sub} | token: ${token}")
+        } catch (e) {
+            log.warn("Fetching userInfo failed - retrying once | ${e.message}")
+            resp = jsonClient.executeAsMap(get)
+            log.debug("Fetched user info for ${resp.email} | sub: ${resp.sub} | token: ${token}")
+        }
+
 
         return resp
     }
