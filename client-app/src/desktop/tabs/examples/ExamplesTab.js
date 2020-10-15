@@ -4,7 +4,7 @@ import {a, code, hbox, p, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {ToolboxLink} from '../../../core/ToolboxLink';
+import {ToolboxLink} from '../../../core/cmp/ToolboxLink';
 import {wrapper} from '../../common';
 import './ExamplesTab.scss';
 
