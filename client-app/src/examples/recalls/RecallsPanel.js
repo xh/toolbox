@@ -30,14 +30,16 @@ export const recallsPanel = hoistCmp.factory({
                     textInput({
                         bind: 'searchQuery',
                         placeholder: 'Keyword Search',
+                        width: 250,
                         commitOnChange: true,
                         enableClear: true
                     }),
                     toolbarSep(),
-                    span('Group By : '),
+                    span('Group By:'),
                     buttonGroupInput({
                         bind: 'groupBy',
                         enableClear: true,
+                        outlined: true,
                         items: [
                             button({
                                 text: 'Class',

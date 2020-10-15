@@ -75,7 +75,7 @@ class Auth0Service extends BaseService {
     JsonWebKeySet getJsonWebKeySet() {
         if (!_jkws) {
             // Yes, this is a bit odd - we get a JSON config then re-serialize to JSON to pass to
-            // JWKS ctor. Could store as string confg, but keeping as JSON in configService gives
+            // JWKS ctor. Could store as string config, but keeping as JSON in configService gives
             // us a nicer UI to view/update in admin console.
             def jwksJson = JSONSerializer.serialize(configService.getMap('auth0Jwks'))
             _jkws = new JsonWebKeySet(jwksJson)

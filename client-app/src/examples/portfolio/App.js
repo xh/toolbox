@@ -16,7 +16,8 @@ export const App = hoistCmp.factory({
             tbar: appBar({
                 appMenuButtonProps: {
                     icon: Icon.portfolio(),
-                    minimal: false
+                    minimal: false,
+                    hideLogoutItem: false
                 },
                 appMenuButtonPosition: 'left',
                 rightItems: [

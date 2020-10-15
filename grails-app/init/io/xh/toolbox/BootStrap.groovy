@@ -272,7 +272,7 @@ class BootStrap {
                     email: adminUsername,
                     password: adminPassword,
                     name: 'Toolbox Admin',
-                    profilePicUrl: 'https://xh.io/images/xh-xonly-logo-square-150px.png'
+                    profilePicUrl: 'https://xh.io/images/toolbox-admin-profile-pic.png'
                 ).save()
             } else if (!user.checkPassword(adminPassword)) {
                 user.password = adminPassword

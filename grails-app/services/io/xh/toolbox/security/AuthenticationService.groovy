@@ -23,6 +23,11 @@ class AuthenticationService extends BaseAuthenticationService  {
         *super.whitelistURIs
     ]
 
+    protected boolean isWhitelist(HttpServletRequest request) {
+        def uri = request.requestURI
+        return whitelistURIs.any{uri.endsWith(it)} || isWhitelistFile(uri)
+    }
+
     /**
      * Evaluate a request to determine if an ID token can be extracted from headers installed by
      * the client and used to lookup/create and set an app User. This should transparently login

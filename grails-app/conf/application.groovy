@@ -83,6 +83,6 @@ private void hoistDefaults() {
         flush {
             mode = 'AUTO'
         }
-        show_sql = true
+        show_sql = false
     }
 }

@@ -15,7 +15,8 @@ export const App = hoistCmp({
         return panel({
             tbar: appBar({
                 icon: Icon.folder({size: '2x', prefix: 'fal'}),
-                hideRefreshButton: true
+                hideRefreshButton: true,
+                appMenuButtonProps: {hideLogoutItem: false}
             }),
             item: vframe({
                 className: 'xh-tiled-bg',

@@ -15,30 +15,39 @@ export class OauthService {
     /** @member {string} - ID Token in JWT format - for passing to Hoist server. */
     idToken;
 
-    config = {
-        domain: 'login.xh.io',
-        client_id: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB'
-    }
+    /** @member {Object} - soft-config loaded from whitelisted endpoint on UI server. */
+    config;
 
     async initAsync() {
+        const config = this.config = await XH.fetchJson({
+            url: 'oauthConfig'
+        }).catchDefault();
+
         const auth0 = this.auth0 = await createAuth0Client({
-            ...this.config,
+            domain: config.domain,
+            client_id: config.clientId,
             redirect_uri: `${window.location.origin}/${XH.clientAppCode}/`
         });
 
         let isAuthenticated = await this.checkAuthAsync();
-        console.log('isAuthenticated | initial check', isAuthenticated);
+        console.debug('isAuthenticated | initial check', isAuthenticated);
 
         // Presence of query params used here as an indicator that we *might* be returning from
         // an Auth0 redirect. Safely call handler to see if we have had a successful auth.
-        if (!isAuthenticated && window.location.search) {
+        const qString = window.location.search;
+        if (!isAuthenticated && qString) {
             try {
                 const redirectResult = await auth0.handleRedirectCallback();
                 console.debug('redirectResult', redirectResult);
                 isAuthenticated = await this.checkAuthAsync();
                 console.debug('isAuthenticated | post redirect handle', isAuthenticated);
+
+                // Remove Auth0 query string from URL - will be left otherwise if app does not
+                // do any routing on its own.
+                const cleanUrl = window.location.toString().replace(qString, '');
+                window.history.replaceState({}, document.title, cleanUrl);
             } catch (e) {
-                console.log(`Caught while attempting to get redirectResults`, e);
+                console.warn(`Caught while attempting to get redirectResults`, e);
             }
         }
 
@@ -65,7 +74,7 @@ export class OauthService {
     }
 
     async checkAuthAsync() {
-        return await this.auth0.isAuthenticated();
+        return this.auth0.isAuthenticated();
     }
 
     /**
