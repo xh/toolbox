@@ -28,8 +28,7 @@ class BootStrap {
         }
         BaseService.parallelInit(services)
 
-        ensureUsersCreated()
-        resetGuestUserPassword()
+        createLocalAdminUserIfNeeded()
     }
 
     def destroy = {}
@@ -262,52 +261,28 @@ class BootStrap {
         if (!monitor) new Monitor(data).save()
     }
 
-    private void ensureUsersCreated() {
+    private void createLocalAdminUserIfNeeded() {
         String adminUsername = getInstanceConfig('adminUsername')
         String adminPassword = getInstanceConfig('adminPassword')
 
         if (adminUsername && adminPassword) {
-            createUserIfNeeded(
-                email: adminUsername,
-                password: adminPassword,
-                name: 'Toolbox Admin'
-            )
+            def user = User.findByEmail(adminUsername)
+            if (!user) {
+                new User(
+                    email: adminUsername,
+                    password: adminPassword,
+                    name: 'Toolbox Admin',
+                    profilePicUrl: 'https://xh.io/images/xh-xonly-logo-square-150px.png'
+                ).save()
+            } else if (!user.checkPassword(adminPassword)) {
+                user.password = adminPassword
+                user.save()
+            }
+
+            log.info("Local admin user available as per instanceConfig | $adminUsername")
         } else {
             log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
-
-        createUserIfNeeded(
-            email: guestUserEmail,
-            password: guestUserPwd,
-            name: 'Toolbox Demo'
-        )
-
-        createUserIfNeeded(
-            email: 'norole@xh.io',
-            password: 'password',
-            name: 'No Role User'
-        )
-
-        createUserIfNeeded(
-            email: 'inactive@xh.io',
-            password: 'password',
-            name: 'Inactive User',
-            enabled: false
-        )
-    }
-
-    private void createUserIfNeeded(Map data) {
-        def username = data.email as String
-        def user = User.findByUsername(username)
-        if (!user) {
-            new User([username: username, *:data]).save()
-        }
-    }
-
-    private void resetGuestUserPassword () {
-        def user = User.findByEmail(guestUserEmail)
-        user.setPassword(guestUserPwd)
-        user.save()
     }
 
     private void logStartupMsg() {
@@ -324,6 +299,4 @@ class BootStrap {
         """)
     }
 
-    private guestUserEmail = 'toolbox@xh.io'
-    private guestUserPwd = 'Hoist_Toolb0x'
 }

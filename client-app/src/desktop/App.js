@@ -30,6 +30,7 @@ export const App = hoistCmp({
                 ],
                 hideRefreshButton: false,
                 appMenuButtonProps: {
+                    hideLogoutItem: false,
                     extraItems: [
                         div({
                             className: 'tb-welcome-message',

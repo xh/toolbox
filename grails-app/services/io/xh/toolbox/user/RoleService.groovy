@@ -6,9 +6,10 @@ import static io.xh.hoist.util.Utils.configService
 import static io.xh.hoist.util.Utils.withNewSession
 
 /**
- * Every user in Toolbox is granted the base APP_READER role by default.
- * Other roles are sourced from a simple soft-configuration map of role -> username[].
- * TODO - research Auth0 support for roles.
+ * Every user in Toolbox is granted the base APP_READER role by default - this ensures that any
+ * newly created users logging in via OAuth can immediately access the app.
+ *
+ * Other roles (HOIST_ADMIN) are sourced from a soft-configuration map of role -> username[].
  */
 class RoleService extends BaseRoleService {
 
@@ -16,24 +17,17 @@ class RoleService extends BaseRoleService {
 
     Map<String, Set<String>> getAllRoleAssignments() {
         def ret = new HashMap<>()
+
+        // TODO - review for efficiency re. withNewSession + GORM queries here.
         withNewSession {
             def confRoles = configService.getMap('roles')
             confRoles.each{role, users ->
                 ret[role] = users.toSet()
             }
-        }
 
-        return ret
-    }
-
-    Set<String> getRolesForUser(String username) {
-        def ret = super.getRolesForUser(username)
-
-        // Ensure minimal APP_READER role available on all users, specifically Oauth-created
-        // users without any entries in our local roles config.
-        if (!ret.contains(READER_ROLE)) {
-            ret = new HashSet<String>(ret)
-            ret.add(READER_ROLE)
+            // All users are granted a READER_ROLE as per class doc comment.
+            def allUsernames = User.list().collect{user -> user.email}
+            ret.put(READER_ROLE, new HashSet(allUsernames))
         }
 
         return ret

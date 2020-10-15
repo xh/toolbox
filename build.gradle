@@ -70,6 +70,9 @@ dependencies {
     profile "org.grails.profiles:web"
 
     compile "org.springframework:spring-websocket"
+
+    // For JWT token validation.
+    compile "org.bitbucket.b_c:jose4j:0.7.2"
     
     runtime "org.apache.tomcat:tomcat-jdbc"
     runtime "mysql:mysql-connector-java:5.1.47"

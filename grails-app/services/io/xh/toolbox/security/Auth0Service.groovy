@@ -4,69 +4,61 @@ import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
-import io.xh.toolbox.user.User
-import org.apache.http.client.methods.HttpGet
+import io.xh.hoist.json.JSONParser
+import io.xh.hoist.json.JSONSerializer
+import org.jose4j.jwk.JsonWebKeySet
+import org.jose4j.jwk.VerificationJwkSelector
+import org.jose4j.jws.JsonWebSignature
 
 import static io.xh.hoist.util.Utils.withNewSession
 
+/**
+ * Decodes and validates ID tokens issues by Auth0, the OAuth provider for Toolbox.
+ */
 @Slf4j
 class Auth0Service extends BaseService {
 
     ConfigService configService
 
-    // TODO - discuss if we want to save OAuth-sourced users in our app DB - we could keep them
-    //      in-memory only, avoiding the need to update any fields that might have changed.
-    // TODO - discuss handling for user who logs on first with one OAuth identity provider and then
-    //      another - where the email is the same across the two. Note Auth0 has support for linking
-    //      multiple provider-specific identities together if we want to do that.
-    User getOrCreateUser(String token) {
-        (User) withNewSession {
-            Map ui = getUserInfo(token)
-            String username = ui.sub as String
-            User user = User.findByUsername(username)
-
-            if (!user) {
-                user = new User(
-                    username: username,
-                    name: ui.name,
-                    email: ui.email,
-                    profilePicUrl: ui.picture
-                ).save()
-                log.info("Created new user from token | username: ${user.username} | email: ${user.email}")
-            } else if (
-                user.name != ui.name ||
-                user.email != ui.email ||
-                user.profilePicUrl != ui.picture
-            ) {
-                user.name = ui.name
-                user.email = ui.email
-                user.profilePicUrl = ui.picture
-                user.save()
-            }
-
-            return user
-        }
+    Map getClientConfig() {
+        return [
+            clientId: clientId,
+            domain: domain
+        ]
     }
 
-    Map getUserInfo(String token) {
-        def url = "https://${configService.getString('auth0Host')}/userinfo",
-            get = new HttpGet(url)
+    JwtValidationResult validateToken(String token) {
+        (JwtValidationResult) withNewSession {
+            try {
+                if (!token) throw new JwtException("Unable to validate JWT - no token provided.")
 
-        get.addHeader('Authorization', "Bearer ${token}")
+                def jws = new JsonWebSignature()
+                jws.setCompactSerialization(token)
 
-        // TODO - look for / investigate periodic connection resets on this HTTP call.
-        def resp
-        try {
-            resp = jsonClient.executeAsMap(get)
-            log.debug("Fetched user info for ${resp.email} | sub: ${resp.sub} | token: ${token}")
-        } catch (e) {
-            log.warn("Fetching userInfo failed - retrying once | ${e.message}")
-            resp = jsonClient.executeAsMap(get)
-            log.debug("Fetched user info for ${resp.email} | sub: ${resp.sub} | token: ${token}")
+                def selector = new VerificationJwkSelector(),
+                    jwk = selector.select(jws, jsonWebKeySet.jsonWebKeys)
+                if (!jwk?.key) throw new JwtException("Unable to select valid key for token from loaded JWKS")
+
+                jws.setKey(jwk.key)
+                if (!jws.verifySignature()) throw new JwtException("Token failed signature validation")
+
+                def payload = JSONParser.parseObject(jws.payload)
+                if (payload.aud != this.clientId) {
+                    throw new JwtException("Token aud value [${payload.aud}] does not match expected value from auth0ClientId config.")
+                }
+
+                return new JwtValidationResult(
+                    token: token,
+                    sub: payload.sub,
+                    email: payload.email,
+                    fullName: payload.name,
+                    profilePicUrl: payload.picture
+                )
+
+            } catch (e) {
+                return new JwtValidationResult(token: token, exception: e)
+            }
         }
-
-
-        return resp
     }
 
 
@@ -79,8 +71,34 @@ class Auth0Service extends BaseService {
         return _jsonClient
     }
 
+    private JsonWebKeySet _jkws
+    JsonWebKeySet getJsonWebKeySet() {
+        if (!_jkws) {
+            // Yes, this is a bit odd - we get a JSON config then re-serialize to JSON to pass to
+            // JWKS ctor. Could store as string confg, but keeping as JSON in configService gives
+            // us a nicer UI to view/update in admin console.
+            def jwksJson = JSONSerializer.serialize(configService.getMap('auth0Jwks'))
+            _jkws = new JsonWebKeySet(jwksJson)
+
+            if (!_jkws.jsonWebKeys.size()) {
+                throw new RuntimeException("Unable to build valid key set from 'auth0Jwks' app config")
+            }
+        }
+
+        return _jkws
+    }
+
+    private String getClientId() {
+        return configService.getString('auth0ClientId')
+    }
+
+    private String getDomain() {
+        return configService.getString('auth0Domain')
+    }
+
     void clearCaches() {
         _jsonClient = null
+        _jkws = null
     }
 
 }

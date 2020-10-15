@@ -6,9 +6,14 @@ import {SECONDS} from '@xh/hoist/utils/datetime';
 @HoistService
 export class OauthService {
 
+    /** @member {Auth0Client} */
     auth0;
+    /** @member {Object} - Authenticated user info as provided by Auth0 */
     user;
+    /** @member {string} - Opaque Auth0 token - could be used to call e.g. their /userinfo API. */
     token;
+    /** @member {string} - ID Token in JWT format - for passing to Hoist server. */
+    idToken;
 
     config = {
         domain: 'login.xh.io',
@@ -45,23 +50,18 @@ export class OauthService {
             await never();
         } else {
             // Otherwise we should be able to ask Auth0 for user and token info.
-            this.user = await this.getUserAsync();
-            this.token = await this.getTokenAsync();
+            this.user = await this.auth0.getUser();
+            this.token = await this.auth0.getTokenSilently();
+            this.idToken = await this.getIdTokenAsync();
+
             console.log(`Authenticated OK | token: ${this.token} | user`, this.user);
             this.installDefaultFetchServiceHeaders();
         }
     }
 
-    async getUserAsync() {
-        const user = await this.auth0.getUser();
-        console.log('user', user);
-        return user;
-    }
-
-    async getTokenAsync() {
-        const token = await this.auth0.getTokenSilently();
-        console.log(`token`, token);
-        return token;
+    async getIdTokenAsync() {
+        const claims = await this.auth0.getIdTokenClaims();
+        return claims?.__raw;
     }
 
     async checkAuthAsync() {
@@ -93,12 +93,12 @@ export class OauthService {
 
     installDefaultFetchServiceHeaders() {
         XH.fetchService.setDefaultHeaders((opts) => {
-            const {token} = this,
+            const {idToken} = this,
                 relativeHoistUrl = !opts.url.startsWith('http');
 
             // Send XH ID token headers for requests to the Hoist server only - used to identify
             // our Hoist User via handling in server-side AuthenticationService.
-            return relativeHoistUrl ? {'x-xh-idt': token} : {};
+            return relativeHoistUrl ? {'x-xh-idt': idToken} : {};
         });
     }
 

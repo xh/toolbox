@@ -8,21 +8,21 @@ class User implements HoistUser {
 
     private static encryptor = new BasicPasswordEncryptor()
 
-    // Local username (in email format) or OAuth-provided sub (unique user ID).
-    String username
+    // Email captured and stored as username.
+    String email
     // Nullable password - set for local (non-Oauth) users only.
     String password
     // First/last displayName.
     String name
-    String email
+    // External URL to profile pic - supplied by social login.
     String profilePicUrl
+
     boolean enabled = true
 
     static constraints = {
-        username blank: false, unique: true, validator: {
+        email blank: false, unique: true, email: true, validator: {
             return validateUsername(it) ?: 'toolbox.user.custom.validation.fail.message'
         }
-        email email: true, nullable: true
         name blank: false
         password nullable: true
         profilePicUrl nullable: true
@@ -31,7 +31,7 @@ class User implements HoistUser {
     static mapping = {
         cache true
         table 'tb_user'
-        username index: 'idx_tb_user_username'
+        email index: 'idx_tb_user_email'
         password column: '`password`'
     }
 
@@ -43,6 +43,7 @@ class User implements HoistUser {
     // HoistUser overrides
     //-------------------------------
     boolean isActive()      {enabled}
+    String getUsername()    {email}
     String getEmail()       {email}
     String getDisplayName() {name}
 
