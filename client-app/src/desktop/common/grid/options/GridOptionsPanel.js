@@ -13,7 +13,7 @@ export const gridOptionsPanel = hoistCmp.factory({
             icon: Icon.settings(),
             className: 'tbox-display-opts',
             compactHeader: true,
-            model: {side: 'right', defaultSize: 200, resizable: false},
+            model: {side: 'right', defaultSize: 250, resizable: false},
             items: [
                 gridOptions(),
                 extraItems

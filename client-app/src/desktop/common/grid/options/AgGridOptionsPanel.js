@@ -13,7 +13,7 @@ export const agGridOptionsPanel = hoistCmp.factory({
             icon: Icon.settings(),
             className: 'tbox-display-opts',
             compactHeader: true,
-            model: {side: 'right', defaultSize: 160, resizable: false},
+            model: {side: 'right', defaultSize: 250, resizable: false},
             items: [
                 agGridOptions()
             ]
