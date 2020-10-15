@@ -28,7 +28,7 @@ import {treeGridPage} from './treegrids/TreeGridPage';
 export class AppModel {
 
     @managed
-    appMenuModel = new AppMenuModel();
+    appMenuModel = new AppMenuModel({hideLogoutItem: false});
 
     @managed
     navigatorModel = new NavigatorModel({
