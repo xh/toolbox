@@ -1,9 +1,9 @@
 import {box, hframe} from '@xh/hoist/cmp/layout';
 import React from 'react';
-import {hoistCmp} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 import xhHoist from '../../../core/img/xh+hoist.png';
 import {roadmapView} from './roadmap/RoadmapView';
 import './HomeTab.scss';
@@ -33,6 +33,7 @@ const welcomePanel = hoistCmp.factory(
                         <img src={xhHoist} alt="xh.io + Hoist"/>
                     </div>,
                     <div className="tb-welcome__greeting">
+                        <p style={{fontWeight: 'bold'}}>Welcome, {XH.getUser().displayName}!</p>
                         <p>
                             Toolbox demonstrates key components, code patterns, utilities, and
                             other tooling included in {link('Hoist React', 'https://github.com/xh/hoist-react/')} and {link('Hoist Core', 'https://github.com/xh/hoist-core/')},
