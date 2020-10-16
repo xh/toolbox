@@ -13,7 +13,8 @@ export const App = hoistCmp({
     render() {
         return panel({
             tbar: appBar({
-                icon: Icon.health({size: '2x', prefix: 'fal'})
+                icon: Icon.health({size: '2x', prefix: 'fal'}),
+                appMenuButtonProps: {hideLogoutItem: false}
             }),
             item: recallsPanel()
         });

@@ -7,6 +7,7 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
+import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {getAppOptions} from './AppOptions';
 import {chartsTab} from './tabs/charts/ChartsTab';
@@ -42,6 +43,12 @@ export class AppModel {
         return XH.getPref('gridSizingMode');
     }
 
+    async preAuthInitAsync() {
+        await XH.installServicesAsync(
+            OauthService
+        );
+    }
+
     async initAsync() {
         await XH.installServicesAsync(
             PortfolioService
@@ -50,6 +57,10 @@ export class AppModel {
 
     async doLoadAsync(loadSpec) {
         await loadAllAsync([], loadSpec);
+    }
+
+    async logoutAsync() {
+        await XH.oauthService.logoutAsync();
     }
 
     goHome() {
@@ -153,3 +164,9 @@ export class AppModel {
         ];
     }
 }
+
+/**
+ * @typedef XH
+ * @property {OauthService} oauthService
+ * @property {PortfolioService} portfolioService
+ */

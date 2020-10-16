@@ -29,7 +29,8 @@ export const App = hoistCmp({
                         options: {prefix: 'Last Updated:'}
                     }),
                     appBarSeparator()
-                ]
+                ],
+                appMenuButtonProps: {hideLogoutItem: false}
             }),
             item: newsPanel()
         });
