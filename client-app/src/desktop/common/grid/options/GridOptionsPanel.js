@@ -1,4 +1,5 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {div} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -14,10 +15,13 @@ export const gridOptionsPanel = hoistCmp.factory({
             className: 'tbox-display-opts',
             compactHeader: true,
             model: {side: 'right', defaultSize: 250, resizable: false},
-            items: [
-                gridOptions(),
-                extraItems
-            ]
+            item: div({
+                className: 'tbox-display-opts__inner',
+                items: [
+                    gridOptions(),
+                    extraItems
+                ]
+            })
         });
     }
 });
