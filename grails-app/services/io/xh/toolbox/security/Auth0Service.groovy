@@ -18,6 +18,9 @@ import static io.xh.hoist.util.Utils.withNewSession
 @Slf4j
 class Auth0Service extends BaseService {
 
+
+    static clearCachesConfigs = ['auth0Domain', 'auth0ClientId', 'auth0Jwks']
+
     ConfigService configService
 
     Map getClientConfig() {
@@ -65,12 +68,6 @@ class Auth0Service extends BaseService {
     //------------------------
     // Implementation
     //------------------------
-    private JSONClient _jsonClient
-    JSONClient getJsonClient() {
-        if (!_jsonClient) _jsonClient = new JSONClient()
-        return _jsonClient
-    }
-
     private JsonWebKeySet _jkws
     JsonWebKeySet getJsonWebKeySet() {
         if (!_jkws) {
@@ -97,7 +94,6 @@ class Auth0Service extends BaseService {
     }
 
     void clearCaches() {
-        _jsonClient = null
         _jkws = null
     }
 
