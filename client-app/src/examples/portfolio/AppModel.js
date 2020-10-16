@@ -8,6 +8,7 @@ import {HoistAppModel, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {startCase} from 'lodash';
+import {OauthService} from '../../core/svc/OauthService';
 import {PortfolioService} from '../../core/svc/PortfolioService';
 
 export const PERSIST_MAIN = {localStorageKey: 'portfolioAppMainState'};
@@ -18,6 +19,20 @@ export class AppModel {
 
     get gridSizingMode() {
         return XH.getPref('gridSizingMode');
+    }
+
+    async preAuthInitAsync() {
+        await XH.installServicesAsync(OauthService);
+    }
+
+    async initAsync() {
+        await XH.installServicesAsync(
+            PortfolioService
+        );
+    }
+
+    async logoutAsync() {
+        await XH.oauthService.logoutAsync();
     }
 
     getAppOptions() {
@@ -39,11 +54,6 @@ export class AppModel {
         ];
     }
 
-    async initAsync() {
-        await XH.installServicesAsync(
-            PortfolioService
-        );
-    }
 }
 
 
