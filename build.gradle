@@ -76,7 +76,6 @@ dependencies {
     
     runtime "org.apache.tomcat:tomcat-jdbc"
     runtime "mysql:mysql-connector-java:5.1.47"
-    runtime "com.h2database:h2"
 
     if (!inlineHoist) {
         // Include Hoist as versioned external dependency when building a WAR for release

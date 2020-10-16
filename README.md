@@ -14,17 +14,9 @@ Framework.  In particular, the dev version -- https://toolbox-dev.xh.io -- will 
 with CI using the current `develop` branches of Hoist, while the production version -- https://toolbox.xh.io -- will 
 typically be re-released with every new released version of Hoist. 
 
-Toolbox is designed to be highly portable and optimized for easy checkout and development use.  To this end, no actual
-database is required for running the development version of the app:  The development app uses an in-memory H2 database
-with all default data provided.  In contrast, The deployed versions of the apps use a standard mySQL database, and can 
-be used  to test the full stateful behavior of Hoist applications including usage tracking, preferences, and 
-configuration.
-
-Also note that Toolbox uses a simple authentication adapter to provide forms-based authentication.  It is important to 
-note that actual Hoist applications will typically use enterprise Single Sign-On (SSO) instead, a usage for which Hoist
-is optimized.  The forms-based authentication used here is specific to Toolbox, and the fact that we are publishing it 
-on the internet for public usage.  The core of the app can be accessed by logging in as 'toolbox@xh.io' (pwd: 'Hoist_Toolb0x');
-admin tooling may be accessed with additional credentials which we will be happy to provide as necessary.   
+Note that Toolbox uses 'Auth0' as its authentication provider, and includes various client-side and server side adaptors
+for that. Typical Hoist applications will use an enterprise-specific Single Sign-On (SSO) such as JESPA/NTLM, kerberos, 
+or another OAuth based solution.
 
 🙏 Thanks for your patience as we continue to build out this application.  All suggestions are welcome!
 
