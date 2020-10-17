@@ -2,7 +2,7 @@ import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {roadmapViewItem} from './RoadmapViewItem';
-import './RoadmapView.scss';
+import './RoadmapWidget.scss';
 import {Icon} from '@xh/hoist/icon';
 import {toNumber} from 'lodash';
 

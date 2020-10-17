@@ -8,19 +8,17 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {RoadmapModel} from './RoadmapModel';
-import './RoadmapView.scss';
+import './RoadmapWidget.scss';
 
-export const roadmapView = hoistCmp.factory({
+export const roadmapWidget = hoistCmp.factory({
+    displayName: 'RoadmapWidget',
     model: creates(RoadmapModel),
 
-    render({model, ...props})  {
+    render()  {
         return panel({
-            title: 'Hoist Roadmap',
-            icon: Icon.mapSigns(),
-            className: 'tb-roadmap',
+            className: 'tb-roadmap-widget',
             item: dataView(),
-            bbar: bbar(),
-            ...props
+            bbar: bbar()
         });
     }
 });

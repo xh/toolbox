@@ -7,6 +7,7 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
+import {GitHubService} from '../core/svc/GitHubService';
 import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {getAppOptions} from './AppOptions';
@@ -51,6 +52,7 @@ export class AppModel {
 
     async initAsync() {
         await XH.installServicesAsync(
+            GitHubService,
             PortfolioService
         );
     }
@@ -167,6 +169,7 @@ export class AppModel {
 
 /**
  * @typedef XH
+ * @property {GitHubService} gitHubService
  * @property {OauthService} oauthService
  * @property {PortfolioService} portfolioService
  */

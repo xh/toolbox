@@ -1,0 +1,45 @@
+.tb-activity-repo {
+  &--hoist-react {
+    background-color: hsla(33, 93%, 55%, 0.4);
+  }
+
+  &--hoist-core {
+    background-color: hsla(203, 85%, 61%, 0.4);
+  }
+
+  &--hoist-dev-utils {
+    background-color: hsla(123, 26%, 39%, 0.4);
+  }
+
+  &--toolbox {
+    background-color: hsla(180, 55%, 25%, 0.4);
+  }
+}
+
+.tb-activity-deltas {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+
+  &--additions {
+    flex: 1;
+    text-align: right;
+    color: var(--xh-green-muted);
+  }
+
+  &--deletions {
+    flex: 1;
+    text-align: left;
+    color: var(--xh-red-muted);
+  }
+
+  &--sep {
+    margin: 0 6px;
+    color: var(--xh-text-color-muted);
+  }
+}
+
+.tb-activity--release {
+  font-weight: bold;
+  background-color: var(--xh-bg-highlight);
+}
