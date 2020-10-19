@@ -83,6 +83,11 @@ dependencies {
     }
 }
 
+// Avoid unexpected errors with overly-long classpath on Windows development machines.
+grails {
+    pathingJar = true
+}
+
 if (inlineHoist) {
     // Include Hoist as an inline plugin in multi-project mode when running in development
     grails {
