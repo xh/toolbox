@@ -111,6 +111,7 @@ export class SampleTreeGridModel {
     createGridModel(includeCheckboxes) {
         return new GridModel({
             treeMode: true,
+            treeStyle: 'none',
             store: {
                 loadRootAsSummary: true,
                 fields: [{name: 'isChecked', type: 'bool'}],

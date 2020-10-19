@@ -10,12 +10,15 @@
 
 .tb-welcome {
   flex: 1;
-  max-width: 575px;
+  max-width: 620px;
   height: 525px;
 
   &__logo {
     margin: var(--xh-pad-double-px) 0;
     border-right: var(--xh-border-solid);
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
 
     img {
       width: 250px;  // 0.25 * actual image size
@@ -23,6 +26,7 @@
   }
 
   &__greeting {
+    margin: auto 0;
     overflow-y: auto;
     padding: var(--xh-pad-double-px);
 

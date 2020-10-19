@@ -29,6 +29,7 @@ const bbar = hoistCmp.factory(
     ({model}) => toolbar(
         buttonGroupInput({
             bind: 'statusFilter',
+            outlined: true,
             items: [
                 button({
                     text: 'Upcoming',
