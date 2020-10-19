@@ -8,7 +8,7 @@
         "headers": {
           "user-agent": "JS GraphQL",
           "Accept": "application/vnd.github.v4.idl",
-          "Authorization": "bearer b8c1b07669ba29488d55a2043b5921fb2d604877"
+          "Authorization": "bearer [INSERT TOKEN]"
         },
         "introspect": false
       }

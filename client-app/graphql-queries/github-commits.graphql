@@ -5,7 +5,12 @@ query XHRepoCommits {
             target {
                 ... on Commit {
                     id
-                    history {
+                    history(after: null) {
+                        totalCount
+                        pageInfo {
+                            endCursor
+                            hasNextPage
+                        }
                         nodes {
                             abbreviatedOid
                             committedDate

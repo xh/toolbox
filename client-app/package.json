@@ -28,11 +28,9 @@
   "dependencies": {
     "@ag-grid-community/react": "~23.2.0",
     "@ag-grid-enterprise/all-modules": "~23.2.0",
-    "@apollo/client": "^3.2.4",
     "@auth0/auth0-spa-js": "~1.12.1",
     "@fortawesome/free-brands-svg-icons": "~5.14.0",
     "@xh/hoist": "^37.0.0-SNAPSHOT",
-    "graphql": "^15.3.0",
     "highcharts": "~8.2.0",
     "react": "~16.13.1",
     "react-dom": "~16.13.1",
