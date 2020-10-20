@@ -57,18 +57,21 @@ export class HomeTabModel {
                 {
                     id: 'welcome',
                     title: 'Welcome',
+                    unique: true,
                     content: welcomeWidget,
                     icon: Icon.home()
                 },
                 {
                     id: 'about',
                     title: 'About Toolbox',
+                    unique: true,
                     content: aboutToolboxWidget,
                     icon: Icon.info()
                 },
                 {
                     id: 'roadmap',
                     title: 'Hoist Roadmap',
+                    unique: true,
                     content: roadmapWidget,
                     icon: Icon.mapSigns()
                 },
