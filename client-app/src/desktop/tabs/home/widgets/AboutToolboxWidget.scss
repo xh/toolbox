@@ -1,7 +1,7 @@
-.tb-about-widget {
+.tb-about-widget .tb-about-widget__inner {
+  flex: 1;
   overflow-y: auto;
   padding: 0 var(--xh-pad-px) var(--xh-pad-px) var(--xh-pad-px);
-  flex: 1;
 
   h2 {
     font-size: var(--xh-font-size-large-px);
