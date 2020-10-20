@@ -1,18 +1,22 @@
 .tb-activity-repo {
+  padding: 2px 10px;
+  border-radius: 4px;
+  color: var(--xh-gray-light);
+
   &--hoist-react {
-    background-color: hsla(33, 93%, 55%, 0.4);
+    background-color: var(--xh-orange-muted);
   }
 
   &--hoist-core {
-    background-color: hsla(203, 85%, 61%, 0.4);
+    background-color: var(--xh-blue-muted);
   }
 
   &--hoist-dev-utils {
-    background-color: hsla(123, 26%, 39%, 0.4);
+    background-color: var(--xh-red-muted);
   }
 
   &--toolbox {
-    background-color: hsla(180, 55%, 25%, 0.4);
+    background-color: var(--xh-green-muted);
   }
 }
 

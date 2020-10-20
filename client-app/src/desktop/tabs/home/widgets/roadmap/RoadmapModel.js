@@ -21,7 +21,7 @@ export class RoadmapModel {
                 'status', 'gitLinks', 'sortOrder', 'lastUpdated', 'lastUpdatedBy'
             ]
         },
-        itemHeight: 130,
+        itemHeight: 150,
         elementRenderer: (v, {record}) => roadmapViewItem({record}),
         sortBy: 'sortOrder',
         groupBy: 'sortedPhase',

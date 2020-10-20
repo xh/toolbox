@@ -18,6 +18,7 @@
     border: var(--xh-border-solid);
     font-family: var(--xh-font-family-mono);
     font-size: var(--xh-font-size-small-px);
+    table-layout: fixed;
     width: 100%;
 
     tr {
@@ -25,16 +26,16 @@
     }
 
     th {
-      padding: var(--xh-pad-half-px);
       background-color: var(--xh-bg-alt);
-      width: 120px;
+      padding: var(--xh-pad-half-px);
       text-align: right;
       vertical-align: top;
+      white-space: nowrap;
+      width: 120px;
     }
 
     td {
       padding: var(--xh-pad-half-px);
-      white-space: nowrap;
     }
   }
 }

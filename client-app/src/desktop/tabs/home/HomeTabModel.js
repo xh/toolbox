@@ -74,7 +74,7 @@ export class HomeTabModel {
                 },
                 {
                     id: 'activity',
-                    title: 'Recent Commit Activity',
+                    title: 'Hoist Commits',
                     content: activityWidget,
                     icon: Icon.icon({iconName: 'github', prefix: 'fab'})
                 }

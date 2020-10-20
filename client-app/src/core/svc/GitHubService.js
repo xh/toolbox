@@ -1,41 +1,55 @@
-import {HoistService} from '@xh/hoist/core';
+import {LoadSupport, HoistService, XH} from '@xh/hoist/core';
+import {computed, bindable} from '@xh/hoist/mobx';
+import {LocalDate} from '@xh/hoist/utils/datetime';
+import {forOwn, sortBy} from 'lodash';
 
+// TODO - auto-refresh with app, do so efficiently, only replacing local data when new commits.
 @HoistService
+@LoadSupport
 export class GitHubService {
 
-    async getCommitsAsync(repoNames) {
-        // const loads = repoNames.map(repoName => {
-        //     return XH.fetchJson({
-        //         url: `gitHub/commits${repoName}`
-        //     });
-        // });
-        //
-        // const ret = [],
-        //     results = await Promise.allSettled(loads);
-        //
-        // TODO - extract commits from new simpler serialization
-        // results.forEach((it, idx) => {
-        //     it.value.data.repository.defaultBranchRef.target.history.nodes.forEach(it => {
-        //         const committedDate = moment(it.committedDate).toDate();
-        //         ret.push({
-        //             id: `${repoName}-${it.abbreviatedOid}`,
-        //             repo: repoName,
-        //             abbreviatedOid: it.abbreviatedOid,
-        //             authorName: it.author?.user?.name || it.author?.email,
-        //             authorEmail: it.author?.email ?? 'UNKNOWN',
-        //             committedDate,
-        //             committedDay: LocalDate.from(committedDate),
-        //             messageHeadline: it.messageHeadline,
-        //             changedFiles: it.changedFiles,
-        //             additions: it.additions,
-        //             deletions: it.deletions,
-        //             url: it.url,
-        //             isRelease: it.author?.email == 'techops@xh.io' && it.messageHeadline.startsWith('v')
-        //         });
-        //     });
-        // });
-        //
-        // return ret;
+    /** @member {Object} - loaded commits histories, keyed by repoName. */
+    @bindable.ref commitHistories = {};
+
+    /** @return {Object[]} - array of loaded commits across all repositories. */
+    @computed
+    get allCommits() {
+        const ret = [];
+        forOwn(this.commitHistories, v => ret.push(...v.commits));
+        return sortBy(ret, it => -it.committedDate);
+    }
+
+    async initAsync() {
+        try {
+            // TODO - do we want to await?
+            this.loadAsync();
+        } catch (e) {
+            console.error(`Error initializing GitHubService`, e);
+        }
+    }
+
+    async doLoadAsync(loadSpec) {
+        const commitHistories = await XH.fetchJson({
+            url: 'gitHub/allCommits',
+            loadSpec
+        }).track({
+            category: 'GitHub Service',
+            message: 'Loaded all commits'
+        });
+
+        console.log(commitHistories);
+        forOwn(commitHistories, v => {
+            // Minor translations here on client for convenience.
+            v.commits.forEach(it => {
+                it.authorEmail = it.author.email;
+                it.authorName = it.author.name || it.authorEmail;
+                it.committedDate = new Date(it.committedDate);
+                it.committedDay = LocalDate.from(it.committedDate);
+                it.isRelease = it.authorEmail == 'techops@xh.io' && it.messageHeadline.startsWith('v');
+            });
+        });
+
+        this.setCommitHistories(commitHistories);
     }
 
 }

@@ -5,7 +5,7 @@ import io.xh.hoist.json.JSONFormat
 class CommitHistory implements JSONFormat {
 
     String repo
-    String lastCommitDate
+    String lastCommitTimestamp
     Date firstLoaded
     Date lastUpdated
     // TODO - sortedSet for commits?
@@ -18,23 +18,23 @@ class CommitHistory implements JSONFormat {
         sortCommits()
     }
 
-    void updateWithNewCommits(List<Commit> commits) {
+    void updateWithNewCommits(List<Commit> newCommits) {
         def currIds = commits.collect{it.id}
-        commits = commits.findAll{!currIds.contains(it.id)}
-        this.commits.addAll(0, commits)
-        this.lastUpdated = new Date()
+        newCommits = newCommits.findAll{!currIds.contains(it.id)}
+        commits.addAll(0, newCommits)
+        lastUpdated = new Date()
         sortCommits()
     }
 
     private void sortCommits() {
         commits.sort{a, b -> b.committedDate <=> a.committedDate}
-        lastCommitDate = commits ? commits.first().committedDateStr : null
+        lastCommitTimestamp = commits ? commits.first().committedDateStr : null
     }
 
     Map formatForJSON() {
         return [
             repo: repo,
-            lastCommitDate: lastCommitDate,
+            lastCommitTimestamp: lastCommitTimestamp,
             firstLoaded: firstLoaded,
             lastUpdated: lastUpdated,
             commits: commits

@@ -1,20 +1,23 @@
+import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
-import {HoistModel, XH} from '@xh/hoist/core';
-import {LoadSupport} from '@xh/hoist/core/mixins/LoadSupport';
+import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
+import {bindable} from '@xh/hoist/mobx';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 
 @HoistModel
 @LoadSupport
 export class ActivityWidgetModel {
 
+    /** @member {GridModel} */
     gridModel;
+    /** @member {FilterChooserModel} */
+    filterChooserModel;
 
-    @bindable repos = ['hoist-react', 'hoist-core', 'toolbox']
+    @bindable groupBy = 'committedDay';
 
     constructor() {
         const openUrlAction = {
@@ -27,7 +30,6 @@ export class ActivityWidgetModel {
 
         this.gridModel = new GridModel({
             colChooserModel: true,
-            groupBy: 'committedDay',
             sortBy: 'committedDate|desc',
             contextMenu: [
                 openUrlAction,
@@ -59,10 +61,12 @@ export class ActivityWidgetModel {
                 },
                 {
                     field: 'repo',
-                    width: 120,
-                    align: 'center',
+                    width: 140,
                     pinned: true,
-                    cellClass: v => `tb-activity-repo--${v}`
+                    align: 'right',
+                    renderer: v => {
+                        return `<span class="tb-activity-repo tb-activity-repo--${v}">${v}</span>`;
+                    }
                 },
                 {
                     field: 'messageHeadline',
@@ -120,26 +124,50 @@ export class ActivityWidgetModel {
             rowClassFn: (rec) => rec?.data?.isRelease ? 'tb-activity--release' : '',
             showGroupRowCounts: false,
             groupSortFn: (a, b) => {
-                return a == b ? 0 : (a < b ? 1 : -1);
+                return a == b ? 0 :
+                    this.groupBy == 'committedDay' ? (a < b ? 1 : -1) : (a < b ? -1 : 1);
             },
             groupRowRenderer: (params) => {
-                const {value} = params,
-                    ld = LocalDate.get(value);
-                if (ld == LocalDate.today()) return 'Today';
-                if (ld == LocalDate.yesterday()) return 'Yesterday';
-                return ld ? fmtDate(ld, 'dddd, DD-MMM') : '???';
+                const {value} = params;
+
+                if (this.groupBy == 'committedDay') {
+                    const ld = LocalDate.get(value);
+                    if (ld == LocalDate.today()) return 'Today';
+                    if (ld == LocalDate.yesterday()) return 'Yesterday';
+                    return ld ? fmtDate(ld, 'dddd, DD-MMM') : '???';
+                } else {
+                    return value;
+                }
             }
         });
 
+        this.filterChooserModel = new FilterChooserModel({
+            sourceStore: this.gridModel.store,
+            targetStore: this.gridModel.store,
+            fieldSpecs: [
+                'repo', 'authorName', 'authorEmail', 'committedDay', 'changedFiles', 'isRelease'
+            ]
+        });
+
         this.addReaction({
-            track: () => this.repos,
+            track: () => this.groupBy,
+            run: (groupBy) => this.gridModel.setGroupBy(groupBy),
+            fireImmediately: true
+        });
+
+        this.addReaction({
+            track: () => XH.gitHubService.allCommits,
             run: () => this.loadAsync()
         });
     }
 
     async doLoadAsync() {
-        const commits = await XH.gitHubService.getCommitsAsync(this.repos);
-        this.gridModel.loadData(commits);
+        this.gridModel.loadData(XH.gitHubService.allCommits);
     }
+
+    onRowDoubleClicked = (params) => {
+        const rec = params.data;
+        if (rec?.isRecord) window.open(rec.data.url);
+    };
 
 }
