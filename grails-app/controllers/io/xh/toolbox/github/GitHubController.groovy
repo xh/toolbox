@@ -13,9 +13,8 @@ class GitHubController extends BaseController {
     }
 
     // TODO - move to admin controller
-    def loadCommitsForRepo(String repo) {
-        gitHubService.loadCommitsForRepo(repo)
-        renderJSON(success: true)
+    def loadCommits(String repo) {
+        renderJSON(gitHubService.loadCommitsForRepo(repo))
     }
 
 }

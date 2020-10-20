@@ -2,12 +2,16 @@ package io.xh.toolbox.github
 
 import io.xh.hoist.json.JSONFormatCached
 
+import java.time.Instant
+import java.time.format.DateTimeFormatter
+
 class Commit extends JSONFormatCached {
 
     final String id
     final String repo
     final String abbreviatedOid
     final Map author
+    final String committedDateStr
     final Date committedDate
     final String messageHeadline
     final String messageBody
@@ -20,14 +24,23 @@ class Commit extends JSONFormatCached {
         id = "${mp.repo}-${mp.abbreviatedOid}"
         repo = mp.repo
         abbreviatedOid = mp.abbreviatedOid
-        author = mp.author
-        committedDate = mp.committedDate
+        author = mp.author as Map
+        committedDateStr = mp.committedDate
+        committedDate = parseDate(committedDateStr)
         messageHeadline = mp.messageHeadline
         messageBody = mp.messageBody
-        changedFiles = mp.changedFiles
-        additions = mp.additions
-        deletions = mp.deletions
+        changedFiles = mp.changedFiles as Integer
+        additions = mp.additions as Integer
+        deletions = mp.deletions as Integer
         url = mp.url
+    }
+
+    String toString() {id}
+    int hashCode() {Objects.hashCode(id)}
+    boolean equals(Object other) {other instanceof Commit && Objects.equals(other.id, id)}
+
+    private Date parseDate(String dateStr) {
+        return Date.from(Instant.from(DateTimeFormatter.ISO_INSTANT.parse(dateStr)))
     }
 
     Map formatForJSON() {

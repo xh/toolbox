@@ -5,7 +5,7 @@ query XHRepoCommits {
             target {
                 ... on Commit {
                     id
-                    history(after: null) {
+                    history(after: "2ae6f021d423e018e9ec74b08d96808b61d6f661 99", since: "2020-09-15T20:34:28Z") {
                         totalCount
                         pageInfo {
                             endCursor

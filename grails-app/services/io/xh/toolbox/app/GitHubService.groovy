@@ -3,35 +3,35 @@ package io.xh.toolbox.app
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
-import io.xh.hoist.json.JSONParser
 import io.xh.hoist.json.JSONSerializer
 import io.xh.toolbox.github.Commit
+import io.xh.toolbox.github.CommitHistory
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
-
-import java.time.Instant
-import java.time.format.DateTimeFormatter
 
 class GitHubService extends BaseService {
 
     ConfigService configService
+    Map<String, CommitHistory> commitsByRepo = new HashMap()
 
-    Map<String, List<Commit>> commitsByRepo = new HashMap<>()
+    CommitHistory getCommitsForRepo(String repoName) {commitsByRepo[repoName]}
 
-    List<Commit> getCommitsForRepo(String repoName) {
-        return commitsByRepo[repoName] ?: []
-    }
-
-    List<Commit> loadCommitsForRepo(String repoName) {
-        def cursor = null,
-            hasNextPage = true,
+    CommitHistory loadCommitsForRepo(String repoName) {
+        def hasNextPage = true,
+            cursor = '',
             pageCount = 1,
-            commits = new ArrayList<Commit>()
+            commitHistory = this.getCommitsForRepo(repoName),
+            newCommits = new ArrayList<Commit>()
+
+        if (!commitHistory) {
+            commitHistory = new CommitHistory(repoName)
+            this.commitsByRepo.put(repoName, commitHistory)
+        }
 
         while (hasNextPage) {
             log.info("Fetching page ${pageCount} for repo ${repoName} | cursor ${cursor}")
             try {
-                def raw = loadCommitsForRepoInternal(repoName, cursor)
+                def raw = loadCommitsForRepoInternal(repoName, commitHistory.lastCommitDate, cursor)
                 if (raw?.data?.repository?.name != repoName) {
                     throw new RuntimeException("JSON returned by GitHub API not in expected format")
                 }
@@ -40,21 +40,20 @@ class GitHubService extends BaseService {
                     pageInfo = history.pageInfo,
                     rawCommits = history.nodes as List
 
-                log.info("Fetched ${commits.size() + rawCommits.size()} / ${history.totalCount} commits")
+                log.info("Fetched ${newCommits.size() + rawCommits.size()} / ${history.totalCount} commits for this batch")
                 cursor = pageInfo.endCursor
-                // TODO - decide what to do in local dev env - maybe fetch two pages?
                 hasNextPage = pageInfo.hasNextPage && pageCount < 3
                 pageCount++
 
                 rawCommits.each{it ->
-                    commits.push(new Commit(
+                    newCommits.push(new Commit(
                         repo: repoName,
                         abbreviatedOid: it.abbreviatedOid,
                         author: [
                             email: it.author.email,
                             name: it.author.user?.name ?: it.author.email
                         ],
-                        committedDate: parseDate(it.committedDate),
+                        committedDate: it.committedDate,
                         messageHeadline: it.messageHeadline,
                         messageBody: it.messageBody,
                         changedFiles: it.changedFiles,
@@ -70,30 +69,33 @@ class GitHubService extends BaseService {
             }
         }
 
-        log.info("Commit load complete | got ${commits.size()} commits")
-        commitsByRepo.put(repoName, commits)
-        return commits
+        if (newCommits.size()) {
+            log.info("Commit load complete | got ${newCommits.size()} new commits")
+            commitHistory.updateWithNewCommits(newCommits)
+        } else {
+            log.info("No new commits found - staying at cursor ${cursor}")
+        }
+
+        return commitHistory
     }
 
-    Map loadCommitsForRepoInternal(String repoName, String cursor = null) {
-        log.info(JSONParser.parseObject(getCommitsQueryJson(repoName, cursor)).toString())
-        def post = new HttpPost('https://api.github.com/graphql')
+    Map loadCommitsForRepoInternal(String repoName, String sinceTimestamp = null, String cursor = null) {
+        def query = getCommitsQueryJson(repoName, sinceTimestamp, cursor),
+            post = new HttpPost('https://api.github.com/graphql')
+
         post.setHeader('Accept', 'application/json')
         post.setHeader('Content-type', 'application/json')
         post.setHeader('Authorization', "bearer ${configService.getString('gitHubAccessToken')}")
-        post.setEntity(new StringEntity(getCommitsQueryJson(repoName, cursor)))
+        post.setEntity(new StringEntity(query))
+
         jsonClient.executeAsMap(post)
     }
 
-    private Date parseDate(String rawDate) {
-        return Date.from(Instant.from(DateTimeFormatter.ISO_INSTANT.parse(rawDate)))
+    private String getCommitsQueryJson(String repoName, String sinceTimestamp, cursor) {
+        return JSONSerializer.serialize([query: getCommitsQueryString(repoName, sinceTimestamp, cursor)])
     }
 
-    private String getCommitsQueryJson(String repoName, cursor = null) {
-        return JSONSerializer.serialize([query: getCommitsQueryString(repoName, cursor)])
-    }
-
-    private String getCommitsQueryString(String repoName, String cursor = null) {
+    private String getCommitsQueryString(String repoName, String sinceTimestamp, String cursor) {
         return """
 query XHRepoCommits {
     repository(owner: "xh", name: "$repoName") {
@@ -102,7 +104,7 @@ query XHRepoCommits {
             target {
                 ... on Commit {
                     id
-                    history(after: ${cursor ? '"' + cursor + '"' : 'null'}) {
+                    history(after: ${cursor ? '"' + cursor + '"' : 'null'}, since: ${sinceTimestamp ? '"' + sinceTimestamp + '"' : 'null'}) {
                         totalCount
                         pageInfo {
                             endCursor
@@ -140,6 +142,11 @@ query XHRepoCommits {
             _jsonClient = new JSONClient()
         }
         return _jsonClient
+    }
+
+    void clearCaches() {
+        this.commitsByRepo = new HashMap()
+        this._jsonClient = null
     }
 
 }
