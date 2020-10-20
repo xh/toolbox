@@ -11,17 +11,35 @@ import org.apache.http.entity.StringEntity
 
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 
+/**
+ * Service to load commits from XH's GitHub repos via their GraphQL API. This service will load
+ * the entire commit history for a configured list of repositories, then will cache the results
+ * centrally here and load differential updates on a timer to keep the cache fresh.
+ *
+ * This service requires several config keys to operate. It checks the "gitHubAccessToken" string
+ * config on startup to determine if it should do any work at all.
+ *
+ * Another optional int config - "gitHubMaxPagesPerLoad" - is intended for local development
+ * environments, where a developer might wish to enable this service to load *some* commits but
+ * has no reason to load the entire history. (Set to a value of 1 to work in this mode.)
+ */
 class GitHubService extends BaseService {
+
+    static clearCachesConfigs = ['gitHubRepos', 'gitHubAccessToken', 'gitHubMaxPagesPerLoad']
 
     ConfigService configService
     Map<String, CommitHistory> commitsByRepo = new HashMap()
 
     void init() {
-        createTimer(
-            runFn: this.&loadCommitsForAllRepos,
-            interval: 'gitHubCommitsRefreshMins',
-            intervalUnits: MINUTES
-        )
+        if (configService.getString('gitHubAccessToken', 'none') == 'none') {
+            log.warn('Required "gitHubAccessToken" config not present or set to "none" - no commits will be loaded from GitHub.')
+        } else {
+            createTimer(
+                runFn: this.&loadCommitsForAllRepos,
+                interval: 'gitHubCommitsRefreshMins',
+                intervalUnits: MINUTES
+            )
+        }
     }
 
     /** Return the cached history of commits for a single repo, by name. */
@@ -54,8 +72,11 @@ class GitHubService extends BaseService {
             commitHistory = new CommitHistory(repoName)
         }
 
-        while (hasNextPage && !hadError) {
-            withShortInfo("Fetching page ${pageCount} for repo ${repoName}") {
+        // See class-level comment regarding this optional config.
+        def maxPagesToLoad = configService.getInt('gitHubMaxPagesPerLoad', 99)
+
+        while (hasNextPage && pageCount <= maxPagesToLoad && !hadError) {
+            withShortDebug("Fetching page ${pageCount} for repo ${repoName}") {
                 try {
                     def response = loadCommitsForRepoInternal(repoName, commitHistory.lastCommitTimestamp, cursor)
                     if (response?.data?.repository?.name != repoName) {
@@ -102,11 +123,11 @@ class GitHubService extends BaseService {
         if (hadError) {
             log.error("Error during commit load | no commits will be updated")
         } else if (newCommits.size() > 1) {
-            log.info("Commit load complete | got ${newCommits.size()} new commits")
+            log.debug("Commit load complete | got ${newCommits.size()} new commits")
             commitHistory.updateWithNewCommits(newCommits)
             this.commitsByRepo.put(repoName, commitHistory)
         } else {
-            log.info("Commit load complete | no new commits found")
+            log.debug("Commit load complete | no new commits found")
         }
 
         return commitHistory
@@ -128,12 +149,8 @@ class GitHubService extends BaseService {
         jsonClient.executeAsMap(post)
     }
 
-    private String getCommitsQueryJson(String repoName, String sinceTimestamp, cursor) {
-        return JSONSerializer.serialize([query: getCommitsQueryString(repoName, sinceTimestamp, cursor)])
-    }
-
-    private String getCommitsQueryString(String repoName, String sinceTimestamp, String cursor) {
-        return """
+    private String getCommitsQueryJson(String repoName, String sinceTimestamp, String cursor) {
+        def query = """
 query XHRepoCommits {
     repository(owner: "xh", name: "$repoName") {
         name
@@ -170,7 +187,9 @@ query XHRepoCommits {
         }
     }
 }
-""".toString()
+"""
+
+        return JSONSerializer.serialize([query: query])
     }
 
     private JSONClient _jsonClient
@@ -182,8 +201,9 @@ query XHRepoCommits {
     }
 
     void clearCaches() {
-        this.commitsByRepo = new HashMap()
         this._jsonClient = null
+        this.commitsByRepo = new HashMap()
+        this.loadCommitsForAllRepos()
     }
 
 }

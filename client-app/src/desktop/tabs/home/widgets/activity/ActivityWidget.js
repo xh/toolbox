@@ -26,8 +26,8 @@ export const activityWidget = hoistCmp.factory({
 const bbar = hoistCmp.factory({
     render({model}) {
         return toolbar(
-            filterChooser({placeholder: 'Filter commits...', flex: 5}),
             select({
+                width: 140,
                 bind: 'groupBy',
                 options: [
                     {value: 'committedDay', label: 'By Day'},
@@ -35,6 +35,7 @@ const bbar = hoistCmp.factory({
                     {value: null, label: 'Ungrouped'}
                 ]
             }),
+            filterChooser({placeholder: 'Filter commits...', flex: 5}),
             filler(),
             gridCountLabel({unit: 'commit'}),
             toolbarSep(),

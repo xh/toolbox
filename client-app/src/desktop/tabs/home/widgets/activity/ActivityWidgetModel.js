@@ -29,6 +29,7 @@ export class ActivityWidgetModel {
         };
 
         this.gridModel = new GridModel({
+            emptyText: 'No commits found...',
             colChooserModel: true,
             sortBy: 'committedDate|desc',
             contextMenu: [
@@ -145,7 +146,11 @@ export class ActivityWidgetModel {
             sourceStore: this.gridModel.store,
             targetStore: this.gridModel.store,
             fieldSpecs: [
-                'repo', 'authorName', 'authorEmail', 'committedDay', 'changedFiles', 'isRelease'
+                'repo', 'authorName', 'authorEmail', 'committedDay', 'changedFiles', 'isRelease',
+                {
+                    field: 'messageHeadline',
+                    suggestValues: false
+                }
             ]
         });
 

@@ -58,7 +58,7 @@ export class AppModel {
     }
 
     async doLoadAsync(loadSpec) {
-        await loadAllAsync([], loadSpec);
+        await loadAllAsync([XH.gitHubService], loadSpec);
     }
 
     async logoutAsync() {

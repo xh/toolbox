@@ -20,36 +20,35 @@ export class GitHubService {
     }
 
     async initAsync() {
-        try {
-            // TODO - do we want to await?
-            this.loadAsync();
-        } catch (e) {
-            console.error(`Error initializing GitHubService`, e);
-        }
+        // Note we do not await this - we don't want the app load to block here.
+        this.loadAsync();
     }
 
     async doLoadAsync(loadSpec) {
-        const commitHistories = await XH.fetchJson({
-            url: 'gitHub/allCommits',
-            loadSpec
-        }).track({
-            category: 'GitHub Service',
-            message: 'Loaded all commits'
-        });
-
-        console.log(commitHistories);
-        forOwn(commitHistories, v => {
-            // Minor translations here on client for convenience.
-            v.commits.forEach(it => {
-                it.authorEmail = it.author.email;
-                it.authorName = it.author.name || it.authorEmail;
-                it.committedDate = new Date(it.committedDate);
-                it.committedDay = LocalDate.from(it.committedDate);
-                it.isRelease = it.authorEmail == 'techops@xh.io' && it.messageHeadline.startsWith('v');
+        try {
+            const commitHistories = await XH.fetchJson({
+                url: 'gitHub/allCommits',
+                loadSpec
+            }).track({
+                category: 'GitHub Service',
+                message: 'Loaded all commits'
             });
-        });
 
-        this.setCommitHistories(commitHistories);
+            forOwn(commitHistories, v => {
+                // Minor translations here on client for convenience.
+                v.commits.forEach(it => {
+                    it.authorEmail = it.author.email;
+                    it.authorName = it.author.name || it.authorEmail;
+                    it.committedDate = new Date(it.committedDate);
+                    it.committedDay = LocalDate.from(it.committedDate);
+                    it.isRelease = it.authorEmail == 'techops@xh.io' && it.messageHeadline.startsWith('v');
+                });
+            });
+
+            this.setCommitHistories(commitHistories);
+        } catch (e) {
+            XH.handleException(e, {showAlert: false, showAsError: false});
+        }
     }
 
 }
