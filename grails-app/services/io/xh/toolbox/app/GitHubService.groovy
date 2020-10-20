@@ -1,5 +1,6 @@
 package io.xh.toolbox.app
 
+import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
@@ -12,9 +13,11 @@ import org.apache.http.entity.StringEntity
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 
 /**
- * Service to load commits from XH's GitHub repos via their GraphQL API. This service will load
- * the entire commit history for a configured list of repositories, then will cache the results
- * centrally here and load differential updates on a timer to keep the cache fresh.
+ * Service to load commits from the default branches (develop) of XH's GitHub repos.
+ *
+ * Queries commit history via the GitHub GraphQL API (https://docs.github.com/). Will load the
+ * entire commit history for a configured list of repos then cache the results centrally here and
+ * load differential updates on a timer to keep the cache fresh.
  *
  * This service requires several config keys to operate. It checks the "gitHubAccessToken" string
  * config on startup to determine if it should do any work at all.
@@ -23,6 +26,7 @@ import static io.xh.hoist.util.DateTimeUtils.MINUTES
  * environments, where a developer might wish to enable this service to load *some* commits but
  * has no reason to load the entire history. (Set to a value of 1 to work in this mode.)
  */
+@Slf4j
 class GitHubService extends BaseService {
 
     static clearCachesConfigs = ['gitHubRepos', 'gitHubAccessToken', 'gitHubMaxPagesPerLoad']
@@ -51,7 +55,7 @@ class GitHubService extends BaseService {
      *      incremental load of new commits only.
      */
     Map<String, CommitHistory> loadCommitsForAllRepos(Boolean forceFullLoad = false) {
-        def repos = configService.getList('gitHubRepos')
+        def repos = configService.getList('gitHubRepos', [])
         withInfo("Refreshing GitHub commits for ${repos.size()} configured repositories") {
             repos.each{loadCommitsForRepo(it as String, forceFullLoad)}
         }
