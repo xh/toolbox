@@ -1,4 +1,4 @@
-import {div, hspacer, hbox} from '@xh/hoist/cmp/layout';
+import {div, hspacer} from '@xh/hoist/cmp/layout';
 import {fmtTime} from '@xh/hoist/format';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
@@ -193,18 +193,8 @@ class Model {
             id = this.id++;
         dynamicModel.addTab({
             id,
-            title: hbox({
-                alignItems: 'center',
-                items: [
-                    `Tab ${id}`,
-                    hspacer(2),
-                    button({
-                        icon: Icon.x(),
-                        onClick: () => dynamicModel.removeTab(id),
-                        style: {minHeight: 15, minWidth: 15, borderRadius: 5, padding: 0}
-                    })
-                ]
-            }),
+            title:  `Tab ${id}`,
+            showRemoveAction: true,
             content: () => div(`Tab ${id}: Brand spanking new at ${fmtTime(new Date(), {fmt: 'HH:mm:ss'})}`)
         }, {activateImmediately: true});
     }
