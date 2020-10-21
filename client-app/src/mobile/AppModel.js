@@ -32,6 +32,7 @@ export class AppModel {
 
     @managed
     navigatorModel = new NavigatorModel({
+        track: true,
         pages: [
             {id: 'default', content: homePage},
             {id: 'grids', content: gridPage},
