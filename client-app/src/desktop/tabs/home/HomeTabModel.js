@@ -82,6 +82,13 @@ export class HomeTabModel {
                     content: activityWidget,
                     icon: Icon.icon({iconName: 'github', prefix: 'fab'})
                 }
+            ],
+            extraMenuItems: [
+                {
+                    text: 'Restore Default Layout',
+                    icon: Icon.reset(),
+                    actionFn: () => this.restoreDefaultsAsync()
+                }
             ]
         });
     }
