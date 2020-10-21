@@ -24,7 +24,7 @@ export const activityWidget = hoistCmp.factory({
 });
 
 const bbar = hoistCmp.factory({
-    render({model}) {
+    render() {
         return toolbar(
             select({
                 width: 140,

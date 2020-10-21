@@ -1,7 +1,7 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
-import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
@@ -13,9 +13,9 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 export class ActivityWidgetModel {
 
     /** @member {GridModel} */
-    gridModel;
+    @managed gridModel;
     /** @member {FilterChooserModel} */
-    filterChooserModel;
+    @managed filterChooserModel;
 
     @bindable groupBy = 'committedDay';
 
