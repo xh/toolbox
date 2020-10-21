@@ -1,15 +1,11 @@
-.tb-roadmap {
-  flex: 1;
-  max-width: 650px;
-  height: 525px;
-
+.tb-roadmap-widget {
   // Group header calendar icons
   .ag-group-value svg {
     margin-right: 4px;
   }
 
   .tb-roadmap-item {
-    flex: 1;
+    height: 148px;
     padding: var(--xh-pad-half-px) var(--xh-pad-px);
 
     // Title row.

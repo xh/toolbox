@@ -2,7 +2,7 @@ import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {roadmapViewItem} from './RoadmapViewItem';
-import './RoadmapView.scss';
+import './RoadmapWidget.scss';
 import {Icon} from '@xh/hoist/icon';
 import {toNumber} from 'lodash';
 
@@ -21,7 +21,7 @@ export class RoadmapModel {
                 'status', 'gitLinks', 'sortOrder', 'lastUpdated', 'lastUpdatedBy'
             ]
         },
-        itemHeight: 130,
+        itemHeight: 150,
         elementRenderer: (v, {record}) => roadmapViewItem({record}),
         sortBy: 'sortOrder',
         groupBy: 'sortedPhase',

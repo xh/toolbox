@@ -1,0 +1,41 @@
+.tb-about-widget .tb-about-widget__inner {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 var(--xh-pad-px) var(--xh-pad-px) var(--xh-pad-px);
+
+  h2 {
+    font-size: var(--xh-font-size-large-px);
+
+    .xh-icon {
+      margin-right: 0.5em;
+    }
+  }
+
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    background-color: var(--xh-bg);
+    border: var(--xh-border-solid);
+    font-family: var(--xh-font-family-mono);
+    font-size: var(--xh-font-size-small-px);
+    table-layout: fixed;
+    width: 100%;
+
+    tr {
+      border-bottom: var(--xh-border-solid);
+    }
+
+    th {
+      background-color: var(--xh-bg-alt);
+      padding: var(--xh-pad-half-px);
+      text-align: right;
+      vertical-align: top;
+      white-space: nowrap;
+      width: 120px;
+    }
+
+    td {
+      padding: var(--xh-pad-half-px);
+    }
+  }
+}
