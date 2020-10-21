@@ -85,7 +85,7 @@ export class HomeTabModel {
             ],
             extraMenuItems: [
                 {
-                    text: 'Restore Dash Defaults',
+                    text: 'Restore Default Layout',
                     icon: Icon.reset(),
                     actionFn: () => this.restoreDefaultsAsync()
                 }
