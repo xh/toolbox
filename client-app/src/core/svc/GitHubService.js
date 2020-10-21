@@ -29,9 +29,6 @@ export class GitHubService {
             const commitHistories = await XH.fetchJson({
                 url: 'gitHub/allCommits',
                 loadSpec
-            }).track({
-                category: 'GitHub Service',
-                message: 'Loaded all commits'
             });
 
             forOwn(commitHistories, v => {
