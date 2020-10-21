@@ -5,10 +5,13 @@ import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONSerializer
+import io.xh.hoist.websocket.WebSocketService
 import io.xh.toolbox.github.Commit
 import io.xh.toolbox.github.CommitHistory
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
+
+import java.time.Instant
 
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 
@@ -32,6 +35,7 @@ class GitHubService extends BaseService {
     static clearCachesConfigs = ['gitHubRepos', 'gitHubAccessToken', 'gitHubMaxPagesPerLoad']
 
     ConfigService configService
+    WebSocketService webSocketService
     Map<String, CommitHistory> commitsByRepo = new HashMap()
 
     void init() {
@@ -55,16 +59,29 @@ class GitHubService extends BaseService {
      *      incremental load of new commits only.
      */
     Map<String, CommitHistory> loadCommitsForAllRepos(Boolean forceFullLoad = false) {
-        def repos = configService.getList('gitHubRepos', [])
-        withInfo("Refreshing GitHub commits for ${repos.size()} configured repositories") {
-            repos.each{loadCommitsForRepo(it as String, forceFullLoad)}
+        def repos = configService.getList('gitHubRepos', []),
+            newCommitCount = 0
+
+        withShortInfo("Refreshing GitHub commits for ${repos.size()} configured repositories") {
+            repos.each{
+                def newCommits = loadCommitsForRepo(it as String, forceFullLoad)
+                newCommitCount += newCommits.size()
+            }
+
+            if (newCommitCount) {
+                log.debug("Found ${newCommitCount} new commits - pushing update...")
+                pushUpdate()
+            }
         }
 
         return commitsByRepo
     }
 
-    /** Reload commit history for a single repo, by name. */
-    CommitHistory loadCommitsForRepo(String repoName, Boolean forceFullLoad = false) {
+    /**
+     * Reload commit history for a single repo, by name.
+     * @return collection of newly loaded commits, if any.
+     */
+    List<Commit> loadCommitsForRepo(String repoName, Boolean forceFullLoad = false) {
         def hadError = false,
             hasNextPage = true,
             cursor = '',
@@ -119,22 +136,24 @@ class GitHubService extends BaseService {
                     hadError = true
                 }
             }
-
         }
 
-        // Check size > 1 as update checks on an existing CommitHistory will return 1 spurious
-        // "new" commit - the latest commit that itself occurred at lastCommitTimestamp.
+        // This filter is important, as our update checks will include the commit that occurred on
+        // commitHistory.lastCommitTimestamp.
+        newCommits = newCommits.findAll{!commitHistory.hasCommit(it)}
+
         if (hadError) {
             log.error("Error during commit load | no commits will be updated")
-        } else if (newCommits.size() > 1) {
+            return []
+        } else if (!newCommits) {
+            log.debug("Commit load complete | no new commits found")
+            return []
+        } else {
             log.debug("Commit load complete | got ${newCommits.size()} new commits")
             commitHistory.updateWithNewCommits(newCommits)
             this.commitsByRepo.put(repoName, commitHistory)
-        } else {
-            log.debug("Commit load complete | no new commits found")
+            return newCommits
         }
-
-        return commitHistory
     }
 
 
@@ -202,6 +221,13 @@ query XHRepoCommits {
             _jsonClient = new JSONClient()
         }
         return _jsonClient
+    }
+
+    private void pushUpdate() {
+        webSocketService.pushToChannels(
+            webSocketService.allChannels*.key, 'gitHubUpdate',
+            [timestamp: Instant.now()]
+        )
     }
 
     void clearCaches() {

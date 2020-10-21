@@ -1,4 +1,5 @@
 import {LoadSupport, HoistService, XH} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
 import {computed, bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {forOwn, sortBy} from 'lodash';
@@ -20,16 +21,20 @@ export class GitHubService {
     }
 
     async initAsync() {
+        // Subscribe to websocket based updates so we refresh and pick up new commits immediately.
+        XH.webSocketService.subscribe('gitHubUpdate', () => this.loadAsync());
+
         // Note we do not await this - we don't want the app load to block here.
         this.loadAsync();
     }
 
     async doLoadAsync(loadSpec) {
         try {
-            const commitHistories = await XH.fetchJson({
-                url: 'gitHub/allCommits',
-                loadSpec
-            });
+            const priorCommitCount = this.allCommits.length,
+                commitHistories = await XH.fetchJson({
+                    url: 'gitHub/allCommits',
+                    loadSpec
+                });
 
             forOwn(commitHistories, v => {
                 // Minor translations here on client for convenience.
@@ -43,6 +48,15 @@ export class GitHubService {
             });
 
             this.setCommitHistories(commitHistories);
+
+            const newCommitCount = this.allCommits.length;
+            if (priorCommitCount && newCommitCount > priorCommitCount) {
+                XH.toast({
+                    message: 'New Hoist commit detected!',
+                    icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
+                    intent: 'primary'
+                });
+            }
         } catch (e) {
             XH.handleException(e, {showAlert: false, showAsError: false});
         }

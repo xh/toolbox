@@ -19,11 +19,14 @@ class CommitHistory implements JSONFormat {
     }
 
     void updateWithNewCommits(List<Commit> newCommits) {
-        def currIds = commits.collect{it.id}
-        newCommits = newCommits.findAll{!currIds.contains(it.id)}
+        newCommits = newCommits.findAll{!hasCommit(it)}
         commits.addAll(0, newCommits)
         lastUpdated = new Date()
         sortCommits()
+    }
+
+    boolean hasCommit(Commit commit) {
+        return commits.find{it.id == commit.id} != null
     }
 
     private void sortCommits() {
