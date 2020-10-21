@@ -1,5 +1,5 @@
 import {br, fragment} from '@xh/hoist/cmp/layout';
-import {HoistModel, XH, managed} from '@xh/hoist/core';
+import {managed, HoistModel, XH} from '@xh/hoist/core';
 import {DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {Icon} from '@xh/hoist/icon';
 import {aboutToolboxWidget} from './widgets/AboutToolboxWidget';
