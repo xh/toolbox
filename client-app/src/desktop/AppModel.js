@@ -7,6 +7,8 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
+import {GitHubService} from '../core/svc/GitHubService';
+import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {getAppOptions} from './AppOptions';
 import {chartsTab} from './tabs/charts/ChartsTab';
@@ -42,14 +44,25 @@ export class AppModel {
         return XH.getPref('gridSizingMode');
     }
 
+    async preAuthInitAsync() {
+        await XH.installServicesAsync(
+            OauthService
+        );
+    }
+
     async initAsync() {
         await XH.installServicesAsync(
+            GitHubService,
             PortfolioService
         );
     }
 
     async doLoadAsync(loadSpec) {
-        await loadAllAsync([], loadSpec);
+        await loadAllAsync([XH.gitHubService], loadSpec);
+    }
+
+    async logoutAsync() {
+        await XH.oauthService.logoutAsync();
     }
 
     goHome() {
@@ -153,3 +166,10 @@ export class AppModel {
         ];
     }
 }
+
+/**
+ * @typedef XH
+ * @property {GitHubService} gitHubService
+ * @property {OauthService} oauthService
+ * @property {PortfolioService} portfolioService
+ */

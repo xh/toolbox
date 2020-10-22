@@ -1,3 +1,4 @@
+import {div} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -13,10 +14,11 @@ export const agGridOptionsPanel = hoistCmp.factory({
             icon: Icon.settings(),
             className: 'tbox-display-opts',
             compactHeader: true,
-            model: {side: 'right', defaultSize: 160, resizable: false},
-            items: [
-                agGridOptions()
-            ]
+            model: {side: 'right', defaultSize: 250, resizable: false},
+            item: div({
+                className: 'tbox-display-opts__inner',
+                item: agGridOptions()
+            })
         });
     }
 });

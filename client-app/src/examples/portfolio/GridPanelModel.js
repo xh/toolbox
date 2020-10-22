@@ -1,4 +1,5 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {TreeStyle} from '@xh/hoist/core/enums/TreeStyle';
 import {bindable} from '@xh/hoist/mobx';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
@@ -36,6 +37,7 @@ export class GridPanelModel {
         return new GridModel({
             persistWith: PERSIST_MAIN,
             treeMode: true,
+            treeStyle: TreeStyle.HIGHLIGHT_GROUPS_WITH_BORDERS,
             sortBy: 'pnl|desc|abs',
             emptyText: 'No records found...',
             colChooserModel: true,

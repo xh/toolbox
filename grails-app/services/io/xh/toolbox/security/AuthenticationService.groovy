@@ -1,25 +1,65 @@
 package io.xh.toolbox.security
 
+import groovy.util.logging.Slf4j
 import io.xh.hoist.security.BaseAuthenticationService
 import io.xh.hoist.user.HoistUser
 import io.xh.toolbox.user.User
+import io.xh.toolbox.user.UserService
 
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
 
 import static io.xh.hoist.util.Utils.withNewSession
 
+@Slf4j
 class AuthenticationService extends BaseAuthenticationService  {
 
-    // TODO - clarify this implementation - I'm still not sure as to why it's setup as it is - ATM
-    protected boolean completeAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        // Don't attempt to authorize non-html/whitelisted requests (might handle ajax re-auth at some point)
-        if (isAjax(request) || !acceptHtml(request) || isWhitelistFile(request.requestURI)) {
-            return true
-        }
-        return false
+    Auth0Service auth0Service
+    UserService userService
+
+    /** Add whitelist entry for OauthConfigController to allow client to call prior to auth. */
+    protected List<String> whitelistURIs = [
+        '/oauthConfig',
+        '/gitHub/webhookTrigger',
+        *super.whitelistURIs
+    ]
+
+    protected boolean isWhitelist(HttpServletRequest request) {
+        def uri = request.requestURI
+        return whitelistURIs.any{uri.endsWith(it)} || isWhitelistFile(uri)
     }
 
+    /**
+     * Evaluate a request to determine if an ID token can be extracted from headers installed by
+     * the client and used to lookup/create and set an app User. This should transparently login
+     * a user who has already authenticated via OAuth on the client when the UI goes to make its
+     * first identity check back to the server.
+     */
+    protected boolean completeAuthentication(HttpServletRequest request, HttpServletResponse response) {
+        def token = request.getHeader('x-xh-idt')
+
+        // No token found - TODO - explain why we are returning true under these particular conditions.
+        if (!token) {
+            return (isAjax(request) || !acceptHtml(request) || isWhitelistFile(request.requestURI))
+        }
+
+        def tokenResult = auth0Service.validateToken(token)
+        if (!tokenResult.isValid) {
+            log.debug("Invalid token result - user will not be installed on session - return 401 | exception: ${tokenResult.exception}")
+            return true
+        }
+
+        def user = userService.getOrCreateFromJwtResult(tokenResult)
+        setUser(request, user)
+        log.debug("User read from token and set on request | username: ${user.username}")
+
+        return true
+    }
+
+    /**
+     * Process an interactive password-driven login - not for use by Oauth-sourced users.
+     * Supported for forms-based login to admin client using the admin user created in Bootstrap.
+     */
     boolean login(HttpServletRequest request, String username, String password) {
         def user = lookupUser(username, password)
         if (user) {
@@ -38,9 +78,9 @@ class AuthenticationService extends BaseAuthenticationService  {
     //------------------------
     // Implementation
     //------------------------
-    private HoistUser lookupUser(String username, String password) {
+    private HoistUser lookupUser(String email, String password) {
         (HoistUser) withNewSession {
-            def user = User.findByEmailAndEnabled(username, true)
+            def user = User.findByEmailAndEnabled(email, true)
             return user?.checkPassword(password) ? user : null
         }
     }
