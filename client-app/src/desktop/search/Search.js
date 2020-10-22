@@ -23,6 +23,7 @@ export const search = hoistCmp.factory({
                 placeholder: 'Search for a component...(s)',
                 hideDropdownIndicator: true,
                 enableClear: true,
+                valueField: 'route',
                 onChange: (val) => model.forwardToTopic(val)
             }),
             [
@@ -47,51 +48,37 @@ class Model {
   selectRef = createRef();
 
   get globalSearchOptions() {
-      const {rootNode} = XH.routerModel.router,
-          groupedRoutes = this.getRoutesAsGroupedOptions(rootNode),
-          unNested = groupedRoutes[0].options[0].options;
+      return XH.getConf('searchOptions');
+  }
 
-      return unNested;
+  get selectElem() {
+      return this.selectRef.current?.reactSelectRef?.current;
   }
 
   forwardToTopic(val) {
       if (val) {
-          XH.navigate(val);
+          if (val.startsWith('launch.')) {
+              this.openExternal(val);
+          } else {
+              XH.navigate(val.split('|')[0]);
+          }
+
           XH.track({
               category: 'Global Search',
               message: 'Selected result',
               data: {topic: val}
           });
       }
+
+      // let's displayed value reflect selection
+      //  and keeps focus on select box and 
       this.blur();
       wait(100).then(() => this.focus());
   }
 
-  getRoutesAsGroupedOptions(node, value = '') {
-      const option = {
-              label: node.name,
-              value: value + node.name
-          },
-          ret = [];
-
-      if (node.children?.length) {
-          option.options = [];
-      }
-
-      node.children.forEach(child => {
-          const value = option.value ? option.value + '.' : '';
-          this.getRoutesAsGroupedOptions(child, value)
-              .forEach(it => {
-                  option.options.push(it);
-              });
-      });
-
-      ret.push(option);
-      return ret;
-  }
-
-  get selectElem() {
-      return this.selectRef.current?.reactSelectRef?.current;
+  openExternal(val) {
+      const path = val.replace('launch.examples.', '');
+      window.open(`/${path}`);
   }
 
   focus() {
