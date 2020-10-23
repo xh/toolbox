@@ -5,6 +5,7 @@
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
 import {HoistAppModel, XH} from '@xh/hoist/core';
+import {OauthService} from '../../core/svc/OauthService';
 
 @HoistAppModel
 export class AppModel {
@@ -12,9 +13,17 @@ export class AppModel {
     get gridSizingMode() {
         return XH.getPref('gridSizingMode');
     }
-    
+
+    async preAuthInitAsync() {
+        await XH.installServicesAsync(OauthService);
+    }
+
     async initAsync() {
         this.loadAsync();
     }
-    
+
+    async logoutAsync() {
+        await XH.oauthService.logoutAsync();
+    }
+
 }

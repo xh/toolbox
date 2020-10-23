@@ -1,7 +1,7 @@
-import {hoistCmp, uses} from '@xh/hoist/core';
+import {hoistCmp, uses, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
-import {fragment} from '@xh/hoist/cmp/layout';
+import {fragment, label, vspacer} from '@xh/hoist/cmp/layout';
 
 export const agGridOptions = hoistCmp.factory({
     model: uses(AgGridModel),
@@ -9,7 +9,7 @@ export const agGridOptions = hoistCmp.factory({
     render() {
         return fragment({
             items: [
-                'Sizing Mode',
+                label('Sizing Mode'),
                 select({
                     width: null,
                     bind: 'sizingMode',
@@ -19,6 +19,18 @@ export const agGridOptions = hoistCmp.factory({
                         {label: 'Compact', value: 'compact'},
                         {label: 'Tiny', value: 'tiny'}
                     ]
+                }),
+                vspacer(10),
+                switchInput({
+                    label: 'Dark Mode',
+                    labelAlign: 'left',
+                    bind: 'darkTheme',
+                    model: XH
+                }),
+                switchInput({
+                    bind: 'hideHeaders',
+                    label: 'Hide Headers',
+                    labelAlign: 'left'
                 }),
                 switchInput({
                     bind: 'stripeRows',

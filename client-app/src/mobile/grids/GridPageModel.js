@@ -15,7 +15,7 @@ export class GridPageModel {
     gridModel = new GridModel({
         persistWith: {localStorageKey: 'toolboxSampleGrid'},
         sortBy: ['profit_loss|desc|abs'],
-        enableColChooser: true,
+        colChooserModel: true,
         columns: [
             {
                 field: 'company',

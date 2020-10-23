@@ -96,7 +96,7 @@ export class PortfolioPanelModel {
     createDimChooserModel() {
         return new DimensionChooserModel({
             dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
-            initialValue: ['sector', 'symbol'],
+            initialValue: ['region', 'sector', 'symbol'],
             initialHistory: [
                 ['sector', 'symbol'],
                 ['fund', 'trader'],

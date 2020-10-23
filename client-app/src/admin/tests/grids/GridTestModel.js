@@ -39,6 +39,13 @@ export class GridTestModel {
     @bindable useDeltaSort = true;
     @bindable disableSelect = false;
 
+    @bindable colChooserCommitOnChange = true;
+    @bindable colChooserShowRestoreDefaults = true;
+    @bindable colChooserWidth = null;
+    @bindable colChooserHeight = null;
+
+    @bindable restoreDefaultsWarning = GridModel.DEFAULT_RESTORE_DEFAULTS_WARNING;
+
     @bindable
     @persist
     autosizeMode = 'onDemand';
@@ -76,7 +83,12 @@ export class GridTestModel {
                 this.useDeltaSort,
                 this.disableSelect,
                 this.autosizeMode,
-                this.persistType
+                this.persistType,
+                this.colChooserCommitOnChange,
+                this.colChooserShowRestoreDefaults,
+                this.colChooserWidth,
+                this.colChooserHeight,
+                this.restoreDefaultsWarning
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -241,11 +253,13 @@ export class GridTestModel {
 
     createGridModel() {
         const {persistType} = this;
+
         return new GridModel({
             persistWith: persistType ? {[persistType]: 'persistTest'} : null,
             selModel: {mode: 'multiple'},
             sortBy: 'id',
             emptyText: 'No records found...',
+            restoreDefaultsWarning: this.restoreDefaultsWarning,
             store: this.tree && this.showSummary && this.loadRootAsSummary ? {
                 loadRootAsSummary: true
             }: undefined,
@@ -254,6 +268,12 @@ export class GridTestModel {
             experimental: {
                 useTransactions: this.useTransactions,
                 useDeltaSort: this.useDeltaSort
+            },
+            colChooserModel: {
+                commitOnChange: this.colChooserCommitOnChange,
+                showRestoreDefaults: this.colChooserShowRestoreDefaults,
+                width: this.colChooserWidth ?? undefined,
+                height: this.colChooserHeight ?? undefined
             },
             autosizeOptions: {
                 mode: this.autosizeMode
