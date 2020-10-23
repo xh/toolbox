@@ -280,6 +280,7 @@ export class SampleGridModel {
 
     @action
     setGroupBy(groupBy) {
+        this.gridKey = XH.genId();
         this.groupBy = groupBy;
 
         // Always select first when regrouping.
