@@ -91,6 +91,7 @@ class Model {
             content: [
                 {
                     type: 'stack',
+                    width: 60,
                     content: [
                         {type: 'view', id: 'grid'},
                         {type: 'view', id: 'treeGrid'}
@@ -98,9 +99,10 @@ class Model {
                 },
                 {
                     type: 'column',
+                    width: 40,
                     content: [
                         {type: 'view', id: 'chart'},
-                        {type: 'view', id: 'buttons'}
+                        {type: 'view', id: 'buttons', height: '200px'}
                     ]
                 }
             ]

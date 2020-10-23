@@ -22,12 +22,16 @@
     }
   }
 
-  .xh-vframe {
-    padding: var(--xh-pad-half-px);
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: var(--xh-pad-px) var(--xh-pad-half-px);
 
     .xh-input,
     .xh-button {
       margin: var(--xh-pad-half-px);
+      flex: none;
     }
 
     label {

@@ -7,6 +7,7 @@ module.exports = (env = {}) => {
         appVersion: env.appVersion || '2.0-SNAPSHOT',
         favicon: './public/favicon.png',
         devServerOpenPage: 'app/',
+        dupePackageCheckExcludes: ['es-abstract'],
         ...env
     });
 };
