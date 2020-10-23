@@ -4,7 +4,7 @@
  *
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {fragment} from '@xh/hoist/cmp/layout';
@@ -111,7 +111,7 @@ export class SampleTreeGridModel {
     createGridModel(includeCheckboxes) {
         return new GridModel({
             treeMode: true,
-            treeStyle: 'none',
+            treeStyle: TreeStyle.HIGHLIGHTS,
             store: {
                 loadRootAsSummary: true,
                 fields: [{name: 'isChecked', type: 'bool'}],
