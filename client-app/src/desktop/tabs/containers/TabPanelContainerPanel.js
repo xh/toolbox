@@ -83,7 +83,7 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                                 content: () => panel({
                                     className: 'child-tabcontainer',
                                     tbar: model.detachedTabModel.tabs.map(childModel => button({
-                                        intent: childModel.isActive ? 'primary' : 'default',
+                                        intent: childModel.isActive ? 'primary' : null,
                                         text: childModel.title,
                                         onClick: () => {
                                             detachedTabModel.setActiveTabId(childModel.id);
