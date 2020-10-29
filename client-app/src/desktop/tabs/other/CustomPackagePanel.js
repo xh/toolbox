@@ -26,6 +26,11 @@ export const customPackagePanel = hoistCmp.factory(
                 url: 'https://github.com/xh/package-template',
                 text: '@xh/package-template',
                 notes: 'GitHub repo for an extremely simple JS package project.'
+            },
+            {
+                url: '$TB/client-app/webpack.config.js',
+                text: 'webpack.config.js',
+                notes: 'Webpack config for Toolbox, with special handling for our custom package.'
             }
         ],
         item: customPanel({width: 700})

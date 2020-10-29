@@ -2109,10 +2109,10 @@
     core-js "^2.5.1"
     gulp-protractor "^4.1.1"
 
-"@xh/package-template@~1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@xh/package-template/-/package-template-1.0.1.tgz#9e733034bcfe712b25f9a035daaf511a45e4aa90"
-  integrity sha512-FTItMji+wnz+n1+859n1Bvd7kqfbLuMG3KF63KVeu7+xmGZbk37N++TuAydQRJ40B68F3Q310WJy8XoG5cr1xg==
+"@xh/package-template@~1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@xh/package-template/-/package-template-1.0.2.tgz#7894f9ab64beb478b69a190a5380ba3787285c35"
+  integrity sha512-2DO44wYCyhPnJ0U+kVWzrDSFpqOnAzLPnPAF8gpn3SBLexLPcA0T884Z7CygIu49kvgvObVukb4/iEw3KRL49A==
 
 "@xh/react-onsenui@~0.1.2":
   version "0.1.3"
