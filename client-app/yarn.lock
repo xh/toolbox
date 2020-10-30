@@ -2051,10 +2051,10 @@
     webpack-dev-server "~3.11.0"
     webpackbar "~4.0.0"
 
-"@xh/hoist@36.6.0":
-  version "36.6.0"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-36.6.0.tgz#685efcb2a0bbd2a68839912831746b7a8a7021ab"
-  integrity sha512-72URcAz68atfVXHkhDCtt7BxHEzSe/Z9NWmu/jCOiEPpD2dammimxQwRYt+y7GEfjgJnYcyRt/W+3vX8l4VNxQ==
+"@xh/hoist@^37.0.0-SNAPSHOT":
+  version "37.0.0-SNAPSHOT.1603908256265"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-37.0.0-SNAPSHOT.1603908256265.tgz#40be0abe67d52ee0a1e19da20722967a3cc820b9"
+  integrity sha512-9c8PH/OhJqw9NBnBJgCOYFstWyRam2pzlRi6i/dS6QMZGkk9xXUzmBdXAa1DHHR9PKrlY5kRNEhCcogeKtj+PQ==
   dependencies:
     "@blueprintjs/core" "~3.35.0"
     "@blueprintjs/datetime" "~3.19.3"
@@ -2108,6 +2108,11 @@
     "@onsenui/fastclick" "1.1.1"
     core-js "^2.5.1"
     gulp-protractor "^4.1.1"
+
+"@xh/package-template@~1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@xh/package-template/-/package-template-1.0.2.tgz#7894f9ab64beb478b69a190a5380ba3787285c35"
+  integrity sha512-2DO44wYCyhPnJ0U+kVWzrDSFpqOnAzLPnPAF8gpn3SBLexLPcA0T884Z7CygIu49kvgvObVukb4/iEw3KRL49A==
 
 "@xh/react-onsenui@~0.1.2":
   version "0.1.3"

@@ -146,6 +146,7 @@ export class AppModel {
                             {name: 'appNotifications', path: '/appNotifications'},
                             {name: 'buttons', path: '/buttons'},
                             {name: 'clock', path: '/clock'},
+                            {name: 'customPackage', path: '/customPackage'},
                             {name: 'dateFormats', path: '/dateFormats'},
                             {name: 'jsx', path: '/jsx'},
                             {name: 'fileChooser', path: '/fileChooser'},
