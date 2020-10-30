@@ -27,6 +27,7 @@ export class AppModel {
     tabModel = new TabContainerModel({
         route: 'default',
         track: true,
+        switcher: false,
         tabs: [
             {id: 'home', icon: Icon.home(), content: homeTab},
             {id: 'grids', icon: Icon.grid(), content: gridsTab},
@@ -36,8 +37,7 @@ export class AppModel {
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
             {id: 'other', icon: Icon.boxFull(), content: otherTab},
             {id: 'examples', icon: Icon.books(), content: examplesTab}
-        ],
-        switcherPosition: 'none'
+        ]
     });
 
     get gridSizingMode() {

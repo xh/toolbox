@@ -17,7 +17,7 @@ export const otherTab = hoistCmp.factory(
     () => tabContainer({
         model: {
             route: 'default.other',
-            switcherPosition: 'left',
+            switcher: {orientation: 'left'},
             tabs: [
                 {id: 'appNotifications', content: appNotificationsPanel},
                 {id: 'buttons', content: buttonsPanel},

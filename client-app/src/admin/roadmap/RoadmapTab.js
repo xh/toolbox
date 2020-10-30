@@ -18,7 +18,7 @@ export const roadmapTab = hoistCmp(
                 {id: 'projects', icon: Icon.checkCircle(), content: projectRestPanel},
                 {id: 'phases', icon: Icon.calendar(), content: phaseRestPanel}
             ],
-            switcherPosition: 'left'
+            switcher: {orientation: 'left'}
         }
     })
 );
