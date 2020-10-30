@@ -157,8 +157,10 @@ class Model {
 
     @managed
     dynamicModel = new TabContainerModel({
-        enableOverflow: true,
-        tabs: []
+        tabs: [],
+        switcherProps: {
+            enableOverflow: true
+        }
     });
 
     constructor() {
