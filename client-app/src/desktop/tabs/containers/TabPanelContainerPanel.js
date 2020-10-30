@@ -194,14 +194,16 @@ class Model {
     addDynamic() {
         const {dynamicModel} = this,
             icons = [Icon.user(), Icon.home(), Icon.portfolio()],
-            id = this.id++;
+            id = this.id++,
+            message = `Tab ${id}: Brand spanking new at ${fmtTime(new Date(), {fmt: 'HH:mm:ss'})}`;
 
         dynamicModel.addTab({
             id: id.toString(),
             icon: icons[id % icons.length],
             title: `Tab ${id}`,
+            tooltip: message,
             showRemoveAction: true,
-            content: () => div(`Tab ${id}: Brand spanking new at ${fmtTime(new Date(), {fmt: 'HH:mm:ss'})}`)
+            content: () => div(message)
         }, {activateImmediately: true});
     }
 
