@@ -18,7 +18,7 @@ export const WipTab = hoistCmp({
             return tabContainer({
                 model: {
                     route: 'default.wip',
-                    switcherPosition: 'left',
+                    switcher: {orientation: 'left'},
                     tabs
                 }
             });
