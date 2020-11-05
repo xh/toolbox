@@ -70,8 +70,7 @@ class Model {
           });
       }
 
-      // let's displayed value reflect selection
-      //  and keeps focus on select box and 
+      // keeps focus on select box to facilate typing a new query
       this.blur();
       wait(100).then(() => this.focus());
   }
