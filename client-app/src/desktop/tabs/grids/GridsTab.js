@@ -22,7 +22,7 @@ export const gridsTab = hoistCmp.factory(
                 {id: 'dataview', title: 'DataView', content: dataViewPanel},
                 {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
             ],
-            switcherPosition: 'left'
+            switcher: {orientation: 'left'}
         },
         className: 'toolbox-tab'
     })

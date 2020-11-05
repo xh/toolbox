@@ -2,6 +2,7 @@ import {tabContainer} from '@xh/hoist/cmp/tab';
 import {hoistCmp} from '@xh/hoist/core';
 import {buttonsPanel} from './Buttons';
 import {clockPanel} from './ClockPanel';
+import {customPackagePanel} from './CustomPackagePanel';
 import {fileChooserPanel} from './FileChooserPanel';
 import {dateFormatsPanel} from './formats/DateFormatsPanel';
 import {numberFormatsPanel} from './formats/NumberFormatsPanel';
@@ -17,11 +18,12 @@ export const otherTab = hoistCmp.factory(
     () => tabContainer({
         model: {
             route: 'default.other',
-            switcherPosition: 'left',
+            switcher: {orientation: 'left'},
             tabs: [
                 {id: 'appNotifications', content: appNotificationsPanel},
                 {id: 'buttons', content: buttonsPanel},
                 {id: 'clock', content: clockPanel},
+                {id: 'customPackage', content: customPackagePanel},
                 {id: 'dateFormats', content: dateFormatsPanel},
                 {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
                 {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},

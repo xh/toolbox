@@ -31,7 +31,7 @@ export const TestsTab = hoistCmp(
                 {id: 'storeEditing', title: 'Store Editing', content: StoreEditingPanel},
                 {id: 'select', title: 'Select', content: SelectTestPanel}
             ],
-            switcherPosition: 'left'
+            switcher: {orientation: 'left'}
         }
     })
 );
