@@ -101,7 +101,7 @@ export class FormPanelModel {
                     fields: [
                         {name: 'name', rules: [required]},
                         {name: 'relationship'},
-                        {name: 'email', rules: [required, this.validEmail]}
+                        {name: 'email', rules: [required, validEmail]}
                     ],
                     initialValues: {relationship: 'professional'}
                 },
