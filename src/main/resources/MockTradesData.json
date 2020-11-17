@@ -6998,5 +6998,12 @@
     "city": "Boston",
     "trade_volume": 7738.59,
     "profit_loss": 6330000.0
+  },
+  {
+    "id": 1001,
+    "company": "Ross/Oaks",
+    "city": "Boston",
+    "trade_volume": 17338.59,
+    "profit_loss": 37329000.0
   }
 ]
