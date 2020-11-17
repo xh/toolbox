@@ -1,5 +1,5 @@
 import {createRef} from 'react';
-
+import {createFilter} from 'react-select';
 import {XH, HoistModel, hoistCmp, creates} from '@xh/hoist/core';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {bindable} from '@xh/hoist/mobx';
@@ -24,6 +24,7 @@ export const search = hoistCmp.factory({
                 hideDropdownIndicator: true,
                 enableClear: true,
                 valueField: 'route',
+                filterFn: createFilter,
                 onChange: (val) => model.forwardToTopic(val)
             }),
             [
