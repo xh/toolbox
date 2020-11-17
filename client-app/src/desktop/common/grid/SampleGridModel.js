@@ -14,7 +14,6 @@ import './SampleGrid.scss';
 export class SampleGridModel {
     @observable groupBy = false;
 
-
     @observable matchMode = 'startWord';
     sffKey = XH.genId()
     @action setMatchMode(mode) {
