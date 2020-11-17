@@ -8,6 +8,7 @@ import {label, select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {GridPageModel} from './GridPageModel';
+import {storeFilterFieldMatchModeButton} from './StoreFilterFieldMatchModeButton';
 
 export const gridPage = hoistCmp.factory({
 
@@ -56,7 +57,8 @@ export const gridPage = hoistCmp.factory({
                 })
             ],
             bbar: [
-                storeFilterField(),
+                storeFilterField({matchMode: model.matchMode, key: model.sffKey}),
+                storeFilterFieldMatchModeButton(),
                 filler(),
                 colAutosizeButton(),
                 colChooserButton()

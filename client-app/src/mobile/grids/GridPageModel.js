@@ -1,7 +1,7 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
-import {bindable} from '@xh/hoist/mobx';
+import {action, bindable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 
 @HoistModel
@@ -10,6 +10,13 @@ export class GridPageModel {
 
     @bindable.ref
     dateLoaded = null;
+
+    @observable matchMode = 'startWord';
+    sffKey = XH.genId()
+    @action setMatchMode(mode) {
+        this.sffKey = XH.genId();
+        this.matchMode = mode;
+    }
 
     @managed
     gridModel = new GridModel({
