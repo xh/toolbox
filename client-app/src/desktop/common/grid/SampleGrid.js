@@ -9,6 +9,7 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import PT from 'prop-types';
 import {gridOptionsPanel} from './options/GridOptionsPanel';
+import {storeFilterFieldMatchModeButton} from './options/StoreFilterFieldMatchModeButton';
 import {SampleGridModel} from './SampleGridModel';
 import './SampleGrid.scss';
 
@@ -49,7 +50,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
                         className: 'tbox-samplegrid__selbar'
                     })
                 ),
-                gridOptionsPanel({model: model.gridModel})
+                gridOptionsPanel({model: model.gridModel, extraItems: storeFilterFieldMatchModeButton({model})})
             ),
             tbar: [
                 refreshButton(),
@@ -69,7 +70,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
                 }),
                 filler(),
                 gridCountLabel({unit: 'companies'}),
-                storeFilterField(),
+                storeFilterField({matchMode: model.matchMode, key: model.sffKey}),
                 colChooserButton(),
                 exportButton()
             ]
