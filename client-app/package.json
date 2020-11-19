@@ -33,8 +33,8 @@
     "@xh/hoist": "^37.0.0-SNAPSHOT",
     "@xh/package-template": "~1.0.2",
     "highcharts": "~8.2.2",
-    "react": "~16.13.1",
-    "react-dom": "~16.13.1",
+    "react": "~17.0.1",
+    "react-dom": "~17.0.1",
     "react-dom-factories": "~1.0.2"
   },
   "devDependencies": {
