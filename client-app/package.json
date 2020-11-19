@@ -34,8 +34,7 @@
     "@xh/package-template": "~1.0.2",
     "highcharts": "~8.2.2",
     "react": "~17.0.1",
-    "react-dom": "~17.0.1",
-    "react-dom-factories": "~1.0.2"
+    "react-dom": "~17.0.1"
   },
   "devDependencies": {
     "@xh/hoist-dev-utils": "~5.4.0",
