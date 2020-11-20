@@ -1,13 +1,13 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Cube} from '@xh/hoist/data';
 import {fmtThousands} from '@xh/hoist/format';
 import {times} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {Timer} from '@xh/hoist/utils/async';
 
-@HoistModel
-@LoadSupport
-export class CubeModel {
+export class CubeModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @managed cube;
     @managed orders = [];
@@ -16,6 +16,7 @@ export class CubeModel {
     parent;
 
     constructor(parent) {
+        super();
         this.cube = this.createCube();
         this.parent = parent;
 

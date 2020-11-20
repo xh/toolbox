@@ -1,5 +1,5 @@
 import React from 'react';
-import {creates, hoistCmp, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -41,9 +41,9 @@ export const dataViewPanel = hoistCmp.factory({
     }
 });
 
-@HoistModel
-@LoadSupport
-class Model {
+class Model extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @managed
     dataViewModel = new DataViewModel({

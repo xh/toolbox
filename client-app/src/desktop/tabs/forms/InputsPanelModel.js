@@ -5,8 +5,7 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import moment from 'moment';
 import {random} from 'lodash';
 
-@HoistModel
-export class InputsPanelModel {
+export class InputsPanelModel extends HoistModel {
 
     @bindable commitOnChange = false;
 

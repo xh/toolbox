@@ -3,14 +3,14 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateRenderer} from '@xh/hoist/format';
 import {bindable} from '@xh/hoist/mobx';
 
-@HoistModel
-export class WebSocketTestModel {
+export class WebSocketTestModel extends HoistModel {
 
     @managed gridModel;
     @managed updateSub;
     @bindable subscribed = false;
 
     constructor() {
+        super();
         this.gridModel = new GridModel({
             sortBy: [{colId: 'timestamp', sort: 'desc'}],
             emptyText: 'No updates received',

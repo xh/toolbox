@@ -9,8 +9,7 @@ import React from 'react';
 import {wrapper} from '../../common';
 import './Buttons.scss';
 
-@HoistModel
-class ButtonsModel {
+class ButtonsModel extends HoistModel {
     @bindable disableButtons = false;
     @bindable activeButtons = false;
     @bindable activeButton = 'v1';

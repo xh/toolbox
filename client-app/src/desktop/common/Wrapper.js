@@ -56,13 +56,13 @@ Wrapper.propTypes = {
     links: PT.arrayOf(PT.object)
 };
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @managed
     dockContainerModel = new DockContainerModel();
 
     constructor(links) {
+        super();
         if (links) {
             this.dockContainerModel.addView({
                 id: XH.genId(),

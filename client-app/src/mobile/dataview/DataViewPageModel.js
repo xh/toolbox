@@ -1,11 +1,11 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {shuffle, take} from 'lodash';
 import {dataViewItem} from './DataViewItem';
 
-@HoistModel
-@LoadSupport
-export class DataViewPageModel {
+export class DataViewPageModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @managed
     dataViewModel = new DataViewModel({

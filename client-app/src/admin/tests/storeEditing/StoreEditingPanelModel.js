@@ -5,8 +5,8 @@ import {Icon} from '@xh/hoist/icon';
 import {action} from '@xh/hoist/mobx';
 import {isEmpty, max} from 'lodash';
 
-@HoistModel
-export class StoreEditingPanelModel {
+export class StoreEditingPanelModel extends HoistModel {
+
     @managed
     gridModel = new GridModel({
         store: {
@@ -69,6 +69,7 @@ export class StoreEditingPanelModel {
     }
 
     constructor() {
+        super();
         this.store.loadData([
             {
                 id: 0,

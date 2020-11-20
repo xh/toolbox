@@ -1,4 +1,4 @@
-import {hoistCmp, HoistModel, LoadSupport, useLocalModel, XH} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, useLocalModel, XH} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
@@ -36,15 +36,16 @@ export const gridDetailPage = hoistCmp.factory({
     }
 });
 
-@HoistModel
-@LoadSupport
-class LocalModel {
+class LocalModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @bindable id = null;
     @observable.ref record = null;
     @bindable.ref customers = null;
 
     constructor() {
+        super();
         this.addReaction({
             track: () => [this.customers, this.id],
             run: ([customers, id]) => {

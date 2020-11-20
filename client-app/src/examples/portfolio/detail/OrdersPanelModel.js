@@ -1,14 +1,14 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateTimeCol, GridModel} from '@xh/hoist/cmp/grid';
 import {numberRenderer} from '@xh/hoist/format';
 import {isNil} from 'lodash';
 import {bindable} from '@xh/hoist/mobx';
 import {PERSIST_DETAIL} from '../AppModel';
 
-@HoistModel
-@LoadSupport
-export class OrdersPanelModel {
+export class OrdersPanelModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @managed gridModel;
     @managed filterChooserModel;
@@ -16,6 +16,7 @@ export class OrdersPanelModel {
     @bindable positionId = null;
 
     constructor() {
+        super();
         this.gridModel = new GridModel({
             groupBy: 'dir',
             sortBy: 'time|desc',

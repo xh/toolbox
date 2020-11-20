@@ -138,8 +138,7 @@ const loremIpsum = [
 ];
 
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @bindable resizeWhileDragging = false;
 
@@ -169,6 +168,7 @@ class Model {
     });
     
     constructor() {
+        super();
         this.addReaction({
             track: () => this.resizeWhileDragging,
             run: (resizeWhileDragging) => {

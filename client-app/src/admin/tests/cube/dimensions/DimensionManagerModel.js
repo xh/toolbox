@@ -6,8 +6,7 @@ import {action, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {cloneDeep, isEmpty, isEqual, pullAllWith, unionWith} from 'lodash';
 
-@HoistModel
-export class DimensionManagerModel {
+export class DimensionManagerModel extends HoistModel {
 
     @observable.ref value = [];
 
@@ -19,6 +18,7 @@ export class DimensionManagerModel {
     @managed gridModel;
 
     constructor(config) {
+        super();
         this.dimChooserModel = new DimensionChooserModel({
             dimensions: config.dimensions,
             initialValue: [],

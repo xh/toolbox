@@ -1,8 +1,7 @@
 import {HoistModel} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 
-@HoistModel
-export class BasicPanelModel {
+export class BasicPanelModel extends HoistModel {
     @bindable state = null;
 
     demoText = [

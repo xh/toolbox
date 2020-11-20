@@ -94,8 +94,7 @@ const clockCard = hoistCmp.factory({
     }
 });
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
     @bindable format;
     @bindable updateInterval;
     @bindable prefix;

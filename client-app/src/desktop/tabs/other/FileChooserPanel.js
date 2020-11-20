@@ -87,8 +87,7 @@ export const fileChooserPanel = hoistCmp.factory({
 });
 
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
     @managed
     chooserModel = new FileChooserModel();
 

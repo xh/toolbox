@@ -4,14 +4,14 @@
  *
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {DimensionChooserModel} from '@xh/hoist/mobile/cmp/dimensionchooser';
 
-@HoistModel
-@LoadSupport
-export class TreeGridPageModel {
+export class TreeGridPageModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @managed
     dimensionChooserModel = new DimensionChooserModel({
@@ -72,6 +72,7 @@ export class TreeGridPageModel {
     });
 
     constructor() {
+        super();
         this.addReaction({
             track: () => this.dimensionChooserModel.value,
             run: () => this.loadAsync()

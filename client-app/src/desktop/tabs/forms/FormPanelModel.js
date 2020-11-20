@@ -16,8 +16,7 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon';
 import {filter, isEmpty, isNil} from 'lodash';
 
-@HoistModel
-export class FormPanelModel {
+export class FormPanelModel extends HoistModel {
 
     @managed
     validateTask = new PendingTaskModel();
@@ -111,6 +110,7 @@ export class FormPanelModel {
     });
 
     constructor() {
+        super();
         this.addReaction({
             track: () => this.formModel.values.endDate,
             run: (endDate) => {

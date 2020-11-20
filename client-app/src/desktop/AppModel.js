@@ -20,8 +20,7 @@ import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
 
-@HoistAppModel
-export class AppModel {
+export class AppModel extends HoistAppModel {
 
     @managed
     tabModel = new TabContainerModel({
@@ -58,7 +57,7 @@ export class AppModel {
     }
 
     async doLoadAsync(loadSpec) {
-        await loadAllAsync([XH.gitHubService], loadSpec);
+        await XH.gitHubService.loadDataAsync();
     }
 
     async logoutAsync() {

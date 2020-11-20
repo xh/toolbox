@@ -7,8 +7,7 @@
 import {HoistAppModel, XH} from '@xh/hoist/core';
 import {OauthService} from '../../core/svc/OauthService';
 
-@HoistAppModel
-export class AppModel {
+export class AppModel extends HoistAppModel {
 
     get gridSizingMode() {
         return XH.getPref('gridSizingMode');

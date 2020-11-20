@@ -85,8 +85,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
 });
 
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
     @observable prefix = 'Refreshed';
     @observable timestamp = Date.now();
     @bindable useShortFmt = false;

@@ -5,8 +5,7 @@ import * as formatFunctions from '@xh/hoist/format/FormatDate';
 import {fmtDate} from '@xh/hoist/format';
 import {nilAwareFormat} from './Util';
 
-@HoistModel
-export class DateFormatsPanelModel {
+export class DateFormatsPanelModel extends HoistModel {
 
     // Inputs
     testData = [

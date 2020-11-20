@@ -1,4 +1,4 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {roadmapViewItem} from './RoadmapViewItem';
@@ -6,9 +6,9 @@ import './RoadmapWidget.scss';
 import {Icon} from '@xh/hoist/icon';
 import {toNumber} from 'lodash';
 
-@HoistModel
-@LoadSupport
-export class RoadmapModel {
+export class RoadmapModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @bindable
     statusFilter = 'showUpcoming';
@@ -42,6 +42,7 @@ export class RoadmapModel {
     });
 
     constructor() {
+        super();
         this.addReaction({
             track: () => this.statusFilter,
             run: () => this.loadAsync()

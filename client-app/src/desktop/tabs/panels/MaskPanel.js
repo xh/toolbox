@@ -1,5 +1,5 @@
 import React from 'react';
-import {creates, hoistCmp, HoistModel, LoadSupport, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable} from '@xh/hoist/mobx';
@@ -81,9 +81,9 @@ export const maskPanel = hoistCmp.factory({
     }
 });
 
-@LoadSupport
-@HoistModel
-class Model {
+class Model extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @bindable seconds = 3;
     @bindable message = '';

@@ -1,13 +1,13 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {action, bindable, observable} from '@xh/hoist/mobx';
 import {uniq} from 'lodash';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {newsPanelItem} from './NewsPanelItem';
 import {fmtCompactDate} from '@xh/hoist/format';
 
-@HoistModel
-@LoadSupport
-export class NewsPanelModel {
+export class NewsPanelModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     SEARCH_FIELDS = ['title', 'text'];
 
@@ -34,6 +34,7 @@ export class NewsPanelModel {
     @bindable.ref textFilter = null;
 
     constructor() {
+        super();
         this.addReaction({
             track: () => [this.sourceFilterValues, this.textFilter, this.lastRefresh],
             run: () => this.viewModel.setFilter(this.createFilter()),

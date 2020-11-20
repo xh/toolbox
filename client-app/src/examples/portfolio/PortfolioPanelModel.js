@@ -1,4 +1,4 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {MapPanelModel} from './MapPanelModel';
@@ -7,9 +7,9 @@ import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
 import {DetailPanelModel} from './detail/DetailPanelModel';
 import {PERSIST_MAIN} from './AppModel';
 
-@HoistModel
-@LoadSupport
-export class PortfolioPanelModel {
+export class PortfolioPanelModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @managed session;
 
@@ -24,6 +24,7 @@ export class PortfolioPanelModel {
     }
 
     constructor() {
+        super();
         this.addReaction(this.selectedPositionReaction());
         this.addReaction(this.dimensionChooserReaction());
     }

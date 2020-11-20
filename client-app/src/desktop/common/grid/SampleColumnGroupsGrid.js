@@ -6,7 +6,7 @@
  */
 import {boolCheckCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -54,9 +54,9 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
     }
 });
 
-@HoistModel
-@LoadSupport
-class Model {
+class Model extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @managed gridModel;
     @observable groupRows;
@@ -65,6 +65,7 @@ class Model {
     panelRef = createRef();
 
     constructor() {
+        super();
         this.gridModel = this.createGridModel();
         this.setGroupRows(true);
 

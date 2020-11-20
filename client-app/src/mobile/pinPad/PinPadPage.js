@@ -29,8 +29,7 @@ const secretPlans = hoistCmp.factory(
     })
 );
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @managed
     pinPadModel = new PinPadModel({
@@ -44,6 +43,7 @@ class Model {
     @bindable loggedIn = false;
 
     constructor() {
+        super();
         const {pinPadModel: pad} = this;
         this.addReaction({
             track: () => pad.completedPin,

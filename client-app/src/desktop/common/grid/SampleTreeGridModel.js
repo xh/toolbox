@@ -5,7 +5,7 @@
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
@@ -13,9 +13,9 @@ import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/form
 import {action, bindable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
 
-@HoistModel
-@LoadSupport
-export class SampleTreeGridModel {
+export class SampleTreeGridModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @bindable
     filterIncludesChildren = false;
@@ -39,6 +39,7 @@ export class SampleTreeGridModel {
     get store() {return this.gridModel.store}
 
     constructor({includeCheckboxes}) {
+        super();
         this.gridModel = this.createGridModel(includeCheckboxes);
 
         this.addReaction({

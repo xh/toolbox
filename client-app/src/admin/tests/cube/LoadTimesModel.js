@@ -1,11 +1,11 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, LoadSupport, managed} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 import {castArray} from 'lodash';
 
-@HoistModel
-@LoadSupport
-export class LoadTimesModel {
+export class LoadTimesModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @managed gridModel = new GridModel({
         store: {idSpec: 'timestamp'},

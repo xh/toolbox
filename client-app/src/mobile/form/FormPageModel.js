@@ -3,8 +3,7 @@ import {FormModel, lengthIs, required} from '@xh/hoist/cmp/form';
 import {bindable} from '@xh/hoist/mobx';
 import {movies} from '../../core/data';
 
-@HoistModel
-export class FormPageModel {
+export class FormPageModel extends HoistModel {
 
     @bindable minimal;
     @bindable readonly;

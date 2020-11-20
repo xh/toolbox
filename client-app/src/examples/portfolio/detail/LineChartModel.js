@@ -1,17 +1,18 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {fmtDate} from '@xh/hoist/format';
 import {Highcharts} from '@xh/hoist/kit/highcharts';
 import {isNil} from 'lodash';
 import {bindable} from '@xh/hoist/mobx';
 
-@HoistModel
-@LoadSupport
-export class LineChartModel {
+export class LineChartModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @bindable symbol = null;
 
     constructor() {
+        super();
         this.addReaction({
             track: () => this.symbol,
             run: () => this.loadAsync()

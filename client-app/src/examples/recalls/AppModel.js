@@ -9,8 +9,7 @@ import {OauthService} from '../../core/svc/OauthService';
 
 export const PERSIST_APP = {localStorageKey: 'recallsAppState'};
 
-@HoistAppModel
-export class AppModel {
+export class AppModel extends HoistAppModel {
 
     get gridSizingMode() {
         return XH.getPref('gridSizingMode');

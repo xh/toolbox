@@ -4,8 +4,7 @@ import * as formatFunctions from '@xh/hoist/format/FormatNumber';
 import {fmtNumber} from '@xh/hoist/format/FormatNumber';
 import {nilAwareFormat} from './Util';
 
-@HoistModel
-export class NumberFormatsPanelModel {
+export class NumberFormatsPanelModel extends HoistModel {
 
     // Inputs
     testData = [

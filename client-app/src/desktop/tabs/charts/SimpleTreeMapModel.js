@@ -1,11 +1,11 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {Store} from '@xh/hoist/data';
 import {clamp} from 'lodash';
 
-@HoistModel
-@LoadSupport
-export class SimpleTreeMapModel {
+export class SimpleTreeMapModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @managed
     store = new Store({

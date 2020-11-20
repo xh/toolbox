@@ -57,8 +57,7 @@ export const leftRightChooserPanel = hoistCmp.factory({
 });
 
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @managed
     leftRightChooserModel = new LeftRightChooserModel({

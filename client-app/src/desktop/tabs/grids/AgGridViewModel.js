@@ -1,11 +1,12 @@
-import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
+import {HoistModel, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
 import {bindable} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 
-@HoistModel
-@LoadSupport
-export class AgGridViewModel {
+export class AgGridViewModel extends HoistModel {
+
+    get isLoadSupport() {return true}
+
     @bindable.ref data = [];
 
     columnDefs = [
@@ -72,6 +73,7 @@ export class AgGridViewModel {
     });
 
     constructor() {
+        super();
         const {agGridModel} = this;
         this.addReaction({
             track: () => [this.data, agGridModel.agApi],

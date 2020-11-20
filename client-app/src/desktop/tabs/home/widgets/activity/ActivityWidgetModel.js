@@ -1,16 +1,16 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
-import {managed, HoistModel, LoadSupport, XH} from '@xh/hoist/core';
+import {managed, HoistModel, XH} from '@xh/hoist/core';
 import {bindable} from '@xh/hoist/mobx';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 
-@HoistModel
-@LoadSupport
-export class ActivityWidgetModel {
+export class ActivityWidgetModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     /** @member {GridModel} */
     @managed
@@ -23,6 +23,7 @@ export class ActivityWidgetModel {
     @bindable groupBy = 'committedDay';
 
     constructor() {
+        super();
         const openUrlAction = {
             text: 'Open on Github',
             tooltip: 'Open on Github',

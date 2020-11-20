@@ -1,4 +1,4 @@
-import {hoistCmp, HoistModel, LoadSupport, useLocalModel, XH} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, useLocalModel, XH} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
@@ -51,14 +51,15 @@ function renderRow(title, value, renderer) {
     });
 }
 
-@LoadSupport
-@HoistModel
-class LocalModel {
+class LocalModel extends HoistModel {
+
+    get isLoadSupport() {return true}
 
     @bindable id;
     @bindable.ref position;
 
     constructor() {
+        super();
         this.addReaction({
             track: () => this.id,
             run: () => this.loadAsync()

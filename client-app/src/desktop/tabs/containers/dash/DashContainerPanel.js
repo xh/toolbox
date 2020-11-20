@@ -79,8 +79,7 @@ const bbar = hoistCmp.factory(
     )
 );
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
     @bindable renderDashboard = true;
 
     @managed
