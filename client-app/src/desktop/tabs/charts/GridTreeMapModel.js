@@ -7,8 +7,6 @@ import {clamp} from 'lodash';
 
 export class GridTreeMapModel extends HoistModel {
 
-    get isLoadSupport() {return true}
-
     @managed
     dimChooserModel = new DimensionChooserModel({
         dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],

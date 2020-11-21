@@ -9,8 +9,6 @@ import {PERSIST_MAIN} from './AppModel';
 
 export class PortfolioPanelModel extends HoistModel {
 
-    get isLoadSupport() {return true}
-
     @managed session;
 
     @managed dimChooserModel = this.createDimChooserModel();

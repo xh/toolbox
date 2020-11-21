@@ -2,15 +2,13 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
 import {managed, HoistModel, XH} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 
 export class ActivityWidgetModel extends HoistModel {
-
-    get isLoadSupport() {return true}
 
     /** @member {GridModel} */
     @managed
@@ -24,6 +22,7 @@ export class ActivityWidgetModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         const openUrlAction = {
             text: 'Open on Github',
             tooltip: 'Open on Github',

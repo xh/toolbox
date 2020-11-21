@@ -1,5 +1,5 @@
 import {HoistModel} from '@xh/hoist/core';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {h3, li, ol, p} from '@xh/hoist/cmp/layout';
 
@@ -29,6 +29,7 @@ export class PanelResizingTestModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.setPanelModels();
     }
 

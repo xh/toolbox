@@ -5,13 +5,11 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {fmtDate, fmtMillions, fmtNumber, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import './SampleGrid.scss';
 
 export class SampleGridModel extends HoistModel {
-
-    get isLoadSupport() {return true}
 
     @observable groupBy = false;
 
@@ -243,6 +241,11 @@ export class SampleGridModel extends HoistModel {
             }
         ]
     });
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     async doLoadAsync(loadSpec) {
         const {trades, summary} = await XH.fetchJson({url: 'trade'}),

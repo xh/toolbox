@@ -5,7 +5,7 @@
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
+import {HoistAppModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {GitHubService} from '../core/svc/GitHubService';
 import {OauthService} from '../core/svc/OauthService';
@@ -57,7 +57,7 @@ export class AppModel extends HoistAppModel {
     }
 
     async doLoadAsync(loadSpec) {
-        await XH.gitHubService.loadDataAsync();
+        await XH.gitHubService.loadAsync(loadSpec);
     }
 
     async logoutAsync() {

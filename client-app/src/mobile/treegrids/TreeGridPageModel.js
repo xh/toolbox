@@ -11,8 +11,6 @@ import {DimensionChooserModel} from '@xh/hoist/mobile/cmp/dimensionchooser';
 
 export class TreeGridPageModel extends HoistModel {
 
-    get isLoadSupport() {return true}
-
     @managed
     dimensionChooserModel = new DimensionChooserModel({
         dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],

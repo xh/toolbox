@@ -1,7 +1,7 @@
 import {merge} from 'lodash';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {start} from '@xh/hoist/promise';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 
 export class FetchApiTestModel extends  HoistModel {
@@ -32,6 +32,7 @@ export class FetchApiTestModel extends  HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.setTestServer(this.testServers[0].value);
         this.setTestMethod(this.testMethods[0].value);
     }

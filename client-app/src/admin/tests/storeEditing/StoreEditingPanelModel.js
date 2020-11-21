@@ -2,7 +2,7 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
-import {action} from '@xh/hoist/mobx';
+import {action, makeObservable} from '@xh/hoist/mobx';
 import {isEmpty, max} from 'lodash';
 
 export class StoreEditingPanelModel extends HoistModel {
@@ -70,6 +70,7 @@ export class StoreEditingPanelModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.store.loadData([
             {
                 id: 0,

@@ -1,12 +1,10 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 
 export class GridPageModel extends HoistModel {
-
-    get isLoadSupport() {return true}
 
     @bindable.ref
     dateLoaded = null;
@@ -45,6 +43,11 @@ export class GridPageModel extends HoistModel {
             }
         ]
     });
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     async doLoadAsync(loadSpec) {
         await wait(500);

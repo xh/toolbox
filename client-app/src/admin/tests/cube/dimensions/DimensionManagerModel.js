@@ -2,7 +2,7 @@ import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {cloneDeep, isEmpty, isEqual, pullAllWith, unionWith} from 'lodash';
 
@@ -19,6 +19,7 @@ export class DimensionManagerModel extends HoistModel {
 
     constructor(config) {
         super();
+        makeObservable(this);
         this.dimChooserModel = new DimensionChooserModel({
             dimensions: config.dimensions,
             initialValue: [],

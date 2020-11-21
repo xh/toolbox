@@ -1,5 +1,5 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {times} from 'lodash';
 
 export class SelectTestModel extends HoistModel {
@@ -44,6 +44,7 @@ export class SelectTestModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.numOptions,
             run: () => this.setBigOptions(times(this.numOptions, i => `option: ${i}`)),

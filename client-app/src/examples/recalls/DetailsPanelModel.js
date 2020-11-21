@@ -1,9 +1,14 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class DetailsPanelModel extends HoistModel {
 
     @bindable.ref currentRecord = null;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     get classificationDetails() {
         const {classification} = this.currentRecord.data;

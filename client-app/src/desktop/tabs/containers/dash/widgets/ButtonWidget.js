@@ -1,5 +1,5 @@
 import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {div, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -47,6 +47,7 @@ class LocalModel extends HoistModel {
 
     constructor(viewModel) {
         super();
+        makeObservable(this);
         this.viewModel = viewModel;
         this.value = viewModel.viewState ? viewModel.viewState.value : 'Button 1';
         this.addReaction({

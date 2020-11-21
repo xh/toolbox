@@ -1,7 +1,7 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {p} from '@xh/hoist/cmp/layout';
 import {wait} from '@xh/hoist/promise';
 import './PinPadPage.scss';
@@ -44,6 +44,7 @@ class Model extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         const {pinPadModel: pad} = this;
         this.addReaction({
             track: () => pad.completedPin,

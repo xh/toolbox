@@ -1,8 +1,13 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class BasicPanelModel extends HoistModel {
     @bindable state = null;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     demoText = [
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ut aliquam lectus. Morbi maximus, dui et facilisis tincidunt, orci quam posuere purus, sed mollis tortor orci a magna. Aliquam aliquam risus eu turpis blandit placerat. Quisque porta egestas vulputate. Ut vehicula tincidunt laoreet. Maecenas metus arcu, tristique sit amet lectus sed, suscipit posuere dui. Vestibulum et est et elit blandit molestie. Sed auctor interdum tristique. Quisque ac felis non dolor laoreet elementum eu et felis. Praesent id ultricies tortor. Praesent a laoreet nisl.',

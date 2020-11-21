@@ -1,5 +1,5 @@
 import {HoistModel, loadAllAsync, managed} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {OrdersPanelModel} from './OrdersPanelModel';
 import {ChartsPanelModel} from './ChartsPanelModel';
@@ -7,8 +7,6 @@ import {PERSIST_DETAIL} from '../AppModel';
 
 
 export class DetailPanelModel extends HoistModel {
-
-    get isLoadSupport() {return true}
 
     @bindable positionId = null;
 
@@ -26,6 +24,7 @@ export class DetailPanelModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         const {chartsPanelModel, ordersPanelModel, panelSizingModel} = this;
         this.addReaction({
             track: () => [this.positionId, panelSizingModel.collapsed],

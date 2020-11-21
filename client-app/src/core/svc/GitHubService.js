@@ -1,6 +1,6 @@
 import {HoistService, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {computed, bindable} from '@xh/hoist/mobx';
+import {computed, bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {forOwn, sortBy} from 'lodash';
 
@@ -18,15 +18,20 @@ export class GitHubService extends HoistService {
         return sortBy(ret, it => -it.committedDate);
     }
 
-    async initAsync() {
-        // Subscribe to websocket based updates so we refresh and pick up new commits immediately.
-        XH.webSocketService.subscribe('gitHubUpdate', () => this.loadDataAsync());
-
-        // Note we do not await this - we don't want the app load to block here.
-        this.loadDataAsync();
+    constructor() {
+        super();
+        makeObservable(this);
     }
 
-    async loadDataAsync() {
+    async initAsync() {
+        // Subscribe to websocket based updates so we refresh and pick up new commits immediately.
+        XH.webSocketService.subscribe('gitHubUpdate', () => this.loadAsync());
+
+        // Note we do not await this - we don't want the app load to block here.
+        this.loadAsync();
+    }
+
+    async doLoadAsync() {
         try {
             const priorCommitCount = this.allCommits.length,
                 commitHistories = await XH.fetchJson({

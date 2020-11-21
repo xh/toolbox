@@ -3,7 +3,7 @@ import {ChartModel} from '@xh/hoist/cmp/chart';
 import {fmtDate} from '@xh/hoist/format';
 import {Highcharts} from '@xh/hoist/kit/highcharts';
 import {isNil} from 'lodash';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class LineChartModel extends HoistModel {
 
@@ -13,6 +13,7 @@ export class LineChartModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.symbol,
             run: () => this.loadAsync()

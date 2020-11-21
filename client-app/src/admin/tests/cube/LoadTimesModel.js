@@ -5,8 +5,6 @@ import {castArray} from 'lodash';
 
 export class LoadTimesModel extends HoistModel {
 
-    get isLoadSupport() {return true}
-
     @managed gridModel = new GridModel({
         store: {idSpec: 'timestamp'},
         sortBy: 'timestamp|desc',

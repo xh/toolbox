@@ -6,7 +6,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {TIME_FMT} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import React from 'react';
 import {wrapper} from '../../common/Wrapper';
@@ -99,4 +99,9 @@ class Model extends HoistModel {
     @bindable updateInterval;
     @bindable prefix;
     @bindable suffix;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 }

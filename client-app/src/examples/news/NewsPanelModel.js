@@ -1,13 +1,11 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {uniq} from 'lodash';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {newsPanelItem} from './NewsPanelItem';
 import {fmtCompactDate} from '@xh/hoist/format';
 
 export class NewsPanelModel extends HoistModel {
-
-    get isLoadSupport() {return true}
 
     SEARCH_FIELDS = ['title', 'text'];
 
@@ -35,6 +33,7 @@ export class NewsPanelModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.addReaction({
             track: () => [this.sourceFilterValues, this.textFilter, this.lastRefresh],
             run: () => this.viewModel.setFilter(this.createFilter()),

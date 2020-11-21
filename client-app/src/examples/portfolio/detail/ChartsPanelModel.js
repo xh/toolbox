@@ -1,11 +1,9 @@
 import {HoistModel, loadAllAsync, managed} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LineChartModel} from './LineChartModel';
 import {OHLCChartModel} from './OHLCChartModel';
 
 export class ChartsPanelModel extends HoistModel  {
-
-    get isLoadSupport() {return true}
 
     @bindable symbol = null;
 
@@ -14,6 +12,7 @@ export class ChartsPanelModel extends HoistModel  {
 
     constructor() {
         super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.symbol,
             run: (symbol) => {

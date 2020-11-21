@@ -5,8 +5,6 @@ import {dataViewItem} from './DataViewItem';
 
 export class DataViewPageModel extends HoistModel {
 
-    get isLoadSupport() {return true}
-
     @managed
     dataViewModel = new DataViewModel({
         store: {

@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -100,4 +100,8 @@ class Model extends HoistModel {
     @bindable
     showFileGrid = true;
 
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 }

@@ -1,13 +1,11 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {PERSIST_MAIN} from './AppModel';
 
 export class GridPanelModel extends HoistModel {
-
-    get isLoadSupport() {return true}
 
     @managed
     panelSizingModel = new PanelModel({
@@ -16,7 +14,6 @@ export class GridPanelModel extends HoistModel {
         persistWith: {...PERSIST_MAIN, path: 'positionsPanel'}
     });
 
-    // TODO:  What is this?  is this load support?
     @bindable loadTimestamp;
 
     @managed
@@ -30,6 +27,7 @@ export class GridPanelModel extends HoistModel {
 
     constructor({parentModel}) {
         super();
+        makeObservable(this);
         this.parentModel = parentModel;
         this.gridModel = this.createGridModel();
     }

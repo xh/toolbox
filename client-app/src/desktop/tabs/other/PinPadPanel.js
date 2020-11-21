@@ -1,7 +1,7 @@
 import React from 'react';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {h3, p} from '@xh/hoist/cmp/layout';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -72,6 +72,7 @@ class Model extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         const {pinPadModel: pad} = this;
         this.addReaction({
             track: () => pad.completedPin,

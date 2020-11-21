@@ -5,8 +5,6 @@ import {clamp} from 'lodash';
 
 export class SimpleTreeMapModel extends HoistModel {
 
-    get isLoadSupport() {return true}
-
     @managed
     store = new Store({
         processRawData: (r) => {

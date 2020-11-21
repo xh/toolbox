@@ -1,5 +1,5 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import * as formatFunctions from '@xh/hoist/format/FormatNumber';
 import {fmtNumber} from '@xh/hoist/format/FormatNumber';
 import {nilAwareFormat} from './Util';
@@ -53,6 +53,11 @@ export class NumberFormatsPanelModel extends HoistModel {
 
     get tryItResult() {
         return this.getResult(this.tryItData);
+    }
+
+    constructor() {
+        super();
+        makeObservable(this);
     }
 
     //-----------------------------

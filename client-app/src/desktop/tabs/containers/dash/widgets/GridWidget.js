@@ -12,9 +12,6 @@ export const gridWidget = hoistCmp.factory({
 
 class LocalModel extends HoistModel {
 
-    get isLoadSupport() {return true}
-
-
     viewModel;
     @managed gridModel;
 

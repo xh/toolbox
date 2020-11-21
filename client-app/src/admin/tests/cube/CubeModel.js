@@ -7,8 +7,6 @@ import {Timer} from '@xh/hoist/utils/async';
 
 export class CubeModel extends HoistModel {
 
-    get isLoadSupport() {return true}
-
     @managed cube;
     @managed orders = [];
     @managed timer;

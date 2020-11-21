@@ -43,8 +43,6 @@ export const dataViewPanel = hoistCmp.factory({
 
 class Model extends HoistModel {
 
-    get isLoadSupport() {return true}
-
     @managed
     dataViewModel = new DataViewModel({
         store: {

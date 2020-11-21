@@ -1,7 +1,7 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {fileExtCol, GridModel} from '@xh/hoist/cmp/grid';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {computed} from '@xh/hoist/mobx';
+import {computed, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import filesize from 'filesize';
@@ -9,8 +9,6 @@ import download from 'downloadjs';
 import {filter, find, pull} from 'lodash';
 
 export class FileManagerModel extends HoistModel {
-
-    get isLoadSupport() {return true}
 
     @managed
     chooserModel = new FileChooserModel();
@@ -88,6 +86,7 @@ export class FileManagerModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.chooserModel.files,
             run: this.syncWithChooser

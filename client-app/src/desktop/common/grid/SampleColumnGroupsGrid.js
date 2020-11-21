@@ -15,7 +15,7 @@ import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtMillions, fmtNumber, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
 import {gridOptionsPanel} from './options/GridOptionsPanel';
 
@@ -56,8 +56,6 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
 
 class Model extends HoistModel {
 
-    get isLoadSupport() {return true}
-
     @managed gridModel;
     @observable groupRows;
     @bindable inMillions = false;
@@ -66,6 +64,7 @@ class Model extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.gridModel = this.createGridModel();
         this.setGroupRows(true);
 

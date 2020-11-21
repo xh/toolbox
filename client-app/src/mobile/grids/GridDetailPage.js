@@ -4,7 +4,7 @@ import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {find, isNil} from 'lodash';
-import {bindable, observable} from '@xh/hoist/mobx';
+import {bindable, observable, makeObservable} from '@xh/hoist/mobx';
 
 export const gridDetailPage = hoistCmp.factory({
     render({id}) {
@@ -46,6 +46,7 @@ class LocalModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.addReaction({
             track: () => [this.customers, this.id],
             run: ([customers, id]) => {

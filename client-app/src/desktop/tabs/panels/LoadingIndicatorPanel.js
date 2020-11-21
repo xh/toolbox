@@ -2,7 +2,7 @@ import React from 'react';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {span} from '@xh/hoist/cmp/layout';
 import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -85,8 +85,6 @@ export const loadingIndicatorPanel = hoistCmp.factory({
 
 class Model extends HoistModel {
 
-    get isLoadSupport() {return true}
-
     @bindable seconds = 3;
     @bindable message = '';
     @bindable corner = 'br';
@@ -94,6 +92,11 @@ class Model extends HoistModel {
 
     @managed
     sampleGridModel = new SampleGridModel()
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     async doLoadAsync(loadSpec) {
         const {loadModel, message, seconds} = this,

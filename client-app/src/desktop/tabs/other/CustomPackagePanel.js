@@ -33,6 +33,6 @@ export const customPackagePanel = hoistCmp.factory(
                 notes: 'Webpack config for Toolbox, with special handling for our custom package.'
             }
         ],
-        item: ''//customPanel({width: 700})
+        item: '' // customPanel({width: 700})
     })
 );

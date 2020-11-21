@@ -3,7 +3,7 @@ import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hois
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {mean, random, reduce, sample, takeRight, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 
 const pnlColumn = {
     absSort: true,
@@ -18,8 +18,6 @@ const pnlColumn = {
 };
 
 export class GridTestModel extends HoistModel {
-
-    get isLoadSupport() {return true}
 
     persistWith = {localStorageKey: 'persistTest'};
 
@@ -72,6 +70,7 @@ export class GridTestModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.markPersist('tree');
         this.markPersist('showSummary');
         this.gridModel = this.createGridModel();

@@ -10,12 +10,10 @@ import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {action, bindable} from '@xh/hoist/mobx';
+import {action, bindable, makeObservable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
 
 export class SampleTreeGridModel extends HoistModel {
-
-    get isLoadSupport() {return true}
 
     @bindable
     filterIncludesChildren = false;
@@ -40,6 +38,7 @@ export class SampleTreeGridModel extends HoistModel {
 
     constructor({includeCheckboxes}) {
         super();
+        makeObservable(this);
         this.gridModel = this.createGridModel(includeCheckboxes);
 
         this.addReaction({

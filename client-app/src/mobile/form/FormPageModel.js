@@ -1,12 +1,17 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {FormModel, lengthIs, required} from '@xh/hoist/cmp/form';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {movies} from '../../core/data';
 
 export class FormPageModel extends HoistModel {
 
     @bindable minimal;
     @bindable readonly;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     @managed
     formModel = new FormModel({

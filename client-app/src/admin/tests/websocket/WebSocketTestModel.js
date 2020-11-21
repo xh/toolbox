@@ -1,7 +1,7 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateRenderer} from '@xh/hoist/format';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class WebSocketTestModel extends HoistModel {
 
@@ -11,6 +11,7 @@ export class WebSocketTestModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         this.gridModel = new GridModel({
             sortBy: [{colId: 'timestamp', sort: 'desc'}],
             emptyText: 'No updates received',

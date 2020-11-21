@@ -5,7 +5,7 @@
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
@@ -15,8 +15,6 @@ import {PERSIST_APP} from './AppModel';
 import {uniqBy} from 'lodash';
 
 export class RecallsPanelModel extends HoistModel {
-
-    get isLoadSupport() {return true}
 
     persistWith = PERSIST_APP;
 
@@ -95,6 +93,7 @@ export class RecallsPanelModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
         const {gridModel} = this;
 
         this.addReaction({
