@@ -334,7 +334,7 @@ export class GridTestModel extends HoistModel {
 
     @action
     tearDown() {
-        XH.destroy(this.gridModel);
+        XH.safeDestroy(this.gridModel);
         this.gridModel = this.createGridModel();
         this._data = null;
         this.runTimes = {};

@@ -32,7 +32,7 @@ export class PortfolioPanelModel extends HoistModel {
             dims = dimChooserModel.value;
 
         let {session} = this;
-        if (session) session.destroy();
+        session?.destroy();
 
         session = await XH.portfolioService
             .getLivePositionsAsync(dims, 'mainApp')
