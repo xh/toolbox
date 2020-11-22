@@ -1,5 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core';
-// import {customPanel} from '@xh/package-template/desktop/cmp/custompanel';
+import {customPanel} from '@xh/package-template/desktop/cmp/custompanel';
 import React from 'react';
 import {wrapper} from '../../common';
 
@@ -33,6 +33,6 @@ export const customPackagePanel = hoistCmp.factory(
                 notes: 'Webpack config for Toolbox, with special handling for our custom package.'
             }
         ],
-        item: '' // customPanel({width: 700})
+        item: customPanel({width: 700})
     })
 );
