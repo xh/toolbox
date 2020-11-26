@@ -41,7 +41,7 @@ export class LineChartModel extends HoistModel {
             animation: true
         });
 
-        this.chartModel.setSeries([series]);
+        this.chartModel.setSeries(series);
     }
 
     getChartModelCfg() {
@@ -55,26 +55,15 @@ export class LineChartModel extends HoistModel {
             subtitle: {
                 text: 'Click and drag in the plot area to zoom in'
             },
-            scrollbar: {
-                enabled: false
-            },
-            rangeSelector: {
-                enabled: true
-            },
-            navigator: {
-                enabled: true
-            },
-            xAxis: {
-                type: 'datetime'
-            },
-            yAxis: {
-                title: {
-                    text: 'USD'
-                }
-            },
-            legend: {
-                enabled: false
-            },
+            // Turn on optional features
+            navigator: {enabled: true},
+            rangeSelector: {enabled: true},
+            exporting: {enabled: true},
+            // Disable others
+            legend: {enabled: false},
+            scrollbar: {enabled: false},
+            xAxis: {type: 'datetime'},
+            yAxis: {title: {text: 'USD'}},
             plotOptions: {
                 area: {
                     fillColor: {
@@ -100,9 +89,6 @@ export class LineChartModel extends HoistModel {
                     },
                     threshold: null
                 }
-            },
-            exporting: {
-                enabled: true
             }
         };
     }
