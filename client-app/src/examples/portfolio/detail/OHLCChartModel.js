@@ -22,21 +22,18 @@ export class OHLCChartModel {
         highchartsConfig: {
             chart: {
                 type: 'ohlc',
-                spacingLeft: 3,
-                spacingBottom: 5,
                 zoomType: 'x',
-                animation: false,
-                marginLeft: 50
+                animation: false
             },
             title: {text: null},
             legend: {enabled: false},
-            scrollbar: {enabled: false},
+            scrollbar: {enabled: true},
             rangeSelector: {
                 enabled: true,
                 selected: 1     // default to a 3-month zoom
             },
-            navigator: {enabled: true},
             xAxis: {
+                type: 'datetime',
                 labels: {
                     formatter: function() {
                         return fmtDate(this.value, {fmt: 'DD-MMM-YY'});
@@ -44,16 +41,10 @@ export class OHLCChartModel {
                 }
             },
             yAxis: {
-                title: {text: null},
-                opposite: false,
-                endOnTick: true,
-                showLastLabel: true,
-                tickPixelInterval: 40
+                opposite: true,
+                title: {text: null}
             },
             tooltip: {
-                split: false,
-                crosshairs: false,
-                followPointer: true,
                 useHTML: true,
                 formatter: function() {
                     const p = this.point;
@@ -68,16 +59,14 @@ export class OHLCChartModel {
                     `;
                 }
             },
-            exporting: {
-                enabled: true
-            }
+            exporting: {enabled: true}
         }
     });
 
     async doLoadAsync(loadSpec) {
         const {symbol} = this;
         if (isNil(symbol)) {
-            this.chartModel.setSeries([]);
+            this.chartModel.clear();
             return;
         }
 
@@ -86,6 +75,6 @@ export class OHLCChartModel {
             loadSpec
         }).catchDefault() ?? {};
 
-        this.chartModel.setSeries([series]);
+        this.chartModel.setSeries(series);
     }
 }
