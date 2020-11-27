@@ -24,7 +24,7 @@ export const search = hoistCmp.factory({
                 hideDropdownIndicator: true,
                 enableClear: true,
                 valueField: 'route',
-                filterFn: createFilter,
+                filterFn: createFilter(),
                 onChange: (val) => model.forwardToTopic(val)
             }),
             [
