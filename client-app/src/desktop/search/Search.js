@@ -53,7 +53,7 @@ class Model {
   }
 
   get selectElem() {
-      return this.selectRef.current?.reactSelectRef?.current;
+      return this.selectRef.current?.querySelector('input');
   }
 
   forwardToTopic(val) {
