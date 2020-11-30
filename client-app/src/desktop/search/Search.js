@@ -52,7 +52,7 @@ class Model {
       return XH.getConf('searchOptions');
   }
 
-  get selectElem() {
+  get inputElem() {
       return this.selectRef.current?.querySelector('input');
   }
 
@@ -82,11 +82,11 @@ class Model {
   }
 
   focus() {
-    this.selectElem?.focus();
+    this.inputElem?.focus();
   }
 
   blur() {
-    this.selectElem?.blur();
+    this.inputElem?.blur();
   }
 
 }
