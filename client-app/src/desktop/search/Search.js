@@ -52,8 +52,8 @@ class Model {
       return XH.getConf('searchOptions');
   }
 
-  get inputElem() {
-      return this.selectRef.current?.querySelector('input');
+  get reacSelectCmp() {
+      return this.selectRef.current?.reactSelectRef?.current;
   }
 
   forwardToTopic(val) {
@@ -82,11 +82,11 @@ class Model {
   }
 
   focus() {
-    this.inputElem?.focus();
+    this.reacSelectCmp?.focus();
   }
 
   blur() {
-    this.inputElem?.blur();
+    this.reacSelectCmp?.blur();
   }
 
 }
