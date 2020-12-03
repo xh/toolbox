@@ -2,7 +2,7 @@ import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {fragment, label, spacer, vspacer} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {select, textInput} from '@xh/hoist/desktop/cmp/input';
+import {select, textInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {sample} from 'lodash';
 import {agGridOptions} from './AgGridOptions';
@@ -14,6 +14,11 @@ export const gridOptions = hoistCmp.factory({
         return fragment({
             items: [
                 agGridOptions({model: model.agGridModel}),
+                switchInput({
+                    bind: 'showColumnGroups',
+                    label: 'Show Column Groups',
+                    labelAlign: 'left'
+                }),
                 spacer({height: 10, omit: !model.treeMode}),
                 label({
                     item: 'Tree Styles',
