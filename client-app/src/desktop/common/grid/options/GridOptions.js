@@ -17,7 +17,8 @@ export const gridOptions = hoistCmp.factory({
                 switchInput({
                     bind: 'showColumnGroups',
                     label: 'Show Column Groups',
-                    labelAlign: 'left'
+                    labelAlign: 'left',
+                    omit: !model.hasColumnGroups
                 }),
                 spacer({height: 10, omit: !model.treeMode}),
                 label({
