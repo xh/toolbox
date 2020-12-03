@@ -2,6 +2,7 @@ import {HoistModel, XH} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {bindable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
+import {createObservableRef} from '@xh/hoist/utils/react';
 import moment from 'moment';
 import {random} from 'lodash';
 
@@ -9,6 +10,10 @@ import {random} from 'lodash';
 export class InputsPanelModel {
 
     @bindable commitOnChange = false;
+
+    inputRefs = [];
+    inputRefsObj = {};
+    focused = null;
 
     formModel = new FormModel({
         fields: [
@@ -37,6 +42,43 @@ export class InputsPanelModel {
             {name: 'buttonGroup1', initialValue: 'button2'}
         ]
     });
+
+    constructor() {
+        this.inputRefsArray = this.formModel.fieldList.map(it => {
+            this.inputRefsObj[it.name] = {
+                modelRef: createObservableRef(),
+                inputRef: createObservableRef()
+            };
+            return this.inputRefsObj[it.name];
+        });
+
+        this.addReaction({
+            track: () => {
+                const focused = this.inputRefsArray.find(it => it.modelRef.current?.hasFocus);
+                return focused?.modelRef.current;
+            },
+            run: (inputModel) => {
+                if (inputModel) this.focused = inputModel;
+            }
+        });
+    }
+
+    focus(incr) {
+        const idx = this.focusedInputIdx,
+            last = this.inputRefsArray.filter(it => it.inputRef.current).length - 1;
+
+        if ((idx === 0 && incr === -1) || (idx === last && incr === 1)) {
+            this.inputRefsArray[idx].inputRef.current.focus();
+            return;
+        }
+
+        const next = idx > -1 ? idx + incr : 0;
+        this.inputRefsArray[next].inputRef.current.focus();
+    }
+
+    get focusedInputIdx() {
+        return this.inputRefsArray.findIndex(it => it.modelRef.current === this.focused);
+    }
 
     queryCustomersAsync(query) {
         return XH.fetchJson({

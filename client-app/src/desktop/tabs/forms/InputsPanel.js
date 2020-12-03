@@ -2,7 +2,7 @@ import React from 'react';
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {box, div, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
     buttonGroupInput,
@@ -78,6 +78,8 @@ const formContents = hoistCmp.factory(
                         field: 'text1',
                         info: 'autoFocus',
                         item: textInput({
+                            ref: model.inputRefsObj.text1.modelRef,
+                            inputRef: model.inputRefsObj.text1.inputRef,
                             autoFocus: true
                         })
                     }),
@@ -88,6 +90,8 @@ const formContents = hoistCmp.factory(
                         item: textInput({
                             placeholder: 'user@company.com',
                             round: true,
+                            ref: model.inputRefsObj.text2.modelRef,
+                            inputRef: model.inputRefsObj.text2.inputRef,
                             leftIcon: Icon.mail(),
                             enableClear: true
                         })
@@ -99,6 +103,8 @@ const formContents = hoistCmp.factory(
                         readonlyRenderer: v => v ? v.replace(/./g, '•') : null,
                         item: textInput({
                             type: 'password',
+                            ref: model.inputRefsObj.text3.modelRef,
+                            inputRef: model.inputRefsObj.text3.inputRef,
                             selectOnFocus: true
                         })
                     }),
@@ -110,6 +116,8 @@ const formContents = hoistCmp.factory(
                         item: textArea({
                             fill: true,
                             placeholder: 'Tell us your thoughts...',
+                            ref: model.inputRefsObj.text4.modelRef,
+                            inputRef: model.inputRefsObj.text4.inputRef,
                             selectOnFocus: true
                         })
                     }),
@@ -368,6 +376,22 @@ const bbar = hoistCmp.factory(
         const {formModel} = model;
 
         return toolbar(
+            buttonGroup(
+                button({
+                    text: 'Previous',
+                    icon: Icon.angleLeft(),
+                    minimal: false,
+                    width: 130,
+                    onClick: () => model.focus(-1)
+                }),
+                button({
+                    text: 'Next',
+                    rightIcon: Icon.angleRight(),
+                    minimal: false,
+                    width: 130,
+                    onClick: () => model.focus(1)
+                })
+            ),
             filler(),
             switchInput({
                 model: formModel,
