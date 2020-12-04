@@ -78,8 +78,8 @@ const formContents = hoistCmp.factory(
                         field: 'text1',
                         info: 'autoFocus',
                         item: textInput({
-                            ref: model.inputRefsObj.text1.modelRef,
-                            inputRef: model.inputRefsObj.text1.inputRef,
+                            ref: model.fieldRefsObj.text1.modelRef,
+                            inputRef: model.fieldRefsObj.text1.inputRef,
                             autoFocus: true
                         })
                     }),
@@ -90,8 +90,8 @@ const formContents = hoistCmp.factory(
                         item: textInput({
                             placeholder: 'user@company.com',
                             round: true,
-                            ref: model.inputRefsObj.text2.modelRef,
-                            inputRef: model.inputRefsObj.text2.inputRef,
+                            ref: model.fieldRefsObj.text2.modelRef,
+                            inputRef: model.fieldRefsObj.text2.inputRef,
                             leftIcon: Icon.mail(),
                             enableClear: true
                         })
@@ -103,8 +103,8 @@ const formContents = hoistCmp.factory(
                         readonlyRenderer: v => v ? v.replace(/./g, '•') : null,
                         item: textInput({
                             type: 'password',
-                            ref: model.inputRefsObj.text3.modelRef,
-                            inputRef: model.inputRefsObj.text3.inputRef,
+                            ref: model.fieldRefsObj.text3.modelRef,
+                            inputRef: model.fieldRefsObj.text3.inputRef,
                             selectOnFocus: true
                         })
                     }),
@@ -116,8 +116,8 @@ const formContents = hoistCmp.factory(
                         item: textArea({
                             fill: true,
                             placeholder: 'Tell us your thoughts...',
-                            ref: model.inputRefsObj.text4.modelRef,
-                            inputRef: model.inputRefsObj.text4.inputRef,
+                            ref: model.fieldRefsObj.text4.modelRef,
+                            inputRef: model.fieldRefsObj.text4.inputRef,
                             selectOnFocus: true
                         })
                     }),

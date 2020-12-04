@@ -11,8 +11,8 @@ export class InputsPanelModel {
 
     @bindable commitOnChange = false;
 
-    inputRefs = [];
-    inputRefsObj = {};
+    fieldRefsArray = [];
+    fieldRefsObj = {};
     focused = null;
 
     formModel = new FormModel({
@@ -44,17 +44,17 @@ export class InputsPanelModel {
     });
 
     constructor() {
-        this.inputRefsArray = this.formModel.fieldList.map(it => {
-            this.inputRefsObj[it.name] = {
+        this.fieldRefsArray = this.formModel.fieldList.map(it => {
+            this.fieldRefsObj[it.name] = {
                 modelRef: createObservableRef(),
                 inputRef: createObservableRef()
             };
-            return this.inputRefsObj[it.name];
+            return this.fieldRefsObj[it.name];
         });
 
         this.addReaction({
             track: () => {
-                const focused = this.inputRefsArray.find(it => it.modelRef.current?.hasFocus);
+                const focused = this.fieldRefsArray.find(it => it.modelRef.current?.hasFocus);
                 return focused?.modelRef.current;
             },
             run: (inputModel) => {
@@ -65,19 +65,19 @@ export class InputsPanelModel {
 
     focus(incr) {
         const idx = this.focusedInputIdx,
-            last = this.inputRefsArray.filter(it => it.inputRef.current).length - 1;
+            last = this.fieldRefsArray.filter(it => it.inputRef.current).length - 1;
 
         if ((idx === 0 && incr === -1) || (idx === last && incr === 1)) {
-            this.inputRefsArray[idx].inputRef.current.focus();
+            this.fieldRefsArray[idx].inputRef.current.focus();
             return;
         }
 
         const next = idx > -1 ? idx + incr : 0;
-        this.inputRefsArray[next].inputRef.current.focus();
+        this.fieldRefsArray[next].inputRef.current.focus();
     }
 
     get focusedInputIdx() {
-        return this.inputRefsArray.findIndex(it => it.modelRef.current === this.focused);
+        return this.fieldRefsArray.findIndex(it => it.modelRef.current === this.focused);
     }
 
     queryCustomersAsync(query) {
