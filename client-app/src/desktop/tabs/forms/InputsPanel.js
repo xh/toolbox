@@ -156,19 +156,19 @@ const formContents = hoistCmp.factory(
                     }),
                     row({
                         label: 'Slider',
-                        field: 'number3',
+                        field: 'range1',
                         info: 'max, min, stepSizes',
                         item: slider({
                             max: 100,
                             min: 0,
                             labelStepSize: 25,
                             stepSize: 1
-                            // ref: model.fieldRefsObj.number3
+                            // ref: model.fieldRefsObj.range1
                         })
                     }),
                     row({
                         label: 'Slider',
-                        field: 'range1',
+                        field: 'range2',
                         info: 'multi-value, labelRenderer',
                         readonlyRenderer: v => v.map(it => fmtNumber(it)).join(' - '),
                         item: slider({
@@ -193,7 +193,8 @@ const formContents = hoistCmp.factory(
                             placeholder: 'YYYY-MM-DD',
                             minDate: moment().subtract(5, 'weeks').toDate(),
                             maxDate: moment().add(2, 'weeks').toDate(),
-                            enableClear: true
+                            enableClear: true,
+                            ref: model.fieldRefsObj.date1
                         })
                     }),
                     row({
@@ -206,7 +207,8 @@ const formContents = hoistCmp.factory(
                         item: dateInput({
                             showActionsBar: true,
                             timePrecision: 'minute',
-                            timePickerProps: {useAmPm: true}
+                            timePickerProps: {useAmPm: true},
+                            ref: model.fieldRefsObj.date2
                         })
                     }),
                     row({
@@ -215,7 +217,8 @@ const formContents = hoistCmp.factory(
                         info: 'valueType: localDate',
                         layout: {width: 130},
                         item: dateInput({
-                            valueType: 'localDate'
+                            valueType: 'localDate',
+                            ref: model.fieldRefsObj.localDate
                         })
                     })
                 ]
