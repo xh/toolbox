@@ -45,17 +45,14 @@ export class InputsPanelModel {
 
     constructor() {
         this.fieldRefsArray = this.formModel.fieldList.map(it => {
-            this.fieldRefsObj[it.name] = {
-                modelRef: createObservableRef(),
-                inputRef: createObservableRef()
-            };
+            this.fieldRefsObj[it.name] = createObservableRef();
             return this.fieldRefsObj[it.name];
         });
 
         this.addReaction({
             track: () => {
-                const focused = this.fieldRefsArray.find(it => it.modelRef.current?.hasFocus);
-                return focused?.modelRef.current;
+                const focused = this.fieldRefsArray.find(it => it.current?.hasFocus);
+                return focused?.current;
             },
             run: (inputModel) => {
                 if (inputModel) this.focused = inputModel;
@@ -64,20 +61,19 @@ export class InputsPanelModel {
     }
 
     focus(incr) {
-        const idx = this.focusedInputIdx,
-            last = this.fieldRefsArray.filter(it => it.inputRef.current).length - 1;
+        const last = this.implementedRefs.length - 1,
+            idx = this.focusedInputIdx;
+        let next = idx > -1 ? idx + incr : 0;
 
         if ((idx === 0 && incr === -1) || (idx === last && incr === 1)) {
-            this.fieldRefsArray[idx].inputRef.current.focus();
-            return;
+            next = idx;
         }
 
-        const next = idx > -1 ? idx + incr : 0;
-        this.fieldRefsArray[next].inputRef.current.focus();
+        this.implementedRefs[next].current.focus();
     }
 
     get focusedInputIdx() {
-        return this.fieldRefsArray.findIndex(it => it.modelRef.current === this.focused);
+        return this.implementedRefs.findIndex(it => it.current === this.focused);
     }
 
     queryCustomersAsync(query) {
@@ -85,5 +81,9 @@ export class InputsPanelModel {
             url: 'customer',
             params: {query}
         });
+    }
+
+    get implementedRefs() {
+        return this.fieldRefsArray.filter(it => it.current);
     }
 }
