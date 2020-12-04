@@ -121,7 +121,9 @@ const formContents = hoistCmp.factory(
                         label: 'JSONInput',
                         field: 'text5',
                         layout: {height: 200},
-                        item: jsonInput()
+                        item: jsonInput({
+                            // ref: model.fieldRefsObj.text5
+                        })
                     })
                 ]
             }),
@@ -136,7 +138,8 @@ const formContents = hoistCmp.factory(
                             fill: true,
                             stepSize: 1000,
                             majorStepSize: 100000,
-                            minorStepSize: 100
+                            minorStepSize: 100,
+                            ref: model.fieldRefsObj.number1
                         })
                     }),
                     row({
@@ -147,7 +150,8 @@ const formContents = hoistCmp.factory(
                             fill: true,
                             enableShorthandUnits: true,
                             displayWithCommas: true,
-                            selectOnFocus: true
+                            selectOnFocus: true,
+                            ref: model.fieldRefsObj.number2
                         })
                     }),
                     row({
@@ -159,6 +163,7 @@ const formContents = hoistCmp.factory(
                             min: 0,
                             labelStepSize: 25,
                             stepSize: 1
+                            // ref: model.fieldRefsObj.number3
                         })
                     }),
                     row({

@@ -51,8 +51,8 @@ export class InputsPanelModel {
 
         this.addReaction({
             track: () => {
-                const focused = this.fieldRefsArray.find(it => it.current?.model.hasFocus);
-                return focused?.current.model;
+                const focused = this.fieldRefsArray.find(it => it.current?.hasFocus);
+                return focused?.current;
             },
             run: (inputModel) => {
                 if (inputModel) this.focused = inputModel;
@@ -61,20 +61,19 @@ export class InputsPanelModel {
     }
 
     focus(incr) {
-        const idx = this.focusedInputIdx,
-            last = this.fieldRefsArray.filter(it => it.current?.inputRef).length - 1;
+        const last = this.implementedRefs.length - 1,
+            idx = this.focusedInputIdx;
+        let next = idx > -1 ? idx + incr : 0;
 
         if ((idx === 0 && incr === -1) || (idx === last && incr === 1)) {
-            this.fieldRefsArray[idx].current.model.focus();
-            return;
+            next = idx;
         }
 
-        const next = idx > -1 ? idx + incr : 0;
-        this.fieldRefsArray[next].current.model.focus();
+        this.implementedRefs[next].current.focus();
     }
 
     get focusedInputIdx() {
-        return this.fieldRefsArray.findIndex(it => it.current.model === this.focused);
+        return this.implementedRefs.findIndex(it => it.current === this.focused);
     }
 
     queryCustomersAsync(query) {
@@ -82,5 +81,9 @@ export class InputsPanelModel {
             url: 'customer',
             params: {query}
         });
+    }
+
+    get implementedRefs() {
+        return this.fieldRefsArray.filter(it => it.current);
     }
 }
