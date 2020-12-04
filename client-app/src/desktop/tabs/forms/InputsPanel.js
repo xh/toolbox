@@ -225,25 +225,27 @@ const formContents = hoistCmp.factory(
                 items: [
                     row({
                         label: 'Select',
-                        field: 'option2',
+                        field: 'option1',
                         info: 'enableClear, enableCreate, selectOnFocus',
                         item: select({
                             options: restaurants,
                             enableClear: true,
                             enableCreate: true,
                             selectOnFocus: true,
-                            placeholder: 'Search restaurants...'
+                            placeholder: 'Search restaurants...',
+                            ref: model.fieldRefsObj.option1
                         })
                     }),
                     row({
                         label: 'Select',
-                        field: 'option1',
+                        field: 'option2',
                         info: 'enableFilter:false',
                         layout: {width: 150},
                         item: select({
                             options: usStates,
                             enableFilter: false,
-                            placeholder: 'Select a state...'
+                            placeholder: 'Select a state...',
+                            ref: model.fieldRefsObj.option2
                         })
                     }),
                     row({
@@ -257,7 +259,8 @@ const formContents = hoistCmp.factory(
                             selectOnFocus: true,
                             queryFn: (q) => model.queryCustomersAsync(q),
                             optionRenderer: (opt) => customerOption({opt}),
-                            placeholder: 'Search customers...'
+                            placeholder: 'Search customers...',
+                            ref: model.fieldRefsObj.option3
                         })
                     }),
                     row({
@@ -268,7 +271,8 @@ const formContents = hoistCmp.factory(
                             options: usStates,
                             enableClear: false,
                             enableMulti: true,
-                            placeholder: 'Select state(s)...'
+                            placeholder: 'Select state(s)...',
+                            ref: model.fieldRefsObj.option5
                         })
                     }),
                     row({
