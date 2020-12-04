@@ -27,7 +27,6 @@ export const agGridOptionsPanel = hoistCmp.factory({
                         minimal: false,
                         onClick: () => {
                             const state = model.getState();
-                            console.log(state);
                             XH.localStorageService.set('agGridWrapperState', state);
                         }
                     }),
