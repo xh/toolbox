@@ -279,7 +279,8 @@ const formContents = hoistCmp.factory(
                         label: 'Checkbox',
                         field: 'bool1',
                         item: checkbox({
-                            label: 'enabled'
+                            label: 'enabled',
+                            ref: model.fieldRefsObj.bool1
                         })
                     }),
                     row({
