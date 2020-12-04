@@ -45,17 +45,14 @@ export class InputsPanelModel {
 
     constructor() {
         this.fieldRefsArray = this.formModel.fieldList.map(it => {
-            this.fieldRefsObj[it.name] = {
-                modelRef: createObservableRef(),
-                inputRef: createObservableRef()
-            };
+            this.fieldRefsObj[it.name] = createObservableRef();
             return this.fieldRefsObj[it.name];
         });
 
         this.addReaction({
             track: () => {
-                const focused = this.fieldRefsArray.find(it => it.modelRef.current?.hasFocus);
-                return focused?.modelRef.current;
+                const focused = this.fieldRefsArray.find(it => it.current?.model.hasFocus);
+                return focused?.current.model;
             },
             run: (inputModel) => {
                 if (inputModel) this.focused = inputModel;
@@ -65,19 +62,19 @@ export class InputsPanelModel {
 
     focus(incr) {
         const idx = this.focusedInputIdx,
-            last = this.fieldRefsArray.filter(it => it.inputRef.current).length - 1;
+            last = this.fieldRefsArray.filter(it => it.current?.inputRef).length - 1;
 
         if ((idx === 0 && incr === -1) || (idx === last && incr === 1)) {
-            this.fieldRefsArray[idx].inputRef.current.focus();
+            this.fieldRefsArray[idx].current.model.focus();
             return;
         }
 
         const next = idx > -1 ? idx + incr : 0;
-        this.fieldRefsArray[next].inputRef.current.focus();
+        this.fieldRefsArray[next].current.model.focus();
     }
 
     get focusedInputIdx() {
-        return this.fieldRefsArray.findIndex(it => it.modelRef.current === this.focused);
+        return this.fieldRefsArray.findIndex(it => it.current.model === this.focused);
     }
 
     queryCustomersAsync(query) {

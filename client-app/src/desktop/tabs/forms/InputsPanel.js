@@ -78,8 +78,7 @@ const formContents = hoistCmp.factory(
                         field: 'text1',
                         info: 'autoFocus',
                         item: textInput({
-                            ref: model.fieldRefsObj.text1.modelRef,
-                            inputRef: model.fieldRefsObj.text1.inputRef,
+                            ref: model.fieldRefsObj.text1,
                             autoFocus: true
                         })
                     }),
@@ -90,8 +89,7 @@ const formContents = hoistCmp.factory(
                         item: textInput({
                             placeholder: 'user@company.com',
                             round: true,
-                            ref: model.fieldRefsObj.text2.modelRef,
-                            inputRef: model.fieldRefsObj.text2.inputRef,
+                            ref: model.fieldRefsObj.text2,
                             leftIcon: Icon.mail(),
                             enableClear: true
                         })
@@ -103,8 +101,7 @@ const formContents = hoistCmp.factory(
                         readonlyRenderer: v => v ? v.replace(/./g, '•') : null,
                         item: textInput({
                             type: 'password',
-                            ref: model.fieldRefsObj.text3.modelRef,
-                            inputRef: model.fieldRefsObj.text3.inputRef,
+                            ref: model.fieldRefsObj.text3,
                             selectOnFocus: true
                         })
                     }),
@@ -116,8 +113,7 @@ const formContents = hoistCmp.factory(
                         item: textArea({
                             fill: true,
                             placeholder: 'Tell us your thoughts...',
-                            ref: model.fieldRefsObj.text4.modelRef,
-                            inputRef: model.fieldRefsObj.text4.inputRef,
+                            ref: model.fieldRefsObj.text4,
                             selectOnFocus: true
                         })
                     }),
