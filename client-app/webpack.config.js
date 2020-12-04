@@ -34,6 +34,7 @@ module.exports = (env = {}) => {
         favicon: './public/favicon.png',
         devServerOpenPage: 'app/',
         dupePackageCheckExcludes: ['es-abstract'],
+        sourceMaps: 'devOnly',
         // Include custom package for babel transpiling for both packaged and inline use cases.
         babelIncludePaths: [customPkgPath],
         // Resolve custom package aliases and exclude nested node_modules for inline local dev only.
