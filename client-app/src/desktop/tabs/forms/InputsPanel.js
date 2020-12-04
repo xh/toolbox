@@ -162,8 +162,8 @@ const formContents = hoistCmp.factory(
                             max: 100,
                             min: 0,
                             labelStepSize: 25,
-                            stepSize: 1
-                            // ref: model.fieldRefsObj.range1
+                            stepSize: 1,
+                            ref: model.fieldRefsObj.range1
                         })
                     }),
                     row({
@@ -180,7 +180,8 @@ const formContents = hoistCmp.factory(
                                 label: true,
                                 precision: 0,
                                 labelCls: null
-                            })}`
+                            })}`,
+                            ref: model.fieldRefsObj.range2
                         })
                     }),
                     row({
