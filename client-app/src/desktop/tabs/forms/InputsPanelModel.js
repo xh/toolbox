@@ -68,7 +68,9 @@ export class InputsPanelModel {
             next = idx;
         }
 
-        this.implementedRefs[next].current.focus();
+        const el = this.implementedRefs[next].current;
+        el.focus();
+        el.select ? el.select() : null;
     }
 
     get focusedInputIdx() {
