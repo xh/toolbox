@@ -5,6 +5,7 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {createObservableRef} from '@xh/hoist/utils/react';
 import moment from 'moment';
 import {random} from 'lodash';
+import {wait} from '@xh/hoist/promise';
 
 @HoistModel
 export class InputsPanelModel {
@@ -71,6 +72,12 @@ export class InputsPanelModel {
         const el = this.implementedRefs[next].current;
         el.focus();
         el.select ? el.select() : null;
+        wait(500).then(() => el.blur ? el.blur() : null);
+        wait(1000).then(() => {
+            el.focus();
+            el.select ? el.select() : null;
+        });
+
     }
 
     get focusedInputIdx() {
