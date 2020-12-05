@@ -14,7 +14,7 @@ export class InputsPanelModel {
 
     fieldRefsArray = [];
     fieldRefsObj = {};
-    focused = null;
+    lastFocused = null;
 
     formModel = new FormModel({
         fields: [
@@ -55,7 +55,7 @@ export class InputsPanelModel {
                 return focused?.current;
             },
             run: (inputModel) => {
-                if (inputModel) this.focused = inputModel;
+                if (inputModel) this.lastFocused = inputModel;
             }
         });
     }
@@ -72,16 +72,23 @@ export class InputsPanelModel {
         const el = this.implementedRefs[next].current;
         el.focus();
         el.select ? el.select() : null;
-        wait(500).then(() => el.blur ? el.blur() : null);
-        wait(1000).then(() => {
-            el.focus();
-            el.select ? el.select() : null;
-        });
 
+        // a little blink effect to observe/test blur
+        wait(500).then(() => {
+            if (el.blur && this.lastFocused === el) {
+                el.blur();
+                wait(1000).then(() => {
+                    if (this.lastFocused === el) {
+                        el.focus();
+                        el.select ? el.select() : null;
+                    }
+                });
+            }
+        });
     }
 
     get focusedInputIdx() {
-        return this.implementedRefs.findIndex(it => it.current === this.focused);
+        return this.implementedRefs.findIndex(it => it.current === this.lastFocused);
     }
 
     queryCustomersAsync(query) {
