@@ -393,14 +393,16 @@ const bbar = hoistCmp.factory(
                     icon: Icon.angleLeft(),
                     minimal: false,
                     width: 130,
-                    onClick: () => model.focus(-1)
+                    onClick: () => model.focus(-1),
+                    disabled: formModel.readonly || formModel.disabled
                 }),
                 button({
                     text: 'Next',
                     rightIcon: Icon.angleRight(),
                     minimal: false,
                     width: 130,
-                    onClick: () => model.focus(1)
+                    onClick: () => model.focus(1),
+                    disabled: formModel.readonly || formModel.disabled
                 })
             ),
             filler(),

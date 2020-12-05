@@ -61,8 +61,10 @@ export class InputsPanelModel {
     }
 
     focus(incr) {
-        const last = this.implementedRefs.length - 1,
-            idx = this.focusedInputIdx;
+        const last = this.implementedRefs.length - 1;
+        if (last < 0) return;
+        
+        const idx = this.focusedInputIdx;
         let next = idx > -1 ? idx + incr : 0;
 
         if ((idx === 0 && incr === -1) || (idx === last && incr === 1)) {
