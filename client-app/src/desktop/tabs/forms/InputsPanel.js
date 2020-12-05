@@ -122,7 +122,7 @@ const formContents = hoistCmp.factory(
                         field: 'text5',
                         layout: {height: 200},
                         item: jsonInput({
-                            // ref: model.fieldRefsObj.text5
+                            ref: model.fieldRefsObj.text5
                         })
                     })
                 ]
