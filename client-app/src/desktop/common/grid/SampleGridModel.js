@@ -129,6 +129,7 @@ export class SampleGridModel {
         },
         colDefaults: {
             tooltipElement: (v, {record, gridModel}) => {
+                if (record.isSummary) return null;
                 const {company, city, trade_date, profit_loss, trade_volume} = record.data;
                 return vbox({
                     className: 'sample-grid-tooltip',
