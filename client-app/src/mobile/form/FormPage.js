@@ -2,7 +2,7 @@ import {creates, hoistCmp} from '@xh/hoist/core';
 import {div, filler, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
-import {button} from '@xh/hoist/mobile/cmp/button';
+import {button, buttonGroup} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/mobile/cmp/form';
@@ -53,17 +53,24 @@ const formCmp = hoistCmp.factory(
                     formField({
                         field: 'name',
                         info: 'Min. 8 chars',
-                        item: textInput()
+                        item: textInput({
+                            ref: model.fieldRefsObj.name
+                        })
                     }),
                     formField({
                         field: 'movie',
-                        item: select({options: movies})
+                        item: select({
+                            options: movies,
+                            ref: model.fieldRefsObj.movie
+                            // enableCreate: true
+                        })
                     }),
                     formField({
                         field: 'salary',
                         item: numberInput({
                             enableShorthandUnits: true,
-                            displayWithCommas: true
+                            displayWithCommas: true,
+                            ref: model.fieldRefsObj.salary
                         })
                     }),
                     formField({
@@ -72,7 +79,8 @@ const formCmp = hoistCmp.factory(
                             minDate: LocalDate.today().subtract(2),
                             maxDate: LocalDate.today().add(1, 'month'),
                             textAlign: 'right',
-                            valueType: 'localDate'
+                            valueType: 'localDate',
+                            ref: model.fieldRefsObj.date
                         })
                     }),
                     formField({
@@ -103,11 +111,15 @@ const formCmp = hoistCmp.factory(
                     }),
                     formField({
                         field: 'notes',
-                        item: textArea()
+                        item: textArea({
+                            ref: model.fieldRefsObj.notes
+                        })
                     }),
                     formField({
                         field: 'searchQuery',
-                        item: searchInput()
+                        item: searchInput({
+                            ref: model.fieldRefsObj.searchQuery
+                        })
                     })
                 )
             })
@@ -138,6 +150,22 @@ const bbar = hoistCmp.factory(
     ({model}) => toolbar({
         height: 38,
         items: [
+            buttonGroup(
+                button({
+                    text: 'Previous',
+                    icon: Icon.angleLeft(),
+                    minimal: false,
+                    width: 130,
+                    onClick: () => model.focus(-1)
+                }),
+                button({
+                    text: 'Next',
+                    rightIcon: Icon.angleRight(),
+                    minimal: false,
+                    width: 130,
+                    onClick: () => model.focus(1)
+                })
+            ),
             filler(),
             label('Read-only'),
             switchInput({model: model.formModel, bind: 'readonly'}),
