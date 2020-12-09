@@ -239,6 +239,14 @@ export class SampleGridModel {
                 headerName: '',
                 chooserName: 'Active Status',
                 tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
+            },
+            {
+                field: 'comment',
+                width: 200,
+                agOptions: {
+                    autoHeight: true,
+                    wrapText: true
+                }
             }
         ]
     });
