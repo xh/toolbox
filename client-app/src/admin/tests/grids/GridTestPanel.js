@@ -31,7 +31,8 @@ export const GridTestPanel = hoistCmp({
                 }),
                 bbar1(),
                 bbar2(),
-                bbar3()
+                bbar3(),
+                bbar4()
             ]
         });
     }
@@ -74,11 +75,6 @@ const tbar = hoistCmp.factory(
             text: 'Destroy Grid',
             icon: Icon.skull(),
             onClick: () => model.tearDown()
-        }),
-        button({
-            text: 'Scroll to Selected',
-            icon: Icon.crosshairs(),
-            onClick: () => model.gridModel.ensureSelectionVisible()
         }),
         button({
             text: 'Autosize Columns',
@@ -152,13 +148,6 @@ const bbar1 = hoistCmp.factory(
 
 const bbar2 = hoistCmp.factory(
     ({model}) => toolbar(
-        toolbarSep(),
-        switchInput({
-            bind: 'disableSelect',
-            label: 'Disable Day < 0 Selection',
-            labelAlign: 'left'
-        }),
-        toolbarSep(),
         tooltip({
             content: 'persistWith',
             item: select({
@@ -171,6 +160,7 @@ const bbar2 = hoistCmp.factory(
                 ]
             })
         }),
+        toolbarSep(),
         storeFilterField({
             includeFields: ['symbol', 'trader']
         }),
@@ -218,6 +208,28 @@ const bbar3 = hoistCmp.factory(
             label: 'Lock Column Groups',
             bind: 'lockColumnGroups',
             labelAlign: 'left'
+        })
+    )
+);
+
+const bbar4 = hoistCmp.factory(
+    ({model}) => toolbar(
+        switchInput({
+            bind: 'disableSelect',
+            label: 'Disable Day < 0 Selection',
+            labelAlign: 'left'
+        }),
+        toolbarSep(),
+        button({
+            text: 'Scroll to Selected',
+            icon: Icon.crosshairs(),
+            onClick: () => model.gridModel.ensureSelectionVisible()
+        }),
+        toolbarSep(),
+        button({
+            text: 'Select And Go',
+            icon: Icon.target(),
+            onClick: () => model.selectAndGo()
         })
     )
 );

@@ -1,7 +1,7 @@
 import {HoistModel, LoadSupport, managed, persist, XH} from '@xh/hoist/core';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {mean, random, reduce, sample, takeRight, times} from 'lodash';
+import {mean, random, range, reduce, sample, takeRight, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {action, bindable, observable} from '@xh/hoist/mobx';
 
@@ -252,6 +252,21 @@ export class GridTestModel {
         });
 
         this.updateData({update: newPositions});
+    }
+
+    selectAndGo() {
+        const {agApi} = this.gridModel,
+            rowCount = agApi.getDisplayedRowCount(),
+            start = random(rowCount),
+            toSelectCount = Math.min(random(rowCount - start), 20),
+            end = start + toSelectCount;
+
+        agApi.deselectAll();
+        range(start, end).forEach(it => {
+            const node = agApi.getDisplayedRowAtIndex(it);
+            node.setSelected(true);
+        });
+        this.gridModel.ensureSelectionVisible();
     }
 
     createGridModel() {
