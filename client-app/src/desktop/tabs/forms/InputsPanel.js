@@ -299,29 +299,33 @@ const formContents = hoistCmp.factory(
                     row({
                         label: 'ButtonGroupInput',
                         field: 'buttonGroup1',
-                        item: buttonGroupInput(
-                            button({
-                                icon: Icon.chartLine(),
-                                text: 'Button 1',
-                                value: 'button1'
-                            }),
-                            button({
-                                icon: Icon.gear(),
-                                text: 'Button 2',
-                                value: 'button2'
-                            }),
-                            button({
-                                icon: Icon.skull(),
-                                text: 'Button 3',
-                                value: 'button3'
-                            })
-                        )
+                        item: buttonGroupInput({
+                            ref: model.fieldRefsObj.buttonGroup1,
+                            items: [
+                                button({
+                                    icon: Icon.chartLine(),
+                                    text: 'Button 1',
+                                    value: 'button1'
+                                }),
+                                button({
+                                    icon: Icon.gear(),
+                                    text: 'Button 2',
+                                    value: 'button2'
+                                }),
+                                button({
+                                    icon: Icon.skull(),
+                                    text: 'Button 3',
+                                    value: 'button3'
+                                })
+                            ]
+                        })
                     }),
                     row({
                         label: 'RadioInput',
-                        field: 'option6',
+                        field: 'radioInput1',
                         info: 'inline, disabled option',
                         item: radioInput({
+                            ref: model.fieldRefsObj.radioInput1,
                             inline: true,
                             options: ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]
                         })

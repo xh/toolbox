@@ -36,10 +36,10 @@ export class InputsPanelModel {
             {name: 'option3'},
             {name: 'option4'},
             {name: 'option5'},
-            {name: 'option6'},
             {name: 'bool1'},
             {name: 'bool2'},
-            {name: 'buttonGroup1', initialValue: 'button2'}
+            {name: 'buttonGroup1', initialValue: 'button2'},
+            {name: 'radioInput1'}
         ]
     });
 
