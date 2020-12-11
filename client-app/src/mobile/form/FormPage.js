@@ -62,7 +62,6 @@ const formCmp = hoistCmp.factory(
                         item: select({
                             options: movies,
                             ref: model.fieldRefsObj.movie
-                            // enableCreate: true
                         })
                     }),
                     formField({
@@ -85,29 +84,36 @@ const formCmp = hoistCmp.factory(
                     }),
                     formField({
                         field: 'included',
-                        item: checkbox()
+                        item: checkbox({
+                            ref: model.fieldRefsObj.included
+                        })
                     }),
                     formField({
                         field: 'enabled',
-                        item: switchInput()
+                        item: switchInput({
+                            ref: model.fieldRefsObj.enabled
+                        })
                     }),
                     formField({
                         field: 'buttonGroup',
-                        item: buttonGroupInput(
-                            button({
-                                text: 'Button 1',
-                                value: 'button1'
-                            }),
-                            button({
-                                icon: Icon.moon(),
-                                value: 'button2'
-                            }),
-                            button({
-                                icon: Icon.skull(),
-                                text: 'Button 2',
-                                value: 'button3'
-                            })
-                        )
+                        item: buttonGroupInput({
+                            ref: model.fieldRefsObj.buttonGroup,
+                            items: [
+                                button({
+                                    text: 'Button 1',
+                                    value: 'button1'
+                                }),
+                                button({
+                                    icon: Icon.moon(),
+                                    value: 'button2'
+                                }),
+                                button({
+                                    icon: Icon.skull(),
+                                    text: 'Button 2',
+                                    value: 'button3'
+                                })
+                            ]
+                        })
                     }),
                     formField({
                         field: 'notes',
