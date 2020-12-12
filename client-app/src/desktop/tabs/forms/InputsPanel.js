@@ -1,8 +1,8 @@
 import React from 'react';
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {box, div, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
+import {box, div, span, strong, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
-import {button, buttonGroup} from '@xh/hoist/desktop/cmp/button';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {
     buttonGroupInput,
@@ -26,6 +26,7 @@ import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import './InputsPanel.scss';
 import {InputsPanelModel} from './InputsPanelModel';
+import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 
 export const inputsPanel = hoistCmp.factory({
     model: creates(InputsPanelModel),
@@ -74,56 +75,45 @@ const formContents = hoistCmp.factory(
                 className: 'toolbox-inputs-panel__column',
                 items: [
                     row({
-                        label: 'TextInput',
-                        field: 'text1',
+                        field: 'textInput1',
                         info: 'autoFocus',
                         item: textInput({
-                            ref: model.fieldRefsObj.text1,
                             autoFocus: true
                         })
                     }),
                     row({
-                        label: 'TextInput',
-                        field: 'text2',
+                        field: 'textInput2',
                         info: 'placeholder, leftIcon, enableClear',
                         item: textInput({
                             placeholder: 'user@company.com',
                             round: true,
-                            ref: model.fieldRefsObj.text2,
                             leftIcon: Icon.mail(),
                             enableClear: true
                         })
                     }),
                     row({
-                        label: 'TextInput',
-                        field: 'text3',
+                        field: 'textInput3',
                         info: 'type:password, selectOnFocus',
                         readonlyRenderer: v => v ? v.replace(/./g, '•') : null,
                         item: textInput({
                             type: 'password',
-                            ref: model.fieldRefsObj.text3,
                             selectOnFocus: true
                         })
                     }),
                     row({
-                        label: 'TextArea',
-                        field: 'text4',
+                        field: 'textArea',
                         info: 'fill, placeholder, selectOnFocus',
                         layout: {height: 150},
                         item: textArea({
                             fill: true,
                             placeholder: 'Tell us your thoughts...',
-                            ref: model.fieldRefsObj.text4,
                             selectOnFocus: true
                         })
                     }),
                     row({
-                        label: 'JSONInput',
-                        field: 'text5',
+                        field: 'jsonInput',
                         layout: {height: 200},
-                        item: jsonInput({
-                            ref: model.fieldRefsObj.text5
-                        })
+                        item: jsonInput()
                     })
                 ]
             }),
@@ -131,44 +121,37 @@ const formContents = hoistCmp.factory(
                 className: 'toolbox-inputs-panel__column',
                 items: [
                     row({
-                        label: 'NumberInput',
-                        field: 'number1',
+                        field: 'numberInput1',
                         info: 'stepSizes',
                         item: numberInput({
                             fill: true,
                             stepSize: 1000,
                             majorStepSize: 100000,
-                            minorStepSize: 100,
-                            ref: model.fieldRefsObj.number1
+                            minorStepSize: 100
                         })
                     }),
                     row({
-                        label: 'NumberInput',
-                        field: 'number2',
+                        field: 'numberInput2',
                         info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
                         item: numberInput({
                             fill: true,
                             enableShorthandUnits: true,
                             displayWithCommas: true,
-                            selectOnFocus: true,
-                            ref: model.fieldRefsObj.number2
+                            selectOnFocus: true
                         })
                     }),
                     row({
-                        label: 'Slider',
-                        field: 'range1',
+                        field: 'slider1',
                         info: 'max, min, stepSizes',
                         item: slider({
                             max: 100,
                             min: 0,
                             labelStepSize: 25,
-                            stepSize: 1,
-                            ref: model.fieldRefsObj.range1
+                            stepSize: 1
                         })
                     }),
                     row({
-                        label: 'Slider',
-                        field: 'range2',
+                        field: 'slider2',
                         info: 'multi-value, labelRenderer',
                         readonlyRenderer: v => v.map(it => fmtNumber(it)).join(' - '),
                         item: slider({
@@ -180,13 +163,11 @@ const formContents = hoistCmp.factory(
                                 label: true,
                                 precision: 0,
                                 labelCls: null
-                            })}`,
-                            ref: model.fieldRefsObj.range2
+                            })}`
                         })
                     }),
                     row({
-                        label: 'DateInput',
-                        field: 'date1',
+                        field: 'dateInput1',
                         info: 'minDate, maxDate, enableClear',
                         fmtVal: v => fmtDateTime(v),
                         layout: {width: 160},
@@ -194,13 +175,11 @@ const formContents = hoistCmp.factory(
                             placeholder: 'YYYY-MM-DD',
                             minDate: moment().subtract(5, 'weeks').toDate(),
                             maxDate: moment().add(2, 'weeks').toDate(),
-                            enableClear: true,
-                            ref: model.fieldRefsObj.date1
+                            enableClear: true
                         })
                     }),
                     row({
-                        label: 'DateInput',
-                        field: 'date2',
+                        field: 'dateInput2',
                         info: 'timePrecision',
                         fmtVal: v => fmtDateTime(v),
                         readonlyRenderer: v => fmtDateTime(v),
@@ -208,18 +187,15 @@ const formContents = hoistCmp.factory(
                         item: dateInput({
                             showActionsBar: true,
                             timePrecision: 'minute',
-                            timePickerProps: {useAmPm: true},
-                            ref: model.fieldRefsObj.date2
+                            timePickerProps: {useAmPm: true}
                         })
                     }),
                     row({
-                        label: 'DateInput',
-                        field: 'localDate',
+                        field: 'dateInput3',
                         info: 'valueType: localDate',
                         layout: {width: 130},
                         item: dateInput({
-                            valueType: 'localDate',
-                            ref: model.fieldRefsObj.localDate
+                            valueType: 'localDate'
                         })
                     })
                 ]
@@ -228,33 +204,28 @@ const formContents = hoistCmp.factory(
                 className: 'toolbox-inputs-panel__column',
                 items: [
                     row({
-                        label: 'Select',
-                        field: 'option1',
+                        field: 'select1',
                         info: 'enableClear, enableCreate, selectOnFocus',
                         item: select({
                             options: restaurants,
                             enableClear: true,
                             enableCreate: true,
                             selectOnFocus: true,
-                            placeholder: 'Search restaurants...',
-                            ref: model.fieldRefsObj.option1
+                            placeholder: 'Search restaurants...'
                         })
                     }),
                     row({
-                        label: 'Select',
-                        field: 'option2',
+                        field: 'select2',
                         info: 'enableFilter:false',
                         layout: {width: 150},
                         item: select({
                             options: usStates,
                             enableFilter: false,
-                            placeholder: 'Select a state...',
-                            ref: model.fieldRefsObj.option2
+                            placeholder: 'Select a state...'
                         })
                     }),
                     row({
-                        label: 'Select',
-                        field: 'option3',
+                        field: 'select3',
                         info: 'custom fields, renderer, selectOnFocus, async search',
                         item: select({
                             valueField: 'id',
@@ -263,42 +234,34 @@ const formContents = hoistCmp.factory(
                             selectOnFocus: true,
                             queryFn: (q) => model.queryCustomersAsync(q),
                             optionRenderer: (opt) => customerOption({opt}),
-                            placeholder: 'Search customers...',
-                            ref: model.fieldRefsObj.option3
+                            placeholder: 'Search customers...'
                         })
                     }),
                     row({
-                        label: 'Select',
-                        field: 'option5',
+                        field: 'select4',
                         info: 'enableMulti',
                         item: select({
                             options: usStates,
                             enableClear: false,
                             enableMulti: true,
-                            placeholder: 'Select state(s)...',
-                            ref: model.fieldRefsObj.option5
+                            placeholder: 'Select state(s)...'
                         })
                     }),
                     row({
-                        label: 'Checkbox',
-                        field: 'bool1',
+                        field: 'checkbox',
                         item: checkbox({
-                            label: 'enabled',
-                            ref: model.fieldRefsObj.bool1
+                            label: 'enabled'
                         })
                     }),
                     row({
-                        label: 'SwitchInput',
-                        field: 'bool2',
+                        field: 'switch',
                         item: switchInput({
                             label: 'Enabled:',
-                            labelAlign: 'left',
-                            ref: model.fieldRefsObj.bool2
+                            labelAlign: 'left'
                         })
                     }),
                     row({
-                        label: 'ButtonGroupInput',
-                        field: 'buttonGroup1',
+                        field: 'buttonGroupInput',
                         item: buttonGroupInput(
                             button({
                                 icon: Icon.chartLine(),
@@ -318,8 +281,7 @@ const formContents = hoistCmp.factory(
                         )
                     }),
                     row({
-                        label: 'RadioInput',
-                        field: 'option6',
+                        field: 'radioInput',
                         info: 'inline, disabled option',
                         item: radioInput({
                             inline: true,
@@ -387,25 +349,10 @@ const bbar = hoistCmp.factory(
         const {formModel} = model;
 
         return toolbar(
-            buttonGroup(
-                button({
-                    text: 'Previous',
-                    icon: Icon.angleLeft(),
-                    minimal: false,
-                    width: 130,
-                    onClick: () => model.focus(-1),
-                    disabled: formModel.readonly || formModel.disabled
-                }),
-                button({
-                    text: 'Next',
-                    rightIcon: Icon.angleRight(),
-                    minimal: false,
-                    width: 130,
-                    onClick: () => model.focus(1),
-                    disabled: formModel.readonly || formModel.disabled
-                })
-            ),
+            currFocused(),
             filler(),
+            setFocusMenu(),
+            toolbarSep(),
             switchInput({
                 model: formModel,
                 bind: 'readonly',
@@ -441,6 +388,33 @@ const fieldDisplay = hoistCmp.factory(
         return div({
             className: 'inputs-panel-field-display',
             item: displayVal
+        });
+    }
+);
+
+
+const currFocused = hoistCmp.factory(
+    ({model}) => {
+        const {focusedField} = model.formModel;
+        return span(
+            'Focused: ',
+            focusedField ? strong(focusedField.displayName) : ''
+        );
+    }
+);
+
+const setFocusMenu = hoistCmp.factory(
+    ({model}) => {
+        const fields = model.formModel.fieldList,
+            menuItems = fields.map(f => {
+                return menuItem({text: f.displayName, onClick: () => f.focus()});
+            });
+        return popover({
+            target: button({
+                icon: Icon.target(),
+                text: 'Set Focus'
+            }),
+            content: menu(menuItems)
         });
     }
 );

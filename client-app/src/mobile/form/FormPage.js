@@ -1,8 +1,9 @@
-import {creates, hoistCmp} from '@xh/hoist/core';
-import {div, filler, vbox} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, useLocalModel} from '@xh/hoist/core';
+import {div, filler, vbox, fragment} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
-import {button, buttonGroup} from '@xh/hoist/mobile/cmp/button';
+import {button, menuButton} from '@xh/hoist/mobile/cmp/button';
+import {MenuModel, menu} from '@xh/hoist/mobile/cmp/menu';
 import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/mobile/cmp/form';
@@ -53,24 +54,19 @@ const formCmp = hoistCmp.factory(
                     formField({
                         field: 'name',
                         info: 'Min. 8 chars',
-                        item: textInput({
-                            ref: model.fieldRefsObj.name
-                        })
+                        item: textInput()
                     }),
                     formField({
                         field: 'movie',
                         item: select({
-                            options: movies,
-                            ref: model.fieldRefsObj.movie
-                            // enableCreate: true
+                            options: movies
                         })
                     }),
                     formField({
                         field: 'salary',
                         item: numberInput({
                             enableShorthandUnits: true,
-                            displayWithCommas: true,
-                            ref: model.fieldRefsObj.salary
+                            displayWithCommas: true
                         })
                     }),
                     formField({
@@ -79,8 +75,7 @@ const formCmp = hoistCmp.factory(
                             minDate: LocalDate.today().subtract(2),
                             maxDate: LocalDate.today().add(1, 'month'),
                             textAlign: 'right',
-                            valueType: 'localDate',
-                            ref: model.fieldRefsObj.date
+                            valueType: 'localDate'
                         })
                     }),
                     formField({
@@ -111,15 +106,11 @@ const formCmp = hoistCmp.factory(
                     }),
                     formField({
                         field: 'notes',
-                        item: textArea({
-                            ref: model.fieldRefsObj.notes
-                        })
+                        item: textArea()
                     }),
                     formField({
                         field: 'searchQuery',
-                        item: searchInput({
-                            ref: model.fieldRefsObj.searchQuery
-                        })
+                        item: searchInput()
                     })
                 )
             })
@@ -128,7 +119,7 @@ const formCmp = hoistCmp.factory(
 );
 
 const results = hoistCmp.factory(
-    ({model}) => {
+    () => {
         return div({
             className: 'toolbox-card',
             items: [
@@ -150,22 +141,7 @@ const bbar = hoistCmp.factory(
     ({model}) => toolbar({
         height: 38,
         items: [
-            buttonGroup(
-                button({
-                    text: 'Previous',
-                    icon: Icon.angleLeft(),
-                    minimal: false,
-                    width: 130,
-                    onClick: () => model.focus(-1)
-                }),
-                button({
-                    text: 'Next',
-                    rightIcon: Icon.angleRight(),
-                    minimal: false,
-                    width: 130,
-                    onClick: () => model.focus(1)
-                })
-            ),
+            setFocusMenu(),
             filler(),
             label('Read-only'),
             switchInput({model: model.formModel, bind: 'readonly'}),
@@ -185,5 +161,28 @@ const fieldResult = hoistCmp.factory(
                 div(renderer ? renderer(value) : value)
             ]
         });
+    }
+);
+
+const setFocusMenu = hoistCmp.factory(
+    ({model}) => {
+        const fields = model.formModel.fieldList,
+            menuModel = useLocalModel(() => {
+                return new MenuModel({
+                    itemModels: fields.map(f => ({
+                        text: f.displayName,
+                        action: () => f.focus()
+                    }))
+                });
+            });
+
+        return fragment(
+            menuButton({
+                icon: Icon.target(),
+                text: 'Focus',
+                model: menuModel
+            }),
+            menu({model: menuModel})
+        );
     }
 );
