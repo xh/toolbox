@@ -52,10 +52,6 @@ class Model {
       return XH.getConf('searchOptions');
   }
 
-  get reacSelectCmp() {
-      return this.selectRef.current?.reactSelectRef?.current;
-  }
-
   forwardToTopic(val) {
       if (val) {
           if (val.startsWith('launch.')) {
@@ -82,11 +78,11 @@ class Model {
   }
 
   focus() {
-    this.reacSelectCmp?.focus();
+    this.selectRef?.current.focus();
   }
 
   blur() {
-    this.reacSelectCmp?.blur();
+    this.selectRef?.current.blur();
   }
 
 }
