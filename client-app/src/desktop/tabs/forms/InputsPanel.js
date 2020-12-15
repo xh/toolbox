@@ -1,6 +1,6 @@
 import React from 'react';
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {box, div, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
+import {box, div, span, strong, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -26,6 +26,7 @@ import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import './InputsPanel.scss';
 import {InputsPanelModel} from './InputsPanelModel';
+import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 
 export const inputsPanel = hoistCmp.factory({
     model: creates(InputsPanelModel),
@@ -74,16 +75,14 @@ const formContents = hoistCmp.factory(
                 className: 'toolbox-inputs-panel__column',
                 items: [
                     row({
-                        label: 'TextInput',
-                        field: 'text1',
+                        field: 'textInput1',
                         info: 'autoFocus',
                         item: textInput({
                             autoFocus: true
                         })
                     }),
                     row({
-                        label: 'TextInput',
-                        field: 'text2',
+                        field: 'textInput2',
                         info: 'placeholder, leftIcon, enableClear',
                         item: textInput({
                             placeholder: 'user@company.com',
@@ -93,8 +92,7 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'TextInput',
-                        field: 'text3',
+                        field: 'textInput3',
                         info: 'type:password, selectOnFocus',
                         readonlyRenderer: v => v ? v.replace(/./g, '•') : null,
                         item: textInput({
@@ -103,8 +101,7 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'TextArea',
-                        field: 'text4',
+                        field: 'textArea',
                         info: 'fill, placeholder, selectOnFocus',
                         layout: {height: 150},
                         item: textArea({
@@ -114,8 +111,7 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'JSONInput',
-                        field: 'text5',
+                        field: 'jsonInput',
                         layout: {height: 200},
                         item: jsonInput()
                     })
@@ -125,8 +121,7 @@ const formContents = hoistCmp.factory(
                 className: 'toolbox-inputs-panel__column',
                 items: [
                     row({
-                        label: 'NumberInput',
-                        field: 'number1',
+                        field: 'numberInput1',
                         info: 'stepSizes',
                         item: numberInput({
                             fill: true,
@@ -136,8 +131,7 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'NumberInput',
-                        field: 'number2',
+                        field: 'numberInput2',
                         info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
                         item: numberInput({
                             fill: true,
@@ -147,8 +141,7 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'Slider',
-                        field: 'number3',
+                        field: 'slider1',
                         info: 'max, min, stepSizes',
                         item: slider({
                             max: 100,
@@ -158,8 +151,7 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'Slider',
-                        field: 'range1',
+                        field: 'slider2',
                         info: 'multi-value, labelRenderer',
                         readonlyRenderer: v => v.map(it => fmtNumber(it)).join(' - '),
                         item: slider({
@@ -175,8 +167,7 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'DateInput',
-                        field: 'date1',
+                        field: 'dateInput1',
                         info: 'minDate, maxDate, enableClear',
                         fmtVal: v => fmtDateTime(v),
                         layout: {width: 160},
@@ -188,8 +179,7 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'DateInput',
-                        field: 'date2',
+                        field: 'dateInput2',
                         info: 'timePrecision',
                         fmtVal: v => fmtDateTime(v),
                         readonlyRenderer: v => fmtDateTime(v),
@@ -201,8 +191,7 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'DateInput',
-                        field: 'localDate',
+                        field: 'dateInput3',
                         info: 'valueType: localDate',
                         layout: {width: 130},
                         item: dateInput({
@@ -215,8 +204,7 @@ const formContents = hoistCmp.factory(
                 className: 'toolbox-inputs-panel__column',
                 items: [
                     row({
-                        label: 'Select',
-                        field: 'option2',
+                        field: 'select1',
                         info: 'enableClear, enableCreate, selectOnFocus',
                         item: select({
                             options: restaurants,
@@ -227,8 +215,7 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'Select',
-                        field: 'option1',
+                        field: 'select2',
                         info: 'enableFilter:false',
                         layout: {width: 150},
                         item: select({
@@ -238,8 +225,7 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'Select',
-                        field: 'option3',
+                        field: 'select3',
                         info: 'custom fields, renderer, selectOnFocus, async search',
                         item: select({
                             valueField: 'id',
@@ -252,8 +238,7 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'Select',
-                        field: 'option5',
+                        field: 'select4',
                         info: 'enableMulti',
                         item: select({
                             options: usStates,
@@ -263,23 +248,20 @@ const formContents = hoistCmp.factory(
                         })
                     }),
                     row({
-                        label: 'Checkbox',
-                        field: 'bool1',
+                        field: 'checkbox',
                         item: checkbox({
                             label: 'enabled'
                         })
                     }),
                     row({
-                        label: 'SwitchInput',
-                        field: 'bool2',
+                        field: 'switch',
                         item: switchInput({
                             label: 'Enabled:',
                             labelAlign: 'left'
                         })
                     }),
                     row({
-                        label: 'ButtonGroupInput',
-                        field: 'buttonGroup1',
+                        field: 'buttonGroupInput',
                         item: buttonGroupInput(
                             button({
                                 icon: Icon.chartLine(),
@@ -299,8 +281,7 @@ const formContents = hoistCmp.factory(
                         )
                     }),
                     row({
-                        label: 'RadioInput',
-                        field: 'option6',
+                        field: 'radioInput',
                         info: 'inline, disabled option',
                         item: radioInput({
                             inline: true,
@@ -368,7 +349,10 @@ const bbar = hoistCmp.factory(
         const {formModel} = model;
 
         return toolbar(
+            currFocused(),
             filler(),
+            setFocusMenu(),
+            toolbarSep(),
             switchInput({
                 model: formModel,
                 bind: 'readonly',
@@ -404,6 +388,33 @@ const fieldDisplay = hoistCmp.factory(
         return div({
             className: 'inputs-panel-field-display',
             item: displayVal
+        });
+    }
+);
+
+
+const currFocused = hoistCmp.factory(
+    ({model}) => {
+        const {focusedField} = model.formModel;
+        return span(
+            'Focused: ',
+            focusedField ? strong(focusedField.displayName) : ''
+        );
+    }
+);
+
+const setFocusMenu = hoistCmp.factory(
+    ({model}) => {
+        const fields = model.formModel.fieldList,
+            menuItems = fields.map(f => {
+                return menuItem({text: f.displayName, onClick: () => f.focus()});
+            });
+        return popover({
+            target: button({
+                icon: Icon.target(),
+                text: 'Set Focus'
+            }),
+            content: menu(menuItems)
         });
     }
 );
