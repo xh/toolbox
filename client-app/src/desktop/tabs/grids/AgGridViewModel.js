@@ -43,7 +43,7 @@ export class AgGridViewModel {
         {
             field: 'mktVal',
             type: 'numericColumn',
-            filter: 'agNumberFilter',
+            filter: 'agNumberColumnFilter',
             width: 130,
             enableValue: true,
             aggFunc: 'sum',
@@ -55,7 +55,7 @@ export class AgGridViewModel {
         {
             field: 'pnl',
             type: 'numericColumn',
-            filter: 'agNumberFilter',
+            filter: 'agNumberColumnFilter',
             width: 130,
             enableValue: true,
             aggFunc: 'sum',

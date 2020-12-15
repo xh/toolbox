@@ -212,10 +212,15 @@ const bbar3 = hoistCmp.factory(
         numberInput({
             bind: 'colChooserHeight',
             width: 60
+        }),
+        toolbarSep(),
+        switchInput({
+            label: 'Lock Column Groups',
+            bind: 'lockColumnGroups',
+            labelAlign: 'left'
         })
     )
 );
-
 
 function formatRunTimes(model) {
     const fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null}) : 'N/A',

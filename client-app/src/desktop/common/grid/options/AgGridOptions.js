@@ -3,10 +3,11 @@ import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
 import {fragment, label, vspacer} from '@xh/hoist/cmp/layout';
 
+
 export const agGridOptions = hoistCmp.factory({
     model: uses(AgGridModel),
 
-    render() {
+    render({model}) {
         return fragment({
             items: [
                 label('Sizing Mode'),
