@@ -12,7 +12,8 @@ export const App = hoistCmp({
         return panel({
             tbar: appBar({
                 icon: Icon.boxFull({size: 'lg', prefix: 'fal'}),
-                hideRefreshButton: false
+                hideRefreshButton: false,
+                appMenuButtonProps: {hideLogoutItem: false}
             }),
             item: navigator()
         });
