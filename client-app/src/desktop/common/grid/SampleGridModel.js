@@ -242,7 +242,7 @@ export class SampleGridModel {
             },
             {
                 field: 'comment',
-                width: 200,
+                flex: true,
                 agOptions: {
                     autoHeight: true,
                     wrapText: true
