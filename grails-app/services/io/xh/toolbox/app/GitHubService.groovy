@@ -132,7 +132,7 @@ class GitHubService extends BaseService {
                     }
 
                 } catch (e) {
-                    log.error("Failure fetching commits for $repoName", e)
+                    logErrorCompact("Failure fetching commits for $repoName", e)
                     hadError = true
                 }
             }

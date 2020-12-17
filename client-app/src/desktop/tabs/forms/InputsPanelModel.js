@@ -12,29 +12,90 @@ export class InputsPanelModel {
 
     formModel = new FormModel({
         fields: [
-            {name: 'text1'},
-            {name: 'text2'},
-            {name: 'text3'},
-            {name: 'text4'},
-            {name: 'text5'},
-            {name: 'text6'},
-            {name: 'number1'},
-            {name: 'number2'},
-            {name: 'number3', initialValue: random(0, 100)},
-            {name: 'number4'},
-            {name: 'range1', initialValue: [random(50000, 70000), random(110000, 150000)]},
-            {name: 'option1', initialValue: 'CA'},
-            {name: 'option2'},
-            {name: 'option3'},
-            {name: 'option4'},
-            {name: 'option5'},
-            {name: 'option6'},
-            {name: 'date1'},
-            {name: 'date2', initialValue: moment().startOf('hour').toDate()},
-            {name: 'localDate', initialValue: LocalDate.today()},
-            {name: 'bool1'},
-            {name: 'bool2'},
-            {name: 'buttonGroup1', initialValue: 'button2'}
+            {
+                name: 'textInput1',
+                displayName: 'TextInput 1'
+            },
+            {
+                name: 'textInput2',
+                displayName: 'TextInput 2'
+            },
+            {
+                name: 'textInput3',
+                displayName: 'TextInput 3'
+            },
+            {
+                name: 'textArea',
+                displayName: 'TextArea'
+            },
+            {
+                name: 'jsonInput',
+                displayName: 'JsonInput'
+            },
+            {
+                name: 'numberInput1',
+                displayName: 'NumberInput 1'
+            },
+            {
+                name: 'numberInput2',
+                displayName: 'NumberInput 2'
+            },
+            {
+                name: 'slider1',
+                displayName: 'Slider 1',
+                initialValue: random(0, 100)
+            },
+            {
+                name: 'slider2',
+                displayName: 'Slider 2',
+                initialValue: [random(50000, 70000), random(110000, 150000)]
+            },
+            {
+                name: 'dateInput1',
+                displayName: 'DateInput 1'
+            },
+            {
+                name: 'dateInput2',
+                displayName: 'DateInput 2',
+                initialValue: moment().startOf('hour').toDate()
+            },
+            {
+                name: 'dateInput3',
+                displayName: 'DateInput 3',
+                initialValue: LocalDate.today()
+            },
+            {
+                name: 'select1',
+                displayName: 'Select 1'
+            },
+            {
+                name: 'select2',
+                displayName: 'Select 2',
+                initialValue: 'CA'
+            },
+            {
+                name: 'select3',
+                displayName: 'Select 3'
+            },
+            {
+                name: 'select4',
+                displayName: 'Select 4'
+            },
+            {
+                name: 'checkbox'
+            },
+            {
+                name: 'switch'
+            },
+            {
+                name: 'buttonGroupInput',
+                displayName: 'ButtonGroupInput',
+                initialValue: 'button2'
+            },
+            {
+                name: 'radioInput',
+                displayName: 'RadioInput'
+            }
         ]
     });
 
