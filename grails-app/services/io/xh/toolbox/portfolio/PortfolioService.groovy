@@ -6,6 +6,9 @@ import io.xh.hoist.cache.Cache
 
 import java.time.*
 
+import com.thedeanda.lorem.Lorem
+import com.thedeanda.lorem.LoremIpsum
+
 import static io.xh.toolbox.portfolio.Utils.*
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
 import static io.xh.hoist.util.DateTimeUtils.DAYS
@@ -16,6 +19,7 @@ class PortfolioService extends BaseService {
 
 
     private Cache<LocalDate, PortfolioDataSet> dataSets = new Cache(svc: this, expireTime: 1 * DAYS )
+    private Lorem lorem;
 
     def configService,
         tradingDayService,
@@ -24,6 +28,7 @@ class PortfolioService extends BaseService {
         instrumentGenerationService
 
     void init() {
+        lorem = LoremIpsum.getInstance()
         this.getData()
         createTimer(
                 runFn: this.&generateIntradayPrices,
@@ -93,7 +98,8 @@ class PortfolioService extends BaseService {
                     trader: first.trader,
                     cost: cost,
                     endQty: endQty,
-                    endPx: endPx
+                    endPx: endPx,
+                    comment: lorem.getParagraphs(1, 2)
             )
         }
     }

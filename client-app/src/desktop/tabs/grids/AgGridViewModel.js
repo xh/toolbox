@@ -64,6 +64,13 @@ export class AgGridViewModel {
                 ledger: true,
                 colorSpec: true
             })
+        },
+        {
+            field: 'comment',
+            flex: 1,
+            minWidth: 200,
+            autoHeight: true,
+            wrapText: true
         }
     ];
 

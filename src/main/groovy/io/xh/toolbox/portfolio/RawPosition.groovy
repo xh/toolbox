@@ -11,6 +11,7 @@ class RawPosition extends JSONFormatCached {
     final String trader
     final Long cost
     final Long endQty
+    final String comment
 
     // Pricing related
     final Double endPx
@@ -31,6 +32,7 @@ class RawPosition extends JSONFormatCached {
         endPx = mp.endPx as Double
         mktVal = (endQty * endPx).round()
         pnl = mktVal - cost
+        comment = mp.comment
     }
 
 
@@ -49,12 +51,13 @@ class RawPosition extends JSONFormatCached {
 
     Map formatForJSON() {
         return [
-                symbol: symbol,
-                model : model,
-                fund  : fund,
-                trader: trader,
-                mktVal: mktVal,
-                pnl   : pnl
+                symbol : symbol,
+                model  : model,
+                fund   : fund,
+                trader : trader,
+                mktVal : mktVal,
+                pnl    : pnl,
+                comment: comment
         ]
     }
 }

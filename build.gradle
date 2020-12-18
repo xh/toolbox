@@ -77,6 +77,9 @@ dependencies {
     runtime "org.apache.tomcat:tomcat-jdbc"
     runtime "mysql:mysql-connector-java:5.1.47"
 
+    // For lorem ipsum text generation. https://github.com/mdeanda/lorem
+    compile 'com.thedeanda:lorem:2.1'
+
     if (!inlineHoist) {
         // Include Hoist as versioned external dependency when building a WAR for release
         compile "io.xh:hoist-core:$hoistCoreVersion"
