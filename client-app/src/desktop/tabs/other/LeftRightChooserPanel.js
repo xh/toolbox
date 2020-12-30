@@ -42,7 +42,7 @@ export const leftRightChooserPanel = hoistCmp.factory({
                 }),
                 bbar: [
                     leftRightChooserFilter({
-                        fields: ['text'],
+                        fields: ['text', 'group'],
                         model: model.leftRightChooserModel,
                         anyMatch: model.anyMatch
                     }),
