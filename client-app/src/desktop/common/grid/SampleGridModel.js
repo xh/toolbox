@@ -215,7 +215,8 @@ export class SampleGridModel {
                     precision: 1,
                     label: true
                 }),
-                exportFormat: ExportFormat.NUM_DELIMITED
+                exportFormat: ExportFormat.NUM_DELIMITED,
+                chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
             },
             {
                 field: 'profit_loss',
@@ -227,11 +228,13 @@ export class SampleGridModel {
                     ledger: true,
                     colorSpec: true
                 }),
-                exportFormat: ExportFormat.LEDGER_COLOR
+                exportFormat: ExportFormat.LEDGER_COLOR,
+                chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
             },
             {
                 field: 'trade_date',
-                ...localDateCol
+                ...localDateCol,
+                chooserDescription: 'Date of last trade (including related derivatives)'
             },
             {
                 field: 'active',
