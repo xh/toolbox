@@ -4,12 +4,12 @@ import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/cmp/store';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {CubeTestModel} from './CubeTestModel';
 import {dimensionManager} from './dimensions/DimensionManager';
 import {loadTimesPanel} from './LoadTimesPanel';
-import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {colChooserButton, button} from '@xh/hoist/desktop/cmp/button';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 
 export const CubeTestPanel = hoistCmp({
@@ -37,7 +37,7 @@ export const CubeTestPanel = hoistCmp({
 });
 
 const tbar = hoistCmp.factory(
-    () => toolbar(
+    ({model}) => toolbar(
         switchInput({bind: 'showSummary', label: 'Summary?', labelAlign: 'left'}),
         switchInput({bind: 'includeLeaves', label: 'Leaves?', labelAlign: 'left'}),
         select({
@@ -61,6 +61,12 @@ const tbar = hoistCmp.factory(
             bind: 'updateCount',
             options: [0, 5, 10, 100, 200],
             width: 80
+        }),
+        toolbarSep(),
+        button({
+            icon: Icon.reset(),
+            text: 'Clear Cube',
+            onClick: () => model.clear()
         })
     )
 );

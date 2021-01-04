@@ -59,6 +59,10 @@ export class CubeTestModel {
         return {dimensions, filter, includeLeaves, includeRoot};
     }
 
+    clear() {
+        this.cubeModel.cube.clearAsync();
+    }
+
     async doLoadAsync() {
         await this.cubeModel.loadAsync();
     }
