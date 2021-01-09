@@ -42,7 +42,7 @@ export class AgGridViewModel extends HoistModel {
         {
             field: 'mktVal',
             type: 'numericColumn',
-            filter: 'agNumberFilter',
+            filter: 'agNumberColumnFilter',
             width: 130,
             enableValue: true,
             aggFunc: 'sum',
@@ -54,7 +54,7 @@ export class AgGridViewModel extends HoistModel {
         {
             field: 'pnl',
             type: 'numericColumn',
-            filter: 'agNumberFilter',
+            filter: 'agNumberColumnFilter',
             width: 130,
             enableValue: true,
             aggFunc: 'sum',

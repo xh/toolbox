@@ -3,7 +3,7 @@ import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {MapPanelModel} from './MapPanelModel';
 import {clamp, round} from 'lodash';
-import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
+import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {DetailPanelModel} from './detail/DetailPanelModel';
 import {PERSIST_MAIN} from './AppModel';
 
@@ -11,7 +11,7 @@ export class PortfolioPanelModel extends HoistModel {
 
     @managed session;
 
-    @managed dimChooserModel = this.createDimChooserModel();
+    @managed groupingChooserModel = this.createGroupingChooserModel();
     @managed store = this.createStore();
     @managed gridPanelModel = new GridPanelModel({parentModel: this});
     @managed mapPanelModel = new MapPanelModel({parentModel: this});
@@ -23,13 +23,23 @@ export class PortfolioPanelModel extends HoistModel {
 
     constructor() {
         super();
-        this.addReaction(this.selectedPositionReaction());
-        this.addReaction(this.dimensionChooserReaction());
+        this.addReaction({
+            track: () => this.groupingChooserModel.value,
+            run: () => this.loadAsync()
+        });
+
+        this.addReaction({
+            track: () => this.selectedPosition,
+            run: (position) => {
+                this.detailPanelModel.setPositionId(position ? position.id : null);
+            },
+            debounce: 300
+        });
     }
 
     async doLoadAsync(loadSpec) {
-        const {store, dimChooserModel, gridPanelModel} = this,
-            dims = dimChooserModel.value;
+        const {store, groupingChooserModel, gridPanelModel} = this,
+            dims = groupingChooserModel.value;
 
         let {session} = this;
         session?.destroy();
@@ -56,23 +66,6 @@ export class PortfolioPanelModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
-    selectedPositionReaction() {
-        return {
-            track: () => this.selectedPosition,
-            run: (position) => {
-                this.detailPanelModel.setPositionId(position ? position.id : null);
-            },
-            debounce: 300
-        };
-    }
-
-    dimensionChooserReaction() {
-        return {
-            track: () => this.dimChooserModel.value,
-            run: () => this.loadAsync()
-        };
-    }
-
     createStore() {
         return new Store({
             processRawData: (r) => {
@@ -92,16 +85,10 @@ export class PortfolioPanelModel extends HoistModel {
         });
     }
 
-    createDimChooserModel() {
-        return new DimensionChooserModel({
+    createGroupingChooserModel() {
+        return new GroupingChooserModel({
             dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
             initialValue: ['region', 'sector', 'symbol'],
-            initialHistory: [
-                ['sector', 'symbol'],
-                ['fund', 'trader'],
-                ['fund', 'trader', 'sector', 'symbol'],
-                ['region']
-            ],
             persistWith: PERSIST_MAIN
         });
     }
