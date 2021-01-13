@@ -17,10 +17,6 @@ export class AppModel extends HoistAppModel {
         await XH.installServicesAsync(OauthService);
     }
 
-    async initAsync() {
-        this.loadAsync();
-    }
-
     async logoutAsync() {
         await XH.oauthService.logoutAsync();
     }
