@@ -7,6 +7,8 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
+import {GitHubService} from '../core/svc/GitHubService';
+import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {getAppOptions} from './AppOptions';
 import {chartsTab} from './tabs/charts/ChartsTab';
@@ -25,6 +27,7 @@ export class AppModel {
     tabModel = new TabContainerModel({
         route: 'default',
         track: true,
+        switcher: false,
         tabs: [
             {id: 'home', icon: Icon.home(), content: homeTab},
             {id: 'grids', icon: Icon.grid(), content: gridsTab},
@@ -34,22 +37,36 @@ export class AppModel {
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
             {id: 'other', icon: Icon.boxFull(), content: otherTab},
             {id: 'examples', icon: Icon.books(), content: examplesTab}
-        ],
-        switcherPosition: 'none'
+        ]
     });
 
     get gridSizingMode() {
         return XH.getPref('gridSizingMode');
     }
 
+    async preAuthInitAsync() {
+        await XH.installServicesAsync(
+            OauthService
+        );
+    }
+
     async initAsync() {
         await XH.installServicesAsync(
+            GitHubService,
             PortfolioService
         );
     }
 
     async doLoadAsync(loadSpec) {
-        await loadAllAsync([], loadSpec);
+        await loadAllAsync([XH.gitHubService], loadSpec);
+    }
+
+    async logoutAsync() {
+        await XH.oauthService.logoutAsync();
+    }
+
+    goHome() {
+        this.tabModel.setActiveTabId('home');
     }
 
     getAppOptions() {
@@ -126,17 +143,19 @@ export class AppModel {
                         name: 'other',
                         path: '/other',
                         children: [
+                            {name: 'appNotifications', path: '/appNotifications'},
+                            {name: 'buttons', path: '/buttons'},
                             {name: 'clock', path: '/clock'},
+                            {name: 'customPackage', path: '/customPackage'},
                             {name: 'dateFormats', path: '/dateFormats'},
+                            {name: 'jsx', path: '/jsx'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'icons', path: '/icons'},
-                            {name: 'jsx', path: '/jsx'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'numberFormats', path: '/numberFormats'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'popups', path: '/popups'},
-                            {name: 'timestamp', path: '/timestamp'},
-                            {name: 'appNotifications', path: '/appNotifications'}
+                            {name: 'timestamp', path: '/timestamp'}
                         ]
                     },
                     {
@@ -148,3 +167,10 @@ export class AppModel {
         ];
     }
 }
+
+/**
+ * @typedef XH
+ * @property {GitHubService} gitHubService
+ * @property {OauthService} oauthService
+ * @property {PortfolioService} portfolioService
+ */

@@ -7,23 +7,16 @@
 import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {DimensionChooserModel} from '@xh/hoist/mobile/cmp/dimensionchooser';
+import {GroupingChooserModel} from '@xh/hoist/mobile/cmp/grouping';
 
 @HoistModel
 @LoadSupport
 export class TreeGridPageModel {
 
     @managed
-    dimensionChooserModel = new DimensionChooserModel({
-        dimensions: [
-            {value: 'fund', label: 'Fund'},
-            {value: 'model', label: 'Model'},
-            {value: 'region', label: 'Region'},
-            {value: 'sector', label: 'Sector'},
-            {value: 'symbol', label: 'Symbol'},
-            {value: 'trader', label: 'Trader'}
-        ],
-        initialValue: ['trader'],
+    groupingChooserModel = new GroupingChooserModel({
+        dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
+        initialValue: ['sector', 'symbol'],
         persistWith: {localStorageKey: 'toolboxTreeGridSample'}
     });
 
@@ -34,7 +27,7 @@ export class TreeGridPageModel {
         store: {
             loadRootAsSummary: true
         },
-        enableColChooser: true,
+        colChooserModel: true,
         sortBy: 'pnl|desc|abs',
         columns: [
             {
@@ -42,17 +35,6 @@ export class TreeGridPageModel {
                 field: 'name',
                 isTreeColumn: true,
                 flex: true
-            },
-            {
-                headerName: 'P&L',
-                field: 'pnl',
-                align: 'right',
-                width: 120,
-                absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
             },
             {
                 headerName: 'Mkt Value (m)',
@@ -68,19 +50,30 @@ export class TreeGridPageModel {
                     precision: 3,
                     ledger: true
                 })
+            },
+            {
+                headerName: 'P&L',
+                field: 'pnl',
+                align: 'right',
+                width: 120,
+                absSort: true,
+                agOptions: {
+                    aggFunc: 'sum'
+                },
+                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
             }
         ]
     });
 
     constructor() {
         this.addReaction({
-            track: () => this.dimensionChooserModel.value,
+            track: () => this.groupingChooserModel.value,
             run: () => this.loadAsync()
         });
     }
 
     async doLoadAsync(loadSpec) {
-        const dims = this.dimensionChooserModel.value;
+        const dims = this.groupingChooserModel.value;
         const data = await XH.portfolioService.getPositionsAsync(dims, true);
         this.gridModel.loadData(data);
     }

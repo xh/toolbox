@@ -85,6 +85,10 @@ dependencies {
     runtime "com.h2database:h2"
     runtime "org.apache.tomcat:tomcat-jdbc"
 
+    // For JWT token validation.
+    compile "org.bitbucket.b_c:jose4j:0.7.2"
+
+
     // Toolbox additions/Changes
     compile "org.hibernate:hibernate-core:5.4.14.Final"
     compile "org.hibernate:hibernate-ehcache:5.4.14.Final"
@@ -96,6 +100,11 @@ dependencies {
         // Include Hoist as versioned external dependency when building a WAR for release
         compile "io.xh:hoist-core:$hoistCoreVersion"
     }
+}
+
+// Avoid unexpected errors with overly-long classpath on Windows development machines.
+grails {
+    pathingJar = true
 }
 
 if (inlineHoist) {

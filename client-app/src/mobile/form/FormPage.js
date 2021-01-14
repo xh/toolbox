@@ -1,8 +1,9 @@
-import {creates, hoistCmp} from '@xh/hoist/core';
-import {div, filler, vbox} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, useLocalModel} from '@xh/hoist/core';
+import {div, filler, vbox, fragment} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
-import {button} from '@xh/hoist/mobile/cmp/button';
+import {button, menuButton} from '@xh/hoist/mobile/cmp/button';
+import {MenuModel, menu} from '@xh/hoist/mobile/cmp/menu';
 import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/mobile/cmp/form';
@@ -57,7 +58,9 @@ const formCmp = hoistCmp.factory(
                     }),
                     formField({
                         field: 'movie',
-                        item: select({options: movies})
+                        item: select({
+                            options: movies
+                        })
                     }),
                     formField({
                         field: 'salary',
@@ -116,7 +119,7 @@ const formCmp = hoistCmp.factory(
 );
 
 const results = hoistCmp.factory(
-    ({model}) => {
+    () => {
         return div({
             className: 'toolbox-card',
             items: [
@@ -138,6 +141,7 @@ const bbar = hoistCmp.factory(
     ({model}) => toolbar({
         height: 38,
         items: [
+            setFocusMenu(),
             filler(),
             label('Read-only'),
             switchInput({model: model.formModel, bind: 'readonly'}),
@@ -157,5 +161,28 @@ const fieldResult = hoistCmp.factory(
                 div(renderer ? renderer(value) : value)
             ]
         });
+    }
+);
+
+const setFocusMenu = hoistCmp.factory(
+    ({model}) => {
+        const fields = model.formModel.fieldList,
+            menuModel = useLocalModel(() => {
+                return new MenuModel({
+                    itemModels: fields.map(f => ({
+                        text: f.displayName,
+                        action: () => f.focus()
+                    }))
+                });
+            });
+
+        return fragment(
+            menuButton({
+                icon: Icon.target(),
+                text: 'Focus',
+                model: menuModel
+            }),
+            menu({model: menuModel})
+        );
     }
 );

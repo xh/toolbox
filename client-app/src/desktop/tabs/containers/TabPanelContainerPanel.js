@@ -1,19 +1,20 @@
-import React from 'react';
-import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {div, hspacer} from '@xh/hoist/cmp/layout';
+import {fmtTime} from '@xh/hoist/format';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
+import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {Icon} from '@xh/hoist/icon';
-import {wrapper} from '../../common/Wrapper';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
-import {find} from 'lodash';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
+import {find, shuffle, isEmpty} from 'lodash';
+import React from 'react';
+import {wrapper} from '../../common/Wrapper';
 
 export const tabPanelContainerPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {
-        const {stateTabModel, detachedTabModel} = model;
+        const {stateTabModel, detachedTabModel, dynamicModel} = model;
 
         return wrapper({
             description: [
@@ -24,7 +25,7 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                 </p>,
                 <p>
                     The controls for switching tabs can be placed on any side of the container,
-                    or omitted entirely via the <code>switcherPosition</code> prop.
+                    or omitted entirely via the <code>switcher</code> prop.
                 </p>
             ],
             links: [
@@ -42,6 +43,7 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                 height: 400,
                 item: tabContainer({
                     model: {
+                        persistWith: {localStorageKey: 'tabExampleState'},
                         tabs: [
                             {
                                 id: 'top',
@@ -56,7 +58,9 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                                 title: 'Bottom Tabs',
                                 content: () => tabContainer({
                                     className: 'child-tabcontainer',
-                                    model: model.createContainerModelConfig({switcherPosition: 'bottom'})
+                                    model: model.createContainerModelConfig({
+                                        switcher: {orientation: 'bottom'}
+                                    })
                                 })
                             },
                             {
@@ -64,7 +68,9 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                                 title: 'Left Tabs',
                                 content: () => tabContainer({
                                     className: 'child-tabcontainer',
-                                    model: model.createContainerModelConfig({switcherPosition: 'left'})
+                                    model: model.createContainerModelConfig({
+                                        switcher: {orientation: 'left'}
+                                    })
                                 })
                             },
                             {
@@ -72,7 +78,9 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                                 title: 'Right Tabs',
                                 content: () => tabContainer({
                                     className: 'child-tabcontainer',
-                                    model: model.createContainerModelConfig({switcherPosition: 'right'})
+                                    model: model.createContainerModelConfig({
+                                        switcher: {orientation: 'right'}
+                                    })
                                 })
                             },
                             {
@@ -81,7 +89,7 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                                 content: () => panel({
                                     className: 'child-tabcontainer',
                                     tbar: model.detachedTabModel.tabs.map(childModel => button({
-                                        intent: childModel.isActive ? 'primary' : 'default',
+                                        intent: childModel.isActive ? 'primary' : null,
                                         text: childModel.title,
                                         onClick: () => {
                                             detachedTabModel.setActiveTabId(childModel.id);
@@ -116,6 +124,22 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                                         item: tabContainer({model: stateTabModel})
                                     });
                                 }
+                            },
+                            {
+                                id: 'dynamic',
+                                title: 'Dynamic',
+                                content: () => {
+                                    return panel({
+                                        className: 'child-tabcontainer',
+                                        bbar: [
+                                            button({icon: Icon.add(), text:  'Add', onClick: () => model.addDynamic()}),
+                                            button({icon: Icon.transaction(), text:  'Shuffle', onClick: () => model.shuffleDynamic()}),
+                                            button({icon: Icon.x(), text:  'Remove First', onClick: () => model.removeDynamic()}),
+                                            button({icon: Icon.xCircle(), text:  'Clear', onClick: () => model.clearDynamic()})
+                                        ],
+                                        item: tabContainer({model: dynamicModel})
+                                    });
+                                }
                             }
                         ]
                     }
@@ -129,12 +153,26 @@ export const tabPanelContainerPanel = hoistCmp.factory({
 @HoistModel
 class Model {
 
+    id = 0;
+
     @managed
-    detachedTabModel = new TabContainerModel(this.createContainerModelConfig({switcherPosition: 'none'}));
+    detachedTabModel = new TabContainerModel(this.createContainerModelConfig({switcher: false}));
 
     @managed
     stateTabModel = new TabContainerModel(this.createContainerModelConfig({}));
 
+    @managed
+    dynamicModel = new TabContainerModel({
+        tabs: [],
+        switcher: {
+            orientation: 'top',
+            enableOverflow: true
+        }
+    });
+
+    constructor() {
+        this.addDynamic();
+    }
 
     createContainerModelConfig(args) {
         const tabTxt = title => div(`This is the ${title} tab`);
@@ -158,5 +196,37 @@ class Model {
             ],
             ...args
         };
+    }
+
+    addDynamic() {
+        const {dynamicModel} = this,
+            icons = [Icon.user(), Icon.home(), Icon.portfolio()],
+            id = this.id++,
+            message = `Tab ${id}: Brand spanking new at ${fmtTime(new Date(), {fmt: 'HH:mm:ss'})}`;
+
+        dynamicModel.addTab({
+            id: id.toString(),
+            icon: icons[id % icons.length],
+            title: `Tab ${id}`,
+            tooltip: message,
+            showRemoveAction: true,
+            content: () => div(message)
+        }, {activateImmediately: true});
+    }
+
+    removeDynamic() {
+        const {dynamicModel} = this;
+        if (!isEmpty(dynamicModel.tabs)) {
+            dynamicModel.removeTab(dynamicModel.tabs[0]);
+        }
+    }
+
+    clearDynamic() {
+        this.dynamicModel.setTabs([]);
+    }
+
+    shuffleDynamic() {
+        const {dynamicModel} = this;
+        dynamicModel.setTabs(shuffle(dynamicModel.tabs));
     }
 }

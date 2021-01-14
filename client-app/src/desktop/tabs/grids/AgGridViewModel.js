@@ -43,7 +43,7 @@ export class AgGridViewModel {
         {
             field: 'mktVal',
             type: 'numericColumn',
-            filter: 'agNumberFilter',
+            filter: 'agNumberColumnFilter',
             width: 130,
             enableValue: true,
             aggFunc: 'sum',
@@ -55,7 +55,7 @@ export class AgGridViewModel {
         {
             field: 'pnl',
             type: 'numericColumn',
-            filter: 'agNumberFilter',
+            filter: 'agNumberColumnFilter',
             width: 130,
             enableValue: true,
             aggFunc: 'sum',
@@ -81,8 +81,8 @@ export class AgGridViewModel {
         });
     }
 
-    async doLoadAsync() {
-        const data = await XH.portfolioService.getRawPositionsAsync();
+    async doLoadAsync(loadSpec) {
+        const data = await XH.portfolioService.getRawPositionsAsync({loadSpec});
         this.setData(data);
     }
 }

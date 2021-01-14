@@ -1,7 +1,7 @@
 import {HoistModel, LoadSupport, managed, persist, XH} from '@xh/hoist/core';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {mean, random, sample, takeRight, times} from 'lodash';
+import {mean, random, reduce, sample, takeRight, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {action, bindable, observable} from '@xh/hoist/mobx';
 
@@ -31,9 +31,22 @@ export class GridTestModel {
     @bindable idSeed = 1;
     // True to generate data in tree structure.
     @bindable tree = false;
+    // True to show summary row.
+    @bindable showSummary = false;
+    // True to use tree root node as summary row.
+    @bindable loadRootAsSummary = false;
     @bindable useTransactions = true;
     @bindable useDeltaSort = true;
     @bindable disableSelect = false;
+
+    @bindable colChooserCommitOnChange = true;
+    @bindable colChooserShowRestoreDefaults = true;
+    @bindable colChooserWidth = null;
+    @bindable colChooserHeight = null;
+
+    @bindable restoreDefaultsWarning = GridModel.DEFAULT_RESTORE_DEFAULTS_WARNING;
+
+    @bindable lockColumnGroups = true;
 
     @bindable
     @persist
@@ -45,6 +58,7 @@ export class GridTestModel {
 
     // Generated data in tree
     _data;
+    _summaryData;
 
     @managed
     @observable.ref
@@ -60,15 +74,24 @@ export class GridTestModel {
 
     constructor() {
         this.markPersist('tree');
+        this.markPersist('showSummary');
         this.gridModel = this.createGridModel();
         this.addReaction({
             track: () =>  [
                 this.tree,
+                this.showSummary,
+                this.loadRootAsSummary,
                 this.useTransactions,
                 this.useDeltaSort,
                 this.disableSelect,
                 this.autosizeMode,
-                this.persistType
+                this.persistType,
+                this.colChooserCommitOnChange,
+                this.colChooserShowRestoreDefaults,
+                this.colChooserWidth,
+                this.colChooserHeight,
+                this.restoreDefaultsWarning,
+                this.lockColumnGroups
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -95,7 +118,7 @@ export class GridTestModel {
         if (!this._data) {
             this.genTestData();
         }
-        this.loadData(this._data);
+        this.loadData(this._data, this._summaryData);
     }
 
     clearGrid() {
@@ -104,10 +127,10 @@ export class GridTestModel {
     }
 
 
-    loadData(data) {
+    loadData(data, summaryData) {
         const loadStart = Date.now();
         return start(() => {
-            this.gridModel.loadData(data);
+            this.gridModel.loadData(data, summaryData);
         }).linkTo(
             this.loadModel
         ).finally(() => {
@@ -157,7 +180,13 @@ export class GridTestModel {
             };
 
             if (this.tree) {
-                const childCount = random(0, 10);
+                const childCount = random(0, 10),
+                    maxT = childCount - 1;
+                let dayRem = pos.day, 
+                    mtdRem = pos.mtd, 
+                    ytdRem = pos.ytd, 
+                    volRem = pos.volume;
+
                 pos.children = times(childCount, (t) => {
                     trader = 'trader' + t;
                     count++;
@@ -165,16 +194,42 @@ export class GridTestModel {
                         id: `${idSeed}~${symbol}~${trader}`,
                         trader,
                         symbol,
-                        day: random(-80000, 100000),
-                        mtd: random(-500000, 500000),
-                        ytd: random(-1000000, 2000000),
-                        volume: random(1000, 1200000)
+                        day: t < maxT ? random(Math.min(0, dayRem), Math.max(0, dayRem)) : dayRem,
+                        mtd: t < maxT ? random(Math.min(0, mtdRem), Math.max(0, mtdRem)) : mtdRem,
+                        ytd: t < maxT ? random(Math.min(0, ytdRem), Math.max(0, ytdRem)) : ytdRem,
+                        volume: t < maxT ? random(0, volRem) : volRem
                     };
+                    dayRem -= child.day;
+                    mtdRem -= child.mtd;
+                    ytdRem -= child.ytd;
+                    volRem -= child.volume;
+
                     return child;
                 });
             }
 
             this._data.push(pos);
+        }
+
+        if (this.showSummary) {
+            const summaryData = reduce(this._data, (sum, val) => {
+                sum.day += val.day;
+                sum.mtd += val.mtd;
+                sum.ytd += val.ytd;
+                sum.volume += val.volume;
+                return sum;
+            },
+            {id: `${idSeed}~summaryRow`, day: 0, mtd: 0, ytd: 0, volume: 0}
+            );
+            if (this.tree && this.loadRootAsSummary) {
+                summaryData.children = this._data;
+                this._data = [summaryData];
+                this._summaryData = null;
+            } else {
+                this._summaryData = summaryData;
+            }
+        } else {
+            this._summaryData = null;
         }
 
         console.log(`Generated ${count} test records.`);
@@ -201,15 +256,28 @@ export class GridTestModel {
 
     createGridModel() {
         const {persistType} = this;
+
         return new GridModel({
             persistWith: persistType ? {[persistType]: 'persistTest'} : null,
             selModel: {mode: 'multiple'},
             sortBy: 'id',
             emptyText: 'No records found...',
+            restoreDefaultsWarning: this.restoreDefaultsWarning,
+            lockColumnGroups: this.lockColumnGroups,
+            store: this.tree && this.showSummary && this.loadRootAsSummary ? {
+                loadRootAsSummary: true
+            }: undefined,
             treeMode: this.tree,
+            showSummary: this.showSummary,
             experimental: {
                 useTransactions: this.useTransactions,
                 useDeltaSort: this.useDeltaSort
+            },
+            colChooserModel: {
+                commitOnChange: this.colChooserCommitOnChange,
+                showRestoreDefaults: this.colChooserShowRestoreDefaults,
+                width: this.colChooserWidth ?? undefined,
+                height: this.colChooserHeight ?? undefined
             },
             autosizeOptions: {
                 mode: this.autosizeMode
@@ -234,12 +302,18 @@ export class GridTestModel {
                     width: 200
                 },
                 {
-                    field: 'day',
-                    highlightOnChange: true,
-                    ...pnlColumn
+                    groupId: 'pnl',
+                    headerName: 'P&L',
+                    children: [
+                        {
+                            field: 'day',
+                            highlightOnChange: true,
+                            ...pnlColumn
+                        },
+                        {field: 'mtd', headerName: 'MTD', ...pnlColumn},
+                        {field: 'ytd', headerName: 'YTD', ...pnlColumn}
+                    ]
                 },
-                {field: 'mtd', headerName: 'MTD', ...pnlColumn},
-                {field: 'ytd', headerName: 'YTD', ...pnlColumn},
                 {
                     headerName: 'Volume',
                     field: 'volume',

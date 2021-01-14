@@ -42,7 +42,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                         })
                     }),
                     box({
-                        margin: 10,
+                        margin: '10 10 40 10',
                         style: {opacity: 0.5},
                         item: new Date(model.timestamp).toString()
                     })

@@ -8,7 +8,7 @@ import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
@@ -28,10 +28,10 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
             tbar: [
                 refreshButton(),
                 toolbarSep(),
-                dimensionChooser(),
+                groupingChooser(),
                 filler(),
                 gridCountLabel({includeChildren: true}),
-                storeFilterField({filterOptions: {includeChildren: model.filterIncludeChildren}}),
+                storeFilterField(),
                 colChooserButton(),
                 exportButton()
             ],
@@ -50,7 +50,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 }),
                 toolbarSep(),
                 switchInput({
-                    bind: 'filterIncludeChildren',
+                    bind: 'filterIncludesChildren',
                     label: 'Filter w/Children',
                     labelAlign: 'left'
                 })

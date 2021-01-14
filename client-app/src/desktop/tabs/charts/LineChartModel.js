@@ -20,21 +20,27 @@ export class LineChartModel {
     
     async doLoadAsync(loadSpec) {
         if (!this.symbols) {
-            let symbols = await XH.portfolioService.getSymbolsAsync();
+            let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
             symbols = symbols.slice(0, this.numCompanies);
             this.setSymbols(symbols);
         }
+
         if (!this.currentSymbol) {
             this.setCurrentSymbol(this.symbols[0]);
         }
 
-        let series = await XH.portfolioService.getLineChartSeriesAsync(this.currentSymbol, 'close');
+        let series = await XH.portfolioService.getLineChartSeriesAsync({
+            symbol: this.currentSymbol,
+            dimension: 'close',
+            loadSpec
+        }).catchDefault() ?? {};
+
         Object.assign(series, {
             type: 'area',
             animation: true
         });
 
-        this.chartModel.setSeries([series]);
+        this.chartModel.setSeries(series);
     }
 
     getChartModelCfg() {
@@ -48,26 +54,15 @@ export class LineChartModel {
             subtitle: {
                 text: 'Click and drag in the plot area to zoom in'
             },
-            scrollbar: {
-                enabled: false
-            },
-            rangeSelector: {
-                enabled: true
-            },
-            navigator: {
-                enabled: true
-            },
-            xAxis: {
-                type: 'datetime'
-            },
-            yAxis: {
-                title: {
-                    text: 'USD'
-                }
-            },
-            legend: {
-                enabled: false
-            },
+            // Turn on optional features
+            navigator: {enabled: true},
+            rangeSelector: {enabled: true},
+            exporting: {enabled: true},
+            // Disable others
+            legend: {enabled: false},
+            scrollbar: {enabled: false},
+            xAxis: {type: 'datetime'},
+            yAxis: {title: {text: 'USD'}},
             plotOptions: {
                 area: {
                     fillColor: {
@@ -93,9 +88,6 @@ export class LineChartModel {
                     },
                     threshold: null
                 }
-            },
-            exporting: {
-                enabled: true
             }
         };
     }

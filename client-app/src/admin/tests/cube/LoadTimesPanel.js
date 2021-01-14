@@ -20,7 +20,7 @@ export const loadTimesPanel = hoistCmp.factory({
                 defaultCollapsed: true,
                 defaultSize: 260
             },
-            item: grid({hideHeaders: true}),
+            item: grid(),
             bbar: [
                 filler(),
                 button({
