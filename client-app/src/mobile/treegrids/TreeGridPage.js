@@ -22,7 +22,7 @@ export const treeGridPage = hoistCmp.factory({
                 }
             }),
             bbar: [
-                groupingChooser(),
+                groupingChooser({maxWidth: 250}),
                 filler(),
                 colAutosizeButton(),
                 colChooserButton()

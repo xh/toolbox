@@ -62,7 +62,7 @@ class GitHubService extends BaseService {
         def repos = configService.getList('gitHubRepos', []),
             newCommitCount = 0
 
-        withShortInfo("Refreshing GitHub commits for ${repos.size()} configured repositories") {
+        withInfo("Refreshing GitHub commits for ${repos.size()} configured repositories") {
             repos.each{
                 def newCommits = loadCommitsForRepo(it as String, forceFullLoad)
                 newCommitCount += newCommits.size()
@@ -97,7 +97,7 @@ class GitHubService extends BaseService {
         def maxPagesToLoad = configService.getInt('gitHubMaxPagesPerLoad', 99)
 
         while (hasNextPage && pageCount <= maxPagesToLoad && !hadError) {
-            withShortDebug("Fetching page ${pageCount} for repo ${repoName}") {
+            withDebug("Fetching page ${pageCount} for repo ${repoName}") {
                 try {
                     def response = loadCommitsForRepoInternal(repoName, commitHistory.lastCommitTimestamp, cursor)
                     if (response?.data?.repository?.name != repoName) {
@@ -132,7 +132,7 @@ class GitHubService extends BaseService {
                     }
 
                 } catch (e) {
-                    log.error("Failure fetching commits for $repoName", e)
+                    logErrorCompact("Failure fetching commits for $repoName", e)
                     hadError = true
                 }
             }

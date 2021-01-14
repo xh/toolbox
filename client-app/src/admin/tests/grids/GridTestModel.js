@@ -46,6 +46,8 @@ export class GridTestModel {
 
     @bindable restoreDefaultsWarning = GridModel.DEFAULT_RESTORE_DEFAULTS_WARNING;
 
+    @bindable lockColumnGroups = true;
+
     @bindable
     @persist
     autosizeMode = 'onDemand';
@@ -88,7 +90,8 @@ export class GridTestModel {
                 this.colChooserShowRestoreDefaults,
                 this.colChooserWidth,
                 this.colChooserHeight,
-                this.restoreDefaultsWarning
+                this.restoreDefaultsWarning,
+                this.lockColumnGroups
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -260,6 +263,7 @@ export class GridTestModel {
             sortBy: 'id',
             emptyText: 'No records found...',
             restoreDefaultsWarning: this.restoreDefaultsWarning,
+            lockColumnGroups: this.lockColumnGroups,
             store: this.tree && this.showSummary && this.loadRootAsSummary ? {
                 loadRootAsSummary: true
             }: undefined,
@@ -298,12 +302,18 @@ export class GridTestModel {
                     width: 200
                 },
                 {
-                    field: 'day',
-                    highlightOnChange: true,
-                    ...pnlColumn
+                    groupId: 'pnl',
+                    headerName: 'P&L',
+                    children: [
+                        {
+                            field: 'day',
+                            highlightOnChange: true,
+                            ...pnlColumn
+                        },
+                        {field: 'mtd', headerName: 'MTD', ...pnlColumn},
+                        {field: 'ytd', headerName: 'YTD', ...pnlColumn}
+                    ]
                 },
-                {field: 'mtd', headerName: 'MTD', ...pnlColumn},
-                {field: 'ytd', headerName: 'YTD', ...pnlColumn},
                 {
                     headerName: 'Volume',
                     field: 'volume',
