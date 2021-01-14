@@ -8,8 +8,9 @@ import io.xh.hoist.json.JSONSerializer
 import io.xh.hoist.websocket.WebSocketService
 import io.xh.toolbox.github.Commit
 import io.xh.toolbox.github.CommitHistory
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.StringEntity
+import org.apache.hc.client5.http.classic.methods.HttpPost
+import org.apache.hc.core5.http.io.entity.StringEntity
+
 
 import java.time.Instant
 

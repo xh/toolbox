@@ -10,8 +10,6 @@ import io.xh.toolbox.user.UserService
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
 
-import static io.xh.hoist.util.Utils.withNewSession
-
 @Slf4j
 class AuthenticationService extends BaseAuthenticationService  {
 

@@ -48,12 +48,12 @@ if (inlineHoist) {
     println "${appName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
 }
 
+// Incremental - for java 8 only -- see https://github.com/grails/grails-core/pull/11441
 boolean hotReload = false
 
 dependencies {
 
     if  (hotReload) {
-        // Incremental - for java 8 only -- see https://github.com/grails/grails-core/pull/11441
         agent "org.springframework:springloaded:1.2.8.RELEASE"
         runtimeOnly "io.methvin:directory-watcher:0.9.6"
     } else {
