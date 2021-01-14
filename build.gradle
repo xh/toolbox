@@ -48,7 +48,7 @@ if (inlineHoist) {
     println "${appName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
 }
 
-boolean hotReload = true
+boolean hotReload = false
 
 dependencies {
 
