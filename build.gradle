@@ -61,7 +61,7 @@ dependencies {
         developmentOnly "org.springframework.boot:spring-boot-devtools"
     }
 
-    // Grails 4.0.3 REST Defaults
+    // Grails 4.0.6 REST Defaults
     compile "org.springframework.boot:spring-boot-starter-logging"
     compile "org.springframework.boot:spring-boot-autoconfigure"
     compile "org.grails:grails-core"
@@ -89,8 +89,8 @@ dependencies {
     compile "org.bitbucket.b_c:jose4j:0.7.2"
 
     // Toolbox additions/Changes
-    compile "org.hibernate:hibernate-core:5.4.14.Final"
-    compile "org.hibernate:hibernate-ehcache:5.4.14.Final"
+    compile "org.hibernate:hibernate-core:5.4.27.Final"
+    compile "org.hibernate:hibernate-ehcache:5.4.27.Final"
     compile "net.sf.ehcache:ehcache:2.10.6"
     compile "org.springframework:spring-websocket"
     runtime "mysql:mysql-connector-java:5.1.47"
