@@ -39,8 +39,9 @@ export const errorMessagePanel = hoistCmp.factory({
                 height: 350,
                 item: error ?
                     errorMessage({
-                        message: error,
-                        actionIcon: Icon.refresh(),
+                        error,
+                        title: 'Something went wrong:',
+                        actionButtonProps: {icon: Icon.refresh()},
                         actionFn: () => model.toggleError()
                     }) :
                     vframe({
