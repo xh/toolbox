@@ -38,8 +38,6 @@ export const gridDetailPage = hoistCmp.factory({
 
 class LocalModel extends HoistModel {
 
-    get isLoadSupport() {return true}
-
     @bindable id = null;
     @observable.ref record = null;
     @bindable.ref customers = null;
