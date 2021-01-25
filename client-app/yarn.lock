@@ -1114,10 +1114,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@blueprintjs/core@^3.38.0":
-  version "3.38.0"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.38.0.tgz#9b8eb086e22b424153fa0e1483c4c8abd9e6c8e0"
-  integrity sha512-U4yf6B+SbCspNDuvSU2/pl+a80hr9iQgyf2cJ2cOz5It+RV8M+dg9BgB1WaZgqdWgxx/4+A425X5zt2Jw9xalw==
+"@blueprintjs/core@^3.38.1":
+  version "3.38.1"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.38.1.tgz#be71a2a0535ae0ba23a816860e0c1e7987e7e887"
+  integrity sha512-ZBqVfMgeIrXiuprsRxBnLM/MPgPSCRf27uckyhMFHRocyEtFS7zrOGmQeJb1Va0nZ/ufNsYk7EiHVxulb1KkSg==
   dependencies:
     "@blueprintjs/icons" "^3.24.0"
     "@types/dom4" "^2.0.1"
@@ -1149,11 +1149,11 @@
     tslib "~1.13.0"
 
 "@blueprintjs/datetime@~3.20.0":
-  version "3.20.2"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/datetime/-/datetime-3.20.2.tgz#f115a844044974969d251e82e8d79fb13d3fd707"
-  integrity sha512-VGw3rCcib4dxzf5Jv6iBw7q2kjSNqWSNDI49TBC3xRgzXdWraOcFd/cb0zB0YDgyyz0AiGEf86kf2Dfe1dJk/w==
+  version "3.20.3"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/datetime/-/datetime-3.20.3.tgz#85c3a323de6d355d5e55c6061e2c45fa6b3c3eb3"
+  integrity sha512-pJk9xjHUjE9+yi/GmCc/jAraiZRw37ZqXbFweoeuMtxldkGr3qSDNpIQznLBY5vyqgQYPQwQZlOMkwGaFvnZQA==
   dependencies:
-    "@blueprintjs/core" "^3.38.0"
+    "@blueprintjs/core" "^3.38.1"
     classnames "^2.2"
     react-day-picker "7.4.8"
     react-lifecycles-compat "^3.0.4"
@@ -2002,9 +2002,9 @@
     webpackbar "~4.0.0"
 
 "@xh/hoist@^38.0.0-SNAPSHOT":
-  version "38.0.0-SNAPSHOT.1611344505346"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-38.0.0-SNAPSHOT.1611344505346.tgz#8494f3fb095bf0ea1c5059cf0bfefa27bdeb95ae"
-  integrity sha512-/tDU4Ql0E+p8jEU44zGKeGZjv9dI4eslOvNK+ooCnfaEIttCcI5g8jJpsk3te4EReJHU9f7JdeduF4Y5NjStoA==
+  version "38.0.0-SNAPSHOT.1611609742033"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-38.0.0-SNAPSHOT.1611609742033.tgz#5b7e415621d92dfd8307a8e7de7483f06338d937"
+  integrity sha512-YzxtFTMtgwPqgMQsmG9pZgY3MhIp72uvtfs3V4BJ8UpEVyfmWWGNHfta3OjhkIcJMO7vwcoDHOZKW6YA3kQOIA==
   dependencies:
     "@blueprintjs/core" "~3.36.0"
     "@blueprintjs/datetime" "~3.20.0"
@@ -2085,9 +2085,9 @@ acorn-jsx@^5.2.0:
   integrity sha512-K0Ptm/47OKfQRpNQ2J/oIN/3QYiK6FwW+eJbILhsdxh2WTLdl+30o8aGdTbm5JbffpFFAg/g+zi1E+jvJha5ng==
 
 acorn-walk@^8.0.0:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-8.0.1.tgz#d265d35db6940a656c715806a448456ee4fa3b7f"
-  integrity sha512-zn/7dYtoTVkG4EoMU55QlQU4F+m+T7Kren6Vj3C2DapWPnakG/DL9Ns5aPAPW5Ixd3uxXrV/BoMKKVFIazPcdg==
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-8.0.2.tgz#d4632bfc63fd93d0f15fd05ea0e984ffd3f5a8c3"
+  integrity sha512-+bpA9MJsHdZ4bgfDcpk0ozQyhhVct7rzOmO0s1IIr0AGGgKBljss8n2zp11rRP2wid5VGeh04CgeKzgat5/25A==
 
 acorn@^6.4.1:
   version "6.4.2"
@@ -2100,9 +2100,9 @@ acorn@^7.1.1:
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
 acorn@^8.0.4:
-  version "8.0.4"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.0.4.tgz#7a3ae4191466a6984eee0fe3407a4f3aa9db8354"
-  integrity sha512-XNP0PqF1XD19ZlLKvB7cMmnZswW4C/03pRHgirB30uSJTaS3A3V1/P4sS3HPvFmjoriPCJQs+JDSbm4bL1TxGQ==
+  version "8.0.5"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.0.5.tgz#a3bfb872a74a6a7f661bc81b9849d9cac12601b7"
+  integrity sha512-v+DieK/HJkJOpFBETDJioequtc3PfxsWMaxIdIwujtF7FEV/MAyDQLlm6/zPvr7Mix07mLh6ccVwIsloceodlg==
 
 ag-charts-community@~3.0.0:
   version "3.0.0"
@@ -4077,9 +4077,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.634:
-  version "1.3.643"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.643.tgz#fc196e17d01f4d874ef2307b009c0cd993ebe1c7"
-  integrity sha512-TGomM4gj8adt/uqRgPbu9F0yhUVAR1deww5X0fvbQgpGr9suSMjLgc4IwQ9YKGkp1t03cDbZum20OfAkiTYjAg==
+  version "1.3.645"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.645.tgz#c0b269ae2ecece5aedc02dd4586397d8096affb1"
+  integrity sha512-T7mYop3aDpRHIQaUYcmzmh6j9MAe560n6ukqjJMbVC6bVTau7dSpvB18bcsBPPtOSe10cKxhJFtlbEzLa0LL1g==
 
 elliptic@^6.5.3:
   version "6.5.3"
@@ -4142,7 +4142,12 @@ entities@^1.1.1:
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.2.tgz#bdfa735299664dfafd34529ed4f8522a275fea56"
   integrity sha512-f2LZMYl1Fzu7YSBKg+RoROelpOaNrcGmE9AZubeDfrCEia483oW4MI4VyFd5VNHIgQ/7qm1I0wUHK1eJnn2y2w==
 
-entities@^2.0.0, entities@~2.1.0:
+entities@^2.0.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/entities/-/entities-2.2.0.tgz#098dc90ebb83d8dffa089d55256b351d34c4da55"
+  integrity sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
+
+entities@~2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.1.0.tgz#992d3129cf7df6870b96c57858c249a120f8b8b5"
   integrity sha512-hCx1oky9PFrJ611mf0ifBLBRW8lUUVRlFolb5gWRfIELabBlbp9xZvrqZLZAs+NxFnbfQoeGd8wDkygjg7U85w==
@@ -4894,9 +4899,9 @@ flush-write-stream@^1.0.0:
     readable-stream "^2.3.6"
 
 follow-redirects@^1.0.0:
-  version "1.13.1"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.1.tgz#5f69b813376cee4fd0474a3aba835df04ab763b7"
-  integrity sha512-SSG5xmZh1mkPGyKzjZP8zLjltIfpW32Y5QpdNJyjcfGxK3qo3NDDkZOZSFiGn1A6SclQxY9GzEwAHQ3dmYRWpg==
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.2.tgz#dd73c8effc12728ba5cf4259d760ea5fb83e3147"
+  integrity sha512-6mPTgLxYm3r6Bkkg0vNM0HTjfGrOEtsfbhagQvbxDEsEkpNhw582upBaoRZylzen6krEmxXJgt9Ju6HiI4O7BA==
 
 for-in@^1.0.2:
   version "1.0.2"
@@ -5393,11 +5398,12 @@ hpack.js@^2.1.6:
     wbuf "^1.1.0"
 
 html-element-map@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/html-element-map/-/html-element-map-1.2.0.tgz#dfbb09efe882806af63d990cf6db37993f099f22"
-  integrity sha512-0uXq8HsuG1v2TmQ8QkIhzbrqeskE4kn52Q18QJ9iAA/SnHoEKXWiUxHQtclRsCFWEUD2So34X+0+pZZu862nnw==
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/html-element-map/-/html-element-map-1.3.0.tgz#fcf226985d7111e6c2b958169312ec750d02f0d3"
+  integrity sha512-AqCt/m9YaiMwaaAyOPdq4Ga0cM+jdDWWGueUMkdROZcTeClaGpN0AQeyGchZhTegQoABmc6+IqH7oCR/8vhQYg==
   dependencies:
     array-filter "^1.0.0"
+    call-bind "^1.0.2"
 
 html-entities@^1.3.1:
   version "1.4.0"
@@ -10195,9 +10201,9 @@ url@^0.11.0:
     querystring "0.2.0"
 
 use-memo-one@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/use-memo-one/-/use-memo-one-1.1.1.tgz#39e6f08fe27e422a7d7b234b5f9056af313bd22c"
-  integrity sha512-oFfsyun+bP7RX8X2AskHNTxu+R3QdE/RC5IefMbqptmACAA/gfol1KDD5KRzPsGMa62sWxGZw+Ui43u6x4ddoQ==
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/use-memo-one/-/use-memo-one-1.1.2.tgz#0c8203a329f76e040047a35a1197defe342fab20"
+  integrity sha512-u2qFKtxLsia/r8qG0ZKkbytbztzRb317XCkT7yP8wxL0tZ/CzK2G+WWie5vWvpyeP7+YoPIwbJoIHJ4Ba4k0oQ==
 
 use@^3.1.0:
   version "3.1.1"
