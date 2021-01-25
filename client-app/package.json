@@ -28,8 +28,8 @@
   "dependencies": {
     "@ag-grid-community/react": "~25.0.1",
     "@ag-grid-enterprise/all-modules": "~25.0.1",
-    "@auth0/auth0-spa-js": "~1.13.0",
-    "@fortawesome/free-brands-svg-icons": "~5.15.1",
+    "@auth0/auth0-spa-js": "~1.13.6",
+    "@fortawesome/free-brands-svg-icons": "~5.15.2",
     "@xh/hoist": "^38.0.0-SNAPSHOT",
     "@xh/package-template": "~1.2.0",
     "highcharts": "~8.2.2",
@@ -39,9 +39,9 @@
   "devDependencies": {
     "@xh/hoist-dev-utils": "~5.5.0",
     "cross-env": "~7.0.3",
-    "husky": "~4.3.0",
+    "husky": "~4.3.8",
     "lint-staged": "~10.5.0",
-    "stylelint": "~13.8.0",
+    "stylelint": "~13.9.0",
     "stylelint-config-standard": "~20.0.0",
     "stylelint-scss": "~3.18.0"
   }
