@@ -148,6 +148,7 @@ export class AppModel extends HoistAppModel {
                             {name: 'customPackage', path: '/customPackage'},
                             {name: 'dateFormats', path: '/dateFormats'},
                             {name: 'jsx', path: '/jsx'},
+                            {name: 'errorMessage', path: '/errorMessage'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'icons', path: '/icons'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},

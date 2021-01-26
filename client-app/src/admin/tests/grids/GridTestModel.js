@@ -33,8 +33,6 @@ export class GridTestModel extends HoistModel {
     @bindable showSummary = false;
     // True to use tree root node as summary row.
     @bindable loadRootAsSummary = false;
-    @bindable useTransactions = true;
-    @bindable useDeltaSort = true;
     @bindable disableSelect = false;
 
     @bindable colChooserCommitOnChange = true;
@@ -81,8 +79,6 @@ export class GridTestModel extends HoistModel {
                 this.tree,
                 this.showSummary,
                 this.loadRootAsSummary,
-                this.useTransactions,
-                this.useDeltaSort,
                 this.disableSelect,
                 this.autosizeMode,
                 this.persistType,
@@ -269,10 +265,6 @@ export class GridTestModel extends HoistModel {
             }: undefined,
             treeMode: this.tree,
             showSummary: this.showSummary,
-            experimental: {
-                useTransactions: this.useTransactions,
-                useDeltaSort: this.useDeltaSort
-            },
             colChooserModel: {
                 commitOnChange: this.colChooserCommitOnChange,
                 showRestoreDefaults: this.colChooserShowRestoreDefaults,
