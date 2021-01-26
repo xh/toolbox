@@ -4,7 +4,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {errorMessage} from '@xh/hoist/desktop/cmp/error';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import React from 'react';
 import {wrapper} from '../../common';
 import './ClockPanel.scss';
@@ -66,9 +66,13 @@ export const errorMessagePanel = hoistCmp.factory({
     }
 });
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
     @bindable error = null;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     // Manufacture an error. In the real world, this code would do something that might break
     // like load/process data from an API, but still follow pattern of setting and clearing an
