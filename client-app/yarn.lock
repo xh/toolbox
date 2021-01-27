@@ -1985,9 +1985,9 @@
     webpackbar "~4.0.0"
 
 "@xh/hoist@^38.0.0-SNAPSHOT":
-  version "38.0.0-SNAPSHOT.1611718479460"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-38.0.0-SNAPSHOT.1611718479460.tgz#484e0a1cb7592f232ac5b8ee61d3c4496b186d89"
-  integrity sha512-PYz7rQoj5SoO+M467W3UZesIwxgPec3okOMt7jecU9a+mi6sWARlXTFw4Pl3YIc1tSBBUgHOZORUFcIuhRTyCg==
+  version "38.0.0-SNAPSHOT.1611764414091"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-38.0.0-SNAPSHOT.1611764414091.tgz#0a0e2ed843a7943a80c7dae82fc22819fe4331d2"
+  integrity sha512-2+vZ3zP7pxvCcMO+hVqx+BUqprABJjd9XJwmySwGxyLMG4AA/enXZIXGnmdGkXolMd5b6pCDKqYjh82sRay+YQ==
   dependencies:
     "@blueprintjs/core" "~3.38.1"
     "@blueprintjs/datetime" "~3.20.3"
@@ -2012,8 +2012,8 @@
     http-status-codes "~2.1.4"
     lodash "~4.17.20"
     lodash-inflection "~1.5.0"
-    mobx "~6.0.5"
-    mobx-react "~7.0.6"
+    mobx "~6.1.0"
+    mobx-react "~7.1.0"
     moment "~2.29.1"
     numbro "~2.3.2"
     onsenui "~2.11.2"
@@ -6868,22 +6868,22 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-mobx-react-lite@^3.1.7:
+mobx-react-lite@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-3.2.0.tgz#331d7365a6b053378dfe9c087315b4e41c5df69f"
   integrity sha512-q5+UHIqYCOpBoFm/PElDuOhbcatvTllgRp3M1s+Hp5j0Z6XNgDbgqxawJ0ZAUEyKM8X1zs70PCuhAIzX1f4Q/g==
 
-mobx-react@~7.0.6:
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-7.0.6.tgz#38e0074d518ef2344152c35b11fdac399c1d8d54"
-  integrity sha512-EBNfDXnXNd0KmxtykioybOrJVX0Rc446aPZ69gDxguJnHPl/pPE032PhZ83EGWSZO3KiYsC251Ax3JlPqUwWBw==
+mobx-react@~7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-7.1.0.tgz#d947cada3cfad294b4b6f692e969c242b9c16eaf"
+  integrity sha512-DxvA6VXmnZ+N9f/UTtolWtdRnAAQY2iHWTSPLktfpj8NKlXUe4dabBAjuXrBcZUM8GjLWnxD1ZEjssXq1M0RAw==
   dependencies:
-    mobx-react-lite "^3.1.7"
+    mobx-react-lite "^3.2.0"
 
-mobx@~6.0.5:
-  version "6.0.5"
-  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.0.5.tgz#617e716b7aa81d5b700598af3bb1643ff2144410"
-  integrity sha512-Q3/GiSj/QyazDn1n44PjdiMlokCE6gVs85BnFR0xCJmkF2d34k/ZnWAEG7wGbnJYEi+0f5CdvzDquBiKeo56bA==
+mobx@~6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.1.0.tgz#4a50d151c7396abc7058db8f4153ef866fb7d6b4"
+  integrity sha512-AU3z1oIep0wu7BdFFjd/0e0K1SGVcXi0TX8GPKKCkdnQEjJ3w/PgOct63Yk7V0/di/bnxb8+UehWC/Lld+MmeA==
 
 moment@>=1.6.0, moment@~2.29.1:
   version "2.29.1"
