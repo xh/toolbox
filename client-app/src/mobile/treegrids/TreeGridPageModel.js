@@ -1,9 +1,3 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
