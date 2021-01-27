@@ -1,9 +1,9 @@
-import {HoistModel, LoadSupport, managed, persist, XH} from '@xh/hoist/core';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {mean, random, reduce, sample, takeRight, times} from 'lodash';
 import {start} from '@xh/hoist/promise';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 
 const pnlColumn = {
     absSort: true,
@@ -17,9 +17,7 @@ const pnlColumn = {
     })
 };
 
-@HoistModel
-@LoadSupport
-export class GridTestModel {
+export class GridTestModel extends HoistModel {
 
     persistWith = {localStorageKey: 'persistTest'};
 
@@ -71,6 +69,8 @@ export class GridTestModel {
     _gridLoadTimes = [];
 
     constructor() {
+        super();
+        makeObservable(this);
         this.markPersist('tree');
         this.markPersist('showSummary');
         this.gridModel = this.createGridModel();
@@ -336,7 +336,7 @@ export class GridTestModel {
 
     @action
     tearDown() {
-        XH.destroy(this.gridModel);
+        XH.safeDestroy(this.gridModel);
         this.gridModel = this.createGridModel();
         this._data = null;
         this.runTimes = {};

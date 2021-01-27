@@ -14,8 +14,7 @@ import {PortfolioService} from '../../core/svc/PortfolioService';
 export const PERSIST_MAIN = {localStorageKey: 'portfolioAppMainState'};
 export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
 
-@HoistAppModel
-export class AppModel {
+export class AppModel extends HoistAppModel {
 
     get gridSizingMode() {
         return XH.getPref('gridSizingMode');

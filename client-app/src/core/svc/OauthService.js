@@ -22,8 +22,7 @@ import {SECONDS} from '@xh/hoist/utils/datetime';
  *      lost during the redirect flow. We should be able to note and restore via the `state`
  *      key we can set and then read on our Auth0 login request / post-redirect response.
  */
-@HoistService
-export class OauthService {
+export class OauthService extends HoistService {
 
     /** @member {Auth0Client} */
     auth0;

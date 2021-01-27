@@ -1,4 +1,4 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {MapPanelModel} from './MapPanelModel';
@@ -7,9 +7,7 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {DetailPanelModel} from './detail/DetailPanelModel';
 import {PERSIST_MAIN} from './AppModel';
 
-@HoistModel
-@LoadSupport
-export class PortfolioPanelModel {
+export class PortfolioPanelModel extends HoistModel {
 
     @managed session;
 
@@ -24,6 +22,7 @@ export class PortfolioPanelModel {
     }
 
     constructor() {
+        super();
         this.addReaction({
             track: () => this.groupingChooserModel.value,
             run: () => this.loadAsync()
@@ -43,7 +42,7 @@ export class PortfolioPanelModel {
             dims = groupingChooserModel.value;
 
         let {session} = this;
-        if (session) session.destroy();
+        session?.destroy();
 
         session = await XH.portfolioService
             .getLivePositionsAsync(dims, 'mainApp')

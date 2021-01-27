@@ -1,17 +1,16 @@
 import {createRef} from 'react';
 import {boolCheckCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {fmtDate, fmtMillions, fmtNumber, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import './SampleGrid.scss';
 
-@HoistModel
-@LoadSupport
-export class SampleGridModel {
+export class SampleGridModel extends HoistModel {
+
     @observable groupBy = false;
 
     panelRef = createRef();
@@ -245,6 +244,11 @@ export class SampleGridModel {
             }
         ]
     });
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     async doLoadAsync(loadSpec) {
         const {trades, summary} = await XH.fetchJson({url: 'trade'}),
