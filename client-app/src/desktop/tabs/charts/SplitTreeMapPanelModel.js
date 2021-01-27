@@ -1,4 +1,4 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
@@ -6,9 +6,7 @@ import {hspacer} from '@xh/hoist/cmp/layout';
 import {fmtMillions, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {clamp} from 'lodash';
 
-@HoistModel
-@LoadSupport
-export class SplitTreeMapPanelModel {
+export class SplitTreeMapPanelModel extends HoistModel {
 
     @managed
     dimChooserModel = new DimensionChooserModel({
@@ -97,6 +95,7 @@ export class SplitTreeMapPanelModel {
     });
 
     constructor() {
+        super();
         this.addReaction({
             track: () => this.dimChooserModel.value,
             run: () => this.loadAsync()

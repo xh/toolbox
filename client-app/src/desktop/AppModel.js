@@ -5,7 +5,7 @@
  * Copyright © 2020 Extremely Heavy Industries Inc.
  */
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
+import {HoistAppModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {GitHubService} from '../core/svc/GitHubService';
 import {OauthService} from '../core/svc/OauthService';
@@ -20,8 +20,7 @@ import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
 
-@HoistAppModel
-export class AppModel {
+export class AppModel extends HoistAppModel {
 
     @managed
     tabModel = new TabContainerModel({
@@ -58,7 +57,7 @@ export class AppModel {
     }
 
     async doLoadAsync(loadSpec) {
-        await loadAllAsync([XH.gitHubService], loadSpec);
+        await XH.gitHubService.loadAsync(loadSpec);
     }
 
     async logoutAsync() {
@@ -149,6 +148,7 @@ export class AppModel {
                             {name: 'customPackage', path: '/customPackage'},
                             {name: 'dateFormats', path: '/dateFormats'},
                             {name: 'jsx', path: '/jsx'},
+                            {name: 'errorMessage', path: '/errorMessage'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'icons', path: '/icons'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},

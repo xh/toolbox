@@ -23,8 +23,7 @@ import {popupsPage} from './popups/PopupsPage';
 import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
 import {treeGridPage} from './treegrids/TreeGridPage';
 
-@HoistAppModel
-export class AppModel {
+export class AppModel extends HoistAppModel {
 
     @managed
     navigatorModel = new NavigatorModel({

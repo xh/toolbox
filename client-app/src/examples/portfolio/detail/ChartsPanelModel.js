@@ -1,11 +1,9 @@
-import {HoistModel, loadAllAsync, LoadSupport, managed} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {HoistModel, loadAllAsync, managed} from '@xh/hoist/core';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LineChartModel} from './LineChartModel';
 import {OHLCChartModel} from './OHLCChartModel';
 
-@HoistModel
-@LoadSupport
-export class ChartsPanelModel {
+export class ChartsPanelModel extends HoistModel  {
 
     @bindable symbol = null;
 
@@ -13,6 +11,8 @@ export class ChartsPanelModel {
     @managed ohlcChartModel = new OHLCChartModel();
 
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.symbol,
             run: (symbol) => {
