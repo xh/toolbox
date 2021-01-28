@@ -1,6 +1,5 @@
 import {required} from '@xh/hoist/cmp/form';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
-import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
 import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {OauthService} from '../core/svc/OauthService';
@@ -19,9 +18,6 @@ import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
 import {treeGridPage} from './treegrids/TreeGridPage';
 
 export class AppModel extends HoistAppModel {
-
-    @managed
-    appMenuModel = new AppMenuModel({hideLogoutItem: false});
 
     @managed
     navigatorModel = new NavigatorModel({
