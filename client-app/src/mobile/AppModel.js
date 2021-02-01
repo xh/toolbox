@@ -13,6 +13,7 @@ import {homePage} from './home/HomePage';
 import {iconPage} from './icons/IconPage';
 import {panelsPage} from './panels/PanelsPage';
 import {pinPadPage} from './pinPad/PinPadPage';
+import {popoverPage} from './popover/PopoverPage';
 import {popupsPage} from './popups/PopupsPage';
 import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
 import {treeGridPage} from './treegrids/TreeGridPage';
@@ -31,6 +32,7 @@ export class AppModel extends HoistAppModel {
             {id: 'form', content: formPage},
             {id: 'containers', content: containersPage},
             {id: 'panels', content: panelsPage},
+            {id: 'popovers', content: popoverPage},
             {id: 'popups', content: popupsPage},
             {id: 'icons', content: iconPage},
             {id: 'pinPad', content: pinPadPage}
@@ -74,6 +76,10 @@ export class AppModel extends HoistAppModel {
                     {
                         name: 'panels',
                         path: '/panels'
+                    },
+                    {
+                        name: 'popovers',
+                        path: '/popovers'
                     },
                     {
                         name: 'popups',
