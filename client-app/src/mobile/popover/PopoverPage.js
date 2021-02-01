@@ -49,7 +49,7 @@ const popoverCard = hoistCmp.factory({
             className: 'toolbox-card',
             item: popover({
                 target: button({text}),
-                content: popoverContent(),
+                content: popoverContent,
                 ...popoverProps
             })
         });
