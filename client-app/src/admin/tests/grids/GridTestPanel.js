@@ -158,9 +158,7 @@ const bbar2 = hoistCmp.factory(
                 ]
             })
         }),
-        storeFilterField({
-            includeFields: ['symbol', 'trader']
-        }),
+        storeFilterField(),
         toolbarSep(),
         label('Restore Warning'),
         textInput({
