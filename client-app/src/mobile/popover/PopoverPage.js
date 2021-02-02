@@ -25,9 +25,9 @@ export const popoverPage = hoistCmp.factory({
                     }
                 }),
                 popoverCard({
-                    text: 'Show Popover with mask',
+                    text: 'Show Popover with backdrop',
                     popoverProps: {
-                        withMask: true
+                        backdrop: true
                     }
                 }),
                 popoverCard({
