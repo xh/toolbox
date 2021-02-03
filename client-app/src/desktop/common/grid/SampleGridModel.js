@@ -3,7 +3,15 @@ import {boolCheckCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {fmtDate, fmtMillions, fmtNumber, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {
+    dateRenderer,
+    fmtDate,
+    fmtMillions,
+    fmtNumber,
+    fmtNumberTooltip,
+    millionsRenderer,
+    numberRenderer
+} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
@@ -229,6 +237,15 @@ export class SampleGridModel extends HoistModel {
                 }),
                 exportFormat: ExportFormat.LEDGER_COLOR,
                 chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
+            },
+            {
+                colId: 'dayOfWeek',
+                field: 'trade_date',
+                displayName: 'Day of Week',
+                chooserDescription: 'Used for testing storeFilterField matching on rendered dates.',
+                width: 130,
+                hidden: true,
+                renderer: dateRenderer({fmt: 'dddd'})
             },
             {
                 field: 'trade_date',
