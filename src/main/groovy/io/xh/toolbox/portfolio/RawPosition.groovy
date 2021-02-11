@@ -40,6 +40,7 @@ class RawPosition extends JSONFormatCached {
         return new RawPosition(
                 instrument: this.instrument,
                 model: this.model,
+                comment: this.comment,
                 fund: this.fund,
                 trader: this.trader,
                 cost: this.cost,

@@ -90,6 +90,7 @@ class PortfolioService extends BaseService {
 
             long endQty = ordersForKey.sum { it.quantity } as long
             long cost = ordersForKey.sum { it.cost } as long
+            String comment = lorem.getWords(10, 100)
 
             return new RawPosition(
                     instrument: instruments[symbol],
@@ -99,7 +100,7 @@ class PortfolioService extends BaseService {
                     cost: cost,
                     endQty: endQty,
                     endPx: endPx,
-                    comment: lorem.getParagraphs(1, 2)
+                    comment: comment
             )
         }
     }
