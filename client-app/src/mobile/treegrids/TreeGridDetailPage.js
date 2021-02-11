@@ -1,10 +1,10 @@
-import {hoistCmp, HoistModel, LoadSupport, useLocalModel, XH} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, useLocalModel, XH} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
 import {capitalize} from 'lodash';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export const treeGridDetailPage = hoistCmp.factory({
     render({id}) {
@@ -51,14 +51,14 @@ function renderRow(title, value, renderer) {
     });
 }
 
-@LoadSupport
-@HoistModel
-class LocalModel {
+class LocalModel extends HoistModel {
 
     @bindable id;
     @bindable.ref position;
 
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.id,
             run: () => this.loadAsync()

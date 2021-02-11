@@ -3,8 +3,7 @@ import {HoistModel, managed} from '@xh/hoist/core';
 import {panelPage} from './PanelPage';
 import {scrollablePanelPage} from './ScrollablePanelPage';
 
-@HoistModel
-export class PanelsPageModel {
+export class PanelsPageModel extends HoistModel {
 
     @managed
     tabContainerModel = new TabContainerModel({

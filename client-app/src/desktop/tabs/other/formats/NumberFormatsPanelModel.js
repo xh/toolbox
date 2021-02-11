@@ -1,11 +1,10 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import * as formatFunctions from '@xh/hoist/format/FormatNumber';
 import {fmtNumber} from '@xh/hoist/format/FormatNumber';
 import {nilAwareFormat} from './Util';
 
-@HoistModel
-export class NumberFormatsPanelModel {
+export class NumberFormatsPanelModel extends HoistModel {
 
     // Inputs
     testData = [
@@ -54,6 +53,11 @@ export class NumberFormatsPanelModel {
 
     get tryItResult() {
         return this.getResult(this.tryItData);
+    }
+
+    constructor() {
+        super();
+        makeObservable(this);
     }
 
     //-----------------------------

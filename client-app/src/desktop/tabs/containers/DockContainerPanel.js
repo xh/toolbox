@@ -85,8 +85,7 @@ const btnCfg = {
     margin: 5
 };
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @managed
     dockContainerModel = new DockContainerModel();
