@@ -41,8 +41,8 @@ export const roadmapViewItem = hoistCmp.factory({
                         popoverClassName: 'tb-roadmap__popover',
                         minimal: true,
                         interactionKind: 'hover',
-                        position: 'top',
-                        target: div({
+                        placement: 'top',
+                        item: div({
                             className: 'tb-roadmap-item__statusIcon',
                             item: getStatusIcon(status)
                         }),
@@ -57,8 +57,8 @@ export const roadmapViewItem = hoistCmp.factory({
                             popoverClassName: 'tb-roadmap__popover tb-roadmap__popover--description',
                             minimal: true,
                             interactionKind: 'hover',
-                            position: 'left-top',
-                            target: span(' ...'),
+                            placement: 'left-start',
+                            item: span(' ...'),
                             content: div({
                                 items: breakUpDescription(description)
                             })
