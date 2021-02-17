@@ -64,23 +64,20 @@ export class SampleTreeGridModel extends HoistModel {
         const {gridModel, groupingChooserModel} = this,
             dims = groupingChooserModel.value;
 
-        return XH.portfolioService
-            .getPositionsAsync(dims, true)
-            .then(data => {
-                if (isRefresh) {
-                    gridModel.updateData({update: data});
-                    if (isAutoRefresh) {
-                        XH.toast({
-                            intent: 'primary',
-                            message: 'Data Updated',
-                            containerRef: this.panelRef.current
-                        });
-                    }
-                } else {
-                    gridModel.loadData(data);
-                    gridModel.selectFirst();
-                }
-            });
+        const data = await XH.portfolioService.getPositionsAsync(dims, true);
+        if (isRefresh) {
+            gridModel.updateData({update: data});
+            if (isAutoRefresh) {
+                XH.toast({
+                    intent: 'primary',
+                    message: 'Data Updated',
+                    containerRef: this.panelRef.current
+                });
+            }
+        } else {
+            gridModel.loadData(data);
+            await gridModel.selectFirstAsync();
+        }
     }
 
     syncDimsToRouter() {

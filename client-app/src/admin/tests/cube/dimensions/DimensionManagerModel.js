@@ -112,7 +112,7 @@ export class DimensionManagerModel extends HoistModel {
             if (idToSelect) {
                 gridModel.selModel.select(idToSelect);
             } else if (!gridModel.selectedRecord) {
-                gridModel.selectFirst();
+                gridModel.selectFirstAsync();
             }
         });
     }
