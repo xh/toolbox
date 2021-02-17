@@ -4,6 +4,8 @@ import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.json.JSONParser
 
+import static io.xh.toolbox.portfolio.Utils.loremWords
+
 @Slf4j
 class CustomerService extends BaseService {
 
@@ -34,6 +36,7 @@ class CustomerService extends BaseService {
             ret = JSONParser.parseArray(mockData.inputStream)
             ret.each{it -> it.isActive = (it.id % 3 != 0)}
             ret = ret.unique{it.company}
+            ret.each{it -> it.comment = loremWords()}
         } catch (Exception e) {
             log.error("Failure loading mock data | ${e.message}")
         }

@@ -6,6 +6,8 @@ import io.xh.hoist.json.JSONParser
 
 import java.time.LocalDate
 
+import static io.xh.toolbox.portfolio.Utils.*
+
 @Slf4j
 class TradeService extends BaseService {
 
@@ -36,6 +38,7 @@ class TradeService extends BaseService {
                 it.trade_volume = it.trade_volume * 1000000
                 it.active = it.trade_volume.toBigInteger() % 6 == 0
                 it.trade_date = LocalDate.now().minusDays(Math.round(dateRange * Math.random()))
+                it.comment = randInt(0,5) == 1 ? loremWords() : null
             }
 
             ret = [
