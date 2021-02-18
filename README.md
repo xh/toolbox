@@ -24,4 +24,4 @@ or another OAuth based solution.
                                                                                   
 📫☎️🌎 info@xh.io | <https://xh.io/contact>
 
-Copyright © 2020 Extremely Heavy Industries Inc.
+Copyright © 2021 Extremely Heavy Industries Inc.

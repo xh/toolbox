@@ -1,17 +1,24 @@
 import {createRef} from 'react';
 import {boolCheckCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {fmtDate, fmtMillions, fmtNumber, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {
+    dateRenderer,
+    fmtDate,
+    fmtMillions,
+    fmtNumber,
+    fmtNumberTooltip,
+    millionsRenderer,
+    numberRenderer
+} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import './SampleGrid.scss';
 
-@HoistModel
-@LoadSupport
-export class SampleGridModel {
+export class SampleGridModel extends HoistModel {
+
     @observable groupBy = false;
 
     panelRef = createRef();
@@ -215,7 +222,8 @@ export class SampleGridModel {
                     precision: 1,
                     label: true
                 }),
-                exportFormat: ExportFormat.NUM_DELIMITED
+                exportFormat: ExportFormat.NUM_DELIMITED,
+                chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
             },
             {
                 field: 'profit_loss',
@@ -227,11 +235,22 @@ export class SampleGridModel {
                     ledger: true,
                     colorSpec: true
                 }),
-                exportFormat: ExportFormat.LEDGER_COLOR
+                exportFormat: ExportFormat.LEDGER_COLOR,
+                chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
+            },
+            {
+                colId: 'dayOfWeek',
+                field: 'trade_date',
+                displayName: 'Day of Week',
+                chooserDescription: 'Used for testing storeFilterField matching on rendered dates.',
+                width: 130,
+                hidden: true,
+                renderer: dateRenderer({fmt: 'dddd'})
             },
             {
                 field: 'trade_date',
-                ...localDateCol
+                ...localDateCol,
+                chooserDescription: 'Date of last trade (including related derivatives)'
             },
             {
                 field: 'active',
@@ -242,6 +261,11 @@ export class SampleGridModel {
             }
         ]
     });
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     async doLoadAsync(loadSpec) {
         const {trades, summary} = await XH.fetchJson({url: 'trade'}),

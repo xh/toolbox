@@ -1,16 +1,14 @@
 import {GridModel, timeCol} from '@xh/hoist/cmp/grid';
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
-import {bindable, comparer} from '@xh/hoist/mobx';
+import {bindable, comparer, makeObservable} from '@xh/hoist/mobx';
 import {start} from '@xh/hoist/promise';
 import {isEmpty} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 import {LoadTimesModel} from './LoadTimesModel';
 import {CubeModel} from './CubeModel';
 
-@HoistModel
-@LoadSupport
-export class CubeTestModel {
+export class CubeTestModel extends HoistModel {
 
     @managed cubeModel;
     @managed gridModel;
@@ -25,6 +23,8 @@ export class CubeTestModel {
     @bindable updateCount = 5;
 
     constructor() {
+        super();
+        makeObservable(this);
         this.loadTimesModel = new LoadTimesModel();
         this.gridModel = this.createGridModel();
         this.cubeModel = new CubeModel(this);
@@ -57,6 +57,10 @@ export class CubeTestModel {
             includeRoot = this.showSummary;
 
         return {dimensions, filter, includeLeaves, includeRoot};
+    }
+
+    clear() {
+        this.cubeModel.cube.clearAsync();
     }
 
     async doLoadAsync() {

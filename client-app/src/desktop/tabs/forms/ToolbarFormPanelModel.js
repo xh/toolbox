@@ -2,8 +2,7 @@ import {HoistModel} from '@xh/hoist/core';
 import {FormModel, required} from '@xh/hoist/cmp/form';
 import {random} from 'lodash';
 
-@HoistModel
-export class ToolbarFormPanelModel {
+export class ToolbarFormPanelModel extends HoistModel {
 
     topFormModel = new FormModel({
         fields: [

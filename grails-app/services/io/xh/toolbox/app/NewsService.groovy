@@ -58,7 +58,7 @@ class NewsService extends BaseService {
     private void loadAllNews() {
         def sources = configService.getMap('newsSources').keySet().toList()
 
-        withShortInfo("Loading news from ${sources.size()} configured sources") {
+        withInfo("Loading news from ${sources.size()} configured sources") {
             def items = []
             try {
                 items = loadNewsForSources(sources)

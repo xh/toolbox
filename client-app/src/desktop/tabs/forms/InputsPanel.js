@@ -296,7 +296,6 @@ const formContents = hoistCmp.factory(
 
 const row = hoistCmp.factory({
     model: uses(FormModel),
-    memo: false,
 
     render({model, label, field, info, readonlyRenderer, fmtVal, layout = {}, children}) {
         const fieldModel = model.fields[field];

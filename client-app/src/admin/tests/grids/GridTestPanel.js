@@ -123,25 +123,12 @@ const bbar1 = hoistCmp.factory(
             labelAlign: 'left'
         }),
         toolbarSep(),
-        switchInput({
-            bind: 'useTransactions',
-            label: 'Transactions',
-            labelAlign: 'left'
-        }),
-        toolbarSep(),
         tooltip({
             content: 'Autosize Mode',
             item: select({
                 bind: 'autosizeMode',
                 options: ['disabled', 'onDemand']
             })
-        }),
-        toolbarSep(),
-        switchInput({
-            bind: 'useDeltaSort',
-            label: 'Delta Sort',
-            disabled: model.tree,
-            labelAlign: 'left'
         })
     )
 );
@@ -160,10 +147,7 @@ const bbar2 = hoistCmp.factory(
                 ]
             })
         }),
-        toolbarSep(),
-        storeFilterField({
-            includeFields: ['symbol', 'trader']
-        }),
+        storeFilterField(),
         toolbarSep(),
         label('Restore Warning'),
         textInput({
