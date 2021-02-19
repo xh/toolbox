@@ -78,7 +78,7 @@ const tbar = hoistCmp.factory(
         button({
             text: 'Scroll to Selected',
             icon: Icon.crosshairs(),
-            onClick: () => model.gridModel.ensureSelectionVisible()
+            onClick: () => model.gridModel.ensureSelectionVisibleAsync()
         }),
         button({
             text: 'Autosize Columns',

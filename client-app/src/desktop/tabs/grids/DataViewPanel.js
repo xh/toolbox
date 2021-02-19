@@ -67,7 +67,7 @@ class Model extends HoistModel {
         const min = -1000,
             max = 1000;
 
-        await dataViewModel.store.loadData(customers.map(it => {
+        await dataViewModel.loadData(customers.map(it => {
             const randVal = Math.random() * (max - min) + min;
             return {
                 id: it.id,
@@ -77,6 +77,6 @@ class Model extends HoistModel {
             };
         }));
 
-        dataViewModel.selectFirst();
+        await dataViewModel.selectFirstAsync();
     }
 }
