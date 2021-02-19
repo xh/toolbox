@@ -1,9 +1,9 @@
-import {creates, hoistCmp, useLocalModel} from '@xh/hoist/core';
-import {div, filler, vbox, fragment} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {div, filler, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
-import {button, menuButton} from '@xh/hoist/mobile/cmp/button';
-import {MenuModel, menu} from '@xh/hoist/mobile/cmp/menu';
+import {button} from '@xh/hoist/mobile/cmp/button';
+import {menuButton} from '@xh/hoist/mobile/cmp/menu';
 import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/mobile/cmp/form';
@@ -167,22 +167,16 @@ const fieldResult = hoistCmp.factory(
 const setFocusMenu = hoistCmp.factory(
     ({model}) => {
         const fields = model.formModel.fieldList,
-            menuModel = useLocalModel(() => {
-                return new MenuModel({
-                    itemModels: fields.map(f => ({
-                        text: f.displayName,
-                        action: () => f.focus()
-                    }))
-                });
-            });
+            menuItems = fields.map(f => ({
+                text: f.displayName,
+                actionFn: () => f.focus()
+            }));
 
-        return fragment(
-            menuButton({
-                icon: Icon.target(),
-                text: 'Focus',
-                model: menuModel
-            }),
-            menu({model: menuModel})
-        );
+        return menuButton({
+            icon: Icon.target(),
+            text: 'Focus',
+            menuPosition: 'top',
+            menuItems
+        });
     }
 );

@@ -1,11 +1,5 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
-import {HoistModel, LoadSupport, managed, persist, XH} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
@@ -14,15 +8,12 @@ import {DetailsPanelModel} from './DetailsPanelModel';
 import {PERSIST_APP} from './AppModel';
 import {uniqBy} from 'lodash';
 
-@HoistModel
-@LoadSupport
-export class RecallsPanelModel {
+export class RecallsPanelModel extends HoistModel {
 
     persistWith = PERSIST_APP;
 
     @bindable
     searchQuery = '';
-
 
     @bindable
     @persist
@@ -95,6 +86,8 @@ export class RecallsPanelModel {
     });
 
     constructor() {
+        super();
+        makeObservable(this);
         const {gridModel} = this;
 
         this.addReaction({

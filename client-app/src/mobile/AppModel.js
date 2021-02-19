@@ -1,12 +1,5 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
 import {required} from '@xh/hoist/cmp/form';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
-import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
 import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {OauthService} from '../core/svc/OauthService';
@@ -20,15 +13,12 @@ import {homePage} from './home/HomePage';
 import {iconPage} from './icons/IconPage';
 import {panelsPage} from './panels/PanelsPage';
 import {pinPadPage} from './pinPad/PinPadPage';
+import {popoverPage} from './popover/PopoverPage';
 import {popupsPage} from './popups/PopupsPage';
 import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
 import {treeGridPage} from './treegrids/TreeGridPage';
 
-@HoistAppModel
-export class AppModel {
-
-    @managed
-    appMenuModel = new AppMenuModel({hideLogoutItem: false});
+export class AppModel extends HoistAppModel {
 
     @managed
     navigatorModel = new NavigatorModel({
@@ -42,6 +32,7 @@ export class AppModel {
             {id: 'form', content: formPage},
             {id: 'containers', content: containersPage},
             {id: 'panels', content: panelsPage},
+            {id: 'popovers', content: popoverPage},
             {id: 'popups', content: popupsPage},
             {id: 'icons', content: iconPage},
             {id: 'pinPad', content: pinPadPage}
@@ -85,6 +76,10 @@ export class AppModel {
                     {
                         name: 'panels',
                         path: '/panels'
+                    },
+                    {
+                        name: 'popovers',
+                        path: '/popovers'
                     },
                     {
                         name: 'popups',

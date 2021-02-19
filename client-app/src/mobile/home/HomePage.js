@@ -47,6 +47,12 @@ export const homePage = hoistCmp.factory({
                     route: 'panels'
                 }),
                 summaryCard({
+                    title: 'Popovers',
+                    icon: Icon.openExternal(),
+                    summary: 'Popovers display floating content next to a target element.',
+                    route: 'popovers'
+                }),
+                summaryCard({
                     title: 'Popups',
                     icon: Icon.comment(),
                     summary: 'Dialogs and Toasts.',

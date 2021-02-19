@@ -150,8 +150,7 @@ export const tabPanelContainerPanel = hoistCmp.factory({
 });
 
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     id = 0;
 
@@ -171,6 +170,7 @@ class Model {
     });
 
     constructor() {
+        super();
         this.addDynamic();
     }
 
