@@ -58,7 +58,7 @@ export class NewsPanelModel extends HoistModel {
     completeLoad(stories) {
         const {viewModel} = this;
         viewModel.loadData(stories);
-        viewModel.selectFirstAsync({ifNoSelection: true});
+        viewModel.preSelectFirstAsync();
         this.sourceOptions = uniq(map(viewModel.store.records, 'data.source'));
         this.lastRefresh = new Date();
     }

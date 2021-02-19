@@ -56,7 +56,7 @@ export class PortfolioPanelModel extends HoistModel {
 
         this.session = session;
 
-        await gridPanelModel.gridModel.selectFirstAsync({ifNoSelection: true});
+        await gridPanelModel.gridModel.preSelectFirstAsync();
 
 
         await this.detailPanelModel.doLoadAsync();

@@ -78,7 +78,7 @@ export class SampleTreeGridModel extends HoistModel {
             gridModel.loadData(data);
         }
 
-        await gridModel.selectFirstAsync({ifNoSelection: true});
+        await gridModel.preSelectFirstAsync();
     }
 
     syncDimsToRouter() {
