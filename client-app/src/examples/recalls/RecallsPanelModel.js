@@ -131,9 +131,7 @@ export class RecallsPanelModel extends HoistModel {
             entries = uniqBy(entries, 'id');
 
             gridModel.loadData(entries);
-            if (!gridModel.hasSelection) {
-                await gridModel.selectFirstAsync();
-            }
+            await gridModel.selectFirstAsync({ifNoSelection: true});
         } catch (e) {
             XH.handleException(e);
         }

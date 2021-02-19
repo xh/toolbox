@@ -117,8 +117,7 @@ export class OrdersPanelModel extends HoistModel {
         }).catchDefault() ?? [];
 
         gridModel.loadData(orders);
-        if (!this.selectedRecord) {
-            await gridModel.selectFirstAsync();
-        }
+        await gridModel.selectFirstAsync({ifNoSelection: true});
+
     }
 }

@@ -76,7 +76,7 @@ export class SampleTreeGridModel extends HoistModel {
             }
         } else {
             gridModel.loadData(data);
-            await gridModel.selectFirstAsync();
+            await gridModel.selectFirstAsync({ifNoSelection: true});
         }
     }
 

@@ -110,9 +110,9 @@ export class DimensionManagerModel extends HoistModel {
 
         wait(300).then(() => {
             if (idToSelect) {
-                gridModel.selModel.select(idToSelect);
-            } else if (!gridModel.selectedRecord) {
-                gridModel.selectFirstAsync();
+                gridModel.selectAsync(idToSelect);
+            } else  {
+                gridModel.selectFirstAsync({ifNoSelection: true});
             }
         });
     }

@@ -271,9 +271,7 @@ export class SampleGridModel extends HoistModel {
             {gridModel} = this;
 
         gridModel.loadData(trades, summary);
-        if (!gridModel.hasSelection) {
-            await gridModel.selectFirstAsync();
-        }
+        await gridModel.selectFirstAsync({ifNoSelection: true});
     }
 
     showInfoToast(rec) {
@@ -308,6 +306,6 @@ export class SampleGridModel extends HoistModel {
         // Always select first when regrouping.
         const groupByArr = groupBy ? groupBy.split(',') : [];
         this.gridModel.setGroupBy(groupByArr);
-        this.gridModel.selectFirstAsync();
+        this.gridModel.selectFirstAsync({ifNoSelection: true});
     }
 }
