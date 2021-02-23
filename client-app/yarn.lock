@@ -1950,9 +1950,9 @@
     webpackbar "~4.0.0"
 
 "@xh/hoist@^39.0.0-SNAPSHOT":
-  version "39.0.0-SNAPSHOT.1613655861030"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-39.0.0-SNAPSHOT.1613655861030.tgz#14c4726c117b4dd9caaa88671de8ec42ceaf4981"
-  integrity sha512-ul7/dy/YzpxdZjZipDE1MyN/OsXc15s13n3aeW/1myO+uHdKxMMdW+Jxt9ZUYRMcmLJMplAjYKWbMuwpT/tLsQ==
+  version "39.0.0-SNAPSHOT.1614039211437"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-39.0.0-SNAPSHOT.1614039211437.tgz#98ebfeb4d6ec975cef17b5e7b8d5c9747f27d411"
+  integrity sha512-r/ayB095Hn7Vd9448sw3uo4LWTjGjh96zd9mGfBqAZAs9IDAsYlxZ0gb1oTVTxN22Ik/W8G/u9+EBajzSqq20A==
   dependencies:
     "@blueprintjs/core" "~3.38.2"
     "@blueprintjs/datetime" "~3.20.4"
