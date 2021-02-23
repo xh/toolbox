@@ -14,7 +14,6 @@ import {
 } from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
-import {wait} from '@xh/hoist/promise';
 import './SampleGrid.scss';
 
 export class SampleGridModel extends HoistModel {
@@ -277,10 +276,10 @@ export class SampleGridModel extends HoistModel {
 
     async doLoadAsync(loadSpec) {
         const {trades, summary} = await XH.fetchJson({url: 'trade'}),
-            gridModel = this.gridModel;
+            {gridModel} = this;
 
         gridModel.loadData(trades, summary);
-        if (gridModel.isReady && !gridModel.hasSelection) gridModel.selectFirst();
+        await gridModel.preSelectFirstAsync();
     }
 
     showInfoToast(rec) {
@@ -315,6 +314,6 @@ export class SampleGridModel extends HoistModel {
         // Always select first when regrouping.
         const groupByArr = groupBy ? groupBy.split(',') : [];
         this.gridModel.setGroupBy(groupByArr);
-        wait(1).then(() => this.gridModel.selectFirst());
+        this.gridModel.preSelectFirstAsync();
     }
 }
