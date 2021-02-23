@@ -261,10 +261,7 @@ export class SampleGridModel extends HoistModel {
             {
                 field: 'comment',
                 flex: true,
-                agOptions: {
-                    autoHeight: true,
-                    wrapText: true
-                }
+                autoHeight: true
             }
         ]
     });
