@@ -1,4 +1,5 @@
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {FieldType} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {mean, random, reduce, sample, takeRight, times} from 'lodash';
@@ -33,6 +34,12 @@ export class GridTestModel extends HoistModel {
     @bindable showSummary = false;
     // True to use tree root node as summary row.
     @bindable loadRootAsSummary = false;
+    // True to turn off default XSS protection at store level.
+    @bindable disableXssProtection = false;
+    // Value > 0 will trigger creation of additional (null value) fields on the store to
+    // help stress-test stores with a wide array of fields.
+    @bindable extraFieldCount = 0;
+
     @bindable disableSelect = false;
 
     @bindable colChooserCommitOnChange = true;
@@ -87,7 +94,9 @@ export class GridTestModel extends HoistModel {
                 this.colChooserWidth,
                 this.colChooserHeight,
                 this.restoreDefaultsWarning,
-                this.lockColumnGroups
+                this.lockColumnGroups,
+                this.disableXssProtection,
+                this.extraFieldCount
             ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
@@ -251,7 +260,30 @@ export class GridTestModel extends HoistModel {
     }
 
     createGridModel() {
-        const {persistType} = this;
+        const {persistType, disableXssProtection, extraFieldCount} = this,
+            storeConf = {disableXssProtection};
+
+        if (this.tree && this.showSummary && this.loadRootAsSummary) {
+            storeConf.loadRootAsSummary = true;
+        }
+
+        const FT = FieldType;
+        storeConf.fields = [
+            {name: 'symbol', type: FT.STRING},
+            {name: 'trader', type: FT.STRING},
+            {name: 'day', type: FT.NUMBER},
+            {name: 'mtd', displayName: 'MTD', type: FT.NUMBER},
+            {name: 'ytd', displayName: 'YTD', type: FT.NUMBER},
+            {name: 'volume', type: FT.NUMBER}
+        ];
+
+        if (extraFieldCount > 0) {
+            for (let i = 0; i <= extraFieldCount; i++) {
+                storeConf.fields.push({
+                    name: 'extraField' + i
+                });
+            }
+        }
 
         return new GridModel({
             persistWith: persistType ? {[persistType]: 'persistTest'} : null,
@@ -260,9 +292,7 @@ export class GridTestModel extends HoistModel {
             emptyText: 'No records found...',
             restoreDefaultsWarning: this.restoreDefaultsWarning,
             lockColumnGroups: this.lockColumnGroups,
-            store: this.tree && this.showSummary && this.loadRootAsSummary ? {
-                loadRootAsSummary: true
-            }: undefined,
+            store: storeConf,
             treeMode: this.tree,
             showSummary: this.showSummary,
             colChooserModel: {
@@ -277,7 +307,6 @@ export class GridTestModel extends HoistModel {
             columns: [
                 {
                     field: 'id',
-                    headerName: 'ID',
                     width: 140,
                     isTreeColumn: this.tree
                 },
@@ -297,17 +326,12 @@ export class GridTestModel extends HoistModel {
                     groupId: 'pnl',
                     headerName: 'P&L',
                     children: [
-                        {
-                            field: 'day',
-                            highlightOnChange: true,
-                            ...pnlColumn
-                        },
-                        {field: 'mtd', headerName: 'MTD', ...pnlColumn},
-                        {field: 'ytd', headerName: 'YTD', ...pnlColumn}
+                        {field: 'day', highlightOnChange: true, ...pnlColumn},
+                        {field: 'mtd', ...pnlColumn},
+                        {field: 'ytd', ...pnlColumn}
                     ]
                 },
                 {
-                    headerName: 'Volume',
                     field: 'volume',
                     align: 'right',
                     width: 130,
@@ -319,7 +343,6 @@ export class GridTestModel extends HoistModel {
                     })
                 },
                 {
-                    headerName: 'Complex',
                     field: 'complex',
                     align: 'right',
                     width: 130,

@@ -133,6 +133,18 @@ const bbar1 = hoistCmp.factory(
                 bind: 'autosizeMode',
                 options: ['disabled', 'onDemand']
             })
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'disableXssProtection',
+            label: 'Disable XSS',
+            labelAlign: 'left'
+        }),
+        toolbarSep(),
+        label('Extra Fields'),
+        numberInput({
+            bind: 'extraFieldCount',
+            width: 80
         })
     )
 );
