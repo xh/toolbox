@@ -2,7 +2,7 @@ import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {FieldType} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {mean, random, reduce, sample, takeRight, times} from 'lodash';
+import {mean, random, reduce, sample, takeRight, times, cloneDeep} from 'lodash';
 import {start} from '@xh/hoist/promise';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 
@@ -124,7 +124,7 @@ export class GridTestModel extends HoistModel {
         if (!this._data) {
             this.genTestData();
         }
-        this.loadData(this._data, this._summaryData);
+        this.loadData(cloneDeep(this._data), this._summaryData);
     }
 
     clearGrid() {
