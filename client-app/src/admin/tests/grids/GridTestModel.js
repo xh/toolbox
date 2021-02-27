@@ -23,7 +23,7 @@ export class GridTestModel extends HoistModel {
     persistWith = {localStorageKey: 'persistTest'};
 
     // Total count (approx) of all nodes generated (parents + children).
-    @bindable recordCount = 5000;
+    @bindable recordCount = 200000;
     // Loop x times over nodes, randomly selecting a note and twiddling data.
     @bindable twiddleCount = Math.round(this.recordCount * .10);
     // Prefix for all IDs - change to ensure no IDs re-used across data gens.
@@ -35,7 +35,7 @@ export class GridTestModel extends HoistModel {
     // True to use tree root node as summary row.
     @bindable loadRootAsSummary = false;
     // True to turn off default XSS protection at store level.
-    @bindable disableXssProtection = false;
+    @bindable disableXssProtection = true;
     // Value > 0 will trigger creation of additional (null value) fields on the store to
     // help stress-test stores with a wide array of fields.
     @bindable extraFieldCount = 0;
@@ -106,6 +106,7 @@ export class GridTestModel extends HoistModel {
             },
             debounce: 100
         });
+        window.gm = this;
 
         this.addReaction({
             track: () =>  this.recordCount,
