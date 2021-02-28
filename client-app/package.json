@@ -30,7 +30,7 @@
     "@ag-grid-enterprise/all-modules": "~25.0.1",
     "@auth0/auth0-spa-js": "~1.13.6",
     "@fortawesome/free-brands-svg-icons": "~5.15.2",
-    "@xh/hoist": "38.1.1",
+    "@xh/hoist": "^39.0.0-SNAPSHOT",
     "@xh/package-template": "2.0.0",
     "highcharts": "~8.2.2",
     "react": "~17.0.1",
