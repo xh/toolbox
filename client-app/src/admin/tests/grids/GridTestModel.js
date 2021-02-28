@@ -2,9 +2,10 @@ import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {FieldType} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {mean, random, reduce, sample, takeRight, times, cloneDeep} from 'lodash';
-import {start} from '@xh/hoist/promise';
+import {cloneDeep} from 'lodash';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
+import {GridTestData} from './GridTestData';
+import {GridTestMetrics} from './GridTestMetrics';
 
 const pnlColumn = {
     absSort: true,
@@ -24,7 +25,7 @@ export class GridTestModel extends HoistModel {
 
     // Total count (approx) of all nodes generated (parents + children).
     @bindable recordCount = 200000;
-    // Loop x times over nodes, randomly selecting a note and twiddling data.
+    // Number of random records to perturb
     @bindable twiddleCount = Math.round(this.recordCount * .10);
     // Prefix for all IDs - change to ensure no IDs re-used across data gens.
     @bindable idSeed = 1;
@@ -59,21 +60,15 @@ export class GridTestModel extends HoistModel {
     @persist.with({path: 'gridPersistType', buffer: 500})  // test persist.with!
     persistType = null;
 
-    // Generated data in tree
-    _data;
-    _summaryData;
+    @managed
+    data = new GridTestData();
+
+    @managed
+    metrics = new GridTestMetrics();
 
     @managed
     @observable.ref
     gridModel;
-
-    @bindable gridUpdateTime = null;
-    @bindable avgGridUpdateTime = null;
-    _gridUpdateTimes = [];
-
-    @bindable gridLoadTime = null;
-    @bindable avgGridLoadTime = null;
-    _gridLoadTimes = [];
 
     constructor() {
         super();
@@ -115,149 +110,40 @@ export class GridTestModel extends HoistModel {
     }
 
     clearData() {
-        this._data = null;
+        this.data.clear();
+        this.metrics.clear();
     }
 
     async doLoadAsync(loadSpec) {
+        const {data, metrics, gridModel} = this;
         if (loadSpec.isAutoRefresh) return; // avoid auto-refresh confusing our tests here
 
-        if (!this._data) {
-            this.genTestData();
+        if (data.isEmpty) {
+            data.generate(this);
         }
-        this.loadData(cloneDeep(this._data), this._summaryData);
+        metrics.runAsLoad(() => {
+            gridModel.loadData(cloneDeep(data.rows), cloneDeep(data.summary));
+        });
     }
 
     clearGrid() {
-        this._gridLoadTimes = [];
-        this.loadData([]);
-    }
-
-
-    loadData(data, summaryData) {
-        const loadStart = Date.now();
-        return start(() => {
-            this.gridModel.loadData(data, summaryData);
-        }).linkTo(
-            this.loadModel
-        ).finally(() => {
-            this.setGridLoadTime(Date.now() - loadStart);
-
-            this._gridLoadTimes = takeRight([...this._gridLoadTimes, this.gridLoadTime], 10);
-            this.setAvgGridLoadTime(mean(this._gridLoadTimes));
-
-            this.setGridUpdateTime(null);
-            this.setAvgGridUpdateTime(null);
-            this._gridUpdateTimes = [];
-
+        this.metrics.clear();
+        this.metrics.runAsLoad(() => {
+            this.gridModel.clear();
         });
     }
 
-    updateData(updates) {
-        const loadStart = Date.now();
-        return start(() => {
-            this.gridModel.updateData(updates);
-        }).finally(() => {
-            this.setGridUpdateTime(Date.now() - loadStart);
-            this._gridUpdateTimes = takeRight([...this._gridUpdateTimes, this.gridUpdateTime], 10);
-
-            this.setAvgGridUpdateTime(mean(this._gridUpdateTimes));
-        });
-    }
-
-
-    genTestData() {
-        this._data = [];
-        let count = 0;
-        const idSeed = this.idSeed;
-
-        while (count < this.recordCount) {
-            let symbol = 'Symbol ' + count,
-                trader = 'Trader ' + count % (this.recordCount/10);
-
-            count++;
-            const pos = {
-                id: `${idSeed}~${symbol}`,
-                trader,
-                symbol,
-                day: random(-80000, 100000),
-                mtd: random(-500000, 500000),
-                ytd: random(-1000000, 2000000),
-                volume: random(1000, 2000000)
-            };
-
-            if (this.tree) {
-                const childCount = random(0, 10),
-                    maxT = childCount - 1;
-                let dayRem = pos.day, 
-                    mtdRem = pos.mtd, 
-                    ytdRem = pos.ytd, 
-                    volRem = pos.volume;
-
-                pos.children = times(childCount, (t) => {
-                    trader = 'trader' + t;
-                    count++;
-                    const child = {
-                        id: `${idSeed}~${symbol}~${trader}`,
-                        trader,
-                        symbol,
-                        day: t < maxT ? random(Math.min(0, dayRem), Math.max(0, dayRem)) : dayRem,
-                        mtd: t < maxT ? random(Math.min(0, mtdRem), Math.max(0, mtdRem)) : mtdRem,
-                        ytd: t < maxT ? random(Math.min(0, ytdRem), Math.max(0, ytdRem)) : ytdRem,
-                        volume: t < maxT ? random(0, volRem) : volRem
-                    };
-                    dayRem -= child.day;
-                    mtdRem -= child.mtd;
-                    ytdRem -= child.ytd;
-                    volRem -= child.volume;
-
-                    return child;
-                });
-            }
-
-            this._data.push(pos);
-        }
-
-        if (this.showSummary) {
-            const summaryData = reduce(this._data, (sum, val) => {
-                sum.day += val.day;
-                sum.mtd += val.mtd;
-                sum.ytd += val.ytd;
-                sum.volume += val.volume;
-                return sum;
-            },
-            {id: `${idSeed}~summaryRow`, day: 0, mtd: 0, ytd: 0, volume: 0}
-            );
-            if (this.tree && this.loadRootAsSummary) {
-                summaryData.children = this._data;
-                this._data = [summaryData];
-                this._summaryData = null;
+    twiddleData(mode) {
+        const {gridModel, data, twiddleCount, metrics} = this;
+        metrics.runAsUpdate(() => {
+            if (mode === 'update') {
+                const update = data.generateUpdates(twiddleCount);
+                gridModel.updateData(update);
             } else {
-                this._summaryData = summaryData;
+                data.applyUpdates(twiddleCount);
+                gridModel.loadData(cloneDeep(data.rows), cloneDeep(data.summary));
             }
-        } else {
-            this._summaryData = null;
-        }
-
-        console.log(`Generated ${count} test records.`);
-    }
-
-    twiddleData() {
-        if (!this._data) {
-            console.log('No data to twiddle');
-            return;
-        }
-
-        const newPositions = [];
-        times(this.twiddleCount, () => {
-            const pos = sample(this.gridModel.store.allRecords);
-            newPositions.push({
-                ...pos.raw,
-                day: random(-80000, 100000),
-                volume: random(1000, 1200000)
-            });
         });
-
-        this.updateData({update: newPositions});
     }
 
     createGridModel() {
@@ -366,7 +252,7 @@ export class GridTestModel extends HoistModel {
     tearDown() {
         XH.safeDestroy(this.gridModel);
         this.gridModel = this.createGridModel();
-        this._data = null;
+        this.testData.clear();
         this.runTimes = {};
     }
 }

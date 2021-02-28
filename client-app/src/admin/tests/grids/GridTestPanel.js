@@ -58,7 +58,7 @@ const tbar = hoistCmp.factory(
         button({
             text: 'Generate Data',
             icon: Icon.gears(),
-            onClick: () => model.genTestData()
+            onClick: () => model.testData.generate()
         }),
         toolbarSep(),
         refreshButton({
@@ -80,11 +80,6 @@ const tbar = hoistCmp.factory(
             icon: Icon.crosshairs(),
             onClick: () => model.gridModel.ensureSelectionVisibleAsync()
         }),
-        button({
-            text: 'Autosize Columns',
-            icon: Icon.arrowsLeftRight(),
-            onClick: () => model.gridModel.autosizeAsync()
-        }),
         toolbarSep(),
         tooltip({
             content: '# records to randomly change',
@@ -92,14 +87,20 @@ const tbar = hoistCmp.factory(
                 bind: 'twiddleCount',
                 enableShorthandUnits: true,
                 selectOnFocus: true,
-                width: 80
+                width: 60
             })
         }),
         button({
-            text: 'Twiddle',
+            text: 'As Update',
             icon: Icon.diff(),
             intent: 'primary',
-            onClick: () => model.twiddleData()
+            onClick: () => model.twiddleData('update')
+        }),
+        button({
+            text: 'As Reload',
+            icon: Icon.diff(),
+            intent: 'primary',
+            onClick: () => model.twiddleData('load')
         }),
         filler(),
         span(formatRunTimes(model))
@@ -221,6 +222,6 @@ const bbar3 = hoistCmp.factory(
 
 function formatRunTimes(model) {
     const fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null}) : 'N/A',
-        {gridLoadTime: lt, avgGridLoadTime: avgLt, gridUpdateTime: ut, avgGridUpdateTime: avgUt} = model;
+        {loadTime: lt, avgLoadTime: avgLt, updateTime: ut, avgUpdateTime: avgUt} = model.metrics;
     return `Load: ${fmt(lt)} ${avgLt ? `(${fmt(avgLt)}) ` : ''}• Update: ${fmt(ut)} ${avgUt ? `(${fmt(avgUt)}) ` : ''}`;
 }
