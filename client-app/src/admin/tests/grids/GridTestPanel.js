@@ -1,13 +1,13 @@
-import {filler, label, span, vbox} from '@xh/hoist/cmp/layout';
-import {fmtNumber} from '@xh/hoist/format';
-import {creates, hoistCmp} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/cmp/store';
-import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {numberInput, switchInput, select, textInput} from '@xh/hoist/desktop/cmp/input';
-import {button, refreshButton, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {grid} from '@xh/hoist/cmp/grid';
+import {filler, label, span, vbox} from '@xh/hoist/cmp/layout';
+import {storeFilterField} from '@xh/hoist/cmp/store';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {button, colChooserButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {fmtNumber} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon';
 import {tooltip} from '@xh/hoist/kit/blueprint';
 import {GridTestModel} from './GridTestModel';
 
@@ -171,14 +171,7 @@ const bbar2 = hoistCmp.factory(
                 ]
             })
         }),
-        storeFilterField(),
-        toolbarSep(),
-        label('Restore Warning'),
-        textInput({
-            bind: 'restoreDefaultsWarning',
-            enableClear: true,
-            width: 300
-        })
+        storeFilterField()
     )
 );
 

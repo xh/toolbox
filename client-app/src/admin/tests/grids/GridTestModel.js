@@ -48,8 +48,6 @@ export class GridTestModel extends HoistModel {
     @bindable colChooserWidth = null;
     @bindable colChooserHeight = null;
 
-    @bindable restoreDefaultsWarning = GridModel.DEFAULT_RESTORE_DEFAULTS_WARNING;
-
     @bindable lockColumnGroups = true;
 
     @bindable
@@ -88,7 +86,6 @@ export class GridTestModel extends HoistModel {
                 this.colChooserShowRestoreDefaults,
                 this.colChooserWidth,
                 this.colChooserHeight,
-                this.restoreDefaultsWarning,
                 this.lockColumnGroups,
                 this.disableXssProtection,
                 this.extraFieldCount
@@ -181,7 +178,6 @@ export class GridTestModel extends HoistModel {
             selModel: {mode: 'multiple'},
             sortBy: 'id',
             emptyText: 'No records found...',
-            restoreDefaultsWarning: this.restoreDefaultsWarning,
             lockColumnGroups: this.lockColumnGroups,
             store: storeConf,
             treeMode: this.tree,
