@@ -145,7 +145,10 @@ export class GridTestModel extends HoistModel {
 
     createGridModel() {
         const {persistType, disableXssProtection, extraFieldCount} = this,
-            storeConf = {};
+            storeConf = {
+                freezeData: false,
+                idEncodesTreePath: true
+            };
 
         if (disableXssProtection) {
             storeConf.fieldDefaults = {disableXssProtection};
