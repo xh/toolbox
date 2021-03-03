@@ -52,7 +52,7 @@ const tbar = hoistCmp.factory(
                 bind: 'recordCount',
                 enableShorthandUnits: true,
                 selectOnFocus: true,
-                width: 100
+                width: 75
             })
         }),
         button({
@@ -75,11 +75,6 @@ const tbar = hoistCmp.factory(
             icon: Icon.skull(),
             onClick: () => model.tearDown()
         }),
-        button({
-            text: 'Scroll to Selected',
-            icon: Icon.crosshairs(),
-            onClick: () => model.gridModel.ensureSelectionVisibleAsync()
-        }),
         toolbarSep(),
         tooltip({
             content: '# records to randomly change',
@@ -91,13 +86,13 @@ const tbar = hoistCmp.factory(
             })
         }),
         button({
-            text: 'As Update',
+            text: 'Update',
             icon: Icon.diff(),
             intent: 'primary',
             onClick: () => model.twiddleData('update')
         }),
         button({
-            text: 'As Reload',
+            text: 'Reload',
             icon: Icon.diff(),
             intent: 'primary',
             onClick: () => model.twiddleData('load')
@@ -171,7 +166,12 @@ const bbar2 = hoistCmp.factory(
                 ]
             })
         }),
-        storeFilterField()
+        storeFilterField(),
+        button({
+            text: 'Scroll to Sel',
+            icon: Icon.crosshairs(),
+            onClick: () => model.gridModel.ensureSelectionVisibleAsync()
+        })
     )
 );
 

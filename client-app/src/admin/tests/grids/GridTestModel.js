@@ -26,7 +26,7 @@ export class GridTestModel extends HoistModel {
     // Total count (approx) of all nodes generated (parents + children).
     @bindable recordCount = 200000;
     // Number of random records to perturb
-    @bindable twiddleCount = Math.round(this.recordCount * .10);
+    @bindable twiddleCount = Math.round(this.recordCount * .50);
     // Prefix for all IDs - change to ensure no IDs re-used across data gens.
     @bindable idSeed = 1;
     // True to generate data in tree structure.
@@ -39,7 +39,7 @@ export class GridTestModel extends HoistModel {
     @bindable disableXssProtection = true;
     // Value > 0 will trigger creation of additional (null value) fields on the store to
     // help stress-test stores with a wide array of fields.
-    @bindable extraFieldCount = 0;
+    @bindable extraFieldCount = 50;
 
     @bindable disableSelect = false;
 
