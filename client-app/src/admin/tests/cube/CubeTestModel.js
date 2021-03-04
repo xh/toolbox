@@ -1,7 +1,7 @@
 import {GridModel, timeCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
-import {bindable, comparer, makeObservable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {start} from '@xh/hoist/promise';
 import {isEmpty} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
@@ -46,7 +46,7 @@ export class CubeTestModel extends HoistModel {
         this.addReaction({
             track: () => this.getQuery(),
             run: () => this.executeQueryAsync(),
-            equals: comparer.structural
+            equals: 'structural'
         });
     }
 
