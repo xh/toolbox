@@ -9,7 +9,7 @@ export class AppModel extends HoistAppModel {
         return XH.getPref('gridSizingMode');
     }
 
-    async preAuthInitAsync() {
+    static async preAuthAsync() {
         await XH.installServicesAsync(OauthService);
     }
 
