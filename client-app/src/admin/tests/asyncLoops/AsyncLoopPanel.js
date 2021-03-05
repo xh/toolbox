@@ -1,5 +1,5 @@
 import {hspacer, span} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistModel} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {creates} from '@xh/hoist/core/modelspec/creates';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
@@ -9,11 +9,12 @@ import {fmtDateTime} from '@xh/hoist/format';
 import {fmtNumber} from '@xh/hoist/format/FormatNumber';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable, computed} from '@xh/hoist/mobx';
-import {forEachAsync, whileAsync} from '@xh/hoist/utils/async';
-import {logDebug} from '@xh/hoist/utils/js';
+import {forEachAsync, Timer, whileAsync} from '@xh/hoist/utils/async';
+import {withDebug} from '@xh/hoist/utils/js';
 import {sampleGrid} from '../../../desktop/common';
 import {times} from 'lodash';
 import {wait} from '@xh/hoist/promise';
+import {SECONDS} from '@xh/hoist/utils/datetime';
 
 /**
  * Test to demonstrate use of {@see whileAsync} and its more common cousin {@see forEachAsync}.
@@ -49,6 +50,12 @@ const tbar = hoistCmp.factory(({model}) => {
                 options: ['forEach', 'while', 'forEachAsync', 'whileAsync']
             }),
             toolbarSep(),
+            toolbarSep(),
+            'Auto-Refresh (secs):',
+            select({
+                bind: 'refreshInterval',
+                options: [-1, 5, 10, 30]
+            }),
             button({
                 text: isPending ? 'Working...' : 'Run',
                 disabled: isPending,
@@ -67,6 +74,12 @@ class Model extends HoistModel {
     @bindable iterations = 1000 * 1000;
     @bindable lastRunDuration = null;
     @bindable loopType = 'forEachAsync';
+    @bindable refreshInterval = -1;
+
+    @managed timer = Timer.create({
+        runFn: () => this.refreshAsync(),
+        interval: () => this.refreshInterval * SECONDS
+    });
 
     constructor() {
         super();
@@ -95,28 +108,30 @@ class Model extends HoistModel {
     async runLoopAsync() {
         const {iterations, collection, loopType} = this,
             options = {debug: loopType};
-        let i = 0;
-        logDebug([`Looping ${iterations} times with ${loopType}`]);
-        switch (loopType) {
-            case 'forEachAsync':
-                return await forEachAsync(collection, (it) => {
-                    this.testFn(it);
-                }, options);
-            case 'whileAsync':
-                return await whileAsync(() => i < iterations, () => {
-                    this.testFn(collection[i++]);
-                }, options);
-            case 'forEach':
-                collection.forEach(it => {
-                    this.testFn(it);
-                });
-                return;
-            case 'while':
-                while (i < iterations) {
-                    this.testFn(collection[i++]);
-                }
-                return;
-        }
+
+        await withDebug([`Looping ${iterations} times with ${loopType}`], async () => {
+            let i = 0;
+            switch (loopType) {
+                case 'forEachAsync':
+                    return await forEachAsync(collection, (it) => {
+                        this.testFn(it);
+                    }, options);
+                case 'whileAsync':
+                    return await whileAsync(() => i < iterations, () => {
+                        this.testFn(collection[i++]);
+                    }, options);
+                case 'forEach':
+                    collection.forEach(it => {
+                        this.testFn(it);
+                    });
+                    return;
+                case 'while':
+                    while (i < iterations) {
+                        this.testFn(collection[i++]);
+                    }
+                    return;
+            }
+        });
     }
 
     genRandomObject() {
