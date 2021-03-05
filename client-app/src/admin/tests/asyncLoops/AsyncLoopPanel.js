@@ -2,16 +2,18 @@ import {hspacer, span} from '@xh/hoist/cmp/layout';
 import {hoistCmp, HoistModel} from '@xh/hoist/core';
 import {creates} from '@xh/hoist/core/modelspec/creates';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtDateTime} from '@xh/hoist/format';
 import {fmtNumber} from '@xh/hoist/format/FormatNumber';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {whileAsync} from '@xh/hoist/utils/async';
+import {bindable, makeObservable, computed} from '@xh/hoist/mobx';
+import {forEachAsync, whileAsync} from '@xh/hoist/utils/async';
 import {logDebug} from '@xh/hoist/utils/js';
 import {sampleGrid} from '../../../desktop/common';
+import {times} from 'lodash';
+import {wait} from '@xh/hoist/promise';
 
 /**
  * Test to demonstrate use of {@see whileAsync} and its more common cousin {@see forEachAsync}.
@@ -19,7 +21,7 @@ import {sampleGrid} from '../../../desktop/common';
 export const asyncLoopPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
-    render({model}) {
+    render() {
         return panel({
             title: 'Run to process x iterations of random work while attempting to interact with the grid',
             icon: Icon.refresh(),
@@ -41,10 +43,10 @@ const tbar = hoistCmp.factory(({model}) => {
                 width: 100
             }),
             toolbarSep(),
-            switchInput({
-                bind: 'runAsync',
-                label: 'Use whileAsync',
-                labelAlign: 'left'
+            'Loop Type:',
+            select({
+                bind: 'loopType',
+                options: ['forEach', 'while', 'forEachAsync', 'whileAsync']
             }),
             toolbarSep(),
             button({
@@ -53,7 +55,7 @@ const tbar = hoistCmp.factory(({model}) => {
                 icon: Icon.refresh(),
                 intent: 'primary',
                 outlined: true,
-                onClick: () => model.loadAsync()
+                onClick: () => wait(0).then(() => model.loadAsync())
             }),
             hspacer(),
             lastRunDuration ? span(`Last run took: ${fmtNumber(lastRunDuration)}ms`) : null
@@ -62,51 +64,58 @@ const tbar = hoistCmp.factory(({model}) => {
 });
 
 class Model extends HoistModel {
-    @bindable runAsync = true;
     @bindable iterations = 1000 * 1000;
     @bindable lastRunDuration = null;
+    @bindable loopType = 'forEachAsync';
 
     constructor() {
         super();
         makeObservable(this);
     }
 
-    async doLoadAsync(loadSpec) {
-        const start = Date.now();
-        if (this.runAsync) {
-            await this.runLoopAsync();
-        } else {
-            this.runLoop();
-        }
+    @computed
+    get collection() {
+        return times(this.iterations, () => ({}));
+    }
 
+    async doLoadAsync(loadSpec) {
+
+        if (loadSpec.loadNumber === 0) return;
+
+        const start = Date.now();
+        await wait(0);
+        await this.runLoopAsync();
         this.setLastRunDuration(Date.now() - start);
     }
 
-    async runLoopAsync() {
-        const {iterations} = this;
-        let runCount = 0,
-            ignoredOutput = [];
-
-        logDebug([`Looping ${iterations} times`, `async enabled`]);
-        await whileAsync(
-            () => runCount < iterations,
-            () => {
-                runCount++;
-                ignoredOutput.push(this.genRandomObject());
-            }
-        );
+    testFn(obj) {
+        obj.ignored = this.genRandomObject();
     }
 
-    // Async here only to support mask linking above.
-    runLoop() {
-        const {iterations} = this;
-        let runCount = 0,
-            ignoredOutput = [];
-
-        logDebug([`Looping ${iterations} times`, `async disabled`]);
-        while (runCount < iterations) {
-            runCount++;
-            ignoredOutput.push(this.genRandomObject());
+    async runLoopAsync() {
+        const {iterations, collection, loopType} = this,
+            options = {debug: loopType};
+        let i = 0;
+        logDebug([`Looping ${iterations} times with ${loopType}`]);
+        switch (loopType) {
+            case 'forEachAsync':
+                return await forEachAsync(collection, (it) => {
+                    this.testFn(it);
+                }, options);
+            case 'whileAsync':
+                return await whileAsync(() => i < iterations, () => {
+                    this.testFn(collection[i++]);
+                }, options);
+            case 'forEach':
+                collection.forEach(it => {
+                    this.testFn(it);
+                });
+                return;
+            case 'while':
+                while (i < iterations) {
+                    this.testFn(collection[i++]);
+                }
+                return;
         }
     }
 
