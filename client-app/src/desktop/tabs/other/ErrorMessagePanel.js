@@ -37,14 +37,15 @@ export const errorMessagePanel = hoistCmp.factory({
                 icon: Icon.skull(),
                 width: 700,
                 height: 350,
-                item: error ?
+                items: [
                     errorMessage({
                         error,
                         title: 'Something went wrong:',
                         actionButtonProps: {icon: Icon.refresh()},
                         actionFn: () => model.toggleError()
-                    }) :
+                    }),
                     vframe({
+                        omit: error,
                         items: [
                             'Everything is OK right now, but....',
                             button({
@@ -61,6 +62,7 @@ export const errorMessagePanel = hoistCmp.factory({
                         alignItems: 'center',
                         justifyContent: 'center'
                     })
+                ]
             })
         });
     }
@@ -88,6 +90,8 @@ class Model extends HoistModel {
             return foo.bar.baz;
         } catch (e) {
             this.setError(e);
+            // this.setError(<div>I'm an error!</div>);
+
         }
     }
 }
