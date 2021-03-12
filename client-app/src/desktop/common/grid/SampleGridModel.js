@@ -185,9 +185,8 @@ export class SampleGridModel extends HoistModel {
             },
             {
                 field: 'company',
-                flex: 2,
+                flex: 1,
                 minWidth: 200,
-                maxWidth: 350,
                 headerName: ({gridModel}) => {
                     let ret = 'Company';
                     if (gridModel.selectedRecord) {
