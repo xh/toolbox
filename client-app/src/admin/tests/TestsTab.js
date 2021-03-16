@@ -1,4 +1,5 @@
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
+import {asyncLoopPanel} from './asyncLoops/AsyncLoopPanel';
 import {GridTestPanel} from './grids/GridTestPanel';
 import {CubeTestPanel} from './cube/CubeTestPanel';
 import {WebSocketTestPanel} from './websocket/WebSocketTestPanel';
@@ -26,15 +27,16 @@ class TestsTabModel extends HoistModel {
     tabContainerModel = new TabContainerModel({
         route: 'default.tests',
         tabs: [
-            {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
-            {id: 'grid', title: 'Grid', content: GridTestPanel},
-            {id: 'dataView', title: 'Data View', content: dataViewTestPanel},
+            {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
             {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
-            {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel},
-            {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel},
+            {id: 'dataView', title: 'Data View', content: dataViewTestPanel},
             {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
+            {id: 'grid', title: 'Grid', content: GridTestPanel},
+            {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
+            {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel},
+            {id: 'select', title: 'Select', content: SelectTestPanel},
             {id: 'storeEditing', title: 'Store Editing', content: StoreEditingPanel},
-            {id: 'select', title: 'Select', content: SelectTestPanel}
+            {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel}
         ],
         switcher: {orientation: 'left'}
     });

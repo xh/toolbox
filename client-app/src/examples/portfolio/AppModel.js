@@ -10,12 +10,12 @@ export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
 
 export class AppModel extends HoistAppModel {
 
-    get gridSizingMode() {
-        return XH.getPref('gridSizingMode');
+    static async preAuthAsync() {
+        await XH.installServicesAsync(OauthService);
     }
 
-    async preAuthInitAsync() {
-        await XH.installServicesAsync(OauthService);
+    get gridSizingMode() {
+        return XH.getPref('gridSizingMode');
     }
 
     async initAsync() {
