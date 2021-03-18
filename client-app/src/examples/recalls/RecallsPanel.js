@@ -1,5 +1,5 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
-import {a, filler, p, span, vframe} from '@xh/hoist/cmp/layout';
+import {a, filler, p, placeholder, span, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
@@ -7,7 +7,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {PERSIST_APP} from './AppModel';
-import {detailsPanel} from './DetailsPanel';
+import {detailsPanel} from './detail/DetailsPanel';
 import './RecallsPanel.scss';
 import {RecallsPanelModel} from './RecallsPanelModel';
 
@@ -15,19 +15,18 @@ export const recallsPanel = hoistCmp.factory({
     model: creates(RecallsPanelModel),
 
     render({model}) {
-        const {detailsPanelModel} = model,
-            {currentRecord} = detailsPanelModel;
+        const {currentRecord} = model.detailsPanelModel;
 
         return vframe(
             panel({
+                tbar: tbar(),
                 item: grid(),
-                mask: 'onLoad',
-                tbar: tbar()
+                mask: 'onLoad'
             }),
             panel({
-                title: currentRecord ? currentRecord.data.brandName : 'Select a drug to see its details',
+                title: currentRecord?.data.brandName ?? 'Drug Details',
                 icon: Icon.detail(),
-                item: detailsPanel(),
+                item: currentRecord ? detailsPanel() : placeholder('Select a drug above to view its details.'),
                 className: 'toolbox-recalls-detail-panel',
                 compactHeader: true,
                 model: {

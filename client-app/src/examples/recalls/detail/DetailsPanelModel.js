@@ -3,7 +3,7 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class DetailsPanelModel extends HoistModel {
 
-    @bindable.ref currentRecord = null;
+    @bindable.ref currentRecord;
 
     constructor() {
         super();

@@ -1,12 +1,12 @@
-import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
-import {DetailsPanelModel} from './DetailsPanelModel';
-import {PERSIST_APP} from './AppModel';
 import {uniqBy} from 'lodash';
+import {PERSIST_APP} from './AppModel';
+import {DetailsPanelModel} from './detail/DetailsPanelModel';
 
 export class RecallsPanelModel extends HoistModel {
 
@@ -80,15 +80,14 @@ export class RecallsPanelModel extends HoistModel {
                 width: 200,
                 hidden: true
             }
-
         ]
     });
 
     constructor() {
         super();
         makeObservable(this);
-        const {gridModel} = this;
 
+        const {gridModel} = this;
         this.addReaction({
             track: () => gridModel.selectedRecord,
             run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
