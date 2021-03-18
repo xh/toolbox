@@ -36,7 +36,6 @@ export class RecallsPanelModel extends HoistModel {
         enableExport: true,
         rowBorders: true,
         showHover: true,
-        sizingMode: XH.appModel.gridSizingMode,
         persistWith: this.persistWith,
         columns: [
             {
