@@ -41,22 +41,10 @@ export const recallsPanel = hoistCmp.factory({
                         enableClear: true,
                         outlined: true,
                         items: [
-                            button({
-                                text: 'Class',
-                                value: 'classification'
-                            }),
-                            button({
-                                text: 'Brand Name',
-                                value: 'brandName'
-                            }),
-                            button({
-                                text: 'Status',
-                                value: 'status'
-                            }),
-                            button({
-                                text: 'Recalling Firm',
-                                value: 'recallingFirm'
-                            })
+                            button({text: 'Class', value: 'classification'}),
+                            button({text: 'Brand Name', value: 'brandName'}),
+                            button({text: 'Status', value: 'status'}),
+                            button({text: 'Recalling Firm', value: 'recallingFirm'})
                         ]
                     }),
                     filler(),

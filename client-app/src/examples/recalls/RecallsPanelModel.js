@@ -124,6 +124,8 @@ export class RecallsPanelModel extends HoistModel {
                 loadSpec
             });
 
+            if (loadSpec.isStale) return;
+
             // Approximate (and enforce) a unique id for this rather opaque API
             entries.forEach(it => {
                 it.id = it.openfda.brand_name[0] + it.recall_number;
