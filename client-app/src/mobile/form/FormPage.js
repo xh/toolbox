@@ -175,6 +175,7 @@ const setFocusMenu = hoistCmp.factory(
         return menuButton({
             icon: Icon.target(),
             text: 'Focus',
+            title: 'Focus',
             menuPosition: 'top',
             menuItems
         });
