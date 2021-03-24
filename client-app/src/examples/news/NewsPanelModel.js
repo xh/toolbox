@@ -8,8 +8,6 @@ export class NewsPanelModel extends HoistModel {
 
     SEARCH_FIELDS = ['title', 'text'];
 
-    @bindable storeFilterRaw = null;
-
     @managed
     viewModel = new DataViewModel({
         sortBy: 'published|desc',
