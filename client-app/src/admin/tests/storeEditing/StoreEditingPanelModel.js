@@ -3,10 +3,10 @@ import {GridModel, dateCol, boolCheckCol} from '@xh/hoist/cmp/grid';
 import {
     actionCol,
     calcActionColWidth,
-    InlineTextEditor,
-    InlineNumberEditor,
-    InlineDateEditor,
-    InlineCheckboxEditor
+    inlineTextEditor,
+    inlineNumberEditor,
+    inlineDateEditor,
+    inlineCheckboxEditor
 } from '@xh/hoist/desktop/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
 import {action, makeObservable} from '@xh/hoist/mobx';
@@ -18,6 +18,7 @@ export class StoreEditingPanelModel extends HoistModel {
     gridModel = new GridModel({
         selModel: 'none',
         showCellFocus: true,
+        fullRowEditing: true,
         store: {
             fields: [
                 {
@@ -26,14 +27,8 @@ export class StoreEditingPanelModel extends HoistModel {
                     defaultValue: 'Enter a Name'
                 },
                 {
-                    name: 'description',
-                    type: 'string',
-                    defaultValue: 'Enter a Description'
-                },
-                {
                     name: 'amount',
-                    type: 'number',
-                    defaultValue: 0
+                    type: 'number'
                 },
                 {
                     name: 'date',
@@ -46,6 +41,10 @@ export class StoreEditingPanelModel extends HoistModel {
                 },
                 {
                     name: 'category',
+                    type: 'string'
+                },
+                {
+                    name: 'Description',
                     type: 'string'
                 }
             ]
@@ -81,41 +80,37 @@ export class StoreEditingPanelModel extends HoistModel {
                 ]
             },
             {
+                field: 'isActive',
+                ...boolCheckCol,
+                headerName: '?',
+                editable: true,
+                editor: inlineCheckboxEditor
+            },
+            {
                 field: 'name',
                 editable: true,
                 width: 200,
-                agOptions: {
-                    cellEditorFramework: InlineTextEditor
-                }
+                editor: inlineTextEditor
             },
             {
                 field: 'amount',
                 editable: true,
                 width: 100,
-                agOptions: {
-                    cellEditorFramework: InlineNumberEditor
-                }
+                editor: inlineNumberEditor
             },
             {
                 field: 'date',
                 ...dateCol,
                 editable: true,
-                agOptions: {
-                    cellEditorFramework: InlineDateEditor
-                }
-            },
-            {
-                field: 'isActive',
-                ...boolCheckCol,
-                headerName: '?',
-                editable: true,
-                agOptions: {
-                    cellEditorFramework: InlineCheckboxEditor
+                editor: inlineDateEditor,
+                editorParams: {
+                    inputProps: {
+                        minDate: new Date(2021, 3, 15)
+                    }
                 }
             },
             {
                 field: 'description',
-                editable: true,
                 width: 300
             }
         ]
