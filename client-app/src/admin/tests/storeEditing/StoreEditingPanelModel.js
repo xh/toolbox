@@ -16,9 +16,8 @@ export class StoreEditingPanelModel extends HoistModel {
 
     @managed
     gridModel = new GridModel({
-        selModel: 'none',
+        selModel: null,
         showCellFocus: true,
-        fullRowEditing: true,
         store: {
             fields: [
                 {
@@ -105,7 +104,7 @@ export class StoreEditingPanelModel extends HoistModel {
                 editor: inlineDateEditor,
                 editorParams: {
                     inputProps: {
-                        minDate: new Date(2021, 3, 15)
+                        minDate: new Date(2021, 2, 15)
                     }
                 }
             },
