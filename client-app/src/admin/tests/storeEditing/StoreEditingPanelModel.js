@@ -1,6 +1,13 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {GridModel} from '@xh/hoist/cmp/grid';
-import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
+import {GridModel, dateCol, boolCheckCol} from '@xh/hoist/cmp/grid';
+import {
+    actionCol,
+    calcActionColWidth,
+    InlineTextEditor,
+    InlineNumberEditor,
+    InlineDateEditor,
+    InlineCheckboxEditor
+} from '@xh/hoist/desktop/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
 import {action, makeObservable} from '@xh/hoist/mobx';
 import {isEmpty, max} from 'lodash';
@@ -9,15 +16,37 @@ export class StoreEditingPanelModel extends HoistModel {
 
     @managed
     gridModel = new GridModel({
+        selModel: 'none',
+        showCellFocus: true,
         store: {
             fields: [
                 {
                     name: 'name',
+                    type: 'string',
                     defaultValue: 'Enter a Name'
                 },
                 {
                     name: 'description',
+                    type: 'string',
                     defaultValue: 'Enter a Description'
+                },
+                {
+                    name: 'amount',
+                    type: 'number',
+                    defaultValue: 0
+                },
+                {
+                    name: 'date',
+                    type: 'date'
+                },
+                {
+                    name: 'isActive',
+                    type: 'bool',
+                    defaultValue: true
+                },
+                {
+                    name: 'category',
+                    type: 'string'
                 }
             ]
         },
@@ -54,7 +83,35 @@ export class StoreEditingPanelModel extends HoistModel {
             {
                 field: 'name',
                 editable: true,
-                width: 200
+                width: 200,
+                agOptions: {
+                    cellEditorFramework: InlineTextEditor
+                }
+            },
+            {
+                field: 'amount',
+                editable: true,
+                width: 100,
+                agOptions: {
+                    cellEditorFramework: InlineNumberEditor
+                }
+            },
+            {
+                field: 'date',
+                ...dateCol,
+                editable: true,
+                agOptions: {
+                    cellEditorFramework: InlineDateEditor
+                }
+            },
+            {
+                field: 'isActive',
+                ...boolCheckCol,
+                headerName: '?',
+                editable: true,
+                agOptions: {
+                    cellEditorFramework: InlineCheckboxEditor
+                }
             },
             {
                 field: 'description',
