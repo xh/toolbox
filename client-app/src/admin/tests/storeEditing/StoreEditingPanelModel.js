@@ -83,26 +83,26 @@ export class StoreEditingPanelModel extends HoistModel {
                 ...boolCheckCol,
                 headerName: '?',
                 editable: true,
-                editor: inlineCheckboxEditor
+                cellEditorElement: inlineCheckboxEditor
             },
             {
                 field: 'name',
                 editable: true,
                 width: 200,
-                editor: inlineTextEditor
+                cellEditorElement: inlineTextEditor
             },
             {
                 field: 'amount',
                 editable: true,
                 width: 100,
-                editor: inlineNumberEditor
+                cellEditorElement: inlineNumberEditor
             },
             {
                 field: 'date',
                 ...dateCol,
                 editable: true,
-                editor: inlineDateEditor,
-                editorParams: {
+                cellEditorElement: inlineDateEditor,
+                cellEditorParams: {
                     inputProps: {
                         minDate: new Date(2021, 2, 15)
                     }
