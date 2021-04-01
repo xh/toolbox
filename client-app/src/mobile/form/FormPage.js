@@ -59,10 +59,10 @@ const formCmp = hoistCmp.factory(
                     formField({
                         field: 'movie',
                         item: select({
+                            title: 'Select a Movie...',
                             options: movies,
                             enableFilter: true,
-                            enableFullscreen: true,
-                            fullscreenTitle: 'Select a Movie...'
+                            enableFullscreen: true
                         })
                     }),
                     formField({
