@@ -11,21 +11,21 @@ export const appNotificationsPanel = hoistCmp.factory(
     () => wrapper({
         links: [
             {url: '$HR/svc/EnvironmentService.js', notes: 'EnvironmentService checks for updated versions and alerts after a new release, if enabled.'},
-            {url: '$HR/desktop/appcontainer/AppBanner.js', notes: 'AppBanner Component'},
+            {url: '$HR/desktop/appcontainer/Banner.js', notes: 'Banner Component'},
             {url: '$HR/svc/IdleService.js', notes: 'Idle Service listens for user interactions and triggers the IdlePanel, if enabled.'},
             {url: '$HR/desktop/appcontainer/IdlePanel.js', notes: 'IdlePanel Component'}
         ],
         item: box({
             className: 'tb-app-notifications',
             items: [
-                appBannerTile(),
+                bannerTile(),
                 idleServiceTile()
             ]
         })
     })
 );
 
-const appBannerTile = hoistCmp.factory(
+const bannerTile = hoistCmp.factory(
     () => {
         return panel({
             title: 'App Update',
