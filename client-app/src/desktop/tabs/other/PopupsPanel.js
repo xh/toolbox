@@ -30,7 +30,7 @@ export const popupsPanel = hoistCmp.factory(
                         and <code>XH.prompt()</code> methods provide convenient APIs for apps to
                         trigger the display of Messages.
                     </p>
-                    <p>For non-modal notifications, consider using <code>XH.toast()</code>.</p>
+                    <p>For non-modal notifications, consider using <code>XH.toast()</code> or <code>XH.showBanner()</code>.</p>
                 </div>
             ),
             item: box({
@@ -220,6 +220,45 @@ export const popupsPanel = hoistCmp.factory(
                                 confirmProps: {text: 'Resolve to true'},
                                 cancelProps: {text: 'Resolve to false'}
                             }).then(responseToast)
+                        })
+                    ),
+                    row(
+                        button({
+                            ...popBtn(Icon.flag({className: 'xh-blue-dark'})),
+                            text: 'Banner',
+                            onClick: () => XH.showBanner({
+                                message: (
+                                    <span>
+                                        This is a Banner. Banners are highly configurable, and can display rich text by
+                                        accepting <code>strings</code>, <code>JSX</code>, and <code>React elements</code>.
+                                    </span>
+                                )
+                            })
+                        }),
+                        button({
+                            ...popBtn(Icon.flag({className: 'xh-blue-muted'})),
+                            text: 'with intent + icon',
+                            onClick: () => XH.showBanner({
+                                message: span('This is a Banner with ', code("intent: 'danger'")),
+                                icon: Icon.skull(),
+                                intent: 'danger'
+                            })
+                        }),
+                        button({
+                            ...popBtn(Icon.flag({className: 'xh-blue-muted'})),
+                            text: 'with action',
+                            onClick: () => XH.showBanner({
+                                message: 'This is a Banner with an action button. The action button can be configured to execute custom functionality.',
+                                icon: Icon.flag(),
+                                actionFn: () => {
+                                    XH.toast({message: 'Action button clicked!'});
+                                    XH.hideBanner();
+                                },
+                                actionButtonProps: {
+                                    text: 'Click me!',
+                                    intent: 'success'
+                                }
+                            })
                         })
                     ),
                     row(
