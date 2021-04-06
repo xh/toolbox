@@ -250,13 +250,13 @@ export const popupsPanel = hoistCmp.factory(
                             onClick: () => XH.showBanner({
                                 message: 'This is a Banner with an action button. The action button can be configured to execute custom functionality.',
                                 icon: Icon.flag(),
-                                actionFn: () => {
-                                    XH.toast({message: 'Action button clicked!'});
-                                    XH.hideBanner();
-                                },
                                 actionButtonProps: {
                                     text: 'Click me!',
-                                    intent: 'success'
+                                    intent: 'success',
+                                    onClick: () => {
+                                        XH.toast({message: 'Action button clicked!'});
+                                        XH.hideBanner();
+                                    }
                                 }
                             })
                         })
