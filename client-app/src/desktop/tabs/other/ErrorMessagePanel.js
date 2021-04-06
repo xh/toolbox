@@ -41,8 +41,10 @@ export const errorMessagePanel = hoistCmp.factory({
                     errorMessage({
                         error,
                         title: 'Something went wrong:',
-                        actionButtonProps: {icon: Icon.refresh()},
-                        actionFn: () => model.toggleError()
+                        actionButtonProps: {
+                            icon: Icon.refresh(),
+                            onClick: () => model.toggleError()
+                        }
                     }),
                     vframe({
                         omit: error,
@@ -90,8 +92,6 @@ class Model extends HoistModel {
             return foo.bar.baz;
         } catch (e) {
             this.setError(e);
-            // this.setError(<div>I'm an error!</div>);
-
         }
     }
 }
