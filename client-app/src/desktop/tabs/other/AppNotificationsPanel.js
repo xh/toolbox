@@ -11,7 +11,6 @@ export const appNotificationsPanel = hoistCmp.factory(
     () => wrapper({
         links: [
             {url: '$HR/svc/EnvironmentService.js', notes: 'EnvironmentService checks for updated versions and alerts after a new release, if enabled.'},
-            {url: '$HR/desktop/appcontainer/Banner.js', notes: 'Banner Component'},
             {url: '$HR/svc/IdleService.js', notes: 'Idle Service listens for user interactions and triggers the IdlePanel, if enabled.'},
             {url: '$HR/desktop/appcontainer/IdlePanel.js', notes: 'IdlePanel Component'}
         ],
