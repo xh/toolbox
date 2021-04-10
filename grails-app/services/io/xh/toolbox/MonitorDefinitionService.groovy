@@ -140,9 +140,18 @@ class MonitorDefinitionService extends BaseService {
      * Check the age of the most recent commit loaded from GitHub.
      */
     def gitHubMostRecentCommitAgeMins(MonitorResult result) {
-        Date maxDate = null
-        gitHubService.commitsByRepo.each {k, CommitHistory commitHistory ->
-            maxDate = [maxDate, commitHistory.commits.first().committedDate].max()
+        def repos = configService.getList('gitHubRepos', []),
+            maxDate = null
+
+        if (repos.empty) {
+            result.status = INACTIVE
+            result.message = "No GitHub repos configured for loading."
+            return
+        }
+
+        repos.each {repo ->
+            def commitHistory = gitHubService.getCommitsForRepo(repo)
+            maxDate = [maxDate, commitHistory.commits.first()?.committedDate].max()
         }
 
         if (maxDate) {
