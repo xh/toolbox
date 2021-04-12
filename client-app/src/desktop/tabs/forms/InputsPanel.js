@@ -112,8 +112,12 @@ const formContents = hoistCmp.factory(
                     }),
                     row({
                         field: 'jsonInput',
-                        layout: {height: 200},
-                        item: jsonInput()
+                        info: 'enableSearch, showCopyButton',
+                        layout: {height: 260},
+                        item: jsonInput({
+                            enableSearch: true,
+                            showCopyButton: true
+                        })
                     })
                 ]
             }),
