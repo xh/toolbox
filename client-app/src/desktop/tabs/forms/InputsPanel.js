@@ -243,11 +243,12 @@ const formContents = hoistCmp.factory(
                     }),
                     row({
                         field: 'select4',
-                        info: 'enableMulti',
+                        info: 'enableMulti, leftIcon',
                         item: select({
                             options: usStates,
                             enableClear: false,
                             enableMulti: true,
+                            leftIcon: Icon.globe(),
                             placeholder: 'Select state(s)...'
                         })
                     }),
