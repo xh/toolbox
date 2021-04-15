@@ -1,7 +1,6 @@
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {fragment, label, spacer, vspacer} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {TreeStyle} from '@xh/hoist/core/enums/TreeStyle';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {select, textInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
@@ -26,9 +25,9 @@ export const gridOptions = hoistCmp.factory({
                     omit: !model.treeMode,
                     options: [
                         {value: TreeStyle.NONE, label: 'None'},
-                        {value: TreeStyle.HIGHLIGHT_GROUPS, label: 'Highlight Groups'},
-                        {value: TreeStyle.GROUP_BORDERS, label: 'Group Borders'},
-                        {value: TreeStyle.HIGHLIGHT_GROUPS_WITH_BORDERS, label: 'Highlight Groups w/Borders'}
+                        {value: TreeStyle.HIGHLIGHTS, label: 'Highlight Groups'},
+                        {value: TreeStyle.BORDERS, label: 'Group Borders'},
+                        {value: TreeStyle.HIGHLIGHTS_AND_BORDERS, label: 'Highlight Groups w/Borders'}
                     ]
                 }),
                 vspacer(10),
@@ -48,7 +47,7 @@ export const gridOptions = hoistCmp.factory({
                     text: 'Scroll to selection',
                     icon: Icon.crosshairs(),
                     minimal: false,
-                    onClick: () => model.ensureSelectionVisible()
+                    onClick: () => model.ensureSelectionVisibleAsync()
                 })
             ]
         });

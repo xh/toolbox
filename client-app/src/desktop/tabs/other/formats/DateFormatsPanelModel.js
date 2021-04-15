@@ -1,12 +1,11 @@
 import moment from 'moment';
 import {HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import * as formatFunctions from '@xh/hoist/format/FormatDate';
 import {fmtDate} from '@xh/hoist/format';
 import {nilAwareFormat} from './Util';
 
-@HoistModel
-export class DateFormatsPanelModel {
+export class DateFormatsPanelModel extends HoistModel {
 
     // Inputs
     testData = [
@@ -40,6 +39,11 @@ export class DateFormatsPanelModel {
 
     get enableFmt() {
         return this.fnName === 'fmtDate';
+    }
+
+    constructor() {
+        super();
+        makeObservable(this);
     }
 
     //-----------------------------

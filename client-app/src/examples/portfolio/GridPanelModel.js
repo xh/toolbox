@@ -1,14 +1,11 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
-import {TreeStyle} from '@xh/hoist/core/enums/TreeStyle';
-import {bindable} from '@xh/hoist/mobx';
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {PERSIST_MAIN} from './AppModel';
 
-@HoistModel
-@LoadSupport
-export class GridPanelModel {
+export class GridPanelModel extends HoistModel {
 
     @managed
     panelSizingModel = new PanelModel({
@@ -29,6 +26,8 @@ export class GridPanelModel {
     }
 
     constructor({parentModel}) {
+        super();
+        makeObservable(this);
         this.parentModel = parentModel;
         this.gridModel = this.createGridModel();
     }
@@ -37,7 +36,7 @@ export class GridPanelModel {
         return new GridModel({
             persistWith: PERSIST_MAIN,
             treeMode: true,
-            treeStyle: TreeStyle.HIGHLIGHT_GROUPS_WITH_BORDERS,
+            treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'pnl|desc|abs',
             emptyText: 'No records found...',
             colChooserModel: true,

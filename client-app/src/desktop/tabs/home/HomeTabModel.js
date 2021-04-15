@@ -7,13 +7,13 @@ import {activityWidget} from './widgets/activity/ActivityWidget';
 import {roadmapWidget} from './widgets/roadmap/RoadmapWidget';
 import {welcomeWidget} from './widgets/WelcomeWidget';
 
-@HoistModel
-export class HomeTabModel {
+export class HomeTabModel extends HoistModel {
 
     @managed
     dashModel;
 
     constructor() {
+        super();
         this.dashModel = new DashContainerModel({
             persistWith: {localStorageKey: 'homeDashboard'},
             initialState: [{
@@ -81,6 +81,13 @@ export class HomeTabModel {
                     title: 'Hoist Commits',
                     content: activityWidget,
                     icon: Icon.icon({iconName: 'github', prefix: 'fab'})
+                }
+            ],
+            extraMenuItems: [
+                {
+                    text: 'Restore Default Layout',
+                    icon: Icon.reset(),
+                    actionFn: () => this.restoreDefaultsAsync()
                 }
             ]
         });

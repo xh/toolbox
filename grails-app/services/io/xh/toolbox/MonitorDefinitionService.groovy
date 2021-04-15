@@ -2,22 +2,32 @@ package io.xh.toolbox
 
 import groovy.time.TimeCategory
 import io.xh.hoist.BaseService
+import io.xh.hoist.config.ConfigService
 import io.xh.hoist.monitor.MonitorResult
 import io.xh.hoist.track.TrackLog
+import io.xh.toolbox.app.FileManagerService
+import io.xh.toolbox.app.GitHubService
+import io.xh.toolbox.app.NewsService
+import io.xh.toolbox.app.RecallsService
+import io.xh.toolbox.github.CommitHistory
+import io.xh.toolbox.portfolio.PortfolioService
 
 import static io.xh.hoist.monitor.MonitorStatus.OK
 import static io.xh.hoist.monitor.MonitorStatus.FAIL
 import static io.xh.hoist.monitor.MonitorStatus.WARN
+import static io.xh.hoist.monitor.MonitorStatus.INACTIVE
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 import static java.lang.Runtime.runtime
 import static java.lang.System.currentTimeMillis
 
 class MonitorDefinitionService extends BaseService {
 
-    def newsService
-    def fileManagerService
-    def recallsService
-    def portfolioService
+    ConfigService configService
+    FileManagerService fileManagerService
+    GitHubService gitHubService
+    NewsService newsService
+    PortfolioService portfolioService
+    RecallsService recallsService
 
     /**
      * Check the count of news stories loaded by NewsService
@@ -33,10 +43,10 @@ class MonitorDefinitionService extends BaseService {
     def lastUpdateAgeMins(MonitorResult result) {
         if (newsService.lastTimestamp) {
             def diffMs = currentTimeMillis() - newsService.lastTimestamp.time,
-                diffHours = Math.floor(diffMs / MINUTES)
-            result.metric = diffHours
+                diffMins = Math.floor(diffMs / MINUTES)
+            result.metric = diffMins
         } else {
-            result.metric = -1;
+            result.metric = -1
             result.status = FAIL
             result.message = 'Have not yet loaded any stories'
         }
@@ -103,6 +113,56 @@ class MonitorDefinitionService extends BaseService {
      */
     def pricesAgeMs(MonitorResult result) {
         result.metric = currentTimeMillis() - portfolioService.data.timeCreated.time
+    }
+
+    /**
+     * Count the number of commits loaded from GitHub.
+     */
+    def gitHubCommitCount(MonitorResult result) {
+        def repos = configService.getList('gitHubRepos', []),
+            commitCount = 0
+
+        if (repos.empty) {
+            result.status = INACTIVE
+            result.message = "No GitHub repos configured for loading."
+            return
+        }
+
+        repos.each {repo ->
+            commitCount += gitHubService.getCommitsForRepo(repo).commits.size()
+        }
+
+        result.metric = commitCount
+        result.message = "Loaded ${commitCount} commits from ${repos.size()} repos."
+    }
+
+    /**
+     * Check the age of the most recent commit loaded from GitHub.
+     */
+    def gitHubMostRecentCommitAgeMins(MonitorResult result) {
+        def repos = configService.getList('gitHubRepos', []),
+            maxDate = null
+
+        if (repos.empty) {
+            result.status = INACTIVE
+            result.message = "No GitHub repos configured for loading."
+            return
+        }
+
+        repos.each {repo ->
+            def commitHistory = gitHubService.getCommitsForRepo(repo)
+            maxDate = [maxDate, commitHistory.commits.first()?.committedDate].max()
+        }
+
+        if (maxDate) {
+            def diffMs = currentTimeMillis() - maxDate.time,
+                diffMins = Math.floor(diffMs / MINUTES)
+            result.metric = diffMins
+            result.message = "Latest commit @ ${maxDate.format('MMM d h:mma zzz')}"
+        } else {
+            result.status = FAIL
+            result.message = "Commits not loaded, or could not determine latest commit."
+        }
     }
 
     /**

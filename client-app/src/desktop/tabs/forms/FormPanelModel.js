@@ -10,14 +10,13 @@ import {
     validEmail
 } from '@xh/hoist/cmp/form';
 import {pre, vbox} from '@xh/hoist/cmp/layout';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon';
 import {filter, isEmpty, isNil} from 'lodash';
 
-@HoistModel
-export class FormPanelModel {
+export class FormPanelModel extends HoistModel {
 
     @managed
     validateTask = new PendingTaskModel();
@@ -101,7 +100,7 @@ export class FormPanelModel {
                     fields: [
                         {name: 'name', rules: [required]},
                         {name: 'relationship'},
-                        {name: 'email', rules: [required, this.validEmail]}
+                        {name: 'email', rules: [required, validEmail]}
                     ],
                     initialValues: {relationship: 'professional'}
                 },
@@ -111,6 +110,8 @@ export class FormPanelModel {
     });
 
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.formModel.values.endDate,
             run: (endDate) => {

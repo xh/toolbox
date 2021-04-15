@@ -20,6 +20,7 @@
     font-size: var(--xh-font-size-small-px);
     table-layout: fixed;
     width: 100%;
+    min-width: 300px;
 
     tr {
       border-bottom: var(--xh-border-solid);

@@ -1,12 +1,12 @@
-import React from 'react';
 import {hoistCmp} from '@xh/hoist/core';
 import {a, code, hbox, p, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {ToolboxLink} from '../../../core/cmp/ToolboxLink';
-import {wrapper} from '../../common';
+
 import './ExamplesTab.scss';
+import {wrapper} from '../../common';
+import {ToolboxLink} from '../../../core/cmp/ToolboxLink';
 
 export const examplesTab = hoistCmp.factory(
     () => wrapper(
@@ -34,7 +34,6 @@ export const examplesTab = hoistCmp.factory(
         })
     )
 );
-
 
 function getExamples() {
     return [
@@ -107,4 +106,4 @@ function getExamples() {
     ];
 }
 
-function link(txt, url) { <a href={url} target="_blank">{txt}</a> }
+const link = (txt, url) => a({href: url, target: '_blank', item: txt});
