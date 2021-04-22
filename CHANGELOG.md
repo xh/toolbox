@@ -2,6 +2,9 @@
 
 ## v3.0.0-SNAPSHOT - unreleased
 
+### Libraries
+
+* @xh/hoist-dev-utils 5.8.0
 
 ## v2.6.0 - 2021-04-22
 
