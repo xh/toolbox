@@ -9,7 +9,13 @@
 
 * Demo new support for displaying an in-app Changelog, with this changelog!
 * Add example usage of new `XH.showBanner()` util.
+* Enable built-in navigation tracking for the Toolbox mobile app.
 
+### Libraries
+
+* @xh/hoist 40.0.0
+* @xh/hoist-dev-utils 5.7.0
+* hoist-core 9.2.1
 
 ## v2.5.0 - 2021-03-23
 
