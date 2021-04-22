@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.0-SNAPSHOT
+## v2.6.0 - 2021-04-22
 
 ### New Features
 
