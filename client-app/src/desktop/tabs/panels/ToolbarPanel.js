@@ -152,7 +152,8 @@ const bottomBar = hoistCmp.factory(
             select({
                 bind: 'state',
                 options: usStates,
-                placeholder: 'Select a State...'
+                placeholder: 'Select a State...',
+                leftIcon: Icon.globe()
             }),
             toolbarSep(),
             button({
