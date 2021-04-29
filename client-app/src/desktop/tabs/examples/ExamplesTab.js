@@ -102,6 +102,16 @@ function getExamples() {
                     Please {link('contact us', 'https://xh.io/contact/')} for access.
                 </p>
             ]
+        },
+        {
+            title: 'Contact',
+            icon: Icon.users(),
+            path: '/contact',
+            text: [
+                <p>
+                    [Team contacts app.]
+                </p>
+            ]
         }
     ];
 }

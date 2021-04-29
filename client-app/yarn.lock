@@ -2033,9 +2033,9 @@
     webpackbar "~4.0.0"
 
 "@xh/hoist@^41.0.0-SNAPSHOT":
-  version "41.0.0-SNAPSHOT.1619134895694"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-41.0.0-SNAPSHOT.1619134895694.tgz#55d3a285049e6fe6de34314df34ee694df75494a"
-  integrity sha512-DW5qtE9kJ8ctMYp/fHvKJ+k147aOo1868X/Nz+68p7srXHRXzcR+mj1keFT54pS+qzISzssKDt0XnJH5NzJIEQ==
+  version "41.0.0-SNAPSHOT.1619628314285"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-41.0.0-SNAPSHOT.1619628314285.tgz#6351883b23325760bcc6936f5078c2251f549519"
+  integrity sha512-+3xJk8oFmeq3trBI1ttiU/kPESXJO3Ct4UjcwNF8Xa8a4+dF0BObQUqlygLFdN7RuVda64YoEszci3oRnsXRCA==
   dependencies:
     "@blueprintjs/core" "~3.44.0"
     "@blueprintjs/datetime" "~3.23.0"
@@ -2061,7 +2061,7 @@
     http-status-codes "~2.1.4"
     lodash "~4.17.21"
     lodash-inflection "~1.5.0"
-    mobx "~6.1.8"
+    mobx "~6.3.0"
     mobx-react "~7.1.0"
     mobx-react-lite "~3.2.0"
     moment "~2.29.1"
@@ -6902,10 +6902,10 @@ mobx-react@~7.1.0:
   dependencies:
     mobx-react-lite "^3.2.0"
 
-mobx@~6.1.8:
-  version "6.1.8"
-  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.1.8.tgz#5d03cb76d8f7694dd82bfb2578d886945b66450d"
-  integrity sha512-U4yCvUeh6yKXRwFxm2lyJjXPVekOEar/R8ZKWAXem/3fthJqYflViawfjDAUh7lZEvbKqljC3NT/pSaUKpE+gg==
+mobx@~6.3.0:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.3.0.tgz#a8fb693c3047bdfcb1eaff9aa48e36a7eb084f96"
+  integrity sha512-Aa1+VXsg4WxqJMTQfWoYuJi5UD10VZhiobSmcs5kcmI3BIT0aVtn7DysvCeDADCzl7dnbX+0BTHUj/v7gLlZpQ==
 
 moment@>=1.6.0, moment@~2.29.1:
   version "2.29.1"
