@@ -1,7 +1,6 @@
+import {ChartModel} from '@xh/hoist/cmp/chart';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
-import {ChartModel} from '@xh/hoist/cmp/chart';
-import {isNil} from 'lodash';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class OHLCChartModel extends HoistModel {
@@ -65,16 +64,18 @@ export class OHLCChartModel extends HoistModel {
 
     async doLoadAsync(loadSpec) {
         const {symbol} = this;
-        if (isNil(symbol)) {
+
+        if (!symbol) {
             this.chartModel.clear();
             return;
         }
 
-        const series = await XH.portfolioService.getOHLCChartSeriesAsync({
-            symbol,
-            loadSpec
-        }).catchDefault() ?? {};
+        const series = await XH.portfolioService
+            .getOHLCChartSeriesAsync({symbol, loadSpec})
+            .catchDefault();
 
-        this.chartModel.setSeries(series);
+        if (!loadSpec.isObsolete) {
+            this.chartModel.setSeries(series ?? {});
+        }
     }
 }

@@ -76,10 +76,11 @@ class NewsService extends BaseService {
 
         def articles = response.articles,
             ret = []
-        articles.forEach { it ->
+        articles.eachWithIndex{ it, idx ->
             if (it.publishedAt) {
                 def cleanPubString = it.publishedAt.take(19) + 'Z'
                 ret << new NewsItem(
+                        id: idx,
                         source: it.source.name,
                         title: it.title,
                         author: it.author,

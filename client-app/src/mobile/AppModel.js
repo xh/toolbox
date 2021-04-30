@@ -22,6 +22,7 @@ export class AppModel extends HoistAppModel {
 
     @managed
     navigatorModel = new NavigatorModel({
+        track: true,
         pages: [
             {id: 'default', content: homePage},
             {id: 'grids', content: gridPage},
@@ -128,7 +129,7 @@ export class AppModel extends HoistAppModel {
         ];
     }
 
-    async preAuthInitAsync() {
+    static async preAuthAsync() {
         await XH.installServicesAsync(OauthService);
     }
 

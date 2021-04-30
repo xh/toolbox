@@ -42,9 +42,9 @@ export const toolbarPanel = hoistCmp.factory({
     }
 });
 
-
 const topBar = hoistCmp.factory(
     ({model}) => toolbar({
+        compact: model.compact,
         enableOverflowMenu: true,
         items: [
             button({
@@ -101,9 +101,9 @@ const topBar = hoistCmp.factory(
 );
 
 const leftBar = hoistCmp.factory(
-    () => toolbar({
+    ({model}) => toolbar({
+        compact: model.compact,
         vertical: true,
-        width: 42,
         items: [
             filler(),
             button({icon: Icon.contact()}),
@@ -119,9 +119,9 @@ const leftBar = hoistCmp.factory(
 );
 
 const rightBar = hoistCmp.factory(
-    () => toolbar({
+    ({model}) => toolbar({
+        compact: model.compact,
         vertical: true,
-        width: 42,
         items: [
             button({icon: Icon.contact()})
         ]
@@ -129,28 +129,37 @@ const rightBar = hoistCmp.factory(
 );
 
 const bottomBar = hoistCmp.factory(
-    ({model}) => toolbar(
-        buttonGroupInput({
-            bind: 'visible',
-            items: [
-                button({icon: Icon.eye(), text: 'Show', value: true}),
-                button({icon: Icon.eyeSlash(), text: 'Hide', value: false})
-            ]
-        }),
-        span({
-            item: 'Now you see me...',
-            omit: !model.visible
-        }),
-        filler(),
-        select({
-            bind: 'state',
-            options: usStates,
-            placeholder: 'Select a State...'
-        }),
-        toolbarSep(),
-        button({
-            text: 'Show Toast',
-            onClick: () => XH.toast({message: `Currently selected State: ${model.state || 'None'}`})
-        })
-    )
+    ({model}) => toolbar({
+        compact: model.compact,
+        items: [
+            switchInput({
+                label: 'Compact',
+                bind: 'compact'
+            }),
+            toolbarSep(),
+            buttonGroupInput({
+                bind: 'visible',
+                items: [
+                    button({icon: Icon.eye(), text: 'Show', value: true}),
+                    button({icon: Icon.eyeSlash(), text: 'Hide', value: false})
+                ]
+            }),
+            span({
+                item: 'Now you see me...',
+                omit: !model.visible
+            }),
+            filler(),
+            select({
+                bind: 'state',
+                options: usStates,
+                placeholder: 'Select a State...',
+                leftIcon: Icon.globe()
+            }),
+            toolbarSep(),
+            button({
+                text: 'Show Toast',
+                onClick: () => XH.toast({message: `Currently selected State: ${model.state || 'None'}`})
+            })
+        ]
+    })
 );

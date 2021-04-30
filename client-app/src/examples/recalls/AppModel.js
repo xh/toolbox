@@ -5,11 +5,7 @@ export const PERSIST_APP = {localStorageKey: 'recallsAppState'};
 
 export class AppModel extends HoistAppModel {
 
-    get gridSizingMode() {
-        return XH.getPref('gridSizingMode');
-    }
-
-    async preAuthInitAsync() {
+    static async preAuthAsync() {
         await XH.installServicesAsync(OauthService);
     }
 

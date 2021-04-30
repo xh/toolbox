@@ -25,21 +25,24 @@ export const activityWidget = hoistCmp.factory({
 
 const bbar = hoistCmp.factory({
     render() {
-        return toolbar(
-            select({
-                width: 140,
-                bind: 'groupBy',
-                options: [
-                    {value: 'committedDay', label: 'By Day'},
-                    {value: 'repo', label: 'By Repo'},
-                    {value: null, label: 'Ungrouped'}
-                ]
-            }),
-            filterChooser({placeholder: 'Filter commits...', flex: 5}),
-            filler(),
-            gridCountLabel({unit: 'commit'}),
-            toolbarSep(),
-            colChooserButton()
-        );
+        return toolbar({
+            compact: true,
+            items: [
+                select({
+                    width: 140,
+                    bind: 'groupBy',
+                    options: [
+                        {value: 'committedDay', label: 'By Day'},
+                        {value: 'repo', label: 'By Repo'},
+                        {value: null, label: 'Ungrouped'}
+                    ]
+                }),
+                filterChooser({placeholder: 'Filter commits...', flex: 5}),
+                filler(),
+                gridCountLabel({unit: 'commit'}),
+                toolbarSep(),
+                colChooserButton()
+            ]
+        });
     }
 });
