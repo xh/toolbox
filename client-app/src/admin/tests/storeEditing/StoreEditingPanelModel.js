@@ -18,6 +18,7 @@ export class StoreEditingPanelModel extends HoistModel {
     gridModel = new GridModel({
         selModel: null,
         showCellFocus: true,
+        fullRowEditing: true,
         store: {
             fields: [
                 {
@@ -83,30 +84,30 @@ export class StoreEditingPanelModel extends HoistModel {
                 ...boolCheckCol,
                 headerName: '?',
                 editable: true,
-                cellEditorElement: inlineCheckboxEditor
+                editorElement: inlineCheckboxEditor
             },
             {
                 field: 'name',
                 editable: true,
                 width: 200,
-                cellEditorElement: inlineTextEditor
+                editorElement: inlineTextEditor
             },
             {
                 field: 'amount',
                 editable: true,
                 width: 100,
-                cellEditorElement: inlineNumberEditor
+                editorElement: inlineNumberEditor
             },
             {
                 field: 'date',
                 ...dateCol,
                 editable: true,
-                cellEditorElement: inlineDateEditor,
-                cellEditorParams: {
+                editorElement: (props) => inlineDateEditor({
+                    ...props,
                     inputProps: {
                         minDate: new Date(2021, 2, 15)
                     }
-                }
+                })
             },
             {
                 field: 'description',
