@@ -1,36 +1,42 @@
-import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed} from '@xh/hoist/core';
-// import {compactDateRenderer} from '@xh/hoist/format';
-// import {Icon} from '@xh/hoist/icon/Icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {compactDateRenderer} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon/Icon';
+import {bindable, observable, makeObservable, action} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
-// import {uniqBy} from 'lodash';
-// import {PERSIST_APP} from './AppModel';
-// import {DetailsPanelModel} from './detail/DetailsPanelModel';
+import {uniqBy, without} from 'lodash';
+import {PERSIST_APP} from './AppModel';
+import {DetailsPanelModel} from './detail/DetailsPanelModel';
+import {button} from '@xh/hoist/desktop/cmp/button/index';
+
+// DMS: Look in admin for the tile example
 
 export class DirectoryPanelModel extends HoistModel {
 
-    // persistWith = PERSIST_APP;
+    persistWith = PERSIST_APP;
+
+    @observable.ref
+    @persist
+    userFaves = [];
 
     @bindable
     searchQuery = '';
 
-    // @bindable
-    // @persist
-    // groupBy = null;
+    @bindable
+    displayMode = 'details';
+
+    @bindable
+    @persist
+    showDetails = 'true'; // DMS: Maybe groupInput is the right input element for this, but I want something that's a slide-toggle
 
     @managed
-    // detailsPanelModel = new DetailsPanelModel();
+    detailsPanelModel = new DetailsPanelModel();
 
     @managed
     gridModel = new GridModel({
-        store: {
-            processRawData: this.processRecord,
-            fields: [{
-                name: 'name',
-                location: 'location'
-            }]
-        },
+        // store: {
+        //     processRawData: this.processRecord
+        // },
         emptyText: 'No records found...',
         colChooserModel: true,
         enableExport: true,
@@ -38,23 +44,64 @@ export class DirectoryPanelModel extends HoistModel {
         showHover: true,
         persistWith: this.persistWith,
         columns: [
+            {
+                field: 'isFavorite',
+                headerName: 'Favorites',
+                align: 'center',
+                width: 70,
+                // renderer: this.favoriteRenderer,
+                elementRenderer: (val, {record}) => {
+                    const {isFavorite} = record.data;
+
+                        return button({
+                            icon: Icon.favorite({
+                                color: isFavorite ? 'gold' : null,
+                                prefix: isFavorite ? 'fas' : 'far'
+                            }),
+                            onClick: () => this.toggleFavorite(record)
+                        });
+
+                }
+            },
+            {
+                field: 'name',
+                headerName: 'Name'
+            },
+            {
+                field: 'location',
+                headerName: 'Location'
+            },
+            {
+                field: 'workPhone',
+                headerName: 'Work Phone'
+            },
+            {
+                field: 'homePhone',
+                headerName: 'Home Phone',
+                hidden: true
+            },
+            {
+                field: 'cellPhone',
+                headerName: 'Cell Phone',
+                hidden: true
+            },
+            {
+                field: 'email',
+                headerName: 'Email'
+            },
+            {
+                field: 'bio',
+                headerName: 'Bio',
+                hidden: true
+            }
             // {
-            //     field: 'name',
-            //     headerName: 'Name',
+            //     field: 'classification',
+            //     headerName: 'Class',
             //     align: 'center',
             //     width: 65,
             //     tooltip: (cls) => cls,
             //     elementRenderer: this.classificationRenderer
             // },
-            {
-                field: 'name',
-                width: 300
-            },
-            {
-                field: 'location',
-                width: 300,
-                hidden: true
-            }
             // {
             //     field: 'recallDate',
             //     ...localDateCol,
@@ -65,15 +112,19 @@ export class DirectoryPanelModel extends HoistModel {
         ]
     });
 
+    get currentRecord() {
+        return this.gridModel.selectedRecord
+    }
+
     constructor() {
         super();
         makeObservable(this);
 
         const {gridModel} = this;
-        // this.addReaction({
-        //     track: () => gridModel.selectedRecord,
-        //     run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
-        // });
+        this.addReaction({
+            track: () => gridModel.selectedRecord,
+            run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
+        });
 
         this.addReaction({
             track: () => this.searchQuery,
@@ -83,11 +134,16 @@ export class DirectoryPanelModel extends HoistModel {
 
         this.addReaction({
             track: () => this.groupBy,
-            run: (selectedGroup) => gridModel.setGroupBy(selectedGroup)
+            run: () => gridModel.setShowDetails()
         });
 
+        // this.addReaction({
+        //     track: () => /* pick up event when button clicked */,
+        //     run: () => /* change favorite flag (and reload?) */
+        // })
+
         const {groupBy} = gridModel;
-        this.setGroupBy(groupBy && groupBy.length > 0 ? groupBy[0] : null);
+        this.setShowDetails(this.showDetails ? false : true);
     }
 
 
@@ -95,18 +151,68 @@ export class DirectoryPanelModel extends HoistModel {
     // Implementation
     //------------------------
     async doLoadAsync(loadSpec) {
-        // const {gridModel} = this;
-        //
-        // let entries = [
-        //     {
-        //         name: 'Anselm',
-        //         location: 'California'
-        //     },
-        //     {
-        //         name: 'Lee',
-        //         location: 'New York'
-        //     }
-        // ];
+        const {gridModel} = this;
+
+        let entries = [
+            {
+                id: 0,
+                name: 'Lee',
+                location: 'NY',
+                workPhone: '(555) 555-5555',
+                homePhone: '(555) 555-5555',
+                cellPhone: '(555) 555-5555',
+                email: 'x@xh.io',
+                bio: 'add a bio'
+            },
+            {
+                id: 1,
+                name: 'Anselm',
+                location: 'CA',
+                workPhone: '(555) 555-5555',
+                homePhone: '(555) 555-5555',
+                cellPhone: '(555) 555-5555',
+                email: 'x@xh.io',
+                bio: 'add a bio'
+            },
+            {
+                id: 2,
+                name: 'Tom',
+                location: 'NY',
+                workPhone: '(555) 555-5555',
+                homePhone: '(555) 555-5555',
+                cellPhone: '(555) 555-5555',
+                email: 'x@xh.io',
+                bio: 'add a bio'
+            },
+            {
+                id: 3,
+                name: 'Petra',
+                location: 'NY',
+                workPhone: '(555) 555-5555',
+                homePhone: '(555) 555-5555',
+                cellPhone: '(555) 555-5555',
+                email: 'x@xh.io',
+                bio: 'add a bio'
+            },
+            {
+                id: 4,
+                name: 'Collin',
+                location: 'NY',
+                workPhone: '(555) 555-5555',
+                homePhone: '(555) 555-5555',
+                cellPhone: '(555) 555-5555',
+                email: 'x@xh.io',
+                bio: 'add a bio'
+            }
+        ]
+
+
+        entries.forEach(entry => {
+            entry.isFavorite = this.userFaves.includes(entry.id)
+        })
+
+        gridModel.loadData(entries)
+        await gridModel.preSelectFirstAsync();
 
         // try {
         //     let entries = await XH.fetchJson({
@@ -133,25 +239,15 @@ export class DirectoryPanelModel extends HoistModel {
     // processRecord(rawRec) {
     //     return {
     //         ...rawRec,
-    //         brandName: rawRec.openfda.brand_name[0],
-    //         genericName: rawRec.openfda.generic_name[0],
-    //         recallDate: rawRec.recall_initiation_date,
-    //         description: rawRec.product_description,
-    //         recallingFirm: rawRec.recalling_firm,
-    //         reason: rawRec.reason_for_recall
+    //         isFavorite: this.userFaves.includes(rawRec.name)
     //     };
     // }
-    //
-    // classificationRenderer(val) {
-    //     switch (val) {
-    //         case 'Class I':
-    //             return Icon.skull({className: 'xh-red'});
-    //         case 'Class II':
-    //             return Icon.warning({className: 'xh-orange'});
-    //         case 'Class III':
-    //             return Icon.info({className: 'xh-blue'});
-    //         default:
-    //             return null;
-    //     }
-    // }
+
+    @action
+    toggleFavorite(record) {
+        const {userFaves} = this;
+        this.userFaves = record.data.isFavorite ? without(userFaves, record.id) : [...userFaves, record.id];
+        this.refreshAsync();
+    }
+
 }

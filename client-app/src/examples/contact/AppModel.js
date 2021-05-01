@@ -1,7 +1,7 @@
 import {HoistAppModel, XH} from '@xh/hoist/core';
 import {OauthService} from '../../core/svc/OauthService';
 
-export const PERSIST_APP = {localStorageKey: 'recallsAppState'};
+export const PERSIST_APP = {prefKey: 'contactAppState'};
 
 export class AppModel extends HoistAppModel {
 

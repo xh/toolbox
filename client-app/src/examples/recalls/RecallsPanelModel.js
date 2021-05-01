@@ -7,6 +7,7 @@ import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {uniqBy} from 'lodash';
 import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
+import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 
 export class RecallsPanelModel extends HoistModel {
 
@@ -21,6 +22,16 @@ export class RecallsPanelModel extends HoistModel {
 
     @managed
     detailsPanelModel = new DetailsPanelModel();
+
+    toggleFavorite = {
+        text: 'Favorite',
+        icon: Icon.favorite(),
+        tooltip: 'Favorite',
+        recordsRequired: 1,
+        actionFn: (record => {
+            console.log(record)
+        })
+    }
 
     @managed
     gridModel = new GridModel({
@@ -39,47 +50,66 @@ export class RecallsPanelModel extends HoistModel {
         persistWith: this.persistWith,
         columns: [
             {
-                field: 'classification',
-                headerName: 'Class',
-                align: 'center',
-                width: 65,
-                tooltip: (cls) => cls,
-                elementRenderer: this.classificationRenderer
+                ...actionCol,
+                // field: 'isFavorite',
+                // headerName: 'Favorites',
+                // align: 'center',
+                // width: 65,
+                // elementRenderer: this.classificationRenderer,
+                actions: [
+                    this.toggleFavorite
+                ]
             },
             {
-                field: 'brandName',
-                width: 300
+                field: 'name',
+                headerName: 'Name'
             },
             {
-                field: 'genericName',
-                width: 300,
-                hidden: true
-            },
-            {
-                field: 'status',
-                width: 100
-            },
-            {
-                field: 'recallingFirm',
-                width: 200
-            },
-            {
-                field: 'recallDate',
-                ...localDateCol,
-                headerName: 'Date',
-                width: 100,
-                renderer: compactDateRenderer('MMM D')
-            },
-            {
-                field: 'description',
-                width: 400,
-                hidden: true
-            },
-            {
-                field: 'reason',
-                width: 200,
-                hidden: true
+                field: 'location',
+                headerName: 'Location'
             }
+            // {
+            //     field: 'classification',
+            //     headerName: 'Class',
+            //     align: 'center',
+            //     width: 65,
+            //     tooltip: (cls) => cls,
+            //     elementRenderer: this.classificationRenderer
+            // },
+            // {
+            //     field: 'brandName',
+            //     width: 300
+            // },
+            // {
+            //     field: 'genericName',
+            //     width: 300,
+            //     hidden: true
+            // },
+            // {
+            //     field: 'status',
+            //     width: 100
+            // },
+            // {
+            //     field: 'recallingFirm',
+            //     width: 200
+            // },
+            // {
+            //     field: 'recallDate',
+            //     ...localDateCol,
+            //     headerName: 'Date',
+            //     width: 100,
+            //     renderer: compactDateRenderer('MMM D')
+            // },
+            // {
+            //     field: 'description',
+            //     width: 400,
+            //     hidden: true
+            // },
+            // {
+            //     field: 'reason',
+            //     width: 200,
+            //     hidden: true
+            // }
         ]
     });
 
@@ -115,50 +145,82 @@ export class RecallsPanelModel extends HoistModel {
     async doLoadAsync(loadSpec) {
         const {gridModel} = this;
 
-        try {
-            let entries = await XH.fetchJson({
-                url: 'recalls',
-                params: {searchQuery: this.searchQuery},
-                loadSpec
-            });
+        let entries = [
+            {
+                id: 0,
+                name: 'Lee',
+                location: 'NY',
+                isFavorite: true
+            },
+            {
+                id: 1,
+                name: 'Anselm',
+                location: 'CA',
+                isFavorite: false
+            }
+        ]
 
-            if (loadSpec.isStale) return;
 
-            // Approximate (and enforce) a unique id for this rather opaque API
-            entries.forEach(it => {
-                it.id = it.openfda.brand_name[0] + it.recall_number;
-            });
-            entries = uniqBy(entries, 'id');
+        gridModel.loadData(entries)
+        await gridModel.preSelectFirstAsync();
 
-            gridModel.loadData(entries);
-            await gridModel.preSelectFirstAsync();
-        } catch (e) {
-            XH.handleException(e);
-        }
+        // try {
+        //     let entries = await XH.fetchJson({
+        //         url: 'recalls',
+        //         params: {searchQuery: this.searchQuery},
+        //         loadSpec
+        //     });
+        //
+        //     if (loadSpec.isStale) return;
+        //
+        //     // Approximate (and enforce) a unique id for this rather opaque API
+        //     entries.forEach(it => {
+        //         it.id = it.openfda.brand_name[0] + it.recall_number;
+        //     });
+        //     entries = uniqBy(entries, 'id');
+        //
+        //     gridModel.loadData(entries);
+        //     await gridModel.preSelectFirstAsync();
+        // } catch (e) {
+        //     XH.handleException(e);
+        // }
     }
 
     processRecord(rawRec) {
         return {
             ...rawRec,
-            brandName: rawRec.openfda.brand_name[0],
-            genericName: rawRec.openfda.generic_name[0],
-            recallDate: rawRec.recall_initiation_date,
-            description: rawRec.product_description,
-            recallingFirm: rawRec.recalling_firm,
-            reason: rawRec.reason_for_recall
+            // brandName: rawRec.openfda.brand_name[0],
+            // genericName: rawRec.openfda.generic_name[0],
+            // recallDate: rawRec.recall_initiation_date,
+            // description: rawRec.product_description,
+            // recallingFirm: rawRec.recalling_firm,
+            // reason: rawRec.reason_for_recall
         };
     }
 
     classificationRenderer(val) {
-        switch (val) {
-            case 'Class I':
-                return Icon.skull({className: 'xh-red'});
-            case 'Class II':
-                return Icon.warning({className: 'xh-orange'});
-            case 'Class III':
-                return Icon.info({className: 'xh-blue'});
-            default:
-                return null;
+        if(val) {
+            return Icon.favorite({
+                color: 'gold',
+                prefix: 'fas'
+            });
+        } else {
+            return Icon.favorite({
+
+            });
         }
+
+        // switch (val) {
+        //     case 'Class I':
+        //         return Icon.skull({className: 'xh-red'});
+        //     case 'Class II':
+        //         return Icon.warning({className: 'xh-orange'});
+        //     case 'Class III':
+        //         return Icon.info({className: 'xh-blue'});
+        //     default:
+        //         return null;
+        // }
     }
+
+
 }

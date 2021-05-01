@@ -24,9 +24,9 @@ export const recallsPanel = hoistCmp.factory({
                 mask: 'onLoad'
             }),
             panel({
-                title: currentRecord?.data.brandName ?? 'Drug Details',
+                title: currentRecord?.data.name ?? 'Select a contact',
                 icon: Icon.detail(),
-                item: currentRecord ? detailsPanel() : placeholder('Select a drug above to view its details.'),
+                item: currentRecord ? detailsPanel() : placeholder('Select a contact above to view its details.'),
                 className: 'toolbox-recalls-detail-panel',
                 compactHeader: true,
                 model: {
@@ -41,10 +41,7 @@ export const recallsPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory(
     ({model}) => {
-        const aboutBlurb = 'This applet uses the openFDA drug enforcement reports API, ' +
-                'which provides information on drug recall events since 2004. ' +
-                'For more information, see: ',
-            fdaWebsite = 'https://open.fda.gov/apis/drug/enforcement/';
+        const aboutBlurb = 'Contact app';
 
         return toolbar({
             style: {backgroundColor: 'transparent'},

@@ -1,36 +1,37 @@
-import {grid} from '@xh/hoist/cmp/grid';
-import {filler, p, placeholder, span, vframe} from '@xh/hoist/cmp/layout';
+import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
+import {a, filler, p, placeholder, span, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
-import {select, textInput} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, textInput, switchInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {PERSIST_APP} from './AppModel';
+import {detailsPanel} from './detail/DetailsPanel';
+import './DirectoryPanel.scss';
 import {DirectoryPanelModel} from './DirectoryPanelModel';
-// import {detailsPanel} from './detail/DetailsPanel';
-// import './RecallsPanel.scss';
+import {storeFilterField} from '@xh/hoist/cmp/store';
 
-export const recallsPanel = hoistCmp.factory({
+export const directoryPanel = hoistCmp.factory({
     model: creates(DirectoryPanelModel),
 
     render({model}) {
-        const {currentRecord} = model.detailsPanelModel;
+        const {currentRecord, displayMode} = model;
 
-        return vframe(
+        return hframe(
             panel({
                 tbar: tbar(),
-                item: grid(),
+                item: displayMode === 'details' ? grid() : placeholder('Facebook View'),
                 mask: 'onLoad'
             }),
             panel({
-                title: currentRecord?.data.brandName ?? 'Drug Details',
+                title: currentRecord?.data.name ?? 'Select a contact',
                 icon: Icon.detail(),
-                item: currentRecord ? placeholder('current record found') : placeholder('Select a drug above to view its details.'),
+                item: currentRecord ? detailsPanel() : placeholder('Select a contact above to view their details.'),
                 className: 'toolbox-recalls-detail-panel',
                 compactHeader: true,
                 model: {
-                    side: 'bottom',
+                    side: 'right',
                     defaultSize: 325,
                     persistWith: PERSIST_APP
                 }
@@ -41,40 +42,49 @@ export const recallsPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory(
     ({model}) => {
-        // const aboutBlurb = 'This is a team directory';
+        const aboutBlurb = 'Contact app';
 
         return toolbar({
             style: {backgroundColor: 'transparent'},
             items: [
-                textInput({
-                    bind: 'searchQuery',
-                    placeholder: 'Search by name [or other fields?]',
+                storeFilterField({
                     width: 250,
-                    commitOnChange: true,
-                    enableClear: true
-                }),
+                    }),
                 toolbarSep(),
-                span('Department:'),
-                select({
-                    bind: 'department',
-                    options: [
-                        {value: 'placeholder', label: 'Placeholder'}
-                    ]
+                select({  // Check News App example for combo storeFilterField + source/other filters
+                    labelField: 'Location',
+                    placeholder: 'Office',
+                    options: ['New York', 'California']
                 }),
                 toolbarSep(),
                 select({
-                    bind: 'location',
-                    options: [
-                        {value: 'placeholder', label: 'Placeholder'}
-                    ]
+                    labelField: 'Department',
+                    placeholder: 'Department',
+                    options: ['XH']
                 }),
                 filler(),
+                buttonGroupInput({
+                    bind: 'displayMode',
+                    outlined: true,
+                    intent: 'primary',
+                    items: [
+                        button({
+                            text: 'Details',
+                            value: 'details'
+                        }),
+                        button({
+                            text: 'Faces',
+                            value: 'faces'
+                        })
+                    ]
+                }),
+                toolbarSep(),
                 button({
-                    title: 'About',
+                    title: 'About the API',
                     text: 'About',
                     icon: Icon.questionCircle(),
                     onClick: () => XH.alert({
-                        message: p('Placeholder')
+                        message: p(aboutBlurb, a({href: fdaWebsite, item: fdaWebsite, target: '_blank'}))
                     })
                 }),
                 toolbarSep(),
