@@ -11,6 +11,7 @@ import {detailsPanel} from './detail/DetailsPanel';
 import './DirectoryPanel.scss';
 import {DirectoryPanelModel} from './DirectoryPanelModel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
+import {facebookLayout} from './FacebookLayout';
 
 export const directoryPanel = hoistCmp.factory({
     model: creates(DirectoryPanelModel),
@@ -21,7 +22,7 @@ export const directoryPanel = hoistCmp.factory({
         return hframe(
             panel({
                 tbar: tbar(),
-                item: displayMode === 'details' ? grid() : placeholder('Facebook View'),
+                item: displayMode === 'details' ? grid() : facebookLayout(),
                 mask: 'onLoad'
             }),
             panel({
@@ -84,7 +85,7 @@ const tbar = hoistCmp.factory(
                     text: 'About',
                     icon: Icon.questionCircle(),
                     onClick: () => XH.alert({
-                        message: p(aboutBlurb, a({href: fdaWebsite, item: fdaWebsite, target: '_blank'}))
+                        message: p(aboutBlurb)
                     })
                 }),
                 toolbarSep(),

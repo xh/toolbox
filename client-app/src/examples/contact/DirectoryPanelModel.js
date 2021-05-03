@@ -1,13 +1,13 @@
-import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
-import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable, observable, makeObservable, action} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
-import {uniqBy, without} from 'lodash';
+import {without} from 'lodash';
 import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
-import {button} from '@xh/hoist/desktop/cmp/button/index';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {FacebookModel} from './FacebookModel'
 
 // DMS: Look in admin for the tile example
 
@@ -112,6 +112,9 @@ export class DirectoryPanelModel extends HoistModel {
         ]
     });
 
+    @managed
+    facebookModel = new FacebookModel()
+
     get currentRecord() {
         return this.gridModel.selectedRecord
     }
@@ -137,12 +140,6 @@ export class DirectoryPanelModel extends HoistModel {
             run: () => gridModel.setShowDetails()
         });
 
-        // this.addReaction({
-        //     track: () => /* pick up event when button clicked */,
-        //     run: () => /* change favorite flag (and reload?) */
-        // })
-
-        const {groupBy} = gridModel;
         this.setShowDetails(this.showDetails ? false : true);
     }
 
@@ -151,7 +148,7 @@ export class DirectoryPanelModel extends HoistModel {
     // Implementation
     //------------------------
     async doLoadAsync(loadSpec) {
-        const {gridModel} = this;
+        const {gridModel, facebookModel} = this;
 
         let entries = [
             {
@@ -211,8 +208,10 @@ export class DirectoryPanelModel extends HoistModel {
             entry.isFavorite = this.userFaves.includes(entry.id)
         })
 
-        gridModel.loadData(entries)
+        gridModel.loadData(entries);
         await gridModel.preSelectFirstAsync();
+
+        facebookModel.loadData(entries);
 
         // try {
         //     let entries = await XH.fetchJson({
