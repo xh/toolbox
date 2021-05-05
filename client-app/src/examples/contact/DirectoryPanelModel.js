@@ -1,15 +1,12 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {HoistModel, managed, persist} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable, observable, makeObservable, action} from '@xh/hoist/mobx';
-import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {without} from 'lodash';
 import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {FacebookModel} from './FacebookModel'
-
-// DMS: Look in admin for the tile example
+import {FacebookModel} from './FacebookModel';
 
 export class DirectoryPanelModel extends HoistModel {
 
@@ -19,120 +16,60 @@ export class DirectoryPanelModel extends HoistModel {
     @persist
     userFaves = [];
 
+    /** @member {function} */
     @bindable
-    searchQuery = '';
+    searchQuery;
+
+    /** @member {string} */
+    @bindable
+    locationFilter = '';
+
+    /** @member {string} */
+    @bindable
+    departmentFilter = '';
 
     @bindable
     displayMode = 'details';
 
     @bindable
     @persist
-    showDetails = 'true'; // DMS: Maybe groupInput is the right input element for this, but I want something that's a slide-toggle
+    showDetails = 'true';
 
     @managed
     detailsPanelModel = new DetailsPanelModel();
 
+    /** @member {GridModel} */
     @managed
-    gridModel = new GridModel({
-        // store: {
-        //     processRawData: this.processRecord
-        // },
-        emptyText: 'No records found...',
-        colChooserModel: true,
-        enableExport: true,
-        rowBorders: true,
-        showHover: true,
-        persistWith: this.persistWith,
-        columns: [
-            {
-                field: 'isFavorite',
-                headerName: 'Favorites',
-                align: 'center',
-                width: 70,
-                // renderer: this.favoriteRenderer,
-                elementRenderer: (val, {record}) => {
-                    const {isFavorite} = record.data;
+    gridModel;
 
-                        return button({
-                            icon: Icon.favorite({
-                                color: isFavorite ? 'gold' : null,
-                                prefix: isFavorite ? 'fas' : 'far'
-                            }),
-                            onClick: () => this.toggleFavorite(record)
-                        });
-
-                }
-            },
-            {
-                field: 'name',
-                headerName: 'Name'
-            },
-            {
-                field: 'location',
-                headerName: 'Location'
-            },
-            {
-                field: 'workPhone',
-                headerName: 'Work Phone'
-            },
-            {
-                field: 'homePhone',
-                headerName: 'Home Phone',
-                hidden: true
-            },
-            {
-                field: 'cellPhone',
-                headerName: 'Cell Phone',
-                hidden: true
-            },
-            {
-                field: 'email',
-                headerName: 'Email'
-            },
-            {
-                field: 'bio',
-                headerName: 'Bio',
-                hidden: true
-            }
-            // {
-            //     field: 'classification',
-            //     headerName: 'Class',
-            //     align: 'center',
-            //     width: 65,
-            //     tooltip: (cls) => cls,
-            //     elementRenderer: this.classificationRenderer
-            // },
-            // {
-            //     field: 'recallDate',
-            //     ...localDateCol,
-            //     headerName: 'Date',
-            //     width: 100,
-            //     renderer: compactDateRenderer('MMM D')
-            // }
-        ]
-    });
-
+    /** @member {FacebookModel} */
     @managed
-    facebookModel = new FacebookModel()
+    facebookModel;
 
     get currentRecord() {
-        return this.gridModel.selectedRecord
+        return this.gridModel.selectedRecord;
     }
 
     constructor() {
         super();
         makeObservable(this);
 
-        const {gridModel} = this;
+        const gridModel = this.gridModel = this.createGridModel();
+
+        this.facebookModel = new FacebookModel({
+            store: gridModel.store,
+            selModel: gridModel.selModel
+        });
+
         this.addReaction({
             track: () => gridModel.selectedRecord,
             run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
         });
 
         this.addReaction({
-            track: () => this.searchQuery,
-            run: () => this.loadAsync(),
-            debounce: ONE_SECOND
+            track: () => [this.locationFilter, this.departmentFilter, this.searchQuery],
+            run: () => this.gridModel.setFilter(this.createFilter()),
+            fireImmediately: true
         });
 
         this.addReaction({
@@ -155,6 +92,7 @@ export class DirectoryPanelModel extends HoistModel {
                 id: 0,
                 name: 'Lee',
                 location: 'NY',
+                department: 'XH',
                 workPhone: '(555) 555-5555',
                 homePhone: '(555) 555-5555',
                 cellPhone: '(555) 555-5555',
@@ -165,6 +103,7 @@ export class DirectoryPanelModel extends HoistModel {
                 id: 1,
                 name: 'Anselm',
                 location: 'CA',
+                department: 'XH',
                 workPhone: '(555) 555-5555',
                 homePhone: '(555) 555-5555',
                 cellPhone: '(555) 555-5555',
@@ -175,6 +114,7 @@ export class DirectoryPanelModel extends HoistModel {
                 id: 2,
                 name: 'Tom',
                 location: 'NY',
+                department: 'XH',
                 workPhone: '(555) 555-5555',
                 homePhone: '(555) 555-5555',
                 cellPhone: '(555) 555-5555',
@@ -185,6 +125,7 @@ export class DirectoryPanelModel extends HoistModel {
                 id: 3,
                 name: 'Petra',
                 location: 'NY',
+                department: 'XH',
                 workPhone: '(555) 555-5555',
                 homePhone: '(555) 555-5555',
                 cellPhone: '(555) 555-5555',
@@ -195,18 +136,41 @@ export class DirectoryPanelModel extends HoistModel {
                 id: 4,
                 name: 'Collin',
                 location: 'NY',
+                department: 'XH',
+                workPhone: '(555) 555-5555',
+                homePhone: '(555) 555-5555',
+                cellPhone: '(555) 555-5555',
+                email: 'x@xh.io',
+                bio: 'add a bio'
+            },
+            {
+                id: 5,
+                name: 'Saba',
+                location: 'CA',
+                department: 'XH',
+                workPhone: '(555) 555-5555',
+                homePhone: '(555) 555-5555',
+                cellPhone: '(555) 555-5555',
+                email: 'x@xh.io',
+                bio: 'add a bio'
+            },
+            {
+                id: 6,
+                name: 'John',
+                location: 'NY',
+                department: 'XH',
                 workPhone: '(555) 555-5555',
                 homePhone: '(555) 555-5555',
                 cellPhone: '(555) 555-5555',
                 email: 'x@xh.io',
                 bio: 'add a bio'
             }
-        ]
+        ];
 
 
         entries.forEach(entry => {
-            entry.isFavorite = this.userFaves.includes(entry.id)
-        })
+            entry.isFavorite = this.userFaves.includes(entry.id);
+        });
 
         gridModel.loadData(entries);
         await gridModel.preSelectFirstAsync();
@@ -235,12 +199,72 @@ export class DirectoryPanelModel extends HoistModel {
         // }
     }
 
-    // processRecord(rawRec) {
-    //     return {
-    //         ...rawRec,
-    //         isFavorite: this.userFaves.includes(rawRec.name)
-    //     };
-    // }
+    createFilter() {
+        const {searchQuery, locationFilter, departmentFilter} = this;
+        return [
+            searchQuery,
+            locationFilter ? {field: 'location', op: '=', value: locationFilter} : null,
+            departmentFilter ? {field: 'department', op: '=', value: departmentFilter} : null
+        ];
+    }
+
+    createGridModel() {
+        return new GridModel({
+            store: {
+                fields: ['department']
+            },
+            emptyText: 'No records found...',
+            colChooserModel: true,
+            enableExport: true,
+            rowBorders: true,
+            showHover: true,
+            persistWith: this.persistWith,
+            columns: [
+                {
+                    field: 'isFavorite',
+                    displayName: 'Favorites',
+                    align: 'center',
+                    width: 70,
+                    elementRenderer: (val, {record}) => {
+                        const {isFavorite} = record.data;
+
+                        return button({
+                            icon: Icon.favorite({
+                                color: isFavorite ? 'gold' : null,
+                                prefix: isFavorite ? 'fas' : 'far'
+                            }),
+                            onClick: () => this.toggleFavorite(record)
+                        });
+
+                    }
+                },
+                {
+                    field: 'name'
+                },
+                {
+                    field: 'location'
+                },
+                {
+                    field: 'workPhone'
+                },
+                {
+                    field: 'homePhone',
+                    hidden: true
+                },
+                {
+                    field: 'cellPhone',
+                    hidden: true
+                },
+                {
+                    field: 'email'
+                },
+                {
+                    field: 'bio',
+                    hidden: true
+                }
+            ]
+        });
+    }
 
     @action
     toggleFavorite(record) {

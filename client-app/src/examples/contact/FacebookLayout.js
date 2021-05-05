@@ -1,27 +1,40 @@
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {div} from '@xh/hoist/cmp/layout/index';
+import {div, box} from '@xh/hoist/cmp/layout';
 import {FacebookModel} from './FacebookModel';
 import {vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
+import './FacebookLayout.scss';
 
 export const facebookLayout = hoistCmp.factory({
-    model: uses(FacebookModel),
+    model: uses(FacebookModel), // DMS: Consider replacing with just DirectoryPanelModel
 
+    /**
+     * @param {FacebookModel} model
+     * */
     render({model}) {
-        console.log(model.contacts)
-        return div({
-            items: [...model.contacts.map(contact => vbox({
-                height: 150,
-                width: 100,
-                alignItems: 'center',
-                justifyContent: 'center',
-                items: [
-                    Icon.user({size: '2x'}),
-                    div(contact.name),
-                    div(contact.bio),
-                    div(contact.email)
-                ]
-            }))]
-        })
+        return box({
+            style: {
+                flexWrap: 'wrap'
+            },
+            items: [...model.store.records.map(record => {
+                const isSelected = model.selModel.selectedRecordId === record.id;
+
+                return vbox({
+                    height: 150,
+                    width: 250,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    onClick: () => model.selModel.select(record),
+                    className: `contact-fb-tile ${isSelected ? 'contact-fb-tile--selected' : ''}`,
+                    items: [
+                        Icon.user({size: '2x'}),
+                        div(record.data.name),
+                        div(record.data.bio),
+                        div(record.data.email)
+                    ]
+                });
+            }
+            )]
+        });
     }
-})
+});

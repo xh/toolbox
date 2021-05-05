@@ -1,29 +1,23 @@
 import {HoistModel} from '@xh/hoist/core';
-import {makeObservable, observable} from '@xh/hoist/mobx';
 
 export class FacebookModel extends HoistModel {
     //-------------------
-    // Public properties
-    //-------------------
-
-    //-------------------
     // Observable API
     //-------------------
-    @observable.ref
-    contacts
+    /** @member {Store} */
+    store;
 
-    constructor() {
+    /** @member {StoreSelectionModel} */
+    selModel;
+
+
+    constructor({
+        store,
+        selModel
+    }) {
         super();
-        makeObservable(this);
-    }
 
-    //--------------------
-    // Public Methods
-    //--------------------
-    loadData(arr) {
-        this.contacts = [...arr]
+        this.store = store;
+        this.selModel = selModel;
     }
-    //--------------------
-    // Implementation
-    //--------------------
 }

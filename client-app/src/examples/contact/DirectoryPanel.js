@@ -1,8 +1,8 @@
-import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
-import {a, filler, p, placeholder, span, hframe} from '@xh/hoist/cmp/layout';
+import {grid} from '@xh/hoist/cmp/grid';
+import {filler, p, placeholder, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, textInput, switchInput, select} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
@@ -50,18 +50,29 @@ const tbar = hoistCmp.factory(
             items: [
                 storeFilterField({
                     width: 250,
-                    }),
-                toolbarSep(),
-                select({  // Check News App example for combo storeFilterField + source/other filters
-                    labelField: 'Location',
-                    placeholder: 'Office',
-                    options: ['New York', 'California']
+                    autoApply: false,
+                    onFilterChange: (fn) => model.setSearchQuery(fn)
                 }),
                 toolbarSep(),
                 select({
+                    bind: 'locationFilter',
+                    labelField: 'Location',
+                    placeholder: 'Office',
+                    enableClear: true,
+                    options: [
+                        {label: 'New York', value: 'NY'},
+                        {label: 'California', value: 'CA'}
+                    ]
+                }),
+                toolbarSep(),
+                select({
+                    bind: 'departmentFilter',
                     labelField: 'Department',
                     placeholder: 'Department',
-                    options: ['XH']
+                    enableClear: true,
+                    options: [
+                        {label: 'XH', value: 'XH'}
+                    ]
                 }),
                 filler(),
                 buttonGroupInput({
