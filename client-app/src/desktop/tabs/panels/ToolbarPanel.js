@@ -59,9 +59,9 @@ const topBar = hoistCmp.factory(
                 intent: 'primary'
             }),
             popover({
-                position: 'bottom-left',
+                placement: 'bottom-start',
                 minimal: true,
-                target: button({
+                item: button({
                     icon: Icon.chevronDown(),
                     text: 'Menu Button'
                 }),
