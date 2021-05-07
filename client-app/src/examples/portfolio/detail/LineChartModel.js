@@ -1,16 +1,15 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {fmtDate} from '@xh/hoist/format';
-import {isNil} from 'lodash';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
-@HoistModel
-@LoadSupport
-export class LineChartModel {
+export class LineChartModel extends HoistModel {
 
     @bindable symbol = null;
 
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.symbol,
             run: () => this.loadAsync()
@@ -51,16 +50,18 @@ export class LineChartModel {
 
     async doLoadAsync(loadSpec) {
         const {symbol} = this;
-        if (isNil(symbol)) {
+
+        if (!symbol) {
             this.chartModel.clear();
             return;
         }
 
-        const series = await XH.portfolioService.getLineChartSeriesAsync({
-            symbol,
-            loadSpec
-        }).catchDefault() ?? {};
+        const series = await XH.portfolioService
+            .getLineChartSeriesAsync({symbol, loadSpec})
+            .catchDefault();
 
-        this.chartModel.setSeries(series);
+        if (!loadSpec.isObsolete) {
+            this.chartModel.setSeries(series ?? {});
+        }
     }
 }

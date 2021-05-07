@@ -1,11 +1,10 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
 
-@HoistModel
-@LoadSupport
-export class OHLCChartModel {
+export class OHLCChartModel extends HoistModel {
+
     @bindable currentSymbol = '';
     @bindable.ref symbols = null;
     numCompanies = 3;
@@ -14,6 +13,8 @@ export class OHLCChartModel {
     @bindable aspectRatio = null;
     
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.currentSymbol,
             run: () => this.loadAsync()

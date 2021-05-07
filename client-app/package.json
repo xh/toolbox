@@ -1,5 +1,6 @@
 {
   "name": "toolbox",
+  "version": "3.0-SNAPSHOT",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
@@ -10,7 +11,6 @@
     "lint:all": "yarn lint:js && yarn lint:styles",
     "lint:js": "eslint --ext .js,.jsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
-    "refreshHoist": "echo 'This script has been removed - run `yarn upgrade` instead to get the latest snapshot.'",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
     "startOnDevice": "yarn install && webpack-dev-server --env.inlineHoist --env.devHost=$(hostname)",
     "startAndAnalyze": "yarn install && webpack-dev-server --env.analyzeBundles",
@@ -26,23 +26,23 @@
     }
   },
   "dependencies": {
-    "@ag-grid-community/react": "~24.1.1",
-    "@ag-grid-enterprise/all-modules": "~24.1.0",
-    "@auth0/auth0-spa-js": "~1.13.0",
-    "@fortawesome/free-brands-svg-icons": "~5.15.1",
-    "@xh/hoist": "^37.0.0-SNAPSHOT",
-    "@xh/package-template": "~1.2.0",
+    "@ag-grid-community/react": "~25.1.0",
+    "@ag-grid-enterprise/all-modules": "~25.1.0",
+    "@auth0/auth0-spa-js": "~1.15.0",
+    "@fortawesome/free-brands-svg-icons": "~5.15.2",
+    "@xh/hoist": "^41.0.0-SNAPSHOT",
+    "@xh/package-template": "2.0.0",
     "highcharts": "~8.2.2",
     "react": "~17.0.1",
     "react-dom": "~17.0.1"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "~5.5.0",
+    "@xh/hoist-dev-utils": "^6.0.0-SNAPSHOT",
     "cross-env": "~7.0.3",
-    "husky": "~4.3.0",
+    "husky": "~4.3.8",
     "lint-staged": "~10.5.0",
-    "stylelint": "~13.8.0",
-    "stylelint-config-standard": "~20.0.0",
-    "stylelint-scss": "~3.18.0"
+    "stylelint": "~13.13.1",
+    "stylelint-config-standard": "~22.0.0",
+    "stylelint-scss": "~3.19.0"
   }
 }

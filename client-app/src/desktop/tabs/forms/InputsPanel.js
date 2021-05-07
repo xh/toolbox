@@ -112,8 +112,12 @@ const formContents = hoistCmp.factory(
                     }),
                     row({
                         field: 'jsonInput',
-                        layout: {height: 200},
-                        item: jsonInput()
+                        info: 'enableSearch, showCopyButton',
+                        layout: {height: 260},
+                        item: jsonInput({
+                            enableSearch: true,
+                            showCopyButton: true
+                        })
                     })
                 ]
             }),
@@ -239,11 +243,12 @@ const formContents = hoistCmp.factory(
                     }),
                     row({
                         field: 'select4',
-                        info: 'enableMulti',
+                        info: 'enableMulti, leftIcon',
                         item: select({
                             options: usStates,
                             enableClear: false,
                             enableMulti: true,
+                            leftIcon: Icon.globe(),
                             placeholder: 'Select state(s)...'
                         })
                     }),
@@ -296,7 +301,6 @@ const formContents = hoistCmp.factory(
 
 const row = hoistCmp.factory({
     model: uses(FormModel),
-    memo: false,
 
     render({model, label, field, info, readonlyRenderer, fmtVal, layout = {}, children}) {
         const fieldModel = model.fields[field];

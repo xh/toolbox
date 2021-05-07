@@ -1,5 +1,5 @@
-import {hoistCmp, uses} from '@xh/hoist/core';
 import {div, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {DetailsPanelModel} from './DetailsPanelModel';
 
 export const detailsPanel = hoistCmp.factory({
@@ -7,7 +7,6 @@ export const detailsPanel = hoistCmp.factory({
 
     render({model}) {
         const {currentRecord} = model;
-
         if (!currentRecord) return null;
 
         return div({

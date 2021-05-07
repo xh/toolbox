@@ -1,13 +1,11 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {clamp} from 'lodash';
 
-@HoistModel
-@LoadSupport
-export class GridTreeMapModel {
+export class GridTreeMapModel extends HoistModel {
 
     @managed
     dimChooserModel = new DimensionChooserModel({
@@ -84,6 +82,7 @@ export class GridTreeMapModel {
     });
 
     constructor() {
+        super();
         this.addReaction({
             track: () => this.dimChooserModel.value,
             run: () => this.loadAsync()
