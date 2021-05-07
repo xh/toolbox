@@ -1,7 +1,7 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {filler, hframe, span} from '@xh/hoist/cmp/layout';
-import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {grid} from '@xh/hoist/cmp/grid';
 import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -29,7 +29,7 @@ export const splitTreeMapPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory(
     ({model}) => toolbar(
-        dimensionChooser(),
+        groupingChooser(),
         filler(),
         span('Orientation'),
         select({
