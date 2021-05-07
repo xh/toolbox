@@ -1,6 +1,6 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {clamp} from 'lodash';
@@ -8,16 +8,20 @@ import {clamp} from 'lodash';
 export class GridTreeMapModel extends HoistModel {
 
     @managed
-    dimChooserModel = new DimensionChooserModel({
+    groupingChooserModel = new GroupingChooserModel({
         dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],
         initialValue: ['sector', 'symbol'],
-        initialHistory: [
+        initialFavorites: [
             ['sector', 'symbol'],
             ['region', 'sector', 'symbol'],
             ['region', 'symbol'],
             ['sector'],
             ['symbol']
-        ]
+        ],
+        persistWith: {
+            localStorageKey: 'gridTreeMapDims',
+            persistFavorites: true
+        }
     });
 
     @managed
@@ -84,13 +88,13 @@ export class GridTreeMapModel extends HoistModel {
     constructor() {
         super();
         this.addReaction({
-            track: () => this.dimChooserModel.value,
+            track: () => this.groupingChooserModel.value,
             run: () => this.loadAsync()
         });
     }
 
     async doLoadAsync() {
-        const dims = this.dimChooserModel.value;
+        const dims = this.groupingChooserModel.value;
         const data = await XH.portfolioService.getPositionsAsync(dims);
         this.gridModel.loadData(data);
     }

@@ -1,4 +1,4 @@
-import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
+import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
@@ -14,16 +14,17 @@ export class DimensionManagerModel extends HoistModel {
     userDims;
     userDimPref;
 
-    @managed dimChooserModel;
+    @managed groupingChooserModel;
     @managed gridModel;
 
     constructor(config) {
         super();
         makeObservable(this);
-        this.dimChooserModel = new DimensionChooserModel({
+
+        this.defaultDims = config.defaultDimConfig ? XH.getConf(config.defaultDimConfig) : [];
+        this.groupingChooserModel = new GroupingChooserModel({
             dimensions: config.dimensions,
-            initialValue: [],
-            maxHistoryLength: 0
+            initialValue: this.defaultDims[0]
         });
 
         this.gridModel = new GridModel({
@@ -52,11 +53,9 @@ export class DimensionManagerModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => this.dimChooserModel.value,
+            track: () => this.groupingChooserModel.value,
             run: (val) => this.onDimChooserValChange(val)
         });
-
-        this.defaultDims = config.defaultDimConfig ? XH.getConf(config.defaultDimConfig) : [];
 
         this.userDimPref = config.userDimPref;
         const userDims = this.userDimPref ? XH.getPref(this.userDimPref) : [];
@@ -66,7 +65,7 @@ export class DimensionManagerModel extends HoistModel {
     @action
     setValue(val) {
         this.value = val;
-        this.dimChooserModel.setValue(val);
+        this.groupingChooserModel.setValue(val);
     }
 
     @action
@@ -92,7 +91,7 @@ export class DimensionManagerModel extends HoistModel {
         this.setUserDims(newDims, newId);
 
         // Reset chooser for next show.
-        this.dimChooserModel.setValue([]);
+        this.groupingChooserModel.setValue([]);
     }
 
     get formattedDimensions() {return this.formatDimensions(this.value)}
@@ -166,8 +165,7 @@ export class DimensionManagerModel extends HoistModel {
     }
 
     formatDimensions(dims) {
-        const {dimChooserModel} = this;
-        return dims.map(dim => dimChooserModel.getDimDisplayName(dim)).join(' › ');
+        return dims.map(dim => this.groupingChooserModel.getDimDisplayName(dim)).join(' › ');
     }
 
 }
