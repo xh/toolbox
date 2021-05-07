@@ -2,7 +2,7 @@ import {createRef} from 'react';
 import {createFilter} from 'react-select';
 import {XH, HoistModel, hoistCmp, creates} from '@xh/hoist/core';
 import {select} from '@xh/hoist/desktop/cmp/input';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {getLayoutProps} from '@xh/hoist/utils/react';
 import {useHotkeys} from '@xh/hoist/desktop/hooks';
 import {Icon} from '@xh/hoist/icon';
@@ -40,8 +40,8 @@ export const search = hoistCmp.factory({
     }
 });
 
-@HoistModel
-class Model {
+
+class Model extends HoistModel {
   
   @bindable
   globalSearchSelection;
@@ -50,6 +50,11 @@ class Model {
 
   get globalSearchOptions() {
       return XH.getConf('searchOptions');
+  }
+
+  constructor() {
+      super();
+      makeObservable(this);
   }
 
   forwardToTopic(val) {
@@ -78,11 +83,11 @@ class Model {
   }
 
   focus() {
-    this.selectRef?.current.focus();
+      this.selectRef?.current.focus();
   }
 
   blur() {
-    this.selectRef?.current.blur();
+      this.selectRef?.current.blur();
   }
 
 }
