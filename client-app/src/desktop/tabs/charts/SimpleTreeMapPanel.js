@@ -50,7 +50,6 @@ const bbar = hoistCmp.factory(
             width: 120,
             options: [
                 {label: 'Linear', value: 'linear'},
-                {label: 'Balanced', value: 'balanced'},
                 {label: 'Wash', value: 'wash'},
                 {label: 'None', value: 'none'}
             ]
