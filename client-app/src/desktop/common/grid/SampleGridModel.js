@@ -116,6 +116,10 @@ export class SampleGridModel extends HoistModel {
                     name: 'trade_volume',
                     headerName: 'Volume (Sales Quantity)',
                     type: 'number'
+                },
+                {
+                    name: 'active',
+                    type: 'bool'
                 }
             ]
         },
@@ -196,7 +200,8 @@ export class SampleGridModel extends HoistModel {
                     return ret;
                 },
                 exportName: 'Company',
-                headerTooltip: 'Select a company & continue'
+                headerTooltip: 'Select a company & continue',
+                enableFilter: true
             },
             {
                 field: 'winLose',
@@ -210,7 +215,8 @@ export class SampleGridModel extends HoistModel {
                 tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
                 cellClass: (val) => {
                     return val === 'New York' ? 'xh-text-color-accent' : '';
-                }
+                },
+                enableFilter: true
             },
             {
                 field: 'trade_volume',
@@ -221,7 +227,8 @@ export class SampleGridModel extends HoistModel {
                     label: true
                 }),
                 exportFormat: ExportFormat.NUM_DELIMITED,
-                chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
+                chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)',
+                enableFilter: true
             },
             {
                 field: 'profit_loss',
@@ -234,7 +241,8 @@ export class SampleGridModel extends HoistModel {
                     colorSpec: true
                 }),
                 exportFormat: ExportFormat.LEDGER_COLOR,
-                chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
+                chooserDescription: 'Annual Profit & Loss YTD (EBITDA)',
+                enableFilter: true
             },
             {
                 colId: 'dayOfWeek',
@@ -248,14 +256,16 @@ export class SampleGridModel extends HoistModel {
             {
                 field: 'trade_date',
                 ...localDateCol,
-                chooserDescription: 'Date of last trade (including related derivatives)'
+                chooserDescription: 'Date of last trade (including related derivatives)',
+                enableFilter: true
             },
             {
                 field: 'active',
                 ...boolCheckCol,
                 headerName: '',
                 chooserName: 'Active Status',
-                tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
+                tooltip: (active, {record}) => active ? `${record.data.company} is active` : '',
+                enableFilter: true
             }
         ]
     });

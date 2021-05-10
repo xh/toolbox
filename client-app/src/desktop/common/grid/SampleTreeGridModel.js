@@ -106,7 +106,10 @@ export class SampleTreeGridModel extends HoistModel {
             treeMode: true,
             store: {
                 loadRootAsSummary: true,
-                fields: [{name: 'isChecked', type: 'bool'}],
+                fields: [{name: 'isChecked', type: 'bool'},
+                    {name: 'mktVal', type: 'number'},
+                    {name: 'pnl', type: 'number'}
+                ],
                 processRawData: (r) => ({isChecked: false, ...r})
             },
             selModel: {mode: 'multiple'},
@@ -121,6 +124,7 @@ export class SampleTreeGridModel extends HoistModel {
                     width: 200,
                     field: 'name',
                     isTreeColumn: true,
+                    enableFilter: true,
                     ...(includeCheckboxes ? this.createCheckboxTreeColumn() : {})
                 },
                 {
@@ -137,7 +141,8 @@ export class SampleTreeGridModel extends HoistModel {
                     renderer: millionsRenderer({
                         precision: 3,
                         ledger: true
-                    })
+                    }),
+                    enableFilter: true
                 },
                 {
                     headerName: 'P&L',
@@ -153,7 +158,8 @@ export class SampleTreeGridModel extends HoistModel {
                         precision: 0,
                         ledger: true,
                         colorSpec: true
-                    })
+                    }),
+                    enableFilter: true
                 }
             ]
         });
