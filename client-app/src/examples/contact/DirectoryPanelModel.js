@@ -63,7 +63,7 @@ export class DirectoryPanelModel extends HoistModel {
 
         this.addReaction({
             track: () => gridModel.selectedRecord,
-            run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
+            run: (rec) => [this.detailsPanelModel.setCurrentRecord(rec), this.detailsPanelModel.setProfilePictureURL(rec.data.profilePicture)]
         });
 
         this.addReaction({
@@ -164,6 +164,16 @@ export class DirectoryPanelModel extends HoistModel {
                 cellPhone: '(555) 555-5555',
                 email: 'x@xh.io',
                 bio: 'add a bio'
+            },
+            {
+                id: 7,
+                name: 'Dan',
+                profilePicture: '../assets/wallESaysHi.jpg',
+                location: 'NY',
+                department: 'XH',
+                cellPhone: '(555) 555-5555',
+                email: 'x@xh.io',
+                bio: 'add a bio'
             }
         ];
 
@@ -174,8 +184,6 @@ export class DirectoryPanelModel extends HoistModel {
 
         gridModel.loadData(entries);
         await gridModel.preSelectFirstAsync();
-
-        facebookModel.loadData(entries);
 
         // try {
         //     let entries = await XH.fetchJson({
@@ -260,6 +268,10 @@ export class DirectoryPanelModel extends HoistModel {
                 },
                 {
                     field: 'bio',
+                    hidden: true
+                },
+                {
+                    field: 'profilePicture',
                     hidden: true
                 }
             ]

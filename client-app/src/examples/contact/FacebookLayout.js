@@ -28,9 +28,7 @@ export const facebookLayout = hoistCmp.factory({
                     className: `contact-fb-tile ${isSelected ? 'contact-fb-tile--selected' : ''}`,
                     items: [
                         Icon.user({size: '2x'}),
-                        div(record.data.name),
-                        div(record.data.bio),
-                        div(record.data.email)
+                        div(record.data.name)
                     ]
                 });
             }

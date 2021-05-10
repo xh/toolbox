@@ -1,7 +1,8 @@
-import {div, table, tbody, td, th, tr, vbox} from '@xh/hoist/cmp/layout';
+import {div, img, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {DetailsPanelModel} from './DetailsPanelModel';
 import {Icon} from '@xh/hoist/icon/Icon';
+import './DetailsPanel.scss';
 
 export const detailsPanel = hoistCmp.factory({
     model: uses(DetailsPanelModel),
@@ -10,29 +11,37 @@ export const detailsPanel = hoistCmp.factory({
         const {currentRecord} = model;
         if (!currentRecord) return null;
 
+        const recordFields = Object.keys(currentRecord.data).filter(str => !['id', 'isFavorite', 'profilePicture'].includes(str));
+
         return vbox({
             className: 'recalls-detail-wrapper',
-            alignItems: 'center',
             item: [
-                Icon.user({
-                    size: '10x'
+                currentRecord.data.profilePicture ? img({src: currentRecord.data.profilePicture, height: 125, width: 125, className: 'contact-record-user-image'}) : Icon.user({
+                    size: '10x',
+                    className: 'contact-record-user-image'
                 }),
-                div(`${currentRecord.data.name}`),
-                div(`${currentRecord.data.location}`),
-                div(`${currentRecord.data.workPhone}`),
-                div(`${currentRecord.data.bio}`)
+                ...recordFields.map(foo => {
+                    const value = currentRecord.data[foo];
+                    return currentRecord.data[foo] ? recordFieldEntry({foo, value}) : null;
+                })
             ]
-            //
-            //     table(
-            //     tbody(
-            //         tr(th('Brand Name'), td(`${currentRecord.data.brandName}`)),
-            //         tr(th('Generic Name'), td(`${currentRecord.data.genericName}`)),
-            //         tr(th('Classification'), td(`${model.classificationDetails}`)),
-            //         tr(th('Description'), td(`${currentRecord.data.description}`)),
-            //         tr(th('Recalling Firm'), td(`${currentRecord.data.recallingFirm}`)),
-            //         tr(th('Reason For Recall'), td(`${currentRecord.data.reason}`))
-            //     )
-            // )
+        });
+    }
+});
+
+const recordFieldEntry = hoistCmp.factory({
+    render({foo, value}) {
+        return vbox({
+            item: [
+                div({
+                    className: 'contact-record-entry-heading',
+                    item: foo
+                }),
+                div({
+                    className: 'contact-record-entry-value',
+                    item: value
+                })
+            ]
         });
     }
 });

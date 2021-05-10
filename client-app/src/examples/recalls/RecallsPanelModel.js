@@ -158,7 +158,7 @@ export class RecallsPanelModel extends HoistModel {
                 location: 'CA',
                 isFavorite: false
             }
-        ]
+        ];
 
 
         gridModel.loadData(entries)
