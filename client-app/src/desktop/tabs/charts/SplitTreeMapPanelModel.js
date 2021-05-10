@@ -4,7 +4,6 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {fmtMillions, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {clamp} from 'lodash';
 
 export class SplitTreeMapPanelModel extends HoistModel {
 
@@ -35,13 +34,13 @@ export class SplitTreeMapPanelModel extends HoistModel {
         store: {
             processRawData: (r) => {
                 return {
-                    pnlMktVal: clamp(r.pnl / Math.abs(r.mktVal), -1, 1),
+                    pnlMktVal: r.pnl / Math.abs(r.mktVal),
                     ...r
                 };
             },
             fields: [
-                {name: 'pnl', label: 'P&L'},
-                {name: 'pnlMktVal', label: 'P&L / Mkt Val'}
+                {name: 'pnl', displayName: 'P&L'},
+                {name: 'pnlMktVal', displayName: 'P&L / Mkt Val'}
             ]
         },
         columns: [

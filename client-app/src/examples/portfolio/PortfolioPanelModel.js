@@ -2,7 +2,7 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {MapPanelModel} from './MapPanelModel';
-import {clamp, round} from 'lodash';
+import {round} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {DetailPanelModel} from './detail/DetailPanelModel';
 import {PERSIST_MAIN} from './AppModel';
@@ -68,9 +68,8 @@ export class PortfolioPanelModel extends HoistModel {
     createStore() {
         return new Store({
             processRawData: (r) => {
-                const roundedPnlMktVal = round(r.pnl / Math.abs(r.mktVal), 2);
                 return {
-                    pnlMktVal: clamp(roundedPnlMktVal, -1, 1),
+                    pnlMktVal: round(r.pnl / Math.abs(r.mktVal), 2),
                     ...r
                 };
             },
