@@ -30,6 +30,19 @@ export const simpleTreeMapPanel = hoistCmp.factory({
 const bbar = hoistCmp.factory(
     ({model}) => toolbar(
         filler(),
+        span('Max Heat'),
+        select({
+            model: model.treeMapModel,
+            bind: 'maxHeat',
+            width: 120,
+            options: [
+                {label: 'None (auto)', value: undefined},
+                {label: '1', value: 1},
+                {label: '2', value: 2},
+                {label: '5', value: 5}
+            ]
+        }),
+        '-',
         span('Color Mode'),
         select({
             model: model.treeMapModel,

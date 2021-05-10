@@ -23,7 +23,8 @@ export class SimpleTreeMapModel extends HoistModel {
     @managed
     treeMapModel = new TreeMapModel({
         store: this.store,
-        colorMode: 'balanced',
+        maxHeat: 1,
+        colorMode: 'linear',
         labelField: 'name',
         valueField: 'pnl',
         heatField: 'pnlMktVal'

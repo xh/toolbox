@@ -79,7 +79,8 @@ export class GridTreeMapModel extends HoistModel {
     @managed
     treeMapModel = new TreeMapModel({
         gridModel: this.gridModel,
-        colorMode: 'balanced',
+        maxHeat: 1,
+        colorMode: 'linear',
         labelField: 'name',
         valueField: 'pnl',
         heatField: 'pnlMktVal'

@@ -80,6 +80,11 @@ export class SplitTreeMapPanelModel extends HoistModel {
     @managed
     splitTreeMapModel = new SplitTreeMapModel({
         gridModel: this.gridModel,
+        maxHeat: 1,
+        colorMode: 'linear',
+        labelField: 'name',
+        valueField: 'pnl',
+        heatField: 'pnlMktVal',
         mapTitleFn: (model, isPrimary) => {
             return [
                 isPrimary ? 'Profit:' : 'Loss:',
@@ -91,11 +96,7 @@ export class SplitTreeMapPanelModel extends HoistModel {
                     asElement: true
                 })
             ];
-        },
-        colorMode: 'balanced',
-        labelField: 'name',
-        valueField: 'pnl',
-        heatField: 'pnlMktVal'
+        }
     });
 
     constructor() {
