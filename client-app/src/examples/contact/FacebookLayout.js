@@ -6,27 +6,28 @@ import './FacebookLayout.scss';
 
 export const facebookLayout = hoistCmp.factory({
     render({model}) {
+        const {store, selModel} = model.gridModel;
+
         return box({
-            style: {
-                flexWrap: 'wrap'
-            },
-            items: [...model.gridModel.store.records.map(record => {
-                const isSelected = model.gridModel.selModel.selectedRecordId === record.id;
+            flexWrap: 'wrap',
+            items: store.records.map(record => {
+                const isSelected = selModel.selectedRecordId === record.id;
+                const {profilePicture, name} = record.data;
 
                 return vbox({
                     height: 150,
                     width: 250,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    onClick: () => model.gridModel.selModel.select(record),
+                    onClick: () => selModel.select(record),
                     className: `contact-fb-tile ${isSelected ? 'contact-fb-tile--selected' : ''}`,
                     items: [
-                        record.data.profilePicture ? img({src: record.data.profilePicture, height: 125, width: 125}) : Icon.user({size: '2x'}),
-                        div(record.data.name)
+                        profilePicture ? img({src: profilePicture, height: 125, width: 125}) : Icon.user({size: '2x'}),
+                        div(name)
                     ]
                 });
             }
-            )]
+            )
         });
     }
 });

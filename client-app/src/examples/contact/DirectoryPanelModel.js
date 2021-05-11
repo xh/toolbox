@@ -1,12 +1,11 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, persist} from '@xh/hoist/core';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable, observable, makeObservable, action} from '@xh/hoist/mobx';
 import {without} from 'lodash';
 import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {JsonBlobService} from '@xh/hoist/svc';
 
 export class DirectoryPanelModel extends HoistModel {
 
@@ -22,11 +21,11 @@ export class DirectoryPanelModel extends HoistModel {
 
     /** @member {string} */
     @bindable
-    locationFilter = '';
+    locationFilter;
 
     /** @member {string} */
     @bindable
-    departmentFilter = '';
+    departmentFilter;
 
     @bindable
     displayMode = 'details';
@@ -36,7 +35,7 @@ export class DirectoryPanelModel extends HoistModel {
     showDetails = 'true';
 
     @managed
-    detailsPanelModel = new DetailsPanelModel();
+    detailsPanelModel;
 
     /** @member {GridModel} */
     @managed
@@ -51,16 +50,16 @@ export class DirectoryPanelModel extends HoistModel {
         makeObservable(this);
 
         const gridModel = this.gridModel = this.createGridModel();
-        this.jsonBlob = new JsonBlobService();
+        this.detailsPanelModel = new DetailsPanelModel();
 
         this.addReaction({
             track: () => gridModel.selectedRecord,
-            run: (rec) => [this.detailsPanelModel.setCurrentRecord(rec), this.detailsPanelModel.setProfilePictureURL(rec.data.profilePicture)]
+            run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
         });
 
         this.addReaction({
-            track: () => [this.locationFilter, this.departmentFilter, this.searchQuery],
-            run: () => this.gridModel.setFilter(this.createFilter()),
+            track: () => [this.locationFilter, this.searchQuery],
+            run: () => gridModel.setFilter(this.createFilter()),
             fireImmediately: true
         });
 
@@ -81,7 +80,7 @@ export class DirectoryPanelModel extends HoistModel {
         let entries = [];
 
         try {
-            let blobs = await this.jsonBlob.listAsync({
+            let blobs = await XH.jsonBlobService.listAsync({
                 type: 'ContactData',
                 includeValue: true
             });
@@ -98,11 +97,10 @@ export class DirectoryPanelModel extends HoistModel {
     }
 
     createFilter() {
-        const {searchQuery, locationFilter, departmentFilter} = this;
+        const {searchQuery, locationFilter} = this;
         return [
             searchQuery,
-            locationFilter ? {field: 'location', op: '=', value: locationFilter} : null,
-            departmentFilter ? {field: 'department', op: '=', value: departmentFilter} : null
+            locationFilter ? {field: 'location', op: '=', value: locationFilter} : null
         ];
     }
 
