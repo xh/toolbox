@@ -6,7 +6,7 @@ import {without} from 'lodash';
 import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {FacebookModel} from './FacebookModel';
+import {JsonBlobService} from '@xh/hoist/svc';
 
 export class DirectoryPanelModel extends HoistModel {
 
@@ -42,10 +42,6 @@ export class DirectoryPanelModel extends HoistModel {
     @managed
     gridModel;
 
-    /** @member {FacebookModel} */
-    @managed
-    facebookModel;
-
     get currentRecord() {
         return this.gridModel.selectedRecord;
     }
@@ -55,11 +51,7 @@ export class DirectoryPanelModel extends HoistModel {
         makeObservable(this);
 
         const gridModel = this.gridModel = this.createGridModel();
-
-        this.facebookModel = new FacebookModel({
-            store: gridModel.store,
-            selModel: gridModel.selModel
-        });
+        this.jsonBlob = new JsonBlobService();
 
         this.addReaction({
             track: () => gridModel.selectedRecord,
@@ -85,126 +77,24 @@ export class DirectoryPanelModel extends HoistModel {
     // Implementation
     //------------------------
     async doLoadAsync(loadSpec) {
-        const {gridModel, facebookModel} = this;
+        const {gridModel} = this;
+        let entries = [];
 
-        let entries = [
-            {
-                id: 0,
-                name: 'Lee',
-                location: 'NY',
-                department: 'XH',
-                workPhone: '(555) 555-5555',
-                homePhone: '(555) 555-5555',
-                cellPhone: '(555) 555-5555',
-                email: 'x@xh.io',
-                bio: 'add a bio'
-            },
-            {
-                id: 1,
-                name: 'Anselm',
-                location: 'CA',
-                department: 'XH',
-                workPhone: '(555) 555-5555',
-                homePhone: '(555) 555-5555',
-                cellPhone: '(555) 555-5555',
-                email: 'x@xh.io',
-                bio: 'add a bio'
-            },
-            {
-                id: 2,
-                name: 'Tom',
-                location: 'NY',
-                department: 'XH',
-                workPhone: '(555) 555-5555',
-                homePhone: '(555) 555-5555',
-                cellPhone: '(555) 555-5555',
-                email: 'x@xh.io',
-                bio: 'add a bio'
-            },
-            {
-                id: 3,
-                name: 'Petra',
-                location: 'NY',
-                department: 'XH',
-                workPhone: '(555) 555-5555',
-                homePhone: '(555) 555-5555',
-                cellPhone: '(555) 555-5555',
-                email: 'x@xh.io',
-                bio: 'add a bio'
-            },
-            {
-                id: 4,
-                name: 'Collin',
-                location: 'NY',
-                department: 'XH',
-                workPhone: '(555) 555-5555',
-                homePhone: '(555) 555-5555',
-                cellPhone: '(555) 555-5555',
-                email: 'x@xh.io',
-                bio: 'add a bio'
-            },
-            {
-                id: 5,
-                name: 'Saba',
-                location: 'CA',
-                department: 'XH',
-                workPhone: '(555) 555-5555',
-                homePhone: '(555) 555-5555',
-                cellPhone: '(555) 555-5555',
-                email: 'x@xh.io',
-                bio: 'add a bio'
-            },
-            {
-                id: 6,
-                name: 'John',
-                location: 'NY',
-                department: 'XH',
-                workPhone: '(555) 555-5555',
-                homePhone: '(555) 555-5555',
-                cellPhone: '(555) 555-5555',
-                email: 'x@xh.io',
-                bio: 'add a bio'
-            },
-            {
-                id: 7,
-                name: 'Dan',
-                profilePicture: '../assets/wallESaysHi.jpg',
-                location: 'NY',
-                department: 'XH',
-                cellPhone: '(555) 555-5555',
-                email: 'x@xh.io',
-                bio: 'add a bio'
-            }
-        ];
+        try {
+            let blobs = await this.jsonBlob.listAsync({
+                type: 'ContactData',
+                includeValue: true
+            });
 
+            blobs.forEach(blob => {
+                entries.push({...blob.value, isFavorite: this.userFaves.includes(blob.value.id)});
+            });
 
-        entries.forEach(entry => {
-            entry.isFavorite = this.userFaves.includes(entry.id);
-        });
-
-        gridModel.loadData(entries);
-        await gridModel.preSelectFirstAsync();
-
-        // try {
-        //     let entries = await XH.fetchJson({
-        //         url: 'recalls',
-        //         params: {searchQuery: this.searchQuery},
-        //         loadSpec
-        //     });
-        //
-        //     if (loadSpec.isStale) return;
-        //
-        //     // Approximate (and enforce) a unique id for this rather opaque API
-        //     entries.forEach(it => {
-        //         it.id = it.openfda.brand_name[0] + it.recall_number;
-        //     });
-        //     entries = uniqBy(entries, 'id');
-        //
-        //     gridModel.loadData(entries);
-        //     await gridModel.preSelectFirstAsync();
-        // } catch (e) {
-        //     XH.handleException(e);
-        // }
+            gridModel.loadData(entries);
+            await gridModel.preSelectFirstAsync();
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     createFilter() {

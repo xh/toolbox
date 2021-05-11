@@ -1,5 +1,9 @@
 .contact-record-entry-heading {
   text-align: left;
+  background: var(--xh-title-bg);
+  color: var(--xh-title-text-color);
+  padding: var(--xh-pad-half-px);
+  margin: var(--xh-pad-px);
 }
 
 .contact-record-entry-value {

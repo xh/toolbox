@@ -28,7 +28,7 @@ export const directoryPanel = hoistCmp.factory({
             panel({
                 title: currentRecord?.data.name ?? 'Select a contact',
                 icon: Icon.detail(),
-                item: currentRecord ? detailsPanel() : placeholder('Select a contact above to view their details.'),
+                item: currentRecord ? detailsPanel() : placeholder('Select a contact to view their details.'),
                 className: 'toolbox-recalls-detail-panel',
                 compactHeader: true,
                 model: {

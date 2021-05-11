@@ -2,6 +2,7 @@ import {div, img, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {DetailsPanelModel} from './DetailsPanelModel';
 import {Icon} from '@xh/hoist/icon/Icon';
+import {startCase} from 'lodash';
 import './DetailsPanel.scss';
 
 export const detailsPanel = hoistCmp.factory({
@@ -20,9 +21,9 @@ export const detailsPanel = hoistCmp.factory({
                     size: '10x',
                     className: 'contact-record-user-image'
                 }),
-                ...recordFields.map(foo => {
-                    const value = currentRecord.data[foo];
-                    return currentRecord.data[foo] ? recordFieldEntry({foo, value}) : null;
+                ...recordFields.map(contactRecordField => {
+                    const value = currentRecord.data[contactRecordField];
+                    return currentRecord.data[contactRecordField] ? recordFieldEntry({contactRecordField, value}) : null;
                 })
             ]
         });
@@ -30,12 +31,12 @@ export const detailsPanel = hoistCmp.factory({
 });
 
 const recordFieldEntry = hoistCmp.factory({
-    render({foo, value}) {
+    render({contactRecordField, value}) {
         return vbox({
             item: [
                 div({
                     className: 'contact-record-entry-heading',
-                    item: foo
+                    item: startCase(contactRecordField)
                 }),
                 div({
                     className: 'contact-record-entry-value',

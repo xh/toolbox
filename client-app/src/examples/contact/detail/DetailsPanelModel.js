@@ -1,16 +1,16 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {makeObservable, observable, bindable} from '@xh/hoist/mobx';
 
 export class DetailsPanelModel extends HoistModel {
 
-    @bindable.ref
-    currentRecord;
+    @observable
+    profilePicture
 
     @bindable
     profilePictureURL
 
-    @observable
-    profilePicture
+    @bindable
+    currentRecord
 
     constructor() {
         super();
