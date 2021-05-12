@@ -4,7 +4,6 @@ import {
     lengthIs,
     required
 } from '@xh/hoist/cmp/form';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {Icon} from '@xh/hoist/icon';
 
@@ -21,18 +20,15 @@ export class TodoFormPanelModel extends HoistModel {
                 rules: [required, lengthIs({max: 50, min: 1})]
             },
             {
-                name: 'complete'
-            },
-            {
                 name: 'dueDate',
                 displayName: 'Due Date'
             }
         ]
     });
 
-    constructor() {
+    constructor(parentModel) {
         super();
-        // makeObservable(this);
+        this.parentModel = parentModel;
     }
 
     async reset() {
@@ -43,7 +39,13 @@ export class TodoFormPanelModel extends HoistModel {
         const {formModel} = this;
         const isValid = await formModel.validateAsync().linkTo(this.validateTask);
         if (isValid) {
-            //  add logic to store entry here
+            this.parentModel.data.push({
+                id: Date.now(),
+                task: formModel.values.task,
+                complete: false,
+                dueDate: formModel.values.dueDate ? formModel.values.dueDate : null
+            });
+            this.parentModel.refreshAsync();
             XH.toast({message: 'New task added to todo list.'});
             this.reset();
         } else {

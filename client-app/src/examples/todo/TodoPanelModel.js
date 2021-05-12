@@ -11,18 +11,11 @@ export class TodoPanelModel extends HoistModel {
     persistWith = PERSIST_APP;
 
     @bindable
-    searchQuery = '';
-
-    @bindable
     @persist
-    groupBy = null;
-
-    @bindable
-    @persist
-    filter = null;
+    filterBy = null;
 
     @managed
-    formPanelModel = new TodoFormPanelModel()
+    formPanelModel = new TodoFormPanelModel(this)
 
     @managed
     gridModel = new GridModel({
@@ -53,6 +46,8 @@ export class TodoPanelModel extends HoistModel {
         ]
     });
 
+    data = [{id: 1, task: 'buy groceries', complete: false, dueDate: '2021-05-21'}, {id: 2, task: 'walk dog', complete: false, dueDate: null}]
+
     constructor() {
         super();
         makeObservable(this);
@@ -69,30 +64,18 @@ export class TodoPanelModel extends HoistModel {
             track: () => this.filter,
             run: (selectedFilter) => gridModel.setFilter(selectedFilter)
         });
-
-        const {groupBy} = gridModel;
-        this.setGroupBy(groupBy && groupBy.length > 0 ? groupBy[0] : null);
     }
 
 
     //------------------------
     // Implementation
     //------------------------
-    // async doLoadAsync(loadSpec) {
-    //     const {gridModel} = this;
-    //
-    //     try {
-    //     } catch (e) {
-    //         XH.handleException(e);
-    //     }
-    // }
-
-    // processRecord(rawRec) {
-    //     return {
-    //         ...rawRec,
-    //         task: rawRec.task,
-    //         complete: rawRec.complete,
-    //         dueDate: rawRec.dueDate
-    //     };
-    // }
+    async doLoadAsync(loadSpec) {
+        const {gridModel} = this;
+        try {
+            gridModel.loadData(this.data);
+        } catch (e) {
+            XH.handleException(e);
+        }
+    }
 }
