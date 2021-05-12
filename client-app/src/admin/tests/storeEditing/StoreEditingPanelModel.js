@@ -6,7 +6,8 @@ import {
     inlineTextEditor,
     inlineNumberEditor,
     inlineDateEditor,
-    inlineCheckboxEditor
+    inlineCheckboxEditor,
+    inlineSelectEditor
 } from '@xh/hoist/desktop/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
 import {action, makeObservable} from '@xh/hoist/mobx';
@@ -99,6 +100,17 @@ export class StoreEditingPanelModel extends HoistModel {
                 editorElement: inlineNumberEditor
             },
             {
+                field: 'category',
+                editable: true,
+                width: 100,
+                editorElement: (props) => inlineSelectEditor({
+                    ...props,
+                    inputProps: {
+                        options: ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
+                    }
+                })
+            },
+            {
                 field: 'date',
                 ...dateCol,
                 editable: true,
@@ -127,16 +139,19 @@ export class StoreEditingPanelModel extends HoistModel {
             {
                 id: 0,
                 name: 'Record 0',
+                category: 'US',
                 description: 'This is a record'
             },
             {
                 id: 1,
                 name: 'Record 1',
+                category: 'EU',
                 description: 'This is a record'
             },
             {
                 id: 2,
                 name: 'Record 2',
+                category: 'BRIC',
                 description: 'This is a record'
             }
         ]);
