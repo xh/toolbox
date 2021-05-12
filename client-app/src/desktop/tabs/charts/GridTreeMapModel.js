@@ -3,7 +3,6 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {clamp} from 'lodash';
 
 export class GridTreeMapModel extends HoistModel {
 
@@ -34,13 +33,13 @@ export class GridTreeMapModel extends HoistModel {
         store: {
             processRawData: (r) => {
                 return {
-                    pnlMktVal: clamp(r.pnl / Math.abs(r.mktVal), -1, 1),
+                    pnlMktVal: r.pnl / Math.abs(r.mktVal),
                     ...r
                 };
             },
             fields: [
-                {name: 'pnl', label: 'P&L'},
-                {name: 'pnlMktVal', label: 'P&L / Mkt Val'}
+                {name: 'pnl', displayName: 'P&L'},
+                {name: 'pnlMktVal', displayName: 'P&L / Mkt Val'}
             ]
         },
         columns: [
@@ -79,7 +78,8 @@ export class GridTreeMapModel extends HoistModel {
     @managed
     treeMapModel = new TreeMapModel({
         gridModel: this.gridModel,
-        colorMode: 'balanced',
+        maxHeat: 1,
+        colorMode: 'linear',
         labelField: 'name',
         valueField: 'pnl',
         heatField: 'pnlMktVal'
