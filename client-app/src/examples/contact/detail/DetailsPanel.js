@@ -1,4 +1,4 @@
-import {div, img, vbox} from '@xh/hoist/cmp/layout';
+import {div, img, placeholder, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {DetailsPanelModel} from './DetailsPanelModel';
 import {Icon} from '@xh/hoist/icon/Icon';
@@ -8,39 +8,46 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 
 export const detailsPanel = hoistCmp.factory({
     model: uses(DetailsPanelModel),
+    className: 'contact-details-panel',
 
-    render({model}) {
+    render({model, className, ...props}) {
         const {currentRecord} = model;
-        if (!currentRecord) return null;
-
-        const recordFields = Object.keys(currentRecord.data).filter(str => !['id', 'isFavorite', 'profilePicture'].includes(str));
 
         return panel({
-            className: 'contact-details-panel',
-            item: vbox({
-                className: 'recalls-detail-wrapper',
-                item: [
-                    currentRecord.data.profilePicture ? img({
-                        src: currentRecord
-                            .
-                            data
-                            .
-                            profilePicture,
-                        className:
-                             'contact-record-user-image'
-                    }) : Icon.user({
-                        size: '10x',
-                        className: 'contact-record-user-image'
-                    }),
-                    ...recordFields.map(contactRecordField => {
-                        const value = currentRecord.data[contactRecordField];
-                        return currentRecord.data[contactRecordField] ? recordFieldEntry({
-                            contactRecordField,
-                            value
-                        }) : null;
-                    })
-                ]
-            })
+            title: currentRecord?.data.name ?? 'Select a contact',
+            className,
+            icon: Icon.detail(),
+            width: 325,
+            items: currentRecord ? renameThisProfile({record: currentRecord}) : placeholder('Select a contact to view their details.'),
+            ...props
+        });
+    }
+});
+
+const renameThisProfile = hoistCmp.factory({
+    render({record}) {
+        const recordFields = Object.keys(record.data).filter(str => !['id', 'isFavorite', 'profilePicture'].includes(str));
+
+        return vbox({
+            items: [
+                record?.data.profilePicture ? img({
+                    src: record
+                        .data
+                        .profilePicture,
+                    className:
+                        'contact-record-user-image'
+                }) : Icon.user({
+                    size: '10x',
+                    className: 'contact-record-user-image'
+                }),
+                ...recordFields.map(contactRecordField => {
+                    const value = record.data[contactRecordField];
+                    return record.data[contactRecordField] ? recordFieldEntry({
+                        contactRecordField,
+                        value
+                    }) : null;
+                })
+            ]
         });
     }
 });

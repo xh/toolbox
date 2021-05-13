@@ -1,12 +1,10 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {filler, placeholder, hframe} from '@xh/hoist/cmp/layout';
+import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {Icon} from '@xh/hoist/icon';
-import {PERSIST_APP} from './AppModel';
 import {detailsPanel} from './detail/DetailsPanel';
 import './DirectoryPanel.scss';
 import {DirectoryPanelModel} from './DirectoryPanelModel';
@@ -17,7 +15,7 @@ export const directoryPanel = hoistCmp.factory({
     model: creates(DirectoryPanelModel),
 
     render({model}) {
-        const {currentRecord, displayMode} = model;
+        const {displayMode} = model;
 
         return panel({
             item: hframe(
@@ -25,17 +23,8 @@ export const directoryPanel = hoistCmp.factory({
                     tbar: tbar(),
                     item: displayMode === 'grid' ? grid() : tileView()
                 }),
-                panel({
-                    title: currentRecord?.data.name ?? 'Select a contact',
-                    icon: Icon.detail(),
-                    item: currentRecord ? detailsPanel() : placeholder('Select a contact to view their details.'),
-                    className: 'toolbox-recalls-detail-panel',
-                    compactHeader: true,
-                    model: {
-                        side: 'right',
-                        defaultSize: 325,
-                        persistWith: PERSIST_APP
-                    }
+                detailsPanel({
+                    className: 'xh-border-left'
                 })
             ),
             mask: 'onLoad'

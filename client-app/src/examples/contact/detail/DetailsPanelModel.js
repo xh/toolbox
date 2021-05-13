@@ -7,9 +7,6 @@ export class DetailsPanelModel extends HoistModel {
     profilePicture
 
     @bindable
-    profilePictureURL
-
-    @bindable
     currentRecord
 
     constructor() {

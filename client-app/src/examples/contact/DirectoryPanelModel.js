@@ -54,6 +54,8 @@ export class DirectoryPanelModel extends HoistModel {
             run: () => gridModel.setFilter(this.createFilter()),
             fireImmediately: true
         });
+
+        window.dpm = this;
     }
 
 
@@ -144,8 +146,10 @@ export class DirectoryPanelModel extends HoistModel {
     @action
     toggleFavorite(record) {
         const {userFaves} = this;
+        const {store} = this.gridModel;
+
         this.userFaves = record.data.isFavorite ? without(userFaves, record.id) : [...userFaves, record.id];
-        this.refreshAsync();
+        store.modifyRecords({id: record.id, isFavorite: !record.data.isFavorite});
     }
 
 }
