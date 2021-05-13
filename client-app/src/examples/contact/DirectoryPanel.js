@@ -11,7 +11,7 @@ import {detailsPanel} from './detail/DetailsPanel';
 import './DirectoryPanel.scss';
 import {DirectoryPanelModel} from './DirectoryPanelModel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {facebookLayout} from './FacebookLayout';
+import {tileView} from './TileView';
 
 export const directoryPanel = hoistCmp.factory({
     model: creates(DirectoryPanelModel),
@@ -19,25 +19,27 @@ export const directoryPanel = hoistCmp.factory({
     render({model}) {
         const {currentRecord, displayMode} = model;
 
-        return hframe(
-            panel({
-                tbar: tbar(),
-                item: displayMode === 'details' ? grid() : facebookLayout(),
-                mask: 'onLoad'
-            }),
-            panel({
-                title: currentRecord?.data.name ?? 'Select a contact',
-                icon: Icon.detail(),
-                item: currentRecord ? detailsPanel() : placeholder('Select a contact to view their details.'),
-                className: 'toolbox-recalls-detail-panel',
-                compactHeader: true,
-                model: {
-                    side: 'right',
-                    defaultSize: 325,
-                    persistWith: PERSIST_APP
-                }
-            })
-        );
+        return panel({
+            item: hframe(
+                panel({
+                    tbar: tbar(),
+                    item: displayMode === 'grid' ? grid() : tileView()
+                }),
+                panel({
+                    title: currentRecord?.data.name ?? 'Select a contact',
+                    icon: Icon.detail(),
+                    item: currentRecord ? detailsPanel() : placeholder('Select a contact to view their details.'),
+                    className: 'toolbox-recalls-detail-panel',
+                    compactHeader: true,
+                    model: {
+                        side: 'right',
+                        defaultSize: 325,
+                        persistWith: PERSIST_APP
+                    }
+                })
+            ),
+            mask: 'onLoad'
+        });
     }
 });
 
@@ -72,11 +74,11 @@ const tbar = hoistCmp.factory(
                     items: [
                         button({
                             text: 'Details',
-                            value: 'details'
+                            value: 'grid'
                         }),
                         button({
                             text: 'Faces',
-                            value: 'faces'
+                            value: 'tiles'
                         })
                     ]
                 }),

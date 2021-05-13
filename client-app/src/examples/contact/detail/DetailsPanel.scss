@@ -12,4 +12,15 @@
 
 .contact-record-user-image {
   align-self: center;
+  width: auto;
+  height: 33%;
+  padding: var(--xh-pad-half-px);
+}
+
+.recalls-detail-wrapper {
+  overflow: auto;
+}
+
+.contact-details-panel {
+  max-width: 350px;
 }

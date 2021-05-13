@@ -4,6 +4,7 @@ import {DetailsPanelModel} from './DetailsPanelModel';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {startCase} from 'lodash';
 import './DetailsPanel.scss';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 
 export const detailsPanel = hoistCmp.factory({
     model: uses(DetailsPanelModel),
@@ -14,18 +15,32 @@ export const detailsPanel = hoistCmp.factory({
 
         const recordFields = Object.keys(currentRecord.data).filter(str => !['id', 'isFavorite', 'profilePicture'].includes(str));
 
-        return vbox({
-            className: 'recalls-detail-wrapper',
-            item: [
-                currentRecord.data.profilePicture ? img({src: currentRecord.data.profilePicture, height: 125, width: 125, className: 'contact-record-user-image'}) : Icon.user({
-                    size: '10x',
-                    className: 'contact-record-user-image'
-                }),
-                ...recordFields.map(contactRecordField => {
-                    const value = currentRecord.data[contactRecordField];
-                    return currentRecord.data[contactRecordField] ? recordFieldEntry({contactRecordField, value}) : null;
-                })
-            ]
+        return panel({
+            className: 'contact-details-panel',
+            item: vbox({
+                className: 'recalls-detail-wrapper',
+                item: [
+                    currentRecord.data.profilePicture ? img({
+                        src: currentRecord
+                            .
+                            data
+                            .
+                            profilePicture,
+                        className:
+                             'contact-record-user-image'
+                    }) : Icon.user({
+                        size: '10x',
+                        className: 'contact-record-user-image'
+                    }),
+                    ...recordFields.map(contactRecordField => {
+                        const value = currentRecord.data[contactRecordField];
+                        return currentRecord.data[contactRecordField] ? recordFieldEntry({
+                            contactRecordField,
+                            value
+                        }) : null;
+                    })
+                ]
+            })
         });
     }
 });

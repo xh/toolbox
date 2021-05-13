@@ -23,16 +23,8 @@ export class DirectoryPanelModel extends HoistModel {
     @bindable
     locationFilter;
 
-    /** @member {string} */
     @bindable
-    departmentFilter;
-
-    @bindable
-    displayMode = 'details';
-
-    @bindable
-    @persist
-    showDetails = 'true';
+    displayMode = 'grid';
 
     @managed
     detailsPanelModel;
@@ -62,13 +54,6 @@ export class DirectoryPanelModel extends HoistModel {
             run: () => gridModel.setFilter(this.createFilter()),
             fireImmediately: true
         });
-
-        this.addReaction({
-            track: () => this.groupBy,
-            run: () => gridModel.setShowDetails()
-        });
-
-        this.setShowDetails(this.showDetails ? false : true);
     }
 
 
@@ -80,19 +65,18 @@ export class DirectoryPanelModel extends HoistModel {
         let entries = [];
 
         try {
-            let blobs = await XH.jsonBlobService.listAsync({
-                type: 'ContactData',
-                includeValue: true
+            let contacts = await XH.fetchJson({
+                url: 'contacts'
             });
 
-            blobs.forEach(blob => {
-                entries.push({...blob.value, isFavorite: this.userFaves.includes(blob.value.id)});
+            contacts.forEach(contactInfo => {
+                entries.push({...contactInfo, isFavorite: this.userFaves.includes(contactInfo.id)});
             });
 
             gridModel.loadData(entries);
             await gridModel.preSelectFirstAsync();
         } catch (e) {
-            console.error(e);
+            XH.handleException(e);
         }
     }
 
@@ -107,7 +91,7 @@ export class DirectoryPanelModel extends HoistModel {
     createGridModel() {
         return new GridModel({
             store: {
-                fields: ['department']
+                fields: ['profilePicture', 'bio']
             },
             emptyText: 'No records found...',
             colChooserModel: true,
@@ -131,7 +115,6 @@ export class DirectoryPanelModel extends HoistModel {
                             }),
                             onClick: () => this.toggleFavorite(record)
                         });
-
                     }
                 },
                 {
@@ -153,14 +136,6 @@ export class DirectoryPanelModel extends HoistModel {
                 },
                 {
                     field: 'email'
-                },
-                {
-                    field: 'bio',
-                    hidden: true
-                },
-                {
-                    field: 'profilePicture',
-                    hidden: true
                 }
             ]
         });

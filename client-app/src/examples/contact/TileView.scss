@@ -1,0 +1,8 @@
+.contact-fb-tile {
+  border: var(--xh-border-solid);
+  margin: var(--xh-pad-px);
+
+  &--selected {
+    border-color: var(--xh-orange);
+  }
+}
