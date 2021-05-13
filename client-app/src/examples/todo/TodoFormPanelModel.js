@@ -9,6 +9,9 @@ import {Icon} from '@xh/hoist/icon';
 
 export class TodoFormPanelModel extends HoistModel {
 
+    /** @member {TodoPanelModel} */
+    parentModel;
+
     @managed
     validateTask = new PendingTaskModel();
 
@@ -26,9 +29,9 @@ export class TodoFormPanelModel extends HoistModel {
         ]
     });
 
-    constructor(parentModel) {
+    constructor(todoPanelModel) {
         super();
-        this.parentModel = parentModel;
+        this.parentModel = todoPanelModel;
     }
 
     async reset() {

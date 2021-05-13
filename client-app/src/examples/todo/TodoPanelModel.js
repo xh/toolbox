@@ -2,7 +2,6 @@ import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {PERSIST_APP} from './AppModel';
 import {TodoFormPanelModel} from './TodoFormPanelModel';
 
@@ -12,7 +11,7 @@ export class TodoPanelModel extends HoistModel {
 
     @bindable
     @persist
-    filterBy = null;
+    filterBy = 'all';
 
     @managed
     formPanelModel = new TodoFormPanelModel(this)
@@ -46,7 +45,7 @@ export class TodoPanelModel extends HoistModel {
         ]
     });
 
-    data = [{id: 1, task: 'buy groceries', complete: false, dueDate: '2021-05-21'}, {id: 2, task: 'walk dog', complete: false, dueDate: null}]
+    data = [{id: 1, task: 'buy groceries', complete: true, dueDate: '2021-05-21'}, {id: 2, task: 'walk dog', complete: false, dueDate: null}]
 
     constructor() {
         super();
@@ -55,17 +54,20 @@ export class TodoPanelModel extends HoistModel {
         const {gridModel} = this;
 
         this.addReaction({
-            track: () => this.searchQuery,
-            run: () => this.loadAsync(),
-            debounce: ONE_SECOND
-        });
-
-        this.addReaction({
-            track: () => this.filter,
-            run: (selectedFilter) => gridModel.setFilter(selectedFilter)
+            track: () => this.filterBy,
+            run: (filterBy) => {
+                switch (filterBy) {
+                    case 'complete':
+                        return gridModel.setFilter({field: 'complete', op: '=', value: true});
+                    case 'active':
+                        return gridModel.setFilter({field: 'complete', op: '=', value: false});
+                    default:
+                        return gridModel.setFilter(null);
+                }
+            },
+            fireImmediately: true
         });
     }
-
 
     //------------------------
     // Implementation

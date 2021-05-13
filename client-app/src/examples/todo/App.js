@@ -16,7 +16,6 @@ export const App = hoistCmp({
                 icon: Icon.clipboard({size: '2x', prefix: 'fal'}),
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
-            // item: formPanel()
             item: todoPanel()
         });
     }

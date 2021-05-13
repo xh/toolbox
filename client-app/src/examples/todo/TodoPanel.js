@@ -31,7 +31,6 @@ const bbar = hoistCmp.factory(
             items: [
                 buttonGroupInput({
                     bind: 'filterBy',
-                    enableClear: true,
                     outlined: true,
                     items: [
                         button({text: 'All', value: 'all'}),
@@ -40,7 +39,7 @@ const bbar = hoistCmp.factory(
                     ]
                 }),
                 toolbarSep(),
-                gridCountLabel({unit: 'active task'})
+                gridCountLabel({unit: 'task'})
             ]
         });
     }
