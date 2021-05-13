@@ -19,7 +19,7 @@ export class TodoFormPanelModel extends HoistModel {
     formModel = new FormModel({
         fields: [
             {
-                name: 'task',
+                name: 'description',
                 rules: [required, lengthIs({max: 50, min: 1})]
             },
             {
@@ -29,12 +29,14 @@ export class TodoFormPanelModel extends HoistModel {
         ]
     });
 
+    newTask = '';
+
     constructor(todoPanelModel) {
         super();
         this.parentModel = todoPanelModel;
     }
 
-    async reset() {
+    async resetAsync() {
         this.formModel.reset();
     }
 
@@ -42,15 +44,16 @@ export class TodoFormPanelModel extends HoistModel {
         const {formModel} = this;
         const isValid = await formModel.validateAsync().linkTo(this.validateTask);
         if (isValid) {
-            this.parentModel.data.push({
+            const newTask = {
                 id: Date.now(),
-                task: formModel.values.task,
+                description: formModel.values.description,
                 complete: false,
                 dueDate: formModel.values.dueDate ? formModel.values.dueDate : null
-            });
-            this.parentModel.refreshAsync();
+            };
+            XH.localStorageService.set(this.parentModel._localStorageKey, [...this.parentModel.tasks, newTask]);
+            await this.parentModel.refreshAsync();
             XH.toast({message: 'New task added to todo list.'});
-            this.reset();
+            await this.resetAsync();
         } else {
             XH.toast({
                 icon: Icon.warning(),

@@ -18,15 +18,15 @@ export const todoFormPanel = hoistCmp.factory({
             icon: Icon.add(),
             height: 300,
             item: form(
-                vbox(task(), dueDate())
+                vbox(description(), dueDate())
             ),
             bbar: bbar()
         });
     }
 });
 
-const task = hoistCmp.factory(
-    () => formField({field: 'task', item: textInput()})
+const description = hoistCmp.factory(
+    () => formField({field: 'description', item: textInput()})
 );
 
 const dueDate = hoistCmp.factory(

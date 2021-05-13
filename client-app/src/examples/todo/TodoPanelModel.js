@@ -9,12 +9,14 @@ export class TodoPanelModel extends HoistModel {
 
     persistWith = PERSIST_APP;
 
+    _localStorageKey = 'todoAppData';
+
     @bindable
     @persist
     filterBy = 'all';
 
     @managed
-    formPanelModel = new TodoFormPanelModel(this)
+    formPanelModel = new TodoFormPanelModel(this);
 
     @managed
     gridModel = new GridModel({
@@ -28,7 +30,7 @@ export class TodoPanelModel extends HoistModel {
         persistWith: this.persistWith,
         columns: [
             {
-                field: 'task',
+                field: 'description',
                 width: 300,
                 tooltip: (cls) => cls
             },
@@ -45,7 +47,9 @@ export class TodoPanelModel extends HoistModel {
         ]
     });
 
-    data = [{id: 1, task: 'buy groceries', complete: true, dueDate: '2021-05-21'}, {id: 2, task: 'walk dog', complete: false, dueDate: null}]
+    defaultTasks = [{id: 1, description: 'buy groceries', complete: true, dueDate: '2021-05-21'}, {id: 2, description: 'walk dog', complete: false, dueDate: null}];
+
+    tasks
 
     constructor() {
         super();
@@ -75,7 +79,14 @@ export class TodoPanelModel extends HoistModel {
     async doLoadAsync(loadSpec) {
         const {gridModel} = this;
         try {
-            gridModel.loadData(this.data);
+            if (XH.localStorageService.get(this._localStorageKey)) {
+                this.tasks = XH.localStorageService.get(this._localStorageKey);
+            } else {
+                XH.localStorageService.set(this._localStorageKey, this.defaultTasks);
+                this.tasks = this.defaultTasks;
+            }
+
+            gridModel.loadData(this.tasks);
         } catch (e) {
             XH.handleException(e);
         }
