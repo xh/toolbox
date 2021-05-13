@@ -1,8 +1,10 @@
-import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {GridModel, localDateCol, boolCheckCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PERSIST_APP} from './AppModel';
+import {actionCol} from '@xh/hoist/desktop/cmp/grid';
+import {Icon} from '@xh/hoist/icon';
 import {TodoFormPanelModel} from './TodoFormPanelModel';
 
 export class TodoPanelModel extends HoistModel {
@@ -30,13 +32,29 @@ export class TodoPanelModel extends HoistModel {
         persistWith: this.persistWith,
         columns: [
             {
+                ...actionCol,
+                actionsShowOnHoverOnly: true,
+                actions: [
+                    {
+                        icon: Icon.delete(),
+                        tooltip: 'Remove task',
+                        intent: 'danger'
+                    },
+                    {
+                        icon: Icon.edit(),
+                        tooltip: 'Edit task'
+                    }
+                ]
+            },
+            {
                 field: 'description',
-                width: 300,
+                flex: 1,
                 tooltip: (cls) => cls
             },
             {
                 field: 'complete',
-                width: 100
+                ...boolCheckCol,
+                width: 80
             },
             {
                 field: 'dueDate',
@@ -90,5 +108,9 @@ export class TodoPanelModel extends HoistModel {
         } catch (e) {
             XH.handleException(e);
         }
+    }
+
+    addTask(task) {
+        XH.localStorageService.set(this._localStorageKey, [...this.tasks, task]);
     }
 }

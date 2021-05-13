@@ -4,16 +4,12 @@ import {
     lengthIs,
     required
 } from '@xh/hoist/cmp/form';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 import {Icon} from '@xh/hoist/icon';
 
 export class TodoFormPanelModel extends HoistModel {
 
     /** @member {TodoPanelModel} */
     parentModel;
-
-    @managed
-    validateTask = new PendingTaskModel();
 
     @managed
     formModel = new FormModel({
@@ -36,24 +32,26 @@ export class TodoFormPanelModel extends HoistModel {
         this.parentModel = todoPanelModel;
     }
 
-    async resetAsync() {
+    reset() {
         this.formModel.reset();
     }
 
     async submitAsync() {
-        const {formModel} = this;
-        const isValid = await formModel.validateAsync().linkTo(this.validateTask);
+        const {formModel, parentModel} = this,
+            {values} = formModel,
+            isValid = await formModel.validateAsync();
+
         if (isValid) {
             const newTask = {
                 id: Date.now(),
-                description: formModel.values.description,
-                complete: false,
-                dueDate: formModel.values.dueDate ? formModel.values.dueDate : null
+                description: values.description,
+                dueDate: values.dueDate,
+                complete: false
             };
-            XH.localStorageService.set(this.parentModel._localStorageKey, [...this.parentModel.tasks, newTask]);
-            await this.parentModel.refreshAsync();
-            XH.toast({message: 'New task added to todo list.'});
-            await this.resetAsync();
+            parentModel.addTask(newTask);
+            await parentModel.refreshAsync();
+            XH.toast({message: `New task added: '${newTask.description}'`});
+            this.reset();
         } else {
             XH.toast({
                 icon: Icon.warning(),

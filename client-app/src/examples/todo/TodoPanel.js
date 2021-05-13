@@ -34,7 +34,7 @@ const bbar = hoistCmp.factory(
                     outlined: true,
                     items: [
                         button({text: 'All', value: 'all'}),
-                        button({text: 'Active', value: 'active'}),
+                        button({text: 'In Progress', value: 'active'}),
                         button({text: 'Complete', value: 'complete'})
                     ]
                 }),
