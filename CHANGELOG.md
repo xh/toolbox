@@ -4,7 +4,7 @@
 
 ### Libraries
 
-* @xh/hoist-dev-utils 5.8.0
+* @xh/hoist-dev-utils 5.9.0
 
 ## v2.6.0 - 2021-04-22
 
