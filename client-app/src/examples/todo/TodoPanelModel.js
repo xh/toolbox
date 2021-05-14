@@ -5,7 +5,8 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PERSIST_APP} from './AppModel';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
-import {TodoFormPanelModel} from './TodoFormPanelModel';
+import {reject} from 'lodash';
+import {FormPanelModel} from './FormPanelModel';
 
 export class TodoPanelModel extends HoistModel {
 
@@ -18,7 +19,7 @@ export class TodoPanelModel extends HoistModel {
     filterBy = 'all';
 
     @managed
-    formPanelModel = new TodoFormPanelModel(this);
+    formPanelModel = new FormPanelModel(this);
 
     @managed
     gridModel = new GridModel({
@@ -29,6 +30,7 @@ export class TodoPanelModel extends HoistModel {
         enableExport: true,
         rowBorders: true,
         showHover: true,
+        sortBy: 'dueDate',
         persistWith: this.persistWith,
         columns: [
             {
@@ -66,9 +68,9 @@ export class TodoPanelModel extends HoistModel {
         ]
     });
 
-    defaultTasks = [{id: 1, description: 'buy groceries', complete: true, dueDate: '2021-05-21'}, {id: 2, description: 'walk dog', complete: false, dueDate: null}];
-
-    tasks
+    get selectedTask() {
+        return this.gridModel.selectedRecord?.data;
+    }
 
     constructor() {
         super();
@@ -96,27 +98,26 @@ export class TodoPanelModel extends HoistModel {
     // Implementation
     //------------------------
     async doLoadAsync(loadSpec) {
-        const {gridModel} = this;
-        try {
-            if (XH.localStorageService.get(this._localStorageKey)) {
-                this.tasks = XH.localStorageService.get(this._localStorageKey);
-            } else {
-                XH.localStorageService.set(this._localStorageKey, this.defaultTasks);
-                this.tasks = this.defaultTasks;
-            }
-
-            gridModel.loadData(this.tasks);
-        } catch (e) {
-            XH.handleException(e);
-        }
+        const {gridModel} = this,
+            tasks = XH.getPref('todoApp');
+        gridModel.loadData(tasks);
     }
 
     addTask(task) {
-        XH.localStorageService.set(this._localStorageKey, [...this.tasks, task]);
+        const tasks = XH.getPref('todoApp');
+        XH.setPref('todoApp', [...tasks, task]);
+    }
+
+    editTask(task) {
+        const {id} = task;
+        let tasks = XH.getPref('todoApp');
+        tasks = reject(tasks, {id});
+        tasks = [...tasks, task];
+        XH.setPref('todoApp', tasks);
     }
 
     async removeTaskAsync(record) {
-        const {description} = record.data,
+        const {id, description} = record.data,
             remove = await XH.confirm({
                 title: 'Remove Task',
                 message: `Are you sure you want to permanently remove '${description}?'`,
@@ -131,19 +132,17 @@ export class TodoPanelModel extends HoistModel {
                 }
             });
 
-        let index = this.tasks.findIndex(task => task.description === description);
-        this.tasks.splice(index, 1);
-
         if (remove) {
-            XH.localStorageService.set(this._localStorageKey, this.tasks);
+            let tasks = XH.getPref('todoApp');
+            tasks = reject(tasks, {id});
+            XH.setPref('todoApp', tasks);
+
             XH.toast({
                 message: `Task removed: '${description}'`,
                 icon: Icon.cross(),
                 intent: 'danger'
             });
             await this.refreshAsync();
-        } else {
-            return '';
         }
     }
 }

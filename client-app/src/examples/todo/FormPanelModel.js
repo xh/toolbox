@@ -6,7 +6,7 @@ import {
 } from '@xh/hoist/cmp/form';
 import {Icon} from '@xh/hoist/icon';
 
-export class TodoFormPanelModel extends HoistModel {
+export class FormPanelModel extends HoistModel {
 
     /** @member {TodoPanelModel} */
     parentModel;
@@ -14,6 +14,9 @@ export class TodoFormPanelModel extends HoistModel {
     @managed
     formModel = new FormModel({
         fields: [
+            {
+                name: 'id'
+            },
             {
                 name: 'description',
                 rules: [required, lengthIs({max: 50, min: 1})]
@@ -30,6 +33,11 @@ export class TodoFormPanelModel extends HoistModel {
     constructor(todoPanelModel) {
         super();
         this.parentModel = todoPanelModel;
+
+        this.addReaction({
+            track: () => this.parentModel.selectedTask,
+            run: (selectedTask) => this.formModel.init(selectedTask)
+        });
     }
 
     reset() {
@@ -42,15 +50,16 @@ export class TodoFormPanelModel extends HoistModel {
             isValid = await formModel.validateAsync();
 
         if (isValid) {
-            const newTask = {
-                id: Date.now(),
-                description: values.description,
-                dueDate: values.dueDate,
-                complete: false
-            };
-            parentModel.addTask(newTask);
+            const existingId = values.id,
+                task = {
+                    id: existingId ?? Date.now(),
+                    description: values.description,
+                    dueDate: values.dueDate,
+                    complete: false
+                };
+            existingId ? parentModel.editTask(task) : parentModel.addTask(task);
             await parentModel.refreshAsync();
-            XH.toast({message: `New task added: '${newTask.description}'`});
+            XH.toast({message: existingId ? `Task updated: '${task.description}'`: `New task added: '${task.description}'`});
             this.reset();
         } else {
             XH.toast({

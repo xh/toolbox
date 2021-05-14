@@ -5,7 +5,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {todoFormPanel} from './TodoFormPanel';
+import {formPanel} from './FormPanel';
 import './TodoPanel.scss';
 import {TodoPanelModel} from './TodoPanelModel';
 
@@ -14,7 +14,7 @@ export const todoPanel = hoistCmp.factory({
 
     render() {
         return hframe(
-            todoFormPanel(),
+            formPanel(),
             panel({
                 flex: 1,
                 bbar: bbar(),

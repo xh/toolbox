@@ -7,10 +7,10 @@ import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {dateInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {TodoFormPanelModel} from './TodoFormPanelModel';
+import {FormPanelModel} from './FormPanelModel';
 
-export const todoFormPanel = hoistCmp.factory({
-    model: uses(TodoFormPanelModel),
+export const formPanel = hoistCmp.factory({
+    model: uses(FormPanelModel),
 
     render() {
         return panel({
