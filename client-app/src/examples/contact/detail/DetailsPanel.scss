@@ -1,26 +1,24 @@
-.contact-record-entry-heading {
-  text-align: left;
-  background: var(--xh-title-bg);
-  color: var(--xh-title-text-color);
-  padding: var(--xh-pad-half-px);
-  margin: var(--xh-pad-px);
-}
-
-.contact-record-entry-value {
-  text-align: center;
-}
-
-.contact-record-user-image {
-  align-self: center;
-  width: auto;
-  height: 33%;
-  padding: var(--xh-pad-half-px);
-}
-
-.recalls-detail-wrapper {
-  overflow: auto;
-}
-
 .contact-details-panel {
-  max-width: 350px;
+  &__inner {
+    height: 100%;
+    padding: var(--xh-pad-double-px);
+    overflow-y: auto;
+  }
+
+  // make this centered again
+  .contact-record-user-image {
+    margin: 0 auto;
+    display: table-cell;
+    width: auto;
+    height: 33%;
+    padding: var(--xh-pad-half-px);
+  }
+
+  .xh-form-field {
+    border-bottom: var(--xh-border-solid);
+  }
+
+  .xh-form-field-label {
+    font-weight: bold;
+  }
 }

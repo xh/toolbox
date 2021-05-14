@@ -23,6 +23,10 @@ export class DirectoryPanelModel extends HoistModel {
     @bindable
     locationFilter;
 
+    /** @member {boolean} */
+    @bindable
+    showFavoritesOnly = false;
+
     @bindable
     displayMode = 'grid';
 
@@ -42,7 +46,7 @@ export class DirectoryPanelModel extends HoistModel {
         makeObservable(this);
 
         const gridModel = this.gridModel = this.createGridModel();
-        this.detailsPanelModel = new DetailsPanelModel();
+        this.detailsPanelModel = new DetailsPanelModel(this);
 
         this.addReaction({
             track: () => gridModel.selectedRecord,
@@ -50,7 +54,7 @@ export class DirectoryPanelModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => [this.locationFilter, this.searchQuery],
+            track: () => [this.locationFilter, this.searchQuery, this.showFavoritesOnly],
             run: () => gridModel.setFilter(this.createFilter()),
             fireImmediately: true
         });
@@ -64,18 +68,17 @@ export class DirectoryPanelModel extends HoistModel {
     //------------------------
     async doLoadAsync(loadSpec) {
         const {gridModel} = this;
-        let entries = [];
 
         try {
-            let contacts = await XH.fetchJson({
+            const contacts = await XH.fetchJson({
                 url: 'contacts'
-            });
+            }).track({category: 'Contacts', message: 'Loaded contacts.'});
 
             contacts.forEach(contactInfo => {
-                entries.push({...contactInfo, isFavorite: this.userFaves.includes(contactInfo.id)});
+                contactInfo.isFavorite = this.userFaves.includes(contactInfo.id);
             });
 
-            gridModel.loadData(entries);
+            gridModel.loadData(contacts);
             await gridModel.preSelectFirstAsync();
         } catch (e) {
             XH.handleException(e);
@@ -83,10 +86,11 @@ export class DirectoryPanelModel extends HoistModel {
     }
 
     createFilter() {
-        const {searchQuery, locationFilter} = this;
+        const {searchQuery, locationFilter, showFavoritesOnly} = this;
         return [
             searchQuery,
-            locationFilter ? {field: 'location', op: '=', value: locationFilter} : null
+            locationFilter ? {field: 'location', op: '=', value: locationFilter} : null,
+            showFavoritesOnly ? {field: 'isFavorite', op: '=', value: true} : null
         ];
     }
 
@@ -152,4 +156,14 @@ export class DirectoryPanelModel extends HoistModel {
         store.modifyRecords({id: record.id, isFavorite: !record.data.isFavorite});
     }
 
+    async updateContactAsync(id, update) {
+        const {gridModel} = this;
+
+        const contacts = await XH.fetchService.postJson({
+            url: `contacts/update/${id}`,
+            body: update
+        });
+
+        gridModel.loadData(contacts);
+    }
 }

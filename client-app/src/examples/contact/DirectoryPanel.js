@@ -2,7 +2,7 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {detailsPanel} from './detail/DetailsPanel';
@@ -34,6 +34,8 @@ export const directoryPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory(
     ({model}) => {
+        const {displayMode} = model;
+
         return toolbar({
             className: 'directory-panel-toolbar',
             items: [
@@ -55,6 +57,11 @@ const tbar = hoistCmp.factory(
                         {label: 'Canada', value: 'CAN'}
                     ]
                 }),
+                toolbarSep(),
+                switchInput({
+                    label: model.showFavoritesOnly ? 'Show All' : 'Show Favorites',
+                    bind: 'showFavoritesOnly'
+                }),
                 filler(),
                 buttonGroupInput({
                     bind: 'displayMode',
@@ -72,7 +79,9 @@ const tbar = hoistCmp.factory(
                     ]
                 }),
                 toolbarSep(),
-                colChooserButton()
+                colChooserButton({
+                    disabled: !(displayMode === 'grid')
+                })
             ]
         });
     }
