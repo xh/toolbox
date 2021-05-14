@@ -38,7 +38,8 @@ export class TodoPanelModel extends HoistModel {
                     {
                         icon: Icon.delete(),
                         tooltip: 'Remove task',
-                        intent: 'danger'
+                        intent: 'danger',
+                        actionFn: ({record}) => this.removeTaskAsync(record)
                     },
                     {
                         icon: Icon.edit(),
@@ -112,5 +113,37 @@ export class TodoPanelModel extends HoistModel {
 
     addTask(task) {
         XH.localStorageService.set(this._localStorageKey, [...this.tasks, task]);
+    }
+
+    async removeTaskAsync(record) {
+        const {description} = record.data,
+            remove = await XH.confirm({
+                title: 'Remove Task',
+                message: `Are you sure you want to permanently remove '${description}?'`,
+                confirmProps: {
+                    text: 'Yes',
+                    intent: 'primary'
+                },
+                cancelProps: {
+                    text: 'No',
+                    intent: 'danger',
+                    autoFocus: true
+                }
+            });
+
+        let index = this.tasks.findIndex(task => task.description === description);
+        this.tasks.splice(index, 1);
+
+        if (remove) {
+            XH.localStorageService.set(this._localStorageKey, this.tasks);
+            XH.toast({
+                message: `Task removed: '${description}'`,
+                icon: Icon.cross(),
+                intent: 'danger'
+            });
+            await this.refreshAsync();
+        } else {
+            return '';
+        }
     }
 }
