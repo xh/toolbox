@@ -108,9 +108,10 @@ export class DirectoryPanelModel extends HoistModel {
             columns: [
                 {
                     field: 'isFavorite',
-                    displayName: 'Favorites',
+                    headerName: null,
                     align: 'center',
-                    width: 70,
+                    resizable: false,
+                    width: 40,
                     elementRenderer: (val, {record}) => {
                         const {isFavorite} = record.data;
 

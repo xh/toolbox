@@ -47,7 +47,7 @@ const tbar = hoistCmp.factory(
                 toolbarSep(),
                 select({
                     bind: 'locationFilter',
-                    placeholder: 'Office',
+                    placeholder: 'Location',
                     enableClear: true,
                     options: [
                         {label: 'New York', value: 'NY'},
@@ -59,7 +59,7 @@ const tbar = hoistCmp.factory(
                 }),
                 toolbarSep(),
                 switchInput({
-                    label: model.showFavoritesOnly ? 'Show All' : 'Show Favorites',
+                    label: 'Favorites Only',
                     bind: 'showFavoritesOnly'
                 }),
                 filler(),
