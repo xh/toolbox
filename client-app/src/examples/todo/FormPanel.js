@@ -48,8 +48,7 @@ const bbar = hoistCmp.factory(
         button({
             text: 'Reset',
             icon: Icon.reset({className: 'xh-red'}),
-            onClick: () => model.reset(),
-            disabled: !model.formModel.isDirty
+            onClick: () => model.reset()
         }),
         filler(),
         button({

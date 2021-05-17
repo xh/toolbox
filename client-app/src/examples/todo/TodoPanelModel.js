@@ -38,21 +38,23 @@ export class TodoPanelModel extends HoistModel {
                 actionsShowOnHoverOnly: true,
                 actions: [
                     {
+                        icon: Icon.check(),
+                        tooltip: 'Mark complete',
+                        intent: 'success',
+                        actionFn: ({record}) => this.markComplete(record)
+                    },
+                    {
                         icon: Icon.delete(),
                         tooltip: 'Remove task',
                         intent: 'danger',
                         actionFn: ({record}) => this.removeTaskAsync(record)
-                    },
-                    {
-                        icon: Icon.edit(),
-                        tooltip: 'Edit task'
                     }
                 ]
             },
             {
                 field: 'description',
                 flex: 1,
-                tooltip: (cls) => cls
+                tooltip: (description) => description
             },
             {
                 field: 'complete',
@@ -62,7 +64,7 @@ export class TodoPanelModel extends HoistModel {
             {
                 field: 'dueDate',
                 ...localDateCol,
-                width: 100,
+                width: 120,
                 renderer: compactDateRenderer('MMM D')
             }
         ]
@@ -114,6 +116,18 @@ export class TodoPanelModel extends HoistModel {
         tasks = reject(tasks, {id});
         tasks = [...tasks, task];
         XH.setPref('todoApp', tasks);
+    }
+
+    async markComplete(record) {
+        const {id, description, dueDate, complete} = record.data;
+        this.editTask({
+            id,
+            description,
+            dueDate,
+            complete: !complete
+        });
+        !complete ? XH.toast({message: `You completed '${record.data.description}!'`}) : '';
+        await this.refreshAsync();
     }
 
     async removeTaskAsync(record) {
