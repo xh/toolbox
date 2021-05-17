@@ -42,13 +42,13 @@ export class TodoPanelModel extends HoistModel {
                         icon: Icon.check(),
                         tooltip: 'Mark complete',
                         intent: 'success',
-                        actionFn: ({record}) => this.markCompleteAsync(record)
+                        actionFn: async ({record}) => await this.toggleCompleteAsync(record)
                     },
                     {
                         icon: Icon.delete(),
                         tooltip: 'Remove task',
                         intent: 'danger',
-                        actionFn: ({record}) => this.removeTaskAsync(record)
+                        actionFn: async ({record}) => await this.removeTaskAsync(record)
                     }
                 ]
             },

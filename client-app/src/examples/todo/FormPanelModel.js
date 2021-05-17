@@ -23,6 +23,9 @@ export class FormPanelModel extends HoistModel {
             {
                 name: 'dueDate',
                 displayName: 'Due Date'
+            },
+            {
+                name: 'complete'
             }
         ]
     });
@@ -54,6 +57,7 @@ export class FormPanelModel extends HoistModel {
                     dueDate: values.dueDate,
                     complete: values.complete ?? false
                 };
+
             existingId ? await parentModel.editTaskAsync(task) : await parentModel.addTaskAsync(task);
             this.clearForm();
         }
