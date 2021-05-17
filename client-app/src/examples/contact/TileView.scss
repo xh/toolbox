@@ -5,4 +5,12 @@
   &--selected {
     border-color: var(--xh-orange);
   }
+
+  .floating-name {
+    position: absolute;
+    font-weight: bold;
+    text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;
+    left: 200px;
+    top: 125px;
+  }
 }

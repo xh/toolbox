@@ -23,7 +23,10 @@ export const tileView = hoistCmp.factory({
                     className: `contact-fb-tile ${isSelected ? 'contact-fb-tile--selected' : ''}`,
                     items: [
                         profilePicture ? img({src: profilePicture, height: 'auto', width: '100%'}) : Icon.user({size: '2x'}),
-                        div(name)
+                        div({
+                            className: profilePicture ? 'floating-name' : null,
+                            item: name
+                        })
                     ]
                 });
             }
