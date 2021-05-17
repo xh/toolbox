@@ -1,5 +1,6 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel, dateCol, boolCheckCol} from '@xh/hoist/cmp/grid';
+import {dateIs, lengthIs, numberIs, required} from '@xh/hoist/data';
 import {
     actionCol,
     calcActionColWidth,
@@ -9,9 +10,10 @@ import {
     inlineCheckboxEditor,
     inlineSelectEditor
 } from '@xh/hoist/desktop/cmp/grid';
+import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {action, makeObservable} from '@xh/hoist/mobx';
-import {isEmpty, max} from 'lodash';
+import {isEmpty, isNil, max} from 'lodash';
 
 export class StoreEditingPanelModel extends HoistModel {
 
@@ -25,15 +27,29 @@ export class StoreEditingPanelModel extends HoistModel {
                 {
                     name: 'name',
                     type: 'string',
-                    defaultValue: 'Enter a Name'
+                    rules: [required, lengthIs({max: 10})]
                 },
                 {
                     name: 'amount',
-                    type: 'number'
+                    type: 'number',
+                    rules: [
+                        numberIs({min: 0, max: 100}),
+                        {
+                            when: (f, {category}) => category === 'US',
+                            check: [
+                                required,
+                                async ({value}) => {
+                                    await wait(1000);
+                                    return isNil(value) || value < 10 ? 'Records where `category` is "US" require `amount` of 10 or greater.' : null;
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
                     name: 'date',
-                    type: 'date'
+                    type: 'date',
+                    rules: [required, dateIs({max: 'today'})]
                 },
                 {
                     name: 'isActive',
@@ -42,7 +58,8 @@ export class StoreEditingPanelModel extends HoistModel {
                 },
                 {
                     name: 'category',
-                    type: 'string'
+                    type: 'string',
+                    rules: [required]
                 },
                 {
                     name: 'Description',
@@ -172,7 +189,10 @@ export class StoreEditingPanelModel extends HoistModel {
     }
 
     @action
-    commitAll() {
+    async commitAllAsync() {
+        const isValid = await this.store.validateAsync();
+        if (!isValid) return;
+
         const {store} = this,
             {addedRecords, modifiedRecords, removedRecords} = store,
             nextId = this.getNextId(),
