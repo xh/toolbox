@@ -11,18 +11,16 @@ export const detailsPanel = hoistCmp.factory({
 
         return div({
             className: 'recalls-detail-wrapper',
-            item: div(`${currentRecord.data.name}`)
-            //
-            //     table(
-            //     tbody(
-            //         tr(th('Brand Name'), td(`${currentRecord.data.brandName}`)),
-            //         tr(th('Generic Name'), td(`${currentRecord.data.genericName}`)),
-            //         tr(th('Classification'), td(`${model.classificationDetails}`)),
-            //         tr(th('Description'), td(`${currentRecord.data.description}`)),
-            //         tr(th('Recalling Firm'), td(`${currentRecord.data.recallingFirm}`)),
-            //         tr(th('Reason For Recall'), td(`${currentRecord.data.reason}`))
-            //     )
-            // )
+            item: table(
+                tbody(
+                    tr(th('Brand Name'), td(`${currentRecord.data.brandName}`)),
+                    tr(th('Generic Name'), td(`${currentRecord.data.genericName}`)),
+                    tr(th('Classification'), td(`${model.classificationDetails}`)),
+                    tr(th('Description'), td(`${currentRecord.data.description}`)),
+                    tr(th('Recalling Firm'), td(`${currentRecord.data.recallingFirm}`)),
+                    tr(th('Reason For Recall'), td(`${currentRecord.data.reason}`))
+                )
+            )
         });
     }
 });
