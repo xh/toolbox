@@ -1,14 +1,14 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {FormModel} from '@xh/hoist/cmp/form';
 import {
     constrainAll,
     dateIs,
-    FormModel,
     lengthIs,
     numberIs,
     required,
     stringExcludes,
     validEmail
-} from '@xh/hoist/cmp/form';
+} from '@xh/hoist/data';
 import {pre, vbox} from '@xh/hoist/cmp/layout';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
