@@ -27,6 +27,7 @@ export class TodoPanelModel extends HoistModel {
             processRawData: this.processRecord
         },
         emptyText: 'Empty todo list...',
+        selModel: {mode: 'multiple'},
         enableExport: true,
         rowBorders: true,
         showHover: true,
@@ -72,6 +73,10 @@ export class TodoPanelModel extends HoistModel {
 
     get selectedTask() {
         return this.gridModel.selectedRecord?.data;
+    }
+
+    get selectedTasksLength() {
+        return this.gridModel.selModel.records.length;
     }
 
     constructor() {
