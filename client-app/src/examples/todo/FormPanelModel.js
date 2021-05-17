@@ -28,8 +28,6 @@ export class FormPanelModel extends HoistModel {
         ]
     });
 
-    // newTask = '';
-
     constructor(todoPanelModel) {
         super();
         this.parentModel = todoPanelModel;
@@ -61,7 +59,7 @@ export class FormPanelModel extends HoistModel {
             existingId ? parentModel.editTask(task) : parentModel.addTask(task);
             await parentModel.refreshAsync();
             gridModel.clearSelection();
-            this.reset();
+            this.clearForm();
             XH.toast({message: existingId ? `Task updated: '${task.description}'`: `New task added: '${task.description}'`});
         } else {
             XH.toast({
@@ -70,5 +68,14 @@ export class FormPanelModel extends HoistModel {
                 message: 'Task cannot be empty.'
             });
         }
+    }
+
+    clearForm() {
+        this.formModel.init({
+            id: null,
+            description: null,
+            dueDate: null,
+            complete: null
+        });
     }
 }

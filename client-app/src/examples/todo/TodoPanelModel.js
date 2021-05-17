@@ -5,18 +5,18 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PERSIST_APP} from './AppModel';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
-import {reject} from 'lodash';
 import {FormPanelModel} from './FormPanelModel';
 
 export class TodoPanelModel extends HoistModel {
 
     persistWith = PERSIST_APP;
 
-    _localStorageKey = 'todoAppData';
-
     @bindable
     @persist
     filterBy = 'all';
+
+    @bindable
+    groupAction = ''
 
     @managed
     formPanelModel = new FormPanelModel(this);
@@ -42,7 +42,7 @@ export class TodoPanelModel extends HoistModel {
                         icon: Icon.check(),
                         tooltip: 'Mark complete',
                         intent: 'success',
-                        actionFn: ({record}) => this.markComplete(record)
+                        actionFn: ({record}) => this.markCompleteAsync(record)
                     },
                     {
                         icon: Icon.delete(),
@@ -99,31 +99,42 @@ export class TodoPanelModel extends HoistModel {
             },
             fireImmediately: true
         });
+
+        this.addReaction({
+            track: () => this.groupAction,
+            run: (groupAction) => {
+                switch (groupAction) {
+                    case 'markComplete':
+                        return;
+                    case 'markActive':
+                        return;
+                    case 'deleteAll':
+                        return this.removeAllAsync();
+                    default:
+                        return;
+                }
+            },
+            fireImmediately: true
+        });
     }
 
     //------------------------
     // Implementation
     //------------------------
     async doLoadAsync(loadSpec) {
-        const {gridModel} = this,
-            tasks = XH.getPref('todoApp');
-        gridModel.loadData(tasks);
+        const {gridModel} = this;
+        gridModel.loadData(XH.todoService.tasks);
     }
 
     addTask(task) {
-        const tasks = XH.getPref('todoApp');
-        XH.setPref('todoApp', [...tasks, task]);
+        XH.todoService.addTaskAsync(task);
     }
 
     editTask(task) {
-        const {id} = task;
-        let tasks = XH.getPref('todoApp');
-        tasks = reject(tasks, {id});
-        tasks = [...tasks, task];
-        XH.setPref('todoApp', tasks);
+        XH.todoService.editTaskAsync(task);
     }
 
-    async markComplete(record) {
+    markCompleteAsync(record) {
         const {id, description, dueDate, complete} = record.data;
         this.editTask({
             id,
@@ -132,7 +143,6 @@ export class TodoPanelModel extends HoistModel {
             complete: !complete
         });
         !complete ? XH.toast({message: `You completed '${record.data.description}!'`}) : '';
-        await this.refreshAsync();
     }
 
     async removeTaskAsync(record) {
@@ -152,16 +162,38 @@ export class TodoPanelModel extends HoistModel {
             });
 
         if (remove) {
-            let tasks = XH.getPref('todoApp');
-            tasks = reject(tasks, {id});
-            XH.setPref('todoApp', tasks);
-
+            await XH.todoService.removeTaskAsync(id);
             XH.toast({
                 message: `Task removed: '${description}'`,
                 icon: Icon.cross(),
                 intent: 'danger'
             });
-            await this.refreshAsync();
+        }
+    }
+
+    async removeAllAsync() {
+        const removeAll = await XH.confirm({
+            title: 'Remove All Tasks',
+            message: 'Are you sure you want to permanently remove all selected tasks?',
+            confirmProps: {
+                text: 'Yes',
+                intent: 'primary'
+            },
+            cancelProps: {
+                text: 'No',
+                intent: 'danger',
+                autoFocus: true
+            }
+        });
+
+        if (removeAll) {
+            await XH.prefService.clearAllAsync();
+            this.gridModel.clear();
+            XH.toast({
+                message: 'All selected tasks have been removed.',
+                icon: Icon.cross(),
+                intent: 'danger'
+            });
         }
     }
 }

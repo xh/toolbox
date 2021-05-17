@@ -51,11 +51,12 @@ const groupActions = hoistCmp.factory(
             style: {backgroundColor: 'transparent'},
             items: [
                 buttonGroupInput({
+                    bind: 'groupAction',
                     outlined: true,
                     items: [
                         button({text: 'Mark All Complete', value: 'markComplete'}),
                         button({text: 'Mark All In Progress', value: 'markActive'}),
-                        button({text: 'Delete All', value: 'delete'})
+                        button({text: 'Delete All', value: 'deleteAll'})
                     ]
                 }),
                 toolbarSep(),
