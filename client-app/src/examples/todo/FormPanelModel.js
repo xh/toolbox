@@ -1,10 +1,9 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {
     FormModel,
     lengthIs,
     required
 } from '@xh/hoist/cmp/form';
-import {Icon} from '@xh/hoist/icon';
 
 export class FormPanelModel extends HoistModel {
 
@@ -45,7 +44,6 @@ export class FormPanelModel extends HoistModel {
     async submitAsync() {
         const {formModel, parentModel} = this,
             {values} = formModel,
-            {gridModel} = parentModel,
             isValid = await formModel.validateAsync();
 
         if (isValid) {
@@ -56,17 +54,8 @@ export class FormPanelModel extends HoistModel {
                     dueDate: values.dueDate,
                     complete: values.complete ?? false
                 };
-            existingId ? parentModel.editTask(task) : parentModel.addTask(task);
-            await parentModel.refreshAsync();
-            gridModel.clearSelection();
+            existingId ? await parentModel.editTaskAsync(task) : await parentModel.addTaskAsync(task);
             this.clearForm();
-            XH.toast({message: existingId ? `Task updated: '${task.description}'`: `New task added: '${task.description}'`});
-        } else {
-            XH.toast({
-                icon: Icon.warning(),
-                intent: 'danger',
-                message: 'Task cannot be empty.'
-            });
         }
     }
 

@@ -108,8 +108,8 @@ export class TodoPanelModel extends HoistModel {
                         return;
                     case 'markActive':
                         return;
-                    case 'deleteAll':
-                        return this.removeAllAsync();
+                    case 'delete':
+                        return;
                     default:
                         return;
                 }
@@ -122,31 +122,41 @@ export class TodoPanelModel extends HoistModel {
     // Implementation
     //------------------------
     async doLoadAsync(loadSpec) {
-        const {gridModel} = this;
-        gridModel.loadData(XH.todoService.tasks);
+        const tasks = await XH.todoService.getTasksAsync();
+        this.gridModel.loadData(tasks);
     }
 
-    addTask(task) {
-        XH.todoService.addTaskAsync(task);
+    async addTaskAsync(task) {
+        await XH.todoService.addTaskAsync(task);
+        await this.refreshAsync();
+        XH.toast({message: `Task Added: '${task.description}'`});
     }
 
-    editTask(task) {
-        XH.todoService.editTaskAsync(task);
+    async editTaskAsync(task) {
+        await XH.todoService.editTaskAsync(task);
+        await this.refreshAsync();
+        this.info(`Task edited: '${task.description}'`);
     }
 
-    markCompleteAsync(record) {
+    async toggleCompleteAsync(record) {
         const {id, description, dueDate, complete} = record.data;
-        this.editTask({
+        await XH.todoService.editTaskAsync({
             id,
             description,
             dueDate,
             complete: !complete
         });
-        !complete ? XH.toast({message: `You completed '${record.data.description}!'`}) : '';
+        await this.refreshAsync();
+
+        if (!complete) {
+            this.info(`Congrats! You completed '${record.data.description}!'`);
+        } else {
+            this.info(`Too bad! Back to work on '${record.data.description}!'`);
+        }
     }
 
     async removeTaskAsync(record) {
-        const {id, description} = record.data,
+        const {description} = record.data,
             remove = await XH.confirm({
                 title: 'Remove Task',
                 message: `Are you sure you want to permanently remove '${description}?'`,
@@ -162,38 +172,15 @@ export class TodoPanelModel extends HoistModel {
             });
 
         if (remove) {
-            await XH.todoService.removeTaskAsync(id);
-            XH.toast({
-                message: `Task removed: '${description}'`,
-                icon: Icon.cross(),
-                intent: 'danger'
-            });
+            await XH.todoService.removeTaskAsync(record.data);
+            await this.refreshAsync();
+            this.info(`Task removed: '${description}'`);
         }
     }
 
-    async removeAllAsync() {
-        const removeAll = await XH.confirm({
-            title: 'Remove All Tasks',
-            message: 'Are you sure you want to permanently remove all selected tasks?',
-            confirmProps: {
-                text: 'Yes',
-                intent: 'primary'
-            },
-            cancelProps: {
-                text: 'No',
-                intent: 'danger',
-                autoFocus: true
-            }
-        });
 
-        if (removeAll) {
-            await XH.prefService.clearAllAsync();
-            this.gridModel.clear();
-            XH.toast({
-                message: 'All selected tasks have been removed.',
-                icon: Icon.cross(),
-                intent: 'danger'
-            });
-        }
+    info(message) {
+        XH.toast({message});
     }
+
 }

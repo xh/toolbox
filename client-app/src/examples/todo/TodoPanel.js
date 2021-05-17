@@ -12,19 +12,19 @@ import {TodoPanelModel} from './TodoPanelModel';
 export const todoPanel = hoistCmp.factory({
     model: creates(TodoPanelModel),
 
-    render(props) {
+    render() {
         return hframe(
             formPanel(),
             panel({
                 flex: 1,
-                bbar: props.model.selectedTasksLength <= 1 ? filters() : groupActions(),
+                bbar: bbar(),
                 item: grid()
             })
         );
     }
 });
 
-const filters = hoistCmp.factory(
+const bbar = hoistCmp.factory(
     () => {
         return toolbar({
             style: {backgroundColor: 'transparent'},
@@ -39,28 +39,17 @@ const filters = hoistCmp.factory(
                     ]
                 }),
                 toolbarSep(),
-                gridCountLabel({unit: 'task'})
-            ]
-        });
-    }
-);
-
-const groupActions = hoistCmp.factory(
-    () => {
-        return toolbar({
-            style: {backgroundColor: 'transparent'},
-            items: [
+                gridCountLabel({unit: 'task'}),
+                toolbarSep(),
                 buttonGroupInput({
                     bind: 'groupAction',
                     outlined: true,
                     items: [
-                        button({text: 'Mark All Complete', value: 'markComplete'}),
-                        button({text: 'Mark All In Progress', value: 'markActive'}),
-                        button({text: 'Delete All', value: 'deleteAll'})
+                        button({text: 'Mark Complete', value: 'markComplete'}),
+                        button({text: 'Mark In Progress', value: 'markActive'}),
+                        button({text: 'Delete', value: 'delete'})
                     ]
-                }),
-                toolbarSep(),
-                gridCountLabel({unit: 'task'})
+                })
             ]
         });
     }
