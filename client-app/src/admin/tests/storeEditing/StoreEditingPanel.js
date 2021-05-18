@@ -47,7 +47,7 @@ export const StoreEditingPanel = hoistCmp({
                 filler(),
                 switchInput({
                     bind: 'asyncValidation',
-                    label: 'Async Validation'
+                    label: 'Async Validation?'
                 })
             ],
             item: grid()
@@ -89,7 +89,7 @@ const storeValidIndicator = hoistCmp.factory(
                     break;
                 case ValidationState.NotValid:
                     icon = Icon.xCircle();
-                    label = `Not Valid (${errorCount})`;
+                    label = `Not Valid (${errorCount} errors)`;
                     color = 'var(--xh-intent-warning)';
                     break;
                 default:
