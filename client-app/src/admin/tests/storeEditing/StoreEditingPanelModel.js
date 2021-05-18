@@ -12,10 +12,13 @@ import {
 } from '@xh/hoist/desktop/cmp/grid';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {action, makeObservable} from '@xh/hoist/mobx';
+import {action, bindable, makeObservable} from '@xh/hoist/mobx';
 import {isEmpty, isNil, max} from 'lodash';
 
 export class StoreEditingPanelModel extends HoistModel {
+
+    @bindable
+    asyncValidation = false;
 
     @managed
     gridModel = new GridModel({
@@ -39,7 +42,7 @@ export class StoreEditingPanelModel extends HoistModel {
                             check: [
                                 required,
                                 async ({value}) => {
-                                    await wait(1000);
+                                    if (this.asyncValidation) await wait(1000);
                                     return isNil(value) || value < 10 ? 'Records where `category` is "US" require `amount` of 10 or greater.' : null;
                                 }
                             ]

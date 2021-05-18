@@ -4,8 +4,9 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-import {hbox, hspacer} from '@xh/hoist/cmp/layout';
+import {hbox, hspacer, filler} from '@xh/hoist/cmp/layout';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {ValidationState} from '@xh/hoist/data';
 
 export const StoreEditingPanel = hoistCmp({
@@ -42,7 +43,12 @@ export const StoreEditingPanel = hoistCmp({
                 toolbarSep(),
                 storeDirtyIndicator(),
                 toolbarSep(),
-                storeValidIndicator()
+                storeValidIndicator(),
+                filler(),
+                switchInput({
+                    bind: 'asyncValidation',
+                    label: 'Async Validation'
+                })
             ],
             item: grid()
         });
