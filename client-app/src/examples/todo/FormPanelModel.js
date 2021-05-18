@@ -60,6 +60,7 @@ export class FormPanelModel extends HoistModel {
 
             existingId ? await parentModel.editTaskAsync(task) : await parentModel.addTaskAsync(task);
             this.clearForm();
+            parentModel.dialogIsOpen = false;
         }
     }
 

@@ -3,8 +3,6 @@ import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PERSIST_APP} from './AppModel';
-import {actionCol} from '@xh/hoist/desktop/cmp/grid';
-import {Icon} from '@xh/hoist/icon';
 import {FormPanelModel} from './FormPanelModel';
 
 export class TodoPanelModel extends HoistModel {
@@ -16,7 +14,7 @@ export class TodoPanelModel extends HoistModel {
     filterBy = 'all';
 
     @bindable
-    groupAction = ''
+    dialogIsOpen = false;
 
     @managed
     formPanelModel = new FormPanelModel(this);
@@ -34,24 +32,6 @@ export class TodoPanelModel extends HoistModel {
         sortBy: 'dueDate',
         persistWith: this.persistWith,
         columns: [
-            {
-                ...actionCol,
-                actionsShowOnHoverOnly: true,
-                actions: [
-                    {
-                        icon: Icon.check(),
-                        tooltip: 'Mark complete',
-                        intent: 'success',
-                        actionFn: async ({record}) => await this.toggleCompleteAsync(record)
-                    },
-                    {
-                        icon: Icon.delete(),
-                        tooltip: 'Remove task',
-                        intent: 'danger',
-                        actionFn: async ({record}) => await this.removeTaskAsync(record)
-                    }
-                ]
-            },
             {
                 field: 'description',
                 flex: 1,
@@ -95,23 +75,6 @@ export class TodoPanelModel extends HoistModel {
                         return gridModel.setFilter({field: 'complete', op: '=', value: false});
                     default:
                         return gridModel.setFilter(null);
-                }
-            },
-            fireImmediately: true
-        });
-
-        this.addReaction({
-            track: () => this.groupAction,
-            run: (groupAction) => {
-                switch (groupAction) {
-                    case 'markComplete':
-                        return;
-                    case 'markActive':
-                        return;
-                    case 'delete':
-                        return;
-                    default:
-                        return;
                 }
             },
             fireImmediately: true

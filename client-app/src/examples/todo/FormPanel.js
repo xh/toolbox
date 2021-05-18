@@ -14,9 +14,6 @@ export const formPanel = hoistCmp.factory({
 
     render() {
         return panel({
-            title: 'Add a Task',
-            icon: Icon.add(),
-            height: 300,
             item: form(
                 vbox(description(), dueDate())
             ),
@@ -54,6 +51,7 @@ const bbar = hoistCmp.factory(
         button({
             text: 'Submit',
             icon: Icon.check(),
+            disabled: !model.formModel.isValid,
             minimal: false,
             intent: 'success',
             onClick: () => model.submitAsync()
