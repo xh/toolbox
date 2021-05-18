@@ -191,7 +191,19 @@ export class StoreEditingPanelModel extends HoistModel {
     @action
     async commitAllAsync() {
         const isValid = await this.store.validateAsync();
-        if (!isValid) return;
+        if (!isValid) {
+            const doCommit = await XH.confirm({
+                icon: Icon.warning(),
+                title: 'Commit?',
+                message: 'The Store contains invalid records - do you want to commit all changes anyway?',
+                confirmProps: {
+                    intent: 'success',
+                    icon: Icon.check(),
+                    text: 'Commit'
+                }
+            });
+            if (!doCommit) return;
+        }
 
         const {store} = this,
             {addedRecords, modifiedRecords, removedRecords} = store,

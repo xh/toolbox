@@ -30,7 +30,7 @@ export const StoreEditingPanel = hoistCmp({
                     text: 'Commit All',
                     intent: 'success',
                     onClick: () => model.commitAllAsync(),
-                    disabled: !model.store.isModified || !model.store.isValid
+                    disabled: !model.store.isModified
                 }),
                 button({
                     icon: Icon.undo(),
