@@ -11,9 +11,7 @@ export class AppModel extends HoistAppModel {
     }
 
     async initAsync() {
-        await XH.installServicesAsync(
-            TodoService
-        );
+        await XH.installServicesAsync(TodoService);
     }
 
     async logoutAsync() {

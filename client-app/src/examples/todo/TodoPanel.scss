@@ -1,31 +1,3 @@
-.toolbox-todo-detail-panel {
-  overflow: scroll;
-
-  table {
-    width: 700px;
-    border-collapse: collapse;
-    border-right: var(--xh-border-solid);
-
-    th {
-      padding: var(--xh-pad-px);
-      background-color: var(--xh-bg-alt);
-      width: 140px;
-      text-align: right;
-      vertical-align: top;
-    }
-
-    tr {
-      border-bottom: var(--xh-border-solid);
-    }
-
-    td {
-      vertical-align: top;
-      text-align: left;
-      padding: var(--xh-pad-px);
-    }
-  }
-
-  .todo-detail-wrapper {
-    overflow-y: auto;
-  }
+.past-due-date {
+  color: red;
 }

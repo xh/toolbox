@@ -7,11 +7,25 @@ import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {dateInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {FormPanelModel} from './FormPanelModel';
+import {TaskDialogModel} from './TaskDialogModel';
+import {dialog} from '@xh/hoist/kit/blueprint';
 
-export const formPanel = hoistCmp.factory({
-    model: uses(FormPanelModel),
+export const taskDialog = hoistCmp.factory({
+    model: uses(TaskDialogModel),
 
+    render({model}) {
+        return dialog({
+            title: 'Add a Task',
+            icon: Icon.add(),
+            style: {width: 450},
+            isOpen: model.isOpen,
+            onClose: () => model.setIsOpen(false),
+            item: formPanel()
+        });
+    }
+});
+
+const formPanel = hoistCmp.factory({
     render() {
         return panel({
             item: form(

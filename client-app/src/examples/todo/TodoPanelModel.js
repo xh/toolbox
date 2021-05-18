@@ -1,9 +1,9 @@
 import {GridModel, localDateCol, boolCheckCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
-import {compactDateRenderer} from '@xh/hoist/format';
+import {compactDateRenderer, fmtDate} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PERSIST_APP} from './AppModel';
-import {FormPanelModel} from './FormPanelModel';
+import {TaskDialogModel} from './TaskDialogModel';
 
 export class TodoPanelModel extends HoistModel {
 
@@ -13,11 +13,8 @@ export class TodoPanelModel extends HoistModel {
     @persist
     filterBy = 'all';
 
-    @bindable
-    dialogIsOpen = false;
-
     @managed
-    formPanelModel = new FormPanelModel(this);
+    taskDialogModel = new TaskDialogModel(this);
 
     @managed
     gridModel = new GridModel({
@@ -46,7 +43,8 @@ export class TodoPanelModel extends HoistModel {
                 field: 'dueDate',
                 ...localDateCol,
                 width: 120,
-                renderer: compactDateRenderer('MMM D')
+                renderer: compactDateRenderer('MMM D'),
+                cellClass: (val) => fmtDate(val) < fmtDate(Date.now()) && !this.selectedTask?.complete ? 'past-due-date' : ''
             }
         ]
     });
@@ -56,7 +54,7 @@ export class TodoPanelModel extends HoistModel {
     }
 
     get selectedTasksLength() {
-        return this.gridModel.selModel.records.length;
+        return this.gridModel.selection.length;
     }
 
     constructor() {
@@ -81,18 +79,10 @@ export class TodoPanelModel extends HoistModel {
         });
     }
 
-    //------------------------
-    // Implementation
-    //------------------------
-    async doLoadAsync(loadSpec) {
-        const tasks = await XH.todoService.getTasksAsync();
-        this.gridModel.loadData(tasks);
-    }
-
     async addTaskAsync(task) {
         await XH.todoService.addTaskAsync(task);
         await this.refreshAsync();
-        XH.toast({message: `Task Added: '${task.description}'`});
+        this.info(`Task added: '${task.description}'`);
     }
 
     async editTaskAsync(task) {
@@ -113,8 +103,6 @@ export class TodoPanelModel extends HoistModel {
 
         if (!complete) {
             this.info(`Congrats! You completed '${record.data.description}!'`);
-        } else {
-            this.info(`Too bad! Back to work on '${record.data.description}!'`);
         }
     }
 
@@ -141,9 +129,15 @@ export class TodoPanelModel extends HoistModel {
         }
     }
 
+    //------------------------
+    // Implementation
+    //------------------------
+    async doLoadAsync(loadSpec) {
+        const tasks = await XH.todoService.getTasksAsync();
+        this.gridModel.loadData(tasks);
+    }
 
     info(message) {
         XH.toast({message});
     }
-
 }

@@ -4,11 +4,15 @@ import {
     lengthIs,
     required
 } from '@xh/hoist/cmp/form';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
-export class FormPanelModel extends HoistModel {
+export class TaskDialogModel extends HoistModel {
 
     /** @member {TodoPanelModel} */
     parentModel;
+
+    @bindable
+    isOpen = false;
 
     @managed
     formModel = new FormModel({
@@ -32,12 +36,8 @@ export class FormPanelModel extends HoistModel {
 
     constructor(todoPanelModel) {
         super();
+        makeObservable(this);
         this.parentModel = todoPanelModel;
-
-        this.addReaction({
-            track: () => this.parentModel.selectedTask,
-            run: (selectedTask) => this.formModel.init(selectedTask)
-        });
     }
 
     reset() {
@@ -60,10 +60,23 @@ export class FormPanelModel extends HoistModel {
 
             existingId ? await parentModel.editTaskAsync(task) : await parentModel.addTaskAsync(task);
             this.clearForm();
-            parentModel.dialogIsOpen = false;
+            this.setIsOpen(false);
         }
     }
 
+    openAddForm() {
+        this.setIsOpen(true);
+        this.clearForm();
+    }
+
+    openEditForm(task) {
+        this.setIsOpen(true);
+        this.formModel.init(task);
+    }
+
+    //------------------------
+    // Implementation
+    //------------------------
     clearForm() {
         this.formModel.init({
             id: null,
