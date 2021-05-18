@@ -13,6 +13,7 @@ import {
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, makeObservable} from '@xh/hoist/mobx';
+import {fmtDate} from '@xh/hoist/format';
 import {isEmpty, isNil, max} from 'lodash';
 
 export class StoreEditingPanelModel extends HoistModel {
@@ -111,7 +112,8 @@ export class StoreEditingPanelModel extends HoistModel {
                 field: 'name',
                 editable: true,
                 width: 200,
-                editorElement: inlineTextEditor
+                editorElement: inlineTextEditor,
+                tooltip: true
             },
             {
                 field: 'amount',
@@ -139,7 +141,8 @@ export class StoreEditingPanelModel extends HoistModel {
                     inputProps: {
                         minDate: new Date(2021, 2, 15)
                     }
-                })
+                }),
+                tooltip: (v) => fmtDate(v, 'dddd MMMM Do YYYY')
             },
             {
                 field: 'description',
