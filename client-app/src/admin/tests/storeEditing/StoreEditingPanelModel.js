@@ -4,11 +4,11 @@ import {dateIs, lengthIs, numberIs, required} from '@xh/hoist/data';
 import {
     actionCol,
     calcActionColWidth,
-    inlineTextEditor,
-    inlineNumberEditor,
-    inlineDateEditor,
-    inlineCheckboxEditor,
-    inlineSelectEditor
+    textEditor,
+    numberEditor,
+    dateEditor,
+    checkboxEditor,
+    selectEditor
 } from '@xh/hoist/desktop/cmp/grid';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
@@ -106,26 +106,26 @@ export class StoreEditingPanelModel extends HoistModel {
                 ...boolCheckCol,
                 headerName: '?',
                 editable: true,
-                editorElement: inlineCheckboxEditor
+                editor: checkboxEditor
             },
             {
                 field: 'name',
                 editable: true,
                 width: 200,
-                editorElement: inlineTextEditor,
+                editor: textEditor,
                 tooltip: true
             },
             {
                 field: 'amount',
                 editable: true,
                 width: 100,
-                editorElement: inlineNumberEditor
+                editor: numberEditor
             },
             {
                 field: 'category',
                 editable: true,
                 width: 100,
-                editorElement: (props) => inlineSelectEditor({
+                editor: (props) => selectEditor({
                     ...props,
                     inputProps: {
                         options: ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
@@ -136,7 +136,7 @@ export class StoreEditingPanelModel extends HoistModel {
                 field: 'date',
                 ...dateCol,
                 editable: true,
-                editorElement: (props) => inlineDateEditor({
+                editor: (props) => dateEditor({
                     ...props,
                     inputProps: {
                         minDate: new Date(2021, 2, 15)
