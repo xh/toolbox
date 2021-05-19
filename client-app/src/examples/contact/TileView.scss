@@ -1,6 +1,9 @@
 .contact-fb-tile {
   border: var(--xh-border-solid);
   margin: var(--xh-pad-px);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 
   &--selected {
     border-color: var(--xh-orange);
@@ -10,7 +13,7 @@
     position: absolute;
     font-weight: bold;
     text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;
-    left: 200px;
-    top: 125px;
+    right: 20px;
+    bottom: 10px;
   }
 }
