@@ -14,9 +14,11 @@ export const taskDialog = hoistCmp.factory({
     model: uses(TaskDialogModel),
 
     render({model}) {
+        const {addOrEdit} = model;
+
         return dialog({
-            title: 'Add a Task',
-            icon: Icon.add(),
+            title: addOrEdit === 'add' ? 'Add a Task' : 'Edit Task',
+            icon: addOrEdit === 'add' ? Icon.add() : Icon.edit(),
             style: {width: 450},
             isOpen: model.isOpen,
             onClose: () => model.setIsOpen(false),

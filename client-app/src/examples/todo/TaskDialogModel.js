@@ -12,6 +12,9 @@ export class TaskDialogModel extends HoistModel {
     parentModel;
 
     @bindable
+    addOrEdit;
+
+    @bindable
     isOpen = false;
 
     @managed
@@ -65,11 +68,13 @@ export class TaskDialogModel extends HoistModel {
     }
 
     openAddForm() {
+        this.setAddOrEdit('add');
         this.setIsOpen(true);
         this.clearForm();
     }
 
     openEditForm(task) {
+        this.setAddOrEdit('edit');
         this.setIsOpen(true);
         this.formModel.init(task);
     }
