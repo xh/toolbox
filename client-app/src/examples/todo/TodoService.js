@@ -21,7 +21,7 @@ export class TodoService extends HoistService {
         XH.setPref('todoApp', tasks);
     }
 
-    async removeTaskAsync(task) {
+    async removeTasksAsync(task) {
         const {id} = task;
         let tasks = await this.getTasksAsync();
         tasks = reject(tasks, {id});

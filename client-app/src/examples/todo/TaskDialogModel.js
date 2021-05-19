@@ -53,12 +53,13 @@ export class TaskDialogModel extends HoistModel {
             isValid = await formModel.validateAsync();
 
         if (isValid) {
-            const existingId = values.id,
+            const {description, dueDate, complete} = values,
+                existingId = values.id,
                 task = {
                     id: existingId ?? Date.now(),
-                    description: values.description,
-                    dueDate: values.dueDate,
-                    complete: values.complete ?? false
+                    description,
+                    dueDate,
+                    complete: complete ?? false
                 };
 
             existingId ? await parentModel.editTaskAsync(task) : await parentModel.addTaskAsync(task);

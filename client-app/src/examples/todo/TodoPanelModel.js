@@ -1,6 +1,6 @@
 import {GridModel, localDateCol, boolCheckCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
-import {compactDateRenderer, fmtDate} from '@xh/hoist/format';
+import {compactDateRenderer} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
@@ -19,7 +19,9 @@ export class TodoPanelModel extends HoistModel {
     @managed
     gridModel = new GridModel({
         store: {
-            processRawData: this.processRecord
+            fields: [
+                {name: 'dueDate', type: 'localDate'}
+            ]
         },
         emptyText: 'Empty todo list...',
         selModel: {mode: 'multiple'},
@@ -43,8 +45,7 @@ export class TodoPanelModel extends HoistModel {
                 field: 'dueDate',
                 ...localDateCol,
                 width: 120,
-                renderer: compactDateRenderer('MMM D'),
-                cellClass: (val) => fmtDate(val) < fmtDate(Date.now()) && !this.selectedTask?.complete ? 'past-due-date' : ''
+                renderer: compactDateRenderer('MMM D')
             }
         ]
     });
@@ -53,8 +54,8 @@ export class TodoPanelModel extends HoistModel {
         return this.gridModel.selectedRecord?.data;
     }
 
-    get selectedTasksLength() {
-        return this.gridModel.selection.length;
+    get selectedTasks() {
+        return this.gridModel.selection;
     }
 
     constructor() {
@@ -91,26 +92,30 @@ export class TodoPanelModel extends HoistModel {
         this.info(`Task edited: '${task.description}'`);
     }
 
-    async toggleCompleteAsync(record) {
-        const {id, description, dueDate, complete} = record.data;
+    async toggleCompleteAsync(record, isComplete) {
+        const {id, description, dueDate} = record.data;
         await XH.todoService.editTaskAsync({
             id,
             description,
             dueDate,
-            complete: !complete
+            complete: isComplete
         });
         await this.refreshAsync();
 
-        if (!complete) {
+        if (isComplete) {
             this.info(`Congrats! You completed '${record.data.description}!'`);
         }
     }
 
-    async removeTaskAsync(record) {
-        const {description} = record.data,
+    async removeTasksAsync() {
+        const {selectedTasks} =  this,
+            count = selectedTasks.length,
+            {description} = selectedTasks[0].data,
             remove = await XH.confirm({
-                title: 'Remove Task',
-                message: `Are you sure you want to permanently remove '${description}?'`,
+                title: 'Confirm',
+                message: `Are you sure you want to permanently remove ${count === 1 ? 
+                    `'${description}?'` : 
+                    count + ' tasks?'}`,
                 confirmProps: {
                     text: 'Yes',
                     intent: 'primary'
@@ -123,9 +128,11 @@ export class TodoPanelModel extends HoistModel {
             });
 
         if (remove) {
-            await XH.todoService.removeTaskAsync(record.data);
+            for (const task of selectedTasks) {
+                await XH.todoService.removeTasksAsync(task.data);
+            }
             await this.refreshAsync();
-            this.info(`Task removed: '${description}'`);
+            this.info(selectedTasks.length === 1 ? `Task removed: '${description}'` : `${selectedTasks.length} tasks removed`);
         }
     }
 

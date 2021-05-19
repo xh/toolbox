@@ -8,7 +8,6 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {taskDialog} from './TaskDialog';
 import {TodoPanelModel} from './TodoPanelModel';
-import './TodoPanel.scss';
 
 export const todoPanel = hoistCmp.factory({
     model: creates(TodoPanelModel),
@@ -26,7 +25,7 @@ export const todoPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory(
     ({model}) => {
-        const {taskDialogModel, selectedTask, selectedTasksLength, gridModel} = model,
+        const {taskDialogModel, selectedTask, selectedTasks, gridModel} = model,
             {selectedRecord} = gridModel;
 
         return toolbar({
@@ -38,6 +37,7 @@ const tbar = hoistCmp.factory(
                     intent: 'success',
                     onClick: () => taskDialogModel.openAddForm()
                 }),
+                toolbarSep(),
                 button({
                     icon: Icon.edit(),
                     text: 'Edit',
@@ -49,17 +49,17 @@ const tbar = hoistCmp.factory(
                     icon: Icon.delete(),
                     text: 'Remove',
                     intent: 'danger',
-                    disabled: !selectedTasksLength,
-                    onClick: () => model.removeTaskAsync(selectedRecord)
+                    disabled: !selectedTasks.length,
+                    onClick: () => model.removeTasksAsync()
                 }),
-                toolbarSep(),
+                filler(),
                 button({
                     icon: selectedTask?.complete ? Icon.reset() : Icon.check(),
                     text: selectedTask?.complete ? 'Mark In Progress' : 'Mark Complete',
                     disabled: !selectedTask,
-                    onClick: () => model.toggleCompleteAsync(selectedRecord)
+                    onClick: () => model.toggleCompleteAsync(selectedRecord, !selectedTask.complete)
                 }),
-                filler(),
+                toolbarSep(),
                 gridCountLabel({unit: 'task'}),
                 toolbarSep(),
                 buttonGroupInput({
