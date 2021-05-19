@@ -109,7 +109,7 @@ function getExamples() {
             path: '/contact',
             text: [
                 <p>
-                    [Team contacts app.]
+                    Meet the Extremely Heavy team.
                 </p>
             ]
         }
