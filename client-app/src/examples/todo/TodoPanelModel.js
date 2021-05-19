@@ -4,6 +4,7 @@ import {compactDateRenderer} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
+import {isEmpty} from 'lodash';
 
 export class TodoPanelModel extends HoistModel {
 
@@ -89,9 +90,8 @@ export class TodoPanelModel extends HoistModel {
     }
 
     async toggleCompleteAsync(isComplete) {
-        const {selectedTasks} = this,
-            count = selectedTasks.length,
-            {description} = selectedTasks[0].data;
+        const {selectedTasks} = this;
+        if (isEmpty(selectedTasks)) return;
 
         for (const task of selectedTasks) {
             const {id, description, dueDate} = task.data;
@@ -102,40 +102,37 @@ export class TodoPanelModel extends HoistModel {
                 dueDate,
                 complete: isComplete
             });
-            await this.refreshAsync();
         }
 
+        await this.refreshAsync();
+
         if (isComplete) {
-            this.info(`Congrats! You completed ${count === 1 ? "'" + description + "!'" : count + ' tasks!'}`);
+            const count = selectedTasks.length,
+                label = count === 1 ? `'${selectedTasks[0].data.description}!'` : `${count} tasks!`;
+            this.info(`Congrats! You completed ${label}`);
         }
     }
 
     async removeTasksAsync() {
-        const {selectedTasks} =  this,
-            count = selectedTasks.length,
+        const {selectedTasks} =  this;
+        if (isEmpty(selectedTasks)) return;
+
+        const count = selectedTasks.length,
             {description} = selectedTasks[0].data,
+            message = count === 1 ? `'${description}?'` : `${count} tasks?`,
             remove = await XH.confirm({
                 title: 'Confirm',
-                message: `Are you sure you want to permanently remove ${count === 1 ? 
-                    `'${description}?'` : 
-                    count + ' tasks?'}`,
-                confirmProps: {
-                    text: 'Yes',
-                    intent: 'primary'
-                },
-                cancelProps: {
-                    text: 'No',
-                    intent: 'danger',
-                    autoFocus: true
-                }
+                message: `Are you sure you want to permanently remove ${message}`
             });
 
         if (remove) {
+            const label = count === 1 ? `Task removed: '${description}'` : `${count} tasks removed`;
+
             for (const task of selectedTasks) {
                 await XH.todoService.removeTasksAsync(task.data);
             }
             await this.refreshAsync();
-            this.info(count === 1 ? `Task removed: '${description}'` : `${count} tasks removed`);
+            this.info(label);
         }
     }
 
