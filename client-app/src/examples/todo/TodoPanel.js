@@ -25,8 +25,9 @@ export const todoPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory(
     ({model}) => {
-        const {taskDialogModel, selectedTask, selectedTasks, gridModel} = model,
-            {selectedRecord} = gridModel;
+        const {taskDialogModel, selectedTasks} = model,
+            task = selectedTasks[0]?.data,
+            count = selectedTasks.length;
 
         return toolbar({
             enableOverflowMenu: true,
@@ -42,22 +43,28 @@ const tbar = hoistCmp.factory(
                     icon: Icon.edit(),
                     text: 'Edit',
                     intent: 'primary',
-                    disabled: !selectedTask,
-                    onClick: () => taskDialogModel.openEditForm(selectedTask)
+                    disabled: count !== 1,
+                    onClick: () => taskDialogModel.openEditForm(task)
                 }),
                 button({
                     icon: Icon.delete(),
                     text: 'Remove',
                     intent: 'danger',
-                    disabled: !selectedTasks.length,
+                    disabled: !count,
                     onClick: () => model.removeTasksAsync()
                 }),
                 filler(),
                 button({
-                    icon: selectedTask?.complete ? Icon.reset() : Icon.check(),
-                    text: selectedTask?.complete ? 'Mark In Progress' : 'Mark Complete',
-                    disabled: !selectedTask,
-                    onClick: () => model.toggleCompleteAsync(selectedRecord, !selectedTask.complete)
+                    icon: Icon.check(),
+                    text: 'Mark Complete',
+                    disabled: !count || task.complete,
+                    onClick: () => model.toggleCompleteAsync(true)
+                }),
+                button({
+                    icon: Icon.reset(),
+                    text: 'Mark In Progress',
+                    disabled: !count || !task.complete,
+                    onClick: () => model.toggleCompleteAsync(false)
                 }),
                 toolbarSep(),
                 gridCountLabel({unit: 'task'}),

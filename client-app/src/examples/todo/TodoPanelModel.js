@@ -50,10 +50,6 @@ export class TodoPanelModel extends HoistModel {
         ]
     });
 
-    get selectedTask() {
-        return this.gridModel.selectedRecord?.data;
-    }
-
     get selectedTasks() {
         return this.gridModel.selection;
     }
@@ -92,18 +88,25 @@ export class TodoPanelModel extends HoistModel {
         this.info(`Task edited: '${task.description}'`);
     }
 
-    async toggleCompleteAsync(record, isComplete) {
-        const {id, description, dueDate} = record.data;
-        await XH.todoService.editTaskAsync({
-            id,
-            description,
-            dueDate,
-            complete: isComplete
-        });
-        await this.refreshAsync();
+    async toggleCompleteAsync(isComplete) {
+        const {selectedTasks} = this,
+            count = selectedTasks.length,
+            {description} = selectedTasks[0].data;
+
+        for (const task of selectedTasks) {
+            const {id, description, dueDate} = task.data;
+
+            await XH.todoService.editTaskAsync({
+                id,
+                description,
+                dueDate,
+                complete: isComplete
+            });
+            await this.refreshAsync();
+        }
 
         if (isComplete) {
-            this.info(`Congrats! You completed '${record.data.description}!'`);
+            this.info(`Congrats! You completed ${count === 1 ? "'" + description + "!'" : count + ' tasks!'}`);
         }
     }
 
@@ -132,7 +135,7 @@ export class TodoPanelModel extends HoistModel {
                 await XH.todoService.removeTasksAsync(task.data);
             }
             await this.refreshAsync();
-            this.info(selectedTasks.length === 1 ? `Task removed: '${description}'` : `${selectedTasks.length} tasks removed`);
+            this.info(count === 1 ? `Task removed: '${description}'` : `${count} tasks removed`);
         }
     }
 
