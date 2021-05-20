@@ -18,7 +18,8 @@ export const todoPanel = hoistCmp.factory({
             taskDialog(),
             panel({
                 tbar: tbar(),
-                item: grid()
+                item: grid(),
+                mask: 'onLoad'
             })
         );
     }

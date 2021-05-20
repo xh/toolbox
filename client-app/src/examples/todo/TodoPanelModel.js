@@ -1,6 +1,6 @@
 import {GridModel, localDateCol, boolCheckCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
-import {fmtCompactDate} from '@xh/hoist/format';
+import {fmtDate} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
@@ -50,9 +50,9 @@ export class TodoPanelModel extends HoistModel {
                 rendererIsComplex: true,
                 renderer: (v, {record}) => {
                     if (v && v < LocalDate.today() && !record.data.complete) {
-                        return fmtCompactDate(v, 'MMM D') + ' !';
+                        return fmtDate(v, 'MMM D') + ' !';
                     } else {
-                        return fmtCompactDate(v, 'MMM D');
+                        return fmtDate(v, 'MMM D');
                     }
                 }
             }
