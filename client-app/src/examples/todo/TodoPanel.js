@@ -8,6 +8,7 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {taskDialog} from './TaskDialog';
 import {TodoPanelModel} from './TodoPanelModel';
+import {every} from 'lodash';
 
 export const todoPanel = hoistCmp.factory({
     model: creates(TodoPanelModel),
@@ -27,7 +28,8 @@ const tbar = hoistCmp.factory(
     ({model}) => {
         const {taskDialogModel, selectedTasks} = model,
             task = selectedTasks[0]?.data,
-            count = selectedTasks.length;
+            count = selectedTasks.length,
+            mixedStatus = () => !(every(selectedTasks, ['data.complete', true]) || every(selectedTasks, ['data.complete', false]));
 
         return toolbar({
             enableOverflowMenu: true,
@@ -55,16 +57,10 @@ const tbar = hoistCmp.factory(
                 }),
                 filler(),
                 button({
-                    icon: Icon.check(),
-                    text: 'Mark Complete',
-                    disabled: !count || task.complete,
-                    onClick: () => model.toggleCompleteAsync(true)
-                }),
-                button({
-                    icon: Icon.reset(),
-                    text: 'Mark In Progress',
-                    disabled: !count || !task.complete,
-                    onClick: () => model.toggleCompleteAsync(false)
+                    icon: count && task.complete ? Icon.reset() : Icon.check(),
+                    text: count && task.complete ? 'Mark In Progress' : 'Mark Complete',
+                    disabled: !count || mixedStatus(),
+                    onClick: () => model.toggleCompleteAsync(!task.complete)
                 }),
                 toolbarSep(),
                 gridCountLabel({unit: 'task'}),
