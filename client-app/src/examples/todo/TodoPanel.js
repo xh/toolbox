@@ -28,9 +28,9 @@ export const todoPanel = hoistCmp.factory({
 const tbar = hoistCmp.factory(
     ({model}) => {
         const {taskDialogModel, selectedTasks} = model,
-            task = selectedTasks[0]?.data,
+            firstTask = selectedTasks[0],
             count = selectedTasks.length,
-            mixedStatus = () => !(every(selectedTasks, ['data.complete', true]) || every(selectedTasks, ['data.complete', false]));
+            allSame = every(selectedTasks, {complete: true}) || every(selectedTasks, {complete: false});
 
         return toolbar({
             enableOverflowMenu: true,
@@ -47,7 +47,7 @@ const tbar = hoistCmp.factory(
                     text: 'Edit',
                     intent: 'primary',
                     disabled: count !== 1,
-                    onClick: () => taskDialogModel.openEditForm(task)
+                    onClick: () => taskDialogModel.openEditForm(firstTask)
                 }),
                 button({
                     icon: Icon.delete(),
@@ -58,13 +58,13 @@ const tbar = hoistCmp.factory(
                 }),
                 filler(),
                 button({
-                    icon: count && task.complete ? Icon.reset() : Icon.check(),
-                    text: count && task.complete ? 'Mark In Progress' : 'Mark Complete',
-                    disabled: !count || mixedStatus(),
-                    onClick: () => model.toggleCompleteAsync(!task.complete)
+                    icon: count && firstTask.complete ? Icon.reset() : Icon.check(),
+                    text: count && firstTask.complete ? 'Mark In Progress' : 'Mark Complete',
+                    omit:  !count || !allSame,
+                    onClick: () => model.toggleCompleteAsync(!firstTask.complete)
                 }),
                 toolbarSep(),
-                gridCountLabel({unit: 'task'}),
+                gridCountLabel({unit: 'task', showSelectionCount: 'never'}),
                 toolbarSep(),
                 buttonGroupInput({
                     bind: 'filterBy',

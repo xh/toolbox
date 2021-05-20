@@ -6,6 +6,8 @@ import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
 import {isEmpty} from 'lodash';
 import {LocalDate} from '@xh/hoist/utils/datetime';
+import {Icon} from '@xh/hoist/icon/Icon';
+import {hbox} from '@xh/hoist/cmp/layout';
 
 export class TodoPanelModel extends HoistModel {
 
@@ -48,19 +50,14 @@ export class TodoPanelModel extends HoistModel {
                 ...localDateCol,
                 width: 120,
                 rendererIsComplex: true,
-                renderer: (v, {record}) => {
-                    if (v && v < LocalDate.today() && !record.data.complete) {
-                        return fmtDate(v, 'MMM D') + ' !';
-                    } else {
-                        return fmtDate(v, 'MMM D');
-                    }
-                }
+                renderer: null,
+                elementRenderer: (v, {record}) => this.dueDateRenderer(v, {record})
             }
         ]
     });
 
     get selectedTasks() {
-        return this.gridModel.selection;
+        return this.gridModel.selection.map(record => record.data);
     }
 
     constructor() {
@@ -102,7 +99,7 @@ export class TodoPanelModel extends HoistModel {
         if (isEmpty(selectedTasks)) return;
 
         for (const task of selectedTasks) {
-            const {id, description, dueDate} = task.data;
+            const {id, description, dueDate} = task;
 
             await XH.todoService.editTaskAsync({
                 id,
@@ -116,7 +113,7 @@ export class TodoPanelModel extends HoistModel {
 
         if (isComplete) {
             const count = selectedTasks.length,
-                label = count === 1 ? `'${selectedTasks[0].data.description}!'` : `${count} tasks!`;
+                label = count === 1 ? `'${selectedTasks[0].description}!'` : `${count} tasks!`;
             this.info(`Congrats! You completed ${label}`);
         }
     }
@@ -126,7 +123,7 @@ export class TodoPanelModel extends HoistModel {
         if (isEmpty(selectedTasks)) return;
 
         const count = selectedTasks.length,
-            {description} = selectedTasks[0].data,
+            {description} = selectedTasks[0],
             message = count === 1 ? `'${description}?'` : `${count} tasks?`,
             remove = await XH.confirm({
                 title: 'Confirm',
@@ -137,7 +134,7 @@ export class TodoPanelModel extends HoistModel {
             const label = count === 1 ? `Task removed: '${description}'` : `${count} tasks removed`;
 
             for (const task of selectedTasks) {
-                await XH.todoService.removeTasksAsync(task.data);
+                await XH.todoService.removeTasksAsync(task);
             }
             await this.refreshAsync();
             this.info(label);
@@ -154,5 +151,13 @@ export class TodoPanelModel extends HoistModel {
 
     info(message) {
         XH.toast({message});
+    }
+
+    dueDateRenderer(v, {record}) {
+        if (v && v < LocalDate.today() && !record.data.complete) {
+            return hbox(fmtDate(v, 'MMM D'), Icon.warning());
+        } else {
+            return fmtDate(v, 'MMM D');
+        }
     }
 }
