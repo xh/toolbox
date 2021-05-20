@@ -48,7 +48,7 @@ export class TodoPanelModel extends HoistModel {
             {
                 field: 'dueDate',
                 ...localDateCol,
-                width: 120,
+                width: 110,
                 rendererIsComplex: true,
                 renderer: null,
                 elementRenderer: (v, {record}) => this.dueDateRenderer(v, {record})
@@ -155,7 +155,14 @@ export class TodoPanelModel extends HoistModel {
 
     dueDateRenderer(v, {record}) {
         if (v && v < LocalDate.today() && !record.data.complete) {
-            return hbox(fmtDate(v, 'MMM D'), Icon.warning());
+            return hbox({
+                items: [
+                    Icon.warning({className: 'xh-orange'}),
+                    fmtDate(v, 'MMM D')
+                ],
+                justifyContent: 'flex-end',
+                alignItems: 'center'
+            });
         } else {
             return fmtDate(v, 'MMM D');
         }
