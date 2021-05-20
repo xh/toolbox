@@ -74,9 +74,9 @@ const storeDirtyIndicator = hoistCmp.factory(
 
 const storeValidIndicator = hoistCmp.factory(
     ({model}) => {
-        const {isValidationPending, validationState, errorCount} = model.store;
+        const {isPending, validationState, errorCount} = model.store.validator;
         let icon, label, color;
-        if (isValidationPending) {
+        if (isPending) {
             icon = Icon.questionCircle();
             label = 'Validation pending';
             color = 'var(--xh-text-color-muted)';

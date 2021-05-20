@@ -37,16 +37,14 @@ export class StoreEditingPanelModel extends HoistModel {
                     name: 'amount',
                     type: 'number',
                     rules: [
+                        required,
                         numberIs({min: 0, max: 100}),
                         {
                             when: (f, {category}) => category === 'US',
-                            check: [
-                                required,
-                                async ({value}) => {
-                                    if (this.asyncValidation) await wait(1000);
-                                    return isNil(value) || value < 10 ? 'Records where `category` is "US" require `amount` of 10 or greater.' : null;
-                                }
-                            ]
+                            check: async ({value}) => {
+                                if (this.asyncValidation) await wait(1000);
+                                return isNil(value) || value < 10 ? 'Records where `category` is "US" require `amount` of 10 or greater.' : null;
+                            }
                         }
                     ]
                 },
