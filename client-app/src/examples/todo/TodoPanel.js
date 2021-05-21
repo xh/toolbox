@@ -13,12 +13,12 @@ import {every} from 'lodash';
 export const todoPanel = hoistCmp.factory({
     model: creates(TodoPanelModel),
 
-    render() {
+    render({model}) {
         return fragment(
             taskDialog(),
             panel({
                 tbar: tbar(),
-                item: grid(),
+                item: grid({onRowDoubleClicked: (e) => model.taskDialogModel.openEditForm(e.data.data)}),
                 mask: 'onLoad'
             })
         );
