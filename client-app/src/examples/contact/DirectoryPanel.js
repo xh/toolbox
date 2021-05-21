@@ -70,11 +70,13 @@ const tbar = hoistCmp.factory(
                     items: [
                         button({
                             text: 'Details',
-                            value: 'grid'
+                            value: 'grid',
+                            width: 80
                         }),
                         button({
                             text: 'Faces',
-                            value: 'tiles'
+                            value: 'tiles',
+                            width: 80
                         })
                     ]
                 }),

@@ -6,7 +6,7 @@ import './DetailsPanel.scss';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {textArea, textInput} from '@xh/hoist/desktop/cmp/input';
+import {textArea, select} from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
 
 export const detailsPanel = hoistCmp.factory({
@@ -22,17 +22,20 @@ export const detailsPanel = hoistCmp.factory({
             icon: Icon.detail(),
             width: 325,
             flex: 'none',
-            items: currentRecord ? renameThisProfile({record: currentRecord}) : placeholder('Select a contact to view their details.'),
+            items: currentRecord ? profileRenderer({record: currentRecord}) : placeholder('Select a contact to view their details.'),
             ...props
         });
     }
 });
 
-const renameThisProfile = hoistCmp.factory({
+const profileRenderer = hoistCmp.factory({
     render({model, record}) {
         const {data} = record;
         const {profilePicture, isFavorite} = data;
-        const readonlyRenderer = (val) => val ?? '-';
+        const ffConf = {
+            readonlyRenderer: (val) => val ?? '-',
+            item: textArea()
+        };
 
         return div({
             className: 'contact-details-panel__inner',
@@ -51,41 +54,32 @@ const renameThisProfile = hoistCmp.factory({
                         labelWidth: 100
                     },
                     items: [
+                        formField({...ffConf, field: 'name'}),
+                        formField({...ffConf, field: 'email'}),
+                        formField({...ffConf, field: 'location'}),
+                        formField({...ffConf, field: 'workPhone'}),
+                        formField({...ffConf, field: 'cellPhone'}),
+                        formField({...ffConf, field: 'homePhone'}),
+                        formField({...ffConf, field: 'bio'}),
                         formField({
-                            field: 'name',
-                            readonlyRenderer,
-                            item: textInput()
-                        }),
-                        formField({
-                            field: 'email',
-                            readonlyRenderer,
-                            item: textInput()
-                        }),
-                        formField({
-                            field: 'location',
-                            readonlyRenderer,
-                            item: textInput()
-                        }),
-                        formField({
-                            field: 'workPhone',
-                            readonlyRenderer,
-                            item: textInput()
-                        }),
-                        formField({
-                            field: 'cellPhone',
-                            readonlyRenderer,
-                            item: textInput()
-                        }),
-                        formField({
-                            field: 'homePhone',
-                            readonlyRenderer,
-                            item: textInput()
-                        }),
-                        formField({
-                            field: 'bio',
-                            readonlyRenderer,
-                            item: textArea()
-                        })
+                            readonlyRenderer: tags => {
+                                tags = tags ?? [];
+                                const returnDivs = [];
+
+                                tags.forEach(tag => {
+                                    returnDivs.push(div({
+                                        className: 'metadata-tag',
+                                        item: tag
+                                    }));
+                                });
+
+                                return returnDivs;
+                            },
+                            item: select({
+                                enableCreate: true,
+                                enableMulti: true
+                            }),
+                            field: 'tags'})
                     ]
                 }),
                 hbox({
@@ -94,7 +88,8 @@ const renameThisProfile = hoistCmp.factory({
                             text: isFavorite ? 'Remove Favorite' : 'Add Favorite',
                             icon: Icon.favorite({
                                 color: isFavorite ? 'gold' : null,
-                                prefix: isFavorite ? 'fas' : 'far'}
+                                prefix: isFavorite ? 'fas' : 'far'
+                            }
                             ),
                             width: 150,
                             // outlined: true,

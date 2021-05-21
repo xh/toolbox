@@ -5,7 +5,6 @@
     overflow-y: auto;
   }
 
-  // make this centered again
   .contact-record-user-image {
     margin: 0 auto;
     display: table-cell;
@@ -20,5 +19,14 @@
 
   .xh-form-field-label {
     font-weight: bold;
+  }
+
+  .metadata-tag {
+    border-radius: 1.5px;
+    font-size: 85%;
+    padding: 3px 6px 3px 6px;
+    margin: 2px;
+    width: fit-content;
+    background-color: var(--xh-bg-alt);
   }
 }

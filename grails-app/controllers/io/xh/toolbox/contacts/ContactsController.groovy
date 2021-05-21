@@ -16,7 +16,15 @@ class ContactsController extends BaseController {
     def index() {
         renderJSON(getContacts())
     }
-
+    /**
+     * Updates the requested contact with any new values provided in the request body.
+     *
+     * NOTE - this is a very unusual use of the Hoist config system and would NOT be recommended
+     * a production application. Configs are typically only modified interactive by users via the
+     * Hoist admin console. Here we are storing example contact records in a config for convenience
+     * (mainly to avoid setting up GORM objects and their DB tables). This code patches that config
+     * in place, allowing the Contacts example app to demo data updates.
+     */
     def update(String id) {
         if (!user.isHoistAdmin) throw new NotAuthorizedException()
 

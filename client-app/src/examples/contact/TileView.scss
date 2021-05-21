@@ -4,16 +4,26 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  align-items: center;
+  justify-content: center;
 
   &--selected {
     border-color: var(--xh-orange);
   }
 
-  .floating-name {
+  .floating-name-bar {
     position: absolute;
-    font-weight: bold;
-    text-shadow: 2px 0 0 #000, 0 -2px 0 #000, 0 2px 0 #000, -2px 0 0 #000;
-    right: 20px;
     bottom: 10px;
+    height: fit-content;
+    width: 100%;
+    text-align: right;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .floating-name {
+    font-weight: bold;
+    font-size: var(--xh-font-size-large-em);
+    color: var(--xh-gray-dark);
+    padding: 5px 15px 5px 5px;
   }
 }

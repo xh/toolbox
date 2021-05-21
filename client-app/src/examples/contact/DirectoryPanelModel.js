@@ -58,8 +58,6 @@ export class DirectoryPanelModel extends HoistModel {
             run: () => gridModel.setFilter(this.createFilter()),
             fireImmediately: true
         });
-
-        window.dpm = this;
     }
 
 
@@ -143,6 +141,10 @@ export class DirectoryPanelModel extends HoistModel {
                 },
                 {
                     field: 'email'
+                },
+                {
+                    field: 'tags',
+                    hidden: true
                 }
             ]
         });
@@ -159,6 +161,7 @@ export class DirectoryPanelModel extends HoistModel {
 
     async updateContactAsync(id, update) {
         const {gridModel} = this;
+        console.log('update: ', update);
 
         const contacts = await XH.fetchService.postJson({
             url: `contacts/update/${id}`,

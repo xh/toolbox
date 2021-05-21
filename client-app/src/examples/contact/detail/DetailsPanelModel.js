@@ -4,9 +4,6 @@ import {FormModel} from '@xh/hoist/cmp/form';
 
 export class DetailsPanelModel extends HoistModel {
 
-    @observable
-    profilePicture
-
     @observable.ref
     currentRecord
 
@@ -35,7 +32,8 @@ export class DetailsPanelModel extends HoistModel {
                 {name: 'workPhone'},
                 {name: 'cellPhone'},
                 {name: 'homePhone'},
-                {name: 'bio'}
+                {name: 'bio'},
+                {name: 'tags'}
             ]
         });
     }
