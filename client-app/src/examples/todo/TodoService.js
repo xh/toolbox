@@ -16,13 +16,13 @@ export class TodoService extends HoistService {
             let dueDateGroup;
 
             if (!dueDate) {
-                dueDateGroup = 'future';
+                dueDateGroup = 'Upcoming';
             } else if (dueDate.isToday) {
-                dueDateGroup = 'today';
+                dueDateGroup = 'Today';
             } else if (dueDate < LocalDate.today()) {
-                dueDateGroup = 'past';
+                dueDateGroup = 'Past';
             } else {
-                dueDateGroup = 'future';
+                dueDateGroup = 'Upcoming';
             }
 
             return {...it, dueDate, dueDateGroup};

@@ -8,6 +8,7 @@ import {isEmpty} from 'lodash';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {filler, hbox} from '@xh/hoist/cmp/layout';
+import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 
 export class TodoPanelModel extends HoistModel {
 
@@ -30,7 +31,7 @@ export class TodoPanelModel extends HoistModel {
         sortBy: 'dueDate',
         groupBy: 'dueDateGroup',
         groupSortFn: (a, b, groupField) => {
-            if (groupField === 'future' || groupField === 'past') return a < b ? -1 : 1;
+            if (groupField === 'Upcoming' || groupField === 'Past') return a < b ? -1 : 1;
         },
         persistWith: this.persistWith,
         columns: [
@@ -43,6 +44,27 @@ export class TodoPanelModel extends HoistModel {
                 field: 'complete',
                 ...boolCheckCol,
                 width: 80
+            },
+            {
+                ...actionCol,
+                actions: [
+                    {
+                        title: 'Status',
+                        displayFn: ({record}) => {
+                            const {complete} = record.data;
+
+                            return {
+                                title: 'Status',
+                                icon: complete ? Icon.checkCircle() : Icon.circle(),
+                                tooltip: complete ? 'Mark In Progress' : 'Mark complete',
+                                intent: complete ? 'success' : ''
+                            };
+                        },
+                        actionFn: ({record}) => {
+                            this.toggleOneCompleteAsync(record.data, !record.data.complete);
+                        }
+                    }
+                ]
             },
             {
                 field: 'dueDate',
@@ -97,7 +119,19 @@ export class TodoPanelModel extends HoistModel {
         this.info(`Task edited: '${task.description}'`);
     }
 
-    async toggleCompleteAsync(isComplete) {
+    async toggleOneCompleteAsync(task, isComplete) {
+        const {id, description, dueDate} = task;
+        await XH.todoService.editTaskAsync({
+            id,
+            description,
+            dueDate,
+            complete: isComplete
+        });
+        await this.refreshAsync();
+        if (isComplete) this.info(`Congrats! You completed '${description}!'`);
+    }
+
+    async toggleAllCompleteAsync(isComplete) {
         const {selectedTasks} = this;
         if (isEmpty(selectedTasks)) return;
 

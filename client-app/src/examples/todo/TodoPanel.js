@@ -59,9 +59,9 @@ const tbar = hoistCmp.factory(
                 filler(),
                 button({
                     icon: count && firstTask.complete ? Icon.reset() : Icon.check(),
-                    text: count && firstTask.complete ? 'Mark In Progress' : 'Mark Complete',
-                    omit:  !count || !allSame,
-                    onClick: () => model.toggleCompleteAsync(!firstTask.complete)
+                    text: count && firstTask.complete ? 'Mark All In Progress' : 'Mark All Complete',
+                    omit:  !count || count < 2 || !allSame,
+                    onClick: () => model.toggleAllCompleteAsync(!firstTask.complete)
                 }),
                 toolbarSep(),
                 gridCountLabel({unit: 'task', showSelectionCount: 'never'}),
