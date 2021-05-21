@@ -22,17 +22,16 @@ export class TodoPanelModel extends HoistModel {
 
     @managed
     gridModel = new GridModel({
-        store: {
-            fields: [
-                {name: 'dueDate', type: 'localDate'}
-            ]
-        },
         emptyText: 'Empty todo list...',
         selModel: {mode: 'multiple'},
         enableExport: true,
         rowBorders: true,
         showHover: true,
         sortBy: 'dueDate',
+        groupBy: 'dueDateGroup',
+        groupSortFn: (a, b, groupField) => {
+            if (groupField === 'future' || groupField === 'past') return a < b ? -1 : 1;
+        },
         persistWith: this.persistWith,
         columns: [
             {
@@ -52,6 +51,10 @@ export class TodoPanelModel extends HoistModel {
                 rendererIsComplex: true,
                 renderer: null,
                 elementRenderer: (v, {record}) => this.dueDateRenderer(v, {record})
+            },
+            {
+                field: 'dueDateGroup',
+                hidden: true
             }
         ]
     });
@@ -138,6 +141,9 @@ export class TodoPanelModel extends HoistModel {
             }
             await this.refreshAsync();
             this.info(label);
+
+            const tasks = await XH.todoService.getTasksAsync();
+            if (!tasks.length) XH.showBanner({message: 'You did it! All of it!'});
         }
     }
 

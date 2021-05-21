@@ -19,3 +19,9 @@ export class AppModel extends HoistAppModel {
     }
 
 }
+
+/**
+ * @typedef XH
+ * @property {TodoService} todoService
+ * @property {OauthService} oauthService
+ */
