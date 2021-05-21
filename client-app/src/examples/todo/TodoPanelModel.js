@@ -7,7 +7,7 @@ import {TaskDialogModel} from './TaskDialogModel';
 import {isEmpty} from 'lodash';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {hbox} from '@xh/hoist/cmp/layout';
+import {filler, hbox} from '@xh/hoist/cmp/layout';
 
 export class TodoPanelModel extends HoistModel {
 
@@ -154,17 +154,19 @@ export class TodoPanelModel extends HoistModel {
     }
 
     dueDateRenderer(v, {record}) {
-        if (v && v < LocalDate.today() && !record.data.complete) {
-            return hbox({
-                items: [
-                    Icon.warning({className: 'xh-orange'}),
-                    fmtDate(v, 'MMM D')
-                ],
-                justifyContent: 'flex-end',
-                alignItems: 'center'
-            });
-        } else {
-            return fmtDate(v, 'MMM D');
-        }
+        const overdue = v && v < LocalDate.today() && !record.data.complete;
+        return hbox({
+            items: [
+                Icon.warning({
+                    className: 'xh-orange',
+                    title: 'Overdue!',
+                    omit: !overdue
+                }),
+                filler(),
+                fmtDate(v, 'MMM D')
+            ],
+            alignItems: 'center'
+        });
+
     }
 }
