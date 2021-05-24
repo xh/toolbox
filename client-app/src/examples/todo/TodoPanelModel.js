@@ -25,13 +25,18 @@ export class TodoPanelModel extends HoistModel {
     gridModel = new GridModel({
         emptyText: 'Empty todo list...',
         selModel: {mode: 'multiple'},
+        sizingMode: 'large',
+        colDefaults: {rowHeight: 75},
         enableExport: true,
         rowBorders: true,
         showHover: true,
         sortBy: 'dueDate',
         groupBy: 'dueDateGroup',
         groupSortFn: (a, b, groupField) => {
-            if (groupField === 'Upcoming' || groupField === 'Past') return a < b ? -1 : 1;
+            if (a==='Today') return -1;
+            else if (b==='Today') return 1;
+            else if (a==='Upcoming') return -1;
+            else return 1;
         },
         persistWith: this.persistWith,
         columns: [
@@ -69,7 +74,7 @@ export class TodoPanelModel extends HoistModel {
             {
                 field: 'dueDate',
                 ...localDateCol,
-                width: 110,
+                width: 120,
                 rendererIsComplex: true,
                 renderer: null,
                 elementRenderer: (v, {record}) => this.dueDateRenderer(v, {record})
