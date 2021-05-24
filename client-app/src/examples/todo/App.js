@@ -5,6 +5,7 @@ import {Icon} from '@xh/hoist/icon';
 import {AppModel} from './AppModel';
 import {todoPanel} from './TodoPanel';
 import '../../core/Toolbox.scss';
+import './App.scss';
 
 export const App = hoistCmp({
     displayName: 'App',
@@ -16,7 +17,8 @@ export const App = hoistCmp({
                 icon: Icon.clipboard({size: '2x', prefix: 'fal'}),
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
-            item: todoPanel()
+            item: todoPanel(),
+            className: 'tbox-todoapp'
         });
     }
 });

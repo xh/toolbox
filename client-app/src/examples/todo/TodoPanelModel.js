@@ -1,10 +1,10 @@
-import {GridModel, localDateCol, boolCheckCol} from '@xh/hoist/cmp/grid';
+import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {fmtDate} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
-import {isEmpty} from 'lodash';
+import {isEmpty, every} from 'lodash';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {filler, hbox} from '@xh/hoist/cmp/layout';
@@ -26,13 +26,13 @@ export class TodoPanelModel extends HoistModel {
         emptyText: 'Empty todo list...',
         selModel: {mode: 'multiple'},
         sizingMode: 'large',
-        colDefaults: {rowHeight: 75},
+        colDefaults: {rowHeight: 60},
         enableExport: true,
         rowBorders: true,
         showHover: true,
         sortBy: 'dueDate',
         groupBy: 'dueDateGroup',
-        groupSortFn: (a, b, groupField) => {
+        groupSortFn: (a, b) => {
             if (a==='Today') return -1;
             else if (b==='Today') return 1;
             else if (a==='Upcoming') return -1;
@@ -47,8 +47,7 @@ export class TodoPanelModel extends HoistModel {
             },
             {
                 field: 'complete',
-                ...boolCheckCol,
-                width: 80
+                hidden: true
             },
             {
                 ...actionCol,
@@ -59,8 +58,7 @@ export class TodoPanelModel extends HoistModel {
                             const {complete} = record.data;
 
                             return {
-                                title: 'Status',
-                                icon: complete ? Icon.checkCircle() : Icon.circle(),
+                                icon: complete ? Icon.checkCircle({size: 'lg'}) : Icon.circle({size: 'lg'}),
                                 tooltip: complete ? 'Mark In Progress' : 'Mark complete',
                                 intent: complete ? 'success' : ''
                             };
@@ -74,7 +72,7 @@ export class TodoPanelModel extends HoistModel {
             {
                 field: 'dueDate',
                 ...localDateCol,
-                width: 120,
+                width: 140,
                 rendererIsComplex: true,
                 renderer: null,
                 elementRenderer: (v, {record}) => this.dueDateRenderer(v, {record})
@@ -134,6 +132,7 @@ export class TodoPanelModel extends HoistModel {
         });
         await this.refreshAsync();
         if (isComplete) this.info(`Congrats! You completed '${description}!'`);
+        this.nothingInProgressAsync();
     }
 
     async toggleAllCompleteAsync(isComplete) {
@@ -158,6 +157,8 @@ export class TodoPanelModel extends HoistModel {
                 label = count === 1 ? `'${selectedTasks[0].description}!'` : `${count} tasks!`;
             this.info(`Congrats! You completed ${label}`);
         }
+
+        this.nothingInProgressAsync();
     }
 
     async removeTasksAsync() {
@@ -181,8 +182,7 @@ export class TodoPanelModel extends HoistModel {
             await this.refreshAsync();
             this.info(label);
 
-            const tasks = await XH.todoService.getTasksAsync();
-            if (!tasks.length) XH.showBanner({message: 'You did it! All of it!'});
+            this.nothingInProgressAsync();
         }
     }
 
@@ -213,5 +213,12 @@ export class TodoPanelModel extends HoistModel {
             alignItems: 'center'
         });
 
+    }
+
+    async nothingInProgressAsync() {
+        const tasks = await XH.todoService.getTasksAsync();
+        if (every(tasks, {complete: true}) || !tasks.length) {
+            XH.showBanner({message: 'You did it! All of it!'});
+        }
     }
 }
