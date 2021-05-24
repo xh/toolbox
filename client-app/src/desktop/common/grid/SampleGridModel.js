@@ -212,6 +212,7 @@ export class SampleGridModel extends HoistModel {
                 field: 'city',
                 minWidth: 150,
                 maxWidth: 200,
+                hidden: true,
                 tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
                 cellClass: (val) => {
                     return val === 'New York' ? 'xh-text-color-accent' : '';
