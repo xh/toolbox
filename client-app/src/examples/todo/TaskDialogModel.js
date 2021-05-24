@@ -33,6 +33,9 @@ export class TaskDialogModel extends HoistModel {
             },
             {
                 name: 'complete'
+            },
+            {
+                name: 'completeTimestamp'
             }
         ]
     });
@@ -53,13 +56,14 @@ export class TaskDialogModel extends HoistModel {
             isValid = await formModel.validateAsync();
 
         if (isValid) {
-            const {description, dueDate, complete} = values,
+            const {description, dueDate, complete, completeTimestamp} = values,
                 existingId = values.id,
                 task = {
                     id: existingId ?? Date.now(),
                     description,
                     dueDate,
-                    complete: complete ?? false
+                    complete: complete ?? false,
+                    completeTimestamp: completeTimestamp ?? null
                 };
 
             existingId ? await parentModel.editTaskAsync(task) : await parentModel.addTaskAsync(task);
@@ -95,7 +99,8 @@ export class TaskDialogModel extends HoistModel {
             id: null,
             description: null,
             dueDate: null,
-            complete: null
+            complete: null,
+            completeTimestamp: null
         });
     }
 }

@@ -50,10 +50,14 @@ export class TodoPanelModel extends HoistModel {
                 hidden: true
             },
             {
+                field: 'completeTimestamp',
+                hidden: true
+            },
+            {
                 ...actionCol,
+                title: 'Status',
                 actions: [
                     {
-                        title: 'Status',
                         displayFn: ({record}) => {
                             const {complete} = record.data;
 
@@ -128,7 +132,8 @@ export class TodoPanelModel extends HoistModel {
             id,
             description,
             dueDate,
-            complete: isComplete
+            complete: isComplete,
+            completeTimestamp: isComplete ? Date.now() : null
         });
         await this.refreshAsync();
         if (isComplete) this.info(`Congrats! You completed '${description}!'`);
@@ -146,7 +151,8 @@ export class TodoPanelModel extends HoistModel {
                 id,
                 description,
                 dueDate,
-                complete: isComplete
+                complete: isComplete,
+                completeTimestamp: isComplete ? Date.now() : null
             });
         }
 

@@ -68,7 +68,8 @@ export class TodoService extends HoistService {
                 id: it.id,
                 description: it.description,
                 complete: it.complete,
-                dueDate: it.dueDate?.toString()
+                dueDate: it.dueDate?.toString(),
+                completeTimestamp: it.completeTimestamp
             };
         }));
     }
@@ -81,4 +82,5 @@ export class TodoService extends HoistService {
  * @property {boolean} complete
  * @property {LocalDate} dueDate
  * @property {string} dueDateGroup
+ * @property {LocalDate} completeTimestamp
  */
