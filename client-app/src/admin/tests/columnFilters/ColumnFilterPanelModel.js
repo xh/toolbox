@@ -1,5 +1,6 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {boolCheckCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {GroupingChooserModel} from '@xh/hoist/cmp/grouping/GroupingChooserModel';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {
     dateRenderer,
@@ -13,9 +14,25 @@ export class ColumnFilterPanelModel extends HoistModel {
     @bindable.ref
     jsonFilterInput = JSON.stringify(null);
 
+    @bindable
+    isTreeMode = false;
+
     get filter() {
-        return this.gridModel.store.filter;
+        const {isTreeMode, gridModel, treeGridModel} = this;
+        return isTreeMode ? treeGridModel.store.filter : gridModel.store.filter;
     }
+
+    @managed
+    groupingChooserModel = new GroupingChooserModel({
+        persistWith: {localStorageKey: 'columnFilterTestTreeGrid'},
+        dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],
+        initialValue: ['sector', 'symbol'],
+        initialFavorites: [
+            ['region', 'sector'],
+            ['region', 'symbol'],
+            ['sector']
+        ]
+    });
 
     @managed
     gridModel = new GridModel({
@@ -134,6 +151,65 @@ export class ColumnFilterPanelModel extends HoistModel {
         ]
     });
 
+    treeGridModel = new GridModel({
+        treeMode: true,
+        store: {
+            loadRootAsSummary: true,
+            fields: [
+                {name: 'mktVal', type: 'number'},
+                {name: 'pnl', type: 'number'}
+            ]
+        },
+        sortBy: 'pnl|desc|abs',
+        emptyText: 'No records found...',
+        colChooserModel: true,
+        enableExport: true,
+        sizingMode: XH.appModel.gridSizingMode,
+        colDefaults: {
+            enableFilter: true
+        },
+        columns: [
+            {
+                headerName: 'Name',
+                width: 200,
+                field: 'name',
+                isTreeColumn: true
+            },
+            {
+                field: 'mktVal',
+                headerName: 'Mkt Value (m)',
+                headerTooltip: 'Market value (in millions USD)',
+                align: 'right',
+                width: 130,
+                absSort: true,
+                agOptions: {
+                    aggFunc: 'sum'
+                },
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
+                renderer: millionsRenderer({
+                    precision: 3,
+                    ledger: true
+                })
+            },
+            {
+                headerName: 'P&L',
+                field: 'pnl',
+                align: 'right',
+                width: 130,
+                absSort: true,
+                agOptions: {
+                    aggFunc: 'sum'
+                },
+                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
+                renderer: numberRenderer({
+                    precision: 0,
+                    ledger: true,
+                    colorSpec: true
+                })
+            }
+        ]
+    });
+
     constructor() {
         super();
         makeObservable(this);
@@ -142,14 +218,29 @@ export class ColumnFilterPanelModel extends HoistModel {
             track: () => this.filter,
             run: (filter) => this.setJsonFilterInput(JSON.stringify(filter?.toJSON() ?? null, undefined, 2))
         });
+
+        // Load data when dimensions change
+        this.addReaction({
+            track: () => this.groupingChooserModel.value,
+            run: () => this.loadAsync()
+        });
     }
 
-    async doLoadAsync(loadSpec) {
-        const {trades, summary} = await XH.fetchJson({url: 'trade'}),
-            {gridModel} = this;
+    async doLoadAsync({isRefresh}) {
+        const dims = this.groupingChooserModel.value,
+            {trades, summary} = await XH.fetchJson({url: 'trade'}),
+            data = await XH.portfolioService.getPositionsAsync(dims, true),
+            {gridModel, treeGridModel} = this;
 
         gridModel.loadData(trades, summary);
         await gridModel.preSelectFirstAsync();
+
+        if (isRefresh) {
+            treeGridModel.updateData({update: data});
+        } else {
+            treeGridModel.loadData(data);
+        }
+        await treeGridModel.preSelectFirstAsync();
     }
 
 }
