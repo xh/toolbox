@@ -4,8 +4,10 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-import {hbox, hspacer} from '@xh/hoist/cmp/layout';
+import {hbox, hspacer, filler} from '@xh/hoist/cmp/layout';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {ValidationState} from '@xh/hoist/data';
 
 export const StoreEditingPanel = hoistCmp({
     model: creates(StoreEditingPanelModel),
@@ -28,7 +30,7 @@ export const StoreEditingPanel = hoistCmp({
                     icon: Icon.check(),
                     text: 'Commit All',
                     intent: 'success',
-                    onClick: () => model.commitAll(),
+                    onClick: () => model.commitAllAsync(),
                     disabled: !model.store.isModified
                 }),
                 button({
@@ -39,7 +41,14 @@ export const StoreEditingPanel = hoistCmp({
                     disabled: !model.store.isModified
                 }),
                 toolbarSep(),
-                storeDirtyIndicator()
+                storeDirtyIndicator(),
+                toolbarSep(),
+                storeValidIndicator(),
+                filler(),
+                switchInput({
+                    bind: 'asyncValidation',
+                    label: 'Async Validation?'
+                })
             ],
             item: grid()
         });
@@ -59,6 +68,42 @@ const storeDirtyIndicator = hoistCmp.factory(
                 hspacer(5),
                 'Store ' + (isModified ? 'Dirty' : 'Clean')
             ]
+        });
+    }
+);
+
+const storeValidIndicator = hoistCmp.factory(
+    ({model}) => {
+        const {isPending, validationState, errorCount} = model.store.validator;
+        let icon, label, color;
+        if (isPending) {
+            icon = Icon.questionCircle();
+            label = 'Validation pending';
+            color = 'var(--xh-text-color-muted)';
+        } else {
+            switch (validationState) {
+                case ValidationState.Valid:
+                    icon = Icon.checkCircle();
+                    label = 'Valid';
+                    color = 'var(--xh-intent-success)';
+                    break;
+                case ValidationState.NotValid:
+                    icon = Icon.xCircle();
+                    label = `Not Valid (${errorCount} errors)`;
+                    color = 'var(--xh-intent-warning)';
+                    break;
+                default:
+                    icon = Icon.questionCircle();
+                    label = 'Validation state unknown';
+                    color = 'var(--xh-text-color-muted)';
+                    break;
+            }
+        }
+
+        return hbox({
+            alignItems: 'center',
+            style: {color},
+            items: [icon, hspacer(5), label]
         });
     }
 );

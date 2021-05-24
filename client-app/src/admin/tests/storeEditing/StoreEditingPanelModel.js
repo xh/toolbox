@@ -1,5 +1,6 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel, dateCol, boolCheckCol} from '@xh/hoist/cmp/grid';
+import {dateIs, lengthIs, numberIs, required} from '@xh/hoist/data';
 import {
     actionCol,
     calcActionColWidth,
@@ -9,11 +10,16 @@ import {
     checkboxEditor,
     selectEditor
 } from '@xh/hoist/desktop/cmp/grid';
+import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {action, makeObservable} from '@xh/hoist/mobx';
-import {isEmpty, max} from 'lodash';
+import {action, bindable, makeObservable} from '@xh/hoist/mobx';
+import {fmtDate} from '@xh/hoist/format';
+import {isEmpty, isNil, max} from 'lodash';
 
 export class StoreEditingPanelModel extends HoistModel {
+
+    @bindable
+    asyncValidation = false;
 
     @managed
     gridModel = new GridModel({
@@ -25,15 +31,27 @@ export class StoreEditingPanelModel extends HoistModel {
                 {
                     name: 'name',
                     type: 'string',
-                    defaultValue: 'Enter a Name'
+                    rules: [required, lengthIs({max: 10})]
                 },
                 {
                     name: 'amount',
-                    type: 'number'
+                    type: 'number',
+                    rules: [
+                        required,
+                        numberIs({min: 0, max: 100}),
+                        {
+                            when: (f, {category}) => category === 'US',
+                            check: async ({value}) => {
+                                if (this.asyncValidation) await wait(1000);
+                                return isNil(value) || value < 10 ? 'Records where `category` is "US" require `amount` of 10 or greater.' : null;
+                            }
+                        }
+                    ]
                 },
                 {
                     name: 'date',
-                    type: 'date'
+                    type: 'date',
+                    rules: [required, dateIs({max: 'today'})]
                 },
                 {
                     name: 'isActive',
@@ -42,7 +60,8 @@ export class StoreEditingPanelModel extends HoistModel {
                 },
                 {
                     name: 'category',
-                    type: 'string'
+                    type: 'string',
+                    rules: [required]
                 },
                 {
                     name: 'Description',
@@ -91,7 +110,8 @@ export class StoreEditingPanelModel extends HoistModel {
                 field: 'name',
                 editable: true,
                 width: 200,
-                editor: textEditor
+                editor: textEditor,
+                tooltip: true
             },
             {
                 field: 'amount',
@@ -119,7 +139,8 @@ export class StoreEditingPanelModel extends HoistModel {
                     inputProps: {
                         minDate: new Date(2021, 2, 15)
                     }
-                })
+                }),
+                tooltip: (v) => fmtDate(v, 'dddd MMMM Do YYYY')
             },
             {
                 field: 'description',
@@ -172,7 +193,22 @@ export class StoreEditingPanelModel extends HoistModel {
     }
 
     @action
-    commitAll() {
+    async commitAllAsync() {
+        const isValid = await this.store.validateAsync();
+        if (!isValid) {
+            const doCommit = await XH.confirm({
+                icon: Icon.warning(),
+                title: 'Commit?',
+                message: 'The Store contains invalid records - do you want to commit all changes anyway?',
+                confirmProps: {
+                    intent: 'success',
+                    icon: Icon.check(),
+                    text: 'Commit'
+                }
+            });
+            if (!doCommit) return;
+        }
+
         const {store} = this,
             {addedRecords, modifiedRecords, removedRecords} = store,
             nextId = this.getNextId(),
