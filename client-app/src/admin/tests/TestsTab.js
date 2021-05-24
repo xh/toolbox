@@ -12,6 +12,7 @@ import {dataViewTestPanel} from './dataview/DataViewTestPanel';
 import {Component} from 'react';
 import {HoistModel} from '@xh/hoist/core';
 import {HoistComponent} from '@xh/hoist/deprecated';
+import {ColumnFilterPanel} from './columnFilters/ColumnFilterPanel';
 
 // Lets test our deprecated Class Component decorator right here.
 @HoistComponent
@@ -36,7 +37,8 @@ class TestsTabModel extends HoistModel {
             {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel},
             {id: 'select', title: 'Select', content: SelectTestPanel},
             {id: 'storeEditing', title: 'Store Editing', content: StoreEditingPanel},
-            {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel}
+            {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel},
+            {id: 'columnFilters', title: 'Column Filters', content: ColumnFilterPanel}
         ],
         switcher: {orientation: 'left'}
     });

@@ -39,7 +39,8 @@ export class AppModel extends BaseAppModel {
                     {name: 'panelResizing', path: '/panelResizing'},
                     {name: 'select', path: '/select'},
                     {name: 'storeEditing', path: '/storeEditing'},
-                    {name: 'webSockets', path: '/webSockets'}
+                    {name: 'webSockets', path: '/webSockets'},
+                    {name: 'columnFilters', path: '/columnFilters'}
                 ]
             },
             {
