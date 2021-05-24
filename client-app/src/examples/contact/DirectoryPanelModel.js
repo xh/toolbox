@@ -15,6 +15,12 @@ export class DirectoryPanelModel extends HoistModel {
     @persist
     userFaves = [];
 
+    @observable
+    tagList = [];
+
+    @observable
+    locationList = [];
+
     /** @member {function} */
     @bindable
     searchQuery;
@@ -64,16 +70,20 @@ export class DirectoryPanelModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
+    @action
     async doLoadAsync(loadSpec) {
-        const {gridModel} = this;
+        const {gridModel, tagList, locationList} = this;
 
         try {
             const contacts = await XH.fetchJson({
                 url: 'contacts'
             }).track({category: 'Contacts', message: 'Loaded contacts.'});
-
             contacts.forEach(contactInfo => {
                 contactInfo.isFavorite = this.userFaves.includes(contactInfo.id);
+                contactInfo?.tags?.forEach(tag => {
+                    if (!tagList.includes(tag)) tagList.push(tag);
+                });
+                if (contactInfo.location && !locationList.includes(contactInfo.location)) locationList.push(contactInfo.location);
             });
 
             gridModel.loadData(contacts);
@@ -161,7 +171,6 @@ export class DirectoryPanelModel extends HoistModel {
 
     async updateContactAsync(id, update) {
         const {gridModel} = this;
-        console.log('update: ', update);
 
         const contacts = await XH.fetchService.postJson({
             url: `contacts/update/${id}`,

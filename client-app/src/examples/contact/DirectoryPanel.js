@@ -34,7 +34,7 @@ export const directoryPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory(
     ({model}) => {
-        const {displayMode} = model;
+        const {displayMode, locationList} = model;
 
         return toolbar({
             className: 'directory-panel-toolbar',
@@ -49,13 +49,7 @@ const tbar = hoistCmp.factory(
                     bind: 'locationFilter',
                     placeholder: 'Location',
                     enableClear: true,
-                    options: [
-                        {label: 'New York', value: 'NY'},
-                        {label: 'California', value: 'CA'},
-                        {label: 'Maine', value: 'ME'},
-                        {label: 'United Kingdom', value: 'UK'},
-                        {label: 'Canada', value: 'CAN'}
-                    ]
+                    options: locationList.map(loc => ({value: loc}))
                 }),
                 toolbarSep(),
                 switchInput({
