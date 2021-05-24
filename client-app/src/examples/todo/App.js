@@ -4,21 +4,23 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {AppModel} from './AppModel';
 import {todoPanel} from './TodoPanel';
-import '../../core/Toolbox.scss';
 import './App.scss';
+import {wrapper} from '../../desktop/common';
 
 export const App = hoistCmp({
     displayName: 'App',
     model: uses(AppModel),
 
     render() {
-        return panel({
-            tbar: appBar({
-                icon: Icon.clipboard({size: '2x', prefix: 'fal'}),
-                appMenuButtonProps: {hideLogoutItem: false}
-            }),
-            item: todoPanel(),
-            className: 'tbox-todoapp'
-        });
+        return wrapper(
+            panel({
+                tbar: appBar({
+                    icon: Icon.clipboard({size: '2x', prefix: 'fal'}),
+                    appMenuButtonProps: {hideLogoutItem: false}
+                }),
+                item: todoPanel(),
+                className: 'tbox-todoapp xh-tiled-bg'
+            })
+        );
     }
 });

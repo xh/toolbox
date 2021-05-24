@@ -1,7 +1,9 @@
 body {
   --grid-large-font-size: 16;
+  --grid-large-cell-lr-pad: 30;
 
   .tbox-todoapp {
-    margin: 100px 200px;
+    margin: 100px;
+    width: 75%;
   }
 }
