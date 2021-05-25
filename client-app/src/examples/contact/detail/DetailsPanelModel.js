@@ -20,7 +20,6 @@ export class DetailsPanelModel extends HoistModel {
     constructor(directoryPanelModel) {
         super();
         makeObservable(this);
-
         this.directoryPanelModel = directoryPanelModel;
 
         this.formModel = new FormModel({

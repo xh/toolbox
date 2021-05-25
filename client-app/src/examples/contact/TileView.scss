@@ -16,7 +16,8 @@
     bottom: 10px;
     height: fit-content;
     width: 100%;
-    text-align: right;
+    display: flex;
+    flex-flow: row;
     background-color: rgba(255, 255, 255, 0.5);
   }
 
@@ -25,5 +26,18 @@
     font-size: var(--xh-font-size-large-em);
     color: var(--xh-gray-dark);
     padding: 5px 15px 5px 5px;
+  }
+}
+
+.details-panel-title-bar {
+  height: var(--xh-tbar-min-size-px);
+  padding: 10px 0 0 5px;
+  background-color: var(--xh-title-bg);
+  font-size: var(--xh-font-size-large-em);
+  font-family: var(--xh-title-font-family);
+
+  .details-title-icon {
+    width: 35px;
+    font-size: large;
   }
 }

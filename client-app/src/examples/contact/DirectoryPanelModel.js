@@ -6,22 +6,36 @@ import {without} from 'lodash';
 import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {div, hbox} from '@xh/hoist/cmp/layout';
+
+/**
+ * Primary model to load a list of contacts from the server and manage filtering and selection state.
+ */
 
 export class DirectoryPanelModel extends HoistModel {
 
     persistWith = PERSIST_APP;
 
+    /**
+     * @member {string[]} - ids of all contacts that the user has favorited.
+     */
     @observable.ref
     @persist
     userFaves = [];
 
+    /**
+     * @member {string[]} - set of known tags applied to all contacts
+     */
     @observable
     tagList = [];
 
+    /**
+     * @member {string[]} - set of known locations of all contacts
+     */
     @observable
     locationList = [];
 
-    /** @member {function} */
+    /** @member {string} - quick filter search term */
     @bindable
     searchQuery;
 
@@ -29,13 +43,24 @@ export class DirectoryPanelModel extends HoistModel {
     @bindable
     locationFilter;
 
+    /** @member {string[]} - when multiple tags are selected for filtering, the grid will display all records matching all selected tags */
+    @bindable.ref
+    tagFilters;
+
     /** @member {boolean} */
     @bindable
     showFavoritesOnly = false;
 
+    /**
+     * @member {string} - options are 'grid' and 'tiled'. In 'grid' mode, contacts are displayed in an interactive table. In
+     * 'tiled' mode, contacts are displayed as tiled profile pictures.
+     */
     @bindable
     displayMode = 'grid';
 
+    /**
+     * @member {DetailsPanelModel}
+     */
     @managed
     detailsPanelModel;
 
@@ -43,7 +68,7 @@ export class DirectoryPanelModel extends HoistModel {
     @managed
     gridModel;
 
-    get currentRecord() {
+    get selectedRecord() {
         return this.gridModel.selectedRecord;
     }
 
@@ -60,12 +85,11 @@ export class DirectoryPanelModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => [this.locationFilter, this.searchQuery, this.showFavoritesOnly],
+            track: () => [this.locationFilter, this.searchQuery, this.showFavoritesOnly, this.tagFilters],
             run: () => gridModel.setFilter(this.createFilter()),
             fireImmediately: true
         });
     }
-
 
     //------------------------
     // Implementation
@@ -94,11 +118,24 @@ export class DirectoryPanelModel extends HoistModel {
     }
 
     createFilter() {
-        const {searchQuery, locationFilter, showFavoritesOnly} = this;
+        const {searchQuery, locationFilter, showFavoritesOnly, tagFilters} = this;
+
         return [
             searchQuery,
             locationFilter ? {field: 'location', op: '=', value: locationFilter} : null,
-            showFavoritesOnly ? {field: 'isFavorite', op: '=', value: true} : null
+            showFavoritesOnly ? {field: 'isFavorite', op: '=', value: true} : null,
+            tagFilters ? {testFn: (record) => {
+                if (!tagFilters) return true;
+                let hasAllTags = true;
+
+                tagFilters.forEach(
+                    activeTag => {
+                        if (!record.data.tags?.includes(activeTag)) hasAllTags = false;
+                    }
+                );
+
+                return hasAllTags;
+            }} : null
         ];
     }
 
@@ -112,6 +149,7 @@ export class DirectoryPanelModel extends HoistModel {
             enableExport: true,
             rowBorders: true,
             showHover: true,
+            colDefaults: {width: 200},
             persistWith: this.persistWith,
             columns: [
                 {
@@ -120,17 +158,7 @@ export class DirectoryPanelModel extends HoistModel {
                     align: 'center',
                     resizable: false,
                     width: 40,
-                    elementRenderer: (val, {record}) => {
-                        const {isFavorite} = record.data;
-
-                        return button({
-                            icon: Icon.favorite({
-                                color: isFavorite ? 'gold' : null,
-                                prefix: isFavorite ? 'fas' : 'far'
-                            }),
-                            onClick: () => this.toggleFavorite(record)
-                        });
-                    }
+                    elementRenderer: (val, {record}) => this.renderFavorite(record)
                 },
                 {
                     field: 'name'
@@ -154,7 +182,22 @@ export class DirectoryPanelModel extends HoistModel {
                 },
                 {
                     field: 'tags',
-                    hidden: true
+                    hidden: true,
+                    elementRenderer: (val, {record}) => {
+                        if (!record.data.tags) return null;
+
+                        return hbox({
+                            className: 'metadata-tag-container',
+                            items: record.data.tags?.map(tag => 
+                                div({
+                                    className: 'metadata-tag',
+                                    item: tag,
+                                    onClick: () => this.setTagFilters(tag)
+                                })
+                                
+                            )
+                        });
+                    }
                 }
             ]
         });
@@ -167,6 +210,18 @@ export class DirectoryPanelModel extends HoistModel {
 
         this.userFaves = record.data.isFavorite ? without(userFaves, record.id) : [...userFaves, record.id];
         store.modifyRecords({id: record.id, isFavorite: !record.data.isFavorite});
+    }
+
+    renderFavorite(record) {
+        const {isFavorite} = record.data;
+
+        return button({
+            icon: Icon.favorite({
+                color: isFavorite ? 'gold' : null,
+                prefix: isFavorite ? 'fas' : 'far'
+            }),
+            onClick: () => this.toggleFavorite(record)
+        });
     }
 
     async updateContactAsync(id, update) {

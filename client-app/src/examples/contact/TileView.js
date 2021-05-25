@@ -1,5 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {div, tileFrame, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler, span, tileFrame, vframe} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
 import './TileView.scss';
 
@@ -12,7 +12,7 @@ export const tileView = hoistCmp.factory({
             spacing: 10,
             desiredRatio: 1.25,
             minTileWidth: 300,
-            maxTileWidth: 600,
+            maxTileWidth: 450,
             minTileHeight: 250,
             maxTileHeight: 250,
             items: store.records.map(record => {
@@ -27,10 +27,15 @@ export const tileView = hoistCmp.factory({
                         profilePicture ? null : Icon.user({size: '2x'}),
                         div({
                             className: profilePicture ? 'floating-name-bar' : null,
-                            item: div({
-                                className: profilePicture ? 'floating-name' : null,
-                                item: name
-                            })
+                            items: [
+                                span({
+                                    item: model.renderFavorite(record)
+                                }),
+                                filler(),
+                                span({
+                                    className: profilePicture ? 'floating-name' : null,
+                                    item: name
+                                })]
                         })
                     ]
                 });

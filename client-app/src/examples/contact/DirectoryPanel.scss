@@ -1,3 +1,16 @@
 .directory-panel-toolbar {
   background-color: transparent;
 }
+
+.metadata-tag-container {
+  padding: var(--xh-pad-double);
+
+  .metadata-tag {
+    border-radius: 1.5px;
+    font-size: 85%;
+    padding: 3px 6px 3px 6px;
+    margin: 2px;
+    width: fit-content;
+    background-color: var(--xh-bg-alt);
+  }
+}

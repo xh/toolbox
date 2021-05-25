@@ -17,11 +17,10 @@ export const detailsPanel = hoistCmp.factory({
         const {currentRecord} = model;
 
         return panel({
-            title: currentRecord?.data.name ?? 'Select a contact',
             className,
-            icon: Icon.detail(),
             width: 325,
             flex: 'none',
+            tbar: detailsTitleBar(),
             items: currentRecord ? profileRenderer({record: currentRecord}) : placeholder('Select a contact to view their details.'),
             ...props
         });
@@ -32,6 +31,8 @@ const profileRenderer = hoistCmp.factory({
     render({model, record}) {
         const {data} = record;
         const {profilePicture, isFavorite} = data;
+        const {directoryPanelModel} = model;
+        const {tagList} = directoryPanelModel;
         const ffConf = {
             readonlyRenderer: (val) => val ?? '-',
             item: textArea()
@@ -69,7 +70,8 @@ const profileRenderer = hoistCmp.factory({
                                 tags.forEach(tag => {
                                     returnDivs.push(div({
                                         className: 'metadata-tag',
-                                        item: tag
+                                        item: tag,
+                                        onClick: () => directoryPanelModel.setTagFilters(tag)
                                     }));
                                 });
 
@@ -77,7 +79,8 @@ const profileRenderer = hoistCmp.factory({
                             },
                             item: select({
                                 enableCreate: true,
-                                enableMulti: true
+                                enableMulti: true,
+                                options: tagList.map(tag => ({value: tag}))
                             }),
                             field: 'tags'})
                     ]
@@ -109,3 +112,19 @@ const profileRenderer = hoistCmp.factory({
         });
     }
 });
+
+const detailsTitleBar = hoistCmp.factory(
+    ({model}) => {
+        const {currentRecord} = model;
+
+        return div({
+            className: 'details-panel-title-bar',
+            items: [
+                Icon.detail({
+                    size: 'lg',
+                    className: 'details-title-icon'
+                }),
+                currentRecord ? currentRecord.data.name : 'Select a contact to view'
+            ]
+        });
+    });
