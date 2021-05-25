@@ -6,8 +6,8 @@ import {TaskDialogModel} from './TaskDialogModel';
 import {isEmpty, every} from 'lodash';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {filler, hbox} from '@xh/hoist/cmp/layout';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class TodoPanelModel extends HoistModel {
 
@@ -15,6 +15,9 @@ export class TodoPanelModel extends HoistModel {
 
     @managed
     taskDialogModel = new TaskDialogModel(this);
+
+    @bindable
+    showCompleted = false
 
     @managed
     gridModel = new GridModel({
@@ -25,44 +28,28 @@ export class TodoPanelModel extends HoistModel {
         enableExport: true,
         rowBorders: true,
         showHover: true,
+        hideHeaders: true,
         sortBy: 'dueDate',
         groupBy: 'dueDateGroup',
         groupSortFn: (a, b) => {
-            if (a === 'Overdue') return -1;
-            else if (b==='Overdue') return 1;
-            else if (a==='Today') return -1;
-            else if (b === 'Today') return 1;
-            else if (a === 'Complete') return 1;
-            else if (b === 'Complete') return -1;
-            else return 1;
+            a = dueDateGroupSort[a];
+            b = dueDateGroupSort[b];
+            return a-b;
         },
         persistWith: this.persistWith,
         columns: [
             {
-                field: 'description',
-                flex: 1,
-                tooltip: (description) => description
-            },
-            {
-                field: 'complete',
-                hidden: true
-            },
-            {
-                field: 'completeTimestamp',
-                hidden: true
-            },
-            {
                 ...actionCol,
-                title: 'Status',
                 actions: [
                     {
                         displayFn: ({record}) => {
                             const {complete} = record.data;
 
                             return {
-                                icon: complete ? Icon.checkCircle() : Icon.circle(),
-                                tooltip: complete ? 'Mark In Progress' : 'Mark complete',
-                                intent: complete ? 'success' : ''
+                                icon: complete ?
+                                    Icon.checkCircle({prefix: 'fal', className: 'xh-intent-success'}) :
+                                    Icon.circle({prefix: 'fal', className: 'xh-text-color-muted'}),
+                                tooltip: complete ? 'Mark In Progress' : 'Mark complete'
                             };
                         },
                         actionFn: ({record}) => {
@@ -72,12 +59,24 @@ export class TodoPanelModel extends HoistModel {
                 ]
             },
             {
+                field: 'complete',
+                hidden: true
+            },
+            {
+                field: 'description',
+                flex: 1,
+                tooltip: (description) => description
+            },
+            {
+                field: 'completeTimestamp',
+                hidden: true
+            },
+            {
                 field: 'dueDate',
                 ...localDateCol,
                 width: 140,
                 rendererIsComplex: true,
-                renderer: null,
-                elementRenderer: (v, {record}) => this.dueDateRenderer(v, {record})
+                renderer: (v, {record}) => this.dueDateRenderer(v, {record})
             },
             {
                 field: 'dueDateGroup',
@@ -92,6 +91,8 @@ export class TodoPanelModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
+
     }
 
     async addTaskAsync(task) {
@@ -174,20 +175,17 @@ export class TodoPanelModel extends HoistModel {
     }
 
     dueDateRenderer(v, {record}) {
-        const overdue = v && v < LocalDate.today() && !record.data.complete;
-        return hbox({
-            items: [
-                Icon.warning({
-                    className: 'xh-orange',
-                    title: 'Overdue!',
-                    omit: !overdue
-                }),
-                filler(),
-                fmtDate(v, 'MMM D')
-            ],
-            alignItems: 'center'
-        });
-
+        const overdue = v && v < LocalDate.today() && !record.data.complete,
+            dateStr = fmtDate(v, 'MMM D');
+        if (!overdue) {
+            return dateStr;
+        } else {
+            return Icon.warning({
+                className: 'xh-orange',
+                title: 'Overdue!',
+                asHtml: true
+            }) + ' ' + dateStr;
+        }
     }
 
     validateCompleted(tasks) {
@@ -196,3 +194,10 @@ export class TodoPanelModel extends HoistModel {
         }
     }
 }
+
+const dueDateGroupSort = {
+    'Overdue': 1,
+    'Today': 2,
+    'Upcoming': 3,
+    'Complete': 4
+};

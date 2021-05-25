@@ -1,8 +1,11 @@
 body {
   --grid-large-font-size: 16;
-  --grid-large-cell-lr-pad: 30;
   --tbar-font-size: 16;
   --button-font-size: 16;
+
+  .xh-record-action-button svg {
+    font-size: 24px;
+  }
 
   .tbox-todoapp {
     margin: 100px 0;
