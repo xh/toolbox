@@ -2,7 +2,6 @@ import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon/Icon';
@@ -64,17 +63,7 @@ const tbar = hoistCmp.factory(
                     onClick: () => model.toggleAllCompleteAsync(!firstTask.complete)
                 }),
                 toolbarSep(),
-                gridCountLabel({unit: 'task', showSelectionCount: 'never'}),
-                toolbarSep(),
-                buttonGroupInput({
-                    bind: 'filterBy',
-                    outlined: true,
-                    items: [
-                        button({text: 'All', value: 'all'}),
-                        button({text: 'In Progress', value: 'active'}),
-                        button({text: 'Complete', value: 'complete'})
-                    ]
-                })
+                gridCountLabel({unit: 'task', showSelectionCount: 'never'})
             ]
         });
     }

@@ -12,15 +12,18 @@ export class TodoService extends HoistService {
     /** @returns {Promise<TaskItem[]>} */
     async getTasksAsync() {
         return XH.getPref('todoApp').map(it => {
-            const dueDate = isString(it.dueDate) ? LocalDate.get(it.dueDate) : null;
+            const dueDate = isString(it.dueDate) ? LocalDate.get(it.dueDate) : null,
+                complete = it.complete;
             let dueDateGroup;
 
-            if (!dueDate) {
+            if (complete) {
+                dueDateGroup = 'Complete';
+            } else if (!dueDate) {
                 dueDateGroup = 'Upcoming';
             } else if (dueDate.isToday) {
                 dueDateGroup = 'Today';
             } else if (dueDate < LocalDate.today()) {
-                dueDateGroup = 'Past';
+                dueDateGroup = 'Overdue';
             } else {
                 dueDateGroup = 'Upcoming';
             }
