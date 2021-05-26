@@ -1,13 +1,10 @@
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {Icon} from '@xh/hoist/icon/Icon';
 import {taskDialog} from './TaskDialog';
 import {TodoPanelModel} from './TodoPanelModel';
-import {every} from 'lodash';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 
 
@@ -29,40 +26,24 @@ export const todoPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory(
     ({model}) => {
-        const {taskDialogModel, selectedTasks} = model,
-            firstTask = selectedTasks[0],
-            count = selectedTasks.length,
-            allSame = every(selectedTasks, {complete: true}) || every(selectedTasks, {complete: false});
+        const {selModel} = model.gridModel,
+            {addAction, editAction, deleteAction, toggleCompleteAction} = model;
 
         return toolbar({
             items: [
-                button({
-                    icon: Icon.add(),
-                    text: 'New',
-                    intent: 'success',
-                    onClick: () => taskDialogModel.openAddForm()
+                recordActionBar({
+                    selModel,
+                    actions: [addAction]
                 }),
                 toolbarSep(),
-                button({
-                    icon: Icon.edit(),
-                    text: 'Edit',
-                    intent: 'primary',
-                    disabled: count !== 1,
-                    onClick: () => taskDialogModel.openEditForm(firstTask)
-                }),
-                button({
-                    icon: Icon.delete(),
-                    text: 'Remove',
-                    intent: 'danger',
-                    disabled: !count,
-                    onClick: () => model.removeTasksAsync()
+                recordActionBar({
+                    selModel,
+                    actions: [editAction, deleteAction]
                 }),
                 filler(),
-                button({
-                    icon: count && firstTask.complete ? Icon.reset() : Icon.check(),
-                    text: count && firstTask.complete ? 'Mark All In Progress' : 'Mark All Complete',
-                    omit:  !count || count < 2 || !allSame,
-                    onClick: () => model.toggleCompleteAsync(selectedTasks, !firstTask.complete)
+                recordActionBar({
+                    selModel,
+                    actions: [toggleCompleteAction]
                 })
             ]
         });

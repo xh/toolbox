@@ -25,7 +25,7 @@ export class TaskDialogModel extends HoistModel {
             },
             {
                 name: 'description',
-                rules: [required, lengthIs({max: 50, min: 1})]
+                rules: [required, lengthIs({max: 1000, min: 1})]
             },
             {
                 name: 'dueDate',
@@ -76,7 +76,8 @@ export class TaskDialogModel extends HoistModel {
     }
 
     @action
-    openEditForm(task) {
+    openEditForm() {
+        const task = this.parentModel.selectedTasks[0];
         this.isAdd = false;
         this.isOpen = true;
         this.formModel.init(task);
