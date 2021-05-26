@@ -53,7 +53,7 @@ export class TodoPanelModel extends HoistModel {
                             };
                         },
                         actionFn: ({record}) => {
-                            this.toggleOneCompleteAsync(record.data, !record.data.complete);
+                            this.toggleCompleteAsync(record.data, !record.data.complete);
                         }
                     }
                 ]
@@ -107,34 +107,20 @@ export class TodoPanelModel extends HoistModel {
         this.info(`Task edited: '${task.description}'`);
     }
 
-    async toggleOneCompleteAsync(task, isComplete, count = 1) {
-        const {description} = task;
-        await XH.todoService.editTaskAsync({
-            ...task,
-            complete: isComplete,
-            completeTimestamp: isComplete ? Date.now() : null
-        });
+    async toggleCompleteAsync(tasks, isComplete) {
+        const count = tasks.length,
+            {description} = tasks;
 
-        if (count === 1) {
-            await this.refreshAsync();
-            if (isComplete) this.info(`Congrats! You completed '${description}!'`);
-        }
-    }
-
-    async toggleAllCompleteAsync(isComplete) {
-        const {selectedTasks} = this,
-            count = selectedTasks?.length;
-
-        if (isEmpty(selectedTasks)) return;
-
-        for (const task of selectedTasks) {
-            await this.toggleOneCompleteAsync(task, isComplete, count);
-        }
-
+        if (isEmpty(tasks)) return;
+        await XH.todoService.toggleCompleteAsync(tasks, isComplete);
         await this.refreshAsync();
 
         if (isComplete) {
-            this.info(`Congrats! You completed ${count} tasks!`);
+            if (count) {
+                this.info(`Congrats! You completed ${count} tasks!`);
+            } else {
+                this.info(`Congrats! You completed '${description}!'`);
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
+import {grid} from '@xh/hoist/cmp/grid';
 import {filler, fragment} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -35,7 +35,6 @@ const tbar = hoistCmp.factory(
             allSame = every(selectedTasks, {complete: true}) || every(selectedTasks, {complete: false});
 
         return toolbar({
-            enableOverflowMenu: true,
             items: [
                 button({
                     icon: Icon.add(),
@@ -63,12 +62,8 @@ const tbar = hoistCmp.factory(
                     icon: count && firstTask.complete ? Icon.reset() : Icon.check(),
                     text: count && firstTask.complete ? 'Mark All In Progress' : 'Mark All Complete',
                     omit:  !count || count < 2 || !allSame,
-                    onClick: () => model.toggleAllCompleteAsync(!firstTask.complete)
-                }),
-                toolbarSep({
-                    omit:  !count || count < 2 || !allSame
-                }),
-                gridCountLabel({unit: 'task', showSelectionCount: 'never'})
+                    onClick: () => model.toggleCompleteAsync(selectedTasks, !firstTask.complete)
+                })
             ]
         });
     }

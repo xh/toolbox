@@ -1,7 +1,7 @@
 import {HoistService, XH} from '@xh/hoist/core';
 import {reject} from 'lodash';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {isString} from 'lodash';
+import {isString, isArray, castArray} from 'lodash';
 
 /**
  * Service to manage fetching, updating and persisting tasks.
@@ -52,6 +52,21 @@ export class TodoService extends HoistService {
         tasks = reject(tasks, {id});
         tasks = [...tasks, task];
         this.saveToPreference(tasks);
+    }
+
+    /**
+     * @param tasks
+     * @param isComplete
+     * @returns {Promise<void>}
+     */
+    async toggleCompleteAsync(tasks, isComplete) {
+        if (!isArray(tasks)) {
+            tasks = castArray(tasks);
+        }
+
+        for (const task of tasks) {
+            await this.editTaskAsync({...task, complete: isComplete});
+        }
     }
 
     /**
