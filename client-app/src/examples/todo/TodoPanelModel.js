@@ -68,10 +68,6 @@ export class TodoPanelModel extends HoistModel {
                 tooltip: (description) => description
             },
             {
-                field: 'completeTimestamp',
-                hidden: true
-            },
-            {
                 field: 'dueDate',
                 ...localDateCol,
                 width: 140,
