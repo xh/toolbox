@@ -70,8 +70,7 @@ const profileRenderer = hoistCmp.factory({
                                 tags.forEach(tag => {
                                     returnDivs.push(div({
                                         className: 'metadata-tag',
-                                        item: tag,
-                                        onClick: () => directoryPanelModel.setTagFilters(tag)
+                                        item: tag
                                     }));
                                 });
 

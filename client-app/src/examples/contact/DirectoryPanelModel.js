@@ -2,7 +2,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable, observable, makeObservable, action} from '@xh/hoist/mobx';
-import {without} from 'lodash';
+import {without, union} from 'lodash';
 import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -26,13 +26,13 @@ export class DirectoryPanelModel extends HoistModel {
     /**
      * @member {string[]} - set of known tags applied to all contacts
      */
-    @observable
+    @observable.ref
     tagList = [];
 
     /**
      * @member {string[]} - set of known locations of all contacts
      */
-    @observable
+    @observable.ref
     locationList = [];
 
     /** @member {string} - quick filter search term */
@@ -45,7 +45,7 @@ export class DirectoryPanelModel extends HoistModel {
 
     /** @member {string[]} - when multiple tags are selected for filtering, the grid will display all records matching all selected tags */
     @bindable.ref
-    tagFilters;
+    tagFilters = [];
 
     /** @member {boolean} */
     @bindable
@@ -96,19 +96,16 @@ export class DirectoryPanelModel extends HoistModel {
     //------------------------
     @action
     async doLoadAsync(loadSpec) {
-        const {gridModel, tagList, locationList} = this;
+        const {gridModel, userFaves} = this;
 
         try {
             const contacts = await XH.fetchJson({
                 url: 'contacts'
             }).track({category: 'Contacts', message: 'Loaded contacts.'});
-            contacts.forEach(contactInfo => {
-                contactInfo.isFavorite = this.userFaves.includes(contactInfo.id);
-                contactInfo?.tags?.forEach(tag => {
-                    if (!tagList.includes(tag)) tagList.push(tag);
-                });
-                if (contactInfo.location && !locationList.includes(contactInfo.location)) locationList.push(contactInfo.location);
-            });
+
+            contacts.forEach(it => it.isFavorite = userFaves.includes(it.id));
+            this.tagList = union(...contacts.map(it => it.tags ?? []));
+            this.locationList = union(contacts.map(it => it.location));
 
             gridModel.loadData(contacts);
             await gridModel.preSelectFirstAsync();
@@ -192,7 +189,7 @@ export class DirectoryPanelModel extends HoistModel {
                                 div({
                                     className: 'metadata-tag',
                                     item: tag,
-                                    onClick: () => this.setTagFilters(tag)
+                                    onClick: () => this.toggleTag(tag)
                                 })
                                 
                             )
@@ -210,6 +207,15 @@ export class DirectoryPanelModel extends HoistModel {
 
         this.userFaves = record.data.isFavorite ? without(userFaves, record.id) : [...userFaves, record.id];
         store.modifyRecords({id: record.id, isFavorite: !record.data.isFavorite});
+    }
+
+    @action
+    toggleTag(tag) {
+        let tagFilters = this.tagFilters ?? [];
+
+        this.tagFilters = tagFilters.includes(tag) ?
+            without(tagFilters, tag) :
+            [...tagFilters, tag];
     }
 
     renderFavorite(record) {
