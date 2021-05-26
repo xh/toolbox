@@ -18,7 +18,7 @@ export class TodoPanelModel extends HoistModel {
     taskDialogModel = new TaskDialogModel(this);
 
     @bindable
-    showCompleted = false
+    showCompletedOnly = false
 
     @managed
     gridModel;
@@ -108,6 +108,11 @@ export class TodoPanelModel extends HoistModel {
         const tasks = await XH.todoService.getTasksAsync();
         this.gridModel.loadData(tasks);
         this.validateCompleted(tasks);
+    }
+
+    createFilter() {
+        const {showCompletedOnly} = this;
+        return showCompletedOnly ? {field: 'complete', op: '=', value: true} : null;
     }
 
     info(message) {

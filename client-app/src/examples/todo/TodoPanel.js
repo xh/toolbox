@@ -54,7 +54,7 @@ const bbar = hoistCmp.factory(
     () => {
         return toolbar({
             item: switchInput({
-                bind: 'showCompleted',
+                bind: 'showCompletedOnly',
                 label: 'completed tasks'
             }),
             flexDirection: 'row',
