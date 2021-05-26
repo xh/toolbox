@@ -106,6 +106,8 @@ export class TodoPanelModel extends HoistModel {
     //------------------------
     async doLoadAsync(loadSpec) {
         const tasks = await XH.todoService.getTasksAsync();
+        //  Description field's auto height does not adjust after edit without first clearing the store
+        this.gridModel.clear();
         this.gridModel.loadData(tasks);
         this.validateCompleted(tasks);
     }
