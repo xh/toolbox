@@ -61,7 +61,18 @@ const profileRenderer = hoistCmp.factory({
                         formField({...ffConf, field: 'workPhone'}),
                         formField({...ffConf, field: 'cellPhone'}),
                         formField({...ffConf, field: 'homePhone'}),
-                        formField({...ffConf, field: 'bio'}),
+                        formField({
+                            field: 'bio',
+                            item: textArea(),
+                            readonlyRenderer: (val) => {
+                                return val ?
+                                    div({
+                                        className: 'bio-readonly-panel',
+                                        item: val
+                                    }) :
+                                    '-';
+                            }                       
+                        }),
                         formField({
                             readonlyRenderer: tags => {
                                 tags = tags ?? [];
