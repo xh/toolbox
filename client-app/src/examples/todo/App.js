@@ -4,8 +4,8 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {AppModel} from './AppModel';
 import {todoPanel} from './TodoPanel';
-import './App.scss';
 import {wrapper} from '../../desktop/common';
+import './App.scss';
 
 export const App = hoistCmp({
     displayName: 'App',
@@ -19,7 +19,7 @@ export const App = hoistCmp({
                     appMenuButtonProps: {hideLogoutItem: false}
                 }),
                 item: todoPanel(),
-                className: 'tbox-todoapp xh-tiled-bg'
+                className: 'tbox-todoapp'
             })
         );
     }

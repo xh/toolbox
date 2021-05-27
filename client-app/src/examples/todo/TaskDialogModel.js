@@ -24,15 +24,15 @@ export class TaskDialogModel extends HoistModel {
                 name: 'id'
             },
             {
+                name: 'complete'
+            },
+            {
                 name: 'description',
-                rules: [required, lengthIs({max: 1000, min: 1})]
+                rules: [required, lengthIs({max: 1000})]
             },
             {
                 name: 'dueDate',
                 displayName: 'Due Date'
-            },
-            {
-                name: 'complete'
             }
         ]
     });
@@ -40,6 +40,7 @@ export class TaskDialogModel extends HoistModel {
     constructor(todoPanelModel) {
         super();
         makeObservable(this);
+
         this.parentModel = todoPanelModel;
     }
 

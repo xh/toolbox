@@ -1,9 +1,17 @@
 body {
   --grid-large-font-size: 16;
   --tbar-font-size: 16;
-  --button-font-size: 16;
+  --button-font-size: 24;
 
-  .xh-record-action-button svg {
+  .fa-sync, .fa-bars, .fa-undo {
+    font-size: 16px;
+  }
+
+  .xh-record-action-bar svg {
+    font-size: 16px;
+  }
+
+  .bp3-button-text {
     font-size: 16px;
   }
 

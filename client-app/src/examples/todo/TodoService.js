@@ -83,9 +83,7 @@ export class TodoService extends HoistService {
     saveToPreference(tasks) {
         XH.setPref('todoApp', tasks.map(it => {
             return {
-                id: it.id,
-                description: it.description,
-                complete: it.complete,
+                ...it,
                 dueDate: it.dueDate?.toString()
             };
         }));

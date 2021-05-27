@@ -39,7 +39,7 @@ export class TodoPanelModel extends HoistModel {
     })
 
     get selectedTasks() {
-        return this.gridModel.selection.map(record => record.data);
+        return this.gridModel.selection.map(it => it.data);
     }
 
     constructor() {
@@ -96,6 +96,7 @@ export class TodoPanelModel extends HoistModel {
             for (const task of selectedTasks) {
                 await XH.todoService.removeTasksAsync(task);
             }
+
             await this.refreshAsync();
             this.info(label);
         }
@@ -106,14 +107,17 @@ export class TodoPanelModel extends HoistModel {
     //------------------------
     async doLoadAsync(loadSpec) {
         const tasks = await XH.todoService.getTasksAsync();
-        //  Description field's auto height does not adjust after edit without first clearing the store
+
+        //  Clear store so description field's auto height readjusts after edit
         this.gridModel.clear();
         this.gridModel.loadData(tasks);
+
         this.validateCompleted(tasks);
     }
 
     createFilter() {
         const {showCompletedOnly} = this;
+
         return showCompletedOnly ? {field: 'complete', op: '=', value: true} : null;
     }
 
