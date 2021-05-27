@@ -1,22 +1,20 @@
 body {
   --grid-large-font-size: 16;
-  --tbar-font-size: 16;
-  --button-font-size: 24;
 
-  .fa-sync, .fa-bars, .fa-undo {
-    font-size: 16px;
+  .large-actions {
+    font-size: 24px;
   }
 
-  .xh-record-action-bar svg {
-    font-size: 16px;
-  }
-
-  .bp3-button-text {
-    font-size: 16px;
+  .xh-record-action-bar * {
+    font-size: var(--xh-font-size-large-px);
   }
 
   .tbox-todoapp {
     margin: 100px 0;
     width: 600px;
+  }
+
+  .todo-form {
+    padding: var(--xh-pad-px);
   }
 }

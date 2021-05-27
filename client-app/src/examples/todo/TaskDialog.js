@@ -5,7 +5,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {dateInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {dateInput, textArea} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {TaskDialogModel} from './TaskDialogModel';
 import {dialog} from '@xh/hoist/kit/blueprint';
@@ -31,7 +31,13 @@ const formPanel = hoistCmp.factory({
     render() {
         return panel({
             item: form(
-                vbox(description(), dueDate())
+                vbox({
+                    items: [
+                        description(),
+                        dueDate()
+                    ],
+                    className: 'todo-form'
+                })
             ),
             bbar: bbar()
         });
@@ -39,7 +45,7 @@ const formPanel = hoistCmp.factory({
 });
 
 const description = hoistCmp.factory(
-    () => formField({field: 'description', item: textInput()})
+    () => formField({field: 'description', item: textArea()})
 );
 
 const dueDate = hoistCmp.factory(

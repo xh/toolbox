@@ -55,12 +55,13 @@ const tbar = hoistCmp.factory(
 const bbar = hoistCmp.factory(
     () => {
         return toolbar({
-            item: switchInput({
-                bind: 'showCompletedOnly',
-                label: 'completed tasks'
-            }),
-            flexDirection: 'row',
-            justifyContent: 'flex-end'
+            items: [
+                filler(),
+                switchInput({
+                    bind: 'showCompletedOnly',
+                    label: 'Completed Tasks'
+                })
+            ]
         });
     }
 );
