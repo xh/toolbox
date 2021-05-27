@@ -20,6 +20,7 @@ export class TodoPanelModel extends HoistModel {
     @bindable
     showCompletedOnly = false
 
+    /** @member {GridModel} */
     @managed
     gridModel;
 
@@ -38,6 +39,40 @@ export class TodoPanelModel extends HoistModel {
         actionFn: () => this.taskDialogModel.openEditForm()
     })
 
+    deleteAction = new RecordAction({
+        icon: Icon.delete(),
+        text: 'Remove',
+        intent: 'danger',
+        recordsRequired: true,
+        actionFn: () => this.removeSelectedTasksAsync()
+    });
+
+    toggleCompleteAction = new RecordAction({
+        displayFn: ({selectedRecords}) => {
+            const tasks = selectedRecords.map(it => it.data),
+                firstTask = tasks[0],
+                complete = firstTask?.complete,
+                text = complete ? 'Mark all Incomplete' : 'Mark all Complete',
+                allSame = tasks.length > 1 && every(tasks, {complete: complete});
+
+            return allSame ?
+                {
+                    text,
+                    icon: complete ?
+                        Icon.circle({prefix: 'fal', className: 'xh-text-color-muted'}) :
+                        Icon.checkCircle({prefix: 'fal', className: 'xh-intent-success'}),
+                    tooltip: text
+                } :
+                {hidden: true};
+        },
+        actionFn: ({selectedRecords}) => {
+            const tasks = selectedRecords.map(it => it.data),
+                firstTask = tasks[0];
+
+            this.toggleCompleteAsync(tasks, !firstTask.complete);
+        }
+    });
+
     get selectedTasks() {
         return this.gridModel.selection.map(it => it.data);
     }
@@ -46,6 +81,79 @@ export class TodoPanelModel extends HoistModel {
         super();
         makeObservable(this);
 
+        this.gridModel = new GridModel({
+            emptyText: 'No tasks to show...',
+            selModel: {mode: 'multiple'},
+            sizingMode: 'large',
+            enableExport: true,
+            hideHeaders: true,
+            rowBorders: true,
+            showHover: true,
+            sortBy: 'dueDate',
+            groupBy: 'dueDateGroup',
+            groupSortFn: (a, b) => {
+                a = dueDateGroupSort[a];
+                b = dueDateGroupSort[b];
+                return a - b;
+            },
+            persistWith: this.persistWith,
+            contextMenu: [
+                this.editAction,
+                this.toggleCompleteAction,
+                this.deleteAction,
+                '-',
+                ...GridModel.defaultContextMenu
+            ],
+            columns: [
+                {
+                    ...actionCol,
+                    actions: [
+                        {
+                            displayFn: ({record}) => {
+                                const {complete} = record.data;
+
+                                return {
+                                    icon: complete ?
+                                        Icon.checkCircle({prefix: 'fal', className: 'xh-intent-success large-actions'}) :
+                                        Icon.circle({prefix: 'fal', className: 'xh-text-color-muted large-actions'}),
+                                    tooltip: complete ? 'Mark Incomplete' : 'Mark Complete'
+                                };
+                            },
+                            actionFn: ({record}) => {
+                                this.toggleCompleteAsync(record.data, !record.data.complete);
+                            }
+                        }
+                    ]
+                },
+                {
+                    field: 'complete',
+                    hidden: true
+                },
+                {
+                    field: 'description',
+                    flex: 1,
+                    cellClass: 'xh-pad',
+                    tooltip: (description) => description,
+                    autoHeight: true
+                },
+                {
+                    field: 'dueDate',
+                    ...localDateCol,
+                    width: 140,
+                    rendererIsComplex: true,
+                    renderer: (v, {record}) => this.dueDateRenderer(v, {record})
+                },
+                {
+                    field: 'dueDateGroup',
+                    hidden: true
+                }
+            ]
+        });
+
+        this.addReaction({
+            track: () => this.showCompletedOnly,
+            run: () => this.gridModel.setFilter(this.createFilter())
+        });
     }
 
     async addTaskAsync(task) {
@@ -78,8 +186,8 @@ export class TodoPanelModel extends HoistModel {
         }
     }
 
-    async removeTasksAsync() {
-        const {selectedTasks} =  this;
+    async removeSelectedTasksAsync() {
+        const {selectedTasks} = this;
         if (isEmpty(selectedTasks)) return;
 
         const count = selectedTasks.length,

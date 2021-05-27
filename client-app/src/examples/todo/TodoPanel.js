@@ -6,6 +6,7 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {taskDialog} from './TaskDialog';
 import {TodoPanelModel} from './TodoPanelModel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {recordActionBar} from '@xh/hoist/desktop/cmp/record';
 
 
 export const todoPanel = hoistCmp.factory({
@@ -25,6 +26,7 @@ export const todoPanel = hoistCmp.factory({
 });
 
 const tbar = hoistCmp.factory(
+    /** @param {TodoPanelModel} */
     ({model}) => {
         const {selModel} = model.gridModel,
             {addAction, editAction, deleteAction, toggleCompleteAction} = model;
