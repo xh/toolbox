@@ -2,7 +2,7 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {detailsPanel} from './detail/DetailsPanel';
@@ -59,11 +59,6 @@ const tbar = hoistCmp.factory(
                     enableMulti: true,
                     enableClear: true,
                     options: tagList.map(tag => ({value: tag}))
-                }),
-                toolbarSep(),
-                switchInput({
-                    label: 'Favorites Only',
-                    bind: 'showFavoritesOnly'
                 }),
                 filler(),
                 buttonGroupInput({

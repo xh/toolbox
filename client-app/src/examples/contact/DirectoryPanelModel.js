@@ -47,10 +47,6 @@ export class DirectoryPanelModel extends HoistModel {
     @bindable.ref
     tagFilters;
 
-    /** @member {boolean} */
-    @bindable
-    showFavoritesOnly = false;
-
     /**
      * @member {string} - options are 'grid' and 'tiled'. In 'grid' mode, contacts are displayed in an interactive table. In
      * 'tiled' mode, contacts are displayed as tiled profile pictures.
@@ -85,7 +81,7 @@ export class DirectoryPanelModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => [this.locationFilter, this.searchQuery, this.showFavoritesOnly, this.tagFilters],
+            track: () => [this.locationFilter, this.searchQuery, this.tagFilters],
             run: () => this.updateFilter(),
             fireImmediately: true
         });
@@ -115,12 +111,11 @@ export class DirectoryPanelModel extends HoistModel {
     }
 
     updateFilter() {
-        const {searchQuery, locationFilter, showFavoritesOnly, tagFilters, gridModel} = this;
+        const {searchQuery, locationFilter, tagFilters, gridModel} = this;
 
         gridModel.setFilter([
             searchQuery,
             locationFilter ? {field: 'location', op: '=', value: locationFilter} : null,
-            showFavoritesOnly ? {field: 'isFavorite', op: '=', value: true} : null,
             !isEmpty(tagFilters) ?
                 {testFn: (rec) => tagFilters.every(tag => rec.data.tags?.includes(tag))} :
                 null
@@ -140,6 +135,8 @@ export class DirectoryPanelModel extends HoistModel {
             colDefaults: {width: 200},
             persistWith: this.persistWith,
             groupBy: 'isFavorite',
+            groupRowRenderer: ({value}) => value === 'true' ? 'Favorites' : 'XH Engineers',
+            groupSortFn: (a, b) => (a < b ? 1 : -1),
             columns: [
                 {
                     field: 'isFavorite',
@@ -172,18 +169,19 @@ export class DirectoryPanelModel extends HoistModel {
                 {
                     field: 'tags',
                     hidden: true,
+                    width: 300,
                     elementRenderer: (val, {record}) => {
                         if (!record.data.tags) return null;
 
                         return hbox({
                             className: 'metadata-tag-container',
-                            items: record.data.tags?.map(tag => 
+                            items: record.data.tags?.map(tag =>
                                 div({
                                     className: 'metadata-tag',
                                     item: tag,
                                     onClick: () => this.toggleTag(tag)
                                 })
-                                
+
                             )
                         });
                     }
