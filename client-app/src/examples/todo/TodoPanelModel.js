@@ -19,7 +19,11 @@ export class TodoPanelModel extends HoistModel {
 
     @bindable
     @persist
-    showCompletedOnly = false
+    showCompleted = false
+
+    @bindable
+    @persist
+    showGroups = true
 
     /** @member {GridModel} */
     @managed
@@ -84,10 +88,19 @@ export class TodoPanelModel extends HoistModel {
         this.gridModel = this.createGridModel();
 
         this.addReaction({
-            track: () => this.showCompletedOnly,
-            run: (completedOnly) => {
-                const filter = completedOnly ? {field: 'complete', op: '=', value: true} : null;
+            track: () => this.showCompleted,
+            run: (showCompleted) => {
+                const filter = showCompleted ? null : {field: 'complete', op: '=', value: false};
                 this.gridModel.setFilter(filter);
+            },
+            fireImmediately: true
+        });
+
+        this.addReaction({
+            track: () => this.showGroups,
+            run: (showGroups) => {
+                this.gridModel.setGroupBy(showGroups ? 'dueDateGroup' : null);
+                this.gridModel.hideColumn('dueDateGroup');
             },
             fireImmediately: true
         });
@@ -174,7 +187,6 @@ export class TodoPanelModel extends HoistModel {
             rowBorders: true,
             showHover: true,
             sortBy: 'dueDate',
-            groupBy: 'dueDateGroup',
             groupSortFn: (a, b) => {
                 a = dueDateGroupSort[a];
                 b = dueDateGroupSort[b];

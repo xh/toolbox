@@ -58,8 +58,13 @@ const bbar = hoistCmp.factory(
             items: [
                 filler(),
                 switchInput({
-                    bind: 'showCompletedOnly',
-                    label: 'Completed Tasks'
+                    bind: 'showGroups',
+                    label: 'Show in Groups'
+                }),
+                toolbarSep(),
+                switchInput({
+                    bind: 'showCompleted',
+                    label: 'Show Completed'
                 })
             ]
         });
