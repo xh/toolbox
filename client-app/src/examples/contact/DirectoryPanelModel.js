@@ -2,7 +2,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable, observable, makeObservable, action} from '@xh/hoist/mobx';
-import {without, union} from 'lodash';
+import {without, uniq, isEmpty} from 'lodash';
 import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -45,7 +45,7 @@ export class DirectoryPanelModel extends HoistModel {
 
     /** @member {string[]} - when multiple tags are selected for filtering, the grid will display all records matching all selected tags */
     @bindable.ref
-    tagFilters = [];
+    tagFilters;
 
     /** @member {boolean} */
     @bindable
@@ -86,7 +86,7 @@ export class DirectoryPanelModel extends HoistModel {
 
         this.addReaction({
             track: () => [this.locationFilter, this.searchQuery, this.showFavoritesOnly, this.tagFilters],
-            run: () => gridModel.setFilter(this.createFilter()),
+            run: () => this.updateFilter(),
             fireImmediately: true
         });
     }
@@ -104,8 +104,8 @@ export class DirectoryPanelModel extends HoistModel {
             }).track({category: 'Contacts', message: 'Loaded contacts.'});
 
             contacts.forEach(it => it.isFavorite = userFaves.includes(it.id));
-            this.tagList = union(...contacts.map(it => it.tags ?? []));
-            this.locationList = union(contacts.map(it => it.location));
+            this.tagList = uniq(contacts.flatMap(it => it.tags ?? []));
+            this.locationList = uniq(contacts.map(it => it.location));
 
             gridModel.loadData(contacts);
             await gridModel.preSelectFirstAsync();
@@ -114,26 +114,17 @@ export class DirectoryPanelModel extends HoistModel {
         }
     }
 
-    createFilter() {
-        const {searchQuery, locationFilter, showFavoritesOnly, tagFilters} = this;
+    updateFilter() {
+        const {searchQuery, locationFilter, showFavoritesOnly, tagFilters, gridModel} = this;
 
-        return [
+        gridModel.setFilter([
             searchQuery,
             locationFilter ? {field: 'location', op: '=', value: locationFilter} : null,
             showFavoritesOnly ? {field: 'isFavorite', op: '=', value: true} : null,
-            tagFilters ? {testFn: (record) => {
-                if (!tagFilters) return true;
-                let hasAllTags = true;
-
-                tagFilters.forEach(
-                    activeTag => {
-                        if (!record.data.tags?.includes(activeTag)) hasAllTags = false;
-                    }
-                );
-
-                return hasAllTags;
-            }} : null
-        ];
+            !isEmpty(tagFilters) ?
+                {testFn: (rec) => tagFilters.every(tag => rec.data.tags?.includes(tag))} :
+                null
+        ]);
     }
 
     createGridModel() {
@@ -148,6 +139,7 @@ export class DirectoryPanelModel extends HoistModel {
             showHover: true,
             colDefaults: {width: 200},
             persistWith: this.persistWith,
+            groupBy: 'isFavorite',
             columns: [
                 {
                     field: 'isFavorite',
