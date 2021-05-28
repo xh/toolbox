@@ -2,12 +2,12 @@ import '../Bootstrap';
 
 import {XH} from '@xh/hoist/core';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
-import {App} from '../examples/news/App';
-import {AppModel} from '../examples/news/AppModel';
+import {App} from '../examples/todo/App';
+import {AppModel} from '../examples/todo/AppModel';
 
 XH.renderApp({
-    clientAppCode: 'news',
-    clientAppName: 'XH News',
+    clientAppCode: 'todo',
+    clientAppName: 'Todo',
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,
