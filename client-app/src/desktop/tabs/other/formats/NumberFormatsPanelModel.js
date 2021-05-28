@@ -17,9 +17,10 @@ export class NumberFormatsPanelModel extends HoistModel {
         0.25,
         50,
         101,
+        1265, // tests omitFourDigitComma option
         12456.12,
         123400.1,
-        123450,  // tests that rightmost zero is not cut off  when precision: 0 && zeroPad: false
+        123450,  // tests that rightmost zero is not cut off when precision: 0 && zeroPad: false
         920120.21343,
         12345600,
         100000001,
@@ -39,6 +40,8 @@ export class NumberFormatsPanelModel extends HoistModel {
     @bindable forceLedgerAlign = true;
     @bindable withPlusSign = false;
     @bindable withSignGlyph = false;
+    @bindable withCommas = true;
+    @bindable omitFourDigitComma = false;
     @bindable colorSpec = true;
     @bindable nullDisplay = null;
     @bindable label = null;
@@ -72,6 +75,8 @@ export class NumberFormatsPanelModel extends HoistModel {
             forceLedgerAlign: this.forceLedgerAlign,
             withPlusSign: this.withPlusSign,
             withSignGlyph: this.withSignGlyph,
+            withCommas: this.withCommas,
+            omitFourDigitComma: this.omitFourDigitComma,
             colorSpec: this.colorSpec,
             label: this.label ? this.label : undefined,
             nullDisplay: this.nullDisplay != null ? this.nullDisplay : undefined
