@@ -7,7 +7,7 @@ import {AppModel} from '../examples/todo/AppModel';
 
 XH.renderApp({
     clientAppCode: 'todo',
-    clientAppName: 'Todo List',
+    clientAppName: 'Todo',
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,

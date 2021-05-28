@@ -5,6 +5,7 @@ import {Icon} from '@xh/hoist/icon';
 import {AppModel} from './AppModel';
 import {todoPanel} from './TodoPanel';
 import {wrapper} from '../../desktop/common';
+import {themeToggleButton} from '@xh/hoist/desktop/cmp/button';
 import './App.scss';
 
 export const App = hoistCmp({
@@ -16,7 +17,9 @@ export const App = hoistCmp({
             panel({
                 tbar: appBar({
                     icon: Icon.clipboard({size: '2x', prefix: 'fal'}),
-                    appMenuButtonProps: {hideLogoutItem: false}
+                    hideAppMenuButton: true,
+                    hideRefreshButton: true,
+                    rightItems: [themeToggleButton()]
                 }),
                 item: todoPanel(),
                 className: 'tbox-todoapp'

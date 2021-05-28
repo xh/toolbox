@@ -102,19 +102,6 @@ function getExamples() {
                     Please {link('contact us', 'https://xh.io/contact/')} for access.
                 </p>
             ]
-        },
-        {
-            title: 'Todo List',
-            icon: Icon.clipboard(),
-            path: '/todo',
-            text: [
-                <p>
-                    This example provides a simple to-do application. Provides examples of [replace later...filtering and searching data from an external API.]
-                </p>,
-                <p>
-                    See source code (real link to come) {link('here', 'https://open.fda.gov/apis/drug/enforcement/')}.
-                </p>
-            ]
         }
     ];
 }

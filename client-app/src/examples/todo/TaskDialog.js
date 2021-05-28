@@ -22,30 +22,35 @@ export const taskDialog = hoistCmp.factory({
             style: {width: 450},
             isOpen: model.isOpen,
             onClose: () => model.close(),
+            usePortal: false,
             item: formPanel()
         });
     }
 });
 
-const formPanel = hoistCmp.factory({
-    render() {
-        return panel({
-            item: form(
-                vbox({
-                    items: [
-                        description(),
-                        dueDate()
-                    ],
-                    className: 'todo-form'
-                })
-            ),
-            bbar: bbar()
-        });
-    }
-});
+const formPanel = hoistCmp.factory(
+    () => panel({
+        item: form(
+            vbox({
+                items: [
+                    description(),
+                    dueDate()
+                ],
+                className: 'todo-form'
+            })
+        ),
+        bbar: bbar()
+    })
+);
 
 const description = hoistCmp.factory(
-    () => formField({field: 'description', item: textArea()})
+    () => formField({
+        field: 'description',
+        item: textArea({
+            autoFocus: true,
+            commitOnChange: true
+        })
+    })
 );
 
 const dueDate = hoistCmp.factory(
@@ -64,14 +69,13 @@ const dueDate = hoistCmp.factory(
 
 const bbar = hoistCmp.factory(
     ({model}) => toolbar(
-        button({
-            text: 'Reset',
-            icon: Icon.reset({className: 'xh-red'}),
-            onClick: () => model.reset()
-        }),
         filler(),
         button({
-            text: 'Submit',
+            text: 'Cancel',
+            onClick: () => model.close()
+        }),
+        button({
+            text: 'OK',
             icon: Icon.check(),
             disabled: !model.formModel.isValid,
             minimal: false,

@@ -4,6 +4,7 @@ import {
     lengthIs,
     required
 } from '@xh/hoist/cmp/form';
+import {LocalDate} from '@xh/hoist/utils/datetime';
 import {observable, action, makeObservable} from '@xh/hoist/mobx';
 
 export class TaskDialogModel extends HoistModel {
@@ -63,8 +64,12 @@ export class TaskDialogModel extends HoistModel {
                     complete: complete ?? false
                 };
 
-            existingId ? await parentModel.editTaskAsync(task) : await parentModel.addTaskAsync(task);
-            this.clearForm();
+            if (existingId) {
+                await parentModel.editTaskAsync(task);
+            } else {
+                await parentModel.addTaskAsync(task);
+            }
+
             this.close();
         }
     }
@@ -73,12 +78,13 @@ export class TaskDialogModel extends HoistModel {
     openAddForm() {
         this.isAdd = true;
         this.isOpen = true;
-        this.clearForm();
+        this.formModel.init({
+            dueDate: LocalDate.today()
+        });
     }
 
     @action
-    openEditForm() {
-        const task = this.parentModel.selectedTasks[0];
+    openEditForm(task) {
         this.isAdd = false;
         this.isOpen = true;
         this.formModel.init(task);
@@ -87,17 +93,5 @@ export class TaskDialogModel extends HoistModel {
     @action
     close() {
         this.isOpen = false;
-    }
-
-    //------------------------
-    // Implementation
-    //------------------------
-    clearForm() {
-        this.formModel.init({
-            id: null,
-            description: null,
-            dueDate: null,
-            complete: null
-        });
     }
 }

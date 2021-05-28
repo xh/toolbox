@@ -1,6 +1,6 @@
 import {HoistAppModel, XH} from '@xh/hoist/core';
 import {OauthService} from '../../core/svc/OauthService';
-import {TodoService} from './TodoService';
+import {TaskService} from './TaskService';
 
 export const PERSIST_APP = {localStorageKey: 'todoAppState'};
 
@@ -11,7 +11,7 @@ export class AppModel extends HoistAppModel {
     }
 
     async initAsync() {
-        await XH.installServicesAsync(TodoService);
+        await XH.installServicesAsync(TaskService);
     }
 
     async logoutAsync() {
@@ -22,6 +22,6 @@ export class AppModel extends HoistAppModel {
 
 /**
  * @typedef XH
- * @property {TodoService} todoService
+ * @property {TaskService} taskService
  * @property {OauthService} oauthService
  */

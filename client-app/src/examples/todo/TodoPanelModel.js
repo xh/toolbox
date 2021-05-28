@@ -9,6 +9,7 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {RecordAction} from '@xh/hoist/data';
+import {createRef} from 'react';
 
 export class TodoPanelModel extends HoistModel {
 
@@ -29,6 +30,8 @@ export class TodoPanelModel extends HoistModel {
     @managed
     gridModel;
 
+    panelRef = createRef();
+
     addAction = new RecordAction({
         icon: Icon.add(),
         text: 'New',
@@ -41,7 +44,7 @@ export class TodoPanelModel extends HoistModel {
         text: 'Edit',
         intent: 'primary',
         recordsRequired: 1,
-        actionFn: () => this.taskDialogModel.openEditForm()
+        actionFn: () => this.taskDialogModel.openEditForm(this.selectedTasks[0])
     })
 
     deleteAction = new RecordAction({
@@ -49,7 +52,7 @@ export class TodoPanelModel extends HoistModel {
         text: 'Remove',
         intent: 'danger',
         recordsRequired: true,
-        actionFn: () => this.removeSelectedTasksAsync()
+        actionFn: () => this.deleteTasksAsync(this.selectedTasks)
     });
 
     toggleCompleteAction = new RecordAction({
@@ -72,7 +75,6 @@ export class TodoPanelModel extends HoistModel {
         },
         actionFn: ({selectedRecords}) => {
             const tasks = selectedRecords.map(it => it.data);
-
             this.toggleCompleteAsync(tasks);
         }
     });
@@ -107,15 +109,35 @@ export class TodoPanelModel extends HoistModel {
     }
 
     async addTaskAsync(task) {
-        await XH.todoService.addTaskAsync(task);
+        await XH.taskService.addAsync(task);
         await this.refreshAsync();
         this.info(`Task added: '${task.description}'`);
     }
 
     async editTaskAsync(task) {
-        await XH.todoService.editTaskAsync(task);
+        await XH.taskService.editAsync([task]);
         await this.refreshAsync();
         this.info(`Task edited: '${task.description}'`);
+    }
+
+    async deleteTasksAsync(tasks) {
+        if (isEmpty(tasks)) return;
+
+        const count = tasks.length,
+            {description} = tasks[0],
+            message = count === 1 ? `'${description}?'` : `${count} tasks?`,
+            confirmed = await XH.confirm({
+                title: 'Confirm',
+                message: `Are you sure you want to permanently remove ${message}`
+            });
+
+        if (!confirmed) return;
+
+        await XH.taskService.deleteAsync(tasks);
+        await this.refreshAsync();
+
+        const label = count === 1 ? `Task removed: '${description}'` : `${count} tasks removed`;
+        this.info(label);
     }
 
     async toggleCompleteAsync(tasks) {
@@ -124,7 +146,7 @@ export class TodoPanelModel extends HoistModel {
         const firstTask = tasks[0],
             isCompleting = !firstTask.complete;
 
-        await XH.todoService.toggleCompleteAsync(tasks);
+        await XH.taskService.toggleCompleteAsync(tasks);
         await this.refreshAsync();
 
         if (isCompleting) {
@@ -137,49 +159,20 @@ export class TodoPanelModel extends HoistModel {
         }
     }
 
-    async removeSelectedTasksAsync() {
-        const {selectedTasks} = this;
-
-        if (isEmpty(selectedTasks)) return;
-
-        const count = selectedTasks.length,
-            {description} = selectedTasks[0],
-            message = count === 1 ? `'${description}?'` : `${count} tasks?`,
-            confirmed = await XH.confirm({
-                title: 'Confirm',
-                message: `Are you sure you want to permanently remove ${message}`
-            });
-
-        if (!confirmed) return;
-
-        const label = count === 1 ? `Task removed: '${description}'` : `${count} tasks removed`;
-
-        for (const task of selectedTasks) {
-            await XH.todoService.removeTasksAsync(task);
-        }
-
-        await this.refreshAsync();
-        this.info(label);
-    }
 
     //------------------------
     // Implementation
     //------------------------
     async doLoadAsync(loadSpec) {
-        const tasks = await XH.todoService.getTasksAsync();
+        const tasks = await XH.taskService.getAsync();
 
-        //  Clear store so description field's auto height readjusts after edit
-        this.gridModel.clear();
+        this.gridModel.clear();   //  force description column to readjust height (see #2465)
         this.gridModel.loadData(tasks);
-
-        if (every(tasks, {complete: true})) {
-            XH.showBanner({message: 'You did it! All of it!'});
-        }
     }
 
     createGridModel() {
         return new GridModel({
-            emptyText: 'No tasks to show...',
+            emptyText: 'Congratulations.  You did it! All of it!',
             selModel: {mode: 'multiple'},
             sizingMode: 'large',
             enableExport: true,
@@ -246,13 +239,14 @@ export class TodoPanelModel extends HoistModel {
     }
 
     info(message) {
-        XH.toast({message});
+        XH.toast({message, containerRef: this.panelRef.current});
     }
 
     dueDateRenderer(v, {record}) {
         const overdue = v && v < LocalDate.today() && !record.data.complete,
             dateStr = fmtCompactDate(v?.date, {
                 sameDayFmt: '[Today]',
+                nearFmt: 'MMM DD',
                 distantFmt: 'MMM DD YYYY'
             });
 
