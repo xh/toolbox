@@ -8,7 +8,7 @@ export const formsTab = hoistCmp.factory(
     () => tabContainer({
         model: {
             route: 'default.forms',
-            switcherPosition: 'left',
+            switcher: {orientation: 'left'},
             tabs: [
                 {id: 'form', title: 'FormModel', content: formPanel},
                 {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},

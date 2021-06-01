@@ -1,36 +1,28 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
-import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
-import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
-import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
 import {required} from '@xh/hoist/cmp/form';
+import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
+import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
+import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {homePage} from './home/HomePage';
-import {gridPage} from './grids/GridPage';
-import {gridDetailPage} from './grids/GridDetailPage';
-import {panelsPage} from './panels/PanelsPage';
-import {treeGridPage} from './treegrids/TreeGridPage';
-import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
+import {containersPage} from './containers/ContainersPage';
 import {dataViewPage} from './dataview/DataViewPage';
 import {formPage} from './form/FormPage';
-import {containersPage} from './containers/ContainersPage';
-import {popupsPage} from './popups/PopupsPage';
+import {gridDetailPage} from './grids/GridDetailPage';
+import {gridPage} from './grids/GridPage';
+import {homePage} from './home/HomePage';
 import {iconPage} from './icons/IconPage';
+import {panelsPage} from './panels/PanelsPage';
 import {pinPadPage} from './pinPad/PinPadPage';
+import {popoverPage} from './popover/PopoverPage';
+import {popupsPage} from './popups/PopupsPage';
+import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
+import {treeGridPage} from './treegrids/TreeGridPage';
 
-@HoistAppModel
-export class AppModel {
-
-    @managed
-    appMenuModel = new AppMenuModel();
+export class AppModel extends HoistAppModel {
 
     @managed
     navigatorModel = new NavigatorModel({
+        track: true,
         pages: [
             {id: 'default', content: homePage},
             {id: 'grids', content: gridPage},
@@ -41,6 +33,7 @@ export class AppModel {
             {id: 'form', content: formPage},
             {id: 'containers', content: containersPage},
             {id: 'panels', content: panelsPage},
+            {id: 'popovers', content: popoverPage},
             {id: 'popups', content: popupsPage},
             {id: 'icons', content: iconPage},
             {id: 'pinPad', content: pinPadPage}
@@ -84,6 +77,10 @@ export class AppModel {
                     {
                         name: 'panels',
                         path: '/panels'
+                    },
+                    {
+                        name: 'popovers',
+                        path: '/popovers'
                     },
                     {
                         name: 'popups',
@@ -132,8 +129,16 @@ export class AppModel {
         ];
     }
 
+    static async preAuthAsync() {
+        await XH.installServicesAsync(OauthService);
+    }
+
     async initAsync() {
         await XH.installServicesAsync(PortfolioService);
+    }
+
+    async logoutAsync() {
+        await XH.oauthService.logoutAsync();
     }
 
     async doLoadAsync(loadSpec) {

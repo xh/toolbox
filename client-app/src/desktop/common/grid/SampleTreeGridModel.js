@@ -1,30 +1,23 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
-import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {GroupingChooserModel} from '@xh/hoist/desktop/cmp/grouping';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {action, bindable} from '@xh/hoist/mobx';
+import {action, bindable, makeObservable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
 
-@HoistModel
-@LoadSupport
-export class SampleTreeGridModel {
+export class SampleTreeGridModel extends HoistModel {
 
     @bindable
     filterIncludesChildren = false;
 
     @managed
-    dimChooserModel = new DimensionChooserModel({
+    groupingChooserModel = new GroupingChooserModel({
+        persistWith: {localStorageKey: 'sampleTreeGrid'},
         dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],
         initialValue: ['sector', 'symbol'],
-        initialHistory: [
+        initialFavorites: [
             ['region', 'sector'],
             ['region', 'symbol'],
             ['sector']
@@ -39,6 +32,8 @@ export class SampleTreeGridModel {
     get store() {return this.gridModel.store}
 
     constructor({includeCheckboxes}) {
+        super();
+        makeObservable(this);
         this.gridModel = this.createGridModel(includeCheckboxes);
 
         this.addReaction({
@@ -48,7 +43,7 @@ export class SampleTreeGridModel {
 
         // Load data when dimensions change
         this.addReaction({
-            track: () => this.dimChooserModel.value,
+            track: () => this.groupingChooserModel.value,
             run: () => this.loadAsync()
         });
 
@@ -60,32 +55,30 @@ export class SampleTreeGridModel {
         });
 
         this.addReaction({
-            track: () => this.dimChooserModel.value,
+            track: () => this.groupingChooserModel.value,
             run: () => this.syncRouterToDims()
         });
     }
 
     async doLoadAsync({isRefresh, isAutoRefresh}) {
-        const {gridModel, dimChooserModel} = this,
-            dims = dimChooserModel.value;
+        const {gridModel, groupingChooserModel} = this,
+            dims = groupingChooserModel.value;
 
-        return XH.portfolioService
-            .getPositionsAsync(dims, true)
-            .then(data => {
-                if (isRefresh) {
-                    gridModel.updateData({update: data});
-                    if (isAutoRefresh) {
-                        XH.toast({
-                            intent: 'primary',
-                            message: 'Data Updated',
-                            containerRef: this.panelRef.current
-                        });
-                    }
-                } else {
-                    gridModel.loadData(data);
-                    gridModel.selectFirst();
-                }
-            });
+        const data = await XH.portfolioService.getPositionsAsync(dims, true);
+        if (isRefresh) {
+            gridModel.updateData({update: data});
+            if (isAutoRefresh) {
+                XH.toast({
+                    intent: 'primary',
+                    message: 'Data Updated',
+                    containerRef: this.panelRef.current
+                });
+            }
+        } else {
+            gridModel.loadData(data);
+        }
+
+        await gridModel.preSelectFirstAsync();
     }
 
     syncDimsToRouter() {
@@ -95,15 +88,15 @@ export class SampleTreeGridModel {
         if (!dims) {
             this.syncRouterToDims({replace: true});
         } else {
-            this.dimChooserModel.setValue(dims.split('.'));
+            this.groupingChooserModel.setValue(dims.split('.'));
         }
     }
 
     syncRouterToDims(opts) {
         if (!XH.router.isActive('default.grids.tree')) return;
 
-        const {dimChooserModel} = this,
-            dims = dimChooserModel.value.join('.');
+        const {groupingChooserModel} = this,
+            dims = groupingChooserModel.value.join('.');
 
         XH.navigate(XH.routerState.name, {dims}, opts);
     }
@@ -119,7 +112,7 @@ export class SampleTreeGridModel {
             selModel: {mode: 'multiple'},
             sortBy: 'pnl|desc|abs',
             emptyText: 'No records found...',
-            enableColChooser: true,
+            colChooserModel: true,
             enableExport: true,
             sizingMode: XH.appModel.gridSizingMode,
             columns: [

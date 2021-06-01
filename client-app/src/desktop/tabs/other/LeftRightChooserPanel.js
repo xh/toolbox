@@ -1,7 +1,7 @@
 import React from 'react';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {wrapper} from '../../common/Wrapper';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {leftRightChooser, leftRightChooserFilter, LeftRightChooserModel} from '@xh/hoist/desktop/cmp/leftrightchooser';
@@ -37,13 +37,10 @@ export const leftRightChooserPanel = hoistCmp.factory({
                 width: 700,
                 height: 400,
                 item: leftRightChooser({
-                    model: model.leftRightChooserModel,
                     flex: 1
                 }),
                 bbar: [
                     leftRightChooserFilter({
-                        fields: ['text'],
-                        model: model.leftRightChooserModel,
                         anyMatch: model.anyMatch
                     }),
                     switchInput({
@@ -57,8 +54,7 @@ export const leftRightChooserPanel = hoistCmp.factory({
 });
 
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @managed
     leftRightChooserModel = new LeftRightChooserModel({
@@ -69,4 +65,9 @@ class Model {
     });
 
     @bindable anyMatch = false;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 }

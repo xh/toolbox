@@ -22,6 +22,7 @@ export const chartsPanel = hoistCmp.factory({
             },
             item: tabContainer({
                 model: {
+                    persistWith: {...PERSIST_DETAIL, path: 'chartsTab'},
                     tabs: [
                         {
                             id: 'line',

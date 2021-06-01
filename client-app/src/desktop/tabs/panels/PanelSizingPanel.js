@@ -1,7 +1,7 @@
 import React from 'react';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {box, filler, h3, hbox, p} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -138,8 +138,7 @@ const loremIpsum = [
 ];
 
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @bindable resizeWhileDragging = false;
 
@@ -166,6 +165,8 @@ class Model {
     });
     
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.resizeWhileDragging,
             run: (resizeWhileDragging) => {

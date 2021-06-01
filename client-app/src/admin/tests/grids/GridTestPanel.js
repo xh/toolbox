@@ -1,13 +1,13 @@
-import {filler, span} from '@xh/hoist/cmp/layout';
-import {fmtNumber} from '@xh/hoist/format';
-import {creates, hoistCmp} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/cmp/store';
-import {toolbarSep, toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {numberInput, switchInput, select} from '@xh/hoist/desktop/cmp/input';
-import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {grid} from '@xh/hoist/cmp/grid';
+import {filler, label, span, vbox} from '@xh/hoist/cmp/layout';
+import {storeFilterField} from '@xh/hoist/cmp/store';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {button, colChooserButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {fmtNumber} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon';
 import {tooltip} from '@xh/hoist/kit/blueprint';
 import {GridTestModel} from './GridTestModel';
 
@@ -16,16 +16,23 @@ export const GridTestPanel = hoistCmp({
     model: creates(GridTestModel),
 
     render({model}) {
-        return panel({
-            mask: 'onLoad',
-            key: model.gridModel.xhId,
-            item: grid({
-                agOptions: {
-                    isRowSelectable: ({data: record}) => !model.disableSelect || record.get('day') > 0
-                }
-            }),
-            tbar: tbar(),
-            bbar: bbar()
+        return vbox({
+            flex: 1,
+            items: [
+                tbar(),
+                panel({
+                    mask: 'onLoad',
+                    key: model.gridModel.xhId,
+                    item: grid({
+                        agOptions: {
+                            isRowSelectable: ({data: record}) => !model.disableSelect || record.get('day') > 0
+                        }
+                    })
+                }),
+                bbar1(),
+                bbar2(),
+                bbar3()
+            ]
         });
     }
 });
@@ -45,13 +52,13 @@ const tbar = hoistCmp.factory(
                 bind: 'recordCount',
                 enableShorthandUnits: true,
                 selectOnFocus: true,
-                width: 100
+                width: 75
             })
         }),
         button({
             text: 'Generate Data',
             icon: Icon.gears(),
-            onClick: () => model.genTestData()
+            onClick: () => model.testData.generate()
         }),
         toolbarSep(),
         refreshButton({
@@ -68,16 +75,6 @@ const tbar = hoistCmp.factory(
             icon: Icon.skull(),
             onClick: () => model.tearDown()
         }),
-        button({
-            text: 'Scroll to Selected',
-            icon: Icon.crosshairs(),
-            onClick: () => model.gridModel.ensureSelectionVisible()
-        }),
-        button({
-            text: 'Autosize Columns',
-            icon: Icon.arrowsLeftRight(),
-            onClick: () => model.gridModel.autosizeAsync()
-        }),
         toolbarSep(),
         tooltip({
             content: '# records to randomly change',
@@ -85,21 +82,27 @@ const tbar = hoistCmp.factory(
                 bind: 'twiddleCount',
                 enableShorthandUnits: true,
                 selectOnFocus: true,
-                width: 80
+                width: 60
             })
         }),
         button({
-            text: 'Twiddle',
+            text: 'Update',
             icon: Icon.diff(),
             intent: 'primary',
-            onClick: () => model.twiddleData()
+            onClick: () => model.twiddleData('update')
+        }),
+        button({
+            text: 'Reload',
+            icon: Icon.diff(),
+            intent: 'primary',
+            onClick: () => model.twiddleData('load')
         }),
         filler(),
         span(formatRunTimes(model))
     )
 );
 
-const bbar = hoistCmp.factory(
+const bbar1 = hoistCmp.factory(
     ({model}) => toolbar(
         switchInput({
             bind: 'showSummary',
@@ -120,12 +123,6 @@ const bbar = hoistCmp.factory(
             labelAlign: 'left'
         }),
         toolbarSep(),
-        switchInput({
-            bind: 'useTransactions',
-            label: 'Transactions',
-            labelAlign: 'left'
-        }),
-        toolbarSep(),
         tooltip({
             content: 'Autosize Mode',
             item: select({
@@ -135,22 +132,28 @@ const bbar = hoistCmp.factory(
         }),
         toolbarSep(),
         switchInput({
-            bind: 'useDeltaSort',
-            label: 'Delta Sort',
-            disabled: model.tree,
+            bind: 'disableXssProtection',
+            label: 'Disable XSS',
             labelAlign: 'left'
         }),
+        toolbarSep(),
+        label('Extra Fields'),
+        numberInput({
+            bind: 'extraFieldCount',
+            width: 80
+        })
+    )
+);
+
+const bbar2 = hoistCmp.factory(
+    ({model}) => toolbar(
         toolbarSep(),
         switchInput({
             bind: 'disableSelect',
             label: 'Disable Day < 0 Selection',
             labelAlign: 'left'
         }),
-        switchInput({
-            bind: 'disableSelect',
-            label: 'Disable Day < 0 Selection',
-            labelAlign: 'left'
-        }),
+        toolbarSep(),
         tooltip({
             content: 'persistWith',
             item: select({
@@ -163,16 +166,55 @@ const bbar = hoistCmp.factory(
                 ]
             })
         }),
-        filler(),
-        storeFilterField({
-            includeFields: ['symbol', 'trader']
+        storeFilterField(),
+        button({
+            text: 'Scroll to Sel',
+            icon: Icon.crosshairs(),
+            onClick: () => model.gridModel.ensureSelectionVisibleAsync()
         })
     )
 );
 
+const bbar3 = hoistCmp.factory(
+    ({model}) => toolbar(
+        'Chooser:',
+        colChooserButton({
+            gridModel: model.gridModel
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'colChooserCommitOnChange',
+            label: 'CommitOnChange',
+            labelAlign: 'left'
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'colChooserShowRestoreDefaults',
+            label: 'ShowRestoreDefaults',
+            labelAlign: 'left'
+        }),
+        toolbarSep(),
+        label('Width'),
+        numberInput({
+            bind: 'colChooserWidth',
+            width: 60
+        }),
+        label('Height'),
+        numberInput({
+            bind: 'colChooserHeight',
+            width: 60
+        }),
+        toolbarSep(),
+        switchInput({
+            label: 'Lock Column Groups',
+            bind: 'lockColumnGroups',
+            labelAlign: 'left'
+        })
+    )
+);
 
 function formatRunTimes(model) {
     const fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null}) : 'N/A',
-        {gridLoadTime: lt, avgGridLoadTime: avgLt, gridUpdateTime: ut, avgGridUpdateTime: avgUt} = model;
+        {loadTime: lt, avgLoadTime: avgLt, updateTime: ut, avgUpdateTime: avgUt} = model.metrics;
     return `Load: ${fmt(lt)} ${avgLt ? `(${fmt(avgLt)}) ` : ''}• Update: ${fmt(ut)} ${avgUt ? `(${fmt(avgUt)}) ` : ''}`;
 }

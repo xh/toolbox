@@ -3,8 +3,9 @@ import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {dimensionChooser} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
 import {GridPanelModel} from './GridPanelModel';
 
 export const gridPanel = hoistCmp.factory({
@@ -14,15 +15,20 @@ export const gridPanel = hoistCmp.factory({
         const {panelSizingModel} = model;
 
         return panel({
+            tbar: [
+                groupingChooser({
+                    flex: 1,
+                    icon: Icon.treeList()
+                })
+            ],
             item: grid({agOptions: {groupDefaultExpanded: 1}}),
-            model: panelSizingModel,
             bbar: [
-                dimensionChooser(),
                 gridCountLabel({unit: 'position'}),
                 filler(),
                 relativeTimestamp({bind: 'loadTimestamp'}),
                 refreshButton({model: XH.refreshContextModel, intent: 'success'})
-            ]
+            ],
+            model: panelSizingModel
         });
     }
 });

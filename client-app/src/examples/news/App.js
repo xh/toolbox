@@ -25,11 +25,12 @@ export const App = hoistCmp({
                 rightItems: [
                     relativeTimestamp({
                         model: model.newsPanelModel,
-                        bind: 'lastRefresh',
+                        bind: 'lastLoadCompleted',
                         options: {prefix: 'Last Updated:'}
                     }),
                     appBarSeparator()
-                ]
+                ],
+                appMenuButtonProps: {hideLogoutItem: false}
             }),
             item: newsPanel()
         });

@@ -1,4 +1,4 @@
-import {hoistCmp, HoistModel, LoadSupport, managed, useLocalModel, XH} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, managed, useLocalModel, XH} from '@xh/hoist/core';
 import {grid} from '@xh/hoist/cmp/grid';
 import {boolCheckCol,  GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
@@ -10,19 +10,18 @@ export const gridWidget = hoistCmp.factory({
     }
 });
 
-@HoistModel
-@LoadSupport
-class LocalModel {
+class LocalModel extends HoistModel {
 
     viewModel;
     @managed gridModel;
 
     constructor(viewModel) {
+        super();
         this.viewModel = viewModel;
 
         this.gridModel = new GridModel({
             sortBy: 'profit_loss|desc|abs',
-            enableColChooser: true,
+            colChooserModel: true,
             sizingMode: XH.appModel.gridSizingMode,
             store: {
                 fields: [{name: 'trade_date', type: 'localDate'}]

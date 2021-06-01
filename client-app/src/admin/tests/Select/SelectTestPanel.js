@@ -1,9 +1,13 @@
+import {isUndefined} from 'lodash';
+
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {restaurants} from '../../../core/data';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {box, div, fragment, hbox, label, p, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
+
+import {usStates} from '../../../core/data';
 import {SelectTestModel} from './SelectTestModel.js';
 import './SelectTestPanel.scss';
 
@@ -37,9 +41,7 @@ export const SelectTestPanel = hoistCmp({
                         name: 'Select queryFn & enableCreate & optionRenderer',
                         bind: 'asyncCreatableValue',
                         selectProps: {...customerProps, enableCreate: true}
-                    })
-                ),
-                vbox(
+                    }),
                     example({
                         name: 'Select (with grouped options)',
                         bind: 'groupedValue',
@@ -53,7 +55,9 @@ export const SelectTestPanel = hoistCmp({
                         selectProps: {
                             options: recipes
                         }
-                    }),
+                    })
+                ),
+                vbox(
                     example({
                         name: 'Select (with many options) enableWindowed & leftIcon',
                         bind: 'bigValue',
@@ -85,6 +89,31 @@ export const SelectTestPanel = hoistCmp({
                             leftIcon: Icon.office(),
                             enableCreate: true
                         }
+                    }),
+                    example({
+                        name: 'Select with leftIcon & enableMulti',
+                        bind: 'enableMultiLeftIcon',
+                        selectProps: {
+                            width: 350,
+                            options: usStates,
+                            leftIcon: Icon.globe(),
+                            enableMulti: true,
+                            placeholder: 'Select state(s)...'
+                        }
+                    }),
+                    example({
+                        name: 'Select with leftIcon & enableMulti & enableClear & rsOptions: {hideSelectedOptions: false, closeMenuOnSelect: false}',
+                        bind: 'enableMultiMenuOpen',
+                        selectProps: {
+                            width: 350,
+                            options: usStates,
+                            leftIcon: Icon.globe(),
+                            enableMulti: true,
+                            placeholder: 'Select state(s)...',
+                            enableClear: true,
+                            hideSelectedOptions: false,
+                            closeMenuOnSelect: false
+                        }
                     })
                 )
             )
@@ -100,20 +129,25 @@ const example = hoistCmp.factory(
     )
 );
 
+// In addition to styling a customer option, this has some logic to handle a newly created option
+// and the "Create XYZ" option that is offered when enableCreate:true
 const customerOption = hoistCmp.factory(
     ({opt}) => hbox({
         className: 'xh-pad-half xh-border-bottom',
         items: [
             box({
-                item: opt.isActive ?
-                    Icon.checkCircle({className: 'xh-green'}) :
-                    Icon.x({className: 'xh-red'}),
+                item: isUndefined(opt.isActive) ?
+                    Icon.magic({className: 'xh-grey'}) :
+                    opt.isActive ?
+                        Icon.checkCircle({className: 'xh-green'}) :
+                        Icon.x({className: 'xh-red'}),
                 width: 32,
                 justifyContent: 'center'
             }),
             div(
-                opt.company,
+                opt.company || opt.label,
                 div({
+                    omit: !opt.city || !opt.id,
                     className: 'xh-text-color-muted xh-font-size-small',
                     item: `${opt.city} · ID: ${opt.id}`
                 })
@@ -135,12 +169,12 @@ const customerProps = {
     labelField: 'company',
     enableClear: true,
     selectOnFocus: true,
-    queryFn: (q) => queryCustomersAsync(q),
+    queryFn: queryCustomersAsync,
     optionRenderer: (opt) => customerOption({opt}),
     placeholder: 'Search customers...'
 };
 
-function queryCustomersAsync(query) {
+async function queryCustomersAsync(query) {
     return XH.fetchJson({
         url: 'customer',
         params: {query}

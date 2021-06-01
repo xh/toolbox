@@ -4,15 +4,20 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import React from 'react';
 import {wrapper} from '../../common';
 import './Buttons.scss';
 
-@HoistModel
-class ButtonsModel {
+class ButtonsModel extends HoistModel {
     @bindable disableButtons = false;
+    @bindable activeButtons = false;
     @bindable activeButton = 'v1';
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 }
 
 export const buttonsPanel = hoistCmp.factory({
@@ -50,6 +55,11 @@ export const buttonsPanel = hoistCmp.factory({
                             label: 'Disable All',
                             labelAlign: 'left',
                             bind: 'disableButtons'
+                        }),
+                        switchInput({
+                            label: 'All Active',
+                            labelAlign: 'left',
+                            bind: 'activeButtons'
                         })
                     ]}),
                     buttonPanel({intent: 'primary'}),
@@ -71,76 +81,85 @@ const buttonPanel = hoistCmp.factory(
             items: [
                 hbox({
                     className: 'tbox-buttons__panel__row',
-                    items: renderButtons(intent, model.disableButtons)
+                    items: renderButtons(intent, model.disableButtons, model.activeButtons)
                 }),
                 hbox({
                     className: 'tbox-buttons__panel__row',
                     items: renderButtonGroupInputs(intent, model.disableButtons)
                 })
             ],
-            tbar: renderButtons(intent, model.disableButtons),
+            tbar: renderButtons(intent, model.disableButtons, model.activeButtons),
             bbar: renderButtonGroupInputs(intent, model.disableButtons)
         });
     }
 );
 
-function renderButtons(intent, disabled) {
+function renderButtons(intent, disabled, active) {
     return [
         button({
             text: 'Default',
             intent,
-            disabled
+            disabled,
+            active
         }),
         button({
             icon: Icon.checkCircle(),
             intent,
-            disabled
+            disabled,
+            active
         }),
         button({
             text: 'Default',
             icon: Icon.checkCircle(),
             intent,
-            disabled
+            disabled,
+            active
         }),
         filler(),
         button({
             text: '!Minimal',
             minimal: false,
             intent,
-            disabled
+            disabled,
+            active
         }),
         button({
             icon: Icon.checkCircle(),
             minimal: false,
             intent,
-            disabled
+            disabled,
+            active
         }),
         button({
             text: '!Minimal',
             icon: Icon.checkCircle(),
             minimal: false,
             intent,
-            disabled
+            disabled,
+            active
         }),
         filler(),
         button({
             text: 'Outlined',
             outlined: true,
             intent,
-            disabled
+            disabled,
+            active
         }),
         button({
             icon: Icon.checkCircle(),
             outlined: true,
             intent,
-            disabled
+            disabled,
+            active
         }),
         button({
             text: 'Outlined',
             icon: Icon.checkCircle(),
             outlined: true,
             intent,
-            disabled
+            disabled,
+            active
         })
     ];
 }

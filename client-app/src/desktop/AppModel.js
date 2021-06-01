@@ -1,12 +1,8 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
+import {HoistAppModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
+import {GitHubService} from '../core/svc/GitHubService';
+import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {getAppOptions} from './AppOptions';
 import {chartsTab} from './tabs/charts/ChartsTab';
@@ -18,13 +14,13 @@ import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
 
-@HoistAppModel
-export class AppModel {
+export class AppModel extends HoistAppModel {
 
     @managed
     tabModel = new TabContainerModel({
         route: 'default',
         track: true,
+        switcher: false,
         tabs: [
             {id: 'home', icon: Icon.home(), content: homeTab},
             {id: 'grids', icon: Icon.grid(), content: gridsTab},
@@ -34,22 +30,32 @@ export class AppModel {
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
             {id: 'other', icon: Icon.boxFull(), content: otherTab},
             {id: 'examples', icon: Icon.books(), content: examplesTab}
-        ],
-        switcherPosition: 'none'
+        ]
     });
 
     get gridSizingMode() {
         return XH.getPref('gridSizingMode');
     }
 
+    static async preAuthAsync() {
+        await XH.installServicesAsync(
+            OauthService
+        );
+    }
+
     async initAsync() {
         await XH.installServicesAsync(
+            GitHubService,
             PortfolioService
         );
     }
 
     async doLoadAsync(loadSpec) {
-        await loadAllAsync([], loadSpec);
+        await XH.gitHubService.loadAsync(loadSpec);
+    }
+
+    async logoutAsync() {
+        await XH.oauthService.logoutAsync();
     }
 
     goHome() {
@@ -133,8 +139,10 @@ export class AppModel {
                             {name: 'appNotifications', path: '/appNotifications'},
                             {name: 'buttons', path: '/buttons'},
                             {name: 'clock', path: '/clock'},
+                            {name: 'customPackage', path: '/customPackage'},
                             {name: 'dateFormats', path: '/dateFormats'},
                             {name: 'jsx', path: '/jsx'},
+                            {name: 'errorMessage', path: '/errorMessage'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'icons', path: '/icons'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
@@ -153,3 +161,10 @@ export class AppModel {
         ];
     }
 }
+
+/**
+ * @typedef XH
+ * @property {GitHubService} gitHubService
+ * @property {OauthService} oauthService
+ * @property {PortfolioService} portfolioService
+ */

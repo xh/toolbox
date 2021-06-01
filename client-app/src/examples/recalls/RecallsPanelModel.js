@@ -1,28 +1,19 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
-import {HoistModel, LoadSupport, managed, persist, XH} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
 import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {compactDateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
-import {DetailsPanelModel} from './DetailsPanelModel';
-import {PERSIST_APP} from './AppModel';
 import {uniqBy} from 'lodash';
+import {PERSIST_APP} from './AppModel';
+import {DetailsPanelModel} from './detail/DetailsPanelModel';
 
-@HoistModel
-@LoadSupport
-export class RecallsPanelModel {
+export class RecallsPanelModel extends HoistModel {
 
     persistWith = PERSIST_APP;
 
     @bindable
     searchQuery = '';
-
 
     @bindable
     @persist
@@ -41,11 +32,10 @@ export class RecallsPanelModel {
             }]
         },
         emptyText: 'No records found...',
-        enableColChooser: true,
+        colChooserModel: true,
         enableExport: true,
         rowBorders: true,
         showHover: true,
-        sizingMode: XH.appModel.gridSizingMode,
         persistWith: this.persistWith,
         columns: [
             {
@@ -90,13 +80,14 @@ export class RecallsPanelModel {
                 width: 200,
                 hidden: true
             }
-
         ]
     });
 
     constructor() {
-        const {gridModel} = this;
+        super();
+        makeObservable(this);
 
+        const {gridModel} = this;
         this.addReaction({
             track: () => gridModel.selectedRecord,
             run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
@@ -122,21 +113,28 @@ export class RecallsPanelModel {
     // Implementation
     //------------------------
     async doLoadAsync(loadSpec) {
-        await XH
-            .fetchJson({
+        const {gridModel} = this;
+
+        try {
+            let entries = await XH.fetchJson({
                 url: 'recalls',
                 params: {searchQuery: this.searchQuery},
                 loadSpec
-            })
-            .then(entries => {
-                // Approximate (and enforce) a unique id for this rather opaque API
-                entries.forEach(it => {it.id = it.openfda.brand_name[0] + it.recall_number});
-                entries = uniqBy(entries, 'id');
-                const {gridModel} = this;
-                gridModel.loadData(entries);
-                if (!gridModel.hasSelection) gridModel.selectFirst();
-            })
-            .catchDefault();
+            });
+
+            if (loadSpec.isStale) return;
+
+            // Approximate (and enforce) a unique id for this rather opaque API
+            entries.forEach(it => {
+                it.id = it.openfda.brand_name[0] + it.recall_number;
+            });
+            entries = uniqBy(entries, 'id');
+
+            gridModel.loadData(entries);
+            await gridModel.preSelectFirstAsync();
+        } catch (e) {
+            XH.handleException(e);
+        }
     }
 
     processRecord(rawRec) {
