@@ -165,8 +165,6 @@ export class TodoPanelModel extends HoistModel {
     //------------------------
     async doLoadAsync(loadSpec) {
         const tasks = await XH.taskService.getAsync();
-
-        this.gridModel.clear();   //  force description column to readjust height (see #2465)
         this.gridModel.loadData(tasks);
     }
 
