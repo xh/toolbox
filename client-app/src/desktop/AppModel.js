@@ -108,6 +108,7 @@ export class AppModel extends HoistAppModel {
                             {name: 'groupedRows', path: '/groupedRows'},
                             {name: 'groupedCols', path: '/groupedCols'},
                             {name: 'rest', path: '/rest'},
+                            {name: 'inlineEditing', path: '/inlineEditing'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'agGrid', path: '/agGrid'}
                         ]

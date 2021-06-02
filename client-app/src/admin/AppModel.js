@@ -38,7 +38,6 @@ export class AppModel extends BaseAppModel {
                     {name: 'localDate', path: '/localDate'},
                     {name: 'panelResizing', path: '/panelResizing'},
                     {name: 'select', path: '/select'},
-                    {name: 'storeEditing', path: '/storeEditing'},
                     {name: 'webSockets', path: '/webSockets'}
                 ]
             },

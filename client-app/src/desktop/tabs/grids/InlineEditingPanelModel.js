@@ -8,7 +8,8 @@ import {
     numberEditor,
     dateEditor,
     checkboxEditor,
-    selectEditor
+    selectEditor,
+    textAreaEditor
 } from '@xh/hoist/desktop/cmp/grid';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
@@ -16,7 +17,7 @@ import {action, bindable, makeObservable} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
 import {isEmpty, isNil, max} from 'lodash';
 
-export class StoreEditingPanelModel extends HoistModel {
+export class InlineEditingPanelModel extends HoistModel {
 
     @bindable
     asyncValidation = false;
@@ -25,7 +26,6 @@ export class StoreEditingPanelModel extends HoistModel {
     gridModel = new GridModel({
         selModel: null,
         showCellFocus: true,
-        fullRowEditing: true,
         store: {
             fields: [
                 {
@@ -64,8 +64,11 @@ export class StoreEditingPanelModel extends HoistModel {
                     rules: [required]
                 },
                 {
-                    name: 'Description',
-                    type: 'string'
+                    name: 'description',
+                    type: 'string',
+                    rules: [
+                        lengthIs({max: 280})
+                    ]
                 }
             ]
         },
@@ -144,7 +147,9 @@ export class StoreEditingPanelModel extends HoistModel {
             },
             {
                 field: 'description',
-                width: 300
+                width: 300,
+                editable: true,
+                editor: textAreaEditor
             }
         ]
     });
