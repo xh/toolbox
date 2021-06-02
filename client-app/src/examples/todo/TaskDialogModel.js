@@ -13,9 +13,6 @@ export class TaskDialogModel extends HoistModel {
     parentModel;
 
     @observable
-    isAdd = false;
-
-    @observable
     isOpen = false;
 
     @managed
@@ -38,15 +35,15 @@ export class TaskDialogModel extends HoistModel {
         ]
     });
 
+    get isAdd() {
+        return this.formModel.values.id == null;
+    }
+
     constructor(todoPanelModel) {
         super();
         makeObservable(this);
 
         this.parentModel = todoPanelModel;
-    }
-
-    reset() {
-        this.formModel.reset();
     }
 
     async submitAsync() {
@@ -76,16 +73,17 @@ export class TaskDialogModel extends HoistModel {
 
     @action
     openAddForm() {
-        this.isAdd = true;
         this.isOpen = true;
         this.formModel.init({
-            dueDate: LocalDate.today()
+            id: null,
+            description: '',
+            dueDate: LocalDate.today(),
+            complete: false
         });
     }
 
     @action
     openEditForm(task) {
-        this.isAdd = false;
         this.isOpen = true;
         this.formModel.init(task);
     }

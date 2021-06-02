@@ -4,6 +4,7 @@ import {dashContainerPanel} from './dash/DashContainerPanel';
 import {dockContainerPanel} from './DockContainerPanel';
 import {hboxContainerPanel} from './HBoxContainerPanel';
 import {tabPanelContainerPanel} from './TabPanelContainerPanel';
+import {tileFrameContainerPanel} from './TileFrameContainerPanel';
 import {vboxContainerPanel} from './VBoxContainerPanel';
 import './ContainersTab.scss';
 
@@ -14,6 +15,7 @@ export const containersTab = hoistCmp.factory(
             switcher: {orientation: 'left'},
             tabs: [
                 {id: 'tabPanel', title: 'TabContainer', content: tabPanelContainerPanel},
+                {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel},
                 {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
                 {id: 'dash', title: 'DashContainer', content: dashContainerPanel},
                 {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
