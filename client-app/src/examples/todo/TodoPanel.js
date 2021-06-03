@@ -38,11 +38,7 @@ const tbar = hoistCmp.factory(
         return toolbar(
             recordActionBar({
                 selModel,
-                actions: [addAction]
-            }),
-            recordActionBar({
-                selModel,
-                actions: [editAction, deleteAction]
+                actions: [addAction, editAction, deleteAction]
             }),
             filler(),
             recordActionBar({
