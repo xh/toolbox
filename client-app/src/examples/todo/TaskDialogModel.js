@@ -22,7 +22,8 @@ export class TaskDialogModel extends HoistModel {
                 name: 'id'
             },
             {
-                name: 'complete'
+                name: 'complete',
+                initialValue: false
             },
             {
                 name: 'description',
@@ -30,7 +31,8 @@ export class TaskDialogModel extends HoistModel {
             },
             {
                 name: 'dueDate',
-                displayName: 'Due Date'
+                displayName: 'Due Date',
+                initialValue: () => LocalDate.today()
             }
         ]
     });
@@ -74,12 +76,7 @@ export class TaskDialogModel extends HoistModel {
     @action
     openAddForm() {
         this.isOpen = true;
-        this.formModel.init({
-            id: null,
-            description: '',
-            dueDate: LocalDate.today(),
-            complete: false
-        });
+        this.formModel.init();
     }
 
     @action
