@@ -84,7 +84,8 @@ export class AppModel extends HoistAppModel {
                             {name: 'vbox', path: '/vbox'},
                             {name: 'tabPanel', path: '/tabPanel'},
                             {name: 'dock', path: '/dock'},
-                            {name: 'dash', path: '/dash'}
+                            {name: 'dash', path: '/dash'},
+                            {name: 'tileFrame', path: '/tileFrame'}
                         ]
                     },
                     {
