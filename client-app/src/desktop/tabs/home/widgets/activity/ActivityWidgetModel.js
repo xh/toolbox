@@ -56,6 +56,7 @@ export class ActivityWidgetModel extends HoistModel {
                     {name: 'url', type: 'string'}
                 ]
             },
+            onRowDoubleClicked: this.onRowDoubleClicked,
             columns: [
                 {
                     field: 'abbreviatedOid',

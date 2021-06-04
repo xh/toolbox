@@ -15,7 +15,7 @@ export const newsPanel = hoistCmp.factory({
             className: 'toolbox-news-panel',
             width: '100%',
             height: '100%',
-            item: dataView({onRowDoubleClicked}),
+            item: dataView(),
             mask: 'onLoad',
             bbar: bbar()
         });
@@ -46,11 +46,3 @@ const bbar = hoistCmp.factory({
         );
     }
 });
-
-
-function onRowDoubleClicked({data: record}) {
-    const url = record.get('url');
-    if (url) {
-        window.open(url, '_blank');
-    }
-}

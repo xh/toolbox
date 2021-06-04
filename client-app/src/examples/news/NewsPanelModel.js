@@ -15,6 +15,7 @@ export class NewsPanelModel extends HoistModel {
             fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
             filter: this.createFilter()
         },
+        onRowDoubleClicked: this.onRowDoubleClicked,
         elementRenderer: (v, {record}) => newsPanelItem({record}),
         itemHeight: 120,
         rowBorders: true,
@@ -59,5 +60,12 @@ export class NewsPanelModel extends HoistModel {
         viewModel.preSelectFirstAsync();
         this.sourceOptions = uniq(map(viewModel.store.records, 'data.source'));
         this.lastRefresh = new Date();
+    }
+
+    onRowDoubleClicked({data: record}) {
+        const url = record.get('url');
+        if (url) {
+            window.open(url, '_blank');
+        }
     }
 }
