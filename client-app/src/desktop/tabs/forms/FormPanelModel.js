@@ -47,6 +47,7 @@ export class FormPanelModel extends HoistModel {
             {
                 name: 'notes',
                 initialValue: '',
+                setValue: this.customNoteSetter,
                 rules: [required, lengthIs({max: 300, min: 10})]
             },
             {
@@ -125,6 +126,11 @@ export class FormPanelModel extends HoistModel {
             },
             fireImmediately: true
         });
+    }
+
+    customNoteSetter(v) {
+        // 'this' becomes the fieldModel, but looks a little confusing in this context
+        this.value = v + ` - added by ${XH.getUsername()}`;
     }
 
     async reset() {
