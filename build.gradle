@@ -2,7 +2,7 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven {url 'https://repo.grails.org/grails/core'}
+        maven {url 'https://repo.grails.org/artifactory/core'}
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
@@ -27,7 +27,7 @@ apply plugin:'org.grails.grails-gsp'
 repositories {
     mavenLocal()
     mavenCentral()
-    maven {url 'https://repo.grails.org/grails/core'}
+    maven {url 'https://repo.grails.org/artifactory/core'}
     maven {url 'https://repo.xh.io/content/groups/public/'}
 }
 
