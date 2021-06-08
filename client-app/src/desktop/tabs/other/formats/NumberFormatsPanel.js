@@ -105,6 +105,16 @@ const paramsPanel = hoistCmp.factory(
                         info: 'use up/down glyphs to indicate sign'
                     }),
                     param({
+                        bind: 'withCommas',
+                        input: switchInput(),
+                        info: 'include commas delimiters'
+                    }),
+                    param({
+                        bind: 'omitFourDigitComma',
+                        input: switchInput(),
+                        info: 'values under 10,000 will not be delimited'
+                    }),
+                    param({
                         bind: 'colorSpec',
                         input: switchInput(),
                         info: 'color positive and negative numbers (colors configurable)'
