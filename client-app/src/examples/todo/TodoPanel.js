@@ -8,7 +8,6 @@ import {TodoPanelModel} from './TodoPanelModel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {recordActionBar} from '@xh/hoist/desktop/cmp/record';
 
-
 export const todoPanel = hoistCmp.factory({
     model: creates(TodoPanelModel),
 
@@ -17,11 +16,7 @@ export const todoPanel = hoistCmp.factory({
             tbar: tbar(),
             item: fragment(
                 taskDialog(),
-                grid({
-                    onRowDoubleClicked: ({data}) => {
-                        if (data) model.taskDialogModel.openEditForm(data.data);
-                    }
-                })
+                grid()
             ),
             ref: model.panelRef,
             mask: 'onLoad',
@@ -38,11 +33,7 @@ const tbar = hoistCmp.factory(
         return toolbar(
             recordActionBar({
                 selModel,
-                actions: [addAction]
-            }),
-            recordActionBar({
-                selModel,
-                actions: [editAction, deleteAction]
+                actions: [addAction, editAction, deleteAction]
             }),
             filler(),
             recordActionBar({

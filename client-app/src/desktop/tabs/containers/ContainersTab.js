@@ -14,12 +14,12 @@ export const containersTab = hoistCmp.factory(
             route: 'default.containers',
             switcher: {orientation: 'left'},
             tabs: [
-                {id: 'tabPanel', title: 'TabContainer', content: tabPanelContainerPanel},
-                {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel},
-                {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
-                {id: 'dash', title: 'DashContainer', content: dashContainerPanel},
                 {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
-                {id: 'vbox', title: 'VBox', content: vboxContainerPanel}
+                {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
+                {id: 'tabPanel', title: 'TabContainer', content: tabPanelContainerPanel},
+                {id: 'dash', title: 'DashContainer', content: dashContainerPanel},
+                {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
+                {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
             ]
         },
         className: 'toolbox-tab'

@@ -16,7 +16,7 @@ export const activityWidget = hoistCmp.factory({
 
     render({model}) {
         return panel({
-            item: grid({onRowDoubleClicked: model.onRowDoubleClicked}),
+            item: grid(),
             bbar: bbar(),
             mask: 'onLoad'
         });

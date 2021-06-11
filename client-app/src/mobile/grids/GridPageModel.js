@@ -14,6 +14,10 @@ export class GridPageModel extends HoistModel {
         persistWith: {localStorageKey: 'toolboxSampleGrid'},
         sortBy: ['profit_loss|desc|abs'],
         colChooserModel: true,
+        onRowClicked: (e) => {
+            const {id} = e.data.raw;
+            XH.appendRoute('gridDetail', {id});
+        },
         columns: [
             {
                 field: 'company',

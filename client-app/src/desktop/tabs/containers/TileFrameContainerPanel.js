@@ -29,10 +29,10 @@ export const tileFrameContainerPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    The <code>TileFrame</code> component renders its children as equally-sized
-                    tiles, resized and arranged to fill the available space within the container
-                    while maintaining even padding between tiles and keeping tile width / height as
-                    close to a specified ratio as possible.
+                    <code>TileFrame</code> renders its children as equally-sized tiles, resized and
+                    arranged to fill the available space within the container while maintaining
+                    even padding between tiles and keeping tile width / height as close to a
+                    specified ratio as possible.
                 </p>,
                 <p>
                     Try resizing your browser window to see the tiling in action. The outer panel in
