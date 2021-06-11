@@ -65,7 +65,6 @@ export class SampleTreeGridModel extends HoistModel {
             dims = groupingChooserModel.value;
 
         const data = await XH.portfolioService.getPositionsAsync(dims, true);
-        console.log('tree data is ', data);
         if (isRefresh) {
             gridModel.updateData({update: data});
             if (isAutoRefresh) {
