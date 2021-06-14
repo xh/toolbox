@@ -1,4 +1,4 @@
-import {div, filler, hbox, img, placeholder} from '@xh/hoist/cmp/layout';
+import {div, box, filler, hbox, img, placeholder} from '@xh/hoist/cmp/layout';
 import {XH, hoistCmp, uses} from '@xh/hoist/core';
 import {DetailsPanelModel} from './DetailsPanelModel';
 import {Icon} from '@xh/hoist/icon/Icon';
@@ -6,7 +6,7 @@ import './DetailsPanel.scss';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {textArea, select} from '@xh/hoist/desktop/cmp/input';
+import {textArea, textInput, select} from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
 
 export const detailsPanel = hoistCmp.factory({
@@ -36,12 +36,11 @@ const profilePanel = hoistCmp.factory({
                         labelWidth: 100
                     },
                     items: [
-                        stringField({field: 'name'}),
-                        stringField({field: 'email'}),
-                        stringField({field: 'location'}),
-                        stringField({field: 'workPhone'}),
-                        stringField({field: 'cellPhone'}),
-                        stringField({field: 'homePhone'}),
+                        textField({field: 'name'}),
+                        textField({field: 'email'}),
+                        textField({field: 'location'}),
+                        textField({field: 'workPhone'}),
+                        textField({field: 'cellPhone'}),
                         bioField(),
                         tagsField()
                     ]
@@ -87,11 +86,11 @@ const picture = hoistCmp.factory(
 //--------------
 // FormFields
 //--------------
-const stringField = hoistCmp.factory(
+const textField = hoistCmp.factory(
     ({field}) => formField({
         field,
         readonlyRenderer: (val) => val ?? '-',
-        item: textArea()
+        item: textInput()
     })
 );
 
@@ -115,10 +114,10 @@ const tagsField = hoistCmp.factory(
         }),
         readonlyRenderer: (tags) => {
             tags = tags ?? [];
-            return tags.map(tag => div({
-                className: 'metadata-tag',
-                item: tag
-            }));
+            return box({
+                flexWrap: 'wrap',
+                items: tags.map(tag => div({className: 'metadata-tag', item: tag}))
+            });
         }
     })
 );

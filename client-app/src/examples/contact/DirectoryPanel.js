@@ -43,14 +43,12 @@ const tbar = hoistCmp.factory(
                     autoApply: false,
                     onFilterChange: (fn) => model.setSearchQuery(fn)
                 }),
-                toolbarSep(),
                 select({
                     bind: 'locationFilter',
                     placeholder: 'Location',
                     enableClear: true,
                     options: locationList
                 }),
-                toolbarSep(),
                 select({
                     bind: 'tagFilters',
                     placeholder: 'Tags',

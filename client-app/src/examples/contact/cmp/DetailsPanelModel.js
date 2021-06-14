@@ -30,7 +30,6 @@ export class DetailsPanelModel extends HoistModel {
                 {name: 'location'},
                 {name: 'workPhone'},
                 {name: 'cellPhone'},
-                {name: 'homePhone'},
                 {name: 'bio'},
                 {name: 'tags'}
             ]
