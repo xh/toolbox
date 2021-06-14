@@ -1,4 +1,4 @@
-package io.xh.toolbox.contacts
+package io.xh.toolbox.contact
 
 import io.xh.hoist.config.AppConfig
 import io.xh.hoist.exception.NotAuthorizedException
