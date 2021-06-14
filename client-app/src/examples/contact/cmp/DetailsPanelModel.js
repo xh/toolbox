@@ -5,16 +5,16 @@ import {FormModel} from '@xh/hoist/cmp/form';
 export class DetailsPanelModel extends HoistModel {
 
     @observable.ref
-    currentRecord
+    currentRecord;
 
     @managed
-    formModel
+    formModel;
 
     /** @member {DirectoryPanelModel} */
-    directoryPanelModel
+    directoryPanelModel;
 
-    get readonly() {
-        return this.formModel.readonly;
+    get isEditing() {
+        return !this.formModel.readonly;
     }
 
     constructor(directoryPanelModel) {
@@ -30,7 +30,6 @@ export class DetailsPanelModel extends HoistModel {
                 {name: 'location'},
                 {name: 'workPhone'},
                 {name: 'cellPhone'},
-                {name: 'homePhone'},
                 {name: 'bio'},
                 {name: 'tags'}
             ]
