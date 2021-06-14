@@ -21,6 +21,10 @@ export class TreeGridPageModel extends HoistModel {
         },
         colChooserModel: true,
         sortBy: 'pnl|desc|abs',
+        onRowClicked: (e) => {
+            const id = encodeURIComponent(e.data.raw.id);
+            XH.appendRoute('treeGridDetail', {id});
+        },
         columns: [
             {
                 headerName: 'Name',

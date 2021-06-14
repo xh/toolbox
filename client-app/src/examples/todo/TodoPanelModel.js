@@ -183,6 +183,9 @@ export class TodoPanelModel extends HoistModel {
                 b = dueDateGroupSort[b];
                 return a - b;
             },
+            onRowDoubleClicked: ({data}) => {
+                if (data) this.taskDialogModel.openEditForm(data.data);
+            },
             contextMenu: [
                 this.editAction,
                 this.toggleCompleteAction,
