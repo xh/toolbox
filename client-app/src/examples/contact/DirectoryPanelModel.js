@@ -151,20 +151,18 @@ export class DirectoryPanelModel extends HoistModel {
                 },
                 {field: 'name'},
                 {field: 'location'},
-                {field: 'workPhone'},
                 {field: 'email'},
                 {
                     field: 'tags',
-                    hidden: true,
                     width: 300,
                     elementRenderer: this.tagsRenderer
                 },
                 {
-                    field: 'homePhone',
+                    field: 'cellPhone',
                     hidden: true
                 },
                 {
-                    field: 'cellPhone',
+                    field: 'workPhone',
                     hidden: true
                 }
             ]

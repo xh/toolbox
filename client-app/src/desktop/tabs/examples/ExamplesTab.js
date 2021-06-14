@@ -77,7 +77,7 @@ function getExamples() {
                     The classic reference app, Hoist style.
                 </p>,
                 <p>
-                    Includes examples of a grid with RecordActions and RecordActionBar,  a form with validation,
+                    Includes examples of a grid with RecordActions and RecordActionBar, a form with validation,
                     modal dialogs, and the preference system.
                 </p>
             ]
