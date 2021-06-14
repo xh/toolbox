@@ -1,4 +1,4 @@
-import {div, box, filler, hbox, img, placeholder} from '@xh/hoist/cmp/layout';
+import {div, box, filler, hbox, img, placeholder, p} from '@xh/hoist/cmp/layout';
 import {XH, hoistCmp, uses} from '@xh/hoist/core';
 import {DetailsPanelModel} from './DetailsPanelModel';
 import {Icon} from '@xh/hoist/icon/Icon';
@@ -16,7 +16,7 @@ export const detailsPanel = hoistCmp.factory({
     render({model, className}) {
         return panel({
             className,
-            width: 325,
+            width: 400,
             flex: 'none',
             tbar: tbar(),
             items: model.currentRecord ? profilePanel() : placeholder('Select a contact to view their details.')
@@ -26,6 +26,8 @@ export const detailsPanel = hoistCmp.factory({
 
 const profilePanel = hoistCmp.factory({
     render({model}) {
+        const {isEditing} = model;
+
         return div({
             className: 'contact-details-panel__inner',
             items: [
@@ -41,12 +43,12 @@ const profilePanel = hoistCmp.factory({
                         textField({field: 'location'}),
                         textField({field: 'workPhone'}),
                         textField({field: 'cellPhone'}),
-                        bioField(),
-                        tagsField()
+                        tagsField(),
+                        bioField()
                     ]
                 }),
                 hbox(
-                    favoriteButton({omit: model.isEditing}),
+                    favoriteButton({omit: isEditing}),
                     filler(),
                     editButton({omit: !XH.getUser().isHoistAdmin})
                 )
@@ -97,9 +99,17 @@ const textField = hoistCmp.factory(
 const bioField = hoistCmp.factory(
     () => formField({
         field: 'bio',
-        item: textArea(),
+        label: null,
+        item: textArea({
+            minHeight: 250
+        }),
         readonlyRenderer: (val) => {
-            return val ? div({className: 'bio-readonly-panel', item: val}) : '-';
+            return val ?
+                div({
+                    className: 'bio-readonly-panel',
+                    items: val.split('\n').map(v => p(v))
+                }) :
+                '-';
         }
     })
 );
