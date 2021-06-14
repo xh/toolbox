@@ -63,7 +63,22 @@ function getExamples() {
                 </p>,
                 <p>
                     This example shows an employee directory application. Includes multiple views of a store, including
-                    combined filter and search functionality, editable profiles and remote persistence of settings via soft config.
+                    combined filter and search functionality, editable profiles and remote persistence of settings via
+                    soft config.
+                </p>
+            ]
+        },
+        {
+            title: 'Todo',
+            icon: Icon.clipboard(),
+            path: '/todo',
+            text: [
+                <p>
+                    The classic reference app, Hoist style.
+                </p>,
+                <p>
+                    Includes examples of Grid with RecordActions and RecordActionBar,  Forms with Validation,
+                    Modal dialogs, and the preference system.
                 </p>
             ]
         },
