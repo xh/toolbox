@@ -54,6 +54,20 @@ function getExamples() {
             ]
         },
         {
+            title: 'Contact',
+            icon: Icon.users(),
+            path: '/contact',
+            text: [
+                <p>
+                    Meet the Extremely Heavy team!
+                </p>,
+                <p>
+                    This example shows an employee directory application. Includes multiple views of a store, including
+                    combined filter and search functionality, editable profiles and remote persistence of settings via soft config.
+                </p>
+            ]
+        },
+        {
             title: 'News',
             icon: Icon.news(),
             path: '/news',
