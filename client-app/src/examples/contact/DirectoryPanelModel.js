@@ -147,7 +147,8 @@ export class DirectoryPanelModel extends HoistModel {
                     align: 'center',
                     resizable: false,
                     width: 40,
-                    elementRenderer: this.isFavoriteRenderer
+                    elementRenderer: this.isFavoriteRenderer,
+                    excludeFromExport: true
                 },
                 {field: 'name'},
                 {field: 'location'},
