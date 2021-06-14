@@ -1,5 +1,7 @@
 import {HoistAppModel, XH} from '@xh/hoist/core';
 import {OauthService} from '../../core/svc/OauthService';
+import {ContactService} from './ContactService';
+
 
 export const PERSIST_APP = {prefKey: 'contactAppState'};
 
@@ -9,7 +11,9 @@ export class AppModel extends HoistAppModel {
         await XH.installServicesAsync(OauthService);
     }
 
-    async initAsync() {}
+    async initAsync() {
+        await XH.installServicesAsync(ContactService);
+    }
 
     async logoutAsync() {
         await XH.oauthService.logoutAsync();

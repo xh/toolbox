@@ -1,27 +1,16 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon/Icon';
-import {bindable, observable, makeObservable, action} from '@xh/hoist/mobx';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {bindable, observable, makeObservable, action, runInAction} from '@xh/hoist/mobx';
 import {without, uniq, isEmpty} from 'lodash';
-import {PERSIST_APP} from './AppModel';
-import {DetailsPanelModel} from './detail/DetailsPanelModel';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {DetailsPanelModel} from './cmp/DetailsPanelModel';
 import {div, hbox} from '@xh/hoist/cmp/layout';
+import {favoriteButton} from './cmp/FavoriteButton';
 
 /**
  * Primary model to load a list of contacts from the server and manage filtering and selection state.
+ * Support showing results in
  */
-
 export class DirectoryPanelModel extends HoistModel {
-
-    persistWith = PERSIST_APP;
-
-    /**
-     * @member {string[]} - ids of all contacts that the user has favorited.
-     */
-    @observable.ref
-    @persist
-    userFaves = [];
 
     /**
      * @member {string[]} - set of known tags applied to all contacts
@@ -43,13 +32,15 @@ export class DirectoryPanelModel extends HoistModel {
     @bindable
     locationFilter;
 
-    /** @member {string[]} - when multiple tags are selected for filtering, the grid will display all records matching all selected tags */
+    /** @member {string[]}
+     * When multiple tags are selected for filtering, the grid will display all records matching all selected tags
+     */
     @bindable.ref
     tagFilters;
 
     /**
-     * @member {string} - options are 'grid' and 'tiled'. In 'grid' mode, contacts are displayed in an interactive table. In
-     * 'tiled' mode, contacts are displayed as tiled profile pictures.
+     * @member {string} - options are 'grid' and 'tiled'. In 'grid' mode, contacts are displayed in an interactive
+     * table. In 'tiled' mode, contacts are displayed as tiled profile pictures.
      */
     @bindable
     displayMode = 'grid';
@@ -68,6 +59,10 @@ export class DirectoryPanelModel extends HoistModel {
         return this.gridModel.selectedRecord;
     }
 
+    get records() {
+        return this.gridModel.store.records;
+    }
+
     constructor() {
         super();
         makeObservable(this);
@@ -81,27 +76,35 @@ export class DirectoryPanelModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => [this.locationFilter, this.searchQuery, this.tagFilters],
+            track: () => [this.searchQuery, this.locationFilter, this.tagFilters],
             run: () => this.updateFilter(),
             fireImmediately: true
         });
     }
 
+    async updateContactAsync(id, data) {
+        await XH.contactService.updateContactAsync(id, data);
+        await this.loadAsync();
+    }
+
+    toggleFavorite(record) {
+        XH.contactService.toggleFavorite(record.id);
+        // Update store directly, to avoid more heavyweight full reload.
+        this.gridModel.store.modifyRecords({id: record.id, isFavorite: !record.data.isFavorite});
+    }
+
     //------------------------
     // Implementation
     //------------------------
-    @action
     async doLoadAsync(loadSpec) {
-        const {gridModel, userFaves} = this;
+        const {gridModel} = this;
 
         try {
-            const contacts = await XH.fetchJson({
-                url: 'contacts'
-            }).track({category: 'Contacts', message: 'Loaded contacts.'});
-
-            contacts.forEach(it => it.isFavorite = userFaves.includes(it.id));
-            this.tagList = uniq(contacts.flatMap(it => it.tags ?? []));
-            this.locationList = uniq(contacts.map(it => it.location));
+            const contacts = await XH.contactService.getContactsAsync();
+            runInAction(() => {
+                this.tagList = uniq(contacts.flatMap(it => it.tags ?? []));
+                this.locationList = uniq(contacts.map(it => it.location));
+            });
 
             gridModel.loadData(contacts);
             await gridModel.preSelectFirstAsync();
@@ -144,16 +147,17 @@ export class DirectoryPanelModel extends HoistModel {
                     align: 'center',
                     resizable: false,
                     width: 40,
-                    elementRenderer: (val, {record}) => this.renderFavorite(record)
+                    elementRenderer: this.isFavoriteRenderer
                 },
+                {field: 'name'},
+                {field: 'location'},
+                {field: 'workPhone'},
+                {field: 'email'},
                 {
-                    field: 'name'
-                },
-                {
-                    field: 'location'
-                },
-                {
-                    field: 'workPhone'
+                    field: 'tags',
+                    hidden: true,
+                    width: 300,
+                    elementRenderer: this.tagsRenderer
                 },
                 {
                     field: 'homePhone',
@@ -162,72 +166,34 @@ export class DirectoryPanelModel extends HoistModel {
                 {
                     field: 'cellPhone',
                     hidden: true
-                },
-                {
-                    field: 'email'
-                },
-                {
-                    field: 'tags',
-                    hidden: true,
-                    width: 300,
-                    elementRenderer: (val, {record}) => {
-                        if (!record.data.tags) return null;
-
-                        return hbox({
-                            className: 'metadata-tag-container',
-                            items: record.data.tags?.map(tag =>
-                                div({
-                                    className: 'metadata-tag',
-                                    item: tag,
-                                    onClick: () => this.toggleTag(tag)
-                                })
-
-                            )
-                        });
-                    }
                 }
             ]
         });
     }
 
     @action
-    toggleFavorite(record) {
-        const {userFaves} = this;
-        const {store} = this.gridModel;
-
-        this.userFaves = record.data.isFavorite ? without(userFaves, record.id) : [...userFaves, record.id];
-        store.modifyRecords({id: record.id, isFavorite: !record.data.isFavorite});
-    }
-
-    @action
     toggleTag(tag) {
-        let tagFilters = this.tagFilters ?? [];
+        const tagFilters = this.tagFilters ?? [];
 
-        this.tagFilters = tagFilters.includes(tag) ?
-            without(tagFilters, tag) :
-            [...tagFilters, tag];
+        this.tagFilters = tagFilters.includes(tag) ? without(tagFilters, tag) : [...tagFilters, tag];
     }
 
-    renderFavorite(record) {
-        const {isFavorite} = record.data;
+    isFavoriteRenderer = (v, {record}) => {
+        return favoriteButton({model: this, record});
+    };
 
-        return button({
-            icon: Icon.favorite({
-                color: isFavorite ? 'gold' : null,
-                prefix: isFavorite ? 'fas' : 'far'
-            }),
-            onClick: () => this.toggleFavorite(record)
+    tagsRenderer = (v) => {
+        if (!v) return null;
+
+        return hbox({
+            className: 'metadata-tag-container',
+            items: v.map(tag => (
+                div({
+                    className: 'metadata-tag',
+                    item: tag,
+                    onClick: () => this.toggleTag(tag)
+                }))
+            )
         });
-    }
-
-    async updateContactAsync(id, update) {
-        const {gridModel} = this;
-
-        const contacts = await XH.fetchService.postJson({
-            url: `contacts/update/${id}`,
-            body: update
-        });
-
-        gridModel.loadData(contacts);
-    }
+    };
 }

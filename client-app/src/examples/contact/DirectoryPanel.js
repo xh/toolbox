@@ -5,30 +5,28 @@ import {button, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/butt
 import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {detailsPanel} from './detail/DetailsPanel';
+import {detailsPanel} from './cmp/DetailsPanel';
 import './DirectoryPanel.scss';
 import {DirectoryPanelModel} from './DirectoryPanelModel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/cmp/store';
-import {tileView} from './TileView';
+import {tileView} from './cmp/TileView';
 
 export const directoryPanel = hoistCmp.factory({
     model: creates(DirectoryPanelModel),
 
     render({model}) {
-        const {displayMode} = model;
-
         return panel({
+            mask: 'onLoad',
             item: hframe(
                 panel({
                     tbar: tbar(),
-                    item: displayMode === 'grid' ? grid() : tileView(),
+                    item: model.displayMode === 'grid' ? grid() : tileView(),
                     bbar: bbar()
                 }),
                 detailsPanel({
                     className: 'xh-border-left'
                 })
-            ),
-            mask: 'onLoad'
+            )
         });
     }
 });
@@ -50,7 +48,7 @@ const tbar = hoistCmp.factory(
                     bind: 'locationFilter',
                     placeholder: 'Location',
                     enableClear: true,
-                    options: locationList.map(loc => ({value: loc}))
+                    options: locationList
                 }),
                 toolbarSep(),
                 select({
@@ -58,7 +56,7 @@ const tbar = hoistCmp.factory(
                     placeholder: 'Tags',
                     enableMulti: true,
                     enableClear: true,
-                    options: tagList.map(tag => ({value: tag}))
+                    options: tagList
                 }),
                 filler(),
                 buttonGroupInput({
@@ -85,8 +83,8 @@ const tbar = hoistCmp.factory(
 
 const bbar = hoistCmp.factory(
     ({model}) => {
-        const {displayMode, gridModel} = model;
-        const {store} = gridModel;
+        const {displayMode, gridModel} = model,
+            {store} = gridModel;
 
         return toolbar({
             className: 'directory-panel-toolbar',
@@ -95,7 +93,7 @@ const bbar = hoistCmp.factory(
                 storeCountLabel({store, unit: 'XH Engineers'}),
                 toolbarSep(),
                 colChooserButton({
-                    disabled: !(displayMode === 'grid')
+                    disabled: displayMode !== 'grid'
                 }),
                 toolbarSep(),
                 exportButton()
