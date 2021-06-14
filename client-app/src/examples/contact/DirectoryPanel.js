@@ -93,7 +93,6 @@ const bbar = hoistCmp.factory(
                 colChooserButton({
                     disabled: displayMode !== 'grid'
                 }),
-                toolbarSep(),
                 exportButton()
             ]
         });

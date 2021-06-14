@@ -8,7 +8,7 @@ import {favoriteButton} from './cmp/FavoriteButton';
 
 /**
  * Primary model to load a list of contacts from the server and manage filtering and selection state.
- * Support showing results in
+ * Support showing results in a grid or tiled set of photos.
  */
 export class DirectoryPanelModel extends HoistModel {
 
