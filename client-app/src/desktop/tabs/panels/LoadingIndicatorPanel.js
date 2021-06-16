@@ -58,7 +58,6 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                     toolbarSep(),
                     select({
                         bind: 'corner',
-                        label: 'Corner:',
                         enableFilter: false,
                         options: ['tl', 'tr', 'bl', 'br'],
                         width: 70
