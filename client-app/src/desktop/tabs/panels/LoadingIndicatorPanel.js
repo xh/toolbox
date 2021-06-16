@@ -68,7 +68,7 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                     switchInput({
                         bind: 'spinner',
                         label: 'Spinner:',
-                        labelAlign: 'left'
+                        labelSide: 'left'
                     }),
                     toolbarSep(),
                     refreshButton({text: 'Load Now'})

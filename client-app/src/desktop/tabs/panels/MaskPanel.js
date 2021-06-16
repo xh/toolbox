@@ -60,13 +60,13 @@ export const maskPanel = hoistCmp.factory({
                     switchInput({
                         bind: 'inline',
                         label: 'Inline:',
-                        labelAlign: 'left'
+                        labelSide: 'left'
                     }),
                     toolbarSep(),
                     switchInput({
                         bind: 'spinner',
                         label: 'Spinner:',
-                        labelAlign: 'left'
+                        labelSide: 'left'
                     }),
                     toolbarSep(),
                     refreshButton({text: 'Load Now'})
