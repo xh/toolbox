@@ -59,7 +59,6 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                     select({
                         bind: 'corner',
                         label: 'Corner:',
-                        labelAlign: 'left',
                         enableFilter: false,
                         options: ['tl', 'tr', 'bl', 'br'],
                         width: 70
