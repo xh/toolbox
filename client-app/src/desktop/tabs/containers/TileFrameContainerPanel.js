@@ -51,8 +51,6 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                 item: hframe(
                     tileFrame({
                         desiredRatio: vals.desiredRatio,
-                        minTileRatio: vals.minTileRatio,
-                        maxTileRatio: vals.maxTileRatio,
                         spacing: vals.spacing,
                         minTileWidth: vals.minTileWidth,
                         maxTileWidth: vals.maxTileWidth,
@@ -74,14 +72,6 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                                     }),
                                     formField({
                                         field: 'desiredRatio',
-                                        item: numberInput({...inputConf, stepSize: 0.5})
-                                    }),
-                                    formField({
-                                        field: 'minTileRatio',
-                                        item: numberInput({...inputConf, stepSize: 0.5})
-                                    }),
-                                    formField({
-                                        field: 'maxTileRatio',
                                         item: numberInput({...inputConf, stepSize: 0.5})
                                     }),
                                     formField({
@@ -128,8 +118,6 @@ class Model extends HoistModel {
         fields: [
             {name: 'tileCount', label: 'Tiles', initialValue: 5},
             {name: 'desiredRatio', label: 'desiredRatio', initialValue: 1},
-            {name: 'minTileRatio', label: 'minTileRatio', initialValue: 0.5},
-            {name: 'maxTileRatio', label: 'maxTileRatio', initialValue: 4},
             {name: 'spacing', label: 'spacing', initialValue: 10},
             {name: 'minTileWidth', label: 'minTileWidth'},
             {name: 'maxTileWidth', label: 'maxTileWidth'},
