@@ -48,9 +48,10 @@ export const mobileTab = hoistCmp.factory(
                             'Another unique feature of Hoist mobile includes ',
                             code('PinPad'),
                             ', which provides streamlined handling of PIN entry for access. ',
-                            'Visit Toolbox Mobile by clicking on the button below and using Chrome Dev Tools to simulate ',
-                            'a mobile device. Note that Chrome\'s Device Mode has certain limitations and does not yet support ',
-                            'certain features like switch inputs. ',
+                            'Choose from the buttons below to either receive an email with a link to Toolbox Mobile you ',
+                            'can open directly on your mobile device, or open Toolbox Mobile in your browser and use Chrome ',
+                            'Dev Tools to simulate a mobile device. Note that Chrome\'s Device Mode has certain limitations ',
+                            'and does not yet support certain features like switch inputs. ',
                             'See their website for more information and instructions: ',
                             a({
                                 items: [Icon.openExternal(), ' Chrome Dev Tools Device Mode'],
@@ -59,12 +60,21 @@ export const mobileTab = hoistCmp.factory(
                             })
                         ]
                     }),
-                    button({
-                        minimal: false,
-                        text: 'Launch Toolbox Mobile Site',
-                        icon: Icon.icon({iconName: 'mobile'}),
-                        onClick: () => window.open('/mobile')
-                    }),
+                    hframe(
+                        button({
+                            minimal: false,
+                            text: 'Send Link to Toolbox Mobile Site',
+                            icon: Icon.icon({iconName: 'envelope'}),
+                            width: 'fit-content'
+                        }),
+                        button({
+                            minimal: false,
+                            text: 'Launch Toolbox Mobile Site',
+                            icon: Icon.icon({iconName: 'mobile'}),
+                            width: 'fit-content',
+                            onClick: () => window.open('/mobile')
+                        })
+                    ),
                     hframe(
                         img({
                             src: mobileImageHome
