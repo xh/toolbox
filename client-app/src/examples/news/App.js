@@ -2,7 +2,6 @@ import {a} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
-import {ContextMenuItem as CM} from '@xh/hoist/desktop/cmp/contextmenu';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {AppModel} from './AppModel';
@@ -15,7 +14,6 @@ export const App = hoistCmp({
 
     render({model}) {
         return panel({
-            contextMenu: [CM.reloadApp(), CM.about(), CM.logout()],
             tbar: appBar({
                 icon: Icon.news({size: '2x', prefix: 'fal'}),
                 leftItems: [
@@ -27,11 +25,12 @@ export const App = hoistCmp({
                 rightItems: [
                     relativeTimestamp({
                         model: model.newsPanelModel,
-                        bind: 'lastRefresh',
+                        bind: 'lastLoadCompleted',
                         options: {prefix: 'Last Updated:'}
                     }),
                     appBarSeparator()
-                ]
+                ],
+                appMenuButtonProps: {hideLogoutItem: false}
             }),
             item: newsPanel()
         });

@@ -1,31 +1,15 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
-
-import {managed, XH, HoistModel, LoadSupport} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {numberRenderer, millionsRenderer} from '@xh/hoist/format';
-import {DimensionChooserModel} from '@xh/hoist/mobile/cmp/dimensionchooser';
+import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {GroupingChooserModel} from '@xh/hoist/mobile/cmp/grouping';
 
-@HoistModel
-@LoadSupport
-export class TreeGridPageModel {
+export class TreeGridPageModel extends HoistModel {
 
     @managed
-    dimensionChooserModel = new DimensionChooserModel({
-        dimensions: [
-            {value: 'fund', label: 'Fund'},
-            {value: 'model', label: 'Model'},
-            {value: 'region', label: 'Region'},
-            {value: 'sector', label: 'Sector'},
-            {value: 'symbol', label: 'Symbol'},
-            {value: 'trader', label: 'Trader'}
-        ],
-        initialValue: ['trader'],
-        preference: 'mobileDims'
+    groupingChooserModel = new GroupingChooserModel({
+        dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
+        initialValue: ['sector', 'symbol'],
+        persistWith: {localStorageKey: 'toolboxTreeGridSample'}
     });
 
     @managed
@@ -35,25 +19,18 @@ export class TreeGridPageModel {
         store: {
             loadRootAsSummary: true
         },
-        enableColChooser: true,
+        colChooserModel: true,
         sortBy: 'pnl|desc|abs',
+        onRowClicked: (e) => {
+            const id = encodeURIComponent(e.data.raw.id);
+            XH.appendRoute('treeGridDetail', {id});
+        },
         columns: [
             {
                 headerName: 'Name',
                 field: 'name',
                 isTreeColumn: true,
                 flex: true
-            },
-            {
-                headerName: 'P&L',
-                field: 'pnl',
-                align: 'right',
-                width: 120,
-                absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
             },
             {
                 headerName: 'Mkt Value (m)',
@@ -69,19 +46,31 @@ export class TreeGridPageModel {
                     precision: 3,
                     ledger: true
                 })
+            },
+            {
+                headerName: 'P&L',
+                field: 'pnl',
+                align: 'right',
+                width: 120,
+                absSort: true,
+                agOptions: {
+                    aggFunc: 'sum'
+                },
+                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
             }
         ]
     });
 
     constructor() {
+        super();
         this.addReaction({
-            track: () => this.dimensionChooserModel.value,
+            track: () => this.groupingChooserModel.value,
             run: () => this.loadAsync()
         });
     }
 
     async doLoadAsync(loadSpec) {
-        const dims = this.dimensionChooserModel.value;
+        const dims = this.groupingChooserModel.value;
         const data = await XH.portfolioService.getPositionsAsync(dims, true);
         this.gridModel.loadData(data);
     }

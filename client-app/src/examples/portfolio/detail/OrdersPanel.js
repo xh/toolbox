@@ -1,11 +1,9 @@
-
-import {uses} from '@xh/hoist/core';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {hoistCmp} from '@xh/hoist/core/index';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {storeFilterField} from '@xh/hoist/cmp/store';
 import {Icon} from '@xh/hoist/icon';
 import {OrdersPanelModel} from './OrdersPanelModel';
 
@@ -13,17 +11,22 @@ export const ordersPanel = hoistCmp.factory({
     model: uses(OrdersPanelModel),
 
     render({model}) {
-        const {positionId} = model;
+        const {positionId, loadModel} = model;
 
         return panel({
             title: `Orders: ${formatPositionId(positionId)}`,
             icon: Icon.edit(),
             item: grid(),
-            mask: positionId == null,
+            mask: (positionId == null || loadModel.isPending),
             bbar: [
-                filler(),
+                filterChooser({
+                    placeholder: 'Filter orders...',
+                    enableClear: true,
+                    flex: 10,
+                    maxWidth: 800
+                }),
                 gridCountLabel({unit: 'orders'}),
-                storeFilterField(),
+                filler(),
                 colChooserButton()
             ]
         });

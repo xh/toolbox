@@ -15,9 +15,12 @@
     flex: none !important;
     width: 700px;
     margin-bottom: var(--xh-pad-px);
-    background-color: var(--xh-bg-alt);
-    padding: var(--xh-title-pad-px);
     border-radius: var(--xh-border-radius-px);
+
+    .xh-panel__content {
+      padding: var(--xh-title-pad-px);
+      background-color: var(--xh-bg-alt);
+    }
 
     p:last-child {
       margin-bottom: 0;

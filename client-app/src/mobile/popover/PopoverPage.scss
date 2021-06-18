@@ -1,0 +1,16 @@
+.toolbox-popover {
+  padding: var(--xh-pad-double-px);
+  width: 200px;
+  text-align: center;
+  border: var(--xh-border-solid);
+
+  h1 {
+    margin: 0 0 var(--xh-pad-px) !important;
+    font-size: var(--xh-font-size-large-px);
+  }
+
+  p {
+    margin: 0;
+    font-size: var(--xh-font-size-px);
+  }
+}

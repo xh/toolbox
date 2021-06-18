@@ -1,11 +1,10 @@
-import {managed, HoistModel, LoadSupport, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
 
-@HoistModel
-@LoadSupport
-export class OHLCChartModel {
+export class OHLCChartModel extends HoistModel {
+
     @bindable currentSymbol = '';
     @bindable.ref symbols = null;
     numCompanies = 3;
@@ -14,6 +13,8 @@ export class OHLCChartModel {
     @bindable aspectRatio = null;
     
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.currentSymbol,
             run: () => this.loadAsync()
@@ -22,14 +23,19 @@ export class OHLCChartModel {
     
     async doLoadAsync(loadSpec) {
         if (!this.symbols) {
-            let symbols = await XH.portfolioService.getSymbolsAsync();
+            let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
             symbols = symbols.slice(0, this.numCompanies);
             this.setSymbols(symbols);
         }
+
         if (!this.currentSymbol) {
             this.setCurrentSymbol(this.symbols[0]);
         }
-        let series = await XH.portfolioService.getOHLCChartSeriesAsync(this.currentSymbol);
+
+        let series = await XH.portfolioService.getOHLCChartSeriesAsync({
+            symbol: this.currentSymbol,
+            loadSpec
+        }).catchDefault() ?? {};
 
         const groupPixelWidth = 5;
         Object.assign(series, {
@@ -39,15 +45,13 @@ export class OHLCChartModel {
             }
         });
 
-        this.chartModel.setSeries([series]);
+        this.chartModel.setSeries(series);
     }
 
     getChartModelCfg() {
         return {
             chart: {
                 type: 'ohlc',
-                spacingLeft: 3,
-                spacingBottom: 5,
                 zoomType: 'x',
                 resetZoomButton: {
                     theme: {
@@ -55,15 +59,9 @@ export class OHLCChartModel {
                     }
                 }
             },
-            legend: {
-                enabled: false
-            },
-            title: {
-                text: null
-            },
-            scrollbar: {
-                enabled: false
-            },
+            title: {text: null},
+            legend: {enabled: false},
+            scrollbar: {enabled: false},
             xAxis: {
                 labels: {
                     formatter: function() {
@@ -73,20 +71,11 @@ export class OHLCChartModel {
             },
             yAxis: {
                 title: {text: null},
-                opposite: false,
+                opposite: true,
                 endOnTick: true,
-                showLastLabel: true,
-                tickPixelInterval: 40,
-                maxPadding: 0,
-                labels: {
-                    y: 3,
-                    x: -8
-                }
+                showLastLabel: true
             },
             tooltip: {
-                split: false,
-                crosshairs: false,
-                followPointer: true,
                 formatter: function() {
                     const p = this.point;
                     return `

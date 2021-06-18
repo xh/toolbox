@@ -1,26 +1,23 @@
 import {createRef} from 'react';
-import {localDateCol, boolCheckCol, emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
-import {ExportFormat} from '@xh/hoist/cmp/grid/columns';
-import {fragment, br, vbox, div, hbox, filler} from '@xh/hoist/cmp/layout';
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {boolCheckCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {
-    fmtNumberTooltip,
-    millionsRenderer,
-    numberRenderer,
+    dateRenderer,
     fmtDate,
     fmtMillions,
-    fmtNumber
+    fmtNumber,
+    fmtNumberTooltip,
+    millionsRenderer,
+    numberRenderer
 } from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, observable} from '@xh/hoist/mobx';
-import {wait} from '@xh/hoist/promise';
-
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import './SampleGrid.scss';
 
-@HoistModel
-@LoadSupport
-export class SampleGridModel {
+export class SampleGridModel extends HoistModel {
+
     @observable groupBy = false;
 
     panelRef = createRef();
@@ -89,7 +86,7 @@ export class SampleGridModel {
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
-        enableColChooser: true,
+        colChooserModel: true,
         enableExport: true,
         exportOptions: {
             columns: ['id', 'company', 'VISIBLE'],
@@ -106,9 +103,21 @@ export class SampleGridModel {
             },
             fields: [
                 {
+                    name: 'profit_loss',
+                    displayName: 'P&L',
+                    type: 'number'
+                },
+                {
                     name: 'trade_date',
+                    displayName: 'Date',
                     type: 'localDate'
-                }]
+                },
+                {
+                    name: 'trade_volume',
+                    headerName: 'Volume (Sales Quantity)',
+                    type: 'number'
+                }
+            ]
         },
         contextMenu: [
             this.viewDetailsAction,
@@ -118,14 +127,15 @@ export class SampleGridModel {
         ],
         groupSortFn: (a, b, groupField) => {
             if (a == b) return 0;
-            if (groupField == 'winLose') {
-                return a == 'Winner' ? -1 : 1;
+            if (groupField === 'winLose') {
+                return a === 'Winner' ? -1 : 1;
             } else {
                 return a < b ? -1 : 1;
             }
         },
         colDefaults: {
-            tooltipElement: (v, {record}) => {
+            tooltipElement: (v, {record, gridModel}) => {
+                if (record.isSummary) return null;
                 const {company, city, trade_date, profit_loss, trade_volume} = record.data;
                 return vbox({
                     className: 'sample-grid-tooltip',
@@ -162,7 +172,6 @@ export class SampleGridModel {
         columns: [
             {
                 field: 'id',
-                headerName: 'ID',
                 hidden: true
             },
             {
@@ -176,8 +185,8 @@ export class SampleGridModel {
             },
             {
                 field: 'company',
-                width: 200,
-                tooltip: true,
+                flex: 1,
+                minWidth: 200,
                 headerName: ({gridModel}) => {
                     let ret = 'Company';
                     if (gridModel.selectedRecord) {
@@ -186,7 +195,8 @@ export class SampleGridModel {
 
                     return ret;
                 },
-                exportName: 'Company'
+                exportName: 'Company',
+                headerTooltip: 'Select a company & continue'
             },
             {
                 field: 'winLose',
@@ -195,28 +205,26 @@ export class SampleGridModel {
             },
             {
                 field: 'city',
-                width: 140,
+                minWidth: 150,
+                maxWidth: 200,
                 tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
                 cellClass: (val) => {
-                    return val == 'New York' ? 'xh-text-color-accent' : '';
+                    return val === 'New York' ? 'xh-text-color-accent' : '';
                 }
             },
             {
-                headerName: 'Volume',
                 field: 'trade_volume',
-                align: 'right',
                 width: 110,
                 tooltip: (val) => fmtNumberTooltip(val),
                 renderer: millionsRenderer({
                     precision: 1,
                     label: true
                 }),
-                exportFormat: ExportFormat.NUM_DELIMITED
+                exportFormat: ExportFormat.NUM_DELIMITED,
+                chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
             },
             {
-                headerName: 'P&L',
                 field: 'profit_loss',
-                align: 'right',
                 width: 130,
                 absSort: true,
                 tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
@@ -225,12 +233,22 @@ export class SampleGridModel {
                     ledger: true,
                     colorSpec: true
                 }),
-                exportFormat: ExportFormat.LEDGER_COLOR
+                exportFormat: ExportFormat.LEDGER_COLOR,
+                chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
             },
             {
-                headerName: 'Date',
+                colId: 'dayOfWeek',
                 field: 'trade_date',
-                ...localDateCol
+                displayName: 'Day of Week',
+                chooserDescription: 'Used for testing storeFilterField matching on rendered dates.',
+                width: 130,
+                hidden: true,
+                renderer: dateRenderer({fmt: 'dddd'})
+            },
+            {
+                field: 'trade_date',
+                ...localDateCol,
+                chooserDescription: 'Date of last trade (including related derivatives)'
             },
             {
                 field: 'active',
@@ -238,17 +256,21 @@ export class SampleGridModel {
                 headerName: '',
                 chooserName: 'Active Status',
                 tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
-            },
-            {...emptyFlexCol}
+            }
         ]
     });
 
+    constructor() {
+        super();
+        makeObservable(this);
+    }
+
     async doLoadAsync(loadSpec) {
         const {trades, summary} = await XH.fetchJson({url: 'trade'}),
-            gridModel = this.gridModel;
+            {gridModel} = this;
 
         gridModel.loadData(trades, summary);
-        if (gridModel.agGridModel.isReady && !gridModel.hasSelection) gridModel.selectFirst();
+        await gridModel.preSelectFirstAsync();
     }
 
     showInfoToast(rec) {
@@ -283,6 +305,6 @@ export class SampleGridModel {
         // Always select first when regrouping.
         const groupByArr = groupBy ? groupBy.split(',') : [];
         this.gridModel.setGroupBy(groupByArr);
-        wait(1).then(() => this.gridModel.selectFirst());
+        this.gridModel.preSelectFirstAsync();
     }
 }

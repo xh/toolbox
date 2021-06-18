@@ -1,4 +1,4 @@
-import {hoistCmp, creates, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, span, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -8,7 +8,6 @@ import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {OHLCChartModel} from './OHLCChartModel';
 import {wrapper} from '../../common/Wrapper';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-
 
 export const ohlcChartPanel = hoistCmp.factory({
     model: creates(OHLCChartModel),

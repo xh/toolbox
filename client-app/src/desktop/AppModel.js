@@ -1,14 +1,10 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
+import {HoistAppModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faMobileAlt} from '@fortawesome/pro-regular-svg-icons';
+import {GitHubService} from '../core/svc/GitHubService';
+import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {getAppOptions} from './AppOptions';
 import {chartsTab} from './tabs/charts/ChartsTab';
@@ -23,13 +19,13 @@ import {mobileTab} from './tabs/mobile/MobileTab';
 
 library.add(faMobileAlt);
 
-@HoistAppModel
-export class AppModel {
+export class AppModel extends HoistAppModel {
 
     @managed
     tabModel = new TabContainerModel({
         route: 'default',
         track: true,
+        switcher: false,
         tabs: [
             {id: 'home', icon: Icon.home(), content: homeTab},
             {id: 'grids', icon: Icon.grid(), content: gridsTab},
@@ -40,22 +36,36 @@ export class AppModel {
             {id: 'other', icon: Icon.boxFull(), content: otherTab},
             {id: 'examples', icon: Icon.books(), content: examplesTab},
             {id: 'mobile', icon: Icon.icon({iconName: 'mobile-alt'}), content: mobileTab}
-        ],
-        switcherPosition: 'none'
+        ]
     });
 
     get gridSizingMode() {
         return XH.getPref('gridSizingMode');
     }
 
+    static async preAuthAsync() {
+        await XH.installServicesAsync(
+            OauthService
+        );
+    }
+
     async initAsync() {
         await XH.installServicesAsync(
+            GitHubService,
             PortfolioService
         );
     }
 
     async doLoadAsync(loadSpec) {
-        await loadAllAsync([], loadSpec);
+        await XH.gitHubService.loadAsync(loadSpec);
+    }
+
+    async logoutAsync() {
+        await XH.oauthService.logoutAsync();
+    }
+
+    goHome() {
+        this.tabModel.setActiveTabId('home');
     }
 
     getAppOptions() {
@@ -80,7 +90,8 @@ export class AppModel {
                             {name: 'vbox', path: '/vbox'},
                             {name: 'tabPanel', path: '/tabPanel'},
                             {name: 'dock', path: '/dock'},
-                            {name: 'dash', path: '/dash'}
+                            {name: 'dash', path: '/dash'},
+                            {name: 'tileFrame', path: '/tileFrame'}
                         ]
                     },
                     {
@@ -132,16 +143,20 @@ export class AppModel {
                         name: 'other',
                         path: '/other',
                         children: [
+                            {name: 'appNotifications', path: '/appNotifications'},
+                            {name: 'buttons', path: '/buttons'},
                             {name: 'clock', path: '/clock'},
+                            {name: 'customPackage', path: '/customPackage'},
                             {name: 'dateFormats', path: '/dateFormats'},
+                            {name: 'jsx', path: '/jsx'},
+                            {name: 'errorMessage', path: '/errorMessage'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'icons', path: '/icons'},
-                            {name: 'jsx', path: '/jsx'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'numberFormats', path: '/numberFormats'},
+                            {name: 'pinPad', path: '/pinPad'},
                             {name: 'popups', path: '/popups'},
-                            {name: 'timestamp', path: '/timestamp'},
-                            {name: 'appNotifications', path: '/appNotifications'}
+                            {name: 'timestamp', path: '/timestamp'}
                         ]
                     },
                     {
@@ -157,3 +172,10 @@ export class AppModel {
         ];
     }
 }
+
+/**
+ * @typedef XH
+ * @property {GitHubService} gitHubService
+ * @property {OauthService} oauthService
+ * @property {PortfolioService} portfolioService
+ */

@@ -5,14 +5,13 @@ import {basicPanel} from './BasicPanel';
 import {toolbarPanel} from './ToolbarPanel';
 import {loadingIndicatorPanel} from './LoadingIndicatorPanel';
 import {maskPanel} from './MaskPanel';
-
 import './PanelsTab.scss';
 
 export const panelsTab = hoistCmp.factory(
     () => tabContainer({
         model: {
             route: 'default.panels',
-            switcherPosition: 'left',
+            switcher: {orientation: 'left'},
             tabs: [
                 {id: 'intro', content: basicPanel},
                 {id: 'toolbars', content: toolbarPanel},

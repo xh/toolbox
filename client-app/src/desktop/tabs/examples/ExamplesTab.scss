@@ -5,8 +5,10 @@
 }
 
 .example-tile-container {
-  justify-content: center;
-  width: 800px;
+  justify-content: left;
+  overflow: auto;
+  min-width: 650px;
+  max-width: 1250px;
 
   > .xh-panel {
     border: var(--xh-border-solid);

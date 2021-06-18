@@ -1,6 +1,5 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-
 import {standardGridPanel} from './StandardGridPanel';
 import {columnGroupsGridPanel} from './ColumnGroupsGridPanel';
 import {restGridPanel} from './RestGridPanel';
@@ -23,7 +22,7 @@ export const gridsTab = hoistCmp.factory(
                 {id: 'dataview', title: 'DataView', content: dataViewPanel},
                 {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
             ],
-            switcherPosition: 'left'
+            switcher: {orientation: 'left'}
         },
         className: 'toolbox-tab'
     })

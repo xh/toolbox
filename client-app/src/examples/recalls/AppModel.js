@@ -1,19 +1,18 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
 import {HoistAppModel, XH} from '@xh/hoist/core';
+import {OauthService} from '../../core/svc/OauthService';
 
-@HoistAppModel
-export class AppModel {
+export const PERSIST_APP = {localStorageKey: 'recallsAppState'};
 
-    get gridSizingMode() {
-        return XH.getPref('gridSizingMode');
+export class AppModel extends HoistAppModel {
+
+    static async preAuthAsync() {
+        await XH.installServicesAsync(OauthService);
     }
 
-    async initAsync() {
+    async initAsync() {}
 
+    async logoutAsync() {
+        await XH.oauthService.logoutAsync();
     }
+
 }

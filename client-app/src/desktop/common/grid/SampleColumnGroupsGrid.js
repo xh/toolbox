@@ -1,12 +1,6 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
-import {boolCheckCol, emptyFlexCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
+import {boolCheckCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -15,7 +9,7 @@ import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtMillions, fmtNumber, numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
 import {gridOptionsPanel} from './options/GridOptionsPanel';
 
@@ -35,13 +29,13 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
                 switchInput({
                     bind: 'groupRows',
                     label: 'Group rows:',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 toolbarSep(),
                 switchInput({
                     bind: 'inMillions',
                     label: 'Gross in millions:',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 filler(),
                 gridCountLabel(),
@@ -54,9 +48,7 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
     }
 });
 
-@HoistModel
-@LoadSupport
-class Model {
+class Model extends HoistModel {
 
     @managed gridModel;
     @observable groupRows;
@@ -65,11 +57,13 @@ class Model {
     panelRef = createRef();
 
     constructor() {
+        super();
+        makeObservable(this);
         this.gridModel = this.createGridModel();
         this.setGroupRows(true);
 
         this.addReaction({
-            track: () => [this.inMillions],
+            track: () => this.inMillions,
             run: () => {
                 this.gridModel.agApi.refreshCells({
                     columns: ['projectedGross', 'actualGross'],
@@ -106,15 +100,15 @@ class Model {
         };
 
         return new GridModel({
-            stateModel: 'toolboxGroupGrid',
+            persistWith: {localStorageKey: 'toolboxGroupGrid'},
             store: {
                 idSpec: data => `${data.firstName}~${data.lastName}~${data.city}~${data.state}`
             },
             sortBy: 'lastName',
             emptyText: 'No records found...',
-            enableColChooser: true,
+            colChooserModel: true,
             enableExport: true,
-            compact: true,
+            sizingMode: XH.appModel.gridSizingMode,
             contextMenu: () => {
                 return new StoreContextMenu({
                     items: [
@@ -189,11 +183,11 @@ class Model {
                 {
                     groupId: 'sales',
                     headerName: () => 'Sales' + (this.inMillions ? ' (in millions)' : ''),
-                    align: 'center',
+                    headerAlign: 'center',
                     children: [
                         {
                             groupId: 'projected',
-                            align: 'center',
+                            headerAlign: 'center',
                             headerClass: 'xh-blue',
                             children: [
                                 {
@@ -212,7 +206,7 @@ class Model {
                         },
                         {
                             groupId: 'actual',
-                            align: 'center',
+                            headerAlign: 'center',
                             headerClass: 'xh-red',
                             children: [
                                 {
@@ -235,8 +229,7 @@ class Model {
                     field: 'retain',
                     ...boolCheckCol,
                     width: 70
-                },
-                {...emptyFlexCol}
+                }
             ]
         });
     }

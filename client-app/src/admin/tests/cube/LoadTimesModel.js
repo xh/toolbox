@@ -1,18 +1,15 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed} from '@xh/hoist/core';
-import {LoadSupport} from '@xh/hoist/core/mixins';
 import {numberRenderer} from '@xh/hoist/format';
 import {castArray} from 'lodash';
 
-
-@HoistModel
-@LoadSupport
-export class LoadTimesModel {
+export class LoadTimesModel extends HoistModel {
 
     @managed gridModel = new GridModel({
         store: {idSpec: 'timestamp'},
         sortBy: 'timestamp|desc',
         emptyText: 'No actions recorded...',
+        hideHeaders: true,
         columns: [
             {field: 'timestamp', hidden: true},
             {field: 'tag', flex: 1},

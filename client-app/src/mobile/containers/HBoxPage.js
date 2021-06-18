@@ -1,6 +1,6 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {div, hbox, box} from '@xh/hoist/cmp/layout';
+import {box, div, hbox} from '@xh/hoist/cmp/layout';
 
 export const hboxPage = hoistCmp.factory({
     render() {

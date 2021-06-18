@@ -1,11 +1,10 @@
-import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
+import {HoistModel, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 
-@HoistModel
-@LoadSupport
-export class AgGridViewModel {
+export class AgGridViewModel extends HoistModel {
+
     @bindable.ref data = [];
 
     columnDefs = [
@@ -43,7 +42,7 @@ export class AgGridViewModel {
         {
             field: 'mktVal',
             type: 'numericColumn',
-            filter: 'agNumberFilter',
+            filter: 'agNumberColumnFilter',
             width: 130,
             enableValue: true,
             aggFunc: 'sum',
@@ -55,7 +54,7 @@ export class AgGridViewModel {
         {
             field: 'pnl',
             type: 'numericColumn',
-            filter: 'agNumberFilter',
+            filter: 'agNumberColumnFilter',
             width: 130,
             enableValue: true,
             aggFunc: 'sum',
@@ -72,6 +71,8 @@ export class AgGridViewModel {
     });
 
     constructor() {
+        super();
+        makeObservable(this);
         const {agGridModel} = this;
         this.addReaction({
             track: () => [this.data, agGridModel.agApi],
@@ -81,8 +82,8 @@ export class AgGridViewModel {
         });
     }
 
-    async doLoadAsync() {
-        const data = await XH.portfolioService.getRawPositionsAsync();
+    async doLoadAsync(loadSpec) {
+        const data = await XH.portfolioService.getRawPositionsAsync({loadSpec});
         this.setData(data);
     }
 }

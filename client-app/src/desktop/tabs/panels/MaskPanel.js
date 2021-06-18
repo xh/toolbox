@@ -1,16 +1,15 @@
 import React from 'react';
-import {hoistCmp, HoistModel, creates, managed, LoadSupport} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {span} from '@xh/hoist/cmp/layout';
-import {numberInput, textInput, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {mask} from '@xh/hoist/desktop/cmp/mask';
-
 import {sampleGrid, SampleGridModel, wrapper} from '../../common';
 
 export const maskPanel = hoistCmp.factory({
@@ -61,13 +60,13 @@ export const maskPanel = hoistCmp.factory({
                     switchInput({
                         bind: 'inline',
                         label: 'Inline:',
-                        labelAlign: 'left'
+                        labelSide: 'left'
                     }),
                     toolbarSep(),
                     switchInput({
                         bind: 'spinner',
                         label: 'Spinner:',
-                        labelAlign: 'left'
+                        labelSide: 'left'
                     }),
                     toolbarSep(),
                     refreshButton({text: 'Load Now'})
@@ -82,9 +81,7 @@ export const maskPanel = hoistCmp.factory({
     }
 });
 
-@LoadSupport
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @bindable seconds = 3;
     @bindable message = '';
@@ -93,6 +90,11 @@ class Model {
 
     @managed
     sampleGridModel = new SampleGridModel()
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     async doLoadAsync(loadSpec) {
         const {loadModel, message, seconds} = this,

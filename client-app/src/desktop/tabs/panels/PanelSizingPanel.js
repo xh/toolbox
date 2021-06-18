@@ -1,14 +1,13 @@
 import React from 'react';
-import {hoistCmp, XH, creates, HoistModel, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {observable, bindable} from '@xh/hoist/mobx';
-import {box, hbox, filler, p, h3} from '@xh/hoist/cmp/layout';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {box, filler, h3, hbox, p} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-
 import {wrapper} from '../../common/Wrapper';
 
 export const panelSizingPanel = hoistCmp.factory({
@@ -139,20 +138,17 @@ const loremIpsum = [
 ];
 
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @bindable resizeWhileDragging = false;
 
     @managed
-    @observable.ref
     leftPanelModel = new PanelModel({
         defaultSize: 150,
         side: 'left'
     });
 
     @managed
-    @observable.ref
     rightPanelModel = new PanelModel({
         defaultSize: 150,
         maxSize: 300,
@@ -161,7 +157,6 @@ class Model {
     });
 
     @managed
-    @observable.ref
     bottomPanelModel = new PanelModel({
         defaultSize: 130,
         side: 'bottom',
@@ -170,6 +165,8 @@ class Model {
     });
     
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.resizeWhileDragging,
             run: (resizeWhileDragging) => {

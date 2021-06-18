@@ -1,17 +1,15 @@
-import {HoistModel, XH, managed, LoadSupport} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {fmtDate} from '@xh/hoist/format';
-import {Highcharts} from '@xh/hoist/kit/highcharts';
-import {isNil} from 'lodash';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
-@HoistModel
-@LoadSupport
-export class LineChartModel {
+export class LineChartModel extends HoistModel {
 
     @bindable symbol = null;
 
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.symbol,
             run: () => this.loadAsync()
@@ -23,19 +21,15 @@ export class LineChartModel {
         highchartsConfig: {
             chart: {
                 zoomType: 'x',
-                animation: false,
-                marginLeft: 50
+                animation: false
             },
             title: {text: null},
-            tooltip: {outside: true},
             legend: {enabled: false},
-            scrollbar: {enabled: false},
-
+            navigator: {enabled: true},
             rangeSelector: {
                 enabled: true,
                 selected: 1     // default to a 3-month zoom
             },
-            navigator: {enabled: true},
             xAxis: {
                 type: 'datetime',
                 labels: {
@@ -46,50 +40,28 @@ export class LineChartModel {
             },
             yAxis: {
                 floor: 0,
-                title: {
-                    text: null
-                }
+                opposite: true,
+                title: {text: null}
             },
-            plotOptions: {
-                area: {
-                    fillColor: {
-                        linearGradient: {
-                            x1: 0,
-                            y1: 0,
-                            x2: 0,
-                            y2: 1
-                        },
-                        stops: [
-                            [0, Highcharts.getOptions().colors[0]],
-                            [1, new Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                        ]
-                    },
-                    marker: {
-                        radius: 2
-                    },
-                    lineWidth: 1,
-                    states: {
-                        hover: {
-                            lineWidth: 1
-                        }
-                    },
-                    threshold: null
-                }
-            },
-            exporting: {
-                enabled: true
-            }
+            tooltip: {outside: true},
+            exporting: {enabled: true}
         }
     });
 
     async doLoadAsync(loadSpec) {
         const {symbol} = this;
-        if (isNil(symbol)) {
-            this.chartModel.setSeries([]);
+
+        if (!symbol) {
+            this.chartModel.clear();
             return;
         }
 
-        const series = await XH.portfolioService.getLineChartSeriesAsync(symbol);
-        this.chartModel.setSeries([series]);
+        const series = await XH.portfolioService
+            .getLineChartSeriesAsync({symbol, loadSpec})
+            .catchDefault();
+
+        if (!loadSpec.isObsolete) {
+            this.chartModel.setSeries(series ?? {});
+        }
     }
 }

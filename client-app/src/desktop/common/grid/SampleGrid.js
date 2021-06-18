@@ -9,9 +9,7 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import PT from 'prop-types';
 import {gridOptionsPanel} from './options/GridOptionsPanel';
-
 import {SampleGridModel} from './SampleGridModel';
-
 import './SampleGrid.scss';
 
 export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({

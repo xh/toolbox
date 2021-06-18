@@ -1,14 +1,12 @@
-import {XH, hoistCmp, creates} from '@xh/hoist/core';
-
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
+import {colAutosizeButton, colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {label, select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-
 import {GridPageModel} from './GridPageModel';
 
 export const gridPage = hoistCmp.factory({
@@ -27,12 +25,7 @@ export const gridPage = hoistCmp.factory({
                     options: {prefix: 'Loaded'}
                 })
             ],
-            item: grid({
-                onRowClicked: (e) => {
-                    const {id} = e.data.raw;
-                    XH.appendRoute('gridDetail', {id});
-                }
-            }),
+            item: grid(),
             tbar: [
                 label('Size:'),
                 select({
@@ -60,6 +53,7 @@ export const gridPage = hoistCmp.factory({
             bbar: [
                 storeFilterField(),
                 filler(),
+                colAutosizeButton(),
                 colChooserButton()
             ]
         });

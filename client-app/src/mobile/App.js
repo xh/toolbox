@@ -3,7 +3,6 @@ import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
 import {navigator} from '@xh/hoist/mobile/cmp/navigator';
 import {Icon} from '@xh/hoist/icon';
-
 import './App.scss';
 
 export const App = hoistCmp({
@@ -13,7 +12,8 @@ export const App = hoistCmp({
         return panel({
             tbar: appBar({
                 icon: Icon.boxFull({size: 'lg', prefix: 'fal'}),
-                hideRefreshButton: false
+                hideRefreshButton: false,
+                appMenuButtonProps: {hideLogoutItem: false}
             }),
             item: navigator()
         });

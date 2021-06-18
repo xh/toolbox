@@ -1,18 +1,14 @@
-import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
-import {timeCol} from '@xh/hoist/cmp/grid/columns';
+import {GridModel, timeCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {LoadSupport} from '@xh/hoist/core/mixins';
 import {numberRenderer} from '@xh/hoist/format';
-import {bindable, comparer} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {start} from '@xh/hoist/promise';
 import {isEmpty} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 import {LoadTimesModel} from './LoadTimesModel';
 import {CubeModel} from './CubeModel';
 
-@HoistModel
-@LoadSupport
-export class CubeTestModel {
+export class CubeTestModel extends HoistModel {
 
     @managed cubeModel;
     @managed gridModel;
@@ -21,24 +17,22 @@ export class CubeTestModel {
     @managed loadTimesModel;
 
     @bindable includeLeaves = false;
-    @bindable fundFilter = null;
+    @bindable.ref fundFilter = null;
     @bindable showSummary = false;
     @bindable updateFreq = -1;
     @bindable updateCount = 5;
 
     constructor() {
+        super();
+        makeObservable(this);
         this.loadTimesModel = new LoadTimesModel();
         this.gridModel = this.createGridModel();
         this.cubeModel = new CubeModel(this);
 
         const {cube} = this.cubeModel;
 
-        const cubeDims = cube.fields
-            .filter(it => it.isDimension)
-            .map(it => ({value: it.name, label: it.label}));
-
         this.dimManagerModel = new DimensionManagerModel({
-            dimensions: cubeDims,
+            dimensions: cube.dimensions,
             defaultDimConfig: 'cubeTestDefaultDims',
             userDimPref: 'cubeTestUserDims'
         });
@@ -52,17 +46,21 @@ export class CubeTestModel {
         this.addReaction({
             track: () => this.getQuery(),
             run: () => this.executeQueryAsync(),
-            equals: comparer.structural
+            equals: 'structural'
         });
     }
 
     getQuery() {
         const {dimManagerModel, fundFilter, includeLeaves} = this,
             dimensions = dimManagerModel.value,
-            filters = !isEmpty(fundFilter) ? [{name: 'fund', values: [...fundFilter]}] : null,
+            filter = !isEmpty(fundFilter) ? {field: 'fund', op: '=', value: fundFilter} : null,
             includeRoot = this.showSummary;
 
-        return {dimensions, filters, includeLeaves, includeRoot};
+        return {dimensions, filter, includeLeaves, includeRoot};
+    }
+
+    clear() {
+        this.cubeModel.cube.clearAsync();
     }
 
     async doLoadAsync() {
@@ -74,7 +72,7 @@ export class CubeTestModel {
             {gridModel, loadModel, showSummary} = this,
             query = this.getQuery(),
             dimCount = query.dimensions.length,
-            filterCount = !isEmpty(query.filters) ? query.filters[0].values.length : 0;
+            filterCount = !isEmpty(query.filter) ? query.filter.value.length : 0;
 
         // Query is initialized with empty dims and is triggering an initial run we don't need.
         if (!dimCount) return;
@@ -97,7 +95,7 @@ export class CubeTestModel {
             store: {loadRootAsSummary: this.showSummary},
             sortBy: 'time|desc',
             emptyText: 'No records found...',
-            enableColChooser: true,
+            colChooserModel: true,
             enableExport: true,
             rowBorders: true,
             showHover: true,
@@ -175,8 +173,7 @@ export class CubeTestModel {
                 {
                     field: 'time',
                     ...timeCol
-                },
-                {...emptyFlexCol}
+                }
             ]
         });
     }

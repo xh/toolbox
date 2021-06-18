@@ -1,14 +1,6 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
 import {XH} from '@xh/hoist/core';
 import {AppModel as BaseAppModel} from '@xh/hoist/admin/AppModel';
 import {Icon} from '@xh/hoist/icon';
-
-
 import {WipTab} from './wip/WipTab';
 import {TestsTab} from './tests/TestsTab';
 import {roadmapTab} from './roadmap/RoadmapTab';
@@ -38,15 +30,16 @@ export class AppModel extends BaseAppModel {
                 name: 'tests',
                 path: '/tests',
                 children: [
-                    {name: 'localDate', path: '/localDate'},
-                    {name: 'grid', path: '/grid'},
-                    {name: 'dataView', path: '/dataView'},
+                    {name: 'asyncLoop', path: '/asyncLoop'},
                     {name: 'cube', path: '/cube'},
-                    {name: 'webSockets', path: '/webSockets'},
-                    {name: 'panelResizing', path: '/panelResizing'},
+                    {name: 'dataView', path: '/dataView'},
                     {name: 'fetchAPI', path: '/fetchAPI'},
+                    {name: 'grid', path: '/grid'},
+                    {name: 'localDate', path: '/localDate'},
+                    {name: 'panelResizing', path: '/panelResizing'},
+                    {name: 'select', path: '/select'},
                     {name: 'storeEditing', path: '/storeEditing'},
-                    {name: 'select', path: '/select'}
+                    {name: 'webSockets', path: '/webSockets'}
                 ]
             },
             {
