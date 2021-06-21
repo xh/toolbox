@@ -2,21 +2,21 @@
   .xh-hframe {
     justify-content: center;
     align-items: center;
-    padding: var(--xh-pad-px);
+    //padding: var(--xh-pad-px);
 
     img {
       margin: var(--xh-pad-px);
-      width: 200px;
+      width: 300px;
       height: auto;
     }
   }
 
   .xh-button {
     width: 300px;
-    margin: auto;
+    //margin: auto;
   }
 
-  p {
-    margin: var(--xh-pad-px);
-  }
+  //p {
+  //  margin: var(--xh-pad-px);
+  //}
 }
