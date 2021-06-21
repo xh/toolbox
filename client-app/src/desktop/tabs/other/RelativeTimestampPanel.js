@@ -8,7 +8,7 @@ import {Icon} from '@xh/hoist/icon';
 import {action, observable, bindable, makeObservable} from '@xh/hoist/mobx';
 import {random, sample} from 'lodash';
 import moment from 'moment';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 
 export const relativeTimestampPanel = hoistCmp.factory({
     model: creates(() => new Model()),
@@ -50,7 +50,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                 bbar: [
                     switchInput({
                         label: 'Short',
-                        labelAlign: 'left',
+                        labelSide: 'left',
                         bind: 'useShortFmt'
                     }),
                     filler(),

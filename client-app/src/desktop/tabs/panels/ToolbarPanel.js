@@ -1,7 +1,7 @@
 import {span} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 import {filler, frame, hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {buttonGroupInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -74,8 +74,7 @@ const topBar = hoistCmp.factory(
             filler(),
             switchInput({
                 bind: 'enableTerminate',
-                label: 'Danger mode',
-                alignIndicator: 'right'
+                label: 'Danger mode'
             }),
             button({
                 icon: Icon.skull(),

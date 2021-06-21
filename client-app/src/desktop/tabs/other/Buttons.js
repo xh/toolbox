@@ -47,18 +47,18 @@ export const buttonsPanel = hoistCmp.factory({
                     buttonPanel({headerItems: [
                         switchInput({
                             label: 'Dark Mode',
-                            labelAlign: 'left',
+                            labelSide: 'left',
                             bind: 'darkTheme',
                             model: XH
                         }),
                         switchInput({
                             label: 'Disable All',
-                            labelAlign: 'left',
+                            labelSide: 'left',
                             bind: 'disableButtons'
                         }),
                         switchInput({
                             label: 'All Active',
-                            labelAlign: 'left',
+                            labelSide: 'left',
                             bind: 'activeButtons'
                         })
                     ]}),

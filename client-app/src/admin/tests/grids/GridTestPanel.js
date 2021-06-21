@@ -107,20 +107,20 @@ const bbar1 = hoistCmp.factory(
         switchInput({
             bind: 'showSummary',
             label: 'Summary Row',
-            labelAlign: 'left'
+            labelSide: 'left'
         }),
         toolbarSep(),
         switchInput({
             bind: 'tree',
             label: 'Tree mode',
-            labelAlign: 'left'
+            labelSide: 'left'
         }),
         toolbarSep(),
         switchInput({
             bind: 'loadRootAsSummary',
             label: 'Load Root As Summary',
             disabled: !(model.tree && model.showSummary),
-            labelAlign: 'left'
+            labelSide: 'left'
         }),
         toolbarSep(),
         tooltip({
@@ -134,7 +134,7 @@ const bbar1 = hoistCmp.factory(
         switchInput({
             bind: 'disableXssProtection',
             label: 'Disable XSS',
-            labelAlign: 'left'
+            labelSide: 'left'
         }),
         toolbarSep(),
         label('Extra Fields'),
@@ -151,7 +151,7 @@ const bbar2 = hoistCmp.factory(
         switchInput({
             bind: 'disableSelect',
             label: 'Disable Day < 0 Selection',
-            labelAlign: 'left'
+            labelSide: 'left'
         }),
         toolbarSep(),
         tooltip({
@@ -185,13 +185,13 @@ const bbar3 = hoistCmp.factory(
         switchInput({
             bind: 'colChooserCommitOnChange',
             label: 'CommitOnChange',
-            labelAlign: 'left'
+            labelSide: 'left'
         }),
         toolbarSep(),
         switchInput({
             bind: 'colChooserShowRestoreDefaults',
             label: 'ShowRestoreDefaults',
-            labelAlign: 'left'
+            labelSide: 'left'
         }),
         toolbarSep(),
         label('Width'),
@@ -208,7 +208,7 @@ const bbar3 = hoistCmp.factory(
         switchInput({
             label: 'Lock Column Groups',
             bind: 'lockColumnGroups',
-            labelAlign: 'left'
+            labelSide: 'left'
         })
     )
 );
