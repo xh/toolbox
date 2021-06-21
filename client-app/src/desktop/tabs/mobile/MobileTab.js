@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import {a, code, hbox, hframe, img, p} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -65,7 +65,8 @@ export const mobileTab = hoistCmp.factory(
                             minimal: false,
                             text: 'Send Link to Toolbox Mobile Site',
                             icon: Icon.icon({iconName: 'envelope'}),
-                            width: 'fit-content'
+                            width: 'fit-content',
+                            onClick: () => XH.fetchJson({url: 'emailMobileLink/send'})
                         }),
                         button({
                             minimal: false,
