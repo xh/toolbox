@@ -3,8 +3,6 @@ package io.xh.toolbox.mobile
 import io.xh.hoist.security.Access
 import io.xh.toolbox.BaseController
 
-import javax.mail.AuthenticationFailedException
-
 
 @Access(['APP_READER'])
 class EmailMobileLinkController extends BaseController {
