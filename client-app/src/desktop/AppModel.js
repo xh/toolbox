@@ -33,9 +33,9 @@ export class AppModel extends HoistAppModel {
             {id: 'containers', icon: Icon.box(), content: containersTab},
             {id: 'forms', icon: Icon.edit(), content: formsTab},
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
+            {id: 'mobile', icon: Icon.icon({iconName: 'mobile-alt'}), content: mobileTab},
             {id: 'other', icon: Icon.boxFull(), content: otherTab},
-            {id: 'examples', icon: Icon.books(), content: examplesTab},
-            {id: 'mobile', icon: Icon.icon({iconName: 'mobile-alt'}), content: mobileTab}
+            {id: 'examples', icon: Icon.books(), content: examplesTab}
         ]
     });
 
@@ -140,6 +140,10 @@ export class AppModel extends HoistAppModel {
                         ]
                     },
                     {
+                        name: 'mobile',
+                        path: '/mobile'
+                    },
+                    {
                         name: 'other',
                         path: '/other',
                         children: [
@@ -162,10 +166,6 @@ export class AppModel extends HoistAppModel {
                     {
                         name: 'examples',
                         path: '/examples'
-                    },
-                    {
-                        name: 'mobile',
-                        path: '/mobile'
                     }
                 ]
             }
