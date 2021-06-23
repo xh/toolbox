@@ -7,10 +7,10 @@ import {library} from '@fortawesome/fontawesome-svg-core';
 import {faPhoneLaptop, faMobile} from '@fortawesome/pro-regular-svg-icons';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
-import './MobileTab.scss';
-import mobileImageGrid from './MobileImageGrid.png';
 import mobileImageHome from './MobileImageHome.png';
+import mobileImageGrid from './MobileImageGrid.png';
 import mobileImageColChooser from './MobileImageColChooser.png';
+import './MobileTab.scss';
 
 library.add(faPhoneLaptop, faMobile);
 
@@ -29,7 +29,7 @@ export const mobileTab = hoistCmp.factory(
             items: panel({
                 title: 'Mobile Support',
                 icon: Icon.icon({iconName: 'phone-laptop'}),
-                width: 1200,
+                width: 1000,
                 height: 740,
                 items: [
                     vframe(
