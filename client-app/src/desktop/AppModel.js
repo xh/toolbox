@@ -1,8 +1,6 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistAppModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faMobileAlt} from '@fortawesome/pro-regular-svg-icons';
 import {GitHubService} from '../core/svc/GitHubService';
 import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
@@ -16,8 +14,6 @@ import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
 import {mobileTab} from './tabs/mobile/MobileTab';
-
-library.add(faMobileAlt);
 
 export class AppModel extends HoistAppModel {
 
@@ -33,7 +29,7 @@ export class AppModel extends HoistAppModel {
             {id: 'containers', icon: Icon.box(), content: containersTab},
             {id: 'forms', icon: Icon.edit(), content: formsTab},
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
-            {id: 'mobile', icon: Icon.icon({iconName: 'mobile-alt'}), content: mobileTab},
+            {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
             {id: 'other', icon: Icon.boxFull(), content: otherTab},
             {id: 'examples', icon: Icon.books(), content: examplesTab}
         ]
