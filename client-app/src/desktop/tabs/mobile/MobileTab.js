@@ -19,7 +19,7 @@ export const mobileTab = hoistCmp.factory(
         description: [
             <p>
                 Mobile apps share many of the same components and logic as their desktop counterparts, with some
-                mobile-specific Hoist components that are supported by the open source <a href="http://onsen.io" target="_blank">
+                mobile-specific Hoist components that are supported by the open source <a href="https://onsen.io" target="_blank">
                 Onsen</a> framework to improve the native mobile UI experience. Explore the Toolbox Mobile App on your
                 device at <a href="https://toolbox.xh.io/mobile" target="_blank">toolbox.xh.io/mobile</a>.
             </p>
