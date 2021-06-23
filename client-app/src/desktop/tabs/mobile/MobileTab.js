@@ -36,8 +36,11 @@ export const mobileTab = hoistCmp.factory(
                         button({
                             minimal: false,
                             text: 'Send Link to Toolbox Mobile App',
-                            icon: Icon.icon({iconName: 'envelope'}),
-                            onClick: () => XH.fetchJson({url: 'emailMobileLink/send'})
+                            icon: Icon.envelope(),
+                            onClick: () => {
+                                XH.fetchJson({url: 'emailMobileLink/send'});
+                                XH.toast({message: 'Check your inbox on your mobile device!'});
+                            }
                         }),
                         button({
                             minimal: false,

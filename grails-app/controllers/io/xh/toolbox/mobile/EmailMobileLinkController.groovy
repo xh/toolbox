@@ -9,17 +9,14 @@ class EmailMobileLinkController extends BaseController {
 
     def emailService
 
-    /**
-     * Sends an email with the link to the Toolbox Mobile Site to the currently logged in user.
-     */
     def send() {
         try {
             emailService.sendEmail([
                     to: user.email,
-                    subject: 'Your Link to the Toolbox Mobile Site',
+                    subject: 'Your Link to the Toolbox Mobile App',
                     html: """
                         Click <a href="https://toolbox-dev.xh.io/mobile">here</a> from your mobile device to launch the 
-                        Toolbox Mobile Site.
+                        Toolbox Mobile App.
                     """
             ])
             renderJSON([email: user.email, success: true])
