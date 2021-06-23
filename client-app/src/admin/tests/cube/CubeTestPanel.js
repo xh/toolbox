@@ -38,8 +38,8 @@ export const CubeTestPanel = hoistCmp({
 
 const tbar = hoistCmp.factory(
     ({model}) => toolbar(
-        switchInput({bind: 'showSummary', label: 'Summary?', labelAlign: 'left'}),
-        switchInput({bind: 'includeLeaves', label: 'Leaves?', labelAlign: 'left'}),
+        switchInput({bind: 'showSummary', label: 'Summary?', labelSide: 'left'}),
+        switchInput({bind: 'includeLeaves', label: 'Leaves?', labelSide: 'left'}),
         select({
             bind: 'fundFilter',
             options: XH.portfolioService.lookups.funds,

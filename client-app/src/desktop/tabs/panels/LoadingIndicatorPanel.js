@@ -58,8 +58,6 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                     toolbarSep(),
                     select({
                         bind: 'corner',
-                        label: 'Corner:',
-                        labelAlign: 'left',
                         enableFilter: false,
                         options: ['tl', 'tr', 'bl', 'br'],
                         width: 70
@@ -68,7 +66,7 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                     switchInput({
                         bind: 'spinner',
                         label: 'Spinner:',
-                        labelAlign: 'left'
+                        labelSide: 'left'
                     }),
                     toolbarSep(),
                     refreshButton({text: 'Load Now'})

@@ -46,7 +46,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 switchInput({
                     bind: 'filterIncludesChildren',
                     label: 'Filter w/Children',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 })
             ],
             ...props

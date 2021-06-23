@@ -24,39 +24,39 @@ export const agGridOptions = hoistCmp.factory({
                 vspacer(10),
                 switchInput({
                     label: 'Dark Mode',
-                    labelAlign: 'left',
+                    labelSide: 'left',
                     bind: 'darkTheme',
                     model: XH
                 }),
                 switchInput({
                     bind: 'hideHeaders',
                     label: 'Hide Headers',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 switchInput({
                     bind: 'stripeRows',
                     label: 'Striped',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 switchInput({
                     bind: 'rowBorders',
                     label: 'Row Borders',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 switchInput({
                     bind: 'cellBorders',
                     label: 'Cell Borders',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 switchInput({
                     bind: 'showHover',
                     label: 'Hover',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 switchInput({
                     bind: 'showCellFocus',
                     label: 'Cell focus',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 })
             ]
         });

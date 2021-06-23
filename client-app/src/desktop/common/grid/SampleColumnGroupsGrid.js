@@ -29,13 +29,13 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
                 switchInput({
                     bind: 'groupRows',
                     label: 'Group rows:',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 toolbarSep(),
                 switchInput({
                     bind: 'inMillions',
                     label: 'Gross in millions:',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 filler(),
                 gridCountLabel(),

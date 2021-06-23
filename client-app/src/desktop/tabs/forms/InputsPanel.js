@@ -262,7 +262,7 @@ const formContents = hoistCmp.factory(
                         field: 'switch',
                         item: switchInput({
                             label: 'Enabled:',
-                            labelAlign: 'left'
+                            labelSide: 'left'
                         })
                     }),
                     row({
