@@ -1,13 +1,9 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {boolCheckCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
-import {GroupingChooserModel} from '@xh/hoist/cmp/grouping/GroupingChooserModel';
+import {FilterChooserModel} from '@xh/hoist/cmp/filter';
+import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {
-    dateRenderer,
-    fmtNumberTooltip,
-    millionsRenderer,
-    numberRenderer
-} from '@xh/hoist/format';
+import {dateRenderer, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 
 export class ColumnFilterPanelModel extends HoistModel {
 
@@ -21,18 +17,6 @@ export class ColumnFilterPanelModel extends HoistModel {
         const {isTreeMode, gridModel, treeGridModel} = this;
         return isTreeMode ? treeGridModel.store.filter : gridModel.store.filter;
     }
-
-    @managed
-    groupingChooserModel = new GroupingChooserModel({
-        persistWith: {localStorageKey: 'columnFilterTestTreeGrid'},
-        dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],
-        initialValue: ['sector', 'symbol'],
-        initialFavorites: [
-            ['region', 'sector'],
-            ['region', 'symbol'],
-            ['sector']
-        ]
-    });
 
     @managed
     gridModel = new GridModel({
@@ -151,6 +135,13 @@ export class ColumnFilterPanelModel extends HoistModel {
         ]
     });
 
+    @managed
+    gridFilterChooserModel = new FilterChooserModel({
+        sourceStore: this.gridModel.store,
+        targetStore: this.gridModel.store
+    });
+
+    @managed
     treeGridModel = new GridModel({
         treeMode: true,
         store: {
@@ -210,10 +201,29 @@ export class ColumnFilterPanelModel extends HoistModel {
         ]
     });
 
+    @managed
+    treeGridFilterChooserModel = new FilterChooserModel({
+        sourceStore: this.treeGridModel.store,
+        targetStore: this.treeGridModel.store
+    });
+
+    @managed
+    groupingChooserModel = new GroupingChooserModel({
+        persistWith: {localStorageKey: 'columnFilterTestTreeGrid'},
+        dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],
+        initialValue: ['sector', 'symbol'],
+        initialFavorites: [
+            ['region', 'sector'],
+            ['region', 'symbol'],
+            ['sector']
+        ]
+    });
+
     constructor() {
         super();
         makeObservable(this);
 
+        // Update filter JSON
         this.addReaction({
             track: () => this.filter,
             run: (filter) => this.setJsonFilterInput(JSON.stringify(filter?.toJSON() ?? null, undefined, 2))
@@ -242,5 +252,10 @@ export class ColumnFilterPanelModel extends HoistModel {
         }
         await treeGridModel.preSelectFirstAsync();
     }
+
+    //--------------------
+    // Implementation
+    //--------------------
+
 
 }
