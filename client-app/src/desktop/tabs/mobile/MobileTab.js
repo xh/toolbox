@@ -9,7 +9,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
 import mobileImageHome from './MobileImageHome.png';
 import mobileImageGrid from './MobileImageGrid.png';
-import mobileImageColChooser from './MobileImageColChooser.png';
+import mobileImageForm from './MobileImageForm.png';
 import './MobileTab.scss';
 
 library.add(faPhoneLaptop, faMobile);
@@ -19,9 +19,9 @@ export const mobileTab = hoistCmp.factory(
         description: [
             <p>
                 Mobile apps share many of the same components and logic as their desktop counterparts, with some
-                mobile-specific Hoist components that are supported by the open-source framework <a href="https://onsen.io"
-                target="_blank">Onsen</a> to improve the native mobile UI experience. Explore the Toolbox Mobile App on
-                your device at <a href="https://toolbox.xh.io/mobile" target="_blank">toolbox.xh.io/mobile</a>.
+                mobile-specific Hoist components that are supported by the open-source
+                framework <a href="https://onsen.io" target="_blank">Onsen</a> to improve the native mobile UI experience.
+                Explore the Toolbox Mobile App on your device at <a href="https://toolbox.xh.io/mobile" target="_blank">toolbox.xh.io/mobile</a>.
             </p>
         ],
         item: hbox({
@@ -38,7 +38,7 @@ export const mobileTab = hoistCmp.factory(
                             text: 'Send Link to Toolbox Mobile App',
                             icon: Icon.envelope(),
                             onClick: () => {
-                                XH.fetchJson({url: 'emailMobileLink/send'});
+                                XH.fetch({url: 'emailMobileLink/send'});
                                 XH.toast({message: 'Check your inbox on your mobile device!'});
                             }
                         }),
@@ -57,7 +57,7 @@ export const mobileTab = hoistCmp.factory(
                             src: mobileImageGrid
                         }),
                         img({
-                            src: mobileImageColChooser
+                            src: mobileImageForm
                         })
                     )
                 ]
