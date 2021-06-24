@@ -102,7 +102,8 @@ export class ColumnFilterPanelModel extends HoistModel {
                     label: true
                 }),
                 exportFormat: ExportFormat.NUM_DELIMITED,
-                chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
+                chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)',
+                disableEnumFilter: true
             },
             {
                 field: 'profit_loss',
@@ -115,7 +116,8 @@ export class ColumnFilterPanelModel extends HoistModel {
                     colorSpec: true
                 }),
                 exportFormat: ExportFormat.LEDGER_COLOR,
-                chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
+                chooserDescription: 'Annual Profit & Loss YTD (EBITDA)',
+                disableEnumFilter: true
             },
             {
                 colId: 'dayOfWeek',
