@@ -1,6 +1,6 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel, dateCol, boolCheckCol} from '@xh/hoist/cmp/grid';
-import {dateIs, lengthIs, numberIs, required} from '@xh/hoist/data';
+import {Store, dateIs, lengthIs, numberIs, required} from '@xh/hoist/data';
 import {
     actionCol,
     calcActionColWidth,
@@ -13,7 +13,7 @@ import {
 } from '@xh/hoist/desktop/cmp/grid';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, makeObservable} from '@xh/hoist/mobx';
+import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {fmtDate} from '@xh/hoist/format';
 import {isEmpty, isNil, max} from 'lodash';
 
@@ -22,178 +22,43 @@ export class InlineEditingPanelModel extends HoistModel {
     @bindable
     asyncValidation = false;
 
-    @managed
-    gridModel = new GridModel({
-        selModel: null,
-        showCellFocus: true,
-        store: {
-            fields: [
-                {
-                    name: 'name',
-                    type: 'string',
-                    rules: [required, lengthIs({max: 10})]
-                },
-                {
-                    name: 'amount',
-                    type: 'number',
-                    rules: [
-                        required,
-                        numberIs({min: 0, max: 100}),
-                        {
-                            when: (f, {category}) => category === 'US',
-                            check: async ({value}) => {
-                                if (this.asyncValidation) await wait(1000);
-                                return isNil(value) || value < 10 ? 'Records where `category` is "US" require `amount` of 10 or greater.' : null;
-                            }
-                        }
-                    ]
-                },
-                {
-                    name: 'date',
-                    type: 'date',
-                    rules: [required, dateIs({max: 'today'})]
-                },
-                {
-                    name: 'isActive',
-                    type: 'bool',
-                    defaultValue: true
-                },
-                {
-                    name: 'category',
-                    type: 'string',
-                    rules: [required]
-                },
-                {
-                    name: 'description',
-                    type: 'string',
-                    rules: [
-                        lengthIs({max: 280})
-                    ]
-                }
-            ]
-        },
-        columns: [
-            {
-                ...actionCol,
-                width: calcActionColWidth(3),
-                actions: [
-                    {
-                        icon: Icon.check(),
-                        intent: 'success',
-                        displayFn: ({record}) => {
-                            return {
-                                icon: record.isAdd ? Icon.add() : Icon.check(),
-                                disabled: record.isCommitted
-                            };
-                        },
-                        actionFn: ({record}) => this.commitRecord(record)
-                    },
-                    {
-                        icon: Icon.undo(),
-                        intent: 'primary',
-                        displayFn: ({record}) => ({disabled: !record.isModified}),
-                        actionFn: ({record}) => this.revertRecord(record)
-                    },
-                    {
-                        icon: Icon.delete(),
-                        intent: 'danger',
-                        displayFn: ({record}) => ({icon: record.isAdd ? Icon.close() : Icon.delete()}),
-                        actionFn: ({record}) => this.store.removeRecords(record)
-                    }
-                ]
-            },
-            {
-                field: 'isActive',
-                ...boolCheckCol,
-                headerName: '?',
-                editable: true,
-                editor: checkboxEditor
-            },
-            {
-                field: 'name',
-                editable: true,
-                width: 200,
-                editor: textEditor,
-                tooltip: true
-            },
-            {
-                field: 'amount',
-                editable: true,
-                width: 100,
-                editor: numberEditor
-            },
-            {
-                field: 'category',
-                editable: true,
-                width: 100,
-                editor: (props) => selectEditor({
-                    ...props,
-                    inputProps: {
-                        options: ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
-                    }
-                })
-            },
-            {
-                field: 'date',
-                ...dateCol,
-                editable: true,
-                editor: (props) => dateEditor({
-                    ...props,
-                    inputProps: {
-                        minDate: new Date(2021, 2, 15)
-                    }
-                }),
-                tooltip: (v) => fmtDate(v, 'dddd MMMM Do YYYY')
-            },
-            {
-                field: 'description',
-                width: 300,
-                editable: true,
-                editor: textAreaEditor
-            }
-        ]
-    });
+    @bindable
+    fullRowEditing = false;
 
-    get store() {
-        return this.gridModel.store;
-    }
+    @managed
+    @observable.ref
+    gridModel;
+
+
+    @managed
+    store;
 
     constructor() {
         super();
         makeObservable(this);
-        this.store.loadData([
-            {
-                id: 0,
-                name: 'Record 0',
-                category: 'US',
-                description: 'This is a record'
-            },
-            {
-                id: 1,
-                name: 'Record 1',
-                category: 'EU',
-                description: 'This is a record'
-            },
-            {
-                id: 2,
-                name: 'Record 2',
-                category: 'BRIC',
-                description: 'This is a record'
+        this.store = this.createStore();
+        this.gridModel = this.createGridModel();
+
+        this.addReaction({
+            track: () => this.fullRowEditing,
+            run: () => {
+                XH.safeDestroy(this.gridModel);
+                this.gridModel = this.createGridModel();
             }
-        ]);
+        });
     }
 
     add() {
-        this.store.addRecords({id: XH.genId()});
+        this.store.addRecords({});
     }
 
     addFive() {
         this.store.addRecords([
-            {id: XH.genId(), name: 'New Record 1'},
-            {id: XH.genId(), name: 'New Record 2'},
-            {id: XH.genId(), name: 'New Record 3'},
-            {id: XH.genId(), name: 'New Record 4'},
-            {id: XH.genId(), name: 'New Record 5'}
+            {name: 'New Record 1'},
+            {name: 'New Record 2'},
+            {name: 'New Record 3'},
+            {name: 'New Record 4'},
+            {name: 'New Record 5'}
         ]);
     }
 
@@ -262,6 +127,168 @@ export class InlineEditingPanelModel extends HoistModel {
     @action
     revertRecord(record) {
         this.store.revertRecords(record);
+    }
+
+    createStore() {
+        return new Store({
+            idSpec: XH.genId,
+            fields: [
+                {
+                    name: 'name',
+                    type: 'string',
+                    rules: [required, lengthIs({max: 15})]
+                },
+                {
+                    name: 'amount',
+                    type: 'number',
+                    rules: [
+                        required,
+                        numberIs({min: 0, max: 100}),
+                        {
+                            when: (f, {category}) => category === 'US',
+                            check: async ({value}) => {
+                                if (this.asyncValidation) await wait(1000);
+                                return isNil(value) || value < 10 ? 'Records where `category` is "US" require `amount` of 10 or greater.' : null;
+                            }
+                        }
+                    ]
+                },
+                {
+                    name: 'date',
+                    type: 'date',
+                    rules: [dateIs({max: 'today'})]
+                },
+                {
+                    name: 'isActive',
+                    type: 'bool',
+                    defaultValue: true
+                },
+                {
+                    name: 'category',
+                    type: 'string',
+                    rules: [required]
+                },
+                {
+                    name: 'description',
+                    type: 'string',
+                    rules: [
+                        lengthIs({max: 280})
+                    ]
+                }
+            ],
+            data: [
+                {
+                    id: 0,
+                    name: 'Record 0',
+                    category: 'US',
+                    amount: 50,
+                    description: 'This is a record'
+                },
+                {
+                    id: 1,
+                    name: 'Record 1',
+                    category: 'EU',
+                    amount: 25,
+                    description: 'This is a record'
+                },
+                {
+                    id: 2,
+                    name: 'Record 2',
+                    category: 'BRIC',
+                    amount: 30,
+                    description: 'This is a record'
+                }
+            ]
+        });
+    }
+
+    createGridModel() {
+        return new GridModel({
+            selModel: null,
+            showCellFocus: true,
+            fullRowEditing: this.fullRowEditing,
+            store: this.store,
+            columns: [
+                {
+                    ...actionCol,
+                    width: calcActionColWidth(3),
+                    actions: [
+                        {
+                            icon: Icon.check(),
+                            intent: 'success',
+                            displayFn: ({record}) => {
+                                return {
+                                    icon: record.isAdd ? Icon.add() : Icon.check(),
+                                    disabled: record.isCommitted
+                                };
+                            },
+                            actionFn: ({record}) => this.commitRecord(record)
+                        },
+                        {
+                            icon: Icon.undo(),
+                            intent: 'primary',
+                            displayFn: ({record}) => ({disabled: !record.isModified}),
+                            actionFn: ({record}) => this.revertRecord(record)
+                        },
+                        {
+                            icon: Icon.delete(),
+                            intent: 'danger',
+                            displayFn: ({record}) => ({icon: record.isAdd ? Icon.close() : Icon.delete()}),
+                            actionFn: ({record}) => this.store.removeRecords(record)
+                        }
+                    ]
+                },
+                {
+                    field: 'isActive',
+                    ...boolCheckCol,
+                    headerName: '?',
+                    editable: true,
+                    editor: checkboxEditor
+                },
+                {
+                    field: 'name',
+                    editable: true,
+                    width: 200,
+                    editor: textEditor,
+                    tooltip: true
+                },
+                {
+                    field: 'amount',
+                    editable: true,
+                    width: 100,
+                    editor: numberEditor
+                },
+                {
+                    field: 'category',
+                    editable: true,
+                    width: 100,
+                    editor: (props) => selectEditor({
+                        ...props,
+                        inputProps: {
+                            options: ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
+                        }
+                    })
+                },
+                {
+                    field: 'date',
+                    ...dateCol,
+                    editable: true,
+                    editor: (props) => dateEditor({
+                        ...props,
+                        inputProps: {
+                            minDate: new Date(2021, 2, 15)
+                        }
+                    }),
+                    tooltip: (v) => fmtDate(v, 'dddd MMMM Do YYYY')
+                },
+                {
+                    field: 'description',
+                    width: 300,
+                    editable: true,
+                    editor: textAreaEditor
+                }
+            ]
+        });
     }
 
     getNextId() {

@@ -16,7 +16,13 @@ export const inlineEditingPanel = hoistCmp.factory({
     render({model}) {
         return wrapper({
             description: [
-                <p>TODO</p>
+                <p>
+                    Grids support inline editing of its underlying store records. To enable, set an appropriate
+                    editor per column.
+
+                    Grid will also show the validation state of any pending records, allowing the application to
+                    require resolution before persisting to the back-end.
+                </p>
             ],
             item: panel({
                 title: 'Grids › Inline Editing',
@@ -55,12 +61,19 @@ export const inlineEditingPanel = hoistCmp.factory({
                     storeValidIndicator(),
                     filler(),
                     switchInput({
+                        bind: 'fullRowEditing',
+                        label: 'Full row Editing?'
+                    }),
+                    switchInput({
                         bind: 'asyncValidation',
                         label: 'Async Validation?'
                     })
                 ],
                 item: hframe(
-                    grid(),
+                    grid({
+                        key: model.gridModel.xhId,
+                        model: model.gridModel
+                    }),
                     gridOptionsPanel()
                 )
             })
