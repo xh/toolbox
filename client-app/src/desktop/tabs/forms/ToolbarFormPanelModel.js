@@ -1,5 +1,6 @@
 import {HoistModel} from '@xh/hoist/core';
-import {FormModel, required} from '@xh/hoist/cmp/form';
+import {FormModel} from '@xh/hoist/cmp/form';
+import {required} from '@xh/hoist/data';
 import {random} from 'lodash';
 
 export class ToolbarFormPanelModel extends HoistModel {
