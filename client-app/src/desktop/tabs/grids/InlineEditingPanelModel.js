@@ -49,16 +49,16 @@ export class InlineEditingPanelModel extends HoistModel {
     }
 
     add() {
-        this.store.addRecords({});
+        this.store.addRecords({id: XH.genId()});
     }
 
     addFive() {
         this.store.addRecords([
-            {name: 'New Record 1'},
-            {name: 'New Record 2'},
-            {name: 'New Record 3'},
-            {name: 'New Record 4'},
-            {name: 'New Record 5'}
+            {id: XH.genId(), name: 'New Record 1'},
+            {id: XH.genId(), name: 'New Record 2'},
+            {id: XH.genId(), name: 'New Record 3'},
+            {id: XH.genId(), name: 'New Record 4'},
+            {id: XH.genId(), name: 'New Record 5'}
         ]);
     }
 
@@ -92,19 +92,8 @@ export class InlineEditingPanelModel extends HoistModel {
         store.updateData(transaction);
     }
 
-    async revert() {
-        const doRevert = await XH.confirm({
-            icon: Icon.warning(),
-            title: 'Revert?',
-            message: 'Are you sure you want to revert all changes?',
-            confirmProps: {
-                intent: 'warning',
-                icon: Icon.undo(),
-                text: 'Revert'
-            }
-        });
-
-        if (doRevert) this.store.revert();
+    revert() {
+        this.store.revert();
     }
 
     @action
@@ -131,7 +120,6 @@ export class InlineEditingPanelModel extends HoistModel {
 
     createStore() {
         return new Store({
-            idSpec: XH.genId,
             fields: [
                 {
                     name: 'name',
