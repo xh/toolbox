@@ -25,6 +25,7 @@ export class MapPanelModel extends HoistModel {
             },
             labelField: 'name',
             valueField: 'pnl',
+            maxHeat: 1.0,
             heatField: 'pnlMktVal',
             orientation: 'vertical'
         });
