@@ -1,9 +1,6 @@
 import {HoistModel, managed} from '@xh/hoist/core';
-import {
-    FormModel,
-    lengthIs,
-    required
-} from '@xh/hoist/cmp/form';
+import {FormModel} from '@xh/hoist/cmp/form';
+import {required, lengthIs} from '@xh/hoist/data';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {observable, action, makeObservable} from '@xh/hoist/mobx';
 
