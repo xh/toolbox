@@ -35,6 +35,12 @@ export const homePage = hoistCmp.factory({
                     route: 'form'
                 }),
                 summaryCard({
+                    title: 'Charts',
+                    icon: Icon.chartLine(),
+                    summary: 'coming soon',
+                    route: 'charts'
+                }),
+                summaryCard({
                     title: 'Containers',
                     icon: Icon.box(),
                     summary: 'Layout children in Tabs, or flexed horizontally or vertically.',
