@@ -2,7 +2,7 @@ import {box, code, div, li, p, span, table, tbody, td, th, tr, ul} from '@xh/hoi
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
-import {lengthIs, required} from '@xh/hoist/cmp/form';
+import {lengthIs, required} from '@xh/hoist/data';
 import {Icon} from '@xh/hoist/icon';
 import React, {useRef} from 'react';
 import {wrapper} from '../../common';
@@ -18,7 +18,7 @@ export const popupsPanel = hoistCmp.factory(
                 icon: ret ? Icon.check() : Icon.x(),
                 containerRef: divRef.current
             });
-        
+
         return wrapper({
             description: (
                 <div>
