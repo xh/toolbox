@@ -52,7 +52,14 @@ export class OHLCChartModel extends HoistModel {
         return {
             chart: {
                 type: 'ohlc',
-                zoomType: 'x'
+                zoomType: 'x',
+                resetZoomButton: {
+                    theme: {
+                        style: {
+                            display: 'none'
+                        }
+                    }
+                }
             },
             title: {text: null},
             legend: {enabled: false},
