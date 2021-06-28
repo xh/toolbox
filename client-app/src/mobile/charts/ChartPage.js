@@ -28,7 +28,7 @@ const example = hoistCmp.factory(
     ({model}) => vframe({
         className: 'toolbox-example-container',
         item: chart({
-            aspectRatio: model.aspectRatio
+            aspectRatio: model.aspectRatio || 0
         })
     })
 );

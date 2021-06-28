@@ -5,12 +5,19 @@ import {fmtDate} from '@xh/hoist/format';
 
 export class ChartPageModel extends HoistModel {
 
-    @bindable currentSymbol = '';
-    @bindable.ref symbols = null;
+    @bindable
+    currentSymbol = '';
+
+    @bindable.ref
+    symbols = null;
+
     numCompanies = 3;
 
-    @managed chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
-    @bindable aspectRatio = null;
+    @managed
+    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
+
+    @bindable
+    aspectRatio = null;
 
     constructor() {
         super();
@@ -51,15 +58,7 @@ export class ChartPageModel extends HoistModel {
     getChartModelCfg() {
         return {
             chart: {
-                type: 'ohlc',
-                zoomType: 'x',
-                resetZoomButton: {
-                    theme: {
-                        style: {
-                            display: 'none'
-                        }
-                    }
-                }
+                type: 'ohlc'
             },
             title: {text: null},
             legend: {enabled: false},
@@ -76,19 +75,6 @@ export class ChartPageModel extends HoistModel {
                 opposite: true,
                 endOnTick: true,
                 showLastLabel: true
-            },
-            tooltip: {
-                formatter: function() {
-                    const p = this.point;
-                    return `
-                        ${fmtDate(this.x)}<br>
-                        <b>${p.series.name}</b><br>
-                        Open: ${p.open}<br>
-                        High: ${p.high}<br>
-                        Low: ${p.low}<br>
-                        Close: ${p.close}<br>
-                    `;
-                }
             }
         };
     }
