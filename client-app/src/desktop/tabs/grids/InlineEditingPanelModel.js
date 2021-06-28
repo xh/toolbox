@@ -144,7 +144,7 @@ export class InlineEditingPanelModel extends HoistModel {
                 {
                     name: 'date',
                     type: 'date',
-                    rules: [dateIs({max: 'today'})]
+                    rules: [dateIs({min: new Date(2021, 2, 15), max: 'today'})]
                 },
                 {
                     name: 'isActive',
@@ -261,12 +261,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     field: 'date',
                     ...dateCol,
                     editable: true,
-                    editor: (props) => dateEditor({
-                        ...props,
-                        inputProps: {
-                            minDate: new Date(2021, 2, 15)
-                        }
-                    }),
+                    editor: dateEditor,
                     tooltip: (v) => fmtDate(v, 'dddd MMMM Do YYYY')
                 },
                 {
