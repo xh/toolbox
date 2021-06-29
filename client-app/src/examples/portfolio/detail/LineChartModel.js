@@ -28,7 +28,7 @@ export class LineChartModel extends HoistModel {
             navigator: {enabled: true},
             rangeSelector: {
                 enabled: true,
-                selected: 1     // default to a 3-month zoom
+                selected: 1 // default to a 3-month zoom
             },
             xAxis: {
                 type: 'datetime',
@@ -43,8 +43,7 @@ export class LineChartModel extends HoistModel {
                 opposite: true,
                 title: {text: null}
             },
-            tooltip: {outside: true},
-            exporting: {enabled: true}
+            tooltip: {outside: true}
         }
     });
 
