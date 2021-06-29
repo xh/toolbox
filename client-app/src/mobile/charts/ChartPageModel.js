@@ -16,9 +16,6 @@ export class ChartPageModel extends HoistModel {
     @managed
     chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
-    @bindable
-    aspectRatio = null;
-
     constructor() {
         super();
         makeObservable(this);
