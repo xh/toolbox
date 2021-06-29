@@ -13,7 +13,7 @@ import {ColumnFilterPanelModel} from './ColumnFilterPanelModel';
 export const ColumnFilterPanel = hoistCmp({
     model: creates(ColumnFilterPanelModel),
     render({model}) {
-        const {isTreeMode, gridModel, treeGridModel} = model;
+        const {activeGridModel} = model;
         return hframe({
             items: [
                 panel({
@@ -21,8 +21,8 @@ export const ColumnFilterPanel = hoistCmp({
                     title: 'Column Filter Test Grid',
                     tbar: tbar(),
                     item: grid({
-                        key: isTreeMode ? treeGridModel.xhId : gridModel.xhId,
-                        model: isTreeMode ? treeGridModel : gridModel
+                        key: activeGridModel.xhId,
+                        model: activeGridModel
                     }),
                     bbar: bbar()
                 }),
@@ -34,13 +34,11 @@ export const ColumnFilterPanel = hoistCmp({
 
 const tbar = hoistCmp.factory(
     ({model}) => {
-        const {isTreeMode, gridFilterChooserModel, treeGridFilterChooserModel} = model,
-            chooserModel = isTreeMode ? treeGridFilterChooserModel : gridFilterChooserModel;
-
+        const {activeFilterChooserModel} = model;
         return toolbar(
             filterChooser({
-                key: chooserModel.xhId,
-                model: chooserModel,
+                key: activeFilterChooserModel.xhId,
+                model: activeFilterChooserModel,
                 flex: 1,
                 enableClear: true
             })
@@ -50,20 +48,18 @@ const tbar = hoistCmp.factory(
 
 const bbar = hoistCmp.factory(
     ({model}) => {
-        const {isTreeMode, gridModel, treeGridModel} = model,
-            countModel = isTreeMode ? treeGridModel : gridModel;
-
+        const {isCubeMode, activeGridModel} = model;
         return toolbar(
             switchInput({
-                bind: 'isTreeMode',
-                label: 'Tree Mode'
+                bind: 'isCubeMode',
+                label: 'Cube Mode'
             }),
-            toolbarSep({omit: !isTreeMode}),
-            isTreeMode ? groupingChooser() : null,
+            toolbarSep({omit: !isCubeMode}),
+            isCubeMode ? groupingChooser() : null,
             filler(),
             gridCountLabel({
-                key: countModel.xhId,
-                gridModel: countModel,
+                key: activeGridModel.xhId,
+                gridModel: activeGridModel,
                 includeChildren: true
             })
         );
@@ -71,7 +67,8 @@ const bbar = hoistCmp.factory(
 );
 
 const filterJsonPanel = hoistCmp.factory(
-    () => {
+    ({model}) => {
+        const prefix = model.isCubeMode ? 'Cube View' : 'Grid';
         return panel({
             model: {
                 side: 'right',
@@ -79,11 +76,11 @@ const filterJsonPanel = hoistCmp.factory(
                 collapsible: true
             },
             icon: Icon.code(),
-            title: 'Store Filter as JSON',
+            title: `${prefix} Filter as JSON`,
             item: jsonInput({
                 flex: 1,
                 width: '100%',
-                bind: 'jsonFilterInput'
+                bind: 'filterJson'
             })
         });
     }
