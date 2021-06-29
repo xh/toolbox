@@ -1,5 +1,5 @@
-import {required} from '@xh/hoist/cmp/form';
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
+import {required} from '@xh/hoist/data';
 import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {OauthService} from '../core/svc/OauthService';
