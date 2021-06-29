@@ -246,6 +246,7 @@ export class ColumnFilterPanelModel extends HoistModel {
     }
 
     createCubeGridModel() {
+        const {cubeView} = this;
         return new GridModel({
             treeMode: true,
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
@@ -254,6 +255,8 @@ export class ColumnFilterPanelModel extends HoistModel {
             colChooserModel: true,
             enableExport: true,
             sizingMode: XH.appModel.gridSizingMode,
+            filterSource: cubeView,
+            filterTarget: cubeView,
             colDefaults: {enableFilter: true},
             columns: [
                 {
