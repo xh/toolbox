@@ -49,7 +49,8 @@ const tbar = hoistCmp.factory(
             bind: 'aspectRatio',
             commitOnChange: true,
             selectOnFocus: true,
-            min: 0
+            min: 0,
+            style: {backgroundColor: 'white'}
         })
     )
 );
