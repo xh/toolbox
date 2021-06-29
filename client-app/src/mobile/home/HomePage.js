@@ -37,7 +37,7 @@ export const homePage = hoistCmp.factory({
                 summaryCard({
                     title: 'Charts',
                     icon: Icon.chartLine(),
-                    summary: 'coming soon',
+                    summary: 'Customize interactive charts with dynamically updated data.',
                     route: 'charts'
                 }),
                 summaryCard({
