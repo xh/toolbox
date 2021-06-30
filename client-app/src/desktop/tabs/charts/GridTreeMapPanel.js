@@ -29,13 +29,14 @@ export const gridTreeMapPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory(
     ({model}) => toolbar(
-        groupingChooser(),
+        groupingChooser({width: 200}),
         filler(),
         span('Max Heat'),
         select({
             model: model.treeMapModel,
             bind: 'maxHeat',
             width: 120,
+            enableFilter: false,
             options: [
                 {label: 'None (auto)', value: undefined},
                 {label: '0.5', value: 0.5},
@@ -49,6 +50,7 @@ const tbar = hoistCmp.factory(
             model: model.treeMapModel,
             bind: 'colorMode',
             width: 120,
+            enableFilter: false,
             options: [
                 {label: 'Linear', value: 'linear'},
                 {label: 'Wash', value: 'wash'},
@@ -61,6 +63,7 @@ const tbar = hoistCmp.factory(
             model: model.treeMapModel,
             bind: 'algorithm',
             width: 120,
+            enableFilter: false,
             options: [
                 {label: 'Squarified', value: 'squarified'},
                 {label: 'Slice and Dice', value: 'sliceAndDice'},

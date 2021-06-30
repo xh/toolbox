@@ -48,17 +48,18 @@ export class OHLCChartModel extends HoistModel {
                 formatter: function() {
                     const p = this.point;
                     return `
-                        <div class="tbox-pos-chart-tip__title"><b>${p.series.name}</b> ${fmtDate(this.x)}</div>
-                        <table class="tbox-pos-chart-tip">
+                        <div class="xh-chart-tooltip">
+                        <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(this.x)}</div>
+                        <table>
                             <tr><th>Open:</th><td>${fmtPrice(p.open)}</td></tr>
                             <tr><th>High:</th><td>${fmtPrice(p.high)}</td></tr>
                             <tr><th>Low:</th><td>${fmtPrice(p.low)}</td></tr>
                             <tr><th>Close:</th><td>${fmtPrice(p.close)}</td></tr>
                         </table>
+                        </div>
                     `;
                 }
-            },
-            exporting: {enabled: true}
+            }
         }
     });
 

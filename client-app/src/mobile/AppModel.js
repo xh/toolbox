@@ -7,6 +7,7 @@ import {PortfolioService} from '../core/svc/PortfolioService';
 import {containersPage} from './containers/ContainersPage';
 import {dataViewPage} from './dataview/DataViewPage';
 import {formPage} from './form/FormPage';
+import {chartPage} from './charts/ChartPage';
 import {gridDetailPage} from './grids/GridDetailPage';
 import {gridPage} from './grids/GridPage';
 import {homePage} from './home/HomePage';
@@ -31,6 +32,7 @@ export class AppModel extends HoistAppModel {
             {id: 'treeGridDetail', content: treeGridDetailPage},
             {id: 'dataview', content: dataViewPage},
             {id: 'form', content: formPage},
+            {id: 'charts', content: chartPage},
             {id: 'containers', content: containersPage},
             {id: 'panels', content: panelsPage},
             {id: 'popovers', content: popoverPage},
@@ -69,6 +71,10 @@ export class AppModel extends HoistAppModel {
                     {
                         name: 'form',
                         path: '/form'
+                    },
+                    {
+                        name: 'charts',
+                        path: '/charts'
                     },
                     {
                         name: 'containers',
