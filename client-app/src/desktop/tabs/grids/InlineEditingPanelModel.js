@@ -268,7 +268,8 @@ export class InlineEditingPanelModel extends HoistModel {
                     field: 'description',
                     width: 300,
                     editable: true,
-                    editor: textAreaEditor
+                    editor: textAreaEditor,
+                    omit: this.fullRowEditing
                 }
             ]
         });
