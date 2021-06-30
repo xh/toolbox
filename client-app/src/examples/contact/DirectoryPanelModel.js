@@ -1,9 +1,9 @@
-import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {div, hbox} from '@xh/hoist/cmp/layout';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {bindable, observable, makeObservable, action, runInAction} from '@xh/hoist/mobx';
 import {without, uniq, isEmpty} from 'lodash';
 import {DetailsPanelModel} from './cmp/DetailsPanelModel';
-import {div, hbox} from '@xh/hoist/cmp/layout';
 import {favoriteButton} from './cmp/FavoriteButton';
 
 /**

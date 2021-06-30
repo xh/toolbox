@@ -1,9 +1,8 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {div, filler, span} from '@xh/hoist/cmp/layout';
+import {div, filler, span, vframe, box, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
-import './TileView.scss';
-import {vframe, box, vbox} from '@xh/hoist/cmp/layout/index';
 import {favoriteButton} from './FavoriteButton';
+import './TileView.scss';
 
 export const tileView = hoistCmp.factory({
     render({model}) {
