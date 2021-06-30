@@ -30,11 +30,12 @@ export const lineChartPanel = hoistCmp.factory({
                 icon: Icon.chartLine(),
                 width: '80%',
                 height: '60%',
+                mask: 'onLoad',
                 tbar: tbar(),
                 item: chart()
             }),
             links: [
-                {text: 'Toolbox src', url: '$TB/client-app/src/desktop/tabs/charts', notes: 'These examples.'},
+                {url: '$TB/client-app/src/desktop/tabs/charts/LineChartPanel.js', notes: 'This example.'},
                 {url: '$HR/cmp/chart/Chart.js', notes: 'Hoist wrapper component for Chart sizing and layout.'},
                 {url: '$HR/cmp/chart/ChartModel.js', notes: 'Hoist model with observable Chart config and series.'},
                 {text: 'Highcharts Docs', url: 'https://api.highcharts.com/highstock/', notes: 'Library API documentation.'}
@@ -45,7 +46,7 @@ export const lineChartPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory(({model}) => {
     return toolbar(
-        span('Symbol: '),
+        span('Symbol'),
         select({
             bind: 'currentSymbol',
             options: model.symbols,
