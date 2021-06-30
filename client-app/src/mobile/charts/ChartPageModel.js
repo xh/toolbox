@@ -1,7 +1,7 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {fmtDate} from '@xh/hoist/format';
+import {fmtDate, fmtPrice} from '@xh/hoist/format';
 
 export class ChartPageModel extends HoistModel {
 
@@ -72,6 +72,23 @@ export class ChartPageModel extends HoistModel {
                 opposite: true,
                 endOnTick: true,
                 showLastLabel: true
+            },
+            tooltip: {
+                useHTML: true,
+                formatter: function() {
+                    const p = this.point;
+                    return `
+                        <div class="xh-chart-tooltip">
+                        <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(this.x)}</div>
+                        <table>
+                            <tr><th>Open:</th><td>${fmtPrice(p.open)}</td></tr>
+                            <tr><th>High:</th><td>${fmtPrice(p.high)}</td></tr>
+                            <tr><th>Low:</th><td>${fmtPrice(p.low)}</td></tr>
+                            <tr><th>Close:</th><td>${fmtPrice(p.close)}</td></tr>
+                        </table>
+                        </div>
+                    `;
+                }
             }
         };
     }
