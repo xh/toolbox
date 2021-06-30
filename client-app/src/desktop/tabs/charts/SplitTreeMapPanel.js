@@ -29,13 +29,14 @@ export const splitTreeMapPanel = hoistCmp.factory({
 
 const tbar = hoistCmp.factory(
     ({model}) => toolbar(
-        groupingChooser(),
+        groupingChooser({width: 200}),
         filler(),
         span('Orientation'),
         select({
             model: model.splitTreeMapModel,
             bind: 'orientation',
             width: 120,
+            enableFilter: false,
             options: [
                 {label: 'Horizontal', value: 'horizontal'},
                 {label: 'Vertical', value: 'vertical'}
@@ -47,6 +48,7 @@ const tbar = hoistCmp.factory(
             model: model.splitTreeMapModel,
             bind: 'maxHeat',
             width: 120,
+            enableFilter: false,
             options: [
                 {label: 'None (auto)', value: undefined},
                 {label: '0.5', value: 0.5},
@@ -60,6 +62,7 @@ const tbar = hoistCmp.factory(
             model: model.splitTreeMapModel,
             bind: 'colorMode',
             width: 120,
+            enableFilter: false,
             options: [
                 {label: 'Linear', value: 'linear'},
                 {label: 'Wash', value: 'wash'},
@@ -72,6 +75,7 @@ const tbar = hoistCmp.factory(
             model: model.splitTreeMapModel,
             bind: 'algorithm',
             width: 120,
+            enableFilter: false,
             options: [
                 {label: 'Squarified', value: 'squarified'},
                 {label: 'Slice and Dice', value: 'sliceAndDice'},
