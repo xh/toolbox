@@ -1,4 +1,4 @@
-import {div, box, filler, hbox, img, placeholder, p} from '@xh/hoist/cmp/layout';
+import {div, box, filler, img, placeholder, p} from '@xh/hoist/cmp/layout';
 import {XH, hoistCmp, uses} from '@xh/hoist/core';
 import {DetailsPanelModel} from './DetailsPanelModel';
 import {Icon} from '@xh/hoist/icon/Icon';
@@ -8,6 +8,7 @@ import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {textArea, textInput, select} from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 
 export const detailsPanel = hoistCmp.factory({
     model: uses(DetailsPanelModel),
@@ -47,11 +48,14 @@ const profilePanel = hoistCmp.factory({
                         bioField()
                     ]
                 }),
-                hbox(
-                    favoriteButton({omit: isEditing}),
-                    filler(),
-                    editButton({omit: !XH.getUser().isHoistAdmin})
-                )
+                toolbar({
+                    className: 'details-bottom-toolbar',
+                    items: [
+                        favoriteButton({omit: isEditing}),
+                        filler(),
+                        editButton({omit: !XH.getUser().isHoistAdmin})
+                    ]
+                })
             ]
         });
     }
@@ -100,13 +104,13 @@ const bioField = hoistCmp.factory(
     () => formField({
         field: 'bio',
         label: null,
+        className: 'bio-readonly-panel',
         item: textArea({
             minHeight: 250
         }),
         readonlyRenderer: (val) => {
             return val ?
                 div({
-                    className: 'bio-readonly-panel',
                     items: val.split('\n').map(v => p(v))
                 }) :
                 '-';

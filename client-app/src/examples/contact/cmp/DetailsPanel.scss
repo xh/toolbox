@@ -1,8 +1,9 @@
 .contact-details-panel {
   &__inner {
+    display: flex;
+    flex-direction: column;
     height: 100%;
     padding: var(--xh-pad-double-px);
-    overflow-y: auto;
   }
 
   .contact-record-user-image {
@@ -15,6 +16,11 @@
 
   .xh-form-field {
     border-bottom: var(--xh-border-solid);
+    min-height: 2.5em;
+  }
+
+  .xh-form-field:nth-last-child(2) {
+    border-bottom: none;
   }
 
   .xh-form-field-label {
@@ -22,9 +28,12 @@
   }
 
   .bio-readonly-panel {
-    max-height: 40ex;
-    min-height: 100px;
-    overflow: auto;
+    flex-grow: 1;
+    overflow-y: auto !important;
+  }
+
+  .details-bottom-toolbar {
+    margin-bottom: 15px;
   }
 
   .metadata-tag {
