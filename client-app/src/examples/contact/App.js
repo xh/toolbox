@@ -13,7 +13,7 @@ export const App = hoistCmp({
     render() {
         return panel({
             tbar: appBar({
-                icon: Icon.user({size: '2x', prefix: 'fal'}),
+                icon: Icon.contact({size: '2x', prefix: 'fal'}),
                 appMenuButtonProps: {hideLogoutItem: false}
             }),
             item: directoryPanel()

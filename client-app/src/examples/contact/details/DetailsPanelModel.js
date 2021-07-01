@@ -1,14 +1,15 @@
 import {XH, HoistModel, managed} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
+import {required} from '@xh/hoist/data/validation/constraints';
 import {makeObservable, observable, action} from '@xh/hoist/mobx';
 
 export class DetailsPanelModel extends HoistModel {
 
-    @observable.ref
-    currentRecord;
+    /** @member {Record} */
+    @observable.ref currentRecord;
 
-    @managed
-    formModel;
+    /** @member {FormModel} */
+    @managed formModel;
 
     /** @member {DirectoryPanelModel} */
     directoryPanelModel;
@@ -25,9 +26,9 @@ export class DetailsPanelModel extends HoistModel {
         this.formModel = new FormModel({
             readonly: true,
             fields: [
-                {name: 'name'},
-                {name: 'email'},
-                {name: 'location'},
+                {name: 'name', rules: [required]},
+                {name: 'email', rules: [required]},
+                {name: 'location', rules: [required]},
                 {name: 'workPhone'},
                 {name: 'cellPhone'},
                 {name: 'bio'},
@@ -54,12 +55,19 @@ export class DetailsPanelModel extends HoistModel {
             formModel.setReadonly(!readonly);
             return;
         }
+
         try {
             await directoryPanelModel.updateContactAsync(currentRecord.id, formModel.getData(true));
             formModel.setReadonly(true);
         } catch (e) {
             XH.handleException(e);
         }
+    }
+
+    cancelEdit() {
+        const {formModel, currentRecord} = this;
+        formModel.setReadonly(true);
+        formModel.init(currentRecord.data);
     }
 }
 
