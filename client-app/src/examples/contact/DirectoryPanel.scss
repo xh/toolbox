@@ -6,11 +6,26 @@
   padding: var(--xh-pad-double);
 
   .metadata-tag {
+    position: relative;
     border-radius: 1.5px;
     font-size: 85%;
-    padding: 3px 6px 3px 6px;
-    margin: 2px;
+    padding: 3px 6px 3px 3px;
+    margin: 2px 2px 2px 12px;
     width: fit-content;
     background-color: var(--xh-bg-alt);
+    height: 20px;
+    line-height: 15px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 0;
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 10px solid var(--xh-bg-alt);
+    }
   }
 }

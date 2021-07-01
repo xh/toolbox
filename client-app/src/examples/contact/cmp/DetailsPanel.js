@@ -121,6 +121,7 @@ const bioField = hoistCmp.factory(
 const tagsField = hoistCmp.factory(
     ({model}) => formField({
         field: 'tags',
+        className: 'bio-tags',
         item: select({
             enableCreate: true,
             enableMulti: true,
