@@ -1,9 +1,17 @@
 # Changelog
 
-## v3.0.0-SNAPSHOT - unreleased
+
+## v2.7.0 - 2021-07-01
+
+### New Features
+
+* New 'Contact' Example App
+* New 'Todo' Example App
+* New 'Mobile' Tab
 
 ### Libraries
 
+* @xh/hoist 41.0.0
 * @xh/hoist-dev-utils 5.9.0
 
 ## v2.6.0 - 2021-04-22
