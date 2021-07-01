@@ -1,6 +1,6 @@
 import {XH, HoistModel, managed} from '@xh/hoist/core';
-import {makeObservable, observable, action} from '@xh/hoist/mobx';
 import {FormModel} from '@xh/hoist/cmp/form';
+import {makeObservable, observable, action} from '@xh/hoist/mobx';
 
 export class DetailsPanelModel extends HoistModel {
 

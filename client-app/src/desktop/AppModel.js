@@ -13,6 +13,7 @@ import {gridsTab} from './tabs/grids/GridsTab';
 import {homeTab} from './tabs/home/HomeTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
+import {mobileTab} from './tabs/mobile/MobileTab';
 
 export class AppModel extends HoistAppModel {
 
@@ -28,6 +29,7 @@ export class AppModel extends HoistAppModel {
             {id: 'containers', icon: Icon.box(), content: containersTab},
             {id: 'forms', icon: Icon.edit(), content: formsTab},
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
+            {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
             {id: 'other', icon: Icon.boxFull(), content: otherTab},
             {id: 'examples', icon: Icon.books(), content: examplesTab}
         ]
@@ -133,6 +135,10 @@ export class AppModel extends HoistAppModel {
                             {name: 'gridTreeMap', path: '/gridTreeMap'},
                             {name: 'splitTreeMap', path: '/splitTreeMap'}
                         ]
+                    },
+                    {
+                        name: 'mobile',
+                        path: '/mobile'
                     },
                     {
                         name: 'other',

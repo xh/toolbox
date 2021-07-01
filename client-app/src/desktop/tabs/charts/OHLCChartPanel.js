@@ -1,45 +1,53 @@
-import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
-import {filler, span, vframe} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {chart} from '@xh/hoist/cmp/chart';
+import {filler, span} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button/index';
-import {OHLCChartModel} from './OHLCChartModel';
-import {wrapper} from '../../common/Wrapper';
+import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {Icon} from '@xh/hoist/icon';
+import React from 'react';
+import {wrapper} from '../../common';
+import {OHLCChartModel} from './OHLCChartModel';
 
 export const ohlcChartPanel = hoistCmp.factory({
     model: creates(OHLCChartModel),
 
-    render() {
+    render({model}) {
         return wrapper({
-            style: {paddingTop: 0},
+            description: [
+                <p>
+                    Hoist provides a lightweight wrapper around the Highcharts charting and visualization library.
+                    This integration includes the <code>Chart</code> component to handle basic rendering, layout,
+                    and resizing and a <code>ChartModel</code> class to hold an observable config and data series.
+                </p>,
+                <p>
+                    Note that applications must license and specify a compatible version of Highcharts as an application
+                    dependency.
+                </p>
+            ],
             item: panel({
-                className: 'toolbox-ohlcchart-panel',
                 title: 'Charts › OHLC',
                 icon: Icon.chartLine(),
-                width: 800,
-                height: 600,
-                item: example(),
-                tbar: tbar()
-            })
+                width: '80%',
+                height: '60%',
+                mask: 'onLoad',
+                tbar: tbar(),
+                item: chart({aspectRatio: model.aspectRatio})
+            }),
+            links: [
+                {url: '$TB/client-app/src/desktop/tabs/charts/OHLCChartPanel.js', notes: 'This example.'},
+                {url: '$HR/cmp/chart/Chart.js', notes: 'Hoist wrapper component for Chart sizing and layout.'},
+                {url: '$HR/cmp/chart/ChartModel.js', notes: 'Hoist model with observable Chart config and series.'},
+                {text: 'Highcharts Docs', url: 'https://api.highcharts.com/highstock/', notes: 'Library API documentation.'}
+            ]
         });
     }
 });
 
-const example = hoistCmp.factory(
-    ({model}) => vframe({
-        className: 'toolbox-example-container',
-        item: chart({
-            aspectRatio: model.aspectRatio
-        })
-    })
-);
-
-const tbar = hoistCmp.factory(
-    ({model}) => toolbar(
-        span('Symbol: '),
+const tbar = hoistCmp.factory(({model}) => {
+    return toolbar(
+        span('Symbol'),
         select({
             bind: 'currentSymbol',
             options: model.symbols,
@@ -47,7 +55,7 @@ const tbar = hoistCmp.factory(
             width: 120
         }),
         toolbarSep(),
-        span('Aspect Ratio: '),
+        span('Aspect Ratio'),
         numberInput({
             width: 50,
             bind: 'aspectRatio',
@@ -68,5 +76,5 @@ const tbar = hoistCmp.factory(
                 });
             }
         })
-    )
-);
+    );
+});

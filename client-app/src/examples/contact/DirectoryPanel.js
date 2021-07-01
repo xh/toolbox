@@ -1,15 +1,15 @@
-import {grid} from '@xh/hoist/cmp/grid';
-import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {button, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
+import {filler, hframe} from '@xh/hoist/cmp/layout';
+import {grid} from '@xh/hoist/cmp/grid';
+import {storeCountLabel, storeFilterField} from '@xh/hoist/cmp/store';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
+import {button, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {detailsPanel} from './cmp/DetailsPanel';
-import './DirectoryPanel.scss';
 import {DirectoryPanelModel} from './DirectoryPanelModel';
-import {storeCountLabel, storeFilterField} from '@xh/hoist/cmp/store';
 import {tileView} from './cmp/TileView';
+import './DirectoryPanel.scss';
 
 export const directoryPanel = hoistCmp.factory({
     model: creates(DirectoryPanelModel),
@@ -54,6 +54,7 @@ const tbar = hoistCmp.factory(
                     placeholder: 'Tags',
                     enableMulti: true,
                     enableClear: true,
+                    width: 350,
                     options: tagList
                 }),
                 filler(),

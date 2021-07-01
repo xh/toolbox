@@ -2,13 +2,16 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
-import {isEmpty} from 'lodash';
 
-export class OHLCChartModel extends HoistModel {
+export class ChartPageModel extends HoistModel {
 
-    @bindable currentSymbol = '';
-    @bindable.ref symbols = [];
-    @bindable aspectRatio = null;
+    @bindable
+    currentSymbol = '';
+
+    @bindable.ref
+    symbols = null;
+
+    numCompanies = 3;
 
     @managed
     chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
@@ -16,7 +19,6 @@ export class OHLCChartModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
-
         this.addReaction({
             track: () => this.currentSymbol,
             run: () => this.loadAsync()
@@ -24,9 +26,9 @@ export class OHLCChartModel extends HoistModel {
     }
 
     async doLoadAsync(loadSpec) {
-        if (isEmpty(this.symbols)) {
+        if (!this.symbols) {
             let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
-            symbols = symbols.slice(0, 5);
+            symbols = symbols.slice(0, this.numCompanies);
             this.setSymbols(symbols);
         }
 
@@ -39,10 +41,11 @@ export class OHLCChartModel extends HoistModel {
             loadSpec
         }).catchDefault() ?? {};
 
+        const groupPixelWidth = 5;
         Object.assign(series, {
             dataGrouping: {
-                enabled: true,
-                groupPixelWidth: 5
+                enabled: !!groupPixelWidth,
+                groupPixelWidth: groupPixelWidth
             }
         });
 
@@ -52,17 +55,12 @@ export class OHLCChartModel extends HoistModel {
     getChartModelCfg() {
         return {
             chart: {
-                type: 'ohlc',
-                zoomType: 'x',
-                animation: false
+                type: 'ohlc'
             },
-            exporting: {enabled: true},
-            rangeSelector: {enabled: true, selected: 4},
             title: {text: null},
             legend: {enabled: false},
             scrollbar: {enabled: false},
             xAxis: {
-                type: 'datetime',
                 labels: {
                     formatter: function() {
                         return fmtDate(this.value);
@@ -70,8 +68,10 @@ export class OHLCChartModel extends HoistModel {
                 }
             },
             yAxis: {
+                title: {text: null},
                 opposite: true,
-                title: {text: null}
+                endOnTick: true,
+                showLastLabel: true
             },
             tooltip: {
                 useHTML: true,
