@@ -75,8 +75,8 @@ export class OrdersPanelModel extends HoistModel {
         });
 
         this.filterChooserModel = new FilterChooserModel({
-            filterSource: this.gridModel.store,
-            filterTarget: this.gridModel.store,
+            valueSource: this.gridModel.store,
+            target: this.gridModel.store,
             fieldSpecs: [
                 'symbol',
                 'trader',

@@ -22,7 +22,7 @@ export class ColumnFilterPanelModel extends HoistModel {
 
     get filter() {
         const {isCubeMode, gridModel, cubeView} = this;
-        return isCubeMode ? cubeView?.filter : gridModel?.filter;
+        return isCubeMode ? cubeView?.filter : gridModel?.filterModel.filter;
     }
 
     get activeGridModel() {
@@ -107,6 +107,7 @@ export class ColumnFilterPanelModel extends HoistModel {
             selModel: {mode: 'multiple'},
             sortBy: 'profit_loss|desc|abs',
             emptyText: 'No records found...',
+            filterModel: true,
             colChooserModel: true,
             enableExport: true,
             exportOptions: {
@@ -186,7 +187,7 @@ export class ColumnFilterPanelModel extends HoistModel {
                     }),
                     exportFormat: ExportFormat.NUM_DELIMITED,
                     chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)',
-                    disableEnumFilter: true
+                    enableEnumFilter: false
                 },
                 {
                     field: 'profit_loss',
@@ -200,7 +201,7 @@ export class ColumnFilterPanelModel extends HoistModel {
                     }),
                     exportFormat: ExportFormat.LEDGER_COLOR,
                     chooserDescription: 'Annual Profit & Loss YTD (EBITDA)',
-                    disableEnumFilter: true
+                    enableEnumFilter: false
                 },
                 {
                     field: 'trade_date',
@@ -215,8 +216,8 @@ export class ColumnFilterPanelModel extends HoistModel {
     createGridFilterChooserModel() {
         const {store} = this.gridModel;
         return new FilterChooserModel({
-            filterSource: store,
-            filterTarget: store
+            valueSource: store,
+            target: store
         });
     }
 
@@ -255,9 +256,11 @@ export class ColumnFilterPanelModel extends HoistModel {
             colChooserModel: true,
             enableExport: true,
             sizingMode: XH.appModel.gridSizingMode,
-            filterSource: cubeView,
-            filterTarget: cubeView,
             colDefaults: {enableFilter: true},
+            filterModel: {
+                valueSource: cubeView,
+                target: cubeView
+            },
             columns: [
                 {
                     field: 'id',
@@ -290,7 +293,7 @@ export class ColumnFilterPanelModel extends HoistModel {
                         precision: 0,
                         ledger: true
                     }),
-                    disableEnumFilter: true,
+                    enableEnumFilter: false,
                     hidden: true
                 },
                 {
@@ -300,7 +303,7 @@ export class ColumnFilterPanelModel extends HoistModel {
                     renderer: numberRenderer({
                         precision: 4
                     }),
-                    disableEnumFilter: true,
+                    enableEnumFilter: false,
                     hidden: true
                 },
                 {
@@ -311,7 +314,7 @@ export class ColumnFilterPanelModel extends HoistModel {
                         precision: 0,
                         ledger: true
                     }),
-                    disableEnumFilter: true
+                    enableEnumFilter: false
                 }
             ]
         });
@@ -327,8 +330,8 @@ export class ColumnFilterPanelModel extends HoistModel {
     createCubeFilterChooserModel() {
         const {cubeView} = this;
         return new FilterChooserModel({
-            filterSource: cubeView,
-            filterTarget: cubeView
+            valueSource: cubeView,
+            target: cubeView
         });
     }
 
