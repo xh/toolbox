@@ -34,6 +34,10 @@ export const welcomeWidget = hoistCmp.factory(
                             available for review.
                         </p>
                         <p>
+                            Meet our dedicated and hard-working team in our sample {link('Contact', '/contact')} app.
+                            We are always looking for talented developers to join us!
+                        </p>
+                        <p>
                             {link('Contact us', 'https://xh.io/')} with questions
                             or for more information - we would love to hear from you!
                         </p>
