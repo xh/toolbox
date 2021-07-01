@@ -7,6 +7,8 @@ export const tileView = hoistCmp.factory({
     render({model}) {
         return tileFrame({
             spacing: 10,
+            maxTileHeight: 400,
+            maxTileWidth: 400,
             items: model.records.map(record => tile({record}))
         });
     }
