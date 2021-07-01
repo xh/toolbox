@@ -1,0 +1,36 @@
+.tb-contact-details-panel {
+  flex: none !important;
+  width: 400px;
+
+  // Sync header height with DirectoryPanel toolbar.
+  .xh-panel-header {
+    height: 41px;
+  }
+
+  &__inner {
+    overflow-y: auto;
+
+    img {
+      display: table-cell;
+      height: 250px;
+      margin: var(--xh-pad-px) auto;
+    }
+
+    .xh-form-field {
+      margin: 0;
+      padding: var(--xh-pad-half-px) var(--xh-pad-px);
+
+      &:first-of-type {
+        border-top: var(--xh-border-solid);
+      }
+
+      &:not(:last-child) {
+        border-bottom: var(--xh-border-solid);
+      }
+    }
+
+    .xh-form-field-label {
+      font-weight: bold;
+    }
+  }
+}

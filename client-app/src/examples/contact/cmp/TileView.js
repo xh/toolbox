@@ -1,18 +1,14 @@
+import {div, filler, span, tileFrame, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp} from '@xh/hoist/core';
-import {div, filler, span, vframe, box, vbox} from '@xh/hoist/cmp/layout';
-import {Icon} from '@xh/hoist/icon/Icon';
 import {favoriteButton} from './FavoriteButton';
 import './TileView.scss';
 
 export const tileView = hoistCmp.factory({
     render({model}) {
-        return vframe(
-            box({
-                flexWrap: 'wrap',
-                items: model.records.map(record => tile({record}))
-            }),
-            filler()
-        );
+        return tileFrame({
+            spacing: 10,
+            items: model.records.map(record => tile({record}))
+        });
     }
 });
 
@@ -23,24 +19,21 @@ const tile = hoistCmp.factory(
             {profilePicture, name} = record.data;
 
         return vbox({
-            style: profilePicture ? {backgroundImage: `url(${profilePicture})`} : null,
-            height: 150,
-            width: 250,
-            onClick: () => gridModel.selectAsync(record),
-            className: `contact-fb-tile ${isSelected ? 'contact-fb-tile--selected' : ''}`,
+            style: {backgroundImage: `url(${profilePicture})`},
+            className: `tb-contact-tile ${isSelected ? 'tb-contact-tile--selected' : ''}`,
             items: [
-                profilePicture ? null : Icon.user({size: '2x'}),
                 div({
-                    className: profilePicture ? 'floating-name-bar' : null,
+                    className: 'tb-contact-tile__bar',
                     items: [
                         favoriteButton({record}),
                         filler(),
                         span({
-                            className: profilePicture ? 'floating-name' : null,
+                            className: 'tb-contact-tile__name',
                             item: name
                         })]
                 })
-            ]
+            ],
+            onClick: () => gridModel.selectAsync(record)
         });
     }
 );

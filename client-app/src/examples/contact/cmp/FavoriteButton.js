@@ -6,6 +6,7 @@ export const favoriteButton = hoistCmp.factory(
     ({model, record}) => {
         const {isFavorite} = record.data;
         return button({
+            className: 'tb-contact-fave-btn',
             icon: Icon.favorite({
                 color: isFavorite ? 'gold' : null,
                 prefix: isFavorite ? 'fas' : 'far'
