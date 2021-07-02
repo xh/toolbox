@@ -1,25 +1,27 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {filler, fragment} from '@xh/hoist/cmp/layout';
+import {filler} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {recordActionBar} from '@xh/hoist/desktop/cmp/record';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {Icon} from '@xh/hoist/icon';
 import {taskDialog} from './TaskDialog';
 import {TodoPanelModel} from './TodoPanelModel';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
-import {recordActionBar} from '@xh/hoist/desktop/cmp/record';
 
 export const todoPanel = hoistCmp.factory({
     model: creates(TodoPanelModel),
 
     render({model}) {
         return panel({
-            tbar: tbar(),
-            item: fragment(
-                taskDialog(),
-                grid()
-            ),
             ref: model.panelRef,
             mask: 'onLoad',
+            tbar: tbar(),
+            items: [
+                grid(),
+                taskDialog()
+            ],
             bbar: bbar()
         });
     }
@@ -45,15 +47,22 @@ const tbar = hoistCmp.factory(
 );
 
 const bbar = hoistCmp.factory(
-    () => toolbar(
+    ({model}) => toolbar(
         switchInput({
             bind: 'showGroups',
             label: 'Show in Groups'
         }),
-        filler(),
+        '-',
         switchInput({
             bind: 'showCompleted',
             label: 'Show Completed'
+        }),
+        filler(),
+        button({
+            icon: Icon.reset(),
+            intent: 'danger',
+            tooltip: 'Reset to example defaults.',
+            onClick: () => model.resetToDefaultTasksAsync()
         })
     )
 );

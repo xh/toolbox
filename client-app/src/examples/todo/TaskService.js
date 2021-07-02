@@ -1,6 +1,6 @@
 import {HoistService, XH} from '@xh/hoist/core';
-import {differenceBy} from 'lodash';
 import {LocalDate} from '@xh/hoist/utils/datetime';
+import {differenceBy} from 'lodash';
 
 /**
  * Service to manage fetching, updating and persisting tasks.
@@ -13,7 +13,7 @@ export class TaskService extends HoistService {
         return XH.getPref('todoTasks').map(it => {
             const dueDate = LocalDate.get(it.dueDate),
                 complete = it.complete;
-            
+
             let dueDateGroup;
             if (complete) {
                 dueDateGroup = 'Complete';
@@ -65,6 +65,10 @@ export class TaskService extends HoistService {
     async toggleCompleteAsync(tasks) {
         tasks = tasks.map(task => ({...task, complete: !task.complete}));
         return this.editAsync(tasks);
+    }
+
+    async resetToDefaultTasksAsync() {
+        XH.prefService.unset('todoTasks');
     }
 
     //------------------
