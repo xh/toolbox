@@ -1,6 +1,6 @@
 import {HoistAppModel, XH} from '@xh/hoist/core';
 import {OauthService} from '../../core/svc/OauthService';
-import {ContactService} from './ContactService';
+import {ContactService} from './svc/ContactService';
 
 
 export const PERSIST_APP = {prefKey: 'contactAppState'};
@@ -20,3 +20,9 @@ export class AppModel extends HoistAppModel {
     }
 
 }
+
+/**
+ * @typedef XH
+ * @property {ContactService} contactService
+ * @property {OauthService} oauthService
+ */

@@ -1779,9 +1779,9 @@
   integrity sha512-fZQQafSREFyuZcdWFAExYjBiCL7AUCdgsk80iO0q4yihYYdcIiH28CcuPTGFgLOCC8RlW49GSQxdHwZP+I7CNg==
 
 "@types/node@*":
-  version "15.12.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.12.5.tgz#9a78318a45d75c9523d2396131bd3cca54b2d185"
-  integrity sha512-se3yX7UHv5Bscf8f1ERKvQOD6sTyycH3hdaoozvaLxgUiY5lIGEeH37AD0G0Qi9kPqihPn0HOfd2yaIEN9VwEg==
+  version "15.14.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.14.0.tgz#74dbf254fb375551a9d2a71faf6b9dbc2178dc53"
+  integrity sha512-um/+/ip3QZmwLfIkWZSNtQIJNVAqrJ92OkLMeuZrjZMTAJniI7fh8N8OICyDhAJ2mzgk/fmYFo72jRr5HyZ1EQ==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -1840,9 +1840,9 @@
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^17.0.3", "@types/react@~17.0.11":
-  version "17.0.11"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.11.tgz#67fcd0ddbf5a0b083a0f94e926c7d63f3b836451"
-  integrity sha512-yFRQbD+whVonItSk7ZzP/L+gPTJVBkL/7shLEF+i9GC/1cV3JmUxEQz6+9ylhUpWSDuqo1N9qEvqS6vTj4USUA==
+  version "17.0.13"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.13.tgz#6b7c9a8f2868586ad87d941c02337c6888fb874f"
+  integrity sha512-D/G3PiuqTfE3IMNjLn/DCp6umjVCSvtZTPdtAFy5+Ved6CsdRvivfKeCzw79W4AatShtU4nGqgvOv5Gro534vQ==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -2042,14 +2042,14 @@
     "@xtuc/long" "4.2.2"
 
 "@xh/eslint-config@~3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@xh/eslint-config/-/eslint-config-3.0.3.tgz#17ccd453fcaf4fbe3e3f237697e84e92a101fa7f"
-  integrity sha512-O+DM8w7QxDq7YzFJl1+O1QpbRmFuLog9jXlM9VUGclp2jd9hwKk3pAh/O19Jw9o+T6rpBFSmCXrmVcpGiahzyg==
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@xh/eslint-config/-/eslint-config-3.0.4.tgz#5b79fc6c380b87d86a8882b073645c76c94a6f04"
+  integrity sha512-RFWOWbCB7TjN3cPb1rDE9DqjG6xHFOKOukhNiqFdVXIJCKY3AF3Cj1w0XUMv0hza4xJrx0mKuFbqghyxcKufiQ==
   dependencies:
     "@babel/core" "^7.14.0"
     "@babel/eslint-parser" "^7.14.0"
     "@babel/eslint-plugin" "^7.14.0"
-    eslint "^7.28.0"
+    eslint "^7.29.0"
     eslint-plugin-react "^7.24.0"
     eslint-plugin-react-hooks "^4.2.0"
 
@@ -2096,10 +2096,10 @@
     webpack-dev-server "~3.11.2"
     webpackbar "~4.0.0"
 
-"@xh/hoist@^41.0.0-SNAPSHOT":
-  version "41.0.0-SNAPSHOT.1625067587115"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-41.0.0-SNAPSHOT.1625067587115.tgz#c47eaa9b0e1cb7d358637f22ed210d29181dfc5a"
-  integrity sha512-1BdQhmr2vTDCuse9MY6YkeeTmaPM3EULGxV/eWrEG4sAiJqu3rS4KbO4uFiBwQf3ybJhJejY6t5IsDVcKj8zIQ==
+"@xh/hoist@41.0.0":
+  version "41.0.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-41.0.0.tgz#d3cfb1d1c8055586164d016fb7e01bc097738f5f"
+  integrity sha512-EMP5BZYrMGvFTd6QjeV8THPGkzY0/v2JI4ZYnItZGfOMWeoO7gGzwKv+VeHJAcSfkzKXQHnSDM+UTDjFNTNrtQ==
   dependencies:
     "@blueprintjs/core" "~3.46.0"
     "@blueprintjs/datetime" "~3.23.5"
@@ -2115,12 +2115,12 @@
     classnames "~2.3.0"
     clipboard-copy "~4.0.1"
     codemirror "~5.62.0"
-    core-js "~3.15.1"
+    core-js "~3.15.2"
     debounce-promise "~3.1.0"
     dompurify "~2.2.9"
     downloadjs "~1.4.7"
     fast-deep-equal "~3.1.1"
-    filesize "~6.3.0"
+    filesize "~6.4.0"
     golden-layout "~1.5.9"
     http-status-codes "~2.1.4"
     lodash "~4.17.21"
@@ -3555,7 +3555,7 @@ core-js@^2.6.12:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
-core-js@^3.11.0, core-js@~3.15.1:
+core-js@^3.11.0, core-js@~3.15.2:
   version "3.15.2"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.15.2.tgz#740660d2ff55ef34ce664d7e2455119c5bdd3d61"
   integrity sha512-tKs41J7NJVuaya8DxIOCnl8QuPHx5/ZVbFo1oKgVl1qHFBBrDctzQGtuLjPpRdNTWmKPH6oEvgN/MUID+l485Q==
@@ -4107,9 +4107,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.723:
-  version "1.3.762"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.762.tgz#3fa4e3bcbda539b50e3aa23041627063a5cffe61"
-  integrity sha512-LehWjRpfPcK8F1Lf/NZoAwWLWnjJVo0SZeQ9j/tvnBWYcT99qDqgo4raAfS2oTKZjPrR/jxruh85DGgDUmywEA==
+  version "1.3.764"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.764.tgz#24c61a7a3c92630f1723078c59e1dbb42648d581"
+  integrity sha512-nI8fb0ePu2LjzGQMoJ2j4wCnpbSMtuXmOZz/dFAduroICL/B9rU6Iwck/oTvXdzZCfN3ZdU5mpY4XCizU2saow==
 
 elliptic@^6.5.3:
   version "6.5.4"
@@ -4382,7 +4382,7 @@ eslint-visitor-keys@^2.0.0, eslint-visitor-keys@^2.1.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-2.1.0.tgz#f65328259305927392c938ed44eb0a5c9b2bd303"
   integrity sha512-0rSmRBzXgDzIsD6mGdJgevzgezI534Cer5L/vyMX0kHzT/jiB43jRhd9YUlMGYLQy2zprNmoT8qasCGtY+QaKw==
 
-eslint@^7.28.0:
+eslint@^7.29.0:
   version "7.29.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.29.0.tgz#ee2a7648f2e729485e4d0bd6383ec1deabc8b3c0"
   integrity sha512-82G/JToB9qIy/ArBzIWG9xvvwL3R86AlCjtGw+A29OMZDqhTybz/MByORSukGxeI+YPCR4coYyITKk8BFH9nDA==
@@ -4781,10 +4781,10 @@ file-uri-to-path@1.0.0:
   resolved "https://registry.yarnpkg.com/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz#553a7b8446ff6f684359c445f1e37a05dacc33dd"
   integrity sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==
 
-filesize@~6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/filesize/-/filesize-6.3.0.tgz#dff53cfb3f104c9e422f346d53be8dbcc971bf11"
-  integrity sha512-ytx0ruGpDHKWVoiui6+BY/QMNngtDQ/pJaFwfBpQif0J63+E8DLdFyqS3NkKQn7vIruUEpoGD9JUJSg7Kp+I0g==
+filesize@~6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/filesize/-/filesize-6.4.0.tgz#914f50471dd66fdca3cefe628bd0cde4ef769bcd"
+  integrity sha512-mjFIpOHC4jbfcTfoh4rkWpI31mF7viw9ikj/JyLoKzqlwG/YsefKfvYlYhdYdg/9mtK2z1AzgN/0LvVQ3zdlSQ==
 
 fill-range@^4.0.0:
   version "4.0.0"
@@ -4888,9 +4888,9 @@ flat-cache@^3.0.4:
     rimraf "^3.0.2"
 
 flatted@^3.1.0:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.1.1.tgz#c4b489e80096d9df1dfc97c79871aea7c617c469"
-  integrity sha512-zAoAQiudy+r5SvnSw3KJy5os/oRJYHzrzja/tBDqrZtNhUw8bt6y8OBzMWcjWr+8liV8Eb6yOhw8WZ7VFZ5ZzA==
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.0.tgz#da07fb8808050aba6fdeac2294542e5043583f05"
+  integrity sha512-XprP7lDrVT+kE2c2YlfiV+IfS9zxukiIOvNamPNsImNhXadSsQEbosItdL9bUQlCZXR13SvPk20BjWSWLA7m4A==
 
 flush-write-stream@^1.0.0:
   version "1.1.1"

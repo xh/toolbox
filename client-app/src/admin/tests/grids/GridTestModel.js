@@ -181,6 +181,7 @@ export class GridTestModel extends HoistModel {
             selModel: {mode: 'multiple'},
             sortBy: 'id',
             emptyText: 'No records found...',
+            enableExport: true,
             lockColumnGroups: this.lockColumnGroups,
             store: storeConf,
             treeMode: this.tree,
@@ -251,7 +252,7 @@ export class GridTestModel extends HoistModel {
     tearDown() {
         XH.safeDestroy(this.gridModel);
         this.gridModel = this.createGridModel();
-        this.testData.clear();
+        this.data.clear();
         this.runTimes = {};
     }
 }

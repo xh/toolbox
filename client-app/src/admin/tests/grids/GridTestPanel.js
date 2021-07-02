@@ -58,7 +58,7 @@ const tbar = hoistCmp.factory(
         button({
             text: 'Generate Data',
             icon: Icon.gears(),
-            onClick: () => model.testData.generate()
+            onClick: () => model.data.generate(model)
         }),
         toolbarSep(),
         refreshButton({

@@ -1,17 +1,15 @@
-.contact-fb-tile {
+.tb-contact-tile {
   border: var(--xh-border-solid);
-  margin: var(--xh-pad-px);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  align-items: center;
-  justify-content: center;
+  flex: 1;
 
   &--selected {
     border-color: var(--xh-orange);
   }
 
-  .floating-name-bar {
+  &__bar {
     position: absolute;
     bottom: 10px;
     height: fit-content;
@@ -21,24 +19,15 @@
     background-color: rgba(255, 255, 255, 0.5);
   }
 
-  .floating-name {
+  &__name {
     font-weight: bold;
     font-size: var(--xh-font-size-large-em);
     color: var(--xh-gray-dark);
     padding: 5px 15px 5px 5px;
   }
-}
 
-.details-panel-title-bar {
-  height: var(--xh-tbar-min-size-px);
-  padding: 10px 0 5px 5px;
-  background-color: var(--xh-title-bg);
-  color: var(--xh-title-text-color);
-  font-size: var(--xh-font-size-large-em);
-  font-family: var(--xh-title-font-family);
-
-  .details-title-icon {
-    width: 35px;
-    font-size: large;
+  .tb-contact-fave-btn:hover {
+    background-color: transparent !important;
+    color: gold !important;
   }
 }
