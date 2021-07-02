@@ -317,6 +317,7 @@ export class ColumnFilterPanelModel extends HoistModel {
     createCubeView() {
         return this.cube.createView({
             query: this.cubeQuery,
+            loadModel: this.loadModel,
             connect: true
         });
     }

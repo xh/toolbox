@@ -17,6 +17,7 @@ export const ColumnFilterPanel = hoistCmp({
         return hframe({
             items: [
                 panel({
+                    mask: 'onLoad',
                     icon: Icon.filter(),
                     title: 'Column Filter Test Grid',
                     tbar: tbar(),
