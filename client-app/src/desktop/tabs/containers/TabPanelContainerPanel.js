@@ -1,14 +1,16 @@
-import {div, hspacer} from '@xh/hoist/cmp/layout';
+import {div, hbox, hspacer} from '@xh/hoist/cmp/layout';
 import {fmtTime} from '@xh/hoist/format';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
-import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {creates, managed, hoistCmp, HoistModel} from '@xh/hoist/core';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {badge} from '@xh/hoist/desktop/cmp/badge';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {find, shuffle, isEmpty} from 'lodash';
 import React from 'react';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 
 export const tabPanelContainerPanel = hoistCmp.factory({
     model: creates(() => new Model()),
@@ -39,7 +41,7 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                 title: 'Containers › Tabs',
                 icon: Icon.tab(),
                 className: 'toolbox-containers-tabs',
-                width: 700,
+                width: 760,
                 height: 400,
                 item: tabContainer({
                     model: {
@@ -140,6 +142,35 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                                         item: tabContainer({model: dynamicModel})
                                     });
                                 }
+                            },
+                            {
+                                id: 'badge',
+                                title: hbox({
+                                    items: [
+                                        'Tab with Badge',
+                                        badge({
+                                            item: model.badgeCount
+                                        })
+                                    ]
+                                }),
+                                content: () => {
+                                    return panel({
+                                        className: 'child-tabcontainer',
+                                        style: {padding: 10},
+                                        items: [
+                                            div(`Tabs can include a small, styled badge inline with the title, typically
+                                                showing a count or other indicator that something is new or has content.`),
+                                            button({
+                                                text: 'Increase Badge Count',
+                                                minimal: false,
+                                                icon: Icon.add(),
+                                                width: 'fit-content',
+                                                marginTop: 10,
+                                                onClick: () => model.increaseBadgeCount()
+                                            })
+                                        ]
+                                    });
+                                }
                             }
                         ]
                     }
@@ -148,7 +179,6 @@ export const tabPanelContainerPanel = hoistCmp.factory({
         });
     }
 });
-
 
 class Model extends HoistModel {
 
@@ -169,9 +199,18 @@ class Model extends HoistModel {
         }
     });
 
+    @bindable
+    badgeCount = 10
+
     constructor() {
         super();
+        makeObservable(this);
+
         this.addDynamic();
+    }
+
+    increaseBadgeCount() {
+        this.badgeCount++;
     }
 
     createContainerModelConfig(args) {
