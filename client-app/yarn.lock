@@ -2096,10 +2096,10 @@
     webpack-dev-server "~3.11.2"
     webpackbar "~4.0.0"
 
-"@xh/hoist@41.0.0":
-  version "41.0.0"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-41.0.0.tgz#d3cfb1d1c8055586164d016fb7e01bc097738f5f"
-  integrity sha512-EMP5BZYrMGvFTd6QjeV8THPGkzY0/v2JI4ZYnItZGfOMWeoO7gGzwKv+VeHJAcSfkzKXQHnSDM+UTDjFNTNrtQ==
+"@xh/hoist@^42.0.0-SNAPSHOT":
+  version "42.0.0-SNAPSHOT.1625219657920"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-42.0.0-SNAPSHOT.1625219657920.tgz#31cfb0000ceb2409ec975453cb0f977a4f332e42"
+  integrity sha512-FrF+Y96ZaUtcXIhGJtXeEOzDIt62SvwnB/jx/6REy2ErXDcSTZON/mLpTJXECGfP3QPkZ1zI82h41Ie1Lzzb2g==
   dependencies:
     "@blueprintjs/core" "~3.46.0"
     "@blueprintjs/datetime" "~3.23.5"
@@ -4107,9 +4107,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.723:
-  version "1.3.764"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.764.tgz#24c61a7a3c92630f1723078c59e1dbb42648d581"
-  integrity sha512-nI8fb0ePu2LjzGQMoJ2j4wCnpbSMtuXmOZz/dFAduroICL/B9rU6Iwck/oTvXdzZCfN3ZdU5mpY4XCizU2saow==
+  version "1.3.765"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.765.tgz#36fa0ef7a81048bb487bfe3d297100967e2b8db2"
+  integrity sha512-4NhcsfZYlr1x4FehYkK+R9CNNTOZ8vLcIu8Y1uWehxYp5r/jlCGAfBqChIubEfdtX+rBQpXx4yJuX/dzILH/nw==
 
 elliptic@^6.5.3:
   version "6.5.4"

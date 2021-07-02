@@ -1,16 +1,19 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {div, hbox} from '@xh/hoist/cmp/layout';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {bindable, observable, makeObservable, action, runInAction} from '@xh/hoist/mobx';
-import {without, uniq, isEmpty} from 'lodash';
-import {DetailsPanelModel} from './details/DetailsPanelModel';
+import {div, hbox} from '@xh/hoist/cmp/layout';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {action, bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {isEmpty, uniq, without} from 'lodash';
+import {PERSIST_APP} from './AppModel';
 import {favoriteButton} from './cmp/FavoriteButton';
+import {DetailsPanelModel} from './details/DetailsPanelModel';
 
 /**
  * Primary model to load a list of contacts from the server and manage filter and selection state.
  * Support showing results in a grid or tiled set of photos.
  */
 export class DirectoryPanelModel extends HoistModel {
+
+    persistWith = PERSIST_APP;
 
     /** @member {string[]} - known tags across all contacts. */
     @observable.ref tagList = [];
@@ -28,7 +31,7 @@ export class DirectoryPanelModel extends HoistModel {
     @bindable.ref tagFilters = [];
 
     /** @member {('grid'|'tiles')} */
-    @bindable displayMode = 'grid';
+    @bindable @persist displayMode = 'grid';
 
     /** @member {DetailsPanelModel} */
     @managed detailsPanelModel;
@@ -116,7 +119,7 @@ export class DirectoryPanelModel extends HoistModel {
             enableExport: true,
             rowBorders: true,
             showHover: true,
-            colDefaults: {width: 200},
+            colDefaults: {width: 160},
             persistWith: this.persistWith,
             groupBy: 'isFavorite',
             groupRowRenderer: ({value}) => value === 'true' ? 'Favorites' : 'XH Engineers',
@@ -131,21 +134,15 @@ export class DirectoryPanelModel extends HoistModel {
                     elementRenderer: this.isFavoriteRenderer,
                     excludeFromExport: true
                 },
-                {field: 'name'},
+                {field: 'name', width: 200},
                 {field: 'location'},
                 {field: 'email'},
+                {field: 'cellPhone', hidden: true},
+                {field: 'workPhone', hidden: true},
                 {
                     field: 'tags',
-                    width: 300,
+                    width: 400,
                     elementRenderer: this.tagsRenderer
-                },
-                {
-                    field: 'cellPhone',
-                    hidden: true
-                },
-                {
-                    field: 'workPhone',
-                    hidden: true
                 }
             ]
         });

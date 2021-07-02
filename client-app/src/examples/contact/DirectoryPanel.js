@@ -1,5 +1,3 @@
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faTag} from '@fortawesome/pro-regular-svg-icons';
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/cmp/store';
@@ -13,8 +11,6 @@ import {tileView} from './cmp/TileView';
 import {detailsPanel} from './details/DetailsPanel';
 import './DirectoryPanel.scss';
 import {DirectoryPanelModel} from './DirectoryPanelModel';
-
-library.add(faTag);
 
 export const directoryPanel = hoistCmp.factory({
     model: creates(DirectoryPanelModel),
@@ -61,9 +57,7 @@ const tbar = hoistCmp.factory(
                 select({
                     bind: 'tagFilters',
                     placeholder: 'Tags',
-                    // TODO - use when in Hoist.
-                    // leftIcon: Icon.tag(),
-                    leftIcon: Icon.icon({iconName: 'tag'}),
+                    leftIcon: Icon.tag(),
                     enableMulti: true,
                     enableClear: true,
                     options: tagList,
@@ -100,7 +94,7 @@ const bbar = hoistCmp.factory(
 
         return toolbar(
             filler(),
-            storeCountLabel({store, unit: 'XH Engineers'}),
+            storeCountLabel({store, unit: 'contact'}),
             toolbarSep(),
             colChooserButton({
                 disabled: displayMode !== 'grid'
