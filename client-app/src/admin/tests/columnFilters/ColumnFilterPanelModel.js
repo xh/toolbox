@@ -138,9 +138,7 @@ export class ColumnFilterPanelModel extends HoistModel {
                     }
                 ]
             },
-            colDefaults: {
-                enableFilter: true
-            },
+            colDefaults: {filterable: true},
             columns: [
                 {
                     field: 'id',
@@ -186,8 +184,7 @@ export class ColumnFilterPanelModel extends HoistModel {
                         label: true
                     }),
                     exportFormat: ExportFormat.NUM_DELIMITED,
-                    chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)',
-                    enableEnumFilter: false
+                    chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
                 },
                 {
                     field: 'profit_loss',
@@ -200,8 +197,7 @@ export class ColumnFilterPanelModel extends HoistModel {
                         colorSpec: true
                     }),
                     exportFormat: ExportFormat.LEDGER_COLOR,
-                    chooserDescription: 'Annual Profit & Loss YTD (EBITDA)',
-                    enableEnumFilter: false
+                    chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
                 },
                 {
                     field: 'trade_date',
@@ -256,7 +252,7 @@ export class ColumnFilterPanelModel extends HoistModel {
             colChooserModel: true,
             enableExport: true,
             sizingMode: XH.appModel.gridSizingMode,
-            colDefaults: {enableFilter: true},
+            colDefaults: {filterable: true},
             filterModel: {
                 valueSource: cubeView,
                 target: cubeView
@@ -273,7 +269,8 @@ export class ColumnFilterPanelModel extends HoistModel {
                     headerName: 'Name',
                     flex: 1,
                     minWidth: 180,
-                    isTreeColumn: true
+                    isTreeColumn: true,
+                    filterable: false
                 },
                 {
                     field: 'fund',
@@ -293,7 +290,6 @@ export class ColumnFilterPanelModel extends HoistModel {
                         precision: 0,
                         ledger: true
                     }),
-                    enableEnumFilter: false,
                     hidden: true
                 },
                 {
@@ -303,7 +299,6 @@ export class ColumnFilterPanelModel extends HoistModel {
                     renderer: numberRenderer({
                         precision: 4
                     }),
-                    enableEnumFilter: false,
                     hidden: true
                 },
                 {
@@ -313,8 +308,7 @@ export class ColumnFilterPanelModel extends HoistModel {
                     renderer: numberRenderer({
                         precision: 0,
                         ledger: true
-                    }),
-                    enableEnumFilter: false
+                    })
                 }
             ]
         });
