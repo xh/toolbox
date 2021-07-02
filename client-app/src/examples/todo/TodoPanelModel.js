@@ -1,15 +1,15 @@
 import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {RecordAction} from '@xh/hoist/data';
+import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 import {fmtCompactDate} from '@xh/hoist/format';
+import {Icon} from '@xh/hoist/icon/Icon';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {LocalDate} from '@xh/hoist/utils/datetime';
+import {every, isEmpty} from 'lodash';
+import {createRef} from 'react';
 import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
-import {isEmpty, every} from 'lodash';
-import {LocalDate} from '@xh/hoist/utils/datetime';
-import {Icon} from '@xh/hoist/icon/Icon';
-import {actionCol} from '@xh/hoist/desktop/cmp/grid';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {RecordAction} from '@xh/hoist/data';
-import {createRef} from 'react';
 
 export class TodoPanelModel extends HoistModel {
 
@@ -159,6 +159,10 @@ export class TodoPanelModel extends HoistModel {
         }
     }
 
+    async resetToDefaultTasksAsync() {
+        await XH.taskService.resetToDefaultTasksAsync();
+        await this.refreshAsync();
+    }
 
     //------------------------
     // Implementation
