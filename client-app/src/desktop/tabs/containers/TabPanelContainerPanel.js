@@ -1,11 +1,11 @@
-import {div, hbox, hspacer} from '@xh/hoist/cmp/layout';
+import {div, hbox, hspacer, vspacer, label, hframe} from '@xh/hoist/cmp/layout';
 import {fmtTime} from '@xh/hoist/format';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, managed, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {badge} from '@xh/hoist/desktop/cmp/badge';
-import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {find, shuffle, isEmpty} from 'lodash';
@@ -149,26 +149,49 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                                     items: [
                                         'Tab with Badge',
                                         badge({
-                                            item: model.badgeCount
+                                            item: model.badgeCount,
+                                            intent: model.intent !== 'none' ? model.intent: ''
                                         })
                                     ]
                                 }),
                                 content: () => {
                                     return panel({
                                         className: 'child-tabcontainer',
-                                        style: {padding: 10},
-                                        items: [
-                                            div(`Tabs can include a small, styled badge inline with the title, typically
-                                                showing a count or other indicator that something is new or has content.`),
-                                            button({
-                                                text: 'Increase Badge Count',
-                                                minimal: false,
-                                                icon: Icon.add(),
-                                                width: 'fit-content',
-                                                marginTop: 10,
-                                                onClick: () => model.increaseBadgeCount()
+                                        item: hframe(
+                                            div({
+                                                style: {padding: 10},
+                                                item: `Tabs can include a small, styled badge inline with the title, typically
+                                                showing a count or other indicator that something is new or has content.`
+                                            }),
+                                            panel({
+                                                title: 'Display Options',
+                                                icon: Icon.settings(),
+                                                className: 'tbox-display-opts',
+                                                compactHeader: true,
+                                                model: {side: 'right', defaultSize: 250, resizable: false},
+                                                item: div({
+                                                    className: 'tbox-display-opts__inner',
+                                                    items: [
+                                                        label('Badge Intent'),
+                                                        select({
+                                                            bind: 'intent',
+                                                            options: ['primary', 'success', 'warning', 'danger', 'none']
+                                                        }),
+                                                        vspacer(10),
+                                                        label('Badge Value'),
+                                                        select({
+                                                            bind: 'badgeCount',
+                                                            options: [0, 1, 5, 10, 100]
+                                                        }),
+                                                        vspacer(10),
+                                                        switchInput({
+                                                            label: 'Omit badge if 0',
+                                                            labelSide: 'left'
+                                                        })
+                                                    ]
+                                                })
                                             })
-                                        ]
+                                        )
                                     });
                                 }
                             }
@@ -202,15 +225,14 @@ class Model extends HoistModel {
     @bindable
     badgeCount = 10
 
+    @bindable
+    intent = 'primary'
+
     constructor() {
         super();
         makeObservable(this);
 
         this.addDynamic();
-    }
-
-    increaseBadgeCount() {
-        this.badgeCount++;
     }
 
     createContainerModelConfig(args) {
