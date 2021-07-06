@@ -57,6 +57,7 @@ export class ColumnFilterPanelModel extends HoistModel {
         this.cubeFilterChooserModel = this.createCubeFilterChooserModel();
         this.groupingChooserModel = this.createGroupingChooserModel();
 
+        window.cubeView = this.cubeView;
         this.cubeView.setStores(this.cubeGridModel.store);
 
         // Update filter JSON
@@ -94,7 +95,16 @@ export class ColumnFilterPanelModel extends HoistModel {
     }
 
     async loadCubeAsync(loadSpec) {
-        const orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
+        let orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
+        orders.forEach(o => {
+            [1, 2, 3].forEach(v => {
+                o['price' + v] = o.price;
+                o['quantity' + v] = o.quantity;
+            });
+            [1, 2, 3, 4, 5, 6, 7].forEach(v => {
+                o['commission' + v] = o.commission;
+            });
+        });
         await this.cube.loadDataAsync(orders, {asOf: Date.now()});
     }
 
@@ -116,6 +126,9 @@ export class ColumnFilterPanelModel extends HoistModel {
             },
             sizingMode: XH.appModel.gridSizingMode,
             store: {
+                idEncodesTreePath: true,
+                freezeData: false,
+                fieldDefaults: {disableXssProtection: true},
                 fields: [
                     {
                         name: 'profit_loss',
@@ -227,6 +240,9 @@ export class ColumnFilterPanelModel extends HoistModel {
 
         return new Cube({
             idSpec: 'id',
+            fieldDefaults: {
+                disableXSSProtection: true
+            },
             fields: [
                 {name: 'symbol', isDimension: true},
                 {name: 'sector', isDimension: true},
@@ -236,8 +252,21 @@ export class ColumnFilterPanelModel extends HoistModel {
                 {name: 'trader', isDimension: true},
                 {name: 'dir', displayName: 'Direction', isDimension: true},
                 {name: 'quantity', type: 'number', aggregator: 'SUM', canAggregateFn: isInstrument},
+                {name: 'quantity1', type: 'number', aggregator: 'SUM', canAggregateFn: isInstrument},
+                {name: 'quantity2', type: 'number', aggregator: 'SUM', canAggregateFn: isInstrument},
+                {name: 'quantity3', type: 'number', aggregator: 'SUM', canAggregateFn: isInstrument},
                 {name: 'price', type: 'number', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
-                {name: 'commission', type: 'number', aggregator: 'SUM'}
+                {name: 'price1', type: 'number', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
+                {name: 'price2', type: 'number', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
+                {name: 'price3', type: 'number', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
+                {name: 'commission', type: 'number', aggregator: 'SUM'},
+                {name: 'commission1', type: 'number', aggregator: 'SUM'},
+                {name: 'commission2', type: 'number', aggregator: 'SUM'},
+                {name: 'commission3', type: 'number', aggregator: 'SUM'},
+                {name: 'commission4', type: 'number', aggregator: 'SUM'},
+                {name: 'commission5', type: 'number', aggregator: 'SUM'},
+                {name: 'commission6', type: 'number', aggregator: 'SUM'},
+                {name: 'commission7', type: 'number', aggregator: 'SUM'}
             ]
         });
     }
@@ -280,36 +309,22 @@ export class ColumnFilterPanelModel extends HoistModel {
                     field: 'trader',
                     width: 130
                 },
-                {
-                    field: 'quantity',
-                    headerName: 'Qty',
-                    align: 'right',
-                    width: 130,
-                    absSort: true,
-                    renderer: numberRenderer({
-                        precision: 0,
-                        ledger: true
-                    }),
-                    hidden: true
-                },
-                {
-                    field: 'price',
-                    align: 'right',
-                    width: 130,
-                    renderer: numberRenderer({
-                        precision: 4
-                    }),
-                    hidden: true
-                },
-                {
-                    field: 'commission',
-                    align: 'right',
-                    width: 130,
-                    renderer: numberRenderer({
-                        precision: 0,
-                        ledger: true
-                    })
-                }
+                {field: 'quantity', ...quantityCol},
+                {field: 'quantity1', ...quantityCol},
+                {field: 'quantity2', ...quantityCol},
+                {field: 'quantity3', ...quantityCol},
+                {field: 'price', ...priceCol},
+                {field: 'price1', ...priceCol},
+                {field: 'price2', ...priceCol},
+                {field: 'price3', ...priceCol},
+                {field: 'commission', ...commissionCol},
+                {field: 'commission1', ...commissionCol},
+                {field: 'commission2', ...commissionCol},
+                {field: 'commission3', ...commissionCol},
+                {field: 'commission4', ...commissionCol},
+                {field: 'commission5', ...commissionCol},
+                {field: 'commission6', ...commissionCol},
+                {field: 'commission7', ...commissionCol}
             ]
         });
     }
@@ -340,3 +355,30 @@ export class ColumnFilterPanelModel extends HoistModel {
         });
     }
 }
+
+const quantityCol = {
+    headerName: 'Qty',
+    align: 'right',
+    width: 130,
+    absSort: true,
+    renderer: numberRenderer({
+        precision: 0,
+        ledger: true
+    })
+};
+const priceCol = {
+    align: 'right',
+    width: 130,
+    renderer: numberRenderer({
+        precision: 4
+    })
+};
+
+const commissionCol = {
+    align: 'right',
+    width: 130,
+    renderer: numberRenderer({
+        precision: 0,
+        ledger: true
+    })
+};

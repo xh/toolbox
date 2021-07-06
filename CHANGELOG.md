@@ -1,5 +1,6 @@
 # Changelog
 
+## v3.0.0-SNAPSHOT - unreleased
 
 ## v2.7.0 - 2021-07-01
 
