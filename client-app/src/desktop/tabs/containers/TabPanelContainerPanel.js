@@ -149,8 +149,10 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                                     items: [
                                         'Tab with Badge',
                                         badge({
+                                            tab: model.tabBadgeStyling,
                                             item: model.badgeCount,
-                                            intent: model.intent !== 'none' ? model.intent: ''
+                                            intent: model.intent !== 'none' ? model.intent: '',
+                                            omit: model.omitBadge ? !model.badgeCount : ''
                                         })
                                     ]
                                 }),
@@ -160,8 +162,10 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                                         item: hframe(
                                             div({
                                                 style: {padding: 10},
-                                                item: `Tabs can include a small, styled badge inline with the title, typically
-                                                showing a count or other indicator that something is new or has content.`
+                                                item: `Tabs can include a small, styled badge inline with the title, 
+                                                typically showing a count or other indicator that something is new or 
+                                                has content. When turned on, tab styling places the badge in the upper 
+                                                right-hand corner.`
                                             }),
                                             panel({
                                                 title: 'Display Options',
@@ -185,7 +189,14 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                                                         }),
                                                         vspacer(10),
                                                         switchInput({
-                                                            label: 'Omit badge if 0',
+                                                            bind: 'omitBadge',
+                                                            label: 'Omit Badge if 0',
+                                                            labelSide: 'left'
+                                                        }),
+                                                        vspacer(10),
+                                                        switchInput({
+                                                            bind: 'tabBadgeStyling',
+                                                            label: 'Tab Badge Styling',
                                                             labelSide: 'left'
                                                         })
                                                     ]
@@ -226,6 +237,12 @@ class Model extends HoistModel {
     badgeCount = 10
 
     @bindable
+    tabBadgeStyling = true
+
+    @bindable
+    omitBadge = false
+
+    @bindable
     intent = 'primary'
 
     constructor() {
@@ -233,6 +250,14 @@ class Model extends HoistModel {
         makeObservable(this);
 
         this.addDynamic();
+
+        this.addReaction({
+            track: () => this.intent,
+            run: (intent) => {
+                console.log(intent);
+            },
+            fireImmediately: true
+        });
     }
 
     createContainerModelConfig(args) {
