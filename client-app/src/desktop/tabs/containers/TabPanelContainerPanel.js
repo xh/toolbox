@@ -57,6 +57,9 @@ class Model extends HoistModel {
     badgeValue = 10;
 
     @bindable
+    showBadge = false;
+
+    @bindable
     badgeIntent = 'none';
 
     @managed
@@ -137,6 +140,11 @@ class Model extends HoistModel {
                             textInput({
                                 model: placesTab,
                                 bind: 'title'
+                            }),
+                            hspacer(10),
+                            switchInput({
+                                bind: 'showBadge',
+                                label: 'Show Badge on Things Tab'
                             })
                         ],
                         item: tabContainer({model: this.stateTabModel})
@@ -218,6 +226,30 @@ class Model extends HoistModel {
             run: () => this.updateBadge(),
             fireImmediately: true
         });
+
+        this.addReaction({
+            track: () => this.showBadge,
+            run: () => this.showBadge ? this.setShowBadge() : this.hideBadge()
+        });
+    }
+
+    setShowBadge() {
+        const thingsTab = this.stateTabModel.findTab('things');
+        thingsTab.setTitle(hbox({
+            items: [
+                'Things ',
+                badge({
+                    item: 'New',
+                    intent: 'primary',
+                    position: 'top'
+                })
+            ]
+        }));
+    }
+
+    hideBadge() {
+        const thingsTab = this.stateTabModel.findTab('things');
+        thingsTab.setTitle('Things');
     }
 
     updateBadge() {
