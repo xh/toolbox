@@ -2,9 +2,9 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {createContainerModelConfig} from '../TabPanelContainerPanel';
+import {createContainerModelConfig} from './SimpleExample';
 
-export const customTabContainerPanel = hoistCmp.factory({
+export const customExample = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {
@@ -13,9 +13,7 @@ export const customTabContainerPanel = hoistCmp.factory({
             tbar: model.detachedTabModel.tabs.map(childModel => button({
                 intent: childModel.isActive ? 'primary' : null,
                 text: childModel.title,
-                onClick: () => {
-                    model.detachedTabModel.setActiveTabId(childModel.id);
-                }
+                onClick: () => model.detachedTabModel.setActiveTabId(childModel.id)
             })),
             item: tabContainer({model: model.detachedTabModel})
         });

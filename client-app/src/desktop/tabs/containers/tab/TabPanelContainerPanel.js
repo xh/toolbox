@@ -5,7 +5,7 @@ import {creates, managed, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../../common';
-import {dynamicTabContainerPanel, tabStateContainerPanel, customTabContainerPanel} from './tabs';
+import {dynamicExample, tabStateExample, customExample, simpleExample} from './tabs';
 
 
 export const tabPanelContainerPanel = hoistCmp.factory({
@@ -43,65 +43,6 @@ export const tabPanelContainerPanel = hoistCmp.factory({
     }
 });
 
-const topTabContainerPanel = hoistCmp.factory(
-    () => div(
-        `This overall example is a standard TabContainer with its switcher located in the default, top position. Change 
-        the tabs above to see examples of other TabContainer configurations.`
-    )
-);
-
-const bottomTabContainerPanel = hoistCmp.factory(
-    () => tabContainer({
-        className: 'child-tabcontainer',
-        model: createContainerModelConfig({
-            switcher: {orientation: 'bottom'}
-        })
-    })
-);
-
-const leftTabContainerPanel = hoistCmp.factory(
-    () => tabContainer({
-        className: 'child-tabcontainer',
-        model: createContainerModelConfig({
-            switcher: {orientation: 'left'}
-        })
-    })
-);
-
-const rightTabContainerPanel = hoistCmp.factory(
-    () => tabContainer({
-        className: 'child-tabcontainer',
-        model: createContainerModelConfig({
-            switcher: {orientation: 'right'}
-        })
-    })
-);
-
-export const createContainerModelConfig = (args) => {
-    const tabTxt = title => div(`This is the ${title} tab`);
-
-    return {
-        tabs: [
-            {
-                id: 'people',
-                icon: Icon.user(),
-                content: () => tabTxt('People')
-            },
-            {
-                id: 'places',
-                icon: Icon.home(),
-                content: () => tabTxt('Places')
-            },
-            {
-                id: 'things',
-                icon: Icon.portfolio(),
-                content: () => tabTxt('Things')
-            }
-        ],
-        ...args
-    };
-};
-
 class Model extends HoistModel {
     @managed
     tabModel = new TabContainerModel({
@@ -110,38 +51,45 @@ class Model extends HoistModel {
             {
                 id: 'top',
                 title: 'Top Tabs',
-                content: topTabContainerPanel()
+                content: topExample()
             },
             {
                 id: 'bottom',
                 title: 'Bottom Tabs',
-                content: bottomTabContainerPanel()
+                content: simpleExample({orientation: 'bottom'})
             },
             {
                 id: 'left',
                 title: 'Left Tabs',
-                content: leftTabContainerPanel()
+                content: simpleExample({orientation: 'left'})
             },
             {
                 id: 'right',
                 title: 'Right Tabs',
-                content: rightTabContainerPanel()
+                content: simpleExample({orientation: 'right'})
             },
             {
                 id: 'custom',
                 title: 'Custom Switcher',
-                content: customTabContainerPanel()
+                content: customExample()
             },
             {
                 id: 'state',
                 title: 'Tab State',
-                content: tabStateContainerPanel()
+                content: tabStateExample()
             },
             {
                 id: 'dynamic',
                 title: 'Dynamic',
-                content: dynamicTabContainerPanel()
+                content: dynamicExample()
             }
         ]
     });
 }
+
+const topExample = hoistCmp.factory(
+    () => div(
+        `This overall example is a standard TabContainer with its switcher located in the default, top position. Change 
+        the tabs above to see examples of other TabContainer configurations.`
+    )
+);

@@ -1,3 +1,4 @@
-export * from './TabStateContainerPanel';
-export * from './DynamicTabContainerPanel';
-export * from './CustomTabContainerPanel';
+export * from './TabStateExample';
+export * from './DynamicExample';
+export * from './CustomExample';
+export * from './SimpleExample';

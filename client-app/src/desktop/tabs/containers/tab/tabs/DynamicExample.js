@@ -7,7 +7,7 @@ import {div} from '@xh/hoist/cmp/layout';
 import {fmtTime} from '@xh/hoist/format';
 import {isEmpty, shuffle} from 'lodash';
 
-export const dynamicTabContainerPanel = hoistCmp.factory({
+export const dynamicExample = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {
