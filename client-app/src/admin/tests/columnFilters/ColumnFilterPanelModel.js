@@ -90,6 +90,11 @@ export class ColumnFilterPanelModel extends HoistModel {
         const {gridModel} = this,
             {trades, summary} = await XH.fetchJson({url: 'trade'});
 
+        // Todo: Don't check in
+        trades.forEach(trade => {
+            if (trade.city === 'Boston') trade.city = null;
+        });
+
         gridModel.loadData(trades, summary);
         await gridModel.preSelectFirstAsync();
     }
