@@ -5,7 +5,9 @@ import {creates, managed, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../../common';
-import {dynamicTabContainerPanel, tabStateContainerPanel, customTabContainerPanel} from './index';
+import {dynamicTabContainerPanel} from './DynamicTabContainerPanel';
+import {tabStateContainerPanel} from './TabStateContainerPanel';
+import {customTabContainerPanel} from './CustomTabContainerPanel';
 
 
 export const tabPanelContainerPanel = hoistCmp.factory({
