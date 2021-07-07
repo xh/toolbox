@@ -5,9 +5,7 @@ import {creates, managed, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../../common';
-import {dynamicTabContainerPanel} from './DynamicTabContainerPanel';
-import {tabStateContainerPanel} from './TabStateContainerPanel';
-import {customTabContainerPanel} from './CustomTabContainerPanel';
+import {dynamicTabContainerPanel, tabStateContainerPanel, customTabContainerPanel} from './tabs';
 
 
 export const tabPanelContainerPanel = hoistCmp.factory({
@@ -44,50 +42,6 @@ export const tabPanelContainerPanel = hoistCmp.factory({
         });
     }
 });
-
-class Model extends HoistModel {
-    @managed
-    tabModel = new TabContainerModel({
-        persistWith: {localStorageKey: 'tabExampleState'},
-        tabs: [
-            {
-                id: 'top',
-                title: 'Top Tabs',
-                content: topTabContainerPanel()
-            },
-            {
-                id: 'bottom',
-                title: 'Bottom Tabs',
-                content: bottomTabContainerPanel()
-            },
-            {
-                id: 'left',
-                title: 'Left Tabs',
-                content: leftTabContainerPanel()
-            },
-            {
-                id: 'right',
-                title: 'Right Tabs',
-                content: rightTabContainerPanel()
-            },
-            {
-                id: 'custom',
-                title: 'Custom Switcher',
-                content: customTabContainerPanel()
-            },
-            {
-                id: 'state',
-                title: 'Tab State',
-                content: tabStateContainerPanel()
-            },
-            {
-                id: 'dynamic',
-                title: 'Dynamic',
-                content: dynamicTabContainerPanel()
-            }
-        ]
-    });
-}
 
 const topTabContainerPanel = hoistCmp.factory(
     () => div(
@@ -147,3 +101,47 @@ export const createContainerModelConfig = (args) => {
         ...args
     };
 };
+
+class Model extends HoistModel {
+    @managed
+    tabModel = new TabContainerModel({
+        persistWith: {localStorageKey: 'tabExampleState'},
+        tabs: [
+            {
+                id: 'top',
+                title: 'Top Tabs',
+                content: topTabContainerPanel()
+            },
+            {
+                id: 'bottom',
+                title: 'Bottom Tabs',
+                content: bottomTabContainerPanel()
+            },
+            {
+                id: 'left',
+                title: 'Left Tabs',
+                content: leftTabContainerPanel()
+            },
+            {
+                id: 'right',
+                title: 'Right Tabs',
+                content: rightTabContainerPanel()
+            },
+            {
+                id: 'custom',
+                title: 'Custom Switcher',
+                content: customTabContainerPanel()
+            },
+            {
+                id: 'state',
+                title: 'Tab State',
+                content: tabStateContainerPanel()
+            },
+            {
+                id: 'dynamic',
+                title: 'Dynamic',
+                content: dynamicTabContainerPanel()
+            }
+        ]
+    });
+}

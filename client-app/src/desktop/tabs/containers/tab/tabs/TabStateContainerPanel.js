@@ -5,7 +5,7 @@ import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {hbox, hspacer} from '@xh/hoist/cmp/layout';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {createContainerModelConfig} from './TabPanelContainerPanel';
+import {createContainerModelConfig} from '../TabPanelContainerPanel';
 import {find} from 'lodash';
 
 export const tabStateContainerPanel = hoistCmp.factory({

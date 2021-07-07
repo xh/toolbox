@@ -2,7 +2,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {createContainerModelConfig} from './TabPanelContainerPanel';
+import {createContainerModelConfig} from '../TabPanelContainerPanel';
 
 export const customTabContainerPanel = hoistCmp.factory({
     model: creates(() => new Model()),
