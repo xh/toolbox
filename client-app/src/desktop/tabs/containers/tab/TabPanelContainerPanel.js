@@ -5,7 +5,7 @@ import {creates, managed, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../../common';
-import {dynamicTabContainerPanel, tabStateTabContainerPanel, customTabContainerPanel, createContainerModelConfig} from './index';
+import {dynamicTabContainerPanel, tabStateContainerPanel, customTabContainerPanel} from './index';
 
 
 export const tabPanelContainerPanel = hoistCmp.factory({
@@ -76,7 +76,7 @@ class Model extends HoistModel {
             {
                 id: 'state',
                 title: 'Tab State',
-                content: tabStateTabContainerPanel()
+                content: tabStateContainerPanel()
             },
             {
                 id: 'dynamic',
@@ -120,3 +120,28 @@ const rightTabContainerPanel = hoistCmp.factory(
         })
     })
 );
+
+export const createContainerModelConfig = (args) => {
+    const tabTxt = title => div(`This is the ${title} tab`);
+
+    return {
+        tabs: [
+            {
+                id: 'people',
+                icon: Icon.user(),
+                content: () => tabTxt('People')
+            },
+            {
+                id: 'places',
+                icon: Icon.home(),
+                content: () => tabTxt('Places')
+            },
+            {
+                id: 'things',
+                icon: Icon.portfolio(),
+                content: () => tabTxt('Things')
+            }
+        ],
+        ...args
+    };
+};

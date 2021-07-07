@@ -3,12 +3,12 @@ import {badge} from '@xh/hoist/desktop/cmp/badge';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {hbox, hspacer} from '@xh/hoist/cmp/layout';
-import {find} from 'lodash';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {createContainerModelConfig} from './createContainerModelConfig';
+import {createContainerModelConfig} from './TabPanelContainerPanel';
+import {find} from 'lodash';
 
-export const tabStateTabContainerPanel = hoistCmp.factory({
+export const tabStateContainerPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {

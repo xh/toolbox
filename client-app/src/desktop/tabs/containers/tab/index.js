@@ -6,6 +6,5 @@
  */
 
 export * from './CustomTabContainerPanel';
-export * from './TabStateTabContainerPanel';
+export * from './TabStateContainerPanel';
 export * from './DynamicTabContainerPanel';
-export * from './createContainerModelConfig';
