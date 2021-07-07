@@ -33,7 +33,7 @@ export const tabStateContainerPanel = hoistCmp.factory({
                 hspacer(10),
                 switchInput({
                     bind: 'showBadge',
-                    label: 'Show Badge on Things Tab'
+                    label: 'Show Badge on Things'
                 })
             ],
             item: tabContainer({model: model.stateTabModel})
@@ -43,7 +43,7 @@ export const tabStateContainerPanel = hoistCmp.factory({
 
 class Model extends HoistModel {
     @bindable
-    showBadge = false;
+    showBadge = true;
 
     @managed
     stateTabModel = new TabContainerModel(createContainerModelConfig({}));
@@ -54,26 +54,25 @@ class Model extends HoistModel {
 
         this.addReaction({
             track: () => this.showBadge,
-            run: () => this.showBadge ? this.setShowBadge() : this.hideBadge()
+            run: () => this.setBadge(),
+            fireImmediately: true
         });
     }
 
-    setShowBadge() {
+    setBadge() {
         const thingsTab = this.stateTabModel.findTab('things');
-        thingsTab.setTitle(hbox({
-            items: [
-                'Things ',
-                badge({
-                    item: 'New',
-                    intent: 'primary',
-                    position: 'top'
-                })
-            ]
-        }));
-    }
-
-    hideBadge() {
-        const thingsTab = this.stateTabModel.findTab('things');
-        thingsTab.setTitle('Things');
+        thingsTab.setTitle(
+            this.showBadge ?
+                hbox({
+                    items: [
+                        'Things ',
+                        badge({
+                            item: 'New',
+                            intent: 'primary',
+                            position: 'top'
+                        })
+                    ]
+                }) : 'Things'
+        );
     }
 }
