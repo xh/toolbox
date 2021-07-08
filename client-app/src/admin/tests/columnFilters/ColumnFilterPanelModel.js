@@ -241,7 +241,7 @@ export class ColumnFilterPanelModel extends HoistModel {
         return new Cube({
             idSpec: 'id',
             fieldDefaults: {
-                disableXSSProtection: true
+                disableXssProtection: true
             },
             fields: [
                 {name: 'symbol', isDimension: true},
@@ -275,6 +275,13 @@ export class ColumnFilterPanelModel extends HoistModel {
         const {cubeView} = this;
         return new GridModel({
             treeMode: true,
+            store: {
+                freezeData: true,
+                idEncodesTreePath: true,
+                fieldDefaults: {
+                    disableXssProtection: true
+                }
+            },
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'cubeLabel',
             emptyText: 'No records found...',
@@ -309,14 +316,6 @@ export class ColumnFilterPanelModel extends HoistModel {
                     field: 'trader',
                     width: 130
                 },
-                {field: 'quantity', ...quantityCol},
-                {field: 'quantity1', ...quantityCol},
-                {field: 'quantity2', ...quantityCol},
-                {field: 'quantity3', ...quantityCol},
-                {field: 'price', ...priceCol},
-                {field: 'price1', ...priceCol},
-                {field: 'price2', ...priceCol},
-                {field: 'price3', ...priceCol},
                 {field: 'commission', ...commissionCol},
                 {field: 'commission1', ...commissionCol},
                 {field: 'commission2', ...commissionCol},
@@ -324,7 +323,15 @@ export class ColumnFilterPanelModel extends HoistModel {
                 {field: 'commission4', ...commissionCol},
                 {field: 'commission5', ...commissionCol},
                 {field: 'commission6', ...commissionCol},
-                {field: 'commission7', ...commissionCol}
+                {field: 'commission7', ...commissionCol},
+                {field: 'quantity', ...quantityCol},
+                {field: 'quantity1', ...quantityCol},
+                {field: 'quantity2', ...quantityCol},
+                {field: 'quantity3', ...quantityCol},
+                {field: 'price', ...priceCol},
+                {field: 'price1', ...priceCol},
+                {field: 'price2', ...priceCol},
+                {field: 'price3', ...priceCol}
             ]
         });
     }
