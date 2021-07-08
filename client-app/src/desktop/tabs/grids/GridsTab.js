@@ -9,8 +9,6 @@ import {treeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
 import {agGridView} from './AgGridView';
 import {inlineEditingPanel} from './InlineEditingPanel';
 import './GridsTab.scss';
-import {badge} from '@xh/hoist/desktop/cmp/badge';
-import {hframe} from '@xh/hoist/cmp/layout';
 
 export const gridsTab = hoistCmp.factory(
     () => tabContainer({
@@ -22,17 +20,7 @@ export const gridsTab = hoistCmp.factory(
                 {id: 'treeWithCheckBox', title: 'Tree w/CheckBox', content: treeGridWithCheckboxPanel},
                 {id: 'groupedCols', title: 'Grouped Columns', content: columnGroupsGridPanel},
                 {id: 'rest', title: 'REST Editor', content: restGridPanel},
-                {
-                    id: 'inlineEditing',
-                    title: hframe(
-                        'Inline Editing',
-                        badge({
-                            item: 'New!',
-                            intent: 'primary'
-                        })
-                    ),
-                    content: inlineEditingPanel
-                },
+                {id: 'inlineEditing', content: inlineEditingPanel},
                 {id: 'dataview', title: 'DataView', content: dataViewPanel},
                 {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
             ],

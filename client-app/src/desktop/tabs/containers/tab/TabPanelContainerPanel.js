@@ -7,7 +7,6 @@ import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../../common';
 import {dynamicExample, tabStateExample, customExample, simpleExample} from './tabs';
 
-
 export const tabPanelContainerPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
@@ -16,7 +15,7 @@ export const tabPanelContainerPanel = hoistCmp.factory({
             description: [
                 <p>
                     TabContainers are configured and managed via a TabContainerModel and support
-                    routing based navigation, managed mounting/unmounting of inactive tabs, and lazy
+                    routing-based navigation, managed mounting/unmounting of inactive tabs, and lazy
                     refreshing of its active Tab.
                 </p>,
                 <p>
