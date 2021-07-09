@@ -231,7 +231,15 @@ export class ColumnFilterPanelModel extends HoistModel {
         const {store} = this.gridModel;
         return new FilterChooserModel({
             valueSource: store,
-            target: store
+            target: store,
+            fieldSpecs: [
+                'active',
+                'company',
+                'city',
+                'trade_date',
+                {field: 'profit_loss', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'trade_volume', valueRenderer: millionsRenderer({precision: 1, label: true})}
+            ]
         });
     }
 
@@ -353,7 +361,27 @@ export class ColumnFilterPanelModel extends HoistModel {
         const {cubeView} = this;
         return new FilterChooserModel({
             valueSource: cubeView,
-            target: cubeView
+            target: cubeView,
+            fieldSpecs: [
+                'fund',
+                'trader',
+                {field: 'commission', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'commission1', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'commission2', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'commission3', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'commission4', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'commission5', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'commission6', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'commission7', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'quantity', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'quantity1', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'quantity2', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'quantity3', valueRenderer: numberRenderer({precision: 0})},
+                {field: 'price', valueRenderer: numberRenderer({precision: 4})},
+                {field: 'price1', valueRenderer: numberRenderer({precision: 4})},
+                {field: 'price2', valueRenderer: numberRenderer({precision: 4})},
+                {field: 'price3', valueRenderer: numberRenderer({precision: 4})}
+            ]
         });
     }
 
@@ -378,6 +406,7 @@ const quantityCol = {
         ledger: true
     })
 };
+
 const priceCol = {
     align: 'right',
     width: 130,
