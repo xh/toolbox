@@ -1,5 +1,5 @@
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {badge} from '@xh/hoist/desktop/cmp/badge';
+import {badge} from '@xh/hoist/cmp/badge';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {hbox, hspacer} from '@xh/hoist/cmp/layout';
