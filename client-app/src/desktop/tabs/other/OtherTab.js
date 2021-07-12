@@ -11,6 +11,7 @@ import {iconsPanel} from './IconsPanel';
 import {jsxPanel} from './JsxPanel';
 import {leftRightChooserPanel} from './LeftRightChooserPanel';
 import {pinPadPanel} from './PinPadPanel';
+import {placeholderPanel} from './PlaceholderPanel';
 import {popupsPanel} from './PopupsPanel';
 import {relativeTimestampPanel} from './RelativeTimestampPanel';
 import {appNotificationsPanel} from './AppNotificationsPanel';
@@ -33,6 +34,7 @@ export const otherTab = hoistCmp.factory(
                 {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
                 {id: 'numberFormats', content: numberFormatsPanel},
                 {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
+                {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                 {id: 'popups', content: popupsPanel},
                 {id: 'timestamp', content: relativeTimestampPanel}
             ]

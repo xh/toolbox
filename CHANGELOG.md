@@ -1,14 +1,21 @@
 # Changelog
 
-## v3.0.0-SNAPSHOT - unreleased
+## v3.0.0-SNAPSHOT - under development
+
+### New Features
+
+* New Other > Placeholder example.
+
+### Libraries
+
+* @xh/hoist 42.0.0
 
 ## v2.7.0 - 2021-07-01
 
 ### New Features
 
-* New 'Contact' Example App
-* New 'Todo' Example App
-* New 'Mobile' Tab
+* New full-featured example applications 'Contact' and 'TODO'.
+* New top-level Mobile tab (within the desktop app) highlights Hoist's support for mobile devices.
 
 ### Libraries
 
