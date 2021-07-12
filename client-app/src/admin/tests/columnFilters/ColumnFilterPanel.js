@@ -81,6 +81,8 @@ const filterJsonPanel = hoistCmp.factory(
             item: jsonInput({
                 flex: 1,
                 width: '100%',
+                readonly: true,
+                showCopyButton: true,
                 bind: 'filterJson'
             })
         });
