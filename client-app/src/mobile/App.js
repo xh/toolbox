@@ -20,15 +20,13 @@ export const App = hoistCmp({
                     hideThemeItem: true,
                     extraItems: [
                         {
-                            text: hbox({
-                                items: [
-                                    XH.darkTheme ? 'Light Theme' : 'Dark Theme',
-                                    badge({
-                                        item: 'Try Me',
-                                        intent: 'primary'
-                                    })
-                                ]
-                            }),
+                            text: hbox(
+                                XH.darkTheme ? 'Light Theme' : 'Dark Theme',
+                                badge({
+                                    item: 'Try Me',
+                                    intent: 'primary'
+                                })
+                            ),
                             icon: XH.darkTheme ? Icon.sun({prefix: 'fas'}) : Icon.moon(),
                             actionFn: () => XH.toggleTheme()
                         }
