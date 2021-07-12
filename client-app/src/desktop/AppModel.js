@@ -156,6 +156,7 @@ export class AppModel extends HoistAppModel {
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'numberFormats', path: '/numberFormats'},
                             {name: 'pinPad', path: '/pinPad'},
+                            {name: 'placeholder', path: '/placeholder'},
                             {name: 'popups', path: '/popups'},
                             {name: 'timestamp', path: '/timestamp'}
                         ]
