@@ -121,7 +121,7 @@ export class SampleTreeGridModel extends HoistModel {
                     width: 200,
                     field: 'name',
                     isTreeColumn: true,
-                    expandFromHeader: true,
+                    headerHasExpandCollapse: true,
                     ...(includeCheckboxes ? this.createCheckboxTreeColumn() : {})
                 },
                 {
