@@ -3,7 +3,7 @@ import {hoistCmp} from '@xh/hoist/core';
 import {dashContainerPanel} from './dash/DashContainerPanel';
 import {dockContainerPanel} from './DockContainerPanel';
 import {hboxContainerPanel} from './HBoxContainerPanel';
-import {tabPanelContainerPanel} from './TabPanelContainerPanel';
+import {tabPanelContainerPanel} from './tab/TabPanelContainerPanel';
 import {tileFrameContainerPanel} from './TileFrameContainerPanel';
 import {vboxContainerPanel} from './VBoxContainerPanel';
 import './ContainersTab.scss';
