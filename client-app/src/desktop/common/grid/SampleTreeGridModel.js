@@ -31,10 +31,10 @@ export class SampleTreeGridModel extends HoistModel {
 
     get store() {return this.gridModel.store}
 
-    constructor({includeCheckboxes}) {
+    constructor({includeCheckboxes, headerHasExpandCollapse}) {
         super();
         makeObservable(this);
-        this.gridModel = this.createGridModel(includeCheckboxes);
+        this.gridModel = this.createGridModel(includeCheckboxes, headerHasExpandCollapse);
 
         this.addReaction({
             track: () => this.filterIncludesChildren,
@@ -101,12 +101,13 @@ export class SampleTreeGridModel extends HoistModel {
         XH.navigate(XH.routerState.name, {dims}, opts);
     }
 
-    createGridModel(includeCheckboxes) {
+    createGridModel(includeCheckboxes, headerHasExpandCollapse) {
         return new GridModel({
             treeMode: true,
             store: {
                 loadRootAsSummary: true,
-                fields: [{name: 'isChecked', type: 'bool'},
+                fields: [
+                    {name: 'isChecked', type: 'bool'},
                     {name: 'mktVal', type: 'number'},
                     {name: 'pnl', type: 'number'}
                 ],
@@ -125,6 +126,7 @@ export class SampleTreeGridModel extends HoistModel {
                     field: 'name',
                     isTreeColumn: true,
                     enableFilter: true,
+                    headerHasExpandCollapse,
                     ...(includeCheckboxes ? this.createCheckboxTreeColumn() : {})
                 },
                 {
