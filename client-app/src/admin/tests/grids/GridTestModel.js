@@ -199,8 +199,7 @@ export class GridTestModel extends HoistModel {
                 {
                     field: 'id',
                     width: 140,
-                    isTreeColumn: this.tree,
-                    headerHasExpandCollapse: true
+                    isTreeColumn: this.tree
                 },
                 {
                     field: 'symbol',

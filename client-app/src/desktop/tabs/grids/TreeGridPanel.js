@@ -23,7 +23,7 @@ export const treeGridPanel = hoistCmp.factory(
             title: 'Grids › Tree',
             icon: Icon.grid(),
             className: 'tb-grid-wrapper-panel',
-            item: sampleTreeGrid({model: {includeCheckboxes: false, headerHasExpandCollapse: true}})
+            item: sampleTreeGrid({model: {includeCheckboxes: false}})
         })
     })
 );
