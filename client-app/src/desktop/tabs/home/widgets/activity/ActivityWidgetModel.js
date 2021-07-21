@@ -147,8 +147,8 @@ export class ActivityWidgetModel extends HoistModel {
         });
 
         this.filterChooserModel = new FilterChooserModel({
+            bind: this.gridModel.store,
             valueSource: this.gridModel.store,
-            target: this.gridModel.store,
             fieldSpecs: [
                 'repo', 'authorName', 'authorEmail', 'committedDay', 'changedFiles', 'isRelease',
                 {

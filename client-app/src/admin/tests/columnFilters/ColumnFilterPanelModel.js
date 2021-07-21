@@ -230,8 +230,8 @@ export class ColumnFilterPanelModel extends HoistModel {
     createGridFilterChooserModel() {
         const {store} = this.gridModel;
         return new FilterChooserModel({
+            bind: store,
             valueSource: store,
-            target: store,
             fieldSpecs: [
                 'active',
                 'company',
@@ -303,8 +303,8 @@ export class ColumnFilterPanelModel extends HoistModel {
             sizingMode: XH.appModel.gridSizingMode,
             colDefaults: {filterable: true},
             filterModel: {
-                valueSource: cubeView,
-                target: cubeView
+                bind: cubeView,
+                valueSource: cubeView
             },
             columns: [
                 {
@@ -360,8 +360,8 @@ export class ColumnFilterPanelModel extends HoistModel {
     createCubeFilterChooserModel() {
         const {cubeView} = this;
         return new FilterChooserModel({
+            bind: cubeView,
             valueSource: cubeView,
-            target: cubeView,
             fieldSpecs: [
                 'fund',
                 'trader',
