@@ -4,9 +4,9 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-import {hbox, hspacer, filler, hframe} from '@xh/hoist/cmp/layout';
+import {hbox, hspacer, filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {ValidationState} from '@xh/hoist/data';
 import {wrapper} from '../../common';
 import {gridOptionsPanel} from '../../common/grid/options/GridOptionsPanel';
@@ -62,11 +62,21 @@ export const inlineEditingPanel = hoistCmp.factory({
                     filler(),
                     switchInput({
                         bind: 'fullRowEditing',
-                        label: 'Full row Editing?'
+                        label: 'Full row Editing',
+                        labelSide: 'left'
                     }),
+                    toolbarSep(),
                     switchInput({
                         bind: 'asyncValidation',
-                        label: 'Async Validation?'
+                        label: 'Async Validation',
+                        labelSide: 'left'
+                    }),
+                    toolbarSep(),
+                    span('Clicks To Edit'),
+                    select({
+                        bind: 'clicksToEdit',
+                        options: [2, 1, 0],
+                        width: 45
                     })
                 ],
                 item: hframe(
