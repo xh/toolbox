@@ -1,14 +1,14 @@
 # Changelog
 
-## v3.0.0-SNAPSHOT - under development
+## v2.8.0 - 2021-07-23
 
 ### New Features
 
-* New Other > Placeholder example.
+* Added demos for Badge (new) and Placeholder components.
 
 ### Libraries
 
-* @xh/hoist 42.0.0
+* @xh/hoist 41.1.0
 
 ## v2.7.0 - 2021-07-01
 
