@@ -7,7 +7,7 @@
     "build": "webpack --env.prodBuild",
     "buildAndAnalyze": "webpack --env.prodBuild --env.analyzeBundles",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
-    "lint": "yarn lint:js",
+    "lint": "yarn lint:all",
     "lint:all": "yarn lint:js && yarn lint:styles",
     "lint:js": "eslint --ext .js,.jsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
