@@ -1,11 +1,11 @@
 import {grid} from '@xh/hoist/cmp/grid';
+import {hbox, hframe, hspacer, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {Icon} from '@xh/hoist/icon';
-import {hbox, hspacer, filler, hframe, span} from '@xh/hoist/cmp/layout';
-import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {ValidationState} from '@xh/hoist/data';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common';
 import {gridOptionsPanel} from '../../common/grid/options/GridOptionsPanel';
 import './InlineEditingPanel.scss';
@@ -34,6 +34,9 @@ export const inlineEditingPanel = hoistCmp.factory({
                     require resolution before persisting to the back-end. Cells with invalid values are styled with a red corner
                     flag by default. (Try setting a negative amount in any row to test.)
                 </p>
+            ],
+            links: [
+                {url: '$TB/client-app/src/desktop/tabs/grids/InlineEditingPanel.js', notes: 'This example.'}
             ],
             item: panel({
                 title: 'Grids › Inline Editing',
@@ -70,25 +73,30 @@ export const inlineEditingPanel = hoistCmp.factory({
                     '-',
                     storeDirtyIndicator(),
                     '-',
-                    storeValidIndicator(),
-                    filler(),
+                    storeValidIndicator()
+                ],
+                bbar: [
                     switchInput({
                         bind: 'fullRowEditing',
-                        label: 'Full row Editing',
+                        label: 'Full-row editing',
                         labelSide: 'left'
                     }),
                     '-',
                     switchInput({
                         bind: 'asyncValidation',
-                        label: 'Async Validation',
+                        label: 'Async validation',
                         labelSide: 'left'
                     }),
                     '-',
-                    span('Clicks To Edit'),
-                    select({
+                    span('Edit with'),
+                    buttonGroupInput({
                         bind: 'clicksToEdit',
-                        options: [2, 1, 0],
-                        width: 45
+                        outlined: true,
+                        items: [
+                            button({text: '2 clicks', value: 2}),
+                            button({text: '1 click', value: 1}),
+                            button({text: 'disabled', value: -1})
+                        ]
                     })
                 ],
                 item: hframe(
