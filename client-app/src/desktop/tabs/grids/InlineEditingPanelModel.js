@@ -1,20 +1,21 @@
+import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {GridModel, dateCol, boolCheckCol} from '@xh/hoist/cmp/grid';
-import {Store, dateIs, lengthIs, numberIs, required} from '@xh/hoist/data';
+import {dateIs, lengthIs, numberIs, required, Store} from '@xh/hoist/data';
 import {
     actionCol,
     calcActionColWidth,
-    textEditor,
-    numberEditor,
-    dateEditor,
     checkboxEditor,
+    dateEditor,
+    numberEditor,
     selectEditor,
-    textAreaEditor
+    textAreaEditor,
+    textEditor
 } from '@xh/hoist/desktop/cmp/grid';
-import {wait} from '@xh/hoist/promise';
+import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
-import {fmtDate} from '@xh/hoist/format';
+import {wait} from '@xh/hoist/promise';
+import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
 
 export class InlineEditingPanelModel extends HoistModel {
@@ -28,7 +29,6 @@ export class InlineEditingPanelModel extends HoistModel {
     @managed
     @observable.ref
     gridModel;
-
 
     @managed
     store;
@@ -143,13 +143,13 @@ export class InlineEditingPanelModel extends HoistModel {
                 },
                 {
                     name: 'date',
-                    type: 'date',
-                    rules: [dateIs({min: new Date(2021, 2, 15), max: 'today'})]
+                    type: 'localDate',
+                    rules: [dateIs({min: LocalDate.today().startOfYear(), max: 'today'})]
                 },
                 {
-                    name: 'isActive',
+                    name: 'restricted',
                     type: 'bool',
-                    defaultValue: true
+                    defaultValue: false
                 },
                 {
                     name: 'category',
@@ -170,6 +170,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     name: 'Record 0',
                     category: 'US',
                     amount: 50,
+                    date: LocalDate.today(),
                     description: 'This is a record'
                 },
                 {
@@ -177,23 +178,28 @@ export class InlineEditingPanelModel extends HoistModel {
                     name: 'Record 1',
                     category: 'EU',
                     amount: 25,
+                    date: LocalDate.today().add(-6, 'months'),
                     description: 'This is a record'
                 },
                 {
                     id: 2,
-                    name: 'Record 2',
+                    name: 'Restricted',
                     category: 'BRIC',
                     amount: 30,
-                    description: 'This is a record'
+                    restricted: true,
+                    description: 'Demos conditional editing - in this example, setting restricted boolean to true on a record disables editing of other fields.'
                 }
             ]
         });
     }
 
     createGridModel() {
+        const ifNotRestricted = ({record}) => !record.data.restricted;
         return new GridModel({
             selModel: null,
             showCellFocus: true,
+            cellBorders: true,
+            stripeRows: false,
             fullRowEditing: this.fullRowEditing,
             store: this.store,
             columns: [
@@ -227,29 +233,32 @@ export class InlineEditingPanelModel extends HoistModel {
                     ]
                 },
                 {
-                    field: 'isActive',
-                    ...boolCheckCol,
-                    headerName: '?',
+                    field: 'restricted',
+                    headerName: Icon.lock(),
+                    width: 40,
+                    align: 'center',
+                    resizable: false,
                     editable: true,
-                    editor: checkboxEditor
+                    editor: checkboxEditor,
+                    renderer: (v) => v ? Icon.lock({className: 'xh-warning', asHtml: true}) : ''
                 },
                 {
                     field: 'name',
-                    editable: true,
-                    width: 200,
+                    width: 120,
+                    editable: ifNotRestricted,
                     editor: textEditor,
                     tooltip: true
                 },
                 {
                     field: 'amount',
-                    editable: true,
                     width: 100,
+                    editable: ifNotRestricted,
                     editor: numberEditor
                 },
                 {
                     field: 'category',
-                    editable: true,
-                    width: 100,
+                    width: 80,
+                    editable: ifNotRestricted,
                     editor: (props) => selectEditor({
                         ...props,
                         inputProps: {
@@ -259,15 +268,21 @@ export class InlineEditingPanelModel extends HoistModel {
                 },
                 {
                     field: 'date',
-                    ...dateCol,
-                    editable: true,
-                    editor: dateEditor,
+                    ...localDateCol,
+                    editable: ifNotRestricted,
+                    editor: (props) => dateEditor({
+                        ...props,
+                        inputProps: {
+                            valueType: 'localDate'
+                        }
+                    }),
                     tooltip: (v) => fmtDate(v, 'dddd MMMM Do YYYY')
                 },
                 {
                     field: 'description',
                     width: 300,
-                    editable: true,
+                    tooltip: true,
+                    editable: ifNotRestricted,
                     editor: textAreaEditor,
                     omit: this.fullRowEditing
                 }
