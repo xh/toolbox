@@ -26,6 +26,9 @@ export class InlineEditingPanelModel extends HoistModel {
     @bindable
     fullRowEditing = false;
 
+    @bindable
+    clicksToEdit = 2;
+
     @managed
     @observable.ref
     gridModel;
@@ -40,7 +43,7 @@ export class InlineEditingPanelModel extends HoistModel {
         this.gridModel = this.createGridModel();
 
         this.addReaction({
-            track: () => this.fullRowEditing,
+            track: () => [this.fullRowEditing, this.clicksToEdit],
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
@@ -201,6 +204,7 @@ export class InlineEditingPanelModel extends HoistModel {
             cellBorders: true,
             stripeRows: false,
             fullRowEditing: this.fullRowEditing,
+            clicksToEdit: this.clicksToEdit,
             store: this.store,
             columns: [
                 {

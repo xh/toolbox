@@ -1,9 +1,9 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {filler, hbox, hframe, hspacer} from '@xh/hoist/cmp/layout';
+import {hbox, hframe, hspacer, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {ValidationState} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common';
@@ -34,6 +34,9 @@ export const inlineEditingPanel = hoistCmp.factory({
                     require resolution before persisting to the back-end. Cells with invalid values are styled with a red corner
                     flag by default. (Try setting a negative amount in any row to test.)
                 </p>
+            ],
+            links: [
+                {url: '$TB/client-app/src/desktop/tabs/grids/InlineEditingPanel.js', notes: 'This example.'}
             ],
             item: panel({
                 title: 'Grids › Inline Editing',
@@ -70,16 +73,30 @@ export const inlineEditingPanel = hoistCmp.factory({
                     '-',
                     storeDirtyIndicator(),
                     '-',
-                    storeValidIndicator(),
-                    filler(),
+                    storeValidIndicator()
+                ],
+                bbar: [
                     switchInput({
                         bind: 'fullRowEditing',
-                        label: 'Full-row editing'
+                        label: 'Full-row editing',
+                        labelSide: 'left'
                     }),
                     '-',
                     switchInput({
                         bind: 'asyncValidation',
-                        label: 'Async validation'
+                        label: 'Async validation',
+                        labelSide: 'left'
+                    }),
+                    '-',
+                    span('Edit with'),
+                    buttonGroupInput({
+                        bind: 'clicksToEdit',
+                        outlined: true,
+                        items: [
+                            button({text: '2 clicks', value: 2}),
+                            button({text: '1 click', value: 1}),
+                            button({text: 'disabled', value: -1})
+                        ]
                     })
                 ],
                 item: hframe(
