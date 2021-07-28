@@ -1,0 +1,7 @@
+.tb-inline-editing-panel {
+  &:not(.tb-inline-editing-panel--fullRow) {
+    .xh-cell--editable {
+      background-color: var(--xh-yellow-light);
+    }
+  }
+}
