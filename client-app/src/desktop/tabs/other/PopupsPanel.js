@@ -1,8 +1,8 @@
 import {box, code, div, li, p, span, table, tbody, td, th, tr, ul} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
+import {lengthIs, required} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
-import {lengthIs, required} from '@xh/hoist/data';
 import {Icon} from '@xh/hoist/icon';
 import React, {useRef} from 'react';
 import {wrapper} from '../../common';
@@ -273,8 +273,8 @@ export const popupsPanel = hoistCmp.factory(
                             ...popBtn(Icon.toast({className: 'xh-orange-muted'})),
                             text: 'with custom timeout',
                             onClick: () => XH.toast({
-                                message: span('This is a Toast has a ', code('timeout: 1000'), '. See ya!'),
-                                timeout: 1000
+                                message: span('This is a Toast has a ', code('timeout: 10000'), '. Ten seconds can seem like forever, right?'),
+                                timeout: 10000
                             })
                         }),
                         button({
@@ -298,10 +298,8 @@ export const popupsPanel = hoistCmp.factory(
                         button({
                             ...popBtn(Icon.toast({className: 'xh-orange-muted'})),
                             text: 'with intent + icon',
-                            onClick: () => XH.toast({
-                                message: span('This is a Toast with ', code("intent: 'danger'")),
-                                icon: Icon.skull(),
-                                intent: 'danger'
+                            onClick: () => XH.dangerToast({
+                                message: div('This calls ', code('XH.dangerToast()'), ' to set an intent and icon suitable for an alert when something goes wrong.')
                             })
                         })
                     )
