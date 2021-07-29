@@ -26,15 +26,22 @@ export class InlineEditingPanelModel extends HoistModel {
     @bindable
     fullRowEditing = false;
 
-    @bindable
-    clicksToEdit = 2;
-
     @managed
     @observable.ref
     gridModel;
 
     @managed
     store;
+
+    @bindable
+    clicksToEdit = 2;
+
+    get clicksToEditNote() {
+        const {clicksToEdit} = this;
+        if (clicksToEdit === 1) return 'Single-click a row above to edit';
+        if (clicksToEdit === 2) return 'Double-click a row above to edit';
+        return 'Use top toolbar buttons to edit';
+    }
 
     constructor() {
         super();
@@ -52,17 +59,29 @@ export class InlineEditingPanelModel extends HoistModel {
     }
 
     add() {
-        this.store.addRecords({id: XH.genId()});
+        const id = XH.genId();
+        this.store.addRecords({id, name: 'New Record'});
+        this.gridModel.beginEditAsync({record: id});
     }
 
     addFive() {
+        const firstId = XH.genId();
         this.store.addRecords([
-            {id: XH.genId(), name: 'New Record 1'},
-            {id: XH.genId(), name: 'New Record 2'},
-            {id: XH.genId(), name: 'New Record 3'},
-            {id: XH.genId(), name: 'New Record 4'},
-            {id: XH.genId(), name: 'New Record 5'}
+            {id: firstId, name: 'New Record'},
+            {id: XH.genId(), name: 'New Record'},
+            {id: XH.genId(), name: 'New Record'},
+            {id: XH.genId(), name: 'New Record'},
+            {id: XH.genId(), name: 'New Record'}
         ]);
+        this.gridModel.beginEditAsync({record: firstId});
+    }
+
+    async beginEditAsync(opts) {
+        await this.gridModel.beginEditAsync(opts);
+    }
+
+    async endEditAsync() {
+        await this.gridModel.endEditAsync();
     }
 
     @action
