@@ -49,7 +49,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                 height: 300,
                 tbar: form({
                     model: topFormModel,
-                    fieldDefaults: {minimal: true},
+                    fieldDefaults: {minimal: true, label: null},
                     item: toolbar(
                         formField({
                             label: 'Inline label:',
@@ -58,7 +58,6 @@ export const toolbarFormPanel = hoistCmp.factory({
                             item: textInput()
                         }),
                         formField({
-                            label: null,
                             field: 'number1',
                             item: numberInput({
                                 enableShorthandUnits: true,
@@ -67,7 +66,6 @@ export const toolbarFormPanel = hoistCmp.factory({
                             })
                         }),
                         formField({
-                            label: null,
                             field: 'date1',
                             width: 140,
                             item: dateInput({
@@ -77,7 +75,6 @@ export const toolbarFormPanel = hoistCmp.factory({
                             })
                         }),
                         formField({
-                            label: null,
                             field: 'buttonGroup1',
                             item: buttonGroupInput(
                                 button({
@@ -93,12 +90,10 @@ export const toolbarFormPanel = hoistCmp.factory({
                             )
                         }),
                         formField({
-                            label: null,
                             field: 'bool1',
                             item: checkbox({label: 'enabled'})
                         }),
                         formField({
-                            label: null,
                             field: 'bool2',
                             item: switchInput({label: 'enabled'})
                         }),
@@ -119,7 +114,7 @@ export const toolbarFormPanel = hoistCmp.factory({
                 }),
                 bbar: form({
                     model: bottomFormModel,
-                    fieldDefaults: {minimal: true},
+                    fieldDefaults: {minimal: true, label: null},
                     item: toolbar(
                         formField({
                             label: 'Multi-select:',
@@ -133,7 +128,6 @@ export const toolbarFormPanel = hoistCmp.factory({
                             })
                         }),
                         formField({
-                            label: null,
                             field: 'option1',
                             width: 150,
                             item: select({
@@ -143,7 +137,6 @@ export const toolbarFormPanel = hoistCmp.factory({
                             })
                         }),
                         formField({
-                            label: null,
                             field: 'option3',
                             item: radioInput({
                                 options: ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]
