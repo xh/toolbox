@@ -126,7 +126,7 @@ export class SampleGridModel extends HoistModel {
             ...GridModel.defaultContextMenu
         ],
         groupSortFn: (a, b, groupField) => {
-            if (a == b) return 0;
+            if (a === b) return 0;
             if (groupField === 'winLose') {
                 return a === 'Winner' ? -1 : 1;
             } else {
@@ -138,7 +138,7 @@ export class SampleGridModel extends HoistModel {
                 if (record.isSummary) return null;
                 const {company, city, trade_date, profit_loss, trade_volume} = record.data;
                 return vbox({
-                    className: 'sample-grid-tooltip',
+                    className: 'tb-sample-grid-tooltip',
                     items: [
                         div({className: 'company', item: company}),
                         hbox({
@@ -207,10 +207,7 @@ export class SampleGridModel extends HoistModel {
                 field: 'city',
                 minWidth: 150,
                 maxWidth: 200,
-                tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
-                cellClass: (val) => {
-                    return val === 'New York' ? 'xh-text-color-accent' : '';
-                }
+                tooltip: (val, {record}) => `${record.data.company} is located in ${val}`
             },
             {
                 field: 'trade_volume',
@@ -220,6 +217,9 @@ export class SampleGridModel extends HoistModel {
                     precision: 1,
                     label: true
                 }),
+                cellClassRules: {
+                    'tb-sample-grid__high-volume-cell': ({value}) => value >= 9000000000
+                },
                 exportFormat: ExportFormat.NUM_DELIMITED,
                 chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
             },
