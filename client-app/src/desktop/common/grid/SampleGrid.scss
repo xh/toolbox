@@ -1,4 +1,4 @@
-.tbox-samplegrid {
+.tb-sample-grid {
   &__selbar {
     font-size: var(--xh-font-size-small-px);
     padding: var(--xh-pad-half-px);
@@ -10,9 +10,18 @@
       margin-right: 4px;
     }
   }
+
+  // To demo Column.cellClassRules
+  .ag-row:not(.ag-row-pinned) {
+    .tb-sample-grid__high-volume-cell {
+      color: var(--xh-intent-warning-darker);
+      border-left: 4px solid var(--xh-intent-warning-darker) !important;
+      background-color: var(--xh-intent-warning-trans1);
+    }
+  }
 }
 
-.sample-grid-tooltip {
+.tb-sample-grid-tooltip {
   min-width: 160px;
   padding: var(--xh-pad-px);
   background: var(--xh-bg-alt);
@@ -37,11 +46,5 @@
     > *:first-child {
       margin-right: var(--xh-pad-px);
     }
-  }
-}
-
-.ag-cell {
-  &.dirty {
-    background-color: var(--xh-intent-warning);
   }
 }
