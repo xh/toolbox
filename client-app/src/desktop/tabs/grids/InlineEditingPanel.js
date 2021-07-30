@@ -1,10 +1,11 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {hbox, hframe, hspacer, span} from '@xh/hoist/cmp/layout';
+import {filler, hbox, hframe, hspacer, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {ValidationState} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {wrapper} from '../../common';
 import {gridOptionsPanel} from '../../common/grid/options/GridOptionsPanel';
@@ -15,7 +16,7 @@ export const inlineEditingPanel = hoistCmp.factory({
     model: creates(InlineEditingPanelModel),
 
     render({model}) {
-        const {gridModel, store, fullRowEditing} = model;
+        const {gridModel, fullRowEditing} = model;
 
         return wrapper({
             description: [
@@ -42,73 +43,68 @@ export const inlineEditingPanel = hoistCmp.factory({
                 title: 'Grids › Inline Editing',
                 icon: Icon.edit(),
                 className: `tb-grid-wrapper-panel tb-inline-editing-panel ${fullRowEditing ? 'tb-inline-editing-panel--fullRow' : ''}`,
-                tbar: [
-                    button({
-                        icon: Icon.add(),
-                        text: 'Add',
-                        intent: 'success',
-                        onClick: () => model.add()
-                    }),
-                    button({
-                        icon: Icon.add(),
-                        text: 'Add 5',
-                        intent: 'success',
-                        onClick: () => model.addFive(0)
-                    }),
-                    '-',
-                    button({
-                        icon: Icon.check(),
-                        text: 'Commit All',
-                        intent: 'success',
-                        onClick: () => model.commitAllAsync(),
-                        disabled: !store.isModified
-                    }),
-                    button({
-                        icon: Icon.undo(),
-                        text: 'Revert All',
-                        intent: 'primary',
-                        onClick: () => model.revert(),
-                        disabled: !store.isModified
-                    }),
-                    '-',
-                    storeDirtyIndicator(),
-                    '-',
-                    storeValidIndicator()
-                ],
-                bbar: [
-                    switchInput({
-                        bind: 'fullRowEditing',
-                        label: 'Full-row editing',
-                        labelSide: 'left'
-                    }),
-                    '-',
-                    switchInput({
-                        bind: 'asyncValidation',
-                        label: 'Async validation',
-                        labelSide: 'left'
-                    }),
-                    '-',
-                    span('Edit with'),
-                    buttonGroupInput({
-                        bind: 'clicksToEdit',
-                        outlined: true,
-                        items: [
-                            button({text: '2 clicks', value: 2}),
-                            button({text: '1 click', value: 1}),
-                            button({text: 'disabled', value: -1})
-                        ]
-                    })
-                ],
+                tbar: tbar(),
                 item: hframe(
-                    grid({
-                        key: gridModel.xhId,
-                        model: gridModel
-                    }),
+                    grid({key: gridModel.xhId, model: gridModel}),
                     gridOptionsPanel()
-                )
+                ),
+                bbar: bbar()
             })
         });
     }
+});
+
+const tbar = hoistCmp.factory(({model}) => {
+    const {store, gridModel} = model;
+    return toolbar(
+        button({
+            icon: Icon.add(),
+            text: 'Add',
+            onClick: () => model.add()
+        }),
+        button({
+            icon: Icon.add(),
+            text: 'Add 5',
+            onClick: () => model.addFive(0)
+        }),
+        '-',
+        button({
+            icon: Icon.edit(),
+            text: 'First Row',
+            onClick: () => model.beginEditAsync()
+        }),
+        button({
+            icon: Icon.edit(),
+            text: 'First Row (Amount)',
+            onClick: () => model.beginEditAsync({colId: 'amount'})
+        }),
+        '-',
+        button({
+            icon: Icon.stopCircle(),
+            text: 'Stop Editing',
+            onClick: () => model.endEditAsync(),
+            disabled: !gridModel.isEditing
+        }),
+        '-',
+        button({
+            icon: Icon.check(),
+            text: 'Commit All',
+            intent: 'success',
+            onClick: () => model.commitAllAsync(),
+            disabled: !store.isModified
+        }),
+        button({
+            icon: Icon.undo(),
+            text: 'Revert All',
+            intent: 'primary',
+            onClick: () => model.revert(),
+            disabled: !store.isModified
+        }),
+        filler(),
+        storeDirtyIndicator(),
+        '-',
+        storeValidIndicator()
+    );
 });
 
 const storeDirtyIndicator = hoistCmp.factory(
@@ -161,3 +157,32 @@ const storeValidIndicator = hoistCmp.factory(
         });
     }
 );
+
+const bbar = hoistCmp.factory(({model}) => {
+    return toolbar(
+        switchInput({
+            bind: 'fullRowEditing',
+            label: 'Full-row editing',
+            labelSide: 'left'
+        }),
+        '-',
+        switchInput({
+            bind: 'asyncValidation',
+            label: 'Async validation',
+            labelSide: 'left'
+        }),
+        '-',
+        span('Edit with: '),
+        buttonGroupInput({
+            bind: 'clicksToEdit',
+            outlined: true,
+            items: [
+                button({text: '2 clicks', value: 2}),
+                button({text: '1 click', value: 1}),
+                button({text: 'disabled', value: -1})
+            ]
+        }),
+        hspacer(),
+        span(`${model.clicksToEditNote}`)
+    );
+});
