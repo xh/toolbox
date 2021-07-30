@@ -1,7 +1,7 @@
 import {span} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 import {filler, frame, hframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {buttonGroupInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -42,9 +42,9 @@ export const toolbarPanel = hoistCmp.factory({
     }
 });
 
-
 const topBar = hoistCmp.factory(
     ({model}) => toolbar({
+        compact: model.compact,
         enableOverflowMenu: true,
         items: [
             button({
@@ -74,8 +74,7 @@ const topBar = hoistCmp.factory(
             filler(),
             switchInput({
                 bind: 'enableTerminate',
-                label: 'Danger mode',
-                alignIndicator: 'right'
+                label: 'Danger mode'
             }),
             button({
                 icon: Icon.skull(),
@@ -101,9 +100,9 @@ const topBar = hoistCmp.factory(
 );
 
 const leftBar = hoistCmp.factory(
-    () => toolbar({
+    ({model}) => toolbar({
+        compact: model.compact,
         vertical: true,
-        width: 42,
         items: [
             filler(),
             button({icon: Icon.contact()}),
@@ -119,9 +118,9 @@ const leftBar = hoistCmp.factory(
 );
 
 const rightBar = hoistCmp.factory(
-    () => toolbar({
+    ({model}) => toolbar({
+        compact: model.compact,
         vertical: true,
-        width: 42,
         items: [
             button({icon: Icon.contact()})
         ]
@@ -129,28 +128,37 @@ const rightBar = hoistCmp.factory(
 );
 
 const bottomBar = hoistCmp.factory(
-    ({model}) => toolbar(
-        buttonGroupInput({
-            bind: 'visible',
-            items: [
-                button({icon: Icon.eye(), text: 'Show', value: true}),
-                button({icon: Icon.eyeSlash(), text: 'Hide', value: false})
-            ]
-        }),
-        span({
-            item: 'Now you see me...',
-            omit: !model.visible
-        }),
-        filler(),
-        select({
-            bind: 'state',
-            options: usStates,
-            placeholder: 'Select a State...'
-        }),
-        toolbarSep(),
-        button({
-            text: 'Show Toast',
-            onClick: () => XH.toast({message: `Currently selected State: ${model.state || 'None'}`})
-        })
-    )
+    ({model}) => toolbar({
+        compact: model.compact,
+        items: [
+            switchInput({
+                label: 'Compact',
+                bind: 'compact'
+            }),
+            toolbarSep(),
+            buttonGroupInput({
+                bind: 'visible',
+                items: [
+                    button({icon: Icon.eye(), text: 'Show', value: true}),
+                    button({icon: Icon.eyeSlash(), text: 'Hide', value: false})
+                ]
+            }),
+            span({
+                item: 'Now you see me...',
+                omit: !model.visible
+            }),
+            filler(),
+            select({
+                bind: 'state',
+                options: usStates,
+                placeholder: 'Select a State...',
+                leftIcon: Icon.globe()
+            }),
+            toolbarSep(),
+            button({
+                text: 'Show Toast',
+                onClick: () => XH.toast({message: `Currently selected State: ${model.state || 'None'}`})
+            })
+        ]
+    })
 );

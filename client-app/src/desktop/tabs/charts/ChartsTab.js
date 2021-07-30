@@ -10,11 +10,11 @@ export const chartsTab = hoistCmp.factory(
     () => tabContainer({
         model: {
             route: 'default.charts',
-            switcherPosition: 'left',
+            switcher: {orientation: 'left'},
             tabs: [
-                {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
                 {id: 'line', content: lineChartPanel},
-                {id: 'simpleTreeMap', title: 'Simple TreeMap', content: simpleTreeMapPanel},
+                {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
+                {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
                 {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
                 {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
             ]

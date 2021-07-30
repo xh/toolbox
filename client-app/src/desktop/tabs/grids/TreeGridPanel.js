@@ -9,9 +9,9 @@ export const treeGridPanel = hoistCmp.factory(
         description: [
             <p>
                 Hoist's Grid supports the display of hierarchical tree data, leveraging the
-                underlying support for nested data rows provided by ag-Grid. The <code>DimensionChooser</code> menu
-                allows control over the tree hierarchy, and stores the user's recent history for quick access.
-                History can also be persisted on the server with <code>XH.prefService()</code>.
+                underlying support for nested data rows provided by ag-Grid. The <code>GroupingChooser</code> component
+                allows control over the tree hierarchy, with optional support for persisting
+                user-driven favorites.
             </p>,
             <p>
                 Applications provide standard record data with <code>children</code> nodes containing

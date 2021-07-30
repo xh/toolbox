@@ -2,7 +2,7 @@ import React from 'react';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../../common/Wrapper';
+import {wrapper} from '../../../common';
 import {code, hframe} from '@xh/hoist/cmp/layout';
 import {dateInput, radioInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {card} from '@xh/hoist/kit/blueprint';
@@ -58,7 +58,6 @@ const paramsPanel = hoistCmp.factory(
             param({
                 bind: 'fnName',
                 input: radioInput({
-                    alignIndicator: 'left',
                     inline: true,
                     options: [
                         {value: 'fmtDate', label: code('fmtDate')},

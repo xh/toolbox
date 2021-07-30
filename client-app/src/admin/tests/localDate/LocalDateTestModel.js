@@ -1,10 +1,9 @@
 import {HoistModel} from '@xh/hoist/core';
-import {computed, observable} from '@xh/hoist/mobx';
+import {computed, observable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import moment from 'moment';
 
-@HoistModel
-export class LocalDateTestModel {
+export class LocalDateTestModel extends HoistModel {
 
     @computed
     get testResults() {
@@ -295,4 +294,8 @@ export class LocalDateTestModel {
         }
     ];
 
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 }

@@ -1,9 +1,8 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {times} from 'lodash';
 
-@HoistModel
-export class SelectTestModel {
+export class SelectTestModel extends HoistModel {
     @bindable
     selectValue;
 
@@ -44,6 +43,8 @@ export class SelectTestModel {
     enableMultiMenuOpen
 
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.numOptions,
             run: () => this.setBigOptions(times(this.numOptions, i => `option: ${i}`)),

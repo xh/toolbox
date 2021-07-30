@@ -1,8 +1,8 @@
 import {box, code, div, li, p, span, table, tbody, td, th, tr, ul} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
+import {lengthIs, required} from '@xh/hoist/data';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {textArea} from '@xh/hoist/desktop/cmp/input';
-import {lengthIs, required} from '@xh/hoist/cmp/form';
 import {Icon} from '@xh/hoist/icon';
 import React, {useRef} from 'react';
 import {wrapper} from '../../common';
@@ -18,7 +18,7 @@ export const popupsPanel = hoistCmp.factory(
                 icon: ret ? Icon.check() : Icon.x(),
                 containerRef: divRef.current
             });
-        
+
         return wrapper({
             description: (
                 <div>
@@ -30,7 +30,7 @@ export const popupsPanel = hoistCmp.factory(
                         and <code>XH.prompt()</code> methods provide convenient APIs for apps to
                         trigger the display of Messages.
                     </p>
-                    <p>For non-modal notifications, consider using <code>XH.toast()</code>.</p>
+                    <p>For non-modal notifications, consider using <code>XH.toast()</code> or <code>XH.showBanner()</code>.</p>
                 </div>
             ),
             item: box({
@@ -224,6 +224,45 @@ export const popupsPanel = hoistCmp.factory(
                     ),
                     row(
                         button({
+                            ...popBtn(Icon.flag({className: 'xh-blue-dark'})),
+                            text: 'Banner',
+                            onClick: () => XH.showBanner({
+                                message: (
+                                    <span>
+                                        This is a Banner. Banners are highly configurable, and can display rich text by
+                                        accepting <code>strings</code>, <code>JSX</code>, and <code>React elements</code>.
+                                    </span>
+                                )
+                            })
+                        }),
+                        button({
+                            ...popBtn(Icon.flag({className: 'xh-blue-muted'})),
+                            text: 'with intent + icon',
+                            onClick: () => XH.showBanner({
+                                message: span('This is a Banner with ', code("intent: 'danger'")),
+                                icon: Icon.skull(),
+                                intent: 'danger'
+                            })
+                        }),
+                        button({
+                            ...popBtn(Icon.flag({className: 'xh-blue-muted'})),
+                            text: 'with action',
+                            onClick: () => XH.showBanner({
+                                message: 'This is a Banner with an action button. The action button can be configured to execute custom functionality.',
+                                icon: Icon.flag(),
+                                actionButtonProps: {
+                                    text: 'Click me!',
+                                    intent: 'success',
+                                    onClick: () => {
+                                        XH.toast({message: 'Action button clicked!'});
+                                        XH.hideBanner();
+                                    }
+                                }
+                            })
+                        })
+                    ),
+                    row(
+                        button({
                             ...popBtn(Icon.toast({className: 'xh-orange'})),
                             text: 'Toast',
                             onClick: () => XH.toast({
@@ -234,8 +273,8 @@ export const popupsPanel = hoistCmp.factory(
                             ...popBtn(Icon.toast({className: 'xh-orange-muted'})),
                             text: 'with custom timeout',
                             onClick: () => XH.toast({
-                                message: span('This is a Toast has a ', code('timeout: 1000'), '. See ya!'),
-                                timeout: 1000
+                                message: span('This is a Toast has a ', code('timeout: 10000'), '. Ten seconds can seem like forever, right?'),
+                                timeout: 10000
                             })
                         }),
                         button({
@@ -259,10 +298,8 @@ export const popupsPanel = hoistCmp.factory(
                         button({
                             ...popBtn(Icon.toast({className: 'xh-orange-muted'})),
                             text: 'with intent + icon',
-                            onClick: () => XH.toast({
-                                message: span('This is a Toast with ', code("intent: 'danger'")),
-                                icon: Icon.skull(),
-                                intent: 'danger'
+                            onClick: () => XH.dangerToast({
+                                message: div('This calls ', code('XH.dangerToast()'), ' to set an intent and icon suitable for an alert when something goes wrong.')
                             })
                         })
                     )

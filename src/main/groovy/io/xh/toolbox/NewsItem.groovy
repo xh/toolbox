@@ -4,6 +4,7 @@ import io.xh.hoist.json.JSONFormatCached
 
 class NewsItem extends JSONFormatCached {
 
+    final String id
     final String source
     final String title
     final String author
@@ -13,6 +14,7 @@ class NewsItem extends JSONFormatCached {
     final Date published
 
     NewsItem(Map mp) {
+        id = mp.id
         source = mp.source
         title = mp.title
         author = mp.author
@@ -24,6 +26,7 @@ class NewsItem extends JSONFormatCached {
 
     Map formatForJSON() {
         return [
+                id: id,
                 source: source,
                 title: title,
                 author: author,

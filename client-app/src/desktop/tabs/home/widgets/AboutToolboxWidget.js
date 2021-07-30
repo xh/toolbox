@@ -3,6 +3,7 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtDateTime} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {fmtTimeZone} from '@xh/hoist/utils/impl';
@@ -63,17 +64,17 @@ export const aboutToolboxWidget = hoistCmp.factory({
                     })
                 ]
             }),
-            bbar: [
-                filler(),
-                button({
-                    text: 'Send Feedback!',
-                    icon: Icon.comment({className: 'fa-flip-horizontal'}),
-                    outlined: true,
-                    intent: 'primary',
-                    onClick: () => XH.showFeedbackDialog()
-                }),
-                filler()
-            ]
+            bbar: toolbar({
+                compact: true,
+                items: [
+                    filler(),
+                    button({
+                        text: 'Send Feedback!',
+                        icon: Icon.comment({className: 'fa-flip-horizontal'}),
+                        onClick: () => XH.showFeedbackDialog()
+                    })
+                ]
+            })
         });
     }
 });

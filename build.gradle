@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
+        mavenCentral()
         maven {url 'https://repo.grails.org/grails/core'}
     }
     dependencies {
@@ -26,7 +26,7 @@ apply plugin:'org.grails.grails-gsp'
 
 repositories {
     mavenLocal()
-    jcenter()
+    mavenCentral()
     maven {url 'https://repo.grails.org/grails/core'}
     maven {url 'https://repo.xh.io/content/groups/public/'}
 }
@@ -73,7 +73,7 @@ dependencies {
 
     // For JWT token validation.
     compile "org.bitbucket.b_c:jose4j:0.7.2"
-    
+
     runtime "org.apache.tomcat:tomcat-jdbc"
     runtime "mysql:mysql-connector-java:5.1.47"
 

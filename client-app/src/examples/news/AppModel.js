@@ -2,8 +2,7 @@ import {HoistAppModel, managed, XH} from '@xh/hoist/core';
 import {OauthService} from '../../core/svc/OauthService';
 import {NewsPanelModel} from './NewsPanelModel';
 
-@HoistAppModel
-export class AppModel {
+export class AppModel extends HoistAppModel {
 
     @managed
     newsPanelModel;
@@ -12,7 +11,7 @@ export class AppModel {
         return XH.getPref('gridSizingMode');
     }
 
-    async preAuthInitAsync() {
+    static async preAuthAsync() {
         await XH.installServicesAsync(OauthService);
     }
 

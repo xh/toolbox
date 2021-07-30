@@ -13,7 +13,7 @@ import './Wrapper.scss';
 export const [Wrapper, wrapper] = hoistCmp.withFactory({
     displayName: 'Wrapper',
     className: 'tbox-wrapper xh-tiled-bg',
-    model: false, memo: false,
+    model: false,
 
     render({className, description, links, children, ...rest}) {
 
@@ -56,13 +56,13 @@ Wrapper.propTypes = {
     links: PT.arrayOf(PT.object)
 };
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @managed
     dockContainerModel = new DockContainerModel();
 
     constructor(links) {
+        super();
         if (links) {
             this.dockContainerModel.addView({
                 id: XH.genId(),

@@ -7,13 +7,13 @@ import {activityWidget} from './widgets/activity/ActivityWidget';
 import {roadmapWidget} from './widgets/roadmap/RoadmapWidget';
 import {welcomeWidget} from './widgets/WelcomeWidget';
 
-@HoistModel
-export class HomeTabModel {
+export class HomeTabModel extends HoistModel {
 
     @managed
     dashModel;
 
     constructor() {
+        super();
         this.dashModel = new DashContainerModel({
             persistWith: {localStorageKey: 'homeDashboard'},
             initialState: [{

@@ -2,8 +2,7 @@ import {HoistService, XH} from '@xh/hoist/core';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {PositionSession} from '../positions/PositionSession';
 
-@HoistService
-export class PortfolioService {
+export class PortfolioService extends HoistService {
 
     MAX_POSITIONS = 950;
 

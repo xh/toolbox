@@ -1,0 +1,20 @@
+body {
+  --grid-large-font-size: 16;
+
+  .large-actions {
+    font-size: 24px;
+  }
+
+  .xh-record-action-bar * {
+    font-size: var(--xh-font-size-large-px);
+  }
+
+  .tbox-todoapp {
+    margin: 100px 0;
+    width: 600px;
+  }
+
+  .todo-form {
+    padding: var(--xh-pad-px);
+  }
+}

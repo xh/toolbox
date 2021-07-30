@@ -47,7 +47,7 @@ export const gridOptions = hoistCmp.factory({
                     text: 'Scroll to selection',
                     icon: Icon.crosshairs(),
                     minimal: false,
-                    onClick: () => model.ensureSelectionVisible()
+                    onClick: () => model.ensureSelectionVisibleAsync()
                 })
             ]
         });

@@ -1,34 +1,14 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
-import {box} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {hoistCmp} from '@xh/hoist/core';
+import {placeholder} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
+import {hoistCmp} from '@xh/hoist/core';
 
-export const WipTab = hoistCmp({
+/**
+ * Shell for work-in-progress examples and testing code.
+ */
+export const wipTab = hoistCmp(() => {
+    const tabs = [];
 
-    render() {
-        const tabs = [];
-
-        if (tabs.length) {
-            return tabContainer({
-                model: {
-                    route: 'default.wip',
-                    switcherPosition: 'left',
-                    tabs
-                }
-            });
-        }
-
-        return panel(
-            box({
-                margin: 20,
-                item: 'No WIP examples at the moment...'
-            })
-        );
-    }
+    return tabs.length ?
+        tabContainer({model: {route: 'default.wip', switcher: {orientation: 'left'}, tabs}}) :
+        placeholder('No WIP projects at the moment...');
 });

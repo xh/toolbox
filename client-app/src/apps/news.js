@@ -7,7 +7,7 @@ import {AppModel} from '../examples/news/AppModel';
 
 XH.renderApp({
     clientAppCode: 'news',
-    clientAppName: 'XH News Feed',
+    clientAppName: 'XH News',
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,

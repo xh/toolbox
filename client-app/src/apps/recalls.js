@@ -7,7 +7,7 @@ import {AppModel} from '../examples/recalls/AppModel';
 
 XH.renderApp({
     clientAppCode: 'recalls',
-    clientAppName: 'XH FDA Recalls',
+    clientAppName: 'FDA Recalls',
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,

@@ -1,5 +1,5 @@
 import React from 'react';
-import {creates, hoistCmp, HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -41,9 +41,7 @@ export const dataViewPanel = hoistCmp.factory({
     }
 });
 
-@HoistModel
-@LoadSupport
-class Model {
+class Model extends HoistModel {
 
     @managed
     dataViewModel = new DataViewModel({
@@ -69,7 +67,7 @@ class Model {
         const min = -1000,
             max = 1000;
 
-        await dataViewModel.store.loadData(customers.map(it => {
+        await dataViewModel.loadData(customers.map(it => {
             const randVal = Math.random() * (max - min) + min;
             return {
                 id: it.id,
@@ -79,6 +77,6 @@ class Model {
             };
         }));
 
-        dataViewModel.selectFirst();
+        await dataViewModel.selectFirstAsync();
     }
 }

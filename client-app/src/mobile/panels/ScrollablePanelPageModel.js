@@ -1,10 +1,13 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
-@HoistModel
-export class ScrollablePanelPageModel {
+export class ScrollablePanelPageModel extends HoistModel {
 
     @bindable
     showLongContent = false;
 
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 }

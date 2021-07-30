@@ -24,26 +24,29 @@ export const roadmapWidget = hoistCmp.factory({
 });
 
 const bbar = hoistCmp.factory(
-    ({model}) => toolbar(
-        buttonGroupInput({
-            bind: 'statusFilter',
-            outlined: true,
-            items: [
-                button({
-                    text: 'Upcoming',
-                    icon: Icon.mapSigns(),
-                    value: 'showUpcoming',
-                    width: 100
-                }),
-                button({
-                    text: 'Released',
-                    icon: Icon.checkCircle(),
-                    value: 'showReleased',
-                    width: 100
-                })
-            ]
-        }),
-        filler(),
-        storeFilterField({store: model.dataViewModel.store})
-    )
+    ({model}) => toolbar({
+        compact: true,
+        items: [
+            buttonGroupInput({
+                bind: 'statusFilter',
+                outlined: true,
+                items: [
+                    button({
+                        text: 'Upcoming',
+                        icon: Icon.mapSigns(),
+                        value: 'showUpcoming',
+                        width: 80
+                    }),
+                    button({
+                        text: 'Released',
+                        icon: Icon.checkCircle(),
+                        value: 'showReleased',
+                        width: 80
+                    })
+                ]
+            }),
+            filler(),
+            storeFilterField({store: model.dataViewModel.store})
+        ]
+    })
 );

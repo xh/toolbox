@@ -11,7 +11,7 @@ export const panelsTab = hoistCmp.factory(
     () => tabContainer({
         model: {
             route: 'default.panels',
-            switcherPosition: 'left',
+            switcher: {orientation: 'left'},
             tabs: [
                 {id: 'intro', content: basicPanel},
                 {id: 'toolbars', content: toolbarPanel},

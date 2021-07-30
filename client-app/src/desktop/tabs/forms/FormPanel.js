@@ -1,7 +1,7 @@
 import React from 'react';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
@@ -246,30 +246,33 @@ const displayOptions = hoistCmp.factory(
             icon: Icon.settings(),
             compactHeader: true,
             model: {side: 'right', defaultSize: 220, resizable: false},
-            items: [
-                switchInput({
-                    bind: 'inline',
-                    label: 'Inline labels'
-                }),
-                switchInput({
-                    bind: 'minimal',
-                    label: 'Minimal validation display'
-                }),
-                switchInput({
-                    bind: 'commitOnChange',
-                    label: 'Commit on change'
-                }),
-                switchInput({
-                    model: formModel,
-                    bind: 'readonly',
-                    label: 'Read-only'
-                }),
-                switchInput({
-                    model: formModel,
-                    bind: 'disabled',
-                    label: 'Disabled'
-                })
-            ]
+            item: div({
+                className: 'tbox-display-opts__inner',
+                items: [
+                    switchInput({
+                        bind: 'inline',
+                        label: 'Inline labels'
+                    }),
+                    switchInput({
+                        bind: 'minimal',
+                        label: 'Minimal validation display'
+                    }),
+                    switchInput({
+                        bind: 'commitOnChange',
+                        label: 'Commit on change'
+                    }),
+                    switchInput({
+                        model: formModel,
+                        bind: 'readonly',
+                        label: 'Read-only'
+                    }),
+                    switchInput({
+                        model: formModel,
+                        bind: 'disabled',
+                        label: 'Disabled'
+                    })
+                ]
+            })
         });
     }
 );

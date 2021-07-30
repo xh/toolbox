@@ -1,28 +1,14 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {DimensionChooserModel} from '@xh/hoist/mobile/cmp/dimensionchooser';
+import {GroupingChooserModel} from '@xh/hoist/mobile/cmp/grouping';
 
-@HoistModel
-@LoadSupport
-export class TreeGridPageModel {
+export class TreeGridPageModel extends HoistModel {
 
     @managed
-    dimensionChooserModel = new DimensionChooserModel({
+    groupingChooserModel = new GroupingChooserModel({
         dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
         initialValue: ['sector', 'symbol'],
-        initialHistory: [
-            ['sector', 'symbol'],
-            ['fund', 'trader'],
-            ['fund', 'trader', 'sector', 'symbol'],
-            ['region']
-        ],
         persistWith: {localStorageKey: 'toolboxTreeGridSample'}
     });
 
@@ -35,6 +21,10 @@ export class TreeGridPageModel {
         },
         colChooserModel: true,
         sortBy: 'pnl|desc|abs',
+        onRowClicked: (e) => {
+            const id = encodeURIComponent(e.data.raw.id);
+            XH.appendRoute('treeGridDetail', {id});
+        },
         columns: [
             {
                 headerName: 'Name',
@@ -72,14 +62,15 @@ export class TreeGridPageModel {
     });
 
     constructor() {
+        super();
         this.addReaction({
-            track: () => this.dimensionChooserModel.value,
+            track: () => this.groupingChooserModel.value,
             run: () => this.loadAsync()
         });
     }
 
     async doLoadAsync(loadSpec) {
-        const dims = this.dimensionChooserModel.value;
+        const dims = this.groupingChooserModel.value;
         const data = await XH.portfolioService.getPositionsAsync(dims, true);
         this.gridModel.loadData(data);
     }

@@ -4,8 +4,7 @@ import {hboxPage} from './HBoxPage';
 import {vboxPage} from './VBoxPage';
 import {toolbarPage} from './ToolbarPage';
 
-@HoistModel
-export class ContainersPageModel {
+export class ContainersPageModel extends HoistModel {
 
     @managed
     tabContainerModel = new TabContainerModel({

@@ -1,11 +1,15 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {usStates} from '../../core/data';
 
-@HoistModel
-export class ToolbarPageModel {
+export class ToolbarPageModel extends HoistModel {
 
     @bindable state;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     get options() {
         return usStates.map(it => it.label);
