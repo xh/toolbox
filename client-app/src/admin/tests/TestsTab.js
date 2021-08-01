@@ -9,7 +9,9 @@ import {PanelResizingTestPanel} from './panels/PanelResizingTestPanel';
 import {FetchApiTestPanel} from './fetch/FetchApiTestPanel';
 import {SelectTestPanel} from './Select/SelectTestPanel';
 import {dataViewTestPanel} from './dataview/DataViewTestPanel';
-import {ColumnFilterPanel} from './columnFilters/ColumnFilterPanel';
+import {storeColumnFilterPanel} from './columnFilters/store/StoreColumnFilterPanel';
+import {viewColumnFilterPanel} from './columnFilters/view/ViewColumnFilterPanel';
+
 
 export const testsTab = hoistCmp(() => {
     return tabContainer({
@@ -26,7 +28,9 @@ export const testsTab = hoistCmp(() => {
                 {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel},
                 {id: 'select', title: 'Select', content: SelectTestPanel},
                 {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel},
-                {id: 'columnFilters', title: 'Column Filters', content: ColumnFilterPanel}
+                {id: 'storeColumnFilters', title: 'Store Column Filters', content: storeColumnFilterPanel},
+                {id: 'viewColumnFilters', title: 'View Column Filters', content: viewColumnFilterPanel}
+
             ]
         }
     });

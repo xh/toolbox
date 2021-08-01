@@ -1,68 +1,43 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Cube} from '@xh/hoist/data';
-import {GridModel, TreeStyle, ExportFormat, boolCheckCol, localDateCol} from '@xh/hoist/cmp/grid';
+import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {numberRenderer} from '@xh/hoist/format';
 
-export class ColumnFilterPanelModel extends HoistModel {
+export class ViewColumnFilterPanelModel extends HoistModel {
 
     @bindable.ref filterJson = JSON.stringify(null);
-    @bindable isCubeMode = false;
-
-    @managed gridModel;
-    @managed gridFilterChooserModel;
 
     @managed cube;
-    @managed cubeView;
-    @managed cubeGridModel;
-    @managed cubeFilterChooserModel;
+    @managed view;
+    @managed gridModel;
+    @managed filterChooserModel;
     @managed groupingChooserModel;
 
-    get filter() {
-        const {isCubeMode, gridModel, cubeView} = this;
-        return isCubeMode ? cubeView?.filter : gridModel?.filterModel.filter;
-    }
-
-    get activeGridModel() {
-        const {isCubeMode, gridModel, cubeGridModel} = this;
-        return isCubeMode ? cubeGridModel : gridModel;
-    }
-
-    get activeFilterChooserModel() {
-        const {isCubeMode, gridFilterChooserModel, cubeFilterChooserModel} = this;
-        return isCubeMode ? cubeFilterChooserModel : gridFilterChooserModel;
-    }
-
-    get cubeQuery() {
-        const {isCubeMode, groupingChooserModel, filter} = this;
-        if (!isCubeMode || !groupingChooserModel) return null;
-        const dimensions = groupingChooserModel.value;
-        return {dimensions, filter, includeLeaves: true};
+    get query() {
+        const dimensions = this.groupingChooserModel?.value;
+        return {dimensions, filter: this.view?.filter, includeLeaves: true};
     }
 
     constructor() {
         super();
         makeObservable(this);
 
-        // Setup Simple Grid mode
-        this.gridModel = this.createGridModel();
-        this.gridFilterChooserModel = this.createGridFilterChooserModel();
-
         // Setup Cube mode
         this.cube = this.createCube();
-        this.cubeView = this.createCubeView();
-        this.cubeGridModel = this.createCubeGridModel();
-        this.cubeFilterChooserModel = this.createCubeFilterChooserModel();
+        this.view = this.createView();
+        this.gridModel = this.createGridModel();
+        this.filterChooserModel = this.createFilterChooserModel();
         this.groupingChooserModel = this.createGroupingChooserModel();
 
-        window.cubeView = this.cubeView;
-        this.cubeView.setStores(this.cubeGridModel.store);
+        window.view = this.view;
+        this.view.setStores(this.gridModel.store);
 
         // Update filter JSON
         this.addReaction({
-            track: () => this.filter,
+            track: () => this.query.filter,
             run: (filter) => {
                 const str = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
                 this.setFilterJson(str);
@@ -71,36 +46,17 @@ export class ColumnFilterPanelModel extends HoistModel {
 
         // Update cube view when query changes
         this.addReaction({
-            track: () => this.cubeQuery,
+            track: () => this.query,
             run: (query) => {
-                if (query) this.cubeView.updateQuery(query);
+                this.view.updateQuery(query);
             },
+            fireImmediately: true,
             equals: 'structural'
         });
     }
 
     async doLoadAsync(loadSpec) {
-        return Promise.all([
-            this.loadGridAsync(),
-            this.loadCubeAsync(loadSpec)
-        ]);
-    }
-
-    async loadGridAsync() {
-        const {gridModel} = this,
-            {trades, summary} = await XH.fetchJson({url: 'trade'});
-
-        // Introduce null values to test 'blank' filters
-        trades.forEach(trade => {
-            if (trade.city === 'Boston') trade.city = null;
-        });
-
-        gridModel.loadData(trades, summary);
-        await gridModel.preSelectFirstAsync();
-    }
-
-    async loadCubeAsync(loadSpec) {
-        let orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
+        const orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
         orders.forEach(o => {
             [1, 2, 3].forEach(v => {
                 o['price' + v] = o.price;
@@ -113,138 +69,6 @@ export class ColumnFilterPanelModel extends HoistModel {
         await this.cube.loadDataAsync(orders, {asOf: Date.now()});
     }
 
-    //--------------------
-    // Grid Mode Implementation
-    //--------------------
-    createGridModel() {
-        return new GridModel({
-            showSummary: 'bottom',
-            selModel: {mode: 'multiple'},
-            sortBy: 'profit_loss|desc|abs',
-            emptyText: 'No records found...',
-            filterModel: true,
-            colChooserModel: true,
-            enableExport: true,
-            exportOptions: {
-                columns: ['id', 'company', 'VISIBLE'],
-                filename: 'hoist-sample-export'
-            },
-            sizingMode: XH.appModel.gridSizingMode,
-            store: {
-                idEncodesTreePath: true,
-                freezeData: false,
-                fieldDefaults: {disableXssProtection: true},
-                fields: [
-                    {
-                        name: 'profit_loss',
-                        displayName: 'P&L',
-                        type: 'number'
-                    },
-                    {
-                        name: 'trade_date',
-                        displayName: 'Date',
-                        type: 'localDate'
-                    },
-                    {
-                        name: 'trade_volume',
-                        headerName: 'Volume (Sales Quantity)',
-                        type: 'number'
-                    },
-                    {
-                        name: 'active',
-                        type: 'bool'
-                    }
-                ]
-            },
-            colDefaults: {filterable: true},
-            columns: [
-                {
-                    field: 'id',
-                    hidden: true
-                },
-                {
-                    field: 'active',
-                    ...boolCheckCol,
-                    headerName: '',
-                    chooserName: 'Active Status',
-                    tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
-                },
-                {
-                    field: 'company',
-                    flex: 1,
-                    minWidth: 200,
-                    headerName: ({gridModel}) => {
-                        let ret = 'Company';
-                        if (gridModel.selectedRecord) {
-                            ret += ` (${gridModel.selectedRecord.data.company})`;
-                        }
-
-                        return ret;
-                    },
-                    exportName: 'Company',
-                    headerTooltip: 'Select a company & continue'
-                },
-                {
-                    field: 'city',
-                    minWidth: 150,
-                    maxWidth: 200,
-                    tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
-                    cellClass: (val) => {
-                        return val === 'New York' ? 'xh-text-color-accent' : '';
-                    }
-                },
-                {
-                    field: 'trade_volume',
-                    width: 150,
-                    tooltip: (val) => fmtNumberTooltip(val),
-                    renderer: millionsRenderer({
-                        precision: 1,
-                        label: true
-                    }),
-                    exportFormat: ExportFormat.NUM_DELIMITED,
-                    chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
-                },
-                {
-                    field: 'profit_loss',
-                    width: 150,
-                    absSort: true,
-                    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
-                    renderer: numberRenderer({
-                        precision: 0,
-                        ledger: true,
-                        colorSpec: true
-                    }),
-                    exportFormat: ExportFormat.LEDGER_COLOR,
-                    chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
-                },
-                {
-                    field: 'trade_date',
-                    ...localDateCol,
-                    width: 150,
-                    chooserDescription: 'Date of last trade (including related derivatives)'
-                }
-            ]
-        });
-    }
-
-    createGridFilterChooserModel() {
-        const {store} = this.gridModel;
-        return new FilterChooserModel({
-            bind: store,
-            fieldSpecs: [
-                'active',
-                'company',
-                'city',
-                'trade_date',
-                {field: 'profit_loss', valueRenderer: numberRenderer({precision: 0})},
-                {field: 'trade_volume', valueRenderer: millionsRenderer({precision: 1, label: true})}
-            ]
-        });
-    }
-
-    //--------------------
-    // Cube Mode Implementation
-    //--------------------
     createCube() {
         const isInstrument = (dim, val, appliedDims) => {
             return !!appliedDims['symbol'];
@@ -283,8 +107,8 @@ export class ColumnFilterPanelModel extends HoistModel {
         });
     }
 
-    createCubeGridModel() {
-        const {cubeView} = this;
+    createGridModel() {
+        const {view} = this;
         return new GridModel({
             treeMode: true,
             store: {
@@ -301,7 +125,7 @@ export class ColumnFilterPanelModel extends HoistModel {
             enableExport: true,
             sizingMode: XH.appModel.gridSizingMode,
             colDefaults: {filterable: true},
-            filterModel: {bind: cubeView},
+            filterModel: {bind: view},
             columns: [
                 {
                     field: 'id',
@@ -345,18 +169,18 @@ export class ColumnFilterPanelModel extends HoistModel {
         });
     }
 
-    createCubeView() {
+    createView() {
         return this.cube.createView({
-            query: this.cubeQuery,
+            query: this.query,
             loadModel: this.loadModel,
             connect: true
         });
     }
 
-    createCubeFilterChooserModel() {
-        const {cubeView} = this;
+    createFilterChooserModel() {
+        const {view} = this;
         return new FilterChooserModel({
-            bind: cubeView,
+            bind: view,
             fieldSpecs: [
                 'fund',
                 'trader',
