@@ -5,6 +5,7 @@ import {basicPanel} from './BasicPanel';
 import {toolbarPanel} from './ToolbarPanel';
 import {loadingIndicatorPanel} from './LoadingIndicatorPanel';
 import {maskPanel} from './MaskPanel';
+import {errorPanel} from './ErrorPanel';
 import './PanelsTab.scss';
 
 export const panelsTab = hoistCmp.factory(
@@ -17,7 +18,8 @@ export const panelsTab = hoistCmp.factory(
                 {id: 'toolbars', content: toolbarPanel},
                 {id: 'sizing', content: panelSizingPanel},
                 {id: 'mask', content: maskPanel},
-                {id: 'loadingIndicator', content: loadingIndicatorPanel}
+                {id: 'loadingIndicator', content: loadingIndicatorPanel},
+                {id: 'errorPanel', content: errorPanel}
             ]
         },
         className: 'toolbox-tab'

@@ -98,7 +98,8 @@ export class AppModel extends HoistAppModel {
                             {name: 'toolbars', path: '/toolbars'},
                             {name: 'sizing', path: '/sizing'},
                             {name: 'mask', path: '/mask'},
-                            {name: 'loadingIndicator', path: '/loadingIndicator'}
+                            {name: 'loadingIndicator', path: '/loadingIndicator'},
+                            {name: 'errorPanel', path: '/errorPanel'}
                         ]
                     },
                     {
