@@ -62,7 +62,7 @@ const tbar = hoistCmp.factory(({model}) => {
                 icon: Icon.refresh(),
                 intent: 'primary',
                 outlined: true,
-                onClick: () => wait(0).then(() => model.loadAsync())
+                onClick: () => wait().then(() => model.loadAsync())
             }),
             hspacer(),
             lastRunDuration ? span(`Last run took: ${fmtNumber(lastRunDuration)}ms`) : null
@@ -96,7 +96,7 @@ class Model extends HoistModel {
         if (loadSpec.loadNumber === 0) return;
 
         const start = Date.now();
-        await wait(0);
+        await wait();
         await this.runLoopAsync();
         this.setLastRunDuration(Date.now() - start);
     }

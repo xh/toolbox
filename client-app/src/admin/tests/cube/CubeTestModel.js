@@ -2,7 +2,7 @@ import {GridModel, timeCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {start} from '@xh/hoist/promise';
+import {wait} from '@xh/hoist/promise';
 import {isEmpty} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 import {LoadTimesModel} from './LoadTimesModel';
@@ -77,7 +77,7 @@ export class CubeTestModel extends HoistModel {
         // Query is initialized with empty dims and is triggering an initial run we don't need.
         if (!dimCount) return;
 
-        return start(async () => {
+        return wait().then(async () => {
             const {store} = gridModel;
             gridModel.setShowSummary(showSummary);
             store.setLoadRootAsSummary(showSummary);

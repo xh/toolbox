@@ -1,6 +1,6 @@
 import {merge} from 'lodash';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {start} from '@xh/hoist/promise';
+import {wait} from '@xh/hoist/promise';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {PendingTaskModel} from '@xh/hoist/utils/async';
 
@@ -65,11 +65,13 @@ export class FetchApiTestModel extends  HoistModel {
     }
 
     async doTestAsync(code) {
-        return start(() => {
-            if (this.testMethod == 'fetch') return this.doFetchAsync(code);
-            return  XH.fetchService[this.testMethod](this.requestOptions(code));
-        })
-            .catch((err) => this.handleError(err));
+        return wait()
+            .then(() => {
+                if (this.testMethod === 'fetch') return this.doFetchAsync(code);
+                return  XH.fetchService[this.testMethod](this.requestOptions(code));
+            }).catch(
+                (err) => this.handleError(err)
+            );
     }
 
     async doFetchAsync(code) {
