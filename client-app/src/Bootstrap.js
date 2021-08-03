@@ -46,6 +46,7 @@ import highchartsHeatmap from 'highcharts/modules/heatmap';
 import highchartsOfflineExporting from 'highcharts/modules/offline-exporting';
 import highchartsTree from 'highcharts/modules/treemap';
 import highchartsDrilldown from 'highcharts/modules/drilldown';
+import highchartsFullscreen from 'highcharts/modules/full-screen';
 
 highchartsExporting(Highcharts);
 highchartsOfflineExporting(Highcharts);
@@ -53,6 +54,7 @@ highchartsExportData(Highcharts);
 highchartsTree(Highcharts);
 highchartsHeatmap(Highcharts);
 highchartsDrilldown(Highcharts);
+highchartsFullscreen(Highcharts);
 
 installHighcharts(Highcharts);
 

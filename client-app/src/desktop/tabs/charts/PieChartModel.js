@@ -117,7 +117,22 @@ export class PieChartModel extends HoistModel {
             chart: {
                 type: 'pie'
             },
-            exporting: {enabled: true},
+            exporting: {
+                enabled: true,
+                buttons: {
+                    contextButton: {
+                        menuItems: [
+                            'viewFullscreen',
+                            'separator', 
+                            'printChart',
+                            'downloadPNG', 
+                            'downloadSVG', 
+                            'separator', 
+                            'downloadCSV'
+                        ]
+                    }
+                }
+            },
             title: {text: null},
             plotOptions: {
                 pie: {
