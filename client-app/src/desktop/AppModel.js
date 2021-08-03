@@ -131,6 +131,7 @@ export class AppModel extends HoistAppModel {
                         children: [
                             {name: 'ohlc', path: '/ohlc'},
                             {name: 'line', path: '/line'},
+                            {name: 'pie', path: '/pie'},
                             {name: 'simpleTreeMap', path: '/simpleTreeMap'},
                             {name: 'gridTreeMap', path: '/gridTreeMap'},
                             {name: 'splitTreeMap', path: '/splitTreeMap'}

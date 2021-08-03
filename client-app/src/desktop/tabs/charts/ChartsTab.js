@@ -5,6 +5,7 @@ import {lineChartPanel} from './LineChartPanel';
 import {simpleTreeMapPanel} from './SimpleTreeMapPanel';
 import {gridTreeMapPanel} from './GridTreeMapPanel';
 import {splitTreeMapPanel} from './SplitTreeMapPanel';
+import {pieChartPanel} from './PieChartPanel';
 
 export const chartsTab = hoistCmp.factory(
     () => tabContainer({
@@ -14,6 +15,7 @@ export const chartsTab = hoistCmp.factory(
             tabs: [
                 {id: 'line', content: lineChartPanel},
                 {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
+                {id: 'pie', content: pieChartPanel},
                 {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
                 {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
                 {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
