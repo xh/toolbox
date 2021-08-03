@@ -27,10 +27,6 @@ export class PieChartModel extends HoistModel {
         }
     });
 
-    get firstDim() {
-        return this.groupingChooserModel.value[0];
-    }
-
     get chartTitle() {
         return 'Profit by ' + this.groupingChooserModel.value.map(capitalize).join(' > ');
     }
@@ -61,11 +57,10 @@ export class PieChartModel extends HoistModel {
 
     getSeries(data) {
         const dims = this.groupingChooserModel.value,
-            hasDrilldown = dims.length > 1,
-            {firstDim} = this;
+            hasDrilldown = dims.length > 1;
 
         return [{
-            name: firstDim,
+            name: dims[0],
             colorByPoint: true,
             data: data.map(it => ({
                 name: it.name,
@@ -81,13 +76,13 @@ export class PieChartModel extends HoistModel {
 
         if (dims.length === 1) return;
 
-        const ret = {series: []};
+        const series = [];
 
         const buildDrilldownSeries = (name, children) => {  
             this._colorCount = Math.max(this._colorCount, children.length);
             children = this.sort(children);
 
-            ret.series.push({
+            series.push({
                 name: name,
                 id: name,
                 data: children.map(it => {
@@ -110,26 +105,11 @@ export class PieChartModel extends HoistModel {
             buildDrilldownSeries(it.name, it.children);
         });
 
-        console.log(ret);
-        return ret;
+        return {series};
     }
 
     sort(data) {
         return sortBy(data, ['pnl']).reverse();
-    }
-
-    getPieColors() {
-        const colors = [],
-            greenBase = Highcharts.getOptions().colors[2];
-
-        for (let i = 0; i < this._colorCount; i++) {
-            
-            // Start out with a darkened base color (negative brighten), and end
-            // up with a much brighter color
-            colors.push(Highcharts.color(greenBase).brighten((i - 3) / this._colorCount).get());
-        }
-
-        return colors.map(this.applyGradient);
     }
 
     getChartModelCfg() {
@@ -166,6 +146,19 @@ export class PieChartModel extends HoistModel {
         this.chartModel.setHighchartsConfig(conf);
     }
 
+    getPieColors() {
+        const colors = [],
+            greenBase = Highcharts.getOptions().colors[2];
+
+        for (let i = 0; i < this._colorCount; i++) {
+            
+            // Start out with a darkened base color (negative brighten), and end
+            // up with a much brighter color
+            colors.push(Highcharts.color(greenBase).brighten((i - 3) / this._colorCount).get());
+        }
+
+        return colors.map(this.applyGradient);
+    }
 
     applyGradient(color) {
         return {
