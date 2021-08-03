@@ -2,9 +2,13 @@ import {ChartModel} from '@xh/hoist/cmp/chart';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import Highcharts from 'highcharts/highstock';
-import {capitalize, isEmpty, sortBy} from 'lodash';
+import {capitalize, cloneDeep, isEmpty, sortBy} from 'lodash';
 
 export class PieChartModel extends HoistModel {
+
+    // todo: 
+    // get colors to reset based on slices at drilldown level
+    // get subtitle to reflect drilldown path
 
     @managed
     groupingChooserModel = new GroupingChooserModel({
@@ -31,6 +35,8 @@ export class PieChartModel extends HoistModel {
         return 'Profit by ' + this.groupingChooserModel.value.map(capitalize).join(' > ');
     }
 
+    _colorCount = 0;
+
     @managed
     chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
@@ -46,25 +52,17 @@ export class PieChartModel extends HoistModel {
         const data = await XH.portfolioService.getPositionsAsync(this.groupingChooserModel.value),
             sortedData = this.sort(data),    
             series = this.getSeries(sortedData),
-            colors = this.getPieColors(sortedData.length);
+            drilldown = this.getDrilldown(sortedData),
+            colors = this.getPieColors();
 
         this.chartModel.setSeries(series);
-        this.chartModel.updateHighchartsConfig({
-            title: {text: this.chartTitle},
-            plotOptions: {
-                pie: {
-                    colors
-                }
-            },
-            drilldown: this.getDrilldown(sortedData)
-        });
+        this.updateHighchartsConfig(drilldown, colors, this.chartTitle);
     }
 
     getSeries(data) {
         const dims = this.groupingChooserModel.value,
             hasDrilldown = dims.length > 1,
             {firstDim} = this;
-        console.log(data);
 
         return [{
             name: firstDim,
@@ -79,21 +77,37 @@ export class PieChartModel extends HoistModel {
 
     getDrilldown(data) {
         const dims = this.groupingChooserModel.value;
+        this._colorCount = data.length;
+
         if (dims.length === 1) return;
 
         const ret = {series: []};
 
-        data.forEach(prt => {
-            if (isEmpty(prt.children)) return;
-            
+        const buildDrilldownSeries = (name, children) => {  
+            this._colorCount = Math.max(this._colorCount, children.length);
+            children = this.sort(children);
+
             ret.series.push({
-                name: prt.name,
-                id: prt.name,
-                data: prt.children.map(it => ({
-                    name: it.name,
-                    y: it.pnl
-                }))
+                name: name,
+                id: name,
+                data: children.map(it => {
+                    const hasDrilldown = !isEmpty(it.children);
+                    if (hasDrilldown) {
+                        buildDrilldownSeries(name + '_' + it.name, it.children);
+                    }
+
+                    return {
+                        name: it.name,
+                        y: it.pnl,
+                        drilldown: hasDrilldown ? name + '_' + it.name : undefined
+                    };
+                })
             });
+        };
+
+        data.forEach((it) => {
+            if (isEmpty(it.children)) return;
+            buildDrilldownSeries(it.name, it.children);
         });
 
         console.log(ret);
@@ -104,15 +118,15 @@ export class PieChartModel extends HoistModel {
         return sortBy(data, ['pnl']).reverse();
     }
 
-    getPieColors(points) {
+    getPieColors() {
         const colors = [],
             greenBase = Highcharts.getOptions().colors[2];
 
-        for (let i = 0; i < points; i++) {
+        for (let i = 0; i < this._colorCount; i++) {
             
             // Start out with a darkened base color (negative brighten), and end
             // up with a much brighter color
-            colors.push(Highcharts.color(greenBase).brighten((i - 3) / 7).get());
+            colors.push(Highcharts.color(greenBase).brighten((i - 3) / this._colorCount).get());
         }
 
         return colors.map(this.applyGradient);
@@ -137,6 +151,21 @@ export class PieChartModel extends HoistModel {
             }
         };
     }
+
+    // special handling around updates needed
+    // because drillown and colors must overwrite, not merge.
+    updateHighchartsConfig(drilldown, colors, title) {
+        const conf = cloneDeep(this.chartModel.highchartsConfig);
+        conf.title.text = title;
+        if (drilldown) {
+            conf.drilldown = drilldown;
+        } else {
+            delete conf.drilldown;
+        }
+        conf.plotOptions.pie.colors = colors;
+        this.chartModel.setHighchartsConfig(conf);
+    }
+
 
     applyGradient(color) {
         return {
