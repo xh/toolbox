@@ -41,8 +41,8 @@ export class PieChartModel extends HoistModel {
     async doLoadAsync(loadSpec) {
         const {firstDim} = this;
         const data = await XH.portfolioService.getPositionsAsync([firstDim]),
-            series = this.setSeries(data),
-            colors = this.setPieColors(data.length);
+            series = this.getSeries(data),
+            colors = this.getPieColors(data.length);
 
         this.chartModel.setSeries(series);
         this.chartModel.updateHighchartsConfig({
@@ -55,7 +55,7 @@ export class PieChartModel extends HoistModel {
         });
     }
 
-    setSeries(rawData) {
+    getSeries(rawData) {
         const sortedData = sortBy(rawData, ['pnl']).reverse(),
             {firstDim} = this;
         console.log(rawData);
@@ -69,17 +69,18 @@ export class PieChartModel extends HoistModel {
         }];
     }
 
-    setPieColors(points) {
-        console.log(Highcharts.getOptions().colors);
+    getPieColors(points) {
         const colors = [],
-            base = Highcharts.getOptions().colors[2];
+            greenBase = Highcharts.getOptions().colors[2];
 
         for (let i = 0; i < points; i++) {
-        // Start out with a darkened base color (negative brighten), and end
-        // up with a much brighter color
-            colors.push(Highcharts.color(base).brighten((i - 3) / 7).get());
+            
+            // Start out with a darkened base color (negative brighten), and end
+            // up with a much brighter color
+            colors.push(Highcharts.color(greenBase).brighten((i - 3) / 7).get());
         }
-        return colors;
+
+        return colors.map(this.applyGradient);
     }
 
     getChartModelCfg() {
@@ -99,6 +100,20 @@ export class PieChartModel extends HoistModel {
                     }
                 }
             }
+        };
+    }
+
+    applyGradient(color) {
+        return {
+            radialGradient: {
+                cx: 0.5,
+                cy: 0.3,
+                r: 0.7
+            },
+            stops: [
+                [0, color],
+                [1, Highcharts.color(color).brighten(-0.3).get('rgb')] // darken
+            ]
         };
     }
 }
