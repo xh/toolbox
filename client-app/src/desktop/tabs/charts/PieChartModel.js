@@ -2,7 +2,7 @@ import {ChartModel} from '@xh/hoist/cmp/chart';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import Highcharts from 'highcharts/highstock';
-import {sortBy} from 'lodash';
+import {capitalize, isEmpty, sortBy} from 'lodash';
 
 export class PieChartModel extends HoistModel {
 
@@ -27,6 +27,10 @@ export class PieChartModel extends HoistModel {
         return this.groupingChooserModel.value[0];
     }
 
+    get chartTitle() {
+        return 'Profit by ' + this.groupingChooserModel.value.map(capitalize).join(' > ');
+    }
+
     @managed
     chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
@@ -39,34 +43,65 @@ export class PieChartModel extends HoistModel {
     }
 
     async doLoadAsync(loadSpec) {
-        const {firstDim} = this;
-        const data = await XH.portfolioService.getPositionsAsync([firstDim]),
-            series = this.getSeries(data),
-            colors = this.getPieColors(data.length);
+        const data = await XH.portfolioService.getPositionsAsync(this.groupingChooserModel.value),
+            sortedData = this.sort(data),    
+            series = this.getSeries(sortedData),
+            colors = this.getPieColors(sortedData.length);
 
         this.chartModel.setSeries(series);
         this.chartModel.updateHighchartsConfig({
-            title: {text: 'Profit by ' + firstDim},
+            title: {text: this.chartTitle},
             plotOptions: {
                 pie: {
                     colors
                 }
-            }
+            },
+            drilldown: this.getDrilldown(sortedData)
         });
     }
 
-    getSeries(rawData) {
-        const sortedData = sortBy(rawData, ['pnl']).reverse(),
+    getSeries(data) {
+        const dims = this.groupingChooserModel.value,
+            hasDrilldown = dims.length > 1,
             {firstDim} = this;
-        console.log(rawData);
+        console.log(data);
+
         return [{
             name: firstDim,
             colorByPoint: true,
-            data: sortedData.map(it => ({
+            data: data.map(it => ({
                 name: it.name,
-                y: it.pnl
+                y: it.pnl,
+                drilldown: hasDrilldown ? it.name : undefined
             }))
         }];
+    }
+
+    getDrilldown(data) {
+        const dims = this.groupingChooserModel.value;
+        if (dims.length === 1) return;
+
+        const ret = {series: []};
+
+        data.forEach(prt => {
+            if (isEmpty(prt.children)) return;
+            
+            ret.series.push({
+                name: prt.name,
+                id: prt.name,
+                data: prt.children.map(it => ({
+                    name: it.name,
+                    y: it.pnl
+                }))
+            });
+        });
+
+        console.log(ret);
+        return ret;
+    }
+
+    sort(data) {
+        return sortBy(data, ['pnl']).reverse();
     }
 
     getPieColors(points) {

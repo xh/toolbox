@@ -45,12 +45,14 @@ import highchartsExporting from 'highcharts/modules/exporting';
 import highchartsHeatmap from 'highcharts/modules/heatmap';
 import highchartsOfflineExporting from 'highcharts/modules/offline-exporting';
 import highchartsTree from 'highcharts/modules/treemap';
+import highchartsDrilldown from 'highcharts/modules/drilldown';
 
 highchartsExporting(Highcharts);
 highchartsOfflineExporting(Highcharts);
 highchartsExportData(Highcharts);
 highchartsTree(Highcharts);
 highchartsHeatmap(Highcharts);
+highchartsDrilldown(Highcharts);
 
 installHighcharts(Highcharts);
 
