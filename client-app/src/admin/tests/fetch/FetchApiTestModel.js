@@ -1,8 +1,7 @@
 import {merge} from 'lodash';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH, PromiseTaskObserver} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
 
 export class FetchApiTestModel extends  HoistModel {
 
@@ -28,7 +27,7 @@ export class FetchApiTestModel extends  HoistModel {
     ]
 
     @managed
-    loadModel = new PendingTaskModel();
+    loadModel = new PromiseTaskObserver();
 
     constructor() {
         super();
