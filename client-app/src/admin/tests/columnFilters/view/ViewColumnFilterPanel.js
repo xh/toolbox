@@ -12,10 +12,14 @@ import {ViewColumnFilterPanelModel} from './ViewColumnFilterPanelModel';
 
 export const viewColumnFilterPanel = hoistCmp.factory({
     model: creates(ViewColumnFilterPanelModel),
-    render() {
+    render({model}) {
         return hframe(
             panel({
-                mask: 'onLoad',
+                mask: [
+                    model.loadModel,
+                    model.filterChooserModel.filterTask,
+                    model.gridModel.filterModel.filterTask
+                ],
                 icon: Icon.filter(),
                 title: 'Column Filter Test Grid',
                 tbar: tbar(),
@@ -28,45 +32,39 @@ export const viewColumnFilterPanel = hoistCmp.factory({
 });
 
 const tbar = hoistCmp.factory(
-    () => {
-        return toolbar(
-            filterChooser({
-                flex: 1,
-                enableClear: true
-            })
-        );
-    }
+    () => toolbar(
+        filterChooser({
+            flex: 1,
+            enableClear: true
+        })
+    )
 );
 
 const bbar = hoistCmp.factory(
-    () => {
-        return toolbar(
-            groupingChooser(),
-            filler(),
-            gridCountLabel({
-                includeChildren: true
-            })
-        );
-    }
+    () => toolbar(
+        groupingChooser(),
+        filler(),
+        gridCountLabel({
+            includeChildren: true
+        })
+    )
 );
 
 const filterJsonPanel = hoistCmp.factory(
-    () => {
-        return panel({
-            model: {
-                side: 'right',
-                defaultSize: 500,
-                collapsible: true
-            },
-            icon: Icon.code(),
-            title: 'Filter as JSON',
-            item: jsonInput({
-                flex: 1,
-                width: '100%',
-                readonly: true,
-                showCopyButton: true,
-                bind: 'filterJson'
-            })
-        });
-    }
+    () => panel({
+        model: {
+            side: 'right',
+            defaultSize: 500,
+            collapsible: true
+        },
+        icon: Icon.code(),
+        title: 'Filter as JSON',
+        item: jsonInput({
+            flex: 1,
+            width: '100%',
+            readonly: true,
+            showCopyButton: true,
+            bind: 'filterJson'
+        })
+    })
 );

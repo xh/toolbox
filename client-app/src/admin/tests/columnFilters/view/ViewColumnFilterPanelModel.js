@@ -32,7 +32,6 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         this.filterChooserModel = this.createFilterChooserModel();
         this.groupingChooserModel = this.createGroupingChooserModel();
 
-        window.view = this.view;
         this.view.setStores(this.gridModel.store);
 
         // Update filter JSON
