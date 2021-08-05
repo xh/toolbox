@@ -17,7 +17,7 @@ export const storeColumnFilterPanel = hoistCmp.factory({
                 mask: [
                     model.loadModel,
                     model.filterChooserModel.filterTask,
-                    model.gridModel.filterModel.filterTask
+                    model.gridModel.filterTask
                 ],
                 icon: Icon.filter(),
                 title: 'Column Filter Test Grid',
