@@ -17,13 +17,13 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
     className: 'tb-sample-grid',
 
     render({model, omitMask, omitGridTools, ...props}) {
-        const {selection} = model.gridModel,
-            selCount = selection.length;
+        const {selectedRecords} = model.gridModel,
+            selCount = selectedRecords.length;
 
         let selText;
         switch (selCount) {
             case 0: selText = 'No selection'; break;
-            case 1: selText = `Selected ${selection[0].data.company}`; break;
+            case 1: selText = `Selected ${selectedRecords[0].data.company}`; break;
 
             default: selText = `Selected ${selCount} companies`;
         }
