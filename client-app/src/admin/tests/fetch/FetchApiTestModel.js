@@ -27,7 +27,7 @@ export class FetchApiTestModel extends  HoistModel {
     ]
 
     @managed
-    loadModel = TaskObserver.forLoadTracking();
+    loadModel = TaskObserver.trackLast();
 
     constructor() {
         super();
