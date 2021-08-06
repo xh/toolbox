@@ -4,6 +4,10 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import Highcharts from 'highcharts/highstock';
 import {capitalize, cloneDeep, isEmpty, sortBy} from 'lodash';
 
+import {ContextMenuItem} from '@xh/hoist/desktop/cmp/contextmenu';
+import {Icon} from '@xh/hoist/icon';
+
+
 export class PieChartModel extends HoistModel {
 
     // todo: 
@@ -34,7 +38,43 @@ export class PieChartModel extends HoistModel {
     _colorCount = 0;
 
     @managed
-    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
+    chartModel = new ChartModel({
+        highchartsConfig: this.getChartModelCfg(),
+        // cases:
+        // contextMenu: undefined                   // => show default   // confirmed
+        // contextMenu: null                        // => show none      // confirmed
+        // contextMenu: false                       // => show none      // confirmed
+        // contextMenu: true                        // => show default   // confirmed
+        // contextMenu: ['viewFullscreen'],         // => show custom   // confirmed
+        // contextMenu: [                           // => show custom   // confirmed
+        //     {
+        //         text: 'View in full screen',
+        //         icon: Icon.expand(),
+        //         actionFn: (chartModel) => chartModel.highchart.fullscreen.toggle()
+        //     },
+        //     new ContextMenuItem({
+        //         text: 'Download PNG image',
+        //         icon: Icon.fileImage(),
+        //         actionFn: (chartModel) => chartModel.highchart.exportChart()
+        //     }),
+        //     '-',
+        //     'downloadCSV'
+        // ],
+        contextMenu: (chartModel) => [                         // => show custom   // confirmed
+            {
+                text: 'View in full screen',
+                icon: Icon.expand(),
+                actionFn: (chartModel) => chartModel.highchart.fullscreen.toggle()
+            },
+            new ContextMenuItem({
+                text: 'Download PNG image',
+                icon: Icon.fileImage(),
+                actionFn: (chartModel) => chartModel.highchart.exportChart()
+            }),
+            '-',
+            'downloadCSV'
+        ]
+    });
 
     constructor() {
         super();
