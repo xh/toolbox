@@ -1,4 +1,4 @@
-import {HoistModel, managed, XH, PromiseTaskObserver} from '@xh/hoist/core';
+import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {
     constrainAll,
@@ -18,7 +18,7 @@ import {filter, isEmpty, isNil} from 'lodash';
 export class FormPanelModel extends HoistModel {
 
     @managed
-    validateTask = new PromiseTaskObserver();
+    validateTask = TaskObserver.trackLast();
 
     // For meta controls below example.
     @bindable readonly = false;
