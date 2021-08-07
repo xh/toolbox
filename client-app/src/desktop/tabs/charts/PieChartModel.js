@@ -4,8 +4,8 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import Highcharts from 'highcharts/highstock';
 import {capitalize, cloneDeep, isEmpty, sortBy} from 'lodash';
 
-import {ContextMenuItem} from '@xh/hoist/desktop/cmp/contextmenu';
-import {Icon} from '@xh/hoist/icon';
+// import {ContextMenuItem} from '@xh/hoist/desktop/cmp/contextmenu';
+// import {Icon} from '@xh/hoist/icon';
 
 
 export class PieChartModel extends HoistModel {
@@ -39,7 +39,7 @@ export class PieChartModel extends HoistModel {
 
     @managed
     chartModel = new ChartModel({
-        highchartsConfig: this.getChartModelCfg(),
+        highchartsConfig: this.getChartModelCfg()
         // cases:
         // contextMenu: undefined                   // => show default   // confirmed
         // contextMenu: null                        // => show none      // confirmed
@@ -60,20 +60,20 @@ export class PieChartModel extends HoistModel {
         //     '-',
         //     'downloadCSV'
         // ],
-        contextMenu: (chartModel) => [                         // => show custom   // confirmed
-            {
-                text: 'View in full screen',
-                icon: Icon.expand(),
-                actionFn: (chartModel) => chartModel.highchart.fullscreen.toggle()
-            },
-            new ContextMenuItem({
-                text: 'Download PNG image',
-                icon: Icon.fileImage(),
-                actionFn: (chartModel) => chartModel.highchart.exportChart()
-            }),
-            '-',
-            'downloadCSV'
-        ]
+        // contextMenu: (chartModel) => [                         // => show custom   // confirmed
+        //     {
+        //         text: 'View in full screen',
+        //         icon: Icon.expand(),
+        //         actionFn: (chartModel) => chartModel.highchart.fullscreen.toggle()
+        //     },
+        //     new ContextMenuItem({
+        //         text: 'Download PNG image',
+        //         icon: Icon.fileImage(),
+        //         actionFn: (chartModel) => chartModel.highchart.exportChart()
+        //     }),
+        //     '-',
+        //     'downloadCSV'
+        // ]
     });
 
     constructor() {
