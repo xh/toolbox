@@ -45,7 +45,7 @@ export class PieChartModel extends HoistModel {
         // contextMenu: null                        // => show none      // confirmed
         // contextMenu: false                       // => show none      // confirmed
         // contextMenu: true                        // => show default   // confirmed
-        // contextMenu: ['viewFullscreen'],         // => show custom   // confirmed
+        // contextMenu: ['downloadPDF']             // => show custom   // confirmed
         // contextMenu: [                           // => show custom   // confirmed
         //     {
         //         text: 'View in full screen',
@@ -158,20 +158,7 @@ export class PieChartModel extends HoistModel {
                 type: 'pie'
             },
             exporting: {
-                enabled: true,
-                buttons: {
-                    contextButton: {
-                        menuItems: [
-                            'viewFullscreen',
-                            'separator', 
-                            'printChart',
-                            'downloadPNG', 
-                            'downloadSVG', 
-                            'separator', 
-                            'downloadCSV'
-                        ]
-                    }
-                }
+                enabled: true
             },
             title: {text: null},
             plotOptions: {
