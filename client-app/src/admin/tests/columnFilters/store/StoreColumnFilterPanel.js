@@ -11,10 +11,14 @@ import {StoreColumnFilterPanelModel} from './StoreColumnFilterPanelModel';
 
 export const storeColumnFilterPanel = hoistCmp.factory({
     model: creates(StoreColumnFilterPanelModel),
-    render() {
+    render({model}) {
         return hframe(
             panel({
-                mask: 'onLoad',
+                mask: [
+                    model.loadModel,
+                    model.filterChooserModel.filterTask,
+                    model.gridModel.filterTask
+                ],
                 icon: Icon.filter(),
                 title: 'Column Filter Test Grid',
                 tbar: tbar(),
@@ -27,43 +31,37 @@ export const storeColumnFilterPanel = hoistCmp.factory({
 });
 
 const tbar = hoistCmp.factory(
-    () => {
-        return toolbar(
-            filterChooser({
-                flex: 1,
-                enableClear: true
-            })
-        );
-    }
+    () => toolbar(
+        filterChooser({
+            flex: 1,
+            enableClear: true
+        })
+    )
 );
 
 const bbar = hoistCmp.factory(
-    () => {
-        return toolbar(
-            gridCountLabel({
-                includeChildren: true
-            })
-        );
-    }
+    () => toolbar(
+        gridCountLabel({
+            includeChildren: true
+        })
+    )
 );
 
 const filterJsonPanel = hoistCmp.factory(
-    () => {
-        return panel({
-            model: {
-                side: 'right',
-                defaultSize: 500,
-                collapsible: true
-            },
-            icon: Icon.code(),
-            title: `Filter as JSON`,
-            item: jsonInput({
-                flex: 1,
-                width: '100%',
-                readonly: true,
-                showCopyButton: true,
-                bind: 'filterJson'
-            })
-        });
-    }
+    () => panel({
+        model: {
+            side: 'right',
+            defaultSize: 500,
+            collapsible: true
+        },
+        icon: Icon.code(),
+        title: `Filter as JSON`,
+        item: jsonInput({
+            flex: 1,
+            width: '100%',
+            readonly: true,
+            showCopyButton: true,
+            bind: 'filterJson'
+        })
+    })
 );
