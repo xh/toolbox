@@ -199,4 +199,3 @@ function calcAggState(rec) {
     if (allChildren.every(it => it.data.isChecked === false)) return false;
     return null;
 }
-
