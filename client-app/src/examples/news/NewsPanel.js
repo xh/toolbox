@@ -28,8 +28,6 @@ const bbar = hoistCmp.factory({
         return toolbar(
             storeFilterField({
                 store,
-                autoApply: false,
-                onFilterChange: (f) => model.setTextFilter(f),
                 includeFields: model.SEARCH_FIELDS,
                 placeholder: 'Filter by title...'
             }),
