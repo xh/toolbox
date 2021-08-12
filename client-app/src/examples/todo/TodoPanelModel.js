@@ -80,7 +80,7 @@ export class TodoPanelModel extends HoistModel {
     });
 
     get selectedTasks() {
-        return this.gridModel.selection.map(it => it.data);
+        return this.gridModel.selectedRecords.map(it => it.data);
     }
 
     constructor() {
