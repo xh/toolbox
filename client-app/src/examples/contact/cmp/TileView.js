@@ -17,7 +17,7 @@ export const tileView = hoistCmp.factory({
 const tile = hoistCmp.factory(
     ({model, record}) => {
         const {gridModel} = model,
-            isSelected = gridModel.selectedRecordId === record.id,
+            isSelected = gridModel.selectedId === record.id,
             {profilePicture, name} = record.data;
 
         return vbox({

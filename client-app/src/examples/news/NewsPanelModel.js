@@ -1,7 +1,9 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
-import {uniq, map} from 'lodash';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
+import {withFilterByField} from '@xh/hoist/data';
+import {uniq, map} from 'lodash';
+
 import {newsPanelItem} from './NewsPanelItem';
 
 export class NewsPanelModel extends HoistModel {
@@ -12,8 +14,7 @@ export class NewsPanelModel extends HoistModel {
     viewModel = new DataViewModel({
         sortBy: 'published|desc',
         store: {
-            fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published'],
-            filter: this.createFilter()
+            fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published']
         },
         onRowDoubleClicked: this.onRowDoubleClicked,
         elementRenderer: (v, {record}) => newsPanelItem({record}),
@@ -23,17 +24,15 @@ export class NewsPanelModel extends HoistModel {
     });
 
     @observable.ref sourceOptions = [];
-
     @bindable.ref sourceFilterValues = null;
-    @bindable.ref textFilter = null;
 
     constructor() {
         super();
         makeObservable(this);
+
         this.addReaction({
-            track: () => [this.sourceFilterValues, this.textFilter, this.lastRefresh],
-            run: () => this.viewModel.setFilter(this.createFilter()),
-            fireImmediately: true
+            track: () => [this.sourceFilterValues, this.lastRefresh],
+            run: () => this.setSourceFilter()
         });
     }
 
@@ -45,12 +44,13 @@ export class NewsPanelModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
-    createFilter() {
-        const {textFilter, sourceFilterValues} = this;
-        return [
-            textFilter,
-            sourceFilterValues ? {field: 'source', op: '=', value: sourceFilterValues} : null
-        ];
+    setSourceFilter() {
+        const {sourceFilterValues} = this,
+            {store} = this.viewModel,
+            newFilter = sourceFilterValues ? {field: 'source', op: '=', value: sourceFilterValues} : null;
+
+        const filter = withFilterByField(store.filter, newFilter, 'source');
+        store.setFilter(filter);
     }
 
     @action
@@ -64,8 +64,6 @@ export class NewsPanelModel extends HoistModel {
 
     onRowDoubleClicked({data: record}) {
         const url = record.get('url');
-        if (url) {
-            window.open(url, '_blank');
-        }
+        if (url) window.open(url, '_blank');
     }
 }

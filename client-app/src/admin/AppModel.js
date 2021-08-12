@@ -38,7 +38,9 @@ export class AppModel extends BaseAppModel {
                     {name: 'localDate', path: '/localDate'},
                     {name: 'panelResizing', path: '/panelResizing'},
                     {name: 'select', path: '/select'},
-                    {name: 'webSockets', path: '/webSockets'}
+                    {name: 'webSockets', path: '/webSockets'},
+                    {name: 'viewColumnFilters', path: '/viewColumnFilters'},
+                    {name: 'storeColumnFilters', path: '/storeColumnFilters'}
                 ]
             },
             {

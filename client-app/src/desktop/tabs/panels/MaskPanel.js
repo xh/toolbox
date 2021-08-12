@@ -24,8 +24,8 @@ export const maskPanel = hoistCmp.factory({
                 <p>
                     A convenient way to display a mask is via the <code>mask</code> property of Panel.
                     This prop can accept a fully configured mask element, <code>true</code> for a
-                    plain default mask, or (most commonly) a <code>PendingTaskModel</code> instance
-                    to automatically show a mask with a spinner when a linked promise is pending.
+                    plain default mask, or (most commonly) a <code>TaskObserver</code> instance
+                    to automatically show a mask with a spinner when a task is pending.
                 </p>,
                 <p>
                     A mask configured with <code>inline: false</code> will mask the entire Viewport.
@@ -74,7 +74,7 @@ export const maskPanel = hoistCmp.factory({
                 mask: mask({
                     spinner: model.spinner,
                     inline: model.inline,
-                    model: model.loadModel
+                    bind: model.loadModel
                 })
             })
         });

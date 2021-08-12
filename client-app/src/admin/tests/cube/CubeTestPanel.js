@@ -78,7 +78,7 @@ const bbar = hoistCmp.factory(
             storeCountLabel({store: view.cube.store, unit: 'cube facts'}),
             hspacer(2),
             'Last Updated:',
-            relativeTimestamp({timestamp: view.info.asOf}),
+            relativeTimestamp({timestamp: view.info?.asOf}),
             filler(),
             storeFilterField(),
             colChooserButton()

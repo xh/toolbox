@@ -80,7 +80,7 @@ export class TodoPanelModel extends HoistModel {
     });
 
     get selectedTasks() {
-        return this.gridModel.selection.map(it => it.data);
+        return this.gridModel.selectedRecords.map(it => it.data);
     }
 
     constructor() {
@@ -93,7 +93,7 @@ export class TodoPanelModel extends HoistModel {
             track: () => this.showCompleted,
             run: (showCompleted) => {
                 const filter = showCompleted ? null : {field: 'complete', op: '=', value: false};
-                this.gridModel.setFilter(filter);
+                this.gridModel.store.setFilter(filter);
             },
             fireImmediately: true
         });

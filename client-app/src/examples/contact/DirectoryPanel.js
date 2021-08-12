@@ -42,8 +42,6 @@ const tbar = hoistCmp.factory(
             items: [
                 storeFilterField({
                     leftIcon: Icon.search(),
-                    autoApply: false,
-                    onFilterChange: (fn) => model.setQuickFilter(fn),
                     width: 200
                 }),
                 select({
