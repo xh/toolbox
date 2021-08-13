@@ -15,10 +15,6 @@ export class AppModel extends HoistAppModel {
         await XH.installServicesAsync(OauthService);
     }
 
-    get gridSizingMode() {
-        return XH.getPref('gridSizingMode');
-    }
-
     async initAsync() {
         await XH.installServicesAsync(
             PortfolioService
@@ -37,8 +33,7 @@ export class AppModel extends HoistAppModel {
     getAppOptions() {
         return [
             {
-                name: 'gridSizingMode',
-                prefName: 'gridSizingMode',
+                name: 'sizingMode',
                 formField: {
                     label: 'Default grid size',
                     item: buttonGroupInput(
@@ -48,7 +43,8 @@ export class AppModel extends HoistAppModel {
                         getGridSizeModeButton('tiny')
                     )
                 },
-                reloadRequired: true
+                valueGetter: () => XH.sizingMode,
+                valueSetter: (v) => XH.setSizingMode(v)
             }
         ];
     }
@@ -73,9 +69,7 @@ export class AppModel extends HoistAppModel {
             XH.hideBanner(category);
         }
     }
-
 }
-
 
 function getGridSizeModeButton(size) {
     return button({

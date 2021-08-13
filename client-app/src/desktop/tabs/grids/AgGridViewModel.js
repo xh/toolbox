@@ -67,7 +67,7 @@ export class AgGridViewModel extends HoistModel {
     ];
 
     agGridModel = new AgGridModel({
-        sizingMode: XH.appModel.gridSizingMode
+        sizingMode: XH.sizingMode
     });
 
     constructor() {

@@ -18,8 +18,7 @@ export function getAppOptions() {
             valueSetter: (v) => XH.setDarkTheme(v)
         },
         {
-            name: 'gridSizingMode',
-            prefName: 'gridSizingMode',
+            name: 'sizingMode',
             formField: {
                 label: 'Default grid size',
                 item: buttonGroupInput(
@@ -29,7 +28,8 @@ export function getAppOptions() {
                     getGridSizeModeButton('tiny')
                 )
             },
-            reloadRequired: true
+            valueGetter: () => XH.sizingMode,
+            valueSetter: (v) => XH.setSizingMode(v)
         },
         {
             name: 'autoRefresh',
