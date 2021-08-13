@@ -30,14 +30,14 @@ export class StoreColumnFilterPanelModel extends HoistModel {
 
     async doLoadAsync(loadSpec) {
         const {gridModel} = this,
-            {trades, summary} = await XH.fetchJson({url: 'trade'});
+            {trades} = await XH.fetchJson({url: 'trade'});
 
         // Introduce null values to test 'blank' filters
         trades.forEach(trade => {
             if (trade.city === 'Boston') trade.city = null;
         });
 
-        gridModel.loadData(trades, summary);
+        gridModel.loadData(trades);
         await gridModel.preSelectFirstAsync();
     }
 
@@ -46,7 +46,6 @@ export class StoreColumnFilterPanelModel extends HoistModel {
     //--------------------
     createGridModel() {
         return new GridModel({
-            showSummary: 'bottom',
             selModel: {mode: 'multiple'},
             sortBy: 'profit_loss|desc|abs',
             emptyText: 'No records found...',

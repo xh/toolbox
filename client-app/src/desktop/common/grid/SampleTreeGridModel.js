@@ -4,13 +4,10 @@ import {GroupingChooserModel} from '@xh/hoist/desktop/cmp/grouping';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {action, bindable, makeObservable} from '@xh/hoist/mobx';
+import {action, makeObservable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
 
 export class SampleTreeGridModel extends HoistModel {
-
-    @bindable
-    filterIncludesChildren = false;
 
     @managed
     groupingChooserModel = new GroupingChooserModel({
@@ -36,11 +33,6 @@ export class SampleTreeGridModel extends HoistModel {
         super();
         makeObservable(this);
         this.gridModel = this.createGridModel(includeCheckboxes);
-
-        this.addReaction({
-            track: () => this.filterIncludesChildren,
-            run: (val) => this.gridModel.store.setFilterIncludesChildren(val)
-        });
 
         // Load data when dimensions change
         this.addReaction({
@@ -105,6 +97,7 @@ export class SampleTreeGridModel extends HoistModel {
     createGridModel(includeCheckboxes) {
         return new GridModel({
             treeMode: true,
+            showSummary: 'bottom',
             store: {
                 loadRootAsSummary: true,
                 fields: [{name: 'isChecked', type: 'bool'}],
