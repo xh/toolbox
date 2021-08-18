@@ -75,6 +75,19 @@ const tbar = hoistCmp.factory(
             ]
         }),
         '-',
+        span('Theme'),
+        select({
+            model: model.treeMapModel,
+            bind: 'theme',
+            width: 120,
+            enableFilter: false,
+            options: [
+                {label: 'Default', value: undefined},
+                {label: 'Light', value: 'light'},
+                {label: 'Dark', value: 'dark'}
+            ]
+        }),
+        '-',
         span('Algorithm'),
         select({
             model: model.treeMapModel,
