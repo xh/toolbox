@@ -68,7 +68,7 @@ export class TodoPanelModel extends HoistModel {
                     text,
                     icon: complete ?
                         Icon.circle({prefix: 'fal', className: 'xh-text-color-muted'}) :
-                        Icon.checkCircle({prefix: 'fal', className: 'xh-intent-success'}),
+                        Icon.checkCircle({prefix: 'fal', intent: 'success'}),
                     tooltip: text
                 } :
                 {hidden: true};
@@ -207,7 +207,7 @@ export class TodoPanelModel extends HoistModel {
 
                                 return {
                                     icon: complete ?
-                                        Icon.checkCircle({prefix: 'fal', className: 'xh-intent-success large-actions'}) :
+                                        Icon.checkCircle({prefix: 'fal', intent: 'success', className: 'large-actions'}) :
                                         Icon.circle({prefix: 'fal', className: 'xh-text-color-muted large-actions'}),
                                     tooltip: complete ? 'Mark Incomplete' : 'Mark Complete'
                                 };
