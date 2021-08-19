@@ -24,7 +24,6 @@ export class OrdersPanelModel extends HoistModel {
             enableExport: true,
             rowBorders: true,
             showHover: true,
-            sizingMode: XH.appModel.gridSizingMode,
             persistWith: {...PERSIST_DETAIL, path: 'ordersGrid'},
             store: {
                 fields: [

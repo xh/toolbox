@@ -1,5 +1,5 @@
 import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {HoistModel, managed, persist, XH, SizingMode} from '@xh/hoist/core';
 import {RecordAction} from '@xh/hoist/data';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 import {fmtCompactDate} from '@xh/hoist/format';
@@ -176,7 +176,7 @@ export class TodoPanelModel extends HoistModel {
         return new GridModel({
             emptyText: 'Congratulations.  You did it! All of it!',
             selModel: {mode: 'multiple'},
-            sizingMode: 'large',
+            sizingMode: SizingMode.LARGE,
             enableExport: true,
             hideHeaders: true,
             rowBorders: true,

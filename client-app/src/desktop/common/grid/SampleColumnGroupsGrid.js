@@ -108,7 +108,6 @@ class Model extends HoistModel {
             emptyText: 'No records found...',
             colChooserModel: true,
             enableExport: true,
-            sizingMode: XH.appModel.gridSizingMode,
             contextMenu: () => {
                 return new StoreContextMenu({
                     items: [

@@ -122,7 +122,6 @@ export class ViewColumnFilterPanelModel extends HoistModel {
             emptyText: 'No records found...',
             colChooserModel: true,
             enableExport: true,
-            sizingMode: XH.appModel.gridSizingMode,
             colDefaults: {filterable: true},
             filterModel: {bind: view},
             columns: [

@@ -108,7 +108,6 @@ export class SampleTreeGridModel extends HoistModel {
             emptyText: 'No records found...',
             colChooserModel: true,
             enableExport: true,
-            sizingMode: XH.appModel.gridSizingMode,
             columns: [
                 {
                     headerName: 'Name',

@@ -56,7 +56,6 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                 columns: ['id', 'company', 'VISIBLE'],
                 filename: 'hoist-sample-export'
             },
-            sizingMode: XH.appModel.gridSizingMode,
             store: {
                 idEncodesTreePath: true,
                 freezeData: false,

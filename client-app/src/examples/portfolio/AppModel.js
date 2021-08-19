@@ -1,8 +1,6 @@
 import {HoistAppModel, XH} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
-import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
+import {themeAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {Icon} from '@xh/hoist/icon';
-import {startCase} from 'lodash';
 import {OauthService} from '../../core/svc/OauthService';
 import {PortfolioService} from '../../core/svc/PortfolioService';
 
@@ -13,10 +11,6 @@ export class AppModel extends HoistAppModel {
 
     static async preAuthAsync() {
         await XH.installServicesAsync(OauthService);
-    }
-
-    get gridSizingMode() {
-        return XH.getPref('gridSizingMode');
     }
 
     async initAsync() {
@@ -36,20 +30,8 @@ export class AppModel extends HoistAppModel {
 
     getAppOptions() {
         return [
-            {
-                name: 'gridSizingMode',
-                prefName: 'gridSizingMode',
-                formField: {
-                    label: 'Default grid size',
-                    item: buttonGroupInput(
-                        getGridSizeModeButton('large'),
-                        getGridSizeModeButton('standard'),
-                        getGridSizeModeButton('compact'),
-                        getGridSizeModeButton('tiny')
-                    )
-                },
-                reloadRequired: true
-            }
+            themeAppOption,
+            sizingModeAppOption
         ];
     }
 
@@ -73,16 +55,4 @@ export class AppModel extends HoistAppModel {
             XH.hideBanner(category);
         }
     }
-
-}
-
-
-function getGridSizeModeButton(size) {
-    return button({
-        value: size,
-        text: startCase(size),
-        style: {
-            fontSize: `var(--xh-grid-${size}-font-size-px`
-        }
-    });
 }
