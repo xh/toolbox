@@ -24,7 +24,8 @@ export const App = hoistCmp({
                                 XH.darkTheme ? 'Light Theme' : 'Dark Theme',
                                 badge({
                                     item: 'Try Me',
-                                    intent: 'primary'
+                                    intent: 'primary',
+                                    compact: true
                                 })
                             ),
                             icon: XH.darkTheme ? Icon.sun({prefix: 'fas'}) : Icon.moon(),

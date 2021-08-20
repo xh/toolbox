@@ -54,7 +54,6 @@ export class LineChartModel extends HoistModel {
             navigator: {enabled: true},
             rangeSelector: {enabled: true},
             exporting: {enabled: true},
-            title: {text: null},
             legend: {enabled: false},
             scrollbar: {enabled: false},
             xAxis: {type: 'datetime'},

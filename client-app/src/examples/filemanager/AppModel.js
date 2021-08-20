@@ -3,10 +3,6 @@ import {OauthService} from '../../core/svc/OauthService';
 
 export class AppModel extends HoistAppModel {
 
-    get gridSizingMode() {
-        return XH.getPref('gridSizingMode');
-    }
-
     static async preAuthAsync() {
         await XH.installServicesAsync(OauthService);
     }

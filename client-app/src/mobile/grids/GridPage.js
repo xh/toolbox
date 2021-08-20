@@ -33,10 +33,10 @@ export const gridPage = hoistCmp.factory({
                     model: gridModel,
                     bind: 'sizingMode',
                     options: [
-                        {label: 'Large', value: 'large'},
-                        {label: 'Standard', value: 'standard'},
+                        {label: 'Tiny', value: 'tiny'},
                         {label: 'Compact', value: 'compact'},
-                        {label: 'Tiny', value: 'tiny'}
+                        {label: 'Standard', value: 'standard'},
+                        {label: 'Large', value: 'large'}
                     ]
                 }),
                 label('Borders:'),

@@ -22,7 +22,6 @@ class LocalModel extends HoistModel {
         this.gridModel = new GridModel({
             sortBy: 'profit_loss|desc|abs',
             colChooserModel: true,
-            sizingMode: XH.appModel.gridSizingMode,
             store: {
                 fields: [{name: 'trade_date', type: 'localDate'}]
             },

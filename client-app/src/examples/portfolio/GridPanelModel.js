@@ -1,4 +1,4 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
@@ -44,7 +44,6 @@ export class GridPanelModel extends HoistModel {
             rowBorders: true,
             showHover: true,
             showSummary: true,
-            sizingMode: XH.appModel.gridSizingMode,
             store: this.parentModel.store,
             columns: [
                 {

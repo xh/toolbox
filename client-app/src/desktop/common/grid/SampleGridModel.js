@@ -82,7 +82,6 @@ export class SampleGridModel extends HoistModel {
 
     @managed
     gridModel = new GridModel({
-        showSummary: 'bottom',
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
@@ -92,7 +91,6 @@ export class SampleGridModel extends HoistModel {
             columns: ['id', 'company', 'VISIBLE'],
             filename: 'hoist-sample-export'
         },
-        sizingMode: XH.appModel.gridSizingMode,
         store: {
             processRawData: (r) => {
                 const pnl = r.profit_loss;
@@ -266,10 +264,10 @@ export class SampleGridModel extends HoistModel {
     }
 
     async doLoadAsync(loadSpec) {
-        const {trades, summary} = await XH.fetchJson({url: 'trade'}),
+        const {trades} = await XH.fetchJson({url: 'trade'}),
             {gridModel} = this;
 
-        gridModel.loadData(trades, summary);
+        gridModel.loadData(trades);
         await gridModel.preSelectFirstAsync();
     }
 

@@ -1,5 +1,5 @@
 import {GridModel, timeCol} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
@@ -99,7 +99,6 @@ export class CubeTestModel extends HoistModel {
             enableExport: true,
             rowBorders: true,
             showHover: true,
-            sizingMode: XH.appModel.gridSizingMode,
             columns: [
                 {
                     field: 'id',

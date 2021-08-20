@@ -3,6 +3,15 @@
 ## v2.8.0 - 2021-07-23
 
 ### New Features
+* New Tests for Hoist Column Filtering
+
+### Libraries
+
+* @xh/hoist 42.0.0
+## v2.8.0 - 2021-07-23
+
+
+### New Features
 
 * Added demos for Badge (new) and Placeholder components.
 

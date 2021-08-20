@@ -7,10 +7,6 @@ export class AppModel extends HoistAppModel {
     @managed
     newsPanelModel;
 
-    get gridSizingMode() {
-        return XH.getPref('gridSizingMode');
-    }
-
     static async preAuthAsync() {
         await XH.installServicesAsync(OauthService);
     }

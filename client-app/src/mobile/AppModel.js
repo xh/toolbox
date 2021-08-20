@@ -1,7 +1,6 @@
 import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
-import {required} from '@xh/hoist/data';
-import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
+import {themeAppOption, sizingModeAppOption, autoRefreshAppOption} from '@xh/hoist/mobile/cmp/appOption';
 import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {containersPage} from './containers/ContainersPage';
@@ -107,31 +106,9 @@ export class AppModel extends HoistAppModel {
 
     getAppOptions() {
         return [
-            {
-                name: 'theme',
-                formField: {
-                    item: select({
-                        options: [
-                            {value: 'light', label: 'Light'},
-                            {value: 'dark', label: 'Dark'}
-                        ]
-                    })
-                },
-                fieldModel: {
-                    rules: [required]
-                },
-                valueGetter: () => XH.darkTheme ? 'dark' : 'light',
-                valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark')
-            },
-            {
-                name: 'autoRefresh',
-                prefName: 'xhAutoRefreshEnabled',
-                formField: {
-                    label: 'Auto-refresh',
-                    info: `Enable to auto-refresh app data every ${XH.autoRefreshService.interval} seconds`,
-                    item: switchInput()
-                }
-            }
+            themeAppOption(),
+            sizingModeAppOption(),
+            autoRefreshAppOption()
         ];
     }
 

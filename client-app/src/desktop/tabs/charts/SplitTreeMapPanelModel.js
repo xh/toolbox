@@ -29,7 +29,6 @@ export class SplitTreeMapPanelModel extends HoistModel {
         treeMode: true,
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
-        sizingMode: XH.appModel.gridSizingMode,
         selModel: 'multiple',
         store: {
             processRawData: (r) => {

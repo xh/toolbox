@@ -69,7 +69,12 @@ class Model extends HoistModel {
                         badge({
                             item: 'New',
                             intent: 'primary',
-                            position: 'top'
+                            compact: true,
+                            style: {
+                                position: 'relative',
+                                top: -6,
+                                marginLeft: 2
+                            }
                         })
                     ]
                 }) : 'Things'

@@ -58,7 +58,6 @@ export class OHLCChartModel extends HoistModel {
             },
             exporting: {enabled: true},
             rangeSelector: {enabled: true, selected: 4},
-            title: {text: null},
             legend: {enabled: false},
             scrollbar: {enabled: false},
             xAxis: {
