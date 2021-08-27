@@ -1,4 +1,4 @@
-import {HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {lengthIs, required} from '@xh/hoist/data';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -18,6 +18,7 @@ export class FormPageModel extends HoistModel {
     formModel = new FormModel({
         fields: [
             {name: 'name', rules: [required, lengthIs({min: 8})]},
+            {name: 'customer', rules: [required]},
             {name: 'movie', rules: [required]},
             {name: 'salary'},
             {name: 'date', rules: [required]},
@@ -30,4 +31,13 @@ export class FormPageModel extends HoistModel {
     });
 
     movies = movies;
+
+    async queryCustomersAsync(query) {
+        const results = await XH.fetchJson({url: 'customer', params: {query}});
+        return results.map(it => {
+            const value = it.id,
+                label = it.company;
+            return {value, label};
+        });
+    }
 }

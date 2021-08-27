@@ -57,12 +57,20 @@ const formCmp = hoistCmp.factory(
                         item: textInput()
                     }),
                     formField({
+                        field: 'customer',
+                        item: select({
+                            placeholder: 'Search customers...',
+                            title: 'Search customers...',
+                            enableFilter: true,
+                            enableFullscreen: true,
+                            queryFn: (q) => model.queryCustomersAsync(q)
+                        })
+                    }),
+                    formField({
                         field: 'movie',
                         item: select({
-                            title: 'Select a Movie...',
-                            options: movies,
-                            enableFilter: true,
-                            enableFullscreen: true
+                            placeholder: 'Select a Movie...',
+                            options: movies
                         })
                     }),
                     formField({
@@ -127,6 +135,7 @@ const results = hoistCmp.factory(
             className: 'toolbox-card',
             items: [
                 fieldResult({field: 'name'}),
+                fieldResult({field: 'customer'}),
                 fieldResult({field: 'movie'}),
                 fieldResult({field: 'salary'}),
                 fieldResult({field: 'date', renderer: v => v?.toString()}),
