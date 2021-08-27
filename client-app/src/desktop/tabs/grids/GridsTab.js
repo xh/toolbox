@@ -8,6 +8,7 @@ import {treeGridPanel} from './TreeGridPanel';
 import {treeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
 import {agGridView} from './AgGridView';
 import {inlineEditingPanel} from './InlineEditingPanel';
+import {columnFilteringPanel} from './ColumnFilteringPanel';
 import './GridsTab.scss';
 
 export const gridsTab = hoistCmp.factory(
@@ -21,6 +22,7 @@ export const gridsTab = hoistCmp.factory(
                 {id: 'groupedCols', title: 'Grouped Columns', content: columnGroupsGridPanel},
                 {id: 'rest', title: 'REST Editor', content: restGridPanel},
                 {id: 'inlineEditing', content: inlineEditingPanel},
+                {id: 'columnFiltering', content: columnFilteringPanel},
                 {id: 'dataview', title: 'DataView', content: dataViewPanel},
                 {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
             ],
