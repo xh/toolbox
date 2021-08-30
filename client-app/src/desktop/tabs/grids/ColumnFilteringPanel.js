@@ -18,19 +18,16 @@ export const columnFilteringPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    Grids support column-based filtering. To enable, provide a <code>GridModel</code> with a
-                    <code>GridFilterModel</code> via the <code>GridFilterModel.filterModel</code> config, and
-                    <code>filterable: true</code> on the columns you wish you filter. For convenience, you can
-                    pass <code>filterModel: true</code> to enable the default <code>GridFilterModel</code>, which
-                    will include all fields in the <code>GridModel</code>'s <code>Store</code> and automatically
-                    read / write filters to the <code>Store</code>.
+                    Grids support column-based filtering of their underlying store data. To enable, set the
+                    <code>GridModel.filterModel</code> config to a <code>GridFilterModel</code> (or true) and set
+                    <code>filterable: true</code> on the columns you wish to filter.
                 </p>,
                 <p>
-                    Alternatively, you can provide a configuration for a <code>GridFilterModel</code>. Configuration
-                    options include <code>bind</code> (allowing you to read / write to a different <code>Store</code>
-                    or Cube <code>View</code>) and <code>fieldSpecs</code> (allowing you to specify the behaviour of
-                    specific fields, such as whether or not to enable the "Values" tab and pass props to the inputs
-                    used on the "Custom" tab)
+                    Applications may also wish to use a <code>FilterChooser</code> to allow the user to filter the
+                    store data via a single "omni-box" style text control.
+                </p>,
+                <p>
+                    The example below shows both of these methods being used together on a single store.
                 </p>
             ],
             links: [
