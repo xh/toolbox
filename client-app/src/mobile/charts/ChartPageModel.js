@@ -55,8 +55,11 @@ export class ChartPageModel extends HoistModel {
     getChartModelCfg() {
         return {
             chart: {
-                type: 'ohlc'
+                type: 'ohlc',
+                zoomType: 'x'
             },
+            rangeSelector: {enabled: true, selected: 5},
+            navigator: {enabled: true},
             title: {text: null},
             legend: {enabled: false},
             scrollbar: {enabled: false},
