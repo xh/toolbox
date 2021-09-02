@@ -44,6 +44,10 @@
 }
 
 .tb-activity--release {
-  font-weight: bold;
+  font-weight: 600;
   background-color: var(--xh-bg-highlight);
+
+  .tb-activity-repo {
+    font-weight: normal;
+  }
 }
