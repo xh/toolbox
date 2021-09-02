@@ -1,19 +1,24 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {HoistAppModel, managed, XH} from '@xh/hoist/core';
+import {
+    autoRefreshAppOption,
+    sizingModeAppOption,
+    themeAppOption
+} from '@xh/hoist/desktop/cmp/appOption';
+import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {GitHubService} from '../core/svc/GitHubService';
 import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {getAppOptions} from './AppOptions';
 import {chartsTab} from './tabs/charts/ChartsTab';
 import {containersTab} from './tabs/containers/ContainersTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
 import {formsTab} from './tabs/forms/FormsTab';
 import {gridsTab} from './tabs/grids/GridsTab';
 import {homeTab} from './tabs/home/HomeTab';
+import {mobileTab} from './tabs/mobile/MobileTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
-import {mobileTab} from './tabs/mobile/MobileTab';
 
 export class AppModel extends HoistAppModel {
 
@@ -61,7 +66,20 @@ export class AppModel extends HoistAppModel {
     }
 
     getAppOptions() {
-        return getAppOptions();
+        return [
+            themeAppOption(),
+            sizingModeAppOption(),
+            autoRefreshAppOption(),
+            {
+                name: 'expandDockedLinks',
+                prefName: 'expandDockedLinks',
+                formField: {
+                    label: 'Expand Links',
+                    info: 'Enable to always expand the docked Links panel when available.',
+                    item: switchInput()
+                }
+            }
+        ];
     }
 
     getRoutes() {
