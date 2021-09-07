@@ -1,4 +1,4 @@
-import {GridModel, timeCol} from '@xh/hoist/cmp/grid';
+import {GridModel, timeCol, TreeStyle} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -91,6 +91,7 @@ export class CubeTestModel extends HoistModel {
     createGridModel() {
         return new GridModel({
             treeMode: true,
+            treeStyle: TreeStyle.COLOR_GRADIENT,
             showSummary: this.showSummary,
             store: {loadRootAsSummary: this.showSummary},
             sortBy: 'time|desc',
