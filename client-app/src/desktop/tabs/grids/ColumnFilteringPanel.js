@@ -4,6 +4,7 @@ import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {button, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
+import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
@@ -60,12 +61,19 @@ const tbar = hoistCmp.factory(() => {
 });
 
 const bbar = hoistCmp.factory(({model}) => {
+    const {filterModel} = model.gridModel;
     return toolbar(
         button({
             icon: Icon.filter(),
             text: 'View Grid Filters',
             intent: 'primary',
-            onClick: () => model.gridModel.filterModel.openDialog()
+            onClick: () => filterModel.openDialog()
+        }),
+        '-',
+        switchInput({
+            model: filterModel,
+            bind: 'commitOnChange',
+            label: 'Commit on change'
         }),
         filler(),
         gridCountLabel(),

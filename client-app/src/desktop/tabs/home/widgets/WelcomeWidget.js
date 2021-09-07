@@ -16,7 +16,7 @@ export const welcomeWidget = hoistCmp.factory(
                         <img src={xhHoist} alt="xh.io + Hoist"/>
                     </div>,
                     <div className="tb-welcome-widget__greeting">
-                        <p style={{fontWeight: 'bold'}}>Welcome, {XH.getUser().displayName}!</p>
+                        <p style={{fontWeight: 500}}>Welcome, {XH.getUser().displayName}!</p>
                         <p>
                             Toolbox demonstrates key components, code patterns, utilities, and
                             other tooling included in {link('Hoist React', 'https://github.com/xh/hoist-react/')} and {link('Hoist Core', 'https://github.com/xh/hoist-core/')},

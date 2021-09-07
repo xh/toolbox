@@ -30,8 +30,8 @@ export class AppModel extends HoistAppModel {
 
     getAppOptions() {
         return [
-            themeAppOption,
-            sizingModeAppOption
+            themeAppOption(),
+            sizingModeAppOption()
         ];
     }
 
