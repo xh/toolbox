@@ -1,76 +1,66 @@
-import React from 'react';
-import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {hframe, filler, span} from '@xh/hoist/cmp/layout';
+import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
+import {storeFilterField} from '@xh/hoist/cmp/store';
+import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 
-import {wrapper, sampleGrid, SampleGridModel} from '../../common';
+import {ExternalSortGridPanelModel} from './ExternalSortGridPanelModel';
+import {wrapper} from '../../common';
+import {gridOptionsPanel} from '../../common/grid/options/GridOptionsPanel';
 
 export const externalSortGridPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
-
-    render({model}) {
+    model: creates(ExternalSortGridPanelModel),
+    render() {
         return wrapper({
             description: [
                 <p>
                     Grids can optionally manage their sort externally. In the below example, we react to
-                    <code>GridModel.sortBy</code> to offload sorting to external logic.
+                    <code>GridModel.sortBy</code> to offload sorting to external logic. Sorted rows can
+                    be limited after sorting, facilitating showing a subset of large datasets.
                 </p>,
                 <p>
-                    Similar patterns could be used to offload sorting to the server or to support
-                    "max rows" constraints that respect both sorting and filtering.
+                    This pattern could be used to similarly offload sorting to the server.
                 </p>
             ],
             item: panel({
                 title: 'Grids › External Sort',
                 icon: Icon.gridPanel(),
-                className: 'tb-grid-wrapper-panel',
-                item: sampleGrid({model})
+                className: 'tb-grid-wrapper-panel tb-external-sort-panel',
+                mask: 'onLoad',
+                tbar: tbar(),
+                item: hframe(
+                    grid(),
+                    gridOptionsPanel()
+                )
             })
         });
     }
 });
 
-class Model extends SampleGridModel {
-
-    @bindable.ref trades;
-    @bindable.ref summary;
-
-    constructor() {
-        super({
-            experimental: {
-                externalSort: true
-            }
-        });
-
-        this.addReaction({
-            track: () => [this.trades, this.summary, this.gridModel.sortBy],
-            run: () => this.sortAndLoadGridData()
-        });
-    }
-
-    async doLoadAsync(loadSpec) {
-        const {trades, summary} = await XH.fetchJson({url: 'trade'});
-        this.setTrades(trades);
-        this.setSummary(summary);
-    }
-
-    sortAndLoadGridData() {
-        const {trades, summary, gridModel} = this,
-            {sortBy} = gridModel,
-            data = [...trades];
-
-        // Sort according to GridModel.sortBy[]
-        sortBy.forEach(it => {
-            const compFn = it.comparator.bind(it),
-                direction = it.sort === 'desc' ? -1 : 1;
-
-            data.sort((a, b) => compFn(a[it.colId], b[it.colId]) * direction);
-        });
-
-        // Show only top 50 records
-        gridModel.loadData(data.slice(0, 50), summary);
-
-        if (gridModel.agGridModel.isReady && !gridModel.hasSelection) gridModel.selectFirst();
-    }
-}
+const tbar = hoistCmp.factory(() => {
+    return toolbar(
+        refreshButton(),
+        toolbarSep(),
+        span('Max rows:'),
+        select({
+            bind: 'maxRows',
+            options: [
+                {value: null, label: 'None'},
+                {value: 50, label: '50'},
+                {value: 100, label: '100'},
+                {value: 500, label: '500'}
+            ],
+            width: 100,
+            enableFilter: false
+        }),
+        filler(),
+        gridCountLabel({unit: 'companies'}),
+        storeFilterField(),
+        colChooserButton(),
+        exportButton()
+    );
+});
