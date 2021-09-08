@@ -1,11 +1,9 @@
 import {HoistModel} from '@xh/hoist/core';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
-import {ol, li, p, h3} from '@xh/hoist/cmp/layout';
+import {h3, li, ol, p} from '@xh/hoist/cmp/layout';
 
-
-@HoistModel
-export class PanelResizingTestModel {
+export class PanelResizingTestModel extends HoistModel {
 
     @observable resizeWhileDragging = false;
 
@@ -30,6 +28,8 @@ export class PanelResizingTestModel {
     ];
 
     constructor() {
+        super();
+        makeObservable(this);
         this.setPanelModels();
     }
 

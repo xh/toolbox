@@ -1,14 +1,15 @@
 import {hoistCmp} from '@xh/hoist/core';
-import {box} from '@xh/hoist/cmp/layout';
+import {placeholder, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
 
-export const PanelWidget = hoistCmp({
+export const panelWidget = hoistCmp.factory({
     render() {
         return panel(
-            box({
-                padding: 10,
-                item: 'Just a simple panel'
-            })
+            placeholder(
+                Icon.window(),
+                p('Just a simple panel.')
+            )
         );
     }
 });

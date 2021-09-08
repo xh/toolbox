@@ -24,13 +24,12 @@ class PortfolioService extends BaseService {
         instrumentGenerationService
 
     void init() {
-        def updateIntervalSecs = config.updateIntervalSecs
         this.getData()
         createTimer(
                 runFn: this.&generateIntradayPrices,
-                interval: updateIntervalSecs,
+                interval: {config.updateIntervalSecs},
                 intervalUnits: SECONDS,
-                delayMs: 30 * SECONDS
+                delay: true
         )
         super.init()
     }
@@ -65,7 +64,7 @@ class PortfolioService extends BaseService {
         // Get current day portfolio from cache.  If it exists, perturb it, and put it back in the cache
         def data = dataSets.get(tradingDayService.currentDay())
         if (data) {
-            withShortDebug("Perturbing prices for ${data.day}") {
+            withDebug("Perturbing prices for ${data.day}") {
                 data = perturbIntradayPrices(data)
                 dataSets.put(data.day, data)
             }
@@ -139,7 +138,7 @@ class PortfolioService extends BaseService {
 
 
     private Map getConfig() {
-        configService.getJSONObject('portfolioConfigs')
+        configService.getMap('portfolioConfigs')
     }
 
     void clearCaches() {

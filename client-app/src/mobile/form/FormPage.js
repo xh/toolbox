@@ -1,25 +1,25 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {div, filler, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {button} from '@xh/hoist/mobile/cmp/button';
+import {menuButton} from '@xh/hoist/mobile/cmp/menu';
 import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
 import {formField} from '@xh/hoist/mobile/cmp/form';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {
-    label,
-    textInput,
-    select,
-    numberInput,
     buttonGroupInput,
     checkbox,
     dateInput,
+    label,
+    numberInput,
+    searchInput,
+    select,
     switchInput,
     textArea,
-    searchInput
+    textInput
 } from '@xh/hoist/mobile/cmp/input';
-
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 
@@ -57,8 +57,21 @@ const formCmp = hoistCmp.factory(
                         item: textInput()
                     }),
                     formField({
+                        field: 'customer',
+                        item: select({
+                            placeholder: 'Search customers...',
+                            title: 'Search customers...',
+                            enableFilter: true,
+                            enableFullscreen: true,
+                            queryFn: (q) => model.queryCustomersAsync(q)
+                        })
+                    }),
+                    formField({
                         field: 'movie',
-                        item: select({options: movies})
+                        item: select({
+                            placeholder: 'Select a Movie...',
+                            options: movies
+                        })
                     }),
                     formField({
                         field: 'salary',
@@ -117,11 +130,12 @@ const formCmp = hoistCmp.factory(
 );
 
 const results = hoistCmp.factory(
-    ({model}) => {
+    () => {
         return div({
             className: 'toolbox-card',
             items: [
                 fieldResult({field: 'name'}),
+                fieldResult({field: 'customer'}),
                 fieldResult({field: 'movie'}),
                 fieldResult({field: 'salary'}),
                 fieldResult({field: 'date', renderer: v => v?.toString()}),
@@ -139,6 +153,7 @@ const bbar = hoistCmp.factory(
     ({model}) => toolbar({
         height: 38,
         items: [
+            setFocusMenu(),
             filler(),
             label('Read-only'),
             switchInput({model: model.formModel, bind: 'readonly'}),
@@ -157,6 +172,24 @@ const fieldResult = hoistCmp.factory(
                 label(displayName),
                 div(renderer ? renderer(value) : value)
             ]
+        });
+    }
+);
+
+const setFocusMenu = hoistCmp.factory(
+    ({model}) => {
+        const fields = model.formModel.fieldList,
+            menuItems = fields.map(f => ({
+                text: f.displayName,
+                actionFn: () => f.focus()
+            }));
+
+        return menuButton({
+            icon: Icon.target(),
+            text: 'Focus',
+            title: 'Focus',
+            menuPosition: 'top',
+            menuItems
         });
     }
 );

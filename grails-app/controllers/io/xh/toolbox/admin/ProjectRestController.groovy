@@ -1,18 +1,9 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
-
 package io.xh.toolbox.admin
 
 import io.xh.hoist.RestController
-import io.xh.hoist.config.AppConfig
 import io.xh.hoist.security.Access
 import io.xh.toolbox.roadmap.Project
 import io.xh.toolbox.roadmap.Phase
-import org.grails.web.json.JSONObject
 
 @Access(['HOIST_ADMIN'])
 class ProjectRestController extends RestController {
@@ -29,7 +20,7 @@ class ProjectRestController extends RestController {
         )
     }
 
-    protected void preprocessSubmit(JSONObject submit) {
+    protected void preprocessSubmit(Map submit) {
         submit.lastUpdatedBy = username
         if (submit.phaseName) {
             def phase = Phase.findByName(submit.phaseName)

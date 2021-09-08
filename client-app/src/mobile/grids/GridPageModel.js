@@ -1,27 +1,30 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
-import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 
-@HoistModel
-@LoadSupport
-export class GridPageModel {
+export class GridPageModel extends HoistModel {
 
     @bindable.ref
     dateLoaded = null;
 
     @managed
     gridModel = new GridModel({
-        stateModel: 'toolboxSampleGrid',
+        persistWith: {localStorageKey: 'toolboxSampleGrid'},
         sortBy: ['profit_loss|desc|abs'],
-        enableColChooser: true,
+        colChooserModel: true,
+        onRowClicked: (e) => {
+            const {id} = e.data.raw;
+            XH.appendRoute('gridDetail', {id});
+        },
         columns: [
             {
                 field: 'company',
                 pinned: true,
                 hideable: false,
-                width: 170
+                width: 170,
+                autosizeMaxWidth: 200
             },
             {
                 field: 'city',
@@ -41,10 +44,14 @@ export class GridPageModel {
                 width: 90,
                 align: 'right',
                 renderer: thousandsRenderer({precision: 1, label: true})
-            },
-            {...emptyFlexCol}
+            }
         ]
     });
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     async doLoadAsync(loadSpec) {
         await wait(500);

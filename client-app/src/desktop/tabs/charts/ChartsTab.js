@@ -1,22 +1,20 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-
 import {ohlcChartPanel} from './OHLCChartPanel';
 import {lineChartPanel} from './LineChartPanel';
 import {simpleTreeMapPanel} from './SimpleTreeMapPanel';
 import {gridTreeMapPanel} from './GridTreeMapPanel';
 import {splitTreeMapPanel} from './SplitTreeMapPanel';
 
-
 export const chartsTab = hoistCmp.factory(
     () => tabContainer({
         model: {
             route: 'default.charts',
-            switcherPosition: 'left',
+            switcher: {orientation: 'left'},
             tabs: [
-                {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
                 {id: 'line', content: lineChartPanel},
-                {id: 'simpleTreeMap', title: 'Simple TreeMap', content: simpleTreeMapPanel},
+                {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
+                {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
                 {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
                 {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
             ]

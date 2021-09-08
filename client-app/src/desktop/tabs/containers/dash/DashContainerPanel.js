@@ -1,23 +1,14 @@
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
-import {toolbarSeparator} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
-import {XH, creates, hoistCmp, HoistModel, managed, RenderMode, RefreshMode} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {creates, hoistCmp, HoistModel, managed, RefreshMode, RenderMode, XH} from '@xh/hoist/core';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
-
-import {
-    ButtonWidget,
-    ChartWidget,
-    GridWidget,
-    PanelWidget,
-    TreeGridWidget
-} from './widgets';
-
+import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from './widgets';
 import {wrapper} from '../../../common';
 
 export const dashContainerPanel = hoistCmp.factory({
@@ -64,19 +55,22 @@ const bbar = hoistCmp.factory(
             label: 'Render Dashboard',
             bind: 'renderDashboard'
         }),
+        switchInput({
+            label: 'Layout Locked',
+            bind: 'layoutLocked',
+            model: model.dashContainerModel
+        }),
+        switchInput({
+            label: 'Content Locked',
+            bind: 'contentLocked',
+            model: model.dashContainerModel
+        }),
+        switchInput({
+            label: 'Rename Locked',
+            bind: 'renameLocked',
+            model: model.dashContainerModel
+        }),
         filler(),
-        button({
-            text: 'Capture State',
-            icon: Icon.camera(),
-            onClick: () => model.saveState()
-        }),
-        button({
-            disabled: !model.stateSnapshot,
-            text: 'Load Saved State',
-            icon: Icon.download(),
-            onClick: () => model.loadState()
-        }),
-        toolbarSeparator(),
         button({
             text: 'Reset & Clear State',
             icon: Icon.reset(),
@@ -85,37 +79,33 @@ const bbar = hoistCmp.factory(
     )
 );
 
-@HoistModel
-class Model {
-
-    stateKey = 'dashContainerState';
-
-    @bindable.ref stateSnapshot;
+class Model extends HoistModel {
     @bindable renderDashboard = true;
-
-    defaultState = [{
-        type: 'row',
-        content: [
-            {
-                type: 'stack',
-                content: [
-                    {type: 'view', id: 'grid'},
-                    {type: 'view', id: 'treeGrid'}
-                ]
-            },
-            {
-                type: 'column',
-                content: [
-                    {type: 'view', id: 'chart'},
-                    {type: 'view', id: 'buttons'}
-                ]
-            }
-        ]
-    }];
 
     @managed
     dashContainerModel = new DashContainerModel({
-        initialState: XH.localStorageService.get(this.stateKey, this.defaultState),
+        persistWith: {localStorageKey: 'dashContainerState'},
+        initialState: [{
+            type: 'row',
+            content: [
+                {
+                    type: 'stack',
+                    width: 60,
+                    content: [
+                        {type: 'view', id: 'grid'},
+                        {type: 'view', id: 'treeGrid'}
+                    ]
+                },
+                {
+                    type: 'column',
+                    width: 40,
+                    content: [
+                        {type: 'view', id: 'chart'},
+                        {type: 'view', id: 'buttons', height: '200px'}
+                    ]
+                }
+            ]
+        }],
         viewSpecDefaults: {
             icon: Icon.grid()
         },
@@ -124,13 +114,13 @@ class Model {
                 id: 'grid',
                 title: 'Grid',
                 unique: true,
-                content: GridWidget
+                content: gridWidget
             },
             {
                 id: 'buttons',
                 title: 'Buttons',
                 icon: Icon.question(),
-                content: ButtonWidget
+                content: buttonWidget
             },
             {
                 id: 'chart',
@@ -138,45 +128,31 @@ class Model {
                 icon: Icon.chartLine(),
                 unique: true,
                 refreshMode: RefreshMode.ON_SHOW_ALWAYS,
-                content: ChartWidget
+                content: chartWidget
             },
             {
                 id: 'panel',
                 title: 'Panel',
                 icon: Icon.window(),
                 renderMode: RenderMode.ALWAYS,
-                content: PanelWidget
+                content: panelWidget
             },
             {
                 id: 'treeGrid',
                 title: 'Tree Grid',
-                content: TreeGridWidget
+                content: treeGridWidget
             }
         ]
     });
 
     constructor() {
-        this.addReaction({
-            track: () => this.dashContainerModel.state,
-            run: (state) => XH.localStorageService.set(this.stateKey, state)
-        });
-    }
-
-    saveState() {
-        this.setStateSnapshot(this.dashContainerModel.state);
-        XH.toast({message: 'Dash state snapshot captured!'});
-    }
-
-    loadState() {
-        this.dashContainerModel.loadStateAsync(this.stateSnapshot).then(() => {
-            XH.toast({message: 'Dash state snapshot loaded!'});
-        });
+        super();
+        makeObservable(this);
     }
 
     resetState() {
-        XH.localStorageService.remove(this.stateKey);
-        this.dashContainerModel.loadStateAsync(this.defaultState).then(() => {
-            XH.toast({message: 'Dash state reset to default'});
-        });
+        this.dashContainerModel
+            .restoreDefaultsAsync()
+            .then(() => XH.toast({message: 'Dash state reset to default'}));
     }
 }

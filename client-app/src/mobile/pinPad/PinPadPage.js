@@ -1,10 +1,9 @@
-import {hoistCmp, HoistModel, creates, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {pinPad, PinPadModel} from '@xh/hoist/mobile/cmp/pinpad';
-import {bindable} from '@xh/hoist/mobx';
+import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {p} from '@xh/hoist/cmp/layout';
 import {wait} from '@xh/hoist/promise';
-
 import './PinPadPage.scss';
 
 export const pinPadPage = hoistCmp.factory({
@@ -30,8 +29,7 @@ const secretPlans = hoistCmp.factory(
     })
 );
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @managed
     pinPadModel = new PinPadModel({
@@ -45,6 +43,8 @@ class Model {
     @bindable loggedIn = false;
 
     constructor() {
+        super();
+        makeObservable(this);
         const {pinPadModel: pad} = this;
         this.addReaction({
             track: () => pad.completedPin,

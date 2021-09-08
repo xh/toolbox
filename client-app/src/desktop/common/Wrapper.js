@@ -1,12 +1,10 @@
-import {hoistCmp, HoistModel, useLocalModel, XH} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, managed, useLocalModel, XH} from '@xh/hoist/core';
 import PT from 'prop-types';
-import {box, table, tbody, tr, td, th} from '@xh/hoist/cmp/layout';
+import {box, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {DockContainerModel, dockContainer} from '@xh/hoist/cmp/dock';
-import {managed} from '@xh/hoist/core/mixins';
-import {toolboxLink} from '../../core/ToolboxLink';
-
+import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
+import {toolboxLink} from '../../core/cmp/ToolboxLink';
 import './Wrapper.scss';
 
 /**
@@ -15,7 +13,7 @@ import './Wrapper.scss';
 export const [Wrapper, wrapper] = hoistCmp.withFactory({
     displayName: 'Wrapper',
     className: 'tbox-wrapper xh-tiled-bg',
-    model: false, memo: false,
+    model: false,
 
     render({className, description, links, children, ...rest}) {
 
@@ -58,13 +56,13 @@ Wrapper.propTypes = {
     links: PT.arrayOf(PT.object)
 };
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @managed
     dockContainerModel = new DockContainerModel();
 
     constructor(links) {
+        super();
         if (links) {
             this.dockContainerModel.addView({
                 id: XH.genId(),

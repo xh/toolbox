@@ -1,49 +1,62 @@
-import {hoistCmp, uses} from '@xh/hoist/core';
-import {switchInput, select} from '@xh/hoist/desktop/cmp/input';
+import {hoistCmp, uses, XH} from '@xh/hoist/core';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
-import {fragment} from '@xh/hoist/cmp/layout';
+import {fragment, label, vspacer} from '@xh/hoist/cmp/layout';
+
 
 export const agGridOptions = hoistCmp.factory({
     model: uses(AgGridModel),
 
-    render() {
+    render({model}) {
         return fragment({
             items: [
-                'Sizing Mode',
+                label('Sizing Mode'),
                 select({
                     width: null,
                     bind: 'sizingMode',
                     options: [
-                        {label: 'Large', value: 'large'},
-                        {label: 'Standard', value: 'standard'},
+                        {label: 'Tiny', value: 'tiny'},
                         {label: 'Compact', value: 'compact'},
-                        {label: 'Tiny', value: 'tiny'}
+                        {label: 'Standard', value: 'standard'},
+                        {label: 'Large', value: 'large'}
                     ]
+                }),
+                vspacer(10),
+                switchInput({
+                    label: 'Dark Mode',
+                    labelSide: 'left',
+                    bind: 'darkTheme',
+                    model: XH
+                }),
+                switchInput({
+                    bind: 'hideHeaders',
+                    label: 'Hide Headers',
+                    labelSide: 'left'
                 }),
                 switchInput({
                     bind: 'stripeRows',
                     label: 'Striped',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 switchInput({
                     bind: 'rowBorders',
                     label: 'Row Borders',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 switchInput({
                     bind: 'cellBorders',
                     label: 'Cell Borders',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 switchInput({
                     bind: 'showHover',
                     label: 'Hover',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 }),
                 switchInput({
                     bind: 'showCellFocus',
                     label: 'Cell focus',
-                    labelAlign: 'left'
+                    labelSide: 'left'
                 })
             ]
         });

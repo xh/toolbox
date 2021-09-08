@@ -1,8 +1,7 @@
 import {hoistCmp} from '@xh/hoist/core';
-
 import {sampleTreeGrid} from '../../../../common';
 
-export const TreeGridWidget = hoistCmp({
+export const treeGridWidget = hoistCmp.factory({
     render() {
         return sampleTreeGrid({model: {includeCheckboxes: false}});
     }

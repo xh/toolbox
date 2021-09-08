@@ -1,10 +1,8 @@
 import {HoistService, XH} from '@xh/hoist/core';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-
 import {PositionSession} from '../positions/PositionSession';
 
-@HoistService
-export class PortfolioService {
+export class PortfolioService extends HoistService {
 
     MAX_POSITIONS = 950;
 
@@ -12,15 +10,16 @@ export class PortfolioService {
         this.lookups = await XH.fetchJson({url: 'portfolio/lookups'});
     }
 
-    async getSymbolsAsync() {
-        return XH.fetchJson({url: 'portfolio/symbols'});
+    async getSymbolsAsync({loadSpec} = {}) {
+        return XH.fetchJson({url: 'portfolio/symbols', loadSpec});
     }
 
     /**
      * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
      * @param {string[]} dims - field names for dimensions on which to group.
      * @param {boolean} [includeSummary] - true to include a root summary node
-     * @param {int} maxPositions - truncate position tree, by smallest pnl, until this number positions is reached
+     * @param {int} maxPositions - truncate position tree, by smallest pnl, until this number of
+     *     positions is reached.
      * @return {Promise<Array>}
      */
     async getPositionsAsync(dims, includeSummary = false, maxPositions = this.MAX_POSITIONS) {
@@ -73,25 +72,24 @@ export class PortfolioService {
      * Return a list of flat position data.
      * @returns {Promise<Array>}
      */
-    async getRawPositionsAsync() {
-        return XH.fetchJson({url: 'portfolio/rawPositions'});
+    async getRawPositionsAsync({loadSpec} = {}) {
+        return XH.fetchJson({url: 'portfolio/rawPositions', loadSpec});
     }
 
-    async getAllOrdersAsync() {
-        return XH.fetchJson({url: 'portfolio/orders'});
+    async getAllOrdersAsync({loadSpec} = {}) {
+        return XH.fetchJson({url: 'portfolio/orders', loadSpec});
     }
 
-    async getOrdersAsync(positionId) {
+    async getOrdersAsync({positionId, loadSpec}) {
         return XH.fetchJson({
             url: 'portfolio/ordersForPosition',
-            params: {
-                positionId
-            }
+            params: {positionId},
+            loadSpec
         });
     }
 
-    async getLineChartSeriesAsync(symbol, dimension = 'volume') {
-        const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`});
+    async getLineChartSeriesAsync({symbol, dimension = 'volume', loadSpec}) {
+        const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`, loadSpec});
         return {
             name: symbol,
             type: 'line',
@@ -100,8 +98,8 @@ export class PortfolioService {
         };
     }
 
-    async getOHLCChartSeriesAsync(symbol) {
-        const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`});
+    async getOHLCChartSeriesAsync({symbol, loadSpec}) {
+        const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`, loadSpec});
         return {
             name: symbol,
             type: 'ohlc',

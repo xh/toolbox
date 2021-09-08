@@ -1,11 +1,10 @@
-import {XH, hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {dimensionChooser} from '@xh/hoist/mobile/cmp/dimensionchooser';
-import {colChooserButton} from '@xh/hoist/mobile/cmp/button';
+import {groupingChooser} from '@xh/hoist/mobile/cmp/grouping';
+import {colAutosizeButton, colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-
 import {TreeGridPageModel} from './TreeGridPageModel';
 
 export const treeGridPage = hoistCmp.factory({
@@ -16,15 +15,11 @@ export const treeGridPage = hoistCmp.factory({
             title: 'Tree Grids',
             icon: Icon.grid(),
             mask: 'onLoad',
-            item: grid({
-                onRowClicked: (e) => {
-                    const id = encodeURIComponent(e.data.raw.id);
-                    XH.appendRoute('treeGridDetail', {id});
-                }
-            }),
+            item: grid(),
             bbar: [
-                dimensionChooser(),
+                groupingChooser({maxWidth: 250}),
                 filler(),
+                colAutosizeButton(),
                 colChooserButton()
             ]
         });

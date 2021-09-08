@@ -1,8 +1,7 @@
-import {hoistCmp, HoistModel, LoadSupport, managed, XH, creates} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {label, span, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dataView, DataViewModel} from '@xh/hoist/cmp/dataview';
-
 import {shuffle, take} from 'lodash';
 import {slider} from '@xh/hoist/desktop/cmp/input';
 import './DataViewTestPanel.scss';
@@ -28,9 +27,7 @@ export const dataViewTestPanel = hoistCmp.factory({
     }
 });
 
-@HoistModel
-@LoadSupport
-class Model {
+class Model extends HoistModel {
 
     @managed
     dataViewModel = new DataViewModel({

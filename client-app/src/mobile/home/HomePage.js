@@ -1,4 +1,4 @@
-import {XH, hoistCmp} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {button} from '@xh/hoist/mobile/cmp/button';
@@ -35,6 +35,12 @@ export const homePage = hoistCmp.factory({
                     route: 'form'
                 }),
                 summaryCard({
+                    title: 'Charts',
+                    icon: Icon.chartLine(),
+                    summary: 'Customize interactive charts with dynamically updated data.',
+                    route: 'charts'
+                }),
+                summaryCard({
                     title: 'Containers',
                     icon: Icon.box(),
                     summary: 'Layout children in Tabs, or flexed horizontally or vertically.',
@@ -45,6 +51,12 @@ export const homePage = hoistCmp.factory({
                     icon: Icon.window(),
                     summary: 'Core building block component with support for header and toolbars.',
                     route: 'panels'
+                }),
+                summaryCard({
+                    title: 'Popovers',
+                    icon: Icon.openExternal(),
+                    summary: 'Popovers display floating content next to a target element.',
+                    route: 'popovers'
                 }),
                 summaryCard({
                     title: 'Popups',

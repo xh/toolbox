@@ -1,38 +1,28 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
-import {XH, HoistAppModel, managed, loadAllAsync} from '@xh/hoist/core';
+import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
-import {AppMenuModel} from '@xh/hoist/mobile/cmp/header';
-import {required} from '@xh/hoist/cmp/form';
-import {select, switchInput} from '@xh/hoist/mobile/cmp/input';
-
+import {themeAppOption, sizingModeAppOption, autoRefreshAppOption} from '@xh/hoist/mobile/cmp/appOption';
+import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
-
-import {homePage} from './home/HomePage';
-import {gridPage} from './grids/GridPage';
-import {gridDetailPage} from './grids/GridDetailPage';
-import {panelsPage} from './panels/PanelsPage';
-import {treeGridPage} from './treegrids/TreeGridPage';
-import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
+import {containersPage} from './containers/ContainersPage';
 import {dataViewPage} from './dataview/DataViewPage';
 import {formPage} from './form/FormPage';
-import {containersPage} from './containers/ContainersPage';
-import {popupsPage} from './popups/PopupsPage';
+import {chartPage} from './charts/ChartPage';
+import {gridDetailPage} from './grids/GridDetailPage';
+import {gridPage} from './grids/GridPage';
+import {homePage} from './home/HomePage';
 import {iconPage} from './icons/IconPage';
+import {panelsPage} from './panels/PanelsPage';
 import {pinPadPage} from './pinPad/PinPadPage';
+import {popoverPage} from './popover/PopoverPage';
+import {popupsPage} from './popups/PopupsPage';
+import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
+import {treeGridPage} from './treegrids/TreeGridPage';
 
-@HoistAppModel
-export class AppModel {
-
-    @managed
-    appMenuModel = new AppMenuModel();
+export class AppModel extends HoistAppModel {
 
     @managed
     navigatorModel = new NavigatorModel({
+        track: true,
         pages: [
             {id: 'default', content: homePage},
             {id: 'grids', content: gridPage},
@@ -41,8 +31,10 @@ export class AppModel {
             {id: 'treeGridDetail', content: treeGridDetailPage},
             {id: 'dataview', content: dataViewPage},
             {id: 'form', content: formPage},
+            {id: 'charts', content: chartPage},
             {id: 'containers', content: containersPage},
             {id: 'panels', content: panelsPage},
+            {id: 'popovers', content: popoverPage},
             {id: 'popups', content: popupsPage},
             {id: 'icons', content: iconPage},
             {id: 'pinPad', content: pinPadPage}
@@ -80,12 +72,20 @@ export class AppModel {
                         path: '/form'
                     },
                     {
+                        name: 'charts',
+                        path: '/charts'
+                    },
+                    {
                         name: 'containers',
                         path: '/containers'
                     },
                     {
                         name: 'panels',
                         path: '/panels'
+                    },
+                    {
+                        name: 'popovers',
+                        path: '/popovers'
                     },
                     {
                         name: 'popups',
@@ -106,36 +106,22 @@ export class AppModel {
 
     getAppOptions() {
         return [
-            {
-                name: 'theme',
-                formField: {
-                    item: select({
-                        options: [
-                            {value: 'light', label: 'Light'},
-                            {value: 'dark', label: 'Dark'}
-                        ]
-                    })
-                },
-                fieldModel: {
-                    rules: [required]
-                },
-                valueGetter: () => XH.darkTheme ? 'dark' : 'light',
-                valueSetter: (v) => XH.acm.themeModel.setDarkTheme(v == 'dark')
-            },
-            {
-                name: 'autoRefresh',
-                prefName: 'xhAutoRefreshEnabled',
-                formField: {
-                    label: 'Auto-refresh',
-                    info: `Enable to auto-refresh app data every ${XH.autoRefreshService.interval} seconds`,
-                    item: switchInput()
-                }
-            }
+            themeAppOption(),
+            sizingModeAppOption(),
+            autoRefreshAppOption()
         ];
+    }
+
+    static async preAuthAsync() {
+        await XH.installServicesAsync(OauthService);
     }
 
     async initAsync() {
         await XH.installServicesAsync(PortfolioService);
+    }
+
+    async logoutAsync() {
+        await XH.oauthService.logoutAsync();
     }
 
     async doLoadAsync(loadSpec) {

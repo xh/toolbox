@@ -1,16 +1,15 @@
-import {HoistModel, XH, LoadSupport, managed} from '@xh/hoist/core';
-import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {isNil} from 'lodash';
-import {bindable} from '@xh/hoist/mobx';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {fmtDate, fmtPrice} from '@xh/hoist/format';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
-@HoistModel
-@LoadSupport
-export class OHLCChartModel {
+export class OHLCChartModel extends HoistModel {
 
     @bindable symbol = null;
 
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.symbol,
             run: () => this.loadAsync()
@@ -22,21 +21,18 @@ export class OHLCChartModel {
         highchartsConfig: {
             chart: {
                 type: 'ohlc',
-                spacingLeft: 3,
-                spacingBottom: 5,
                 zoomType: 'x',
-                animation: false,
-                marginLeft: 50
+                animation: false
             },
             title: {text: null},
             legend: {enabled: false},
-            scrollbar: {enabled: false},
+            scrollbar: {enabled: true},
             rangeSelector: {
                 enabled: true,
                 selected: 1     // default to a 3-month zoom
             },
-            navigator: {enabled: true},
             xAxis: {
+                type: 'datetime',
                 labels: {
                     formatter: function() {
                         return fmtDate(this.value, {fmt: 'DD-MMM-YY'});
@@ -44,44 +40,43 @@ export class OHLCChartModel {
                 }
             },
             yAxis: {
-                title: {text: null},
-                opposite: false,
-                endOnTick: true,
-                showLastLabel: true,
-                tickPixelInterval: 40
+                opposite: true,
+                title: {text: null}
             },
             tooltip: {
-                split: false,
-                crosshairs: false,
-                followPointer: true,
                 useHTML: true,
                 formatter: function() {
                     const p = this.point;
                     return `
-                        <div class="tbox-pos-chart-tip__title"><b>${p.series.name}</b> ${fmtDate(this.x)}</div>
-                        <table class="tbox-pos-chart-tip">
+                        <div class="xh-chart-tooltip">
+                        <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(this.x)}</div>
+                        <table>
                             <tr><th>Open:</th><td>${fmtPrice(p.open)}</td></tr>
                             <tr><th>High:</th><td>${fmtPrice(p.high)}</td></tr>
                             <tr><th>Low:</th><td>${fmtPrice(p.low)}</td></tr>
                             <tr><th>Close:</th><td>${fmtPrice(p.close)}</td></tr>
                         </table>
+                        </div>
                     `;
                 }
-            },
-            exporting: {
-                enabled: true
             }
         }
     });
 
     async doLoadAsync(loadSpec) {
         const {symbol} = this;
-        if (isNil(symbol)) {
-            this.chartModel.setSeries([]);
+
+        if (!symbol) {
+            this.chartModel.clear();
             return;
         }
 
-        const series = await XH.portfolioService.getOHLCChartSeriesAsync(symbol);
-        this.chartModel.setSeries([series]);
+        const series = await XH.portfolioService
+            .getOHLCChartSeriesAsync({symbol, loadSpec})
+            .catchDefault();
+
+        if (!loadSpec.isObsolete) {
+            this.chartModel.setSeries(series ?? {});
+        }
     }
 }

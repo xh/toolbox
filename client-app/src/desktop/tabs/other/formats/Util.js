@@ -3,7 +3,6 @@ import {hoistCmp} from '@xh/hoist/core';
 import {formGroup} from '@xh/hoist/kit/blueprint';
 import {code, span} from '@xh/hoist/cmp/layout';
 
-
 export const param = hoistCmp.factory(
     ({label, bind, input, info, disabled}) => formGroup({
         label,

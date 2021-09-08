@@ -6,11 +6,10 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {TIME_FMT} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import React from 'react';
 import {wrapper} from '../../common/Wrapper';
-
 import './ClockPanel.scss';
 
 export const clockPanel = hoistCmp.factory({
@@ -50,7 +49,7 @@ export const clockPanel = hoistCmp.factory({
                     span('Format'),
                     textInput({
                         bind: 'format',
-                        width: 120,
+                        width: 100,
                         placeholder: TIME_FMT
                     }),
                     toolbarSep(),
@@ -66,14 +65,14 @@ export const clockPanel = hoistCmp.factory({
                     textInput({
                         model,
                         bind: 'prefix',
-                        width: 100
+                        width: 90
                     }),
                     toolbarSep(),
                     span('Suffix'),
                     textInput({
                         model,
                         bind: 'suffix',
-                        width: 100
+                        width: 90
                     })
                 ]
             })
@@ -95,10 +94,14 @@ const clockCard = hoistCmp.factory({
     }
 });
 
-@HoistModel
-class Model {
+class Model extends HoistModel {
     @bindable format;
     @bindable updateInterval;
     @bindable prefix;
     @bindable suffix;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 }

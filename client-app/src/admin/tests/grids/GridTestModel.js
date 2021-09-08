@@ -1,10 +1,11 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {LoadSupport} from '@xh/hoist/core/mixins';
-import {millionsRenderer, numberRenderer, fmtMillions, fmtNumber} from '@xh/hoist/format';
-import {emptyFlexCol, GridModel} from '@xh/hoist/cmp/grid';
-import {random, sample, times, mean, takeRight} from 'lodash';
-import {start} from '@xh/hoist/promise';
-import {action, bindable, observable} from '@xh/hoist/mobx';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {FieldType} from '@xh/hoist/data';
+import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {GridModel} from '@xh/hoist/cmp/grid';
+import {cloneDeep} from 'lodash';
+import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
+import {GridTestData} from './GridTestData';
+import {GridTestMetrics} from './GridTestMetrics';
 
 const pnlColumn = {
     absSort: true,
@@ -18,40 +19,77 @@ const pnlColumn = {
     })
 };
 
-@HoistModel
-@LoadSupport
-export class GridTestModel {
+export class GridTestModel extends HoistModel {
+
+    persistWith = {localStorageKey: 'persistTest'};
 
     // Total count (approx) of all nodes generated (parents + children).
-    @bindable recordCount = 750;
-    // Loop x times over nodes, randomly selecting a note and twiddling data.
-    @bindable twiddleCount = Math.round(this.recordCount * .10);
+    @bindable recordCount = 200000;
+    // Number of random records to perturb
+    @bindable twiddleCount = Math.round(this.recordCount * .50);
     // Prefix for all IDs - change to ensure no IDs re-used across data gens.
     @bindable idSeed = 1;
     // True to generate data in tree structure.
     @bindable tree = false;
-    @bindable useTransactions = true;
-    @bindable useDeltaSort = true;
+    // True to show summary row.
+    @bindable showSummary = false;
+    // True to use tree root node as summary row.
+    @bindable loadRootAsSummary = false;
+    // True to turn off default XSS protection at store level.
+    @bindable disableXssProtection = true;
+    // Value > 0 will trigger creation of additional (null value) fields on the store to
+    // help stress-test stores with a wide array of fields.
+    @bindable extraFieldCount = 50;
+
     @bindable disableSelect = false;
 
-    // Generated data in tree
-    _data;
+    @bindable colChooserCommitOnChange = true;
+    @bindable colChooserShowRestoreDefaults = true;
+    @bindable colChooserWidth = null;
+    @bindable colChooserHeight = null;
+
+    @bindable lockColumnGroups = true;
+
+    @bindable
+    @persist
+    autosizeMode = 'onDemand';
+
+    @bindable
+    @persist.with({path: 'gridPersistType', buffer: 500})  // test persist.with!
+    persistType = null;
+
+    @managed
+    data = new GridTestData();
+
+    @managed
+    metrics = new GridTestMetrics();
 
     @managed
     @observable.ref
-    gridModel = this.createGridModel();
-
-    @bindable gridUpdateTime = null;
-    @bindable avgGridUpdateTime = null;
-    _gridUpdateTimes = [];
-
-    @bindable gridLoadTime = null;
-    @bindable avgGridLoadTime = null;
-    _gridLoadTimes = [];
+    gridModel;
 
     constructor() {
+        super();
+        makeObservable(this);
+        this.markPersist('tree');
+        this.markPersist('showSummary');
+        this.gridModel = this.createGridModel();
         this.addReaction({
-            track: () =>  [this.tree, this.useTransactions, this.useDeltaSort, this.disableSelect],
+            track: () =>  [
+                this.tree,
+                this.showSummary,
+                this.loadRootAsSummary,
+                this.disableSelect,
+                this.autosizeMode,
+                this.persistType,
+                this.colChooserCommitOnChange,
+                this.colChooserShowRestoreDefaults,
+                this.colChooserWidth,
+                this.colChooserHeight,
+                this.lockColumnGroups,
+                this.disableXssProtection,
+                this.extraFieldCount
+            ],
             run: () => {
                 XH.safeDestroy(this.gridModel);
                 this.gridModel = this.createGridModel();
@@ -60,6 +98,7 @@ export class GridTestModel {
             },
             debounce: 100
         });
+        window.gm = this;
 
         this.addReaction({
             track: () =>  this.recordCount,
@@ -68,134 +107,97 @@ export class GridTestModel {
     }
 
     clearData() {
-        this._data = null;
+        this.data.clear();
+        this.metrics.clear();
     }
 
     async doLoadAsync(loadSpec) {
+        const {data, metrics, gridModel} = this;
         if (loadSpec.isAutoRefresh) return; // avoid auto-refresh confusing our tests here
 
-        if (!this._data) {
-            this.genTestData();
+        if (data.isEmpty) {
+            data.generate(this);
         }
-        this.loadData(this._data);
+        metrics.runAsLoad(() => {
+            gridModel.loadData(cloneDeep(data.rows), cloneDeep(data.summary));
+        });
     }
 
     clearGrid() {
-        this._gridLoadTimes = [];
-        this.loadData([]);
-    }
-
-
-    loadData(data) {
-        const loadStart = Date.now();
-        return start(() => {
-            this.gridModel.loadData(data);
-        }).linkTo(
-            this.loadModel
-        ).finally(() => {
-            this.setGridLoadTime(Date.now() - loadStart);
-
-            this._gridLoadTimes = takeRight([...this._gridLoadTimes, this.gridLoadTime], 10);
-            this.setAvgGridLoadTime(mean(this._gridLoadTimes));
-
-            this.setGridUpdateTime(null);
-            this.setAvgGridUpdateTime(null);
-            this._gridUpdateTimes = [];
-
+        this.metrics.clear();
+        this.metrics.runAsLoad(() => {
+            this.gridModel.clear();
         });
     }
 
-    updateData(updates) {
-        const loadStart = Date.now();
-        return start(() => {
-            this.gridModel.updateData(updates);
-        }).finally(() => {
-            this.setGridUpdateTime(Date.now() - loadStart);
-            this._gridUpdateTimes = takeRight([...this._gridUpdateTimes, this.gridUpdateTime], 10);
-
-            this.setAvgGridUpdateTime(mean(this._gridUpdateTimes));
-        });
-    }
-
-
-    genTestData() {
-        this._data = [];
-        let count = 0;
-        const idSeed = this.idSeed;
-
-        while (count < this.recordCount) {
-            let symbol = 'Symbol ' + count,
-                trader = 'Trader ' + count % (this.recordCount/10);
-
-            count++;
-            const pos = {
-                id: `${idSeed}~${symbol}`,
-                trader,
-                symbol,
-                day: random(-80000, 100000),
-                mtd: random(-500000, 500000),
-                ytd: random(-1000000, 2000000),
-                volume: random(1000, 2000000)
-            };
-
-            if (this.tree) {
-                const childCount = random(0, 10);
-                pos.children = times(childCount, (t) => {
-                    trader = 'trader' + t;
-                    count++;
-                    const child = {
-                        id: `${idSeed}~${symbol}~${trader}`,
-                        trader,
-                        symbol,
-                        day: random(-80000, 100000),
-                        mtd: random(-500000, 500000),
-                        ytd: random(-1000000, 2000000),
-                        volume: random(1000, 1200000)
-                    };
-                    return child;
-                });
+    twiddleData(mode) {
+        const {gridModel, data, twiddleCount, metrics} = this;
+        metrics.runAsUpdate(() => {
+            if (mode === 'update') {
+                const update = data.generateUpdates(twiddleCount);
+                gridModel.updateData(update);
+            } else {
+                data.applyUpdates(twiddleCount);
+                gridModel.loadData(cloneDeep(data.rows), cloneDeep(data.summary));
             }
-
-            this._data.push(pos);
-        }
-
-        console.log(`Generated ${count} test records.`);
-    }
-
-    twiddleData() {
-        if (!this._data) {
-            console.log('No data to twiddle');
-            return;
-        }
-
-        const newPositions = [];
-        times(this.twiddleCount, () => {
-            const pos = sample(this.gridModel.store.allRecords);
-            newPositions.push({
-                ...pos.raw,
-                day: random(-80000, 100000),
-                volume: random(1000, 1200000)
-            });
         });
-
-        this.updateData({update: newPositions});
     }
 
     createGridModel() {
+        const {persistType, disableXssProtection, extraFieldCount} = this,
+            storeConf = {
+                freezeData: false,
+                idEncodesTreePath: true
+            };
+
+        if (disableXssProtection) {
+            storeConf.fieldDefaults = {disableXssProtection};
+        }
+
+        if (this.tree && this.showSummary && this.loadRootAsSummary) {
+            storeConf.loadRootAsSummary = true;
+        }
+
+        const FT = FieldType;
+        storeConf.fields = [
+            {name: 'symbol', type: FT.STRING},
+            {name: 'trader', type: FT.STRING},
+            {name: 'day', type: FT.NUMBER},
+            {name: 'mtd', displayName: 'MTD', type: FT.NUMBER},
+            {name: 'ytd', displayName: 'YTD', type: FT.NUMBER},
+            {name: 'volume', type: FT.NUMBER}
+        ];
+
+        if (extraFieldCount > 0) {
+            for (let i = 0; i <= extraFieldCount; i++) {
+                storeConf.fields.push({
+                    name: 'extraField' + i
+                });
+            }
+        }
+
         return new GridModel({
+            persistWith: persistType ? {[persistType]: 'persistTest'} : null,
             selModel: {mode: 'multiple'},
             sortBy: 'id',
             emptyText: 'No records found...',
+            enableExport: true,
+            lockColumnGroups: this.lockColumnGroups,
+            store: storeConf,
             treeMode: this.tree,
-            experimental: {
-                useTransactions: this.useTransactions,
-                useDeltaSort: this.useDeltaSort,
-                suppressUpdateExpandStateOnDataLoad: true
+            showSummary: this.showSummary,
+            colChooserModel: {
+                commitOnChange: this.colChooserCommitOnChange,
+                showRestoreDefaults: this.colChooserShowRestoreDefaults,
+                width: this.colChooserWidth ?? undefined,
+                height: this.colChooserHeight ?? undefined
+            },
+            autosizeOptions: {
+                mode: this.autosizeMode
             },
             columns: [
                 {
                     field: 'id',
-                    headerName: 'ID',
                     width: 140,
                     isTreeColumn: this.tree
                 },
@@ -212,14 +214,15 @@ export class GridTestModel {
                     width: 200
                 },
                 {
-                    field: 'day',
-                    highlightOnChange: true,
-                    ...pnlColumn
+                    groupId: 'pnl',
+                    headerName: 'P&L',
+                    children: [
+                        {field: 'day', highlightOnChange: true, ...pnlColumn},
+                        {field: 'mtd', ...pnlColumn},
+                        {field: 'ytd', ...pnlColumn}
+                    ]
                 },
-                {field: 'mtd', headerName: 'MTD', ...pnlColumn},
-                {field: 'ytd', headerName: 'YTD', ...pnlColumn},
                 {
-                    headerName: 'Volume',
                     field: 'volume',
                     align: 'right',
                     width: 130,
@@ -231,7 +234,6 @@ export class GridTestModel {
                     })
                 },
                 {
-                    headerName: 'Complex',
                     field: 'complex',
                     align: 'right',
                     width: 130,
@@ -241,19 +243,16 @@ export class GridTestModel {
                             fmtNumber(record.data.day, {colorSpec: true});
                     },
                     rendererIsComplex: true
-                },
-
-
-                {...emptyFlexCol}
+                }
             ]
         });
     }
 
     @action
     tearDown() {
-        XH.destroy(this.gridModel);
+        XH.safeDestroy(this.gridModel);
         this.gridModel = this.createGridModel();
-        this._data = null;
+        this.data.clear();
         this.runTimes = {};
     }
 }

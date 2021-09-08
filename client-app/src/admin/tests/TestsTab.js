@@ -1,39 +1,37 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
-
 import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-
+import {asyncLoopPanel} from './asyncLoops/AsyncLoopPanel';
 import {GridTestPanel} from './grids/GridTestPanel';
 import {CubeTestPanel} from './cube/CubeTestPanel';
 import {WebSocketTestPanel} from './websocket/WebSocketTestPanel';
 import {LocalDateTestPanel} from './localDate/LocalDateTestPanel';
 import {PanelResizingTestPanel} from './panels/PanelResizingTestPanel';
 import {FetchApiTestPanel} from './fetch/FetchApiTestPanel';
-import {StoreEditingPanel} from './storeEditing/StoreEditingPanel';
 import {SelectTestPanel} from './Select/SelectTestPanel';
 import {dataViewTestPanel} from './dataview/DataViewTestPanel';
+import {storeColumnFilterPanel} from './columnFilters/store/StoreColumnFilterPanel';
+import {viewColumnFilterPanel} from './columnFilters/view/ViewColumnFilterPanel';
 
-export const TestsTab = hoistCmp(
-    () => tabContainer({
+
+export const testsTab = hoistCmp(() => {
+    return tabContainer({
         model: {
             route: 'default.tests',
+            switcher: {orientation: 'left'},
             tabs: [
-                {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
-                {id: 'grid', title: 'Grid', content: GridTestPanel},
-                {id: 'dataView', title: 'Data View', content: dataViewTestPanel},
+                {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
                 {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
-                {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel},
-                {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel},
+                {id: 'dataView', title: 'Data View', content: dataViewTestPanel},
                 {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
-                {id: 'storeEditing', title: 'Store Editing', content: StoreEditingPanel},
-                {id: 'select', title: 'Select', content: SelectTestPanel}
-            ],
-            switcherPosition: 'left'
+                {id: 'grid', title: 'Grid', content: GridTestPanel},
+                {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
+                {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel},
+                {id: 'select', title: 'Select', content: SelectTestPanel},
+                {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel},
+                {id: 'storeColumnFilters', title: 'Store Column Filters', content: storeColumnFilterPanel},
+                {id: 'viewColumnFilters', title: 'View Column Filters', content: viewColumnFilterPanel}
+
+            ]
         }
-    })
-);
+    });
+});

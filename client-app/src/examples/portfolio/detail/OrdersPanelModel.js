@@ -1,106 +1,101 @@
-import {HoistModel, XH, LoadSupport, managed} from '@xh/hoist/core';
-import {GridModel} from '@xh/hoist/cmp/grid';
-import {emptyFlexCol, dateTimeCol} from '@xh/hoist/cmp/grid';
+import {FilterChooserModel} from '@xh/hoist/cmp/filter';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {dateTimeCol, GridModel} from '@xh/hoist/cmp/grid';
 import {numberRenderer} from '@xh/hoist/format';
 import {isNil} from 'lodash';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {PERSIST_DETAIL} from '../AppModel';
 
-@HoistModel
-@LoadSupport
-export class OrdersPanelModel {
+export class OrdersPanelModel extends HoistModel {
+
+    @managed gridModel;
+    @managed filterChooserModel;
 
     @bindable positionId = null;
 
     constructor() {
+        super();
+        makeObservable(this);
+        this.gridModel = new GridModel({
+            groupBy: 'dir',
+            sortBy: 'time|desc',
+            emptyText: 'No orders found...',
+            colChooserModel: true,
+            enableExport: true,
+            rowBorders: true,
+            showHover: true,
+            persistWith: {...PERSIST_DETAIL, path: 'ordersGrid'},
+            store: {
+                fields: [
+                    {name: 'symbol', displayName: 'Instrument', type: 'string'},
+                    {name: 'trader', type: 'string'},
+                    {name: 'fund', type: 'string'},
+                    {name: 'model', type: 'string'},
+                    {name: 'region', type: 'string'},
+                    {name: 'sector', type: 'string'},
+                    {name: 'dir', displayName: 'Direction', type: 'string'},
+                    {name: 'quantity', type: 'number'},
+                    {name: 'price', type: 'number'},
+                    {name: 'time', displayName: 'Exec Time', type: 'date'}
+
+
+                ]
+            },
+            columns: [
+                {field: 'symbol', width: 100, pinned: true},
+                {field: 'trader', width: 140},
+                {field: 'fund', width: 160, hidden: true},
+                {field: 'model', width: 160, hidden: true},
+                {field: 'region', width: 160, hidden: true},
+                {field: 'sector', width: 160, hidden: true},
+                {
+                    field: 'dir',
+                    headerName: 'B/S',
+                    headerTooltip: 'Direction (Buy/Sell)',
+                    align: 'center',
+                    width: 60
+                },
+                {
+                    field: 'quantity',
+                    width: 100,
+                    renderer: numberRenderer({precision: 0, ledger: true})
+                },
+                {
+                    field: 'price',
+                    width: 80,
+                    renderer: numberRenderer({precision: 2})
+                },
+                {
+                    field: 'time',
+                    ...dateTimeCol,
+                    align: 'left'
+                }
+            ]
+        });
+
+        this.filterChooserModel = new FilterChooserModel({
+            bind: this.gridModel.store,
+            fieldSpecs: [
+                'symbol',
+                'trader',
+                'fund',
+                'model',
+                'region',
+                {
+                    field: 'dir',
+                    forceSelection: true,
+                    values: ['Buy', 'Sell']
+                },
+                'quantity',
+                'price'
+            ]
+        });
+
         this.addReaction({
             track: () => this.positionId,
             run: () => this.loadAsync()
         });
     }
-
-    @managed
-    gridModel = new GridModel({
-        groupBy: 'dir',
-        sortBy: [{colId: 'time', sort: 'desc'}],
-        emptyText: 'No records found...',
-        enableColChooser: true,
-        enableExport: true,
-        rowBorders: true,
-        showHover: true,
-        sizingMode: XH.appModel.gridSizingMode,
-        stateModel: 'portfolio-orders-grid',
-        columns: [
-            {
-                field: 'symbol',
-                headerName: 'Instrument',
-                width: 100,
-                pinned: true
-            },
-            {
-                field: 'trader',
-                headerName: 'Trader',
-                width: 140
-            },
-            {
-                field: 'fund',
-                headerName: 'Fund',
-                width: 160,
-                hidden: true
-            },
-            {
-                field: 'model',
-                headerName: 'Model',
-                width: 160,
-                hidden: true
-            },
-            {
-                field: 'region',
-                headerName: 'Region',
-                width: 160,
-                hidden: true
-            },
-            {
-                field: 'sector',
-                headerName: 'Sector',
-                width: 160,
-                hidden: true
-            },
-            {
-                field: 'dir',
-                headerName: 'B/S',
-                headerTooltip: 'Direction (Buy/Sell)',
-                chooserName: 'Direction',
-                align: 'center',
-                width: 60
-            },
-            {
-                field: 'quantity',
-                headerName: 'Quantity',
-                width: 100,
-                align: 'right',
-                renderer: numberRenderer({
-                    precision: 0,
-                    ledger: true
-                })
-            },
-            {
-                field: 'price',
-                headerName: 'Price',
-                width: 80,
-                align: 'right',
-                renderer: numberRenderer({
-                    precision: 2
-                })
-            },
-            {
-                field: 'time',
-                headerName: 'Exec Time',
-                ...dateTimeCol,
-                align: 'left'
-            },
-            {...emptyFlexCol}
-        ]
-    });
 
     get selectedRecord() {
         return this.gridModel.selectedRecord;
@@ -114,8 +109,13 @@ export class OrdersPanelModel {
             return;
         }
 
-        const orders = await XH.portfolioService.getOrdersAsync(positionId);
+        const orders = await XH.portfolioService.getOrdersAsync({
+            positionId,
+            loadSpec
+        }).catchDefault() ?? [];
+
         gridModel.loadData(orders);
-        if (!this.selectedRecord) gridModel.selectFirst();
+        await gridModel.preSelectFirstAsync();
+
     }
 }

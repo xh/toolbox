@@ -1,0 +1,16 @@
+.tb-mobile {
+  .xh-hframe {
+    justify-content: center;
+
+    img {
+      margin: var(--xh-pad-px);
+      width: 300px;
+    }
+  }
+
+  .xh-button {
+    width: 250px;
+    align-self: center;
+    margin: var(--xh-pad-px);
+  }
+}

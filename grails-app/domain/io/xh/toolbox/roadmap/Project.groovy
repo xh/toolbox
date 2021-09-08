@@ -44,6 +44,7 @@ class Project implements JSONFormat {
                 gitLinks: gitLinks,
                 sortOrder: sortOrder,
                 phaseName: phase.name,
+                phaseOrder: phase.sortOrder,
                 lastUpdatedBy: lastUpdatedBy,
                 lastUpdated: lastUpdated,
         ]

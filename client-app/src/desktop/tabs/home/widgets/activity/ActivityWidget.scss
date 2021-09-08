@@ -1,0 +1,53 @@
+.tb-activity-repo {
+  padding: 2px 10px;
+  border-radius: 4px;
+  color: var(--xh-gray-light);
+
+  &--hoist-react {
+    background-color: var(--xh-orange-muted);
+  }
+
+  &--hoist-core {
+    background-color: var(--xh-blue-muted);
+  }
+
+  &--hoist-dev-utils {
+    background-color: var(--xh-red-muted);
+  }
+
+  &--toolbox {
+    background-color: var(--xh-green-muted);
+  }
+}
+
+.tb-activity-deltas {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+
+  &--additions {
+    flex: 1;
+    text-align: right;
+    color: var(--xh-green-muted);
+  }
+
+  &--deletions {
+    flex: 1;
+    text-align: left;
+    color: var(--xh-red-muted);
+  }
+
+  &--sep {
+    margin: 0 6px;
+    color: var(--xh-text-color-muted);
+  }
+}
+
+.tb-activity--release {
+  font-weight: 600;
+  background-color: var(--xh-bg-highlight);
+
+  .tb-activity-repo {
+    font-weight: normal;
+  }
+}

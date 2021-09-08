@@ -1,12 +1,10 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-
 import {hboxPage} from './HBoxPage';
 import {vboxPage} from './VBoxPage';
 import {toolbarPage} from './ToolbarPage';
 
-@HoistModel
-export class ContainersPageModel {
+export class ContainersPageModel extends HoistModel {
 
     @managed
     tabContainerModel = new TabContainerModel({

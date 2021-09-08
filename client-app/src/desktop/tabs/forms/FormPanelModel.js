@@ -1,33 +1,30 @@
-import {HoistModel, XH, managed} from '@xh/hoist/core';
-import {dateIs, FormModel, lengthIs, numberIs, required, stringExcludes, constrainAll} from '@xh/hoist/cmp/form';
-import {wait} from '@xh/hoist/promise';
+import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
+import {FormModel} from '@xh/hoist/cmp/form';
+import {
+    constrainAll,
+    dateIs,
+    lengthIs,
+    numberIs,
+    required,
+    stringExcludes,
+    validEmail
+} from '@xh/hoist/data';
 import {pre, vbox} from '@xh/hoist/cmp/layout';
-import {bindable} from '@xh/hoist/mobx';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon';
 import {filter, isEmpty, isNil} from 'lodash';
 
-@HoistModel
-export class FormPanelModel {
+export class FormPanelModel extends HoistModel {
 
     @managed
-    validateTask = new PendingTaskModel();
+    validateTask = TaskObserver.trackLast();
 
     // For meta controls below example.
     @bindable readonly = false;
     @bindable inline = false;
     @bindable minimal = false;
     @bindable commitOnChange = false;
-
-    validEmail = ({value}) => {
-        if (isNil(value)) return;
-        return wait(500).then(() => {
-            if ((!value.includes('@') || !value.includes('.'))) {
-                return 'Invalid email (async).';
-            }
-        });
-    };
 
     @managed
     formModel = new FormModel({
@@ -44,7 +41,7 @@ export class FormPanelModel {
             },
             {
                 name: 'email',
-                rules: [required, this.validEmail]
+                rules: [required, validEmail]
             },
             {
                 name: 'notes',
@@ -102,7 +99,7 @@ export class FormPanelModel {
                     fields: [
                         {name: 'name', rules: [required]},
                         {name: 'relationship'},
-                        {name: 'email', rules: [required, this.validEmail]}
+                        {name: 'email', rules: [required, validEmail]}
                     ],
                     initialValues: {relationship: 'professional'}
                 },
@@ -112,6 +109,8 @@ export class FormPanelModel {
     });
 
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.formModel.values.endDate,
             run: (endDate) => {

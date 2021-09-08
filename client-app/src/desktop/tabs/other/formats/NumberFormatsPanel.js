@@ -1,17 +1,10 @@
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../../common/Wrapper';
+import {wrapper} from '../../../common';
 import {code, hframe} from '@xh/hoist/cmp/layout';
-import {
-    numberInput,
-    radioInput,
-    switchInput,
-    textInput,
-    select
-} from '@xh/hoist/desktop/cmp/input';
-
+import {numberInput, radioInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {card} from '@xh/hoist/kit/blueprint';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 import './Styles.scss';
@@ -65,7 +58,6 @@ const paramsPanel = hoistCmp.factory(
             param({
                 bind: 'fnName',
                 input: radioInput({
-                    alignIndicator: 'left',
                     inline: true,
                     options: [
                         {value: 'fmtNumber', label: code('fmtNumber')},
@@ -110,6 +102,16 @@ const paramsPanel = hoistCmp.factory(
                         bind: 'withSignGlyph',
                         input: switchInput(),
                         info: 'use up/down glyphs to indicate sign'
+                    }),
+                    param({
+                        bind: 'withCommas',
+                        input: switchInput(),
+                        info: 'include commas delimiters'
+                    }),
+                    param({
+                        bind: 'omitFourDigitComma',
+                        input: switchInput(),
+                        info: 'values under 10,000 will not be delimited'
                     }),
                     param({
                         bind: 'colorSpec',
