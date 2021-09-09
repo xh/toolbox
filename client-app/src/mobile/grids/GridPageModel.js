@@ -24,7 +24,7 @@ export class GridPageModel extends HoistModel {
                 pinned: true,
                 hideable: false,
                 width: 170,
-                autosizeMaxWidth: 200
+                autosizeOptions: {maxWidth: 200}
             },
             {
                 field: 'city',
