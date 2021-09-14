@@ -10,15 +10,25 @@
       margin-right: 4px;
     }
   }
+}
 
-  // To demo Column.cellClassRules
-  .ag-row:not(.ag-row-pinned) {
-    .tb-sample-grid__high-volume-cell {
-      color: var(--xh-intent-warning-darker);
-      border-left: 4px solid var(--xh-intent-warning-darker) !important;
-      background-color: var(--xh-intent-warning-trans1);
-    }
+// To demo GridModel.rowClassRules
+.tb-sample-grid__bolded-row {
+  font-weight: bold;
+
+  .ag-cell,
+  .xh-grid-autosize-cell {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
   }
+}
+
+// To demo Column.cellClassRules
+.tb-sample-grid__high-volume-cell {
+  padding-left: 70px !important;
+  color: var(--xh-intent-warning-darker);
+  border-left: 4px solid var(--xh-intent-warning-darker) !important;
+  background-color: var(--xh-intent-warning-trans1);
 }
 
 .tb-sample-grid-tooltip {

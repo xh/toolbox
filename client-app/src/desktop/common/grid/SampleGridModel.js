@@ -131,6 +131,9 @@ export class SampleGridModel extends HoistModel {
                 return a < b ? -1 : 1;
             }
         },
+        rowClassRules: {
+            'tb-sample-grid__bolded-row': ({data: record}) => record.get('city') === 'San Francisco'
+        },
         colDefaults: {
             tooltipElement: (v, {record, gridModel}) => {
                 if (record.isSummary) return null;
@@ -203,8 +206,7 @@ export class SampleGridModel extends HoistModel {
             },
             {
                 field: 'city',
-                minWidth: 150,
-                maxWidth: 200,
+                width: 150,
                 tooltip: (val, {record}) => `${record.data.company} is located in ${val}`
             },
             {
