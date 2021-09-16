@@ -26,9 +26,10 @@ export const gridOptions = hoistCmp.factory({
                     options: [
                         {value: TreeStyle.NONE, label: 'None'},
                         {value: TreeStyle.HIGHLIGHTS, label: 'Highlight Groups'},
-                        {value: TreeStyle.COLOR_GRADIENT, label: 'Color Gradient'},
+                        {value: TreeStyle.COLORS, label: 'Color Groups'},
                         {value: TreeStyle.BORDERS, label: 'Group Borders'},
-                        {value: TreeStyle.HIGHLIGHTS_AND_BORDERS, label: 'Highlight Groups w/Borders'}
+                        {value: TreeStyle.HIGHLIGHTS_AND_BORDERS, label: 'Highlight Groups w/Borders'},
+                        {value: TreeStyle.COLORS_AND_BORDERS, label: 'Color Groups w/Borders'}
                     ]
                 }),
                 vspacer(10),

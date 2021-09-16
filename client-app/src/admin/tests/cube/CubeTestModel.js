@@ -91,7 +91,7 @@ export class CubeTestModel extends HoistModel {
     createGridModel() {
         return new GridModel({
             treeMode: true,
-            treeStyle: TreeStyle.COLOR_GRADIENT,
+            treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             showSummary: this.showSummary,
             store: {loadRootAsSummary: this.showSummary},
             sortBy: 'time|desc',
@@ -110,7 +110,7 @@ export class CubeTestModel extends HoistModel {
                 {
                     field: 'cubeLabel',
                     headerName: 'Name',
-                    flex: 1,
+                    // flex: 1,
                     minWidth: 180,
                     isTreeColumn: true
                 },
