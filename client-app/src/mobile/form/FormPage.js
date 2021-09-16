@@ -76,7 +76,7 @@ const formCmp = hoistCmp.factory(
                     formField({
                         field: 'salary',
                         item: numberInput({
-                            enableShorthandUnits: true,
+                            enableShorthandUnits: false,
                             displayWithCommas: true
                         })
                     }),

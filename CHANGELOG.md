@@ -1,15 +1,16 @@
 # Changelog
 
-## v2.8.0 - 2021-07-23
+## v2.9.0 - 2021-08-13
 
 ### New Features
+
 * New Tests for Hoist Column Filtering
 
 ### Libraries
 
 * @xh/hoist 42.0.0
-## v2.8.0 - 2021-07-23
 
+## v2.8.0 - 2021-07-23
 
 ### New Features
 

@@ -1,12 +1,12 @@
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {badge} from '@xh/hoist/cmp/badge';
+import {hbox, label} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {hbox, hspacer} from '@xh/hoist/cmp/layout';
 import {switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {createContainerModelConfig} from './SimpleExample';
 import {find} from 'lodash';
+import {createContainerModelConfig} from './SimpleExample';
 
 export const tabStateExample = hoistCmp.factory({
     model: creates(() => new Model()),
@@ -22,18 +22,20 @@ export const tabStateExample = hoistCmp.factory({
                 switchInput({
                     model: peopleTab,
                     bind: 'disabled',
-                    label: 'People Disabled?'
+                    label: 'People disabled',
+                    labelSide: 'left'
                 }),
-                hspacer(10),
-                'Places Tab Title: ',
+                '-',
+                label('Places title'),
                 textInput({
                     model: placesTab,
                     bind: 'title'
                 }),
-                hspacer(10),
+                '-',
                 switchInput({
                     bind: 'showBadge',
-                    label: 'Show Badge on Things'
+                    label: 'Things badge',
+                    labelSide: 'left'
                 })
             ],
             item: tabContainer({model: model.stateTabModel})
