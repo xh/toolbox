@@ -1,6 +1,6 @@
 import React from 'react';
 import {hoistCmp, XH} from '@xh/hoist/core';
-import {a, hbox, hframe, vframe, img, p} from '@xh/hoist/cmp/layout';
+import {hbox, hframe, vframe, img} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {library} from '@fortawesome/fontawesome-svg-core';
