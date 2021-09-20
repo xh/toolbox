@@ -1,4 +1,4 @@
-import {code, div, filler, hbox, p} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
