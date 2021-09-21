@@ -1,17 +1,9 @@
-/*
- * This file belongs to Hoist, an application development toolkit
- * developed by Extremely Heavy Industries (www.xh.io | info@xh.io)
- *
- * Copyright © 2020 Extremely Heavy Industries Inc.
- */
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GroupingChooserModel} from '@xh/hoist/mobile/cmp/grouping';
 
-@HoistModel
-@LoadSupport
-export class TreeGridPageModel {
+export class TreeGridPageModel extends HoistModel {
 
     @managed
     groupingChooserModel = new GroupingChooserModel({
@@ -29,6 +21,10 @@ export class TreeGridPageModel {
         },
         colChooserModel: true,
         sortBy: 'pnl|desc|abs',
+        onRowClicked: (e) => {
+            const id = encodeURIComponent(e.data.raw.id);
+            XH.appendRoute('treeGridDetail', {id});
+        },
         columns: [
             {
                 headerName: 'Name',
@@ -66,6 +62,7 @@ export class TreeGridPageModel {
     });
 
     constructor() {
+        super();
         this.addReaction({
             track: () => this.groupingChooserModel.value,
             run: () => this.loadAsync()

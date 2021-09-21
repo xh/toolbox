@@ -1,12 +1,11 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import moment from 'moment';
 import {random} from 'lodash';
 
-@HoistModel
-export class InputsPanelModel {
+export class InputsPanelModel extends HoistModel {
 
     @bindable commitOnChange = false;
 
@@ -98,6 +97,11 @@ export class InputsPanelModel {
             }
         ]
     });
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     queryCustomersAsync(query) {
         return XH.fetchJson({

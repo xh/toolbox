@@ -1,27 +1,31 @@
-import {HoistModel, LoadSupport, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {bindable} from '@xh/hoist/mobx';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import Highcharts from 'highcharts/highstock';
+import {isEmpty} from 'lodash';
 
-@HoistModel
-@LoadSupport
-export class LineChartModel {
+export class LineChartModel extends HoistModel {
+
     @bindable currentSymbol = '';
-    @bindable.ref symbols = null;
-    numCompanies = 3;
+    @bindable.ref symbols = [];
+
+    @managed
     chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
     constructor() {
+        super();
+        makeObservable(this);
+
         this.addReaction({
             track: () => this.currentSymbol,
             run: () => this.loadAsync()
         });
     }
-    
+
     async doLoadAsync(loadSpec) {
-        if (!this.symbols) {
+        if (isEmpty(this.symbols)) {
             let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
-            symbols = symbols.slice(0, this.numCompanies);
+            symbols = symbols.slice(0, 5);
             this.setSymbols(symbols);
         }
 
@@ -44,21 +48,12 @@ export class LineChartModel {
     }
 
     getChartModelCfg() {
+        const fillColor = Highcharts.getOptions().colors[0];
         return {
-            chart: {
-                zoomType: 'x'
-            },
-            title: {
-                text: 'Stock price over time'
-            },
-            subtitle: {
-                text: 'Click and drag in the plot area to zoom in'
-            },
-            // Turn on optional features
+            chart: {zoomType: 'x'},
             navigator: {enabled: true},
             rangeSelector: {enabled: true},
             exporting: {enabled: true},
-            // Disable others
             legend: {enabled: false},
             scrollbar: {enabled: false},
             xAxis: {type: 'datetime'},
@@ -66,25 +61,15 @@ export class LineChartModel {
             plotOptions: {
                 area: {
                     fillColor: {
-                        linearGradient: {
-                            x1: 0,
-                            y1: 0,
-                            x2: 0,
-                            y2: 1
-                        },
+                        linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
                         stops: [
-                            [0, Highcharts.getOptions().colors[0]],
-                            [1, new Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                            [0, fillColor],
+                            [1, 'rgba(255,255,255,0)']
                         ]
-                    },
-                    marker: {
-                        radius: 2
                     },
                     lineWidth: 1,
                     states: {
-                        hover: {
-                            lineWidth: 1
-                        }
+                        hover: {lineWidth: 1}
                     },
                     threshold: null
                 }

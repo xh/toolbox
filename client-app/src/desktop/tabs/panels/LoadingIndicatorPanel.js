@@ -1,8 +1,8 @@
 import React from 'react';
-import {creates, hoistCmp, HoistModel, LoadSupport, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {span} from '@xh/hoist/cmp/layout';
 import {numberInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -26,14 +26,14 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                 <p>
                     A convenient way to display a loading indicator is via the <code>loadingIndicator</code> property
                     of Panel. This prop can accept a fully configured loadingIndicator element or
-                    (most commonly) a <code>PendingTaskModel</code> instance to automatically show
-                    the indicator when a linked promise is pending.
+                    (most commonly) a <code>TaskObserver</code> instance to automatically show
+                    the indicator when a task is pending.
                 </p>
             ],
             links: [
                 {url: '$TB/client-app/src/desktop/tabs/panels/LoadingIndicatorPanel.js', notes: 'This example.'},
                 {url: '$HR/desktop/cmp/loadingindicator/LoadingIndicator.js', notes: 'Hoist component.'},
-                {url: '$HR/utils/async/PendingTaskModel.js', notes: 'Hoist model for tracking async tasks - can be linked to indicators.'}
+                {url: '$HR/core/TaskObserver.js', notes: 'Hoist model for tracking async tasks - can be linked to indicators.'}
             ],
             item: panel({
                 title: 'Panels › Loading Indicator',
@@ -58,8 +58,6 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                     toolbarSep(),
                     select({
                         bind: 'corner',
-                        label: 'Corner:',
-                        labelAlign: 'left',
                         enableFilter: false,
                         options: ['tl', 'tr', 'bl', 'br'],
                         width: 70
@@ -68,7 +66,7 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                     switchInput({
                         bind: 'spinner',
                         label: 'Spinner:',
-                        labelAlign: 'left'
+                        labelSide: 'left'
                     }),
                     toolbarSep(),
                     refreshButton({text: 'Load Now'})
@@ -76,16 +74,15 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                 loadingIndicator: loadingIndicator({
                     spinner: model.spinner,
                     corner: model.corner,
-                    model: model.loadModel
+                    bind: model.loadModel
                 })
             })
         });
     }
 });
 
-@LoadSupport
-@HoistModel
-class Model {
+class Model extends HoistModel {
+
     @bindable seconds = 3;
     @bindable message = '';
     @bindable corner = 'br';
@@ -93,6 +90,11 @@ class Model {
 
     @managed
     sampleGridModel = new SampleGridModel()
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     async doLoadAsync(loadSpec) {
         const {loadModel, message, seconds} = this,

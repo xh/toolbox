@@ -1,13 +1,12 @@
-import {DimensionChooserModel} from '@xh/hoist/cmp/dimensionchooser';
+import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {action, observable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {cloneDeep, isEmpty, isEqual, pullAllWith, unionWith} from 'lodash';
 
-@HoistModel
-export class DimensionManagerModel {
+export class DimensionManagerModel extends HoistModel {
 
     @observable.ref value = [];
 
@@ -15,14 +14,17 @@ export class DimensionManagerModel {
     userDims;
     userDimPref;
 
-    @managed dimChooserModel;
+    @managed groupingChooserModel;
     @managed gridModel;
 
     constructor(config) {
-        this.dimChooserModel = new DimensionChooserModel({
+        super();
+        makeObservable(this);
+
+        this.defaultDims = config.defaultDimConfig ? XH.getConf(config.defaultDimConfig) : [];
+        this.groupingChooserModel = new GroupingChooserModel({
             dimensions: config.dimensions,
-            initialValue: [],
-            maxHistoryLength: 0
+            initialValue: this.defaultDims[0]
         });
 
         this.gridModel = new GridModel({
@@ -51,11 +53,9 @@ export class DimensionManagerModel {
         });
 
         this.addReaction({
-            track: () => this.dimChooserModel.value,
+            track: () => this.groupingChooserModel.value,
             run: (val) => this.onDimChooserValChange(val)
         });
-
-        this.defaultDims = config.defaultDimConfig ? XH.getConf(config.defaultDimConfig) : [];
 
         this.userDimPref = config.userDimPref;
         const userDims = this.userDimPref ? XH.getPref(this.userDimPref) : [];
@@ -65,7 +65,7 @@ export class DimensionManagerModel {
     @action
     setValue(val) {
         this.value = val;
-        this.dimChooserModel.setValue(val);
+        this.groupingChooserModel.setValue(val);
     }
 
     @action
@@ -91,7 +91,7 @@ export class DimensionManagerModel {
         this.setUserDims(newDims, newId);
 
         // Reset chooser for next show.
-        this.dimChooserModel.setValue([]);
+        this.groupingChooserModel.setValue([]);
     }
 
     get formattedDimensions() {return this.formatDimensions(this.value)}
@@ -109,9 +109,9 @@ export class DimensionManagerModel {
 
         wait(300).then(() => {
             if (idToSelect) {
-                gridModel.selModel.select(idToSelect);
-            } else if (!gridModel.selectedRecord) {
-                gridModel.selectFirst();
+                gridModel.selectAsync(idToSelect);
+            } else  {
+                gridModel.preSelectFirstAsync();
             }
         });
     }
@@ -165,8 +165,7 @@ export class DimensionManagerModel {
     }
 
     formatDimensions(dims) {
-        const {dimChooserModel} = this;
-        return dims.map(dim => dimChooserModel.getDimDisplayName(dim)).join(' › ');
+        return dims.map(dim => this.groupingChooserModel.getDimDisplayName(dim)).join(' › ');
     }
 
 }

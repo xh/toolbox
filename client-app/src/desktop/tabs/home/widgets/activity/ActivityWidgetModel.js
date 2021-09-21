@@ -1,16 +1,14 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
-import {managed, HoistModel, LoadSupport, XH} from '@xh/hoist/core';
-import {bindable} from '@xh/hoist/mobx';
+import {managed, HoistModel, XH} from '@xh/hoist/core';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 
-@HoistModel
-@LoadSupport
-export class ActivityWidgetModel {
+export class ActivityWidgetModel extends HoistModel {
 
     /** @member {GridModel} */
     @managed
@@ -23,6 +21,8 @@ export class ActivityWidgetModel {
     @bindable groupBy = 'committedDay';
 
     constructor() {
+        super();
+        makeObservable(this);
         const openUrlAction = {
             text: 'Open on Github',
             tooltip: 'Open on Github',
@@ -56,6 +56,7 @@ export class ActivityWidgetModel {
                     {name: 'url', type: 'string'}
                 ]
             },
+            onRowDoubleClicked: this.onRowDoubleClicked,
             columns: [
                 {
                     field: 'abbreviatedOid',
@@ -146,8 +147,7 @@ export class ActivityWidgetModel {
         });
 
         this.filterChooserModel = new FilterChooserModel({
-            sourceStore: this.gridModel.store,
-            targetStore: this.gridModel.store,
+            bind: this.gridModel.store,
             fieldSpecs: [
                 'repo', 'authorName', 'authorEmail', 'committedDay', 'changedFiles', 'isRelease',
                 {

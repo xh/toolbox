@@ -1,26 +1,24 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
+import {FormModel} from '@xh/hoist/cmp/form';
 import {
     constrainAll,
     dateIs,
-    FormModel,
     lengthIs,
     numberIs,
     required,
     stringExcludes,
     validEmail
-} from '@xh/hoist/cmp/form';
+} from '@xh/hoist/data';
 import {pre, vbox} from '@xh/hoist/cmp/layout';
-import {bindable} from '@xh/hoist/mobx';
-import {PendingTaskModel} from '@xh/hoist/utils/async';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon';
 import {filter, isEmpty, isNil} from 'lodash';
 
-@HoistModel
-export class FormPanelModel {
+export class FormPanelModel extends HoistModel {
 
     @managed
-    validateTask = new PendingTaskModel();
+    validateTask = TaskObserver.trackLast();
 
     // For meta controls below example.
     @bindable readonly = false;
@@ -111,6 +109,8 @@ export class FormPanelModel {
     });
 
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.formModel.values.endDate,
             run: (endDate) => {

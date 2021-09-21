@@ -1,16 +1,14 @@
-import {GridModel, timeCol} from '@xh/hoist/cmp/grid';
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {GridModel, timeCol, TreeStyle} from '@xh/hoist/cmp/grid';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
-import {bindable, comparer} from '@xh/hoist/mobx';
-import {start} from '@xh/hoist/promise';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {wait} from '@xh/hoist/promise';
 import {isEmpty} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 import {LoadTimesModel} from './LoadTimesModel';
 import {CubeModel} from './CubeModel';
 
-@HoistModel
-@LoadSupport
-export class CubeTestModel {
+export class CubeTestModel extends HoistModel {
 
     @managed cubeModel;
     @managed gridModel;
@@ -25,6 +23,8 @@ export class CubeTestModel {
     @bindable updateCount = 5;
 
     constructor() {
+        super();
+        makeObservable(this);
         this.loadTimesModel = new LoadTimesModel();
         this.gridModel = this.createGridModel();
         this.cubeModel = new CubeModel(this);
@@ -46,7 +46,7 @@ export class CubeTestModel {
         this.addReaction({
             track: () => this.getQuery(),
             run: () => this.executeQueryAsync(),
-            equals: comparer.structural
+            equals: 'structural'
         });
     }
 
@@ -77,7 +77,7 @@ export class CubeTestModel {
         // Query is initialized with empty dims and is triggering an initial run we don't need.
         if (!dimCount) return;
 
-        return start(async () => {
+        return wait().then(async () => {
             const {store} = gridModel;
             gridModel.setShowSummary(showSummary);
             store.setLoadRootAsSummary(showSummary);
@@ -91,6 +91,7 @@ export class CubeTestModel {
     createGridModel() {
         return new GridModel({
             treeMode: true,
+            treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             showSummary: this.showSummary,
             store: {loadRootAsSummary: this.showSummary},
             sortBy: 'time|desc',
@@ -99,7 +100,6 @@ export class CubeTestModel {
             enableExport: true,
             rowBorders: true,
             showHover: true,
-            sizingMode: XH.appModel.gridSizingMode,
             columns: [
                 {
                     field: 'id',
@@ -110,7 +110,7 @@ export class CubeTestModel {
                 {
                     field: 'cubeLabel',
                     headerName: 'Name',
-                    flex: 1,
+                    // flex: 1,
                     minWidth: 180,
                     isTreeColumn: true
                 },

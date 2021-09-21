@@ -1,25 +1,26 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {DimensionChooserModel} from '@xh/hoist/desktop/cmp/dimensionchooser';
+import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {clamp} from 'lodash';
 
-@HoistModel
-@LoadSupport
-export class GridTreeMapModel {
+export class GridTreeMapModel extends HoistModel {
 
     @managed
-    dimChooserModel = new DimensionChooserModel({
+    groupingChooserModel = new GroupingChooserModel({
         dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],
         initialValue: ['sector', 'symbol'],
-        initialHistory: [
+        initialFavorites: [
             ['sector', 'symbol'],
             ['region', 'sector', 'symbol'],
             ['region', 'symbol'],
             ['sector'],
             ['symbol']
-        ]
+        ],
+        persistWith: {
+            localStorageKey: 'gridTreeMapDims',
+            persistFavorites: true
+        }
     });
 
     @managed
@@ -27,18 +28,17 @@ export class GridTreeMapModel {
         treeMode: true,
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
-        sizingMode: XH.appModel.gridSizingMode,
         selModel: 'multiple',
         store: {
             processRawData: (r) => {
                 return {
-                    pnlMktVal: clamp(r.pnl / Math.abs(r.mktVal), -1, 1),
+                    pnlMktVal: r.pnl / Math.abs(r.mktVal),
                     ...r
                 };
             },
             fields: [
-                {name: 'pnl', label: 'P&L'},
-                {name: 'pnlMktVal', label: 'P&L / Mkt Val'}
+                {name: 'pnl', displayName: 'P&L'},
+                {name: 'pnlMktVal', displayName: 'P&L / Mkt Val'}
             ]
         },
         columns: [
@@ -77,21 +77,23 @@ export class GridTreeMapModel {
     @managed
     treeMapModel = new TreeMapModel({
         gridModel: this.gridModel,
-        colorMode: 'balanced',
+        maxHeat: 1,
+        colorMode: 'linear',
         labelField: 'name',
         valueField: 'pnl',
         heatField: 'pnlMktVal'
     });
 
     constructor() {
+        super();
         this.addReaction({
-            track: () => this.dimChooserModel.value,
+            track: () => this.groupingChooserModel.value,
             run: () => this.loadAsync()
         });
     }
 
     async doLoadAsync() {
-        const dims = this.dimChooserModel.value;
+        const dims = this.groupingChooserModel.value;
         const data = await XH.portfolioService.getPositionsAsync(dims);
         this.gridModel.loadData(data);
     }

@@ -1,18 +1,24 @@
-import {HoistModel, managed} from '@xh/hoist/core';
-import {FormModel, lengthIs, required} from '@xh/hoist/cmp/form';
-import {bindable} from '@xh/hoist/mobx';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {FormModel} from '@xh/hoist/cmp/form';
+import {lengthIs, required} from '@xh/hoist/data';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {movies} from '../../core/data';
 
-@HoistModel
-export class FormPageModel {
+export class FormPageModel extends HoistModel {
 
     @bindable minimal;
     @bindable readonly;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     @managed
     formModel = new FormModel({
         fields: [
             {name: 'name', rules: [required, lengthIs({min: 8})]},
+            {name: 'customer', rules: [required]},
             {name: 'movie', rules: [required]},
             {name: 'salary'},
             {name: 'date', rules: [required]},
@@ -25,4 +31,13 @@ export class FormPageModel {
     });
 
     movies = movies;
+
+    async queryCustomersAsync(query) {
+        const results = await XH.fetchJson({url: 'customer', params: {query}});
+        return results.map(it => {
+            const value = it.id,
+                label = it.company;
+            return {value, label};
+        });
+    }
 }

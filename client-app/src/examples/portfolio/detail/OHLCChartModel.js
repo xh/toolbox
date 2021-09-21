@@ -1,16 +1,15 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
-import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {isNil} from 'lodash';
-import {bindable} from '@xh/hoist/mobx';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {fmtDate, fmtPrice} from '@xh/hoist/format';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
-@HoistModel
-@LoadSupport
-export class OHLCChartModel {
+export class OHLCChartModel extends HoistModel {
 
     @bindable symbol = null;
 
     constructor() {
+        super();
+        makeObservable(this);
         this.addReaction({
             track: () => this.symbol,
             run: () => this.loadAsync()
@@ -49,32 +48,35 @@ export class OHLCChartModel {
                 formatter: function() {
                     const p = this.point;
                     return `
-                        <div class="tbox-pos-chart-tip__title"><b>${p.series.name}</b> ${fmtDate(this.x)}</div>
-                        <table class="tbox-pos-chart-tip">
+                        <div class="xh-chart-tooltip">
+                        <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(this.x)}</div>
+                        <table>
                             <tr><th>Open:</th><td>${fmtPrice(p.open)}</td></tr>
                             <tr><th>High:</th><td>${fmtPrice(p.high)}</td></tr>
                             <tr><th>Low:</th><td>${fmtPrice(p.low)}</td></tr>
                             <tr><th>Close:</th><td>${fmtPrice(p.close)}</td></tr>
                         </table>
+                        </div>
                     `;
                 }
-            },
-            exporting: {enabled: true}
+            }
         }
     });
 
     async doLoadAsync(loadSpec) {
         const {symbol} = this;
-        if (isNil(symbol)) {
+
+        if (!symbol) {
             this.chartModel.clear();
             return;
         }
 
-        const series = await XH.portfolioService.getOHLCChartSeriesAsync({
-            symbol,
-            loadSpec
-        }).catchDefault() ?? {};
+        const series = await XH.portfolioService
+            .getOHLCChartSeriesAsync({symbol, loadSpec})
+            .catchDefault();
 
-        this.chartModel.setSeries(series);
+        if (!loadSpec.isObsolete) {
+            this.chartModel.setSeries(series ?? {});
+        }
     }
 }

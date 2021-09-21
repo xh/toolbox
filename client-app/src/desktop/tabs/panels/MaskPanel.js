@@ -1,8 +1,8 @@
 import React from 'react';
-import {creates, hoistCmp, HoistModel, LoadSupport, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {span} from '@xh/hoist/cmp/layout';
 import {numberInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -24,8 +24,8 @@ export const maskPanel = hoistCmp.factory({
                 <p>
                     A convenient way to display a mask is via the <code>mask</code> property of Panel.
                     This prop can accept a fully configured mask element, <code>true</code> for a
-                    plain default mask, or (most commonly) a <code>PendingTaskModel</code> instance
-                    to automatically show a mask with a spinner when a linked promise is pending.
+                    plain default mask, or (most commonly) a <code>TaskObserver</code> instance
+                    to automatically show a mask with a spinner when a task is pending.
                 </p>,
                 <p>
                     A mask configured with <code>inline: false</code> will mask the entire Viewport.
@@ -60,13 +60,13 @@ export const maskPanel = hoistCmp.factory({
                     switchInput({
                         bind: 'inline',
                         label: 'Inline:',
-                        labelAlign: 'left'
+                        labelSide: 'left'
                     }),
                     toolbarSep(),
                     switchInput({
                         bind: 'spinner',
                         label: 'Spinner:',
-                        labelAlign: 'left'
+                        labelSide: 'left'
                     }),
                     toolbarSep(),
                     refreshButton({text: 'Load Now'})
@@ -74,16 +74,14 @@ export const maskPanel = hoistCmp.factory({
                 mask: mask({
                     spinner: model.spinner,
                     inline: model.inline,
-                    model: model.loadModel
+                    bind: model.loadModel
                 })
             })
         });
     }
 });
 
-@LoadSupport
-@HoistModel
-class Model {
+class Model extends HoistModel {
 
     @bindable seconds = 3;
     @bindable message = '';
@@ -92,6 +90,11 @@ class Model {
 
     @managed
     sampleGridModel = new SampleGridModel()
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     async doLoadAsync(loadSpec) {
         const {loadModel, message, seconds} = this,

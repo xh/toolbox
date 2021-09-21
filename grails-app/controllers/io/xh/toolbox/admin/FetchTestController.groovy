@@ -9,9 +9,14 @@ class FetchTestController extends BaseController {
 
     def index() {
         def status = params.status,
+            sleep = params.sleep?.toInteger(),
             statusInt = status.toInteger(),
             responseData = [requestedStatus:  status]
 
+        if (sleep) {
+            Thread.sleep(sleep)
+        }
+        
         response.status = statusInt
 
         switch(status[0]) {

@@ -1,14 +1,12 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateTimeCol, GridModel} from '@xh/hoist/cmp/grid';
 import {numberRenderer} from '@xh/hoist/format';
 import {isNil} from 'lodash';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PERSIST_DETAIL} from '../AppModel';
 
-@HoistModel
-@LoadSupport
-export class OrdersPanelModel {
+export class OrdersPanelModel extends HoistModel {
 
     @managed gridModel;
     @managed filterChooserModel;
@@ -16,6 +14,8 @@ export class OrdersPanelModel {
     @bindable positionId = null;
 
     constructor() {
+        super();
+        makeObservable(this);
         this.gridModel = new GridModel({
             groupBy: 'dir',
             sortBy: 'time|desc',
@@ -24,7 +24,6 @@ export class OrdersPanelModel {
             enableExport: true,
             rowBorders: true,
             showHover: true,
-            sizingMode: XH.appModel.gridSizingMode,
             persistWith: {...PERSIST_DETAIL, path: 'ordersGrid'},
             store: {
                 fields: [
@@ -75,8 +74,7 @@ export class OrdersPanelModel {
         });
 
         this.filterChooserModel = new FilterChooserModel({
-            sourceStore: this.gridModel.store,
-            targetStore: this.gridModel.store,
+            bind: this.gridModel.store,
             fieldSpecs: [
                 'symbol',
                 'trader',
@@ -117,6 +115,7 @@ export class OrdersPanelModel {
         }).catchDefault() ?? [];
 
         gridModel.loadData(orders);
-        if (!this.selectedRecord) gridModel.selectFirst();
+        await gridModel.preSelectFirstAsync();
+
     }
 }

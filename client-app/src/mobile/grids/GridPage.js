@@ -1,4 +1,4 @@
-import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
@@ -25,12 +25,7 @@ export const gridPage = hoistCmp.factory({
                     options: {prefix: 'Loaded'}
                 })
             ],
-            item: grid({
-                onRowClicked: (e) => {
-                    const {id} = e.data.raw;
-                    XH.appendRoute('gridDetail', {id});
-                }
-            }),
+            item: grid(),
             tbar: [
                 label('Size:'),
                 select({
@@ -38,10 +33,10 @@ export const gridPage = hoistCmp.factory({
                     model: gridModel,
                     bind: 'sizingMode',
                     options: [
-                        {label: 'Large', value: 'large'},
-                        {label: 'Standard', value: 'standard'},
+                        {label: 'Tiny', value: 'tiny'},
                         {label: 'Compact', value: 'compact'},
-                        {label: 'Tiny', value: 'tiny'}
+                        {label: 'Standard', value: 'standard'},
+                        {label: 'Large', value: 'large'}
                     ]
                 }),
                 label('Borders:'),

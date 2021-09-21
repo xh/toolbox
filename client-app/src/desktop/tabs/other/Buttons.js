@@ -1,19 +1,23 @@
-import {code, div, filler, hbox, p} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {bindable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import React from 'react';
 import {wrapper} from '../../common';
 import './Buttons.scss';
 
-@HoistModel
-class ButtonsModel {
+class ButtonsModel extends HoistModel {
     @bindable disableButtons = false;
     @bindable activeButtons = false;
     @bindable activeButton = 'v1';
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 }
 
 export const buttonsPanel = hoistCmp.factory({
@@ -43,18 +47,18 @@ export const buttonsPanel = hoistCmp.factory({
                     buttonPanel({headerItems: [
                         switchInput({
                             label: 'Dark Mode',
-                            labelAlign: 'left',
+                            labelSide: 'left',
                             bind: 'darkTheme',
                             model: XH
                         }),
                         switchInput({
                             label: 'Disable All',
-                            labelAlign: 'left',
+                            labelSide: 'left',
                             bind: 'disableButtons'
                         }),
                         switchInput({
                             label: 'All Active',
-                            labelAlign: 'left',
+                            labelSide: 'left',
                             bind: 'activeButtons'
                         })
                     ]}),

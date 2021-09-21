@@ -1,0 +1,43 @@
+.tb-directory-panel {
+  &__tbar {
+    background-color: transparent;
+  }
+}
+
+.tb-contact-tag-container {
+  //padding: var(--xh-pad-double);
+}
+
+.tb-contact-tag {
+  --tb-contact-tag-bg: var(--xh-bg-alt);
+
+  position: relative;
+  border-radius: 1.5px;
+  font-size: 85%;
+  padding: 3px 6px 3px 3px;
+  margin: 2px 2px 2px 12px;
+  width: fit-content;
+  background-color: var(--tb-contact-tag-bg);
+  height: 20px;
+  line-height: 15px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 0;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid var(--tb-contact-tag-bg);
+  }
+}
+
+.xh-grid .tb-contact-tag {
+  cursor: pointer;
+
+  &:hover {
+    --tb-contact-tag-bg: var(--xh-intent-primary-trans2);
+  }
+}

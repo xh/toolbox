@@ -1,12 +1,12 @@
-import React from 'react';
 import {hoistCmp} from '@xh/hoist/core';
-import {a, code, hbox, p, vframe} from '@xh/hoist/cmp/layout';
+import {a, code, hbox, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {ToolboxLink} from '../../../core/cmp/ToolboxLink';
-import {wrapper} from '../../common';
+
 import './ExamplesTab.scss';
+import {wrapper} from '../../common';
+import {ToolboxLink} from '../../../core/cmp/ToolboxLink';
 
 export const examplesTab = hoistCmp.factory(
     () => wrapper(
@@ -35,7 +35,6 @@ export const examplesTab = hoistCmp.factory(
     )
 );
 
-
 function getExamples() {
     return [
         {
@@ -51,6 +50,35 @@ function getExamples() {
                     The view layer of this app has been implemented with both elem factories as well as the more standard
                     JSX approach.  Toggle between the two in options, and compare the component
                     source code <ToolboxLink url='$TB/client-app/src/examples/portfolio/ui' text='here'/>.
+                </p>
+            ]
+        },
+        {
+            title: 'Contact',
+            icon: Icon.users(),
+            path: '/contact',
+            text: [
+                <p>
+                    Meet the Extremely Heavy team!
+                </p>,
+                <p>
+                    This example shows an employee directory application. Includes multiple views of a store, including
+                    combined filter and search functionality, editable profiles and remote persistence of settings via
+                    soft config.
+                </p>
+            ]
+        },
+        {
+            title: 'Todo',
+            icon: Icon.clipboard(),
+            path: '/todo',
+            text: [
+                <p>
+                    The classic reference app, Hoist style.
+                </p>,
+                <p>
+                    Includes examples of a grid with RecordActions and RecordActionBar, a form with validation,
+                    modal dialogs, and the preference system.
                 </p>
             ]
         },
@@ -107,4 +135,4 @@ function getExamples() {
     ];
 }
 
-function link(txt, url) { <a href={url} target="_blank">{txt}</a> }
+const link = (txt, url) => a({href: url, target: '_blank', item: txt});

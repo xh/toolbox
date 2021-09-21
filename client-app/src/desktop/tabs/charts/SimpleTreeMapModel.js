@@ -1,31 +1,29 @@
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {Store} from '@xh/hoist/data';
-import {clamp} from 'lodash';
 
-@HoistModel
-@LoadSupport
-export class SimpleTreeMapModel {
+export class SimpleTreeMapModel extends HoistModel {
 
     @managed
     store = new Store({
         processRawData: (r) => {
             return {
-                pnlMktVal: clamp(r.pnl / Math.abs(r.mktVal), -1, 1),
+                pnlMktVal: r.pnl / Math.abs(r.mktVal),
                 ...r
             };
         },
         fields: [
             'name',
-            {name: 'pnl', label: 'P&L'},
-            {name: 'pnlMktVal', label: 'P&L / Mkt Val'}
+            {name: 'pnl', displayName: 'P&L'},
+            {name: 'pnlMktVal', displayName: 'P&L / Mkt Val'}
         ]
     });
 
     @managed
     treeMapModel = new TreeMapModel({
         store: this.store,
-        colorMode: 'balanced',
+        maxHeat: 1,
+        colorMode: 'linear',
         labelField: 'name',
         valueField: 'pnl',
         heatField: 'pnlMktVal'

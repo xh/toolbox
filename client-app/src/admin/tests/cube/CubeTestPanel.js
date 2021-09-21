@@ -38,8 +38,8 @@ export const CubeTestPanel = hoistCmp({
 
 const tbar = hoistCmp.factory(
     ({model}) => toolbar(
-        switchInput({bind: 'showSummary', label: 'Summary?', labelAlign: 'left'}),
-        switchInput({bind: 'includeLeaves', label: 'Leaves?', labelAlign: 'left'}),
+        switchInput({bind: 'showSummary', label: 'Summary?', labelSide: 'left'}),
+        switchInput({bind: 'includeLeaves', label: 'Leaves?', labelSide: 'left'}),
         select({
             bind: 'fundFilter',
             options: XH.portfolioService.lookups.funds,
@@ -78,7 +78,7 @@ const bbar = hoistCmp.factory(
             storeCountLabel({store: view.cube.store, unit: 'cube facts'}),
             hspacer(2),
             'Last Updated:',
-            relativeTimestamp({timestamp: view.info.asOf}),
+            relativeTimestamp({timestamp: view.info?.asOf}),
             filler(),
             storeFilterField(),
             colChooserButton()

@@ -1,17 +1,23 @@
 import {createRef} from 'react';
 import {boolCheckCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
-import {HoistModel, LoadSupport, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {fmtDate, fmtMillions, fmtNumber, fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {
+    dateRenderer,
+    fmtDate,
+    fmtMillions,
+    fmtNumber,
+    fmtNumberTooltip,
+    millionsRenderer,
+    numberRenderer
+} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, observable} from '@xh/hoist/mobx';
-import {wait} from '@xh/hoist/promise';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import './SampleGrid.scss';
 
-@HoistModel
-@LoadSupport
-export class SampleGridModel {
+export class SampleGridModel extends HoistModel {
+
     @observable groupBy = false;
 
     panelRef = createRef();
@@ -76,7 +82,6 @@ export class SampleGridModel {
 
     @managed
     gridModel = new GridModel({
-        showSummary: 'bottom',
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
@@ -86,7 +91,6 @@ export class SampleGridModel {
             columns: ['id', 'company', 'VISIBLE'],
             filename: 'hoist-sample-export'
         },
-        sizingMode: XH.appModel.gridSizingMode,
         store: {
             processRawData: (r) => {
                 const pnl = r.profit_loss;
@@ -120,7 +124,7 @@ export class SampleGridModel {
             ...GridModel.defaultContextMenu
         ],
         groupSortFn: (a, b, groupField) => {
-            if (a == b) return 0;
+            if (a === b) return 0;
             if (groupField === 'winLose') {
                 return a === 'Winner' ? -1 : 1;
             } else {
@@ -132,7 +136,7 @@ export class SampleGridModel {
                 if (record.isSummary) return null;
                 const {company, city, trade_date, profit_loss, trade_volume} = record.data;
                 return vbox({
-                    className: 'sample-grid-tooltip',
+                    className: 'tb-sample-grid-tooltip',
                     items: [
                         div({className: 'company', item: company}),
                         hbox({
@@ -179,9 +183,8 @@ export class SampleGridModel {
             },
             {
                 field: 'company',
-                flex: 2,
+                flex: 1,
                 minWidth: 200,
-                maxWidth: 350,
                 headerName: ({gridModel}) => {
                     let ret = 'Company';
                     if (gridModel.selectedRecord) {
@@ -202,10 +205,7 @@ export class SampleGridModel {
                 field: 'city',
                 minWidth: 150,
                 maxWidth: 200,
-                tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
-                cellClass: (val) => {
-                    return val === 'New York' ? 'xh-text-color-accent' : '';
-                }
+                tooltip: (val, {record}) => `${record.data.company} is located in ${val}`
             },
             {
                 field: 'trade_volume',
@@ -215,6 +215,9 @@ export class SampleGridModel {
                     precision: 1,
                     label: true
                 }),
+                cellClassRules: {
+                    'tb-sample-grid__high-volume-cell': ({value}) => value >= 9000000000
+                },
                 exportFormat: ExportFormat.NUM_DELIMITED,
                 chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
             },
@@ -232,6 +235,15 @@ export class SampleGridModel {
                 chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
             },
             {
+                colId: 'dayOfWeek',
+                field: 'trade_date',
+                displayName: 'Day of Week',
+                chooserDescription: 'Used for testing storeFilterField matching on rendered dates.',
+                width: 130,
+                hidden: true,
+                renderer: dateRenderer({fmt: 'dddd'})
+            },
+            {
                 field: 'trade_date',
                 ...localDateCol,
                 chooserDescription: 'Date of last trade (including related derivatives)'
@@ -246,12 +258,17 @@ export class SampleGridModel {
         ]
     });
 
-    async doLoadAsync(loadSpec) {
-        const {trades, summary} = await XH.fetchJson({url: 'trade'}),
-            gridModel = this.gridModel;
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
-        gridModel.loadData(trades, summary);
-        if (gridModel.isReady && !gridModel.hasSelection) gridModel.selectFirst();
+    async doLoadAsync(loadSpec) {
+        const {trades} = await XH.fetchJson({url: 'trade'}),
+            {gridModel} = this;
+
+        gridModel.loadData(trades);
+        await gridModel.preSelectFirstAsync();
     }
 
     showInfoToast(rec) {
@@ -286,6 +303,6 @@ export class SampleGridModel {
         // Always select first when regrouping.
         const groupByArr = groupBy ? groupBy.split(',') : [];
         this.gridModel.setGroupBy(groupByArr);
-        wait(1).then(() => this.gridModel.selectFirst());
+        this.gridModel.preSelectFirstAsync();
     }
 }
