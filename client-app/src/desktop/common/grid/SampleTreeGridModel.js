@@ -12,11 +12,18 @@ export class SampleTreeGridModel extends HoistModel {
     @managed
     groupingChooserModel = new GroupingChooserModel({
         persistWith: {localStorageKey: 'sampleTreeGrid'},
-        dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],
-        initialValue: ['region', 'sector', 'symbol'],
+        dimensions: [
+            {name: 'fund'},
+            {name: 'region'},
+            {name: 'sector'},
+            {name: 'symbol', isLeafDimension: true},
+            {name: 'trader'}
+        ],
+        initialValue: ['fund', 'region', 'trader', 'sector', 'symbol'],
         initialFavorites: [
-            ['region', 'sector', 'symbol'],
-            ['region', 'sector'],
+            ['fund', 'region', 'trader', 'sector', 'symbol'],
+            ['fund', 'trader', 'sector', 'symbol'],
+            ['trader', 'region', 'sector'],
             ['region', 'symbol'],
             ['sector', 'symbol']
         ]
