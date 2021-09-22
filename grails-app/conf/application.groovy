@@ -17,6 +17,7 @@ private void hoistDefaults() {
         cors {
             enabled = true
             allowCredentials = true
+            allowedOriginPatterns = ['*']
         }
 
         spring {
