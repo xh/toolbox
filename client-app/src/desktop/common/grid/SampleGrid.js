@@ -1,16 +1,17 @@
-import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
-import {filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
-import {storeFilterField} from '@xh/hoist/cmp/store';
 import {hoistCmp, uses} from '@xh/hoist/core';
+import {filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
+import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
+import {storeFilterField} from '@xh/hoist/cmp/store';
+import {gridFindField} from '@xh/hoist/desktop/cmp/grid';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import PT from 'prop-types';
-import {gridOptionsPanel} from './options/GridOptionsPanel';
 import './SampleGrid.scss';
 import {SampleGridModel} from './SampleGridModel';
+import {gridOptionsPanel} from './options/GridOptionsPanel';
 
 export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
     model: uses(SampleGridModel, {createDefault: true}),
@@ -70,6 +71,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
                 filler(),
                 gridCountLabel({unit: 'companies'}),
                 storeFilterField(),
+                gridFindField(),
                 colChooserButton(),
                 exportButton()
             ]
