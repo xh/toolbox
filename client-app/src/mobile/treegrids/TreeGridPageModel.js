@@ -2,6 +2,7 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GroupingChooserModel} from '@xh/hoist/mobile/cmp/grouping';
+import {isEmpty} from 'lodash';
 
 export class TreeGridPageModel extends HoistModel {
 
@@ -21,8 +22,13 @@ export class TreeGridPageModel extends HoistModel {
         },
         colChooserModel: true,
         sortBy: 'pnl|desc|abs',
-        onRowClicked: (e) => {
-            const id = encodeURIComponent(e.data.raw.id);
+        onRowClicked: ({data: record}) => {
+            if (!isEmpty(record.children)) return;
+            const id = encodeURIComponent(record.id);
+            XH.appendRoute('treeGridDetail', {id});
+        },
+        onRowLongClicked: ({data: record}) => {
+            const id = encodeURIComponent(record.id);
             XH.appendRoute('treeGridDetail', {id});
         },
         columns: [
