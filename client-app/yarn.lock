@@ -2086,10 +2086,10 @@
     eslint-plugin-react "^7.24.0"
     eslint-plugin-react-hooks "^4.2.0"
 
-"@xh/hoist-dev-utils@~5.9.3":
-  version "5.9.3"
-  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-5.9.3.tgz#e94ef280e48b04c204474226a43f0608e4ac6401"
-  integrity sha512-hq6pSk4ZKVcFhAok/CBU4OEsnYOZvbHeCcHYGRxQ+1Kw/TUPNN3EG79keI5unYLhPH7b6G0MCdo4eYgcePgCjw==
+"@xh/hoist-dev-utils@~5.10.0":
+  version "5.10.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-5.10.0.tgz#46ef23bed525706211baddc31f2be480a2b3eff1"
+  integrity sha512-5+DM2T3aB+6+MYtUrwxR4pfFYtTSCQ8JRp+ycaNtA2oDBak2pZjFLYU7Qd4XSss81AakrqrifRpQ4xVqf0F15g==
   dependencies:
     "@babel/core" "~7.15.0"
     "@babel/plugin-proposal-decorators" "~7.14.5"
