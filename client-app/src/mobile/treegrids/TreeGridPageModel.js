@@ -27,7 +27,7 @@ export class TreeGridPageModel extends HoistModel {
             const id = encodeURIComponent(record.id);
             XH.appendRoute('treeGridDetail', {id});
         },
-        onRowLongClicked: ({data: record}) => {
+        onRowLongPress: ({data: record}) => {
             const id = encodeURIComponent(record.id);
             XH.appendRoute('treeGridDetail', {id});
         },
