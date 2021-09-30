@@ -6,7 +6,8 @@
 * New Grid > Column Filters tab added to demo column-based `GridFilterModel` with linked `FilterChooser`.
 * Theme controls for `TreeMap` examples.
 * Add newly supported `TreeStyle` options to shared grid example.
-* Demo new `GridFindField` component within the tree grid example.
+* Demo new `GridFindField` component within the desktop tree grid example.
+* Demo new long-press (`GridModel.onCellContextMenu`) event handler on mobile tree grid example as an alternate drilldown gesture for parent rows.
 * Use newly standardized support for app-wide (grid) sizing mode.
 
 ### Libraries
