@@ -23,10 +23,15 @@ export class TreeGridPageModel extends HoistModel {
         colChooserModel: true,
         sortBy: 'pnl|desc|abs',
         onRowClicked: ({data: record}) => {
+            // Allow single tap on parent row to trigger expand/collapse (default on mobile)
+            // without navigating the user away to the detail page.
             if (!isEmpty(record.children)) return;
+
             const id = encodeURIComponent(record.id);
             XH.appendRoute('treeGridDetail', {id});
         },
+        // Used here (and recommended) as an alternate gesture to support drilldown on parent rows
+        // when `GridModel.clicksToExpand: 1` (the default). Fires on long-press / tap-and-hold.
         onCellContextMenu: ({data: record}) => {
             const id = encodeURIComponent(record.id);
             XH.appendRoute('treeGridDetail', {id});
