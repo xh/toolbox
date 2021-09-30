@@ -12,7 +12,7 @@
 
 ### Libraries
 * @xh/hoist 43.0.0
-* @xh/hoist-dev-utils 5.10.0
+* @xh/hoist-dev-utils 5.11.0
 
 
 ## v2.9.0 - 2021-08-13
