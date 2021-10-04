@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.9.1 - 2021-10-04
+## v2.10.0 - 2021-10-04
 
 ### New Features
 * New Grid > Column Filters tab added to demo column-based `GridFilterModel` with linked `FilterChooser`.
