@@ -2,12 +2,13 @@ import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {gridFindField} from '@xh/hoist/desktop/cmp/grid/find/GridFindField';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {SampleTreeGridModel} from './SampleTreeGridModel';
 import {gridOptionsPanel} from './options/GridOptionsPanel';
+import {SampleTreeGridModel} from './SampleTreeGridModel';
 
 export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
 
@@ -24,6 +25,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 groupingChooser(),
                 filler(),
                 gridCountLabel({includeChildren: true}),
+                gridFindField(),
                 colChooserButton(),
                 exportButton()
             ],

@@ -102,9 +102,9 @@ class Model extends HoistModel {
         loadModel.setMessage(message);
         await this.sampleGridModel.loadAsync(loadSpec);
         await wait(interval);
-        if (message) loadModel.setMessage(message + ' - Still Loading...');
+        if (message) loadModel.setMessage(message + ' - still loading...');
         await wait(interval);
-        if (message) loadModel.setMessage(message + ' - Almost Finished...');
+        if (message) loadModel.setMessage(message + ' - almost finished...');
         await wait(interval);
         loadModel.setMessage(message);
     }

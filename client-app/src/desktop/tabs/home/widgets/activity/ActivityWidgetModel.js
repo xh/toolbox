@@ -76,7 +76,8 @@ export class ActivityWidgetModel extends HoistModel {
                 {
                     field: 'messageHeadline',
                     flex: 1,
-                    minWidth: 200
+                    minWidth: 200,
+                    tooltip: true
                 },
                 {
                     field: 'authorName',
