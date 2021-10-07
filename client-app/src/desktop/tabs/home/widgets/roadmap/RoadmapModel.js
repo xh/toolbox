@@ -15,8 +15,17 @@ export class RoadmapModel extends HoistModel {
     dataViewModel = new DataViewModel({
         store: {
             fields: [
-                'name', 'sortedPhase', 'phaseName', 'category', 'description', 'releaseVersion',
-                'status', 'gitLinks', 'sortOrder', 'lastUpdated', 'lastUpdatedBy'
+                {name: 'name', type: 'string'},
+                {name: 'sortedPhase', type: 'int'},
+                {name: 'phaseName', type: 'string'},
+                {name: 'category', type: 'string'},
+                {name: 'description', type: 'string'},
+                {name: 'releaseVersion', type: 'string'},
+                {name: 'status', type: 'string'},
+                {name: 'gitLinks', type: 'string'},
+                {name: 'sortOrder', type: 'int'},
+                {name: 'lastUpdated', type: 'date'},
+                {name: 'lastUpdatedBy', type: 'string'}
             ]
         },
         itemHeight: 150,

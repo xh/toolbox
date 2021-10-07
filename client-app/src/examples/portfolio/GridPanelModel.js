@@ -1,9 +1,9 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
-import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {PERSIST_MAIN} from './AppModel';
+import {mktValCol, nameCol, pnlCol} from '../../core/columns';
 
 export class GridPanelModel extends HoistModel {
 
@@ -53,39 +53,13 @@ export class GridPanelModel extends HoistModel {
                     hidden: true
                 },
                 {
-                    field: 'name',
-                    headerName: 'Name',
+                    ...nameCol,
+                    width: null,
                     flex: 1,
-                    minWidth: 180,
                     isTreeColumn: true
                 },
-                {
-                    field: 'mktVal',
-                    headerName: 'Mkt Value (m)',
-                    headerTooltip: 'Market value (in millions USD)',
-                    align: 'right',
-                    width: 130,
-                    absSort: true,
-                    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
-                    renderer: millionsRenderer({
-                        precision: 3,
-                        ledger: true
-                    })
-                },
-                {
-                    field: 'pnl',
-                    headerName: 'P&L',
-                    align: 'right',
-                    width: 130,
-                    absSort: true,
-                    highlightOnChange: true,
-                    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
-                    renderer: numberRenderer({
-                        precision: 0,
-                        ledger: true,
-                        colorSpec: true
-                    })
-                }
+                {...mktValCol},
+                {...pnlCol, highlightOnChange: true}
             ]
         });
     }

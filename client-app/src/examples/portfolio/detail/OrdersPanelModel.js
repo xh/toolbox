@@ -1,10 +1,19 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {dateTimeCol, GridModel} from '@xh/hoist/cmp/grid';
-import {numberRenderer} from '@xh/hoist/format';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {isNil} from 'lodash';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PERSIST_DETAIL} from '../AppModel';
+import {
+    dirCol,
+    fundCol,
+    modelCol, priceCol,
+    quantityCol,
+    regionCol,
+    sectorCol,
+    symbolCol, timeCol,
+    traderCol
+} from '../../../core/columns';
 
 export class OrdersPanelModel extends HoistModel {
 
@@ -25,51 +34,17 @@ export class OrdersPanelModel extends HoistModel {
             rowBorders: true,
             showHover: true,
             persistWith: {...PERSIST_DETAIL, path: 'ordersGrid'},
-            store: {
-                fields: [
-                    {name: 'symbol', displayName: 'Instrument', type: 'string'},
-                    {name: 'trader', type: 'string'},
-                    {name: 'fund', type: 'string'},
-                    {name: 'model', type: 'string'},
-                    {name: 'region', type: 'string'},
-                    {name: 'sector', type: 'string'},
-                    {name: 'dir', displayName: 'Direction', type: 'string'},
-                    {name: 'quantity', type: 'number'},
-                    {name: 'price', type: 'number'},
-                    {name: 'time', displayName: 'Exec Time', type: 'date'}
-
-
-                ]
-            },
             columns: [
-                {field: 'symbol', width: 100, pinned: true},
-                {field: 'trader', width: 140},
-                {field: 'fund', width: 160, hidden: true},
-                {field: 'model', width: 160, hidden: true},
-                {field: 'region', width: 160, hidden: true},
-                {field: 'sector', width: 160, hidden: true},
-                {
-                    field: 'dir',
-                    headerName: 'B/S',
-                    headerTooltip: 'Direction (Buy/Sell)',
-                    align: 'center',
-                    width: 60
-                },
-                {
-                    field: 'quantity',
-                    width: 100,
-                    renderer: numberRenderer({precision: 0, ledger: true})
-                },
-                {
-                    field: 'price',
-                    width: 80,
-                    renderer: numberRenderer({precision: 2})
-                },
-                {
-                    field: 'time',
-                    ...dateTimeCol,
-                    align: 'left'
-                }
+                {...symbolCol, pinned: true},
+                {...traderCol},
+                {...fundCol, hidden: true},
+                {...modelCol, hidden: true},
+                {...regionCol, hidden: true},
+                {...sectorCol, hidden: true},
+                {...dirCol},
+                {...quantityCol},
+                {...priceCol},
+                {...timeCol}
             ]
         });
 
