@@ -9,6 +9,7 @@ export const profitLossCol = {
         displayName: 'P&L'
     },
     width: 130,
+    align: 'right',
     absSort: true,
     tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
     renderer: numberRenderer({
@@ -35,6 +36,7 @@ export const tradeVolumeCol = {
         displayName: 'Volume'
     },
     width: 110,
+    align: 'right',
     tooltip: (val) => fmtNumberTooltip(val),
     renderer: millionsRenderer({
         precision: 1,
