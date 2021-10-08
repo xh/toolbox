@@ -40,8 +40,7 @@ export class TreeGridPageModel extends HoistModel {
             {
                 ...nameCol,
                 isTreeColumn: true,
-                width: null,
-                flex: true
+                width: 150
             },
             {...mktValCol},
             {...pnlCol}
