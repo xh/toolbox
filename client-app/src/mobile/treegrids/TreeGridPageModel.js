@@ -41,7 +41,7 @@ export class TreeGridPageModel extends HoistModel {
                 headerName: 'Name',
                 field: 'name',
                 isTreeColumn: true,
-                flex: true
+                width: 150
             },
             {
                 headerName: 'Mkt Value (m)',
