@@ -46,7 +46,11 @@ class Model extends HoistModel {
     @managed
     dataViewModel = new DataViewModel({
         store: {
-            fields: ['name', 'city', 'value']
+            fields: [
+                {name: 'name', type: 'string'},
+                {name: 'city', type: 'string'},
+                {name: 'value', type: 'number'}
+            ]
         },
         sortBy: 'name',
         emptyText: 'No companies found...',

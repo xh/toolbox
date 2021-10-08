@@ -14,7 +14,15 @@ export class NewsPanelModel extends HoistModel {
     viewModel = new DataViewModel({
         sortBy: 'published|desc',
         store: {
-            fields: ['title', 'source', 'text', 'url', 'imageUrl', 'author', 'published']
+            fields: [
+                {name: 'title', type: 'string'},
+                {name: 'source', type: 'string'},
+                {name: 'text', type: 'string'},
+                {name: 'url', type: 'string'},
+                {name: 'imageUrl', type: 'string'},
+                {name: 'author', type: 'string'},
+                {name: 'published', type: 'date'}
+            ]
         },
         onRowDoubleClicked: this.onRowDoubleClicked,
         elementRenderer: (v, {record}) => newsPanelItem({record}),

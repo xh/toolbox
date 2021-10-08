@@ -1,4 +1,4 @@
-import {boolCheckCol, grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
+import {grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
@@ -7,11 +7,24 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
-import {fmtMillions, fmtNumber, numberRenderer} from '@xh/hoist/format';
+import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
 import {gridOptionsPanel} from './options/GridOptionsPanel';
+import {
+    actualGrossCol,
+    actualUnitsSoldCol,
+    cityCol,
+    firstNameCol,
+    fullNameCol,
+    lastNameCol,
+    projectedGrossCol,
+    projectedUnitsSoldCol,
+    retainCol,
+    salaryCol,
+    stateCol
+} from '../../../core/columns';
 
 export const sampleColumnGroupsGrid = hoistCmp.factory({
     model: creates(() => new Model()),
@@ -78,20 +91,9 @@ class Model extends HoistModel {
     // Implementation
     //------------------------
     createGridModel() {
-        const unitColOpts = {
-            headerName: 'Units',
-            align: 'right',
-            width: 70,
-            renderer: numberRenderer({precision: 0})
-        };
-
-        const grossColOpts = {
+        const millionsAwareCol = {
             headerName: () => 'Gross' + (this.inMillions ? ' (m)' : ''),
-            align: 'right',
-            width: 100,
             rendererIsComplex: true,
-            // Note this renderer will *not* auto-refresh just because the model observable changes.
-            // To ensure the grid redraws these cells, we add a custom reaction in our model ctor.
             renderer: (v) => {
                 return this.inMillions ?
                     fmtMillions(v, {label: true, precision: 2}) :
@@ -128,57 +130,39 @@ class Model extends HoistModel {
                     groupId: 'demographics',
                     children: [
                         {
-                            colId: 'fullName',
-                            headerName: 'Name',
-                            width: 140,
-                            chooserName: 'Full Name',
-                            renderer: (v, {record}) => record ? `${record.data.firstName} ${record.data.lastName}` : '',
-                            rendererIsComplex: true,
+                            ...fullNameCol,
                             agOptions: {
                                 columnGroupShow: 'closed'
                             }
                         },
                         {
-                            field: 'firstName',
-                            headerName: 'First',
-                            width: 100,
-                            chooserName: 'First Name',
+                            ...firstNameCol,
                             agOptions: {
                                 columnGroupShow: 'open'
                             }
                         },
                         {
-                            field: 'lastName',
-                            headerName: 'Last',
-                            width: 100,
-                            chooserName: 'Last Name',
+                            ...lastNameCol,
                             agOptions: {
                                 columnGroupShow: 'open'
                             }
                         },
                         {
-                            field: 'city',
-                            width: 120,
+                            ...cityCol,
                             hidden: true,
                             agOptions: {
                                 columnGroupShow: 'open'
                             }
                         },
                         {
-                            field: 'state',
-                            width: 120,
+                            ...stateCol,
                             agOptions: {
                                 columnGroupShow: 'open'
                             }
                         }
                     ]
                 },
-                {
-                    field: 'salary',
-                    width: 90,
-                    align: 'right',
-                    renderer: numberRenderer({precision: 0, prefix: '$'})
-                },
+                {...salaryCol},
                 {
                     groupId: 'sales',
                     headerName: () => 'Sales' + (this.inMillions ? ' (in millions)' : ''),
@@ -189,18 +173,8 @@ class Model extends HoistModel {
                             headerAlign: 'center',
                             headerClass: 'xh-blue',
                             children: [
-                                {
-                                    field: 'projectedUnitsSold',
-                                    chooserName: 'Projected Units',
-                                    exportName: 'Projected Units',
-                                    ...unitColOpts
-                                },
-                                {
-                                    field: 'projectedGross',
-                                    chooserName: 'Projected Gross',
-                                    exportName: 'Projected Gross',
-                                    ...grossColOpts
-                                }
+                                {...projectedUnitsSoldCol},
+                                {...projectedGrossCol, ...millionsAwareCol}
                             ]
                         },
                         {
@@ -208,27 +182,13 @@ class Model extends HoistModel {
                             headerAlign: 'center',
                             headerClass: 'xh-red',
                             children: [
-                                {
-                                    field: 'actualUnitsSold',
-                                    chooserName: 'Actual Units',
-                                    exportName: 'Actual Units',
-                                    ...unitColOpts
-                                },
-                                {
-                                    field: 'actualGross',
-                                    chooserName: 'Actual Gross',
-                                    exportName: 'Actual Gross',
-                                    ...grossColOpts
-                                }
+                                {...actualUnitsSoldCol},
+                                {...actualGrossCol, ...millionsAwareCol}
                             ]
                         }
                     ]
                 },
-                {
-                    field: 'retain',
-                    ...boolCheckCol,
-                    width: 70
-                }
+                {...retainCol}
             ]
         });
     }

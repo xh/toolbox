@@ -1,8 +1,8 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GroupingChooserModel} from '@xh/hoist/mobile/cmp/grouping';
 import {isEmpty} from 'lodash';
+import {mktValCol, nameCol, pnlCol} from '../../core/columns';
 
 export class TreeGridPageModel extends HoistModel {
 
@@ -38,37 +38,12 @@ export class TreeGridPageModel extends HoistModel {
         },
         columns: [
             {
-                headerName: 'Name',
-                field: 'name',
+                ...nameCol,
                 isTreeColumn: true,
                 width: 150
             },
-            {
-                headerName: 'Mkt Value (m)',
-                chooserName: 'Market Value',
-                field: 'mktVal',
-                align: 'right',
-                width: 130,
-                absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                renderer: millionsRenderer({
-                    precision: 3,
-                    ledger: true
-                })
-            },
-            {
-                headerName: 'P&L',
-                field: 'pnl',
-                align: 'right',
-                width: 120,
-                absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
-            }
+            {...mktValCol},
+            {...pnlCol}
         ]
     });
 

@@ -74,10 +74,10 @@ export class PortfolioPanelModel extends HoistModel {
                 };
             },
             fields: [
-                {name: 'name'},
-                {name: 'mktVal'},
-                {name: 'pnl', displayName: 'P&L'},
-                {name: 'pnlMktVal', displayName: 'P&L / Mkt Val'}
+                {name: 'name', type: 'string'},
+                {name: 'mktVal', type: 'number'},
+                {name: 'pnl', type: 'number', displayName: 'P&L'},
+                {name: 'pnlMktVal', type: 'number', displayName: 'P&L / Mkt Val'}
             ],
             loadRootAsSummary: true
         });
