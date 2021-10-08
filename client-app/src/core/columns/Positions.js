@@ -1,11 +1,10 @@
 import {FieldType} from '@xh/hoist/data';
 import {millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 
+const {NUMBER} = FieldType;
+
 export const mktValCol = {
-    field: {
-        name: 'mktVal',
-        type: FieldType.NUMBER
-    },
+    field: {name: 'mktVal', type: NUMBER},
     headerName: 'Mkt Value (m)',
     headerTooltip: 'Market value (in millions USD)',
     align: 'right',
@@ -20,10 +19,7 @@ export const mktValCol = {
 };
 
 export const pnlCol = {
-    field: {
-        name: 'pnl',
-        type: FieldType.NUMBER
-    },
+    field: {name: 'pnl', type: NUMBER},
     headerName: 'P&L',
     align: 'right',
     width: 130,

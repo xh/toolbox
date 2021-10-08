@@ -2,10 +2,12 @@ import {FieldType} from '@xh/hoist/data';
 import {ExportFormat, localDateCol} from '@xh/hoist/cmp/grid';
 import {dateRenderer, millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 
+const {NUMBER, STRING, LOCAL_DATE} = FieldType;
+
 export const profitLossCol = {
     field: {
         name: 'profit_loss',
-        type: FieldType.NUMBER,
+        type: NUMBER,
         displayName: 'P&L'
     },
     width: 130,
@@ -22,17 +24,14 @@ export const profitLossCol = {
 };
 
 export const winLoseCol = {
-    field: {
-        name: 'winLose',
-        type: FieldType.STRING
-    },
+    field: {name: 'winLose', type: STRING},
     excludeFromChooser: true
 };
 
 export const tradeVolumeCol = {
     field: {
         name: 'trade_volume',
-        type: FieldType.NUMBER,
+        type: NUMBER,
         displayName: 'Volume'
     },
     width: 110,
@@ -52,7 +51,7 @@ export const tradeVolumeCol = {
 export const tradeDateCol = {
     field: {
         name: 'trade_date',
-        type: FieldType.LOCAL_DATE,
+        type: LOCAL_DATE,
         displayName: 'Date'
     },
     ...localDateCol,
@@ -62,7 +61,7 @@ export const tradeDateCol = {
 export const dayOfWeekCol = {
     field: {
         name: 'trade_date',
-        type: FieldType.LOCAL_DATE
+        type: LOCAL_DATE
     },
     colId: 'dayOfWeek',
     displayName: 'Day of Week',
