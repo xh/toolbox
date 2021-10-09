@@ -1188,7 +1188,7 @@
   resolved "https://registry.yarnpkg.com/@blueprintjs/colors/-/colors-4.0.0-alpha.1.tgz#370684b404e5400494169c54cc3a31385fc6db6a"
   integrity sha512-i95xW/cAIijJAMIBDrXw1WLbGVXVaRDRG1Ga0CxOtMVwL20zvdXlQj7EMqhkgVEJo9LaKNIDliPI+jsh7h5Lag==
 
-"@blueprintjs/core@^3.51.0":
+"@blueprintjs/core@^3.51.0", "@blueprintjs/core@~3.51.0":
   version "3.51.0"
   resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.51.0.tgz#67b7f2553d820d773135bab3bb8afc07bff8d0a4"
   integrity sha512-RBNaluZMpGFhEbNLee6IJuHt0VuApe1AOiHv97BgsNtQ/jAkZoiV6b4b+KinkZowPrSQq5VO527XckUM35iyVA==
@@ -1206,25 +1206,7 @@
     resize-observer-polyfill "^1.5.1"
     tslib "~1.13.0"
 
-"@blueprintjs/core@~3.50.4":
-  version "3.50.4"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.50.4.tgz#18868d6d9930d513b25d30bfc3b30b3d68adf72a"
-  integrity sha512-FYGr1ZMH1si2acdZaTI4gqhvwgb0yOWcv7otYdi/tvC4ReId2gsm2i+bDw/eBMYsH+OSFYZT0C6hFvHV3HrkPA==
-  dependencies:
-    "@blueprintjs/colors" "^4.0.0-alpha.1"
-    "@blueprintjs/icons" "^3.30.2"
-    "@types/dom4" "^2.0.1"
-    classnames "^2.2"
-    dom4 "^2.1.5"
-    normalize.css "^8.0.1"
-    popper.js "^1.16.1"
-    react-lifecycles-compat "^3.0.4"
-    react-popper "^1.3.7"
-    react-transition-group "^2.9.0"
-    resize-observer-polyfill "^1.5.1"
-    tslib "~1.13.0"
-
-"@blueprintjs/datetime@~3.23.14":
+"@blueprintjs/datetime@~3.23.15":
   version "3.23.15"
   resolved "https://registry.yarnpkg.com/@blueprintjs/datetime/-/datetime-3.23.15.tgz#bcb4fa61649a09e78148950203b44b08e6f948b4"
   integrity sha512-lKegkN5m3t9oxt1z0QTnLlBBkQ7yBSMhj32qDrdtb420sENueyfYnN5YXAKLjoLY+pS6htJoSQBOYjIZVS0dtA==
@@ -2148,12 +2130,12 @@
     webpackbar "~4.0.0"
 
 "@xh/hoist@^44.0.0-SNAPSHOT":
-  version "44.0.0-SNAPSHOT.1633714778211"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-44.0.0-SNAPSHOT.1633714778211.tgz#04ecdae494d190dd8a9776b33cd8a8036edb2e21"
-  integrity sha512-kJIheQAo3bIRXay/80Y0A/NlBC9Wiy12615Nm8sLu39CPNOvCxCdp+dQCCPJ4LnrtzmBOGnTDZQDTXSnT3o4dA==
+  version "44.0.0-SNAPSHOT.1633742087101"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-44.0.0-SNAPSHOT.1633742087101.tgz#991aea77c97ec659226423ef8cded1294066b73e"
+  integrity sha512-FtMm5IdaSU82WMLgN7OZXnhYLCWnQ7YSDobP1+2PMYG0Uht8lLnHkVSxhG7aFtvc60b8s2jrgMALrctDVtiaZg==
   dependencies:
-    "@blueprintjs/core" "~3.50.4"
-    "@blueprintjs/datetime" "~3.23.14"
+    "@blueprintjs/core" "~3.51.0"
+    "@blueprintjs/datetime" "~3.23.15"
     "@fortawesome/fontawesome-pro" "~5.15.4"
     "@fortawesome/fontawesome-svg-core" "~1.2.36"
     "@fortawesome/pro-light-svg-icons" "~5.15.4"
@@ -4160,9 +4142,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.857:
-  version "1.3.862"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.862.tgz#c1c5d4382449e2c9b0e67fe1652f4fc451d6d8c0"
-  integrity sha512-o+FMbCD+hAUJ9S8bfz/FaqA0gE8OpCCm58KhhGogOEqiA1BLFSoVYLi+tW+S/ZavnqBn++n0XZm7HQiBVPs8Jg==
+  version "1.3.863"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.863.tgz#74d0e6474f2bd87eb3688b8a35abc0c7a7fd1183"
+  integrity sha512-C+dLP4xM1DCqvEUjtqCGhd6DJGnXq1t03QR2ZxEWUQPkaXxDlzPUyWsSh17LHLQBEfmBCRfTbA3LpjiVikWsxg==
 
 elliptic@^6.5.3:
   version "6.5.4"
