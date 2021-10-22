@@ -1,20 +1,22 @@
 import {createRef} from 'react';
-import {boolCheckCol, ExportFormat, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
-import {
-    dateRenderer,
-    fmtDate,
-    fmtMillions,
-    fmtNumber,
-    fmtNumberTooltip,
-    millionsRenderer,
-    numberRenderer
-} from '@xh/hoist/format';
+import {fmtDate, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import './SampleGrid.scss';
+import {
+    activeCol,
+    companyCol,
+    winLoseCol,
+    cityCol,
+    tradeVolumeCol,
+    profitLossCol,
+    dayOfWeekCol,
+    tradeDateCol
+} from '../../../core/columns';
 
 export class SampleGridModel extends HoistModel {
 
@@ -98,24 +100,7 @@ export class SampleGridModel extends HoistModel {
                     winLose: pnl > 0 ? 'Winner' : (pnl < 0 ? 'Loser' : 'Flat'),
                     ...r
                 };
-            },
-            fields: [
-                {
-                    name: 'profit_loss',
-                    displayName: 'P&L',
-                    type: 'number'
-                },
-                {
-                    name: 'trade_date',
-                    displayName: 'Date',
-                    type: 'localDate'
-                },
-                {
-                    name: 'trade_volume',
-                    headerName: 'Volume (Sales Quantity)',
-                    type: 'number'
-                }
-            ]
+            }
         },
         contextMenu: [
             this.viewDetailsAction,
@@ -132,7 +117,7 @@ export class SampleGridModel extends HoistModel {
             }
         },
         colDefaults: {
-            tooltipElement: (v, {record, gridModel}) => {
+            tooltipElement: (v, {record}) => {
                 if (record.isSummary) return null;
                 const {company, city, trade_date, profit_loss, trade_volume} = record.data;
                 return vbox({
@@ -168,10 +153,7 @@ export class SampleGridModel extends HoistModel {
             }
         },
         columns: [
-            {
-                field: 'id',
-                hidden: true
-            },
+            {field: 'id', hidden: true},
             {
                 ...actionCol,
                 width: calcActionColWidth(2),
@@ -182,79 +164,24 @@ export class SampleGridModel extends HoistModel {
                 ]
             },
             {
-                field: 'company',
-                flex: 1,
-                minWidth: 200,
+                ...companyCol,
                 headerName: ({gridModel}) => {
                     let ret = 'Company';
                     if (gridModel.selectedRecord) {
                         ret += ` (${gridModel.selectedRecord.data.company})`;
                     }
-
                     return ret;
                 },
                 exportName: 'Company',
                 headerTooltip: 'Select a company & continue'
             },
-            {
-                field: 'winLose',
-                hidden: true,
-                excludeFromChooser: true
-            },
-            {
-                field: 'city',
-                minWidth: 150,
-                maxWidth: 200,
-                tooltip: (val, {record}) => `${record.data.company} is located in ${val}`
-            },
-            {
-                field: 'trade_volume',
-                width: 110,
-                tooltip: (val) => fmtNumberTooltip(val),
-                renderer: millionsRenderer({
-                    precision: 1,
-                    label: true
-                }),
-                cellClassRules: {
-                    'tb-sample-grid__high-volume-cell': ({value}) => value >= 9000000000
-                },
-                exportFormat: ExportFormat.NUM_DELIMITED,
-                chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
-            },
-            {
-                field: 'profit_loss',
-                width: 130,
-                absSort: true,
-                tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
-                renderer: numberRenderer({
-                    precision: 0,
-                    ledger: true,
-                    colorSpec: true
-                }),
-                exportFormat: ExportFormat.LEDGER_COLOR,
-                chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
-            },
-            {
-                colId: 'dayOfWeek',
-                field: 'trade_date',
-                displayName: 'Day of Week',
-                chooserDescription: 'Used for testing storeFilterField matching on rendered dates.',
-                width: 130,
-                hidden: true,
-                renderer: dateRenderer({fmt: 'dddd'})
-            },
-            {
-                field: 'trade_date',
-                ...localDateCol,
-                chooserDescription: 'Date of last trade (including related derivatives)'
-            },
-            {
-                field: 'active',
-                ...boolCheckCol,
-                headerName: '',
-                chooserName: 'Active Status',
-                tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
-            }
+            {...winLoseCol, hidden: true},
+            {...cityCol, tooltip: (val, {record}) => `${record.data.company} is located in ${val}`},
+            {...tradeVolumeCol},
+            {...profitLossCol},
+            {...dayOfWeekCol, hidden: true},
+            {...tradeDateCol},
+            {...activeCol, tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''}
         ]
     });
 

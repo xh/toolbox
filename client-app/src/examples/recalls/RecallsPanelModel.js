@@ -26,10 +26,16 @@ export class RecallsPanelModel extends HoistModel {
     gridModel = new GridModel({
         store: {
             processRawData: this.processRecord,
-            fields: [{
-                name: 'recallDate',
-                type: 'localDate'
-            }]
+            fields: [
+                {name: 'classification', type: 'string'},
+                {name: 'brandName', type: 'string'},
+                {name: 'genericName', type: 'string'},
+                {name: 'status', type: 'string'},
+                {name: 'recallingFirm', type: 'string'},
+                {name: 'recallDate', type: 'localDate'},
+                {name: 'description', type: 'string'},
+                {name: 'reason', type: 'string'}
+            ]
         },
         emptyText: 'No records found...',
         colChooserModel: true,

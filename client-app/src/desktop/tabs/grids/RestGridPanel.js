@@ -41,10 +41,12 @@ const modelSpec = {
         fields: [
             {
                 name: 'name',
+                type: 'string',
                 required: true
             },
             {
                 name: 'type',
+                type: 'string',
                 lookupName: 'types',
                 lookupStrict: true,
                 required: true
@@ -72,7 +74,8 @@ const modelSpec = {
                 required: true
             },
             {
-                name: 'note'
+                name: 'note',
+                type: 'string'
             },
             {
                 name: 'lastUpdated',
@@ -81,6 +84,7 @@ const modelSpec = {
             },
             {
                 name: 'lastUpdatedBy',
+                type: 'string',
                 editable: false
             }
         ]
