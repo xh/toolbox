@@ -233,8 +233,9 @@ export class TodoPanelModel extends HoistModel {
                 {
                     field: 'description',
                     flex: 1,
-                    cellClass: 'xh-pad',
-                    autoHeight: true
+                    autoHeight: true,
+                    // TODO - AG Grid v26.1.0 ignores top/bottom padding via cellClass. This should be resolved in the next release (#5874).
+                    renderer: (v) => `<div class='xh-pad'>${v}</div>`
                 },
                 {
                     field: 'dueDate',
