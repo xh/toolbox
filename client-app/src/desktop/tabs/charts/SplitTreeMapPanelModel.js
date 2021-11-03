@@ -3,7 +3,8 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {hspacer} from '@xh/hoist/cmp/layout';
-import {fmtMillions, millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {fmtMillions} from '@xh/hoist/format';
+import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
 
 export class SplitTreeMapPanelModel extends HoistModel {
 
@@ -38,40 +39,13 @@ export class SplitTreeMapPanelModel extends HoistModel {
                 };
             },
             fields: [
-                {name: 'pnl', displayName: 'P&L'},
-                {name: 'pnlMktVal', displayName: 'P&L / Mkt Val'}
+                {name: 'pnlMktVal', type: 'number', displayName: 'P&L / Mkt Val'}
             ]
         },
         columns: [
-            {
-                headerName: 'Name',
-                width: 200,
-                field: 'name',
-                isTreeColumn: true
-            },
-            {
-                field: 'mktVal',
-                headerName: 'Mkt Value (m)',
-                align: 'right',
-                width: 130,
-                absSort: true,
-                renderer: millionsRenderer({
-                    precision: 3,
-                    ledger: true
-                })
-            },
-            {
-                headerName: 'P&L',
-                field: 'pnl',
-                align: 'right',
-                width: 130,
-                absSort: true,
-                renderer: numberRenderer({
-                    precision: 0,
-                    ledger: true,
-                    colorSpec: true
-                })
-            }
+            {...nameCol, isTreeColumn: true},
+            {...mktValCol},
+            {...pnlCol}
         ]
     });
 

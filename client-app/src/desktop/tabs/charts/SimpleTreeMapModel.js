@@ -13,9 +13,9 @@ export class SimpleTreeMapModel extends HoistModel {
             };
         },
         fields: [
-            'name',
-            {name: 'pnl', displayName: 'P&L'},
-            {name: 'pnlMktVal', displayName: 'P&L / Mkt Val'}
+            {name: 'name', type: 'string'},
+            {name: 'pnl', type: 'number', displayName: 'P&L'},
+            {name: 'pnlMktVal', type: 'number', displayName: 'P&L / Mkt Val'}
         ]
     });
 
