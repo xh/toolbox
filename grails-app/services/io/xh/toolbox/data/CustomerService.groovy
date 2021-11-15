@@ -35,7 +35,7 @@ class CustomerService extends BaseService {
             ret.each{it -> it.isActive = (it.id % 3 != 0)}
             ret = ret.unique{it.company}
         } catch (Exception e) {
-            log.error("Failure loading mock data | ${e.message}")
+            logError('Failure loading mock data', e)
         }
 
         return ret
