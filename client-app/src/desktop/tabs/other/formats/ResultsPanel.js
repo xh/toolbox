@@ -11,7 +11,7 @@ export const resultsPanel = hoistCmp.factory(
         return panel({
             title: 'Input › Output',
             compactHeader: true,
-            width: 400,
+            width: 450,
             flex: 'none',
             className: 'tbox-formats-tab__panel',
             item: table(

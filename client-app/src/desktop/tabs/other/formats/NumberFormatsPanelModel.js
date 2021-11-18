@@ -1,8 +1,7 @@
 import {HoistModel} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import * as formatFunctions from '@xh/hoist/format/FormatNumber';
-import {fmtNumber} from '@xh/hoist/format/FormatNumber';
-import {nilAwareFormat} from './Util';
+import {nilAwareNumberWriter} from './Util';
 
 export class NumberFormatsPanelModel extends HoistModel {
 
@@ -27,6 +26,8 @@ export class NumberFormatsPanelModel extends HoistModel {
         123456789.12,
         1234567890.12,
         1.23456e14,
+        123456789012345.1,  // exceeds # of significant digits that JS can handle. Vanilla JS .toFixed(6) produces incorrect result: '123456789012345.093750'
+        '9007199254740999', // exceeds Number.MAX_SAFE_INTEGER by 8 (must be passed in as a string or else JS will round it before it is passed in)
         null,
         undefined
     ];
@@ -49,7 +50,7 @@ export class NumberFormatsPanelModel extends HoistModel {
     get testResults() {
         return this.testData.map(data => ({
             data,
-            formattedData: nilAwareFormat(data, fmtNumber),
+            formattedData: nilAwareNumberWriter(data),
             result: this.getResult(data)
         }));
     }

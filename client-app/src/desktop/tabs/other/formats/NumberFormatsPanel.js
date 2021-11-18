@@ -23,11 +23,6 @@ export const numberFormatsPanel = hoistCmp.factory({
                     methods delegate to <code>fmtNumber</code> and set useful defaults.
                 </p>,
                 <p>
-                    <code>fmtNumber</code> is backed by <a href="https://numbrojs.com/" target="_blank">numbro.js </a>
-                    and makes the full numbro API available via the <code>formatConfig</code> property, which takes a
-                    numbro configuration object.
-                </p>,
-                <p>
                     All hoist formatting functions support the <code>asElement</code> option to produce either a React
                     element, or a raw HTML string. This allows them to be useful in both React and non-React
                     contexts.
@@ -37,11 +32,17 @@ export const numberFormatsPanel = hoistCmp.factory({
                 title: 'Other › Number Formats',
                 icon: Icon.print(),
                 className: 'tbox-formats-tab',
-                height: 550,
+                height: 600,
                 item: hframe(
                     paramsPanel(),
                     resultsPanel({
-                        tryItInput: numberInput({selectOnFocus: true, placeholder: 'Enter a value to test'})
+                        // numberInput cannot accept a value greater than Number.MAX_SAFE_INTEGER
+                        // so cannot be used for testing the formatting of values bigger than that.
+                        tryItInput: numberInput({
+                            precision: 12, // max decimal precision allowed by fmtNumber
+                            selectOnFocus: true,
+                            placeholder: 'Enter a value to test'
+                        })
                     })
                 )
             })
