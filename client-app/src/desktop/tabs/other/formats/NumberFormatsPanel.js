@@ -32,7 +32,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                 title: 'Other › Number Formats',
                 icon: Icon.print(),
                 className: 'tbox-formats-tab',
-                height: 600,
+                height: 610,
                 item: hframe(
                     paramsPanel(),
                     resultsPanel({
