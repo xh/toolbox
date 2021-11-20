@@ -1,7 +1,8 @@
+import BigNumber from 'bignumber.js';
 import {HoistModel} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import * as formatFunctions from '@xh/hoist/format/FormatNumber';
-import {nilAwareNumberWriter} from './Util';
+import {typeAwareNumberWriter} from './Util';
 
 export class NumberFormatsPanelModel extends HoistModel {
 
@@ -28,6 +29,7 @@ export class NumberFormatsPanelModel extends HoistModel {
         1.23456e14,
         123456789012345.1,  // exceeds # of significant digits that JS can handle. Vanilla JS .toFixed(6) produces incorrect result: '123456789012345.093750'
         '9007199254740999', // exceeds Number.MAX_SAFE_INTEGER by 8 (must be passed in as a string or else JS will round it before it is passed in)
+        BigNumber('8589934592.123456'),  // 8589934592.123456 exceeds the number of safe decimal places JS tolerates.  (8589934592.123456 has value 8589934592.123455 in JS console)
         null,
         undefined
     ];
@@ -50,7 +52,7 @@ export class NumberFormatsPanelModel extends HoistModel {
     get testResults() {
         return this.testData.map(data => ({
             data,
-            formattedData: nilAwareNumberWriter(data),
+            formattedData: typeAwareNumberWriter(data),
             result: this.getResult(data)
         }));
     }

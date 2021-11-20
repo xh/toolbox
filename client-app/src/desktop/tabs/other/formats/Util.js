@@ -1,4 +1,6 @@
 import {cloneElement} from 'react';
+import {isString} from 'lodash';
+import BigNumber from 'bignumber.js';
 import {hoistCmp} from '@xh/hoist/core';
 import {formGroup} from '@xh/hoist/kit/blueprint';
 import {code, span} from '@xh/hoist/cmp/layout';
@@ -17,7 +19,9 @@ export function nilAwareFormat(val, formatter) {
     return formatter(val);
 }
 
-export function nilAwareNumberWriter(val) {
+export function typeAwareNumberWriter(val) {
+    if (BigNumber.isBigNumber(val)) return code(`BigNumber('${val}')`);
+    if (isString(val)) return code(`'${val}'`);
     if (val === Math.PI) return code('Math.PI');
     if (val === Math.E) return code('Math.E');
     if (val === undefined) return code('undefined');
