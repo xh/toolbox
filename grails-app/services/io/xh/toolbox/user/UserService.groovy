@@ -53,7 +53,7 @@ class UserService extends BaseUserService {
                     profilePicUrl: pic
                 ).save()
                 notifyOnUserCreated(user)
-                log.info("Created new user from JWT | ${email}")
+                logInfo("Created new user from JWT", email)
             } else if (user.name != name || user.profilePicUrl != pic) {
                 user.name = name
                 user.profilePicUrl = pic

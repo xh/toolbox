@@ -33,7 +33,7 @@ class SalesService extends BaseService {
                 it.retain = (it.actualGross > it.projectedGross) || (it.salary < 90000)
             }
         } catch (Exception e) {
-            log.error("Failure loading mock data | ${e.message}")
+            logError('Failure loading mock data', e)
         }
 
 
