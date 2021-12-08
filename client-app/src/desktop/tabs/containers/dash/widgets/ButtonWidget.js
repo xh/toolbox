@@ -34,7 +34,10 @@ export const buttonWidget = hoistCmp.factory({
                             })
                         ]
                     }),
-                    div({item: `A stateful ButtonGroupInput. "${model.value}" is selected.`})
+                    div({
+                        className: 'xh-pad',
+                        item: `A stateful ButtonGroupInput. "${model.value}" is selected.`
+                    })
                 ]
             })
         );
