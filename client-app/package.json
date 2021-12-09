@@ -33,7 +33,7 @@
     "@xh/hoist": "^45.0.0-SNAPSHOT",
     "@xh/package-template": "~2.0.0",
     "core-js": "^3.0.0",
-    "highcharts": "~9.1.2",
+    "highcharts": "~9.3.0",
     "lodash": "^4.0.0",
     "moment": "^2.0.0",
     "react": "~17.0.1",

@@ -37,10 +37,10 @@ class MockUpdatesService extends BaseService {
         cullInactiveSubs()
 
         def culledCount = subCount - subs.size()
-        if (culledCount) log.info("Culled ${culledCount} inactive subscribers")
+        if (culledCount) logInfo("Culled $culledCount inactive subscribers")
 
         if (subs) {
-            log.debug("Pushing mock update to ${subs.size()} active subscribers.")
+            logDebug("Pushing mock update to ${subs.size()} active subscribers.")
             webSocketService.pushToChannels(subs, 'mockUpdate', [
                 id: updateCounter,
                 timestamp: Instant.now()

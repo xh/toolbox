@@ -37,12 +37,6 @@ export const App = hoistCmp({
             }),
             hotkeys: [
                 {
-                    label: 'Refresh app data',
-                    combo: 'shift + r',
-                    global: true,
-                    onKeyDown: () => XH.refreshAppAsync()
-                },
-                {
                     label: 'Switch to the home tab',
                     combo: 'shift + h',
                     global: true,

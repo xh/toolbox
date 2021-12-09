@@ -44,14 +44,13 @@ class AuthenticationService extends BaseAuthenticationService  {
 
         def tokenResult = auth0Service.validateToken(token)
         if (!tokenResult.isValid) {
-            log.debug("Invalid token result - user will not be installed on session - return 401 | exception: ${tokenResult.exception}")
+            logDebug("Invalid token result - user will not be installed on session - return 401", tokenResult.exception)
             return true
         }
 
         def user = userService.getOrCreateFromJwtResult(tokenResult)
         setUser(request, user)
-        log.debug("User read from token and set on request | username: ${user.username}")
-
+        logDebug("User read from token and set on request", "username: ${user.username}")
         return true
     }
 

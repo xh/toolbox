@@ -92,7 +92,7 @@ class NewsService extends BaseService {
             }
         }
 
-        log.debug("Loaded ${ret.size()} news items.")
+        logDebug("Loaded ${ret.size()} news items.")
 
         return ret.sort { -it.published.time }
     }
