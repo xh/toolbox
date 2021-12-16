@@ -120,6 +120,7 @@ export class AppModel extends HoistAppModel {
                         path: '/grids',
                         children: [
                             {name: 'standard', path: '/standard'},
+                            {name: 'externalSort', path: '/externalSort'},
                             {name: 'tree', path: '/tree?dims'},
                             {name: 'treeWithCheckBox', path: '/treeWithCheckBox'},
                             {name: 'groupedRows', path: '/groupedRows'},
