@@ -97,61 +97,6 @@ if (inlineHoist) {
     }
 }
 
-apply plugin:'maven-publish'
-publishing {
-    publications {
-        // Classic Maven publication of the Grails server WAR only (with fully spec'd POM file).
-        appWar(MavenPublication) {
-            from components.java
-            artifactId appCode
-            artifact war
-        }
-        // TAR distro with both the Grails WAR + client-side assets.
-        appWarAndClientAssets(MavenPublication) {
-            artifactId appCode + '-all'
-            artifact appWarAndClientAssetsDistTar
-        }
-        // TAR distro with client-side assets only.
-        clientAssets(MavenPublication) {
-            artifactId appCode + '-client-assets'
-            artifact clientAssetsDistTar
-        }
-    }
-    repositories {
-        maven {
-            def repoEndpoint = version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'
-            url "https://repo.xh.io/content/repositories/$repoEndpoint/"
-            credentials {
-                username project.findProperty('xhRepoDeployUser')
-                password project.findProperty('xhRepoDeployPassword')
-            }
-        }
-    }
-}
-
-// Tasks to create distribution bundles that include built client-assets, as well as (for the
-// first task) the WAR. This creates a self-contained archive with both sides of the build output.
-// NOTE - these rely on the client-side build having been completed (outside of Gradle) by Yarn and
-// Webpack. A future project could be to orchestrate the Webpack build from within Gradle as well.
-apply plugin:'distribution'
-distributions {
-    appWarAndClientAssets {
-        contents {
-            into ('client-assets') {
-                from ('client-app/build')
-            }
-            into ('war') {
-                from war.outputs.files
-            }
-        }
-    }
-    clientAssets {
-        contents {
-            from { 'client-app/build' }
-        }
-    }
-}
-
 bootRun {
     systemProperties = System.properties
     jvmArgs = ["-Xmx1G"]
@@ -172,36 +117,4 @@ buildProperties.doLast {
     properties.setProperty('info.xh.appName', appName)
     properties.setProperty('info.xh.appBuild', appBuild)
     grailsBuildInfoFile.withOutputStream {properties.store(it, null)}
-}
-
-
-//----------------------------
-// Custom Tasks
-//----------------------------
-task publishAppWar(dependsOn: "publishAppWarPublicationToMavenRepository") {
-    group 'xhio'
-    description 'Publishes the built Grails server WAR to XH Nexus.'
-
-    doLast {
-        println "$appCode $version published to repo.xh.io!"
-    }
-}
-
-task publishAppWarAndClientAssets(dependsOn: ["checkForClientAssets", "publishAppWarAndClientAssetsPublicationToMavenRepository"]) {
-    group 'xhio'
-    description 'Publishes a combined tarball with WAR and client assets to XH Nexus.'
-
-    doLast {
-        println "$appCode $version published to repo.xh.io!"
-    }
-}
-
-
-task checkForClientAssets() {
-    doFirst {
-        def clientBuild = new File('client-app/build')
-        if (!clientBuild.exists() || !clientBuild.listFiles().size()) {
-            throw new RuntimeException('Client build directory not populated - has a webpack build been run (outside of Gradle)?')
-        }
-    }
 }

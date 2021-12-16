@@ -4,7 +4,7 @@ import {dateIs, lengthIs, numberIs, required, Store} from '@xh/hoist/data';
 import {
     actionCol,
     calcActionColWidth,
-    checkboxEditor,
+    booleanEditor,
     dateEditor,
     numberEditor,
     selectEditor,
@@ -262,7 +262,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     align: 'center',
                     resizable: false,
                     editable: true,
-                    editor: checkboxEditor,
+                    editor: booleanEditor,
                     renderer: (v) => v ? Icon.lock({className: 'xh-warning', asHtml: true}) : ''
                 },
                 {

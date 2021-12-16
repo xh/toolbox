@@ -1,8 +1,8 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {numberRenderer, thousandsRenderer} from '@xh/hoist/format';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
+import {cityCol, companyCol, profitLossCol, tradeVolumeCol} from '../../core/columns';
 
 export class GridPageModel extends HoistModel {
 
@@ -14,37 +14,22 @@ export class GridPageModel extends HoistModel {
         persistWith: {localStorageKey: 'toolboxSampleGrid'},
         sortBy: ['profit_loss|desc|abs'],
         colChooserModel: true,
-        onRowClicked: (e) => {
-            const {id} = e.data.raw;
+        onRowClicked: ({data: record}) => {
+            const {id} = record;
             XH.appendRoute('gridDetail', {id});
         },
         columns: [
             {
-                field: 'company',
+                ...companyCol,
                 pinned: true,
                 hideable: false,
                 width: 170,
-                autosizeMaxWidth: 200
+                autosizeMaxWidth: 200,
+                flex: null
             },
-            {
-                field: 'city',
-                width: 120
-            },
-            {
-                headerName: 'P&L',
-                field: 'profit_loss',
-                width: 120,
-                align: 'right',
-                absSort: true,
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
-            },
-            {
-                headerName: 'Volume',
-                field: 'trade_volume',
-                width: 90,
-                align: 'right',
-                renderer: thousandsRenderer({precision: 1, label: true})
-            }
+            {...cityCol},
+            {...profitLossCol},
+            {...tradeVolumeCol}
         ]
     });
 

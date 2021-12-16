@@ -53,21 +53,28 @@ const bbar = hoistCmp.factory(
     ({model}) => toolbar(
         switchInput({
             label: 'Render Dashboard',
-            bind: 'renderDashboard'
+            bind: 'renderDashboard',
+            labelSide: 'left'
         }),
+        '-',
         switchInput({
             label: 'Layout Locked',
             bind: 'layoutLocked',
+            labelSide: 'left',
             model: model.dashContainerModel
         }),
+        '-',
         switchInput({
             label: 'Content Locked',
             bind: 'contentLocked',
+            labelSide: 'left',
             model: model.dashContainerModel
         }),
+        '-',
         switchInput({
             label: 'Rename Locked',
             bind: 'renameLocked',
+            labelSide: 'left',
             model: model.dashContainerModel
         }),
         filler(),
@@ -85,6 +92,7 @@ class Model extends HoistModel {
     @managed
     dashContainerModel = new DashContainerModel({
         persistWith: {localStorageKey: 'dashContainerState'},
+        showMenuButton: true,
         initialState: [{
             type: 'row',
             content: [

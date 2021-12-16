@@ -1,5 +1,5 @@
 .tb-mobile {
-  .xh-hframe {
+  &__screenshots {
     justify-content: center;
 
     img {
@@ -8,9 +8,4 @@
     }
   }
 
-  .xh-button {
-    width: 250px;
-    align-self: center;
-    margin: var(--xh-pad-px);
-  }
 }

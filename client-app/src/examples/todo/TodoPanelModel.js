@@ -182,6 +182,14 @@ export class TodoPanelModel extends HoistModel {
             rowBorders: true,
             showHover: true,
             sortBy: 'dueDate',
+            store: {
+                fields: [
+                    {name: 'complete', type: 'bool'},
+                    {name: 'description', type: 'string'},
+                    {name: 'dueDate', type: 'localDate'},
+                    {name: 'dueDateGroup', type: 'string'}
+                ]
+            },
             groupSortFn: (a, b) => {
                 a = dueDateGroupSort[a];
                 b = dueDateGroupSort[b];

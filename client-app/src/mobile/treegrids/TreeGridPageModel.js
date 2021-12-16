@@ -1,7 +1,8 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GroupingChooserModel} from '@xh/hoist/mobile/cmp/grouping';
+import {isEmpty} from 'lodash';
+import {mktValCol, nameCol, pnlCol} from '../../core/columns';
 
 export class TreeGridPageModel extends HoistModel {
 
@@ -21,43 +22,28 @@ export class TreeGridPageModel extends HoistModel {
         },
         colChooserModel: true,
         sortBy: 'pnl|desc|abs',
-        onRowClicked: (e) => {
-            const id = encodeURIComponent(e.data.raw.id);
+        onRowClicked: ({data: record}) => {
+            // Allow single tap on parent row to trigger expand/collapse (default on mobile)
+            // without navigating the user away to the detail page.
+            if (!isEmpty(record.children)) return;
+
+            const id = encodeURIComponent(record.id);
+            XH.appendRoute('treeGridDetail', {id});
+        },
+        // Used here (and recommended) as an alternate gesture to support drilldown on parent rows
+        // when `GridModel.clicksToExpand: 1` (the default). Fires on long-press / tap-and-hold.
+        onCellContextMenu: ({data: record}) => {
+            const id = encodeURIComponent(record.id);
             XH.appendRoute('treeGridDetail', {id});
         },
         columns: [
             {
-                headerName: 'Name',
-                field: 'name',
+                ...nameCol,
                 isTreeColumn: true,
-                flex: true
+                width: 150
             },
-            {
-                headerName: 'Mkt Value (m)',
-                chooserName: 'Market Value',
-                field: 'mktVal',
-                align: 'right',
-                width: 130,
-                absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                renderer: millionsRenderer({
-                    precision: 3,
-                    ledger: true
-                })
-            },
-            {
-                headerName: 'P&L',
-                field: 'pnl',
-                align: 'right',
-                width: 120,
-                absSort: true,
-                agOptions: {
-                    aggFunc: 'sum'
-                },
-                renderer: numberRenderer({precision: 0, ledger: true, colorSpec: true})
-            }
+            {...mktValCol},
+            {...pnlCol}
         ]
     });
 

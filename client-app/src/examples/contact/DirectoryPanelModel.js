@@ -8,6 +8,7 @@ import {isEmpty, uniq, without} from 'lodash';
 import {PERSIST_APP} from './AppModel';
 import {favoriteButton} from './cmp/FavoriteButton';
 import {DetailsPanelModel} from './details/DetailsPanelModel';
+import {cellPhoneCol, emailCol, locationCol, nameCol, workPhoneCol} from '../../core/columns';
 
 /**
  * Primary model to load a list of contacts from the server and manage filter and selection state.
@@ -123,7 +124,12 @@ export class DirectoryPanelModel extends HoistModel {
     createGridModel() {
         return new GridModel({
             store: {
-                fields: ['profilePicture', 'bio']
+                fields: [
+                    {name: 'isFavorite', type: 'string'},
+                    {name: 'profilePicture', type: 'string'},
+                    {name: 'bio', type: 'string'},
+                    {name: 'tags', type: 'auto'}
+                ]
             },
             emptyText: 'No matching contacts found.',
             colChooserModel: true,
@@ -145,11 +151,11 @@ export class DirectoryPanelModel extends HoistModel {
                     elementRenderer: this.isFavoriteRenderer,
                     excludeFromExport: true
                 },
-                {field: 'name', width: 200},
-                {field: 'location'},
-                {field: 'email'},
-                {field: 'cellPhone', hidden: true},
-                {field: 'workPhone', hidden: true},
+                {...nameCol},
+                {...locationCol},
+                {...emailCol},
+                {...cellPhoneCol, hidden: true},
+                {...workPhoneCol, hidden: true},
                 {
                     field: 'tags',
                     width: 400,

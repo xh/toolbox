@@ -1,22 +1,30 @@
+import {createRef} from 'react';
+import {flatMapDeep} from 'lodash';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GroupingChooserModel} from '@xh/hoist/desktop/cmp/grouping';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
-import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {action, makeObservable} from '@xh/hoist/mobx';
-import {createRef} from 'react';
+import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
 
 export class SampleTreeGridModel extends HoistModel {
 
     @managed
     groupingChooserModel = new GroupingChooserModel({
         persistWith: {localStorageKey: 'sampleTreeGrid'},
-        dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],
-        initialValue: ['region', 'sector', 'symbol'],
+        dimensions: [
+            {name: 'fund'},
+            {name: 'region'},
+            {name: 'sector'},
+            {name: 'symbol', isLeafDimension: true},
+            {name: 'trader'}
+        ],
+        initialValue: ['fund', 'region', 'trader', 'sector', 'symbol'],
         initialFavorites: [
-            ['region', 'sector', 'symbol'],
-            ['region', 'sector'],
+            ['fund', 'region', 'trader', 'sector', 'symbol'],
+            ['fund', 'trader', 'sector', 'symbol'],
+            ['trader', 'region', 'sector'],
             ['region', 'symbol'],
             ['sector', 'symbol']
         ]
@@ -59,7 +67,12 @@ export class SampleTreeGridModel extends HoistModel {
 
         const data = await XH.portfolioService.getPositionsAsync(dims, true);
         if (isRefresh) {
-            gridModel.updateData({update: data});
+            // Flatten the data. The updateData method ignores child records in a hierarchy,
+            // but will update child records in the store if they are updated from a flat array.
+            const flattener = (rec) => ([rec, flatMapDeep(rec.children, flattener)]),
+                flattenedData = flatMapDeep(data, flattener);
+
+            gridModel.updateData({update: flattenedData});
             if (isAutoRefresh) {
                 XH.toast({
                     intent: 'primary',
@@ -110,44 +123,12 @@ export class SampleTreeGridModel extends HoistModel {
             enableExport: true,
             columns: [
                 {
-                    headerName: 'Name',
-                    width: 200,
-                    field: 'name',
+                    ...nameCol,
                     isTreeColumn: true,
                     ...(includeCheckboxes ? this.createCheckboxTreeColumn() : {})
                 },
-                {
-                    field: 'mktVal',
-                    headerName: 'Mkt Value (m)',
-                    headerTooltip: 'Market value (in millions USD)',
-                    align: 'right',
-                    width: 130,
-                    absSort: true,
-                    agOptions: {
-                        aggFunc: 'sum'
-                    },
-                    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
-                    renderer: millionsRenderer({
-                        precision: 3,
-                        ledger: true
-                    })
-                },
-                {
-                    headerName: 'P&L',
-                    field: 'pnl',
-                    align: 'right',
-                    width: 130,
-                    absSort: true,
-                    agOptions: {
-                        aggFunc: 'sum'
-                    },
-                    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
-                    renderer: numberRenderer({
-                        precision: 0,
-                        ledger: true,
-                        colorSpec: true
-                    })
-                }
+                {...mktValCol},
+                {...pnlCol}
             ]
         });
     }

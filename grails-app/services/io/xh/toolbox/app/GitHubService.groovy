@@ -40,7 +40,7 @@ class GitHubService extends BaseService {
 
     void init() {
         if (configService.getString('gitHubAccessToken', 'none') == 'none') {
-            log.warn('Required "gitHubAccessToken" config not present or set to "none" - no commits will be loaded from GitHub.')
+            logWarn('Required "gitHubAccessToken" config not present or set to "none" - no commits will be loaded from GitHub.')
         } else {
             createTimer(
                 runFn: this.&loadCommitsForAllRepos,
@@ -69,7 +69,7 @@ class GitHubService extends BaseService {
             }
 
             if (newCommitCount) {
-                log.debug("Found ${newCommitCount} new commits - pushing update...")
+                logDebug("Found $newCommitCount new commits - pushing update...")
                 pushUpdate()
             }
         }
@@ -108,7 +108,7 @@ class GitHubService extends BaseService {
                         pageInfo = history.pageInfo,
                         rawCommits = history.nodes as List
 
-                    log.debug("Fetched ${newCommits.size() + rawCommits.size()} / ${history.totalCount} commits for this batch")
+                    logDebug("Fetched ${newCommits.size() + rawCommits.size()} / ${history.totalCount} commits for this batch")
                     cursor = pageInfo.endCursor
                     hasNextPage = pageInfo.hasNextPage
                     pageCount++
@@ -132,7 +132,7 @@ class GitHubService extends BaseService {
                     }
 
                 } catch (e) {
-                    logErrorCompact("Failure fetching commits for $repoName", e)
+                    logError("Failure fetching commits for $repoName", e)
                     hadError = true
                 }
             }
@@ -143,13 +143,13 @@ class GitHubService extends BaseService {
         newCommits = newCommits.findAll{!commitHistory.hasCommit(it)}
 
         if (hadError) {
-            log.error("Error during commit load | no commits will be updated")
+            logError('Error during commit load', 'no commits will be updated')
             return []
         } else if (!newCommits) {
-            log.debug("Commit load complete | no new commits found")
+            logDebug('Commit load complete', 'no new commits found')
             return []
         } else {
-            log.debug("Commit load complete | got ${newCommits.size()} new commits")
+            logDebug('Commit load complete', "${newCommits.size()} new commits")
             commitHistory.updateWithNewCommits(newCommits)
             this.commitsByRepo.put(repoName, commitHistory)
             return newCommits

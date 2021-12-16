@@ -1,11 +1,11 @@
-import React from 'react';
 import {div} from '@xh/hoist/cmp/layout';
 import {tabContainer, TabContainerModel} from '@xh/hoist/cmp/tab';
-import {creates, managed, hoistCmp, HoistModel} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import React from 'react';
 import {wrapper} from '../../../common';
-import {dynamicExample, tabStateExample, customExample, simpleExample} from './tabs';
+import {customExample, dynamicExample, simpleExample, tabStateExample} from './tabs';
 
 export const tabPanelContainerPanel = hoistCmp.factory({
     model: creates(() => new Model()),
@@ -20,7 +20,7 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                 </p>,
                 <p>
                     The controls for switching tabs can be placed on any side of the container,
-                    or omitted entirely via the <code>switcher</code> prop.
+                    or omitted via the <code>switcher</code> prop.
                 </p>
             ],
             links: [
