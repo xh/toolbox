@@ -16,6 +16,7 @@ export class HomeTabModel extends HoistModel {
         super();
         this.dashModel = new DashContainerModel({
             persistWith: {localStorageKey: 'homeDashboard'},
+            showMenuButton: true,
             initialState: [{
                 type: 'row',
                 content: [

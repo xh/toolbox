@@ -1,6 +1,10 @@
 # Changelog
 
-## v3.0.0-SNAPSHOT - unreleased
+## v2.11.0 - 2012-12-08
+
+### Libraries
+* @xh/hoist 44.2.0
+* hoist-core 11.0.2
 
 
 ## v2.10.0 - 2021-10-04
