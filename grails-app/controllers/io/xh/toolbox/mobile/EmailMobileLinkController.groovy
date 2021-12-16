@@ -21,7 +21,7 @@ class EmailMobileLinkController extends BaseController {
             ])
             renderJSON([email: user.email, success: true])
         } catch(Exception e) {
-            logErrorCompact('Error emailing link to user.', e)
+            logError('Error emailing link to user.', e)
             renderJSON([email: user.email, success: false])
         }
     }

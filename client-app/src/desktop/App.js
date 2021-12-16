@@ -1,7 +1,7 @@
 import {img} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {webSocketIndicator} from '@xh/hoist/cmp/websocket';
-import {hoistCmp, uses} from '@xh/hoist/core';
+import {hoistCmp, uses, XH} from '@xh/hoist/core';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {tabSwitcher} from '@xh/hoist/desktop/cmp/tab';
@@ -35,8 +35,16 @@ export const App = hoistCmp({
                     ]
                 }
             }),
-            className: 'toolbox-app-frame',
-            item: tabContainer()
+            hotkeys: [
+                {
+                    label: 'Switch to the home tab',
+                    combo: 'shift + h',
+                    global: true,
+                    onKeyDown: () => XH.appModel.goHome()
+                }
+            ],
+            item: tabContainer(),
+            mask: 'onLoad'
         });
     }
 });

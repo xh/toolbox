@@ -1,10 +1,11 @@
+import {createRef} from 'react';
+import {flatMapDeep} from 'lodash';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GroupingChooserModel} from '@xh/hoist/desktop/cmp/grouping';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {action, makeObservable} from '@xh/hoist/mobx';
-import {createRef} from 'react';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
 
 export class SampleTreeGridModel extends HoistModel {
@@ -66,7 +67,12 @@ export class SampleTreeGridModel extends HoistModel {
 
         const data = await XH.portfolioService.getPositionsAsync(dims, true);
         if (isRefresh) {
-            gridModel.updateData({update: data});
+            // Flatten the data. The updateData method ignores child records in a hierarchy,
+            // but will update child records in the store if they are updated from a flat array.
+            const flattener = (rec) => ([rec, flatMapDeep(rec.children, flattener)]),
+                flattenedData = flatMapDeep(data, flattener);
+
+            gridModel.updateData({update: flattenedData});
             if (isAutoRefresh) {
                 XH.toast({
                     intent: 'primary',

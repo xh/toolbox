@@ -124,7 +124,7 @@ class PortfolioService extends BaseService {
             return newPrice ? pos.repricePosition(newPrice.close) : pos
         }
 
-        log.debug("Perturbed ${numToChange} instruments' pricing")
+        logDebug("Perturbed $numToChange instruments' pricing")
 
         return new PortfolioDataSet(
                 day: oldData.day,
