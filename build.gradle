@@ -21,6 +21,8 @@ group 'io.xh'
 apply plugin:'idea'
 apply plugin:'war'
 apply plugin:'org.grails.grails-web'
+apply plugin:'java-library'
+
 
 repositories {
     mavenLocal()
