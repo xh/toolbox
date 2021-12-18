@@ -74,20 +74,20 @@ dependencies {
     implementation "org.hibernate:hibernate-ehcache:5.5.7.Final"
     profile "org.grails.profiles:rest-api"
 
-    runtime "com.h2database:h2"
-    runtime "org.apache.tomcat:tomcat-jdbc"
+    runtimeOnly "com.h2database:h2"
+    runtimeOnly "org.apache.tomcat:tomcat-jdbc"
 
     // For JWT token validation.
-    compile "org.bitbucket.b_c:jose4j:0.7.2"
+    implementation "org.bitbucket.b_c:jose4j:0.7.2"
 
     // Toolbox additions/Changes
-    compile "net.sf.ehcache:ehcache:2.10.6"
-    compile "org.springframework:spring-websocket"
-    runtime "mysql:mysql-connector-java:5.1.47"
+    implementation "net.sf.ehcache:ehcache:2.10.6"
+    implementation "org.springframework:spring-websocket"
+    runtimeOnly "mysql:mysql-connector-java:5.1.47"
 
     if (!inlineHoist) {
         // Include Hoist as versioned external dependency when building a WAR for release
-        compile "io.xh:hoist-core:$hoistCoreVersion"
+        implementation "io.xh:hoist-core:$hoistCoreVersion"
     }
 }
 
@@ -100,7 +100,7 @@ if (inlineHoist) {
     // Include Hoist as an inline plugin in multi-project mode when running in development
     grails {
         plugins {
-            compile project(":hoist-core")
+            implementation project(":hoist-core")
         }
     }
 }
