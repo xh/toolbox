@@ -72,15 +72,11 @@ dependencies {
     implementation "org.hibernate:hibernate-ehcache:5.5.7.Final"
     profile "org.grails.profiles:rest-api"
 
-    runtimeOnly "com.h2database:h2"
-    runtimeOnly "org.apache.tomcat:tomcat-jdbc"
-
     // For JWT token validation.
     implementation "org.bitbucket.b_c:jose4j:0.7.2"
 
     // Toolbox additions/Changes
     implementation "net.sf.ehcache:ehcache:2.10.6"
-    implementation "org.springframework:spring-websocket"
     runtimeOnly "mysql:mysql-connector-java:5.1.47"
 
     if (!inlineHoist) {
