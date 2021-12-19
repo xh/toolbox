@@ -49,10 +49,6 @@ dependencies {
     // Java 11 dev time support - full spring-boot reload of entire app
     developmentOnly "org.springframework.boot:spring-boot-devtools"
 
-    // Java 8 dev time support --see https://github.com/grails/grails-core/pull/11441
-    // agent "org.springframework:springloaded:1.2.8.RELEASE"
-    // runtimeOnly "io.methvin:directory-watcher:0.9.6"
-
    // Grails 5 REST Defaults
     compileOnly "io.micronaut:micronaut-inject-groovy"
     implementation "org.springframework.boot:spring-boot-starter-logging"
