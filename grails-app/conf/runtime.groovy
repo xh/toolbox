@@ -1,3 +1,5 @@
+import io.xh.hoist.configuration.RuntimeConfig
+
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 import static io.xh.hoist.util.Utils.getAppCode
 import static io.xh.hoist.util.DateTimeUtils.HOURS
@@ -5,7 +7,7 @@ import static io.xh.hoist.util.DateTimeUtils.MINUTES
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
 import static java.sql.Connection.TRANSACTION_READ_COMMITTED
 
-grails.serverURL = getInstanceConfig('serverURL')
+RuntimeConfig.defaultConfig(this)
 
 //-------------------------------------------------------------------------------------------
 // Datasource - for this app's persistent domain objects, including e.g. Hoist configs and prefs.
