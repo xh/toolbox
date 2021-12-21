@@ -51,8 +51,12 @@ if (inlineHoist) {
 dependencies {
     implementation "org.bitbucket.b_c:jose4j:0.7.2"
     runtimeOnly "mysql:mysql-connector-java:5.1.47"
-    developmentOnly "org.springframework.boot:spring-boot-devtools"
-    developmentOnly "io.methvin:directory-watcher:0.15.0"
+
+    // Hot-reload support
+    developmentOnly(
+        "org.springframework.boot:spring-boot-devtools",
+        "io.methvin:directory-watcher:0.15.0"
+    )
 }
 
 // Avoid unexpected errors with overly-long classpath on Windows development machines.
