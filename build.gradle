@@ -28,6 +28,11 @@ repositories {
     maven {url 'https://repo.xh.io/content/groups/public/'}
 }
 
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 configurations {
     developmentOnly
     runtimeClasspath {
