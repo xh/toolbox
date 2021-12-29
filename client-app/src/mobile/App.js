@@ -13,6 +13,7 @@ export const App = hoistCmp({
     render() {
         return panel({
             tbar: appBar({
+                omit: XH.isLandscape,
                 icon: Icon.boxFull({size: 'lg', prefix: 'fal'}),
                 hideRefreshButton: false,
                 appMenuButtonProps: {
