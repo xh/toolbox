@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.12.0 - 2012-12-29
+
+### Libraries
+* @xh/hoist 44.3.0
+* hoist-core 11.0.3
+
+
 ## v2.11.0 - 2012-12-08
 
 ### Libraries
