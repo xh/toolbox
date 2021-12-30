@@ -1,0 +1,10 @@
+.button-page {
+  &__row {
+    padding: var(--xh-pad-half-px);
+    justify-content: center;
+
+    & > .xh-button:not(:last-child) {
+      margin-right: var(--xh-pad-px);
+    }
+  }
+}

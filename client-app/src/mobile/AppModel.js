@@ -3,10 +3,11 @@ import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {themeAppOption, sizingModeAppOption, autoRefreshAppOption} from '@xh/hoist/mobile/cmp/appOption';
 import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
+import {buttonPage} from './buttons/ButtonPage';
+import {chartPage} from './charts/ChartPage';
 import {containersPage} from './containers/ContainersPage';
 import {dataViewPage} from './dataview/DataViewPage';
 import {formPage} from './form/FormPage';
-import {chartPage} from './charts/ChartPage';
 import {gridDetailPage} from './grids/GridDetailPage';
 import {gridPage} from './grids/GridPage';
 import {homePage} from './home/HomePage';
@@ -36,6 +37,7 @@ export class AppModel extends HoistAppModel {
             {id: 'panels', content: panelsPage},
             {id: 'popovers', content: popoverPage},
             {id: 'popups', content: popupsPage},
+            {id: 'buttons', content: buttonPage},
             {id: 'icons', content: iconPage},
             {id: 'pinPad', content: pinPadPage}
         ]
@@ -90,6 +92,10 @@ export class AppModel extends HoistAppModel {
                     {
                         name: 'popups',
                         path: '/popups'
+                    },
+                    {
+                        name: 'buttons',
+                        path: '/buttons'
                     },
                     {
                         name: 'icons',
