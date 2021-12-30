@@ -13,11 +13,11 @@ RuntimeConfig.defaultConfig(this)
 // Datasource - for this app's persistent domain objects, including e.g. Hoist configs and prefs.
 // Toolbox uses mySQL, but apps can use any DB supported by Grails (SQL Server, Postgres, etc).
 //----------------------------------------------------------------------------------------------
-def dbHost = getInstanceConfig('dbHost'),
+def dbHost = getInstanceConfig('dbHost') ?: 'localhost',
     dbCreateMode = getInstanceConfig('dbCreate') ?: 'update',
     dbSchema = getInstanceConfig('dbSchema') ?: appCode,
     dbUser = getInstanceConfig('dbUser') ?: appCode,
-    dbPassword = getInstanceConfig('dbPassword')
+    dbPassword = getInstanceConfig('dbPassword') ?: appCode
 
 dataSource {
     pooled = true
