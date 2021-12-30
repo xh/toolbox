@@ -116,20 +116,10 @@ dataSource {
     }
 }
 
-// Environment-specific JDBC URLs.
-// Note these are also specific to MySQL and must be adjusted for projects using different DBs.
-environments {
-    development {
-        dataSource {
-            // No expectation of SSL for local MySQL instances.
-            url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8&useSSL=false"
-        }
-    }
-    production {
-        dataSource {
-            url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8"
-        }
-    }
+// JDBC URL. Note these are also specific to MySQL and must be adjusted for projects using different DBs.
+// You may also wish to use multiple environment{} blocks for enviro specific db connections.
+dataSource {
+    url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8"
 }
 
 
