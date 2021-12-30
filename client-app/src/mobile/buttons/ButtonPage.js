@@ -4,6 +4,7 @@ import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {buttonGroupInput, label, switchInput} from '@xh/hoist/mobile/cmp/input';
 import {Icon} from '@xh/hoist/icon';
+import classNames from 'classnames';
 
 import './ButtonPage.scss';
 import {ButtonPageModel} from './ButtonPageModel';
@@ -20,7 +21,9 @@ export const buttonPage = hoistCmp.factory({
                 label('Disable All:'),
                 switchInput({bind: 'disabled'}),
                 label('All Active:'),
-                switchInput({bind: 'active'})
+                switchInput({bind: 'active'}),
+                label('Toolbar:'),
+                switchInput({bind: 'toolbar'})
             ],
             items: [
                 buttonPanel(),
@@ -35,9 +38,12 @@ export const buttonPage = hoistCmp.factory({
 
 const buttonPanel = hoistCmp.factory(
     ({model, intent}) => {
-        const {disabled, active} = model;
+        const {disabled, active, toolbar} = model;
         return div({
-            className: 'toolbox-card',
+            className: classNames(
+                'toolbox-card button-page__panel',
+                toolbar ? 'button-page__panel--toolbar' : null
+            ),
             items: [
                 div({
                     className: 'toolbox-card__title',

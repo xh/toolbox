@@ -6,6 +6,7 @@ export class ButtonPageModel extends HoistModel {
     @bindable intent = null;
     @bindable disabled = false;
     @bindable active = false;
+    @bindable toolbar = false;
     @bindable activeButton = 'v1';
 
     constructor() {
