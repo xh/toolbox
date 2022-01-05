@@ -65,6 +65,12 @@ export const homePage = hoistCmp.factory({
                     route: 'popups'
                 }),
                 summaryCard({
+                    title: 'Buttons',
+                    icon: Icon.pointerUp(),
+                    summary: 'Buttons trigger actions when tapped.',
+                    route: 'buttons'
+                }),
+                summaryCard({
                     title: 'Icons',
                     icon: Icon.rocket(),
                     summary: 'A collection of FontAwesome SVG icons, available in 3 variants.',

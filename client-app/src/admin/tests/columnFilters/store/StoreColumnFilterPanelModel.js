@@ -1,5 +1,5 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {GridModel, ExportFormat, boolCheckCol, localDateCol} from '@xh/hoist/cmp/grid';
+import {GridModel, ExcelFormat, boolCheckCol, localDateCol} from '@xh/hoist/cmp/grid';
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
@@ -127,7 +127,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                         precision: 1,
                         label: true
                     }),
-                    exportFormat: ExportFormat.NUM_DELIMITED,
+                    excelFormat: ExcelFormat.NUM_DELIMITED,
                     chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
                 },
                 {
@@ -140,7 +140,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                         ledger: true,
                         colorSpec: true
                     }),
-                    exportFormat: ExportFormat.LEDGER_COLOR,
+                    excelFormat: ExcelFormat.LEDGER_COLOR,
                     chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
                 },
                 {

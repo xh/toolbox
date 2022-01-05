@@ -1,10 +1,16 @@
 # Changelog
 
-## v3.0-SNAPSHOT - unreleased
+## v3.0-SNAPSHOT - under development
+
+### New Features
+* New mobile buttons page shows off the many variations of newly upgraded mobile buttons.
 
 ### Libraries
+* @xh/hoist 45.0.0
 * hoist-core 13.1.0
 * grails 5.0.3
+
+
 
 ## v2.12.0 - 2012-12-29
 
