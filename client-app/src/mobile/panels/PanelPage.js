@@ -28,7 +28,7 @@ export const panelPage = hoistCmp.factory({
                 button({
                     icon: Icon.edit(),
                     text: 'Edit',
-                    modifier: 'quiet'
+                    minimal: true
                 })
             ),
             bbar: toolbar(
@@ -36,7 +36,7 @@ export const panelPage = hoistCmp.factory({
                 button({
                     icon: Icon.questionCircle(),
                     text: 'Another Button',
-                    modifier: 'quiet'
+                    minimal: true
                 })
             )
         });
