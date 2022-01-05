@@ -15,7 +15,7 @@ def dbHost = getInstanceConfig('dbHost') ?: 'localhost',
     dbCreateMode = getInstanceConfig('dbCreate') ?: 'update',
     dbSchema = getInstanceConfig('dbSchema') ?: appCode,
     dbUser = getInstanceConfig('dbUser') ?: appCode,
-    dbPassword = getInstanceConfig('dbPassword') ?: appCode
+    dbPassword = getInstanceConfig('dbPassword')
 
 dataSource {
     pooled = true
