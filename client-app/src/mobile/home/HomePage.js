@@ -66,7 +66,7 @@ export const homePage = hoistCmp.factory({
                 }),
                 summaryCard({
                     title: 'Buttons',
-                    icon: Icon.pointer(),
+                    icon: Icon.pointerUp(),
                     summary: 'Buttons trigger actions when tapped.',
                     route: 'buttons'
                 }),

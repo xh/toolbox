@@ -14,7 +14,7 @@ export const buttonPage = hoistCmp.factory({
     render() {
         return panel({
             title: 'Buttons',
-            icon: Icon.pointer(),
+            icon: Icon.pointerUp(),
             scrollable: true,
             className: 'toolbox-page button-page xh-tiled-bg',
             tbar: [
