@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.0-SNAPSHOT - under development
+
+### New Features
+* New mobile buttons page shows off the many variations of newly upgraded mobile buttons.
+
+### Libraries
+* @xh/hoist 45.0.0
+
+
 ## v2.12.0 - 2012-12-29
 
 ### Libraries
