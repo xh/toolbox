@@ -153,7 +153,7 @@ export class ActivityWidgetModel extends HoistModel {
                 'repo', 'authorName', 'authorEmail', 'committedDay', 'changedFiles', 'isRelease',
                 {
                     field: 'messageHeadline',
-                    suggestValues: false
+                    enableValues: false
                 }
             ]
         });
