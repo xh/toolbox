@@ -24,6 +24,7 @@ apply plugin:'org.grails.grails-web'
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven {url 'https://repo.grails.org/grails/core'}
     maven {url 'https://repo.xh.io/content/groups/public/'}
 }
@@ -56,7 +57,7 @@ dependencies {
     implementation "org.bitbucket.b_c:jose4j:0.7.2"
     runtimeOnly "mysql:mysql-connector-java:5.1.47"
 
-    // Hot-reload support
+    // Support for reloading app on file change in dev environment
     developmentOnly(
         "org.springframework.boot:spring-boot-devtools",
         "io.methvin:directory-watcher:0.15.0"
@@ -86,7 +87,6 @@ bootRun {
     systemProperties System.properties
     jvmArgs(allJvmArgs)
     sourceResources sourceSets.main
-    systemProperty 'spring.profiles.active', System.getProperty('spring.profiles.active')
     systemProperties hoistMetaData
 }
 
