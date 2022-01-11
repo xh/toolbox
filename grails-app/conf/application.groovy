@@ -9,4 +9,3 @@ grails {
 }
 
 hoist.enableWebSockets = true
-spring.main.'allow-bean-definition-overriding'=true
