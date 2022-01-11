@@ -3,7 +3,7 @@ package io.xh.toolbox.app
 import io.xh.hoist.BaseService
 import io.xh.hoist.http.JSONClient
 import io.xh.toolbox.NewsItem
-import org.apache.http.client.methods.HttpGet
+import org.apache.hc.client5.http.classic.methods.HttpGet
 import io.xh.hoist.util.Timer
 
 import static io.xh.hoist.util.DateTimeUtils.MINUTES

@@ -7,6 +7,8 @@
 
 ### Libraries
 * @xh/hoist 45.0.0
+* hoist-core 13.1.0
+* grails 5.1.1
 
 
 ## v2.12.0 - 2012-12-29
