@@ -18,7 +18,6 @@ class MockUpdatesService extends BaseService {
             runFn: this.&pushMockUpdate,
             interval: 3 * SECONDS
         )
-        super.init()
     }
 
     void subscribe(String channelKey) {

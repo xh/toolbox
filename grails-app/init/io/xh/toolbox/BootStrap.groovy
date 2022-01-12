@@ -1,5 +1,6 @@
 package io.xh.toolbox
 
+import grails.gorm.transactions.Transactional
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
@@ -27,6 +28,7 @@ class BootStrap {
     //------------------------
     // Implementation
     //------------------------
+    @Transactional
     private void createLocalAdminUserIfNeeded() {
         String adminUsername = getInstanceConfig('adminUsername')
         String adminPassword = getInstanceConfig('adminPassword')

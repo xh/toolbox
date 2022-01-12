@@ -1,3 +1,5 @@
+import io.xh.hoist.configuration.RuntimeConfig
+
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 import static io.xh.hoist.util.Utils.getAppCode
 import static io.xh.hoist.util.DateTimeUtils.HOURS
@@ -5,7 +7,7 @@ import static io.xh.hoist.util.DateTimeUtils.MINUTES
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
 import static java.sql.Connection.TRANSACTION_READ_COMMITTED
 
-grails.serverURL = getInstanceConfig('serverURL')
+RuntimeConfig.defaultConfig(this)
 
 //-------------------------------------------------------------------------------------------
 // Datasource - for this app's persistent domain objects, including e.g. Hoist configs and prefs.
@@ -15,9 +17,11 @@ def dbHost = getInstanceConfig('dbHost') ?: 'localhost',
     dbCreateMode = getInstanceConfig('dbCreate') ?: 'update',
     dbSchema = getInstanceConfig('dbSchema') ?: appCode,
     dbUser = getInstanceConfig('dbUser') ?: appCode,
-    dbPassword = getInstanceConfig('dbPassword')
+    dbPassword = getInstanceConfig('dbPassword'),
+    sslSuffix = dbHost == 'localhost' ? '&useSSL=false' :  ''
 
 dataSource {
+    url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8$sslSuffix"
     pooled = true
     jmxExport = true
     driverClassName = "com.mysql.jdbc.Driver"
@@ -113,23 +117,6 @@ dataSource {
         }
     }
 }
-
-// Environment-specific JDBC URLs.
-// Note these are also specific to MySQL and must be adjusted for projects using different DBs.
-environments {
-    development {
-        dataSource {
-            // No expectation of SSL for local MySQL instances.
-            url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8&useSSL=false"
-        }
-    }
-    production {
-        dataSource {
-            url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8"
-        }
-    }
-}
-
 
 //---------------------
 // Mail - configures SMTP connection if outbound emailing capabilities required.

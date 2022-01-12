@@ -4,7 +4,7 @@ import io.xh.hoist.exception.DataNotAvailableException
 import io.xh.hoist.security.AccessAll
 import io.xh.toolbox.BaseController
 import org.apache.commons.codec.binary.Hex
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
