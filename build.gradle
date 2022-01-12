@@ -40,6 +40,10 @@ configurations {
     }
 }
 
+springBoot {
+    mainClass = "io.xh.toolbox.Application"
+}
+
 boolean inlineHoist = runHoistInline == 'true'
 if (inlineHoist) {
     println "${appName}: running with Hoist Core INLINE...."

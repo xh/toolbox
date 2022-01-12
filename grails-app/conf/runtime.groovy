@@ -17,9 +17,11 @@ def dbHost = getInstanceConfig('dbHost') ?: 'localhost',
     dbCreateMode = getInstanceConfig('dbCreate') ?: 'update',
     dbSchema = getInstanceConfig('dbSchema') ?: appCode,
     dbUser = getInstanceConfig('dbUser') ?: appCode,
-    dbPassword = getInstanceConfig('dbPassword')
+    dbPassword = getInstanceConfig('dbPassword'),
+    useSSL = dbHost != 'localhost'
 
 dataSource {
+    url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8&useSSL=$useSSL"
     pooled = true
     jmxExport = true
     driverClassName = "com.mysql.jdbc.Driver"
@@ -115,13 +117,6 @@ dataSource {
         }
     }
 }
-
-// JDBC URL. Note these are also specific to MySQL and must be adjusted for projects using different DBs.
-// You may also wish to use multiple environment{} blocks for enviro specific db connections.
-dataSource {
-    url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8"
-}
-
 
 //---------------------
 // Mail - configures SMTP connection if outbound emailing capabilities required.
