@@ -18,10 +18,10 @@ def dbHost = getInstanceConfig('dbHost') ?: 'localhost',
     dbSchema = getInstanceConfig('dbSchema') ?: appCode,
     dbUser = getInstanceConfig('dbUser') ?: appCode,
     dbPassword = getInstanceConfig('dbPassword'),
-    useSSL = dbHost != 'localhost'
+    sslSuffix = dbHost == 'localhost' ? '&useSSL=false' :  ''
 
 dataSource {
-    url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8&useSSL=$useSSL"
+    url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8$sslSuffix"
     pooled = true
     jmxExport = true
     driverClassName = "com.mysql.jdbc.Driver"
