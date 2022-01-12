@@ -1,4 +1,5 @@
 import io.xh.hoist.configuration.RuntimeConfig
+import org.hibernate.dialect.MySQL8Dialect
 
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 import static io.xh.hoist.util.Utils.getAppCode
@@ -17,15 +18,14 @@ def dbHost = getInstanceConfig('dbHost') ?: 'localhost',
     dbCreateMode = getInstanceConfig('dbCreate') ?: 'update',
     dbSchema = getInstanceConfig('dbSchema') ?: appCode,
     dbUser = getInstanceConfig('dbUser') ?: appCode,
-    dbPassword = getInstanceConfig('dbPassword'),
-    sslSuffix = dbHost == 'localhost' ? '&useSSL=false' :  ''
+    dbPassword = getInstanceConfig('dbPassword')
 
 dataSource {
-    url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8$sslSuffix"
+    url = "jdbc:mysql://${dbHost}/${dbSchema}"
     pooled = true
     jmxExport = true
-    driverClassName = "com.mysql.jdbc.Driver"
-    dialect = org.hibernate.dialect.MySQL5InnoDBDialect
+    driverClassName = 'com.mysql.cj.jdbc.Driver'
+    dialect = MySQL8Dialect
     dbCreate = dbCreateMode
     username = dbUser
     password = dbPassword
@@ -98,22 +98,24 @@ dataSource {
         //------------------------
         // MySQL-specific settings - would *not* apply to other databases, so please do not
         // leave these in place if you aren't using MySQL. Sourced from Grails docs example @
-        // https://docs.grails.org/3.3.9/guide/conf.html#dataSource (admittedly w/o much review).
+        // https://docs.grails.org/latest/guide/conf.html#dataSource (admittedly w/o much review).
         //------------------------
         dbProperties {
+            allowPublicKeyRetrieval = true
             autoReconnect = false
-            jdbcCompliantTruncation = false
-            zeroDateTimeBehavior = 'convertToNull'
-            cachePrepStmts = false
             cacheCallableStmts = false
+            cachePrepStmts = false
+            cacheResultSetMetadata = true
+            cacheServerConfiguration = true
+            connectTimeout = 15000
             dontTrackOpenResources = true
             holdResultsOpenOverStatementClose = true
-            useServerPrepStmts = false
-            cacheServerConfiguration = true
-            cacheResultSetMetadata = true
+            jdbcCompliantTruncation = false
             metadataCacheSize = 100
-            connectTimeout = 15000
             socketTimeout = 120000
+            useServerPrepStmts = false
+            useSSL = dbHost != 'localhost'
+            zeroDateTimeBehavior = 'convertToNull'
         }
     }
 }

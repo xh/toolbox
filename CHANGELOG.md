@@ -2,6 +2,9 @@
 
 ## v3.0-SNAPSHOT - unreleased
 
+### Technical
+* MySQL driver and datasource properties updated to MySQL v8.
+
 ## v2.13.0 - 2021-01-11
 
 ### New Features
