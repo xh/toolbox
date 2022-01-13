@@ -9,12 +9,6 @@ buildscript {
     }
 }
 
-if (useJRebel) {
-    plugins {
-        id 'org.zeroturnaround.gradle.jrebel' version '1.1.11'
-    }
-}
-
 // Custom props sourced from gradle.properties
 def appCode = xhAppCode,
     appName = xhAppName,
