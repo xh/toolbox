@@ -18,7 +18,7 @@ def dbHost = getInstanceConfig('dbHost') ?: 'localhost',
     dbSchema = getInstanceConfig('dbSchema') ?: appCode,
     dbUser = getInstanceConfig('dbUser') ?: appCode,
     dbPassword = getInstanceConfig('dbPassword'),
-    sslSuffix = dbHost == 'localhost' ? '&useSSL=false' :  ''
+    sslSuffix = dbHost == 'localhost' ? '&useSSL=false&allowPublicKeyRetrieval=true' :  ''
 
 dataSource {
     url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8$sslSuffix"
