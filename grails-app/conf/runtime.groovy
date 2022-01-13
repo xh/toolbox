@@ -83,8 +83,8 @@ dataSource {
         //------------------------
         // Remove connections considered to be abandoned...
         removeAbandoned = true
-        // ...meaning those in use longer than this value...
-        removeAbandonedTimeout = 3 * MINUTES
+        // ...meaning those in use longer than this value (in seconds)...
+        removeAbandonedTimeout = 180
         // ...but don't necessarily abandon until we actually need space in the pool.
         abandonWhenPercentageFull = 90
 
