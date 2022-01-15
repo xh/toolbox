@@ -4,7 +4,6 @@ import org.hibernate.dialect.MySQL8Dialect
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 import static io.xh.hoist.util.Utils.getAppCode
 import static io.xh.hoist.util.DateTimeUtils.HOURS
-import static io.xh.hoist.util.DateTimeUtils.MINUTES
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
 import static java.sql.Connection.TRANSACTION_READ_COMMITTED
 
@@ -19,6 +18,9 @@ def dbHost = getInstanceConfig('dbHost') ?: 'localhost',
     dbSchema = getInstanceConfig('dbSchema') ?: appCode,
     dbUser = getInstanceConfig('dbUser') ?: appCode,
     dbPassword = getInstanceConfig('dbPassword')
+
+// Default dbPassword to appCode, but also support '' password if so specified.
+if (dbPassword == null) dbPassword = appCode
 
 dataSource {
     url = "jdbc:mysql://${dbHost}/${dbSchema}"
@@ -62,8 +64,8 @@ dataSource {
         testOnBorrow = true
         // ...but test each connection no more than once per this interval...
         validationInterval = 15 * SECONDS
-        // ...by issuing this query...
-        validationQuery = "/* ${appCode} connection validation */ SELECT 1"
+        // ...by issuing this query (special "ping" syntax understood by MySQL for this purpose)...
+        validationQuery = "/* ping */ SELECT 1"
         // ...giving it this long to complete (this one is in seconds!)
         validationQueryTimeout = 3
 
