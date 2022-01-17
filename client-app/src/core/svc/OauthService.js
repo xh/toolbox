@@ -42,6 +42,13 @@ export class OauthService extends HoistService {
             url: 'oauthConfig'
         }).catchDefault();
 
+        if (!config?.domain || !config?.clientId) {
+            throw XH.exception(`
+                Unable to init OAuthService - expected config not returned by server. 
+                Please log on as a local admin user and review this instance's soft configuration entries.
+            `);
+        }
+
         const auth0 = this.auth0 = await createAuth0Client({
             domain: config.domain,
             client_id: config.clientId,

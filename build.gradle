@@ -53,8 +53,8 @@ if (inlineHoist) {
 }
 
 dependencies {
-    implementation "org.bitbucket.b_c:jose4j:0.7.2"
-    runtimeOnly "mysql:mysql-connector-java:5.1.47"
+    implementation "org.bitbucket.b_c:jose4j:0.7.9"
+    runtimeOnly "mysql:mysql-connector-java:8.0.27"
 
     if (useSpringDevTools) {
         runtimeOnly(
