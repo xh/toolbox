@@ -1,17 +1,15 @@
-import {HoistModel, loadAllAsync, managed} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {HoistModel, managed} from '@xh/hoist/core';
+import {observable, makeObservable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {OrdersPanelModel} from './OrdersPanelModel';
-import {ChartsPanelModel} from './ChartsPanelModel';
 import {PERSIST_DETAIL} from '../AppModel';
-
+import {PortfolioPanelModel} from '../PortfolioPanelModel';
 
 export class DetailPanelModel extends HoistModel {
 
-    @bindable positionId = null;
+    @observable positionId = null;
 
-    @managed ordersPanelModel = new OrdersPanelModel();
-    @managed chartsPanelModel = new ChartsPanelModel();
+    @managed ordersPanelModel = new OrdersPanelModel(this);
 
     @managed panelSizingModel = new PanelModel({
         defaultSize: 400,
@@ -22,33 +20,20 @@ export class DetailPanelModel extends HoistModel {
         persistWith: PERSIST_DETAIL
     });
 
-    constructor() {
-        super();
-        makeObservable(this);
-        const {chartsPanelModel, ordersPanelModel, panelSizingModel} = this;
-        this.addReaction({
-            track: () => [this.positionId, panelSizingModel.collapsed],
-            run: () => {
-                if (!panelSizingModel.collapsed) {
-                    ordersPanelModel.setPositionId(this.positionId);
-                }
-            }
-        });
-        this.addReaction({
-            track: () => ordersPanelModel.selectedRecord,
-            run: (order) => {
-                const symbol = order ? order.data.symbol : null;
-                chartsPanelModel.setSymbol(symbol);
-            }
-        });
+    get collapsed() {
+        return this.panelSizingModel.collapsed;
     }
 
-    async doLoadAsync(loadSpec) {
-        if (!this.panelSizingModel.collapsed) {
-            await loadAllAsync([
-                this.ordersPanelModel,
-                this.chartsPanelModel
-            ], loadSpec);
-        }
+    onLinked() {
+        makeObservable(this);
+        const parentModel = this.lookupModel(PortfolioPanelModel);
+
+        this.addReaction({
+            track: () => parentModel.selectedPosition,
+            run: (position) => {
+                this.positionId = position?.id ?? null;
+            },
+            debounce: 300
+        });
     }
 }

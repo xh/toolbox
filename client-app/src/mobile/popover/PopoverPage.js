@@ -10,7 +10,7 @@ import './PopoverPage.scss';
 
 export const popoverPage = hoistCmp.factory({
     render() {
-        const impl = useLocalModel(() => new LocalModel());
+        const impl = useLocalModel(LocalModel);
 
         return panel({
             title: 'Popovers',

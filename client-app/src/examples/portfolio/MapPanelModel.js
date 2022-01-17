@@ -2,15 +2,16 @@ import {HoistModel, managed} from '@xh/hoist/core';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {fmtMillions} from '@xh/hoist/format';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
+import {GridPanelModel} from './GridPanelModel';
 
 export class MapPanelModel extends HoistModel {
 
     @managed splitTreeMapModel;
 
-    constructor({parentModel}) {
-        super();
+    onLinked() {
+        const gridPanelModel = this.lookupModel(GridPanelModel);
         this.splitTreeMapModel = new SplitTreeMapModel({
-            gridModel: parentModel.gridPanelModel.gridModel,
+            gridModel: gridPanelModel.gridModel,
             mapTitleFn: (model, isPrimary) => {
                 return [
                     isPrimary ? 'Profit:' : 'Loss:',
