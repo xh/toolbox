@@ -48,6 +48,13 @@ class BootStrap {
             }
 
             log.info("Local admin user available as per instanceConfig | $adminUsername")
+
+            Utils.configService.ensureRequiredConfigsCreated(
+                roles: [
+                    valueType: 'json',
+                    defaultValue: ['HOIST_ADMIN': [adminUsername], 'APP_READER': [adminUsername]]
+                ]
+            )
         } else {
             log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
