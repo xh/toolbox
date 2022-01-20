@@ -11,7 +11,6 @@ class CustomerService extends BaseService {
 
     void init() {
         allCustomers = loadCustomersFromFile()
-        super.init()
     }
 
     List<Map> queryCustomers(String query) {

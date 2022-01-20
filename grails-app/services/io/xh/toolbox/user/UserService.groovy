@@ -1,26 +1,24 @@
 package io.xh.toolbox.user
 
 import io.xh.hoist.email.EmailService
+import grails.gorm.transactions.ReadOnly
+import grails.gorm.transactions.Transactional
 import io.xh.hoist.user.BaseUserService
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.security.JwtValidationResult
-
-import static io.xh.hoist.util.Utils.withNewSession
 
 class UserService extends BaseUserService {
 
     EmailService emailService
 
-    @Override
+    @ReadOnly
     List<User> list(boolean activeOnly) {
         return activeOnly ? User.findAllByEnabled(true) : User.list()
     }
 
-    @Override
+    @ReadOnly
     User find(String username) {
-        return (User) withNewSession {
-            User.findByEmail(username)
-        }
+        return User.findByEmail(username)
     }
 
     /**
@@ -37,31 +35,30 @@ class UserService extends BaseUserService {
      * token to uniquely identify a social login and allow for a single app user account to be
      * explicitly linked/registered to multiple social providers. That's overkill for Toolbox.
      */
+    @Transactional
     User getOrCreateFromJwtResult(JwtValidationResult jwtResult) {
         if (!jwtResult.isValid) throw new RuntimeException("Invalid JWT token result")
 
-        (User) withNewSession {
-            def email = jwtResult.email,
-                name = jwtResult.fullName,
-                pic = jwtResult.profilePicUrl,
-                user = User.findByEmail(email)
+        def email = jwtResult.email,
+            name = jwtResult.fullName,
+            pic = jwtResult.profilePicUrl,
+            user = User.findByEmail(email)
 
-            if (!user) {
-                user = new User(
-                    email: email,
-                    name: name,
-                    profilePicUrl: pic
-                ).save()
-                notifyOnUserCreated(user)
-                logInfo("Created new user from JWT", email)
-            } else if (user.name != name || user.profilePicUrl != pic) {
-                user.name = name
-                user.profilePicUrl = pic
-                user = user.save()
-            }
-
-            return user
+        if (!user) {
+            user = new User(
+                email: email,
+                name: name,
+                profilePicUrl: pic
+            ).save()
+            notifyOnUserCreated(user)
+            logInfo("Created new user from JWT", email)
+        } else if (user.name != name || user.profilePicUrl != pic) {
+            user.name = name
+            user.profilePicUrl = pic
+            user = user.save()
         }
+
+        return user
     }
 
     private void notifyOnUserCreated(User newUser) {

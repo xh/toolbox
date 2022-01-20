@@ -1,13 +1,35 @@
 # Changelog
 
-## v2.12.0 - 2012-12-29
+## v2.14.0 - 2021-01-17
+
+### Technical
+* MySQL driver and datasource properties tweaked and updated to MySQL v8.
+
+### Libraries
+* @xh/hoist 45.0.2
+* hoist-core 13.0.6
+* mysql-connector-java 8.0.27
+
+
+## v2.13.0 - 2021-01-11
+
+### New Features
+* New mobile buttons page shows off the many variations of newly upgraded mobile buttons.
+
+### Libraries
+* @xh/hoist 45.0.1
+* hoist-core 13.0.5
+* grails 5.1.1
+
+
+## v2.12.0 - 2021-12-29
 
 ### Libraries
 * @xh/hoist 44.3.0
 * hoist-core 11.0.3
 
 
-## v2.11.0 - 2012-12-08
+## v2.11.0 - 2021-12-08
 
 ### Libraries
 * @xh/hoist 44.2.0

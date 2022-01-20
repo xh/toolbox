@@ -1,3 +1,3 @@
-import io.xh.hoist.log.LogUtils
+import io.xh.hoist.configuration.LogbackConfig
 
-LogUtils.initConfig(this)
+LogbackConfig.defaultConfig(this)

@@ -1,11 +1,13 @@
+import io.xh.hoist.configuration.RuntimeConfig
+import org.hibernate.dialect.MySQL8Dialect
+
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 import static io.xh.hoist.util.Utils.getAppCode
 import static io.xh.hoist.util.DateTimeUtils.HOURS
-import static io.xh.hoist.util.DateTimeUtils.MINUTES
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
 import static java.sql.Connection.TRANSACTION_READ_COMMITTED
 
-grails.serverURL = getInstanceConfig('serverURL')
+RuntimeConfig.defaultConfig(this)
 
 //-------------------------------------------------------------------------------------------
 // Datasource - for this app's persistent domain objects, including e.g. Hoist configs and prefs.
@@ -15,13 +17,17 @@ def dbHost = getInstanceConfig('dbHost') ?: 'localhost',
     dbCreateMode = getInstanceConfig('dbCreate') ?: 'update',
     dbSchema = getInstanceConfig('dbSchema') ?: appCode,
     dbUser = getInstanceConfig('dbUser') ?: appCode,
-    dbPassword = getInstanceConfig('dbPassword') ?: appCode
+    dbPassword = getInstanceConfig('dbPassword')
+
+// Default dbPassword to appCode, but also support '' password if so specified.
+if (dbPassword == null) dbPassword = appCode
 
 dataSource {
+    url = "jdbc:mysql://${dbHost}/${dbSchema}"
     pooled = true
     jmxExport = true
-    driverClassName = "com.mysql.jdbc.Driver"
-    dialect = org.hibernate.dialect.MySQL5InnoDBDialect
+    driverClassName = 'com.mysql.cj.jdbc.Driver'
+    dialect = MySQL8Dialect
     dbCreate = dbCreateMode
     username = dbUser
     password = dbPassword
@@ -58,8 +64,8 @@ dataSource {
         testOnBorrow = true
         // ...but test each connection no more than once per this interval...
         validationInterval = 15 * SECONDS
-        // ...by issuing this query...
-        validationQuery = "/* ${appCode} connection validation */ SELECT 1"
+        // ...by issuing this query (special "ping" syntax understood by MySQL for this purpose)...
+        validationQuery = "/* ping */ SELECT 1"
         // ...giving it this long to complete (this one is in seconds!)
         validationQueryTimeout = 3
 
@@ -79,8 +85,8 @@ dataSource {
         //------------------------
         // Remove connections considered to be abandoned...
         removeAbandoned = true
-        // ...meaning those in use longer than this value...
-        removeAbandonedTimeout = 3 * MINUTES
+        // ...meaning those in use longer than this value (in seconds)...
+        removeAbandonedTimeout = 180
         // ...but don't necessarily abandon until we actually need space in the pool.
         abandonWhenPercentageFull = 90
 
@@ -94,42 +100,27 @@ dataSource {
         //------------------------
         // MySQL-specific settings - would *not* apply to other databases, so please do not
         // leave these in place if you aren't using MySQL. Sourced from Grails docs example @
-        // https://docs.grails.org/3.3.9/guide/conf.html#dataSource (admittedly w/o much review).
+        // https://docs.grails.org/latest/guide/conf.html#dataSource (admittedly w/o much review).
         //------------------------
         dbProperties {
+            allowPublicKeyRetrieval = true
             autoReconnect = false
-            jdbcCompliantTruncation = false
-            zeroDateTimeBehavior = 'convertToNull'
-            cachePrepStmts = false
             cacheCallableStmts = false
+            cachePrepStmts = false
+            cacheResultSetMetadata = true
+            cacheServerConfiguration = true
+            connectTimeout = 15000
             dontTrackOpenResources = true
             holdResultsOpenOverStatementClose = true
-            useServerPrepStmts = false
-            cacheServerConfiguration = true
-            cacheResultSetMetadata = true
+            jdbcCompliantTruncation = false
             metadataCacheSize = 100
-            connectTimeout = 15000
             socketTimeout = 120000
+            useServerPrepStmts = false
+            useSSL = dbHost != 'localhost'
+            zeroDateTimeBehavior = 'convertToNull'
         }
     }
 }
-
-// Environment-specific JDBC URLs.
-// Note these are also specific to MySQL and must be adjusted for projects using different DBs.
-environments {
-    development {
-        dataSource {
-            // No expectation of SSL for local MySQL instances.
-            url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8&useSSL=false"
-        }
-    }
-    production {
-        dataSource {
-            url = "jdbc:mysql://$dbHost/$dbSchema?useUnicode=yes&characterEncoding=UTF-8"
-        }
-    }
-}
-
 
 //---------------------
 // Mail - configures SMTP connection if outbound emailing capabilities required.

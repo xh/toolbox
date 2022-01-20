@@ -1,5 +1,5 @@
 import {FieldType} from '@xh/hoist/data';
-import {ExportFormat, localDateCol} from '@xh/hoist/cmp/grid';
+import {ExcelFormat, localDateCol} from '@xh/hoist/cmp/grid';
 import {dateRenderer, millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 
 const {NUMBER, STRING, LOCAL_DATE} = FieldType;
@@ -19,7 +19,7 @@ export const profitLossCol = {
         ledger: true,
         colorSpec: true
     }),
-    exportFormat: ExportFormat.LEDGER_COLOR,
+    excelFormat: ExcelFormat.LEDGER_COLOR,
     chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
 };
 
@@ -44,7 +44,7 @@ export const tradeVolumeCol = {
     cellClassRules: {
         'tb-sample-grid__high-volume-cell': ({value}) => value >= 9000000000
     },
-    exportFormat: ExportFormat.NUM_DELIMITED,
+    excelFormat: ExcelFormat.NUM_DELIMITED,
     chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
 };
 

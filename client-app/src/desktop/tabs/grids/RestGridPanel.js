@@ -4,7 +4,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
-import {boolCheckCol, ExportFormat, numberCol} from '@xh/hoist/cmp/grid';
+import {boolCheckCol, ExcelFormat, numberCol} from '@xh/hoist/cmp/grid';
 import {wrapper} from '../../common/Wrapper';
 import {numberInput, switchInput, textArea} from '@xh/hoist/desktop/cmp/input';
 
@@ -117,7 +117,7 @@ const modelSpec = {
             field: 'earningsDate',
             renderer: dateRenderer(),
             width: 140,
-            exportFormat: ExportFormat.DATE_FMT
+            excelFormat: ExcelFormat.DATE_FMT
         },
         {
             field: 'note',

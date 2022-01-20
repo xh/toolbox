@@ -11,7 +11,6 @@ class SalesService extends BaseService {
 
     void init() {
         sales = loadSalesFromFile()
-        super.init()
     }
 
     List<Map> getSales() {

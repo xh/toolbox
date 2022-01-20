@@ -31,13 +31,13 @@ export const toolbarPage = hoistCmp.factory({
                     button({
                         icon: Icon.edit(),
                         text: 'Edit',
-                        modifier: 'quiet'
+                        minimal: true
                     }),
                     filler(),
                     button({
                         icon: Icon.skull(),
                         text: 'Terminate',
-                        modifier: 'quiet'
+                        minimal: true
                     })
                 ),
                 hframe(
@@ -45,13 +45,13 @@ export const toolbarPage = hoistCmp.factory({
                         vertical: true,
                         items: [
                             filler(),
-                            button({icon: Icon.contact(), modifier: 'quiet'}),
-                            button({icon: Icon.comment(), modifier: 'quiet'}),
+                            button({icon: Icon.contact(), minimal: true}),
+                            button({icon: Icon.comment(), minimal: true}),
                             toolbarSep(),
-                            button({icon: Icon.add(), modifier: 'quiet'}),
-                            button({icon: Icon.delete(), modifier: 'quiet'}),
+                            button({icon: Icon.add(), minimal: true}),
+                            button({icon: Icon.delete(), minimal: true}),
                             toolbarSep(),
-                            button({icon: Icon.gears(), modifier: 'quiet'}),
+                            button({icon: Icon.gears(), minimal: true}),
                             filler()
                         ]
                     }),
