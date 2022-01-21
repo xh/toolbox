@@ -9,13 +9,7 @@ buildscript {
     }
 }
 
-// Custom props sourced from gradle.properties
-def appCode = xhAppCode,
-    appName = xhAppName,
-    appVersion = xhAppVersion,
-    appBuild = findProperty('xhAppBuild') ?: 'UNKNOWN'
-
-version appVersion
+version xhAppVersion
 group 'io.xh'
 
 apply plugin:'idea'
@@ -41,12 +35,12 @@ springBoot {
 
 boolean inlineHoist = runHoistInline == 'true'
 if (inlineHoist) {
-    println "${appName}: running with Hoist Core INLINE...."
+    println "${xhAppName}: running with Hoist Core INLINE...."
     grails.plugins {
         implementation project(":hoist-core")
     }
 } else {
-    println "${appName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
+    println "${xhAppName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
     dependencies {
         implementation "io.xh:hoist-core:$hoistCoreVersion"
     }
@@ -70,9 +64,10 @@ grails {
 }
 
 Map hoistMetaData = [
-        'info.xh.appCode': appCode,
-        'info.xh.appName': appName,
-        'info.xh.appBuild': appBuild
+    'info.xh.appCode': xhAppCode,
+    'info.xh.appName': xhAppName,
+    'info.xh.appPackage': xhAppPackage,
+    'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN'
 ]
 
 def allJvmArgs = [
