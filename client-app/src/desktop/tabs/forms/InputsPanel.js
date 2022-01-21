@@ -56,7 +56,7 @@ export const inputsPanel = hoistCmp.factory({
                 className: 'toolbox-inputs-panel',
                 icon: Icon.edit(),
                 width: '90%',
-                height: 850,
+                height: 950,
                 item: frame(formContents()),
                 bbar: bbar()
             })
@@ -142,6 +142,15 @@ const formContents = hoistCmp.factory(
                             enableShorthandUnits: true,
                             displayWithCommas: true,
                             selectOnFocus: true
+                        })
+                    }),
+                    row({
+                        field: 'numberInput3',
+                        info: 'scale, valueLabel',
+                        item: numberInput({
+                            fill: true,
+                            scaleFactor: 100,
+                            valueLabel: '%'
                         })
                     }),
                     row({

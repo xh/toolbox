@@ -21,6 +21,7 @@ export class FormPageModel extends HoistModel {
             {name: 'customer', rules: [required]},
             {name: 'movie', rules: [required]},
             {name: 'salary'},
+            {name: 'percentage'},
             {name: 'date', rules: [required]},
             {name: 'included'},
             {name: 'enabled'},
