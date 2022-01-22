@@ -9,13 +9,7 @@ buildscript {
     }
 }
 
-// Custom props sourced from gradle.properties
-def appCode = xhAppCode,
-    appName = xhAppName,
-    appVersion = xhAppVersion,
-    appBuild = findProperty('xhAppBuild') ?: 'UNKNOWN'
-
-version appVersion
+version xhAppVersion
 group 'io.xh'
 
 apply plugin:'idea'
@@ -33,11 +27,6 @@ configurations {
     all {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
-
-    developmentOnly
-    runtimeClasspath {
-        extendsFrom developmentOnly
-    }
 }
 
 springBoot {
@@ -46,26 +35,27 @@ springBoot {
 
 boolean inlineHoist = runHoistInline == 'true'
 if (inlineHoist) {
-    println "${appName}: running with Hoist Core INLINE...."
+    println "${xhAppName}: running with Hoist Core INLINE...."
     grails.plugins {
         implementation project(":hoist-core")
     }
 } else {
-    println "${appName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
+    println "${xhAppName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
     dependencies {
         implementation "io.xh:hoist-core:$hoistCoreVersion"
     }
 }
 
 dependencies {
-    implementation "org.bitbucket.b_c:jose4j:0.7.2"
-    runtimeOnly "mysql:mysql-connector-java:5.1.47"
+    implementation "org.bitbucket.b_c:jose4j:0.7.9"
+    runtimeOnly "mysql:mysql-connector-java:8.0.27"
 
-    // Support for reloading app on file change in dev environment
-    developmentOnly(
-        "org.springframework.boot:spring-boot-devtools",
-        "io.methvin:directory-watcher:0.15.0"
-    )
+    if (useSpringDevTools) {
+        runtimeOnly(
+            "org.springframework.boot:spring-boot-devtools",
+            "io.methvin:directory-watcher:0.15.0"
+        )
+    }
 }
 
 // Avoid unexpected errors with overly-long classpath on Windows development machines.
@@ -74,9 +64,10 @@ grails {
 }
 
 Map hoistMetaData = [
-        'info.xh.appCode': appCode,
-        'info.xh.appName': appName,
-        'info.xh.appBuild': appBuild
+    'info.xh.appCode': xhAppCode,
+    'info.xh.appName': xhAppName,
+    'info.xh.appPackage': xhAppPackage,
+    'info.xh.appBuild': findProperty('xhAppBuild') ?: 'UNKNOWN'
 ]
 
 def allJvmArgs = [

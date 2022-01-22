@@ -40,6 +40,10 @@ export class InputsPanelModel extends HoistModel {
                 displayName: 'NumberInput 2'
             },
             {
+                name: 'numberInput3',
+                displayName: 'NumberInput 3'
+            },
+            {
                 name: 'slider1',
                 displayName: 'Slider 1',
                 initialValue: random(0, 100)

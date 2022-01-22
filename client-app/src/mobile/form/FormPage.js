@@ -20,6 +20,7 @@ import {
     textArea,
     textInput
 } from '@xh/hoist/mobile/cmp/input';
+import {fmtPercent} from '@xh/hoist/format';
 import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 
@@ -81,6 +82,13 @@ const formCmp = hoistCmp.factory(
                         })
                     }),
                     formField({
+                        field: 'percentage',
+                        item: numberInput({
+                            scaleFactor: 100,
+                            valueLabel: '%'
+                        })
+                    }),
+                    formField({
                         field: 'date',
                         item: dateInput({
                             minDate: LocalDate.today().subtract(2),
@@ -138,6 +146,7 @@ const results = hoistCmp.factory(
                 fieldResult({field: 'customer'}),
                 fieldResult({field: 'movie'}),
                 fieldResult({field: 'salary'}),
+                fieldResult({field: 'percentage', renderer: v => fmtPercent(v)}),
                 fieldResult({field: 'date', renderer: v => v?.toString()}),
                 fieldResult({field: 'included'}),
                 fieldResult({field: 'enabled'}),

@@ -1,6 +1,15 @@
 # Changelog
 
-## v3.0-SNAPSHOT - unreleased
+## v2.14.0 - 2021-01-17
+
+### Technical
+* MySQL driver and datasource properties tweaked and updated to MySQL v8.
+
+### Libraries
+* @xh/hoist 45.0.2
+* hoist-core 13.0.6
+* mysql-connector-java 8.0.27
+
 
 ## v2.13.0 - 2021-01-11
 
