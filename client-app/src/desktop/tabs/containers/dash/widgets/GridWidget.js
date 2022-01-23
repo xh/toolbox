@@ -1,4 +1,4 @@
-import {hoistCmp, HoistModel, managed, useLocalModel, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {grid} from '@xh/hoist/cmp/grid';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {
@@ -12,20 +12,18 @@ import {
 } from '../../../../../core/columns';
 
 export const gridWidget = hoistCmp.factory({
-    render({viewModel}) {
-        const model = useLocalModel(() => new LocalModel(viewModel));
-        return grid({model: model.gridModel});
+    model: creates(() => new LocalModel()),
+    render() {
+        return grid();
     }
 });
 
 class LocalModel extends HoistModel {
 
-    viewModel;
     @managed gridModel;
 
-    constructor(viewModel) {
-        super();
-        this.viewModel = viewModel;
+    onLinked() {
+        const {viewModel} = this.componentProps;
 
         this.gridModel = new GridModel({
             sortBy: 'profit_loss|desc|abs',

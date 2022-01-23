@@ -1,5 +1,5 @@
 import {chart, ChartModel} from '@xh/hoist/cmp/chart';
-import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup, managed, XH} from '@xh/hoist/core';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {ChartsPanelModel} from './ChartsPanelModel';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -17,10 +17,11 @@ export const ohlcChart = hoistCmp.factory({
 
 class Model extends HoistModel {
 
+    @lookup(ChartsPanelModel) parentModel;
+
     get symbol() {return this.parentModel.symbol}
 
     onLinked() {
-        this.parentModel = this.lookupModel(ChartsPanelModel);
         this.addReaction({
             track: () => this.symbol,
             run: () => this.loadAsync()

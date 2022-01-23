@@ -1,4 +1,4 @@
-import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {div, vbox} from '@xh/hoist/cmp/layout';
@@ -7,8 +7,8 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 
 export const buttonWidget = hoistCmp.factory({
-    render({viewModel}) {
-        const model = useLocalModel(() => new LocalModel(viewModel));
+    model: creates(() => new LocalModel()),
+    render({model}) {
         return panel(
             vbox({
                 padding: 10,
@@ -45,19 +45,17 @@ export const buttonWidget = hoistCmp.factory({
 });
 
 class LocalModel extends HoistModel {
-    viewModel;
     @bindable value;
 
-    constructor(viewModel) {
-        super();
+    onLinked() {
         makeObservable(this);
-        this.viewModel = viewModel;
+        const {viewModel} = this.componentProps;
         this.value = viewModel.viewState ? viewModel.viewState.value : 'Button 1';
         this.addReaction({
             track: () => this.value,
-            run: value => {
-                this.viewModel.setIcon(this.getIconForValue(value));
-                this.viewModel.setViewState({value});
+            run: (value) => {
+                viewModel.setIcon(this.getIconForValue(value));
+                viewModel.setViewState({value});
             }
         });
     }

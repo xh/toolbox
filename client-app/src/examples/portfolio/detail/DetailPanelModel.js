@@ -1,4 +1,4 @@
-import {HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel, lookup, managed} from '@xh/hoist/core';
 import {observable, makeObservable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {OrdersPanelModel} from './OrdersPanelModel';
@@ -9,6 +9,7 @@ export class DetailPanelModel extends HoistModel {
 
     @observable positionId = null;
 
+    @lookup(PortfolioPanelModel) parentModel;
     @managed ordersPanelModel = new OrdersPanelModel(this);
 
     @managed panelSizingModel = new PanelModel({
@@ -26,10 +27,8 @@ export class DetailPanelModel extends HoistModel {
 
     onLinked() {
         makeObservable(this);
-        const parentModel = this.lookupModel(PortfolioPanelModel);
-
         this.addReaction({
-            track: () => parentModel.selectedPosition,
+            track: () => this.parentModel.selectedPosition,
             run: (position) => {
                 this.positionId = position?.id ?? null;
             },

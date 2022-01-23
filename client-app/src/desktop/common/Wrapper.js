@@ -17,7 +17,7 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory({
 
     render({className, description, links, children, ...rest}) {
 
-        const localModel = useLocalModel(() => new Model(links));
+        const localModel = useLocalModel(Model, {links});
 
         return box({
             className,
@@ -61,8 +61,8 @@ class Model extends HoistModel {
     @managed
     dockContainerModel = new DockContainerModel();
 
-    constructor(links) {
-        super();
+    onLinked() {
+        const {links} = this.componentProps;
         if (links) {
             this.dockContainerModel.addView({
                 id: XH.genId(),
@@ -86,7 +86,7 @@ class Model extends HoistModel {
                 links.map(link => {
                     return tr(
                         th(toolboxLink(link)),
-                        td(link.notes || '')
+                        td(link.notes ?? '')
                     );
                 })
             )
