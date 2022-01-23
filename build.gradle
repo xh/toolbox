@@ -10,7 +10,7 @@ buildscript {
 }
 
 version xhAppVersion
-group 'io.xh'
+group xhAppPackage
 
 apply plugin:'idea'
 apply plugin:'war'
@@ -30,7 +30,7 @@ configurations {
 }
 
 springBoot {
-    mainClass = "io.xh.toolbox.Application"
+    mainClass = xhAppPackage + ".Application"
 }
 
 boolean inlineHoist = runHoistInline == 'true'
