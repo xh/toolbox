@@ -81,6 +81,7 @@ export class ActivityWidgetModel extends HoistModel {
                 },
                 {
                     field: 'authorName',
+                    autosizeMaxWidth: 170,
                     width: 170
                 },
                 {
