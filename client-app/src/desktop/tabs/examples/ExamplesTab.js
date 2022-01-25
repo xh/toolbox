@@ -1,5 +1,5 @@
-import {hoistCmp} from '@xh/hoist/core';
-import {a, code, hbox, vframe} from '@xh/hoist/cmp/layout';
+import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
+import {a, code, div, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -7,33 +7,59 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import './ExamplesTab.scss';
 import {wrapper} from '../../common';
 import {ToolboxLink} from '../../../core/cmp/ToolboxLink';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {directoryPanel} from '../../../examples/contact/DirectoryPanel';
+import {todoPanel} from '../../../examples/todo/TodoPanel';
+import {recallsPanel} from '../../../examples/recalls/RecallsPanel';
+import {fileManager} from '../../../examples/filemanager/FileManager';
+import {newsPanel} from './NewsPanel';
+import {portfolioPanel} from './PortfolioPanel';
 
 export const examplesTab = hoistCmp.factory(
-    () => wrapper(
-        hbox({
-            className: 'example-tile-container',
-            flexWrap: 'wrap',
-            items: getExamples().map(e => panel({
-                title: e.title,
-                icon: e.icon,
-                width: 300,
-                height: 300,
-                margin: 20,
-                item: vframe({
-                    className: 'example-tile-text',
-                    items: e.text
-                }),
-                bbar: [
-                    button({
-                        text: 'Launch app',
-                        icon: Icon.openExternal(),
-                        onClick: () => window.open(e.path)
+    () => {
+        const impl = useLocalModel(LocalModel);
+        return wrapper(
+            vbox({
+                className: 'example-tile-container',
+                items: getExamples().map(e => panel({
+                    flex: impl.activePanel == e.title ? 'auto' : 'none',
+                    title: div({
+                        className: 'example-tile-title',
+                        item: e.title,
+                        onClick: () => impl.setActivePanel(e.title)
+                    }),
+                    icon: e.icon,
+                    headerItems: [
+                        button({
+                            title: 'Launch app',
+                            icon: Icon.openExternal(),
+                            onClick: () => window.open(e.path)
+                        })
+                    ],
+                    item: vframe({
+                        omit: impl.activePanel !== e.title,
+                        className: 'example-tile-text',
+                        items: [
+                            div(e.text),
+                            e.cmp()
+                        ]
                     })
-                ]
-            }))
-        })
-    )
+                }))
+            })
+        );
+    }
 );
+
+
+class LocalModel extends HoistModel {
+
+    @bindable activePanel = 'Portfolio';
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
+}
 
 function getExamples() {
     return [
@@ -41,6 +67,7 @@ function getExamples() {
             title: 'Portfolio',
             icon: Icon.portfolio(),
             path: '/portfolio',
+            cmp: () => portfolioPanel(),
             text: [
                 <p>
                     This example shows a synthetic portfolio analysis tool.  Includes examples of large data-set grids,
@@ -57,6 +84,7 @@ function getExamples() {
             title: 'Contact',
             icon: Icon.users(),
             path: '/contact',
+            cmp: () => directoryPanel(),
             text: [
                 <p>
                     Meet the Extremely Heavy team!
@@ -72,6 +100,7 @@ function getExamples() {
             title: 'Todo',
             icon: Icon.clipboard(),
             path: '/todo',
+            cmp: () => todoPanel(),
             text: [
                 <p>
                     The classic reference app, Hoist style.
@@ -86,6 +115,7 @@ function getExamples() {
             title: 'News',
             icon: Icon.news(),
             path: '/news',
+            cmp: () => newsPanel(),
             text: [
                 <p>
                     This example demonstrates Hoist support for loading and caching data on the server from
@@ -102,6 +132,7 @@ function getExamples() {
             title: 'FDA Recalls',
             icon: Icon.health(),
             path: '/recalls',
+            cmp: () => recallsPanel(),
             text: [
                 <p>
                     This applet uses the openFDA drug enforcement reports API, which provides information on drug recall
@@ -116,6 +147,7 @@ function getExamples() {
             title: 'File Manager',
             icon: Icon.fileArchive(),
             path: '/fileManager',
+            cmp: () => fileManager(),
             text: [
                 <p>
                     This example shows a simple, full-stack pattern for syncing files to a server.

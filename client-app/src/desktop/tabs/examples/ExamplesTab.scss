@@ -5,11 +5,14 @@
 }
 
 .example-tile-container {
-  justify-content: left;
-  overflow: auto;
-  min-width: 650px;
-  max-width: 1250px;
+  justify-content: center;
+  width: 80vw;
+  height: 90vh;
 
+  .example-tile-title {
+    width: 100%;
+    cursor: pointer;
+  }
   > .xh-panel {
     border: var(--xh-border-solid);
   }
