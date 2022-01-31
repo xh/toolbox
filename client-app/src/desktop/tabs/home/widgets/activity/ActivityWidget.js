@@ -14,7 +14,7 @@ export const activityWidget = hoistCmp.factory({
     displayName: 'ActivityWidget',
     model: creates(ActivityWidgetModel),
 
-    render({model}) {
+    render() {
         return panel({
             item: grid(),
             bbar: bbar(),
