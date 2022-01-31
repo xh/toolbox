@@ -9,8 +9,9 @@ import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
+import {isEmpty} from 'lodash';
 import {gridOptionsPanel} from './options/GridOptionsPanel';
 import {
     actualGrossCol,
@@ -64,16 +65,18 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
 class Model extends HoistModel {
 
     @managed gridModel;
-    @observable groupRows;
     @bindable inMillions = false;
 
     panelRef = createRef();
+
+    get groupRows() {
+        return !isEmpty(this.gridModel?.groupBy);
+    }
 
     constructor() {
         super();
         makeObservable(this);
         this.gridModel = this.createGridModel();
-        this.setGroupRows(true);
 
         this.addReaction({
             track: () => this.inMillions,
@@ -107,6 +110,7 @@ class Model extends HoistModel {
                 idSpec: data => `${data.firstName}~${data.lastName}~${data.city}~${data.state}`
             },
             sortBy: 'lastName',
+            groupBy: 'state',
             emptyText: 'No records found...',
             colChooserModel: true,
             enableExport: true,
@@ -208,9 +212,7 @@ class Model extends HoistModel {
         });
     }
 
-    @action
-    setGroupRows = (groupRows) => {
-        this.groupRows = groupRows;
+    setGroupRows(groupRows) {
         this.gridModel.setGroupBy(groupRows ? 'state' : null);
-    };
+    }
 }
