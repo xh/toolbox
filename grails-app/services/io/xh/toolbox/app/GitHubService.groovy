@@ -115,7 +115,7 @@ class GitHubService extends BaseService {
                     pageCount++
 
                     rawCommits.each{raw ->
-                        newCommits.push(new Commit(
+                        newCommits.add(new Commit(
                             repo: repoName,
                             abbreviatedOid: raw.abbreviatedOid,
                             author: [
