@@ -2,6 +2,8 @@ import {hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {button} from '@xh/hoist/desktop/cmp/button';
 
+import './FavoriteButton.scss';
+
 export const favoriteButton = hoistCmp.factory(
     ({model, record}) => {
         const {isFavorite} = record.data;
@@ -11,7 +13,10 @@ export const favoriteButton = hoistCmp.factory(
                 color: isFavorite ? 'gold' : null,
                 prefix: isFavorite ? 'fas' : 'far'
             }),
-            onClick: () => model.toggleFavorite(record)
+            onClick: (e) => {
+                e.stopPropagation();
+                model.toggleFavorite(record);
+            }
         });
     }
 );

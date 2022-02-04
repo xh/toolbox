@@ -1,7 +1,6 @@
-import {HoistService, persist, XH} from '@xh/hoist/core';
-import {without} from 'lodash';
+import {HoistService, XH} from '@xh/hoist/core';
+import {pull} from 'lodash';
 import {action} from '@xh/hoist/mobx';
-import {PERSIST_APP} from '../AppModel';
 
 /**
  * Service to manage fetching and updating contacts.
@@ -9,10 +8,8 @@ import {PERSIST_APP} from '../AppModel';
  */
 export class ContactService extends HoistService {
 
-    persistWith = PERSIST_APP;
-
     /** @member {string[]} - ids of all contacts that the user has favorited. */
-    @persist userFaves = [];
+    userFaves = [...XH.getPref('favoriteContacts')];
 
     async getContactsAsync() {
         const ret = await XH.fetchJson({url: 'contacts'});
@@ -35,6 +32,12 @@ export class ContactService extends HoistService {
         const {userFaves} = this,
             isFavorite = userFaves.includes(id);
 
-        this.userFaves = isFavorite ? without(userFaves, id) : [...userFaves, id];
+        if (isFavorite) {
+            pull(userFaves, id);
+        } else {
+            userFaves.push(id);
+        }
+
+        XH.setPref('favoriteContacts', userFaves);
     }
 }

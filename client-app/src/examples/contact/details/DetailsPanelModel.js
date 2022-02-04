@@ -5,7 +5,7 @@ import {makeObservable, observable, action} from '@xh/hoist/mobx';
 
 export class DetailsPanelModel extends HoistModel {
 
-    /** @member {Record} */
+    /** @member {StoreRecord} */
     @observable.ref currentRecord;
 
     /** @member {FormModel} */
