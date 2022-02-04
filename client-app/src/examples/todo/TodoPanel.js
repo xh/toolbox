@@ -19,7 +19,7 @@ export const todoPanel = hoistCmp.factory({
             mask: 'onLoad',
             tbar: tbar(),
             items: [
-                grid(),
+                grid({agOptions: {suppressMakeColumnVisibleAfterUnGroup: true}}),
                 taskDialog()
             ],
             bbar: bbar()
