@@ -54,7 +54,7 @@ export class TaskDialogModel extends HoistModel {
             const {description, dueDate, complete} = values,
                 existingId = values.id,
                 task = {
-                    id: existingId ?? Date.now().toString(),
+                    id: existingId ?? Date.now(),
                     description,
                     dueDate,
                     complete: complete ?? false

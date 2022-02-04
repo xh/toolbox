@@ -2,11 +2,11 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
 import {managed, HoistModel, XH} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {LocalDate} from '@xh/hoist/utils/datetime';
+import {head} from 'lodash';
 
 export class ActivityWidgetModel extends HoistModel {
 
@@ -18,11 +18,13 @@ export class ActivityWidgetModel extends HoistModel {
     @managed
     filterChooserModel;
 
-    @bindable groupBy = 'committedDay';
+    get groupBy() {
+        return head(this.gridModel.groupBy);
+    }
 
     constructor() {
         super();
-        makeObservable(this);
+
         const openUrlAction = {
             text: 'Open on Github',
             tooltip: 'Open on Github',
@@ -35,6 +37,7 @@ export class ActivityWidgetModel extends HoistModel {
             emptyText: 'No commits found...',
             colChooserModel: true,
             sortBy: 'committedDate|desc',
+            groupBy: 'committedDay',
             contextMenu: [
                 openUrlAction,
                 '-',
@@ -130,17 +133,17 @@ export class ActivityWidgetModel extends HoistModel {
             ],
             rowClassFn: (rec) => rec?.data?.isRelease ? 'tb-activity--release' : '',
             showGroupRowCounts: false,
-            groupSortFn: (a, b) => {
+            groupSortFn: (a, b, groupBy) => {
                 return a == b ? 0 :
-                    this.groupBy == 'committedDay' ? (a < b ? 1 : -1) : (a < b ? -1 : 1);
+                    groupBy == 'committedDay' ? (a < b ? 1 : -1) : (a < b ? -1 : 1);
             },
             groupRowRenderer: (params) => {
                 const {value} = params;
 
-                if (this.groupBy == 'committedDay') {
+                if (this.groupBy === 'committedDay') {
                     const ld = LocalDate.get(value);
-                    if (ld == LocalDate.today()) return 'Today';
-                    if (ld == LocalDate.yesterday()) return 'Yesterday';
+                    if (ld === LocalDate.today()) return 'Today';
+                    if (ld === LocalDate.yesterday()) return 'Yesterday';
                     return ld ? fmtDate(ld, 'dddd, DD-MMM') : '???';
                 } else {
                     return value;
@@ -160,12 +163,6 @@ export class ActivityWidgetModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => this.groupBy,
-            run: (groupBy) => this.gridModel.setGroupBy(groupBy),
-            fireImmediately: true
-        });
-
-        this.addReaction({
             track: () => XH.gitHubService.allCommits,
             run: () => this.loadAsync()
         });
@@ -179,5 +176,9 @@ export class ActivityWidgetModel extends HoistModel {
         const rec = params.data;
         if (rec?.isRecord) window.open(rec.data.url);
     };
+
+    setGroupBy(groupBy) {
+        this.gridModel.setGroupBy(groupBy);
+    }
 
 }
