@@ -46,7 +46,8 @@ class LocalModel extends HoistModel {
         return customers && id ? find(customers, {id: parseInt(id)}) : null;
     }
 
-    onLinked() {
+    constructor() {
+        super();
         makeObservable(this);
     }
 

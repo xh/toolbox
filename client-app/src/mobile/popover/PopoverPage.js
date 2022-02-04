@@ -73,7 +73,8 @@ const popoverContent = hoistCmp.factory({
 class LocalModel extends HoistModel {
     @bindable isOpen = false;
 
-    onLinked() {
+    constructor() {
+        super();
         makeObservable(this);
     }
 }
