@@ -17,8 +17,7 @@ export const lineChart = hoistCmp.factory({
 
 class Model extends HoistModel {
 
-    @lookup(ChartsPanelModel)
-    parentModel;
+    @lookup(ChartsPanelModel) parentModel;
 
     get symbol() {return this.parentModel.symbol}
 
