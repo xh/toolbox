@@ -1,5 +1,6 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/Icon';
+import {consumeEvent} from '@xh/hoist/utils/js';
 import {button} from '@xh/hoist/desktop/cmp/button';
 
 import './FavoriteButton.scss';
@@ -14,7 +15,7 @@ export const favoriteButton = hoistCmp.factory(
                 prefix: isFavorite ? 'fas' : 'far'
             }),
             onClick: (e) => {
-                e.stopPropagation();
+                consumeEvent(e);
                 model.toggleFavorite(record);
             }
         });

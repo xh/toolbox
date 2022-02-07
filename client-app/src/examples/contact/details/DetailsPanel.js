@@ -131,8 +131,8 @@ const favoriteButton = hoistCmp.factory(
         return button({
             text: isFavorite ? 'Remove Favorite' : 'Make Favorite',
             icon: Icon.favorite({
-                color: !isFavorite ? 'gold' : null,
-                prefix: !isFavorite ? 'fas' : 'far'
+                color: isFavorite ? 'gold' : null,
+                prefix: isFavorite ? 'fas' : 'far'
             }),
             width: 150,
             minimal: false,
