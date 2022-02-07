@@ -25,8 +25,12 @@ export class DetailPanelModel extends HoistModel {
         return this.panelSizingModel.collapsed;
     }
 
-    onLinked() {
+    constructor() {
+        super();
         makeObservable(this);
+    }
+
+    onLinked() {
         this.addReaction({
             track: () => this.parentModel.selectedPosition,
             run: (position) => {

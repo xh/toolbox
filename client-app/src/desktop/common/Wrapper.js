@@ -13,12 +13,10 @@ import './Wrapper.scss';
 export const [Wrapper, wrapper] = hoistCmp.withFactory({
     displayName: 'Wrapper',
     className: 'tbox-wrapper xh-tiled-bg',
-    model: false,
+    render({className, description, children, ...props}) {
+        const impl = useLocalModel(Model);
 
-    render({className, description, links, children, ...rest}) {
-
-        const localModel = useLocalModel(Model, {links});
-
+        const {dockContainerModel} = impl;
         return box({
             className,
             items: [
@@ -29,12 +27,12 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory({
                 }),
                 children,
                 dockContainer({
-                    model: localModel.dockContainerModel,
-                    compactHeaders: true,
-                    omit: !links
+                    model: dockContainerModel,
+                    omit: !dockContainerModel,
+                    compactHeaders: true
                 })
             ],
-            ...rest
+            ...props
         });
     }
 });
@@ -59,11 +57,12 @@ Wrapper.propTypes = {
 class Model extends HoistModel {
 
     @managed
-    dockContainerModel = new DockContainerModel();
+    dockContainerModel = null;
 
     onLinked() {
         const {links} = this.componentProps;
         if (links) {
+            this.dockContainerModel = new DockContainerModel();
             this.dockContainerModel.addView({
                 id: XH.genId(),
                 icon: Icon.link(),
@@ -83,12 +82,10 @@ class Model extends HoistModel {
     createLinksWithNotes(links) {
         return table(
             tbody(
-                links.map(link => {
-                    return tr(
-                        th(toolboxLink(link)),
-                        td(link.notes ?? '')
-                    );
-                })
+                links.map(link => tr(
+                    th(toolboxLink(link)),
+                    td(link.notes ?? '')
+                ))
             )
         );
     }

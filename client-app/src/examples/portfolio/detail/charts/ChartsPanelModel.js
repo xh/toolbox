@@ -7,8 +7,12 @@ export class ChartsPanelModel extends HoistModel  {
     @observable symbol = null;
     @lookup(OrdersPanelModel) ordersPanelModel;
 
-    onLinked() {
+    constructor() {
+        super();
         makeObservable(this);
+    }
+
+    onLinked() {
         this.addReaction({
             track: () => this.ordersPanelModel.selectedRecord?.data.symbol ?? null,
             run: (symbol) => {

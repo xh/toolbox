@@ -58,8 +58,12 @@ class LocalModel extends HoistModel {
         return decodeURIComponent(this.componentProps.id);
     }
 
-    onLinked() {
+    constructor() {
+        super();
         makeObservable(this);
+    }
+
+    onLinked() {
         this.addReaction({
             track: () => this.id,
             run: () => this.loadAsync()

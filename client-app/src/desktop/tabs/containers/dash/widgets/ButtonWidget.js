@@ -47,8 +47,12 @@ export const buttonWidget = hoistCmp.factory({
 class LocalModel extends HoistModel {
     @bindable value;
 
-    onLinked() {
+    constructor() {
+        super();
         makeObservable(this);
+    }
+
+    onLinked() {
         const {viewModel} = this.componentProps;
         this.value = viewModel.viewState ? viewModel.viewState.value : 'Button 1';
         this.addReaction({
