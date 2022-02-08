@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.14.0 - 2022-02-08
+## v2.15.0 - 2022-02-08
 
 ### Bug Fixes
 * Auth0 OAuth login flow no longer leaves a gap at bottom of the viewport when Toolbox is opened in iOS fullscreen mode.
