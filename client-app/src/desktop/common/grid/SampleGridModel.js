@@ -2,6 +2,7 @@ import {createRef} from 'react';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {br, div, filler, fragment, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {FieldType} from '@xh/hoist/data';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {fmtDate, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
@@ -95,10 +96,20 @@ export class SampleGridModel extends HoistModel {
         },
         store: {
             processRawData: (r) => {
-                const pnl = r.profit_loss;
+                const {id, active, city, company, profit_loss, trade_date, trade_volume} = r;
                 return {
-                    winLose: pnl > 0 ? 'Winner' : (pnl < 0 ? 'Loser' : 'Flat'),
-                    ...r
+                    id,
+                    active,
+                    info: {
+                        city,
+                        company
+                    },
+                    financial: {
+                        profit_loss,
+                        trade_date,
+                        trade_volume,
+                        winLose: profit_loss > 0 ? 'Winner' : (profit_loss < 0 ? 'Loser' : 'Flat')
+                    }
                 };
             }
         },
@@ -165,6 +176,11 @@ export class SampleGridModel extends HoistModel {
             },
             {
                 ...companyCol,
+                field: {
+                    name: 'info.company',
+                    displayName: 'Company',
+                    type: FieldType.STRING
+                },
                 headerName: ({gridModel}) => {
                     let ret = 'Company';
                     if (gridModel.selectedRecord) {
@@ -175,12 +191,47 @@ export class SampleGridModel extends HoistModel {
                 exportName: 'Company',
                 headerTooltip: 'Select a company & continue'
             },
-            {...winLoseCol, hidden: true},
-            {...cityCol, tooltip: (val, {record}) => `${record.data.company} is located in ${val}`},
-            {...tradeVolumeCol},
-            {...profitLossCol},
+            {
+                ...winLoseCol,
+                field: {
+                    name: 'financial.winLose',
+                    type: FieldType.STRING
+                },
+                hidden: true
+            },
+            {
+                ...cityCol,
+                field: {
+                    name: 'info.city',
+                    type: FieldType.STRING
+                },
+                tooltip: (val, {record}) => `${record.data.company} is located in ${val}`
+            },
+            {
+                ...tradeVolumeCol,
+                field: {
+                    name: 'financial.trade_volume',
+                    type: FieldType.NUMBER,
+                    displayName: 'Volume'
+                }
+            },
+            {
+                ...profitLossCol,
+                field: {
+                    name: 'financial.profit_loss',
+                    type: FieldType.NUMBER,
+                    displayName: 'P&L'
+                }
+            },
             {...dayOfWeekCol, hidden: true},
-            {...tradeDateCol},
+            {
+                ...tradeDateCol,
+                field: {
+                    name: 'financial.trade_date',
+                    type: FieldType.LOCAL_DATE,
+                    displayName: 'Date'
+                }
+            },
             {...activeCol, tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''}
         ]
     });
