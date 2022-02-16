@@ -51,7 +51,6 @@ export class DateFormatsPanelModel extends HoistModel {
     //--------------------------------
     getResult(input) {
         const options = {
-            asElement: true,
             tooltip: this.tooltip ? (d) => `${d}` : undefined,
             fmt: this.enableFmt && this.fmt ? this.fmt : undefined,
             nullDisplay: this.nullDisplay != null ? this.nullDisplay : undefined

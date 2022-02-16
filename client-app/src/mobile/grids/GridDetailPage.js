@@ -29,8 +29,8 @@ export const gridDetailPage = hoistCmp.factory({
                 row('ID', record?.id),
                 row('Company', record?.company),
                 row('City', record?.city),
-                row('P&L', record?.profit_loss, numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true})),
-                row('Volume', record?.trade_volume, numberRenderer({precision: 0, asElement: true}))
+                row('P&L', record?.profit_loss, numberRenderer({precision: 0, ledger: true, colorSpec: true})),
+                row('Volume', record?.trade_volume, numberRenderer({precision: 0}))
             ]
         });
     }
