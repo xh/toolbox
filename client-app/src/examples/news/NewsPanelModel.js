@@ -25,7 +25,7 @@ export class NewsPanelModel extends HoistModel {
             ]
         },
         onRowDoubleClicked: this.onRowDoubleClicked,
-        elementRenderer: (v, {record}) => newsPanelItem({record}),
+        renderer: (v, {record}) => newsPanelItem({record}),
         itemHeight: 120,
         rowBorders: true,
         stripeRows: true

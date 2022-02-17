@@ -50,7 +50,7 @@ export class RecallsPanelModel extends HoistModel {
                 align: 'center',
                 width: 65,
                 tooltip: (cls) => cls,
-                elementRenderer: this.classificationRenderer
+                renderer: this.classificationRenderer
             },
             {
                 field: 'brandName',
