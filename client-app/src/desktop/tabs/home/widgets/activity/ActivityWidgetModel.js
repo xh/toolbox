@@ -131,7 +131,7 @@ export class ActivityWidgetModel extends HoistModel {
                     actions: [openUrlAction]
                 }
             ],
-            rowClassFn: (rec) => rec?.data?.isRelease ? 'tb-activity--release' : '',
+            rowClassFn: (rec) => rec?.data?.isRelease ? 'tb-activity--release' : null,
             showGroupRowCounts: false,
             groupSortFn: (a, b, groupBy) => {
                 return a === b ? 0 :
