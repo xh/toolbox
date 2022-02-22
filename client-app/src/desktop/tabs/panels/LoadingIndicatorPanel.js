@@ -13,7 +13,7 @@ import {loadingIndicator} from '@xh/hoist/desktop/cmp/loadingindicator';
 import {sampleGrid, SampleGridModel, wrapper} from '../../common';
 
 export const loadingIndicatorPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => LoadingIndicatorPanelModel),
 
     render({model}) {
         return wrapper({
@@ -81,7 +81,7 @@ export const loadingIndicatorPanel = hoistCmp.factory({
     }
 });
 
-class Model extends HoistModel {
+class LoadingIndicatorPanelModel extends HoistModel {
 
     @bindable seconds = 3;
     @bindable message = '';

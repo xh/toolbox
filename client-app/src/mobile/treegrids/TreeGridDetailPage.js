@@ -7,7 +7,7 @@ import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export const treeGridDetailPage = hoistCmp.factory({
-    model: creates(() => new LocalModel()),
+    model: creates(() => TreeGridDetailPageModel),
     render({model}) {
         const {position} = model;
 
@@ -50,7 +50,7 @@ function renderRow(title, value, renderer) {
     });
 }
 
-class LocalModel extends HoistModel {
+class TreeGridDetailPageModel extends HoistModel {
 
     @bindable.ref position;
 

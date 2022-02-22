@@ -5,7 +5,7 @@ import {ChartsPanelModel} from './ChartsPanelModel';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 
 export const ohlcChart = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => OHLCChartModel),
     render() {
         return panel({
             item: chart(),
@@ -15,7 +15,7 @@ export const ohlcChart = hoistCmp.factory({
     }
 });
 
-class Model extends HoistModel {
+class OHLCChartModel extends HoistModel {
 
     @lookup(ChartsPanelModel) parentModel;
 

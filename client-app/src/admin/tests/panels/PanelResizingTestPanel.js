@@ -9,9 +9,9 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {PanelResizingTestModel} from './PanelResizingTestModel';
 
 export const PanelResizingTestPanel = hoistCmp({
-    model: creates(() => new PanelResizingTestModel()),
+    model: creates(PanelResizingTestModel),
 
-    render({ model }) {
+    render({model}) {
         return panel({
             title: 'Panels › Panel Sizing',
             icon: Icon.window(),

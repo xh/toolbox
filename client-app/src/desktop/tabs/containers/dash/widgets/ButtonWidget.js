@@ -1,13 +1,14 @@
-import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {div, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
+import {DashViewModel} from '@xh/hoist/desktop/cmp/dash/DashViewModel';
 
 export const buttonWidget = hoistCmp.factory({
-    model: creates(() => new LocalModel()),
+    model: creates(() => ButtonWidgetModel),
     render({model}) {
         return panel(
             vbox({
@@ -44,8 +45,9 @@ export const buttonWidget = hoistCmp.factory({
     }
 });
 
-class LocalModel extends HoistModel {
+class ButtonWidgetModel extends HoistModel {
     @bindable value;
+    @lookup(DashViewModel) viewModel;
 
     constructor() {
         super();
@@ -53,7 +55,7 @@ class LocalModel extends HoistModel {
     }
 
     onLinked() {
-        const {viewModel} = this.componentProps;
+        const {viewModel} = this;
         this.value = viewModel.viewState ? viewModel.viewState.value : 'Button 1';
         this.addReaction({
             track: () => this.value,

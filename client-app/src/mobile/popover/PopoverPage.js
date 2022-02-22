@@ -9,7 +9,7 @@ import {Icon} from '@xh/hoist/icon';
 import './PopoverPage.scss';
 
 export const popoverPage = hoistCmp.factory({
-    model: creates(() => new LocalModel()),
+    model: creates(() => PopoverPageModel),
     render({model}) {
         return panel({
             title: 'Popovers',
@@ -70,7 +70,7 @@ const popoverContent = hoistCmp.factory({
 /**
  * LocalModel used to demonstrate opening a Popover in controlled mode
  */
-class LocalModel extends HoistModel {
+class PopoverPageModel extends HoistModel {
     @bindable isOpen = false;
 
     constructor() {

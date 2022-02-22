@@ -11,7 +11,7 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {wrapper} from '../../common/Wrapper';
 
 export const panelSizingPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => PanelSizingModel),
 
     render({model}) {
         return wrapper({
@@ -138,7 +138,7 @@ const loremIpsum = [
 ];
 
 
-class Model extends HoistModel {
+class PanelSizingModel extends HoistModel {
 
     @bindable resizeWhileDragging = false;
 

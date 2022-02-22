@@ -7,7 +7,7 @@ import {find, isNil} from 'lodash';
 import {bindable, makeObservable, computed} from '@xh/hoist/mobx';
 
 export const gridDetailPage = hoistCmp.factory({
-    model: creates(() => new LocalModel()),
+    model: creates(() => GridDetailPageModel),
     render({model}) {
         const {record} = model;
 
@@ -35,7 +35,7 @@ export const gridDetailPage = hoistCmp.factory({
     }
 });
 
-class LocalModel extends HoistModel {
+class GridDetailPageModel extends HoistModel {
 
     @bindable.ref customers = null;
 

@@ -10,7 +10,7 @@ import {wrapper} from '../../common';
 import './ClockPanel.scss';
 
 export const errorMessagePanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => ErrorMessagePanelModel),
 
     render({model}) {
         const {error} = model;
@@ -70,7 +70,7 @@ export const errorMessagePanel = hoistCmp.factory({
     }
 });
 
-class Model extends HoistModel {
+class ErrorMessagePanelModel extends HoistModel {
     @bindable error = null;
 
     constructor() {
