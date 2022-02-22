@@ -101,6 +101,7 @@ export class AppModel extends HoistAppModel {
                             {name: 'tabPanel', path: '/tabPanel'},
                             {name: 'dock', path: '/dock'},
                             {name: 'dash', path: '/dash'},
+                            {name: 'dashGrid', path: '/dashGrid'},
                             {name: 'tileFrame', path: '/tileFrame'}
                         ]
                     },

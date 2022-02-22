@@ -9,7 +9,7 @@ import {
     tradeDateCol,
     tradeVolumeCol,
     winLoseCol
-} from '../../../../../core/columns';
+} from '../../../../core/columns';
 
 export const gridWidget = hoistCmp.factory({
     render({viewModel}) {

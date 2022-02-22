@@ -1,6 +1,7 @@
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {hoistCmp} from '@xh/hoist/core';
 import {dashContainerPanel} from './dash/DashContainerPanel';
+import {dashGridLayoutContainerPanel} from './dashGrid/DashGridLayoutContainerPanel';
 import {dockContainerPanel} from './DockContainerPanel';
 import {hboxContainerPanel} from './HBoxContainerPanel';
 import {tabPanelContainerPanel} from './tab/TabPanelContainerPanel';
@@ -18,6 +19,7 @@ export const containersTab = hoistCmp.factory(
                 {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
                 {id: 'tabPanel', title: 'TabContainer', content: tabPanelContainerPanel},
                 {id: 'dash', title: 'DashContainer', content: dashContainerPanel},
+                {id: 'dashGrid', title: 'DashGridLayoutContianer', content: dashGridLayoutContainerPanel},
                 {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
                 {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
             ]

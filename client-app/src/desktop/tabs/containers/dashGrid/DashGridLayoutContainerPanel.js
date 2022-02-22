@@ -1,4 +1,4 @@
-import {switchInput} from '@xh/hoist/desktop/cmp/input';
+import {switchInput, numberInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
 import {creates, hoistCmp, HoistModel, managed, RefreshMode, RenderMode, XH} from '@xh/hoist/core';
@@ -7,11 +7,11 @@ import {Icon} from '@xh/hoist/icon';
 import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
+import {dashGridLayoutContainer, DashGridLayoutContainerModel} from '@xh/hoist/desktop/cmp/dashGrid';
 import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from '../widgets';
 import {wrapper} from '../../../common';
 
-export const dashContainerPanel = hoistCmp.factory({
+export const dashGridLayoutContainerPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {
@@ -31,7 +31,7 @@ export const dashContainerPanel = hoistCmp.factory({
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard ?
-                    dashContainer() :
+                    dashGridLayoutContainer() :
                     frame({
                         item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
                         padding: 10
@@ -57,6 +57,7 @@ const bbar = hoistCmp.factory(
             labelSide: 'left'
         }),
         '-',
+        /* TODO: Support these flags?
         switchInput({
             label: 'Layout Locked',
             bind: 'layoutLocked',
@@ -77,6 +78,20 @@ const bbar = hoistCmp.factory(
             labelSide: 'left',
             model: model.dashContainerModel
         }),
+         */
+        'Columns',
+        numberInput({
+            width: 80,
+            bind: 'columns',
+            model: model.dashGridLayoutContainerModel
+        }),
+        '-',
+        'Row Height (px)',
+        numberInput({
+            width: 80,
+            bind: 'rowHeight',
+            model: model.dashGridLayoutContainerModel
+        }),
         filler(),
         button({
             text: 'Reset & Clear State',
@@ -90,8 +105,8 @@ class Model extends HoistModel {
     @bindable renderDashboard = true;
 
     @managed
-    dashContainerModel = new DashContainerModel({
-        persistWith: {localStorageKey: 'dashContainerState'},
+    dashGridLayoutContainerModel = new DashGridLayoutContainerModel({
+        persistWith: {localStorageKey: 'dashGridLayoutContainerState'},
         showMenuButton: true,
         initialState: [{
             type: 'row',
