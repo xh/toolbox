@@ -1,4 +1,4 @@
-import {hoistCmp, HoistModel, managed, XH, creates} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, managed, XH, creates, ModelPublishMode} from '@xh/hoist/core';
 import PT from 'prop-types';
 import {box, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -13,9 +13,8 @@ import './Wrapper.scss';
 export const [Wrapper, wrapper] = hoistCmp.withFactory({
     displayName: 'Wrapper',
     className: 'tbox-wrapper xh-tiled-bg',
-    model: creates(() => WrapperModel),
+    model: creates(() => WrapperModel, {publishMode: ModelPublishMode.LIMITED}),
     render({model, className, description, children, ...props}) {
-
         const {dockContainerModel} = model;
         return box({
             className,
