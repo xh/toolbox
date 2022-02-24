@@ -1,4 +1,4 @@
-import {hoistCmp, HoistModel, managed, useLocalModel, XH} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, managed, XH, creates} from '@xh/hoist/core';
 import PT from 'prop-types';
 import {box, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -13,10 +13,10 @@ import './Wrapper.scss';
 export const [Wrapper, wrapper] = hoistCmp.withFactory({
     displayName: 'Wrapper',
     className: 'tbox-wrapper xh-tiled-bg',
-    render({className, description, children, ...props}) {
-        const impl = useLocalModel(Model);
+    model: creates(() => WrapperModel),
+    render({model, className, description, children, ...props}) {
 
-        const {dockContainerModel} = impl;
+        const {dockContainerModel} = model;
         return box({
             className,
             items: [
@@ -54,7 +54,7 @@ Wrapper.propTypes = {
     links: PT.arrayOf(PT.object)
 };
 
-class Model extends HoistModel {
+class WrapperModel extends HoistModel {
 
     @managed
     dockContainerModel = null;
