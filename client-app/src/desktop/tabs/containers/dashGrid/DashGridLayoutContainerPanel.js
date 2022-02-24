@@ -31,7 +31,7 @@ export const dashGridLayoutContainerPanel = hoistCmp.factory({
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard ?
-                    dashGridLayoutContainer() :
+                    frame(dashGridLayoutContainer()):
                     frame({
                         item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
                         padding: 10
