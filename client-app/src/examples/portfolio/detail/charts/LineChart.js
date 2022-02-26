@@ -1,15 +1,27 @@
-import {ChartModel} from '@xh/hoist/cmp/chart';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {chart, ChartModel} from '@xh/hoist/cmp/chart';
+import {creates, hoistCmp, HoistModel, lookup, managed, XH} from '@xh/hoist/core';
 import {fmtDate} from '@xh/hoist/format';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {ChartsPanelModel} from './ChartsPanelModel';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 
-export class LineChartModel extends HoistModel {
+export const lineChart = hoistCmp.factory({
+    model: creates(() => LineChartModel),
+    render() {
+        return panel({
+            item: chart(),
+            mask: 'onLoad',
+            flex: 1
+        });
+    }
+});
 
-    @bindable symbol = null;
+class LineChartModel extends HoistModel {
 
-    constructor() {
-        super();
-        makeObservable(this);
+    @lookup(ChartsPanelModel) parentModel;
+
+    get symbol() {return this.parentModel.symbol}
+
+    onLinked() {
         this.addReaction({
             track: () => this.symbol,
             run: () => this.loadAsync()
@@ -48,19 +60,22 @@ export class LineChartModel extends HoistModel {
     });
 
     async doLoadAsync(loadSpec) {
-        const {symbol} = this;
+        const {symbol, chartModel} = this;
 
         if (!symbol) {
-            this.chartModel.clear();
+            chartModel.clear();
             return;
         }
 
-        const series = await XH.portfolioService
-            .getLineChartSeriesAsync({symbol, loadSpec})
-            .catchDefault();
+        try {
+            const series = await XH.portfolioService.getLineChartSeriesAsync({symbol, loadSpec});
 
-        if (!loadSpec.isObsolete) {
-            this.chartModel.setSeries(series ?? {});
+            if (!loadSpec.isObsolete) {
+                chartModel.setSeries(series);
+            }
+        } catch (e) {
+            chartModel.clear();
+            XH.handleException(e);
         }
     }
 }

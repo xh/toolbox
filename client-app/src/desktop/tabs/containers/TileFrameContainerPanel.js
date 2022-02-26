@@ -12,7 +12,7 @@ import {wrapper} from '../../common';
 import './TileFrameContainerPanel.scss';
 
 export const tileFrameContainerPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => TileFrameContainerPanelModel),
 
     render({model}) {
         const vals = model.formModel.values,
@@ -111,7 +111,7 @@ export const tileFrameContainerPanel = hoistCmp.factory({
 });
 
 
-class Model extends HoistModel {
+class TileFrameContainerPanelModel extends HoistModel {
 
     @managed
     formModel = new FormModel({

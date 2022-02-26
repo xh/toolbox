@@ -12,7 +12,7 @@ import {pluralize} from '@xh/hoist/utils/js';
 import {wrapper} from '../../common/Wrapper';
 
 export const fileChooserPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => FileChooserPanelModel),
 
     render({model}) {
         const {chooserModel, enableMulti, enableAddMulti, showFileGrid} = model;
@@ -87,7 +87,7 @@ export const fileChooserPanel = hoistCmp.factory({
 });
 
 
-class Model extends HoistModel {
+class FileChooserPanelModel extends HoistModel {
     @managed
     chooserModel = new FileChooserModel();
 

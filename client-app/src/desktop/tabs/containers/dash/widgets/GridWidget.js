@@ -1,5 +1,6 @@
-import {hoistCmp, HoistModel, managed, useLocalModel, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, lookup, HoistModel, managed, XH} from '@xh/hoist/core';
 import {grid} from '@xh/hoist/cmp/grid';
+import {DashViewModel} from '@xh/hoist/desktop/cmp/dash/DashViewModel';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {
     activeCol,
@@ -12,25 +13,22 @@ import {
 } from '../../../../../core/columns';
 
 export const gridWidget = hoistCmp.factory({
-    render({viewModel}) {
-        const model = useLocalModel(() => new LocalModel(viewModel));
-        return grid({model: model.gridModel});
+    model: creates(() => GridWidgetModel),
+    render() {
+        return grid();
     }
 });
 
-class LocalModel extends HoistModel {
+class GridWidgetModel extends HoistModel {
 
-    viewModel;
     @managed gridModel;
+    @lookup(DashViewModel) viewModel;
 
-    constructor(viewModel) {
-        super();
-        this.viewModel = viewModel;
-
+    onLinked() {
         this.gridModel = new GridModel({
             sortBy: 'profit_loss|desc|abs',
             colChooserModel: true,
-            persistWith: {dashViewModel: viewModel},
+            persistWith: {dashViewModel: this.viewModel},
             columns: [
                 {
                     field: 'id',

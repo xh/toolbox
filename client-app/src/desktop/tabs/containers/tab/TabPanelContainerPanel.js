@@ -8,7 +8,7 @@ import {wrapper} from '../../../common';
 import {customExample, dynamicExample, simpleExample, tabStateExample} from './tabs';
 
 export const tabPanelContainerPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => TabPanelContainerPanelModel),
 
     render() {
         return wrapper({
@@ -42,7 +42,7 @@ export const tabPanelContainerPanel = hoistCmp.factory({
     }
 });
 
-class Model extends HoistModel {
+class TabPanelContainerPanelModel extends HoistModel {
     @managed
     tabModel = new TabContainerModel({
         persistWith: {localStorageKey: 'tabExampleState'},

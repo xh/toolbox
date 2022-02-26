@@ -9,7 +9,7 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import data from './impl/LeftRightChooserData';
 
 export const leftRightChooserPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => LeftRightChooserPanelModel),
 
     render({model}) {
         return wrapper({
@@ -54,7 +54,7 @@ export const leftRightChooserPanel = hoistCmp.factory({
 });
 
 
-class Model extends HoistModel {
+class LeftRightChooserPanelModel extends HoistModel {
 
     @managed
     leftRightChooserModel = new LeftRightChooserModel({

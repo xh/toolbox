@@ -1,14 +1,15 @@
-import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {div, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
+import {DashViewModel} from '@xh/hoist/desktop/cmp/dash/DashViewModel';
 
 export const buttonWidget = hoistCmp.factory({
-    render({viewModel}) {
-        const model = useLocalModel(() => new LocalModel(viewModel));
+    model: creates(() => ButtonWidgetModel),
+    render({model}) {
         return panel(
             vbox({
                 padding: 10,
@@ -44,20 +45,23 @@ export const buttonWidget = hoistCmp.factory({
     }
 });
 
-class LocalModel extends HoistModel {
-    viewModel;
+class ButtonWidgetModel extends HoistModel {
     @bindable value;
+    @lookup(DashViewModel) viewModel;
 
-    constructor(viewModel) {
+    constructor() {
         super();
         makeObservable(this);
-        this.viewModel = viewModel;
+    }
+
+    onLinked() {
+        const {viewModel} = this;
         this.value = viewModel.viewState ? viewModel.viewState.value : 'Button 1';
         this.addReaction({
             track: () => this.value,
-            run: value => {
-                this.viewModel.setIcon(this.getIconForValue(value));
-                this.viewModel.setViewState({value});
+            run: (value) => {
+                viewModel.setIcon(this.getIconForValue(value));
+                viewModel.setViewState({value});
             }
         });
     }

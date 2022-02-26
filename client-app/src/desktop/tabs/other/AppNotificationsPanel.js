@@ -77,7 +77,7 @@ const idleServiceTile = hoistCmp.factory(
                     className: 'tb-idle__button',
                     icon: Icon.userClock(),
                     text: 'Enter Sleep Mode',
-                    onClick: () => XH.idleService.suspendApp()
+                    onClick: () => XH.suspendApp({reason: 'IDLE'})
                 })
             ]
         });

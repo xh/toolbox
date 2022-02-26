@@ -7,7 +7,7 @@ import {slider} from '@xh/hoist/desktop/cmp/input';
 import './DataViewTestPanel.scss';
 
 export const dataViewTestPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => DataViewTestPanelModel),
 
     render({model})  {
         const {dataViewModel} = model;
@@ -27,7 +27,7 @@ export const dataViewTestPanel = hoistCmp.factory({
     }
 });
 
-class Model extends HoistModel {
+class DataViewTestPanelModel extends HoistModel {
 
     @managed
     dataViewModel = new DataViewModel({

@@ -12,7 +12,7 @@ import './PinPadPanel.scss';
 import {wrapper} from '../../common/Wrapper';
 
 export const pinPadPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => PinPadPanelModel),
 
     render({model}) {
         return wrapper({
@@ -57,7 +57,7 @@ const secretPlans = hoistCmp.factory(
     })
 );
 
-class Model extends HoistModel {
+class PinPadPanelModel extends HoistModel {
 
     @managed
     pinPadModel = new PinPadModel({

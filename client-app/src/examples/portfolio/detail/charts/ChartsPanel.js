@@ -1,14 +1,15 @@
-import {chart} from '@xh/hoist/cmp/chart';
 import {placeholder} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-import {hoistCmp, uses} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {PERSIST_DETAIL} from '../AppModel';
+import {PERSIST_DETAIL} from '../../AppModel';
 import {ChartsPanelModel} from './ChartsPanelModel';
+import {lineChart} from './LineChart';
+import {ohlcChart} from './OHLCChart';
 
 export const chartsPanel = hoistCmp.factory({
-    model: uses(ChartsPanelModel),
+    model: creates(ChartsPanelModel),
 
     render({model}) {
         return panel({
@@ -17,7 +18,7 @@ export const chartsPanel = hoistCmp.factory({
             model: {
                 defaultSize: 700,
                 side: 'right',
-                collapsedRenderMode: 'unmountOnHide',
+                renderMode: 'unmountOnHide',
                 persistWith: {...PERSIST_DETAIL, path: 'chartPanel'}
             },
             item: model.symbol ?
@@ -28,12 +29,12 @@ export const chartsPanel = hoistCmp.factory({
                             {
                                 id: 'line',
                                 title: 'Trading Volume',
-                                content: () => chartPanel({model: model.lineChartModel})
+                                content: lineChart
                             },
                             {
                                 id: 'ohlc',
                                 title: 'Price History',
-                                content: () => chartPanel({model: model.ohlcChartModel})
+                                content: ohlcChart
                             }
                         ]
                     }
@@ -44,10 +45,3 @@ export const chartsPanel = hoistCmp.factory({
 });
 
 
-const chartPanel = hoistCmp.factory(
-    () =>  panel({
-        item: chart(),
-        mask: 'onLoad',
-        flex: 1
-    })
-);

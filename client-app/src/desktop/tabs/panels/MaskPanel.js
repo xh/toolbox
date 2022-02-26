@@ -13,7 +13,7 @@ import {mask} from '@xh/hoist/desktop/cmp/mask';
 import {sampleGrid, SampleGridModel, wrapper} from '../../common';
 
 export const maskPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => MaskPanelModel),
 
     render({model}) {
         return wrapper({
@@ -81,7 +81,7 @@ export const maskPanel = hoistCmp.factory({
     }
 });
 
-class Model extends HoistModel {
+class MaskPanelModel extends HoistModel {
 
     @bindable seconds = 3;
     @bindable message = '';

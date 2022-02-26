@@ -1,17 +1,16 @@
-import {HoistModel, loadAllAsync, managed} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {HoistModel, lookup, managed} from '@xh/hoist/core';
+import {observable, makeObservable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {OrdersPanelModel} from './OrdersPanelModel';
-import {ChartsPanelModel} from './ChartsPanelModel';
 import {PERSIST_DETAIL} from '../AppModel';
-
+import {PortfolioPanelModel} from '../PortfolioPanelModel';
 
 export class DetailPanelModel extends HoistModel {
 
-    @bindable positionId = null;
+    @observable positionId = null;
 
-    @managed ordersPanelModel = new OrdersPanelModel();
-    @managed chartsPanelModel = new ChartsPanelModel();
+    @lookup(PortfolioPanelModel) parentModel;
+    @managed ordersPanelModel = new OrdersPanelModel(this);
 
     @managed panelSizingModel = new PanelModel({
         defaultSize: 400,
@@ -22,33 +21,22 @@ export class DetailPanelModel extends HoistModel {
         persistWith: PERSIST_DETAIL
     });
 
+    get collapsed() {
+        return this.panelSizingModel.collapsed;
+    }
+
     constructor() {
         super();
         makeObservable(this);
-        const {chartsPanelModel, ordersPanelModel, panelSizingModel} = this;
-        this.addReaction({
-            track: () => [this.positionId, panelSizingModel.collapsed],
-            run: () => {
-                if (!panelSizingModel.collapsed) {
-                    ordersPanelModel.setPositionId(this.positionId);
-                }
-            }
-        });
-        this.addReaction({
-            track: () => ordersPanelModel.selectedRecord,
-            run: (order) => {
-                const symbol = order ? order.data.symbol : null;
-                chartsPanelModel.setSymbol(symbol);
-            }
-        });
     }
 
-    async doLoadAsync(loadSpec) {
-        if (!this.panelSizingModel.collapsed) {
-            await loadAllAsync([
-                this.ordersPanelModel,
-                this.chartsPanelModel
-            ], loadSpec);
-        }
+    onLinked() {
+        this.addReaction({
+            track: () => this.parentModel.selectedPosition,
+            run: (position) => {
+                this.positionId = position?.id ?? null;
+            },
+            debounce: 300
+        });
     }
 }
