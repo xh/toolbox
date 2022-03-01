@@ -8,7 +8,7 @@ import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
 import {sampleGrid, wrapper} from '../../common';
 
 export const dockContainerPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => DockContainerPanelModel),
 
     render({model}) {
         return wrapper({
@@ -85,7 +85,7 @@ const btnCfg = {
     margin: 5
 };
 
-class Model extends HoistModel {
+class DockContainerPanelModel extends HoistModel {
 
     @managed
     dockContainerModel = new DockContainerModel();

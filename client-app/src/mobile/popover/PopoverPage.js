@@ -1,5 +1,5 @@
-import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
-import {observable, action, makeObservable} from '@xh/hoist/mobx';
+import {hoistCmp, HoistModel, creates} from '@xh/hoist/core';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {div, filler, h1, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {popover} from '@xh/hoist/mobile/cmp/popover';
@@ -9,9 +9,8 @@ import {Icon} from '@xh/hoist/icon';
 import './PopoverPage.scss';
 
 export const popoverPage = hoistCmp.factory({
-    render() {
-        const impl = useLocalModel(() => new LocalModel());
-
+    model: creates(() => PopoverPageModel),
+    render({model}) {
         return panel({
             title: 'Popovers',
             icon: Icon.openExternal(),
@@ -33,8 +32,8 @@ export const popoverPage = hoistCmp.factory({
                 popoverCard({
                     text: 'Show controlled Popover',
                     popoverProps: {
-                        isOpen: impl.isOpen,
-                        onInteraction: (nextOpenState) => impl.setIsOpen(nextOpenState)
+                        isOpen: model.isOpen,
+                        onInteraction: (nextOpenState) => model.setIsOpen(nextOpenState)
                     }
                 }),
                 filler()
@@ -71,16 +70,11 @@ const popoverContent = hoistCmp.factory({
 /**
  * LocalModel used to demonstrate opening a Popover in controlled mode
  */
-class LocalModel extends HoistModel {
-    @observable isOpen = false;
+class PopoverPageModel extends HoistModel {
+    @bindable isOpen = false;
 
     constructor() {
         super();
         makeObservable(this);
-    }
-
-    @action
-    setIsOpen(isOpen) {
-        this.isOpen = isOpen;
     }
 }

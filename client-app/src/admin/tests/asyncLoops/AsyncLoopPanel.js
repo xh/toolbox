@@ -20,7 +20,7 @@ import {SECONDS} from '@xh/hoist/utils/datetime';
  * Test to demonstrate use of {@see whileAsync} and its more common cousin {@see forEachAsync}.
  */
 export const asyncLoopPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => AsyncLoopPanelModel),
 
     render() {
         return panel({
@@ -70,7 +70,7 @@ const tbar = hoistCmp.factory(({model}) => {
     });
 });
 
-class Model extends HoistModel {
+class AsyncLoopPanelModel extends HoistModel {
     @bindable iterations = 1000 * 1000;
     @bindable lastRunDuration = null;
     @bindable loopType = 'forEachAsync';

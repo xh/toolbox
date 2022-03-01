@@ -125,7 +125,7 @@ export class DirectoryPanelModel extends HoistModel {
         return new GridModel({
             store: {
                 fields: [
-                    {name: 'isFavorite', type: 'string'},
+                    {name: 'isFavorite', type: 'bool'},
                     {name: 'profilePicture', type: 'string'},
                     {name: 'bio', type: 'string'},
                     {name: 'tags', type: 'auto'}

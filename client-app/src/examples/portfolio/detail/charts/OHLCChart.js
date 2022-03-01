@@ -1,15 +1,27 @@
-import {ChartModel} from '@xh/hoist/cmp/chart';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {chart, ChartModel} from '@xh/hoist/cmp/chart';
+import {creates, hoistCmp, HoistModel, lookup, managed, XH} from '@xh/hoist/core';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {ChartsPanelModel} from './ChartsPanelModel';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 
-export class OHLCChartModel extends HoistModel {
+export const ohlcChart = hoistCmp.factory({
+    model: creates(() => OHLCChartModel),
+    render() {
+        return panel({
+            item: chart(),
+            mask: 'onLoad',
+            flex: 1
+        });
+    }
+});
 
-    @bindable symbol = null;
+class OHLCChartModel extends HoistModel {
 
-    constructor() {
-        super();
-        makeObservable(this);
+    @lookup(ChartsPanelModel) parentModel;
+
+    get symbol() {return this.parentModel.symbol}
+
+    onLinked() {
         this.addReaction({
             track: () => this.symbol,
             run: () => this.loadAsync()
@@ -64,19 +76,22 @@ export class OHLCChartModel extends HoistModel {
     });
 
     async doLoadAsync(loadSpec) {
-        const {symbol} = this;
+        const {symbol, chartModel} = this;
 
         if (!symbol) {
-            this.chartModel.clear();
+            chartModel.clear();
             return;
         }
 
-        const series = await XH.portfolioService
-            .getOHLCChartSeriesAsync({symbol, loadSpec})
-            .catchDefault();
+        try {
+            const series = await XH.portfolioService.getOHLCChartSeriesAsync({symbol, loadSpec});
+            if (!loadSpec.isObsolete) {
+                chartModel.setSeries(series);
+            }
 
-        if (!loadSpec.isObsolete) {
-            this.chartModel.setSeries(series ?? {});
+        } catch (e) {
+            chartModel.clear();
+            XH.handleException(e);
         }
     }
 }

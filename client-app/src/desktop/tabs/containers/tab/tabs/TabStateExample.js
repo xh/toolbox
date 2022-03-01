@@ -9,7 +9,7 @@ import {find} from 'lodash';
 import {createContainerModelConfig} from './SimpleExample';
 
 export const tabStateExample = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => TabStateExampleModel),
 
     render({model}) {
         const {tabs} = model.stateTabModel,
@@ -43,7 +43,7 @@ export const tabStateExample = hoistCmp.factory({
     }
 });
 
-class Model extends HoistModel {
+class TabStateExampleModel extends HoistModel {
     @bindable
     showBadge = true;
 

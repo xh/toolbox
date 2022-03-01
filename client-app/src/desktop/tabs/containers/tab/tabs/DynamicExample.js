@@ -8,7 +8,7 @@ import {fmtTime} from '@xh/hoist/format';
 import {isEmpty, shuffle} from 'lodash';
 
 export const dynamicExample = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => DynamicExampleModel),
 
     render({model}) {
         return panel({
@@ -24,7 +24,7 @@ export const dynamicExample = hoistCmp.factory({
     }
 });
 
-class Model extends HoistModel {
+class DynamicExampleModel extends HoistModel {
     id = 0;
 
     @managed

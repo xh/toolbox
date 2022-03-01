@@ -9,7 +9,7 @@ import {wrapper} from '../../common';
 
 export const placeholderPanel = hoistCmp.factory({
     displayName: 'PlaceholderPanel',
-    model: creates(() => new Model()),
+    model: creates(() => PlaceholderPanelModel),
 
     render({model}) {
         const {selectedRecord} = model.gridModel;
@@ -77,7 +77,7 @@ const detailPanel = hoistCmp.factory(({model}) => {
     });
 });
 
-class Model extends HoistModel {
+class PlaceholderPanelModel extends HoistModel {
     gridModel = new GridModel({
         columns: [{field: 'company', flex: 1}]
     })

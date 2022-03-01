@@ -31,7 +31,7 @@ export const detailsPanel = hoistCmp.factory({
 });
 
 const contactProfile = hoistCmp.factory({
-    render({model}) {
+    render() {
         return div({
             className: 'tb-contact-details-panel__inner',
             items: [

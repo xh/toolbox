@@ -1,11 +1,17 @@
 # Changelog
 
-## v3.0-SNAPSHOT - under development
+## v2.15.0 - 2022-02-08
 
 ### Bug Fixes
 * Auth0 OAuth login flow no longer leaves a gap at bottom of the viewport when Toolbox is opened in iOS fullscreen mode.
+* Fixes to contact example app.
 
-## v2.14.0 - 2021-01-17
+### Libraries
+* @xh/hoist 46.1.0
+* hoist-core 13.1.0
+
+
+## v2.14.0 - 2022-01-17
 
 ### Technical
 * MySQL driver and datasource properties tweaked and updated to MySQL v8.
@@ -16,7 +22,7 @@
 * mysql-connector-java 8.0.27
 
 
-## v2.13.0 - 2021-01-11
+## v2.13.0 - 2022-01-11
 
 ### New Features
 * New mobile buttons page shows off the many variations of newly upgraded mobile buttons.

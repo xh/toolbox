@@ -8,7 +8,7 @@ import {AppModel} from './AppModel';
 import {portfolioPanel} from './PortfolioPanel';
 import '../../core/Toolbox.scss';
 
-export const App = hoistCmp.factory({
+export const App = hoistCmp({
     displayName: 'App',
     model: uses(AppModel),
 

@@ -2,7 +2,6 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {isNil} from 'lodash';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {PERSIST_DETAIL} from '../AppModel';
 import {
     dirCol,
@@ -17,14 +16,18 @@ import {
 
 export class OrdersPanelModel extends HoistModel {
 
+    parentModel;
     @managed gridModel;
     @managed filterChooserModel;
 
-    @bindable positionId = null;
+    get positionId() {
+        return this.parentModel.positionId;
+    }
 
-    constructor() {
+    constructor(parentModel) {
         super();
-        makeObservable(this);
+
+        this.parentModel = parentModel;
         this.gridModel = new GridModel({
             groupBy: 'dir',
             sortBy: 'time|desc',
@@ -67,8 +70,10 @@ export class OrdersPanelModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => this.positionId,
-            run: () => this.loadAsync()
+            track: () => [parentModel.collapsed, parentModel.positionId],
+            run: ([collapsed]) => {
+                if (!collapsed) this.loadAsync();
+            }
         });
     }
 
@@ -77,20 +82,21 @@ export class OrdersPanelModel extends HoistModel {
     }
 
     async doLoadAsync(loadSpec) {
-        const {positionId, gridModel} = this;
+        const {gridModel, positionId} = this;
 
         if (isNil(positionId)) {
-            gridModel.loadData([]);
+            gridModel.clear();
             return;
         }
 
-        const orders = await XH.portfolioService.getOrdersAsync({
-            positionId,
-            loadSpec
-        }).catchDefault() ?? [];
-
-        gridModel.loadData(orders);
-        await gridModel.preSelectFirstAsync();
+        try {
+            const orders = await XH.portfolioService.getOrdersAsync({positionId, loadSpec});
+            gridModel.loadData(orders);
+            await gridModel.preSelectFirstAsync();
+        } catch (e) {
+            gridModel.clear();
+            XH.handleException(e);
+        }
 
     }
 }

@@ -28,7 +28,7 @@
   "dependencies": {
     "@ag-grid-community/react": "~26.2.0",
     "@ag-grid-enterprise/all-modules": "~26.2.0",
-    "@auth0/auth0-spa-js": "~1.19.2",
+    "@auth0/auth0-spa-js": "~1.20.0",
     "@fortawesome/free-brands-svg-icons": "~5.15.2",
     "@xh/hoist": "^47.0.0-SNAPSHOT",
     "@xh/package-template": "~2.0.0",
