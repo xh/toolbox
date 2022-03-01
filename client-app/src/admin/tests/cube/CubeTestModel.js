@@ -16,6 +16,7 @@ export class CubeTestModel extends HoistModel {
     @managed dimManagerModel;
     @managed loadTimesModel;
 
+    @bindable includeGlobalAgg = true;
     @bindable includeLeaves = false;
     @bindable.ref fundFilter = null;
     @bindable showSummary = false;
@@ -50,13 +51,19 @@ export class CubeTestModel extends HoistModel {
         });
     }
 
+    get fields() {
+        let {fields} = this.cubeModel.cube;
+        if (!this.includeGlobalAgg) fields =  fields.filter(f => f.name !== 'pctCommission');
+        return fields.map(f => f.name);
+    }
+
     getQuery() {
-        const {dimManagerModel, fundFilter, includeLeaves} = this,
+        const {fields, dimManagerModel, fundFilter, includeLeaves} = this,
             dimensions = dimManagerModel.value,
             filter = !isEmpty(fundFilter) ? {field: 'fund', op: '=', value: fundFilter} : null,
             includeRoot = this.showSummary;
 
-        return {dimensions, filter, includeLeaves, includeRoot};
+        return {fields, dimensions, filter, includeLeaves, includeRoot};
     }
 
     clear() {
@@ -150,6 +157,14 @@ export class CubeTestModel extends HoistModel {
                     renderer: numberRenderer({
                         precision: 0,
                         ledger: true
+                    })
+                },
+                {
+                    field: 'pctCommission',
+                    align: 'right',
+                    width: 130,
+                    renderer: numberRenderer({
+                        precision: 6
                     })
                 },
                 {

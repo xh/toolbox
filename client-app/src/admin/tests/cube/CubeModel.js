@@ -4,6 +4,7 @@ import {fmtThousands} from '@xh/hoist/format';
 import {times} from 'lodash';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {Timer} from '@xh/hoist/utils/async';
+import {PctTotalAggregator} from './PctTotalAggregator';
 
 export class CubeModel extends HoistModel {
 
@@ -30,7 +31,10 @@ export class CubeModel extends HoistModel {
         let orders = [];
         await LTM.withLoadTime('Fetch orders', async () => {
             orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
-            orders.forEach(it => it.maxConfidence = it.minConfidence = it.confidence);
+            orders.forEach(it => {
+                it.pctCommission = it.commission;
+                it.maxConfidence = it.minConfidence = it.confidence;
+            });
         });
 
         const ocTxt = fmtThousands(orders.length) + 'k';
@@ -61,6 +65,7 @@ export class CubeModel extends HoistModel {
                 {name: 'price', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
 
                 {name: 'commission', aggregator: 'SUM'},
+                {name: 'pctCommission',  aggregator: new PctTotalAggregator()},
 
                 {name: 'maxConfidence', aggregator: 'MAX'},
                 {name: 'minConfidence', aggregator: 'MIN'},
@@ -77,7 +82,10 @@ export class CubeModel extends HoistModel {
             const random = Math.floor(Math.random() * orders.length),
                 order = orders[random];
 
-            order.commission = order.commission * (1 + (0.5 - Math.random()) * 0.1);
+            const newCom = order.commission * (1 + (0.5 - Math.random()) * 0.5);
+
+            order.commission = newCom;
+            order.pctCommission = newCom;
 
             return order;
         });
