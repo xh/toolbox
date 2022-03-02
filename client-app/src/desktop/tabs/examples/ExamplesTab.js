@@ -1,5 +1,5 @@
 import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
-import {a, code, div, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {a, code, div, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -15,37 +15,25 @@ import {fileManager} from '../../../examples/filemanager/FileManager';
 import {newsPanel} from './NewsPanel';
 import {portfolioPanel} from './PortfolioPanel';
 
+// TODO: Minify ToDo, Recalls, FileManager and Contact
+
 export const examplesTab = hoistCmp.factory(
     () => {
         const impl = useLocalModel(LocalModel);
         return wrapper(
-            vbox({
-                className: 'example-tile-container',
-                items: getExamples().map(e => panel({
-                    flex: impl.activePanel == e.title ? 'auto' : 'none',
-                    title: div({
-                        className: 'example-tile-title',
-                        item: e.title,
-                        onClick: () => impl.setActivePanel(e.title)
-                    }),
-                    icon: e.icon,
-                    headerItems: [
-                        button({
-                            title: 'Launch app',
-                            icon: Icon.openExternal(),
-                            onClick: () => window.open(e.path)
-                        })
-                    ],
-                    item: vframe({
-                        omit: impl.activePanel !== e.title,
-                        className: 'example-tile-text',
-                        items: [
-                            div(e.text),
-                            e.cmp()
-                        ]
-                    })
-                }))
-            })
+            // TODO: Need constant size for left-hand vbox
+            hframe(vbox({
+                // TODO: Better component than div for this? Expand size and include text if active
+                items: getExamples().map(e => div({
+                    className: 'app-tile',
+                    items: [e.icon, e.title],
+                    onMouseOver: () => impl.setActiveApp(e.title)
+                    }))
+                }),
+                panel({
+                    item: getExamples().find(e => e.title === impl.activeApp).cmp()
+                })
+            )
         );
     }
 );
@@ -53,7 +41,7 @@ export const examplesTab = hoistCmp.factory(
 
 class LocalModel extends HoistModel {
 
-    @bindable activePanel = 'Portfolio';
+    @bindable activeApp = 'Portfolio';
 
     constructor() {
         super();

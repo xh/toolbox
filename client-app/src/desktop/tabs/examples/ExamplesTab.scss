@@ -17,3 +17,11 @@
     border: var(--xh-border-solid);
   }
 }
+
+.app-tile {
+  margin: 10px;
+  padding: 10px;
+  border: var(--xh-border-solid);
+  border-radius: 10px;
+  justify-content: center;
+}
