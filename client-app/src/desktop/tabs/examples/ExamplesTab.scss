@@ -23,5 +23,15 @@
   padding: 10px;
   border: var(--xh-border-solid);
   border-radius: 10px;
-  justify-content: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.app-tile:hover {
+  background-color: var(--xh-button-active-bg);
+}
+
+.launch-button {
+  outline: solid;
+  background: var(--xh-button-bg)
 }

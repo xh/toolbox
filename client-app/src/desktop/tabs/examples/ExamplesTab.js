@@ -1,8 +1,8 @@
-import {hoistCmp, HoistModel, useLocalModel} from '@xh/hoist/core';
-import {a, code, div, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {hoistCmp, HoistModel, managed, useLocalModel} from '@xh/hoist/core';
+import {a, code, div, hbox, iframe, vbox} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 
 import './ExamplesTab.scss';
 import {wrapper} from '../../common';
@@ -12,28 +12,52 @@ import {directoryPanel} from '../../../examples/contact/DirectoryPanel';
 import {todoPanel} from '../../../examples/todo/TodoPanel';
 import {recallsPanel} from '../../../examples/recalls/RecallsPanel';
 import {fileManager} from '../../../examples/filemanager/FileManager';
-import {newsPanel} from './NewsPanel';
-import {portfolioPanel} from './PortfolioPanel';
+import {newsPanel} from '../../../examples/news/NewsPanel';
+import {portfolioPanel} from '../../../examples/portfolio/PortfolioPanel';
 
-// TODO: Minify ToDo, Recalls, FileManager and Contact
 
 export const examplesTab = hoistCmp.factory(
     () => {
         const impl = useLocalModel(LocalModel);
         return wrapper(
             // TODO: Need constant size for left-hand vbox
-            hframe(vbox({
-                // TODO: Better component than div for this? Expand size and include text if active
-                items: getExamples().map(e => div({
-                    className: 'app-tile',
-                    items: [e.icon, e.title],
-                    onMouseOver: () => impl.setActiveApp(e.title)
-                    }))
-                }),
-                panel({
-                    item: getExamples().find(e => e.title === impl.activeApp).cmp()
-                })
-            )
+            panel({
+                width: '100vw',
+                height: '100vh',
+                items: [
+                    hbox({
+                        height: '100vh',
+                        items: [
+                            panel({
+                                model: impl.leftPanelModel,
+                                item: vbox({
+                                    // TODO: Better component than div for this? Expand size and include text if active
+                                    items: getExamples().map(e => div({
+                                        className: 'app-tile',
+                                        items: e.title === impl.activeApp ? [e.icon, e.title, e.text, button({
+                                            className: 'launch-button',
+                                            text: 'Launch',
+                                            onClick: () => window.open(e.path)
+                                        })] : [e.icon, e.title],
+                                        onClick: () => impl.setActiveApp(e.title)
+                                    }))
+                                })
+                            }),
+                            panel({
+                                // model: impl.rightPanelModel,
+                                width: '100%',
+                                height: '100%',
+                                item: iframe({
+                                    height: '100%',
+                                    width: '100%',
+                                    src: getExamples().find(e => e.title === impl.activeApp).path
+                                })
+                            })
+                        ]
+                    })
+
+                ]
+            })
         );
     }
 );
@@ -42,6 +66,22 @@ export const examplesTab = hoistCmp.factory(
 class LocalModel extends HoistModel {
 
     @bindable activeApp = 'Portfolio';
+
+    @managed
+    leftPanelModel = new PanelModel(
+        {
+            defaultSize: 300,
+            collapsible: true,
+            resizable: true,
+            side: 'left'
+        }
+    )
+
+    // @managed
+    // rightPanelModel = new PanelModel({
+    //     defaultSize: '100%',
+    //     side: 'right'
+    // })
 
     constructor() {
         super();
@@ -58,12 +98,13 @@ function getExamples() {
             cmp: () => portfolioPanel(),
             text: [
                 <p>
-                    This example shows a synthetic portfolio analysis tool.  Includes examples of large data-set grids,
+                    This example shows a synthetic portfolio analysis tool. Includes examples of large data-set grids,
                     master-detail grids, charting, and dimensional analysis.
                 </p>,
                 <p>
-                    The view layer of this app has been implemented with both elem factories as well as the more standard
-                    JSX approach.  Toggle between the two in options, and compare the component
+                    The view layer of this app has been implemented with both elem factories as well as the more
+                    standard
+                    JSX approach. Toggle between the two in options, and compare the component
                     source code <ToolboxLink url='$TB/client-app/src/examples/portfolio/ui' text='here'/>.
                 </p>
             ]
