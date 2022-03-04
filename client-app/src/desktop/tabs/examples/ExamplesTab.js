@@ -20,18 +20,17 @@ export const examplesTab = hoistCmp.factory(
     () => {
         const impl = useLocalModel(LocalModel);
         return wrapper(
-            // TODO: Need constant size for left-hand vbox
             panel({
                 width: '100vw',
-                height: '100vh',
+                height: '85vh',
                 items: [
                     hbox({
-                        height: '100vh',
+                        height: '100%',
                         items: [
                             panel({
                                 model: impl.leftPanelModel,
                                 item: vbox({
-                                    // TODO: Better component than div for this? Expand size and include text if active
+                                    // TODO: Convert app tile to sub-component
                                     items: getExamples().map(e => div({
                                         className: 'app-tile',
                                         items: e.title === impl.activeApp ? [e.icon, e.title, e.text, button({
@@ -44,7 +43,6 @@ export const examplesTab = hoistCmp.factory(
                                 })
                             }),
                             panel({
-                                // model: impl.rightPanelModel,
                                 width: '100%',
                                 height: '100%',
                                 item: iframe({
@@ -72,16 +70,10 @@ class LocalModel extends HoistModel {
         {
             defaultSize: 300,
             collapsible: true,
-            resizable: true,
+            resizable: false,
             side: 'left'
         }
     )
-
-    // @managed
-    // rightPanelModel = new PanelModel({
-    //     defaultSize: '100%',
-    //     side: 'right'
-    // })
 
     constructor() {
         super();

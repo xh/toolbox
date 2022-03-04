@@ -18,6 +18,13 @@
   }
 }
 
+.appTile {
+  width: 200px;
+  height: 150px;
+  justify-content: center;
+  align-items: center;
+}
+
 .app-tile {
   margin: 10px;
   padding: 10px;
@@ -25,10 +32,10 @@
   border-radius: 10px;
   justify-content: space-between;
   cursor: pointer;
-}
 
-.app-tile:hover {
-  background-color: var(--xh-button-active-bg);
+  &:hover {
+    background-color: var(--xh-button-active-bg);
+  }
 }
 
 .launch-button {
