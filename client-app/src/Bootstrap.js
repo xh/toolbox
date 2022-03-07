@@ -27,12 +27,12 @@ import '@ag-grid-enterprise/all-modules/dist/styles/ag-grid.css';
 import '@ag-grid-enterprise/all-modules/dist/styles/ag-theme-balham-dark.css';
 import '@ag-grid-enterprise/all-modules/dist/styles/ag-theme-balham.css';
 import {AgGridReact} from '@ag-grid-community/react';
-import {version} from '@ag-grid-enterprise/all-modules/package.json';
+import agPkg from '@ag-grid-enterprise/all-modules/package.json';
 ModuleRegistry.registerModules(AllModules);
 LicenseManager.setLicenseKey(
     'CompanyName=Extremely Heavy Industries,LicensedApplication=Toolbox,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=6,LicensedProductionInstancesCount=1,AssetReference=AG-015460,ExpiryDate=4_June_2022_[v2]_MTY1NDI5NzIwMDAwMA==3a9d403fad7ddc79992a374430df523f'
 );
-installAgGrid(AgGridReact, version);
+installAgGrid(AgGridReact, agPkg.version);
 
 
 //-------------------------------------------------------------------------------
