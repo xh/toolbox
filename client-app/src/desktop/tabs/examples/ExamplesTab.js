@@ -1,11 +1,11 @@
 import {hoistCmp, HoistModel, managed, useLocalModel} from '@xh/hoist/core';
-import {a, code, div, hbox, iframe, vbox} from '@xh/hoist/cmp/layout';
+import {a, code, div, filler, hframe, iframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 
 import './ExamplesTab.scss';
-import {wrapper} from '../../common';
 import {ToolboxLink} from '../../../core/cmp/ToolboxLink';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {directoryPanel} from '../../../examples/contact/DirectoryPanel';
@@ -19,47 +19,79 @@ import {portfolioPanel} from '../../../examples/portfolio/PortfolioPanel';
 export const examplesTab = hoistCmp.factory(
     () => {
         const impl = useLocalModel(LocalModel);
-        return wrapper(
-            panel({
-                width: '100vw',
-                height: '85vh',
-                items: [
-                    hbox({
-                        height: '100%',
-                        items: [
-                            panel({
-                                model: impl.leftPanelModel,
-                                item: vbox({
-                                    // TODO: Convert app tile to sub-component
-                                    items: getExamples().map(e => div({
-                                        className: 'app-tile',
-                                        items: e.title === impl.activeApp ? [e.icon, e.title, e.text, button({
-                                            className: 'launch-button',
-                                            text: 'Launch',
-                                            onClick: () => window.open(e.path)
-                                        })] : [e.icon, e.title],
-                                        onClick: () => impl.setActiveApp(e.title)
-                                    }))
-                                })
-                            }),
-                            panel({
-                                width: '100%',
-                                height: '100%',
-                                item: iframe({
-                                    height: '100%',
-                                    width: '100%',
-                                    src: getExamples().find(e => e.title === impl.activeApp).path
-                                })
+        return panel({
+            className: 'tb-examples-tab',
+            items: [
+                hframe({
+                    items: [
+                        sideBar({
+                            model: impl,
+                            omit: !impl.leftPanelModel.collapsed
+                        }),
+                        // TODO: make this entire panel the app-tile component
+                        // TODO: highlight selected tile (see face view of Contact)
+                        panel({
+                            model: impl.leftPanelModel,
+                            items: div({
+                                className: 'app-tile-container',
+                                items: getExamples().map(e => panel({
+                                    className: 'app-tile',
+                                    title: e.title,
+                                    icon: e.icon,
+                                    compactHeader: true,
+                                    items: appTile(e),
+                                    bbar: toolbar({
+                                        omit: e.title !== impl.activeApp,
+                                        compact: true,
+                                        items: [
+                                            filler(),
+                                            button({
+                                                outlined: true,
+                                                icon: Icon.link(),
+                                                text: 'Open in Tab',
+                                                onClick: () => window.open(e.path)
+                                            })]
+                                    }),
+                                    onClick: () => impl.setActiveApp(e.title)
+                                }))
                             })
-                        ]
-                    })
+                        }),
+                        panel({
+                            className: 'tb-examples-tab__app-frame',
+                            item: iframe({
+                                height: '100%',
+                                width: '100%',
+                                className: 'app-frame',
+                                src: getExamples().find(e => e.title === impl.activeApp).path
+                            })
+                        })
+                    ]
+                })
 
-                ]
-            })
-        );
+            ]
+        });
     }
 );
 
+const appTile = hoistCmp.factory((e) => {
+    return div({
+        className: 'app-tile-contents',
+        items: e.text
+    });
+});
+
+
+// TODO: add expand button right chevron
+const sideBar = hoistCmp.factory(({model}) => {
+    return toolbar({
+        className: 'app-toolbar',
+        items: getExamples().map(e => button({
+            icon: e.icon,
+            onClick: () => model.activeApp === e.title ? window.open(e.path) : model.setActiveApp(e.title)
+        })),
+        vertical: true
+    });
+});
 
 class LocalModel extends HoistModel {
 
@@ -81,6 +113,7 @@ class LocalModel extends HoistModel {
     }
 }
 
+// TODO: Make this a method on the model
 function getExamples() {
     return [
         {

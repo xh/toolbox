@@ -1,44 +1,25 @@
-.example-tile-text {
-  flex: auto;
-  overflow-y: auto !important;
-  padding: var(--xh-pad-px);
-}
-
-.example-tile-container {
-  justify-content: center;
-  width: 80vw;
-  height: 90vh;
-
-  .example-tile-title {
-    width: 100%;
-    cursor: pointer;
+.tb-examples-tab {
+  &__app-frame {
+    margin: 30px;
   }
-  > .xh-panel {
+
+  .app-tile-container {
+    overflow-y: auto;
+  }
+
+  .app-tile {
+    margin: 10px;
     border: var(--xh-border-solid);
+    border-radius: 10px;
+    cursor: pointer;
+
+
+    .app-tile-contents {
+      padding: var(--xh-pad-px)
+    }
+
+    &:hover {
+      background-color: var(--xh-button-active-bg);
+    }
   }
-}
-
-.appTile {
-  width: 200px;
-  height: 150px;
-  justify-content: center;
-  align-items: center;
-}
-
-.app-tile {
-  margin: 10px;
-  padding: 10px;
-  border: var(--xh-border-solid);
-  border-radius: 10px;
-  justify-content: space-between;
-  cursor: pointer;
-
-  &:hover {
-    background-color: var(--xh-button-active-bg);
-  }
-}
-
-.launch-button {
-  outline: solid;
-  background: var(--xh-button-bg)
 }
