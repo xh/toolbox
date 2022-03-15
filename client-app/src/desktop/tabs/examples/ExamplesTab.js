@@ -1,138 +1,121 @@
-import {hoistCmp} from '@xh/hoist/core';
-import {a, code, hbox, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler, frame, hframe, iframe} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {Icon} from '@xh/hoist/icon';
+import {toolboxUrl} from '../../../core/cmp/ToolboxLink';
 import './ExamplesTab.scss';
-import {wrapper} from '../../common';
-import {ToolboxLink} from '../../../core/cmp/ToolboxLink';
+import {ExamplesTabModel} from './ExamplesTabModel';
 
-export const examplesTab = hoistCmp.factory(
-    () => wrapper(
-        hbox({
-            className: 'example-tile-container',
-            flexWrap: 'wrap',
-            items: getExamples().map(e => panel({
-                title: e.title,
-                icon: e.icon,
-                width: 300,
-                height: 300,
-                margin: 20,
-                item: vframe({
-                    className: 'example-tile-text',
-                    items: e.text
-                }),
-                bbar: [
-                    button({
-                        text: 'Launch app',
-                        icon: Icon.openExternal(),
-                        onClick: () => window.open(e.path)
-                    })
-                ]
-            }))
-        })
-    )
+
+export const examplesTab = hoistCmp.factory({
+    displayName: 'ExamplesTab',
+    model: creates(ExamplesTabModel),
+
+    /** @param {ExamplesTabModel} model */
+    render({model}) {
+        return panel({
+            className: 'tb-examples',
+            items: [
+                hframe({
+                    items: [
+                        sideBar({
+                            omit: !model.leftPanelModel.collapsed
+                        }),
+                        appTileBar(),
+                        frame({
+                            className: 'tb-examples__app-frame xh-tiled-bg',
+                            item: iframe({
+                                height: '100%',
+                                width: '100%',
+                                className: 'app-frame',
+                                src: model.activeAppConfig?.path
+                            })
+                        })
+                    ]
+                })
+            ]
+        });
+    }
+});
+
+const appTileBar = hoistCmp.factory(
+    /** @param {ExamplesTabModel} model */
+    ({model}) => {
+        const {leftPanelModel} = model;
+
+        return panel({
+            model: leftPanelModel,
+            items: div({
+                className: 'tb-examples__app-tile-container',
+                items: model.examples.map(app => appTile({app}))
+            }),
+            bbar: [
+                filler(),
+                button({
+                    icon: Icon.chevronLeft(),
+                    onClick: () => leftPanelModel.toggleCollapsed()
+                })
+            ]
+        });
+    }
 );
 
-function getExamples() {
-    return [
-        {
-            title: 'Portfolio',
-            icon: Icon.portfolio(),
-            path: '/portfolio',
-            text: [
-                <p>
-                    This example shows a synthetic portfolio analysis tool.  Includes examples of large data-set grids,
-                    master-detail grids, charting, and dimensional analysis.
-                </p>,
-                <p>
-                    The view layer of this app has been implemented with both elem factories as well as the more standard
-                    JSX approach.  Toggle between the two in options, and compare the component
-                    source code <ToolboxLink url='$TB/client-app/src/examples/portfolio/ui' text='here'/>.
-                </p>
-            ]
-        },
-        {
-            title: 'Contact',
-            icon: Icon.users(),
-            path: '/contact',
-            text: [
-                <p>
-                    Meet the Extremely Heavy team!
-                </p>,
-                <p>
-                    This example shows an employee directory application. Includes multiple views of a store, including
-                    combined filter and search functionality, editable profiles and remote persistence of settings via
-                    soft config.
-                </p>
-            ]
-        },
-        {
-            title: 'Todo',
-            icon: Icon.clipboard(),
-            path: '/todo',
-            text: [
-                <p>
-                    The classic reference app, Hoist style.
-                </p>,
-                <p>
-                    Includes examples of a grid with RecordActions and RecordActionBar, a form with validation,
-                    modal dialogs, and the preference system.
-                </p>
-            ]
-        },
-        {
-            title: 'News',
-            icon: Icon.news(),
-            path: '/news',
-            text: [
-                <p>
-                    This example demonstrates Hoist support for loading and caching data on the server from
-                    a {link('Remote API', 'https://newsapi.org/')}. Refresh rate, news sources, and API key can
-                    be modified in the Admin Config tab.
-                </p>,
-                <p>
-                    On the client side, we use a {link(code('DataView'), '../app/grids/dataview')} grid
-                    to support custom filtering logic and rich component rendering.
-                </p>
-            ]
-        },
-        {
-            title: 'FDA Recalls',
-            icon: Icon.health(),
-            path: '/recalls',
-            text: [
-                <p>
-                    This applet uses the openFDA drug enforcement reports API, which provides information on drug recall
-                    events since 2004. Provides examples of filtering and searching data from an external API.
-                </p>,
-                <p>
-                    For more information, see {link('here', 'https://open.fda.gov/apis/drug/enforcement/')}.
-                </p>
-            ]
-        },
-        {
-            title: 'File Manager',
-            icon: Icon.fileArchive(),
-            path: '/fileManager',
-            text: [
-                <p>
-                    This example shows a simple, full-stack pattern for syncing files to a server.
-                </p>,
-                <p>
-                    On the client side this app uses the {link(code('FileChooser'), '/app/other/fileChooser')}.
-                    The server-side controller and service provide examples of how uploads can
-                    be extracted from the request and processed within Grails.
-                </p>,
-                <p>
-                    <strong>This example is visible only to admins</strong> to avoid
-                    arbitrary file uploads to our server.
-                    Please {link('contact us', 'https://xh.io/contact/')} for access.
-                </p>
-            ]
-        }
-    ];
-}
+const appTile = hoistCmp.factory(
+    ({app, model}) => {
+        const isActive = app === model.activeAppConfig;
+        return panel({
+            className: `tb-examples__app-tile ${isActive ? 'tb-examples__app-tile--selected' : ''}`,
+            title: app.title,
+            icon: app.icon,
+            compactHeader: true,
+            items: div({
+                className: 'tb-examples__app-tile__contents',
+                items: app.text
+            }),
+            bbar: toolbar({
+                omit: !isActive,
+                compact: true,
+                items: [
+                    filler(),
+                    button({
+                        text: 'Source',
+                        icon: Icon.code(),
+                        onClick: () => window.open(toolboxUrl(`$TB/client-app/src/examples/${app.srcPath}`))
+                    }),
+                    button({
+                        text: 'Full Tab',
+                        icon: Icon.openExternal(),
+                        onClick: () => window.open(app.path)
+                    })]
+            }),
+            onClick: () => model.setActiveApp(app.title)
+        });
+    }
+);
 
-const link = (txt, url) => a({href: url, target: '_blank', item: txt});
+const sideBar = hoistCmp.factory(
+    /** @param {ExamplesTabModel} model */
+    ({model}) => {
+        return toolbar({
+            className: 'tb-examples__app-toolbar',
+            items: [
+                ...model.examples.map(app => {
+                    const isActive = model.activeAppConfig === app;
+                    return button({
+                        icon: app.icon,
+                        active: isActive,
+                        onClick: () => isActive ? window.open(app.path) : model.setActiveApp(app.title)
+                    });
+                }),
+                filler(),
+                button({
+                    icon: Icon.chevronRight(),
+                    onClick: () => model.leftPanelModel.collapsed = false
+                })
+            ],
+            vertical: true
+        });
+    }
+);
