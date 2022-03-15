@@ -11,7 +11,7 @@ import {isEmpty} from 'lodash';
 import './DetailsPanel.scss';
 import {DetailsPanelModel} from './DetailsPanelModel';
 
-    export const detailsPanel = hoistCmp.factory({
+export const detailsPanel = hoistCmp.factory({
     model: uses(DetailsPanelModel),
     className: 'tb-contact-details-panel',
 
