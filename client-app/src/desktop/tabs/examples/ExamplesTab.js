@@ -30,7 +30,7 @@ export const examplesTab = hoistCmp.factory({
                                 height: '100%',
                                 width: '100%',
                                 className: 'app-frame',
-                                src: model.activeAppConfig?.path
+                                src: window.location.origin + model.activeAppConfig?.path
                             })
                         })
                     ]
