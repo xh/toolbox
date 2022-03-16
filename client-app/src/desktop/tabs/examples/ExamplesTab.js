@@ -24,21 +24,33 @@ export const examplesTab = hoistCmp.factory({
                             omit: !model.leftPanelModel.collapsed
                         }),
                         appTileBar(),
-                        frame({
-                            className: 'tb-examples__app-frame xh-tiled-bg',
-                            item: iframe({
-                                height: '100%',
-                                width: '100%',
-                                className: 'app-frame',
-                                src: window.location.origin + model.activeAppConfig?.path
-                            })
-                        })
+                        activeAppDisplay()
                     ]
                 })
             ]
         });
     }
 });
+
+
+const activeAppDisplay = hoistCmp.factory({
+    /** @param {ExamplesTabModel} model */
+    render({model}) {
+        const {activeAppConfig} = model;
+        if (!activeAppConfig) return null;
+
+        return frame({
+            className: 'tb-examples__app-frame xh-tiled-bg',
+            item: iframe({
+                height: '100%',
+                width: '100%',
+                className: 'app-frame',
+                src: `${window.location.origin}/${activeAppConfig.path}/`
+            })
+        });
+    }
+});
+
 
 const appTileBar = hoistCmp.factory(
     /** @param {ExamplesTabModel} model */
@@ -87,7 +99,7 @@ const appTile = hoistCmp.factory(
                     button({
                         text: 'Full Tab',
                         icon: Icon.openExternal(),
-                        onClick: () => window.open(app.path)
+                        onClick: () => window.open(`/${app.path}/`)
                     })]
             }),
             onClick: () => model.setActiveApp(app.title)

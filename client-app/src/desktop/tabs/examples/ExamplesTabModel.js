@@ -25,7 +25,7 @@ export class ExamplesTabModel extends HoistModel {
         {
             title: 'Portfolio',
             icon: Icon.portfolio(),
-            path: '/portfolio',
+            path: 'portfolio',
             srcPath: 'portfolio',
             text: [
                 <p>
@@ -41,7 +41,7 @@ export class ExamplesTabModel extends HoistModel {
         {
             title: 'Contact',
             icon: Icon.users(),
-            path: '/contact',
+            path: 'contact',
             srcPath: 'contact',
             text: [
                 <p>
@@ -57,7 +57,7 @@ export class ExamplesTabModel extends HoistModel {
         {
             title: 'TODO',
             icon: Icon.clipboard(),
-            path: '/todo',
+            path: 'todo',
             srcPath: 'todo',
             text: [
                 <p>
@@ -72,7 +72,7 @@ export class ExamplesTabModel extends HoistModel {
         {
             title: 'News',
             icon: Icon.news(),
-            path: '/news',
+            path: 'news',
             srcPath: 'news',
             text: [
                 <p>
@@ -87,7 +87,7 @@ export class ExamplesTabModel extends HoistModel {
         {
             title: 'FDA Recalls',
             icon: Icon.health(),
-            path: '/recalls',
+            path: 'recalls',
             srcPath: 'recalls',
             text: [
                 <p>
@@ -99,7 +99,7 @@ export class ExamplesTabModel extends HoistModel {
         {
             title: 'File Manager',
             icon: Icon.fileArchive(),
-            path: '/fileManager',
+            path: 'fileManager',
             srcPath: 'filemanager',
             text: [
                 <p>
