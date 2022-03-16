@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.0-SNAPSHOT - under development
+
+### New Features
+
+* Improved Examples tab displays available desktop examples using an inline iFrame, for easier browsing and preview of each demo app.
+* Demo new `cancelAlign` option supported by `XH.message()` and variants.
+
 ## v2.15.0 - 2022-02-08
 
 ### Bug Fixes
