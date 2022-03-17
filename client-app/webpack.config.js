@@ -32,9 +32,7 @@ module.exports = (env = {}) => {
         appName: 'Toolbox',
         appVersion: env.appVersion || '3.0-SNAPSHOT',
         favicon: './public/favicon.svg',
-        manifestIcons: true,
         devServerOpenPage: 'app/',
-        dupePackageCheckExcludes: ['es-abstract'],
         sourceMaps: 'devOnly',
         // Include custom package for babel transpiling for both packaged and inline use cases.
         babelIncludePaths: [customPkgPath],
