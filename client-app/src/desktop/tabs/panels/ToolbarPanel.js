@@ -1,14 +1,13 @@
-import {span} from '@xh/hoist/cmp/layout';
-import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
+import {filler, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {wrapper} from '../../common';
-import {filler, frame, hframe} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {buttonGroupInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {Icon} from '@xh/hoist/icon';
+import {buttonGroupInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {Icon, xhLogo} from '@xh/hoist/icon';
+import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {usStates} from '../../../core/data';
+import {wrapper} from '../../common';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
 
 export const toolbarPanel = hoistCmp.factory({
@@ -33,7 +32,7 @@ export const toolbarPanel = hoistCmp.factory({
                 tbar: topBar(),
                 item: hframe(
                     leftBar(),
-                    frame({padding: 10, item: 'Help, I am surrounded by toolbars!'}),
+                    placeholder(xhLogo({width: 200})),
                     rightBar()
                 ),
                 bbar: bottomBar()
