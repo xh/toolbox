@@ -28,8 +28,8 @@ export const toolbarPanel = hoistCmp.factory({
             ],
             item: panel({
                 title: 'Panels › Toolbar',
-                height: 400,
-                width: 700,
+                height: '60vh',
+                width: '80vw',
                 tbar: topBar(),
                 item: hframe(
                     leftBar(),
