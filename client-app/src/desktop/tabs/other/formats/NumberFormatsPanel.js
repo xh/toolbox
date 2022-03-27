@@ -1,14 +1,21 @@
-import {Icon} from '@xh/hoist/icon';
-import React from 'react';
-import {creates, hoistCmp} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../../common';
 import {code, hframe} from '@xh/hoist/cmp/layout';
-import {numberInput, radioInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {
+    buttonGroupInput,
+    numberInput,
+    select,
+    switchInput,
+    textInput
+} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
 import {card} from '@xh/hoist/kit/blueprint';
+import React from 'react';
+import {wrapper} from '../../../common';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
-import './Styles.scss';
 import {resultsPanel} from './ResultsPanel';
+import './Styles.scss';
 import {param} from './Util';
 
 export const numberFormatsPanel = hoistCmp.factory({
@@ -37,7 +44,7 @@ export const numberFormatsPanel = hoistCmp.factory({
                 title: 'Other › Number Formats',
                 icon: Icon.print(),
                 className: 'tbox-formats-tab',
-                height: 550,
+                height: 600,
                 item: hframe(
                     paramsPanel(),
                     resultsPanel({
@@ -57,16 +64,17 @@ const paramsPanel = hoistCmp.factory(
         items: [
             param({
                 bind: 'fnName',
-                input: radioInput({
-                    inline: true,
-                    options: [
-                        {value: 'fmtNumber', label: code('fmtNumber')},
-                        {value: 'fmtQuantity', label: code('fmtQuantity')},
-                        {value: 'fmtPrice', label: code('fmtPrice')},
-                        {value: 'fmtPercent', label: code('fmtPercent')},
-                        {value: 'fmtThousands', label: code('fmtThousands')},
-                        {value: 'fmtMillions', label: code('fmtMillions')},
-                        {value: 'fmtBillions', label: code('fmtBillions')}
+                input: buttonGroupInput({
+                    fill: true,
+                    outlined: true,
+                    items: [
+                        button({value: 'fmtNumber', text: code('fmtNumber')}),
+                        button({value: 'fmtQuantity', text: code('fmtQuantity')}),
+                        button({value: 'fmtPrice', text: code('fmtPrice')}),
+                        button({value: 'fmtPercent', text: code('fmtPercent')}),
+                        button({value: 'fmtThousands', text: code('fmtThousands')}),
+                        button({value: 'fmtMillions', text: code('fmtMillions')}),
+                        button({value: 'fmtBillions', text: code('fmtBillions')})
                     ]
                 })
             }),
