@@ -11,7 +11,7 @@ import moment from 'moment';
 import {wrapper} from '../../common';
 
 export const relativeTimestampPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => RelativeTimestampPanelModel),
 
     render({model}) {
         return wrapper({
@@ -85,7 +85,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
 });
 
 
-class Model extends HoistModel {
+class RelativeTimestampPanelModel extends HoistModel {
     @observable prefix = 'Refreshed';
     @observable timestamp = Date.now();
     @bindable useShortFmt = false;

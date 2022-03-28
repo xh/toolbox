@@ -97,7 +97,8 @@ export const popupsPanel = hoistCmp.factory(
                                     <p>
                                         This is also an Alert. Here, we customized the appearance of
                                         the buttons and set the cancel button to autoFocus
-                                        via <code>confirmProps</code> and <code>cancelProps</code>.
+                                        via <code>confirmProps</code>, <code>cancelProps</code>,
+                                        and <code>cancelAlign</code>.
                                     </p>
                                 ),
                                 confirmProps: {
@@ -108,7 +109,8 @@ export const popupsPanel = hoistCmp.factory(
                                     text: 'Get me outta here!',
                                     intent: 'danger',
                                     autoFocus: true
-                                }
+                                },
+                                cancelAlign: 'left'
                             })
                         }),
                         button({
@@ -141,7 +143,7 @@ export const popupsPanel = hoistCmp.factory(
                                     <p>
                                         This is also a Prompt. Here, we set the input to a custom
                                         textArea with validation via <code>input</code> and
-                                        customized the buttons via <code>confirmProps</code> and <code>cancelProps</code>.
+                                        customized the buttons via <code>confirmProps</code>, <code>cancelProps</code>, and <code>cancelAlign</code>.
                                     </p>
                                 ),
                                 input: {
@@ -150,7 +152,8 @@ export const popupsPanel = hoistCmp.factory(
                                     rules: [required, lengthIs({min: 20})]
                                 },
                                 confirmProps: {text: 'Send a Message', icon: Icon.mail(), intent: 'primary'},
-                                cancelProps: {intent: 'danger'}
+                                cancelProps: {intent: 'danger'},
+                                cancelAlign: 'left'
                             })
                         }),
                         button({

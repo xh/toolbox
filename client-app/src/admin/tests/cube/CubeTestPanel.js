@@ -40,6 +40,7 @@ const tbar = hoistCmp.factory(
     ({model}) => toolbar(
         switchInput({bind: 'showSummary', label: 'Summary?', labelSide: 'left'}),
         switchInput({bind: 'includeLeaves', label: 'Leaves?', labelSide: 'left'}),
+        switchInput({bind: 'includeGlobalAgg', label: 'Global Agg?', labelSide: 'left'}),
         select({
             bind: 'fundFilter',
             options: XH.portfolioService.lookups.funds,

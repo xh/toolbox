@@ -62,7 +62,7 @@ export class AppModel extends HoistAppModel {
     }
 
     goHome() {
-        this.tabModel.setActiveTabId('home');
+        this.tabModel.activateTab('home');
     }
 
     getAppOptions() {

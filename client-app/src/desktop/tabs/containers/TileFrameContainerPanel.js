@@ -6,13 +6,13 @@ import {button} from '@xh/hoist/desktop/cmp/button/index';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {numberInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {Icon} from '@xh/hoist/icon';
+import {Icon, xhLogo} from '@xh/hoist/icon';
 import React from 'react';
 import {wrapper} from '../../common';
 import './TileFrameContainerPanel.scss';
 
 export const tileFrameContainerPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => TileFrameContainerPanelModel),
 
     render({model}) {
         const vals = model.formModel.values,
@@ -21,7 +21,7 @@ export const tileFrameContainerPanel = hoistCmp.factory({
         for (let i = 0; i < vals.tileCount; i++) {
             tiles.push(panel({
                 className: 'tb-tileframe__tile',
-                item: 'I am a tile!'
+                item: xhLogo({maxWidth: '60%', maxHeight: '80%'})
             }));
         }
 
@@ -111,7 +111,7 @@ export const tileFrameContainerPanel = hoistCmp.factory({
 });
 
 
-class Model extends HoistModel {
+class TileFrameContainerPanelModel extends HoistModel {
 
     @managed
     formModel = new FormModel({

@@ -28,7 +28,7 @@ import {
 } from '../../../core/columns';
 
 export const sampleColumnGroupsGrid = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => SampleColumnGroupsGridModel),
 
     render({model, ...props}) {
         const {gridModel} = model;
@@ -62,7 +62,7 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
     }
 });
 
-class Model extends HoistModel {
+class SampleColumnGroupsGridModel extends HoistModel {
 
     @managed gridModel;
     @bindable inMillions = false;

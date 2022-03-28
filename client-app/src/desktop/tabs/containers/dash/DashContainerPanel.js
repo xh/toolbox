@@ -12,7 +12,7 @@ import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from
 import {wrapper} from '../../../common';
 
 export const dashContainerPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => DashContainerPanelModel),
 
     render({model}) {
         return wrapper({
@@ -86,7 +86,7 @@ const bbar = hoistCmp.factory(
     )
 );
 
-class Model extends HoistModel {
+class DashContainerPanelModel extends HoistModel {
     @bindable renderDashboard = true;
 
     @managed

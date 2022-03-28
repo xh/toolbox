@@ -1,4 +1,4 @@
-import {hoistCmp, HoistModel, managed, useLocalModel, XH} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, managed, XH, creates, ModelPublishMode} from '@xh/hoist/core';
 import PT from 'prop-types';
 import {box, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -13,12 +13,9 @@ import './Wrapper.scss';
 export const [Wrapper, wrapper] = hoistCmp.withFactory({
     displayName: 'Wrapper',
     className: 'tbox-wrapper xh-tiled-bg',
-    model: false,
-
-    render({className, description, links, children, ...rest}) {
-
-        const localModel = useLocalModel(() => new Model(links));
-
+    model: creates(() => WrapperModel, {publishMode: ModelPublishMode.LIMITED}),
+    render({model, className, description, children, ...props}) {
+        const {dockContainerModel} = model;
         return box({
             className,
             items: [
@@ -29,12 +26,12 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory({
                 }),
                 children,
                 dockContainer({
-                    model: localModel.dockContainerModel,
-                    compactHeaders: true,
-                    omit: !links
+                    model: dockContainerModel,
+                    omit: !dockContainerModel,
+                    compactHeaders: true
                 })
             ],
-            ...rest
+            ...props
         });
     }
 });
@@ -56,14 +53,15 @@ Wrapper.propTypes = {
     links: PT.arrayOf(PT.object)
 };
 
-class Model extends HoistModel {
+class WrapperModel extends HoistModel {
 
     @managed
-    dockContainerModel = new DockContainerModel();
+    dockContainerModel = null;
 
-    constructor(links) {
-        super();
+    onLinked() {
+        const {links} = this.componentProps;
         if (links) {
+            this.dockContainerModel = new DockContainerModel();
             this.dockContainerModel.addView({
                 id: XH.genId(),
                 icon: Icon.link(),
@@ -83,12 +81,10 @@ class Model extends HoistModel {
     createLinksWithNotes(links) {
         return table(
             tbody(
-                links.map(link => {
-                    return tr(
-                        th(toolboxLink(link)),
-                        td(link.notes || '')
-                    );
-                })
+                links.map(link => tr(
+                    th(toolboxLink(link)),
+                    td(link.notes ?? '')
+                ))
             )
         );
     }
