@@ -18,11 +18,10 @@ export const dashGridLayoutContainerPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    <code>DashContainer</code> is configured and managed via a <code>DashContainerModel</code>
-                    and allows the user to drag-and-drop content into various tab, and split-pane layouts.
-
-                    This component also supports publishing observable state, managed mounting/unmounting of inactive
-                    tabs, and lazy refreshing of its active view.
+                    <code>DashGridLayoutContainer</code> is configured and managed via a
+                    <code>DashGridLayoutContainerModel</code> and allows the user to drag-and-drop content into various
+                    scrollable layouts.  This component also supports publishing observable state, managed
+                    mounting/unmounting of inactive tabs, and lazy refreshing of its active view.
                 </p>
             ],
             item: panel({
@@ -108,28 +107,33 @@ class Model extends HoistModel {
     dashGridLayoutContainerModel = new DashGridLayoutContainerModel({
         persistWith: {localStorageKey: 'dashGridLayoutContainerState'},
         showMenuButton: true,
-        // Initial state does not work in its current form
-        initialState: [{
-            type: 'row',
-            content: [
-                {
-                    type: 'stack',
-                    width: 60,
-                    content: [
-                        {type: 'view', id: 'grid'},
-                        {type: 'view', id: 'treeGrid'}
-                    ]
-                },
-                {
-                    type: 'column',
-                    width: 40,
-                    content: [
-                        {type: 'view', id: 'chart'},
-                        {type: 'view', id: 'buttons', height: '200px'}
-                    ]
-                }
-            ]
-        }],
+        initialViews: [
+            {
+                id: 'grid',
+                width: 8,
+                y: 4
+            },
+            {
+                id: 'buttons',
+                x: 0,
+                y: 0
+            },
+            {
+                id: 'buttons',
+                y: 2
+            },
+            {
+                id: 'panel',
+                x: 5,
+                y: 0,
+                width: 3,
+                height: 4
+            },
+            {
+                id: 'treeGrid',
+                y: 8
+            }
+        ],
         viewSpecDefaults: {
             icon: Icon.grid()
         },
@@ -148,7 +152,9 @@ class Model extends HoistModel {
                 icon: Icon.question(),
                 content: buttonWidget,
                 initWidth: 5,
-                initHeight: 2
+                initHeight: 2,
+                allowRemove: false,
+                allowRename: false
             },
             {
                 id: 'chart',
@@ -185,8 +191,7 @@ class Model extends HoistModel {
     }
 
     resetState() {
-        this.dashContainerModel
-            .restoreDefaultsAsync()
-            .then(() => XH.toast({message: 'Dash state reset to default'}));
+        this.dashGridLayoutContainerModel.restoreDefaults();
+        XH.toast({message: 'Dash state reset to default'});
     }
 }
