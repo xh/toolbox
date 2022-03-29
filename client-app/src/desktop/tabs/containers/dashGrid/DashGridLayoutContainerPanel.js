@@ -108,6 +108,7 @@ class Model extends HoistModel {
     dashGridLayoutContainerModel = new DashGridLayoutContainerModel({
         persistWith: {localStorageKey: 'dashGridLayoutContainerState'},
         showMenuButton: true,
+        // Initial state does not work in its current form
         initialState: [{
             type: 'row',
             content: [
@@ -137,13 +138,17 @@ class Model extends HoistModel {
                 id: 'grid',
                 title: 'Grid',
                 unique: true,
-                content: gridWidget
+                content: gridWidget,
+                initWidth: 5,
+                initHeight: 5
             },
             {
                 id: 'buttons',
                 title: 'Buttons',
                 icon: Icon.question(),
-                content: buttonWidget
+                content: buttonWidget,
+                initWidth: 5,
+                initHeight: 2
             },
             {
                 id: 'chart',
@@ -151,7 +156,9 @@ class Model extends HoistModel {
                 icon: Icon.chartLine(),
                 unique: true,
                 refreshMode: RefreshMode.ON_SHOW_ALWAYS,
-                content: chartWidget
+                content: chartWidget,
+                initWidth: 8,
+                initHeight: 5
             },
             {
                 id: 'panel',
@@ -159,11 +166,15 @@ class Model extends HoistModel {
                 icon: Icon.window(),
                 renderMode: RenderMode.ALWAYS,
                 content: panelWidget
+                // initWidth and initHeight default to 3 when not specified
+                // Maybe the default value should be configurable at the container level?
             },
             {
                 id: 'treeGrid',
                 title: 'Tree Grid',
-                content: treeGridWidget
+                content: treeGridWidget,
+                initWidth: 8,
+                initHeight: 6
             }
         ]
     });
