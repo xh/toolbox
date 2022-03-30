@@ -116,6 +116,7 @@ export class SampleGridModel extends HoistModel {
                 return a < b ? -1 : 1;
             }
         },
+        restoreDefaultsFn: () => this.restoreDefaultsFn(),
         colDefaults: {
             tooltipElement: (v, {record}) => {
                 if (record.isSummary) return null;
@@ -231,5 +232,17 @@ export class SampleGridModel extends HoistModel {
         const groupByArr = groupBy ? groupBy.split(',') : [];
         this.gridModel.setGroupBy(groupByArr);
         this.gridModel.preSelectFirstAsync();
+    }
+
+    restoreDefaultsFn() {
+        // Reset defaults to Display Options panel
+        this.gridModel.setSizingMode(XH.sizingMode);
+        this.gridModel.setHideHeaders(false);
+        this.gridModel.setStripeRows(true);
+        this.gridModel.setRowBorders(false);
+        this.gridModel.setCellBorders(false);
+        this.gridModel.setShowHover(false);
+        this.gridModel.setShowCellFocus(false);
+        this.gridModel.setEmptyText('No records found...');
     }
 }

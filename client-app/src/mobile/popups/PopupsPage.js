@@ -41,7 +41,8 @@ export const popupsPage = hoistCmp.factory({
                         icon: Icon.comment(),
                         message: 'Messages are highly configurable.',
                         confirmProps: {text: 'Ok, got it', icon: Icon.thumbsUp()},
-                        cancelProps: {text: 'Exit'}
+                        cancelProps: {text: 'Exit', intent: 'danger'},
+                        cancelAlign: 'left'
                     });
                 }),
                 renderCard('Toast', () => {

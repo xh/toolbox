@@ -11,7 +11,7 @@ import {dataViewItem} from './DataViewItem';
 import {shuffle, take} from 'lodash';
 
 export const dataViewPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => DataViewPanelModel),
 
     render({model})  {
         return wrapper({
@@ -41,7 +41,7 @@ export const dataViewPanel = hoistCmp.factory({
     }
 });
 
-class Model extends HoistModel {
+class DataViewPanelModel extends HoistModel {
 
     @managed
     dataViewModel = new DataViewModel({

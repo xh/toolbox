@@ -13,7 +13,7 @@ import {wrapper} from '../../common/Wrapper';
 import './ClockPanel.scss';
 
 export const clockPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => ClockPanelModel),
 
     render({model}) {
         return wrapper({
@@ -94,7 +94,7 @@ const clockCard = hoistCmp.factory({
     }
 });
 
-class Model extends HoistModel {
+class ClockPanelModel extends HoistModel {
     @bindable format;
     @bindable updateInterval;
     @bindable prefix;

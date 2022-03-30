@@ -5,7 +5,7 @@ import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {createContainerModelConfig} from './SimpleExample';
 
 export const customExample = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => CustomExampleModel),
 
     render({model}) {
         return panel({
@@ -20,7 +20,7 @@ export const customExample = hoistCmp.factory({
     }
 });
 
-class Model extends HoistModel {
+class CustomExampleModel extends HoistModel {
     @managed
     detachedTabModel = new TabContainerModel(createContainerModelConfig({switcher: false}));
 }

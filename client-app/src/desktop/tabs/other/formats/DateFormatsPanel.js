@@ -1,15 +1,16 @@
-import React from 'react';
-import {creates, hoistCmp} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../../common';
 import {code, hframe} from '@xh/hoist/cmp/layout';
-import {dateInput, radioInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {button} from '@xh/hoist/desktop/cmp/button';
+import {buttonGroupInput, dateInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
 import {card} from '@xh/hoist/kit/blueprint';
+import React from 'react';
+import {wrapper} from '../../../common';
 import {DateFormatsPanelModel} from './DateFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
-import {param} from './Util';
 import './Styles.scss';
+import {param} from './Util';
 
 export const dateFormatsPanel = hoistCmp.factory({
     model: creates(DateFormatsPanelModel),
@@ -35,7 +36,7 @@ export const dateFormatsPanel = hoistCmp.factory({
                 title: 'Other › Date Formats',
                 icon: Icon.print(),
                 className: 'tbox-formats-tab',
-                height: 300,
+                height: 500,
                 item: hframe(
                     paramsPanel(),
                     resultsPanel({
@@ -56,13 +57,14 @@ const paramsPanel = hoistCmp.factory(
         items: [
             param({
                 bind: 'fnName',
-                input: radioInput({
-                    inline: true,
-                    options: [
-                        {value: 'fmtDate', label: code('fmtDate')},
-                        {value: 'fmtCompactDate', label: code('fmtCompactDate')},
-                        {value: 'fmtDateTime', label: code('fmtDateTime')},
-                        {value: 'fmtTime', label: code('fmtTime')}
+                input: buttonGroupInput({
+                    fill: true,
+                    outlined: true,
+                    items: [
+                        button({value: 'fmtDate', text: code('fmtDate')}),
+                        button({value: 'fmtCompactDate', text: code('fmtCompactDate')}),
+                        button({value: 'fmtDateTime', text: code('fmtDateTime')}),
+                        button({value: 'fmtTime', text: code('fmtTime')})
                     ]
                 })
             }),

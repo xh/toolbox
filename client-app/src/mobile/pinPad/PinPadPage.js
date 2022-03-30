@@ -8,7 +8,7 @@ import './PinPadPage.scss';
 
 export const pinPadPage = hoistCmp.factory({
 
-    model: creates(() => new Model()),
+    model: creates(() => PinPadPageModel),
 
     render({model}) {
         return !model.loggedIn ? pinPad() : secretPlans();
@@ -29,7 +29,7 @@ const secretPlans = hoistCmp.factory(
     })
 );
 
-class Model extends HoistModel {
+class PinPadPageModel extends HoistModel {
 
     @managed
     pinPadModel = new PinPadModel({

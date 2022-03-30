@@ -1,8 +1,8 @@
-import moment from 'moment';
 import {HoistModel} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
-import * as formatFunctions from '@xh/hoist/format/FormatDate';
 import {fmtDate} from '@xh/hoist/format';
+import * as formatFunctions from '@xh/hoist/format/FormatDate';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
+import moment from 'moment';
 import {nilAwareFormat} from './Util';
 
 export class DateFormatsPanelModel extends HoistModel {
@@ -10,10 +10,12 @@ export class DateFormatsPanelModel extends HoistModel {
     // Inputs
     testData = [
         moment().toDate(),
-        moment('1776-07-04').toDate(),
-        moment('1969-07-20 04:17').toDate(),
-        moment(0).toDate(),
+        moment().add(-3, 'days').toDate(),
+        moment().add(-3, 'months').toDate(),
         moment('2020-01-20 12:00').toDate(),
+        moment(0).toDate(),
+        moment('1969-07-20 04:17').toDate(),
+        moment('1776-07-04').toDate(),
         null,
         undefined
     ];

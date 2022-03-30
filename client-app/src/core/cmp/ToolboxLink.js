@@ -7,7 +7,7 @@ export const [ToolboxLink, toolboxLink] = hoistCmp.withFactory({
 
     render({text, url}) {
         return a({
-            href: processUrl(url),
+            href: toolboxUrl(url),
             item: text || createDefaultText(url),
             target: '_blank'
         });
@@ -36,7 +36,7 @@ ToolboxLink.propTypes = {
 };
 
 
-function processUrl(url) {
+export function toolboxUrl(url) {
     const sourceUrls = XH.getConf('sourceUrls');
     return url
         .replace('$TB', sourceUrls.toolbox)

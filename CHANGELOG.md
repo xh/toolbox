@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.16.0 - 2022-03-26
+
+### New Features
+
+* Improved Examples tab displays available desktop examples using an inline iFrame, for easier browsing and preview of each demo app.
+* Demo new `cancelAlign` option supported by `XH.message()` and variants.
+
+### Libraries
+* @xh/hoist 47.1.1
+
 ## v2.15.0 - 2022-02-08
 
 ### Bug Fixes
