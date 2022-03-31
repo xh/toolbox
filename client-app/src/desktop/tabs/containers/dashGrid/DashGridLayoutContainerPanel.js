@@ -91,6 +91,24 @@ const bbar = hoistCmp.factory(
             bind: 'rowHeight',
             model: model.dashGridLayoutContainerModel
         }),
+        '-',
+        switchInput({
+            bind: 'isDraggable',
+            label: 'Enable Dragging',
+            model: model.dashGridLayoutContainerModel
+        }),
+        '-',
+        switchInput({
+            bind: 'isResizable',
+            label: 'Enable Resizing',
+            model: model.dashGridLayoutContainerModel
+        }),
+        '-',
+        switchInput({
+            bind: 'compact',
+            label: 'Compact Views',
+            model: model.dashGridLayoutContainerModel
+        }),
         filler(),
         button({
             text: 'Reset & Clear State',
