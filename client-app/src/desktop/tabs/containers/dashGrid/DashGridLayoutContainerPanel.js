@@ -144,7 +144,8 @@ class Model extends HoistModel {
                 unique: true,
                 content: gridWidget,
                 initWidth: 5,
-                initHeight: 5
+                initHeight: 5,
+                groupName: 'Group 1'
             },
             {
                 id: 'buttons',
@@ -153,7 +154,7 @@ class Model extends HoistModel {
                 content: buttonWidget,
                 initWidth: 5,
                 initHeight: 2,
-                allowRemove: false,
+                // allowRemove: false,
                 allowRename: false
             },
             {
