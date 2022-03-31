@@ -20,8 +20,9 @@ export const dashGridLayoutContainerPanel = hoistCmp.factory({
                 <p>
                     <code>DashGridLayoutContainer</code> is configured and managed via a
                     <code>DashGridLayoutContainerModel</code> and allows the user to drag-and-drop content into various
-                    scrollable layouts.  This component also supports publishing observable state, managed
-                    mounting/unmounting of inactive tabs, and lazy refreshing of its active view.
+                    scrollable layouts.
+
+                    This component also supports publishing observable state.
                 </p>
             ],
             item: panel({
@@ -38,11 +39,11 @@ export const dashGridLayoutContainerPanel = hoistCmp.factory({
                 bbar: bbar()
             }),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/containers/dash/DashContainerPanel.js', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/dash/DashContainer.js', notes: 'Hoist container component.'},
-                {url: '$HR/desktop/cmp/dash/DashContainerModel.js', notes: 'Hoist container model - primary API.'},
-                {url: '$HR/desktop/cmp/dash/DashViewSpec.js', notes: 'Configuration template for contained views.'},
-                {url: '$HR/desktop/cmp/dash/DashViewModel.js', notes: 'Model for contained view instances. '}
+                {url: '$TB/client-app/src/desktop/tabs/containers/dashGrid/DashGridLayoutContainerPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/dashGrid/DashGridLayoutContainer.js', notes: 'Hoist container component.'},
+                {url: '$HR/desktop/cmp/dashGrid/DashGridLayoutContainerModel.js', notes: 'Hoist container model - primary API.'},
+                {url: '$HR/desktop/cmp/dashGrid/DashGridLayoutViewSpec.js', notes: 'Configuration template for contained views.'},
+                {url: '$HR/desktop/cmp/dashGrid/DashGridLayoutViewModel.js', notes: 'Model for contained view instances. '}
             ]
         });
     }
@@ -161,8 +162,8 @@ class Model extends HoistModel {
                 title: 'Grid',
                 unique: true,
                 content: gridWidget,
-                initWidth: 5,
-                initHeight: 5,
+                width: 5,
+                height: 5,
                 groupName: 'Group 1'
             },
             {
@@ -170,8 +171,8 @@ class Model extends HoistModel {
                 title: 'Buttons',
                 icon: Icon.question(),
                 content: buttonWidget,
-                initWidth: 5,
-                initHeight: 2,
+                width: 5,
+                height: 2,
                 // allowRemove: false,
                 allowRename: false
             },
@@ -182,8 +183,8 @@ class Model extends HoistModel {
                 unique: true,
                 refreshMode: RefreshMode.ON_SHOW_ALWAYS,
                 content: chartWidget,
-                initWidth: 8,
-                initHeight: 5
+                width: 8,
+                height: 5
             },
             {
                 id: 'panel',
@@ -191,15 +192,15 @@ class Model extends HoistModel {
                 icon: Icon.window(),
                 renderMode: RenderMode.ALWAYS,
                 content: panelWidget
-                // initWidth and initHeight default to 3 when not specified
+                // width and height default to 3 when not specified
                 // Maybe the default value should be configurable at the container level?
             },
             {
                 id: 'treeGrid',
                 title: 'Tree Grid',
                 content: treeGridWidget,
-                initWidth: 8,
-                initHeight: 6
+                width: 8,
+                height: 6
             }
         ]
     });
