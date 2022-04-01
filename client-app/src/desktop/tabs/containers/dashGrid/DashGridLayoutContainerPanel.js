@@ -50,73 +50,76 @@ export const dashGridLayoutContainerPanel = hoistCmp.factory({
 });
 
 const bbar = hoistCmp.factory(
-    ({model}) => toolbar(
-        switchInput({
-            label: 'Render Dashboard',
-            bind: 'renderDashboard',
-            labelSide: 'left'
-        }),
-        '-',
-        /* TODO: Support these flags?
-        switchInput({
-            label: 'Layout Locked',
-            bind: 'layoutLocked',
-            labelSide: 'left',
-            model: model.dashContainerModel
-        }),
-        '-',
-        switchInput({
-            label: 'Content Locked',
-            bind: 'contentLocked',
-            labelSide: 'left',
-            model: model.dashContainerModel
-        }),
-        '-',
-        switchInput({
-            label: 'Rename Locked',
-            bind: 'renameLocked',
-            labelSide: 'left',
-            model: model.dashContainerModel
-        }),
-         */
-        'Columns',
-        numberInput({
-            width: 80,
-            bind: 'columns',
-            model: model.dashGridLayoutContainerModel
-        }),
-        '-',
-        'Row Height (px)',
-        numberInput({
-            width: 80,
-            bind: 'rowHeight',
-            model: model.dashGridLayoutContainerModel
-        }),
-        '-',
-        switchInput({
-            bind: 'isDraggable',
-            label: 'Enable Dragging',
-            model: model.dashGridLayoutContainerModel
-        }),
-        '-',
-        switchInput({
-            bind: 'isResizable',
-            label: 'Enable Resizing',
-            model: model.dashGridLayoutContainerModel
-        }),
-        '-',
-        switchInput({
-            bind: 'compact',
-            label: 'Compact Views',
-            model: model.dashGridLayoutContainerModel
-        }),
-        filler(),
-        button({
-            text: 'Reset & Clear State',
-            icon: Icon.reset(),
-            onClick: () => model.resetState()
-        })
-    )
+    ({model}) => toolbar({
+        enableOverflowMenu: true,
+        children: [
+            switchInput({
+                label: 'Render Dashboard',
+                bind: 'renderDashboard',
+                labelSide: 'left'
+            }),
+            '-',
+            /* TODO: Support these flags?
+            switchInput({
+                label: 'Layout Locked',
+                bind: 'layoutLocked',
+                labelSide: 'left',
+                model: model.dashContainerModel
+            }),
+            '-',
+            switchInput({
+                label: 'Content Locked',
+                bind: 'contentLocked',
+                labelSide: 'left',
+                model: model.dashContainerModel
+            }),
+            '-',
+            switchInput({
+                label: 'Rename Locked',
+                bind: 'renameLocked',
+                labelSide: 'left',
+                model: model.dashContainerModel
+            }),
+             */
+            'Columns',
+            numberInput({
+                width: 80,
+                bind: 'columns',
+                model: model.dashGridLayoutContainerModel
+            }),
+            '-',
+            'Row Height (px)',
+            numberInput({
+                width: 80,
+                bind: 'rowHeight',
+                model: model.dashGridLayoutContainerModel
+            }),
+            '-',
+            switchInput({
+                bind: 'isDraggable',
+                label: 'Enable Dragging',
+                model: model.dashGridLayoutContainerModel
+            }),
+            '-',
+            switchInput({
+                bind: 'isResizable',
+                label: 'Enable Resizing',
+                model: model.dashGridLayoutContainerModel
+            }),
+            '-',
+            switchInput({
+                bind: 'compact',
+                label: 'Compact Views',
+                model: model.dashGridLayoutContainerModel
+            }),
+            filler(),
+            button({
+                text: 'Reset & Clear State',
+                icon: Icon.reset(),
+                onClick: () => model.resetState()
+            })
+        ]
+    })
 );
 
 class Model extends HoistModel {
