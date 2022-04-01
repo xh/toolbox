@@ -13,7 +13,7 @@ export const customExample = hoistCmp.factory({
             tbar: model.detachedTabModel.tabs.map(childModel => button({
                 intent: childModel.isActive ? 'primary' : null,
                 text: childModel.title,
-                onClick: () => model.detachedTabModel.setActiveTabId(childModel.id)
+                onClick: () => model.detachedTabModel.activateTab(childModel.id)
             })),
             item: tabContainer({model: model.detachedTabModel})
         });
