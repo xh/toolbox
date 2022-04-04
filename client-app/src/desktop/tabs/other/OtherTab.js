@@ -15,6 +15,7 @@ import {placeholderPanel} from './PlaceholderPanel';
 import {popupsPanel} from './PopupsPanel';
 import {relativeTimestampPanel} from './RelativeTimestampPanel';
 import {appNotificationsPanel} from './AppNotificationsPanel';
+import {exceptionHandlerPanel} from './exceptions/ExceptionHandlerPanel';
 
 export const otherTab = hoistCmp.factory(
     () => tabContainer({
@@ -27,8 +28,9 @@ export const otherTab = hoistCmp.factory(
                 {id: 'clock', content: clockPanel},
                 {id: 'customPackage', content: customPackagePanel},
                 {id: 'dateFormats', content: dateFormatsPanel},
-                {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
                 {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
+                {id: 'exceptionHandler', title: 'ExceptionHandler', content: exceptionHandlerPanel},
+                {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
                 {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
                 {id: 'icons', content: iconsPanel},
                 {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
