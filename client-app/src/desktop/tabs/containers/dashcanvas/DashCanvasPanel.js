@@ -7,31 +7,31 @@ import {Icon} from '@xh/hoist/icon';
 import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {dashReport, DashReportModel} from '@xh/hoist/desktop/cmp/dash';
+import {dashCanvas, DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from '../widgets';
 import {wrapper} from '../../../common';
 
-export const dashReportPanel = hoistCmp.factory({
+export const dashCanvasPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {
         return wrapper({
             description: [
                 <p>
-                    <code>DashReport</code> is configured and managed via a
-                    <code>DashReportModel</code> and allows the user to drag-and-drop content into various
+                    <code>DashCanvas</code> is configured and managed via a
+                    <code>DashCanvasModel</code> and allows the user to drag-and-drop content into various
                     scrollable layouts.
 
                     This component also supports publishing observable state.
                 </p>
             ],
             item: panel({
-                title: 'Layout › Dash',
+                title: 'Layout › DashCanvas',
                 icon: Icon.gridLarge(),
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard ?
-                    frame(dashReport()):
+                    frame(dashCanvas()):
                     frame({
                         item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
                         padding: 10
@@ -39,11 +39,11 @@ export const dashReportPanel = hoistCmp.factory({
                 bbar: bbar()
             }),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/containers/dashreport/DashReportPanel.js', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/dash/report/DashReport.js', notes: 'Hoist container component.'},
-                {url: '$HR/desktop/cmp/dash/report/DashReportModel.js', notes: 'Hoist container model - primary API.'},
-                {url: '$HR/desktop/cmp/dash/report/DashReportViewSpec.js', notes: 'Configuration template for contained views.'},
-                {url: '$HR/desktop/cmp/dash/report/DashReportViewModel.js', notes: 'Model for contained view instances. '}
+                {url: '$TB/client-app/src/desktop/tabs/containers/dashCanvas/DashCanvasPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/dash/Canvas/DashCanvas.js', notes: 'Hoist container component.'},
+                {url: '$HR/desktop/cmp/dash/Canvas/DashCanvasModel.js', notes: 'Hoist container model - primary API.'},
+                {url: '$HR/desktop/cmp/dash/Canvas/DashCanvasViewSpec.js', notes: 'Configuration template for contained views.'},
+                {url: '$HR/desktop/cmp/dash/Canvas/DashCanvasViewModel.js', notes: 'Model for contained view instances. '}
             ]
         });
     }
@@ -59,58 +59,51 @@ const bbar = hoistCmp.factory(
                 labelSide: 'left'
             }),
             '-',
-            /* TODO: Support these flags?
             switchInput({
                 label: 'Layout Locked',
                 bind: 'layoutLocked',
                 labelSide: 'left',
-                model: model.dashContainerModel
+                model: model.dashCanvasModel
             }),
             '-',
             switchInput({
                 label: 'Content Locked',
                 bind: 'contentLocked',
                 labelSide: 'left',
-                model: model.dashContainerModel
+                model: model.dashCanvasModel
             }),
             '-',
             switchInput({
                 label: 'Rename Locked',
                 bind: 'renameLocked',
                 labelSide: 'left',
-                model: model.dashContainerModel
+                model: model.dashCanvasModel
             }),
-             */
             'Columns',
             numberInput({
                 width: 80,
                 bind: 'columns',
-                model: model.dashReportModel
+                model: model.dashCanvasModel
             }),
             '-',
             'Row Height (px)',
             numberInput({
                 width: 80,
                 bind: 'rowHeight',
-                model: model.dashReportModel
+                model: model.dashCanvasModel
             }),
             '-',
             switchInput({
                 bind: 'isDraggable',
                 label: 'Enable Dragging',
-                model: model.dashReportModel
+                model: model.dashCanvasModel
             }),
             '-',
-            switchInput({
-                bind: 'isResizable',
-                label: 'Enable Resizing',
-                model: model.dashReportModel
-            }),
             '-',
             switchInput({
                 bind: 'compact',
                 label: 'Compact Views',
-                model: model.dashReportModel
+                model: model.dashCanvasModel
             }),
             filler(),
             button({
@@ -126,36 +119,10 @@ class Model extends HoistModel {
     @bindable renderDashboard = true;
 
     @managed
-    dashReportModel = new DashReportModel({
-        persistWith: {localStorageKey: 'dashReportState'},
+    dashCanvasModel = new DashCanvasModel({
+        persistWith: {localStorageKey: 'dashCanvasState'},
         showMenuButton: true,
-        initialViews: [
-            {
-                id: 'grid',
-                width: 8,
-                y: 4
-            },
-            {
-                id: 'buttons',
-                x: 0,
-                y: 0
-            },
-            {
-                id: 'buttons',
-                y: 2
-            },
-            {
-                id: 'panel',
-                x: 5,
-                y: 0,
-                width: 3,
-                height: 4
-            },
-            {
-                id: 'treeGrid',
-                y: 8
-            }
-        ],
+        initialState,
         viewSpecDefaults: {
             icon: Icon.grid()
         },
@@ -214,7 +181,102 @@ class Model extends HoistModel {
     }
 
     resetState() {
-        this.dashReportModel.restoreDefaults();
+        this.dashCanvasModel.restoreDefaults();
         XH.toast({message: 'Dash state reset to default'});
     }
 }
+
+const initialState = {
+    'layout': [
+        {
+            'w': 5,
+            'h': 6,
+            'x': 0,
+            'y': 0,
+            'i': 'xh-id-4_1649277276436',
+            'moved': false,
+            'static': false
+        },
+        {
+            'w': 3,
+            'h': 2,
+            'x': 5,
+            'y': 0,
+            'i': 'xh-id-5_1649277287519',
+            'moved': false,
+            'static': false
+        },
+        {
+            'w': 3,
+            'h': 2,
+            'x': 5,
+            'y': 2,
+            'i': 'xh-id-7_1649277294156',
+            'moved': false,
+            'static': false
+        },
+        {
+            'w': 3,
+            'h': 2,
+            'x': 5,
+            'y': 4,
+            'i': 'xh-id-8_1649277296666',
+            'moved': false,
+            'static': false
+        },
+        {
+            'w': 1,
+            'h': 6,
+            'x': 7,
+            'y': 6,
+            'i': 'xh-id-9_1649277306767',
+            'moved': false,
+            'static': false
+        },
+        {
+            'w': 7,
+            'h': 6,
+            'x': 0,
+            'y': 6,
+            'i': 'xh-id-10_1649277315591',
+            'moved': false,
+            'static': false
+        }
+    ],
+    'viewState': {
+        'xh-id-4_1649277276436': {
+            'viewSpecId': 'chart',
+            'title': 'Chart',
+            'viewState': null
+        },
+        'xh-id-5_1649277287519': {
+            'viewSpecId': 'buttons',
+            'title': 'Buttons 1',
+            'viewState': null
+        },
+        'xh-id-7_1649277294156': {
+            'viewSpecId': 'buttons',
+            'title': 'Buttons 2',
+            'viewState': {
+                'value': 'Button 2'
+            }
+        },
+        'xh-id-8_1649277296666': {
+            'viewSpecId': 'buttons',
+            'title': 'Buttons 3',
+            'viewState': {
+                'value': 'Button 3'
+            }
+        },
+        'xh-id-9_1649277306767': {
+            'viewSpecId': 'panel',
+            'title': 'Panel',
+            'viewState': null
+        },
+        'xh-id-10_1649277315591': {
+            'viewSpecId': 'treeGrid',
+            'title': 'Tree Grid',
+            'viewState': null
+        }
+    }
+};
