@@ -3,13 +3,13 @@ import {wrapper} from '../../../common';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
-import {vframe, vbox, hbox, div, filler} from '@xh/hoist/cmp/layout';
+import {vframe, hframe, div} from '@xh/hoist/cmp/layout';
 import {formField} from '@xh/hoist/desktop/cmp/form';
-import {codeInput, radioInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {buttonGroupInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import './ExceptionHandlerPanel.scss';
 import {ExceptionHandlerModel} from './ExceptionHandlerPanelModel';
+import {capitalize} from 'lodash';
+import './ExceptionHandlerPanel.scss';
 
 export const exceptionHandlerPanel = hoistCmp.factory({
     model: creates(ExceptionHandlerModel),
@@ -40,148 +40,143 @@ export const exceptionHandlerPanel = hoistCmp.factory({
             ],
             item: panel({
                 title: 'Other > ExceptionHandler',
-                className: 'toolbox-exception-handler-panel',
                 icon: Icon.skull(),
                 width: 700,
-                item: div({
-                    className: 'toolbox-exception-handler-options',
-                    item: optionsForm()
-                }),
-                bbar: bbar()
+                item: hframe(
+                    buttonContainer(),
+                    displayOptions()
+                )
             })
         });
     }
 });
 
-const message = hoistCmp.factory(() => formField({
-    field: 'message',
-    item: textInput({placeholder: 'User-friendly text describing the error'})})
-);
-
-const title = hoistCmp.factory(() => formField({
-    field: 'title',
-    item: textInput({placeholder: 'Title for an alert dialog, if shown'})})
-);
-
-const showAsError = hoistCmp.factory(() => formField({
-    field: 'showAsError',
-    inline: false,
-    item: switchInput({label: "Default true for most exceptions, false for those marked 'isRoutine'"})})
-);
-
-const logOnServer = hoistCmp.factory(() => formField({
-    field: 'logOnServer',
-    inline: false,
-    item: switchInput({label: "Default true when 'showAsError' is true, excepting 'isAutoRefresh' fetch exceptions"})})
-);
-
-const showAlert = hoistCmp.factory(() => formField({
-    field: 'showAlert',
-    inline: false,
-    item: switchInput({label: "Display an alert to the user (default true excepting 'isAutoRefresh' fetch exceptions)"})})
-);
-
-const alertType = hoistCmp.factory(({disabled}) => formField({
-    field: 'alertType',
-    item: radioInput({inline: true, options: ['dialog', 'toast'], disabled})})
-);
-
-const requireReload = hoistCmp.factory(() => formField({
-    field: 'requireReload',
-    inline: false,
-    item: switchInput({
-        label: 'Force user to fully refresh the app in order to dismiss (default false, excepting session-related exceptions'
-    })})
-);
-
-const hideParams = hoistCmp.factory(
-    () => formField({
-        field: 'hideParams',
-        item: select({
-            enableMulti: true,
-            enableCreate: true,
-            placeholder: 'List of parameters that should be hidden from the exception alert'
+const buttonContainer = hoistCmp.factory(
+    ({model}) => panel({
+        flex: 1,
+        item: vframe({
+            items: [
+                makeExceptionButton('fatal', model),
+                makeExceptionButton('routine', model)
+            ],
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: 50,
+            gap: 25
         })
     })
 );
 
-const optionsForm = hoistCmp.factory(
+const displayOptions = hoistCmp.factory(
     ({model})=> panel({
-        flex: 1,
+        title: 'Display Options',
+        className: 'tbox-display-opts',
+        icon: Icon.settings(),
+        compactHeader: true,
+        model: {side: 'right', defaultSize: 240, resizable: false},
         item: form({
             fieldDefaults: {
                 inline: true,
                 commitOnChange: true
             },
-            item: vframe({
-                padding: 10,
+            item: div({
+                className: 'tbox-display-opts__inner',
                 items: [
-                    hbox({
-                        flex: 'none',
-                        items: [
-                            vbox({
-                                flex: 1,
-                                marginRight: 30,
-                                items: [
-                                    message(),
-                                    title(),
-                                    showAsError(),
-                                    logOnServer(),
-                                    showAlert(),
-                                    alertType({disabled: !model.formModel.fields.showAlert.value}),
-                                    requireReload(),
-                                    hideParams()
-                                ]
-                            })
-                        ]
-                    })
+                    title(),
+                    message(),
+                    showAsError(),
+                    requireReload(),
+                    showAlert(),
+                    alertType({disabled: !model.formModel.values.showAlert})
                 ]
             })
-        })})
+        })
+    })
 );
 
-const bbar = hoistCmp.factory(
-    ({model}) => div(
-        toolbar(
-            button({
-                text: 'Reset',
-                icon: Icon.reset({className: 'xh-red'}),
-                onClick: () => model.formModel.reset(),
-                disabled: !model.formModel.isDirty
-            }),
-            switchInput({
-                label: 'Show Source Code',
-                bind: 'showSourceCode'
-            }),
-            filler(),
-            button({
-                text: 'Throw exception',
-                icon: Icon.skull(),
-                minimal: false,
-                intent: 'danger',
-                onClick: () => model.throwException()
-            })
-        ),
-        !model.showSourceCode ? null :
-            codeInput({
-                flex: 1,
-                width: null,
-                height: null,
-                value: getCodeSnippet(model),
-                readonly: true,
-                showCopyButton: true
-            })
-
-    )
+const title = hoistCmp.factory(
+    () => formField({
+        field: 'title',
+        inline: false,
+        item: textInput({placeholder: 'Title for an alert dialog, if shown'}),
+        margin
+    })
 );
 
-const getCodeSnippet = (model) => `import {XH} from '@xh/hoist/core';
+const message = hoistCmp.factory(
+    () => formField({
+        field: 'message',
+        inline: false,
+        item: textInput({placeholder: 'Shown instead of exception msg'}),
+        margin
+    })
+);
 
-try {
-  throw 'Simulated exception';
-} catch (e) {
-  XH.handleException(e, { 
-${JSON.stringify(model.exceptionOptions, null, 4).slice(2, -2)}
-  });
-}
-    `;
+const showAsError = hoistCmp.factory(
+    () => formField({
+        field: 'showAsError',
+        item: switchInput({label: 'Show As Error'}),
+        label,
+        margin
+    })
+);
+
+const requireReload = hoistCmp.factory(
+    () => formField({
+        field: 'requireReload',
+        item: switchInput({label: 'Require Reload'}),
+        label,
+        margin
+    })
+);
+
+const showAlert = hoistCmp.factory(
+    () => formField({
+        field: 'showAlert',
+        item: switchInput({label: 'Show Alert'}),
+        label,
+        margin
+    })
+);
+
+const alertType = hoistCmp.factory(
+    ({disabled}) => formField({
+        field: 'alertType',
+        item: buttonGroupInput({
+            className: 'tbox-exception-handler-panel-button-group',
+            disabled,
+            margin,
+            items: [
+                button({
+                    text: 'Dialog',
+                    value: 'dialog'
+                }),
+                button({
+                    text: 'Toast',
+                    value: 'toast'
+                })]
+        })
+    })
+);
+
+
+//--------------------
+// Implementation
+//--------------------
+
+const label = '',
+    margin = 0;
+
+const makeExceptionButton = (type, model) => {
+    const iconName = type === 'fatal' ? 'skull' : 'warning';
+    return button({
+        text: `Simulate a ${capitalize(type)} Exception`,
+        icon: Icon[iconName]({size: 'lg'}),
+        height: 100,
+        width: 250,
+        margin: 10,
+        intent: type === 'fatal' ? 'danger' : 'warning',
+        minimal: false,
+        onClick: () => model.throwException(type)
+    });
+};
