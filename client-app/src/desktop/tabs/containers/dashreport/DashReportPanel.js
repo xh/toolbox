@@ -7,31 +7,31 @@ import {Icon} from '@xh/hoist/icon';
 import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {dashGridLayoutContainer, DashGridLayoutContainerModel} from '@xh/hoist/desktop/cmp/dashGrid';
+import {dashReport, DashReportModel} from '@xh/hoist/desktop/cmp/dash';
 import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from '../widgets';
 import {wrapper} from '../../../common';
 
-export const dashGridLayoutContainerPanel = hoistCmp.factory({
+export const dashReportPanel = hoistCmp.factory({
     model: creates(() => new Model()),
 
     render({model}) {
         return wrapper({
             description: [
                 <p>
-                    <code>DashGridLayoutContainer</code> is configured and managed via a
-                    <code>DashGridLayoutContainerModel</code> and allows the user to drag-and-drop content into various
+                    <code>DashReport</code> is configured and managed via a
+                    <code>DashReportModel</code> and allows the user to drag-and-drop content into various
                     scrollable layouts.
 
                     This component also supports publishing observable state.
                 </p>
             ],
             item: panel({
-                title: 'Containers › Dash',
+                title: 'Layout › Dash',
                 icon: Icon.gridLarge(),
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard ?
-                    frame(dashGridLayoutContainer()):
+                    frame(dashReport()):
                     frame({
                         item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
                         padding: 10
@@ -39,11 +39,11 @@ export const dashGridLayoutContainerPanel = hoistCmp.factory({
                 bbar: bbar()
             }),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/containers/dashGrid/DashGridLayoutContainerPanel.js', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/dashGrid/DashGridLayoutContainer.js', notes: 'Hoist container component.'},
-                {url: '$HR/desktop/cmp/dashGrid/DashGridLayoutContainerModel.js', notes: 'Hoist container model - primary API.'},
-                {url: '$HR/desktop/cmp/dashGrid/DashGridLayoutViewSpec.js', notes: 'Configuration template for contained views.'},
-                {url: '$HR/desktop/cmp/dashGrid/DashGridLayoutViewModel.js', notes: 'Model for contained view instances. '}
+                {url: '$TB/client-app/src/desktop/tabs/containers/dashreport/DashReportPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/dash/report/DashReport.js', notes: 'Hoist container component.'},
+                {url: '$HR/desktop/cmp/dash/report/DashReportModel.js', notes: 'Hoist container model - primary API.'},
+                {url: '$HR/desktop/cmp/dash/report/DashReportViewSpec.js', notes: 'Configuration template for contained views.'},
+                {url: '$HR/desktop/cmp/dash/report/DashReportViewModel.js', notes: 'Model for contained view instances. '}
             ]
         });
     }
@@ -85,32 +85,32 @@ const bbar = hoistCmp.factory(
             numberInput({
                 width: 80,
                 bind: 'columns',
-                model: model.dashGridLayoutContainerModel
+                model: model.dashReportModel
             }),
             '-',
             'Row Height (px)',
             numberInput({
                 width: 80,
                 bind: 'rowHeight',
-                model: model.dashGridLayoutContainerModel
+                model: model.dashReportModel
             }),
             '-',
             switchInput({
                 bind: 'isDraggable',
                 label: 'Enable Dragging',
-                model: model.dashGridLayoutContainerModel
+                model: model.dashReportModel
             }),
             '-',
             switchInput({
                 bind: 'isResizable',
                 label: 'Enable Resizing',
-                model: model.dashGridLayoutContainerModel
+                model: model.dashReportModel
             }),
             '-',
             switchInput({
                 bind: 'compact',
                 label: 'Compact Views',
-                model: model.dashGridLayoutContainerModel
+                model: model.dashReportModel
             }),
             filler(),
             button({
@@ -126,8 +126,8 @@ class Model extends HoistModel {
     @bindable renderDashboard = true;
 
     @managed
-    dashGridLayoutContainerModel = new DashGridLayoutContainerModel({
-        persistWith: {localStorageKey: 'dashGridLayoutContainerState'},
+    dashReportModel = new DashReportModel({
+        persistWith: {localStorageKey: 'dashReportState'},
         showMenuButton: true,
         initialViews: [
             {
@@ -214,7 +214,7 @@ class Model extends HoistModel {
     }
 
     resetState() {
-        this.dashGridLayoutContainerModel.restoreDefaults();
+        this.dashReportModel.restoreDefaults();
         XH.toast({message: 'Dash state reset to default'});
     }
 }

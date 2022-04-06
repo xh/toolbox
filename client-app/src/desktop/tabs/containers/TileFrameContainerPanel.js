@@ -45,7 +45,7 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                 {url: '$HR/cmp/layout/TileFrame.js', notes: 'TileFrame component.'}
             ],
             item: panel({
-                title: 'Containers › TileFrame',
+                title: 'Layout › TileFrame',
                 className: 'tb-tileframe',
                 icon: Icon.gridLarge(),
                 item: hframe(

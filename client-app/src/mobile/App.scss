@@ -34,13 +34,13 @@
   border-bottom: var(--xh-border-solid);
 }
 
-.toolbox-containers-page .xh-panel__content {
+.toolbox-layout-page .xh-panel__content {
   & > .xh-hbox,
   & > .xh-vbox {
     flex: 1;
   }
 
-  .toolbox-containers-box {
+  .toolbox-layout-box {
     border: var(--xh-border-solid);
     font-family: var(--xh-font-family-mono);
   }

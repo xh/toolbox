@@ -31,9 +31,9 @@ export const tabPanelContainerPanel = hoistCmp.factory({
                 {url: '$HR/cmp/tab/TabModel.js', notes: 'Hoist tab model - created by TabContainerModel in its ctor from provided configs.'}
             ],
             item: panel({
-                title: 'Containers › Tabs',
+                title: 'Layout › Tabs',
                 icon: Icon.tab(),
-                className: 'toolbox-containers-tabs',
+                className: 'toolbox-layout-tabs',
                 width: 700,
                 height: 400,
                 item: tabContainer()

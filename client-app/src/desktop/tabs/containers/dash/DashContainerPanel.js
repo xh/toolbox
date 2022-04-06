@@ -26,7 +26,7 @@ export const dashContainerPanel = hoistCmp.factory({
                 </p>
             ],
             item: panel({
-                title: 'Containers › Dash',
+                title: 'Layout › Dash',
                 icon: Icon.gridLarge(),
                 height: '80%',
                 width: '80%',
@@ -40,8 +40,8 @@ export const dashContainerPanel = hoistCmp.factory({
             }),
             links: [
                 {url: '$TB/client-app/src/desktop/tabs/containers/dash/DashContainerPanel.js', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/dash/DashContainer.js', notes: 'Hoist container component.'},
-                {url: '$HR/desktop/cmp/dash/DashContainerModel.js', notes: 'Hoist container model - primary API.'},
+                {url: '$HR/desktop/cmp/dash/container/DashContainer.js', notes: 'Hoist container component.'},
+                {url: '$HR/desktop/cmp/dash/container/DashContainerModel.js', notes: 'Hoist container model - primary API.'},
                 {url: '$HR/desktop/cmp/dash/DashViewSpec.js', notes: 'Configuration template for contained views.'},
                 {url: '$HR/desktop/cmp/dash/DashViewModel.js', notes: 'Model for contained view instances. '}
             ]

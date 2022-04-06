@@ -22,7 +22,7 @@ export const vboxContainerPanel = hoistCmp.factory(
             }
         ],
         item: panel({
-            title: 'Containers › VBox',
+            title: 'Layout › VBox',
             icon: Icon.box(),
             height: 400,
             width: 700,
@@ -40,7 +40,7 @@ export const vboxContainerPanel = hoistCmp.factory(
 
 function renderBox(args) {
     return box({
-        className: 'toolbox-containers-box',
+        className: 'toolbox-layout-box',
         ...args
     });
 }

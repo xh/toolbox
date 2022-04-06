@@ -5,10 +5,10 @@ import {box, div, hbox} from '@xh/hoist/cmp/layout';
 export const hboxPage = hoistCmp.factory({
     render() {
 
-        const defaults = {padding: 10, className: 'toolbox-containers-box'};
+        const defaults = {padding: 10, className: 'toolbox-layout-box'};
 
         return panel({
-            className: 'toolbox-containers-page',
+            className: 'toolbox-layout-page',
             items: [
                 div({
                     className: 'toolbox-description',

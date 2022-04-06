@@ -1,25 +1,25 @@
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {hoistCmp} from '@xh/hoist/core';
 import {dashContainerPanel} from './dash/DashContainerPanel';
-import {dashGridLayoutContainerPanel} from './dashGrid/DashGridLayoutContainerPanel';
+import {dashReportPanel} from './dashreport/DashReportPanel';
 import {dockContainerPanel} from './DockContainerPanel';
 import {hboxContainerPanel} from './HBoxContainerPanel';
 import {tabPanelContainerPanel} from './tab/TabPanelContainerPanel';
 import {tileFrameContainerPanel} from './TileFrameContainerPanel';
 import {vboxContainerPanel} from './VBoxContainerPanel';
-import './ContainersTab.scss';
+import './LayoutTab.scss';
 
-export const containersTab = hoistCmp.factory(
+export const layoutTab = hoistCmp.factory(
     () => tabContainer({
         model: {
-            route: 'default.containers',
+            route: 'default.layout',
             switcher: {orientation: 'left'},
             tabs: [
                 {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
                 {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
                 {id: 'tabPanel', title: 'TabContainer', content: tabPanelContainerPanel},
-                {id: 'dash', title: 'DashContainer', content: dashContainerPanel},
-                {id: 'dashGrid', title: 'DashGridLayoutContianer', content: dashGridLayoutContainerPanel},
+                {id: 'dashContainer', title: 'DashContainer', content: dashContainerPanel},
+                {id: 'dashReport', title: 'DashReport', content: dashReportPanel},
                 {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
                 {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
             ]
