@@ -56,16 +56,32 @@ const buttonContainer = hoistCmp.factory(
         flex: 1,
         item: vframe({
             items: [
-                makeExceptionButton('fatal', model),
-                makeExceptionButton('routine', model)
+                exceptionButton({model, type: 'fatal'}),
+                exceptionButton({model, type: 'routine'})
             ],
             alignItems: 'center',
             justifyContent: 'center',
-            margin: 50,
-            gap: 25
+            margin: 50
         })
     })
 );
+
+const exceptionButton = hoistCmp.factory({
+    render({model, type}) {
+        const isFatal = type === 'fatal',
+            iconName = isFatal ? 'skull' : 'warning';
+        return button({
+            text: `Simulate a ${capitalize(type)} Exception`,
+            icon: Icon[iconName]({size: 'lg'}),
+            height: 100,
+            width: 250,
+            margin: 10,
+            intent: type === 'fatal' ? 'danger' : 'warning',
+            minimal: false,
+            onClick: () => model.throwException(type)
+        });
+    }
+});
 
 const displayOptions = hoistCmp.factory(
     ({model})=> panel({
@@ -166,17 +182,3 @@ const alertType = hoistCmp.factory(
 
 const label = '',
     margin = 0;
-
-const makeExceptionButton = (type, model) => {
-    const iconName = type === 'fatal' ? 'skull' : 'warning';
-    return button({
-        text: `Simulate a ${capitalize(type)} Exception`,
-        icon: Icon[iconName]({size: 'lg'}),
-        height: 100,
-        width: 250,
-        margin: 10,
-        intent: type === 'fatal' ? 'danger' : 'warning',
-        minimal: false,
-        onClick: () => model.throwException(type)
-    });
-};

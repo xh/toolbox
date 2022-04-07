@@ -29,7 +29,7 @@ export const otherTab = hoistCmp.factory(
                 {id: 'customPackage', content: customPackagePanel},
                 {id: 'dateFormats', content: dateFormatsPanel},
                 {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
-                {id: 'exceptionHandler', title: 'ExceptionHandler', content: exceptionHandlerPanel},
+                {id: 'exceptionHandler', title: 'Exception Handling', content: exceptionHandlerPanel},
                 {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
                 {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
                 {id: 'icons', content: iconsPanel},
