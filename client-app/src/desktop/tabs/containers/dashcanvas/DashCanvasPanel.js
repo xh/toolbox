@@ -183,97 +183,75 @@ class Model extends HoistModel {
     }
 }
 
-const initialState = {
-    'layout': [
-        {
-            'w': 5,
-            'h': 6,
-            'x': 0,
-            'y': 0,
-            'i': 'xh-id-4_1649277276436',
-            'moved': false,
-            'static': false
-        },
-        {
-            'w': 3,
-            'h': 2,
-            'x': 5,
-            'y': 0,
-            'i': 'xh-id-5_1649277287519',
-            'moved': false,
-            'static': false
-        },
-        {
-            'w': 3,
-            'h': 2,
-            'x': 5,
-            'y': 2,
-            'i': 'xh-id-7_1649277294156',
-            'moved': false,
-            'static': false
-        },
-        {
-            'w': 3,
-            'h': 2,
-            'x': 5,
-            'y': 4,
-            'i': 'xh-id-8_1649277296666',
-            'moved': false,
-            'static': false
-        },
-        {
-            'w': 1,
-            'h': 6,
-            'x': 7,
-            'y': 6,
-            'i': 'xh-id-9_1649277306767',
-            'moved': false,
-            'static': false
-        },
-        {
-            'w': 7,
-            'h': 6,
-            'x': 0,
-            'y': 6,
-            'i': 'xh-id-10_1649277315591',
-            'moved': false,
-            'static': false
+const initialState = [
+    {
+        viewSpecId: 'chart',
+        title: 'Chart',
+        viewState: null,
+        viewLayout: {
+            w: 5,
+            h: 6,
+            x: 0,
+            y: 0
         }
-    ],
-    'viewState': {
-        'xh-id-4_1649277276436': {
-            'viewSpecId': 'chart',
-            'title': 'Chart',
-            'viewState': null
+    },
+    {
+        viewSpecId: 'buttons',
+        title: 'Buttons 1',
+        viewState: null,
+        viewLayout: {
+            w: 3,
+            h: 2,
+            x: 5,
+            y: 0
+        }
+    },
+    {
+        viewSpecId: 'buttons',
+        title: 'Buttons 2',
+        viewState: {
+            value: 'Button 2'
         },
-        'xh-id-5_1649277287519': {
-            'viewSpecId': 'buttons',
-            'title': 'Buttons 1',
-            'viewState': null
+        viewLayout: {
+            w: 3,
+            h: 2,
+            x: 5,
+            y: 2
+        }
+    },
+    {
+        viewSpecId: 'buttons',
+        title: 'Buttons 3',
+        viewState: {
+            value: 'Button 3'
         },
-        'xh-id-7_1649277294156': {
-            'viewSpecId': 'buttons',
-            'title': 'Buttons 2',
-            'viewState': {
-                'value': 'Button 2'
-            }
-        },
-        'xh-id-8_1649277296666': {
-            'viewSpecId': 'buttons',
-            'title': 'Buttons 3',
-            'viewState': {
-                'value': 'Button 3'
-            }
-        },
-        'xh-id-9_1649277306767': {
-            'viewSpecId': 'panel',
-            'title': 'Panel',
-            'viewState': null
-        },
-        'xh-id-10_1649277315591': {
-            'viewSpecId': 'treeGrid',
-            'title': 'Tree Grid',
-            'viewState': null
+        viewLayout: {
+            w: 3,
+            h: 2,
+            x: 5,
+            y: 4
+        }
+    },
+    {
+        viewSpecId: 'panel',
+        title: 'Panel',
+        viewState: null,
+        viewLayout: {
+            w: 1,
+            h: 6,
+            x: 7,
+            y: 6
+        }
+    },
+    {
+        viewSpecId: 'treeGrid',
+        title: 'Tree Grid',
+        viewState: null,
+        viewLayout: {
+            w: 7,
+            h: 6,
+            x: 0,
+            y: 6
         }
     }
-};
+];
