@@ -2,14 +2,11 @@ import {creates, hoistCmp} from '@xh/hoist/core';
 import {wrapper} from '../../../common';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {form} from '@xh/hoist/cmp/form';
-import {vframe, hframe, div} from '@xh/hoist/cmp/layout';
-import {formField} from '@xh/hoist/desktop/cmp/form';
+import {vframe, hframe, div, hbox, label, filler} from '@xh/hoist/cmp/layout';
 import {buttonGroupInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {ExceptionHandlerModel} from './ExceptionHandlerModel';
 import {capitalize} from 'lodash';
-import './ExceptionHandlerPanel.scss';
 
 export const exceptionHandlerPanel = hoistCmp.factory({
     model: creates(ExceptionHandlerModel),
@@ -52,16 +49,23 @@ export const exceptionHandlerPanel = hoistCmp.factory({
 });
 
 const buttonContainer = hoistCmp.factory(
-    ({model}) => panel({
+    () => panel({
         flex: 1,
         item: vframe({
+            margin: 10,
             items: [
-                exceptionButton({model, type: 'fatal'}),
-                exceptionButton({model, type: 'routine'})
-            ],
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: 50
+                vframe({
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: 15,
+                    items: [
+                        exceptionButton({type: 'fatal'}),
+                        exceptionButton({type: 'routine'})
+                    ]
+                }),
+                div(<p>Open your developer console to see how Hoist elegantly handles exceptions.  Hoist's Exception
+                    Handler can also display alerts to the user and/or log exceptions on the server.</p>)
+            ]
         })
     })
 );
@@ -85,100 +89,74 @@ const exceptionButton = hoistCmp.factory({
 
 const displayOptions = hoistCmp.factory(
     ({model})=> panel({
-        title: 'Display Options',
-        className: 'tbox-display-opts',
+        title: 'Options',
         icon: Icon.settings(),
+        className: 'tbox-display-opts',
         compactHeader: true,
-        model: {side: 'right', defaultSize: 240, resizable: false},
-        item: form({
-            fieldDefaults: {
-                inline: true,
-                commitOnChange: true
-            },
-            item: div({
-                className: 'tbox-display-opts__inner',
-                items: [
-                    title(),
-                    message(),
-                    showAsError(),
-                    requireReload(),
-                    showAlert(),
-                    alertType({disabled: !model.formModel.values.showAlert})
-                ]
-            })
-        })
-    })
-);
-
-const title = hoistCmp.factory(
-    () => formField({
-        field: 'title',
-        inline: false,
-        item: textInput({placeholder: 'Title for an alert dialog, if shown'}),
-        margin
-    })
-);
-
-const message = hoistCmp.factory(
-    () => formField({
-        field: 'message',
-        inline: false,
-        item: textInput({placeholder: 'Shown instead of exception msg'}),
-        margin
-    })
-);
-
-const showAsError = hoistCmp.factory(
-    () => formField({
-        field: 'showAsError',
-        item: switchInput({label: 'Show As Error'}),
-        label,
-        margin
-    })
-);
-
-const requireReload = hoistCmp.factory(
-    () => formField({
-        field: 'requireReload',
-        item: switchInput({label: 'Require Reload'}),
-        label,
-        margin
-    })
-);
-
-const showAlert = hoistCmp.factory(
-    () => formField({
-        field: 'showAlert',
-        item: switchInput({label: 'Show Alert'}),
-        label,
-        margin
-    })
-);
-
-const alertType = hoistCmp.factory(
-    ({disabled}) => formField({
-        field: 'alertType',
-        item: buttonGroupInput({
-            className: 'tbox-exception-handler-panel-button-group',
-            disabled,
-            margin,
+        model: {side: 'right', defaultSize: 250, resizable: false},
+        item: div({
+            className: 'tbox-display-opts__inner',
             items: [
-                button({
-                    text: 'Dialog',
-                    value: 'dialog'
+                textInput({
+                    bind: 'title',
+                    label: 'Title',
+                    placeholder: 'Title for an alert dialog, if shown',
+                    width: null
                 }),
-                button({
-                    text: 'Toast',
-                    value: 'toast'
-                })]
+                textInput({
+                    bind: 'message',
+                    label: 'Message',
+                    placeholder: 'Shown instead of exception message',
+                    width: null
+                }),
+                switchInput({
+                    bind: 'logOnServer',
+                    label: 'Log On Server',
+                    labelSide: 'left'
+                }),
+                switchInput({
+                    bind: 'showAlert',
+                    label: 'Show Alert',
+                    labelSide: 'left'
+                }),
+                switchInput({
+                    bind: 'showAsError',
+                    label: 'Show As Error',
+                    labelSide: 'left',
+                    disabled: !model.showAlert
+                }),
+                switchInput({
+                    bind: 'requireReload',
+                    label: 'Require Reload',
+                    labelSide: 'left',
+                    disabled: !model.showAlert
+                }),
+                hbox({
+                    alignItems: 'center',
+                    items: [
+                        label({
+                            className: `bp3-control bp3-switch bp3-inline bp3-align-right xh-input xh-switch-input${!model.showAlert ? ' bp3-disabled xh-input-disabled' : ''}`,
+                            item: 'Alert Type'
+                        }),
+                        filler(),
+                        buttonGroupInput({
+                            bind: 'alertType',
+                            disabled: !model.showAlert,
+                            items: [
+                                button({
+                                    margin: 0,
+                                    text: 'Dialog',
+                                    value: 'dialog'
+                                }),
+                                button({
+                                    margin: 0,
+                                    text: 'Toast',
+                                    value: 'toast'
+                                })]
+                        })
+                    ]
+                })
+            ]
         })
     })
 );
-
-
-//--------------------
-// Implementation
-//--------------------
-
-const label = '',
-    margin = 0;

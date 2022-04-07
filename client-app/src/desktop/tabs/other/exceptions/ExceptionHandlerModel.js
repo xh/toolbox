@@ -1,20 +1,22 @@
-import {HoistModel, managed} from '@xh/hoist/core';
-import {FormModel} from '@xh/hoist/cmp/form';
+import {HoistModel} from '@xh/hoist/core';
 import {XH} from '@xh/hoist/core';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class ExceptionHandlerModel extends HoistModel {
 
-    @managed
-    formModel = new FormModel({
-        fields: [
-            {name: 'title', initialValue: ''},
-            {name: 'message', initialValue: ''},
-            {name: 'showAsError', initialValue: true},
-            {name: 'requireReload', initialValue: false},
-            {name: 'showAlert', initialValue: true},
-            {name: 'alertType', initialValue: 'dialog'}
-        ]
-    })
+    // For example options:
+    @bindable title = '';
+    @bindable message = '';
+    @bindable logOnServer = true;
+    @bindable showAlert = true;
+    @bindable showAsError = true;
+    @bindable requireReload = false;
+    @bindable alertType = 'dialog';
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     throwException(type) {
         const message = type === 'routine' ?
@@ -26,7 +28,16 @@ export class ExceptionHandlerModel extends HoistModel {
                 isRoutine: type === 'routine'
             });
         } catch (e) {
-            XH.handleException(e, this.formModel.getData());
+            const {title, message, logOnServer, showAlert, showAsError, requireReload, alertType} = this;
+            XH.handleException(e, {
+                title,
+                message,
+                logOnServer,
+                showAlert,
+                showAsError,
+                requireReload,
+                alertType
+            });
         }
     }
 }
