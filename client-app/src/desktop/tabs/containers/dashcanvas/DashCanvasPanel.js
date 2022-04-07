@@ -82,6 +82,7 @@ const bbar = hoistCmp.factory(
                 labelSide: 'left',
                 model: model.dashCanvasModel
             }),
+            '-',
             'Columns',
             numberInput({
                 width: 80,
