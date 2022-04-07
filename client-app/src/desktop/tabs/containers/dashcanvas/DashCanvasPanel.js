@@ -23,6 +23,9 @@ export const dashCanvasPanel = hoistCmp.factory({
                     scrollable layouts.
 
                     This component also supports publishing observable state.
+                </p>,
+                <p>
+                    <strong>NOTE: THIS COMPONENT IS CURRENTLY IN BETA AND SUBJECT TO BREAKING CHANGES</strong>
                 </p>
             ],
             item: panel({
@@ -92,13 +95,6 @@ const bbar = hoistCmp.factory(
                 bind: 'rowHeight',
                 model: model.dashCanvasModel
             }),
-            '-',
-            switchInput({
-                bind: 'isDraggable',
-                label: 'Enable Dragging',
-                model: model.dashCanvasModel
-            }),
-            '-',
             '-',
             switchInput({
                 bind: 'compact',
