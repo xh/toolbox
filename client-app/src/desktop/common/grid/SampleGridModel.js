@@ -138,7 +138,7 @@ export class SampleGridModel extends HoistModel {
                             items: [
                                 'P&L',
                                 filler(),
-                                fmtNumber(profit_loss, {precision: 0, ledger: true, colorSpec: true, asElement: true})
+                                fmtNumber(profit_loss, {precision: 0, ledger: true, colorSpec: true})
                             ]
                         }),
                         hbox({
@@ -146,7 +146,7 @@ export class SampleGridModel extends HoistModel {
                             items: [
                                 'Volume',
                                 filler(),
-                                fmtMillions(trade_volume, {precision: 1, label: true, asElement: true})
+                                fmtMillions(trade_volume, {precision: 1, label: true})
                             ]
                         })
                     ]

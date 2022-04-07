@@ -28,9 +28,8 @@ export const dateFormatsPanel = hoistCmp.factory({
                     string. Convenience methods delegate to <code>fmtDate</code> with a useful <code>fmt</code> default.
                 </p>,
                 <p>
-                    All hoist formatting functions support the <code>asElement</code> option to produce either a React
-                    element, or a raw HTML string. This allows them to be useful in a both raw React and non-React
-                    contexts.
+                    All hoist formatting functions support the <code>asHtml</code> option to produce a raw HTML string
+                    rather than a React element. This allows them to be useful in both React and non-React contexts.
                 </p>
             ],
             item: panel({

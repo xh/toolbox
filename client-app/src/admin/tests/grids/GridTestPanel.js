@@ -214,7 +214,7 @@ const bbar3 = hoistCmp.factory(
 );
 
 function formatRunTimes(model) {
-    const fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null}) : 'N/A',
+    const fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null, asHtml: true}) : 'N/A',
         {loadTime: lt, avgLoadTime: avgLt, updateTime: ut, avgUpdateTime: avgUt} = model.metrics;
     return `Load: ${fmt(lt)} ${avgLt ? `(${fmt(avgLt)}) ` : ''}• Update: ${fmt(ut)} ${avgUt ? `(${fmt(avgUt)}) ` : ''}`;
 }

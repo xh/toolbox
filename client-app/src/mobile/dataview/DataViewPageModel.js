@@ -16,7 +16,7 @@ export class DataViewPageModel extends HoistModel {
         },
         sortBy: 'name',
         emptyText: 'No companies found...',
-        elementRenderer: (v, {record}) => dataViewItem({record}),
+        renderer: (v, {record}) => dataViewItem({record}),
         itemHeight: 70,
         rowClassFn: () => 'dataview-item',
         stripeRows: true

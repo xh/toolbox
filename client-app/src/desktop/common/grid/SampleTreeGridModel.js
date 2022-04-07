@@ -139,7 +139,7 @@ export class SampleTreeGridModel extends HoistModel {
     createCheckboxTreeColumn() {
         return {
             rendererIsComplex: true,
-            elementRenderer: (v, {record}) => {
+            renderer: (v, {record}) => {
                 if (record.isSummary) return record.data.name;
                 return fragment(
                     checkbox({
