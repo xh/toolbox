@@ -5,6 +5,7 @@ import {roadmapViewItem} from './RoadmapViewItem';
 import './RoadmapWidget.scss';
 import {Icon} from '@xh/hoist/icon';
 import {toNumber} from 'lodash';
+import {span} from '@xh/hoist/cmp/layout';
 
 export class RoadmapModel extends HoistModel {
 
@@ -39,8 +40,8 @@ export class RoadmapModel extends HoistModel {
             return this.statusFilter === 'showUpcoming' ? a - b : b - a;
         },
         groupRowRenderer: ({node}) => {
-            const projectRec = node.allLeafChildren[0].data;
-            return Icon.calendar({asHtml: true}) + ' ' + projectRec.data.phaseName;
+            const projectRec = node.allLeafChildren[0]?.data;
+            return projectRec ? span(Icon.calendar(), projectRec.data.phaseName) : null;
         },
         emptyText: 'No projects found...',
         selModel: 'disabled',
@@ -53,7 +54,7 @@ export class RoadmapModel extends HoistModel {
         makeObservable(this);
         this.addReaction({
             track: () => this.statusFilter,
-            run: () => this.loadAsync()
+            run: () => this.refreshAsync()
         });
 
     }
