@@ -36,7 +36,7 @@ export const exceptionHandlerPanel = hoistCmp.factory({
                 {url: '$HR/promise/Promise.js', notes: 'Hoist promise enhancement methods - see .catchDefault()'}
             ],
             item: panel({
-                title: 'Other > ExceptionHandler',
+                title: 'Other > Exception Handler',
                 icon: Icon.skull(),
                 width: 700,
                 item: hframe(
@@ -97,16 +97,16 @@ const displayOptions = hoistCmp.factory(
         item: div({
             className: 'tbox-display-opts__inner',
             items: [
+                'Title',
                 textInput({
                     bind: 'title',
-                    label: 'Title',
-                    placeholder: 'Title for an alert dialog, if shown',
+                    placeholder: 'Error',
                     width: null
                 }),
+                'Message',
                 textInput({
                     bind: 'message',
-                    label: 'Message',
-                    placeholder: 'Shown instead of exception message',
+                    placeholder: '[Exception Message]',
                     width: null
                 }),
                 switchInput({
