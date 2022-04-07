@@ -21,6 +21,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtDateTime, fmtNumber, fmtThousands} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
+import {isString} from 'lodash';
 import moment from 'moment';
 import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
@@ -166,7 +167,7 @@ const formContents = hoistCmp.factory(
                     row({
                         field: 'slider2',
                         info: 'multi-value, labelRenderer',
-                        readonlyRenderer: v => v.map(it => fmtNumber(it)).join(' - '),
+                        readonlyRenderer: v => v.map(it => fmtNumber(it, {asHtml: true})).join(' - '),
                         item: slider({
                             min: 50000,
                             max: 150000,
@@ -175,7 +176,8 @@ const formContents = hoistCmp.factory(
                             labelRenderer: v => `$${fmtThousands(v, {
                                 label: true,
                                 precision: 0,
-                                labelCls: null
+                                labelCls: null,
+                                asHtml: true
                             })}`
                         })
                     }),
@@ -394,7 +396,7 @@ const fieldDisplay = hoistCmp.factory(
             displayVal = 'null';
         } else {
             displayVal = fmtVal ? fmtVal(displayVal) : displayVal.toString();
-            if (displayVal.trim() === '') {
+            if (isString(displayVal) && displayVal.trim() === '') {
                 displayVal = displayVal.length ? '[Blank String]' : '[Empty String]';
             }
         }

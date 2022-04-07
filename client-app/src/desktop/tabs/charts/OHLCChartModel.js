@@ -64,7 +64,7 @@ export class OHLCChartModel extends HoistModel {
                 type: 'datetime',
                 labels: {
                     formatter: function() {
-                        return fmtDate(this.value);
+                        return fmtDate(this.value, {asHtml: true});
                     }
                 }
             },
@@ -75,15 +75,17 @@ export class OHLCChartModel extends HoistModel {
             tooltip: {
                 useHTML: true,
                 formatter: function() {
-                    const p = this.point;
+                    const p = this.point,
+                        opts = {asHtml: true};
+
                     return `
                         <div class="xh-chart-tooltip">
-                        <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(this.x)}</div>
+                        <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(this.x, opts)}</div>
                         <table>
-                            <tr><th>Open:</th><td>${fmtPrice(p.open)}</td></tr>
-                            <tr><th>High:</th><td>${fmtPrice(p.high)}</td></tr>
-                            <tr><th>Low:</th><td>${fmtPrice(p.low)}</td></tr>
-                            <tr><th>Close:</th><td>${fmtPrice(p.close)}</td></tr>
+                            <tr><th>Open:</th><td>${fmtPrice(p.open, opts)}</td></tr>
+                            <tr><th>High:</th><td>${fmtPrice(p.high, opts)}</td></tr>
+                            <tr><th>Low:</th><td>${fmtPrice(p.low, opts)}</td></tr>
+                            <tr><th>Close:</th><td>${fmtPrice(p.close, opts)}</td></tr>
                         </table>
                         </div>
                     `;

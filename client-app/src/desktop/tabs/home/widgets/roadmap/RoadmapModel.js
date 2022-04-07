@@ -29,7 +29,7 @@ export class RoadmapModel extends HoistModel {
             ]
         },
         itemHeight: 150,
-        elementRenderer: (v, {record}) => roadmapViewItem({record}),
+        renderer: (v, {record}) => roadmapViewItem({record}),
         sortBy: 'sortOrder',
         groupBy: 'sortedPhase',
         groupRowHeight: 32,

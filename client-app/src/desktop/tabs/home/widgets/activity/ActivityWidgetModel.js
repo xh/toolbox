@@ -1,5 +1,6 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {span, div} from '@xh/hoist/cmp/layout';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
 import {managed, HoistModel, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
@@ -72,9 +73,7 @@ export class ActivityWidgetModel extends HoistModel {
                     width: 140,
                     pinned: true,
                     align: 'right',
-                    renderer: v => {
-                        return `<span class="tb-activity-repo tb-activity-repo--${v}">${v}</span>`;
-                    }
+                    renderer: v => span({className: `tb-activity-repo tb-activity-repo--${v}`, item: v})
                 },
                 {
                     field: 'messageHeadline',
@@ -100,13 +99,14 @@ export class ActivityWidgetModel extends HoistModel {
                     rendererIsComplex: true,
                     renderer: (v, {record}) => {
                         const {additions, deletions} = record.data;
-                        return `
-                            <div class="tb-activity-deltas">
-                                <div class="tb-activity-deltas--additions">+${additions}</div>
-                                <div class="tb-activity-deltas--sep">|</div>
-                                <div class="tb-activity-deltas--deletions">-${deletions}</div>
-                            </div>
-                        `;
+                        return div({
+                            className: 'tb-activity-deltas',
+                            items: [
+                                div({className: 'tb-activity-deltas--additions', item: `+${additions}`}),
+                                div({className: 'tb-activity-deltas--sep', item: '|'}),
+                                div({className: 'tb-activity-deltas--deletions', item: `-${deletions}`})
+                            ]
+                        });
                     }
                 },
                 {
@@ -131,11 +131,11 @@ export class ActivityWidgetModel extends HoistModel {
                     actions: [openUrlAction]
                 }
             ],
-            rowClassFn: (rec) => rec?.data?.isRelease ? 'tb-activity--release' : '',
+            rowClassFn: (rec) => rec?.data?.isRelease ? 'tb-activity--release' : null,
             showGroupRowCounts: false,
             groupSortFn: (a, b, groupBy) => {
-                return a == b ? 0 :
-                    groupBy == 'committedDay' ? (a < b ? 1 : -1) : (a < b ? -1 : 1);
+                return a === b ? 0 :
+                    groupBy === 'committedDay' ? (a < b ? 1 : -1) : (a < b ? -1 : 1);
             },
             groupRowRenderer: (params) => {
                 const {value} = params;
