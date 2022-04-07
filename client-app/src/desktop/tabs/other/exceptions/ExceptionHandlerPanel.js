@@ -7,7 +7,7 @@ import {vframe, hframe, div} from '@xh/hoist/cmp/layout';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {buttonGroupInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {ExceptionHandlerModel} from './ExceptionHandlerPanelModel';
+import {ExceptionHandlerModel} from './ExceptionHandlerModel';
 import {capitalize} from 'lodash';
 import './ExceptionHandlerPanel.scss';
 
