@@ -42,11 +42,11 @@ export const dashCanvasPanel = hoistCmp.factory({
                 bbar: bbar()
             }),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/containers/dashCanvas/DashCanvasPanel.js', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/dash/Canvas/DashCanvas.js', notes: 'Hoist container component.'},
-                {url: '$HR/desktop/cmp/dash/Canvas/DashCanvasModel.js', notes: 'Hoist container model - primary API.'},
-                {url: '$HR/desktop/cmp/dash/Canvas/DashCanvasViewSpec.js', notes: 'Configuration template for contained views.'},
-                {url: '$HR/desktop/cmp/dash/Canvas/DashCanvasViewModel.js', notes: 'Model for contained view instances. '}
+                {url: '$TB/client-app/src/desktop/tabs/layout/dashCanvas/DashCanvasPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/dash/canvas/DashCanvas.js', notes: 'Hoist container component.'},
+                {url: '$HR/desktop/cmp/dash/canvas/DashCanvasModel.js', notes: 'Hoist container model - primary API.'},
+                {url: '$HR/desktop/cmp/dash/canvas/DashCanvasViewSpec.js', notes: 'Configuration template for contained views.'},
+                {url: '$HR/desktop/cmp/dash/canvas/DashCanvasViewModel.js', notes: 'Model for contained view instances. '}
             ]
         });
     }
