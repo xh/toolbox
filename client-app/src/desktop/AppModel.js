@@ -7,6 +7,8 @@ import {
 } from '@xh/hoist/desktop/cmp/appOption';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
+import {hbox} from '@xh/hoist/cmp/layout';
+import {badge} from '@xh/hoist/cmp/badge';
 import {GitHubService} from '../core/svc/GitHubService';
 import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
@@ -19,8 +21,6 @@ import {homeTab} from './tabs/home/HomeTab';
 import {mobileTab} from './tabs/mobile/MobileTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
-import {hbox} from '@xh/hoist/cmp/layout';
-import {badge} from '@xh/hoist/cmp/badge';
 
 export class AppModel extends HoistAppModel {
 
