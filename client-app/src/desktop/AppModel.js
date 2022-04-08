@@ -19,6 +19,8 @@ import {homeTab} from './tabs/home/HomeTab';
 import {mobileTab} from './tabs/mobile/MobileTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
+import {hbox} from '@xh/hoist/cmp/layout';
+import {badge} from '@xh/hoist/cmp/badge';
 
 export class AppModel extends HoistAppModel {
 
@@ -31,7 +33,7 @@ export class AppModel extends HoistAppModel {
             {id: 'home', icon: Icon.home(), content: homeTab},
             {id: 'grids', icon: Icon.grid(), content: gridsTab},
             {id: 'panels', icon: Icon.window(), content: panelsTab},
-            {id: 'layout', icon: Icon.layout(), content: layoutTab},
+            {id: 'layout', icon: Icon.layout(), title: hbox('Layout', badge({intent: 'primary', item: 'new'})), content: layoutTab},
             {id: 'forms', icon: Icon.edit(), content: formsTab},
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
             {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
