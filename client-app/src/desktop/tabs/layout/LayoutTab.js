@@ -1,10 +1,10 @@
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {hoistCmp} from '@xh/hoist/core';
-import {dashContainerPanel} from './dash/DashContainerPanel';
+import {dashContainerPanel} from './dashContainer/DashContainerPanel';
 import {dashCanvasPanel} from './dashcanvas/DashCanvasPanel';
 import {dockContainerPanel} from './DockContainerPanel';
 import {hboxContainerPanel} from './HBoxContainerPanel';
-import {tabPanelContainerPanel} from './tab/TabPanelContainerPanel';
+import {tabPanelContainerPanel} from './tabContainer/TabPanelContainerPanel';
 import {tileFrameContainerPanel} from './TileFrameContainerPanel';
 import {vboxContainerPanel} from './VBoxContainerPanel';
 import './LayoutTab.scss';

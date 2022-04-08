@@ -11,7 +11,7 @@ import {GitHubService} from '../core/svc/GitHubService';
 import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {chartsTab} from './tabs/charts/ChartsTab';
-import {layoutTab} from './tabs/containers/LayoutTab';
+import {layoutTab} from './tabs/layout/LayoutTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
 import {formsTab} from './tabs/forms/FormsTab';
 import {gridsTab} from './tabs/grids/GridsTab';
