@@ -37,8 +37,7 @@
     "lodash": "^4.0.0",
     "moment": "^2.0.0",
     "react": "~17.0.1",
-    "react-dom": "~17.0.1",
-    "react-grid-layout": "^1.3.4"
+    "react-dom": "~17.0.1"
   },
   "devDependencies": {
     "@xh/hoist-dev-utils": "^6.0.0-SNAPSHOT",
