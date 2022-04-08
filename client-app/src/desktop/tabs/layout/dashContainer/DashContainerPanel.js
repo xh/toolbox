@@ -8,7 +8,7 @@ import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
-import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from './widgets';
+import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from '../widgets';
 import {wrapper} from '../../../common';
 
 export const dashContainerPanel = hoistCmp.factory({
@@ -26,7 +26,7 @@ export const dashContainerPanel = hoistCmp.factory({
                 </p>
             ],
             item: panel({
-                title: 'Containers › Dash',
+                title: 'Layout › Dash',
                 icon: Icon.gridLarge(),
                 height: '80%',
                 width: '80%',
@@ -39,9 +39,9 @@ export const dashContainerPanel = hoistCmp.factory({
                 bbar: bbar()
             }),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/containers/dash/DashContainerPanel.js', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/dash/DashContainer.js', notes: 'Hoist container component.'},
-                {url: '$HR/desktop/cmp/dash/DashContainerModel.js', notes: 'Hoist container model - primary API.'},
+                {url: '$TB/client-app/src/desktop/tabs/layout/dash/DashContainerPanel.js', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/dash/container/DashContainer.js', notes: 'Hoist container component.'},
+                {url: '$HR/desktop/cmp/dash/container/DashContainerModel.js', notes: 'Hoist container model - primary API.'},
                 {url: '$HR/desktop/cmp/dash/DashViewSpec.js', notes: 'Configuration template for contained views.'},
                 {url: '$HR/desktop/cmp/dash/DashViewModel.js', notes: 'Model for contained view instances. '}
             ]
