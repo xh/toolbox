@@ -10,16 +10,31 @@
     width: 100%;
     border-collapse: collapse;
 
+    thead {
+      th {
+        text-align: center;
+        height: 30px;
+        width: 16.667%;
+        border-bottom: var(--xh-border-solid);
+        color: var(--xh-gray);
+      }
+
+      tr {
+        display: table;
+        width: 100%;
+      }
+    }
+
     tbody {
       display: block;
-      overflow: auto;
+      overflow-y: scroll;
       height: 100%;
       width: 100%;
 
       th,
       td {
         text-align: center;
-        width: 25%;
+        width: 16.667%;
         padding: 4px 0;
       }
 
