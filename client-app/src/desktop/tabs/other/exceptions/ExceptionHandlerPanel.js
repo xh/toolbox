@@ -15,20 +15,23 @@ export const exceptionHandlerPanel = hoistCmp.factory({
             description: (
                 <div>
                     <p>
-                        The <code>ExceptionHandler</code> class provides centralized exception handling for Hoist
-                        Applications, including managing the logging and displaying of exceptions.
+                        Hoist provides centralized exception handling for Hoist Applications, including providing a
+                        managed display of the exception to the user, and providing options for introspection, tracking
+                        and notification of the problem to back-end administrators.
                     </p>
                     <p>
-                        The <code>ExceptionHandler</code> is not typically used directly by an application. Instead,
-                        <code>XH.handleException()</code> provides a convenient API for apps to handle exceptions.
-                        It is typically called directly in <code>catch()</code> blocks.
+                        Some errors may require an app refresh, while others do not. Errors may also be marked as
+                        "routine" and need not reveal further details to the user beyond the stringified error message.
+                        Users also have the option to send a message to the configured support email address to report
+                        additional information about the error.
                     </p>
                     <p>
-                        See also <code>Promise.catchDefault()</code>. That method will delegate its arguments to
-                        <code>XH.handleException()</code> and provides a more convenient interface for catching
-                        exceptions in Promise chains.
+                        <code>XH.handleException()</code> provides a convenient API for apps to handle exceptions and
+                        is typically called directly in catch blocks.  <code>Promise.catchDefault()</code> provides a
+                        convenient API to the same functionality in Promise chains.
                     </p>
-                </div>),
+                </div>
+            ),
             links: [
                 {url: '$TB/client-app/src/desktop/tabs/other/exceptions/ExceptionHandler.js', notes: 'This example'},
                 {url: '$HR/core/XH.js', notes: 'XH top-level Singleton model - see .handleException()'},
@@ -63,8 +66,10 @@ const buttonContainer = hoistCmp.factory(
                         exceptionButton({type: 'routine'})
                     ]
                 }),
-                div(<p>Open your developer console to see how Hoist elegantly handles exceptions.  Hoist's Exception
-                    Handler can also display alerts to the user and/or log exceptions on the server.</p>)
+                div({
+                    item: 'Open your developer console to see how Hoist is logging and tracking exceptions when clicking ' +
+                        'the buttons above.'
+                })
             ]
         })
     })
@@ -80,7 +85,7 @@ const exceptionButton = hoistCmp.factory({
             height: 100,
             width: 250,
             margin: 10,
-            intent: type === 'fatal' ? 'danger' : 'warning',
+            intent: type === 'fatal' ? 'danger' : 'primary',
             minimal: false,
             onClick: () => model.throwException(type)
         });
@@ -118,12 +123,6 @@ const displayOptions = hoistCmp.factory(
                     bind: 'showAlert',
                     label: 'Show Alert',
                     labelSide: 'left'
-                }),
-                switchInput({
-                    bind: 'showAsError',
-                    label: 'Show As Error',
-                    labelSide: 'left',
-                    disabled: !model.showAlert
                 }),
                 switchInput({
                     bind: 'requireReload',

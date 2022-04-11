@@ -9,7 +9,6 @@ export class ExceptionHandlerModel extends HoistModel {
     @bindable message = '';
     @bindable logOnServer = true;
     @bindable showAlert = true;
-    @bindable showAsError = true;
     @bindable requireReload = false;
     @bindable alertType = 'dialog';
 
@@ -28,13 +27,12 @@ export class ExceptionHandlerModel extends HoistModel {
                 isRoutine: type === 'routine'
             });
         } catch (e) {
-            const {title, message, logOnServer, showAlert, showAsError, requireReload, alertType} = this;
+            const {title, message, logOnServer, showAlert, requireReload, alertType} = this;
             XH.handleException(e, {
                 title,
                 message,
                 logOnServer,
                 showAlert,
-                showAsError,
                 requireReload,
                 alertType
             });

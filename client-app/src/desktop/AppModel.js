@@ -7,8 +7,6 @@ import {
 } from '@xh/hoist/desktop/cmp/appOption';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
-import {hbox} from '@xh/hoist/cmp/layout';
-import {badge} from '@xh/hoist/cmp/badge';
 import {GitHubService} from '../core/svc/GitHubService';
 import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
@@ -33,7 +31,7 @@ export class AppModel extends HoistAppModel {
             {id: 'home', icon: Icon.home(), content: homeTab},
             {id: 'grids', icon: Icon.grid(), content: gridsTab},
             {id: 'panels', icon: Icon.window(), content: panelsTab},
-            {id: 'layout', icon: Icon.layout(), title: hbox('Layout', badge({intent: 'primary', item: 'new'})), content: layoutTab},
+            {id: 'layout', icon: Icon.layout(), content: layoutTab},
             {id: 'forms', icon: Icon.edit(), content: formsTab},
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
             {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
