@@ -20,7 +20,7 @@ export class ExceptionHandlerModel extends HoistModel {
     throwException(type) {
         const message = type === 'routine' ?
             `User does not have permission to click this button after ${new Date().toLocaleTimeString()}!` :
-            'This is a very problematic button and has caused your Hoist app to crash!';
+            'This is a very problematic button and has encountered a serious error.';
         try {
             throw XH.exception({
                 message,

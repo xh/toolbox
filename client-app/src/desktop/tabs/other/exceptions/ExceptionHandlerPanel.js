@@ -62,7 +62,7 @@ const buttonContainer = hoistCmp.factory(
                     justifyContent: 'center',
                     margin: 15,
                     items: [
-                        exceptionButton({type: 'fatal'}),
+                        exceptionButton({type: 'standard'}),
                         exceptionButton({type: 'routine'})
                     ]
                 }),
@@ -77,15 +77,15 @@ const buttonContainer = hoistCmp.factory(
 
 const exceptionButton = hoistCmp.factory({
     render({model, type}) {
-        const isFatal = type === 'fatal',
-            iconName = isFatal ? 'skull' : 'warning';
+        const isRoutine = type === 'routine',
+            iconName = isRoutine ? 'info' : 'warning';
         return button({
             text: `Simulate a ${capitalize(type)} Exception`,
             icon: Icon[iconName]({size: 'lg'}),
             height: 100,
             width: 250,
             margin: 10,
-            intent: type === 'fatal' ? 'danger' : 'primary',
+            intent: isRoutine ? 'primary' : 'danger',
             minimal: false,
             onClick: () => model.throwException(type)
         });
