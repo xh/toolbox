@@ -3,14 +3,14 @@ import {faIcons} from '@fortawesome/pro-regular-svg-icons';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {div, hspacer, table, tbody, td, th, thead, tr} from '@xh/hoist/cmp/layout';
+import {div, fragment, hspacer, table, tbody, td, th, thead, tr} from '@xh/hoist/cmp/layout';
 import {startCase, without} from 'lodash';
 import React from 'react';
 import {wrapper} from '../../common/Wrapper';
 import './IconsPanel.scss';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {buttonGroupInput, numberInput} from '@xh/hoist/desktop/cmp/input';
+import {buttonGroupInput} from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button';
 
 // Register a custom icon - used within this app / not pre-imported by `Icon` - imported above.
@@ -53,7 +53,6 @@ export const iconsPanel = hoistCmp.factory({
                 title: 'Icons (regular, solid, and light variants)',
                 icon: Icon.icon({iconName: 'icons'}),
                 className: 'toolbox-icons-panel',
-                width: 900,
                 items: [
                     tbar(),
                     div({
@@ -61,7 +60,7 @@ export const iconsPanel = hoistCmp.factory({
                         items: [
                             table(
                                 thead(
-                                    tr(th('icon'), th('far'), th('fas'), th('fal'), th('fat'), th('fad'))
+                                    tr(th('Icon'), th('far'), th('fas'), th('fal'), th('fat'), th('fad'))
                                 ),
                                 tbody(
                                     getAllIconNames().map(iconName => iconRow({iconName}))
@@ -76,25 +75,41 @@ export const iconsPanel = hoistCmp.factory({
 });
 
 const tbar = hoistCmp.factory(
-    ({model}) => div(
+    ({model}) => fragment(
         toolbar(
-            'Base Font Size:',
-            hspacer(),
-            numberInput({
+            'Font Size:',
+            hspacer(5),
+            buttonGroupInput({
                 model,
                 bind: 'fontSize',
-                commitOnChange: true,
-                placeholder: 'Hoist Default',
-                rightElement: button({
-                    icon: Icon.cross(),
-                    omit: !model.fontSize,
-                    onClick: () => model.setFontSize(null)
-                })
+                minimal: true,
+                outlined: true,
+                items: [
+                    sizeButton('small', {className: 'font-size--small'}),
+                    sizeButton('default', {className: 'font-size--default'}),
+                    sizeButton('large', {className: 'font-size--large'})
+                ]
+            }),
+            hspacer(30),
+            'Intent:',
+            hspacer(5),
+            buttonGroupInput({
+                model,
+                bind: 'intent',
+                minimal: true,
+                outlined: true,
+                items: [
+                    intentButton('neutral'),
+                    intentButton('primary'),
+                    intentButton('success'),
+                    intentButton('warning'),
+                    intentButton('danger')
+                ]
             })
         ),
         toolbar(
-            'Size:',
-            hspacer(),
+            'Icon Size:',
+            hspacer(5),
             buttonGroupInput({
                 model,
                 bind: 'size',
@@ -104,10 +119,7 @@ const tbar = hoistCmp.factory(
                     sizeButton('2xs'),
                     sizeButton('xs'),
                     sizeButton('sm'),
-                    button({
-                        text: 'default',
-                        value: ''
-                    }),
+                    sizeButton('default', {value: ''}),
                     sizeButton('lg'),
                     sizeButton('xl'),
                     sizeButton('2xl'),
@@ -123,31 +135,15 @@ const tbar = hoistCmp.factory(
                     sizeButton('10x')
                 ]
             })
-        ),
-        toolbar(
-            'Intent:',
-            hspacer(),
-            buttonGroupInput({
-                model,
-                bind: 'intent',
-                minimal: true,
-                outlined: true,
-                items: [
-                    intentButton('neutral'),
-                    intentButton('primary'),
-                    intentButton('success'),
-                    intentButton('warning'),
-                    intentButton('danger')
-                ]
-            })
         )
     )
 );
 
-function sizeButton(size) {
+function sizeButton(size, props = {}) {
     return button({
         text: size,
-        value: size
+        value: size,
+        ...props
     });
 }
 
@@ -161,16 +157,16 @@ function intentButton(intent) {
 
 const iconRow = hoistCmp.factory(
     ({model, iconName}) => {
-        const {fontSize} = model;
         return tr({
             key: iconName,
+            className: `font-size--${model.fontSize}`,
             items: [
                 td(iconName),
-                td({style: {fontSize}, item: icon({iconName, prefix: 'far'})}),
-                td({style: {fontSize}, item: icon({iconName, prefix: 'fas'})}),
-                td({style: {fontSize}, item: icon({iconName, prefix: 'fal'})}),
-                td({style: {fontSize}, item: icon({iconName, prefix: 'fat'})}),
-                td({style: {fontSize}, item: icon({iconName, prefix: 'fad'})})
+                td(icon({iconName, prefix: 'far'})),
+                td(icon({iconName, prefix: 'fas'})),
+                td(icon({iconName, prefix: 'fal'})),
+                td(icon({iconName, prefix: 'fat'})),
+                td(icon({iconName, prefix: 'fad'}))
             ]
         });
     }
@@ -191,7 +187,7 @@ function getAllIconNames() {
 }
 
 class IconsPanelModel extends HoistModel {
-    @bindable fontSize = null;
+    @bindable fontSize = 'default';
     @bindable size = '2x';
     @bindable intent = 'neutral';
 
