@@ -141,7 +141,9 @@ class Model extends HoistModel {
                 width: 5,
                 height: 2,
                 // allowRemove: false,
-                allowRename: false
+                allowRename: false,
+                hideMenuButton: true,
+                hideFullScreenButton: true
             },
             {
                 id: 'chart',
