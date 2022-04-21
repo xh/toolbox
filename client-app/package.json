@@ -26,10 +26,10 @@
     }
   },
   "dependencies": {
-    "@ag-grid-community/react": "~27.1.0",
-    "@ag-grid-enterprise/all-modules": "~27.1.0",
-    "@auth0/auth0-spa-js": "~1.19.2",
-    "@fortawesome/free-brands-svg-icons": "~5.15.2",
+    "@ag-grid-community/react": "~27.2.1",
+    "@ag-grid-enterprise/all-modules": "~27.2.1",
+    "@auth0/auth0-spa-js": "~1.21.0",
+    "@fortawesome/free-brands-svg-icons": "~6.1.1",
     "@xh/hoist": "^48.0.0-SNAPSHOT",
     "@xh/package-template": "~2.0.0",
     "core-js": "^3.0.0",
