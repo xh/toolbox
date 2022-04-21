@@ -25,7 +25,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                     This component also supports publishing observable state.
                 </p>,
                 <p>
-                    <strong>NOTE: THIS COMPONENT IS CURRENTLY IN BETA AND SUBJECT TO BREAKING CHANGES</strong>
+                    <strong>NOTE: This component is currently in BETA and its API is subject to change.</strong>
                 </p>
             ],
             item: panel({
@@ -90,7 +90,7 @@ const bbar = hoistCmp.factory(
                 model: model.dashCanvasModel
             }),
             '-',
-            'Row Height (px)',
+            'Row Ht.',
             numberInput({
                 width: 80,
                 bind: 'rowHeight',
@@ -104,7 +104,7 @@ const bbar = hoistCmp.factory(
             }),
             filler(),
             button({
-                text: 'Reset & Clear State',
+                text: 'Reset State',
                 icon: Icon.reset(),
                 onClick: () => model.resetState()
             })
