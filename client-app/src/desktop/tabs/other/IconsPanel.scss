@@ -1,6 +1,7 @@
 .toolbox-icons-panel {
   max-height: calc(100% - 200px);
-  width: 1200px;
+  width: calc(100% - 100px);
+  max-width: 1200px;
   overflow: auto;
 
   .font-size {
