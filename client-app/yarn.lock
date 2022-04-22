@@ -1232,9 +1232,9 @@
     to-fast-properties "^2.0.0"
 
 "@blueprintjs/colors@^4.0.0-alpha.3":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/colors/-/colors-4.1.0.tgz#6715062ff4c51667726ba690b49cafe14ace687a"
-  integrity sha512-aXgkEBg2oEz6lCE/sidvREUzQF7eJq2R8BvfOcQ1ICV4r/KVFszee6seA12ZtVaphfvuR4EE/raH6F1d0f4y7g==
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/colors/-/colors-4.1.1.tgz#ddaa27a23f5029e983084012130b8c47df71e800"
+  integrity sha512-uA/TDvIOG/TJ+mDJNerFRK5WnUJlInbRshzHI5SbJXlaPXXIj5BMxAXB67izH0gjvSNj5cXy/9UIgTO2WCB7XA==
 
 "@blueprintjs/core@^3.54.0", "@blueprintjs/core@~3.54.0":
   version "3.54.0"
@@ -1938,9 +1938,9 @@
   integrity sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==
 
 "@types/react-dom@*":
-  version "18.0.1"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.1.tgz#cb3cc10ea91141b12c71001fede1017acfbce4db"
-  integrity sha512-jCwTXvHtRLiyVvKm9aEdHXs8rflVOGd5Sl913JZrPshfXjn8NYsTNZOz70bCsA31IR0TOqwi3ad+X4tSCBoMTw==
+  version "18.0.2"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.2.tgz#2d6b46557aa30257e87e67a6d952146d15979d79"
+  integrity sha512-UxeS+Wtj5bvLRREz9tIgsK4ntCuLDo0EcAcACgw3E+9wE8ePDr9uQpq53MfcyxyIS55xJ+0B6mDS8c4qkkHLBg==
   dependencies:
     "@types/react" "*"
 
@@ -1986,9 +1986,9 @@
     "@types/react" "*"
 
 "@types/react@*":
-  version "18.0.5"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.5.tgz#1a4d4b705ae6af5aed369dec22800b20f89f5301"
-  integrity sha512-UPxNGInDCIKlfqBrm8LDXYWNfLHwIdisWcsH5GpMyGjhEDLFgTtlRBaoWuCua9HcyuE0rMkmAeZ3FXV1pYLIYQ==
+  version "18.0.6"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.6.tgz#30206c3830af6ce8639b91ace5868bc2d3d1d96c"
+  integrity sha512-bPqwzJRzKtfI0mVYr5R+1o9BOE8UEXefwc1LwcBtfnaAn6OoqMhLa/91VA8aeWfDPJt1kHvYKI8RHcQybZLHHA==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -2251,10 +2251,10 @@
     webpack-dev-server "~3.11.2"
     webpackbar "~4.0.0"
 
-"@xh/hoist@^48.0.0-SNAPSHOT":
-  version "48.0.0-SNAPSHOT.1650469930034"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-48.0.0-SNAPSHOT.1650469930034.tgz#a276f40d4dc875a05ab5540cb81c303c4ea9b6ea"
-  integrity sha512-s9fIqxbIdmD6ZnXLx/P428UlR6H2Hmrzunowlt8g4E8aGz/o1SZOkhhLME2+SGm6b9WF9C5RDqfjV/3o+KnAxA==
+"@xh/hoist@48.0.0":
+  version "48.0.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-48.0.0.tgz#20e95b53ebbaad3d32537c978014cb700c317fe8"
+  integrity sha512-FgZVWH7Gc1+W7ATSixiyG6Qtx7MLBJamHLl9gwiUvvM5NbiPAST3y5QW4KCj3C41AcWrJgTCW9xmvUvzNzTEFw==
   dependencies:
     "@blueprintjs/core" "~3.54.0"
     "@blueprintjs/datetime" "~3.24.0"
@@ -10300,7 +10300,12 @@ trough@^1.0.0:
   resolved "https://registry.yarnpkg.com/trough/-/trough-1.0.5.tgz#b8b639cefad7d0bb2abd37d433ff8293efa5f406"
   integrity sha512-rvuRbTarPXmMb79SmzEp8aqXNKcK+y0XaB298IXueQ8I2PsrATcPBCSPyK/dDNa2iWOhKlfNnOjdAOTBU/nkFA==
 
-tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.2.0, tslib@~2.3.1:
+tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.2.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
+  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
+
+tslib@~2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
   integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
