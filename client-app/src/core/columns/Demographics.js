@@ -9,7 +9,8 @@ export const fullNameCol = {
     headerName: 'Name',
     width: 140,
     rendererIsComplex: true,
-    renderer: (v, {record}) => record ? `${record.data.firstName} ${record.data.lastName}` : ''
+    renderer: (v, {record}) => fullNameRenderer(v, record),
+    exportValue: (v, {record}) => fullNameRenderer(v, record) // For copying to clipboard only.
 };
 
 export const firstNameCol = {
@@ -63,3 +64,5 @@ export const cellPhoneCol = {
 export const workPhoneCol = {
     field: {name: 'workPhone', type: STRING}
 };
+
+const fullNameRenderer = (v, record) => record ? `${record.data.firstName} ${record.data.lastName}` : '';
