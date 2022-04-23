@@ -45,7 +45,7 @@ class DynamicExampleModel extends HoistModel {
         const {dynamicModel} = this,
             icons = [Icon.user(), Icon.home(), Icon.portfolio()],
             id = this.id++,
-            message = `Tab ${id}: Brand spanking new at ${fmtTime(new Date(), {fmt: 'HH:mm:ss'})}`;
+            message = `Tab ${id}: Brand spanking new at ${fmtTime(new Date(), {fmt: 'HH:mm:ss', asHtml: true})}`;
 
         dynamicModel.addTab({
             id: id.toString(),

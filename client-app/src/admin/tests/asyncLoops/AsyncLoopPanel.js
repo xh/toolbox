@@ -65,7 +65,7 @@ const tbar = hoistCmp.factory(({model}) => {
                 onClick: () => wait().then(() => model.loadAsync())
             }),
             hspacer(),
-            lastRunDuration ? span(`Last run took: ${fmtNumber(lastRunDuration)}ms`) : null
+            lastRunDuration ? span(`Last run took `, fmtNumber(lastRunDuration, {label: 'ms'})) : null
         ]
     });
 });
