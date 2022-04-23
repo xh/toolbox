@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.17.1 - 2022-04-22
+
+### Libraries
+* @xh/hoist 48.0.1
+
 ## v2.17.0 - 2022-04-21
 
 ### New Features
