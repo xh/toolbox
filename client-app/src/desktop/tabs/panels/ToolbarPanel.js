@@ -5,10 +5,11 @@ import {buttonGroupInput, select, switchInput} from '@xh/hoist/desktop/cmp/input
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon, xhLogo} from '@xh/hoist/icon';
-import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
+import {menuItem} from '@xh/hoist/kit/blueprint';
 import {usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import {ToolbarPanelModel} from './ToolbarPanelModel';
+import {menuButton} from '@xh/hoist/desktop/cmp/contextmenu';
 
 export const toolbarPanel = hoistCmp.factory({
     model: creates(ToolbarPanelModel),
@@ -57,18 +58,15 @@ const topBar = hoistCmp.factory(
                 text: 'Edit',
                 intent: 'primary'
             }),
-            popover({
-                position: 'bottom-left',
-                minimal: true,
-                target: button({
-                    icon: Icon.chevronDown(),
-                    text: 'Menu Button'
-                }),
-                content: menu(
+            menuButton({
+                icon: Icon.chevronDown(),
+                text: 'Menu Button',
+                menuItems: [
                     menuItem({text: 'Menu Item'}),
                     menuItem({text: 'Menu Item 2'}),
                     menuItem({text: 'Menu Item 3'})
-                )
+                ]
+                
             }),
             filler(),
             switchInput({

@@ -27,7 +27,8 @@ import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
 import './InputsPanel.scss';
 import {InputsPanelModel} from './InputsPanelModel';
-import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
+import {menuItem} from '@xh/hoist/kit/blueprint';
+import {menuButton} from '@xh/hoist/desktop/cmp/contextmenu';
 
 export const inputsPanel = hoistCmp.factory({
     model: creates(InputsPanelModel),
@@ -424,12 +425,13 @@ const setFocusMenu = hoistCmp.factory(
             menuItems = fields.map(f => {
                 return menuItem({text: f.displayName, onClick: () => f.focus()});
             });
-        return popover({
-            target: button({
-                icon: Icon.target(),
-                text: 'Set Focus'
-            }),
-            content: menu(menuItems)
+        return menuButton({
+            icon: Icon.target(),
+            text: 'Set Focus',
+            menuItems: menuItems,
+            popoverProps: {
+                minimal: false
+            }
         });
     }
 );
