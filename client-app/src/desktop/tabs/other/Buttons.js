@@ -49,7 +49,7 @@ export const buttonsPanel = hoistCmp.factory({
                             label: 'Dark Mode',
                             labelSide: 'left',
                             bind: 'darkTheme',
-                            model: XH
+                            model: XH.appContainerModel.themeModel
                         }),
                         switchInput({
                             label: 'Disable All',
