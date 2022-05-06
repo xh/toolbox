@@ -31,7 +31,7 @@ export class DirectoryPanelModel extends HoistModel {
     @bindable.ref tagFilters = [];
 
     /** @member {('grid'|'tiles')} */
-    @bindable @persist displayMode = 'grid';
+    @bindable @persist displayMode = 'tiles';
 
     /** @member {DetailsPanelModel} */
     @managed detailsPanelModel;
