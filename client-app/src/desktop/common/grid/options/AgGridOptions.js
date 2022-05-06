@@ -26,7 +26,7 @@ export const agGridOptions = hoistCmp.factory({
                     label: 'Dark Mode',
                     labelSide: 'left',
                     bind: 'darkTheme',
-                    model: XH
+                    model: XH.appContainerModel.themeModel
                 }),
                 switchInput({
                     bind: 'hideHeaders',

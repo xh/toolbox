@@ -1,4 +1,5 @@
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {fragment} from '@xh/hoist/cmp/layout';
 import {FieldType} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
@@ -238,9 +239,11 @@ export class GridTestModel extends HoistModel {
                     align: 'right',
                     width: 130,
                     renderer: (v, {record}) => {
-                        return fmtMillions(record.data.volume, {precision: 2, label: true}) +
-                            ' | ' +
-                            fmtNumber(record.data.day, {colorSpec: true});
+                        return fragment(
+                            fmtMillions(record.data.volume, {precision: 2, label: true}),
+                            ' | ',
+                            fmtNumber(record.data.day, {colorSpec: true})
+                        );
                     },
                     rendererIsComplex: true
                 }

@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.17.1 - 2022-04-22
+
+### Libraries
+* @xh/hoist 48.0.1
+
+## v2.17.0 - 2022-04-21
+
+### New Features
+* New examples for Exceptions, DashCanvas, and more.
+
+### Libraries
+* @xh/hoist 48.0.0
+
 ## v2.16.0 - 2022-03-26
 
 ### New Features

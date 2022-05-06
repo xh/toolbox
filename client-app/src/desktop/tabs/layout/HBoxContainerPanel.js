@@ -16,7 +16,7 @@ export const hboxContainerPanel = hoistCmp.factory(
             {url: '$HR/core/mixins/LayoutSupport.js', notes: 'Decorator to support core layout props.'}
         ],
         item: panel({
-            title: 'Containers › HBox',
+            title: 'Layout › HBox',
             icon: Icon.box(),
             height: 400,
             width: 700,
@@ -32,7 +32,7 @@ export const hboxContainerPanel = hoistCmp.factory(
 
 function renderBox(args) {
     return box({
-        className: 'toolbox-containers-box',
+        className: 'toolbox-layout-box',
         ...args
     });
 }

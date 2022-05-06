@@ -263,7 +263,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     resizable: false,
                     editable: true,
                     editor: booleanEditor,
-                    renderer: (v) => v ? Icon.lock({className: 'xh-warning', asHtml: true}) : ''
+                    renderer: (v) => v ? Icon.lock({className: 'xh-warning'}) : ''
                 },
                 {
                     field: 'name',
@@ -307,6 +307,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     tooltip: true,
                     editable: ifNotRestricted,
                     editor: textAreaEditor,
+                    editorIsPopup: true,
                     omit: this.fullRowEditing
                 }
             ]
