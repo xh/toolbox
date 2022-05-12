@@ -236,6 +236,7 @@ export class SampleGridModel extends HoistModel {
 
     restoreDefaultsFn() {
         // Reset defaults to Display Options panel
+        this.setGroupBy(false);
         this.gridModel.setSizingMode(XH.sizingMode);
         this.gridModel.setHideHeaders(false);
         this.gridModel.setStripeRows(true);
