@@ -30,7 +30,7 @@ import {AgGridReact} from '@ag-grid-community/react';
 import {version} from '@ag-grid-enterprise/all-modules/package.json';
 ModuleRegistry.registerModules(AllModules);
 LicenseManager.setLicenseKey(
-    'CompanyName=Extremely Heavy Industries,LicensedApplication=Toolbox,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=6,LicensedProductionInstancesCount=1,AssetReference=AG-015460,ExpiryDate=4_June_2022_[v2]_MTY1NDI5NzIwMDAwMA==3a9d403fad7ddc79992a374430df523f'
+    'CompanyName=Extremely Heavy Industries Inc.,LicensedApplication=Toolbox,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=6,LicensedProductionInstancesCount=1,AssetReference=AG-027581,ExpiryDate=4_June_2023_[v2]_MTY4NTgzMzIwMDAwMA==d4c6cb75d5bcb4ef4cbee5c6fee57351'
 );
 installAgGrid(AgGridReact, version);
 
