@@ -18,8 +18,8 @@ export const panelSizingPanel = hoistCmp.factory({
             description: (
                 <div>
                     <p>
-                        Panels support collapsing and drag-and-drop resizing via their <code>PanelModel</code> config,
-                        optionally saving their sizing state in a per-user preference.
+                        Panels support collapsing, drag-and-drop resizing, and a toggleable modal view via their
+                        <code>PanelModel</code> config, optionally saving their sizing state in a per-user preference.
                     </p>
                     <p>
                         By default the panel content does not re-layout until the resize bar is dropped.
@@ -39,6 +39,7 @@ export const panelSizingPanel = hoistCmp.factory({
             ],
             item: panel({
                 title: 'Panels › Panel Sizing',
+                model: {modalViewSupported: true, collapsible: false, resizable: false},
                 icon: Icon.window(),
                 height: '60vh',
                 width: '80%',
@@ -104,7 +105,8 @@ export const panelSizingPanel = hoistCmp.factory({
                         compactHeader: true,
                         item: box({
                             padding: 10,
-                            item: 'Collapsible Bottom with minSize and maxSize'
+                            item: <p>Collapsible Bottom with minSize and maxSize. I have <strong>modalSupport</strong> too!
+                                (See what happens when you make me a modal within a modal.)</p>
                         }),
                         headerItems: [
                             relativeTimestamp({
@@ -161,7 +163,9 @@ class PanelSizingModel extends HoistModel {
         defaultSize: 130,
         side: 'bottom',
         maxSize: 350,
-        minSize: 100
+        minSize: 100,
+        modalViewSupported: true,
+        modalViewProps: {style: {width: 400, height: 200}}
     });
     
     constructor() {
