@@ -5,7 +5,6 @@
 ### Libraries
 * @xh/hoist 49.0.0
 
-
 ## v2.17.1 - 2022-04-22
 
 ### Libraries
