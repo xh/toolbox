@@ -131,7 +131,12 @@ class Model extends HoistModel {
                 content: gridWidget,
                 width: 5,
                 height: 5,
-                groupName: 'Group 1'
+                groupName: 'Group 1',
+                extraMenuItems: [{
+                    text: 'Pass GO',
+                    icon: Icon.dollarSign(),
+                    actionFn: () => XH.toast('Collect $200')
+                }]
             },
             {
                 id: 'buttons',
@@ -140,10 +145,14 @@ class Model extends HoistModel {
                 content: buttonWidget,
                 width: 5,
                 height: 2,
-                // allowRemove: false,
                 allowRename: false,
                 hideMenuButton: true,
-                hideFullScreenButton: true
+                headerItems: [
+                    button({
+                        icon: Icon.toast({prefix: 'fas'}),
+                        onClick: () => XH.toast('Toast is ready!')
+                    })
+                ]
             },
             {
                 id: 'chart',
@@ -161,8 +170,6 @@ class Model extends HoistModel {
                 icon: Icon.window(),
                 renderMode: RenderMode.ALWAYS,
                 content: panelWidget
-                // width and height default to 3 when not specified
-                // Maybe the default value should be configurable at the container level?
             },
             {
                 id: 'treeGrid',
