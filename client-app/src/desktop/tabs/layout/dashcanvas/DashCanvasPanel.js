@@ -131,12 +131,7 @@ class Model extends HoistModel {
                 content: gridWidget,
                 width: 5,
                 height: 5,
-                groupName: 'Group 1',
-                extraMenuItems: [{
-                    text: 'Pass GO',
-                    icon: Icon.dollarSign(),
-                    actionFn: () => XH.toast('Collect $200')
-                }]
+                groupName: 'Group 1'
             },
             {
                 id: 'buttons',
@@ -146,13 +141,7 @@ class Model extends HoistModel {
                 width: 5,
                 height: 2,
                 allowRename: false,
-                hideMenuButton: true,
-                headerItems: [
-                    button({
-                        icon: Icon.toast({prefix: 'fas'}),
-                        onClick: () => XH.toast('Toast is ready!')
-                    })
-                ]
+                hideMenuButton: true
             },
             {
                 id: 'chart',
