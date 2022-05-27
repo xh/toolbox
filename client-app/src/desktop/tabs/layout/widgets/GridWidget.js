@@ -49,21 +49,21 @@ class GridWidgetModel extends HoistModel {
         });
 
         const {viewModel, gridModel} = this;
-        if (viewModel instanceof DashCanvasViewModel) {
-            viewModel.setHeaderItems([colChooserButton({gridModel})]);
-            viewModel.setExtraMenuItems([
-                {
-                    text: 'Autosize Columns',
-                    icon: Icon.arrowsLeftRight(),
-                    actionFn: () => gridModel.autosizeAsync()
-                },
-                {
-                    text: 'Restore Grid Defaults',
-                    icon: Icon.reset(),
-                    actionFn: () => gridModel.restoreDefaultsAsync()
-                }
-            ]);
-        }
+
+        viewModel.setExtraMenuItems([
+            {
+                text: 'Autosize Columns',
+                icon: Icon.arrowsLeftRight(),
+                actionFn: () => gridModel.autosizeAsync()
+            },
+            {
+                text: 'Restore Grid Defaults',
+                icon: Icon.reset(),
+                actionFn: () => gridModel.restoreDefaultsAsync()
+            }
+        ]);
+
+        if (viewModel instanceof DashCanvasViewModel) viewModel.setHeaderItems([colChooserButton({gridModel})]);
     }
 
     async doLoadAsync(loadSpec) {

@@ -63,21 +63,22 @@ class ChartWidgetModel extends LineChartModel {
 
     onLinked() {
         const {dashViewModel} = this;
+
+        dashViewModel.setExtraMenuItems([
+            {
+                text: 'Print chart',
+                icon: Icon.print(),
+                actionFn: () => this.chartModel.highchart.print()
+            },
+            {
+                text: 'Export Data',
+                icon: Icon.fileCsv(),
+                actionFn: () => this.chartModel.highchart.downloadCSV()
+            }
+        ]);
+
         if (dashViewModel instanceof DashCanvasViewModel) {
             dashViewModel.setHeaderItems([rangeSelector({model: this})]);
-
-            dashViewModel.setExtraMenuItems([
-                {
-                    text: 'Print chart',
-                    icon: Icon.print(),
-                    actionFn: () => this.chartModel.highchart.print()
-                },
-                {
-                    text: 'Export Data',
-                    icon: Icon.fileCsv(),
-                    actionFn: () => this.chartModel.highchart.downloadCSV()
-                }
-            ]);
 
             this.chartModel.updateHighchartsConfig({
                 rangeSelector: {enabled: false},
