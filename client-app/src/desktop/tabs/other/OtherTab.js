@@ -10,7 +10,6 @@ import {numberFormatsPanel} from './formats/NumberFormatsPanel';
 import {iconsPanel} from './IconsPanel';
 import {jsxPanel} from './JsxPanel';
 import {leftRightChooserPanel} from './LeftRightChooserPanel';
-import {newLeftRightChooserPanel} from './NewLeftRightChooserPanel';
 import {pinPadPanel} from './PinPadPanel';
 import {placeholderPanel} from './PlaceholderPanel';
 import {popupsPanel} from './PopupsPanel';
@@ -35,7 +34,6 @@ export const otherTab = hoistCmp.factory(
                 {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
                 {id: 'icons', content: iconsPanel},
                 {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
-                {id: 'newLeftRightChooser', title: 'NewLeftRightChooser', content: newLeftRightChooserPanel},
                 {id: 'numberFormats', content: numberFormatsPanel},
                 {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                 {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
