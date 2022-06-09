@@ -10,7 +10,6 @@ import './SampleGrid.scss';
 import {
     activeCol,
     companyCol,
-    winLoseCol,
     cityCol,
     tradeVolumeCol,
     profitLossCol,
@@ -176,7 +175,6 @@ export class SampleGridModel extends HoistModel {
                 exportName: 'Company',
                 headerTooltip: 'Select a company & continue'
             },
-            {...winLoseCol, hidden: true},
             {...cityCol, tooltip: (val, {record}) => `${record.data.company} is located in ${val}`},
             {...tradeVolumeCol},
             {...profitLossCol},
