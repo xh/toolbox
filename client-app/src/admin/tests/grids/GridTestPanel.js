@@ -127,8 +127,16 @@ const bbar1 = hoistCmp.factory(
             content: 'Autosize Mode',
             item: select({
                 bind: 'autosizeMode',
-                options: ['disabled', 'onDemand']
+                options: ['disabled', 'onDemand', 'onSizingModeChanged', 'managed']
             })
+        }),
+        switchInput({
+            bind: 'renderedRowsOnly',
+            label: 'Rendered Rows Only'
+        }),
+        switchInput({
+            bind: 'includeCollapsedChildren',
+            label: 'Include Collapsed Children'
         }),
         toolbarSep(),
         switchInput({

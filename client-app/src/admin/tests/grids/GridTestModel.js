@@ -56,6 +56,14 @@ export class GridTestModel extends HoistModel {
     autosizeMode = 'onDemand';
 
     @bindable
+    @persist
+    renderedRowsOnly = true;
+
+    @bindable
+    @persist
+    includeCollapsedChildren = true;
+
+    @bindable
     @persist.with({path: 'gridPersistType', buffer: 500})  // test persist.with!
     persistType = null;
 
@@ -82,6 +90,8 @@ export class GridTestModel extends HoistModel {
                 this.loadRootAsSummary,
                 this.disableSelect,
                 this.autosizeMode,
+                this.renderedRowsOnly,
+                this.includeCollapsedChildren,
                 this.persistType,
                 this.colChooserCommitOnChange,
                 this.colChooserShowRestoreDefaults,
@@ -194,7 +204,9 @@ export class GridTestModel extends HoistModel {
                 height: this.colChooserHeight ?? undefined
             },
             autosizeOptions: {
-                mode: this.autosizeMode
+                mode: this.autosizeMode,
+                renderedRowsOnly: this.renderedRowsOnly,
+                includeCollapsedChildren: this.includeCollapsedChildren
             },
             columns: [
                 {
