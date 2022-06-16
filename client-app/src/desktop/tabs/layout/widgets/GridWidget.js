@@ -11,6 +11,9 @@ import {
     tradeVolumeCol,
     winLoseCol
 } from '../../../../core/columns';
+import {DashCanvasViewModel} from '@xh/hoist/desktop/cmp/dash';
+import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {Icon} from '@xh/hoist/icon';
 
 export const gridWidget = hoistCmp.factory({
     model: creates(() => GridWidgetModel),
@@ -45,6 +48,22 @@ class GridWidgetModel extends HoistModel {
             ]
         });
 
+        const {viewModel, gridModel} = this;
+
+        viewModel.setExtraMenuItems([
+            {
+                text: 'Autosize Columns',
+                icon: Icon.arrowsLeftRight(),
+                actionFn: () => gridModel.autosizeAsync()
+            },
+            {
+                text: 'Restore Grid Defaults',
+                icon: Icon.reset(),
+                actionFn: () => gridModel.restoreDefaultsAsync()
+            }
+        ]);
+
+        if (viewModel instanceof DashCanvasViewModel) viewModel.setHeaderItems([colChooserButton({gridModel})]);
     }
 
     async doLoadAsync(loadSpec) {

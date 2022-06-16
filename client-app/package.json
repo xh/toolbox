@@ -26,11 +26,11 @@
     }
   },
   "dependencies": {
-    "@ag-grid-community/react": "~27.2.1",
-    "@ag-grid-enterprise/all-modules": "~27.2.1",
-    "@auth0/auth0-spa-js": "~1.21.0",
+    "@ag-grid-community/react": "~27.3.0",
+    "@ag-grid-enterprise/all-modules": "~27.3.0",
+    "@auth0/auth0-spa-js": "~1.22.0",
     "@fortawesome/free-brands-svg-icons": "~6.1.1",
-    "@xh/hoist": "^49.0.0-SNAPSHOT",
+    "@xh/hoist": "^50.0.0-SNAPSHOT",
     "@xh/package-template": "~2.0.0",
     "core-js": "^3.0.0",
     "highcharts": "~9.3.0",
@@ -40,7 +40,7 @@
     "react-dom": "~17.0.1"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "^6.0.0-SNAPSHOT",
+    "@xh/hoist-dev-utils": "~5.14.0",
     "cross-env": "~7.0.3",
     "husky": "~4.3.8",
     "lint-staged": "~10.5.0",

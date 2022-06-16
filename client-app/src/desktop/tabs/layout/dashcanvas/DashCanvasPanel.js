@@ -140,10 +140,8 @@ class Model extends HoistModel {
                 content: buttonWidget,
                 width: 5,
                 height: 2,
-                // allowRemove: false,
                 allowRename: false,
-                hideMenuButton: true,
-                hideFullScreenButton: true
+                hideMenuButton: true
             },
             {
                 id: 'chart',
@@ -161,8 +159,6 @@ class Model extends HoistModel {
                 icon: Icon.window(),
                 renderMode: RenderMode.ALWAYS,
                 content: panelWidget
-                // width and height default to 3 when not specified
-                // Maybe the default value should be configurable at the container level?
             },
             {
                 id: 'treeGrid',
