@@ -15,14 +15,18 @@ import {modalButton} from '@xh/hoist/desktop/cmp/panel/impl/PanelHeader';
 export const chartWidget = hoistCmp.factory({
     model: creates(() => ChartWidgetModel),
     render({model}) {
+        const {panelModel, symbols} = model,
+            modalOpts = {title: 'Chart', icon: Icon.chartLine(), headerItems: [rangeSelector({model})]};
+
         return panel({
-            model: model.panelModel,
+            model: panelModel,
+            ...(panelModel.isModal ? modalOpts : {}),
             item: chart(),
             bbar: [
                 box('Symbol: '),
                 select({
                     bind: 'currentSymbol',
-                    options: model.symbols,
+                    options: symbols,
                     enableFilter: false
                 })
             ]

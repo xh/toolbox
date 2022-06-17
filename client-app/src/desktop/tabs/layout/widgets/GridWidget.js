@@ -20,8 +20,12 @@ import {modalButton} from '@xh/hoist/desktop/cmp/panel/impl/PanelHeader';
 export const gridWidget = hoistCmp.factory({
     model: creates(() => GridWidgetModel),
     render({model}) {
+        const {panelModel} = model,
+            modalOpts = {title: 'Grid', icon: Icon.grid()};
+
         return panel({
-            model: model.panelModel,
+            model: panelModel,
+            ...(panelModel.isModal ? modalOpts : {}),
             item: grid()
         });
     }
