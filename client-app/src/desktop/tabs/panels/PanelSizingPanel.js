@@ -6,7 +6,7 @@ import {box, filler, h3, hbox, p} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
-import {panel, PanelModel, ModalViewOptions} from '@xh/hoist/desktop/cmp/panel';
+import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {wrapper} from '../../common/Wrapper';
 
@@ -39,7 +39,7 @@ export const panelSizingPanel = hoistCmp.factory({
             ],
             item: panel({
                 title: 'Panels › Panel Sizing',
-                model: {modalView: true, collapsible: false, resizable: false},
+                model: {modalSupport: true, collapsible: false, resizable: false},
                 icon: Icon.window(),
                 height: '60vh',
                 width: '80%',
@@ -164,7 +164,7 @@ class PanelSizingModel extends HoistModel {
         side: 'bottom',
         maxSize: 350,
         minSize: 100,
-        modalView: new ModalViewOptions({width: 400, height: 200})
+        modalSupport: {width: 400, height: 200}
     });
     
     constructor() {

@@ -12,16 +12,19 @@ import {
     winLoseCol
 } from '../../../../core/columns';
 import {DashCanvasViewModel} from '@xh/hoist/desktop/cmp/dash';
-import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {colChooserButton, modalToggleButton} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
-import {modalButton} from '@xh/hoist/desktop/cmp/panel/impl/PanelHeader';
 
 export const gridWidget = hoistCmp.factory({
     model: creates(() => GridWidgetModel),
     render({model}) {
-        const {panelModel} = model,
-            modalOpts = {title: 'Grid', icon: Icon.grid()};
+        const {panelModel, viewModel} = model,
+            modalOpts = {
+                title: viewModel.title,
+                icon: viewModel.icon,
+                headerItems: [modalToggleButton({panelModel})]
+            };
 
         return panel({
             model: panelModel,
@@ -34,7 +37,7 @@ export const gridWidget = hoistCmp.factory({
 class GridWidgetModel extends HoistModel {
 
     @managed gridModel;
-    @managed panelModel = new PanelModel({modalView: true, collapsible: false, resizable: false});
+    @managed panelModel = new PanelModel({modalSupport: true, showModalToggleButton: false, collapsible: false, resizable: false});
     @lookup(DashViewModel) viewModel;
 
     onLinked() {
@@ -76,7 +79,7 @@ class GridWidgetModel extends HoistModel {
         if (viewModel instanceof DashCanvasViewModel) {
             viewModel.setHeaderItems([
                 colChooserButton({gridModel}),
-                modalButton({panelModel})
+                modalToggleButton({panelModel})
             ]);
         }
     }

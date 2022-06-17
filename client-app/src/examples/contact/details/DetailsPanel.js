@@ -21,7 +21,7 @@ export const detailsPanel = hoistCmp.factory({
             icon = currentRecord ? Icon.detail() : null;
 
         return panel({
-            model: {modalView: true, collapsible: false, resizable: false},
+            model: {modalSupport: true, collapsible: false, resizable: false},
             title,
             icon,
             className,
