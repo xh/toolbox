@@ -14,17 +14,23 @@ import {
 import {DashCanvasViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
+import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
+import {modalButton} from '@xh/hoist/desktop/cmp/panel/impl/PanelHeader';
 
 export const gridWidget = hoistCmp.factory({
     model: creates(() => GridWidgetModel),
-    render() {
-        return grid();
+    render({model}) {
+        return panel({
+            model: model.panelModel,
+            item: grid()
+        });
     }
 });
 
 class GridWidgetModel extends HoistModel {
 
     @managed gridModel;
+    @managed panelModel = new PanelModel({modalView: true, collapsible: false, resizable: false});
     @lookup(DashViewModel) viewModel;
 
     onLinked() {
@@ -48,7 +54,7 @@ class GridWidgetModel extends HoistModel {
             ]
         });
 
-        const {viewModel, gridModel} = this;
+        const {viewModel, gridModel, panelModel} = this;
 
         viewModel.setExtraMenuItems([
             {
@@ -63,7 +69,12 @@ class GridWidgetModel extends HoistModel {
             }
         ]);
 
-        if (viewModel instanceof DashCanvasViewModel) viewModel.setHeaderItems([colChooserButton({gridModel})]);
+        if (viewModel instanceof DashCanvasViewModel) {
+            viewModel.setHeaderItems([
+                colChooserButton({gridModel}),
+                modalButton({panelModel})
+            ]);
+        }
     }
 
     async doLoadAsync(loadSpec) {

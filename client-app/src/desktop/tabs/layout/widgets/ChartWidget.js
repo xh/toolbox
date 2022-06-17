@@ -1,6 +1,6 @@
-import {creates, hoistCmp, lookup} from '@xh/hoist/core';
+import {creates, hoistCmp, lookup, managed} from '@xh/hoist/core';
 import {box} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
 import {chart} from '@xh/hoist/cmp/chart';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -10,11 +10,13 @@ import {ONE_DAY} from '@xh/hoist/utils/datetime';
 import {Icon} from '@xh/hoist/icon/Icon';
 import './ChartWidget.scss';
 import {LineChartModel} from '../../charts/LineChartModel';
+import {modalButton} from '@xh/hoist/desktop/cmp/panel/impl/PanelHeader';
 
 export const chartWidget = hoistCmp.factory({
     model: creates(() => ChartWidgetModel),
     render({model}) {
         return panel({
+            model: model.panelModel,
             item: chart(),
             bbar: [
                 box('Symbol: '),
@@ -45,6 +47,7 @@ class ChartWidgetModel extends LineChartModel {
 
     @bindable range = 30;
     @lookup(DashViewModel) dashViewModel;
+    @managed panelModel = new PanelModel({modalView: true, collapsible: false, resizable: false});
 
     constructor() {
         super();
@@ -62,7 +65,7 @@ class ChartWidgetModel extends LineChartModel {
     }
 
     onLinked() {
-        const {dashViewModel} = this;
+        const {dashViewModel, panelModel} = this;
 
         dashViewModel.setExtraMenuItems([
             {
@@ -78,7 +81,10 @@ class ChartWidgetModel extends LineChartModel {
         ]);
 
         if (dashViewModel instanceof DashCanvasViewModel) {
-            dashViewModel.setHeaderItems([rangeSelector({model: this})]);
+            dashViewModel.setHeaderItems([
+                rangeSelector({model: this}),
+                modalButton({panelModel})
+            ]);
 
             this.chartModel.updateHighchartsConfig({
                 rangeSelector: {enabled: false},
