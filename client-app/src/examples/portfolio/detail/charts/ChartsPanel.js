@@ -19,6 +19,7 @@ export const chartsPanel = hoistCmp.factory({
                 defaultSize: 700,
                 side: 'right',
                 renderMode: 'unmountOnHide',
+                modalSupport: true,
                 persistWith: {...PERSIST_DETAIL, path: 'chartPanel'}
             },
             item: model.symbol ?
