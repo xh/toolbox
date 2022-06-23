@@ -18,23 +18,24 @@ export const dashCanvasPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    <code>DashCanvas</code> is configured and managed via a
-                    <code>DashCanvasModel</code> and allows the user to drag-and-drop content into various
-                    scrollable layouts.
-
-                    This component also supports publishing observable state.
+                    <code>DashCanvas</code> is configured and managed via a <code>DashCanvasModel</code> and allows the
+                    user to drag-and-drop configured widgets into highly-customizable layouts.
                 </p>,
                 <p>
-                    <strong>NOTE: This component is currently in BETA and its API is subject to change.</strong>
+                    Unlike its cousin <code>DashContainer</code>, this component scales the <em>width only</em> of its child
+                    widgets as its overall size changes, leaving heights unchanged and scrolling internally as necessary.
+                    This makes it a good candidate for report-style dashboards containing lots of content that is
+                    unlikely to fit or compress nicely on smaller screens. Consider <code>DashContainer</code> instead
+                    when a space-filling layout is a priority.
                 </p>
             ],
             item: panel({
                 title: 'Layout › DashCanvas',
-                icon: Icon.gridLarge(),
+                icon: Icon.layout(),
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard ?
-                    frame(dashCanvas()):
+                    frame(dashCanvas()) :
                     frame({
                         item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
                         padding: 10
@@ -121,7 +122,7 @@ class Model extends HoistModel {
         showMenuButton: true,
         initialState,
         viewSpecDefaults: {
-            icon: Icon.grid()
+            icon: Icon.gridPanel()
         },
         viewSpecs: [
             {
@@ -129,16 +130,24 @@ class Model extends HoistModel {
                 title: 'Grid',
                 unique: true,
                 content: gridWidget,
-                width: 5,
+                width: 6,
                 height: 5,
-                groupName: 'Group 1'
+                groupName: 'Grid Widgets'
+            },
+            {
+                id: 'treeGrid',
+                title: 'Tree Grid',
+                content: treeGridWidget,
+                width: 12,
+                height: 8,
+                groupName: 'Grid Widgets'
             },
             {
                 id: 'buttons',
                 title: 'Buttons',
-                icon: Icon.question(),
+                icon: Icon.edit(),
                 content: buttonWidget,
-                width: 5,
+                width: 4,
                 height: 2,
                 allowRename: false,
                 hideMenuButton: true
@@ -150,7 +159,7 @@ class Model extends HoistModel {
                 unique: true,
                 refreshMode: RefreshMode.ON_SHOW_ALWAYS,
                 content: chartWidget,
-                width: 8,
+                width: 12,
                 height: 5
             },
             {
@@ -159,13 +168,6 @@ class Model extends HoistModel {
                 icon: Icon.window(),
                 renderMode: RenderMode.ALWAYS,
                 content: panelWidget
-            },
-            {
-                id: 'treeGrid',
-                title: 'Tree Grid',
-                content: treeGridWidget,
-                width: 8,
-                height: 6
             }
         ]
     });
@@ -183,73 +185,69 @@ class Model extends HoistModel {
 
 const initialState = [
     {
-        viewSpecId: 'chart',
-        title: 'Chart',
-        viewState: null,
-        viewLayout: {
-            w: 5,
-            h: 6,
-            x: 0,
-            y: 0
-        }
-    },
-    {
-        viewSpecId: 'buttons',
-        title: 'Buttons 1',
-        viewState: null,
-        viewLayout: {
-            w: 3,
-            h: 2,
-            x: 5,
-            y: 0
-        }
-    },
-    {
-        viewSpecId: 'buttons',
-        title: 'Buttons 2',
-        viewState: {
-            value: 'Button 2'
+        'layout': {
+            'x': 0,
+            'y': 0,
+            'w': 12,
+            'h': 5
         },
-        viewLayout: {
-            w: 3,
-            h: 2,
-            x: 5,
-            y: 2
-        }
+        'viewSpecId': 'chart'
     },
     {
-        viewSpecId: 'buttons',
-        title: 'Buttons 3',
-        viewState: {
-            value: 'Button 3'
+        'layout': {
+            'x': 0,
+            'y': 5,
+            'w': 4,
+            'h': 3
         },
-        viewLayout: {
-            w: 3,
-            h: 2,
-            x: 5,
-            y: 4
+        'viewSpecId': 'buttons',
+        'title': 'Buttons 1',
+        'state': {
+            'value': 'Button 1'
         }
     },
     {
-        viewSpecId: 'panel',
-        title: 'Panel',
-        viewState: null,
-        viewLayout: {
-            w: 1,
-            h: 6,
-            x: 7,
-            y: 6
+        'layout': {
+            'x': 4,
+            'y': 5,
+            'w': 4,
+            'h': 3
+        },
+        'viewSpecId': 'buttons',
+        'title': 'Buttons 2',
+        'state': {
+            'value': 'Button 2'
         }
     },
     {
-        viewSpecId: 'treeGrid',
-        title: 'Tree Grid',
-        viewState: null,
-        viewLayout: {
-            w: 7,
-            h: 6,
-            x: 0,
-            y: 6
+        'layout': {
+            'x': 8,
+            'y': 5,
+            'w': 4,
+            'h': 3
+        },
+        'viewSpecId': 'buttons',
+        'title': 'Buttons 3',
+        'state': {
+            'value': 'Button 3'
         }
+    },
+    {
+        'layout': {
+            'x': 9,
+            'y': 8,
+            'w': 3,
+            'h': 4
+        },
+        'viewSpecId': 'panel'
+    },
+    {
+        'layout': {
+            'x': 0,
+            'y': 8,
+            'w': 9,
+            'h': 7
+        },
+        'viewSpecId': 'treeGrid'
     }
 ];

@@ -26,8 +26,8 @@ export const dashContainerPanel = hoistCmp.factory({
                 </p>
             ],
             item: panel({
-                title: 'Layout › Dash',
-                icon: Icon.gridLarge(),
+                title: 'Layout › Dash Container',
+                icon: Icon.layout(),
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard ?

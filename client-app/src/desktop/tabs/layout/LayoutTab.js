@@ -1,15 +1,15 @@
-import {tabContainer} from '@xh/hoist/cmp/tab';
-import {hbox} from '@xh/hoist/cmp/layout';
 import {badge} from '@xh/hoist/cmp/badge';
+import {hbox} from '@xh/hoist/cmp/layout';
+import {tabContainer} from '@xh/hoist/cmp/tab';
 import {hoistCmp} from '@xh/hoist/core';
+import {dashCanvasPanel} from './dashCanvas/DashCanvasPanel';
 import {dashContainerPanel} from './dashContainer/DashContainerPanel';
-import {dashCanvasPanel} from './dashcanvas/DashCanvasPanel';
 import {dockContainerPanel} from './DockContainerPanel';
 import {hboxContainerPanel} from './HBoxContainerPanel';
+import './LayoutTab.scss';
 import {tabPanelContainerPanel} from './tabContainer/TabPanelContainerPanel';
 import {tileFrameContainerPanel} from './TileFrameContainerPanel';
 import {vboxContainerPanel} from './VBoxContainerPanel';
-import './LayoutTab.scss';
 
 export const layoutTab = hoistCmp.factory(
     () => tabContainer({
