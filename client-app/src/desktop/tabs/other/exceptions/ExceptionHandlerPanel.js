@@ -134,7 +134,7 @@ const displayOptions = hoistCmp.factory(
                     alignItems: 'center',
                     items: [
                         label({
-                            className: `bp3-control bp3-switch bp3-inline bp3-align-right xh-input xh-switch-input${!model.showAlert ? ' bp3-disabled xh-input-disabled' : ''}`,
+                            className: `bp4-control bp4-switch bp4-inline bp4-align-right xh-input xh-switch-input${!model.showAlert ? ' bp4-disabled xh-input-disabled' : ''}`,
                             item: 'Alert Type'
                         }),
                         filler(),
