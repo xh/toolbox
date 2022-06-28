@@ -169,7 +169,13 @@ class Model extends HoistModel {
                 renderMode: RenderMode.ALWAYS,
                 content: panelWidget
             }
-        ]
+        ],
+        extraMenuItems: [{
+            text: 'Reset State',
+            icon: Icon.reset(),
+            actionFn: () => this.resetState(),
+            hidden: () => this.dashCanvasModel.layoutLocked || this.dashCanvasModel.contentLocked
+        }]
     });
 
     constructor() {

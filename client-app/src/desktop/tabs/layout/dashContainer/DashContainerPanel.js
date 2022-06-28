@@ -150,7 +150,13 @@ class DashContainerPanelModel extends HoistModel {
                 title: 'Tree Grid',
                 content: treeGridWidget
             }
-        ]
+        ],
+        extraMenuItems: [{
+            text: 'Reset State',
+            icon: Icon.reset(),
+            actionFn: () => this.resetState(),
+            hidden: () => this.dashContainerModel.layoutLocked || this.dashContainerModel.contentLocked
+        }]
     });
 
     constructor() {
