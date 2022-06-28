@@ -174,7 +174,7 @@ class Model extends HoistModel {
             text: 'Reset State',
             icon: Icon.reset(),
             actionFn: () => this.resetState(),
-            hidden: () => this.dashCanvasModel.layoutLocked || this.dashCanvasModel.contentLocked
+            displayFn: () => ({hidden: this.dashCanvasModel.layoutLocked || this.dashCanvasModel.contentLocked})
         }]
     });
 

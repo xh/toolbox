@@ -155,7 +155,7 @@ class DashContainerPanelModel extends HoistModel {
             text: 'Reset State',
             icon: Icon.reset(),
             actionFn: () => this.resetState(),
-            hidden: () => this.dashContainerModel.layoutLocked || this.dashContainerModel.contentLocked
+            displayFn: () => ({hidden: this.dashContainerModel.layoutLocked || this.dashContainerModel.contentLocked})
         }]
     });
 
