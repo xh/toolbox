@@ -58,6 +58,7 @@ const formContent = hoistCmp.factory(
                 commitOnChange: model.commitOnChange
             },
             item: vframe({
+                testId: 'form-example',
                 padding: 10,
                 items: [
                     hbox({
