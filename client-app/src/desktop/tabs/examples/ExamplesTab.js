@@ -78,6 +78,7 @@ const appTile = hoistCmp.factory(
     ({app, model}) => {
         const isActive = app === model.activeAppConfig;
         return panel({
+            testId: app.path,
             className: `tb-examples__app-tile ${isActive ? 'tb-examples__app-tile--selected' : ''}`,
             title: app.title,
             icon: app.icon,

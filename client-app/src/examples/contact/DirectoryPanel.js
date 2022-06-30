@@ -41,6 +41,7 @@ const tbar = hoistCmp.factory(
             className: 'tb-directory-panel__tbar',
             items: [
                 storeFilterField({
+                    testId: 'filter',
                     leftIcon: Icon.search(),
                     width: 200
                 }),
@@ -69,11 +70,13 @@ const tbar = hoistCmp.factory(
                     intent: 'primary',
                     items: [
                         button({
+                            testId: 'button-details',
                             text: 'Details',
                             value: 'grid',
                             width: 80
                         }),
                         button({
+                            testId: 'button-faces',
                             text: 'Faces',
                             value: 'tiles',
                             width: 80
