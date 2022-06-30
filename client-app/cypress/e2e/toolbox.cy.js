@@ -8,7 +8,7 @@ describe('Test Toolbox', () => {
 
     it('passes', () => {
         cy.visit('');
-        cy.get('.xh-spinner').should('not.exist');
+        cy.shouldPageLoaded();
 
         cy.url().should('include', 'http://localhost:3000/app');
         cy.get('[class="tb-welcome-widget__greeting"] p:first').should('contain.text', `Welcome, `);

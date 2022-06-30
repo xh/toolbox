@@ -24,10 +24,16 @@ Cypress.Commands.add('getTargetByTabId', (selector, ...args) => {
     return cy.get(`[data-tab-id=${selector}] > span > span`, ...args);
 });
 
+// A useful wait for if the hoist SWPA is loaded
+// NOTE: This does NOT guarantee all components and data have been loaded, especially async methods
+Cypress.Commands.add('shouldPageLoaded', () => {
+    return cy.get('.xh-spinner', {timeout: 10000}).should('not.exist');
+});
+
 // Requires command line argument " --env username='FOO',password='BAR' "
 Cypress.Commands.add('doLogin', () => {
     cy.visit('/');
-    cy.get('.xh-spinner').should('not.exist');
+    cy.shouldPageLoaded();
 
     cy.url().then(url => {
         cy.log(url);
@@ -38,7 +44,5 @@ Cypress.Commands.add('doLogin', () => {
         }
     });
 
-    cy.get('.xh-spinner').should('not.exist');
-    cy.url().should('include', 'http://localhost:3000/app');
-    cy.get('[class="tb-welcome-widget__greeting"] p:first').should('contain.text', `Welcome, `);
+    cy.shouldPageLoaded();
 });

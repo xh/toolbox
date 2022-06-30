@@ -8,8 +8,11 @@ describe('test contact', () => {
 
     it('passes', () => {
         cy.visit('../contact');
-        cy.get('.xh-spinner').should('not.exist');
+        cy.shouldPageLoaded();
+
+        // Make sure you are in the proper initial state
         cy.getByTestId('button-details').click();
+        cy.getByTestId('filter').type('{backspace}');
 
         cy.contains('Don Febbraio').should('exist');
         cy.contains('Anselm McClain').should('exist');
