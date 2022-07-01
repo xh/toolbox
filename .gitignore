@@ -16,7 +16,8 @@ bin/
 out/
 /client-app/build/
 /client-app/node_modules/
-client-app/cypress/videos
+/client-app/cypress/videos/
+/client-app/cypress/screenshots/
 
 # Logs #
 ########
