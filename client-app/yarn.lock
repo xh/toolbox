@@ -4073,6 +4073,11 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha512-NJGVKPS81XejHcLhaLJS7plab0fK3slPh11mESeeDq2W4ZI5kUKK/LRRdVDvjJseojbPB7ZwjnyOybg3Igea/A==
 
+cypress-teamcity-reporter@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/cypress-teamcity-reporter/-/cypress-teamcity-reporter-3.0.0.tgz#a5ac5348e95e8aa4ee9857ba1054b26515ffa7c8"
+  integrity sha512-YtKBVjKuoSaVVG1hYcJPQWgDyyNraaQHeDkUNDLtgOgw7VZsxmjg/u2uYT/P88vC89xpx0NsY/OtQkt+1J8zOA==
+
 cypress@^10.3.0:
   version "10.3.0"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-10.3.0.tgz#fae8d32f0822fcfb938e79c7c31ef344794336ae"
