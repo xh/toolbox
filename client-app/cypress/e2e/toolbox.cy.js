@@ -10,7 +10,6 @@ describe('Test Toolbox', () => {
         cy.visit('');
         cy.shouldPageLoaded();
 
-        cy.url().should('include', 'http://localhost:3000/app');
         cy.get('[class="tb-welcome-widget__greeting"] p:first').should('contain.text', `Welcome, `);
 
         cy.getTargetByTabId('grids').click();
