@@ -4,12 +4,12 @@ describe('test contact', () => {
 
     before('login', () => {
         cy.doLogin();
-    });
 
-    it('passes', () => {
         cy.visit('../contact');
         cy.shouldPageLoaded();
+    });
 
+    xit('filtering', () => {
         // Make sure you are in the proper initial state
         cy.getByTestId('button-details').click();
         cy.getByTestId('filter').type('{backspace}');

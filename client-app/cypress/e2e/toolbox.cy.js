@@ -4,14 +4,14 @@ describe('Test Toolbox', () => {
 
     before('login', () => {
         cy.doLogin();
-    });
 
-    it('passes', () => {
         cy.visit('');
         cy.shouldPageLoaded();
-
         cy.get('[class="tb-welcome-widget__greeting"] p:first').should('contain.text', `Welcome, `);
 
+    });
+
+    it('grids', () => {
         cy.getTargetByTabId('grids').click();
         cy.getTargetByTabId('tree').click();
         cy.getTargetByTabId('columnFiltering').click();
@@ -22,6 +22,9 @@ describe('Test Toolbox', () => {
         cy.getTargetByTabId('rest').click();
         cy.getTargetByTabId('agGrid').click();
         cy.getTargetByTabId('standard').click();
+    });
+
+    it('panels', () => {
 
         cy.getTargetByTabId('panels').click();
         cy.getTargetByTabId('toolbars').click();
@@ -29,7 +32,9 @@ describe('Test Toolbox', () => {
         cy.getTargetByTabId('mask').click();
         cy.getTargetByTabId('loadingIndicator').click();
         cy.getTargetByTabId('intro').click();
-
+    });
+    
+    it('layout', () => {
         cy.getTargetByTabId('layout').click();
         cy.getTargetByTabId('vbox').click();
         cy.getTargetByTabId('tabPanel').click();
@@ -38,21 +43,29 @@ describe('Test Toolbox', () => {
         cy.getTargetByTabId('dashCanvas').click();
         cy.getTargetByTabId('tileFrame').click();
         cy.getTargetByTabId('hbox').click();
+    });
 
+    it('forms', () => {
         cy.getTargetByTabId('forms').click();
         cy.getTargetByTabId('inputs').click();
         cy.getTargetByTabId('toolbarForm').click();
         cy.getTargetByTabId('form').click();
+    });
 
+    it('charts', () => {
         cy.getTargetByTabId('charts').click();
         cy.getTargetByTabId('ohlc').click();
         cy.getTargetByTabId('line').click();
         cy.getTargetByTabId('simpleTreeMap').click();
         cy.getTargetByTabId('gridTreeMap').click();
         cy.getTargetByTabId('splitTreeMap').click();
+    });
 
+    it('mobile', () => {
         cy.getTargetByTabId('mobile').click();
+    });
 
+    it('other', () => {
         cy.getTargetByTabId('other').click();
         cy.getTargetByTabId('buttons').click();
         cy.getTargetByTabId('clock').click();
@@ -70,7 +83,9 @@ describe('Test Toolbox', () => {
         cy.getTargetByTabId('popups').click();
         cy.getTargetByTabId('timestamp').click();
         cy.getTargetByTabId('appNotifications').click();
+    });
 
+    xit('examples', () => {
         cy.getTargetByTabId('examples').click();
         cy.getByTestId('contact').click();
         cy.getByTestId('todo').click();
