@@ -32,6 +32,9 @@ Cypress.Commands.add('shouldPageLoaded', () => {
 
 // Requires command line argument " --env username='FOO',password='BAR' "
 Cypress.Commands.add('doLogin', () => {
+    assert.exists(Cypress.env('username'), '"CYPRESS_username" not found')
+    assert.exists(Cypress.env('password'), '"CYPRESS_password" not found')
+
     cy.visit('/');
     cy.shouldPageLoaded();
 
