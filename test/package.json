@@ -1,0 +1,16 @@
+{
+  "name": "toolbox-test",
+  "version": "3.0-SNAPSHOT",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "test": "yarn cypress run all"
+  },
+  "devDependencies": {
+    "cypress": "^10.3.0",
+    "cypress-teamcity-reporter": "^3.0.0"
+  },
+  "resolutions": {
+    "core-js": "^3.0.0"
+  }
+}
