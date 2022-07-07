@@ -9,26 +9,35 @@ import {installHighcharts} from '@xh/hoist/kit/highcharts';
 
 //-----------------------------------------------------------------
 // ag-Grid -- Import and Register
-// If you are using enterprise version, you must provide a license
 //-----------------------------------------------------------------
-// Community edition.
-// import {AllCommunityModules, ModuleRegistry} from '@ag-grid-community/all-modules';
-// import '@ag-grid-community/all-modules/dist/styles/ag-grid.css';
-// import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham-dark.css';
-// import '@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
-// import {AgGridReact} from '@ag-grid-community/react';
-// import {version} from '@ag-grid-community/all-modules/package.json';
-// ModuleRegistry.registerModules(AllCommunityModules);
-// installAgGridImpls(AgGridReact, version);
-
-// Enterprise edition (w/license for Toolbox).
-import {AllModules, LicenseManager, ModuleRegistry} from '@ag-grid-enterprise/all-modules';
-import '@ag-grid-enterprise/all-modules/dist/styles/ag-grid.css';
-import '@ag-grid-enterprise/all-modules/dist/styles/ag-theme-balham-dark.css';
-import '@ag-grid-enterprise/all-modules/dist/styles/ag-theme-balham.css';
+import {ModuleRegistry} from '@ag-grid-community/core';
+import '@ag-grid-community/core/dist/styles/ag-grid.css';
+import '@ag-grid-community/core/dist/styles/ag-theme-balham-dark.css';
+import '@ag-grid-community/core/dist/styles/ag-theme-balham.css';
 import {AgGridReact} from '@ag-grid-community/react';
-import {version} from '@ag-grid-enterprise/all-modules/package.json';
-ModuleRegistry.registerModules(AllModules);
+import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model';
+import {version} from '@ag-grid-community/core/package.json';
+
+// Enterprise features
+// IMPORTANT: If you are using enterprise version in your app, you must provide your own license
+import {LicenseManager} from '@ag-grid-enterprise/core';
+import {ClipboardModule} from '@ag-grid-enterprise/clipboard';
+import {MenuModule} from '@ag-grid-enterprise/menu';
+import {RowGroupingModule} from '@ag-grid-enterprise/row-grouping';
+// Fancy features for the raw agGrid Component example...
+import {SideBarModule} from '@ag-grid-enterprise/side-bar';
+import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel';
+import {FiltersToolPanelModule} from '@ag-grid-enterprise/filter-tool-panel';
+
+ModuleRegistry.registerModules([
+    ClientSideRowModelModule,
+    ClipboardModule,
+    MenuModule,
+    RowGroupingModule,
+    SideBarModule,
+    ColumnsToolPanelModule,
+    FiltersToolPanelModule
+]);
 LicenseManager.setLicenseKey(
     'CompanyName=Extremely Heavy Industries Inc.,LicensedApplication=Toolbox,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=6,LicensedProductionInstancesCount=1,AssetReference=AG-027581,ExpiryDate=4_June_2023_[v2]_MTY4NTgzMzIwMDAwMA==d4c6cb75d5bcb4ef4cbee5c6fee57351'
 );

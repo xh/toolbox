@@ -1,5 +1,7 @@
 # Changelog
 
+## v2.19.0-SNAPSHOT - unreleased
+
 ## v2.18.0 - 2022-05-24
 
 ### Libraries

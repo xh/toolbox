@@ -26,8 +26,18 @@
     }
   },
   "dependencies": {
-    "@ag-grid-community/react": "~27.3.0",
-    "@ag-grid-enterprise/all-modules": "~27.3.0",
+    "@ag-grid-community/client-side-row-model": "~28.0.0",
+    "@ag-grid-community/core": "~28.0.0",
+    "@ag-grid-community/react": "~28.0.0",
+
+    "@ag-grid-enterprise/clipboard": "~28.0.0",
+    "@ag-grid-enterprise/core": "~28.0.0",
+    "@ag-grid-enterprise/menu": "~28.0.0",
+    "@ag-grid-enterprise/row-grouping": "~28.0.0",
+    "@ag-grid-enterprise/side-bar": "~28.0.0",
+    "@ag-grid-enterprise/column-tool-panel": "~28.0.0",
+    "@ag-grid-enterprise/filter-tool-panel": "~28.0.0",
+
     "@auth0/auth0-spa-js": "~1.22.0",
     "@fortawesome/free-brands-svg-icons": "~6.1.1",
     "@xh/hoist": "^50.0.0-SNAPSHOT",
