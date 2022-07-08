@@ -120,7 +120,6 @@ export const popupsPanel = hoistCmp.factory(
                                 title: 'Confirm with promise',
                                 message: p('Confirm returns a promise that resolves to true if the user confirms or false if the user cancels.')
                             }).then(responseToast),
-                            cancelOnEscape: false
                         })
                     ),
                     row(
