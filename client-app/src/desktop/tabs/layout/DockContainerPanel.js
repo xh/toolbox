@@ -5,7 +5,7 @@ import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {sampleGrid, wrapper} from '../../common';
-import {DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
+import {DockContainerModel, dockContainer} from '@xh/hoist/desktop/cmp/dock';
 
 export const dockContainerPanel = hoistCmp.factory({
     model: creates(() => DockContainerPanelModel),
