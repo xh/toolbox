@@ -225,6 +225,57 @@ export const popupsPanel = hoistCmp.factory(
                             }).then(responseToast)
                         })
                     ),
+                    row('',
+                        button({
+                            ...popBtn(Icon.comment({className: 'xh-green-muted'})),
+                            text: 'escape without callback',
+                            onClick: () => XH.message({
+                                title: 'Escape without calling onCancel()',
+                                message: div(
+                                    <p>
+                                        The <code>onCancel</code> callback can be bypassed when clicking out of the
+                                        popup or hitting escape by setting the <code>cancelOnEscape</code> prop to <code>false</code>.
+                                    </p>,
+                                    <p>
+                                        Click the background or hit the escape key to try it!
+                                    </p>
+                                ),
+                                confirmProps: {text: 'Trigger onConfirm()'},
+                                onConfirm: () => XH.toast({
+                                    message: <span>Called <code>onConfirm</code></span>,
+                                    containerRef: divRef.current
+                                }),
+                                cancelProps: {text: 'Trigger onCancel()'},
+                                onCancel: () => XH.toast({
+                                    message: <span>Called <code>onCancel</code></span>,
+                                    icon: Icon.x(),
+                                    intent: 'danger',
+                                    containerRef: divRef.current
+                                }),
+                                cancelOnEscape: false
+                            })
+                        }),
+                        button({
+                            ...popBtn(Icon.comment({className: 'xh-green-muted'})),
+                            text: 'escape without promise',
+                            onClick: () => XH.message({
+                                title: 'Escape without rejecting promise',
+                                message: div(
+                                    <p>
+                                        A <code>null</code> promise can be returned when clicking out of the
+                                        popup or hitting escape by setting the <code>cancelOnEscape</code> prop to <code>
+                                        false</code>.
+                                    </p>,
+                                    <p>
+                                        Click the background or hit the escape key to try it!
+                                    </p>
+                                ),
+                                confirmProps: {text: 'Resolve to true'},
+                                cancelProps: {text: 'Resolve to false'},
+                                cancelOnEscape: false
+                            }).then(responseToast)
+                        })
+                    ),
                     row(
                         button({
                             ...popBtn(Icon.flag({className: 'xh-blue-dark'})),
