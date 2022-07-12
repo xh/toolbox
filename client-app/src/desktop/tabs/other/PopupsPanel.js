@@ -139,11 +139,16 @@ export const popupsPanel = hoistCmp.factory(
                             text: 'with customizations',
                             onClick: () => XH.prompt({
                                 title: 'Prompt with customizations',
-                                message: (
+                                message: div(
                                     <p>
                                         This is also a Prompt. Here, we set the input to a custom
                                         textArea with validation via <code>input</code> and
                                         customized the buttons via <code>confirmProps</code>, <code>cancelProps</code>, and <code>cancelAlign</code>.
+                                    </p>,
+                                    <p>
+                                        This Prompt cannot be dismissed by hitting the escape key or clicking on the
+                                        background. The cancel or send buttons must be clicked to close it. This behavior is
+                                        controlled via <code>dismissable</code> and <code>cancelOnDismiss</code>.
                                     </p>
                                 ),
                                 input: {
@@ -153,7 +158,8 @@ export const popupsPanel = hoistCmp.factory(
                                 },
                                 confirmProps: {text: 'Send a Message', icon: Icon.mail(), intent: 'primary'},
                                 cancelProps: {intent: 'danger'},
-                                cancelAlign: 'left'
+                                cancelAlign: 'left',
+                                dismissable: false
                             })
                         }),
                         button({
