@@ -11,17 +11,33 @@ import {
     tradeVolumeCol,
     winLoseCol
 } from '../../../../core/columns';
+import {DashCanvasViewModel} from '@xh/hoist/desktop/cmp/dash';
+import {colChooserButton, modalToggleButton} from '@xh/hoist/desktop/cmp/button';
+import {Icon} from '@xh/hoist/icon';
+import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 
 export const gridWidget = hoistCmp.factory({
     model: creates(() => GridWidgetModel),
-    render() {
-        return grid();
+    render({model}) {
+        const {panelModel, viewModel} = model,
+            modalOpts = {
+                title: viewModel.title,
+                icon: viewModel.icon,
+                headerItems: [modalToggleButton({panelModel})]
+            };
+
+        return panel({
+            model: panelModel,
+            ...(panelModel.isModal ? modalOpts : {}),
+            item: grid()
+        });
     }
 });
 
 class GridWidgetModel extends HoistModel {
 
     @managed gridModel;
+    @managed panelModel = new PanelModel({modalSupport: true, showModalToggleButton: false, collapsible: false, resizable: false});
     @lookup(DashViewModel) viewModel;
 
     onLinked() {
@@ -45,6 +61,27 @@ class GridWidgetModel extends HoistModel {
             ]
         });
 
+        const {viewModel, gridModel, panelModel} = this;
+
+        viewModel.setExtraMenuItems([
+            {
+                text: 'Autosize Columns',
+                icon: Icon.arrowsLeftRight(),
+                actionFn: () => gridModel.autosizeAsync()
+            },
+            {
+                text: 'Restore Grid Defaults',
+                icon: Icon.reset(),
+                actionFn: () => gridModel.restoreDefaultsAsync()
+            }
+        ]);
+
+        if (viewModel instanceof DashCanvasViewModel) {
+            viewModel.setHeaderItems([
+                colChooserButton({gridModel}),
+                modalToggleButton({panelModel})
+            ]);
+        }
     }
 
     async doLoadAsync(loadSpec) {
