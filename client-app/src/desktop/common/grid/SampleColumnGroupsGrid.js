@@ -16,7 +16,7 @@ import {gridOptionsPanel} from './options/GridOptionsPanel';
 import {
     actualGrossCol,
     actualUnitsSoldCol,
-    cityCol,
+    // cityCol,
     firstNameCol,
     fullNameCol,
     lastNameCol,
@@ -151,13 +151,13 @@ class SampleColumnGroupsGridModel extends HoistModel {
                                 columnGroupShow: 'open'
                             }
                         },
-                        {
-                            ...cityCol,
-                            hidden: true,
-                            agOptions: {
-                                columnGroupShow: 'open'
-                            }
-                        },
+                        // {
+                        //     ...cityCol,
+                        //     hidden: true,
+                        //     agOptions: {
+                        //         columnGroupShow: 'open'
+                        //     }
+                        // },
                         {
                             ...stateCol,
                             agOptions: {
