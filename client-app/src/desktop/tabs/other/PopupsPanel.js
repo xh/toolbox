@@ -148,7 +148,7 @@ export const popupsPanel = hoistCmp.factory(
                                     <p>
                                         This Prompt cannot be dismissed by hitting the escape key or clicking on the
                                         background. The cancel or send buttons must be clicked to close it. This behavior is
-                                        controlled via the <code>dismissable</code> and <code>cancelOnDismiss</code> props.
+                                        controlled via <code>dismissable</code> and <code>cancelOnDismiss</code>.
                                     </p>
                                 ),
                                 input: {
