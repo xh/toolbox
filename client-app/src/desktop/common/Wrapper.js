@@ -3,7 +3,7 @@ import PT from 'prop-types';
 import {box, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {dockContainer, DockContainerModel} from '@xh/hoist/cmp/dock';
+import {dockContainer, DockContainerModel} from '@xh/hoist/desktop/cmp/dock';
 import {toolboxLink} from '../../core/cmp/ToolboxLink';
 import './Wrapper.scss';
 
