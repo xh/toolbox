@@ -41,45 +41,45 @@ export class PanelResizingTestModel extends HoistModel {
             minSize: 50,
             side: 'top'
         });
-    
+
         this.topPanel2Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
             side: 'top'
         });
-    
+
         this.leftPanel1Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
             side: 'left'
         });
-    
+
         this.leftPanel2Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 150,
             minSize: 50,
             side: 'left'
         });
-    
+
         this.rightPanel1Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
             minSize: 150,
             side: 'right'
         });
-    
+
         this.rightPanel2Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 150,
             side: 'right'
         });
-    
+
         this.bottomPanel1Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
             side: 'bottom'
         });
-    
+
         this.bottomPanel2Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
@@ -120,5 +120,5 @@ export class PanelResizingTestModel extends HoistModel {
             ]}),
         p('In default "Resize after Drag" mode, the drag bar should only be draggable as far as the next sibling\'s far side.  Also, if the next sibling is itself resizable, it will not shrink, but get pushed over.'),
         p('Panels that specify a minSize should not be resizable smaller than that specified size.')
-    ]
+    ];
 }

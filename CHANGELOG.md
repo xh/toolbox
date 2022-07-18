@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.19.0-SNAPSHOT - unreleased
+
+## v2.18.0 - 2022-05-24
+
+### Libraries
+* @xh/hoist 49.0.0
+
 ## v2.17.1 - 2022-04-22
 
 ### Libraries

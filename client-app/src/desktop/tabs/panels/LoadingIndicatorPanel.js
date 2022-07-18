@@ -88,8 +88,7 @@ class LoadingIndicatorPanelModel extends HoistModel {
     @bindable corner = 'br';
     @bindable spinner = true;
 
-    @managed
-    sampleGridModel = new SampleGridModel()
+    @managed sampleGridModel = new SampleGridModel();
 
     constructor() {
         super();

@@ -38,19 +38,19 @@
     }
   }
 
-  .bp3-form-content {
+  .bp4-form-content {
     display: flex;
   }
 
-  .bp3-form-group {
+  .bp4-form-group {
     margin: 0;
     padding: var(--xh-pad-half-px);
     float: right;
 
-    .bp3-label {
+    .bp4-label {
       margin-bottom: 2px;
 
-      .bp3-text-muted {
+      .bp4-text-muted {
         visibility: hidden;
         font-family: var(--xh-font-family-mono);
         background-color: var(--xh-bg-alt);
@@ -64,7 +64,7 @@
       }
     }
 
-    .bp3-form-helper-text {
+    .bp4-form-helper-text {
       margin-left: 20px;
     }
   }

@@ -1,5 +1,5 @@
 import {grid} from '@xh/hoist/cmp/grid';
-import {filler, label, span, vbox} from '@xh/hoist/cmp/layout';
+import {filler, hspacer, label, span, vbox} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, colChooserButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
@@ -123,14 +123,6 @@ const bbar1 = hoistCmp.factory(
             labelSide: 'left'
         }),
         toolbarSep(),
-        tooltip({
-            content: 'Autosize Mode',
-            item: select({
-                bind: 'autosizeMode',
-                options: ['disabled', 'onDemand']
-            })
-        }),
-        toolbarSep(),
         switchInput({
             bind: 'disableXssProtection',
             label: 'Disable XSS',
@@ -141,19 +133,15 @@ const bbar1 = hoistCmp.factory(
         numberInput({
             bind: 'extraFieldCount',
             width: 80
-        })
+        }),
+        toolbarSep(),
+        storeFilterField()
     )
 );
 
 const bbar2 = hoistCmp.factory(
     ({model}) => toolbar(
-        toolbarSep(),
-        switchInput({
-            bind: 'disableSelect',
-            label: 'Disable Day < 0 Selection',
-            labelSide: 'left'
-        }),
-        toolbarSep(),
+        label('Persist:'),
         tooltip({
             content: 'persistWith',
             item: select({
@@ -166,18 +154,46 @@ const bbar2 = hoistCmp.factory(
                 ]
             })
         }),
-        storeFilterField(),
+        hspacer(20),
+        label('Selection:'),
+        switchInput({
+            bind: 'disableSelect',
+            label: 'Disable Day < 0 Selection',
+            labelSide: 'left'
+        }),
+        toolbarSep(),
         button({
             text: 'Scroll to Sel',
             icon: Icon.crosshairs(),
             onClick: () => model.gridModel.ensureSelectionVisibleAsync()
+        }),
+        hspacer(20),
+        label('Autosize:'),
+        tooltip({
+            content: 'Autosize Mode',
+            item: select({
+                bind: 'autosizeMode',
+                options: ['disabled', 'onDemand', 'onSizingModeChanged', 'managed']
+            })
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'renderedRowsOnly',
+            label: 'Rendered Rows Only',
+            labelSide: 'left'
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'includeCollapsedChildren',
+            label: 'Include Collapsed Children',
+            labelSide: 'left'
         })
     )
 );
 
 const bbar3 = hoistCmp.factory(
     ({model}) => toolbar(
-        'Chooser:',
+        label('Chooser:'),
         colChooserButton({
             gridModel: model.gridModel
         }),
