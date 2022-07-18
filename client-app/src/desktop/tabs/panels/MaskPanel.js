@@ -88,8 +88,7 @@ class MaskPanelModel extends HoistModel {
     @bindable inline = true;
     @bindable spinner = true;
 
-    @managed
-    sampleGridModel = new SampleGridModel()
+    @managed sampleGridModel = new SampleGridModel();
 
     constructor() {
         super();

@@ -80,7 +80,7 @@ const detailPanel = hoistCmp.factory(({model}) => {
 class PlaceholderPanelModel extends HoistModel {
     gridModel = new GridModel({
         columns: [{field: 'company', flex: 1}]
-    })
+    });
 
     async doLoadAsync(loadSpec) {
         const {trades} = await XH.fetchJson({url: 'trade'});

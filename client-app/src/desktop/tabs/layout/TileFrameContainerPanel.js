@@ -124,7 +124,7 @@ class TileFrameContainerPanelModel extends HoistModel {
             {name: 'minTileHeight', label: 'minTileHeight'},
             {name: 'maxTileHeight', label: 'maxTileHeight'}
         ]
-    })
+    });
 
     constructor() {
         super();

@@ -1,11 +1,10 @@
-import {merge} from 'lodash';
-import {HoistModel, managed, XH, TaskObserver} from '@xh/hoist/core';
-import {wait} from '@xh/hoist/promise';
-import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-
-import {codeGroupBtns, individualBtns, fetchServiceFeatures} from './TabPanels';
+import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
+import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
+import {wait} from '@xh/hoist/promise';
+import {merge} from 'lodash';
 import {codes} from './Codes';
+import {codeGroupBtns, fetchServiceFeatures, individualBtns} from './TabPanels';
 
 
 export class FetchApiTestModel extends  HoistModel {
@@ -13,7 +12,9 @@ export class FetchApiTestModel extends  HoistModel {
     @bindable testServer;
     @bindable testMethod;
     @observable outcome = null;
+
     referenceSite = 'https://httpstatuses.com/';
+
     testServers = [
         {
             value: 'fetchTest?status=',
@@ -24,12 +25,13 @@ export class FetchApiTestModel extends  HoistModel {
             label: 'httpstat.us'
         }
     ];
+
     testMethods = [
         {
             value: 'fetch',
             label: 'fetch (GET)'
         }, 'getJson', 'postJson', 'putJson', 'deleteJson'
-    ]
+    ];
 
     @managed
     loadModel = TaskObserver.trackLast();
@@ -43,13 +45,13 @@ export class FetchApiTestModel extends  HoistModel {
                 content: codeGroupBtns
             },
             {
-                id: 'individual', 
-                title: 'Individual Codes', 
+                id: 'individual',
+                title: 'Individual Codes',
                 content: individualBtns
             },
             {
-                id: 'fetchServiceFeatures', 
-                title: 'FetchService Features', 
+                id: 'fetchServiceFeatures',
+                title: 'FetchService Features',
                 content: fetchServiceFeatures
             }
         ]
@@ -162,7 +164,7 @@ export class FetchApiTestModel extends  HoistModel {
             };
         }
 
-        return ret;   
+        return ret;
     }
 
     formatOutcome(response, code) {
@@ -186,7 +188,7 @@ export class FetchApiTestModel extends  HoistModel {
         };
     }
 
-    @action 
+    @action
     setOutcome(obj) {
         this.outcome = JSON.stringify(obj, undefined, 2);
     }
@@ -226,7 +228,7 @@ export class FetchApiTestModel extends  HoistModel {
         const ret = {};
         for (let p in resp) {
             const type = typeof resp[p];
-            
+
             if (type == 'string' || type == 'number' || type == 'boolean') {
                 ret[p] = resp[p];
             }
@@ -258,6 +260,6 @@ export class FetchApiTestModel extends  HoistModel {
             return await resp[method]();
         } catch (error) {
             return null;
-        } 
+        }
     }
 }

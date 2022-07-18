@@ -19,5 +19,5 @@ export class BasicPanelModel extends HoistModel {
         'Maecenas interdum elit quis erat molestie, at tristique sem malesuada. Pellentesque non neque eget risus gravida accumsan. Proin orci tellus, dapibus in risus vel, sollicitudin accumsan ligula. Donec tincidunt eleifend efficitur. Nam vel mauris quis mauris cursus tincidunt. Sed et venenatis metus. Donec non posuere elit. Praesent congue elit eu dapibus venenatis. Ut quis mi vitae ligula cursus porttitor. Curabitur aliquam sem eget nibh interdum, et ultrices nunc ornare. Quisque et gravida nisi. Curabitur lobortis a velit et ultricies. Nullam at felis eleifend, pharetra risus ut, faucibus felis. Cras nec risus pulvinar, vulputate neque in, ultricies libero. Praesent dignissim magna ut auctor euismod. Sed vehicula purus non purus viverra, vel congue eros mollis.',
 
         'Morbi eget tincidunt ex. Mauris eget egestas nulla. Pellentesque egestas sapien blandit nisi pellentesque varius. Cras dignissim consectetur mauris, eu faucibus quam mattis vel. Curabitur in libero purus. Duis nulla turpis, faucibus sed tristique eget, pretium id nibh. Phasellus sit amet egestas lectus. Donec in aliquet tortor.'
-    ]
+    ];
 }

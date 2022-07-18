@@ -21,11 +21,11 @@ export class TodoPanelModel extends HoistModel {
 
     @bindable
     @persist
-    showCompleted = false
+    showCompleted = false;
 
     @bindable
     @persist
-    showGroups = true
+    showGroups = true;
 
     /** @member {GridModel} */
     @managed
@@ -46,7 +46,7 @@ export class TodoPanelModel extends HoistModel {
         intent: 'primary',
         recordsRequired: 1,
         actionFn: () => this.taskDialogModel.openEditForm(this.selectedTasks[0])
-    })
+    });
 
     deleteAction = new RecordAction({
         icon: Icon.delete(),
