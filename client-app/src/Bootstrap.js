@@ -16,7 +16,7 @@ import '@ag-grid-community/core/dist/styles/ag-theme-balham-dark.css';
 import '@ag-grid-community/core/dist/styles/ag-theme-balham.css';
 import {AgGridReact} from '@ag-grid-community/react';
 import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model';
-import {version} from '@ag-grid-community/core/package.json';
+import agPkg from '@ag-grid-community/core/package.json';
 
 // Enterprise features
 // IMPORTANT: If you are using enterprise version in your app, you must provide your own license
@@ -41,7 +41,7 @@ ModuleRegistry.registerModules([
 LicenseManager.setLicenseKey(
     'CompanyName=Extremely Heavy Industries Inc.,LicensedApplication=Toolbox,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=6,LicensedProductionInstancesCount=1,AssetReference=AG-027581,ExpiryDate=4_June_2023_[v2]_MTY4NTgzMzIwMDAwMA==d4c6cb75d5bcb4ef4cbee5c6fee57351'
 );
-installAgGrid(AgGridReact, version);
+installAgGrid(AgGridReact, agPkg.version);
 
 
 //-------------------------------------------------------------------------------

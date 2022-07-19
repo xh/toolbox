@@ -31,7 +31,7 @@ module.exports = (env = {}) => {
         appCode: 'toolbox',
         appName: 'Toolbox',
         appVersion: env.appVersion || '3.0-SNAPSHOT',
-        favicon: './public/favicon.png',
+        favicon: './public/favicon.svg',
         devServerOpenPage: 'app/',
         dupePackageCheckExcludes: ['es-abstract', 'tslib'],
         sourceMaps: 'devOnly',
