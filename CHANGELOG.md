@@ -2,6 +2,12 @@
 
 ## v2.19.0-SNAPSHOT - unreleased
 
+Updates Toolbox to the latest `hoist-dev-utils`, which includes the latest Webpack5 and related build tooling libraries. 
+
+### Libraries
+* @xh/hoist 50.0.0
+* @xh/hoist-dev-utils 6.0
+
 ## v2.18.0 - 2022-05-24
 
 ### Libraries
