@@ -26,18 +26,16 @@
     }
   },
   "dependencies": {
-    "@ag-grid-community/client-side-row-model": "~28.0.0",
-    "@ag-grid-community/core": "~28.0.0",
+    "@ag-grid-community/client-side-row-model": "~28.0.2",
+    "@ag-grid-community/core": "~28.0.2",
     "@ag-grid-community/react": "~28.0.0",
-
-    "@ag-grid-enterprise/clipboard": "~28.0.0",
-    "@ag-grid-enterprise/core": "~28.0.0",
-    "@ag-grid-enterprise/menu": "~28.0.0",
-    "@ag-grid-enterprise/row-grouping": "~28.0.0",
-    "@ag-grid-enterprise/side-bar": "~28.0.0",
-    "@ag-grid-enterprise/column-tool-panel": "~28.0.0",
-    "@ag-grid-enterprise/filter-tool-panel": "~28.0.0",
-
+    "@ag-grid-enterprise/clipboard": "~28.0.2",
+    "@ag-grid-enterprise/column-tool-panel": "~28.0.2",
+    "@ag-grid-enterprise/core": "~28.0.2",
+    "@ag-grid-enterprise/filter-tool-panel": "~28.0.2",
+    "@ag-grid-enterprise/menu": "~28.0.2",
+    "@ag-grid-enterprise/row-grouping": "~28.0.2",
+    "@ag-grid-enterprise/side-bar": "~28.0.2",
     "@auth0/auth0-spa-js": "~1.22.0",
     "@fortawesome/free-brands-svg-icons": "~6.1.1",
     "@xh/hoist": "^51.0.0-SNAPSHOT",
@@ -54,9 +52,9 @@
     "cross-env": "~7.0.3",
     "husky": "~4.3.8",
     "lint-staged": "~10.5.0",
-    "stylelint": "~13.13.1",
-    "stylelint-config-standard": "~22.0.0",
-    "stylelint-scss": "~3.21.0"
+    "postcss": "~8.4.14",
+    "stylelint": "~14.9.1",
+    "stylelint-config-standard-scss": "~5.0.0"
   },
   "resolutions": {
     "core-js": "^3.0.0"
