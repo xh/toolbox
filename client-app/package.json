@@ -44,7 +44,7 @@
     "react-dom": "~17.0.1"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "^6.0.0-SNAPSHOT",
+    "@xh/hoist-dev-utils": "~6.0.0",
     "cross-env": "^7.0.0",
     "husky": "^8.0.0",
     "lint-staged": "^13.0.0",

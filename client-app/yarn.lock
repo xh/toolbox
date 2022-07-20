@@ -97,15 +97,15 @@
     "@jridgewell/trace-mapping" "^0.3.9"
 
 "@auth0/auth0-spa-js@~1.22.0":
-  version "1.22.1"
-  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-1.22.1.tgz#ae463b9820aa323525918e2f49cededb042f84e3"
-  integrity sha512-l0FCmiN3XubpgCtB3U0ds4h+5WQNTnIF4eLT/fudHEtcyrT65QF/03LybGVdLyuvqdIF/D6OQsfjwYw0Ms605Q==
+  version "1.22.2"
+  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-1.22.2.tgz#8394fb1351eb66f9a7750552b68412f69a3605cc"
+  integrity sha512-gKZx6p2stRBMx7cajJ50qpf88q0nkjL/18ut5yan0WGMlaL83zFqIOLz7AKVgDphG0kR3FHLzY6Ky+zpT9IYig==
   dependencies:
     abortcontroller-polyfill "^1.7.3"
     browser-tabs-lock "^1.2.15"
-    core-js "^3.22.6"
+    core-js "^3.23.2"
     es-cookie "^1.3.2"
-    fast-text-encoding "^1.0.3"
+    fast-text-encoding "^1.0.4"
     promise-polyfill "^8.2.3"
     unfetch "^4.2.0"
 
@@ -1088,13 +1088,13 @@
   resolved "https://registry.yarnpkg.com/@blueprintjs/colors/-/colors-4.1.4.tgz#13ef8fd91dc7973ddaf0e98d58f7032193aeb04e"
   integrity sha512-jggWTpazxg6ifWnaAiug9REsWUeMtkkuaWOFg5CjAiH6YtvMPU4ykWmQc9NnKAkabpKoXfZuR1V1KPAz79iYXQ==
 
-"@blueprintjs/core@^4.6.0", "@blueprintjs/core@~4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-4.6.0.tgz#89a6e4463f61ff8dd18a2e252f50e120c1e2be81"
-  integrity sha512-f8Sbsd2JUrhsxPjXLHyXTS6gi9QuULtIK4MlyoTyBc1yHb3GzQNq9L8stnKQgWOgNFl/u7wOEiXDlrSVrqfYaA==
+"@blueprintjs/core@^4.6.0", "@blueprintjs/core@^4.6.1":
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-4.6.1.tgz#e5f447feb447e2c8e811496013f553c013319fd4"
+  integrity sha512-GGwJyQHrb+w8s7u5+eB1wn2YYHz/a5bGTNsi7rOMjQLqFkaE7ondRPGB5hJE0M6LEZ1Vb2ENVhuDqfuPsGm9cQ==
   dependencies:
     "@blueprintjs/colors" "^4.1.4"
-    "@blueprintjs/icons" "^4.3.1"
+    "@blueprintjs/icons" "^4.4.0"
     "@juggle/resize-observer" "^3.3.1"
     "@types/dom4" "^2.0.1"
     classnames "^2.2"
@@ -1105,20 +1105,20 @@
     react-transition-group "^4.4.1"
     tslib "~2.3.1"
 
-"@blueprintjs/datetime@~4.3.2":
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/datetime/-/datetime-4.3.2.tgz#215c8b2ec25e003afa64c25e9a18dc452f819201"
-  integrity sha512-+zE5dD5djprcmWGc/MeozGLxOe4ARDu+DzVMnRormCveaXTV3mRqIkC4R6WxKNu7xG11nZkvgHbVFc2mkJJdaQ==
+"@blueprintjs/datetime@^4.3.0":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/datetime/-/datetime-4.3.3.tgz#3a0e006098e5cbc239519afbbd3f6723ce15b105"
+  integrity sha512-6Pqm19n1nHXYSB50eYHpu78Xaf1SrnOqUQmnVEkUgp5X6t6IAL6rsGlOSrzFXzrVV5hesMMZK346OEic57bY7g==
   dependencies:
-    "@blueprintjs/core" "^4.6.0"
+    "@blueprintjs/core" "^4.6.1"
     classnames "^2.2"
     react-day-picker "7.4.9"
     tslib "~2.3.1"
 
-"@blueprintjs/icons@^4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/icons/-/icons-4.3.1.tgz#dfcdd1e8feedcc0c951e3b14e0d8e80472c1854b"
-  integrity sha512-XVXFWfvqq/sFSi8FN0Y8mzApD3vQxrPUtmbqp/q1B8mXVdYQLrUwmXICxzUNSvztHqXaRVrApA5jkjDBTAwSJg==
+"@blueprintjs/icons@^4.4.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/icons/-/icons-4.4.0.tgz#a08c3047a2d82c60ec2b3abe4a93355ef0ba24ea"
+  integrity sha512-cZmqXnQ+wMJ48c4J+JHqQ6ZGhCgUzWQnYy0FjgXqBSUeR5iERRVrUC24pDead3ASfENRttEqigFukhP3px3bnQ==
   dependencies:
     change-case "^4.1.2"
     classnames "^2.2"
@@ -1845,10 +1845,10 @@
     eslint-plugin-react "^7.30.0"
     eslint-plugin-react-hooks "^4.6.0"
 
-"@xh/hoist-dev-utils@^6.0.0-SNAPSHOT":
-  version "6.0.0-SNAPSHOT.1658234276614"
-  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-6.0.0-SNAPSHOT.1658234276614.tgz#41bc823ab188242df2c290cc8ab08da320bb78af"
-  integrity sha512-uWxs/RUeU7sQZdXyG3/hcdzJf3//gyjroBCO8DjweUMyziq5AtfVBjz7WhqjzqnvDqzcExEMX9BJYQeL9Mt5mw==
+"@xh/hoist-dev-utils@~6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-6.0.0.tgz#22270d607f970690bbd8d3393c2ab4b5725ad0be"
+  integrity sha512-GYdXE0U0utjTTe6kykZCx9xRlCrosQNxd1Z9weceOWQSdgZsisjgd5lqjp04z+82ZvO8Y2hJaq+S7/bSPq/DsA==
   dependencies:
     "@babel/core" "~7.18.9"
     "@babel/plugin-proposal-decorators" "~7.18.9"
@@ -1888,12 +1888,12 @@
     webpackbar "~5.0.2"
 
 "@xh/hoist@^51.0.0-SNAPSHOT":
-  version "51.0.0-SNAPSHOT.1658236236262"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-51.0.0-SNAPSHOT.1658236236262.tgz#d0b7a07e6ab5ada6de1e8b8e872274472ea62542"
-  integrity sha512-90RvICff/3MBk7fH9x0AjR3smLGPvsmhMZqBEdY0c4ZcktvmlnVIfbwE5+SbISSkPSjaPc+1zZWpToVHSh0Neg==
+  version "51.0.0-SNAPSHOT.1658354320658"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-51.0.0-SNAPSHOT.1658354320658.tgz#f24000d435b35cfcf3493b6fb0c8ee24b0f31ead"
+  integrity sha512-Am0EfHVlw/W74nu/6VGll+BlzHuz4b3ClVuM8Hq2EmBVk6QANuRSmR5/qOpr4xFNBSrVXXuX+NXla8EDSYfspg==
   dependencies:
-    "@blueprintjs/core" "~4.6.0"
-    "@blueprintjs/datetime" "~4.3.2"
+    "@blueprintjs/core" "^4.6.0"
+    "@blueprintjs/datetime" "^4.3.0"
     "@fortawesome/fontawesome-pro" "~6.1.1"
     "@fortawesome/fontawesome-svg-core" "~6.1.1"
     "@fortawesome/pro-light-svg-icons" "~6.1.1"
@@ -2601,9 +2601,9 @@ clsx@^1.1.1:
   integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
 
 codemirror@~5.65.0:
-  version "5.65.6"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.65.6.tgz#fc313797331cbeb3bcab0652d1ec9d0f40c23ab5"
-  integrity sha512-zNihMSMoDxK9Gqv9oEyDT8oM51rcRrQ+IEo2zyS48gJByBq5Fj8XuNEguMra+MuIOuh6lkpnLUJeL70DoTt6yw==
+  version "5.65.7"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.65.7.tgz#29af41ce5f4c2b8f1c1e16f4e645ff392823716a"
+  integrity sha512-zb67cXzgugIQmb6tfD4G11ILjYoMfTjwcjn+cWsa4GewlI2adhR/h3kolkoCQTm1msD/1BuqVTKuO09ELsS++A==
 
 color-convert@^1.9.0:
   version "1.9.3"
@@ -2762,7 +2762,7 @@ core-js-compat@^3.21.0, core-js-compat@^3.22.1:
     browserslist "^4.21.2"
     semver "7.0.0"
 
-core-js@^2.6.12, core-js@^3.0.0, core-js@^3.22.6:
+core-js@^2.6.12, core-js@^3.0.0, core-js@^3.23.2:
   version "3.23.5"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.23.5.tgz#1f82b0de5eece800827a2f59d597509c67650475"
   integrity sha512-7Vh11tujtAZy82da4duVreQysIoO2EvVrur7y6IzZkH1IHPSekuDi8Vuw1+YKjkbfWLRD7Nc9ICQ/sIUDutcyg==
@@ -3139,9 +3139,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.188:
-  version "1.4.194"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.194.tgz#2f83fcec5067907044a3d502ac7c3efb1fe6430b"
-  integrity sha512-ola5UH0xAP1oYY0FFUsPvwtucEzCQHucXnT7PQ1zjHJMccZhCDktEugI++JUR3YuIs7Ff7afz+OVEhVAIMhLAQ==
+  version "1.4.195"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.195.tgz#139b2d95a42a3f17df217589723a1deac71d1473"
+  integrity sha512-vefjEh0sk871xNmR5whJf9TEngX+KTKS3hOHpjoMpauKkwlGwtMz1H8IaIjAT/GNnX0TbGwAdmVoXCAzXf+PPg==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -3594,15 +3594,15 @@ fast-levenshtein@^2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
 
-fast-text-encoding@^1.0.3:
+fast-text-encoding@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/fast-text-encoding/-/fast-text-encoding-1.0.4.tgz#bf1898ad800282a4e53c0ea9690704dd26e4298e"
   integrity sha512-x6lDDm/tBAzX9kmsPcZsNbvDs3Zey3+scsxaZElS8xWLgUMAg/oFLeewfUz0mu1CblHhhsu15jGkraldkFh8KQ==
 
 fastest-levenshtein@^1.0.12:
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/fastest-levenshtein/-/fastest-levenshtein-1.0.12.tgz#9990f7d3a88cc5a9ffd1f1745745251700d497e2"
-  integrity sha512-On2N+BpYJ15xIC974QNVuYGMOlEVt4s0EOI3wwMqOmK1fdDY+FN/zltPV8vosq4ad4c/gJ1KHScUn/6AWIgiow==
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/fastest-levenshtein/-/fastest-levenshtein-1.0.14.tgz#9054384e4b7a78c88d01a4432dc18871af0ac859"
+  integrity sha512-tFfWHjnuUfKE186Tfgr+jtaFc0mZTApEgKDOeyN+FwOqRkO/zK/3h1AiRd8u8CY53owL3CUmGr/oI9p/RdyLTA==
 
 fastq@^1.6.0:
   version "1.13.0"
