@@ -21,7 +21,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtDateTime, fmtNumber, fmtThousands} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {isString} from 'lodash';
+import {isString, isArray} from 'lodash';
 import moment from 'moment';
 import {restaurants, usStates} from '../../../core/data';
 import {wrapper} from '../../common';
@@ -297,6 +297,30 @@ const formContents = hoistCmp.factory(
                         )
                     }),
                     row({
+                        info: 'enableMulti',
+                        field: 'buttonGroupInputMulti',
+                        item: buttonGroupInput({
+                            enableMulti: true,
+                            items: [
+                                button({
+                                    icon: Icon.chartLine(),
+                                    text: 'Button 1',
+                                    value: 'button1'
+                                }),
+                                button({
+                                    icon: Icon.gear(),
+                                    text: 'Button 2',
+                                    value: 'button2'
+                                }),
+                                button({
+                                    icon: Icon.skull(),
+                                    text: 'Button 3',
+                                    value: 'button3'
+                                })
+                            ]
+                        }),
+                    }),
+                    row({
                         field: 'radioInput',
                         info: 'inline, disabled option',
                         item: radioInput({
@@ -394,6 +418,8 @@ const fieldDisplay = hoistCmp.factory(
         let displayVal = fieldModel.value;
         if (displayVal == null) {
             displayVal = 'null';
+        } else if (isArray(displayVal)) {
+            displayVal = '[' + displayVal.toString() + ']';
         } else {
             displayVal = fmtVal ? fmtVal(displayVal) : displayVal.toString();
             if (isString(displayVal) && displayVal.trim() === '') {

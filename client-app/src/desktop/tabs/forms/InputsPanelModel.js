@@ -96,6 +96,11 @@ export class InputsPanelModel extends HoistModel {
                 initialValue: 'button2'
             },
             {
+                name: 'buttonGroupInputMulti',
+                displayName: 'ButtonGroupInputMulti',
+                initialValue: ['button2']
+            },
+            {
                 name: 'radioInput',
                 displayName: 'RadioInput'
             }
