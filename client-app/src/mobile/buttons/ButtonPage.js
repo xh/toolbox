@@ -1,5 +1,5 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {div, hbox} from '@xh/hoist/cmp/layout';
+import {div, fragment, hbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {buttonGroupInput, label, switchInput} from '@xh/hoist/mobile/cmp/input';
@@ -8,6 +8,7 @@ import classNames from 'classnames';
 
 import './ButtonPage.scss';
 import {ButtonPageModel} from './ButtonPageModel';
+import {toolbar} from "@xh/hoist/mobile/cmp/toolbar";
 
 export const buttonPage = hoistCmp.factory({
     model: creates(ButtonPageModel),
@@ -17,14 +18,21 @@ export const buttonPage = hoistCmp.factory({
             icon: Icon.pointerUp(),
             scrollable: true,
             className: 'toolbox-page button-page xh-tiled-bg',
-            tbar: [
-                label('Disable All:'),
-                switchInput({bind: 'disabled'}),
-                label('All Active:'),
-                switchInput({bind: 'active'}),
-                label('Toolbar:'),
-                switchInput({bind: 'toolbar'})
-            ],
+            tbar:
+                fragment(
+                    toolbar(
+                        label('Disable All:'),
+                        switchInput({bind: 'disabled'}),
+                        label('All Active:'),
+                        switchInput({bind: 'active'})
+                    ),
+                    toolbar(
+                        label('Toolbar:'),
+                        switchInput({bind: 'toolbar'}),
+                        label('EnableMulti:'),
+                        switchInput({bind: 'enablemulti'})
+                    )
+                ),
             items: [
                 buttonPanel(),
                 buttonPanel({intent: 'primary'}),
@@ -38,7 +46,7 @@ export const buttonPage = hoistCmp.factory({
 
 const buttonPanel = hoistCmp.factory(
     ({model, intent}) => {
-        const {disabled, active, toolbar} = model;
+        const {disabled, active, toolbar, enablemulti} = model;
         return div({
             className: classNames(
                 'toolbox-card button-page__panel',
@@ -131,6 +139,7 @@ const buttonPanel = hoistCmp.factory(
                     className: 'button-page__row',
                     item: buttonGroupInput({
                         bind: 'activeButton',
+                        enableMulti: enablemulti,
                         intent,
                         disabled,
                         items: [
@@ -145,6 +154,7 @@ const buttonPanel = hoistCmp.factory(
                     item: buttonGroupInput({
                         bind: 'activeButton',
                         minimal: true,
+                        enableMulti: enablemulti,
                         intent,
                         disabled,
                         items: [
@@ -159,6 +169,7 @@ const buttonPanel = hoistCmp.factory(
                     item: buttonGroupInput({
                         bind: 'activeButton',
                         outlined: true,
+                        enableMulti: enablemulti,
                         intent,
                         disabled,
                         items: [
