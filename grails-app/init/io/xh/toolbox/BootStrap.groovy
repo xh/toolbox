@@ -20,6 +20,7 @@ class BootStrap {
         }
         BaseService.parallelInit(services)
 
+        JavaTest.helloWorld()
         createLocalAdminUserIfNeeded()
     }
 
