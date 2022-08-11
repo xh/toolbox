@@ -55,7 +55,7 @@ const formCmp = hoistCmp.factory(
                     formField({
                         field: 'name',
                         info: 'Min. 8 chars',
-                        item: textInput()
+                        item: textInput({enableClear: true})
                     }),
                     formField({
                         field: 'customer',

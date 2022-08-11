@@ -31,7 +31,7 @@ export class DirectoryPanelModel extends HoistModel {
     @bindable.ref tagFilters = [];
 
     /** @member {('grid'|'tiles')} */
-    @bindable @persist displayMode = 'grid';
+    @bindable @persist displayMode = 'tiles';
 
     /** @member {DetailsPanelModel} */
     @managed detailsPanelModel;
@@ -148,7 +148,7 @@ export class DirectoryPanelModel extends HoistModel {
                     align: 'center',
                     resizable: false,
                     width: 40,
-                    elementRenderer: this.isFavoriteRenderer,
+                    renderer: this.isFavoriteRenderer,
                     excludeFromExport: true
                 },
                 {...nameCol},
@@ -159,7 +159,7 @@ export class DirectoryPanelModel extends HoistModel {
                 {
                     field: 'tags',
                     width: 400,
-                    elementRenderer: this.tagsRenderer
+                    renderer: this.tagsRenderer
                 }
             ]
         });

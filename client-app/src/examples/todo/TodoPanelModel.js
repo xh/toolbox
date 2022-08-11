@@ -2,6 +2,7 @@ import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, persist, XH, SizingMode} from '@xh/hoist/core';
 import {RecordAction} from '@xh/hoist/data';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
+import {span} from '@xh/hoist/cmp/layout';
 import {fmtCompactDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -20,11 +21,11 @@ export class TodoPanelModel extends HoistModel {
 
     @bindable
     @persist
-    showCompleted = false
+    showCompleted = false;
 
     @bindable
     @persist
-    showGroups = true
+    showGroups = true;
 
     /** @member {GridModel} */
     @managed
@@ -45,7 +46,7 @@ export class TodoPanelModel extends HoistModel {
         intent: 'primary',
         recordsRequired: 1,
         actionFn: () => this.taskDialogModel.openEditForm(this.selectedTasks[0])
-    })
+    });
 
     deleteAction = new RecordAction({
         icon: Icon.delete(),
@@ -263,7 +264,7 @@ export class TodoPanelModel extends HoistModel {
                 distantFmt: 'MMM DD YYYY'
             });
 
-        return overdue ? `<span class="xh-intent-warning">${dateStr}</span>` : dateStr;
+        return overdue ? span({class: 'xh-intent-warning', item: dateStr}) : dateStr;
     }
 }
 

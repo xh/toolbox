@@ -34,7 +34,7 @@ class DataViewTestPanelModel extends HoistModel {
         store: {
             fields: ['company', 'city']
         },
-        elementRenderer: (v, {record}) => vbox(
+        renderer: (v, {record}) => vbox(
             span(record.data.company),
             span(record.data.city)
         ),

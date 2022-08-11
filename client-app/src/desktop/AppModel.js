@@ -11,7 +11,7 @@ import {GitHubService} from '../core/svc/GitHubService';
 import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {chartsTab} from './tabs/charts/ChartsTab';
-import {containersTab} from './tabs/containers/ContainersTab';
+import {layoutTab} from './tabs/layout/LayoutTab';
 import {examplesTab} from './tabs/examples/ExamplesTab';
 import {formsTab} from './tabs/forms/FormsTab';
 import {gridsTab} from './tabs/grids/GridsTab';
@@ -31,7 +31,7 @@ export class AppModel extends HoistAppModel {
             {id: 'home', icon: Icon.home(), content: homeTab},
             {id: 'grids', icon: Icon.grid(), content: gridsTab},
             {id: 'panels', icon: Icon.window(), content: panelsTab},
-            {id: 'containers', icon: Icon.box(), content: containersTab},
+            {id: 'layout', icon: Icon.layout(), content: layoutTab},
             {id: 'forms', icon: Icon.edit(), content: formsTab},
             {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
             {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
@@ -93,14 +93,15 @@ export class AppModel extends HoistAppModel {
                         path: '/home'
                     },
                     {
-                        name: 'containers',
-                        path: '/containers',
+                        name: 'layout',
+                        path: '/layout',
                         children: [
                             {name: 'hbox', path: '/hbox'},
                             {name: 'vbox', path: '/vbox'},
                             {name: 'tabPanel', path: '/tabPanel'},
                             {name: 'dock', path: '/dock'},
-                            {name: 'dash', path: '/dash'},
+                            {name: 'dashContainer', path: '/dashContainer'},
+                            {name: 'dashCanvas', path: '/dashCanvas'},
                             {name: 'tileFrame', path: '/tileFrame'}
                         ]
                     },
@@ -166,6 +167,7 @@ export class AppModel extends HoistAppModel {
                             {name: 'dateFormats', path: '/dateFormats'},
                             {name: 'jsx', path: '/jsx'},
                             {name: 'errorMessage', path: '/errorMessage'},
+                            {name: 'exceptionHandler', path: '/exceptionHandler'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'icons', path: '/icons'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},

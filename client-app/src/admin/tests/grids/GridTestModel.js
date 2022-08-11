@@ -1,4 +1,5 @@
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
+import {fragment} from '@xh/hoist/cmp/layout';
 import {FieldType} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 import {GridModel} from '@xh/hoist/cmp/grid';
@@ -55,6 +56,14 @@ export class GridTestModel extends HoistModel {
     autosizeMode = 'onDemand';
 
     @bindable
+    @persist
+    renderedRowsOnly = true;
+
+    @bindable
+    @persist
+    includeCollapsedChildren = true;
+
+    @bindable
     @persist.with({path: 'gridPersistType', buffer: 500})  // test persist.with!
     persistType = null;
 
@@ -81,6 +90,8 @@ export class GridTestModel extends HoistModel {
                 this.loadRootAsSummary,
                 this.disableSelect,
                 this.autosizeMode,
+                this.renderedRowsOnly,
+                this.includeCollapsedChildren,
                 this.persistType,
                 this.colChooserCommitOnChange,
                 this.colChooserShowRestoreDefaults,
@@ -193,7 +204,9 @@ export class GridTestModel extends HoistModel {
                 height: this.colChooserHeight ?? undefined
             },
             autosizeOptions: {
-                mode: this.autosizeMode
+                mode: this.autosizeMode,
+                renderedRowsOnly: this.renderedRowsOnly,
+                includeCollapsedChildren: this.includeCollapsedChildren
             },
             columns: [
                 {
@@ -238,9 +251,11 @@ export class GridTestModel extends HoistModel {
                     align: 'right',
                     width: 130,
                     renderer: (v, {record}) => {
-                        return fmtMillions(record.data.volume, {precision: 2, label: true}) +
-                            ' | ' +
-                            fmtNumber(record.data.day, {colorSpec: true});
+                        return fragment(
+                            fmtMillions(record.data.volume, {precision: 2, label: true}),
+                            ' | ',
+                            fmtNumber(record.data.day, {colorSpec: true})
+                        );
                     },
                     rendererIsComplex: true
                 }

@@ -19,7 +19,7 @@ export class SelectTestModel extends HoistModel {
     groupedValue;
 
     @bindable.ref
-    objectValue
+    objectValue;
 
     @bindable
     bigValue;
@@ -34,13 +34,13 @@ export class SelectTestModel extends HoistModel {
     asyncCreatableValue2;
 
     @bindable.ref
-    objectValue2
+    objectValue2;
 
     @bindable.ref
-    enableMultiLeftIcon
-    
+    enableMultiLeftIcon;
+
     @bindable.ref
-    enableMultiMenuOpen
+    enableMultiMenuOpen;
 
     constructor() {
         super();

@@ -1,6 +1,22 @@
 .toolbox-icons-panel {
-  height: calc(100% - 200px);
+  max-height: calc(100% - 200px);
+  width: calc(100% - 100px);
+  max-width: 1200px;
   overflow: auto;
+
+  .font-size {
+    &--small {
+      font-size: var(--xh-font-size-small-px) !important;
+    }
+
+    &--default {
+      font-size: var(--xh-font-size-px) !important;
+    }
+
+    &--large {
+      font-size: var(--xh-font-size-large-px) !important;
+    }
+  }
 
   .toolbox-icons-table-scroller {
     overflow-y: scroll;
@@ -10,16 +26,30 @@
     width: 100%;
     border-collapse: collapse;
 
+    thead {
+      th {
+        text-align: center;
+        height: 30px;
+        width: 16.667%;
+        border-bottom: var(--xh-border-solid);
+        color: var(--xh-gray);
+      }
+
+      tr {
+        display: table;
+        width: 100%;
+      }
+    }
+
     tbody {
       display: block;
-      overflow: auto;
       height: 100%;
       width: 100%;
 
       th,
       td {
         text-align: center;
-        width: 25%;
+        width: 16.667%;
         padding: 4px 0;
       }
 

@@ -19,8 +19,7 @@ export class MapPanelModel extends HoistModel {
                     fmtMillions(model.total, {
                         prefix: '$',
                         precision: 2,
-                        label: true,
-                        asElement: true
+                        label: true
                     })
                 ];
             },

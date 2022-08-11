@@ -68,7 +68,6 @@ export class NumberFormatsPanelModel extends HoistModel {
     //--------------------------------
     getResult(input) {
         const options = {
-            asElement: true,
             precision: this.precision != null ? this.precision : undefined,
             zeroPad: this.zeroPad,
             ledger: this.ledger,

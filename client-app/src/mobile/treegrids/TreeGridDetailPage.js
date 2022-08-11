@@ -35,8 +35,8 @@ function renderPosition(position) {
             return renderRow(capitalize(parts[0]), parts[1]);
         }),
 
-        renderRow('Market Value', position.mktVal, numberRenderer({precision: 0, ledger: true, asElement: true})),
-        renderRow('P&L', position.pnl, numberRenderer({precision: 0, ledger: true, colorSpec: true, asElement: true}))
+        renderRow('Market Value', position.mktVal, numberRenderer({precision: 0, ledger: true})),
+        renderRow('P&L', position.pnl, numberRenderer({precision: 0, ledger: true, colorSpec: true}))
     );
 }
 

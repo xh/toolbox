@@ -2,7 +2,7 @@ import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {colAutosizeButton, colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -53,6 +53,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
             ),
             tbar: [
                 refreshButton(),
+                colAutosizeButton(),
                 toolbarSep(),
                 span('Group by:'),
                 select({
