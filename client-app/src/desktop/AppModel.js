@@ -19,6 +19,7 @@ import {homeTab} from './tabs/home/HomeTab';
 import {mobileTab} from './tabs/mobile/MobileTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
+import {fmtDateTimeSec} from '@xh/hoist/format';
 
 export class AppModel extends HoistAppModel {
 
@@ -185,6 +186,10 @@ export class AppModel extends HoistAppModel {
                 ]
             }
         ];
+    }
+
+    get lastCommitTimestamp() {
+        return fmtDateTimeSec(XH.gitHubService.commitHistories.toolbox.lastCommitTimestamp);
     }
 }
 
