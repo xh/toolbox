@@ -20,6 +20,7 @@ import {mobileTab} from './tabs/mobile/MobileTab';
 import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
 import {fmtDateTimeSec} from '@xh/hoist/format';
+import {span} from '@xh/hoist/cmp/layout';
 
 export class AppModel extends HoistAppModel {
 
@@ -188,8 +189,16 @@ export class AppModel extends HoistAppModel {
         ];
     }
 
-    get lastCommitTimestamp() {
-        return fmtDateTimeSec(XH.gitHubService.commitHistories.toolbox.lastCommitTimestamp);
+    getAboutDialogItems() {
+        const lastGitHubCommit = fmtDateTimeSec(XH.gitHubService.commitHistories.toolbox?.lastCommitTimestamp);
+        return [
+            ...super.getAboutDialogItems(),
+            {
+                label: span(Icon.icon({iconName: 'github', prefix: 'fab'}), 'Last Commit'),
+                value: lastGitHubCommit,
+                omit: !lastGitHubCommit
+            }
+        ];
     }
 }
 
