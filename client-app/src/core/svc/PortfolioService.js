@@ -1,6 +1,7 @@
 import {HoistService, XH} from '@xh/hoist/core';
-import {LocalDate} from '@xh/hoist/utils/datetime';
+import {DAYS, LocalDate, olderThan} from '@xh/hoist/utils/datetime';
 import {PositionSession} from '../positions/PositionSession';
+import {mapValues} from 'lodash';
 
 export class PortfolioService extends HoistService {
 
@@ -96,6 +97,17 @@ export class PortfolioService extends HoistService {
             animation: false,
             data: mktData.map(it => [LocalDate.get(it.day).timestamp, it[dimension]])
         };
+    }
+
+    async getSparklineSeriesAsync({symbols, loadSpec}) {
+        const data = await XH.fetchJson({
+            url: `portfolio/prices`,
+            loadSpec,
+            params: {symbols}
+        });
+        return mapValues(data, mktData => mktData
+            .map(it => [new Date(it.day), it.volume])
+            .filter(([date]) => !olderThan(date, 30 * DAYS)));
     }
 
     async getOHLCChartSeriesAsync({symbol, loadSpec}) {

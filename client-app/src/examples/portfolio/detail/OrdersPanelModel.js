@@ -1,7 +1,7 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {isNil} from 'lodash';
+import {isNil, map, uniq} from 'lodash';
 import {PERSIST_DETAIL} from '../AppModel';
 import {
     dirCol,
@@ -13,6 +13,8 @@ import {
     symbolCol, timeCol,
     traderCol
 } from '../../../core/columns';
+import {fmtDate} from '@xh/hoist/format';
+import {fmtNumber} from '@xh/hoist/format/FormatNumber';
 
 export class OrdersPanelModel extends HoistModel {
 
@@ -39,6 +41,28 @@ export class OrdersPanelModel extends HoistModel {
             persistWith: {...PERSIST_DETAIL, path: 'ordersGrid'},
             columns: [
                 {...symbolCol, pinned: true},
+                {
+                    field: {
+                        name: 'tradingVolume',
+                        displayName: '30D Vol.'
+                    },
+                    sortable: false,
+                    autosizable: false,
+                    width: 100,
+                    agOptions: {
+                        cellRenderer: 'agSparklineCellRenderer',
+                        cellRendererParams: {
+                            sparklineOptions: {
+                                axis: {type: 'time'},
+                                crosshairs: {xLine: {enabled: false}},
+                                tooltip: {renderer: ({xValue, yValue}) => ({
+                                    title: fmtDate(xValue, {fmt: 'MM/DD/YYYY'}),
+                                    content: fmtNumber(yValue)
+                                })}
+                            }
+                        }
+                    }
+                },
                 {...traderCol},
                 {...fundCol, hidden: true},
                 {...modelCol, hidden: true},
@@ -90,8 +114,12 @@ export class OrdersPanelModel extends HoistModel {
         }
 
         try {
-            const orders = await XH.portfolioService.getOrdersAsync({positionId, loadSpec});
-            gridModel.loadData(orders);
+            const orders = await XH.portfolioService.getOrdersAsync({positionId, loadSpec}),
+                symbols = uniq(map(orders, 'symbol')),
+                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync({symbols, loadSpec}),
+                rows = orders.map(order => ({...order, tradingVolume: sparklineSeries[order.symbol]}));
+
+            gridModel.loadData(rows);
             await gridModel.preSelectFirstAsync();
         } catch (e) {
             gridModel.clear();
