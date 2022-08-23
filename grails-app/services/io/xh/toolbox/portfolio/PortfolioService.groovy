@@ -40,6 +40,16 @@ class PortfolioService extends BaseService {
         }
     }
 
+    Map<LocalDate, Double> getClosingPriceHistory(List<String> symbols, int daysBack) {
+        def startDate = LocalDate.now().minusDays(daysBack),
+            historicalPrices = getData().historicalPrices
+
+        return symbols
+            .collectEntries { [it, historicalPrices.get(it)] }
+            .collectEntries { k, v -> [k, v.findAll { it.day >= startDate }] }
+            .collectEntries { k, v -> [k, v.collect { [it.day, it.close] }] }
+    }
+
     //----------------
     // Implementation
     //-----------------

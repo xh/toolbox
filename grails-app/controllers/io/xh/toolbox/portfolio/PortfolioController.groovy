@@ -44,11 +44,18 @@ class PortfolioController extends BaseController {
         renderJSON(portfolioService.getData().instruments[params.id])
     }
 
-    // List of MarketPrices for the given instrument identified by its symbol(s)
+    // List of MarketPrices for the given instrument identified by its symbol
     def prices() {
-        params.symbols ?
-                renderJSON(params.symbols.collectEntries { [it, getPriceData(it)] }) :
-                renderJSON(getPriceData(params.id))
+        List<MarketPrice> historicalPrices = portfolioService.getData().historicalPrices[params.id]
+        MarketPrice intradayPrices = portfolioService.getData().intradayPrices[params.id]
+        List<MarketPrice> allPrices = intradayPrices ? historicalPrices.dropRight(1)+[intradayPrices] : historicalPrices
+        renderJSON(allPrices)
+    }
+
+    def closingPriceHistory() {
+        List<String> symbols = params.symbols
+        int daysBack = params.daysBack ?: 30
+        renderJSON(portfolioService.getClosingPriceHistory(symbols, daysBack))
     }
 
     def lookups() {
@@ -59,12 +66,6 @@ class PortfolioController extends BaseController {
                 sectors: SECTORS,
                 traders: TRADERS
         )
-    }
-
-    private List getPriceData(String symbol) {
-        List<MarketPrice> historicalPrices = portfolioService.getData().historicalPrices[symbol]
-        MarketPrice intradayPrices = portfolioService.getData().intradayPrices[symbol]
-        intradayPrices ? historicalPrices.dropRight(1)+[intradayPrices] : historicalPrices
     }
 
     private PositionQuery parsePositionQuery(Map params) {
