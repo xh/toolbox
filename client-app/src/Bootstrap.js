@@ -28,6 +28,8 @@ import {RowGroupingModule} from '@ag-grid-enterprise/row-grouping';
 import {SideBarModule} from '@ag-grid-enterprise/side-bar';
 import {ColumnsToolPanelModule} from '@ag-grid-enterprise/column-tool-panel';
 import {FiltersToolPanelModule} from '@ag-grid-enterprise/filter-tool-panel';
+// Feature for the portfolio sparklines example
+import {SparklinesModule} from '@ag-grid-enterprise/sparklines';
 
 ModuleRegistry.registerModules([
     ClientSideRowModelModule,
@@ -36,7 +38,8 @@ ModuleRegistry.registerModules([
     RowGroupingModule,
     SideBarModule,
     ColumnsToolPanelModule,
-    FiltersToolPanelModule
+    FiltersToolPanelModule,
+    SparklinesModule
 ]);
 LicenseManager.setLicenseKey(
     'CompanyName=Extremely Heavy Industries Inc.,LicensedApplication=Toolbox,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=6,LicensedProductionInstancesCount=1,AssetReference=AG-027581,ExpiryDate=4_June_2023_[v2]_MTY4NTgzMzIwMDAwMA==d4c6cb75d5bcb4ef4cbee5c6fee57351'

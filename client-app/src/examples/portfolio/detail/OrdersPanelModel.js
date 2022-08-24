@@ -1,9 +1,10 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {isNil} from 'lodash';
+import {isNil, map, uniq} from 'lodash';
 import {PERSIST_DETAIL} from '../AppModel';
 import {
+    closingPriceSparklineCol,
     dirCol,
     fundCol,
     modelCol, priceCol,
@@ -39,6 +40,7 @@ export class OrdersPanelModel extends HoistModel {
             persistWith: {...PERSIST_DETAIL, path: 'ordersGrid'},
             columns: [
                 {...symbolCol, pinned: true},
+                {...closingPriceSparklineCol},
                 {...traderCol},
                 {...fundCol, hidden: true},
                 {...modelCol, hidden: true},
@@ -90,7 +92,12 @@ export class OrdersPanelModel extends HoistModel {
         }
 
         try {
-            const orders = await XH.portfolioService.getOrdersAsync({positionId, loadSpec});
+            const orders = await XH.portfolioService.getOrdersAsync({positionId, loadSpec}),
+                symbols = uniq(map(orders, 'symbol')),
+                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync({symbols, loadSpec});
+
+            orders.forEach(order => order.closingPrices = sparklineSeries[order.symbol]);
+
             gridModel.loadData(orders);
             await gridModel.preSelectFirstAsync();
         } catch (e) {

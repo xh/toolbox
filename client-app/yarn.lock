@@ -88,6 +88,14 @@
     "@ag-grid-community/core" "~28.1.0"
     "@ag-grid-enterprise/core" "~28.1.0"
 
+"@ag-grid-enterprise/sparklines@~28.1.0":
+  version "28.1.0"
+  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/sparklines/-/sparklines-28.1.0.tgz#d56b53ecc22ba33293fcf1b489b627c0e121929c"
+  integrity sha512-4Jch4pvXtQmIYFVAHJYZkReiv6y9ndX0Xk9Ay8/kUQNqfOoIXk4RDIx5+QLkNt+sR3MQb2DynrlAw7robhSiqg==
+  dependencies:
+    "@ag-grid-community/core" "~28.1.0"
+    "@ag-grid-enterprise/core" "~28.1.0"
+
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"

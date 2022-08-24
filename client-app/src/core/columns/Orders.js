@@ -1,8 +1,8 @@
 import {FieldType} from '@xh/hoist/data';
-import {numberRenderer} from '@xh/hoist/format';
+import {fmtDate, fmtNumber, numberRenderer} from '@xh/hoist/format';
 import {dateTimeCol} from '@xh/hoist/cmp/grid';
 
-const {DATE, NUMBER, STRING} = FieldType;
+const {DATE, NUMBER, STRING, JSON} = FieldType;
 
 export const symbolCol = {
     field: {
@@ -70,4 +70,28 @@ export const timeCol = {
     },
     ...dateTimeCol,
     align: 'left'
+};
+
+export const closingPriceSparklineCol = {
+    field: {
+        name: 'closingPrices',
+        type: JSON,
+        displayName: '30D Close'
+    },
+    sortable: false,
+    autosizable: false,
+    width: 100,
+    agOptions: {
+        cellRenderer: 'agSparklineCellRenderer',
+        cellRendererParams: {
+            sparklineOptions: {
+                axis: {type: 'time'},
+                crosshairs: {xLine: {enabled: false}},
+                tooltip: {renderer: ({xValue, yValue}) => ({
+                    title: fmtDate(xValue, {fmt: 'MM/DD/YYYY'}),
+                    content: fmtNumber(yValue)
+                })}
+            }
+        }
+    }
 };
