@@ -54,6 +54,7 @@
     "stylelint-config-standard-scss": "^5.0.0"
   },
   "resolutions": {
-    "core-js": "^3.0.0"
+    "core-js": "^3.0.0",
+    "eslint": "8.22.0"
   }
 }
