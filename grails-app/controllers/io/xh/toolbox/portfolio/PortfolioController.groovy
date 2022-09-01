@@ -54,8 +54,7 @@ class PortfolioController extends BaseController {
     }
 
     def closingPriceHistory() {
-        def symbols = params.symbols
-        symbols = symbols instanceof String ? [symbols] : symbols as List
+        def symbols = params.list('symbols')
         int daysBack = params.daysBack ?: 30
         renderJSON(portfolioService.getClosingPriceHistory(symbols, daysBack))
     }
