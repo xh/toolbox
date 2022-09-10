@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### New Features
+
+* Demo for grid `Sparklines` renderer in Portfolio example
+
 ## v2.19.0 - 2022-07-30
 
 ### New Features
