@@ -25,7 +25,7 @@ import {span} from '@xh/hoist/cmp/layout';
 export class AppModel extends HoistAppModel {
 
     @managed
-    tabModel = new TabContainerModel({
+    tabModel: TabContainerModel = new TabContainerModel({
         route: 'default',
         track: true,
         switcher: false,
