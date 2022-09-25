@@ -9,7 +9,7 @@
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "yarn lint:all",
     "lint:all": "yarn lint:js && yarn lint:styles",
-    "lint:js": "eslint --ext .js,.jsx .",
+    "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
     "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(hostname)",
@@ -18,7 +18,7 @@
     "prepare": "cd .. && husky install client-app/.husky"
   },
   "lint-staged": {
-    "*.{js,jsx}": "eslint",
+    "*.{js,jsx,ts,tsx}": "eslint",
     "*.s?(a|c)ss": "stylelint"
   },
   "dependencies": {
