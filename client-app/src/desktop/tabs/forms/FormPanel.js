@@ -1,16 +1,16 @@
-import React from 'react';
-import {creates, hoistCmp} from '@xh/hoist/core';
-import {Icon} from '@xh/hoist/icon';
-import {div, filler, hbox, hframe, vbox, vframe} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
 import {form} from '@xh/hoist/cmp/form';
+import {div, filler, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {checkbox, dateInput, numberInput, select, switchInput, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {Icon} from '@xh/hoist/icon';
+import React from 'react';
 import {wrapper} from '../../common';
-import {FormPanelModel} from './FormPanelModel';
 import './FormPanel.scss';
+import {FormPanelModel} from './FormPanelModel';
 
 export const formPanel = hoistCmp.factory({
     model: creates(FormPanelModel),
@@ -57,8 +57,8 @@ const formContent = hoistCmp.factory(
                 minimal: model.minimal,
                 commitOnChange: model.commitOnChange
             },
-            item: vframe({
-                padding: 10,
+            item: div({
+                style: {padding: '10px', overflowY: 'auto'},
                 items: [
                     hbox({
                         flex: 'none',
