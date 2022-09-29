@@ -26,39 +26,41 @@ class SlackAlertService extends BaseService{
     // Implementation
     //------------------------
     private void formatAndSendMonitorStatusReport(MonitorStatusReport report) {
-        def msg = "Monitor Status Report:\n" +
-                "${report.getTitle()}\n" +
-                "---------------------------------\n"
-        sendSlackMessage(msg)
+        if(!config.enabled) return
+        sendSlackMessage( """
+Monitor Status Report:
+${report.getTitle()}
+---------------------------------
+        """)
     }
 
     private void formatAndSendClientReport(ClientError ce){
+        if(!config.enabled) return
         def errorText = safeParseJSON(ce.error)?.message ?: ce.error
 
-        def msg =  "Client Error Report:\n" +
-                "Error: ${StringUtils.elide(errorText,80)} \n" +
-                "User: ${ce.username}\n"  +
-                "App: ${appName} (${Utils.appCode})\n" +
-                "Version: ${ce.appVersion}\n" +
-                "Environment: ${ce.appEnvironment}\n" +
-                "Browser: ${ce.browser}\n" +
-                "Device: ${ce.device}\n" +
-                "URL: ${ce.url}\n" +
-                "Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}\n" +
-                "---------------------------------\n"
-        sendSlackMessage(msg)
+        sendSlackMessage("""
+Client Error Report:
+Error: ${StringUtils.elide(errorText,80)}
+User: ${ce.username}
+App: ${appName} (${Utils.appCode})
+Version: ${ce.appVersion}
+Environment: ${ce.appEnvironment}
+Browser: ${ce.browser}
+Device: ${ce.device}
+URL: ${ce.url}
+Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
+---------------------------------
+        """)
     }
 
-    def sendSlackMessage(message){
-        def client = new JSONClient()
-        def channelId = configService.getString('slackChannelId')
-        def post = new HttpPost('https://slack.com/api/chat.postMessage'),
-            body = JSONSerializer.serialize([channel: channelId,text: message])
+    private void sendSlackMessage(message){
+        def client = new JSONClient(),
+                post = new HttpPost('https://slack.com/api/chat.postMessage'),
+                body = JSONSerializer.serialize([channel: config.channel,text: message]),
+                entity = new StringEntity(body)
 
-        def entity = new StringEntity(body)
         post.setHeader('Content-type', 'application/json')
-        post.setHeader('Accept', 'application/json')
-        post.setHeader('Authorization', "Bearer ${configService.getString('slackBearerToken')}")
+        post.setHeader('Authorization', "Bearer ${config.oauthToken}")
         post.setEntity(entity)
 
         client.executeAsMap(post)
@@ -70,5 +72,9 @@ class SlackAlertService extends BaseService{
         } catch (Exception ignored) {
             return null
         }
+    }
+
+    private Map getConfig(){
+        return configService.getMap('slackAlertConfig', [enabled: false])
     }
 }
