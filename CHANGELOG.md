@@ -5,6 +5,7 @@
 ### New Features
 
 * Demo for grid `Sparklines` renderer in Portfolio example
+* Added SlackAlertService to post StatusMonitor and ClientError alerts to the XH slack.
 
 ## v2.19.0 - 2022-07-30
 
