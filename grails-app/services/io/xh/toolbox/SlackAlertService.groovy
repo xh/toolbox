@@ -18,22 +18,25 @@ class SlackAlertService extends BaseService{
 
     ConfigService configService
     void init() {
-        subscribe('xhMonitorStatusReport', this.&sendMonitorStatusReport)
+        subscribe('xhMonitorStatusReport', this.&formatAndSendMonitorStatusReport)
         subscribe('xhClientErrorReceived', this.&formatAndSendClientReport)
     }
-
 
     //------------------------
     // Implementation
     //------------------------
-    private void sendMonitorStatusReport(MonitorStatusReport report) {
-        sendToolboxAlertMessage(report.getTitle())
+    private void formatAndSendMonitorStatusReport(MonitorStatusReport report) {
+        def msg = "Monitor Status Report:\n" +
+                "${report.getTitle()}\n" +
+                "---------------------------------\n"
+        sendSlackMessage(msg)
     }
 
     private void formatAndSendClientReport(ClientError ce){
         def errorText = safeParseJSON(ce.error)?.message ?: ce.error
 
-        def msg =  "Error: ${StringUtils.elide(errorText,80)} \n" +
+        def msg =  "Client Error Report:\n" +
+                "Error: ${StringUtils.elide(errorText,80)} \n" +
                 "User: ${ce.username}\n"  +
                 "App: ${appName} (${Utils.appCode})\n" +
                 "Version: ${ce.appVersion}\n" +
@@ -41,11 +44,12 @@ class SlackAlertService extends BaseService{
                 "Browser: ${ce.browser}\n" +
                 "Device: ${ce.device}\n" +
                 "URL: ${ce.url}\n" +
-                "Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}"
-        sendToolboxAlertMessage(msg)
+                "Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}\n" +
+                "---------------------------------\n"
+        sendSlackMessage(msg)
     }
 
-    def sendToolboxAlertMessage(message){
+    def sendSlackMessage(message){
         def client = new JSONClient()
         def channelId = configService.getString('slackChannelId')
         def post = new HttpPost('https://slack.com/api/chat.postMessage'),
