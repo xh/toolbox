@@ -1,7 +1,6 @@
 import React from 'react';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {div, filler, p} from '@xh/hoist/cmp/layout';
-import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {wrapper} from '../../common/Wrapper';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select} from '@xh/hoist/desktop/cmp/input';
@@ -10,6 +9,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {usStates} from '../../../core/data';
 import {BasicPanelModel} from './BasicPanelModel';
+import {menuButton} from '@xh/hoist/desktop/cmp/contextmenu';
 
 export const basicPanel = hoistCmp.factory({
     model: creates(BasicPanelModel),
@@ -36,18 +36,14 @@ export const basicPanel = hoistCmp.factory({
                 height: 400,
                 width: 700,
                 tbar: [
-                    popover({
-                        position: 'bottom-left',
-                        minimal: true,
-                        target: button({
-                            icon: Icon.chevronDown(),
-                            text: 'Menu Button'
-                        }),
-                        content: menu(
-                            menuItem({text: 'Menu Item'}),
-                            menuItem({text: 'Menu Item 2'}),
-                            menuItem({text: 'Menu Item 3'})
-                        )
+                    menuButton({
+                        icon: Icon.chevronDown(),
+                        text: 'Menu Button',
+                        menuItems: [
+                            {text: 'Menu Item'},
+                            {text: 'Menu Item 2'},
+                            {text: 'Menu Item 3'}
+                        ]
                     })
                 ],
                 item: div({

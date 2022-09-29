@@ -8,8 +8,9 @@ import {hoistCmp, XH} from '@xh/hoist/core/index';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {capitalizeWords} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon/index';
-import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
+import {menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {truncate} from 'lodash';
+import {menuButton} from '@xh/hoist/desktop/cmp/contextmenu';
 
 library.add(faGithub, faCodeMerge);
 
@@ -104,10 +105,9 @@ function getGitIcon(gitLinks) {
     if (gitLinksList.length === 1) {
         return button({icon: gitIcon, onClick: () => window.open(gitLinksList[0])});
     } else {
-        return popover({
-            minimal: true,
-            target: button({icon: gitIcon}),
-            content: menu({items: getGitMenuItems(gitLinks)})
+        return menuButton({
+            icon: gitIcon,
+            menuItems: getGitMenuItems(gitLinks)
         });
     }
 }
