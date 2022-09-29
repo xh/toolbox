@@ -4,7 +4,12 @@
 
 ### New Features
 
-* Demo for grid `Sparklines` renderer in Portfolio example
+* Demo for grid `Sparklines` renderer in Portfolio example.
+* Added Other > Inspector tab to demo and explain the new Hoist Inspector tool.
+
+### Libraries
+
+* @xh/hoist 52.0.0
 
 ## v2.19.0 - 2022-07-30
 

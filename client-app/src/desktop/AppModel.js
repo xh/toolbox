@@ -172,6 +172,7 @@ export class AppModel extends HoistAppModel {
                             {name: 'exceptionHandler', path: '/exceptionHandler'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'icons', path: '/icons'},
+                            {name: 'inspector', path: '/inspector'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'numberFormats', path: '/numberFormats'},
                             {name: 'pinPad', path: '/pinPad'},
