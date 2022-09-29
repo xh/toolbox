@@ -28,8 +28,6 @@ export const mobileTab = hoistCmp.factory(
             title: 'Mobile Support',
             icon: Icon.icon({iconName: 'phone-laptop'}),
             className: 'tb-mobile',
-            width: 1000,
-            height: 740,
             tbar: [
                 filler(),
                 button({
