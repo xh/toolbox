@@ -42,7 +42,6 @@ ${report.getTitle()}
 Client Error Report:
 Error: ${StringUtils.elide(errorText,80)}
 User: ${ce.username}
-App: ${appName} (${Utils.appCode})
 Version: ${ce.appVersion}
 Environment: ${ce.appEnvironment}
 Browser: ${ce.browser}
