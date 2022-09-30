@@ -1,6 +1,5 @@
 import {hspacer, span} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {creates} from '@xh/hoist/core/modelspec/creates';
+import {hoistCmp, HoistModel, managed, creates} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';

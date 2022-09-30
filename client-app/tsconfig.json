@@ -2,6 +2,10 @@
   "compilerOptions": {
     "target": "ES5",
     "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "paths": {
+      "@xh/hoist/core/*.ts": ["./hoist/core/*.ts"]
+    },
     "lib": [
       "dom",
       "es5",

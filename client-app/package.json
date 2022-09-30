@@ -22,7 +22,6 @@
     "*.s?(a|c)ss": "stylelint"
   },
   "dependencies": {
-    "@babel/preset-typescript": "~7.18.6",
     "@ag-grid-community/client-side-row-model": "~28.1.1",
     "@ag-grid-community/core": "~28.1.1",
     "@ag-grid-community/react": "~28.1.1",
