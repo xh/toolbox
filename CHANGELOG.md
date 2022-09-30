@@ -7,6 +7,10 @@
 * Demo for grid `Sparklines` renderer in Portfolio example
 * Added SlackAlertService to post StatusMonitor and ClientError alerts to the XH slack.
 
+### Bug Fixes
+
+* Added missing column 'Active' to `/grids/columnFiltering` grid.
+
 ## v2.19.0 - 2022-07-30
 
 ### New Features
