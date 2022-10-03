@@ -8,6 +8,10 @@
 * Added SlackAlertService to post StatusMonitor and ClientError alerts to the XH slack.
 * Added two simple StatusMonitors, `metric1337Monitor` and `divideByZeroMonitor`, for testing purposes.
 
+### Bug Fixes
+
+* Added missing column 'Active' to `/grids/columnFiltering` grid.
+
 ## v2.19.0 - 2022-07-30
 
 ### New Features

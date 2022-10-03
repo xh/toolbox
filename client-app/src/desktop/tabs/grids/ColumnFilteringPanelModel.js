@@ -2,7 +2,7 @@ import {XH, HoistModel, managed} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {cityCol, companyCol, profitLossCol, tradeDateCol, tradeVolumeCol} from '../../../core/columns';
+import {activeCol, cityCol, companyCol, profitLossCol, tradeDateCol, tradeVolumeCol} from '../../../core/columns';
 
 export class ColumnFilteringPanelModel extends HoistModel {
 
@@ -43,6 +43,7 @@ export class ColumnFilteringPanelModel extends HoistModel {
             colDefaults: {filterable: true},
             columns: [
                 {field: 'id', hidden: true},
+                activeCol,
                 companyCol,
                 cityCol,
                 tradeVolumeCol,
