@@ -39,6 +39,22 @@ class MonitorDefinitionService extends BaseService {
     }
 
     /**
+     * Always returns the value 1337 and a message
+     */
+    def metric1337Monitor(MonitorResult result) {
+        result.metric = 1337
+        result.message = 'This metric is always 1337!'
+    }
+
+    /**
+     * A monitor that attempts to divide by zero
+     */
+    def divideByZeroMonitor(MonitorResult result){
+        result.message = 'Trying to divide by zero'
+        result.metric = 1 / (1-1)
+    }
+
+    /**
      * Check when the last update to the news was fetched.
      * If no news stories have been fetched at all, we consider that a failure.
      */

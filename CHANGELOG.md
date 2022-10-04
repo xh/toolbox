@@ -4,8 +4,9 @@
 
 ### New Features
 
-* Demo for grid `Sparklines` renderer in Portfolio example.
-* Added Other > Inspector tab to demo and explain the new Hoist Inspector tool.
+* Added Other > Inspector tab to demo the new Hoist Inspector tool.
+* Added example of grid sparklines rendering within the Portfolio example app.
+* `SlackAlertService` to post status monitor and client error report alerts to the XH Slack channel for monitoring.
 
 ### Libraries
 
