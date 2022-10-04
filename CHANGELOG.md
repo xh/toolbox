@@ -4,13 +4,13 @@
 
 ### New Features
 
-* Demo for grid `Sparklines` renderer in Portfolio example
-* Added SlackAlertService to post StatusMonitor and ClientError alerts to the XH slack.
-* Added two simple StatusMonitors, `metric1337Monitor` and `divideByZeroMonitor`, for testing purposes.
+* Added Other > Inspector tab to demo the new Hoist Inspector tool.
+* Added example of grid sparklines rendering within the Portfolio example app.
+* `SlackAlertService` to post status monitor and client error report alerts to the XH Slack channel for monitoring.
 
-### Bug Fixes
+### Libraries
 
-* Added missing column 'Active' to `/grids/columnFiltering` grid.
+* @xh/hoist 52.0.0
 
 ## v2.19.0 - 2022-07-30
 
