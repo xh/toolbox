@@ -6,13 +6,12 @@ import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONParser
 import io.xh.hoist.json.JSONSerializer
+import io.xh.hoist.monitor.MonitorResult
 import io.xh.hoist.monitor.MonitorStatusReport
 import io.xh.hoist.util.StringUtils
-import io.xh.hoist.util.Utils
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.core5.http.io.entity.StringEntity
-
-import static io.xh.hoist.util.Utils.getAppName
+import static io.xh.hoist.monitor.MonitorStatus.*
 
 class SlackAlertService extends BaseService{
 
@@ -30,6 +29,8 @@ class SlackAlertService extends BaseService{
         sendSlackMessage( """
 Monitor Status Report:
 ${report.getTitle()}
+-------------Summary-------------
+${failedMsg(report.results)}
 ---------------------------------
         """)
     }
@@ -71,6 +72,17 @@ Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
         } catch (Exception ignored) {
             return null
         }
+    }
+
+    private String failedMsg(List<MonitorResult> result ){
+        def failSummary = result.findAll {it -> it.status == FAIL}.collect{it ->  return "$it.name -- $it.message"}
+        def warnSummary = result.findAll {it -> it.status == WARN}.collect{it -> return "$it.name -- $it.message"}
+        def msg = failSummary ?  "Failed: \n-" : ""
+        msg += failSummary.join("\n-")
+        msg += warnSummary ? "Warning: \n-" : ""
+        msg += warnSummary.join("\n-")
+        msg
+
     }
 
     private Map getConfig(){
