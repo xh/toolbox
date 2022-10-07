@@ -62,8 +62,7 @@ export class AppModel extends HoistAppModel {
                     title: 'New Toolbox version detected',
                     message: `A new version of Toolbox has been deployed to the server with version ${serverVersion} and build ${serverBuild}.`
                 });
-            },
-            fireImmediately: true
+            }
         });
     }
 
