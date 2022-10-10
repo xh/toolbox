@@ -21,7 +21,6 @@ export class FormPanelModel extends HoistModel {
     validateTask = TaskObserver.trackLast();
 
     // For meta controls below example.
-    @bindable readonly = false;
     @bindable inline = false;
     @bindable minimal = false;
     @bindable commitOnChange = false;
@@ -31,25 +30,26 @@ export class FormPanelModel extends HoistModel {
         fields: [
             {
                 name: 'firstName',
-                initialValue: 'Joe',
+                initialValue: 'Hoist',
                 rules: [required, lengthIs({max: 20})]
             },
             {
                 name: 'lastName',
-                initialValue: 'Bloggs',
+                initialValue: 'Developer',
                 rules: [required, lengthIs({max: 20})]
             },
             {
                 name: 'email',
+                initialValue: 'support@xh.io',
                 rules: [required, validEmail]
             },
             {
                 name: 'notes',
-                initialValue: '',
                 rules: [required, lengthIs({max: 300, min: 10})]
             },
             {
                 name: 'isManager',
+                initialValue: false,
                 rules: [required]
             },
             {
@@ -146,7 +146,7 @@ export class FormPanelModel extends HoistModel {
             XH.toast({
                 icon: Icon.warning(),
                 intent: 'danger',
-                message: `Form is not valid. ${errCount} fields are still invalid!`
+                message: `Cannot submit your form - ${errCount} fields failed to pass validation.`
             });
         }
     }

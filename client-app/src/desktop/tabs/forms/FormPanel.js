@@ -1,5 +1,5 @@
 import {form} from '@xh/hoist/cmp/form';
-import {div, filler, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, hframe, span, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -7,6 +7,7 @@ import {checkbox, dateInput, numberInput, select, switchInput, textArea, textInp
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
+import {isNil} from 'lodash';
 import React from 'react';
 import {wrapper} from '../../common';
 import './FormPanel.scss';
@@ -35,7 +36,7 @@ export const formPanel = hoistCmp.factory({
             ],
             item: panel({
                 title: 'Forms › FormModel',
-                className: 'tbox-form-panel',
+                className: 'tb-form-panel',
                 icon: Icon.edit(),
                 width: 870,
                 height: 550,
@@ -55,10 +56,11 @@ const formContent = hoistCmp.factory(
             fieldDefaults: {
                 inline: model.inline,
                 minimal: model.minimal,
-                commitOnChange: model.commitOnChange
+                commitOnChange: model.commitOnChange,
+                readonlyRenderer: v => isNil(v) ? span({item: 'N/A', className: 'xh-text-color-muted'}) : `${v}`
             },
             item: div({
-                style: {padding: '10px', overflowY: 'auto'},
+                className: 'tb-form-panel__inner-scroll',
                 items: [
                     hbox({
                         flex: 'none',
@@ -67,7 +69,10 @@ const formContent = hoistCmp.factory(
                                 flex: 1,
                                 marginRight: 30,
                                 items: [
-                                    lastName(),
+                                    hbox(
+                                        formField({field: 'firstName', item: textInput()}),
+                                        formField({field: 'lastName', item: textInput()})
+                                    ),
                                     region(),
                                     email(),
                                     tags()
@@ -91,10 +96,6 @@ const formContent = hoistCmp.factory(
         }),
         bbar: bbar()
     })
-);
-
-const lastName = hoistCmp.factory(
-    () => formField({field: 'lastName', item: textInput()})
 );
 
 const email = hoistCmp.factory(
@@ -183,15 +184,18 @@ const notes = hoistCmp.factory(
 );
 
 const references = hoistCmp.factory(
+    /** @param {FormPanelModel} model */
     ({model}) => {
-        const {references} = model.formModel.fields,
+        const {formModel} = model,
+            {references} = formModel.fields,
+            disableButtons = formModel.disabled || formModel.readonly,
             rows = references.value.map(
                 refModel => form({
                     model: refModel,
                     key: refModel.xhId,
                     fieldDefaults: {label: null},
                     item: hbox({
-                        className: 'tbox-form-panel__reference-row',
+                        className: 'tb-form-panel__reference-row',
                         items: [
                             formField({
                                 field: 'name',
@@ -216,6 +220,7 @@ const references = hoistCmp.factory(
                             button({
                                 icon: Icon.delete(),
                                 intent: 'danger',
+                                disabled: disableButtons,
                                 onClick: () => references.remove(refModel)
                             })
                         ]
@@ -224,12 +229,13 @@ const references = hoistCmp.factory(
             );
 
         return vbox({
-            className: 'tbox-form-panel__references',
+            className: 'tb-form-panel__references',
             items: [
                 ...rows,
                 button({
                     icon: Icon.add(),
                     text: 'Add new reference...',
+                    disabled: disableButtons,
                     onClick: () => references.add()
                 })
             ]
