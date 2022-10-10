@@ -1,6 +1,6 @@
 # Changelog
 
-## UNRELEASED
+## v2.20.0 - 2022-10-10
 
 ### New Features
 
@@ -11,6 +11,7 @@
 ### Libraries
 
 * @xh/hoist 52.0.0
+* hoist-core 14.3.1
 
 ## v2.19.0 - 2022-07-30
 
