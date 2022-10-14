@@ -1,10 +1,17 @@
 # Changelog
 
-## UNRELEASED
+## v2.20.0 - 2022-10-10
 
 ### New Features
 
-* Demo for grid `Sparklines` renderer in Portfolio example
+* Added Other > Inspector tab to demo the new Hoist Inspector tool.
+* Added example of grid sparklines rendering within the Portfolio example app.
+* `SlackAlertService` to post status monitor and client error report alerts to the XH Slack channel for monitoring.
+
+### Libraries
+
+* @xh/hoist 52.0.0
+* hoist-core 14.3.1
 
 ## v2.19.0 - 2022-07-30
 

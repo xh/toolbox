@@ -31,6 +31,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                 width: 700,
                 items: [
                     box({
+                        style: {fontSize: '1.8em'},
                         margin: 10,
                         item: relativeTimestamp({
                             bind: 'timestamp',

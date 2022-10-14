@@ -1,21 +1,22 @@
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {hoistCmp} from '@xh/hoist/core';
+import {appNotificationsPanel} from './AppNotificationsPanel';
 import {buttonsPanel} from './Buttons';
 import {clockPanel} from './ClockPanel';
 import {customPackagePanel} from './CustomPackagePanel';
 import {errorMessagePanel} from './ErrorMessagePanel';
+import {exceptionHandlerPanel} from './exceptions/ExceptionHandlerPanel';
 import {fileChooserPanel} from './FileChooserPanel';
 import {dateFormatsPanel} from './formats/DateFormatsPanel';
 import {numberFormatsPanel} from './formats/NumberFormatsPanel';
 import {iconsPanel} from './IconsPanel';
+import {inspectorPanel} from './InspectorPanel';
 import {jsxPanel} from './JsxPanel';
 import {leftRightChooserPanel} from './LeftRightChooserPanel';
 import {pinPadPanel} from './PinPadPanel';
 import {placeholderPanel} from './PlaceholderPanel';
 import {popupsPanel} from './PopupsPanel';
 import {relativeTimestampPanel} from './RelativeTimestampPanel';
-import {appNotificationsPanel} from './AppNotificationsPanel';
-import {exceptionHandlerPanel} from './exceptions/ExceptionHandlerPanel';
 
 export const otherTab = hoistCmp.factory(
     () => tabContainer({
@@ -33,6 +34,7 @@ export const otherTab = hoistCmp.factory(
                 {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
                 {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
                 {id: 'icons', content: iconsPanel},
+                {id: 'inspector', content: inspectorPanel},
                 {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
                 {id: 'numberFormats', content: numberFormatsPanel},
                 {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},

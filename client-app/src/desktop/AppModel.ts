@@ -53,6 +53,17 @@ export class AppModel extends HoistAppModel {
             GitHubService,
             PortfolioService
         );
+
+        // Demo app-specific handling of EnvironmentService.serverVersion observable.
+        this.addReaction({
+            track: () => [XH.environmentService.serverVersion, XH.environmentService.serverBuild],
+            run: ([serverVersion, serverBuild]) => {
+                XH.toast({
+                    title: 'New Toolbox version detected',
+                    message: `A new version of Toolbox has been deployed to the server with version ${serverVersion} and build ${serverBuild}.`
+                });
+            }
+        });
     }
 
     async doLoadAsync(loadSpec) {
@@ -172,6 +183,7 @@ export class AppModel extends HoistAppModel {
                             {name: 'exceptionHandler', path: '/exceptionHandler'},
                             {name: 'fileChooser', path: '/fileChooser'},
                             {name: 'icons', path: '/icons'},
+                            {name: 'inspector', path: '/inspector'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
                             {name: 'numberFormats', path: '/numberFormats'},
                             {name: 'pinPad', path: '/pinPad'},
