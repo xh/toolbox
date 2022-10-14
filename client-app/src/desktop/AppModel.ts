@@ -22,6 +22,15 @@ import {panelsTab} from './tabs/panels/PanelsTab';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {span} from '@xh/hoist/cmp/layout';
 
+declare module '@xh/hoist/core/XH' {
+    /* eslint-disable no-unused-vars */
+    interface XHClass {
+        oauthService: OauthService;
+        gitHubService: GitHubService;
+        portfolioService: PortfolioService;
+    }
+}
+
 export class AppModel extends HoistAppModel {
 
     @managed
