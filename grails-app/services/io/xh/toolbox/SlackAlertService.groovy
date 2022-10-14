@@ -25,13 +25,12 @@ class SlackAlertService extends BaseService{
     // Implementation
     //------------------------
     private void formatAndSendMonitorStatusReport(MonitorStatusReport report) {
+        logInfo(alertSummary(report))
         if(!config.enabled) return
         sendSlackMessage( """
 Monitor Status Report:
-${report.getTitle()}
--------------Summary-------------
-${failedMsg(report.results)}
----------------------------------
+${report.title}
+${alertSummary(report)}
         """)
     }
 
@@ -74,13 +73,16 @@ Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
         }
     }
 
-    private String failedMsg(List<MonitorResult> result ){
-        def failSummary = result.findAll {it -> it.status == FAIL}.collect{it ->  return "$it.name -- $it.message"}
-        def warnSummary = result.findAll {it -> it.status == WARN}.collect{it -> return "$it.name -- $it.message"}
-        def msg = failSummary ?  "Failed: \n-" : ""
+    private String alertSummary(MonitorStatusReport report ){
+        if (report.status == OK) return ''
+        def failSummary = report.results.findAll {it -> it.status == FAIL}.collect{it ->  return "$it.name -- $it.message"}
+        def warnSummary = report.results.findAll {it -> it.status == WARN}.collect{it -> return "$it.name -- $it.message"}
+        def msg = '-------------Summary-------------\n'
+        msg +=   failSummary ?  "Failed: \n-" : ""
         msg += failSummary.join("\n-")
         msg += warnSummary ? "Warning: \n-" : ""
         msg += warnSummary.join("\n-")
+        msg += "---------------------------------\n"
         msg
 
     }
