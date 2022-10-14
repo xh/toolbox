@@ -25,7 +25,6 @@ class SlackAlertService extends BaseService{
     // Implementation
     //------------------------
     private void formatAndSendMonitorStatusReport(MonitorStatusReport report) {
-        logInfo(alertSummary(report))
         if(!config.enabled) return
         sendSlackMessage( """
 Monitor Status Report:
