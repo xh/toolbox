@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ES5",
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "target": "ES2015",
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports":  true,
+    "resolveJsonModule":  true,
+    "jsx": "react",
     "paths": {
-      "@xh/hoist/core/*.ts": ["./hoist/core/*.ts"]
+      "@xh/hoist/*": ["../../hoist-react/*"]
     },
     "lib": [
       "dom",
-      "es5",
-      "scripthost",
-      "es2015.promise"
+      "es2022"
     ]
   }
 }
