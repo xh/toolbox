@@ -67,7 +67,7 @@ const dueDate = hoistCmp.factory(
     )
 );
 
-const bbar = hoistCmp.factory(
+const bbar = hoistCmp.factory<TaskDialogModel>(
     ({model}) => toolbar(
         filler(),
         button({

@@ -1,8 +1,10 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
+import {AM} from '../../../apps/app';
+
 
 export class LineChartModel extends HoistModel {
 
@@ -24,7 +26,7 @@ export class LineChartModel extends HoistModel {
 
     async doLoadAsync(loadSpec) {
         if (isEmpty(this.symbols)) {
-            let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
+            let symbols = await AM.portfolioService.getSymbolsAsync({loadSpec});
             symbols = symbols.slice(0, 5);
             this.setSymbols(symbols);
         }
@@ -33,7 +35,7 @@ export class LineChartModel extends HoistModel {
             this.setCurrentSymbol(this.symbols[0]);
         }
 
-        let series = await XH.portfolioService.getLineChartSeriesAsync({
+        let series = await AM.portfolioService.getLineChartSeriesAsync({
             symbol: this.currentSymbol,
             dimension: 'close',
             loadSpec

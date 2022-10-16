@@ -1,13 +1,14 @@
-import {hframe} from '@xh/hoist/cmp/layout';
+import {hframe, a} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import React from 'react';
+// @ts-ignore
 import xhHoist from '../../../../core/img/xh+hoist.png';
 import './WelcomeWidget.scss';
 
 export const welcomeWidget = hoistCmp.factory(
     () => {
-        const link = (txt, url) => <a href={url} target="_blank">{txt}</a>;
+        const link = (txt, url) => a({href: url, target: '_blank', item: txt});
         return panel({
             className: 'tb-welcome-widget',
             items: [

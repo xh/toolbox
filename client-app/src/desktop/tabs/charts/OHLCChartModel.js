@@ -1,8 +1,9 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {isEmpty} from 'lodash';
+import {AM} from '../../../apps/app';
 
 export class OHLCChartModel extends HoistModel {
 
@@ -25,7 +26,7 @@ export class OHLCChartModel extends HoistModel {
 
     async doLoadAsync(loadSpec) {
         if (isEmpty(this.symbols)) {
-            let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
+            let symbols = await AM.portfolioService.getSymbolsAsync({loadSpec});
             symbols = symbols.slice(0, 5);
             this.setSymbols(symbols);
         }
@@ -34,7 +35,7 @@ export class OHLCChartModel extends HoistModel {
             this.setCurrentSymbol(this.symbols[0]);
         }
 
-        let series = await XH.portfolioService.getOHLCChartSeriesAsync({
+        let series = await AM.portfolioService.getOHLCChartSeriesAsync({
             symbol: this.currentSymbol,
             loadSpec
         }).catchDefault() ?? {};

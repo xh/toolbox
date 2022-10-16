@@ -1,9 +1,10 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {round} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {PERSIST_MAIN} from './AppModel';
+import {AM} from '../../apps/portfolio';
 
 export class PortfolioPanelModel extends HoistModel {
 
@@ -25,14 +26,14 @@ export class PortfolioPanelModel extends HoistModel {
         });
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {store, groupingChooserModel, gridPanelModel} = this,
             dims = groupingChooserModel.value;
 
         let {session} = this;
         session?.destroy();
 
-        session = await XH.portfolioService
+        session = await AM.portfolioService
             .getLivePositionsAsync(dims, 'mainApp')
             .catchDefault();
 
@@ -50,7 +51,7 @@ export class PortfolioPanelModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
-    createStore() {
+    private createStore() {
         return new Store({
             processRawData: (r) => {
                 return {
@@ -68,7 +69,7 @@ export class PortfolioPanelModel extends HoistModel {
         });
     }
 
-    createGroupingChooserModel() {
+    private createGroupingChooserModel() {
         return new GroupingChooserModel({
             dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
             initialValue: ['region', 'sector', 'symbol'],

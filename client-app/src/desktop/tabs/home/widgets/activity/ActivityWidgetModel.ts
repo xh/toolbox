@@ -2,22 +2,22 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {span, div} from '@xh/hoist/cmp/layout';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
-import {managed, HoistModel, XH} from '@xh/hoist/core';
+import {managed, HoistModel} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {head} from 'lodash';
+import {AM} from '../../../../../apps/app';
+
 
 export class ActivityWidgetModel extends HoistModel {
 
-    /** @member {GridModel} */
     @managed
-    gridModel;
+    gridModel: GridModel;
 
-    /** @member {FilterChooserModel} */
     @managed
-    filterChooserModel;
+    filterChooserModel: FilterChooserModel;
 
     get groupBy() {
         return head(this.gridModel.groupBy);
@@ -163,21 +163,21 @@ export class ActivityWidgetModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => XH.gitHubService.allCommits,
+            track: () => AM.gitHubService.allCommits,
             run: () => this.loadAsync()
         });
     }
 
-    async doLoadAsync() {
-        this.gridModel.loadData(XH.gitHubService.allCommits);
+    override async doLoadAsync() {
+        this.gridModel.loadData(AM.gitHubService.allCommits);
     }
 
-    onRowDoubleClicked = (params) => {
+    private onRowDoubleClicked = (params) => {
         const rec = params.data;
         if (rec?.isRecord) window.open(rec.data.url);
     };
 
-    setGroupBy(groupBy) {
+    private setGroupBy(groupBy) {
         this.gridModel.setGroupBy(groupBy);
     }
 

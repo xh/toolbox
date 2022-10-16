@@ -23,7 +23,7 @@ export const roadmapWidget = hoistCmp.factory({
     }
 });
 
-const bbar = hoistCmp.factory(
+const bbar = hoistCmp.factory<RoadmapModel>(
     ({model}) => toolbar({
         compact: true,
         items: [

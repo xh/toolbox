@@ -3,6 +3,7 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {isNil, map, uniq} from 'lodash';
 import {PERSIST_DETAIL} from '../AppModel';
+import {AM} from '../../../apps/portfolio';
 import {
     closingPriceSparklineCol,
     dirCol,
@@ -14,12 +15,14 @@ import {
     symbolCol, timeCol,
     traderCol
 } from '../../../core/columns';
+import {DetailPanelModel} from './DetailPanelModel';
+
 
 export class OrdersPanelModel extends HoistModel {
 
-    parentModel;
-    @managed gridModel;
-    @managed filterChooserModel;
+    parentModel: DetailPanelModel;
+    @managed gridModel: GridModel;
+    @managed filterChooserModel: FilterChooserModel;
 
     get positionId() {
         return this.parentModel.positionId;
@@ -83,7 +86,7 @@ export class OrdersPanelModel extends HoistModel {
         return this.gridModel.selectedRecord;
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {gridModel, positionId} = this;
 
         if (isNil(positionId)) {
@@ -92,9 +95,9 @@ export class OrdersPanelModel extends HoistModel {
         }
 
         try {
-            const orders = await XH.portfolioService.getOrdersAsync({positionId, loadSpec}),
+            const orders = await AM.portfolioService.getOrdersAsync({positionId, loadSpec}),
                 symbols = uniq(map(orders, 'symbol')),
-                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync({symbols, loadSpec});
+                sparklineSeries = await AM.portfolioService.getSparklineSeriesAsync({symbols, loadSpec});
 
             orders.forEach(order => order.closingPrices = sparklineSeries[order.symbol]);
 

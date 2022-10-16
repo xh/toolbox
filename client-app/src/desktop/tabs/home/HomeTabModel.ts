@@ -94,7 +94,7 @@ export class HomeTabModel extends HoistModel {
         });
     }
 
-    async restoreDefaultsAsync() {
+    private async restoreDefaultsAsync() {
         const confirmed = await XH.confirm({
             title: 'Please confirm...',
             message: fragment(

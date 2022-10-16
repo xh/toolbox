@@ -1,4 +1,4 @@
-import {HoistAppModel, XH} from '@xh/hoist/core';
+import {HoistAppModel, initServicesAsync, XH} from '@xh/hoist/core';
 import {themeAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {Icon} from '@xh/hoist/icon';
 import {OauthService} from '../../core/svc/OauthService';
@@ -9,14 +9,15 @@ export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
 
 export class AppModel extends HoistAppModel {
 
+    oauthService: OauthService;
+    portfolioService: PortfolioService;
+
     static async preAuthAsync() {
-        await XH.installServicesAsync(OauthService);
+        await initServicesAsync(OauthService, this);
     }
 
-    async initAsync() {
-        await XH.installServicesAsync(
-            PortfolioService
-        );
+    override async initAsync() {
+        await initServicesAsync(PortfolioService, this);
 
         this.addReaction({
             track: () => XH.webSocketService.connected,
@@ -24,18 +25,18 @@ export class AppModel extends HoistAppModel {
         });
     }
 
-    async logoutAsync() {
-        await XH.oauthService.logoutAsync();
+    override async logoutAsync() {
+        await this.oauthService.logoutAsync();
     }
 
-    getAppOptions() {
+    override getAppOptions() {
         return [
             themeAppOption(),
             sizingModeAppOption()
         ];
     }
 
-    updateWebsocketAlertBanner() {
+    private updateWebsocketAlertBanner() {
         const {connected} = XH.webSocketService,
             category = 'wsAlert';
 

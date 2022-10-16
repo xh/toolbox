@@ -1,5 +1,5 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {HoistAppModel, managed, XH} from '@xh/hoist/core';
+import {HoistAppModel, initServicesAsync, managed, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
@@ -22,16 +22,13 @@ import {panelsTab} from './tabs/panels/PanelsTab';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {span} from '@xh/hoist/cmp/layout';
 
-declare module '@xh/hoist/core/XH' {
-    /* eslint-disable no-unused-vars */
-    interface XHClass {
-        oauthService: OauthService;
-        gitHubService: GitHubService;
-        portfolioService: PortfolioService;
-    }
-}
 
 export class AppModel extends HoistAppModel {
+
+    static oauthService: OauthService;
+
+    gitHubService: GitHubService;
+    portfolioService: PortfolioService;
 
     @managed
     tabModel: TabContainerModel = new TabContainerModel({
@@ -52,16 +49,11 @@ export class AppModel extends HoistAppModel {
     });
 
     static async preAuthAsync() {
-        await XH.installServicesAsync(
-            OauthService
-        );
+        await initServicesAsync(OauthService, this);
     }
 
-    async initAsync() {
-        await XH.installServicesAsync(
-            GitHubService,
-            PortfolioService
-        );
+    override async initAsync() {
+        await this.initServicesAsync(GitHubService, PortfolioService);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
         this.addReaction({
@@ -74,19 +66,19 @@ export class AppModel extends HoistAppModel {
         });
     }
 
-    async doLoadAsync(loadSpec) {
-        await XH.gitHubService.loadAsync(loadSpec);
+    override async doLoadAsync(loadSpec) {
+        await this.gitHubService.loadAsync(loadSpec);
     }
 
-    async logoutAsync() {
-        await XH.oauthService.logoutAsync();
+    override async logoutAsync() {
+        await AppModel.oauthService.logoutAsync();
     }
 
     goHome() {
         this.tabModel.activateTab('home');
     }
 
-    getAppOptions() {
+    override getAppOptions() {
         return [
             themeAppOption(),
             sizingModeAppOption(),
@@ -103,7 +95,7 @@ export class AppModel extends HoistAppModel {
         ];
     }
 
-    getRoutes() {
+    override getRoutes() {
         return [
             {
                 name: 'default',
@@ -210,7 +202,7 @@ export class AppModel extends HoistAppModel {
     }
 
     getAboutDialogItems() {
-        const lastGitHubCommit = fmtDateTimeSec(XH.gitHubService.commitHistories.toolbox?.lastCommitTimestamp);
+        const lastGitHubCommit = fmtDateTimeSec(this.gitHubService.commitHistories.toolbox?.lastCommitTimestamp);
         return [
             ...super.getAboutDialogItems(),
             {
@@ -221,10 +213,3 @@ export class AppModel extends HoistAppModel {
         ];
     }
 }
-
-/**
- * @typedef XH
- * @property {GitHubService} gitHubService
- * @property {OauthService} oauthService
- * @property {PortfolioService} portfolioService
- */

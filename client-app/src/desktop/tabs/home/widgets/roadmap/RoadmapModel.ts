@@ -59,7 +59,7 @@ export class RoadmapModel extends HoistModel {
 
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {dataViewModel} = this,
             resp = await XH.fetchJson({
                 url: 'roadmap/data',
@@ -70,7 +70,7 @@ export class RoadmapModel extends HoistModel {
         dataViewModel.loadData(projects);
     }
 
-    processData(rawData) {
+    private processData(rawData) {
         const showReleased = this.statusFilter === 'showReleased';
         const projects = rawData.flatMap(phase => {
             return phase.projects.map(project => {

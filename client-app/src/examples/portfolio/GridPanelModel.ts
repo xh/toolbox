@@ -1,9 +1,10 @@
 import {HoistModel, managed} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {observable, action, makeObservable} from '@xh/hoist/mobx';
 import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {PERSIST_MAIN} from './AppModel';
 import {mktValCol, nameCol, pnlCol} from '../../core/columns';
+import {PortfolioPanelModel} from './PortfolioPanelModel';
 
 export class GridPanelModel extends HoistModel {
 
@@ -14,12 +15,13 @@ export class GridPanelModel extends HoistModel {
         persistWith: {...PERSIST_MAIN, path: 'positionsPanel'}
     });
 
-    @bindable loadTimestamp;
+    @observable loadTimestamp: number;
+    @action setLoadTimestamp(n: number) {this.loadTimestamp = n}
 
     @managed
-    gridModel;
+    gridModel: GridModel;
 
-    parentModel;
+    parentModel: PortfolioPanelModel;
 
     get selectedRecord() {
         return this.gridModel.selectedRecord;
@@ -32,7 +34,7 @@ export class GridPanelModel extends HoistModel {
         this.gridModel = this.createGridModel();
     }
 
-    createGridModel() {
+    private createGridModel() {
         return new GridModel({
             persistWith: PERSIST_MAIN,
             treeMode: true,

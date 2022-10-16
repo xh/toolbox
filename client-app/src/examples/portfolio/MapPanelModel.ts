@@ -6,10 +6,10 @@ import {GridPanelModel} from './GridPanelModel';
 
 export class MapPanelModel extends HoistModel {
 
-    @lookup(GridPanelModel) gridPanelModel;
-    @managed splitTreeMapModel;
+    @lookup(GridPanelModel) gridPanelModel: GridPanelModel;
+    @managed splitTreeMapModel: SplitTreeMapModel;
 
-    onLinked() {
+    override onLinked() {
         this.splitTreeMapModel = new SplitTreeMapModel({
             gridModel: this.gridPanelModel.gridModel,
             mapTitleFn: (model, isPrimary) => {

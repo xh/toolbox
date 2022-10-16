@@ -2,7 +2,7 @@ import '../Bootstrap';
 
 import {XH} from '@xh/hoist/core';
 import {App} from '@xh/hoist/admin/App';
-import {AppModel} from '../admin/AppModel';
+import {AppModel} from '@xh/hoist/admin/AppModel';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
 XH.renderApp({

@@ -2,17 +2,16 @@ import '../Bootstrap';
 
 import {XH} from '@xh/hoist/core';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
-import {App} from '../desktop/App';
-import {AppModel} from '../desktop/AppModel';
+import {App} from '../examples/todo/App';
+import {AppModel} from '../examples/todo/AppModel';
 
-XH.renderApp({
-    clientAppCode: 'app',
-    clientAppName: 'Toolbox',
+export const AM = await XH.renderApp({
+    clientAppCode: 'todo',
+    clientAppName: 'Todo',
     componentClass: App,
     modelClass: AppModel,
     containerClass: AppContainer,
     isMobileApp: false,
     isSSO: true,
-    webSocketsEnabled: true,
     checkAccess: 'APP_READER'
 });

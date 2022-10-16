@@ -1,5 +1,5 @@
 import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed, persist, XH, SizingMode} from '@xh/hoist/core';
+import {HoistModel, managed, persist, SizingMode, XH} from '@xh/hoist/core';
 import {RecordAction} from '@xh/hoist/data';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 import {span} from '@xh/hoist/cmp/layout';
@@ -11,6 +11,7 @@ import {every, isEmpty} from 'lodash';
 import {createRef} from 'react';
 import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
+import {AM} from './../../apps/todo';
 
 export class TodoPanelModel extends HoistModel {
 
@@ -27,11 +28,10 @@ export class TodoPanelModel extends HoistModel {
     @persist
     showGroups = true;
 
-    /** @member {GridModel} */
     @managed
-    gridModel;
+    gridModel: GridModel;
 
-    panelRef = createRef();
+    panelRef = createRef<HTMLElement>();
 
     addAction = new RecordAction({
         icon: Icon.add(),
@@ -110,13 +110,13 @@ export class TodoPanelModel extends HoistModel {
     }
 
     async addTaskAsync(task) {
-        await XH.taskService.addAsync(task);
+        await AM.taskService.addAsync(task);
         await this.refreshAsync();
         this.info(`Task added: '${task.description}'`);
     }
 
     async editTaskAsync(task) {
-        await XH.taskService.editAsync([task]);
+        await AM.taskService.editAsync([task]);
         await this.refreshAsync();
         this.info(`Task edited: '${task.description}'`);
     }
@@ -134,7 +134,7 @@ export class TodoPanelModel extends HoistModel {
 
         if (!confirmed) return;
 
-        await XH.taskService.deleteAsync(tasks);
+        await AM.taskService.deleteAsync(tasks);
         await this.refreshAsync();
 
         const label = count === 1 ? `Task removed: '${description}'` : `${count} tasks removed`;
@@ -147,7 +147,7 @@ export class TodoPanelModel extends HoistModel {
         const firstTask = tasks[0],
             isCompleting = !firstTask.complete;
 
-        await XH.taskService.toggleCompleteAsync(tasks);
+        await AM.taskService.toggleCompleteAsync(tasks);
         await this.refreshAsync();
 
         if (isCompleting) {
@@ -161,19 +161,19 @@ export class TodoPanelModel extends HoistModel {
     }
 
     async resetToDefaultTasksAsync() {
-        await XH.taskService.resetToDefaultTasksAsync();
+        await AM.taskService.resetToDefaultTasksAsync();
         await this.refreshAsync();
     }
 
     //------------------------
     // Implementation
     //------------------------
-    async doLoadAsync(loadSpec) {
-        const tasks = await XH.taskService.getAsync();
+    override async doLoadAsync(loadSpec) {
+        const tasks = await AM.taskService.getAsync();
         this.gridModel.loadData(tasks);
     }
 
-    createGridModel() {
+    private createGridModel() {
         return new GridModel({
             emptyText: 'Congratulations.  You did it! All of it!',
             selModel: {mode: 'multiple'},
@@ -252,11 +252,11 @@ export class TodoPanelModel extends HoistModel {
         });
     }
 
-    info(message) {
+    private info(message) {
         XH.toast({message, containerRef: this.panelRef.current});
     }
 
-    dueDateRenderer(v, {record}) {
+    private dueDateRenderer(v, {record}) {
         const overdue = v && v < LocalDate.today() && !record.data.complete,
             dateStr = fmtCompactDate(v?.date, {
                 sameDayFmt: '[Today]',

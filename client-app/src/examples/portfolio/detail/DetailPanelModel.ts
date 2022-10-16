@@ -30,7 +30,7 @@ export class DetailPanelModel extends HoistModel {
         makeObservable(this);
     }
 
-    onLinked() {
+    override onLinked() {
         this.addReaction({
             track: () => this.parentModel.selectedPosition,
             run: (position) => {

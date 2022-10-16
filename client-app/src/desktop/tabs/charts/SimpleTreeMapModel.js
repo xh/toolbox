@@ -1,6 +1,7 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {Store} from '@xh/hoist/data';
+import {AM} from '../../../apps/app';
 
 export class SimpleTreeMapModel extends HoistModel {
 
@@ -30,7 +31,7 @@ export class SimpleTreeMapModel extends HoistModel {
     });
 
     async doLoadAsync() {
-        const data = await XH.portfolioService.getPositionsAsync(['symbol']);
+        const data = await AM.portfolioService.getPositionsAsync(['symbol']);
         this.store.loadData(data);
     }
 

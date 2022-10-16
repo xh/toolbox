@@ -5,6 +5,7 @@ import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 import {App} from '../examples/portfolio/App';
 import {AppModel} from '../examples/portfolio/AppModel';
 
+export let AM: AppModel;
 XH.renderApp({
     clientAppCode: 'portfolio',
     clientAppName: 'Portfolio',
@@ -15,4 +16,4 @@ XH.renderApp({
     isSSO: true,
     webSocketsEnabled: true,
     checkAccess: 'APP_READER'
-});
+}).then(appModel => AM = appModel as AppModel);

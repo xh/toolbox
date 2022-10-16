@@ -1,11 +1,12 @@
 import {img} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {webSocketIndicator} from '@xh/hoist/cmp/websocket';
-import {hoistCmp, uses, XH} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {tabSwitcher} from '@xh/hoist/desktop/cmp/tab';
 import {welcomeMsg} from '../core/cmp/WelcomeMsg';
+// @ts-ignore
 import xhLogo from '../core/img/xh-toolbox-logo.png';
 import '../core/Toolbox.scss';
 import './App.scss';
@@ -40,7 +41,7 @@ export const App = hoistCmp({
                     label: 'Switch to the home tab',
                     combo: 'shift + h',
                     global: true,
-                    onKeyDown: () => XH.appModel.goHome()
+                    onKeyDown: () => model.goHome()
                 }
             ],
             item: tabContainer(),

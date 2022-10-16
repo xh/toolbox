@@ -7,6 +7,7 @@ import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {action, makeObservable} from '@xh/hoist/mobx';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
+import {AM} from '../../../apps/app';
 
 export class SampleTreeGridModel extends HoistModel {
 
@@ -65,7 +66,7 @@ export class SampleTreeGridModel extends HoistModel {
         const {gridModel, groupingChooserModel} = this,
             dims = groupingChooserModel.value;
 
-        const data = await XH.portfolioService.getPositionsAsync(dims, true);
+        const data = await AM.portfolioService.getPositionsAsync(dims, true);
         if (isRefresh) {
             // Flatten the data. The updateData method ignores child records in a hierarchy,
             // but will update child records in the store if they are updated from a flat array.

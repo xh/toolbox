@@ -9,7 +9,6 @@ import {ordersPanel} from './OrdersPanel';
 export const detailPanel = hoistCmp.factory({
     model: creates(DetailPanelModel),
 
-    /** @param {DetailPanelModel} model */
     render({model}) {
         const {panelSizingModel, positionId, collapsed} = model;
 

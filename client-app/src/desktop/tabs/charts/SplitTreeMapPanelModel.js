@@ -1,10 +1,11 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {fmtMillions} from '@xh/hoist/format';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
+import {AM} from '../../../apps/app';
 
 export class SplitTreeMapPanelModel extends HoistModel {
 
@@ -80,7 +81,7 @@ export class SplitTreeMapPanelModel extends HoistModel {
 
     async doLoadAsync() {
         const dims = this.groupingChooserModel.value;
-        const data = await XH.portfolioService.getPositionsAsync(dims);
+        const data = await AM.portfolioService.getPositionsAsync(dims);
         this.gridModel.loadData(data);
     }
 
