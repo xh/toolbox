@@ -1,15 +1,23 @@
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
-import {hoistCmp} from '@xh/hoist/core';
+import {XH, hoistCmp} from '@xh/hoist/core';
 import {boolCheckCol} from '@xh/hoist/cmp/grid';
 
-export const phaseRestPanel = hoistCmp.factory({
-    render() {
-        return panel({
-            item: restGrid({model: modelSpec})
-        });
+export const phaseRestPanel = hoistCmp.factory(
+    () => {
+        const readonly = !XH.getUser().isHoistAdmin;
+        return restGrid({model: {
+            ...modelSpec,
+            readonly,
+            menuActions: readonly ? [] : [
+                addAction,
+                editAction,
+                viewAction,
+                deleteAction,
+                cloneAction
+            ]
+        }});
     }
-});
+);
 
 const modelSpec = {
     enableExport: true,
@@ -75,13 +83,6 @@ const modelSpec = {
         {field: 'projectNames', label: 'Projects'}
     ],
     emptyText: 'No phases found - try adding one...',
-    menuActions: [
-        addAction,
-        editAction,
-        viewAction,
-        deleteAction,
-        cloneAction
-    ],
     actionWarning: {
         del: 'Warning: Deleting this phase will also delete all projects associated with it. Continue anyway?'
     },

@@ -1,17 +1,26 @@
-import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
 import {dateTimeRenderer} from '@xh/hoist/format';
 import {codeInput, textArea} from '@xh/hoist/desktop/cmp/input';
-import {hoistCmp} from '@xh/hoist/core';
+import {XH, hoistCmp} from '@xh/hoist/core';
 import {toNumber} from 'lodash';
 
-export const projectRestPanel = hoistCmp.factory({
-    render() {
-        return panel({
-            item: restGrid({model: modelSpec})
-        });
+export const projectRestPanel = hoistCmp.factory(
+    () => {
+        const readonly = !XH.getUser().isHoistAdmin;
+        return restGrid({model: {
+            ...modelSpec,
+            readonly,
+            menuActions: readonly ? [] : [
+                addAction,
+                editAction,
+                viewAction,
+                deleteAction,
+                cloneAction
+            ]
+        }});
     }
-});
+);
+
 const tooltip = s => s;
 
 const modelSpec = {
@@ -160,12 +169,5 @@ const modelSpec = {
         {field: 'lastUpdatedBy', label: 'Last Updated By'}
     ],
     emptyText: 'No projects found - try adding one...',
-    menuActions: [
-        addAction,
-        editAction,
-        viewAction,
-        deleteAction,
-        cloneAction
-    ],
     prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
 };
