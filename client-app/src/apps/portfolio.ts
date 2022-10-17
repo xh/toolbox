@@ -2,18 +2,17 @@ import '../Bootstrap';
 
 import {XH} from '@xh/hoist/core';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
-import {App} from '../examples/portfolio/App';
+import {AppComponent} from '../examples/portfolio/AppComponent';
 import {AppModel} from '../examples/portfolio/AppModel';
 
-export let AM: AppModel;
-XH.renderApp({
+export let App = await XH.renderApp({
     clientAppCode: 'portfolio',
     clientAppName: 'Portfolio',
-    componentClass: App,
+    componentClass: AppComponent,
     modelClass: AppModel,
     containerClass: AppContainer,
     isMobileApp: false,
     isSSO: true,
     webSocketsEnabled: true,
     checkAccess: 'APP_READER'
-}).then(appModel => AM = appModel as AppModel);
+});

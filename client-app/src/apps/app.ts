@@ -2,13 +2,13 @@ import '../Bootstrap';
 
 import {XH} from '@xh/hoist/core';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
-import {App} from '../desktop/App';
+import {AppComponent} from '../desktop/AppComponent';
 import {AppModel} from '../desktop/AppModel';
 
-export const AM = await XH.renderApp({
+export const App = await XH.renderApp({
     clientAppCode: 'app',
     clientAppName: 'Toolbox',
-    componentClass: App,
+    componentClass: AppComponent,
     modelClass: AppModel,
     containerClass: AppContainer,
     isMobileApp: false,

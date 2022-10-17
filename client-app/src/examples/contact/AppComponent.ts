@@ -6,7 +6,7 @@ import {AppModel} from './AppModel';
 import {directoryPanel} from './DirectoryPanel';
 import '../../core/Toolbox.scss';
 
-export const App = hoistCmp({
+export const AppComponent = hoistCmp({
     displayName: 'App',
     model: uses(AppModel),
 

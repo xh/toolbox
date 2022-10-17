@@ -8,7 +8,7 @@ import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {head} from 'lodash';
-import {AM} from '../../../../../apps/app';
+import {App} from '../../../../../apps/app';
 
 
 export class ActivityWidgetModel extends HoistModel {
@@ -163,13 +163,13 @@ export class ActivityWidgetModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => AM.gitHubService.allCommits,
+            track: () => App.gitHubService.allCommits,
             run: () => this.loadAsync()
         });
     }
 
     override async doLoadAsync() {
-        this.gridModel.loadData(AM.gitHubService.allCommits);
+        this.gridModel.loadData(App.gitHubService.allCommits);
     }
 
     private onRowDoubleClicked = (params) => {

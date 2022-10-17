@@ -3,7 +3,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
-import {AM} from '../../../apps/app';
+import {App} from '../../../apps/app';
 
 
 export class GridTreeMapModel extends HoistModel {
@@ -69,7 +69,7 @@ export class GridTreeMapModel extends HoistModel {
 
     async doLoadAsync() {
         const dims = this.groupingChooserModel.value;
-        const data = await AM.portfolioService.getPositionsAsync(dims);
+        const data = await App.portfolioService.getPositionsAsync(dims);
         this.gridModel.loadData(data);
     }
 

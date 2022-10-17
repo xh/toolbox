@@ -12,7 +12,7 @@ import '../core/Toolbox.scss';
 import './App.scss';
 import {AppModel} from './AppModel';
 
-export const App = hoistCmp({
+export const AppComponent = hoistCmp({
     displayName: 'App',
     model: uses(AppModel),
 

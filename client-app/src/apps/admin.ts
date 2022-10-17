@@ -1,14 +1,14 @@
 import '../Bootstrap';
 
 import {XH} from '@xh/hoist/core';
-import {App} from '@xh/hoist/admin/App';
+import {AppComponent} from '@xh/hoist/admin/AppComponent';
 import {AppModel} from '@xh/hoist/admin/AppModel';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
-XH.renderApp({
+export const App = await XH.renderApp({
     clientAppCode: 'admin',
     clientAppName: 'Toolbox Admin',
-    componentClass: App,
+    componentClass: AppComponent,
     modelClass: AppModel,
     containerClass: AppContainer,
     isMobileApp: false,

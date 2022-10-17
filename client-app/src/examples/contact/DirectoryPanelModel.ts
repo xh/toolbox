@@ -9,7 +9,7 @@ import {PERSIST_APP} from './AppModel';
 import {favoriteButton} from './cmp/FavoriteButton';
 import {DetailsPanelModel} from './details/DetailsPanelModel';
 import {cellPhoneCol, emailCol, locationCol, nameCol, workPhoneCol} from '../../core/columns';
-import {AM} from '../../apps/contact';
+import {App} from '../../apps/contact';
 import {FilterLike} from '@xh/hoist/data/filter/Types';
 
 /**
@@ -69,12 +69,12 @@ export class DirectoryPanelModel extends HoistModel {
     }
 
     async updateContactAsync(id, data) {
-        await AM.contactService.updateContactAsync(id, data);
+        await App.contactService.updateContactAsync(id, data);
         await this.loadAsync();
     }
 
     toggleFavorite(record) {
-        AM.contactService.toggleFavorite(record.id);
+        App.contactService.toggleFavorite(record.id);
         // Update store directly, to avoid more heavyweight full reload.
         this.gridModel.store.modifyRecords({id: record.id, isFavorite: !record.data.isFavorite});
     }
@@ -86,7 +86,7 @@ export class DirectoryPanelModel extends HoistModel {
         const {gridModel} = this;
 
         try {
-            const contacts = await AM.contactService.getContactsAsync();
+            const contacts = await App.contactService.getContactsAsync();
             runInAction(() => {
                 this.tagList = uniq(contacts.flatMap(it => it.tags ?? [])).sort() as string[];
                 this.locationList = uniq(contacts.map(it => it.location)).sort() as string[];

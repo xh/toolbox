@@ -4,7 +4,7 @@ import {GridPanelModel} from './GridPanelModel';
 import {round} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {PERSIST_MAIN} from './AppModel';
-import {AM} from '../../apps/portfolio';
+import {App} from '../../apps/portfolio';
 
 export class PortfolioPanelModel extends HoistModel {
 
@@ -33,7 +33,7 @@ export class PortfolioPanelModel extends HoistModel {
         let {session} = this;
         session?.destroy();
 
-        session = await AM.portfolioService
+        session = await App.portfolioService
             .getLivePositionsAsync(dims, 'mainApp')
             .catchDefault();
 
