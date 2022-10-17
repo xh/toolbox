@@ -12,10 +12,10 @@ export class ContactService extends HoistService {
 
     persistWith = PERSIST_APP;
 
-    /** @member {string[]} - ids of all contacts that the user has favorited. */
+    /** ids of all contacts that the user has favorited. */
     @observable.ref
     @persist
-    userFaves = [];
+    userFaves: string[] = [];
 
     constructor() {
         super();

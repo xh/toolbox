@@ -4,8 +4,9 @@ import {consumeEvent} from '@xh/hoist/utils/js';
 import {button} from '@xh/hoist/desktop/cmp/button';
 
 import './FavoriteButton.scss';
+import {DirectoryPanelModel} from '../DirectoryPanelModel';
 
-export const favoriteButton = hoistCmp.factory(
+export const favoriteButton = hoistCmp.factory<DirectoryPanelModel>(
     ({model, record}) => {
         const {isFavorite} = record.data;
         return button({

@@ -5,7 +5,7 @@ import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 import {App} from '../examples/contact/App';
 import {AppModel} from '../examples/contact/AppModel';
 
-XH.renderApp({
+export const AM = await XH.renderApp({
     clientAppCode: 'contact',
     clientAppName: 'XH Contact',
     componentClass: App,

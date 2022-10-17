@@ -33,7 +33,7 @@ export const directoryPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory(
+const tbar = hoistCmp.factory<DirectoryPanelModel>(
     ({model}) => {
         const {locationList, tagList} = model;
 
@@ -85,7 +85,7 @@ const tbar = hoistCmp.factory(
     }
 );
 
-const bbar = hoistCmp.factory(
+const bbar = hoistCmp.factory<DirectoryPanelModel>(
     ({model}) => {
         const {displayMode, gridModel} = model,
             {store} = gridModel;

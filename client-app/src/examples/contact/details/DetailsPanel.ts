@@ -58,7 +58,7 @@ const contactProfile = hoistCmp.factory({
 });
 
 
-const bbar = hoistCmp.factory(
+const bbar = hoistCmp.factory<DetailsPanelModel>(
     ({model}) => {
         const {currentRecord, isEditing} = model;
         if (!currentRecord) return null;
@@ -76,7 +76,7 @@ const bbar = hoistCmp.factory(
     }
 );
 
-const picture = hoistCmp.factory(
+const picture = hoistCmp.factory<DetailsPanelModel>(
     ({model}) => img({src: model.currentRecord.data.profilePicture})
 );
 
@@ -104,7 +104,7 @@ const bioField = hoistCmp.factory(
     })
 );
 
-const tagsField = hoistCmp.factory(
+const tagsField = hoistCmp.factory<DetailsPanelModel>(
     ({model}) => formField({
         field: 'tags',
         item: select({
@@ -126,7 +126,7 @@ const tagsField = hoistCmp.factory(
 //------------
 // Buttons
 //------------
-const favoriteButton = hoistCmp.factory(
+const favoriteButton = hoistCmp.factory<DetailsPanelModel>(
     ({model}) => {
         const {isFavorite} = model.currentRecord.data;
         return button({
@@ -142,7 +142,7 @@ const favoriteButton = hoistCmp.factory(
     }
 );
 
-const editButton = hoistCmp.factory(
+const editButton = hoistCmp.factory<DetailsPanelModel>(
     ({model}) => {
         const {isEditing} = model;
         return button({

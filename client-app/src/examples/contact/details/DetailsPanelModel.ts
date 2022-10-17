@@ -2,17 +2,18 @@ import {XH, HoistModel, managed} from '@xh/hoist/core';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {required} from '@xh/hoist/data/validation/constraints';
 import {makeObservable, observable, action} from '@xh/hoist/mobx';
+import {StoreRecord} from '@xh/hoist/data';
+import {DirectoryPanelModel} from '../DirectoryPanelModel';
 
 export class DetailsPanelModel extends HoistModel {
 
-    /** @member {StoreRecord} */
-    @observable.ref currentRecord;
+    @observable.ref
+    currentRecord: StoreRecord;
 
-    /** @member {FormModel} */
-    @managed formModel;
+    @managed
+    formModel: FormModel;
 
-    /** @member {DirectoryPanelModel} */
-    directoryPanelModel;
+    directoryPanelModel: DirectoryPanelModel;
 
     get isEditing() {
         return !this.formModel.readonly;
