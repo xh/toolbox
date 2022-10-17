@@ -1,4 +1,4 @@
-import {box, filler, p} from '@xh/hoist/cmp/layout';
+import {box, code, filler, p} from '@xh/hoist/cmp/layout';
 import {hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -40,11 +40,15 @@ const bannerTile = hoistCmp.factory(
                     banner notification, which will appear at the top of the app's container to 
                     prompt the user to refresh the app.`
                 ),
-                p(`Click below for a demo of the App Update Banner.`),
-                filler(),
+                p(`Click below to show the App Update Banner.`),
+                filler()
+            ],
+            bbar: [
                 button({
                     minimal: false,
-                    icon: Icon.bullhorn(),
+                    flex: 1,
+                    margin: '0 10px',
+                    icon: Icon.rocket(),
                     text: 'Release New Toolbox Version 99.0.0',
                     onClick: () => XH.acm.showUpdateBanner('99.0.0')
                 })
@@ -56,7 +60,7 @@ const bannerTile = hoistCmp.factory(
 const idleServiceTile = hoistCmp.factory(
     () => {
         return panel({
-            title: 'Sleep Mode',
+            title: 'Idle Detection',
             icon: Icon.moon(),
             items: [
                 p(`
@@ -67,15 +71,19 @@ const idleServiceTile = hoistCmp.factory(
                     This feature is recommended for apps that are rapidly polling or receiving 
                     updates from the server that generate load on back-end APIs.
                 `),
-                p(`
-                    Idle detection is enabled and its time limit configured on a per-app basis.
-                `),
-                p('Click below to put Toolbox into Sleep Mode.'),
-                filler(),
+                p(
+                    `Idle detection is enabled and configured via the `, code('xhIdleConfig'), ` app config.`
+                ),
+                p('Click below to put Toolbox to sleep.'),
+                filler()
+            ],
+            bbar: [
                 button({
                     minimal: false,
+                    flex: 1,
+                    margin: '0 10px',
                     className: 'tb-idle__button',
-                    icon: Icon.userClock(),
+                    icon: Icon.moon(),
                     text: 'Enter Sleep Mode',
                     onClick: () => XH.suspendApp({reason: 'IDLE'})
                 })
