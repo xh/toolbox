@@ -7,17 +7,7 @@ import {toNumber} from 'lodash';
 export const projectRestPanel = hoistCmp.factory(
     () => {
         const readonly = !XH.getUser().isHoistAdmin;
-        return restGrid({model: {
-            ...modelSpec,
-            readonly,
-            menuActions: readonly ? [] : [
-                addAction,
-                editAction,
-                viewAction,
-                deleteAction,
-                cloneAction
-            ]
-        }});
+        return restGrid({model: {...modelSpec, readonly}});
     }
 );
 
@@ -169,5 +159,12 @@ const modelSpec = {
         {field: 'lastUpdatedBy', label: 'Last Updated By'}
     ],
     emptyText: 'No projects found - try adding one...',
+    menuActions: [
+        addAction,
+        editAction,
+        viewAction,
+        deleteAction,
+        cloneAction
+    ],
     prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
 };

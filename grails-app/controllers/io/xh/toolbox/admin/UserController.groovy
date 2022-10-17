@@ -1,6 +1,5 @@
 package io.xh.toolbox.admin
 
-import io.xh.hoist.RestController
 import io.xh.hoist.admin.AdminRestController
 import io.xh.hoist.security.Access
 import io.xh.toolbox.user.User

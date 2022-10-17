@@ -5,7 +5,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 
 import './AppNotificationsPanel.scss';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 
 export const appNotificationsPanel = hoistCmp.factory(
     () => wrapper({
