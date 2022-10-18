@@ -21,5 +21,4 @@ export class AppModel extends HoistAppModel {
     async logoutAsync() {
         await AppModel.oauthService.logoutAsync();
     }
-
 }

@@ -9,7 +9,7 @@ export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
 
 export class AppModel extends HoistAppModel {
 
-    oauthService: OauthService;
+    static oauthService: OauthService;
     portfolioService: PortfolioService;
 
     static async preAuthAsync() {
@@ -17,7 +17,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override async initAsync() {
-        await initServicesAsync(PortfolioService, this);
+        await this.initServicesAsync(PortfolioService);
 
         this.addReaction({
             track: () => XH.webSocketService.connected,
@@ -26,7 +26,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override async logoutAsync() {
-        await this.oauthService.logoutAsync();
+        await AppModel.oauthService.logoutAsync();
     }
 
     override getAppOptions() {
