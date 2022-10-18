@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.30.0 - SNAPSHOT
+
+### New Features
+
+* New application permission role: `HOIST_ADMIN_READER`.
+* All Hoist Framework Admin tabs are now readable (read only) by users who have this new role: `HOIST_ADMIN_READER`.
+
+### Libraries
+
+* @xh/hoist 53.0.0
+* hoist-core 15.0.0
+
 ## v2.20.1 - 2022-10-17
 
 ### Bug Fixes
