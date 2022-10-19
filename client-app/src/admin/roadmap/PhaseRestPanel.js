@@ -3,10 +3,7 @@ import {XH, hoistCmp} from '@xh/hoist/core';
 import {boolCheckCol} from '@xh/hoist/cmp/grid';
 
 export const phaseRestPanel = hoistCmp.factory(
-    () => {
-        const readonly = !XH.getUser().isHoistAdmin;
-        return restGrid({model: {...modelSpec, readonly}});
-    }
+    () => restGrid({model: {...modelSpec, readonly: XH.appModel.readonly}})
 );
 
 const modelSpec = {

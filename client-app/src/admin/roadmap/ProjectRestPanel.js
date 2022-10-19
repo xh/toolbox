@@ -5,10 +5,7 @@ import {XH, hoistCmp} from '@xh/hoist/core';
 import {toNumber} from 'lodash';
 
 export const projectRestPanel = hoistCmp.factory(
-    () => {
-        const readonly = !XH.getUser().isHoistAdmin;
-        return restGrid({model: {...modelSpec, readonly}});
-    }
+    () => restGrid({model: {...modelSpec, readonly: XH.appModel.readonly}})
 );
 
 const tooltip = s => s;
