@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.20.1 - 2022-10-17
+
+### Bug Fixes
+
+* Improve Slack status monitor alert formatting.
+
+### Libraries
+
+* @xh/hoist 52.0.2
+
 ## v2.20.0 - 2022-10-10
 
 ### New Features
