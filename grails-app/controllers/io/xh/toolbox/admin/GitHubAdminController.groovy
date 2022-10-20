@@ -3,7 +3,7 @@ package io.xh.toolbox.admin
 import io.xh.hoist.security.Access
 import io.xh.toolbox.BaseController
 
-@Access(['HOIST_ADMIN'])
+@Access(['HOIST_ADMIN_READER'])
 class GitHubAdminController extends BaseController {
 
     def gitHubService

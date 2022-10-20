@@ -4,7 +4,7 @@ import io.xh.toolbox.BaseController
 import io.xh.hoist.security.Access
 
 
-@Access(['HOIST_ADMIN'])
+@Access(['HOIST_ADMIN_READER'])
 class FetchTestController extends BaseController {
 
     def index() {
