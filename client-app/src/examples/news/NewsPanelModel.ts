@@ -1,7 +1,7 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
-import {withFilterByField} from '@xh/hoist/data';
+import {withFilterByField, FilterLike} from '@xh/hoist/data';
 import {uniq, map} from 'lodash';
 
 import {newsPanelItem} from './NewsPanelItem';
@@ -11,7 +11,7 @@ export class NewsPanelModel extends HoistModel {
     SEARCH_FIELDS = ['title', 'text'];
 
     @managed
-    viewModel = new DataViewModel({
+    viewModel: DataViewModel = new DataViewModel({
         sortBy: 'published|desc',
         store: {
             fields: [
@@ -31,8 +31,11 @@ export class NewsPanelModel extends HoistModel {
         stripeRows: true
     });
 
-    @observable.ref sourceOptions = [];
-    @bindable.ref sourceFilterValues = null;
+    @observable.ref
+    sourceOptions: string[]  = [];
+    @bindable.ref
+    private sourceFilterValues = null;
+    private lastRefresh: Date;
 
     constructor() {
         super();
@@ -44,7 +47,7 @@ export class NewsPanelModel extends HoistModel {
         });
     }
 
-    async doLoadAsync(loadSpec)  {
+    override async doLoadAsync(loadSpec)  {
         const stories = await XH.fetchJson({url: 'news', loadSpec});
         this.completeLoad(stories);
     }
@@ -52,17 +55,17 @@ export class NewsPanelModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
-    setSourceFilter() {
+    private setSourceFilter() {
         const {sourceFilterValues} = this,
             {store} = this.viewModel,
-            newFilter = sourceFilterValues ? {field: 'source', op: '=', value: sourceFilterValues} : null;
+            newFilter: FilterLike = sourceFilterValues ? {field: 'source', op: '=', value: sourceFilterValues} : null;
 
         const filter = withFilterByField(store.filter, newFilter, 'source');
         store.setFilter(filter);
     }
 
     @action
-    completeLoad(stories) {
+    private completeLoad(stories) {
         const {viewModel} = this;
         viewModel.loadData(stories);
         viewModel.preSelectFirstAsync();
@@ -70,7 +73,7 @@ export class NewsPanelModel extends HoistModel {
         this.lastRefresh = new Date();
     }
 
-    onRowDoubleClicked({data: record}) {
+    private onRowDoubleClicked({data: record}) {
         const url = record.get('url');
         if (url) window.open(url, '_blank');
     }

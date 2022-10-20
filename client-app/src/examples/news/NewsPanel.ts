@@ -22,7 +22,7 @@ export const newsPanel = hoistCmp.factory({
     }
 });
 
-const bbar = hoistCmp.factory({
+const bbar = hoistCmp.factory<NewsPanelModel>({
     render({model}) {
         const {store} = model.viewModel;
         return toolbar(

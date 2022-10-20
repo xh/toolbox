@@ -1,6 +1,6 @@
 import {a} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {hoistCmp, uses} from '@xh/hoist/core';
+import {hoistComponent, uses} from '@xh/hoist/core';
 import {appBar, appBarSeparator} from '@xh/hoist/desktop/cmp/appbar';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -8,7 +8,7 @@ import {AppModel} from './AppModel';
 import {newsPanel} from './NewsPanel';
 import '../../core/Toolbox.scss';
 
-export const App = hoistCmp({
+export const AppComponent = hoistComponent({
     displayName: 'App',
     model: uses(AppModel),
 
