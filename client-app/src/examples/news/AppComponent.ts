@@ -8,7 +8,7 @@ import {AppModel} from './AppModel';
 import {newsPanel} from './NewsPanel';
 import '../../core/Toolbox.scss';
 
-export const App = hoistCmp({
+export const AppComponent = hoistCmp({
     displayName: 'App',
     model: uses(AppModel),
 
