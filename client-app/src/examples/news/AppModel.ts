@@ -9,7 +9,7 @@ export class AppModel extends HoistAppModel {
     @managed
     newsPanelModel: NewsPanelModel;
 
-    static async preAuthAsync() {
+    static override async preAuthAsync() {
         await initServicesAsync(OauthService, this);
     }
 
