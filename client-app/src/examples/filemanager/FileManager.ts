@@ -1,5 +1,4 @@
-import {filler, fragment} from '@xh/hoist/cmp/layout';
-import React from 'react';
+import {filler, fragment, p} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -27,8 +26,8 @@ export const fileManager = hoistCmp.factory({
                     accept: acceptedFileTypes,
                     showFileGrid: false,
                     targetText: fragment(
-                        <p>Drag-and-drop new files here to queue for upload, or click to browse.</p>,
-                        <p>(Note that not all file types will be accepted.)</p>
+                        p('Drag-and-drop new files here to queue for upload, or click to browse.'),
+                        p('(Note that not all file types will be accepted.)')
                     ),
                     height: 150
                 })
@@ -62,7 +61,7 @@ export const fileManager = hoistCmp.factory({
 
 // Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
 // accepted file types for sanity (and to demo the `accepts` prop).
-const acceptedFileTypes = [
+const acceptedFileTypes: string[] = [
     '.txt',
     '.png',
     '.gif',

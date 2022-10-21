@@ -13,17 +13,17 @@ export class RecallsPanelModel extends HoistModel {
     persistWith = PERSIST_APP;
 
     @bindable
-    searchQuery = '';
+    searchQuery: string = '';
 
     @bindable
     @persist
-    groupBy = null;
+    groupBy: string = null;
 
     @managed
-    detailsPanelModel = new DetailsPanelModel();
+    detailsPanelModel: DetailsPanelModel = new DetailsPanelModel();
 
     @managed
-    gridModel = new GridModel({
+    gridModel: GridModel = new GridModel({
         store: {
             processRawData: this.processRecord,
             fields: [
@@ -111,14 +111,14 @@ export class RecallsPanelModel extends HoistModel {
         });
 
         const {groupBy} = gridModel;
-        this.setGroupBy(groupBy && groupBy.length > 0 ? groupBy[0] : null);
+        this.groupBy = groupBy && groupBy.length > 0 ? groupBy[0] : null;
     }
 
 
     //------------------------
     // Implementation
     //------------------------
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {gridModel} = this;
 
         try {
@@ -143,7 +143,7 @@ export class RecallsPanelModel extends HoistModel {
         }
     }
 
-    processRecord(rawRec) {
+    private processRecord(rawRec) {
         return {
             ...rawRec,
             brandName: rawRec.openfda.brand_name[0],
@@ -155,7 +155,7 @@ export class RecallsPanelModel extends HoistModel {
         };
     }
 
-    classificationRenderer(val) {
+    private classificationRenderer(val: string) {
         switch (val) {
             case 'Class I':
                 return Icon.skull({className: 'xh-red'});

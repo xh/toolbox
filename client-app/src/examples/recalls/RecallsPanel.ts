@@ -29,7 +29,7 @@ export const recallsPanel = hoistCmp.factory({
                 item: currentRecord ? detailsPanel() : placeholder('Select a drug above to view its details.'),
                 className: 'toolbox-recalls-detail-panel',
                 compactHeader: true,
-                model: {
+                modelConfig: {
                     side: 'bottom',
                     defaultSize: 325,
                     persistWith: PERSIST_APP
@@ -40,7 +40,7 @@ export const recallsPanel = hoistCmp.factory({
 });
 
 const tbar = hoistCmp.factory(
-    ({model}) => {
+    () => {
         const aboutBlurb = 'This applet uses the openFDA drug enforcement reports API, ' +
                 'which provides information on drug recall events since 2004. ' +
                 'For more information, see: ',
