@@ -7,14 +7,15 @@ import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import filesize from 'filesize';
 import download from 'downloadjs';
 import {filter, find, pull} from 'lodash';
+import { StoreRecord, StoreRecordId } from '@xh/hoist/data';
 
 export class FileManagerModel extends HoistModel {
 
     @managed
-    chooserModel = new FileChooserModel();
+    chooserModel: FileChooserModel = new FileChooserModel();
     
     @managed
-    gridModel = new GridModel({
+    gridModel: GridModel = new GridModel({
         store: {
             fields: [
                 'name', 'size', 'status', 'file'
@@ -93,26 +94,6 @@ export class FileManagerModel extends HoistModel {
         });
     }
 
-    async doLoadAsync(loadSpec) {
-        const files = await XH.fetchService
-            .fetchJson({
-                url: 'fileManager/list',
-                loadSpec
-            })
-            .track({
-                category: 'File Manager',
-                message: 'Loaded Files',
-                loadSpec
-            })
-            .catchDefault();
-
-        files.forEach(file => {
-            file.status = 'Saved';
-        });
-
-        this.gridModel.loadData(files);
-    }
-
     async saveAsync() {
         let uploadPromise,
             deletePromise;
@@ -186,9 +167,32 @@ export class FileManagerModel extends HoistModel {
         });
     }
 
+    //---------------
+    // Implementation
+    //---------------
+    override async doLoadAsync(loadSpec) {
+        const files = await XH.fetchService
+            .fetchJson({
+                url: 'fileManager/list',
+                loadSpec
+            })
+            .track({
+                category: 'File Manager',
+                message: 'Loaded Files',
+                loadSpec
+            })
+            .catchDefault();
+
+        files.forEach(file => {
+            file.status = 'Saved';
+        });
+
+        this.gridModel.loadData(files);
+    }
+
     // Mark already-uploaded file as pending deletion on save, or immediately remove a
     // not-yet-uploaded file from the chooser.
-    removeFile(file) {
+    private removeFile(file: StoreRecord) {
         const {status} = file.data;
 
         if (status === 'Saved') {
@@ -201,14 +205,14 @@ export class FileManagerModel extends HoistModel {
     }
 
     // Restore a file marked as "Pending Delete" - i.e. cancel delete request.
-    restoreFile(file) {
+    private restoreFile(file: StoreRecord) {
         if (file.data.status === 'Pending Delete') {
             this.setFileStatus(file.id, 'Saved');
         }
     }
 
     // Update the status of an existing record.
-    setFileStatus(id, newStatus) {
+    private setFileStatus(id: StoreRecordId, newStatus: string) {
         const store = this.getStore(),
             rec = store.getById(id),
             newData = {...rec.raw, status: newStatus};
@@ -216,7 +220,7 @@ export class FileManagerModel extends HoistModel {
         store.updateData({update: [newData]});
     }
 
-    syncWithChooser() {
+    private syncWithChooser() {
         const chooserModel = this.chooserModel;
 
         // Get all non-chooser file data.
@@ -240,19 +244,19 @@ export class FileManagerModel extends HoistModel {
         this.getStore().loadData(newData);
     }
 
-    getFilesToDelete() {
+    private getFilesToDelete() {
         return filter(this.getAllData(), {status: 'Pending Delete'});
     }
 
-    getServerSideFiles() {
+    private getServerSideFiles() {
         return filter(this.getAllData(), (it) => it.status !== 'Pending Upload');
     }
 
-    getAllData() {
+    private getAllData() {
         return this.getStore().allRecords.map(it => it.raw);
     }
 
-    getStore() {
+    private getStore() {
         return this.gridModel.store;
     }
 }

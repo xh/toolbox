@@ -1,14 +1,14 @@
 import '../Bootstrap';
 
 import {XH} from '@xh/hoist/core';
-import {App} from '../examples/filemanager/App';
+import {AppComponent} from '../examples/filemanager/AppComponent';
 import {AppModel} from '../examples/filemanager/AppModel';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
-XH.renderApp({
+export let App = XH.renderApp({
     clientAppCode: 'fileManager',
     clientAppName: 'XH File Manager',
-    componentClass: App,
+    componentClass: AppComponent,
     modelClass: AppModel,
     containerClass: AppContainer,
     isMobileApp: false,

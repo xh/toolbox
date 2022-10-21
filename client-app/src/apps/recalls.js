@@ -2,13 +2,13 @@ import '../Bootstrap';
 
 import {XH} from '@xh/hoist/core';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
-import {App} from '../examples/recalls/App';
+import {AppComponent} from '../examples/recalls/AppComponent';
 import {AppModel} from '../examples/recalls/AppModel';
 
-XH.renderApp({
+export let App = XH.renderApp({
     clientAppCode: 'recalls',
     clientAppName: 'FDA Recalls',
-    componentClass: App,
+    componentClass: AppComponent,
     modelClass: AppModel,
     containerClass: AppContainer,
     isMobileApp: false,

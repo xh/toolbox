@@ -1,9 +1,16 @@
 import {HoistModel} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {StoreRecord} from '@xh/hoist/data';
 
 export class DetailsPanelModel extends HoistModel {
 
-    @bindable.ref currentRecord;
+    @observable.ref
+    currentRecord: StoreRecord;
+
+    @action
+    setCurrentRecord(rec: StoreRecord) {
+        this.currentRecord = rec;
+    }
 
     constructor() {
         super();
