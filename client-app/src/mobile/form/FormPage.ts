@@ -43,7 +43,7 @@ export const formPage = hoistCmp.factory({
     }
 });
 
-const formCmp = hoistCmp.factory(
+const formCmp = hoistCmp.factory<FormPageModel>(
     ({model}) => {
         const {minimal, movies} = model;
 
@@ -158,7 +158,7 @@ const results = hoistCmp.factory(
     }
 );
 
-const bbar = hoistCmp.factory(
+const bbar = hoistCmp.factory<FormPageModel>(
     ({model}) => toolbar({
         height: 38,
         items: [
@@ -172,7 +172,7 @@ const bbar = hoistCmp.factory(
     })
 );
 
-const fieldResult = hoistCmp.factory(
+const fieldResult = hoistCmp.factory<FormPageModel>(
     ({model, field, renderer}) => {
         const {displayName, value} = model.formModel.fields[field];
         return div({
@@ -185,7 +185,7 @@ const fieldResult = hoistCmp.factory(
     }
 );
 
-const setFocusMenu = hoistCmp.factory(
+const setFocusMenu = hoistCmp.factory<FormPageModel>(
     ({model}) => {
         const fields = model.formModel.fieldList,
             menuItems = fields.map(f => ({

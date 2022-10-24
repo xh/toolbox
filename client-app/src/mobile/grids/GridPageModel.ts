@@ -1,16 +1,16 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable, makeObservable, runInAction} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {cityCol, companyCol, profitLossCol, tradeVolumeCol} from '../../core/columns';
 
 export class GridPageModel extends HoistModel {
 
     @bindable.ref
-    dateLoaded = null;
+    dateLoaded: Date = null;
 
     @managed
-    gridModel = new GridModel({
+    gridModel: GridModel = new GridModel({
         persistWith: {localStorageKey: 'toolboxSampleGrid'},
         sortBy: ['profit_loss|desc|abs'],
         colChooserModel: true,
@@ -38,11 +38,11 @@ export class GridPageModel extends HoistModel {
         makeObservable(this);
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         await wait(500);
         const customers = await XH.fetchJson({url: 'customer'});
         this.gridModel.loadData(customers);
-        this.setDateLoaded(new Date());
+        runInAction(() => this.dateLoaded = new Date());
     }
 
 }

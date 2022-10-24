@@ -6,8 +6,9 @@ import {movies} from '../../core/data';
 
 export class FormPageModel extends HoistModel {
 
-    @bindable minimal;
-    @bindable readonly;
+    @bindable minimal: boolean;
+    @bindable readonly: boolean;
+    readonly movies: string[] = movies;
 
     constructor() {
         super();
@@ -15,7 +16,7 @@ export class FormPageModel extends HoistModel {
     }
 
     @managed
-    formModel = new FormModel({
+    formModel: FormModel = new FormModel({
         fields: [
             {name: 'name', rules: [required, lengthIs({min: 8})]},
             {name: 'customer', rules: [required]},
@@ -30,8 +31,6 @@ export class FormPageModel extends HoistModel {
             {name: 'searchQuery', displayName: 'Search'}
         ]
     });
-
-    movies = movies;
 
     async queryCustomersAsync(query) {
         const results = await XH.fetchJson({url: 'customer', params: {query}});

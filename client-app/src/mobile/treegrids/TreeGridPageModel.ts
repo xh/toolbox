@@ -3,18 +3,19 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/mobile/cmp/grouping';
 import {isEmpty} from 'lodash';
 import {mktValCol, nameCol, pnlCol} from '../../core/columns';
+import {App} from '../../apps/mobile';
 
 export class TreeGridPageModel extends HoistModel {
 
     @managed
-    groupingChooserModel = new GroupingChooserModel({
+    groupingChooserModel: GroupingChooserModel = new GroupingChooserModel({
         dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
         initialValue: ['sector', 'symbol'],
         persistWith: {localStorageKey: 'toolboxTreeGridSample'}
     });
 
     @managed
-    gridModel = new GridModel({
+    gridModel: GridModel = new GridModel({
         treeMode: true,
         showSummary: true,
         store: {
@@ -55,9 +56,9 @@ export class TreeGridPageModel extends HoistModel {
         });
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const dims = this.groupingChooserModel.value;
-        const data = await XH.portfolioService.getPositionsAsync(dims, true);
+        const data = await App.portfolioService.getPositionsAsync(dims, true);
         this.gridModel.loadData(data);
     }
 }

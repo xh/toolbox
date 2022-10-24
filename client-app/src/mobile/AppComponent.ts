@@ -1,14 +1,16 @@
-import {hoistCmp, XH} from '@xh/hoist/core';
+import {hoistCmp, XH, uses} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
 import {navigator} from '@xh/hoist/mobile/cmp/navigator';
 import {hbox} from '@xh/hoist/cmp/layout';
 import {badge} from '@xh/hoist/cmp/badge';
 import {Icon} from '@xh/hoist/icon';
+import {AppModel} from './AppModel';
 import './App.scss';
 
-export const App = hoistCmp({
+export const AppComponent = hoistCmp({
     displayName: 'App',
+    model: uses(AppModel),
 
     render() {
         return panel({

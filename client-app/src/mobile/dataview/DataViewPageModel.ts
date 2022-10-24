@@ -6,7 +6,7 @@ import {dataViewItem} from './DataViewItem';
 export class DataViewPageModel extends HoistModel {
 
     @managed
-    dataViewModel = new DataViewModel({
+    dataViewModel: DataViewModel = new DataViewModel({
         store: {
             fields: [
                 {name: 'name', type: 'string'},
@@ -22,7 +22,7 @@ export class DataViewPageModel extends HoistModel {
         stripeRows: true
     });
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {dataViewModel} = this,
             allCustomers = await XH.fetchJson({url: 'customer'}),
             customers = take(shuffle(allCustomers), 100);

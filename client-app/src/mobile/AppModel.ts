@@ -1,4 +1,4 @@
-import {HoistAppModel, loadAllAsync, managed, XH} from '@xh/hoist/core';
+import {HoistAppModel, initServicesAsync, loadAllAsync, managed} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {themeAppOption, sizingModeAppOption, autoRefreshAppOption} from '@xh/hoist/mobile/cmp/appOption';
 import {OauthService} from '../core/svc/OauthService';
@@ -21,8 +21,11 @@ import {treeGridPage} from './treegrids/TreeGridPage';
 
 export class AppModel extends HoistAppModel {
 
+    static oauthService: OauthService;
+    portfolioService: PortfolioService;
+
     @managed
-    navigatorModel = new NavigatorModel({
+    navigatorModel: NavigatorModel = new NavigatorModel({
         track: true,
         pages: [
             {id: 'default', content: homePage},
@@ -43,7 +46,7 @@ export class AppModel extends HoistAppModel {
         ]
     });
 
-    getRoutes() {
+    override getRoutes() {
         return [
             {
                 name: 'default',
@@ -110,7 +113,7 @@ export class AppModel extends HoistAppModel {
         ];
     }
 
-    getAppOptions() {
+    override getAppOptions() {
         return [
             themeAppOption(),
             sizingModeAppOption(),
@@ -118,19 +121,19 @@ export class AppModel extends HoistAppModel {
         ];
     }
 
-    static async preAuthAsync() {
-        await XH.installServicesAsync(OauthService);
+    static override async preAuthAsync() {
+        await initServicesAsync(OauthService, this);
     }
 
-    async initAsync() {
-        await XH.installServicesAsync(PortfolioService);
+    override async initAsync() {
+        await this.initServicesAsync(PortfolioService);
     }
 
-    async logoutAsync() {
-        await XH.oauthService.logoutAsync();
+    override async logoutAsync() {
+        await AppModel.oauthService.logoutAsync();
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         await loadAllAsync([], loadSpec);
     }
 }

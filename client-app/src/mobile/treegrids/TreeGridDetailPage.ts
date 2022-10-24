@@ -1,10 +1,11 @@
-import {hoistCmp, HoistModel, XH, creates} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, creates} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
 import {capitalize} from 'lodash';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import {App} from '../../apps/mobile';
 
 export const treeGridDetailPage = hoistCmp.factory({
     model: creates(() => TreeGridDetailPageModel),
@@ -40,7 +41,7 @@ function renderPosition(position) {
     );
 }
 
-function renderRow(title, value, renderer) {
+function renderRow(title, value, renderer?) {
     return div({
         className: 'toolbox-detail-row',
         items: [
@@ -52,7 +53,7 @@ function renderRow(title, value, renderer) {
 
 class TreeGridDetailPageModel extends HoistModel {
 
-    @bindable.ref position;
+    @observable.ref position;
 
     get id() {
         return decodeURIComponent(this.componentProps.id);
@@ -71,7 +72,7 @@ class TreeGridDetailPageModel extends HoistModel {
     }
 
     async doLoadAsync(loadSpec) {
-        const position = await (this.id ? XH.portfolioService.getPositionAsync(this.id) : null);
-        this.setPosition(position);
+        const position = await (this.id ? App.portfolioService.getPositionAsync(this.id) : null);
+        runInAction(() => this.position = position);
     }
 }
