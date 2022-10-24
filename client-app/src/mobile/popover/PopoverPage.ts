@@ -1,5 +1,5 @@
 import {hoistCmp, HoistModel, creates} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {div, filler, h1, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {popover} from '@xh/hoist/mobile/cmp/popover';
@@ -71,7 +71,8 @@ const popoverContent = hoistCmp.factory({
  * LocalModel used to demonstrate opening a Popover in controlled mode
  */
 class PopoverPageModel extends HoistModel {
-    @bindable isOpen = false;
+    @observable isOpen: boolean = false;
+    @action setIsOpen(v: boolean) {this.isOpen = v}
 
     constructor() {
         super();

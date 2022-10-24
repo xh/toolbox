@@ -36,7 +36,7 @@ export const buttonPage = hoistCmp.factory({
     }
 });
 
-const buttonPanel = hoistCmp.factory(
+const buttonPanel = hoistCmp.factory<ButtonPageModel>(
     ({model, intent}) => {
         const {disabled, active, toolbar} = model;
         return div({

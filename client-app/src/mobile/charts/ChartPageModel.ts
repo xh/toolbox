@@ -1,20 +1,21 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
+import {App} from '../../apps/mobile';
 
 export class ChartPageModel extends HoistModel {
 
-    @bindable
-    currentSymbol = '';
+    @observable currentSymbol: string = '';
+    @observable.ref symbols: string[] = null;
 
-    @bindable.ref
-    symbols = null;
+    @action setCurrentSymbol(v: string) {this.currentSymbol = v}
+    @action setSymbols(v: string[]) {this.symbols = v}
 
-    numCompanies = 3;
+    numCompanies: number = 3;
 
     @managed
-    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
+    chartModel: ChartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
     constructor() {
         super();
@@ -25,9 +26,9 @@ export class ChartPageModel extends HoistModel {
         });
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         if (!this.symbols) {
-            let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
+            let symbols = await App.portfolioService.getSymbolsAsync({loadSpec});
             symbols = symbols.slice(0, this.numCompanies);
             this.setSymbols(symbols);
         }
@@ -36,7 +37,7 @@ export class ChartPageModel extends HoistModel {
             this.setCurrentSymbol(this.symbols[0]);
         }
 
-        let series = await XH.portfolioService.getOHLCChartSeriesAsync({
+        let series = await App.portfolioService.getOHLCChartSeriesAsync({
             symbol: this.currentSymbol,
             loadSpec
         }).catchDefault() ?? {};

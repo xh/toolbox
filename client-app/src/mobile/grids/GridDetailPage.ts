@@ -4,14 +4,14 @@ import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {find, isNil} from 'lodash';
-import {bindable, makeObservable, computed} from '@xh/hoist/mobx';
+import {makeObservable, computed, observable} from '@xh/hoist/mobx';
 
 export const gridDetailPage = hoistCmp.factory({
     model: creates(() => GridDetailPageModel),
     render({model}) {
         const {record} = model;
 
-        const row = (title, value, renderer) => div({
+        const row = (title, value, renderer?) => div({
             className: 'toolbox-detail-row',
             items: [
                 div(title),
@@ -37,7 +37,7 @@ export const gridDetailPage = hoistCmp.factory({
 
 class GridDetailPageModel extends HoistModel {
 
-    @bindable.ref customers = null;
+    @observable.ref customers = null;
 
     @computed
     get record() {
@@ -52,6 +52,6 @@ class GridDetailPageModel extends HoistModel {
     }
 
     async doLoadAsync() {
-        this.setCustomers(await XH.fetchJson({url: 'customer'}));
+        await XH.fetchJson({url: 'customer'}).thenAction(c => this.customers = c);
     }
 }

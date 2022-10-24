@@ -7,7 +7,7 @@ import {toolbarPage} from './ToolbarPage';
 export class ContainersPageModel extends HoistModel {
 
     @managed
-    tabContainerModel = new TabContainerModel({
+    tabContainerModel: TabContainerModel = new TabContainerModel({
         defaultTabId: 'hbox',
         tabs: [
             {

@@ -28,7 +28,7 @@ const example = hoistCmp.factory(
     })
 );
 
-const tbar = hoistCmp.factory(
+const tbar = hoistCmp.factory<ChartPageModel>(
     ({model}) => toolbar(
         span('Symbol: '),
         select({

@@ -1,7 +1,7 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {observable, makeObservable} from '@xh/hoist/mobx';
 import {p} from '@xh/hoist/cmp/layout';
 import {wait} from '@xh/hoist/promise';
 import './PinPadPage.scss';
@@ -32,15 +32,15 @@ const secretPlans = hoistCmp.factory(
 class PinPadPageModel extends HoistModel {
 
     @managed
-    pinPadModel = new PinPadModel({
+    pinPadModel: PinPadModel = new PinPadModel({
         pinLength: 5,
         headerText: 'Enter PIN...'
     });
 
-    attempts = 0;
-    maxAttempts = 5;
+    attempts: number = 0;
+    maxAttempts: number = 5;
 
-    @bindable loggedIn = false;
+    @observable loggedIn: boolean = false;
 
     constructor() {
         super();
@@ -58,13 +58,13 @@ class PinPadPageModel extends HoistModel {
         });
     }
 
-    handleCompletedPin(completedPin) {
+    private handleCompletedPin(completedPin: string) {
         const {pinPadModel: pad, attempts, maxAttempts} = this;
         if (completedPin === '12345') {
             pad.setErrorText('');
             pad.setHeaderText('Access Granted.');
             pad.setSubHeaderText('Welcome to XH.io');
-            wait(1000).then(() => this.setLoggedIn(true));
+            wait(1000).thenAction(() => this.loggedIn = true);
         } else if (attempts >= maxAttempts) {
             pad.setHeaderText('Account Locked.');
             pad.setSubHeaderText('Login disabled at this time.');

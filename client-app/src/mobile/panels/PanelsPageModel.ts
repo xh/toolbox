@@ -6,7 +6,7 @@ import {scrollablePanelPage} from './ScrollablePanelPage';
 export class PanelsPageModel extends HoistModel {
 
     @managed
-    tabContainerModel = new TabContainerModel({
+    tabContainerModel: TabContainerModel = new TabContainerModel({
         defaultTabId: 'panel',
         tabs: [
             {

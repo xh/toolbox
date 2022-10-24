@@ -4,7 +4,7 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 export class ScrollablePanelPageModel extends HoistModel {
 
     @bindable
-    showLongContent = false;
+    showLongContent: boolean = false;
 
     constructor() {
         super();
