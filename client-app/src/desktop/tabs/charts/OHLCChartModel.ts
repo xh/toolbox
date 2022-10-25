@@ -12,7 +12,7 @@ export class OHLCChartModel extends HoistModel {
     @bindable aspectRatio: number = null;
 
     @managed
-    chartModel: ChartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
+    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
     constructor() {
         super();

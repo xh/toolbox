@@ -10,7 +10,7 @@ import {App} from '../../../apps/app';
 export class SplitTreeMapPanelModel extends HoistModel {
 
     @managed
-    groupingChooserModel: GroupingChooserModel = new GroupingChooserModel({
+    groupingChooserModel = new GroupingChooserModel({
         dimensions: ['region', 'sector', 'symbol'],
         initialValue: ['sector', 'symbol'],
         initialFavorites: [
@@ -27,7 +27,7 @@ export class SplitTreeMapPanelModel extends HoistModel {
     });
 
     @managed
-    gridModel: GridModel = new GridModel({
+    gridModel = new GridModel({
         treeMode: true,
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',

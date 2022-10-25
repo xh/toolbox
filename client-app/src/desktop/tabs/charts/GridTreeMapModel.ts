@@ -9,7 +9,7 @@ import {App} from '../../../apps/app';
 export class GridTreeMapModel extends HoistModel {
 
     @managed
-    groupingChooserModel: GroupingChooserModel = new GroupingChooserModel({
+    groupingChooserModel = new GroupingChooserModel({
         dimensions: ['region', 'sector', 'symbol'],
         initialValue: ['sector', 'symbol'],
         initialFavorites: [
@@ -26,7 +26,7 @@ export class GridTreeMapModel extends HoistModel {
     });
 
     @managed
-    gridModel: GridModel = new GridModel({
+    gridModel = new GridModel({
         treeMode: true,
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
@@ -50,7 +50,7 @@ export class GridTreeMapModel extends HoistModel {
     });
 
     @managed
-    treeMapModel: TreeMapModel = new TreeMapModel({
+    treeMapModel = new TreeMapModel({
         gridModel: this.gridModel,
         maxHeat: 1,
         colorMode: 'linear',

@@ -12,7 +12,7 @@ export class LineChartModel extends HoistModel {
     @observable.ref symbols: string[] = [];
 
     @managed
-    chartModel: ChartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
+    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
     constructor() {
         super();

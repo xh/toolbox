@@ -13,7 +13,7 @@ import {App} from '../../../apps/app';
 export class SampleTreeGridModel extends HoistModel {
 
     @managed
-    groupingChooserModel: GroupingChooserModel = new GroupingChooserModel({
+    groupingChooserModel = new GroupingChooserModel({
         persistWith: {localStorageKey: 'sampleTreeGrid'},
         dimensions: [
             {name: 'fund'},

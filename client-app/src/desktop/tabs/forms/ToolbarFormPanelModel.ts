@@ -5,7 +5,7 @@ import {random} from 'lodash';
 
 export class ToolbarFormPanelModel extends HoistModel {
 
-    topFormModel: FormModel = new FormModel({
+    topFormModel = new FormModel({
         fields: [
             {name: 'text1', rules: [required]},
             {name: 'number1', initialValue: random(0, 10000000)},
@@ -16,7 +16,7 @@ export class ToolbarFormPanelModel extends HoistModel {
         ]
     });
 
-    bottomFormModel: FormModel = new FormModel({
+    bottomFormModel = new FormModel({
         fields: [
             {name: 'option1', initialValue: 'CA'},
             {name: 'option2'},

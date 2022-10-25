@@ -6,7 +6,7 @@ import {App} from '../../../apps/app';
 export class SimpleTreeMapModel extends HoistModel {
 
     @managed
-    store: Store = new Store({
+    store = new Store({
         processRawData: (r) => {
             return {
                 pnlMktVal: r.pnl / Math.abs(r.mktVal),
@@ -21,7 +21,7 @@ export class SimpleTreeMapModel extends HoistModel {
     });
 
     @managed
-    treeMapModel: TreeMapModel = new TreeMapModel({
+    treeMapModel = new TreeMapModel({
         store: this.store,
         maxHeat: 1,
         colorMode: 'linear',
