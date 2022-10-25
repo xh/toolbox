@@ -13,7 +13,6 @@ export const examplesTab = hoistCmp.factory({
     displayName: 'ExamplesTab',
     model: creates(ExamplesTabModel),
 
-    /** @param {ExamplesTabModel} model */
     render({model}) {
         return panel({
             className: 'tb-examples',
@@ -33,8 +32,7 @@ export const examplesTab = hoistCmp.factory({
 });
 
 
-const activeAppDisplay = hoistCmp.factory({
-    /** @param {ExamplesTabModel} model */
+const activeAppDisplay = hoistCmp.factory<ExamplesTabModel>({
     render({model}) {
         const {activeAppConfig} = model;
         if (!activeAppConfig) return null;
@@ -52,8 +50,7 @@ const activeAppDisplay = hoistCmp.factory({
 });
 
 
-const appTileBar = hoistCmp.factory(
-    /** @param {ExamplesTabModel} model */
+const appTileBar = hoistCmp.factory<ExamplesTabModel>(
     ({model}) => {
         const {leftPanelModel} = model;
 
@@ -74,7 +71,7 @@ const appTileBar = hoistCmp.factory(
     }
 );
 
-const appTile = hoistCmp.factory(
+const appTile = hoistCmp.factory<ExamplesTabModel>(
     ({app, model}) => {
         const isActive = app === model.activeAppConfig;
         return panel({
@@ -107,8 +104,7 @@ const appTile = hoistCmp.factory(
     }
 );
 
-const sideBar = hoistCmp.factory(
-    /** @param {ExamplesTabModel} model */
+const sideBar = hoistCmp.factory<ExamplesTabModel>(
     ({model}) => {
         return toolbar({
             className: 'tb-examples__app-toolbar',

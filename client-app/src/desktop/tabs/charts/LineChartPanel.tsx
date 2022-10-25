@@ -1,19 +1,18 @@
 import {chart} from '@xh/hoist/cmp/chart';
-import {filler, span} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button/index';
-import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
+import {span} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
 import {wrapper} from '../../common';
-import {OHLCChartModel} from './OHLCChartModel';
+import {LineChartModel} from './LineChartModel';
 
-export const ohlcChartPanel = hoistCmp.factory({
-    model: creates(OHLCChartModel),
+export const lineChartPanel = hoistCmp.factory({
+    model: creates(LineChartModel),
 
-    render({model}) {
+    render() {
         return wrapper({
             description: [
                 <p>
@@ -27,16 +26,16 @@ export const ohlcChartPanel = hoistCmp.factory({
                 </p>
             ],
             item: panel({
-                title: 'Charts › OHLC',
+                title: 'Charts › Line',
                 icon: Icon.chartLine(),
                 width: '80%',
                 height: '60%',
                 mask: 'onLoad',
                 tbar: tbar(),
-                item: chart({aspectRatio: model.aspectRatio})
+                item: chart()
             }),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/charts/OHLCChartPanel.js', notes: 'This example.'},
+                {url: '$TB/client-app/src/desktop/tabs/charts/LineChartPanel.js', notes: 'This example.'},
                 {url: '$HR/cmp/chart/Chart.js', notes: 'Hoist wrapper component for Chart sizing and layout.'},
                 {url: '$HR/cmp/chart/ChartModel.js', notes: 'Hoist model with observable Chart config and series.'},
                 {text: 'Highcharts Docs', url: 'https://api.highcharts.com/highstock/', notes: 'Library API documentation.'}
@@ -45,7 +44,7 @@ export const ohlcChartPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory(({model}) => {
+const tbar = hoistCmp.factory<LineChartModel>(({model}) => {
     return toolbar(
         span('Symbol'),
         select({
@@ -53,28 +52,6 @@ const tbar = hoistCmp.factory(({model}) => {
             options: model.symbols,
             enableFilter: false,
             width: 120
-        }),
-        toolbarSep(),
-        span('Aspect Ratio'),
-        numberInput({
-            width: 50,
-            bind: 'aspectRatio',
-            commitOnChange: true,
-            selectOnFocus: true,
-            min: 0
-        }),
-        filler(),
-        button({
-            text: 'Call chart API',
-            icon: Icon.code(),
-            disabled: !model.chartModel.highchart,
-            onClick: () => {
-                const xExtremes = model.chartModel.highchart.axes[0].getExtremes();
-                XH.alert({
-                    title: 'X-axis extremes - as read from chart API',
-                    message: JSON.stringify(xExtremes)
-                });
-            }
         })
     );
 });

@@ -6,19 +6,20 @@ import {GroupingChooserModel} from '@xh/hoist/desktop/cmp/grouping';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {action, makeObservable} from '@xh/hoist/mobx';
+import {StoreRecord} from '@xh/hoist/data';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
 import {App} from '../../../apps/app';
 
 export class SampleTreeGridModel extends HoistModel {
 
     @managed
-    groupingChooserModel = new GroupingChooserModel({
+    groupingChooserModel: GroupingChooserModel = new GroupingChooserModel({
         persistWith: {localStorageKey: 'sampleTreeGrid'},
         dimensions: [
             {name: 'fund'},
             {name: 'region'},
             {name: 'sector'},
-            {name: 'symbol', isLeafDimension: true},
+            {name: 'symbol'},
             {name: 'trader'}
         ],
         initialValue: ['fund', 'region', 'trader', 'sector', 'symbol'],
@@ -32,9 +33,9 @@ export class SampleTreeGridModel extends HoistModel {
     });
 
     @managed
-    gridModel;
+    gridModel: GridModel;
 
-    panelRef = createRef();
+    panelRef = createRef<HTMLElement>();
 
     get store() {return this.gridModel.store}
 
@@ -62,7 +63,7 @@ export class SampleTreeGridModel extends HoistModel {
         });
     }
 
-    async doLoadAsync({isRefresh, isAutoRefresh}) {
+    override async doLoadAsync({isRefresh, isAutoRefresh}) {
         const {gridModel, groupingChooserModel} = this,
             dims = groupingChooserModel.value;
 
@@ -88,7 +89,7 @@ export class SampleTreeGridModel extends HoistModel {
         await gridModel.preSelectFirstAsync();
     }
 
-    syncDimsToRouter() {
+    private syncDimsToRouter() {
         if (!XH.router.isActive('default.grids.tree')) return;
 
         const {dims} = XH.routerState.params;
@@ -99,7 +100,7 @@ export class SampleTreeGridModel extends HoistModel {
         }
     }
 
-    syncRouterToDims(opts) {
+    private syncRouterToDims(opts?) {
         if (!XH.router.isActive('default.grids.tree')) return;
 
         const {groupingChooserModel} = this,
@@ -108,7 +109,7 @@ export class SampleTreeGridModel extends HoistModel {
         XH.navigate(XH.routerState.name, {dims}, opts);
     }
 
-    createGridModel(includeCheckboxes) {
+    private createGridModel(includeCheckboxes) {
         return new GridModel({
             treeMode: true,
             showSummary: 'bottom',
@@ -137,7 +138,7 @@ export class SampleTreeGridModel extends HoistModel {
     //----------------------------------------------
     // CheckBox support
     //----------------------------------------------
-    createCheckboxTreeColumn() {
+    private createCheckboxTreeColumn() {
         return {
             rendererIsComplex: true,
             renderer: (v, {record}) => {
@@ -155,7 +156,7 @@ export class SampleTreeGridModel extends HoistModel {
     }
 
     @action
-    toggleNode(rec) {
+    private toggleNode(rec: StoreRecord) {
         const {store} = this,
             isChecked = !rec.data.isChecked,
             updates = [
@@ -167,7 +168,7 @@ export class SampleTreeGridModel extends HoistModel {
     }
 }
 
-function calcAggState(rec) {
+function calcAggState(rec: StoreRecord) {
     const {allChildren} = rec;
     if (allChildren.every(it => it.data.isChecked === true)) return true;
     if (allChildren.every(it => it.data.isChecked === false)) return false;

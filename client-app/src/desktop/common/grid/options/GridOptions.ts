@@ -7,7 +7,7 @@ import {Icon} from '@xh/hoist/icon';
 import {sample} from 'lodash';
 import {agGridOptions} from './AgGridOptions';
 
-export const gridOptions = hoistCmp.factory({
+export const gridOptions = hoistCmp.factory<GridModel>({
     model: uses(GridModel),
 
     render({model}) {

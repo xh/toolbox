@@ -6,7 +6,7 @@ import {toolbarFormPanel} from './ToolbarFormPanel';
 
 export const formsTab = hoistCmp.factory(
     () => tabContainer({
-        model: {
+        modelConfig: {
             route: 'default.forms',
             switcher: {orientation: 'left'},
             tabs: [

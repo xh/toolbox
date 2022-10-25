@@ -48,7 +48,7 @@ export class AppModel extends HoistAppModel {
         ]
     });
 
-    static async preAuthAsync() {
+    static override async preAuthAsync() {
         await initServicesAsync(OauthService, this);
     }
 
@@ -201,7 +201,7 @@ export class AppModel extends HoistAppModel {
         ];
     }
 
-    getAboutDialogItems() {
+    override getAboutDialogItems() {
         const lastGitHubCommit = fmtDateTimeSec(this.gitHubService.commitHistories.toolbox?.lastCommitTimestamp);
         return [
             ...super.getAboutDialogItems(),

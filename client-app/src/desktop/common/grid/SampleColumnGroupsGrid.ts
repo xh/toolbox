@@ -7,6 +7,7 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
+import {StoreRecord} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -64,10 +65,10 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
 
 class SampleColumnGroupsGridModel extends HoistModel {
 
-    @managed gridModel;
-    @bindable inMillions = false;
+    @managed gridModel: GridModel;
+    @bindable inMillions: boolean = false;
 
-    panelRef = createRef();
+    panelRef = createRef<HTMLElement>();
 
     get groupRows() {
         return !isEmpty(this.gridModel?.groupBy);
@@ -93,7 +94,7 @@ class SampleColumnGroupsGridModel extends HoistModel {
     //------------------------
     // Implementation
     //------------------------
-    createGridModel() {
+    private createGridModel() {
         const millionsAwareCol = {
             headerName: () => 'Gross' + (this.inMillions ? ' (m)' : ''),
             rendererIsComplex: true,
@@ -197,22 +198,17 @@ class SampleColumnGroupsGridModel extends HoistModel {
         });
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const sales = await XH.fetchJson({url: 'sales'});
         this.gridModel.loadData(sales);
     }
 
-    showRecToast(rec) {
-        const {firstName, lastName, actualUnitsSold} = rec.data;
+    private showRecToast(rec: StoreRecord) {
+        const {firstName, actualUnitsSold} = rec.data;
         XH.toast({
-            title: `${firstName} ${lastName}`,
             message: `You asked to see details for ${firstName}. They sold ${actualUnitsSold} last year.`,
             intent: 'primary',
             containerRef: this.panelRef.current
         });
-    }
-
-    setGroupRows(groupRows) {
-        this.gridModel.setGroupBy(groupRows ? 'state' : null);
     }
 }

@@ -5,16 +5,16 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {gridOptions} from './GridOptions';
 
-export const gridOptionsPanel = hoistCmp.factory({
+export const gridOptionsPanel = hoistCmp.factory<GridModel>({
     model: uses(GridModel),
 
-    render({model, extraItems}) {
+    render({extraItems}) {
         return panel({
             title: 'Display Options',
             icon: Icon.settings(),
             className: 'tbox-display-opts',
             compactHeader: true,
-            model: {side: 'right', defaultSize: 250, resizable: false},
+            modelConfig: {side: 'right', defaultSize: 250, resizable: false},
             item: div({
                 className: 'tbox-display-opts__inner',
                 items: [

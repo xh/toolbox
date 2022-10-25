@@ -6,6 +6,7 @@ import {formField} from '@xh/hoist/desktop/cmp/form';
 import {checkbox, dateInput, numberInput, select, switchInput, textArea, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
+import {SubformsFieldModel} from '@xh/hoist/cmp/form';
 import {Icon} from '@xh/hoist/icon';
 import {isNil} from 'lodash';
 import React from 'react';
@@ -49,7 +50,7 @@ export const formPanel = hoistCmp.factory({
     }
 });
 
-const formContent = hoistCmp.factory(
+const formContent = hoistCmp.factory<FormPanelModel>(
     ({model}) => panel({
         flex: 1,
         item: form({
@@ -159,7 +160,7 @@ const reasonForLeaving = hoistCmp.factory(
     })
 );
 
-const managerAndYearsExperience = hoistCmp.factory(
+const managerAndYearsExperience = hoistCmp.factory<FormPanelModel>(
     ({model}) => hbox({
         items: [
             formField({
@@ -183,11 +184,10 @@ const notes = hoistCmp.factory(
     })
 );
 
-const references = hoistCmp.factory(
-    /** @param {FormPanelModel} model */
+const references = hoistCmp.factory<FormPanelModel>(
     ({model}) => {
         const {formModel} = model,
-            {references} = formModel.fields,
+            references = formModel.fields.references as SubformsFieldModel,
             disableButtons = formModel.disabled || formModel.readonly,
             rows = references.value.map(
                 refModel => form({
@@ -243,7 +243,7 @@ const references = hoistCmp.factory(
     }
 );
 
-const displayOptions = hoistCmp.factory(
+const displayOptions = hoistCmp.factory<FormPanelModel>(
     ({model}) => {
         const {formModel} = model;
         return panel({
@@ -251,7 +251,7 @@ const displayOptions = hoistCmp.factory(
             className: 'tbox-display-opts',
             icon: Icon.settings(),
             compactHeader: true,
-            model: {side: 'right', defaultSize: 220, resizable: false},
+            modelConfig: {side: 'right', defaultSize: 220, resizable: false},
             item: div({
                 className: 'tbox-display-opts__inner',
                 items: [
@@ -283,7 +283,7 @@ const displayOptions = hoistCmp.factory(
     }
 );
 
-const bbar = hoistCmp.factory(
+const bbar = hoistCmp.factory<FormPanelModel>(
     ({model}) => toolbar(
         button({
             text: 'Reset',
