@@ -8,8 +8,7 @@ import {differenceBy} from 'lodash';
  */
 export class TaskService extends HoistService {
 
-    /** @returns {Promise<Task[]>} */
-    async getAsync() {
+    async getAsync(): Promise<Task[]> {
         return XH.getPref('todoTasks').map(it => {
             const dueDate = LocalDate.get(it.dueDate),
                 complete = it.complete;
@@ -27,42 +26,30 @@ export class TaskService extends HoistService {
                 dueDateGroup = 'Upcoming';
             }
 
-            return {...it, dueDate, dueDateGroup};
+            return {...it, dueDate, dueDateGroup} as Task;
         });
     }
 
-    /**
-     * @param {Task} task
-     */
-    async addAsync(task) {
+    async addAsync(task: Task) {
         let curr = await this.getAsync(),
             updated = [...curr, task];
         this.saveToPreference(updated);
     }
 
-    /**
-     * @param {Task[]} tasks
-     */
-    async editAsync(tasks) {
+    async editAsync(tasks: Task[]) {
         let curr = await this.getAsync(),
             updated = differenceBy(curr, tasks, 'id');
         updated = [...updated, ...tasks];
         this.saveToPreference(updated);
     }
 
-    /**
-     * @param {Task[]} tasks
-     */
-    async deleteAsync(tasks) {
+    async deleteAsync(tasks: Task[]) {
         let curr = await this.getAsync(),
             updated = differenceBy(curr, tasks, 'id');
         this.saveToPreference(updated);
     }
 
-    /**
-     * @param {Task[]} tasks
-     */
-    async toggleCompleteAsync(tasks) {
+    async toggleCompleteAsync(tasks: Task[]) {
         tasks = tasks.map(task => ({...task, complete: !task.complete}));
         return this.editAsync(tasks);
     }
@@ -74,18 +61,17 @@ export class TaskService extends HoistService {
     //------------------
     // Implementation
     //------------------
-    saveToPreference(tasks) {
+    private saveToPreference(tasks) {
         XH.setPref('todoTasks',
             tasks.map(it => ({...it, dueDate: it.dueDate?.toString()}))
         );
     }
 }
 
-/**
- * @typedef {Object} Task
- * @property {number} id
- * @property {string} description
- * @property {boolean} complete
- * @property {LocalDate} dueDate
- * @property {string} dueDateGroup
- */
+interface Task {
+    id: number;
+    description?: string;
+    complete?: boolean;
+    dueDate?: LocalDate;
+    dueDateGroup?: string
+}
