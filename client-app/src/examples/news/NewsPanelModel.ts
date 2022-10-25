@@ -11,7 +11,7 @@ export class NewsPanelModel extends HoistModel {
     SEARCH_FIELDS = ['title', 'text'];
 
     @managed
-    viewModel: DataViewModel = new DataViewModel({
+    viewModel = new DataViewModel({
         sortBy: 'published|desc',
         store: {
             fields: [

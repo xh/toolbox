@@ -20,10 +20,10 @@ export class RecallsPanelModel extends HoistModel {
     groupBy: string = null;
 
     @managed
-    detailsPanelModel: DetailsPanelModel = new DetailsPanelModel();
+    detailsPanelModel = new DetailsPanelModel();
 
     @managed
-    gridModel: GridModel = new GridModel({
+    gridModel = new GridModel({
         store: {
             processRawData: this.processRecord,
             fields: [
