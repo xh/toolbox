@@ -1,16 +1,17 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
-import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
+import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
+import {hspacer} from '@xh/hoist/cmp/layout';
+import {fmtMillions} from '@xh/hoist/format';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
 import {App} from '../../../apps/app';
 
-
-export class GridTreeMapModel extends HoistModel {
+export class SplitTreeMapPanelModel extends HoistModel {
 
     @managed
-    groupingChooserModel = new GroupingChooserModel({
-        dimensions: ['region', 'sector', {name: 'symbol', isLeafDimension: true}],
+    groupingChooserModel: GroupingChooserModel = new GroupingChooserModel({
+        dimensions: ['region', 'sector', 'symbol'],
         initialValue: ['sector', 'symbol'],
         initialFavorites: [
             ['sector', 'symbol'],
@@ -20,13 +21,13 @@ export class GridTreeMapModel extends HoistModel {
             ['symbol']
         ],
         persistWith: {
-            localStorageKey: 'gridTreeMapDims',
+            localStorageKey: 'splitTreeMapDims',
             persistFavorites: true
         }
     });
 
     @managed
-    gridModel = new GridModel({
+    gridModel: GridModel = new GridModel({
         treeMode: true,
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
@@ -50,13 +51,24 @@ export class GridTreeMapModel extends HoistModel {
     });
 
     @managed
-    treeMapModel = new TreeMapModel({
+    splitTreeMapModel: SplitTreeMapModel = new SplitTreeMapModel({
         gridModel: this.gridModel,
         maxHeat: 1,
         colorMode: 'linear',
         labelField: 'name',
         valueField: 'pnl',
-        heatField: 'pnlMktVal'
+        heatField: 'pnlMktVal',
+        mapTitleFn: (model, isPrimary) => {
+            return [
+                isPrimary ? 'Profit:' : 'Loss:',
+                hspacer(5),
+                fmtMillions(model.total, {
+                    prefix: '$',
+                    precision: 2,
+                    label: true
+                })
+            ];
+        }
     });
 
     constructor() {
@@ -67,7 +79,7 @@ export class GridTreeMapModel extends HoistModel {
         });
     }
 
-    async doLoadAsync() {
+    override async doLoadAsync() {
         const dims = this.groupingChooserModel.value;
         const data = await App.portfolioService.getPositionsAsync(dims);
         this.gridModel.loadData(data);

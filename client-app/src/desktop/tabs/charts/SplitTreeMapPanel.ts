@@ -3,14 +3,14 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {grid} from '@xh/hoist/cmp/grid';
-import {treeMap} from '@xh/hoist/desktop/cmp/treemap';
+import {splitTreeMap} from '@xh/hoist/desktop/cmp/treemap';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {select} from '@xh/hoist/desktop/cmp/input';
 
-import {GridTreeMapModel} from './GridTreeMapModel';
+import {SplitTreeMapPanelModel} from './SplitTreeMapPanelModel';
 
-export const gridTreeMapPanel = hoistCmp.factory({
-    model: creates(GridTreeMapModel),
+export const splitTreeMapPanel = hoistCmp.factory({
+    model: creates(SplitTreeMapPanelModel),
 
     render() {
         return panel({
@@ -18,22 +18,34 @@ export const gridTreeMapPanel = hoistCmp.factory({
             tbar: tbar(),
             items: hframe(
                 panel({
-                    model: {defaultSize: 480, side: 'left'},
+                    modelConfig: {defaultSize: 480, side: 'left'},
                     item: grid()
                 }),
-                treeMap()
+                splitTreeMap()
             )
         });
     }
 });
 
-const tbar = hoistCmp.factory(
+const tbar = hoistCmp.factory<SplitTreeMapPanelModel>(
     ({model}) => toolbar(
         groupingChooser({width: 200}),
         filler(),
+        span('Orientation'),
+        select({
+            model: model.splitTreeMapModel,
+            bind: 'orientation',
+            width: 120,
+            enableFilter: false,
+            options: [
+                {label: 'Horizontal', value: 'horizontal'},
+                {label: 'Vertical', value: 'vertical'}
+            ]
+        }),
+        '-',
         span('Max Heat'),
         select({
-            model: model.treeMapModel,
+            model: model.splitTreeMapModel,
             bind: 'maxHeat',
             width: 120,
             enableFilter: false,
@@ -47,7 +59,7 @@ const tbar = hoistCmp.factory(
         '-',
         span('Color Mode'),
         select({
-            model: model.treeMapModel,
+            model: model.splitTreeMapModel,
             bind: 'colorMode',
             width: 120,
             enableFilter: false,
@@ -60,7 +72,7 @@ const tbar = hoistCmp.factory(
         '-',
         span('Theme'),
         select({
-            model: model.treeMapModel,
+            model: model.splitTreeMapModel,
             bind: 'theme',
             width: 120,
             enableFilter: false,
@@ -73,7 +85,7 @@ const tbar = hoistCmp.factory(
         '-',
         span('Algorithm'),
         select({
-            model: model.treeMapModel,
+            model: model.splitTreeMapModel,
             bind: 'algorithm',
             width: 120,
             enableFilter: false,

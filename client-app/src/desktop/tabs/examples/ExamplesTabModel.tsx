@@ -1,12 +1,13 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import React from 'react';
 
 export class ExamplesTabModel extends HoistModel {
 
     @managed
-    leftPanelModel = new PanelModel(
+    leftPanelModel: PanelModel = new PanelModel(
         {
             defaultSize: 300,
             collapsible: true,
@@ -15,7 +16,8 @@ export class ExamplesTabModel extends HoistModel {
         }
     );
 
-    @bindable activeApp = 'Portfolio';
+    @observable activeApp: string = 'Portfolio';
+    @action setActiveApp(v: string) {this.activeApp = v}
 
     get activeAppConfig() {
         return this.examples.find(it => it.title === this.activeApp);

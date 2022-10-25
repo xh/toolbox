@@ -1,6 +1,6 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {HoistModel, managed} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
 import {App} from '../../../apps/app';
@@ -8,11 +8,11 @@ import {App} from '../../../apps/app';
 
 export class LineChartModel extends HoistModel {
 
-    @bindable currentSymbol = '';
-    @bindable.ref symbols = [];
+    @observable currentSymbol: string = '';
+    @observable.ref symbols: string[] = [];
 
     @managed
-    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
+    chartModel: ChartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
 
     constructor() {
         super();
@@ -24,15 +24,14 @@ export class LineChartModel extends HoistModel {
         });
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         if (isEmpty(this.symbols)) {
             let symbols = await App.portfolioService.getSymbolsAsync({loadSpec});
-            symbols = symbols.slice(0, 5);
-            this.setSymbols(symbols);
+            runInAction(() => this.symbols = symbols.slice(0, 5));
         }
 
         if (!this.currentSymbol) {
-            this.setCurrentSymbol(this.symbols[0]);
+            runInAction(() => this.currentSymbol = this.symbols[0]);
         }
 
         let series = await App.portfolioService.getLineChartSeriesAsync({
@@ -49,7 +48,7 @@ export class LineChartModel extends HoistModel {
         this.chartModel.setSeries(series);
     }
 
-    getChartModelCfg() {
+    private getChartModelCfg() {
         const fillColor = Highcharts.getOptions().colors[0];
         return {
             chart: {zoomType: 'x'},

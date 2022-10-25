@@ -66,7 +66,7 @@ export const inputsPanel = hoistCmp.factory({
 });
 
 
-const formContents = hoistCmp.factory(
+const formContents = hoistCmp.factory<InputsPanelModel>(
     ({model}) => form({
         fieldDefaults: {
             commitOnChange: model.commitOnChange
@@ -310,7 +310,7 @@ const formContents = hoistCmp.factory(
     })
 );
 
-const row = hoistCmp.factory({
+const row = hoistCmp.factory<FormModel>({
     model: uses(FormModel),
 
     render({model, label, field, info, readonlyRenderer, fmtVal, layout = {}, children}) {
@@ -359,7 +359,7 @@ const customerOption = hoistCmp.factory(
     })
 );
 
-const bbar = hoistCmp.factory(
+const bbar = hoistCmp.factory<InputsPanelModel>(
     ({model}) => {
         const {formModel} = model;
 
@@ -408,7 +408,7 @@ const fieldDisplay = hoistCmp.factory(
 );
 
 
-const currFocused = hoistCmp.factory(
+const currFocused = hoistCmp.factory<InputsPanelModel>(
     ({model}) => {
         const {focusedField} = model.formModel;
         return span(
@@ -418,7 +418,7 @@ const currFocused = hoistCmp.factory(
     }
 );
 
-const setFocusMenu = hoistCmp.factory(
+const setFocusMenu = hoistCmp.factory<InputsPanelModel>(
     ({model}) => {
         const fields = model.formModel.fieldList,
             menuItems = fields.map(f => {

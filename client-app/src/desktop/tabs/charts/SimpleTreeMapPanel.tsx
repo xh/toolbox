@@ -46,7 +46,7 @@ export const simpleTreeMapPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory(
+const tbar = hoistCmp.factory<SimpleTreeMapModel>(
     ({model}) => toolbar(
         span('Max Heat'),
         select({

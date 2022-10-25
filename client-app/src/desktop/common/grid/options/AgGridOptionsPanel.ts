@@ -6,7 +6,7 @@ import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {agGridOptions} from './AgGridOptions';
 
-export const agGridOptionsPanel = hoistCmp.factory({
+export const agGridOptionsPanel = hoistCmp.factory<AgGridModel>({
     model: uses(AgGridModel),
 
     render({model}) {
@@ -15,7 +15,7 @@ export const agGridOptionsPanel = hoistCmp.factory({
             icon: Icon.settings(),
             className: 'tbox-display-opts',
             compactHeader: true,
-            model: {side: 'right', defaultSize: 250, resizable: false},
+            modelConfig: {side: 'right', defaultSize: 250, resizable: false},
             item: div({
                 className: 'tbox-display-opts__inner',
                 item: [

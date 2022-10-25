@@ -7,7 +7,7 @@ import {fragment, label, vspacer} from '@xh/hoist/cmp/layout';
 export const agGridOptions = hoistCmp.factory({
     model: uses(AgGridModel),
 
-    render({model}) {
+    render() {
         return fragment({
             items: [
                 label('Sizing Mode'),

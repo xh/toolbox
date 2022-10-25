@@ -6,7 +6,7 @@ import {App} from '../../../apps/app';
 export class SimpleTreeMapModel extends HoistModel {
 
     @managed
-    store = new Store({
+    store: Store = new Store({
         processRawData: (r) => {
             return {
                 pnlMktVal: r.pnl / Math.abs(r.mktVal),
@@ -21,7 +21,7 @@ export class SimpleTreeMapModel extends HoistModel {
     });
 
     @managed
-    treeMapModel = new TreeMapModel({
+    treeMapModel: TreeMapModel = new TreeMapModel({
         store: this.store,
         maxHeat: 1,
         colorMode: 'linear',
@@ -30,7 +30,7 @@ export class SimpleTreeMapModel extends HoistModel {
         heatField: 'pnlMktVal'
     });
 
-    async doLoadAsync() {
+    override async doLoadAsync() {
         const data = await App.portfolioService.getPositionsAsync(['symbol']);
         this.store.loadData(data);
     }

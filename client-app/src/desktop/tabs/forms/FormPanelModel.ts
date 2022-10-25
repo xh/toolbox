@@ -18,15 +18,15 @@ import {filter, isEmpty, isNil} from 'lodash';
 export class FormPanelModel extends HoistModel {
 
     @managed
-    validateTask = TaskObserver.trackLast();
+    validateTask: TaskObserver = TaskObserver.trackLast();
 
     // For meta controls below example.
-    @bindable inline = false;
-    @bindable minimal = false;
-    @bindable commitOnChange = false;
+    @bindable inline: boolean = false;
+    @bindable minimal: boolean = false;
+    @bindable commitOnChange: boolean = false;
 
     @managed
-    formModel = new FormModel({
+    formModel: FormModel = new FormModel({
         fields: [
             {
                 name: 'firstName',

@@ -6,6 +6,7 @@ import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
 import {fmtDate, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {StoreRecord} from '@xh/hoist/data';
 import './SampleGrid.scss';
 import {
     activeCol,
@@ -20,9 +21,9 @@ import {
 
 export class SampleGridModel extends HoistModel {
 
-    @observable groupBy = false;
+    @observable groupBy: string = null;
 
-    panelRef = createRef();
+    panelRef = createRef<HTMLElement>();
 
     viewDetailsAction = {
         text: 'View Details',
@@ -83,7 +84,7 @@ export class SampleGridModel extends HoistModel {
     };
 
     @managed
-    gridModel = new GridModel({
+    gridModel: GridModel = new GridModel({
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
@@ -191,7 +192,7 @@ export class SampleGridModel extends HoistModel {
         makeObservable(this);
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {trades} = await XH.fetchJson({url: 'trade'}),
             {gridModel} = this;
 
@@ -199,7 +200,7 @@ export class SampleGridModel extends HoistModel {
         await gridModel.preSelectFirstAsync();
     }
 
-    showInfoToast(rec) {
+    private showInfoToast(rec: StoreRecord) {
         XH.toast({
             message: fragment(
                 `You asked for ${rec.data.company} details.`, br(),
@@ -211,7 +212,7 @@ export class SampleGridModel extends HoistModel {
         });
     }
 
-    showTerminateToast(rec, terminationMethod = '') {
+    private showTerminateToast(rec: StoreRecord, terminationMethod: string = '') {
         if (terminationMethod) {
             terminationMethod = ' via ' + terminationMethod;
         }
@@ -225,7 +226,7 @@ export class SampleGridModel extends HoistModel {
     }
 
     @action
-    setGroupBy(groupBy) {
+    private setGroupBy(groupBy: string) {
         this.groupBy = groupBy;
 
         // Always select first when regrouping.
@@ -234,9 +235,9 @@ export class SampleGridModel extends HoistModel {
         this.gridModel.preSelectFirstAsync();
     }
 
-    restoreDefaultsFn() {
+    private restoreDefaultsFn() {
         // Reset defaults to Display Options panel
-        this.setGroupBy(false);
+        this.setGroupBy(null);
         this.gridModel.setSizingMode(XH.sizingMode);
         this.gridModel.setHideHeaders(false);
         this.gridModel.setStripeRows(true);
