@@ -27,7 +27,7 @@ export const todoPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory(
+const tbar = hoistCmp.factory<TodoPanelModel>(
     ({model}) => {
         const {selModel} = model.gridModel,
             {addAction, editAction, deleteAction, toggleCompleteAction} = model;
@@ -46,7 +46,7 @@ const tbar = hoistCmp.factory(
     }
 );
 
-const bbar = hoistCmp.factory(
+const bbar = hoistCmp.factory<TodoPanelModel>(
     ({model}) => toolbar(
         switchInput({
             bind: 'showGroups',

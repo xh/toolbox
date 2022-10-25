@@ -11,7 +11,7 @@ import {every, isEmpty} from 'lodash';
 import {createRef} from 'react';
 import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
-import {AM} from './../../apps/todo';
+import {App} from './../../apps/todo';
 
 export class TodoPanelModel extends HoistModel {
 
@@ -110,13 +110,13 @@ export class TodoPanelModel extends HoistModel {
     }
 
     async addTaskAsync(task) {
-        await AM.taskService.addAsync(task);
+        await App.taskService.addAsync(task);
         await this.refreshAsync();
         this.info(`Task added: '${task.description}'`);
     }
 
     async editTaskAsync(task) {
-        await AM.taskService.editAsync([task]);
+        await App.taskService.editAsync([task]);
         await this.refreshAsync();
         this.info(`Task edited: '${task.description}'`);
     }
@@ -134,7 +134,7 @@ export class TodoPanelModel extends HoistModel {
 
         if (!confirmed) return;
 
-        await AM.taskService.deleteAsync(tasks);
+        await App.taskService.deleteAsync(tasks);
         await this.refreshAsync();
 
         const label = count === 1 ? `Task removed: '${description}'` : `${count} tasks removed`;
@@ -147,7 +147,7 @@ export class TodoPanelModel extends HoistModel {
         const firstTask = tasks[0],
             isCompleting = !firstTask.complete;
 
-        await AM.taskService.toggleCompleteAsync(tasks);
+        await App.taskService.toggleCompleteAsync(tasks);
         await this.refreshAsync();
 
         if (isCompleting) {
@@ -161,7 +161,7 @@ export class TodoPanelModel extends HoistModel {
     }
 
     async resetToDefaultTasksAsync() {
-        await AM.taskService.resetToDefaultTasksAsync();
+        await App.taskService.resetToDefaultTasksAsync();
         await this.refreshAsync();
     }
 
@@ -169,7 +169,7 @@ export class TodoPanelModel extends HoistModel {
     // Implementation
     //------------------------
     override async doLoadAsync(loadSpec) {
-        const tasks = await AM.taskService.getAsync();
+        const tasks = await App.taskService.getAsync();
         this.gridModel.loadData(tasks);
     }
 
@@ -264,7 +264,7 @@ export class TodoPanelModel extends HoistModel {
                 distantFmt: 'MMM DD YYYY'
             });
 
-        return overdue ? span({class: 'xh-intent-warning', item: dateStr}) : dateStr;
+        return overdue ? span({className: 'xh-intent-warning', item: dateStr}) : dateStr;
     }
 }
 
