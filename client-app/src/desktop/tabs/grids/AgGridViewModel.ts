@@ -1,12 +1,12 @@
 import {HoistModel, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {App} from '../../../apps/app';
 
 export class AgGridViewModel extends HoistModel {
 
-    @bindable.ref data = [];
+    @observable.ref data = [];
 
     columnDefs = [
         {
@@ -83,8 +83,8 @@ export class AgGridViewModel extends HoistModel {
         });
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const data = await App.portfolioService.getRawPositionsAsync({loadSpec});
-        this.setData(data);
+        runInAction(() => this.data = data);
     }
 }

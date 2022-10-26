@@ -8,6 +8,7 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
+import React from 'react';
 
 import {ColumnFilteringPanelModel} from './ColumnFilteringPanelModel';
 import {wrapper} from '../../common';
@@ -53,31 +54,32 @@ export const columnFilteringPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory(() => {
-    return toolbar(
+const tbar = hoistCmp.factory(
+    () => toolbar(
         filterChooser({flex: 1, enableClear: true}),
         storeFilterField()
-    );
-});
+    )
+);
 
-const bbar = hoistCmp.factory(({model}) => {
-    const {filterModel} = model.gridModel;
-    return toolbar(
-        button({
-            icon: Icon.filter(),
-            text: 'View Grid Filters',
-            intent: 'primary',
-            onClick: () => filterModel.openDialog()
-        }),
-        '-',
-        switchInput({
-            model: filterModel,
-            bind: 'commitOnChange',
-            label: 'Commit on change'
-        }),
-        filler(),
-        gridCountLabel(),
-        colChooserButton(),
-        exportButton()
-    );
-});
+const bbar = hoistCmp.factory<ColumnFilteringPanelModel>(
+    ({model}) => {
+        const {filterModel} = model.gridModel;
+        return toolbar(
+            button({
+                icon: Icon.filter(),
+                text: 'View Grid Filters',
+                intent: 'primary',
+                onClick: () => filterModel.openDialog()
+            }),
+            '-',
+            switchInput({
+                model: filterModel,
+                bind: 'commitOnChange',
+                label: 'Commit on change'
+            }),
+            filler(),
+            gridCountLabel(),
+            colChooserButton(),
+            exportButton()
+        );
+    });

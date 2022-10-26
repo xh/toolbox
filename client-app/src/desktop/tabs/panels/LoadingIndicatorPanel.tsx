@@ -1,5 +1,5 @@
 import React from 'react';
-import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, Corner} from '@xh/hoist/core';
 import {wait} from '@xh/hoist/promise';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
@@ -85,7 +85,7 @@ class LoadingIndicatorPanelModel extends HoistModel {
 
     @bindable seconds = 3;
     @bindable message = '';
-    @bindable corner = 'br';
+    @bindable corner: Corner = 'br';
     @bindable spinner = true;
 
     @managed sampleGridModel = new SampleGridModel();
@@ -95,7 +95,7 @@ class LoadingIndicatorPanelModel extends HoistModel {
         makeObservable(this);
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {loadModel, message, seconds} = this,
             interval = (seconds / 3) * SECONDS;
         loadModel.setMessage(message);

@@ -3,7 +3,7 @@ import {hoistCmp} from '@xh/hoist/core';
 import {box, hbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 
 export const hboxContainerPanel = hoistCmp.factory(
     () => wrapper({

@@ -8,7 +8,7 @@ import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 
 export const panelSizingPanel = hoistCmp.factory({
     model: creates(() => PanelSizingModel),
@@ -39,7 +39,7 @@ export const panelSizingPanel = hoistCmp.factory({
             ],
             item: panel({
                 title: 'Panels › Panel Sizing',
-                model: {modalSupport: true, collapsible: false, resizable: false},
+                modelConfig: {modalSupport: true, collapsible: false, resizable: false},
                 icon: Icon.window(),
                 height: '60vh',
                 width: '80%',

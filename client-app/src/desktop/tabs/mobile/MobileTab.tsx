@@ -7,8 +7,11 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
 import {wrapper} from '../../common';
+// @ts-ignore
 import mobileImageForm from './MobileImageForm.png';
+// @ts-ignore
 import mobileImageGrid from './MobileImageGrid.png';
+// @ts-ignore
 import mobileImageHome from './MobileImageHome.png';
 import './MobileTab.scss';
 

@@ -1,8 +1,8 @@
 import {form, FormModel} from '@xh/hoist/cmp/form';
 import {tileFrame} from '@xh/hoist/cmp/layout';
-import {div, hframe} from '@xh/hoist/cmp/layout/index';
+import {div, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button/index';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {numberInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -116,13 +116,13 @@ class TileFrameContainerPanelModel extends HoistModel {
     @managed
     formModel = new FormModel({
         fields: [
-            {name: 'tileCount', label: 'Tiles', initialValue: 5},
-            {name: 'desiredRatio', label: 'desiredRatio', initialValue: 1},
-            {name: 'spacing', label: 'spacing', initialValue: 10},
-            {name: 'minTileWidth', label: 'minTileWidth'},
-            {name: 'maxTileWidth', label: 'maxTileWidth'},
-            {name: 'minTileHeight', label: 'minTileHeight'},
-            {name: 'maxTileHeight', label: 'maxTileHeight'}
+            {name: 'tileCount', displayName: 'Tiles', initialValue: 5},
+            {name: 'desiredRatio', displayName: 'desiredRatio', initialValue: 1},
+            {name: 'spacing', displayName: 'spacing', initialValue: 10},
+            {name: 'minTileWidth', displayName: 'minTileWidth'},
+            {name: 'maxTileWidth', displayName: 'maxTileWidth'},
+            {name: 'minTileHeight', displayName: 'minTileHeight'},
+            {name: 'maxTileHeight', displayName: 'maxTileHeight'}
         ]
     });
 

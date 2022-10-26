@@ -2,7 +2,7 @@ import React from 'react';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {div, filler, p} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';

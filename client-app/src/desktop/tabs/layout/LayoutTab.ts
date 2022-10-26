@@ -13,7 +13,7 @@ import {vboxContainerPanel} from './VBoxContainerPanel';
 
 export const layoutTab = hoistCmp.factory(
     () => tabContainer({
-        model: {
+        modelConfig: {
             route: 'default.layout',
             switcher: {orientation: 'left'},
             tabs: [

@@ -49,7 +49,7 @@ export const dashContainerPanel = hoistCmp.factory({
     }
 });
 
-const bbar = hoistCmp.factory(
+const bbar = hoistCmp.factory<DashContainerPanelModel>(
     ({model}) => toolbar(
         switchInput({
             label: 'Render Dashboard',

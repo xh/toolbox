@@ -13,7 +13,7 @@ import {ToolbarPanelModel} from './ToolbarPanelModel';
 export const toolbarPanel = hoistCmp.factory({
     model: creates(ToolbarPanelModel),
 
-    render({model}) {
+    render() {
         return wrapper({
             description: `
                 Toolbars (in case you have never seen one) are horizontal or vertical containers 
@@ -41,7 +41,7 @@ export const toolbarPanel = hoistCmp.factory({
     }
 });
 
-const topBar = hoistCmp.factory(
+const topBar = hoistCmp.factory<ToolbarPanelModel>(
     ({model}) => toolbar({
         compact: model.compact,
         enableOverflowMenu: true,
@@ -98,7 +98,7 @@ const topBar = hoistCmp.factory(
     })
 );
 
-const leftBar = hoistCmp.factory(
+const leftBar = hoistCmp.factory<ToolbarPanelModel>(
     ({model}) => toolbar({
         compact: model.compact,
         vertical: true,
@@ -116,7 +116,7 @@ const leftBar = hoistCmp.factory(
     })
 );
 
-const rightBar = hoistCmp.factory(
+const rightBar = hoistCmp.factory<ToolbarPanelModel>(
     ({model}) => toolbar({
         compact: model.compact,
         vertical: true,
@@ -126,7 +126,7 @@ const rightBar = hoistCmp.factory(
     })
 );
 
-const bottomBar = hoistCmp.factory(
+const bottomBar = hoistCmp.factory<ToolbarPanelModel>(
     ({model}) => toolbar({
         compact: model.compact,
         items: [

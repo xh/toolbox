@@ -6,8 +6,8 @@ import {activeCol, cityCol, companyCol, profitLossCol, tradeDateCol, tradeVolume
 
 export class ColumnFilteringPanelModel extends HoistModel {
 
-    @managed gridModel;
-    @managed filterChooserModel;
+    @managed gridModel: GridModel;
+    @managed filterChooserModel: FilterChooserModel;
 
     constructor() {
         super();
@@ -15,14 +15,14 @@ export class ColumnFilteringPanelModel extends HoistModel {
         this.filterChooserModel = this.createFilterChooserModel();
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {trades} = await XH.fetchJson({url: 'trade'}),
             {gridModel} = this;
 
         gridModel.loadData(trades);
     }
 
-    createGridModel() {
+    private createGridModel() {
         return new GridModel({
             showSummary: 'bottom',
             selModel: {mode: 'multiple'},
@@ -53,7 +53,7 @@ export class ColumnFilteringPanelModel extends HoistModel {
         });
     }
 
-    createFilterChooserModel() {
+    private createFilterChooserModel() {
         const {store} = this.gridModel;
         return new FilterChooserModel({
             bind: store,

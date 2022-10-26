@@ -5,7 +5,7 @@ import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
 import {boolCheckCol, ExcelFormat, numberCol} from '@xh/hoist/cmp/grid';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 import {numberInput, switchInput, textArea} from '@xh/hoist/desktop/cmp/input';
 
 export const restGridPanel = hoistCmp.factory({

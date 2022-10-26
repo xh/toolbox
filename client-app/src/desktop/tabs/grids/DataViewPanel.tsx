@@ -6,7 +6,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {dataView, DataViewModel} from '@xh/hoist/cmp/dataview';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 import {dataViewItem} from './DataViewItem';
 import {shuffle, take} from 'lodash';
 
@@ -61,7 +61,7 @@ class DataViewPanelModel extends HoistModel {
         stripeRows: true
     });
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {dataViewModel} = this,
             allCustomers = await XH.fetchJson({url: 'customer'}),
             customers = take(shuffle(allCustomers), 100);
