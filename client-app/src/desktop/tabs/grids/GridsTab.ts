@@ -13,7 +13,7 @@ import './GridsTab.scss';
 
 export const gridsTab = hoistCmp.factory(
     () => tabContainer({
-        model: {
+        modelConfig: {
             route: 'default.grids',
             tabs: [
                 {id: 'standard', content: standardGridPanel},

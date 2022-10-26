@@ -52,7 +52,7 @@ const rangeSelector = hoistCmp.factory(
 class ChartWidgetModel extends LineChartModel {
 
     @bindable range = 30;
-    @lookup(DashViewModel) dashViewModel;
+    @lookup(DashViewModel) dashViewModel: DashViewModel;
     @managed panelModel = new PanelModel({modalSupport: true, showModalToggleButton: false, collapsible: false, resizable: false});
 
     constructor() {
@@ -70,7 +70,7 @@ class ChartWidgetModel extends LineChartModel {
         });
     }
 
-    onLinked() {
+    override onLinked() {
         const {dashViewModel, panelModel} = this;
 
         dashViewModel.setExtraMenuItems([

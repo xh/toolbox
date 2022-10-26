@@ -28,10 +28,10 @@ export class InlineEditingPanelModel extends HoistModel {
 
     @managed
     @observable.ref
-    gridModel;
+    gridModel: GridModel;
 
     @managed
-    store;
+    store: Store;
 
     @bindable
     clicksToEdit = 2;
@@ -76,7 +76,7 @@ export class InlineEditingPanelModel extends HoistModel {
         this.gridModel.beginEditAsync({record: firstId});
     }
 
-    async beginEditAsync(opts) {
+    async beginEditAsync(opts?) {
         await this.gridModel.beginEditAsync(opts);
     }
 
@@ -119,7 +119,7 @@ export class InlineEditingPanelModel extends HoistModel {
     }
 
     @action
-    commitRecord(record) {
+    private commitRecord(record) {
         const {store} = this;
 
         if (record.isAdd) {
@@ -136,11 +136,11 @@ export class InlineEditingPanelModel extends HoistModel {
     }
 
     @action
-    revertRecord(record) {
+    private revertRecord(record) {
         this.store.revertRecords(record);
     }
 
-    createStore() {
+    private createStore() {
         return new Store({
             fields: [
                 {
@@ -215,7 +215,7 @@ export class InlineEditingPanelModel extends HoistModel {
         });
     }
 
-    createGridModel() {
+    private createGridModel() {
         const ifNotRestricted = ({record}) => !record.data.restricted;
         return new GridModel({
             selModel: null,
@@ -314,12 +314,12 @@ export class InlineEditingPanelModel extends HoistModel {
         });
     }
 
-    getNextId() {
+    private getNextId() {
         const {store} = this,
             {committedRecords} = store;
 
         if (isEmpty(committedRecords)) return 0;
-        return max(committedRecords.map(it => it.id)) + 1;
+        return max(committedRecords.map(it => it.id as number)) + 1;
     }
 
 }

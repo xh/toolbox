@@ -90,8 +90,8 @@ class DockContainerPanelModel extends HoistModel {
     @managed
     dockContainerModel = new DockContainerModel();
 
-    addView(...args) {
-        this.dockContainerModel.addView(...args);
+    addView(cfg) {
+        this.dockContainerModel.addView(cfg);
     }
 
     addNewDockedView(allowDialog, allowClose) {

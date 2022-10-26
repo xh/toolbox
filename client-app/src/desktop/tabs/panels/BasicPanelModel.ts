@@ -2,7 +2,7 @@ import {HoistModel} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class BasicPanelModel extends HoistModel {
-    @bindable state = null;
+    @bindable state: string = null;
 
     constructor() {
         super();

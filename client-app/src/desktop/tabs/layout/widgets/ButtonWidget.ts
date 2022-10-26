@@ -46,15 +46,15 @@ export const buttonWidget = hoistCmp.factory({
 });
 
 class ButtonWidgetModel extends HoistModel {
-    @bindable value;
-    @lookup(DashViewModel) viewModel;
+    @bindable value: string;
+    @lookup(DashViewModel) viewModel: DashViewModel;
 
     constructor() {
         super();
         makeObservable(this);
     }
 
-    onLinked() {
+    override onLinked() {
         const {viewModel} = this;
         this.value = viewModel.viewState ? viewModel.viewState.value : 'Button 1';
         this.addReaction({
@@ -69,7 +69,7 @@ class ButtonWidgetModel extends HoistModel {
     //----------------------
     // Implementation
     //----------------------
-    getIconForValue(value) {
+    private getIconForValue(value: string) {
         switch (value) {
             case 'Button 1':
                 return Icon.chartLine();

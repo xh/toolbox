@@ -11,6 +11,7 @@ import {wrapper} from '../../common';
 import {gridOptionsPanel} from '../../common/grid/options/GridOptionsPanel';
 import './InlineEditingPanel.scss';
 import {InlineEditingPanelModel} from './InlineEditingPanelModel';
+import React from 'react';
 
 export const inlineEditingPanel = hoistCmp.factory({
     model: creates(InlineEditingPanelModel),
@@ -54,60 +55,61 @@ export const inlineEditingPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory(({model}) => {
-    const {store, gridModel} = model;
-    return toolbar(
-        button({
-            icon: Icon.add(),
-            text: 'Add',
-            onClick: () => model.add()
-        }),
-        button({
-            icon: Icon.add(),
-            text: 'Add 5',
-            onClick: () => model.addFive(0)
-        }),
-        '-',
-        button({
-            icon: Icon.edit(),
-            text: 'First Row',
-            onClick: () => model.beginEditAsync()
-        }),
-        button({
-            icon: Icon.edit(),
-            text: 'First Row (Amount)',
-            onClick: () => model.beginEditAsync({colId: 'amount'})
-        }),
-        '-',
-        button({
-            icon: Icon.stopCircle(),
-            text: 'Stop Editing',
-            onClick: () => model.endEditAsync(),
-            disabled: !gridModel.isEditing
-        }),
-        '-',
-        button({
-            icon: Icon.check(),
-            text: 'Commit All',
-            intent: 'success',
-            onClick: () => model.commitAllAsync(),
-            disabled: !store.isModified
-        }),
-        button({
-            icon: Icon.undo(),
-            text: 'Revert All',
-            intent: 'primary',
-            onClick: () => model.revert(),
-            disabled: !store.isModified
-        }),
-        filler(),
-        storeDirtyIndicator(),
-        '-',
-        storeValidIndicator()
-    );
-});
+const tbar = hoistCmp.factory<InlineEditingPanelModel>(
+    ({model}) => {
+        const {store, gridModel} = model;
+        return toolbar(
+            button({
+                icon: Icon.add(),
+                text: 'Add',
+                onClick: () => model.add()
+            }),
+            button({
+                icon: Icon.add(),
+                text: 'Add 5',
+                onClick: () => model.addFive()
+            }),
+            '-',
+            button({
+                icon: Icon.edit(),
+                text: 'First Row',
+                onClick: () => model.beginEditAsync()
+            }),
+            button({
+                icon: Icon.edit(),
+                text: 'First Row (Amount)',
+                onClick: () => model.beginEditAsync({colId: 'amount'})
+            }),
+            '-',
+            button({
+                icon: Icon.stopCircle(),
+                text: 'Stop Editing',
+                onClick: () => model.endEditAsync(),
+                disabled: !gridModel.isEditing
+            }),
+            '-',
+            button({
+                icon: Icon.check(),
+                text: 'Commit All',
+                intent: 'success',
+                onClick: () => model.commitAllAsync(),
+                disabled: !store.isModified
+            }),
+            button({
+                icon: Icon.undo(),
+                text: 'Revert All',
+                intent: 'primary',
+                onClick: () => model.revert(),
+                disabled: !store.isModified
+            }),
+            filler(),
+            storeDirtyIndicator(),
+            '-',
+            storeValidIndicator()
+        );
+    });
 
-const storeDirtyIndicator = hoistCmp.factory(
+const storeDirtyIndicator = hoistCmp.factory<InlineEditingPanelModel>(
     ({model}) => {
         const {isModified} = model.store;
         return hbox({
@@ -122,7 +124,7 @@ const storeDirtyIndicator = hoistCmp.factory(
     }
 );
 
-const storeValidIndicator = hoistCmp.factory(
+const storeValidIndicator = hoistCmp.factory<InlineEditingPanelModel>(
     ({model}) => {
         const {isPending, validationState, errorCount} = model.store.validator;
         let icon, label, className;
@@ -158,31 +160,32 @@ const storeValidIndicator = hoistCmp.factory(
     }
 );
 
-const bbar = hoistCmp.factory(({model}) => {
-    return toolbar(
-        switchInput({
-            bind: 'fullRowEditing',
-            label: 'Full-row editing',
-            labelSide: 'left'
-        }),
-        '-',
-        switchInput({
-            bind: 'asyncValidation',
-            label: 'Async validation',
-            labelSide: 'left'
-        }),
-        '-',
-        span('Edit with: '),
-        buttonGroupInput({
-            bind: 'clicksToEdit',
-            outlined: true,
-            items: [
-                button({text: '2 clicks', value: 2}),
-                button({text: '1 click', value: 1}),
-                button({text: 'disabled', value: -1})
-            ]
-        }),
-        hspacer(),
-        span(`${model.clicksToEditNote}`)
-    );
-});
+const bbar = hoistCmp.factory<InlineEditingPanelModel>(
+    ({model}) => {
+        return toolbar(
+            switchInput({
+                bind: 'fullRowEditing',
+                label: 'Full-row editing',
+                labelSide: 'left'
+            }),
+            '-',
+            switchInput({
+                bind: 'asyncValidation',
+                label: 'Async validation',
+                labelSide: 'left'
+            }),
+            '-',
+            span('Edit with: '),
+            buttonGroupInput({
+                bind: 'clicksToEdit',
+                outlined: true,
+                items: [
+                    button({text: '2 clicks', value: 2}),
+                    button({text: '1 click', value: 1}),
+                    button({text: 'disabled', value: -1})
+                ]
+            }),
+            hspacer(),
+            span(`${model.clicksToEditNote}`)
+        );
+    });

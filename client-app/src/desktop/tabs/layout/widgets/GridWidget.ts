@@ -36,11 +36,11 @@ export const gridWidget = hoistCmp.factory({
 
 class GridWidgetModel extends HoistModel {
 
-    @managed gridModel;
+    @managed gridModel: GridModel;
     @managed panelModel = new PanelModel({modalSupport: true, showModalToggleButton: false, collapsible: false, resizable: false});
     @lookup(DashViewModel) viewModel;
 
-    onLinked() {
+    override onLinked() {
         this.gridModel = new GridModel({
             sortBy: 'profit_loss|desc|abs',
             colChooserModel: true,
@@ -84,7 +84,7 @@ class GridWidgetModel extends HoistModel {
         }
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {trades} = await XH.fetchJson({url: 'trade'});
 
         this.gridModel.loadData(trades);

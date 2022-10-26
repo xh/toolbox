@@ -17,7 +17,7 @@ export const treeGridWithCheckboxPanel = hoistCmp.factory(
             title: 'Grids › Tree w/CheckBox',
             icon: Icon.grid(),
             className: 'tb-grid-wrapper-panel',
-            item: sampleTreeGrid({model: {includeCheckboxes: true}})
+            item: sampleTreeGrid({modelConfig: {includeCheckboxes: true}})
         })
     })
 );

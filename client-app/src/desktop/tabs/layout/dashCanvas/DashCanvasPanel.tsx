@@ -12,7 +12,7 @@ import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from
 import {wrapper} from '../../../common';
 
 export const dashCanvasPanel = hoistCmp.factory({
-    model: creates(() => new Model()),
+    model: creates(() => Model),
 
     render({model}) {
         return wrapper({
@@ -53,7 +53,7 @@ export const dashCanvasPanel = hoistCmp.factory({
     }
 });
 
-const bbar = hoistCmp.factory(
+const bbar = hoistCmp.factory<Model>(
     ({model}) => toolbar({
         enableOverflowMenu: true,
         children: [
@@ -119,7 +119,6 @@ class Model extends HoistModel {
     @managed
     dashCanvasModel = new DashCanvasModel({
         persistWith: {localStorageKey: 'dashCanvasState'},
-        showMenuButton: true,
         initialState,
         viewSpecDefaults: {
             icon: Icon.gridPanel()

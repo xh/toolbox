@@ -7,15 +7,15 @@ import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import filesize from 'filesize';
 import download from 'downloadjs';
 import {filter, find, pull} from 'lodash';
-import { StoreRecord, StoreRecordId } from '@xh/hoist/data';
+import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
 
 export class FileManagerModel extends HoistModel {
 
     @managed
-    chooserModel: FileChooserModel = new FileChooserModel();
+    chooserModel = new FileChooserModel();
     
     @managed
-    gridModel: GridModel = new GridModel({
+    gridModel = new GridModel({
         store: {
             fields: [
                 'name', 'size', 'status', 'file'

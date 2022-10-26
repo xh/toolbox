@@ -1,6 +1,6 @@
 import {div, vframe} from '@xh/hoist/cmp/layout';
-import {hoistCmp} from '@xh/hoist/core/index';
-import {Icon} from '@xh/hoist/icon/index';
+import {hoistCmp} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
 import {fmtNumber} from '@xh/hoist/format';
 import './DataViewItem.scss';
 
