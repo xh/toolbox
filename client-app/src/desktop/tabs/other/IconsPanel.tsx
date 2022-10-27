@@ -1,6 +1,6 @@
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faIcons} from '@fortawesome/pro-regular-svg-icons';
-import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, Intent} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {div, fragment, hspacer, table, tbody, td, th, thead, tr} from '@xh/hoist/cmp/layout';
@@ -147,7 +147,7 @@ function sizeButton(size, props = {}) {
     });
 }
 
-function intentButton(intent) {
+function intentButton(intent: 'neutral'|Intent) {
     return button({
         text: startCase(intent),
         value: intent,
@@ -155,7 +155,7 @@ function intentButton(intent) {
     });
 }
 
-const iconRow = hoistCmp.factory(
+const iconRow = hoistCmp.factory<IconsPanelModel>(
     ({model, iconName}) => {
         return tr({
             key: iconName,
@@ -171,7 +171,7 @@ const iconRow = hoistCmp.factory(
     }
 );
 
-const icon = hoistCmp.factory(
+const icon = hoistCmp.factory<IconsPanelModel>(
     ({model, iconName, prefix}) => {
         return Icon[iconName]({
             prefix,
@@ -186,9 +186,9 @@ function getAllIconNames() {
 }
 
 class IconsPanelModel extends HoistModel {
-    @bindable fontSize = 'default';
+    @bindable fontSize: 'small'|'default'|'large' = 'default';
     @bindable size = '2x';
-    @bindable intent = 'neutral';
+    @bindable intent: 'neutral'|Intent = 'neutral';
 
     constructor() {
         super();

@@ -57,32 +57,33 @@ export const placeholderPanel = hoistCmp.factory({
     }
 });
 
-const detailPanel = hoistCmp.factory(({model}) => {
-    const {gridModel} = model,
-        {selectedRecord} = gridModel;
+const detailPanel = hoistCmp.factory<PlaceholderPanelModel>(
+    ({model}) => {
+        const {gridModel} = model,
+            {selectedRecord} = gridModel;
 
-    return panel({
-        item: frame({
-            className: 'xh-pad',
-            item: `Details about ${selectedRecord.data.company}...`
-        }),
-        bbar: [
-            filler(),
-            button({
-                text: 'Clear Selection',
-                outlined: true,
-                onClick: () => model.gridModel.clearSelection()
-            })
-        ]
+        return panel({
+            item: frame({
+                className: 'xh-pad',
+                item: `Details about ${selectedRecord.data.company}...`
+            }),
+            bbar: [
+                filler(),
+                button({
+                    text: 'Clear Selection',
+                    outlined: true,
+                    onClick: () => model.gridModel.clearSelection()
+                })
+            ]
+        });
     });
-});
 
 class PlaceholderPanelModel extends HoistModel {
     gridModel = new GridModel({
         columns: [{field: 'company', flex: 1}]
     });
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {trades} = await XH.fetchJson({url: 'trade'});
         this.gridModel.loadData(trades);
     }

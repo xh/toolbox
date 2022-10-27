@@ -48,7 +48,7 @@ export const dateFormatsPanel = hoistCmp.factory({
     }
 });
 
-const paramsPanel = hoistCmp.factory(
+const paramsPanel = hoistCmp.factory<DateFormatsPanelModel>(
     ({model}) => panel({
         title: 'Function + Options',
         compactHeader: true,

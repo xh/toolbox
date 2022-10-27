@@ -53,7 +53,7 @@ export const jsxPanel = hoistCmp.factory(
 //------------------------
 // Implementation
 //------------------------
-function renderCode(value) {
+function renderCode(value: string) {
     return codeInput({
         flex: 1,
         width: null,
