@@ -3,8 +3,8 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateIs, lengthIs, numberIs, required, Store} from '@xh/hoist/data';
 import {
     actionCol,
-    calcActionColWidth,
     booleanEditor,
+    calcActionColWidth,
     dateEditor,
     numberEditor,
     selectEditor,
@@ -17,6 +17,7 @@ import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
+import {withDebug} from '@xh/hoist/utils/js';
 
 export class InlineEditingPanelModel extends HoistModel {
 
@@ -74,6 +75,18 @@ export class InlineEditingPanelModel extends HoistModel {
             {id: XH.genId(), name: 'New Record'}
         ]);
         this.gridModel.beginEditAsync({record: firstId});
+    }
+
+    addOneThousand() {
+        const data = [];
+        for (let i = 0; i < 1000; ++i) {
+            data.push({
+                id: XH.genId(),
+                name: 'New Record'
+            });
+        }
+
+        withDebug('Adding 1k Records', () => this.store.addRecords(data), this);
     }
 
     async beginEditAsync(opts) {

@@ -65,7 +65,12 @@ const tbar = hoistCmp.factory(({model}) => {
         button({
             icon: Icon.add(),
             text: 'Add 5',
-            onClick: () => model.addFive(0)
+            onClick: () => model.addFive()
+        }),
+        button({
+            icon: Icon.add(),
+            text: 'Add 1k',
+            onClick: () => model.addOneThousand()
         }),
         '-',
         button({
