@@ -7,6 +7,7 @@ import {buttonGroupInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/in
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {ExceptionHandlerModel} from './ExceptionHandlerModel';
 import {capitalize} from 'lodash';
+import React from 'react';
 
 export const exceptionHandlerPanel = hoistCmp.factory({
     model: creates(ExceptionHandlerModel),
@@ -66,16 +67,14 @@ const buttonContainer = hoistCmp.factory(
                         exceptionButton({type: 'routine'})
                     ]
                 }),
-                div({
-                    item: 'Open your developer console to see how Hoist is logging and tracking exceptions when clicking ' +
-                        'the buttons above.'
-                })
+                div('Open your developer console to see how Hoist is logging and tracking exceptions when clicking ' +
+                        'the buttons above.')
             ]
         })
     })
 );
 
-const exceptionButton = hoistCmp.factory({
+const exceptionButton = hoistCmp.factory<ExceptionHandlerModel>({
     render({model, type}) {
         const isRoutine = type === 'routine',
             iconName = isRoutine ? 'info' : 'warning';
@@ -92,13 +91,13 @@ const exceptionButton = hoistCmp.factory({
     }
 });
 
-const displayOptions = hoistCmp.factory(
-    ({model})=> panel({
+const displayOptions = hoistCmp.factory<ExceptionHandlerModel>(
+    ({model}) => panel({
         title: 'Options',
         icon: Icon.settings(),
         className: 'tbox-display-opts',
         compactHeader: true,
-        model: {side: 'right', defaultSize: 250, resizable: false},
+        modelConfig: {side: 'right', defaultSize: 250, resizable: false},
         item: div({
             className: 'tbox-display-opts__inner',
             items: [

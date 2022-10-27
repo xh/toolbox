@@ -19,13 +19,13 @@ export class DateFormatsPanelModel extends HoistModel {
         null,
         undefined
     ];
-    @bindable tryItData = new Date();
+    @bindable.ref tryItData = new Date();
 
     // Parameters
     @bindable fnName = 'fmtDate';
-    @bindable fmt = null;
+    @bindable fmt: string = null;
     @bindable tooltip = false;
-    @bindable nullDisplay = null;
+    @bindable nullDisplay: string = null;
 
     get testResults() {
         return this.testData.map(data => ({
@@ -51,7 +51,7 @@ export class DateFormatsPanelModel extends HoistModel {
     //-----------------------------
     // Implementation
     //--------------------------------
-    getResult(input) {
+    private getResult(input: Date) {
         const options = {
             tooltip: this.tooltip ? (d) => `${d}` : undefined,
             fmt: this.enableFmt && this.fmt ? this.fmt : undefined,

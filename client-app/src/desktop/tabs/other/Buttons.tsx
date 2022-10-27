@@ -1,5 +1,5 @@
 import {div, filler, hbox} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, Intent, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -12,7 +12,7 @@ import './Buttons.scss';
 class ButtonsModel extends HoistModel {
     @bindable disableButtons = false;
     @bindable activeButtons = false;
-    @bindable activeButton = 'v1';
+    @bindable activeButton: 'v1'|'v2'|'v3' = 'v1';
 
     constructor() {
         super();
@@ -22,7 +22,7 @@ class ButtonsModel extends HoistModel {
 
 export const buttonsPanel = hoistCmp.factory({
     model: creates(ButtonsModel),
-    render({model}) {
+    render() {
         return wrapper({
             description: (
                 <div>
@@ -72,7 +72,7 @@ export const buttonsPanel = hoistCmp.factory({
     }
 });
 
-const buttonPanel = hoistCmp.factory(
+const buttonPanel = hoistCmp.factory<ButtonsModel>(
     ({model, intent, headerItems}) => {
         return panel({
             title: `Intent: ${intent ?? 'none (default)'}`,
@@ -94,7 +94,7 @@ const buttonPanel = hoistCmp.factory(
     }
 );
 
-function renderButtons(intent, disabled, active) {
+function renderButtons(intent: Intent, disabled: boolean, active: boolean) {
     return [
         button({
             text: 'Default',
@@ -164,7 +164,7 @@ function renderButtons(intent, disabled, active) {
     ];
 }
 
-function renderButtonGroupInputs(intent, disabled) {
+function renderButtonGroupInputs(intent: Intent, disabled: boolean) {
     return [
         buttonGroupInput({
             bind: 'activeButton',

@@ -1,7 +1,6 @@
-import React from 'react';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {h3, p} from '@xh/hoist/cmp/layout';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -9,16 +8,14 @@ import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 
 import './PinPadPanel.scss';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 
 export const pinPadPanel = hoistCmp.factory({
     model: creates(() => PinPadPanelModel),
 
     render({model}) {
         return wrapper({
-            description: [
-                <p>A specialized PIN input, used for lightweight authentication of users.</p>
-            ],
+            description: 'A specialized PIN input, used for lightweight authentication of users.',
             links: [
                 {url: '$TB/client-app/src/desktop/tabs/other/PinPadPanel.js', notes: 'This example.'},
                 {url: '$HR/cmp/pinpad/PinPad.js', notes: 'Hoist component.'},
@@ -68,7 +65,7 @@ class PinPadPanelModel extends HoistModel {
     attempts = 0;
     maxAttempts = 5;
 
-    @bindable loggedIn = false;
+    @observable loggedIn = false;
 
     constructor() {
         super();
@@ -92,7 +89,7 @@ class PinPadPanelModel extends HoistModel {
             pad.setErrorText('');
             pad.setHeaderText('Access Granted.');
             pad.setSubHeaderText('Welcome to XH.io');
-            wait(1000).then(() => this.setLoggedIn(true));
+            wait(1000).thenAction(() => this.loggedIn = true);
         } else if (attempts >= maxAttempts) {
             pad.setHeaderText('Account Locked.');
             pad.setSubHeaderText('Login disabled at this time.');
@@ -111,6 +108,7 @@ class PinPadPanelModel extends HoistModel {
         }
     }
 
+    @action
     reset() {
         const {pinPadModel: pad} = this;
 
@@ -121,6 +119,6 @@ class PinPadPanelModel extends HoistModel {
         pad.clear();
 
         this.attempts = 0;
-        this.setLoggedIn(false);
+        this.loggedIn = false;
     }
 }

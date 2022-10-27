@@ -8,8 +8,7 @@ import {TIME_FMT} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
-import React from 'react';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 import './ClockPanel.scss';
 
 export const clockPanel = hoistCmp.factory({
@@ -17,11 +16,10 @@ export const clockPanel = hoistCmp.factory({
 
     render({model}) {
         return wrapper({
-            description: [
-                <p>A clock will display the current time, either for browser local time (the default)
+            description: `
+                    A clock will display the current time, either for browser local time (the default)
                     or for a configurable timezone. It fetches timezone offsets from the server to
-                    support any Java-style timezone ID.</p>
-            ],
+                    support any Java-style timezone ID.`,
             links: [
                 {url: '$TB/client-app/src/desktop/tabs/other/ClockPanel.js', notes: 'This example.'},
                 {url: '$HR/cmp/clock/Clock.js', notes: 'Hoist component.'}
@@ -80,7 +78,7 @@ export const clockPanel = hoistCmp.factory({
     }
 });
 
-const clockCard = hoistCmp.factory({
+const clockCard = hoistCmp.factory<ClockPanelModel>({
     className: 'tb-clock-card',
     render({label, timezone, model, ...rest}) {
         const {format, prefix, suffix, updateInterval} = model;
@@ -95,10 +93,10 @@ const clockCard = hoistCmp.factory({
 });
 
 class ClockPanelModel extends HoistModel {
-    @bindable format;
-    @bindable updateInterval;
-    @bindable prefix;
-    @bindable suffix;
+    @bindable format: string;
+    @bindable updateInterval: number;
+    @bindable prefix: string;
+    @bindable suffix: string;
 
     constructor() {
         super();

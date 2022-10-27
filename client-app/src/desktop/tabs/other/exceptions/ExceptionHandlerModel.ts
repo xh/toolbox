@@ -10,14 +10,14 @@ export class ExceptionHandlerModel extends HoistModel {
     @bindable logOnServer = true;
     @bindable showAlert = true;
     @bindable requireReload = false;
-    @bindable alertType = 'dialog';
+    @bindable alertType: 'dialog'|'toast' = 'dialog';
 
     constructor() {
         super();
         makeObservable(this);
     }
 
-    throwException(type) {
+    throwException(type: 'standard'|'routine') {
         const message = type === 'routine' ?
             `User does not have permission to click this button after ${new Date().toLocaleTimeString()}!` :
             'This is a very problematic button and has encountered a serious error.';

@@ -30,7 +30,7 @@ export class NumberFormatsPanelModel extends HoistModel {
         null,
         undefined
     ];
-    @bindable tryItData;
+    @bindable tryItData: number;
 
     // Parameters
     @bindable fnName = 'fmtNumber';
@@ -66,7 +66,7 @@ export class NumberFormatsPanelModel extends HoistModel {
     //-----------------------------
     // Implementation
     //--------------------------------
-    getResult(input) {
+    private getResult(input: number) {
         const options = {
             precision: this.precision != null ? this.precision : undefined,
             zeroPad: this.zeroPad,

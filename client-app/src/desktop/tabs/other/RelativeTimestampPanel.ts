@@ -87,7 +87,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
 
 
 class RelativeTimestampPanelModel extends HoistModel {
-    @observable prefix = 'Refreshed';
+    @observable prefix: 'Refreshed'|'Scheduled' = 'Refreshed';
     @observable timestamp = Date.now();
     @bindable useShortFmt = false;
 
@@ -114,5 +114,5 @@ class RelativeTimestampPanelModel extends HoistModel {
     }
 }
 
-const randUnit = () => sample(['y', 'M', 'd', 'h', 'm', 's', 'ms']);
+const randUnit = () => sample(['y', 'M', 'd', 'h', 'm', 's', 'ms'] as const);
 const randVal = () => random(1, 10);
