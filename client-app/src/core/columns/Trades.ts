@@ -47,12 +47,12 @@ export const tradeVolumeCol = {
 } as ColumnSpec;
 
 export const tradeDateCol = {
+    ...localDateCol,
     field: {
         name: 'trade_date',
         type: 'localDate',
         displayName: 'Date'
     },
-    ...localDateCol,
     chooserDescription: 'Date of last trade (including related derivatives)'
 } as ColumnSpec;
 

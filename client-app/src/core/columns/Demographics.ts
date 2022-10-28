@@ -40,7 +40,7 @@ export const cityCol = {
 export const stateCol = {
     field: {name: 'state', type: 'string'},
     width: 120
-};
+} as ColumnSpec;
 
 export const salaryCol = {
     field: {name: 'salary', type: 'number'},
