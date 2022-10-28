@@ -61,19 +61,19 @@ export const priceCol = {
 } as ColumnSpec;
 
 export const timeCol = {
+    ...dateTimeCol,
     field: {
         name: 'time',
         type: 'date',
         displayName: 'Exec Time'
     },
-    ...dateTimeCol,
     align: 'left'
 } as ColumnSpec;
 
 export const closingPriceSparklineCol = {
     field: {
         name: 'closingPrices',
-        type: JSON,
+        type: 'json',
         displayName: '30D Close'
     },
     sortable: false,
@@ -92,4 +92,4 @@ export const closingPriceSparklineCol = {
             }
         }
     }
-} ;
+} as ColumnSpec;

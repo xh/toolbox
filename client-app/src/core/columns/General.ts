@@ -9,8 +9,8 @@ export const nameCol = {
 } as ColumnSpec;
 
 export const activeCol = {
-    field: {name: 'active', type: 'boolean'},
     ...boolCheckCol,
+    field: {name: 'active', type: 'bool'},
     headerName: '',
     chooserName: 'Active Status'
 } as ColumnSpec;

@@ -28,7 +28,7 @@ export const restGridPanel = hoistCmp.factory({
                 title: 'Grids › REST Editor',
                 icon: Icon.edit(),
                 className: 'tb-grid-wrapper-panel',
-                item: restGrid({model: modelSpec})
+                item: restGrid({modelConfig: modelSpec})
             })
         });
     }
