@@ -155,6 +155,7 @@ export class InlineEditingPanelModel extends HoistModel {
 
     createStore() {
         return new Store({
+            validationIsComplex: false,
             fields: [
                 {
                     name: 'name',
