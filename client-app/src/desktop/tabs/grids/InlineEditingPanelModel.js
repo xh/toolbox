@@ -59,34 +59,20 @@ export class InlineEditingPanelModel extends HoistModel {
         });
     }
 
-    add() {
-        const id = XH.genId();
-        this.store.addRecords({id, name: 'New Record'});
-        this.gridModel.beginEditAsync({record: id});
-    }
+    add(count) {
+        const firstId = XH.genId(),
+            data = [];
 
-    addFive() {
-        const firstId = XH.genId();
-        this.store.addRecords([
-            {id: firstId, name: 'New Record'},
-            {id: XH.genId(), name: 'New Record'},
-            {id: XH.genId(), name: 'New Record'},
-            {id: XH.genId(), name: 'New Record'},
-            {id: XH.genId(), name: 'New Record'}
-        ]);
-        this.gridModel.beginEditAsync({record: firstId});
-    }
-
-    addOneThousand() {
-        const data = [];
-        for (let i = 0; i < 1000; ++i) {
+        for (let i = 0; i < count; ++i) {
             data.push({
-                id: XH.genId(),
+                id: i === 0 ? firstId : XH.genId(),
                 name: 'New Record'
             });
         }
 
-        withDebug('Adding 1k Records', () => this.store.addRecords(data), this);
+        withDebug(`Adding ${count} Records`, () => this.store.addRecords(data), this);
+
+        this.gridModel.beginEditAsync({record: firstId});
     }
 
     async beginEditAsync(opts) {
@@ -155,7 +141,7 @@ export class InlineEditingPanelModel extends HoistModel {
 
     createStore() {
         return new Store({
-            validationIsComplex: false,
+            validationIsComplex: true,
             fields: [
                 {
                     name: 'name',

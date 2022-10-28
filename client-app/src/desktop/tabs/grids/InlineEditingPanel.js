@@ -1,4 +1,4 @@
-import {grid} from '@xh/hoist/cmp/grid';
+import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hbox, hframe, hspacer, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {ValidationState} from '@xh/hoist/data';
@@ -60,17 +60,22 @@ const tbar = hoistCmp.factory(({model}) => {
         button({
             icon: Icon.add(),
             text: 'Add',
-            onClick: () => model.add()
+            onClick: () => model.add(1)
         }),
         button({
             icon: Icon.add(),
             text: 'Add 5',
-            onClick: () => model.addFive()
+            onClick: () => model.add(5)
         }),
         button({
             icon: Icon.add(),
             text: 'Add 1k',
-            onClick: () => model.addOneThousand()
+            onClick: () => model.add(1000)
+        }),
+        button({
+            icon: Icon.add(),
+            text: 'Add 10k',
+            onClick: () => model.add(10000)
         }),
         '-',
         button({
@@ -188,6 +193,8 @@ const bbar = hoistCmp.factory(({model}) => {
             ]
         }),
         hspacer(),
-        span(`${model.clicksToEditNote}`)
+        span(`${model.clicksToEditNote}`),
+        filler(),
+        gridCountLabel()
     );
 });
