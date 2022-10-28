@@ -9,7 +9,7 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {pluralize} from '@xh/hoist/utils/js';
-import {wrapper} from '../../common/Wrapper';
+import {wrapper} from '../../common';
 
 export const fileChooserPanel = hoistCmp.factory({
     model: creates(() => FileChooserPanelModel),
