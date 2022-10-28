@@ -1,5 +1,5 @@
-import createAuth0Client from '@auth0/auth0-spa-js';
-import {HoistService, XH} from '@xh/hoist/core';
+import createAuth0Client, {Auth0Client} from '@auth0/auth0-spa-js';
+import {HoistService, PlainObject, XH} from '@xh/hoist/core';
 import {never, wait} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 
@@ -24,17 +24,16 @@ import {SECONDS} from '@xh/hoist/utils/datetime';
  */
 export class OauthService extends HoistService {
 
-    /** @member {Auth0Client} */
-    auth0;
-    /** @member {Object} - Authenticated user info as provided by Auth0. */
-    user;
-    /** @member {string} - ID Token in JWT format - for passing to Hoist server. */
-    idToken;
+    auth0: Auth0Client;
+    /** Authenticated user info as provided by Auth0. */
+    user: PlainObject;
+    /** ID Token in JWT format - for passing to Hoist server. */
+    idToken: string;
 
-    /** @member {Object} - soft-config loaded from whitelisted endpoint on UI server. */
-    config;
+    /** Soft-config loaded from whitelisted endpoint on UI server. */
+    config: PlainObject;
 
-    async initAsync() {
+    override async initAsync() {
         // This service is initialized prior to Hoist auth/init, so we do *not* have our standard
         // XH.configService ready to go at the point we need these configs. This endpoint is
         // whitelisted in AuthenticationService.groovy to allow us to call it prior to auth.
@@ -91,18 +90,17 @@ export class OauthService extends HoistService {
         }
     }
 
-    async getIdTokenAsync() {
+    private async getIdTokenAsync() {
         const claims = await this.auth0.getIdTokenClaims();
         return claims?.__raw;
     }
 
-    async checkAuthAsync() {
+    private async checkAuthAsync() {
         return this.auth0.isAuthenticated();
     }
 
     /**
      * Logout of both Hoist session and Auth0 Oauth session (if active).
-     * @return {Promise<void>}
      */
     async logoutAsync() {
         try  {
@@ -123,7 +121,7 @@ export class OauthService extends HoistService {
         }
     }
 
-    installDefaultFetchServiceHeaders() {
+    private installDefaultFetchServiceHeaders() {
         XH.fetchService.setDefaultHeaders((opts) => {
             const {idToken} = this,
                 relativeHoistUrl = !opts.url.startsWith('http');
@@ -134,7 +132,7 @@ export class OauthService extends HoistService {
         });
     }
 
-    get baseUrl() {
+    private get baseUrl() {
         return `${window.location.origin}/${XH.clientAppCode}/`;
     }
 

@@ -1,16 +1,16 @@
-import {HoistService, XH} from '@xh/hoist/core';
+import {HoistService, PlainObject, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {computed, bindable, makeObservable} from '@xh/hoist/mobx';
+import {computed, observable, makeObservable, runInAction} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {forOwn, sortBy} from 'lodash';
 
 // TODO - auto-refresh with app, do so efficiently, only replacing local data when new commits.
 export class GitHubService extends HoistService {
 
-    /** @member {Object} - loaded commits histories, keyed by repoName. */
-    @bindable.ref commitHistories = {};
+    /** Loaded commits histories, keyed by repoName. */
+    @observable.ref commitHistories: PlainObject = {};
 
-    /** @return {Object[]} - array of loaded commits across all repositories. */
+    /** Loaded array of commits across all repositories. */
     @computed
     get allCommits() {
         const ret = [];
@@ -23,7 +23,7 @@ export class GitHubService extends HoistService {
         makeObservable(this);
     }
 
-    async initAsync() {
+    override async initAsync() {
         // Subscribe to websocket based updates so we refresh and pick up new commits immediately.
         XH.webSocketService.subscribe('gitHubUpdate', () => this.loadAsync());
 
@@ -31,7 +31,7 @@ export class GitHubService extends HoistService {
         this.loadAsync();
     }
 
-    async doLoadAsync() {
+    override async doLoadAsync() {
         try {
             const priorCommitCount = this.allCommits.length,
                 commitHistories = await XH.fetchJson({
@@ -49,7 +49,7 @@ export class GitHubService extends HoistService {
                 });
             });
 
-            this.setCommitHistories(commitHistories);
+            runInAction(() => this.commitHistories = commitHistories);
 
             const newCommitCount = this.allCommits.length;
             if (priorCommitCount && newCommitCount > priorCommitCount) {

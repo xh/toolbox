@@ -1,18 +1,16 @@
-import {FieldType} from '@xh/hoist/data';
 import {boolCheckCol} from '@xh/hoist/cmp/grid';
-
-const {STRING, BOOL} = FieldType;
+import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
 export const nameCol = {
-    field: {name: 'name', type: STRING},
+    field: {name: 'name', type: 'string'},
     headerName: 'Name',
     minWidth: 180,
     width: 200
-};
+} as ColumnSpec;
 
 export const activeCol = {
-    field: {name: 'active', type: BOOL},
+    field: {name: 'active', type: 'boolean'},
     ...boolCheckCol,
     headerName: '',
     chooserName: 'Active Status'
-};
+} as ColumnSpec;

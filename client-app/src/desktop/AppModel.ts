@@ -23,6 +23,13 @@ import {fmtDateTimeSec} from '@xh/hoist/format';
 import {span} from '@xh/hoist/cmp/layout';
 
 
+declare module '@xh/hoist/core' {
+// eslint-disable-next-line
+    interface HoistUser {
+        profilePicUrl: string;
+    }
+}
+
 export class AppModel extends HoistAppModel {
 
     static oauthService: OauthService;
