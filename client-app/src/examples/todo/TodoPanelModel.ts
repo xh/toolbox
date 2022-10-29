@@ -93,7 +93,7 @@ export class TodoPanelModel extends HoistModel {
         this.addReaction({
             track: () => this.showCompleted,
             run: (showCompleted) => {
-                const filter = showCompleted ? null : {field: 'complete', op: '=', value: false};
+                const filter = showCompleted ? null : {field: 'complete', op: '=', value: false} as const;
                 this.gridModel.store.setFilter(filter);
             },
             fireImmediately: true

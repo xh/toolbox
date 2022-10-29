@@ -235,7 +235,7 @@ export class SampleGridModel extends HoistModel {
         this.gridModel.preSelectFirstAsync();
     }
 
-    private restoreDefaultsFn() {
+    private async restoreDefaultsFn(): Promise<boolean> {
         // Reset defaults to Display Options panel
         this.setGroupBy(null);
         this.gridModel.setSizingMode(XH.sizingMode);
@@ -246,5 +246,6 @@ export class SampleGridModel extends HoistModel {
         this.gridModel.setShowHover(false);
         this.gridModel.setShowCellFocus(false);
         this.gridModel.setEmptyText('No records found...');
+        return true;
     }
 }
