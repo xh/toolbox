@@ -1,7 +1,6 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel, PlainObject, managed} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
-import {castArray} from 'lodash';
 
 export class LoadTimesModel extends HoistModel {
 
@@ -26,7 +25,7 @@ export class LoadTimesModel extends HoistModel {
         this.gridModel.loadData([]);
     }
 
-    async withLoadTime(tag, fn) {
+    async withLoadTime(tag: string, fn) {
         const start = Date.now();
         await fn();
         const end = Date.now();
@@ -38,7 +37,7 @@ export class LoadTimesModel extends HoistModel {
         }]);
     }
 
-    addLoadTimes(times) {
-        this.gridModel.updateData({add: castArray(times)});
+    private addLoadTimes(times: PlainObject[]) {
+        this.gridModel.updateData({add: times});
     }
 }

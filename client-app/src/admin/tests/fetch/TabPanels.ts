@@ -4,8 +4,9 @@ import {hframe, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 
 import {codes} from './Codes';
+import {FetchApiTestModel} from './FetchApiTestModel';
 
-export const individualBtns = hoistCmp.factory(
+export const individualBtns = hoistCmp.factory<FetchApiTestModel>(
     ({model}) => vframe({
         style: {overflowY: 'scroll'},
         items: codes.map(it => hframe({
@@ -28,7 +29,7 @@ export const individualBtns = hoistCmp.factory(
     })
 );
 
-export const codeGroupBtns = hoistCmp.factory(
+export const codeGroupBtns = hoistCmp.factory<FetchApiTestModel>(
     ({model}) => vframe({
         style: {overflowY: 'scroll'},
         items: codes
@@ -42,7 +43,7 @@ export const codeGroupBtns = hoistCmp.factory(
     })
 );
 
-export const fetchServiceFeatures = hoistCmp.factory(
+export const fetchServiceFeatures = hoistCmp.factory<FetchApiTestModel>(
     ({model}) => vframe({
         style: {overflowY: 'scroll'},
         items: [

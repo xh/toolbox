@@ -2,7 +2,7 @@ import '../Bootstrap';
 
 import {XH} from '@xh/hoist/core';
 import {AppComponent} from '@xh/hoist/admin/AppComponent';
-import {AppModel} from '@xh/hoist/admin/AppModel';
+import {AppModel} from '../admin/AppModel';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
 export const App = await XH.renderApp({

@@ -1,16 +1,17 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {hframe} from '@xh/hoist/cmp/layout';
+import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
+import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {jsonInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 
-import {StoreColumnFilterPanelModel} from './StoreColumnFilterPanelModel';
+import {ViewColumnFilterPanelModel} from './ViewColumnFilterPanelModel';
 
-export const storeColumnFilterPanel = hoistCmp.factory({
-    model: creates(StoreColumnFilterPanelModel),
+export const viewColumnFilterPanel = hoistCmp.factory({
+    model: creates(ViewColumnFilterPanelModel),
     render({model}) {
         return hframe(
             panel({
@@ -41,6 +42,8 @@ const tbar = hoistCmp.factory(
 
 const bbar = hoistCmp.factory(
     () => toolbar(
+        groupingChooser(),
+        filler(),
         gridCountLabel({
             includeChildren: true
         })
@@ -49,13 +52,13 @@ const bbar = hoistCmp.factory(
 
 const filterJsonPanel = hoistCmp.factory(
     () => panel({
-        model: {
+        modelConfig: {
             side: 'right',
             defaultSize: 500,
             collapsible: true
         },
         icon: Icon.code(),
-        title: `Filter as JSON`,
+        title: 'Filter as JSON',
         item: jsonInput({
             flex: 1,
             width: '100%',

@@ -17,6 +17,7 @@ export class GridTestMetrics {
         makeObservable(this);
     }
 
+    @action
     clear() {
         this.updateTimes = [];
         this.loadTimes = [];

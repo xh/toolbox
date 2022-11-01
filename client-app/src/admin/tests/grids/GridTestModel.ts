@@ -1,8 +1,8 @@
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {fragment} from '@xh/hoist/cmp/layout';
-import {FieldType} from '@xh/hoist/data';
+import {FieldType, StoreConfig} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
 import {cloneDeep} from 'lodash';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {GridTestData} from './GridTestData';
@@ -18,7 +18,7 @@ const pnlColumn = {
         colorSpec: true,
         tooltip: true
     })
-};
+} as ColumnSpec;
 
 export class GridTestModel extends HoistModel {
 
@@ -53,7 +53,7 @@ export class GridTestModel extends HoistModel {
 
     @bindable
     @persist
-    autosizeMode = 'onDemand';
+    autosizeMode: GridAutosizeMode = 'onDemand';
 
     @bindable
     @persist
@@ -75,7 +75,7 @@ export class GridTestModel extends HoistModel {
 
     @managed
     @observable.ref
-    gridModel;
+    gridModel: GridModel;
 
     constructor() {
         super();
@@ -109,7 +109,6 @@ export class GridTestModel extends HoistModel {
             },
             debounce: 100
         });
-        window.gm = this;
 
         this.addReaction({
             track: () =>  this.recordCount,
@@ -117,12 +116,12 @@ export class GridTestModel extends HoistModel {
         });
     }
 
-    clearData() {
+    private clearData() {
         this.data.clear();
         this.metrics.clear();
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {data, metrics, gridModel} = this;
         if (loadSpec.isAutoRefresh) return; // avoid auto-refresh confusing our tests here
 
@@ -154,9 +153,9 @@ export class GridTestModel extends HoistModel {
         });
     }
 
-    createGridModel() {
+    private createGridModel() {
         const {persistType, disableXssProtection, extraFieldCount} = this,
-            storeConf = {
+            storeConf: StoreConfig = {
                 freezeData: false,
                 idEncodesTreePath: true
             };
@@ -268,6 +267,5 @@ export class GridTestModel extends HoistModel {
         XH.safeDestroy(this.gridModel);
         this.gridModel = this.createGridModel();
         this.data.clear();
-        this.runTimes = {};
     }
 }

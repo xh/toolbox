@@ -1,5 +1,4 @@
 import {AppModel as BaseAppModel} from '@xh/hoist/admin/AppModel';
-import {XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {roadmapTab} from './roadmap/RoadmapTab';
@@ -8,14 +7,16 @@ import {wipTab} from './wip/WipTab';
 
 export class AppModel extends BaseAppModel {
 
-    async initAsync() {
-        await XH.installServicesAsync(PortfolioService);
+    portfolioService: PortfolioService;
+
+    override async initAsync() {
+        await this.initServicesAsync(PortfolioService);
     }
 
     //------------------------
     // Overrides
     //------------------------
-    getTabRoutes() {
+    override getTabRoutes() {
         return [
             ...super.getTabRoutes(),
             {
@@ -50,7 +51,7 @@ export class AppModel extends BaseAppModel {
         ];
     }
 
-    createTabs() {
+    override createTabs() {
         return [
             ...super.createTabs(),
             {id: 'roadmap', title: 'Roadmap', icon: Icon.mapSigns(), content: roadmapTab},

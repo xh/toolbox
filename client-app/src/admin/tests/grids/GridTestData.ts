@@ -1,9 +1,11 @@
 import {random, reduce, sample, times, isEmpty} from 'lodash';
+import {PlainObject} from '@xh/hoist/core';
 
 export class GridTestData {
 
-    rows = [];
-    summary = null;
+    rows: PlainObject[] = [];
+    summary: {day: number, id: string, mtd: number, ytd: number, volume: number} = null;
+    data: any;
 
     clear() {
         this.rows = [];
@@ -23,7 +25,7 @@ export class GridTestData {
                 trader = 'Trader ' + count % (recordCount/10);
 
             count++;
-            const pos = {
+            const pos: PlainObject = {
                 id: `${idSeed}~${symbol}`,
                 trader,
                 symbol,
@@ -78,7 +80,6 @@ export class GridTestData {
                 {id: `${idSeed}~summaryRow`, day: 0, mtd: 0, ytd: 0, volume: 0}
             );
             if (tree && loadRootAsSummary) {
-                summaryData.children = this._data;
                 this.data = [summaryData];
                 this.summary = null;
             } else {
@@ -91,7 +92,7 @@ export class GridTestData {
         console.log(`Generated ${count} test records.`);
     }
 
-    generateUpdates(count) {
+    generateUpdates(count: number) {
         const ret = [];
         times(count, () => {
             const pos = sample(this.rows);
@@ -104,7 +105,7 @@ export class GridTestData {
         return ret;
     }
 
-    applyUpdates(count) {
+    applyUpdates(count: number) {
         times(count, () => {
             const pos = sample(this.rows);
             pos.day = random(-80000, 100000);

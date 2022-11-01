@@ -1,22 +1,23 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {Cube} from '@xh/hoist/data';
-import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
+import {Cube, View} from '@xh/hoist/data';
+import {ColumnSpec, GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {observable, makeObservable, comparer} from '@xh/hoist/mobx';
 import {numberRenderer} from '@xh/hoist/format';
+import {App} from '../../../../apps/admin';
 
 export class ViewColumnFilterPanelModel extends HoistModel {
 
-    @bindable.ref filterJson = JSON.stringify(null);
+    @observable.ref filterJson: string = JSON.stringify(null);
 
-    @managed cube;
-    @managed view;
-    @managed gridModel;
-    @managed filterChooserModel;
-    @managed groupingChooserModel;
+    @managed cube: Cube;
+    @managed view: View;
+    @managed gridModel: GridModel;
+    @managed filterChooserModel: FilterChooserModel;
+    @managed groupingChooserModel: GroupingChooserModel;
 
-    get query() {
+    private get query() {
         const dimensions = this.groupingChooserModel?.value;
         return {dimensions, filter: this.view?.filter, includeLeaves: true};
     }
@@ -38,8 +39,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         this.addReaction({
             track: () => this.query.filter,
             run: (filter) => {
-                const str = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
-                this.setFilterJson(str);
+                this.filterJson = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
             }
         });
 
@@ -50,12 +50,12 @@ export class ViewColumnFilterPanelModel extends HoistModel {
                 this.view.updateQuery(query);
             },
             fireImmediately: true,
-            equals: 'structural'
+            equals: comparer.structural
         });
     }
 
-    async doLoadAsync(loadSpec) {
-        const orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
+    override async doLoadAsync(loadSpec) {
+        const orders = await App.portfolioService.getAllOrdersAsync({loadSpec});
         orders.forEach(o => {
             [1, 2, 3].forEach(v => {
                 o['price' + v] = o.price;
@@ -68,7 +68,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         await this.cube.loadDataAsync(orders, {asOf: Date.now()});
     }
 
-    createCube() {
+    private createCube() {
         const isInstrument = (dim, val, appliedDims) => {
             return !!appliedDims['symbol'];
         };
@@ -106,7 +106,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         });
     }
 
-    createGridModel() {
+    private createGridModel() {
         const {view} = this;
         return new GridModel({
             treeMode: true,
@@ -167,14 +167,14 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         });
     }
 
-    createView() {
+    private createView() {
         return this.cube.createView({
             query: this.query,
             connect: true
         });
     }
 
-    createFilterChooserModel() {
+    private createFilterChooserModel() {
         const {view} = this;
         return new FilterChooserModel({
             bind: view,
@@ -201,7 +201,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         });
     }
 
-    createGroupingChooserModel() {
+    private createGroupingChooserModel() {
         const presets = XH.getConf('cubeTestDefaultDims');
         return new GroupingChooserModel({
             persistWith: {localStorageKey: 'columnFilterTestGroupingChooser'},
@@ -221,7 +221,7 @@ const quantityCol = {
         precision: 0,
         ledger: true
     })
-};
+} as ColumnSpec;
 
 const priceCol = {
     align: 'right',
@@ -229,7 +229,7 @@ const priceCol = {
     renderer: numberRenderer({
         precision: 4
     })
-};
+} as ColumnSpec;
 
 const commissionCol = {
     align: 'right',
@@ -238,4 +238,4 @@ const commissionCol = {
         precision: 0,
         ledger: true
     })
-};
+} as ColumnSpec;

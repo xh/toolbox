@@ -15,7 +15,7 @@ export const loadTimesPanel = hoistCmp.factory({
         return panel({
             title: 'Run Times',
             icon: Icon.clock(),
-            model: {
+            modelConfig: {
                 side: 'right',
                 defaultCollapsed: true,
                 defaultSize: 260

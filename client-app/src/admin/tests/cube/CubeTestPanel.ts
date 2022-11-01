@@ -1,6 +1,6 @@
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler, hframe, hspacer} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/cmp/store';
@@ -11,6 +11,7 @@ import {dimensionManager} from './dimensions/DimensionManager';
 import {loadTimesPanel} from './LoadTimesPanel';
 import {colChooserButton, button} from '@xh/hoist/desktop/cmp/button';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+import {App} from '../../../apps/admin';
 
 export const CubeTestPanel = hoistCmp({
     model: creates(CubeTestModel),
@@ -36,14 +37,14 @@ export const CubeTestPanel = hoistCmp({
     }
 });
 
-const tbar = hoistCmp.factory(
+const tbar = hoistCmp.factory<CubeTestModel>(
     ({model}) => toolbar(
         switchInput({bind: 'showSummary', label: 'Summary?', labelSide: 'left'}),
         switchInput({bind: 'includeLeaves', label: 'Leaves?', labelSide: 'left'}),
         switchInput({bind: 'includeGlobalAgg', label: 'Global Agg?', labelSide: 'left'}),
         select({
             bind: 'fundFilter',
-            options: XH.portfolioService.lookups.funds,
+            options: App.portfolioService.lookups.funds,
             placeholder: 'Fund filter...',
             enableClear: true,
             enableMulti: true,
@@ -72,7 +73,7 @@ const tbar = hoistCmp.factory(
     )
 );
 
-const bbar = hoistCmp.factory(
+const bbar = hoistCmp.factory<CubeTestModel>(
     ({model}) => {
         const {view} = model;
         return toolbar(

@@ -1,13 +1,15 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateRenderer} from '@xh/hoist/format';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import { WebSocketSubscription } from '@xh/hoist/svc';
 
 export class WebSocketTestModel extends HoistModel {
 
-    @managed gridModel;
-    @managed updateSub;
-    @bindable subscribed = false;
+    @managed gridModel: GridModel;
+    @managed updateSub: WebSocketSubscription;
+    @observable subscribed = false;
+    @action setSubscribed(v: boolean) {this.subscribed = v}
 
     constructor() {
         super();
@@ -24,7 +26,7 @@ export class WebSocketTestModel extends HoistModel {
         this.updateSub = XH.webSocketService.subscribe('mockUpdate', (msg) => this.onUpdateMessage(msg));
     }
 
-    onUpdateMessage(msg) {
+    private onUpdateMessage(msg) {
         this.gridModel.updateData({add: [msg.data]});
     }
 

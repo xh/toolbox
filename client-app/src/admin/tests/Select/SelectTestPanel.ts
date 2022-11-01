@@ -8,7 +8,7 @@ import {box, div, fragment, hbox, label, p, vbox} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
 
 import {usStates} from '../../../core/data';
-import {SelectTestModel} from './SelectTestModel.js';
+import {SelectTestModel} from './SelectTestModel';
 import './SelectTestPanel.scss';
 
 export const SelectTestPanel = hoistCmp({
@@ -121,7 +121,7 @@ export const SelectTestPanel = hoistCmp({
     }
 });
 
-const example = hoistCmp.factory(
+const example = hoistCmp.factory<SelectTestModel>(
     ({name, bind, selectProps, model}) => fragment(
         p(name),
         label('value: ' + JSON.stringify(model[bind])),

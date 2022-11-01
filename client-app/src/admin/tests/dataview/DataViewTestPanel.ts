@@ -9,7 +9,7 @@ import './DataViewTestPanel.scss';
 export const dataViewTestPanel = hoistCmp.factory({
     model: creates(() => DataViewTestPanelModel),
 
-    render({model})  {
+    render({model}) {
         const {dataViewModel} = model;
         return panel({
             className: 'dataview-test xh-tiled-bg',
@@ -44,7 +44,7 @@ class DataViewTestPanelModel extends HoistModel {
         groupRowHeight: 25
     });
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {dataViewModel} = this,
             allCustomers = await XH.fetchJson({url: 'customer'}),
             customers = take(shuffle(allCustomers), 100);

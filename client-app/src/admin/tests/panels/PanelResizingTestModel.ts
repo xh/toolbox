@@ -7,14 +7,14 @@ export class PanelResizingTestModel extends HoistModel {
 
     @observable resizeWhileDragging = false;
 
-    @observable.ref topPanel1Model;
-    @observable.ref topPanel2Model;
-    @observable.ref leftPanel1Model;
-    @observable.ref leftPanel2Model;
-    @observable.ref rightPanel1Model;
-    @observable.ref rightPanel2Model;
-    @observable.ref bottomPanel1Model;
-    @observable.ref bottomPanel2Model;
+    @observable.ref topPanel1Model: PanelModel;
+    @observable.ref topPanel2Model: PanelModel;
+    @observable.ref leftPanel1Model: PanelModel;
+    @observable.ref leftPanel2Model: PanelModel;
+    @observable.ref rightPanel1Model: PanelModel;
+    @observable.ref rightPanel2Model: PanelModel;
+    @observable.ref bottomPanel1Model: PanelModel;
+    @observable.ref bottomPanel2Model: PanelModel;
 
     resizablePanelNames = [
         'topPanel1Model',
@@ -34,7 +34,7 @@ export class PanelResizingTestModel extends HoistModel {
     }
 
     @action
-    setPanelModels() {
+    private setPanelModels() {
         this.topPanel1Model = new PanelModel({
             resizeWhileDragging: this.resizeWhileDragging,
             defaultSize: 100,
@@ -88,7 +88,7 @@ export class PanelResizingTestModel extends HoistModel {
         });
     }
 
-    setCollapsedAll(collapsed) {
+    setCollapsedAll(collapsed: boolean) {
         this.resizablePanelNames.forEach(it => this[it].setCollapsed(collapsed));
     }
 
@@ -113,11 +113,10 @@ export class PanelResizingTestModel extends HoistModel {
         }),
         p('The vertical and horizontal drag bars on the surrounding panels should be draggable (hold mouse down on bar and drag) and dragging a bar should resize its panel.'),
         p('There are two modes:'),
-        ol({
-            items: [
-                li('Resize after drag (the default mode)'),
-                li('Resize while dragging.')
-            ]}),
+        ol(
+            li('Resize after drag (the default mode)'),
+            li('Resize while dragging.')
+        ),
         p('In default "Resize after Drag" mode, the drag bar should only be draggable as far as the next sibling\'s far side.  Also, if the next sibling is itself resizable, it will not shrink, but get pushed over.'),
         p('Panels that specify a minSize should not be resizable smaller than that specified size.')
     ];

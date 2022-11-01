@@ -5,17 +5,18 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {cloneDeep, isEmpty, isEqual, pullAllWith, unionWith} from 'lodash';
+import {StoreRecord} from '@xh/hoist/data';
 
 export class DimensionManagerModel extends HoistModel {
 
     @observable.ref value = [];
 
-    defaultDims;
-    userDims;
-    userDimPref;
+    defaultDims: string[][];
+    userDims: string[][];
+    userDimPref: string;
 
-    @managed groupingChooserModel;
-    @managed gridModel;
+    @managed groupingChooserModel: GroupingChooserModel;
+    @managed gridModel: GridModel;
 
     constructor(config) {
         super();
@@ -48,7 +49,7 @@ export class DimensionManagerModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => this.selection,
+            track: () => this.selectedRecord,
             run: (rec) => this.onSelectionChange(rec)
         });
 
@@ -63,17 +64,17 @@ export class DimensionManagerModel extends HoistModel {
     }
 
     @action
-    setValue(val) {
+    private setValue(val) {
         this.value = val;
         this.groupingChooserModel.setValue(val);
     }
 
     @action
-    onSelectionChange(rec) {
-        if (rec) this.setValue(this.decodeOptId(rec.id));
+    private onSelectionChange(rec: StoreRecord) {
+        if (rec) this.setValue(this.decodeOptId(rec.id as string));
     }
 
-    onDimChooserValChange(val) {
+    private onDimChooserValChange(val) {
         if (isEmpty(val)) return;
 
         const {gridModel} = this,
@@ -96,13 +97,13 @@ export class DimensionManagerModel extends HoistModel {
 
     get formattedDimensions() {return this.formatDimensions(this.value)}
 
-    get selection() {return this.gridModel.selectedRecord}
+    private get selectedRecord() {return this.gridModel.selectedRecord}
 
-    get enableDelete() {
-        return this.selection && this.selection.type != 'Default';
+    private get enableDelete() {
+        return this.selectedRecord && this.selectedRecord.data.type != 'Default';
     }
 
-    populateGrid(idToSelect) {
+    private populateGrid(idToSelect: string) {
         const {defaultRowData, userRowData, gridModel} = this;
 
         gridModel.loadData([...defaultRowData, ...userRowData]);
@@ -116,18 +117,18 @@ export class DimensionManagerModel extends HoistModel {
         });
     }
 
-    deleteSelected() {
+    private deleteSelected() {
         if (!this.enableDelete) return;
 
-        const {selection, userDims} = this,
-            dimsToDelete = this.decodeOptId(selection.id),
+        const {selectedRecord, userDims} = this,
+            dimsToDelete = this.decodeOptId(selectedRecord.id as string),
             dimsCopy = cloneDeep(userDims),
             newDims = pullAllWith(dimsCopy, [dimsToDelete], isEqual);
 
         this.setUserDims(newDims);
     }
 
-    setUserDims(dims, idToSelect = null) {
+    private setUserDims(dims: string[][], idToSelect: string = null) {
         this.userDims = dims;
         this.populateGrid(idToSelect);
 
@@ -146,7 +147,7 @@ export class DimensionManagerModel extends HoistModel {
         });
     }
 
-    get userRowData() {
+    private get userRowData() {
         return this.userDims.map(dims => {
             return {
                 id: this.encodeOptId(dims),
@@ -156,15 +157,15 @@ export class DimensionManagerModel extends HoistModel {
         });
     }
 
-    decodeOptId(id) {
+    decodeOptId(id: string) {
         return id.split('>>');
     }
 
-    encodeOptId(dims) {
+    encodeOptId(dims: string[]) {
         return dims.join('>>');
     }
 
-    formatDimensions(dims) {
+    formatDimensions(dims: string[]) {
         return dims.map(dim => this.groupingChooserModel.getDimDisplayName(dim)).join(' › ');
     }
 

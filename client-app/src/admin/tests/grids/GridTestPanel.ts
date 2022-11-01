@@ -37,8 +37,8 @@ export const GridTestPanel = hoistCmp({
     }
 });
 
-const tbar = hoistCmp.factory(
-    ({model}) => new toolbar(
+const tbar = hoistCmp.factory<GridTestModel>(
+    ({model}) => toolbar(
         tooltip({
             content: 'ID prefix',
             item: numberInput({
@@ -102,7 +102,7 @@ const tbar = hoistCmp.factory(
     )
 );
 
-const bbar1 = hoistCmp.factory(
+const bbar1 = hoistCmp.factory<GridTestModel>(
     ({model}) => toolbar(
         switchInput({
             bind: 'showSummary',
@@ -139,7 +139,7 @@ const bbar1 = hoistCmp.factory(
     )
 );
 
-const bbar2 = hoistCmp.factory(
+const bbar2 = hoistCmp.factory<GridTestModel>(
     ({model}) => toolbar(
         label('Persist:'),
         tooltip({
@@ -191,7 +191,7 @@ const bbar2 = hoistCmp.factory(
     )
 );
 
-const bbar3 = hoistCmp.factory(
+const bbar3 = hoistCmp.factory<GridTestModel>(
     ({model}) => toolbar(
         label('Chooser:'),
         colChooserButton({
