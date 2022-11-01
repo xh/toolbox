@@ -3,11 +3,11 @@ import {getOrCreate} from '@xh/hoist/utils/js';
 
 export class PctTotalAggregator extends Aggregator {
 
-    get dependsOnChildrenOnly() {
+    override get dependsOnChildrenOnly() {
         return false;
     }
 
-    aggregate(rows, fieldName, ctx) {
+    override aggregate(rows, fieldName, ctx) {
         const {appData, filteredRecords} = ctx,
             tot = getOrCreate(appData, '_pctTotal' + fieldName, () => {
                 return filteredRecords.reduce((sum, rec) => sum + rec.data[fieldName] ?? 0, 0);

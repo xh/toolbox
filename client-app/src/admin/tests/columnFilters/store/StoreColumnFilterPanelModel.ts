@@ -6,10 +6,10 @@ import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/form
 
 export class StoreColumnFilterPanelModel extends HoistModel {
 
-    @bindable.ref filterJson = JSON.stringify(null);
+    @bindable.ref filterJson: string = JSON.stringify(null);
 
-    @managed gridModel;
-    @managed filterChooserModel;
+    @managed gridModel: GridModel;
+    @managed filterChooserModel: FilterChooserModel;
 
     constructor() {
         super();
@@ -22,13 +22,12 @@ export class StoreColumnFilterPanelModel extends HoistModel {
         this.addReaction({
             track: () => this.gridModel.filterModel.filter,
             run: (filter) => {
-                const str = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
-                this.setFilterJson(str);
+                this.filterJson = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
             }
         });
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {gridModel} = this,
             {trades} = await XH.fetchJson({url: 'trade'});
 
@@ -44,7 +43,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
     //--------------------
     // Grid Mode Implementation
     //--------------------
-    createGridModel() {
+    private createGridModel() {
         return new GridModel({
             selModel: {mode: 'multiple'},
             sortBy: 'profit_loss|desc|abs',
@@ -73,7 +72,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                     },
                     {
                         name: 'trade_volume',
-                        headerName: 'Volume (Sales Quantity)',
+                        displayName: 'Volume (Sales Quantity)',
                         type: 'number'
                     },
                     {
@@ -153,7 +152,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
         });
     }
 
-    createFilterChooserModel() {
+    private createFilterChooserModel() {
         const {store} = this.gridModel;
         return new FilterChooserModel({
             bind: store,

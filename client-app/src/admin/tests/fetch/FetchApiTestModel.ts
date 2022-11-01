@@ -1,5 +1,5 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
+import {HoistModel, managed, PlainObject, TaskObserver, XH} from '@xh/hoist/core';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {merge} from 'lodash';
@@ -7,10 +7,10 @@ import {codes} from './Codes';
 import {codeGroupBtns, fetchServiceFeatures, individualBtns} from './TabPanels';
 
 
-export class FetchApiTestModel extends  HoistModel {
+export class FetchApiTestModel extends HoistModel {
 
     @bindable testServer;
-    @bindable testMethod;
+    @bindable testMethod: string;
     @observable outcome = null;
 
     referenceSite = 'https://httpstatuses.com/';
@@ -27,14 +27,15 @@ export class FetchApiTestModel extends  HoistModel {
     ];
 
     testMethods = [
-        {
-            value: 'fetch',
-            label: 'fetch (GET)'
-        }, 'getJson', 'postJson', 'putJson', 'deleteJson'
+        {value: 'fetch', label: 'fetch (GET)'},
+        {value: 'getJson'},
+        {value: 'postJson'},
+        {value: 'putJson'},
+        {value: 'deleteJson'}
     ];
 
     @managed
-    loadModel = TaskObserver.trackLast();
+    taskModel = TaskObserver.trackLast();
 
     @managed
     testsTabModel = new TabContainerModel({
@@ -60,8 +61,8 @@ export class FetchApiTestModel extends  HoistModel {
     constructor() {
         super();
         makeObservable(this);
-        this.setTestServer(this.testServers[0].value);
-        this.setTestMethod(this.testMethods[0].value);
+        this.testServer = this.testServers[0].value;
+        this.testMethod = this.testMethods[0].value;
     }
 
     async testCodeGroupAsync(codeGroup) {
@@ -82,16 +83,16 @@ export class FetchApiTestModel extends  HoistModel {
                     })
                 );
             })
-            .linkTo(this.loadModel);
+            .linkTo(this.taskModel);
     }
 
     async testCodeAsync(code) {
         this.doTestAsync(code)
             .then((resp) => this.setOutcome(this.formatOutcome(resp, code)))
-            .linkTo(this.loadModel);
+            .linkTo(this.taskModel);
     }
 
-    async doTestAsync(code) {
+    private async doTestAsync(code) {
         return wait()
             .then(() => {
                 if (this.testMethod === 'fetch') return this.doFetchAsync({code});
@@ -101,7 +102,8 @@ export class FetchApiTestModel extends  HoistModel {
             );
     }
 
-    async doFetchAsync({code, delay, autoAbortKey, timeout}) {
+    private async doFetchAsync(opts: {code, delay?, autoAbortKey?, timeout?}) {
+        const {code, delay, autoAbortKey, timeout} = opts;
         return XH.fetch(this.requestOptions({code, delay, autoAbortKey, timeout}))
             .then(async (resp) => {
                 const output = this.getResponseProps(resp);
@@ -126,7 +128,7 @@ export class FetchApiTestModel extends  HoistModel {
             }).catch(
                 (err) => this.handleError(err)
             ).then((resp) => this.setOutcome(this.formatOutcome(resp, code)))
-            .linkTo(this.loadModel);
+            .linkTo(this.taskModel);
 
         wait(1)
             .then(() => {
@@ -150,10 +152,10 @@ export class FetchApiTestModel extends  HoistModel {
             }).catch(
                 (err) => this.handleError(err)
             ).then((resp) => this.setOutcome(this.formatOutcome(resp, code)))
-            .linkTo(this.loadModel);
+            .linkTo(this.taskModel);
     }
 
-    handleError(err) {
+    private handleError(err) {
         let ret;
         if (err.name.includes('HTTP Error')) {
             ret = err;
@@ -167,7 +169,7 @@ export class FetchApiTestModel extends  HoistModel {
         return ret;
     }
 
-    formatOutcome(response, code) {
+    private formatOutcome(response, code) {
         // Early out on fetch features
         if (
             response.name === 'Fetch Timeout' ||
@@ -189,11 +191,12 @@ export class FetchApiTestModel extends  HoistModel {
     }
 
     @action
-    setOutcome(obj) {
+    private setOutcome(obj) {
         this.outcome = JSON.stringify(obj, undefined, 2);
     }
 
-    requestOptions({code, delay, autoAbortKey, timeout}) {
+    private requestOptions(opts: {code, delay?, autoAbortKey?, timeout?}) {
+        const {code, delay, autoAbortKey, timeout} = opts;
         const sep = this.testServer.includes('fetchTest') ? '&' : '?',
             sleepParam = delay ? sep + 'sleep=' + delay : '';
         const ret = {
@@ -220,11 +223,11 @@ export class FetchApiTestModel extends  HoistModel {
         return ret;
     }
 
-    get useCreds() {
+    private get useCreds() {
         return !this.testServer.includes('httpstat');
     }
 
-    getResponseProps(resp) {
+    getResponseProps(resp): PlainObject {
         const ret = {};
         for (let p in resp) {
             const type = typeof resp[p];
@@ -236,7 +239,7 @@ export class FetchApiTestModel extends  HoistModel {
         return ret;
     }
 
-    getResponseHeaders(resp) {
+    private getResponseHeaders(resp): PlainObject {
         const ret = {};
         resp.headers.forEach((val, key) => {
             ret[key] = val;
@@ -244,7 +247,7 @@ export class FetchApiTestModel extends  HoistModel {
         return ret;
     }
 
-    async getResponseBodyAsync(resp) {
+    private async getResponseBodyAsync(resp) {
         const ct = resp.headers.get('Content-Type');
         let method;
         switch (true) {

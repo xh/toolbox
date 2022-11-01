@@ -1,11 +1,12 @@
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
 import {dateTimeRenderer} from '@xh/hoist/format';
 import {codeInput, textArea} from '@xh/hoist/desktop/cmp/input';
-import {XH, hoistCmp} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {toNumber} from 'lodash';
+import {App} from '../../apps/admin';
 
 export const projectRestPanel = hoistCmp.factory(
-    () => restGrid({model: {...modelSpec, readonly: XH.appModel.readonly}})
+    () => restGrid({modelConfig: {...modelSpec, readonly: App.readonly}})
 );
 
 const tooltip = s => s;

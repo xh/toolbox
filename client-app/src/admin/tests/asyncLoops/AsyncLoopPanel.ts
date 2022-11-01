@@ -7,7 +7,7 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtDateTime} from '@xh/hoist/format';
 import {fmtNumber} from '@xh/hoist/format/FormatNumber';
 import {Icon} from '@xh/hoist/icon';
-import {bindable, makeObservable, computed} from '@xh/hoist/mobx';
+import {bindable, observable, makeObservable, runInAction, computed} from '@xh/hoist/mobx';
 import {forEachAsync, Timer, whileAsync} from '@xh/hoist/utils/async';
 import {withDebug} from '@xh/hoist/utils/js';
 import {sampleGrid} from '../../../desktop/common';
@@ -31,49 +31,50 @@ export const asyncLoopPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory(({model}) => {
-    const {loadModel, lastRunDuration} = model,
-        {isPending} = loadModel;
+const tbar = hoistCmp.factory<AsyncLoopPanelModel>(
+    ({model}) => {
+        const {loadModel, lastRunDuration} = model,
+            {isPending} = loadModel;
 
-    return toolbar({
-        items: [
-            span('Iterations:'),
-            numberInput({
-                bind: 'iterations',
-                width: 100
-            }),
-            toolbarSep(),
-            'Loop Type:',
-            select({
-                bind: 'loopType',
-                options: ['forEach', 'while', 'forEachAsync', 'whileAsync']
-            }),
-            toolbarSep(),
-            toolbarSep(),
-            'Auto-Refresh (secs):',
-            select({
-                bind: 'refreshInterval',
-                options: [-1, 5, 10, 30]
-            }),
-            button({
-                text: isPending ? 'Working...' : 'Run',
-                disabled: isPending,
-                icon: Icon.refresh(),
-                intent: 'primary',
-                outlined: true,
-                onClick: () => wait().then(() => model.loadAsync())
-            }),
-            hspacer(),
-            lastRunDuration ? span(`Last run took `, fmtNumber(lastRunDuration, {label: 'ms'})) : null
-        ]
+        return toolbar({
+            items: [
+                span('Iterations:'),
+                numberInput({
+                    bind: 'iterations',
+                    width: 100
+                }),
+                toolbarSep(),
+                'Loop Type:',
+                select({
+                    bind: 'loopType',
+                    options: ['forEach', 'while', 'forEachAsync', 'whileAsync']
+                }),
+                toolbarSep(),
+                toolbarSep(),
+                'Auto-Refresh (secs):',
+                select({
+                    bind: 'refreshInterval',
+                    options: [-1, 5, 10, 30]
+                }),
+                button({
+                    text: isPending ? 'Working...' : 'Run',
+                    disabled: isPending,
+                    icon: Icon.refresh(),
+                    intent: 'primary',
+                    outlined: true,
+                    onClick: () => wait().then(() => model.loadAsync())
+                }),
+                hspacer(),
+                lastRunDuration ? span(`Last run took `, fmtNumber(lastRunDuration, {label: 'ms'})) : null
+            ]
+        });
     });
-});
 
 class AsyncLoopPanelModel extends HoistModel {
     @bindable iterations = 1000 * 1000;
-    @bindable lastRunDuration = null;
     @bindable loopType = 'forEachAsync';
     @bindable refreshInterval = -1;
+    @observable lastRunDuration: number = null;
 
     @managed timer = Timer.create({
         runFn: () => this.refreshAsync(),
@@ -90,14 +91,14 @@ class AsyncLoopPanelModel extends HoistModel {
         return times(this.iterations, () => ({}));
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
 
         if (loadSpec.loadNumber === 0) return;
 
         const start = Date.now();
         await wait();
         await this.runLoopAsync();
-        this.setLastRunDuration(Date.now() - start);
+        runInAction(() => this.lastRunDuration = Date.now() - start);
     }
 
     testFn(obj) {
@@ -105,8 +106,7 @@ class AsyncLoopPanelModel extends HoistModel {
     }
 
     async runLoopAsync() {
-        const {iterations, collection, loopType} = this,
-            options = {debug: loopType};
+        const {iterations, collection, loopType} = this;
 
         await withDebug([`Looping ${iterations} times with ${loopType}`], async () => {
             let i = 0;
@@ -114,11 +114,11 @@ class AsyncLoopPanelModel extends HoistModel {
                 case 'forEachAsync':
                     return await forEachAsync(collection, (it) => {
                         this.testFn(it);
-                    }, options);
+                    });
                 case 'whileAsync':
                     return await whileAsync(() => i < iterations, () => {
                         this.testFn(collection[i++]);
-                    }, options);
+                    });
                 case 'forEach':
                     collection.forEach(it => {
                         this.testFn(it);

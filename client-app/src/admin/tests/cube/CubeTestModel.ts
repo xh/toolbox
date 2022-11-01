@@ -1,20 +1,21 @@
 import {GridModel, timeCol, TreeStyle} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable, comparer, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {isEmpty} from 'lodash';
 import {DimensionManagerModel} from './dimensions/DimensionManagerModel';
 import {LoadTimesModel} from './LoadTimesModel';
 import {CubeModel} from './CubeModel';
+import {QueryConfig, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
 
-    @managed cubeModel;
-    @managed gridModel;
-    @managed view;
-    @managed dimManagerModel;
-    @managed loadTimesModel;
+    @managed cubeModel: CubeModel;
+    @managed gridModel: GridModel;
+    @managed view: View;
+    @managed dimManagerModel: DimensionManagerModel;
+    @managed loadTimesModel: LoadTimesModel;
 
     @bindable includeGlobalAgg = true;
     @bindable includeLeaves = false;
@@ -47,20 +48,20 @@ export class CubeTestModel extends HoistModel {
         this.addReaction({
             track: () => this.getQuery(),
             run: () => this.executeQueryAsync(),
-            equals: 'structural'
+            equals: comparer.structural
         });
     }
 
-    get fields() {
+    private get fields() {
         let {fields} = this.cubeModel.cube;
-        if (!this.includeGlobalAgg) fields =  fields.filter(f => f.name !== 'pctCommission');
+        if (!this.includeGlobalAgg) fields = fields.filter(f => f.name !== 'pctCommission');
         return fields.map(f => f.name);
     }
 
-    getQuery() {
+    private getQuery(): QueryConfig {
         const {fields, dimManagerModel, fundFilter, includeLeaves} = this,
             dimensions = dimManagerModel.value,
-            filter = !isEmpty(fundFilter) ? {field: 'fund', op: '=', value: fundFilter} : null,
+            filter = !isEmpty(fundFilter) ? {field: 'fund', op: '=', value: fundFilter} as const : null,
             includeRoot = this.showSummary;
 
         return {fields, dimensions, filter, includeLeaves, includeRoot};
@@ -70,16 +71,16 @@ export class CubeTestModel extends HoistModel {
         this.cubeModel.cube.clearAsync();
     }
 
-    async doLoadAsync() {
+    override async doLoadAsync() {
         await this.cubeModel.loadAsync();
     }
 
-    async executeQueryAsync() {
+    private async executeQueryAsync() {
         const LTM = this.loadTimesModel,
             {gridModel, loadModel, showSummary} = this,
             query = this.getQuery(),
             dimCount = query.dimensions.length,
-            filterCount = !isEmpty(query.filter) ? query.filter.value.length : 0;
+            filterCount = (query.filter as any)?.value?.length ?? 0; // Any filter is a FieldFilter with [] of Funds
 
         // Query is initialized with empty dims and is triggering an initial run we don't need.
         if (!dimCount) return;
@@ -95,7 +96,7 @@ export class CubeTestModel extends HoistModel {
         }).linkTo(loadModel);
     }
 
-    createGridModel() {
+    private createGridModel() {
         return new GridModel({
             treeMode: true,
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
@@ -117,7 +118,6 @@ export class CubeTestModel extends HoistModel {
                 {
                     field: 'cubeLabel',
                     headerName: 'Name',
-                    // flex: 1,
                     minWidth: 180,
                     isTreeColumn: true
                 },
