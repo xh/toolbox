@@ -1,7 +1,7 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {hoistCmp, uses, HoistProps} from '@xh/hoist/core';
+import {hoistCmp, uses, HoistProps, BoxProps} from '@xh/hoist/core';
 import {colAutosizeButton, colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -11,7 +11,7 @@ import {gridOptionsPanel} from './options/GridOptionsPanel';
 import './SampleGrid.scss';
 import {SampleGridModel} from './SampleGridModel';
 
-export interface SampleGridProps extends HoistProps<SampleGridModel> {
+export interface SampleGridProps extends HoistProps<SampleGridModel>, BoxProps {
     /**
      * True to drop grid-example-specific toolbars/controls - for use when embedding the grid
      * within other examples were such controls would be distracting.
