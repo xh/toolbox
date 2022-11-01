@@ -25,7 +25,7 @@ export interface SampleGridProps extends HoistProps<SampleGridModel>, BoxProps {
     omitMask?: boolean;
 }
 
-export const [SampleGrid, sampleGrid] = hoistCmp.withFactory({
+export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
     model: uses(SampleGridModel, {createDefault: true}),
     className: 'tb-sample-grid',
 
