@@ -1,7 +1,7 @@
 import {switchInput, numberInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
-import {creates, hoistCmp, HoistModel, managed, RefreshMode, RenderMode, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, frame} from '@xh/hoist/cmp/layout';
@@ -156,7 +156,6 @@ class Model extends HoistModel {
                 title: 'Chart',
                 icon: Icon.chartLine(),
                 unique: true,
-                refreshMode: RefreshMode.ON_SHOW_ALWAYS,
                 content: chartWidget,
                 width: 12,
                 height: 5
@@ -165,7 +164,6 @@ class Model extends HoistModel {
                 id: 'panel',
                 title: 'Panel',
                 icon: Icon.window(),
-                renderMode: RenderMode.ALWAYS,
                 content: panelWidget
             }
         ]

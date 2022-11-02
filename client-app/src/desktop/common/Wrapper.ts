@@ -1,4 +1,4 @@
-import {hoistCmp, HoistModel, managed, XH, creates, HoistProps, ChildrenProps} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, managed, XH, creates, HoistProps} from '@xh/hoist/core';
 import {box, table, tbody, td, th, tr} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -7,7 +7,7 @@ import {toolboxLink, ToolboxLinkProps} from '../../core/cmp/ToolboxLink';
 import './Wrapper.scss';
 import {ReactNode} from 'react';
 
-export interface WrapperProps extends HoistProps<WrapperModel>, ChildrenProps {
+export interface WrapperProps extends HoistProps<WrapperModel> {
     /**
      * Intro text or description for the Component/pattern demo'd by this tab.
      */
