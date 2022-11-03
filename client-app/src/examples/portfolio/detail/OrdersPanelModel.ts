@@ -2,8 +2,7 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {isNil, map, uniq} from 'lodash';
-import {PERSIST_DETAIL} from '../AppModel';
-import {App} from '../../../apps/portfolio';
+import {PERSIST_DETAIL, App} from '../AppModel';
 import {
     closingPriceSparklineCol,
     dirCol,

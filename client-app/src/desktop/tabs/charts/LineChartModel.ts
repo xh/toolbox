@@ -3,7 +3,7 @@ import {HoistModel, managed} from '@xh/hoist/core';
 import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
-import {App} from '../../../apps/app';
+import {App} from '../../AppModel';
 
 
 export class LineChartModel extends HoistModel {

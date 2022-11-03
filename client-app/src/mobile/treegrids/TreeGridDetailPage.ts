@@ -5,7 +5,7 @@ import {numberRenderer} from '@xh/hoist/format';
 import {capitalize} from 'lodash';
 import {Icon} from '@xh/hoist/icon';
 import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
-import {App} from '../../apps/mobile';
+import {App} from '../AppModel';
 
 export const treeGridDetailPage = hoistCmp.factory({
     model: creates(() => TreeGridDetailPageModel),

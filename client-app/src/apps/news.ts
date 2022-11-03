@@ -5,7 +5,7 @@ import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 import {AppComponent} from '../examples/news/AppComponent';
 import {AppModel} from '../examples/news/AppModel';
 
-export let App = XH.renderApp({
+XH.renderApp({
     clientAppCode: 'news',
     clientAppName: 'XH News',
     componentClass: AppComponent,

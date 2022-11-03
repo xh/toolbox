@@ -6,7 +6,7 @@ import {SECONDS} from '@xh/hoist/utils/datetime';
 import {Timer} from '@xh/hoist/utils/async';
 import {PctTotalAggregator} from './PctTotalAggregator';
 import {CubeTestModel} from './CubeTestModel';
-import {App} from '../../../apps/admin';
+import {App} from '../../AppModel';
 
 export class CubeModel extends HoistModel {
 

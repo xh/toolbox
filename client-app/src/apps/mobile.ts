@@ -5,7 +5,7 @@ import {AppContainer} from '@xh/hoist/mobile/appcontainer';
 import {AppComponent} from '../mobile/AppComponent';
 import {AppModel} from '../mobile/AppModel';
 
-export let App = await XH.renderApp({
+await XH.renderApp({
     clientAppCode: 'mobile',
     clientAppName: 'Toolbox Mobile',
     componentClass: AppComponent,

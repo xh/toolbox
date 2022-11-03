@@ -11,7 +11,7 @@ import {dimensionManager} from './dimensions/DimensionManager';
 import {loadTimesPanel} from './LoadTimesPanel';
 import {colChooserButton, button} from '@xh/hoist/desktop/cmp/button';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {App} from '../../../apps/admin';
+import {App} from '../../AppModel';
 
 export const CubeTestPanel = hoistCmp({
     model: creates(CubeTestModel),

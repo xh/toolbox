@@ -9,9 +9,8 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {every, isEmpty} from 'lodash';
 import {createRef} from 'react';
-import {PERSIST_APP} from './AppModel';
+import {PERSIST_APP, App} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
-import {App} from './../../apps/todo';
 
 export class TodoPanelModel extends HoistModel {
 

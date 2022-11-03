@@ -2,7 +2,7 @@ import {HoistModel, managed} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
-import {App} from '../../apps/mobile';
+import {App} from '../AppModel';
 
 export class ChartPageModel extends HoistModel {
 

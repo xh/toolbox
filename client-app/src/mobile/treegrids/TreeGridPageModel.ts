@@ -3,7 +3,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/mobile/cmp/grouping';
 import {isEmpty} from 'lodash';
 import {mktValCol, nameCol, pnlCol} from '../../core/columns';
-import {App} from '../../apps/mobile';
+import {App} from '../AppModel';
 
 export class TreeGridPageModel extends HoistModel {
 

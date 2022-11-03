@@ -5,7 +5,7 @@ import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {fmtMillions} from '@xh/hoist/format';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
-import {App} from '../../../apps/app';
+import {App} from '../../AppModel';
 
 export class SplitTreeMapPanelModel extends HoistModel {
 

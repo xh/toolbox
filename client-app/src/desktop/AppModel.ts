@@ -30,6 +30,8 @@ declare module '@xh/hoist/core' {
     }
 }
 
+export let App: AppModel;
+
 export class AppModel extends HoistAppModel {
 
     static oauthService: OauthService;
@@ -60,6 +62,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override async initAsync() {
+        App = this;
         await this.initServicesAsync(GitHubService, PortfolioService);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.

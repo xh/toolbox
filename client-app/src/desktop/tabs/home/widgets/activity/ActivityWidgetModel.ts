@@ -8,8 +8,7 @@ import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {head} from 'lodash';
-import {App} from '../../../../../apps/app';
-
+import {App} from '../../../../AppModel';
 
 export class ActivityWidgetModel extends HoistModel {
 

@@ -3,7 +3,7 @@ import {OauthService} from '../../core/svc/OauthService';
 import {TaskService} from './TaskService';
 
 export const PERSIST_APP = {localStorageKey: 'todoAppState'};
-
+export let App: AppModel;
 export class AppModel extends HoistAppModel {
 
     static oauthService: OauthService;
@@ -14,6 +14,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override async initAsync() {
+        App = this;
         await this.initServicesAsync(TaskService);
     }
 

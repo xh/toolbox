@@ -2,6 +2,8 @@ import {HoistAppModel, initServicesAsync, managed} from '@xh/hoist/core';
 import {OauthService} from '../../core/svc/OauthService';
 import {NewsPanelModel} from './NewsPanelModel';
 
+export let App: AppModel;
+
 export class AppModel extends HoistAppModel {
 
     static oauthService: OauthService;
@@ -14,6 +16,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override async initAsync() {
+        App = this;
         this.newsPanelModel = new NewsPanelModel();
         this.loadAsync();
     }

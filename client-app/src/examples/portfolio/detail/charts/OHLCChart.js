@@ -3,7 +3,7 @@ import {creates, hoistCmp, HoistModel, lookup, managed, XH} from '@xh/hoist/core
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {ChartsPanelModel} from './ChartsPanelModel';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {App} from '../../../../apps/portfolio';
+import {App} from '../../AppModel';
 
 export const ohlcChart = hoistCmp.factory({
     model: creates(() => OHLCChartModel),

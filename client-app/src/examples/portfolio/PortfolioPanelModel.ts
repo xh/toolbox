@@ -4,7 +4,7 @@ import {GridPanelModel} from './GridPanelModel';
 import {round} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {PERSIST_MAIN} from './AppModel';
-import {App} from '../../apps/portfolio';
+import {App} from './AppModel';
 
 export class PortfolioPanelModel extends HoistModel {
 

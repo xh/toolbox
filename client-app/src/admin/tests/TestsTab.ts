@@ -21,7 +21,7 @@ export const testsTab = hoistCmp.factory(
                 route: 'default.tests',
                 switcher: {orientation: 'left'},
                 tabs: [
-                    // {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
+                    {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
                     {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
                     {id: 'dataView', title: 'Data View', content: dataViewTestPanel},
                     {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
