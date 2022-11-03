@@ -8,7 +8,6 @@ import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {action, makeObservable} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
-import {App} from '../../AppModel';
 
 export class SampleTreeGridModel extends HoistModel {
 
