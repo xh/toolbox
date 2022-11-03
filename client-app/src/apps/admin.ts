@@ -5,7 +5,7 @@ import {AppComponent} from '@xh/hoist/admin/AppComponent';
 import {AppModel} from '../admin/AppModel';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
-export const App = await XH.renderApp({
+XH.renderApp({
     clientAppCode: 'admin',
     clientAppName: 'Toolbox Admin',
     componentClass: AppComponent,

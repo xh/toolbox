@@ -19,6 +19,8 @@ import {popupsPage} from './popups/PopupsPage';
 import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
 import {treeGridPage} from './treegrids/TreeGridPage';
 
+export let App: AppModel;
+
 export class AppModel extends HoistAppModel {
 
     static oauthService: OauthService;
@@ -126,6 +128,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override async initAsync() {
+        App = this;
         await this.initServicesAsync(PortfolioService);
     }
 

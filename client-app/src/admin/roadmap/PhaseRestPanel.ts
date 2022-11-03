@@ -1,7 +1,7 @@
 import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
 import {hoistCmp} from '@xh/hoist/core';
 import {boolCheckCol} from '@xh/hoist/cmp/grid';
-import {App} from '../../apps/admin';
+import {App} from '../AppModel';
 
 export const phaseRestPanel = hoistCmp.factory(
     () => restGrid({modelConfig: {...modelSpec, readonly: App.readonly}})

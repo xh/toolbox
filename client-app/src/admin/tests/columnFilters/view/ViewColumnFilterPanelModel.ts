@@ -5,7 +5,7 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {observable, makeObservable, comparer} from '@xh/hoist/mobx';
 import {numberRenderer} from '@xh/hoist/format';
-import {App} from '../../../../apps/admin';
+import {App} from '../../../AppModel';
 
 export class ViewColumnFilterPanelModel extends HoistModel {
 

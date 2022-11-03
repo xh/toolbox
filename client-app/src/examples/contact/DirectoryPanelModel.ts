@@ -5,11 +5,10 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {withFilterByField, withFilterByKey} from '@xh/hoist/data';
 import {isEmpty, uniq, without} from 'lodash';
 
-import {PERSIST_APP} from './AppModel';
+import {App, PERSIST_APP} from './AppModel';
 import {favoriteButton} from './cmp/FavoriteButton';
 import {DetailsPanelModel} from './details/DetailsPanelModel';
 import {cellPhoneCol, emailCol, locationCol, nameCol, workPhoneCol} from '../../core/columns';
-import {App} from '../../apps/contact';
 import {FilterLike} from '@xh/hoist/data/filter/Types';
 
 /**

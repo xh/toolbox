@@ -5,11 +5,14 @@ import {roadmapTab} from './roadmap/RoadmapTab';
 import {testsTab} from './tests/TestsTab';
 import {wipTab} from './wip/WipTab';
 
+export let App: AppModel;
+
 export class AppModel extends BaseAppModel {
 
     portfolioService: PortfolioService;
 
     override async initAsync() {
+        App = this;
         await this.initServicesAsync(PortfolioService);
     }
 

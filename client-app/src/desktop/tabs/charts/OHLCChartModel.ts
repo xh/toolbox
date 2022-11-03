@@ -3,7 +3,7 @@ import {ChartModel} from '@xh/hoist/cmp/chart';
 import {bindable, observable, runInAction, makeObservable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {isEmpty} from 'lodash';
-import {App} from '../../../apps/app';
+import {App} from '../../AppModel';
 
 export class OHLCChartModel extends HoistModel {
 

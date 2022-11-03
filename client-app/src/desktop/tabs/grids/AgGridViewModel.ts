@@ -2,7 +2,7 @@ import {HoistModel, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
 import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
-import {App} from '../../../apps/app';
+import {App} from '../../AppModel';
 
 export class AgGridViewModel extends HoistModel {
 

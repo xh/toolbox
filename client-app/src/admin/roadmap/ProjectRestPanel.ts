@@ -3,7 +3,7 @@ import {dateTimeRenderer} from '@xh/hoist/format';
 import {codeInput, textArea} from '@xh/hoist/desktop/cmp/input';
 import {hoistCmp} from '@xh/hoist/core';
 import {toNumber} from 'lodash';
-import {App} from '../../apps/admin';
+import {App} from '../AppModel';
 
 export const projectRestPanel = hoistCmp.factory(
     () => restGrid({modelConfig: {...modelSpec, readonly: App.readonly}})

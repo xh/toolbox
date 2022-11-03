@@ -3,8 +3,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
-import {App} from '../../../apps/app';
-
+import {App} from '../../AppModel';
 
 export class GridTreeMapModel extends HoistModel {
 

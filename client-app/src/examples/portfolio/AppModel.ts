@@ -4,6 +4,7 @@ import {Icon} from '@xh/hoist/icon';
 import {OauthService} from '../../core/svc/OauthService';
 import {PortfolioService} from '../../core/svc/PortfolioService';
 
+export let App: AppModel;
 export const PERSIST_MAIN = {localStorageKey: 'portfolioAppMainState'};
 export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
 
@@ -17,6 +18,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override async initAsync() {
+        App = this;
         await this.initServicesAsync(PortfolioService);
 
         this.addReaction({
