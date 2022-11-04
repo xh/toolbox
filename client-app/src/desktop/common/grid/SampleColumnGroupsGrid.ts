@@ -2,7 +2,6 @@ import {grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {StoreContextMenu} from '@xh/hoist/desktop/cmp/contextmenu';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
@@ -116,19 +115,16 @@ class SampleColumnGroupsGridModel extends HoistModel {
             colChooserModel: true,
             enableExport: true,
             contextMenu: () => {
-                return new StoreContextMenu({
-                    items: [
-                        {
-                            text: 'View Details',
-                            icon: Icon.search(),
-                            recordsRequired: 1,
-                            actionFn: ({record}) => this.showRecToast(record)
-                        },
-                        '-',
-                        ...GridModel.defaultContextMenu
-                    ],
-                    gridModel: this.gridModel
-                });
+                return [
+                    {
+                        text: 'View Details',
+                        icon: Icon.search(),
+                        recordsRequired: 1,
+                        actionFn: ({record}) => this.showRecToast(record)
+                    },
+                    '-',
+                    ...GridModel.defaultContextMenu
+                ];
             },
             columns: [
                 {
