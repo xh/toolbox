@@ -299,7 +299,7 @@ export class InlineEditingPanelModel extends HoistModel {
                             valueType: 'localDate'
                         }
                     }),
-                    tooltip: (v) => fmtDate(v, 'dddd MMMM Do YYYY')
+                    tooltipElement: (v) => fmtDate(v, 'dddd MMMM Do YYYY')
                 },
                 {
                     field: 'description',

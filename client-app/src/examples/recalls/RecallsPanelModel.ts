@@ -74,7 +74,7 @@ export class RecallsPanelModel extends HoistModel {
                 ...localDateCol,
                 headerName: 'Date',
                 width: 100,
-                renderer: compactDateRenderer('MMM D')
+                renderer: compactDateRenderer()
             },
             {
                 field: 'description',
