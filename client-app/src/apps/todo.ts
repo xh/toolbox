@@ -5,7 +5,7 @@ import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 import {AppComponent} from '../examples/todo/AppComponent';
 import {AppModel} from '../examples/todo/AppModel';
 
-await XH.renderApp({
+XH.renderApp({
     clientAppCode: 'todo',
     clientAppName: 'Todo',
     componentClass: AppComponent,
