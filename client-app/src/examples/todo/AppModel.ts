@@ -1,24 +1,27 @@
-import {HoistAppModel, initServicesAsync} from '@xh/hoist/core';
+import {HoistAppModel, XH} from '@xh/hoist/core';
 import {OauthService} from '../../core/svc/OauthService';
 import {TaskService} from './TaskService';
 
 export const PERSIST_APP = {localStorageKey: 'todoAppState'};
-export let App: AppModel;
-export class AppModel extends HoistAppModel {
 
-    static oauthService: OauthService;
-    taskService: TaskService;
+export const App = {
+    get model() {return AppModel.instance},
+    get oauthService() {return OauthService.instance},
+    get taskService()   {return TaskService.instance}
+};
+
+export class AppModel extends HoistAppModel {
+    static instance: AppModel;
 
     static async preAuthAsync() {
-        await initServicesAsync(OauthService, this);
+        await XH.installServicesAsync(OauthService);
     }
 
     override async initAsync() {
-        App = this;
-        await this.initServicesAsync(TaskService);
+        await XH.installServicesAsync(TaskService);
     }
 
     override async logoutAsync() {
-        await AppModel.oauthService.logoutAsync();
+        await App.oauthService.logoutAsync();
     }
 }

@@ -1,25 +1,28 @@
-import {HoistAppModel, initServicesAsync, XH} from '@xh/hoist/core';
+import {HoistAppModel, XH} from '@xh/hoist/core';
 import {themeAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {Icon} from '@xh/hoist/icon';
 import {OauthService} from '../../core/svc/OauthService';
 import {PortfolioService} from '../../core/svc/PortfolioService';
 
-export let App: AppModel;
 export const PERSIST_MAIN = {localStorageKey: 'portfolioAppMainState'};
 export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
 
+export const App = {
+    get model() {return AppModel.instance},
+    get oauthService() {return OauthService.instance},
+    get portfolioService() {return PortfolioService.instance}
+};
+
 export class AppModel extends HoistAppModel {
 
-    static oauthService: OauthService;
-    portfolioService: PortfolioService;
+    static instance: AppModel;
 
     static async preAuthAsync() {
-        await initServicesAsync(OauthService, this);
+        await XH.installServicesAsync(OauthService);
     }
 
     override async initAsync() {
-        App = this;
-        await this.initServicesAsync(PortfolioService);
+        await XH.installServicesAsync(PortfolioService);
 
         this.addReaction({
             track: () => XH.webSocketService.connected,
@@ -28,7 +31,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override async logoutAsync() {
-        await AppModel.oauthService.logoutAsync();
+        await App.oauthService.logoutAsync();
     }
 
     override getAppOptions() {

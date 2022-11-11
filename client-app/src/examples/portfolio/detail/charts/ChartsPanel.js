@@ -15,7 +15,7 @@ export const chartsPanel = hoistCmp.factory({
         return panel({
             title: model.symbol ? `Volume + Pricing: ${model.symbol}` : 'Volume + Pricing',
             icon: Icon.chartArea(),
-            model: {
+            modelConfig: {
                 defaultSize: 700,
                 side: 'right',
                 renderMode: 'unmountOnHide',
@@ -24,7 +24,7 @@ export const chartsPanel = hoistCmp.factory({
             },
             item: model.symbol ?
                 tabContainer({
-                    model: {
+                    modelConfig: {
                         persistWith: {...PERSIST_DETAIL, path: 'chartsTab'},
                         tabs: [
                             {

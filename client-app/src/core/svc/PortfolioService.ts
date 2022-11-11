@@ -5,6 +5,8 @@ import {mapValues} from 'lodash';
 
 export class PortfolioService extends HoistService {
 
+    static instance: PortfolioService;
+
     MAX_POSITIONS = 950;
     lookups: PlainObject;
 

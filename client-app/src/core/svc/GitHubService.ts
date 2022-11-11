@@ -7,6 +7,8 @@ import {forOwn, sortBy} from 'lodash';
 // TODO - auto-refresh with app, do so efficiently, only replacing local data when new commits.
 export class GitHubService extends HoistService {
 
+    static instance: GitHubService;
+
     /** Loaded commits histories, keyed by repoName. */
     @observable.ref commitHistories: PlainObject = {};
 

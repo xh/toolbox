@@ -8,6 +8,8 @@ import {differenceBy} from 'lodash';
  */
 export class TaskService extends HoistService {
 
+    static instance: TaskService;
+
     async getAsync(): Promise<Task[]> {
         return XH.getPref('todoTasks').map(it => {
             const dueDate = LocalDate.get(it.dueDate),

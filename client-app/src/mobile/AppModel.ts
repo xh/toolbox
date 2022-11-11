@@ -1,4 +1,4 @@
-import {HoistAppModel, initServicesAsync, loadAllAsync, managed} from '@xh/hoist/core';
+import {HoistAppModel, XH, loadAllAsync, managed} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {themeAppOption, sizingModeAppOption, autoRefreshAppOption} from '@xh/hoist/mobile/cmp/appOption';
 import {OauthService} from '../core/svc/OauthService';
@@ -19,12 +19,15 @@ import {popupsPage} from './popups/PopupsPage';
 import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
 import {treeGridPage} from './treegrids/TreeGridPage';
 
-export let App: AppModel;
+export const App = {
+    get model() {return AppModel.instance},
+    get oauthService() {return OauthService.instance},
+    get portfolioService() {return PortfolioService.instance}
+};
 
 export class AppModel extends HoistAppModel {
 
-    static oauthService: OauthService;
-    portfolioService: PortfolioService;
+    static instance: AppModel;
 
     @managed
     navigatorModel: NavigatorModel = new NavigatorModel({
@@ -124,16 +127,15 @@ export class AppModel extends HoistAppModel {
     }
 
     static override async preAuthAsync() {
-        await initServicesAsync(OauthService, this);
+        await XH.installServicesAsync(OauthService);
     }
 
     override async initAsync() {
-        App = this;
-        await this.initServicesAsync(PortfolioService);
+        await XH.installServicesAsync(PortfolioService);
     }
 
     override async logoutAsync() {
-        await AppModel.oauthService.logoutAsync();
+        await App.oauthService.logoutAsync();
     }
 
     override async doLoadAsync(loadSpec) {

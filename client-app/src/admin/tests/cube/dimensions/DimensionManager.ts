@@ -14,7 +14,7 @@ import {DimensionManagerModel} from './DimensionManagerModel';
  * This component and its backing model are incubating in Toolbox for possible inclusion in
  * the core Hoist toolkit in some form.
  */
-export const [DimensionManager, dimensionManager] = hoistCmp.withFactory({
+export const dimensionManager = hoistCmp.factory({
     displayName: 'DimensionManager',
     model: uses(DimensionManagerModel),
     className: 'xh-dim-manager',

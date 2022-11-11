@@ -1,3 +1,4 @@
+import {XH} from '@xh/hoist/core';
 import {AppModel as BaseAppModel} from '@xh/hoist/admin/AppModel';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
@@ -5,15 +6,17 @@ import {roadmapTab} from './roadmap/RoadmapTab';
 import {testsTab} from './tests/TestsTab';
 import {wipTab} from './wip/WipTab';
 
-export let App: AppModel;
+export const App = {
+    get model(): AppModel { return AppModel.instance},
+    get portfolioService(): PortfolioService {return PortfolioService.instance}
+};
 
 export class AppModel extends BaseAppModel {
 
-    portfolioService: PortfolioService;
+    static instance: AppModel;
 
     override async initAsync() {
-        App = this;
-        await this.initServicesAsync(PortfolioService);
+        await XH.installServicesAsync(PortfolioService);
     }
 
     //------------------------

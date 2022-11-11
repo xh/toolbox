@@ -1,5 +1,5 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {HoistAppModel, initServicesAsync, managed, XH} from '@xh/hoist/core';
+import {HoistAppModel, managed, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
@@ -30,14 +30,16 @@ declare module '@xh/hoist/core' {
     }
 }
 
-export let App: AppModel;
+export const App = {
+    get model() {return AppModel.instance},
+    get oauthService() {return OauthService.instance},
+    get portfolioService() {return PortfolioService.instance},
+    get gitHubService() {return GitHubService.instance}
+};
 
 export class AppModel extends HoistAppModel {
 
-    static oauthService: OauthService;
-
-    gitHubService: GitHubService;
-    portfolioService: PortfolioService;
+    static instance: AppModel;
 
     @managed
     tabModel: TabContainerModel = new TabContainerModel({
@@ -58,12 +60,11 @@ export class AppModel extends HoistAppModel {
     });
 
     static override async preAuthAsync() {
-        await initServicesAsync(OauthService, this);
+        await XH.installServicesAsync(OauthService);
     }
 
     override async initAsync() {
-        App = this;
-        await this.initServicesAsync(GitHubService, PortfolioService);
+        await XH.installServicesAsync(GitHubService, PortfolioService);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
         this.addReaction({
@@ -77,11 +78,11 @@ export class AppModel extends HoistAppModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        await this.gitHubService.loadAsync(loadSpec);
+        await App.gitHubService.loadAsync(loadSpec);
     }
 
     override async logoutAsync() {
-        await AppModel.oauthService.logoutAsync();
+        await App.oauthService.logoutAsync();
     }
 
     goHome() {
@@ -212,7 +213,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override getAboutDialogItems() {
-        const lastGitHubCommit = fmtDateTimeSec(this.gitHubService.commitHistories.toolbox?.lastCommitTimestamp);
+        const lastGitHubCommit = fmtDateTimeSec(App.gitHubService.commitHistories.toolbox?.lastCommitTimestamp);
         return [
             ...super.getAboutDialogItems(),
             {

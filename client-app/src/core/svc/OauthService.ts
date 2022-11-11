@@ -24,6 +24,8 @@ import {SECONDS} from '@xh/hoist/utils/datetime';
  */
 export class OauthService extends HoistService {
 
+    static instance: OauthService;
+
     auth0: Auth0Client;
     /** Authenticated user info as provided by Auth0. */
     user: PlainObject;
