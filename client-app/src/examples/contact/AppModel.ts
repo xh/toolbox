@@ -5,9 +5,9 @@ import {ContactService} from './svc/ContactService';
 export const PERSIST_APP = {prefKey: 'contactAppState'};
 
 export const App = {
-    get model() {return AppModel.instance},
-    get oauthService() {return OauthService.instance},
-    get contactService() {return ContactService.instance}
+    get model()          {return XH.appModel as AppModel},
+    get oauthService()   {return XH.getService(OauthService)},
+    get contactService() {return XH.getService(ContactService)}
 };
 
 export class AppModel extends HoistAppModel {

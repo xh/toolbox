@@ -31,10 +31,10 @@ declare module '@xh/hoist/core' {
 }
 
 export const App = {
-    get model() {return AppModel.instance},
-    get oauthService() {return OauthService.instance},
-    get portfolioService() {return PortfolioService.instance},
-    get gitHubService() {return GitHubService.instance}
+    get model()             {return XH.appModel as AppModel},
+    get oauthService()      {return XH.getService(OauthService)},
+    get portfolioService()  {return XH.getService(PortfolioService)},
+    get gitHubService()     {return XH.getService(GitHubService)}
 };
 
 export class AppModel extends HoistAppModel {

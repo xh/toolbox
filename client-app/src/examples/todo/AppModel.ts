@@ -5,9 +5,9 @@ import {TaskService} from './TaskService';
 export const PERSIST_APP = {localStorageKey: 'todoAppState'};
 
 export const App = {
-    get model() {return AppModel.instance},
-    get oauthService() {return OauthService.instance},
-    get taskService()   {return TaskService.instance}
+    get model()             {return XH.appModel as AppModel},
+    get oauthService()      {return XH.getService(OauthService)},
+    get taskService()       {return XH.getService(TaskService)}
 };
 
 export class AppModel extends HoistAppModel {

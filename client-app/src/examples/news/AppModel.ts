@@ -3,8 +3,8 @@ import {OauthService} from '../../core/svc/OauthService';
 import {NewsPanelModel} from './NewsPanelModel';
 
 export const App = {
-    get model() {return AppModel.instance},
-    get oauthService() {return OauthService.instance}
+    get model()          {return XH.appModel as AppModel},
+    get oauthService()   {return XH.getService(OauthService)}
 };
 
 export class AppModel extends HoistAppModel {

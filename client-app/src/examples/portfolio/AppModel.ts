@@ -8,9 +8,9 @@ export const PERSIST_MAIN = {localStorageKey: 'portfolioAppMainState'};
 export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
 
 export const App = {
-    get model() {return AppModel.instance},
-    get oauthService() {return OauthService.instance},
-    get portfolioService() {return PortfolioService.instance}
+    get model()             {return XH.appModel as AppModel},
+    get oauthService()      {return XH.getService(OauthService)},
+    get portfolioService()  {return XH.getService(PortfolioService)}
 };
 
 export class AppModel extends HoistAppModel {
