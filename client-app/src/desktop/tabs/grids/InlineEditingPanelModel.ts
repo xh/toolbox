@@ -3,8 +3,8 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateIs, lengthIs, numberIs, required, Store} from '@xh/hoist/data';
 import {
     actionCol,
-    calcActionColWidth,
     booleanEditor,
+    calcActionColWidth,
     dateEditor,
     numberEditor,
     selectEditor,
@@ -17,6 +17,7 @@ import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
+import {withDebug} from '@xh/hoist/utils/js';
 
 export class InlineEditingPanelModel extends HoistModel {
 
@@ -58,21 +59,19 @@ export class InlineEditingPanelModel extends HoistModel {
         });
     }
 
-    add() {
-        const id = XH.genId();
-        this.store.addRecords({id, name: 'New Record'});
-        this.gridModel.beginEditAsync({record: id});
-    }
+    add(count) {
+        const firstId = XH.genId(),
+            data = [];
 
-    addFive() {
-        const firstId = XH.genId();
-        this.store.addRecords([
-            {id: firstId, name: 'New Record'},
-            {id: XH.genId(), name: 'New Record'},
-            {id: XH.genId(), name: 'New Record'},
-            {id: XH.genId(), name: 'New Record'},
-            {id: XH.genId(), name: 'New Record'}
-        ]);
+        for (let i = 0; i < count; ++i) {
+            data.push({
+                id: i === 0 ? firstId : XH.genId(),
+                name: 'New Record'
+            });
+        }
+
+        withDebug(`Adding ${count} Records`, () => this.store.addRecords(data), this);
+
         this.gridModel.beginEditAsync({record: firstId});
     }
 
@@ -142,6 +141,7 @@ export class InlineEditingPanelModel extends HoistModel {
 
     private createStore() {
         return new Store({
+            validationIsComplex: false,
             fields: [
                 {
                     name: 'name',

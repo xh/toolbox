@@ -1,4 +1,4 @@
-import {grid} from '@xh/hoist/cmp/grid';
+import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hbox, hframe, hspacer, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {ValidationState} from '@xh/hoist/data';
@@ -55,59 +55,68 @@ export const inlineEditingPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory<InlineEditingPanelModel>(
-    ({model}) => {
-        const {store, gridModel} = model;
-        return toolbar(
-            button({
-                icon: Icon.add(),
-                text: 'Add',
-                onClick: () => model.add()
-            }),
-            button({
-                icon: Icon.add(),
-                text: 'Add 5',
-                onClick: () => model.addFive()
-            }),
-            '-',
-            button({
-                icon: Icon.edit(),
-                text: 'First Row',
-                onClick: () => model.beginEditAsync()
-            }),
-            button({
-                icon: Icon.edit(),
-                text: 'First Row (Amount)',
-                onClick: () => model.beginEditAsync({colId: 'amount'})
-            }),
-            '-',
-            button({
-                icon: Icon.stopCircle(),
-                text: 'Stop Editing',
-                onClick: () => model.endEditAsync(),
-                disabled: !gridModel.isEditing
-            }),
-            '-',
-            button({
-                icon: Icon.check(),
-                text: 'Commit All',
-                intent: 'success',
-                onClick: () => model.commitAllAsync(),
-                disabled: !store.isModified
-            }),
-            button({
-                icon: Icon.undo(),
-                text: 'Revert All',
-                intent: 'primary',
-                onClick: () => model.revert(),
-                disabled: !store.isModified
-            }),
-            filler(),
-            storeDirtyIndicator(),
-            '-',
-            storeValidIndicator()
-        );
-    });
+const tbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
+    const {store, gridModel} = model;
+    return toolbar(
+        button({
+            icon: Icon.add(),
+            text: 'Add',
+            onClick: () => model.add(1)
+        }),
+        button({
+            icon: Icon.add(),
+            text: 'Add 5',
+            onClick: () => model.add(5)
+        }),
+        button({
+            icon: Icon.add(),
+            text: 'Add 1k',
+            onClick: () => model.add(1000)
+        }),
+        button({
+            icon: Icon.add(),
+            text: 'Add 10k',
+            onClick: () => model.add(10000)
+        }),
+        '-',
+        button({
+            icon: Icon.edit(),
+            text: 'First Row',
+            onClick: () => model.beginEditAsync()
+        }),
+        button({
+            icon: Icon.edit(),
+            text: 'First Row (Amount)',
+            onClick: () => model.beginEditAsync({colId: 'amount'})
+        }),
+        '-',
+        button({
+            icon: Icon.stopCircle(),
+            text: 'Stop Editing',
+            onClick: () => model.endEditAsync(),
+            disabled: !gridModel.isEditing
+        }),
+        '-',
+        button({
+            icon: Icon.check(),
+            text: 'Commit All',
+            intent: 'success',
+            onClick: () => model.commitAllAsync(),
+            disabled: !store.isModified
+        }),
+        button({
+            icon: Icon.undo(),
+            text: 'Revert All',
+            intent: 'primary',
+            onClick: () => model.revert(),
+            disabled: !store.isModified
+        }),
+        filler(),
+        storeDirtyIndicator(),
+        '-',
+        storeValidIndicator()
+    );
+});
 
 const storeDirtyIndicator = hoistCmp.factory<InlineEditingPanelModel>(
     ({model}) => {
@@ -186,6 +195,8 @@ const bbar = hoistCmp.factory<InlineEditingPanelModel>(
                 ]
             }),
             hspacer(),
-            span(`${model.clicksToEditNote}`)
+            span(`${model.clicksToEditNote}`),
+            filler(),
+            gridCountLabel()
         );
     });
