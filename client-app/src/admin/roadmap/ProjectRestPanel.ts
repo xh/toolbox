@@ -6,7 +6,7 @@ import {toNumber} from 'lodash';
 import {App} from '../AppModel';
 
 export const projectRestPanel = hoistCmp.factory(
-    () => restGrid({modelConfig: {...modelSpec, readonly: App.readonly}})
+    () => restGrid({modelConfig: {...modelSpec, readonly: App.model.readonly}})
 );
 
 const tooltip = s => s;

@@ -4,7 +4,7 @@ import {boolCheckCol} from '@xh/hoist/cmp/grid';
 import {App} from '../AppModel';
 
 export const phaseRestPanel = hoistCmp.factory(
-    () => restGrid({modelConfig: {...modelSpec, readonly: App.readonly}})
+    () => restGrid({modelConfig: {...modelSpec, readonly: App.model.readonly}})
 );
 
 const modelSpec = {

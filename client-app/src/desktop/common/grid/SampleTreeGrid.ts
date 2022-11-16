@@ -10,8 +10,7 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {gridOptionsPanel} from './options/GridOptionsPanel';
 import {SampleTreeGridModel} from './SampleTreeGridModel';
 
-export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory<SampleTreeGridModel>({
-
+export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
     model: uses(SampleTreeGridModel),
 
     render({model, ...props}) {
