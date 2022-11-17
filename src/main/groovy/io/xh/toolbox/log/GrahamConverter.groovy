@@ -32,17 +32,20 @@ class GrahamConverter extends ClassicConverter {
     // Implementation
     //---------------------------------------------------------------------------
     private List<String> delimitedTxt(List msgs) {
-        List<String> ret = msgs.collect {
-            it instanceof Throwable ? exceptionRenderer.summaryTextForThrowable(it) :
+        List<String> msgsCol = msgs.collect {
+            it instanceof Throwable ? addExceptionKey(exceptionRenderer.summaryTextForThrowable(it)) :
                     it instanceof Map ? kvTxt(it) :
                             addMsgKey(it.toString())
         }
 
-        def (messages, meta) = ret.flatten().split {it.startsWith('message=')}
+        def (messages, rest) = msgsCol.flatten().split {it.startsWith('message=')}
+        def (exception, ret) = rest.flatten().split {it.startsWith('exception=')}
+
         messages = messages.collect {it.replace('message=', '')}.join(' | ')
         messages = messages ? "message=${quoteSentence(messages)}" : ''
-        meta << messages
-        return meta
+        ret << messages
+        ret << exception
+        return ret
     }
 
 
@@ -58,7 +61,7 @@ class GrahamConverter extends ClassicConverter {
 
     private String quoteSentence(String str) {
         if (str.contains(' ') && !str.startsWith('"')) {
-            str = '"' + str + '"'
+            str = '"' + str.replaceAll(/"/, '\\"') + '"'
         }
         return str
     }
@@ -68,5 +71,9 @@ class GrahamConverter extends ClassicConverter {
             str = "message=$str"
         }
         return str
+    }
+
+    private String addExceptionKey(String str) {
+        return "exception=${quoteSentence(str)}"
     }
 }
