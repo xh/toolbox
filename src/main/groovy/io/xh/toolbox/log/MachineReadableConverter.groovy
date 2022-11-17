@@ -6,7 +6,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 import static io.xh.hoist.util.Utils.exceptionRenderer
 import static io.xh.hoist.util.Utils.identityService
 
-class GrahamConverter extends ClassicConverter {
+class MachineReadableConverter extends ClassicConverter {
 
       @Override
       public String convert(ILoggingEvent event) {
