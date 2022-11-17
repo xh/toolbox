@@ -24,7 +24,7 @@ class GrahamConverter extends ClassicConverter {
           if (msg) ret << addMsgKey(quoteSentence(msg))
           if (username) ret.add(ret.size() - 1, "user=$username")
 
-          return ret.join(', ')
+          return ret.findAll().join(', ')
       }
 
 
