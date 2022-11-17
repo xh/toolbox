@@ -61,7 +61,7 @@ class GrahamConverter extends ClassicConverter {
 
     private String quoteSentence(String str) {
         if (str.contains(' ') && !str.startsWith('"')) {
-            str = '"' + str.replaceAll(/"/, '\\"') + '"'
+            str = '"' + str.replaceAll(/"/, '\\\\"') + '"'
         }
         return str
     }
