@@ -49,14 +49,13 @@ class MachineReadableConverter extends ClassicConverter {
     }
 
 
-    private List kvTxt(Map msgs) {
-        List<String> ret = msgs.collect {k,v ->
+    private List<String> kvTxt(Map msgs) {
+         return msgs.collect {k,v ->
             v = v instanceof Throwable ?
                     exceptionRenderer.summaryTextForThrowable(v) :
                     quoteSentence(v.toString())
             return "$k=$v"
         }
-        return ret
     }
 
     private String quoteSentence(String str) {
