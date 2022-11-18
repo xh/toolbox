@@ -34,7 +34,7 @@ class MachineReadableConverter extends ClassicConverter {
     //---------------------------------------------------------------------------
     private List<String> delimitedTxt(List msgs) {
         List<String> msgsCol = msgs.collect {
-            it instanceof Throwable ? addExceptionKey(exceptionRenderer.summaryTextForThrowable(it)) :
+            it instanceof Throwable ? addExceptionKey(safeErrorSummary(it)) :
                     it instanceof Map ? kvTxt(it) :
                             addMsgKey(it.toString())
         }
@@ -49,14 +49,18 @@ class MachineReadableConverter extends ClassicConverter {
         return ret
     }
 
-
     private List<String> kvTxt(Map msgs) {
          return msgs.collect {k,v ->
-            v = v instanceof Throwable ?
-                    exceptionRenderer.summaryTextForThrowable(v) :
+            v = v instanceof Throwable ? safeErrorSummary(v) :
                     quoteSentence(v.toString())
             return "$k=$v"
         }
+    }
+
+    private safeErrorSummary(Throwable t) {
+        return Utils.hasProperty('getExceptionRenderer') ?
+                exceptionRenderer.summaryTextForThrowable(t) :
+                t.message
     }
 
     private String quoteSentence(String str) {
