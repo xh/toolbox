@@ -2,9 +2,10 @@ package io.xh.toolbox.log
 
 import ch.qos.logback.classic.pattern.ClassicConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent
+import io.xh.hoist.util.Utils
 
 import static io.xh.hoist.util.Utils.exceptionRenderer
-import static io.xh.hoist.util.Utils.identityService
+import static io.xh.hoist.util.Utils.getIdentityService
 
 class MachineReadableConverter extends ClassicConverter {
 
@@ -12,7 +13,7 @@ class MachineReadableConverter extends ClassicConverter {
       public String convert(ILoggingEvent event) {
           def msg = event.message
           def args = event.argumentArray
-          def username = identityService?.username
+          def username = Utils.hasProperty('getIdentityService') ? identityService.username : null
 
           List<String> ret = args.collect { arg ->
               switch (arg) {
