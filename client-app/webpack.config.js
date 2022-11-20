@@ -36,7 +36,7 @@ module.exports = (env = {}) => {
         dupePackageCheckExcludes: ['es-abstract', 'tslib'],
         sourceMaps: 'devOnly',
         // Use React prod mode, primarily to avoid console warnings for react 18
-        reactProdMode: true,
+        reactProdMode: false,
         // Include custom package for babel transpiling for both packaged and inline use cases.
         babelIncludePaths: [customPkgPath],
         // Resolve custom package aliases and exclude nested node_modules for inline local dev only.
