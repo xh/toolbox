@@ -30,6 +30,7 @@ declare module '@xh/hoist/core' {
     }
 }
 
+/** Exported for convenient, type-aware access to the Toolbox AppModel services. */
 export const App = {
     get model()             {return XH.appModel as AppModel},
     get oauthService()      {return XH.getService(OauthService)},
@@ -39,6 +40,7 @@ export const App = {
 
 export class AppModel extends HoistAppModel {
 
+    /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
 
     @managed
