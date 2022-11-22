@@ -24,10 +24,11 @@ class MachineReadableConverter extends ClassicConverter {
               Throwable t = getThrowable(args)
               if (t) {
                   args.removeLast()
-                  tStack = '\n' + new ThrowableProxy(t)
+                  String indent = '           '
+                  tStack = '\n' + indent + new ThrowableProxy(t)
                           .stackTraceElementProxyArray
                           .collect {it.getSTEAsString()}
-                          .join('\n')
+                          .join('\n' + indent)
               }
           }
 
