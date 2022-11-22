@@ -3,3 +3,4 @@
 
 cd client-app
 yarn run lint-staged
+yarn run tsc
