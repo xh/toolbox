@@ -37,7 +37,7 @@ class MachineReadableConverter extends ClassicConverter {
           def (exception, ret) = rest.split {it.startsWith('exception=')}
           messages = messages.collect {it.replace('message=', '')}.join(' | ')
           messages = messages ? "message=${quoteSentence(messages)}" : ''
-          ret << messages
+          ret.add(0, messages)
           ret << exception
 
           return ret
