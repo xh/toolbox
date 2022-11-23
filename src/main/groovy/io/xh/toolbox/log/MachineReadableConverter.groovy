@@ -5,7 +5,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.classic.spi.ThrowableProxy
 
 import static io.xh.hoist.util.Utils.exceptionRenderer
-import static io.xh.hoist.util.Utils.getIdentityService
 
 class MachineReadableConverter extends ClassicConverter {
 
@@ -13,7 +12,7 @@ class MachineReadableConverter extends ClassicConverter {
       public String convert(ILoggingEvent event) {
           def msg = event.message
           
-          if (!msg.startsWith('USE_XH_LOG_SUPPORT')) {
+          if (!msg?.startsWith('USE_XH_LOG_SUPPORT')) {
               return event.formattedMessage
           }
 
@@ -32,31 +31,29 @@ class MachineReadableConverter extends ClassicConverter {
               }
           }
 
-          List<String> processed = args.collect { delimitedTxt(flatten(it)) }.flatten()
+          List<String> processed = args.collect { delimitedTxt(it) }.flatten()
 
-          def username = null
-          try{username = identityService.username} catch(ignored) {}
-          if (username) processed << "user=$username"
-
-          def (messages, rest) = processed.flatten().split {it.startsWith('message=')}
-          def (exception, ret) = rest.flatten().split {it.startsWith('exception=')}
+          def (messages, rest) = processed.split {it.startsWith('message=')}
+          def (exception, ret) = rest.split {it.startsWith('exception=')}
           messages = messages.collect {it.replace('message=', '')}.join(' | ')
           messages = messages ? "message=${quoteSentence(messages)}" : ''
           ret << messages
           ret << exception
 
-          return ret.findAll().join(', ') + tStack
+          return ret
+                  .flatten() // flatten needed here because exception is a list
+                  .findAll()
+                  .join(', ') + tStack
       }
 
     //---------------------------------------------------------------------------
     // Implementation
     //---------------------------------------------------------------------------
-    private List<String> delimitedTxt(List msgs) {
-        return msgs.collect {
-            it instanceof Throwable ? addExceptionKey(safeErrorSummary(it)) :
-                    it instanceof Map ? kvTxt(it) :
-                            addMsgKey(it.toString())
-        }.flatten()
+    private List<String> delimitedTxt(Object obj) {
+        if (!obj) return []
+        if (obj instanceof Throwable) return [addExceptionKey(safeErrorSummary(obj))]
+        if (obj instanceof Map) return kvTxt(obj)
+        return [addMsgKey(obj.toString())]
     }
 
     private List<String> kvTxt(Map msgs) {
@@ -94,9 +91,5 @@ class MachineReadableConverter extends ClassicConverter {
     private Throwable getThrowable(List msgs) {
         def last = msgs.last()
         return last instanceof Throwable ? last : null
-    }
-
-    private List flatten(Object[] msgs) {
-        Arrays.asList(msgs).flatten()
     }
 }
