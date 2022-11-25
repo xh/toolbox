@@ -4,7 +4,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {errorMessage} from '@xh/hoist/desktop/cmp/error';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {makeObservable, bindable} from '@xh/hoist/mobx';
 import React from 'react';
 import {wrapper} from '../../common';
 import './ClockPanel.scss';
@@ -71,8 +71,7 @@ export const errorMessagePanel = hoistCmp.factory({
 });
 
 class ErrorMessagePanelModel extends HoistModel {
-    @observable error = null;
-    @action setError(e) {this.error = e}
+    @bindable.ref error = null;
 
     constructor() {
         super();
@@ -84,7 +83,7 @@ class ErrorMessagePanelModel extends HoistModel {
     // observable error on the backing model
     toggleError() {
         if (this.error) {
-            this.setError(null);
+            this.error = null;
             return;
         }
 
@@ -93,7 +92,7 @@ class ErrorMessagePanelModel extends HoistModel {
             // @ts-ignore
             return foo.bar.baz;
         } catch (e) {
-            this.setError(e);
+            this.error = e;
         }
     }
 }

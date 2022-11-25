@@ -73,7 +73,7 @@ class ChartWidgetModel extends LineChartModel {
     override onLinked() {
         const {dashViewModel, panelModel} = this;
 
-        dashViewModel.setExtraMenuItems([
+        dashViewModel.extraMenuItems = [
             {
                 text: 'Print chart',
                 icon: Icon.print(),
@@ -84,13 +84,13 @@ class ChartWidgetModel extends LineChartModel {
                 icon: Icon.fileCsv(),
                 actionFn: () => this.chartModel.highchart.downloadCSV()
             }
-        ]);
+        ];
 
         if (dashViewModel instanceof DashCanvasViewModel) {
-            dashViewModel.setHeaderItems([
+            dashViewModel.headerItems = [
                 rangeSelector({model: this}),
                 modalToggleButton({panelModel})
-            ]);
+            ];
 
             this.chartModel.updateHighchartsConfig({
                 rangeSelector: {enabled: false},

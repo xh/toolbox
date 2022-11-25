@@ -53,21 +53,22 @@ export class DetailsPanelModel extends HoistModel {
             {readonly, isDirty} = formModel;
 
         if (readonly || !isDirty) {
-            formModel.setReadonly(!readonly);
+            formModel.readonly = !readonly;
             return;
         }
 
         try {
             await directoryPanelModel.updateContactAsync(currentRecord.id, formModel.getData(true));
-            formModel.setReadonly(true);
+            formModel.readonly = true;
         } catch (e) {
             XH.handleException(e);
         }
     }
 
+    @action
     cancelEdit() {
         const {formModel, currentRecord} = this;
-        formModel.setReadonly(true);
+        formModel.readonly = true;
         formModel.init(currentRecord.data);
     }
 }

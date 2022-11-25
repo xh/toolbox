@@ -77,10 +77,10 @@ class GridWidgetModel extends HoistModel {
         ]);
 
         if (viewModel instanceof DashCanvasViewModel) {
-            viewModel.setHeaderItems([
+            viewModel.headerItems = [
                 colChooserButton({gridModel}),
                 modalToggleButton({panelModel})
-            ]);
+            ];
         }
     }
 

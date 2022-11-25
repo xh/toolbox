@@ -1,7 +1,7 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
-import {observable, makeObservable} from '@xh/hoist/mobx';
+import {observable, makeObservable, action} from '@xh/hoist/mobx';
 import {p} from '@xh/hoist/cmp/layout';
 import {wait} from '@xh/hoist/promise';
 import './PinPadPage.scss';
@@ -51,32 +51,33 @@ class PinPadPageModel extends HoistModel {
             run: (completedPin) => {
                 if (!completedPin) return;
 
-                pad.setSubHeaderText('Checking PIN...');
-                pad.setDisabled(true);
+                pad.subHeaderText = 'Checking PIN...';
+                pad.disabled = true;
                 wait(500).then(() => this.handleCompletedPin(completedPin));
             }
         });
     }
 
+    @action
     private handleCompletedPin(completedPin: string) {
         const {pinPadModel: pad, attempts, maxAttempts} = this;
         if (completedPin === '12345') {
-            pad.setErrorText('');
-            pad.setHeaderText('Access Granted.');
-            pad.setSubHeaderText('Welcome to XH.io');
+            pad.errorText = '';
+            pad.headerText = 'Access Granted.';
+            pad.subHeaderText = 'Welcome to XH.io';
             wait(1000).thenAction(() => this.loggedIn = true);
         } else if (attempts >= maxAttempts) {
-            pad.setHeaderText('Account Locked.');
-            pad.setSubHeaderText('Login disabled at this time.');
-            pad.setErrorText('You have made too many attempts to log in. Contact support for help.');
+            pad.headerText = 'Account Locked.';
+            pad.subHeaderText = 'Login disabled at this time.';
+            pad.errorText = 'You have made too many attempts to log in. Contact support for help.';
         } else {
-            pad.setErrorText(`PIN not recognized. Try again. Account will be locked after ${5 - attempts} attempts.`);
-            pad.setSubHeaderText(
+            pad.errorText = `PIN not recognized. Try again. Account will be locked after ${5 - attempts} attempts.`;
+            pad.subHeaderText = (
                 attempts === maxAttempts - 2 ? 'Access Denied. (Use the Schwartz!)' :
                     attempts === maxAttempts - 1 ? 'Access Denied. (Try \'12345\')' :
                         'Access Denied'
             );
-            pad.setDisabled(false);
+            pad.disabled = false;
             pad.clear();
 
             this.attempts++;

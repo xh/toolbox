@@ -99,7 +99,7 @@ const appTile = hoistCmp.factory<ExamplesTabModel>(
                         onClick: () => window.open(`/${app.path}/`)
                     })]
             }),
-            onClick: () => model.setActiveApp(app.title)
+            onClick: () => model.activeApp = app.title
         });
     }
 );
@@ -114,7 +114,7 @@ const sideBar = hoistCmp.factory<ExamplesTabModel>(
                     return button({
                         icon: app.icon,
                         active: isActive,
-                        onClick: () => isActive ? window.open(app.path) : model.setActiveApp(app.title)
+                        onClick: () => isActive ? window.open(app.path) : (model.activeApp = app.title)
                     });
                 }),
                 filler(),

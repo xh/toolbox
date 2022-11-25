@@ -87,7 +87,7 @@ export class CubeTestModel extends HoistModel {
 
         return wait().then(async () => {
             const {store} = gridModel;
-            gridModel.setShowSummary(showSummary);
+            gridModel.showSummary = showSummary;
             store.setLoadRootAsSummary(showSummary);
 
             await LTM.withLoadTime(`Query | ${dimCount} dims | ${filterCount} fund filters`, async () => {

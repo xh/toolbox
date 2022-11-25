@@ -96,7 +96,7 @@ export class RecallsPanelModel extends HoistModel {
         const {gridModel} = this;
         this.addReaction({
             track: () => gridModel.selectedRecord,
-            run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
+            run: (rec) => this.detailsPanelModel.currentRecord = rec
         });
 
         this.addReaction({

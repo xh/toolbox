@@ -235,17 +235,18 @@ export class SampleGridModel extends HoistModel {
         this.gridModel.preSelectFirstAsync();
     }
 
+    @action
     private async restoreDefaultsFn(): Promise<boolean> {
         // Reset defaults to Display Options panel
         this.setGroupBy(null);
-        this.gridModel.setSizingMode(XH.sizingMode);
-        this.gridModel.setHideHeaders(false);
-        this.gridModel.setStripeRows(true);
-        this.gridModel.setRowBorders(false);
-        this.gridModel.setCellBorders(false);
-        this.gridModel.setShowHover(false);
-        this.gridModel.setShowCellFocus(false);
-        this.gridModel.setEmptyText('No records found...');
+        this.gridModel.sizingMode = XH.sizingMode;
+        this.gridModel.hideHeaders = false;
+        this.gridModel.stripeRows = true;
+        this.gridModel.rowBorders = false;
+        this.gridModel.cellBorders = false;
+        this.gridModel.showHover = false;
+        this.gridModel.showCellFocus = false;
+        this.gridModel.emptyText = 'No records found...';
         return true;
     }
 }

@@ -39,7 +39,7 @@ export class PortfolioPanelModel extends HoistModel {
 
         store.loadData([session.initialPositions.root]);
         session.onUpdate = ({data}) => {
-            gridPanelModel.setLoadTimestamp(Date.now());
+            gridPanelModel.loadTimestamp = Date.now();
             store.updateData(data);
         };
 

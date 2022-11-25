@@ -1,16 +1,13 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {makeObservable, bindable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {App} from '../AppModel';
 
 export class ChartPageModel extends HoistModel {
 
-    @observable currentSymbol: string = '';
-    @observable.ref symbols: string[] = null;
-
-    @action setCurrentSymbol(v: string) {this.currentSymbol = v}
-    @action setSymbols(v: string[]) {this.symbols = v}
+    @bindable currentSymbol: string = '';
+    @bindable.ref symbols: string[] = null;
 
     numCompanies: number = 3;
 
@@ -30,11 +27,11 @@ export class ChartPageModel extends HoistModel {
         if (!this.symbols) {
             let symbols = await App.portfolioService.getSymbolsAsync({loadSpec});
             symbols = symbols.slice(0, this.numCompanies);
-            this.setSymbols(symbols);
+            this.symbols = symbols;
         }
 
         if (!this.currentSymbol) {
-            this.setCurrentSymbol(this.symbols[0]);
+            this.currentSymbol = this.symbols[0];
         }
 
         let series = await App.portfolioService.getOHLCChartSeriesAsync({
