@@ -38,7 +38,7 @@ export const inlineEditingPanel = hoistCmp.factory({
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/grids/InlineEditingPanel.js', notes: 'This example.'}
+                {url: '$TB/client-app/src/desktop/tabs/grids/InlineEditingPanel.tsx', notes: 'This example.'}
             ],
             item: panel({
                 title: 'Grids › Inline Editing',

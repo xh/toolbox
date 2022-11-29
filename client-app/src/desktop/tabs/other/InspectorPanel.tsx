@@ -25,7 +25,7 @@ export const inspectorPanel = hoistCmp.factory({
                 </ul>
             ],
             links: [
-                {url: '$HR/svc/InspectorService.js'},
+                {url: '$HR/svc/InspectorService.ts'},
                 {url: '$HR/inspector', notes: 'Inspector component package'}
             ],
             item: panel({

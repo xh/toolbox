@@ -12,8 +12,7 @@ export const hboxContainerPanel = hoistCmp.factory(
             with <code>flexDirection:row</code>.
         </p>,
         links: [
-            {url: '$HR/cmp/layout/Box.js', notes: 'Hoist Box components.'},
-            {url: '$HR/core/mixins/LayoutSupport.js', notes: 'Decorator to support core layout props.'}
+            {url: '$HR/cmp/layout/Box.ts', notes: 'Hoist Box components.'},
         ],
         item: panel({
             title: 'Layout › HBox',

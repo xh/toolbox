@@ -36,9 +36,9 @@ export const ohlcChartPanel = hoistCmp.factory({
                 item: chart({aspectRatio: model.aspectRatio})
             }),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/charts/OHLCChartPanel.js', notes: 'This example.'},
-                {url: '$HR/cmp/chart/Chart.js', notes: 'Hoist wrapper component for Chart sizing and layout.'},
-                {url: '$HR/cmp/chart/ChartModel.js', notes: 'Hoist model with observable Chart config and series.'},
+                {url: '$TB/client-app/src/desktop/tabs/charts/OHLCChartPanel.tsx', notes: 'This example.'},
+                {url: '$HR/cmp/chart/Chart.ts', notes: 'Hoist wrapper component for Chart sizing and layout.'},
+                {url: '$HR/cmp/chart/ChartModel.ts', notes: 'Hoist model with observable Chart config and series.'},
                 {text: 'Highcharts Docs', url: 'https://api.highcharts.com/highstock/', notes: 'Library API documentation.'}
             ]
         });

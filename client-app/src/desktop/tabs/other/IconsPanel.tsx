@@ -39,7 +39,7 @@ export const iconsPanel = hoistCmp.factory({
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/other/IconsPanel.js',
+                    url: '$TB/client-app/src/desktop/tabs/other/IconsPanel.tsx',
                     notes: 'This example.'
                 },
                 {

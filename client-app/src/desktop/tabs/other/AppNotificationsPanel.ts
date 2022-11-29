@@ -10,9 +10,9 @@ import {wrapper} from '../../common';
 export const appNotificationsPanel = hoistCmp.factory(
     () => wrapper({
         links: [
-            {url: '$HR/svc/EnvironmentService.js', notes: 'EnvironmentService checks for updated versions and alerts after a new release, if enabled.'},
-            {url: '$HR/svc/IdleService.js', notes: 'Idle Service listens for user interactions and triggers the IdlePanel, if enabled.'},
-            {url: '$HR/desktop/appcontainer/IdlePanel.js', notes: 'IdlePanel Component'}
+            {url: '$HR/svc/EnvironmentService.ts', notes: 'EnvironmentService checks for updated versions and alerts after a new release, if enabled.'},
+            {url: '$HR/svc/IdleService.ts', notes: 'Idle Service listens for user interactions and triggers the IdlePanel, if enabled.'},
+            {url: '$HR/desktop/appcontainer/IdlePanel.ts', notes: 'IdlePanel Component'}
         ],
         item: box({
             className: 'tb-app-notifications',
