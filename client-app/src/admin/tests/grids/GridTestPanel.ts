@@ -22,7 +22,6 @@ export const GridTestPanel = hoistCmp({
                 tbar(),
                 panel({
                     mask: 'onLoad',
-                    key: model.gridModel.xhId,
                     item: grid({
                         agOptions: {
                             isRowSelectable: ({data: record}) => !model.disableSelect || record.get('day') > 0

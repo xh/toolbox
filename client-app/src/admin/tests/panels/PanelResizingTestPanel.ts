@@ -28,7 +28,6 @@ export const PanelResizingTestPanel = hoistCmp({
                     title: 'Top Panel 1',
                     icon: Icon.arrowToBottom(),
                     model: model.topPanel1Model,
-                    key: model.topPanel1Model.xhId,
                     compactHeader: true,
                     item: box({
                         padding: 10,
@@ -51,7 +50,6 @@ export const PanelResizingTestPanel = hoistCmp({
                     title: 'Top Panel 2',
                     icon: Icon.arrowToBottom(),
                     model: model.topPanel2Model,
-                    key: model.topPanel2Model.xhId,
                     compactHeader: true,
                     item: box({
                         padding: 10,
@@ -66,7 +64,6 @@ export const PanelResizingTestPanel = hoistCmp({
                             title: 'Left Panel 1',
                             icon: Icon.disabled(),
                             model: model.leftPanel1Model,
-                            key: model.leftPanel1Model.xhId,
                             compactHeader: true,
                             item: box({
                                 className: 'xh-pad',
@@ -77,7 +74,6 @@ export const PanelResizingTestPanel = hoistCmp({
                             title: 'Left Panel 2',
                             icon: Icon.arrowToLeft(),
                             model: model.leftPanel2Model,
-                            key: model.leftPanel2Model.xhId,
                             compactHeader: true,
                             item: box({
                                 className: 'xh-pad',
@@ -109,7 +105,6 @@ export const PanelResizingTestPanel = hoistCmp({
                             title: 'Right Panel 2',
                             icon: Icon.arrowToRight(),
                             model: model.rightPanel2Model,
-                            key: model.rightPanel2Model.xhId,
                             compactHeader: true,
                             item: box({
                                 className: 'xh-pad',
@@ -120,7 +115,6 @@ export const PanelResizingTestPanel = hoistCmp({
                             title: 'Right Panel 1',
                             icon: Icon.disabled(),
                             model: model.rightPanel1Model,
-                            key: model.rightPanel1Model.xhId,
                             compactHeader: true,
                             item: box({
                                 className: 'xh-pad',
@@ -133,7 +127,6 @@ export const PanelResizingTestPanel = hoistCmp({
                     title: 'Bottom Panel 2',
                     icon: Icon.arrowToBottom(),
                     model: model.bottomPanel2Model,
-                    key: model.bottomPanel2Model.xhId,
                     compactHeader: true,
                     item: box({
                         padding: 10,
@@ -144,7 +137,6 @@ export const PanelResizingTestPanel = hoistCmp({
                     title: 'Bottom Panel 1',
                     icon: Icon.arrowToBottom(),
                     model: model.bottomPanel1Model,
-                    key: model.bottomPanel1Model.xhId,
                     compactHeader: true,
                     item: box({
                         padding: 10,
