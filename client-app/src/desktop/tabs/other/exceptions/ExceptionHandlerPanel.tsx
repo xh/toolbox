@@ -34,10 +34,10 @@ export const exceptionHandlerPanel = hoistCmp.factory({
                 </div>
             ),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/other/exceptions/ExceptionHandler.js', notes: 'This example'},
-                {url: '$HR/core/XH.js', notes: 'XH top-level Singleton model - see .handleException()'},
-                {url: '$HR/core/ExceptionHandler.js', notes: 'ExceptionHandler Base Class'},
-                {url: '$HR/promise/Promise.js', notes: 'Hoist promise enhancement methods - see .catchDefault()'}
+                {url: '$TB/client-app/src/desktop/tabs/other/exceptions/ExceptionHandlerPanel.tsx', notes: 'This example'},
+                {url: '$HR/core/XH.ts', notes: 'XH top-level Singleton model - see .handleException()'},
+                {url: '$HR/core/exception/ExceptionHandler.ts', notes: 'ExceptionHandler Base Class'},
+                {url: '$HR/promise/Promise.ts', notes: 'Hoist promise enhancement methods - see .catchDefault()'}
             ],
             item: panel({
                 title: 'Other > Exception Handler',

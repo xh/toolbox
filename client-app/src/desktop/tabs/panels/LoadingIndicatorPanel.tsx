@@ -31,9 +31,9 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/panels/LoadingIndicatorPanel.js', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/loadingindicator/LoadingIndicator.js', notes: 'Hoist component.'},
-                {url: '$HR/core/TaskObserver.js', notes: 'Hoist model for tracking async tasks - can be linked to indicators.'}
+                {url: '$TB/client-app/src/desktop/tabs/panels/LoadingIndicatorPanel.tsx', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/loadingindicator/LoadingIndicator.ts', notes: 'Hoist component.'},
+                {url: '$HR/core/TaskObserver.ts', notes: 'Hoist model for tracking async tasks - can be linked to indicators.'}
             ],
             item: panel({
                 title: 'Panels › Loading Indicator',

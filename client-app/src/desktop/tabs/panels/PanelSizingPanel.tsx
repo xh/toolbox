@@ -33,9 +33,9 @@ export const panelSizingPanel = hoistCmp.factory({
                 </div>
             ),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.js', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/panel/Panel.js', notes: 'Hoist component.'},
-                {url: '$HR/desktop/cmp/panel/PanelModel.js', notes: 'Hoist component model (for resize / collapse).'}
+                {url: '$TB/client-app/src/desktop/tabs/panels/PanelSizingPanel.tsx', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/panel/Panel.ts', notes: 'Hoist component.'},
+                {url: '$HR/desktop/cmp/panel/PanelModel.ts', notes: 'Hoist component model (for resize / collapse).'}
             ],
             item: panel({
                 title: 'Panels › Panel Sizing',

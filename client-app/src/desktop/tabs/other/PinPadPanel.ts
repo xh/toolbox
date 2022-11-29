@@ -17,9 +17,9 @@ export const pinPadPanel = hoistCmp.factory({
         return wrapper({
             description: 'A specialized PIN input, used for lightweight authentication of users.',
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/other/PinPadPanel.js', notes: 'This example.'},
-                {url: '$HR/cmp/pinpad/PinPad.js', notes: 'Hoist component.'},
-                {url: '$HR/cmp/pinpad/PinPadModel.js', notes: 'Hoist component model - primary API and configuration point for pin pads.'}
+                {url: '$TB/client-app/src/desktop/tabs/other/PinPadPanel.ts', notes: 'This example.'},
+                {url: '$HR/cmp/pinpad/PinPad.ts', notes: 'Hoist component.'},
+                {url: '$HR/cmp/pinpad/PinPadModel.ts', notes: 'Hoist component model - primary API and configuration point for pin pads.'}
             ],
             item: panel({
                 title: 'Other › PinPad',

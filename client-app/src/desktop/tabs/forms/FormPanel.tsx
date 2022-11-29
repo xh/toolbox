@@ -30,10 +30,10 @@ export const formPanel = hoistCmp.factory({
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/forms/FormPanel.js', notes: 'This example.'},
-                {url: '$HR/cmp/form/Form.js', notes: 'Form Component'},
-                {url: '$HR/cmp/form/FormModel.js', notes: 'Form Model'},
-                {url: '$HR/desktop/cmp/form/FormField.js', notes: 'Form Field'}
+                {url: '$TB/client-app/src/desktop/tabs/forms/FormPanel.tsx', notes: 'This example.'},
+                {url: '$HR/cmp/form/Form.ts', notes: 'Form Component'},
+                {url: '$HR/cmp/form/FormModel.ts', notes: 'Form Model'},
+                {url: '$HR/desktop/cmp/form/FormField.ts', notes: 'Form Field'}
             ],
             item: panel({
                 title: 'Forms › FormModel',

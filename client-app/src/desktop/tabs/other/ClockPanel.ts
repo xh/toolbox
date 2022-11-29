@@ -21,8 +21,8 @@ export const clockPanel = hoistCmp.factory({
                     or for a configurable timezone. It fetches timezone offsets from the server to
                     support any Java-style timezone ID.`,
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/other/ClockPanel.js', notes: 'This example.'},
-                {url: '$HR/cmp/clock/Clock.js', notes: 'Hoist component.'}
+                {url: '$TB/client-app/src/desktop/tabs/other/ClockPanel.ts', notes: 'This example.'},
+                {url: '$HR/cmp/clock/Clock.ts', notes: 'Hoist component.'}
             ],
             item: panel({
                 title: 'Other › Clock',

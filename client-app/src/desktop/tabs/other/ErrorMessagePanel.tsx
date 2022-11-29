@@ -29,8 +29,8 @@ export const errorMessagePanel = hoistCmp.factory({
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/other/ErrorMessagePanel.js', notes: 'This example'},
-                {url: '$HR/desktop/cmp/error/ErrorMessage.js', notes: 'ErrorMessage source'}
+                {url: '$TB/client-app/src/desktop/tabs/other/ErrorMessagePanel.tsx', notes: 'This example'},
+                {url: '$HR/desktop/cmp/error/ErrorMessage.ts', notes: 'ErrorMessage source'}
             ],
             item: panel({
                 title: 'Other › Error Message',

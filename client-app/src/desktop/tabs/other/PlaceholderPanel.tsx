@@ -27,8 +27,8 @@ export const placeholderPanel = hoistCmp.factory({
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/other/PlaceholderPanel.js', notes: 'This example.'},
-                {url: '$HR/cmp/layout/Placeholder.js', notes: 'Hoist component.'}
+                {url: '$TB/client-app/src/desktop/tabs/other/PlaceholderPanel.tsx', notes: 'This example.'},
+                {url: '$HR/cmp/layout/Placeholder.ts', notes: 'Hoist component.'}
             ],
             item: panel({
                 title: 'Other › Placeholder',

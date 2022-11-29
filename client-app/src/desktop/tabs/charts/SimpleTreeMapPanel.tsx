@@ -37,9 +37,9 @@ export const simpleTreeMapPanel = hoistCmp.factory({
                 item: treeMap()
             }),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/charts/SimpleTreeMapPanel.js', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/treemap/TreeMap.js', notes: 'Hoist wrapper component for TreeMap sizing and layout.'},
-                {url: '$HR/desktop/cmp/treemap/TreeMapModel.js', notes: 'Hoist model with support for store/grid binding.'},
+                {url: '$TB/client-app/src/desktop/tabs/charts/SimpleTreeMapPanel.tsx', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/treemap/TreeMap.ts', notes: 'Hoist wrapper component for TreeMap sizing and layout.'},
+                {url: '$HR/desktop/cmp/treemap/TreeMapModel.ts', notes: 'Hoist model with support for store/grid binding.'},
                 {text: 'Highcharts Docs', url: 'https://api.highcharts.com/highcharts/', notes: 'Library API documentation.'}
             ]
         });

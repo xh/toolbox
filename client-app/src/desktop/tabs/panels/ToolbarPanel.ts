@@ -22,8 +22,8 @@ export const toolbarPanel = hoistCmp.factory({
                 own and can be displayed in a vertical configuration as well. 
             `,
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/panels/ToolbarPanel.js', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/toolbar/Toolbar.js', notes: 'Hoist component.'}
+                {url: '$TB/client-app/src/desktop/tabs/panels/ToolbarPanel.ts', notes: 'This example.'},
+                {url: '$HR/desktop/cmp/toolbar/Toolbar.ts', notes: 'Hoist component.'}
             ],
             item: panel({
                 title: 'Panels › Toolbar',

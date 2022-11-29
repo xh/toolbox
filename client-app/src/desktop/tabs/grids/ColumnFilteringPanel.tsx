@@ -33,11 +33,11 @@ export const columnFilteringPanel = hoistCmp.factory({
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/grids/ColumnFilteringPanel.js', notes: 'This example.'},
-                {url: '$HR/cmp/grid/filter/GridFilterModel.js', notes: 'Hoist model for managed Grid filters.'},
-                {url: '$HR/cmp/grid/filter/GridFilterFieldSpec.js', notes: 'FieldSpec for field managed by the GridFilterModel.'},
-                {url: '$HR/cmp/filter/FilterChooserModel.js', notes: 'Hoist model for FilterChooser component.'},
-                {url: '$HR/cmp/filter/FilterChooserFieldSpec.js', notes: 'FieldSpec for field managed by the FilterChooserModel.'}
+                {url: '$TB/client-app/src/desktop/tabs/grids/ColumnFilteringPanel.tsx', notes: 'This example.'},
+                {url: '$HR/cmp/grid/filter/GridFilterModel.ts', notes: 'Hoist model for managed Grid filters.'},
+                {url: '$HR/cmp/grid/filter/GridFilterFieldSpec.ts', notes: 'FieldSpec for field managed by the GridFilterModel.'},
+                {url: '$HR/cmp/filter/FilterChooserModel.ts', notes: 'Hoist model for FilterChooser component.'},
+                {url: '$HR/cmp/filter/FilterChooserFieldSpec.ts', notes: 'FieldSpec for field managed by the FilterChooserModel.'}
             ],
             item: panel({
                 title: 'Grids › Column Filtering',

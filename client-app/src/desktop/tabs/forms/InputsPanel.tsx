@@ -48,8 +48,8 @@ export const inputsPanel = hoistCmp.factory({
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/forms/InputsPanel.js', notes: 'This example.'},
-                {url: '$HR/cmp/input/HoistInput.js', notes: 'HoistInput Base Class'},
+                {url: '$TB/client-app/src/desktop/tabs/forms/InputsPanel.tsx', notes: 'This example.'},
+                {url: '$HR/cmp/input/HoistInputModel.ts', notes: 'HoistInput Base Class'},
                 {url: '$HR/desktop/cmp/input', notes: 'Hoist Inputs'}
             ],
             item: panel({

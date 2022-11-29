@@ -13,12 +13,8 @@ export const vboxContainerPanel = hoistCmp.factory(
         </p>,
         links: [
             {
-                url: '$HR/cmp/layout/Box.js',
+                url: '$HR/cmp/layout/Box.ts',
                 notes: 'Hoist Box components.'
-            },
-            {
-                url: '$HR/core/mixins/LayoutSupport.js',
-                notes: 'Decorator to support core layout props.'
             }
         ],
         item: panel({
