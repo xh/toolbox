@@ -17,8 +17,6 @@ export const inlineEditingPanel = hoistCmp.factory({
     model: creates(InlineEditingPanelModel),
 
     render({model}) {
-        const {gridModel, fullRowEditing} = model;
-
         return wrapper({
             description: [
                 <p>
@@ -43,10 +41,10 @@ export const inlineEditingPanel = hoistCmp.factory({
             item: panel({
                 title: 'Grids › Inline Editing',
                 icon: Icon.edit(),
-                className: `tb-grid-wrapper-panel tb-inline-editing-panel ${fullRowEditing ? 'tb-inline-editing-panel--fullRow' : ''}`,
+                className: `tb-grid-wrapper-panel tb-inline-editing-panel ${model.fullRowEditing ? 'tb-inline-editing-panel--fullRow' : ''}`,
                 tbar: tbar(),
                 item: hframe(
-                    grid({key: gridModel.xhId, model: gridModel}),
+                    grid(),
                     gridOptionsPanel()
                 ),
                 bbar: bbar()

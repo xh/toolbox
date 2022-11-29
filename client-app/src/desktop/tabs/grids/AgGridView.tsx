@@ -38,7 +38,6 @@ export const agGridView = hoistCmp.factory({
                 mask: 'onLoad',
                 item: hframe(
                     agGrid({
-                        key: agGridModel.xhId,
                         model: agGridModel,
                         columnDefs,
                         rowData: [],
