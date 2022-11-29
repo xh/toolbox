@@ -60,8 +60,8 @@ class ButtonWidgetModel extends HoistModel {
         this.addReaction({
             track: () => this.value,
             run: (value) => {
-                viewModel.setIcon(this.getIconForValue(value));
-                viewModel.setViewState({value});
+                viewModel.icon = this.getIconForValue(value);
+                viewModel.viewState = {value};
             }
         });
     }

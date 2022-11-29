@@ -1,5 +1,5 @@
 import {HoistModel, managed} from '@xh/hoist/core';
-import {observable, action, makeObservable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {PERSIST_MAIN} from './AppModel';
@@ -15,8 +15,7 @@ export class GridPanelModel extends HoistModel {
         persistWith: {...PERSIST_MAIN, path: 'positionsPanel'}
     });
 
-    @observable loadTimestamp: number;
-    @action setLoadTimestamp(n: number) {this.loadTimestamp = n}
+    @bindable loadTimestamp: number;
 
     @managed
     gridModel: GridModel;

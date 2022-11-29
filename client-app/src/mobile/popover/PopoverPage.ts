@@ -1,5 +1,5 @@
 import {hoistCmp, HoistModel, creates} from '@xh/hoist/core';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {observable, makeObservable} from '@xh/hoist/mobx';
 import {div, filler, h1, p} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {popover} from '@xh/hoist/mobile/cmp/popover';
@@ -33,7 +33,7 @@ export const popoverPage = hoistCmp.factory({
                     text: 'Show controlled Popover',
                     popoverProps: {
                         isOpen: model.isOpen,
-                        onInteraction: (nextOpenState) => model.setIsOpen(nextOpenState)
+                        onInteraction: (nextOpenState) => model.isOpen = nextOpenState
                     }
                 }),
                 filler()
@@ -72,7 +72,6 @@ const popoverContent = hoistCmp.factory({
  */
 class PopoverPageModel extends HoistModel {
     @observable isOpen: boolean = false;
-    @action setIsOpen(v: boolean) {this.isOpen = v}
 
     constructor() {
         super();

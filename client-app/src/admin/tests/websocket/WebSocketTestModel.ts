@@ -1,15 +1,14 @@
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateRenderer} from '@xh/hoist/format';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
-import { WebSocketSubscription } from '@xh/hoist/svc';
+import {makeObservable, bindable} from '@xh/hoist/mobx';
+import {WebSocketSubscription} from '@xh/hoist/svc';
 
 export class WebSocketTestModel extends HoistModel {
 
     @managed gridModel: GridModel;
     @managed updateSub: WebSocketSubscription;
-    @observable subscribed = false;
-    @action setSubscribed(v: boolean) {this.subscribed = v}
+    @bindable subscribed = false;
 
     constructor() {
         super();
@@ -37,7 +36,7 @@ export class WebSocketTestModel extends HoistModel {
         });
 
         XH.toast({message: 'Subscribed to updates.'});
-        this.setSubscribed(true);
+        this.subscribed = true;
     }
 
     async unsubscribeAsync() {
@@ -47,7 +46,7 @@ export class WebSocketTestModel extends HoistModel {
         });
 
         XH.toast({message: 'Unsubscribed from updates.', intent: 'danger'});
-        this.setSubscribed(false);
+        this.subscribed = false;
     }
 
 }
