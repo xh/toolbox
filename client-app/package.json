@@ -39,7 +39,7 @@
     "@xh/hoist": "^54.0.0-SNAPSHOT",
     "@xh/package-template": "~2.0.0",
     "core-js": "3.x",
-    "highcharts": "~9.3.0",
+    "highcharts": "~10.3.2",
     "lodash": "4.x",
     "moment": "2.x",
     "react": "~18.2.0",
