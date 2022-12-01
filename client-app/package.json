@@ -9,8 +9,9 @@
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "yarn lint:all",
     "lint:all": "yarn lint:js && yarn lint:styles",
-    "lint:js": "eslint --ext .js,.jsx .",
+    "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
+    "tsc": "./node_modules/typescript/bin/tsc",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
     "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(hostname)",
     "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
@@ -18,7 +19,7 @@
     "prepare": "cd .. && husky install client-app/.husky"
   },
   "lint-staged": {
-    "*.{js,jsx}": "eslint",
+    "*.{js,jsx,ts,tsx}": "eslint",
     "*.s?(a|c)ss": "stylelint"
   },
   "dependencies": {
@@ -37,23 +38,24 @@
     "@fortawesome/free-brands-svg-icons": "~6.2.0",
     "@xh/hoist": "^54.0.0-SNAPSHOT",
     "@xh/package-template": "~2.0.0",
-    "core-js": "^3.0.0",
-    "highcharts": "~9.3.0",
-    "lodash": "^4.0.0",
-    "moment": "^2.0.0",
+    "core-js": "3.x",
+    "highcharts": "~10.3.2",
+    "lodash": "4.x",
+    "moment": "2.x",
     "react": "~18.2.0",
     "react-dom": "~18.2.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "~6.0.0",
-    "cross-env": "^7.0.0",
-    "husky": "^8.0.0",
-    "lint-staged": "^13.0.0",
-    "postcss": "^8.0.0",
-    "stylelint": "^14.0.0",
-    "stylelint-config-standard-scss": "^5.0.0"
+    "@xh/hoist-dev-utils": "^7.0.0-SNAPSHOT",
+    "cross-env": "7.x",
+    "husky": "8.x",
+    "lint-staged": "13.x",
+    "postcss": "8.x",
+    "stylelint": "14.x",
+    "stylelint-config-standard-scss": "6.x",
+    "typescript": "~4.9.3"
   },
   "resolutions": {
-    "core-js": "^3.0.0"
+    "core-js": "3.x"
   }
 }

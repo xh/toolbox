@@ -3,6 +3,7 @@ import {creates, hoistCmp, HoistModel, lookup, managed, XH} from '@xh/hoist/core
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {ChartsPanelModel} from './ChartsPanelModel';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {App} from '../../AppModel';
 
 export const ohlcChart = hoistCmp.factory({
     model: creates(() => OHLCChartModel),
@@ -84,7 +85,7 @@ class OHLCChartModel extends HoistModel {
         }
 
         try {
-            const series = await XH.portfolioService.getOHLCChartSeriesAsync({symbol, loadSpec});
+            const series = await App.portfolioService.getOHLCChartSeriesAsync({symbol, loadSpec});
             if (!loadSpec.isObsolete) {
                 chartModel.setSeries(series);
             }
