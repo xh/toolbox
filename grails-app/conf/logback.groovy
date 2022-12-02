@@ -1,9 +1,9 @@
 import io.xh.hoist.configuration.LogbackConfig
-import io.xh.toolbox.log.MachineReadableConverter
+import io.xh.toolbox.log.TokenizedExampleConverter
 
-// Machine Readable to stdout
-LogbackConfig.stdoutLayout = '%d{"yyyy-MM-dd\'T\'HH:mm:ss.SSSZ"}, class=%c{0}, level=%p, %mrMsg%n'
+// Tokenized output to monitorLayout
+LogbackConfig.monitorLayout = '%d{HH:mm:ss.SSS}, %tokenizedMsg%n'
 
-conversionRule("mrMsg", MachineReadableConverter)
+conversionRule("tokenizedMsg", TokenizedExampleConverter)
 
 LogbackConfig.defaultConfig(this)

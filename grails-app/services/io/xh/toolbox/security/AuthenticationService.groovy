@@ -50,7 +50,7 @@ class AuthenticationService extends BaseAuthenticationService  {
 
         def user = userService.getOrCreateFromJwtResult(tokenResult)
         setUser(request, user)
-        logDebug("User read from token and set on request", "username=${user.username}")
+        logDebug("User read from token and set on request", [username: user.username])
         return true
     }
 

@@ -6,7 +6,18 @@ import ch.qos.logback.classic.spi.ThrowableProxy
 
 import static io.xh.hoist.util.Utils.exceptionRenderer
 
-class MachineReadableConverter extends ClassicConverter {
+/**
+ * Logback Layout Converter to output log messages in a tokenized key/value pair format,
+ * which may be easier for log reading tools to parse than Hoist's DefaultConverter layout.
+ *
+ * Developers wishing to output log entries with a different layout can create their own converter and
+ * override the layout strings in Hoist-Core's @class LogbackConfig with their own layout strings in
+ * their application's /grails-app/conf/logback.groovy file.
+ */
+
+class TokenizedExampleConverter extends ClassicConverter {
+
+      static String MSG_KEY = 'msg'
 
       @Override
       public String convert(ILoggingEvent event) {
@@ -33,10 +44,10 @@ class MachineReadableConverter extends ClassicConverter {
 
           List<String> processed = args.collect { delimitedTxt(it) }.flatten()
 
-          def (messages, rest) = processed.split {it.startsWith('message=')}
+          def (messages, rest) = processed.split {it.startsWith(MSG_KEY + '=')}
           def (exception, ret) = rest.split {it.startsWith('exception=')}
-          messages = messages.collect {it.replace('message=', '')}.join(' | ')
-          messages = messages ? "message=${quoteSentence(messages)}" : ''
+          messages = messages.collect {it.replace(MSG_KEY + '=', '')}.join(' | ')
+          messages = messages ? "$MSG_KEY=${quoteSentence(messages)}" : ''
           ret.add(0, messages)
           ret << exception
 
@@ -58,8 +69,8 @@ class MachineReadableConverter extends ClassicConverter {
 
     private List<String> kvTxt(Map msgs) {
          return msgs.collect {k,v ->
-            v = v instanceof Throwable ? safeErrorSummary(v) :
-                    quoteSentence(v.toString())
+            v = v instanceof Throwable ? safeErrorSummary(v) : quoteSentence(v.toString())
+            k = k.replaceAll(/^_/, '')
             return "$k=$v"
         }
     }
@@ -79,7 +90,7 @@ class MachineReadableConverter extends ClassicConverter {
 
     private String addMsgKey(String str) {
         if (str.split('=').size() != 2) {
-            str = "message=$str"
+            str = "$MSG_KEY=$str"
         }
         return str
     }
