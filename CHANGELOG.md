@@ -1,11 +1,13 @@
 # Changelog
 
-## v2.30.0 - SNAPSHOT
+## v3.0.0 - SNAPSHOT
 
 ### New Features
 
 * New application permission role: `HOIST_ADMIN_READER`.
 * All Hoist Framework Admin tabs are now readable (read only) by users who have this new role: `HOIST_ADMIN_READER`.
+* Log output converter `TokenizedExampleConverter` added as an example of an alternative log output format.  
+  Applied to Monitor log file.
 
 ### Libraries
 
