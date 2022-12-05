@@ -15,7 +15,7 @@ class CustomLogSupportConverter extends LogSupportConverter {
 
 
     protected String getDelimiter() {
-        return ' || '
+        return ', '
     }
 
     protected String formatMap(Map mp) {
