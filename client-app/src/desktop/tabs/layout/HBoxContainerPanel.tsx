@@ -12,7 +12,7 @@ export const hboxContainerPanel = hoistCmp.factory(
             with <code>flexDirection:row</code>.
         </p>,
         links: [
-            {url: '$HR/cmp/layout/Box.ts', notes: 'Hoist Box components.'},
+            {url: '$HR/cmp/layout/Box.ts', notes: 'Hoist Box components.'}
         ],
         item: panel({
             title: 'Layout › HBox',
