@@ -1,6 +1,6 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {HoistModel, managed} from '@xh/hoist/core';
-import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import {observable, makeObservable, runInAction, bindable} from '@xh/hoist/mobx';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
 import {App} from '../../AppModel';
@@ -8,7 +8,7 @@ import {App} from '../../AppModel';
 
 export class LineChartModel extends HoistModel {
 
-    @observable currentSymbol: string = '';
+    @bindable currentSymbol: string = '';
     @observable.ref symbols: string[] = [];
 
     @managed

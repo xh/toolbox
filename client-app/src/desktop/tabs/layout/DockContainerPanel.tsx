@@ -114,9 +114,9 @@ class DockContainerPanelModel extends HoistModel {
             collapsedWidth: 200,
             allowDialog,
             allowClose,
-            content: () => panel(
-                box({items: textItems, padding: 10})
-            )
+            content: () => panel({
+                item: box({items: textItems, padding: 10})
+            })
         });
     }
 
