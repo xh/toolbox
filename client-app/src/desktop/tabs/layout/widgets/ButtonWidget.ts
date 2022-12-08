@@ -10,8 +10,8 @@ import {DashViewModel} from '@xh/hoist/desktop/cmp/dash/DashViewModel';
 export const buttonWidget = hoistCmp.factory({
     model: creates(() => ButtonWidgetModel),
     render({model}) {
-        return panel(
-            vbox({
+        return panel({
+            item: vbox({
                 padding: 10,
                 items: [
                     buttonGroupInput({
@@ -41,7 +41,7 @@ export const buttonWidget = hoistCmp.factory({
                     })
                 ]
             })
-        );
+        });
     }
 });
 
