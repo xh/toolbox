@@ -1,4 +1,4 @@
-import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
+import {addAction, cloneAction, deleteAction, editAction, restGrid, RestGridConfig, viewAction} from '@xh/hoist/desktop/cmp/rest';
 import {hoistCmp} from '@xh/hoist/core';
 import {boolCheckCol} from '@xh/hoist/cmp/grid';
 import {App} from '../AppModel';
@@ -7,7 +7,7 @@ export const phaseRestPanel = hoistCmp.factory(
     () => restGrid({modelConfig: {...modelSpec, readonly: App.model.readonly}})
 );
 
-const modelSpec = {
+const modelSpec:RestGridConfig= {
     enableExport: true,
     store: {
         url: 'rest/phaseRest',
@@ -65,10 +65,10 @@ const modelSpec = {
         }
     ],
     editors: [
-        {field: 'name', label: 'Name'},
+        {field: 'name', formField:{label: 'Name'}},
         {field: 'sortOrder'},
         {field: 'displayed'},
-        {field: 'projectNames', label: 'Projects'}
+        {field: 'projectNames', formField:{label: 'Projects'}}
     ],
     emptyText: 'No phases found - try adding one...',
     menuActions: [
