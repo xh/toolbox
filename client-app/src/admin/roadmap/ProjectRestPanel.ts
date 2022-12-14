@@ -1,4 +1,4 @@
-import {addAction, cloneAction, deleteAction, editAction, restGrid, viewAction} from '@xh/hoist/desktop/cmp/rest';
+import {addAction, cloneAction, deleteAction, editAction, restGrid, RestGridConfig, viewAction} from '@xh/hoist/desktop/cmp/rest';
 import {dateTimeRenderer} from '@xh/hoist/format';
 import {codeInput, textArea} from '@xh/hoist/desktop/cmp/input';
 import {hoistCmp} from '@xh/hoist/core';
@@ -11,7 +11,7 @@ export const projectRestPanel = hoistCmp.factory(
 
 const tooltip = s => s;
 
-const modelSpec = {
+const modelSpec:RestGridConfig= {
     enableExport: true,
     store: {
         url: 'rest/projectRest',
@@ -20,7 +20,6 @@ const modelSpec = {
             {
                 name: 'category',
                 lookupName: 'categories',
-                lookupStrict: true,
                 required: true,
                 enableCreate: true
             },
@@ -40,18 +39,15 @@ const modelSpec = {
                 name: 'phaseName',
                 required: true,
                 lookupName: 'phases',
-                lookupStrict: true
             },
             {
                 name: 'releaseVersion',
                 lookupName: 'releaseVersions',
-                lookupStrict: true,
                 enableCreate: true
             },
             {
                 name: 'status',
                 lookupName: 'statuses',
-                lookupStrict: true,
                 required: true
             },
             {
@@ -136,7 +132,7 @@ const modelSpec = {
         }
     ],
     editors: [
-        {field: 'name', label: 'Title'},
+        {field: 'name', formField:{label: 'Title'}},
         {field: 'category'},
         {field: 'phaseName'},
         {field: 'status'},
@@ -149,12 +145,12 @@ const modelSpec = {
         },
         {
             field: 'gitLinks',
-            label: 'Github Links (one per line)',
-            formField: {item: codeInput()}
+
+            formField: {item: codeInput(), label: 'Github Links', info: '(One per line)'}
         },
         {field: 'releaseVersion'},
-        {field: 'lastUpdated', label: 'Last Updated'},
-        {field: 'lastUpdatedBy', label: 'Last Updated By'}
+        {field: 'lastUpdated', formField:{label: 'Last Updated'}},
+        {field: 'lastUpdatedBy', formField:{label: 'Last Updated By'}}
     ],
     emptyText: 'No projects found - try adding one...',
     menuActions: [
