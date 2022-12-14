@@ -11,7 +11,7 @@ export const projectRestPanel = hoistCmp.factory(
 
 const tooltip = s => s;
 
-const modelSpec:RestGridConfig= {
+const modelSpec: RestGridConfig= {
     enableExport: true,
     store: {
         url: 'rest/projectRest',
