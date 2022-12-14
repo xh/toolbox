@@ -7,7 +7,7 @@ export const phaseRestPanel = hoistCmp.factory(
     () => restGrid({modelConfig: {...modelSpec, readonly: App.model.readonly}})
 );
 
-const modelSpec:RestGridConfig= {
+const modelSpec: RestGridConfig= {
     enableExport: true,
     store: {
         url: 'rest/phaseRest',
