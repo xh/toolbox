@@ -146,7 +146,7 @@ const modelSpec: RestGridConfig= {
         {
             field: 'gitLinks',
 
-            formField: {item: codeInput(), label: 'Github Links', info: '(One per line)'}
+            formField: {item: codeInput({height: 150}), label: 'Github Links', info: '(One per line)'}
         },
         {field: 'releaseVersion'},
         {field: 'lastUpdated', formField:{label: 'Last Updated'}},
