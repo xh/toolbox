@@ -2,13 +2,12 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {span, div} from '@xh/hoist/cmp/layout';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
-import {managed, HoistModel} from '@xh/hoist/core';
+import {managed, HoistModel, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
 import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {head} from 'lodash';
-import {App} from '../../../../AppModel';
 
 export class ActivityWidgetModel extends HoistModel {
 
@@ -162,13 +161,13 @@ export class ActivityWidgetModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => App.gitHubService.allCommits,
+            track: () => XH.gitHubService.allCommits,
             run: () => this.loadAsync()
         });
     }
 
     override async doLoadAsync() {
-        this.gridModel.loadData(App.gitHubService.allCommits);
+        this.gridModel.loadData(XH.gitHubService.allCommits);
     }
 
     private onRowDoubleClicked = (params) => {

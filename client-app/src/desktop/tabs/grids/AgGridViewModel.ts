@@ -2,7 +2,6 @@ import {HoistModel, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
 import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
-import {App} from '../../AppModel';
 
 export class AgGridViewModel extends HoistModel {
 
@@ -84,7 +83,7 @@ export class AgGridViewModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        const data = await App.portfolioService.getRawPositionsAsync({loadSpec});
+        const data = await XH.portfolioService.getRawPositionsAsync({loadSpec});
         runInAction(() => this.data = data);
     }
 }

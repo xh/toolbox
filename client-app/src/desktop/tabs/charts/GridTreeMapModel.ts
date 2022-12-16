@@ -1,9 +1,8 @@
-import {HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
-import {App} from '../../AppModel';
 
 export class GridTreeMapModel extends HoistModel {
 
@@ -68,7 +67,7 @@ export class GridTreeMapModel extends HoistModel {
 
     override async doLoadAsync() {
         const dims = this.groupingChooserModel.value;
-        const data = await App.portfolioService.getPositionsAsync(dims);
+        const data = await XH.portfolioService.getPositionsAsync(dims);
         this.gridModel.loadData(data);
     }
 

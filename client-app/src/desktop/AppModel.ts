@@ -22,21 +22,12 @@ import {panelsTab} from './tabs/panels/PanelsTab';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {span} from '@xh/hoist/cmp/layout';
 
-
 declare module '@xh/hoist/core' {
 // eslint-disable-next-line
     interface HoistUser {
         profilePicUrl: string;
     }
 }
-
-/** Exported for convenient, type-aware access to the Toolbox AppModel services. */
-export const App = {
-    get model()             {return XH.appModel as AppModel},
-    get oauthService()      {return XH.getService(OauthService)},
-    get portfolioService()  {return XH.getService(PortfolioService)},
-    get gitHubService()     {return XH.getService(GitHubService)}
-};
 
 export class AppModel extends HoistAppModel {
 
@@ -80,11 +71,11 @@ export class AppModel extends HoistAppModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        await App.gitHubService.loadAsync(loadSpec);
+        await XH.gitHubService.loadAsync(loadSpec);
     }
 
     override async logoutAsync() {
-        await App.oauthService.logoutAsync();
+        await XH.oauthService.logoutAsync();
     }
 
     goHome() {
@@ -215,7 +206,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override getAboutDialogItems() {
-        const lastGitHubCommit = fmtDateTimeSec(App.gitHubService.commitHistories.toolbox?.lastCommitTimestamp);
+        const lastGitHubCommit = fmtDateTimeSec(XH.gitHubService.commitHistories.toolbox?.lastCommitTimestamp);
         return [
             ...super.getAboutDialogItems(),
             {
