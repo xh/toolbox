@@ -9,7 +9,7 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {every, isEmpty} from 'lodash';
 import {createRef} from 'react';
-import {PERSIST_APP, App} from './AppModel';
+import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
 
 export class TodoPanelModel extends HoistModel {
@@ -109,13 +109,13 @@ export class TodoPanelModel extends HoistModel {
     }
 
     async addTaskAsync(task) {
-        await App.taskService.addAsync(task);
+        await XH.taskService.addAsync(task);
         await this.refreshAsync();
         this.info(`Task added: '${task.description}'`);
     }
 
     async editTaskAsync(task) {
-        await App.taskService.editAsync([task]);
+        await XH.taskService.editAsync([task]);
         await this.refreshAsync();
         this.info(`Task edited: '${task.description}'`);
     }
@@ -133,7 +133,7 @@ export class TodoPanelModel extends HoistModel {
 
         if (!confirmed) return;
 
-        await App.taskService.deleteAsync(tasks);
+        await XH.taskService.deleteAsync(tasks);
         await this.refreshAsync();
 
         const label = count === 1 ? `Task removed: '${description}'` : `${count} tasks removed`;
@@ -146,7 +146,7 @@ export class TodoPanelModel extends HoistModel {
         const firstTask = tasks[0],
             isCompleting = !firstTask.complete;
 
-        await App.taskService.toggleCompleteAsync(tasks);
+        await XH.taskService.toggleCompleteAsync(tasks);
         await this.refreshAsync();
 
         if (isCompleting) {
@@ -160,7 +160,7 @@ export class TodoPanelModel extends HoistModel {
     }
 
     async resetToDefaultTasksAsync() {
-        await App.taskService.resetToDefaultTasksAsync();
+        await XH.taskService.resetToDefaultTasksAsync();
         await this.refreshAsync();
     }
 
@@ -168,7 +168,7 @@ export class TodoPanelModel extends HoistModel {
     // Implementation
     //------------------------
     override async doLoadAsync(loadSpec) {
-        const tasks = await App.taskService.getAsync();
+        const tasks = await XH.taskService.getAsync();
         this.gridModel.loadData(tasks);
     }
 

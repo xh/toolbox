@@ -1,4 +1,4 @@
-import {HoistModel, managed, PlainObject} from '@xh/hoist/core';
+import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {Cube} from '@xh/hoist/data';
 import {fmtThousands} from '@xh/hoist/format';
 import {times} from 'lodash';
@@ -6,7 +6,6 @@ import {SECONDS} from '@xh/hoist/utils/datetime';
 import {Timer} from '@xh/hoist/utils/async';
 import {PctTotalAggregator} from './PctTotalAggregator';
 import {CubeTestModel} from './CubeTestModel';
-import {App} from '../../AppModel';
 
 export class CubeModel extends HoistModel {
 
@@ -32,7 +31,7 @@ export class CubeModel extends HoistModel {
         const LTM = this.parent.loadTimesModel;
         let orders = [];
         await LTM.withLoadTime('Fetch orders', async () => {
-            orders = await App.portfolioService.getAllOrdersAsync({loadSpec});
+            orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
             orders.forEach(it => {
                 it.pctCommission = it.commission;
                 it.maxConfidence = it.minConfidence = it.confidence;

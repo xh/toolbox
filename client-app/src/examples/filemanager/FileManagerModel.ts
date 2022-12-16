@@ -146,7 +146,7 @@ export class FileManagerModel extends HoistModel {
 
     async resetAndLoadAsync() {
         this.chooserModel.removeAllFiles();
-        this.loadAsync();
+        await this.loadAsync();
     }
 
     async downloadSelectedAsync() {

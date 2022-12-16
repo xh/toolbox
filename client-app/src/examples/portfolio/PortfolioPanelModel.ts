@@ -1,10 +1,9 @@
-import {HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel, managed,XH} from '@xh/hoist/core';
 import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {round} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {PERSIST_MAIN} from './AppModel';
-import {App} from './AppModel';
 
 export class PortfolioPanelModel extends HoistModel {
 
@@ -33,7 +32,7 @@ export class PortfolioPanelModel extends HoistModel {
         let {session} = this;
         session?.destroy();
 
-        session = await App.portfolioService
+        session = await XH.portfolioService
             .getLivePositionsAsync(dims, 'mainApp')
             .catchDefault();
 

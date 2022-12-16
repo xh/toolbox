@@ -5,7 +5,6 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {observable, makeObservable, comparer} from '@xh/hoist/mobx';
 import {numberRenderer} from '@xh/hoist/format';
-import {App} from '../../../AppModel';
 
 export class ViewColumnFilterPanelModel extends HoistModel {
 
@@ -55,7 +54,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        const orders = await App.portfolioService.getAllOrdersAsync({loadSpec});
+        const orders = await XH.portfolioService.getAllOrdersAsync({loadSpec});
         orders.forEach(o => {
             [1, 2, 3].forEach(v => {
                 o['price' + v] = o.price;

@@ -1,11 +1,10 @@
-import {hoistCmp, HoistModel, creates} from '@xh/hoist/core';
+import {hoistCmp, HoistModel, creates, XH} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {numberRenderer} from '@xh/hoist/format';
 import {capitalize} from 'lodash';
 import {Icon} from '@xh/hoist/icon';
 import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
-import {App} from '../AppModel';
 
 export const treeGridDetailPage = hoistCmp.factory({
     model: creates(() => TreeGridDetailPageModel),
@@ -72,7 +71,7 @@ class TreeGridDetailPageModel extends HoistModel {
     }
 
     async doLoadAsync(loadSpec) {
-        const position = await (this.id ? App.portfolioService.getPositionAsync(this.id) : null);
+        const position = await (this.id ? XH.portfolioService.getPositionAsync(this.id) : null);
         runInAction(() => this.position = position);
     }
 }

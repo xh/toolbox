@@ -2,7 +2,7 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {isNil, map, uniq} from 'lodash';
-import {PERSIST_DETAIL, App} from '../AppModel';
+import {PERSIST_DETAIL} from '../AppModel';
 import {
     closingPriceSparklineCol,
     dirCol,
@@ -94,9 +94,9 @@ export class OrdersPanelModel extends HoistModel {
         }
 
         try {
-            const orders = await App.portfolioService.getOrdersAsync({positionId, loadSpec}),
+            const orders = await XH.portfolioService.getOrdersAsync({positionId, loadSpec}),
                 symbols = uniq(map(orders, 'symbol')),
-                sparklineSeries = await App.portfolioService.getSparklineSeriesAsync({symbols, loadSpec});
+                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync({symbols, loadSpec});
 
             orders.forEach(order => order.closingPrices = sparklineSeries[order.symbol]);
 

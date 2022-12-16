@@ -7,16 +7,19 @@
 //-----------------------------------------------------------------
 // App Services -- Import and Register
 //-----------------------------------------------------------------
+import {ContactService} from "./examples/contact/svc/ContactService";
+import {GitHubService} from './core/svc/GitHubService';
 import {PortfolioService} from './core/svc/PortfolioService';
 import {OauthService} from './core/svc/OauthService';
-import {GitHubService} from './core/svc/GitHubService';
+import {TaskService} from "./examples/todo/TaskService";
 
 declare module '@xh/hoist/core' {
     export interface XhApi {
+        contactService: ContactService
         gitHubService: GitHubService,
         oauthService: OauthService,
-        portfolioService: PortfolioService
-
+        portfolioService: PortfolioService,
+        taskService: TaskService
     }
 }
 

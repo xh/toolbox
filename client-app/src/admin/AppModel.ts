@@ -6,11 +6,6 @@ import {roadmapTab} from './roadmap/RoadmapTab';
 import {testsTab} from './tests/TestsTab';
 import {wipTab} from './wip/WipTab';
 
-export const App = {
-    get model(): AppModel { return AppModel.instance},
-    get portfolioService(): PortfolioService {return PortfolioService.instance}
-};
-
 export class AppModel extends BaseAppModel {
 
     static instance: AppModel;
