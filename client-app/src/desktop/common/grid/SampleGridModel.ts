@@ -236,7 +236,7 @@ export class SampleGridModel extends HoistModel {
     }
 
     @action
-    private async restoreDefaultsFn(): Promise<boolean> {
+    private restoreDefaultsFn(): boolean {
         // Reset defaults to Display Options panel
         this.setGroupBy(null);
         this.gridModel.sizingMode = XH.sizingMode;
