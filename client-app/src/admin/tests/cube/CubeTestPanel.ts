@@ -16,23 +16,21 @@ export const CubeTestPanel = hoistCmp({
     model: creates(CubeTestModel),
 
     render() {
-        return panel(
-            hframe({
-                items: [
-                    dimensionManager({icon: Icon.cube()}),
-                    panel({
-                        title: 'Grids › Cube Data',
-                        icon: Icon.grid(),
-                        flex: 1,
-                        item: grid(),
-                        mask: 'onLoad',
-                        tbar: tbar(),
-                        bbar: bbar()
-                    }),
-                    loadTimesPanel()
-                ]
-            })
-        );
+        return panel({
+            item: hframe(
+                dimensionManager({icon: Icon.cube()}),
+                panel({
+                    title: 'Grids › Cube Data',
+                    icon: Icon.grid(),
+                    flex: 1,
+                    item: grid(),
+                    mask: 'onLoad',
+                    tbar: tbar(),
+                    bbar: bbar()
+                }),
+                loadTimesPanel()
+            )
+        });
     }
 });
 

@@ -117,7 +117,7 @@ export class SampleGridModel extends HoistModel {
                 return a < b ? -1 : 1;
             }
         },
-        restoreDefaultsFn: () => this.restoreDefaultsFn(),
+        restoreDefaultsFn: async () => this.restoreDefaultsFn(),
         colDefaults: {
             tooltipElement: (v, {record}) => {
                 if (record.isSummary) return null;
@@ -236,7 +236,7 @@ export class SampleGridModel extends HoistModel {
     }
 
     @action
-    private async restoreDefaultsFn(): Promise<boolean> {
+    private restoreDefaultsFn(): boolean {
         // Reset defaults to Display Options panel
         this.setGroupBy(null);
         this.gridModel.sizingMode = XH.sizingMode;

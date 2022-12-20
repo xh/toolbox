@@ -6,7 +6,7 @@ import {Icon} from '@xh/hoist/icon';
 export const simpleExample = hoistCmp.factory(
     ({orientation}) => tabContainer({
         className: 'child-tabcontainer',
-        model: createContainerModelConfig({switcher: {orientation}})
+        modelConfig: createContainerModelConfig({switcher: {orientation}})
     })
 );
 

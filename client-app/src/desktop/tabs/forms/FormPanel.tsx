@@ -192,7 +192,6 @@ const references = hoistCmp.factory<FormPanelModel>(
             rows = references.value.map(
                 refModel => form({
                     model: refModel,
-                    key: refModel.xhId,
                     fieldDefaults: {label: null},
                     item: hbox({
                         className: 'tb-form-panel__reference-row',
