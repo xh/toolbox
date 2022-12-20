@@ -117,7 +117,7 @@ export class SampleGridModel extends HoistModel {
                 return a < b ? -1 : 1;
             }
         },
-        restoreDefaultsFn: async () => this.restoreDefaultsFn(),
+        restoreDefaultsFn: () => this.restoreDefaultsFn(),
         colDefaults: {
             tooltipElement: (v, {record}) => {
                 if (record.isSummary) return null;
