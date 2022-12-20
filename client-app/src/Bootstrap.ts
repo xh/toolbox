@@ -21,6 +21,9 @@ declare module '@xh/hoist/core' {
         portfolioService: PortfolioService,
         taskService: TaskService
     }
+    export interface HoistUser {
+            profilePicUrl: string;
+    }
 }
 
 import {installAgGrid} from '@xh/hoist/kit/ag-grid';
