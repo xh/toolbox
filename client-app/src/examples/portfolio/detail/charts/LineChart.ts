@@ -3,7 +3,6 @@ import {creates, hoistCmp, HoistModel, lookup, managed, XH} from '@xh/hoist/core
 import {fmtDate} from '@xh/hoist/format';
 import {ChartsPanelModel} from './ChartsPanelModel';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {App} from '../../AppModel';
 
 export const lineChart = hoistCmp.factory({
     model: creates(() => LineChartModel),
@@ -69,7 +68,7 @@ class LineChartModel extends HoistModel {
         }
 
         try {
-            const series = await App.portfolioService.getLineChartSeriesAsync({symbol, loadSpec});
+            const series = await XH.portfolioService.getLineChartSeriesAsync({symbol, loadSpec});
 
             if (!loadSpec.isObsolete) {
                 chartModel.setSeries(series);

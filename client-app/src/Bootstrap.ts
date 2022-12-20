@@ -4,6 +4,28 @@
  * This file is imported by each of the client apps, and runs shared code.
  */
 
+//-----------------------------------------------------------------
+// App Services -- Import and Register
+//-----------------------------------------------------------------
+import {ContactService} from "./examples/contact/svc/ContactService";
+import {GitHubService} from './core/svc/GitHubService';
+import {PortfolioService} from './core/svc/PortfolioService';
+import {OauthService} from './core/svc/OauthService';
+import {TaskService} from "./examples/todo/TaskService";
+
+declare module '@xh/hoist/core' {
+    export interface XHApi {
+        contactService: ContactService
+        gitHubService: GitHubService,
+        oauthService: OauthService,
+        portfolioService: PortfolioService,
+        taskService: TaskService
+    }
+    export interface HoistUser {
+            profilePicUrl: string;
+    }
+}
+
 import {installAgGrid} from '@xh/hoist/kit/ag-grid';
 import {installHighcharts} from '@xh/hoist/kit/highcharts';
 

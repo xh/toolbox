@@ -4,11 +4,6 @@ import {ContactService} from './svc/ContactService';
 
 export const PERSIST_APP = {prefKey: 'contactAppState'};
 
-export const App = {
-    get model()          {return XH.appModel as AppModel},
-    get oauthService()   {return XH.getService(OauthService)},
-    get contactService() {return XH.getService(ContactService)}
-};
 
 export class AppModel extends HoistAppModel {
 
@@ -23,6 +18,6 @@ export class AppModel extends HoistAppModel {
     }
 
     async logoutAsync() {
-        await App.oauthService.logoutAsync();
+        await XH.oauthService.logoutAsync();
     }
 }

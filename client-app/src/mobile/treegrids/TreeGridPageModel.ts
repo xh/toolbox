@@ -3,7 +3,6 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/mobile/cmp/grouping';
 import {isEmpty} from 'lodash';
 import {mktValCol, nameCol, pnlCol} from '../../core/columns';
-import {App} from '../AppModel';
 
 export class TreeGridPageModel extends HoistModel {
 
@@ -58,7 +57,7 @@ export class TreeGridPageModel extends HoistModel {
 
     override async doLoadAsync(loadSpec) {
         const dims = this.groupingChooserModel.value;
-        const data = await App.portfolioService.getPositionsAsync(dims, true);
+        const data = await XH.portfolioService.getPositionsAsync(dims, true);
         this.gridModel.loadData(data);
     }
 }

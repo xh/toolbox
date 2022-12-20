@@ -7,12 +7,6 @@ import {PortfolioService} from '../../core/svc/PortfolioService';
 export const PERSIST_MAIN = {localStorageKey: 'portfolioAppMainState'};
 export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
 
-export const App = {
-    get model()             {return XH.appModel as AppModel},
-    get oauthService()      {return XH.getService(OauthService)},
-    get portfolioService()  {return XH.getService(PortfolioService)}
-};
-
 export class AppModel extends HoistAppModel {
 
     static instance: AppModel;
@@ -31,7 +25,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override async logoutAsync() {
-        await App.oauthService.logoutAsync();
+        await XH.oauthService.logoutAsync();
     }
 
     override getAppOptions() {

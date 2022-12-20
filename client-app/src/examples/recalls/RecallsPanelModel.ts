@@ -35,8 +35,8 @@ export class RecallsPanelModel extends HoistModel {
                 {name: 'recallDate', type: 'localDate'},
                 {name: 'description', type: 'string'},
                 {name: 'reason', type: 'string'}
-            ]
-        },
+            ]}
+        ,
         emptyText: 'No records found...',
         colChooserModel: true,
         enableExport: true,
