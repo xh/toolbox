@@ -38,7 +38,7 @@ const modelSpec: RestGridConfig= {
             {
                 name: 'phaseName',
                 required: true,
-                lookupName: 'phases',
+                lookupName: 'phases'
             },
             {
                 name: 'releaseVersion',
@@ -132,7 +132,7 @@ const modelSpec: RestGridConfig= {
         }
     ],
     editors: [
-        {field: 'name', formField:{label: 'Title'}},
+        {field: 'name', formField: {label: 'Title'}},
         {field: 'category'},
         {field: 'phaseName'},
         {field: 'status'},
@@ -149,8 +149,8 @@ const modelSpec: RestGridConfig= {
             formField: {item: codeInput({height: 150}), label: 'Github Links', info: '(One per line)'}
         },
         {field: 'releaseVersion'},
-        {field: 'lastUpdated', formField:{label: 'Last Updated'}},
-        {field: 'lastUpdatedBy', formField:{label: 'Last Updated By'}}
+        {field: 'lastUpdated', formField: {label: 'Last Updated'}},
+        {field: 'lastUpdatedBy', formField: {label: 'Last Updated By'}}
     ],
     emptyText: 'No projects found - try adding one...',
     menuActions: [

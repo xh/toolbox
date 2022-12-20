@@ -1,5 +1,5 @@
 import React from 'react';
-import {hoistCmp, HoistModel} from '@xh/hoist/core';
+import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {dateRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';

@@ -65,10 +65,10 @@ const modelSpec: RestGridConfig= {
         }
     ],
     editors: [
-        {field: 'name', formField:{label: 'Name'}},
+        {field: 'name', formField: {label: 'Name'}},
         {field: 'sortOrder'},
         {field: 'displayed'},
-        {field: 'projectNames', formField:{label: 'Projects'}}
+        {field: 'projectNames', formField: {label: 'Projects'}}
     ],
     emptyText: 'No phases found - try adding one...',
     menuActions: [
