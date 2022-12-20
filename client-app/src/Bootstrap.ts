@@ -14,7 +14,7 @@ import {OauthService} from './core/svc/OauthService';
 import {TaskService} from "./examples/todo/TaskService";
 
 declare module '@xh/hoist/core' {
-    export interface XhApi {
+    export interface XHApi {
         contactService: ContactService
         gitHubService: GitHubService,
         oauthService: OauthService,
