@@ -1,4 +1,4 @@
-import {HoistModel, managed,XH} from '@xh/hoist/core';
+import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Store} from '@xh/hoist/data';
 import {GridPanelModel} from './GridPanelModel';
 import {round} from 'lodash';
