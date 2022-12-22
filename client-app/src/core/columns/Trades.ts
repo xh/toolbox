@@ -2,7 +2,7 @@ import {ExcelFormat, localDateCol} from '@xh/hoist/cmp/grid';
 import {dateRenderer, millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
-export const profitLossCol = {
+export const profitLossCol: ColumnSpec = {
     field: {
         name: 'profit_loss',
         type: 'number',
@@ -19,14 +19,14 @@ export const profitLossCol = {
     }),
     excelFormat: ExcelFormat.LEDGER_COLOR,
     chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
-} as ColumnSpec;
+};
 
-export const winLoseCol = {
+export const winLoseCol: ColumnSpec = {
     field: {name: 'winLose', type: 'string'},
     excludeFromChooser: true
-} as ColumnSpec;
+};
 
-export const tradeVolumeCol = {
+export const tradeVolumeCol: ColumnSpec = {
     field: {
         name: 'trade_volume',
         type: 'number',
@@ -44,9 +44,9 @@ export const tradeVolumeCol = {
     },
     excelFormat: ExcelFormat.NUM_DELIMITED,
     chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
-} as ColumnSpec;
+};
 
-export const tradeDateCol = {
+export const tradeDateCol: ColumnSpec = {
     ...localDateCol,
     field: {
         name: 'trade_date',
@@ -54,9 +54,9 @@ export const tradeDateCol = {
         displayName: 'Date'
     },
     chooserDescription: 'Date of last trade (including related derivatives)'
-} as ColumnSpec;
+};
 
-export const dayOfWeekCol = {
+export const dayOfWeekCol: ColumnSpec = {
     field: {
         name: 'trade_date',
         type: 'localDate'
@@ -66,4 +66,4 @@ export const dayOfWeekCol = {
     chooserDescription: 'Used for testing storeFilterField matching on rendered dates.',
     width: 130,
     renderer: dateRenderer({fmt: 'dddd'})
-} as ColumnSpec;
+};

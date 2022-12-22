@@ -8,7 +8,7 @@ import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {GridTestData} from './GridTestData';
 import {GridTestMetrics} from './GridTestMetrics';
 
-const pnlColumn = {
+const pnlColumn: ColumnSpec = {
     absSort: true,
     align: 'right',
     width: 120,
@@ -18,7 +18,7 @@ const pnlColumn = {
         colorSpec: true,
         tooltip: true
     })
-} as ColumnSpec;
+};
 
 export class GridTestModel extends HoistModel {
 
