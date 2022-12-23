@@ -9,6 +9,7 @@ export class AppModel extends HoistAppModel {
 
     static instance: AppModel;
 
+
     static async preAuthAsync() {
         await XH.installServicesAsync(OauthService);
     }
@@ -20,4 +21,6 @@ export class AppModel extends HoistAppModel {
     async logoutAsync() {
         await XH.oauthService.logoutAsync();
     }
+
+    override get supportVersionBar(): boolean {return false}
 }

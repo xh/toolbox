@@ -19,4 +19,6 @@ export class AppModel extends HoistAppModel {
     override async logoutAsync() {
         await XH.oauthService.logoutAsync();
     }
+
+    override get supportVersionBar(): boolean {return false}
 }

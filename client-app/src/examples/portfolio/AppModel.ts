@@ -35,6 +35,8 @@ export class AppModel extends HoistAppModel {
         ];
     }
 
+    override get supportVersionBar(): boolean {return false}
+
     private updateWebsocketAlertBanner() {
         const {connected} = XH.webSocketService,
             category = 'wsAlert';
