@@ -9,7 +9,6 @@ export class AppModel extends HoistAppModel {
 
     static instance: AppModel;
 
-
     static async preAuthAsync() {
         await XH.installServicesAsync(OauthService);
     }
