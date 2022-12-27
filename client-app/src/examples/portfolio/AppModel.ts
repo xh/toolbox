@@ -35,7 +35,13 @@ export class AppModel extends HoistAppModel {
         ];
     }
 
-    override get supportsVersionBar(): boolean {return false}
+    override get supportsVersionBar(): boolean {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+    }
 
     private updateWebsocketAlertBanner() {
         const {connected} = XH.webSocketService,
