@@ -25,5 +25,5 @@ export class AppModel extends HoistAppModel {
         await this.newsPanelModel.loadAsync(loadSpec);
     }
 
-    override get supportsVersionBar(): boolean {return window.self !== window.top}
+    override get supportsVersionBar(): boolean {return window.self === window.top}
 }
