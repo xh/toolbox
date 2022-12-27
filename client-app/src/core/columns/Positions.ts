@@ -1,7 +1,7 @@
 import {millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
-export const mktValCol = {
+export const mktValCol: ColumnSpec = {
     field: {name: 'mktVal', type: 'number'},
     headerName: 'Mkt Value (m)',
     headerTooltip: 'Market value (in millions USD)',
@@ -14,9 +14,9 @@ export const mktValCol = {
         precision: 3,
         ledger: true
     })
-} as ColumnSpec;
+};
 
-export const pnlCol = {
+export const pnlCol: ColumnSpec = {
     field: {name: 'pnl', type: 'number'},
     headerName: 'P&L',
     align: 'right',
@@ -29,4 +29,4 @@ export const pnlCol = {
         ledger: true,
         colorSpec: true
     })
-} as ColumnSpec;
+};

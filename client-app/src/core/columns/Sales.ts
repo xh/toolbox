@@ -2,50 +2,50 @@ import {boolCheckCol} from '@xh/hoist/cmp/grid';
 import {numberRenderer} from '@xh/hoist/format';
 import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
-const unitColOpts = {
+const unitColOpts: ColumnSpec = {
     headerName: 'Units',
     align: 'right',
     width: 70,
     renderer: numberRenderer({precision: 0})
-} as ColumnSpec;
+};
 
-const grossColOpts = {
+const grossColOpts: ColumnSpec = {
     headerName: 'Gross',
     align: 'right',
     width: 100,
     renderer: numberRenderer({precision: 0})
-} as ColumnSpec;
+};
 
-export const projectedUnitsSoldCol = {
+export const projectedUnitsSoldCol: ColumnSpec = {
     ...unitColOpts,
     field: {name: 'projectedUnitsSold', type: 'number'},
     chooserName: 'Projected Units',
     exportName: 'Projected Units'
-} as ColumnSpec;
+};
 
-export const actualUnitsSoldCol = {
+export const actualUnitsSoldCol: ColumnSpec = {
     ...unitColOpts,
     field: {name: 'actualUnitsSold', type: 'number'},
     chooserName: 'Actual Units',
     exportName: 'Actual Units'
-} as ColumnSpec;
+};
 
-export const projectedGrossCol = {
+export const projectedGrossCol: ColumnSpec = {
     ...grossColOpts,
     field: {name: 'projectedGross', type: 'number'},
     chooserName: 'Projected Gross',
     exportName: 'Projected Gross'
-} as ColumnSpec;
+};
 
-export const actualGrossCol = {
+export const actualGrossCol: ColumnSpec = {
     ...grossColOpts,
     field: {name: 'actualGross', type: 'number'},
     chooserName: 'Actual Gross',
     exportName: 'Actual Gross'
-} as ColumnSpec;
+};
 
-export const retainCol = {
+export const retainCol: ColumnSpec = {
     ...boolCheckCol,
     field: {name: 'retain', type: 'bool'},
     width: 70
-} as ColumnSpec;
+};

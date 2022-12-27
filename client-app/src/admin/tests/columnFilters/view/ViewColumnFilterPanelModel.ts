@@ -211,7 +211,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
     }
 }
 
-const quantityCol = {
+const quantityCol: ColumnSpec ={
     headerName: 'Qty',
     align: 'right',
     width: 130,
@@ -220,21 +220,21 @@ const quantityCol = {
         precision: 0,
         ledger: true
     })
-} as ColumnSpec;
+};
 
-const priceCol = {
+const priceCol: ColumnSpec = {
     align: 'right',
     width: 130,
     renderer: numberRenderer({
         precision: 4
     })
-} as ColumnSpec;
+};
 
-const commissionCol = {
+const commissionCol: ColumnSpec = {
     align: 'right',
     width: 130,
     renderer: numberRenderer({
         precision: 0,
         ledger: true
     })
-} as ColumnSpec;
+};

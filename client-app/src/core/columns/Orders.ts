@@ -2,41 +2,41 @@ import {fmtDate, fmtNumber, numberRenderer} from '@xh/hoist/format';
 import {dateTimeCol} from '@xh/hoist/cmp/grid';
 import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
-export const symbolCol = {
+export const symbolCol: ColumnSpec = {
     field: {
         name: 'symbol',
         type: 'string',
         displayName: 'Instrument'
     },
     width: 100
-} as ColumnSpec;
+};
 
-export const traderCol = {
+export const traderCol: ColumnSpec = {
     field: {name: 'trader', type: 'string'},
     width: 140
-} as ColumnSpec;
+};
 
-export const fundCol = {
+export const fundCol: ColumnSpec = {
     field: {name: 'fund', type: 'string'},
     width: 160
-} as ColumnSpec;
+};
 
-export const modelCol = {
+export const modelCol: ColumnSpec = {
     field: {name: 'model', type: 'string'},
     width: 160
-} as ColumnSpec;
+};
 
-export const regionCol = {
+export const regionCol: ColumnSpec = {
     field: {name: 'region', type: 'string'},
     width: 160
-} as ColumnSpec;
+};
 
-export const sectorCol = {
+export const sectorCol: ColumnSpec = {
     field: {name: 'sector', type: 'string'},
     width: 160
-} as ColumnSpec;
+};
 
-export const dirCol = {
+export const dirCol: ColumnSpec = {
     field: {
         name: 'dir',
         type: 'string',
@@ -46,21 +46,21 @@ export const dirCol = {
     headerTooltip: 'Direction (Buy/Sell)',
     align: 'center',
     width: 60
-} as ColumnSpec;
+};
 
-export const quantityCol = {
+export const quantityCol: ColumnSpec = {
     field: {name: 'quantity', type: 'number'},
     width: 100,
     renderer: numberRenderer({precision: 0, ledger: true})
-} as ColumnSpec;
+};
 
-export const priceCol = {
+export const priceCol: ColumnSpec = {
     field: {name: 'price', type: 'number'},
     width: 80,
     renderer: numberRenderer({precision: 2})
-} as ColumnSpec;
+};
 
-export const timeCol = {
+export const timeCol: ColumnSpec = {
     ...dateTimeCol,
     field: {
         name: 'time',
@@ -68,9 +68,9 @@ export const timeCol = {
         displayName: 'Exec Time'
     },
     align: 'left'
-} as ColumnSpec;
+};
 
-export const closingPriceSparklineCol = {
+export const closingPriceSparklineCol: ColumnSpec = {
     field: {
         name: 'closingPrices',
         type: 'json',
@@ -92,4 +92,4 @@ export const closingPriceSparklineCol = {
             }
         }
     }
-} as ColumnSpec;
+};

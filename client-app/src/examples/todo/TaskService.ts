@@ -28,7 +28,7 @@ export class TaskService extends HoistService {
                 dueDateGroup = 'Upcoming';
             }
 
-            return {...it, dueDate, dueDateGroup} as Task;
+            return {...it, dueDate, dueDateGroup};
         });
     }
 

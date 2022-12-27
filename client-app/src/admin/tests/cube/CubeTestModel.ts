@@ -1,5 +1,5 @@
 import {GridModel, timeCol, TreeStyle} from '@xh/hoist/cmp/grid';
-import {HoistModel, managed} from '@xh/hoist/core';
+import {HoistModel, managed, PlainObject} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 import {bindable, comparer, makeObservable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
@@ -80,7 +80,7 @@ export class CubeTestModel extends HoistModel {
             {gridModel, loadModel, showSummary} = this,
             query = this.getQuery(),
             dimCount = query.dimensions.length,
-            filterCount = (query.filter as any)?.value?.length ?? 0; // Any filter is a FieldFilter with [] of Funds
+            filterCount = (query.filter as PlainObject)?.value?.length ?? 0; // Any filter is a FieldFilter with [] of Funds
 
         // Query is initialized with empty dims and is triggering an initial run we don't need.
         if (!dimCount) return;
