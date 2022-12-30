@@ -3,10 +3,10 @@ import {dateTimeRenderer} from '@xh/hoist/format';
 import {codeInput, textArea} from '@xh/hoist/desktop/cmp/input';
 import {hoistCmp} from '@xh/hoist/core';
 import {toNumber} from 'lodash';
-import {AppModel} from '../AppModel';
+import {AppModel} from '@xh/hoist/admin/AppModel';
 
 export const projectRestPanel = hoistCmp.factory(
-    () => restGrid({modelConfig: {...modelSpec, readonly: AppModel.instance.readonly}})
+    () => restGrid({modelConfig: {...modelSpec, readonly: AppModel.readonly}})
 );
 
 const tooltip = s => s;
