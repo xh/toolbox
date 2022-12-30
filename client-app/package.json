@@ -11,7 +11,6 @@
     "lint:all": "yarn lint:js && yarn lint:styles",
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
-    "tsc": "./node_modules/typescript/bin/tsc",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
     "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(hostname)",
     "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
