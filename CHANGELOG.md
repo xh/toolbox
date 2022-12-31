@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.30.0 - 2022-12-31
+## v3.0.0 - 2022-12-31
 
 ### New Features
 * Toolbox has been completely rewritten in TypeScript.
