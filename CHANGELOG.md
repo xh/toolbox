@@ -1,5 +1,7 @@
 # Changelog
 
+## v4.0-SNAPSHOT - unreleased
+
 ## v3.0.0 - 2022-12-31
 
 ### New Features
