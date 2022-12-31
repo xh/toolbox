@@ -3,7 +3,7 @@
 ## v2.30.0 - 2022-12-31
 
 ### New Features
-
+* Toolbox has been completely rewritten in TypeScript.
 * New application permission role: `HOIST_ADMIN_READER`.
 * All Hoist Framework Admin tabs are now readable (read only) by users who have this new role: `HOIST_ADMIN_READER`.
 * `CustomLogSupportConverter` added as an example of an alternative log output format.  
