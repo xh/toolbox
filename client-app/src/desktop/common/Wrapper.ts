@@ -25,7 +25,7 @@ export interface WrapperProps extends HoistProps<WrapperModel> {
 /**
  * A styled panel used to wrap component examples within Toolbox.
  */
-export const [Wrapper, wrapper] = hoistCmp.withContainerFactory<WrapperProps>({
+export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
     displayName: 'Wrapper',
     className: 'tbox-wrapper xh-tiled-bg',
     model: creates(() => WrapperModel, {publishMode: 'limited'}),
