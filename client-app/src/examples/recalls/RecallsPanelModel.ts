@@ -10,7 +10,7 @@ import {DetailsPanelModel} from './detail/DetailsPanelModel';
 
 export class RecallsPanelModel extends HoistModel {
 
-    persistWith = PERSIST_APP;
+    override persistWith = PERSIST_APP;
 
     @bindable
     searchQuery: string = '';
