@@ -25,11 +25,18 @@ export const tabStateExample = hoistCmp.factory({
                     label: 'People disabled',
                     labelSide: 'left'
                 }),
+                switchInput({
+                    model: peopleTab,
+                    bind: 'excludeFromSwitcher',
+                    label: 'excluded',
+                    labelSide: 'left'
+                }),
                 '-',
                 label('Places title'),
                 textInput({
                     model: placesTab,
-                    bind: 'title'
+                    bind: 'title',
+                    flex: 1
                 }),
                 '-',
                 switchInput({
