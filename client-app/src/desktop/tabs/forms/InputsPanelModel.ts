@@ -6,7 +6,6 @@ import moment from 'moment';
 import {random} from 'lodash';
 
 export class InputsPanelModel extends HoistModel {
-
     @bindable commitOnChange = false;
 
     formModel = new FormModel({

@@ -36,22 +36,22 @@ function renderPosition(position) {
         }),
 
         renderRow('Market Value', position.mktVal, numberRenderer({precision: 0, ledger: true})),
-        renderRow('P&L', position.pnl, numberRenderer({precision: 0, ledger: true, colorSpec: true}))
+        renderRow(
+            'P&L',
+            position.pnl,
+            numberRenderer({precision: 0, ledger: true, colorSpec: true})
+        )
     );
 }
 
 function renderRow(title, value, renderer?) {
     return div({
         className: 'toolbox-detail-row',
-        items: [
-            div(title),
-            div(renderer ? renderer(value) : value)
-        ]
+        items: [div(title), div(renderer ? renderer(value) : value)]
     });
 }
 
 class TreeGridDetailPageModel extends HoistModel {
-
     @observable.ref position;
 
     get id() {
@@ -72,6 +72,6 @@ class TreeGridDetailPageModel extends HoistModel {
 
     async doLoadAsync(loadSpec) {
         const position = await (this.id ? XH.portfolioService.getPositionAsync(this.id) : null);
-        runInAction(() => this.position = position);
+        runInAction(() => (this.position = position));
     }
 }

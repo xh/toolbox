@@ -4,7 +4,6 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import moment from 'moment';
 
 export class LocalDateTestModel extends HoistModel {
-
     @computed
     get testResults() {
         return this.tests.map(test => {
@@ -25,7 +24,6 @@ export class LocalDateTestModel extends HoistModel {
     }
 
     @observable.ref tests = [
-
         //----------------
         // Constructor
         //----------------

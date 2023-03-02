@@ -17,10 +17,7 @@ export const gridOptionsPanel = hoistCmp.factory<GridModel>({
             modelConfig: {side: 'right', defaultSize: 250, resizable: false},
             item: div({
                 className: 'tbox-display-opts__inner',
-                items: [
-                    gridOptions(),
-                    extraItems
-                ]
+                items: [gridOptions(), extraItems]
             })
         });
     }

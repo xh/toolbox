@@ -10,7 +10,6 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {head} from 'lodash';
 
 export class ActivityWidgetModel extends HoistModel {
-
     @managed
     gridModel: GridModel;
 
@@ -37,11 +36,7 @@ export class ActivityWidgetModel extends HoistModel {
             colChooserModel: true,
             sortBy: 'committedDate|desc',
             groupBy: 'committedDay',
-            contextMenu: [
-                openUrlAction,
-                '-',
-                ...GridModel.defaultContextMenu
-            ],
+            contextMenu: [openUrlAction, '-', ...GridModel.defaultContextMenu],
             store: {
                 fields: [
                     {name: 'repo', type: 'string'},
@@ -71,7 +66,8 @@ export class ActivityWidgetModel extends HoistModel {
                     width: 140,
                     pinned: true,
                     align: 'right',
-                    renderer: v => span({className: `tb-activity-repo tb-activity-repo--${v}`, item: v})
+                    renderer: v =>
+                        span({className: `tb-activity-repo tb-activity-repo--${v}`, item: v})
                 },
                 {
                     field: 'messageHeadline',
@@ -100,9 +96,15 @@ export class ActivityWidgetModel extends HoistModel {
                         return div({
                             className: 'tb-activity-deltas',
                             items: [
-                                div({className: 'tb-activity-deltas--additions', item: `+${additions}`}),
+                                div({
+                                    className: 'tb-activity-deltas--additions',
+                                    item: `+${additions}`
+                                }),
                                 div({className: 'tb-activity-deltas--sep', item: '|'}),
-                                div({className: 'tb-activity-deltas--deletions', item: `-${deletions}`})
+                                div({
+                                    className: 'tb-activity-deltas--deletions',
+                                    item: `-${deletions}`
+                                })
                             ]
                         });
                     }
@@ -129,13 +131,12 @@ export class ActivityWidgetModel extends HoistModel {
                     actions: [openUrlAction]
                 }
             ],
-            rowClassFn: (rec) => rec?.data?.isRelease ? 'tb-activity--release' : null,
+            rowClassFn: rec => (rec?.data?.isRelease ? 'tb-activity--release' : null),
             showGroupRowCounts: false,
             groupSortFn: (a, b, groupBy) => {
-                return a === b ? 0 :
-                    groupBy === 'committedDay' ? (a < b ? 1 : -1) : (a < b ? -1 : 1);
+                return a === b ? 0 : groupBy === 'committedDay' ? (a < b ? 1 : -1) : a < b ? -1 : 1;
             },
-            groupRowRenderer: (params) => {
+            groupRowRenderer: params => {
                 const {value} = params;
 
                 if (this.groupBy === 'committedDay') {
@@ -152,7 +153,12 @@ export class ActivityWidgetModel extends HoistModel {
         this.filterChooserModel = new FilterChooserModel({
             bind: this.gridModel.store,
             fieldSpecs: [
-                'repo', 'authorName', 'authorEmail', 'committedDay', 'changedFiles', 'isRelease',
+                'repo',
+                'authorName',
+                'authorEmail',
+                'committedDay',
+                'changedFiles',
+                'isRelease',
                 {
                     field: 'messageHeadline',
                     enableValues: false
@@ -170,7 +176,7 @@ export class ActivityWidgetModel extends HoistModel {
         this.gridModel.loadData(XH.gitHubService.allCommits);
     }
 
-    private onRowDoubleClicked = (params) => {
+    private onRowDoubleClicked = params => {
         const rec = params.data;
         if (rec?.isRecord) window.open(rec.data.url);
     };
@@ -178,5 +184,4 @@ export class ActivityWidgetModel extends HoistModel {
     private setGroupBy(groupBy) {
         this.gridModel.setGroupBy(groupBy);
     }
-
 }

@@ -16,15 +16,17 @@ export const simpleTreeMapPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    Support for TreeMap visualizations is provided via the Highcharts charting and visualization library,
-                    with a set of wrapper components and models provided by Hoist to allow binding to a <code>GridModel</code> or
-                    <code>Store</code> and to customize map defaults to be more immediately useful and relevant for visualizing
-                    financial data. The base <code>TreeMap</code> component is shown below - see the other tabs on this page for
-                    more advanced integrations/variations.
+                    Support for TreeMap visualizations is provided via the Highcharts charting and
+                    visualization library, with a set of wrapper components and models provided by
+                    Hoist to allow binding to a <code>GridModel</code> or
+                    <code>Store</code> and to customize map defaults to be more immediately useful
+                    and relevant for visualizing financial data. The base <code>TreeMap</code>{' '}
+                    component is shown below - see the other tabs on this page for more advanced
+                    integrations/variations.
                 </p>,
                 <p>
-                    Note that applications must license and specify a compatible version of Highcharts as an application
-                    dependency.
+                    Note that applications must license and specify a compatible version of
+                    Highcharts as an application dependency.
                 </p>
             ],
             item: panel({
@@ -37,17 +39,30 @@ export const simpleTreeMapPanel = hoistCmp.factory({
                 item: treeMap()
             }),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/charts/SimpleTreeMapPanel.tsx', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/treemap/TreeMap.ts', notes: 'Hoist wrapper component for TreeMap sizing and layout.'},
-                {url: '$HR/desktop/cmp/treemap/TreeMapModel.ts', notes: 'Hoist model with support for store/grid binding.'},
-                {text: 'Highcharts Docs', url: 'https://api.highcharts.com/highcharts/', notes: 'Library API documentation.'}
+                {
+                    url: '$TB/client-app/src/desktop/tabs/charts/SimpleTreeMapPanel.tsx',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/treemap/TreeMap.ts',
+                    notes: 'Hoist wrapper component for TreeMap sizing and layout.'
+                },
+                {
+                    url: '$HR/desktop/cmp/treemap/TreeMapModel.ts',
+                    notes: 'Hoist model with support for store/grid binding.'
+                },
+                {
+                    text: 'Highcharts Docs',
+                    url: 'https://api.highcharts.com/highcharts/',
+                    notes: 'Library API documentation.'
+                }
             ]
         });
     }
 });
 
-const tbar = hoistCmp.factory<SimpleTreeMapModel>(
-    ({model}) => toolbar(
+const tbar = hoistCmp.factory<SimpleTreeMapModel>(({model}) =>
+    toolbar(
         span('Max Heat'),
         select({
             model: model.treeMapModel,

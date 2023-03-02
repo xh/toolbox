@@ -8,7 +8,6 @@ import {Icon} from '@xh/hoist/icon';
 import {ToolbarPageModel} from './ToolbarPageModel';
 
 export const toolbarPage = hoistCmp.factory({
-
     model: creates(ToolbarPageModel),
 
     render({model}) {
@@ -61,9 +60,7 @@ export const toolbarPage = hoistCmp.factory({
                     }),
                     toolbar({
                         vertical: true,
-                        items: [
-                            button({icon: Icon.contact()})
-                        ]
+                        items: [button({icon: Icon.contact()})]
                     })
                 ),
                 toolbar(
@@ -76,9 +73,12 @@ export const toolbarPage = hoistCmp.factory({
                     }),
                     button({
                         text: 'Show Toast',
-                        onClick: () => XH.toast({
-                            message: model.state ? `Selected "${model.state}"` : 'No state selected'
-                        })
+                        onClick: () =>
+                            XH.toast({
+                                message: model.state
+                                    ? `Selected "${model.state}"`
+                                    : 'No state selected'
+                            })
                     })
                 )
             ]

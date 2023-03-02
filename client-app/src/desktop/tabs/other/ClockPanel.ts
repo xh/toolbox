@@ -21,7 +21,10 @@ export const clockPanel = hoistCmp.factory({
                     or for a configurable timezone. It fetches timezone offsets from the server to
                     support any Java-style timezone ID.`,
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/other/ClockPanel.ts', notes: 'This example.'},
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/ClockPanel.ts',
+                    notes: 'This example.'
+                },
                 {url: '$HR/cmp/clock/Clock.ts', notes: 'Hoist component.'}
             ],
             item: panel({
@@ -84,10 +87,7 @@ const clockCard = hoistCmp.factory<ClockPanelModel>({
         const {format, prefix, suffix, updateInterval} = model;
         return vbox({
             ...rest,
-            items: [
-                div(label),
-                clock({timezone, format, prefix, suffix, updateInterval})
-            ]
+            items: [div(label), clock({timezone, format, prefix, suffix, updateInterval})]
         });
     }
 });

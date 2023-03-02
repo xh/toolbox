@@ -22,7 +22,10 @@ export const relativeTimestampPanel = hoistCmp.factory({
                 in a friendly and readable manner. 
             `,
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/other/RelativeTimestampPanel.ts', notes: 'This example.'},
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/RelativeTimestampPanel.ts',
+                    notes: 'This example.'
+                },
                 {url: '$HR/cmp/relativetimestamp/RelativeTimestamp.ts', notes: 'Hoist component.'}
             ],
             item: panel({
@@ -85,9 +88,8 @@ export const relativeTimestampPanel = hoistCmp.factory({
     }
 });
 
-
 class RelativeTimestampPanelModel extends HoistModel {
-    @observable prefix: 'Refreshed'|'Scheduled' = 'Refreshed';
+    @observable prefix: 'Refreshed' | 'Scheduled' = 'Refreshed';
     @observable timestamp = Date.now();
     @bindable useShortFmt = false;
 

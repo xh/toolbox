@@ -25,7 +25,6 @@ import './FormPage.scss';
 import {FormPageModel} from './FormPageModel';
 
 export const formPage = hoistCmp.factory({
-
     model: creates(FormPageModel),
 
     render() {
@@ -34,132 +33,125 @@ export const formPage = hoistCmp.factory({
             icon: Icon.edit(),
             scrollable: true,
             className: 'toolbox-page form-page xh-tiled-bg',
-            items: [
-                formCmp(),
-                results()
-            ],
+            items: [formCmp(), results()],
             bbar: bbar()
         });
     }
 });
 
-const formCmp = hoistCmp.factory<FormPageModel>(
-    ({model}) => {
-        const {minimal, movies} = model;
+const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
+    const {minimal, movies} = model;
 
-        return div({
-            className: 'toolbox-card',
-            items: form({
-                fieldDefaults: {minimal},
-                items: vbox(
-                    formField({
-                        field: 'name',
-                        info: 'Min. 8 chars',
-                        item: textInput({enableClear: true})
-                    }),
-                    formField({
-                        field: 'customer',
-                        item: select({
-                            placeholder: 'Search customers...',
-                            title: 'Search customers...',
-                            enableFilter: true,
-                            enableFullscreen: true,
-                            queryFn: (q) => model.queryCustomersAsync(q)
-                        })
-                    }),
-                    formField({
-                        field: 'movie',
-                        item: select({
-                            placeholder: 'Select a Movie...',
-                            options: movies
-                        })
-                    }),
-                    formField({
-                        field: 'salary',
-                        item: numberInput({
-                            enableShorthandUnits: false,
-                            displayWithCommas: true
-                        })
-                    }),
-                    formField({
-                        field: 'percentage',
-                        item: numberInput({
-                            scaleFactor: 100,
-                            valueLabel: '%'
-                        })
-                    }),
-                    formField({
-                        field: 'date',
-                        item: dateInput({
-                            minDate: LocalDate.today().subtract(2),
-                            maxDate: LocalDate.today().add(1, 'month'),
-                            textAlign: 'right',
-                            valueType: 'localDate'
-                        })
-                    }),
-                    formField({
-                        field: 'included',
-                        item: checkbox()
-                    }),
-                    formField({
-                        field: 'enabled',
-                        item: switchInput()
-                    }),
-                    formField({
-                        field: 'buttonGroup',
-                        item: buttonGroupInput(
-                            button({
-                                text: 'Button 1',
-                                value: 'button1'
-                            }),
-                            button({
-                                icon: Icon.moon(),
-                                value: 'button2'
-                            }),
-                            button({
-                                icon: Icon.skull(),
-                                text: 'Button 2',
-                                value: 'button3'
-                            })
-                        )
-                    }),
-                    formField({
-                        field: 'notes',
-                        item: textArea()
-                    }),
-                    formField({
-                        field: 'searchQuery',
-                        item: searchInput()
+    return div({
+        className: 'toolbox-card',
+        items: form({
+            fieldDefaults: {minimal},
+            items: vbox(
+                formField({
+                    field: 'name',
+                    info: 'Min. 8 chars',
+                    item: textInput({enableClear: true})
+                }),
+                formField({
+                    field: 'customer',
+                    item: select({
+                        placeholder: 'Search customers...',
+                        title: 'Search customers...',
+                        enableFilter: true,
+                        enableFullscreen: true,
+                        queryFn: q => model.queryCustomersAsync(q)
                     })
-                )
-            })
-        });
-    }
-);
+                }),
+                formField({
+                    field: 'movie',
+                    item: select({
+                        placeholder: 'Select a Movie...',
+                        options: movies
+                    })
+                }),
+                formField({
+                    field: 'salary',
+                    item: numberInput({
+                        enableShorthandUnits: false,
+                        displayWithCommas: true
+                    })
+                }),
+                formField({
+                    field: 'percentage',
+                    item: numberInput({
+                        scaleFactor: 100,
+                        valueLabel: '%'
+                    })
+                }),
+                formField({
+                    field: 'date',
+                    item: dateInput({
+                        minDate: LocalDate.today().subtract(2),
+                        maxDate: LocalDate.today().add(1, 'month'),
+                        textAlign: 'right',
+                        valueType: 'localDate'
+                    })
+                }),
+                formField({
+                    field: 'included',
+                    item: checkbox()
+                }),
+                formField({
+                    field: 'enabled',
+                    item: switchInput()
+                }),
+                formField({
+                    field: 'buttonGroup',
+                    item: buttonGroupInput(
+                        button({
+                            text: 'Button 1',
+                            value: 'button1'
+                        }),
+                        button({
+                            icon: Icon.moon(),
+                            value: 'button2'
+                        }),
+                        button({
+                            icon: Icon.skull(),
+                            text: 'Button 2',
+                            value: 'button3'
+                        })
+                    )
+                }),
+                formField({
+                    field: 'notes',
+                    item: textArea()
+                }),
+                formField({
+                    field: 'searchQuery',
+                    item: searchInput()
+                })
+            )
+        })
+    });
+});
 
-const results = hoistCmp.factory(
-    () => {
-        return div({
-            className: 'toolbox-card',
-            items: [
-                fieldResult({field: 'name'}),
-                fieldResult({field: 'customer'}),
-                fieldResult({field: 'movie'}),
-                fieldResult({field: 'salary'}),
-                fieldResult({field: 'percentage', renderer: v => fmtPercent(v)}),
-                fieldResult({field: 'date', renderer: v => v?.toString()}),
-                fieldResult({field: 'included'}),
-                fieldResult({field: 'enabled'}),
-                fieldResult({field: 'buttonGroup'}),
-                fieldResult({field: 'notes'}),
-                fieldResult({field: 'searchQuery'})
-            ]
-        });
-    }
-);
+const results = hoistCmp.factory(() => {
+    return div({
+        className: 'toolbox-card',
+        items: [
+            fieldResult({field: 'name'}),
+            fieldResult({field: 'customer'}),
+            fieldResult({field: 'movie'}),
+            fieldResult({field: 'salary'}),
+            fieldResult({field: 'percentage', renderer: v => fmtPercent(v)}),
+            fieldResult({field: 'date', renderer: v => v?.toString()}),
+            fieldResult({field: 'included'}),
+            fieldResult({field: 'enabled'}),
+            fieldResult({field: 'buttonGroup'}),
+            fieldResult({field: 'notes'}),
+            fieldResult({field: 'searchQuery'})
+        ]
+    });
+});
 
-const bbar = hoistCmp.factory<FormPageModel>(
-    ({model}) => toolbar({
+const bbar = hoistCmp.factory<FormPageModel>(({model}) =>
+    toolbar({
         height: 38,
         items: [
             setFocusMenu(),
@@ -172,33 +164,26 @@ const bbar = hoistCmp.factory<FormPageModel>(
     })
 );
 
-const fieldResult = hoistCmp.factory<FormPageModel>(
-    ({model, field, renderer}) => {
-        const {displayName, value} = model.formModel.fields[field];
-        return div({
-            className: 'form-field-result',
-            items: [
-                label(displayName),
-                div(renderer ? renderer(value) : value)
-            ]
-        });
-    }
-);
+const fieldResult = hoistCmp.factory<FormPageModel>(({model, field, renderer}) => {
+    const {displayName, value} = model.formModel.fields[field];
+    return div({
+        className: 'form-field-result',
+        items: [label(displayName), div(renderer ? renderer(value) : value)]
+    });
+});
 
-const setFocusMenu = hoistCmp.factory<FormPageModel>(
-    ({model}) => {
-        const fields = model.formModel.fieldList,
-            menuItems = fields.map(f => ({
-                text: f.displayName,
-                actionFn: () => f.focus()
-            }));
+const setFocusMenu = hoistCmp.factory<FormPageModel>(({model}) => {
+    const fields = model.formModel.fieldList,
+        menuItems = fields.map(f => ({
+            text: f.displayName,
+            actionFn: () => f.focus()
+        }));
 
-        return menuButton({
-            icon: Icon.target(),
-            text: 'Focus',
-            title: 'Focus',
-            menuPosition: 'top',
-            menuItems
-        });
-    }
-);
+    return menuButton({
+        icon: Icon.target(),
+        text: 'Focus',
+        title: 'Focus',
+        menuPosition: 'top',
+        menuItems
+    });
+});

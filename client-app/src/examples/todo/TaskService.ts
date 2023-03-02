@@ -7,7 +7,6 @@ import {differenceBy} from 'lodash';
  * Tasks are persisted for each user using the Hoist preference system.
  */
 export class TaskService extends HoistService {
-
     static instance: TaskService;
 
     async getAsync(): Promise<Task[]> {
@@ -64,7 +63,8 @@ export class TaskService extends HoistService {
     // Implementation
     //------------------
     private saveToPreference(tasks) {
-        XH.setPref('todoTasks',
+        XH.setPref(
+            'todoTasks',
             tasks.map(it => ({...it, dueDate: it.dueDate?.toString()}))
         );
     }
@@ -75,5 +75,5 @@ interface Task {
     description?: string;
     complete?: boolean;
     dueDate?: LocalDate;
-    dueDateGroup?: string
+    dueDateGroup?: string;
 }

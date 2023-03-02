@@ -5,7 +5,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {withFilterByField, withFilterByKey} from '@xh/hoist/data';
 import {isEmpty, uniq, without} from 'lodash';
 
-import { PERSIST_APP} from './AppModel';
+import {PERSIST_APP} from './AppModel';
 import {favoriteButton} from './cmp/FavoriteButton';
 import {DetailsPanelModel} from './details/DetailsPanelModel';
 import {cellPhoneCol, emailCol, locationCol, nameCol, workPhoneCol} from '../../core/columns';
@@ -16,7 +16,6 @@ import {FilterLike} from '@xh/hoist/data/filter/Types';
  * Support showing results in a grid or tiled set of photos.
  */
 export class DirectoryPanelModel extends HoistModel {
-
     persistWith = PERSIST_APP;
 
     /** known tags across all contacts. */
@@ -30,7 +29,7 @@ export class DirectoryPanelModel extends HoistModel {
 
     @bindable locationFilter: string;
 
-    @bindable @persist displayMode: 'grid'|'tiles' = 'tiles';
+    @bindable @persist displayMode: 'grid' | 'tiles' = 'tiles';
 
     @managed detailsPanelModel: DetailsPanelModel;
 
@@ -48,12 +47,12 @@ export class DirectoryPanelModel extends HoistModel {
         super();
         makeObservable(this);
 
-        const gridModel = this.gridModel = this.createGridModel();
+        const gridModel = (this.gridModel = this.createGridModel());
         this.detailsPanelModel = new DetailsPanelModel(this);
 
         this.addReaction({
             track: () => gridModel.selectedRecord,
-            run: (rec) => this.detailsPanelModel.setCurrentRecord(rec)
+            run: rec => this.detailsPanelModel.setCurrentRecord(rec)
         });
 
         this.addReaction({
@@ -101,7 +100,9 @@ export class DirectoryPanelModel extends HoistModel {
     private updateLocationFilter() {
         const {locationFilter, gridModel} = this,
             {store} = gridModel,
-            newFilter: FilterLike = locationFilter ? {field: 'location', op: '=', value: locationFilter} : null;
+            newFilter: FilterLike = locationFilter
+                ? {field: 'location', op: '=', value: locationFilter}
+                : null;
 
         const filter = withFilterByField(store.filter, newFilter, 'location');
         store.setFilter(filter);
@@ -110,9 +111,12 @@ export class DirectoryPanelModel extends HoistModel {
     private updateTagFilter() {
         const {tagFilters, gridModel} = this,
             {store} = gridModel,
-            newFilter = !isEmpty(tagFilters) ?
-                {key: 'tags', testFn: (rec) => tagFilters.every(tag => rec.data.tags?.includes(tag))} :
-                null;
+            newFilter = !isEmpty(tagFilters)
+                ? {
+                      key: 'tags',
+                      testFn: rec => tagFilters.every(tag => rec.data.tags?.includes(tag))
+                  }
+                : null;
 
         const filter = withFilterByKey(store.filter, newFilter, 'tags');
         store.setFilter(filter);
@@ -136,7 +140,7 @@ export class DirectoryPanelModel extends HoistModel {
             colDefaults: {width: 160},
             persistWith: this.persistWith,
             groupBy: 'isFavorite',
-            groupRowRenderer: ({value}) => value === 'true' ? 'Favorites' : 'XH Engineers',
+            groupRowRenderer: ({value}) => (value === 'true' ? 'Favorites' : 'XH Engineers'),
             groupSortFn: (a, b) => (a < b ? 1 : -1),
             columns: [
                 {
@@ -165,24 +169,26 @@ export class DirectoryPanelModel extends HoistModel {
     @action
     private toggleTag(tag) {
         const tagFilters = this.tagFilters ?? [];
-        this.tagFilters = tagFilters.includes(tag) ? without(tagFilters, tag) : [...tagFilters, tag];
+        this.tagFilters = tagFilters.includes(tag)
+            ? without(tagFilters, tag)
+            : [...tagFilters, tag];
     }
 
     private isFavoriteRenderer = (v, {record}) => {
         return favoriteButton({model: this, record});
     };
 
-    private tagsRenderer = (v) => {
+    private tagsRenderer = v => {
         if (isEmpty(v)) return null;
 
         return hbox({
             className: 'tb-contact-tag-container',
-            items: v.map(tag => (
+            items: v.map(tag =>
                 div({
                     className: 'tb-contact-tag',
                     item: tag,
                     onClick: () => this.toggleTag(tag)
-                }))
+                })
             )
         });
     };

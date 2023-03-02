@@ -12,7 +12,7 @@ import './Buttons.scss';
 class ButtonsModel extends HoistModel {
     @bindable disableButtons = false;
     @bindable activeButtons = false;
-    @bindable activeButton: 'v1'|'v2'|'v3' = 'v1';
+    @bindable activeButton: 'v1' | 'v2' | 'v3' = 'v1';
 
     constructor() {
         super();
@@ -24,7 +24,8 @@ export const buttonsPanel = hoistCmp.factory({
     model: creates(ButtonsModel),
     render() {
         return wrapper({
-            description: (
+            description:
+                // prettier-ignore
                 <div>
                     <p>
                         Hoist Desktop Buttons are implemented using the Blueprint library, and take all
@@ -39,29 +40,30 @@ export const buttonsPanel = hoistCmp.factory({
                     <p>
                         Buttons are shown below contained within both <code>panel</code> and <code>toolbar</code> components.
                     </p>
-                </div>
-            ),
+                </div>,
             item: div({
                 className: 'tbox-buttons',
                 item: [
-                    buttonPanel({headerItems: [
-                        switchInput({
-                            label: 'Dark Mode',
-                            labelSide: 'left',
-                            bind: 'darkTheme',
-                            model: XH.appContainerModel.themeModel
-                        }),
-                        switchInput({
-                            label: 'Disable All',
-                            labelSide: 'left',
-                            bind: 'disableButtons'
-                        }),
-                        switchInput({
-                            label: 'All Active',
-                            labelSide: 'left',
-                            bind: 'activeButtons'
-                        })
-                    ]}),
+                    buttonPanel({
+                        headerItems: [
+                            switchInput({
+                                label: 'Dark Mode',
+                                labelSide: 'left',
+                                bind: 'darkTheme',
+                                model: XH.appContainerModel.themeModel
+                            }),
+                            switchInput({
+                                label: 'Disable All',
+                                labelSide: 'left',
+                                bind: 'disableButtons'
+                            }),
+                            switchInput({
+                                label: 'All Active',
+                                labelSide: 'left',
+                                bind: 'activeButtons'
+                            })
+                        ]
+                    }),
                     buttonPanel({intent: 'primary'}),
                     buttonPanel({intent: 'success'}),
                     buttonPanel({intent: 'warning'}),
@@ -72,27 +74,25 @@ export const buttonsPanel = hoistCmp.factory({
     }
 });
 
-const buttonPanel = hoistCmp.factory<ButtonsModel>(
-    ({model, intent, headerItems}) => {
-        return panel({
-            title: `Intent: ${intent ?? 'none (default)'}`,
-            className: 'tbox-buttons__panel',
-            headerItems,
-            items: [
-                hbox({
-                    className: 'tbox-buttons__panel__row',
-                    items: renderButtons(intent, model.disableButtons, model.activeButtons)
-                }),
-                hbox({
-                    className: 'tbox-buttons__panel__row',
-                    items: renderButtonGroupInputs(intent, model.disableButtons)
-                })
-            ],
-            tbar: renderButtons(intent, model.disableButtons, model.activeButtons),
-            bbar: renderButtonGroupInputs(intent, model.disableButtons)
-        });
-    }
-);
+const buttonPanel = hoistCmp.factory<ButtonsModel>(({model, intent, headerItems}) => {
+    return panel({
+        title: `Intent: ${intent ?? 'none (default)'}`,
+        className: 'tbox-buttons__panel',
+        headerItems,
+        items: [
+            hbox({
+                className: 'tbox-buttons__panel__row',
+                items: renderButtons(intent, model.disableButtons, model.activeButtons)
+            }),
+            hbox({
+                className: 'tbox-buttons__panel__row',
+                items: renderButtonGroupInputs(intent, model.disableButtons)
+            })
+        ],
+        tbar: renderButtons(intent, model.disableButtons, model.activeButtons),
+        bbar: renderButtonGroupInputs(intent, model.disableButtons)
+    });
+});
 
 function renderButtons(intent: Intent, disabled: boolean, active: boolean) {
     return [

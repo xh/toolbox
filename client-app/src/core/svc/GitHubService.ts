@@ -6,7 +6,6 @@ import {forOwn, sortBy} from 'lodash';
 
 // TODO - auto-refresh with app, do so efficiently, only replacing local data when new commits.
 export class GitHubService extends HoistService {
-
     static instance: GitHubService;
 
     /** Loaded commits histories, keyed by repoName. */
@@ -47,11 +46,12 @@ export class GitHubService extends HoistService {
                     it.authorName = it.author.name || it.authorEmail;
                     it.committedDate = new Date(it.committedDate);
                     it.committedDay = LocalDate.from(it.committedDate);
-                    it.isRelease = it.authorEmail === 'techops@xh.io' && it.messageHeadline.startsWith('v');
+                    it.isRelease =
+                        it.authorEmail === 'techops@xh.io' && it.messageHeadline.startsWith('v');
                 });
             });
 
-            runInAction(() => this.commitHistories = commitHistories);
+            runInAction(() => (this.commitHistories = commitHistories));
 
             const newCommitCount = this.allCommits.length;
             if (priorCommitCount && newCommitCount > priorCommitCount) {
@@ -65,5 +65,4 @@ export class GitHubService extends HoistService {
             XH.handleException(e, {showAlert: false, showAsError: false});
         }
     }
-
 }

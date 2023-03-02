@@ -6,7 +6,6 @@ import {StoreRecord} from '@xh/hoist/data';
 import {DirectoryPanelModel} from '../DirectoryPanelModel';
 
 export class DetailsPanelModel extends HoistModel {
-
     @observable.ref
     currentRecord: StoreRecord;
 
@@ -72,5 +71,3 @@ export class DetailsPanelModel extends HoistModel {
         formModel.init(currentRecord.data);
     }
 }
-
-

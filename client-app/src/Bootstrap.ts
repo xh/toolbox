@@ -15,14 +15,14 @@ import {TaskService} from './examples/todo/TaskService';
 
 declare module '@xh/hoist/core' {
     export interface XHApi {
-        contactService: ContactService
-        gitHubService: GitHubService,
-        oauthService: OauthService,
-        portfolioService: PortfolioService,
-        taskService: TaskService
+        contactService: ContactService;
+        gitHubService: GitHubService;
+        oauthService: OauthService;
+        portfolioService: PortfolioService;
+        taskService: TaskService;
     }
     export interface HoistUser {
-            profilePicUrl: string;
+        profilePicUrl: string;
     }
 }
 
@@ -68,7 +68,6 @@ LicenseManager.setLicenseKey(
 );
 installAgGrid(AgGridReact, agPkg.version);
 
-
 //-------------------------------------------------------------------------------
 // Highcharts - Import and Register
 // You must provide a license for any features (e.g. highstock) that require it
@@ -87,4 +86,3 @@ highchartsTree(Highcharts);
 highchartsHeatmap(Highcharts);
 
 installHighcharts(Highcharts);
-

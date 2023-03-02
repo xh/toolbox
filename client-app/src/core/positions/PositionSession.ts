@@ -2,7 +2,6 @@ import {PlainObject, XH} from '@xh/hoist/core';
 import {WebSocketSubscription, WebSocketMessage} from '@xh/hoist/svc';
 
 export class PositionSession {
-
     id: string;
     channelKey: string;
     topic: string;
@@ -17,9 +16,8 @@ export class PositionSession {
         this.topic = config.topic;
         this.initialPositions = config.positions;
 
-        this.subscription = XH.webSocketService.subscribe(
-            this.topic,
-            (update) => this.handleUpdate(update)
+        this.subscription = XH.webSocketService.subscribe(this.topic, update =>
+            this.handleUpdate(update)
         );
     }
 

@@ -46,4 +46,3 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
         });
     }
 });
-

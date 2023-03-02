@@ -27,8 +27,8 @@ export const gridTreeMapPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory<GridTreeMapModel>(
-    ({model}) => toolbar(
+const tbar = hoistCmp.factory<GridTreeMapModel>(({model}) =>
+    toolbar(
         groupingChooser({width: 200}),
         filler(),
         span('Max Heat'),

@@ -4,7 +4,6 @@ import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
 
 export class PortfolioService extends HoistService {
-
     static instance: PortfolioService;
 
     MAX_POSITIONS = 950;
@@ -25,7 +24,11 @@ export class PortfolioService extends HoistService {
      * @param maxPositions - truncate position tree, by smallest pnl, until this number of
      *     positions is reached.
      */
-    async getPositionsAsync(dims: string[], includeSummary = false, maxPositions = this.MAX_POSITIONS): Promise<PlainObject[]> {
+    async getPositionsAsync(
+        dims: string[],
+        includeSummary = false,
+        maxPositions = this.MAX_POSITIONS
+    ): Promise<PlainObject[]> {
         const positions = await XH.fetchJson({
             url: 'portfolio/positions',
             params: {
@@ -118,7 +121,13 @@ export class PortfolioService extends HoistService {
             upColor: 'rgba(23, 183, 0, 0.85)',
             animation: false,
             dataGrouping: {enabled: false},
-            data: mktData.map(it => [LocalDate.get(it.day).timestamp, it.open, it.high, it.low, it.close])
+            data: mktData.map(it => [
+                LocalDate.get(it.day).timestamp,
+                it.open,
+                it.high,
+                it.low,
+                it.close
+            ])
         };
     }
 }

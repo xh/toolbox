@@ -4,7 +4,6 @@ import {makeObservable, bindable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 
 export class ChartPageModel extends HoistModel {
-
     @bindable currentSymbol: string = '';
     @bindable.ref symbols: string[] = null;
 
@@ -33,10 +32,13 @@ export class ChartPageModel extends HoistModel {
             this.currentSymbol = this.symbols[0];
         }
 
-        let series = await XH.portfolioService.getOHLCChartSeriesAsync({
-            symbol: this.currentSymbol,
-            loadSpec
-        }).catchDefault() ?? {};
+        let series =
+            (await XH.portfolioService
+                .getOHLCChartSeriesAsync({
+                    symbol: this.currentSymbol,
+                    loadSpec
+                })
+                .catchDefault()) ?? {};
 
         const groupPixelWidth = 5;
         Object.assign(series, {
@@ -62,7 +64,7 @@ export class ChartPageModel extends HoistModel {
             scrollbar: {enabled: false},
             xAxis: {
                 labels: {
-                    formatter: function() {
+                    formatter: function () {
                         return fmtDate(this.value, {asHtml: true});
                     }
                 }
@@ -75,12 +77,15 @@ export class ChartPageModel extends HoistModel {
             },
             tooltip: {
                 useHTML: true,
-                formatter: function() {
+                formatter: function () {
                     const p = this.point,
                         opts = {asHtml: true};
                     return `
                         <div class="xh-chart-tooltip">
-                        <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(this.x, opts)}</div>
+                        <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(
+                        this.x,
+                        opts
+                    )}</div>
                         <table>
                             <tr><th>Open:</th><td>${fmtPrice(p.open, opts)}</td></tr>
                             <tr><th>High:</th><td>${fmtPrice(p.high, opts)}</td></tr>

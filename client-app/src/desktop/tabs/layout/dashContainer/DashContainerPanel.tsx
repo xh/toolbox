@@ -18,11 +18,11 @@ export const dashContainerPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    <code>DashContainer</code> is configured and managed via a <code>DashContainerModel</code>
-                    and allows the user to drag-and-drop content into various tab, and split-pane layouts.
-
-                    This component also supports publishing observable state, managed mounting/unmounting of inactive
-                    tabs, and lazy refreshing of its active view.
+                    <code>DashContainer</code> is configured and managed via a{' '}
+                    <code>DashContainerModel</code>
+                    and allows the user to drag-and-drop content into various tab, and split-pane
+                    layouts. This component also supports publishing observable state, managed
+                    mounting/unmounting of inactive tabs, and lazy refreshing of its active view.
                 </p>
             ],
             item: panel({
@@ -30,27 +30,42 @@ export const dashContainerPanel = hoistCmp.factory({
                 icon: Icon.layout(),
                 height: '80%',
                 width: '80%',
-                item: model.renderDashboard ?
-                    dashContainer() :
-                    frame({
-                        item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
-                        padding: 10
-                    }),
+                item: model.renderDashboard
+                    ? dashContainer()
+                    : frame({
+                          item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
+                          padding: 10
+                      }),
                 bbar: bbar()
             }),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/layout/dashContainer/DashContainerPanel.tsx', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/dash/container/DashContainer.ts', notes: 'Hoist container component.'},
-                {url: '$HR/desktop/cmp/dash/container/DashContainerModel.ts', notes: 'Hoist container model - primary API.'},
-                {url: '$HR/desktop/cmp/dash/DashViewSpec.ts', notes: 'Configuration template for contained views.'},
-                {url: '$HR/desktop/cmp/dash/DashViewModel.ts', notes: 'Model for contained view instances. '}
+                {
+                    url: '$TB/client-app/src/desktop/tabs/layout/dashContainer/DashContainerPanel.tsx',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/dash/container/DashContainer.ts',
+                    notes: 'Hoist container component.'
+                },
+                {
+                    url: '$HR/desktop/cmp/dash/container/DashContainerModel.ts',
+                    notes: 'Hoist container model - primary API.'
+                },
+                {
+                    url: '$HR/desktop/cmp/dash/DashViewSpec.ts',
+                    notes: 'Configuration template for contained views.'
+                },
+                {
+                    url: '$HR/desktop/cmp/dash/DashViewModel.ts',
+                    notes: 'Model for contained view instances. '
+                }
             ]
         });
     }
 });
 
-const bbar = hoistCmp.factory<DashContainerPanelModel>(
-    ({model}) => toolbar(
+const bbar = hoistCmp.factory<DashContainerPanelModel>(({model}) =>
+    toolbar(
         switchInput({
             label: 'Render Dashboard',
             bind: 'renderDashboard',
@@ -93,27 +108,29 @@ class DashContainerPanelModel extends HoistModel {
     dashContainerModel = new DashContainerModel({
         persistWith: {localStorageKey: 'dashContainerState'},
         showMenuButton: true,
-        initialState: [{
-            type: 'row',
-            content: [
-                {
-                    type: 'stack',
-                    width: 60,
-                    content: [
-                        {type: 'view', id: 'grid'},
-                        {type: 'view', id: 'treeGrid'}
-                    ]
-                },
-                {
-                    type: 'column',
-                    width: 40,
-                    content: [
-                        {type: 'view', id: 'chart'},
-                        {type: 'view', id: 'buttons', height: '200px'}
-                    ]
-                }
-            ]
-        }],
+        initialState: [
+            {
+                type: 'row',
+                content: [
+                    {
+                        type: 'stack',
+                        width: 60,
+                        content: [
+                            {type: 'view', id: 'grid'},
+                            {type: 'view', id: 'treeGrid'}
+                        ]
+                    },
+                    {
+                        type: 'column',
+                        width: 40,
+                        content: [
+                            {type: 'view', id: 'chart'},
+                            {type: 'view', id: 'buttons', height: '200px'}
+                        ]
+                    }
+                ]
+            }
+        ],
         viewSpecDefaults: {
             icon: Icon.grid()
         },

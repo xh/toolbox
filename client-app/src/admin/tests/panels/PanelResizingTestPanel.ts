@@ -35,14 +35,14 @@ export const PanelResizingTestPanel = hoistCmp({
                     }),
                     headerItems: [
                         relativeTimestamp({
-                            options: { prefix: 'Rendered' },
+                            options: {prefix: 'Rendered'},
                             timestamp: Date.now(),
                             marginLeft: 4
                         }),
                         button({
                             icon: Icon.gear(),
                             minimal: true,
-                            onClick: () => XH.toast({ message: 'You clicked a Panel headerItem' })
+                            onClick: () => XH.toast({message: 'You clicked a Panel headerItem'})
                         })
                     ]
                 }),

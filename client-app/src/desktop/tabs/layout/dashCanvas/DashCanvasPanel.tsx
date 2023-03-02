@@ -18,15 +18,17 @@ export const dashCanvasPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    <code>DashCanvas</code> is configured and managed via a <code>DashCanvasModel</code> and allows the
-                    user to drag-and-drop configured widgets into highly-customizable layouts.
+                    <code>DashCanvas</code> is configured and managed via a{' '}
+                    <code>DashCanvasModel</code> and allows the user to drag-and-drop configured
+                    widgets into highly-customizable layouts.
                 </p>,
                 <p>
-                    Unlike its cousin <code>DashContainer</code>, this component scales the <em>width only</em> of its child
-                    widgets as its overall size changes, leaving heights unchanged and scrolling internally as necessary.
-                    This makes it a good candidate for report-style dashboards containing lots of content that is
-                    unlikely to fit or compress nicely on smaller screens. Consider <code>DashContainer</code> instead
-                    when a space-filling layout is a priority.
+                    Unlike its cousin <code>DashContainer</code>, this component scales the{' '}
+                    <em>width only</em> of its child widgets as its overall size changes, leaving
+                    heights unchanged and scrolling internally as necessary. This makes it a good
+                    candidate for report-style dashboards containing lots of content that is
+                    unlikely to fit or compress nicely on smaller screens. Consider{' '}
+                    <code>DashContainer</code> instead when a space-filling layout is a priority.
                 </p>
             ],
             item: panel({
@@ -34,27 +36,42 @@ export const dashCanvasPanel = hoistCmp.factory({
                 icon: Icon.layout(),
                 height: '80%',
                 width: '80%',
-                item: model.renderDashboard ?
-                    frame(dashCanvas()) :
-                    frame({
-                        item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
-                        padding: 10
-                    }),
+                item: model.renderDashboard
+                    ? frame(dashCanvas())
+                    : frame({
+                          item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
+                          padding: 10
+                      }),
                 bbar: bbar()
             }),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/layout/dashCanvas/DashCanvasPanel.tsx', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/dash/canvas/DashCanvas.ts', notes: 'Hoist container component.'},
-                {url: '$HR/desktop/cmp/dash/canvas/DashCanvasModel.ts', notes: 'Hoist container model - primary API.'},
-                {url: '$HR/desktop/cmp/dash/canvas/DashCanvasViewSpec.ts', notes: 'Configuration template for contained views.'},
-                {url: '$HR/desktop/cmp/dash/canvas/DashCanvasViewModel.ts', notes: 'Model for contained view instances. '}
+                {
+                    url: '$TB/client-app/src/desktop/tabs/layout/dashCanvas/DashCanvasPanel.tsx',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/dash/canvas/DashCanvas.ts',
+                    notes: 'Hoist container component.'
+                },
+                {
+                    url: '$HR/desktop/cmp/dash/canvas/DashCanvasModel.ts',
+                    notes: 'Hoist container model - primary API.'
+                },
+                {
+                    url: '$HR/desktop/cmp/dash/canvas/DashCanvasViewSpec.ts',
+                    notes: 'Configuration template for contained views.'
+                },
+                {
+                    url: '$HR/desktop/cmp/dash/canvas/DashCanvasViewModel.ts',
+                    notes: 'Model for contained view instances. '
+                }
             ]
         });
     }
 });
 
-const bbar = hoistCmp.factory<Model>(
-    ({model}) => toolbar({
+const bbar = hoistCmp.factory<Model>(({model}) =>
+    toolbar({
         enableOverflowMenu: true,
         children: [
             switchInput({
@@ -182,69 +199,69 @@ class Model extends HoistModel {
 
 const initialState = [
     {
-        'layout': {
-            'x': 0,
-            'y': 0,
-            'w': 12,
-            'h': 5
+        layout: {
+            x: 0,
+            y: 0,
+            w: 12,
+            h: 5
         },
-        'viewSpecId': 'chart'
+        viewSpecId: 'chart'
     },
     {
-        'layout': {
-            'x': 0,
-            'y': 5,
-            'w': 4,
-            'h': 3
+        layout: {
+            x: 0,
+            y: 5,
+            w: 4,
+            h: 3
         },
-        'viewSpecId': 'buttons',
-        'title': 'Buttons 1',
-        'state': {
-            'value': 'Button 1'
+        viewSpecId: 'buttons',
+        title: 'Buttons 1',
+        state: {
+            value: 'Button 1'
         }
     },
     {
-        'layout': {
-            'x': 4,
-            'y': 5,
-            'w': 4,
-            'h': 3
+        layout: {
+            x: 4,
+            y: 5,
+            w: 4,
+            h: 3
         },
-        'viewSpecId': 'buttons',
-        'title': 'Buttons 2',
-        'state': {
-            'value': 'Button 2'
+        viewSpecId: 'buttons',
+        title: 'Buttons 2',
+        state: {
+            value: 'Button 2'
         }
     },
     {
-        'layout': {
-            'x': 8,
-            'y': 5,
-            'w': 4,
-            'h': 3
+        layout: {
+            x: 8,
+            y: 5,
+            w: 4,
+            h: 3
         },
-        'viewSpecId': 'buttons',
-        'title': 'Buttons 3',
-        'state': {
-            'value': 'Button 3'
+        viewSpecId: 'buttons',
+        title: 'Buttons 3',
+        state: {
+            value: 'Button 3'
         }
     },
     {
-        'layout': {
-            'x': 9,
-            'y': 8,
-            'w': 3,
-            'h': 4
+        layout: {
+            x: 9,
+            y: 8,
+            w: 3,
+            h: 4
         },
-        'viewSpecId': 'panel'
+        viewSpecId: 'panel'
     },
     {
-        'layout': {
-            'x': 0,
-            'y': 8,
-            'w': 9,
-            'h': 7
+        layout: {
+            x: 0,
+            y: 8,
+            w: 9,
+            h: 7
         },
-        'viewSpecId': 'treeGrid'
+        viewSpecId: 'treeGrid'
     }
 ];

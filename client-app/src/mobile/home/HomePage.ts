@@ -13,19 +13,22 @@ export const homePage = hoistCmp.factory({
                 summaryCard({
                     title: 'Grids',
                     icon: Icon.gridPanel(),
-                    summary: 'Grids are at the heart of many Hoist React projects, and Grid, GridModel, and related helper components are key elements of the framework.',
+                    summary:
+                        'Grids are at the heart of many Hoist React projects, and Grid, GridModel, and related helper components are key elements of the framework.',
                     route: 'grids'
                 }),
                 summaryCard({
                     title: 'Tree Grids',
                     icon: Icon.grid(),
-                    summary: 'Hoist\'s Grid supports the display of hierarchical tree data. Applications provide standard record data with children nodes containing their sub-records',
+                    summary:
+                        "Hoist's Grid supports the display of hierarchical tree data. Applications provide standard record data with children nodes containing their sub-records",
                     route: 'treegrids'
                 }),
                 summaryCard({
                     title: 'Dataview',
                     icon: Icon.addressCard(),
-                    summary: 'The DataView component leverages an underlying Grid / GridModel instance to display individual component "cards" for each rendered item.',
+                    summary:
+                        'The DataView component leverages an underlying Grid / GridModel instance to display individual component "cards" for each rendered item.',
                     route: 'dataview'
                 }),
                 summaryCard({
@@ -79,7 +82,8 @@ export const homePage = hoistCmp.factory({
                 summaryCard({
                     title: 'PinPad',
                     icon: Icon.unlock(),
-                    summary: 'A specialized PIN input, used for lightweight authentication of users.',
+                    summary:
+                        'A specialized PIN input, used for lightweight authentication of users.',
                     route: 'pinPad'
                 })
             ]
@@ -87,8 +91,8 @@ export const homePage = hoistCmp.factory({
     }
 });
 
-const summaryCard = hoistCmp.factory(
-    ({title, icon, summary, route}) => div({
+const summaryCard = hoistCmp.factory(({title, icon, summary, route}) =>
+    div({
         className: 'toolbox-card',
         items: [
             div({className: 'toolbox-card__title', item: title}),

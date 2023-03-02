@@ -22,27 +22,25 @@ export const chartsPanel = hoistCmp.factory({
                 modalSupport: true,
                 persistWith: {...PERSIST_DETAIL, path: 'chartPanel'}
             },
-            item: model.symbol ?
-                tabContainer({
-                    modelConfig: {
-                        persistWith: {...PERSIST_DETAIL, path: 'chartsTab'},
-                        tabs: [
-                            {
-                                id: 'line',
-                                title: 'Trading Volume',
-                                content: lineChart
-                            },
-                            {
-                                id: 'ohlc',
-                                title: 'Price History',
-                                content: ohlcChart
-                            }
-                        ]
-                    }
-                }) :
-                placeholder(Icon.chartLine(), 'Select an order to view available charts.')
+            item: model.symbol
+                ? tabContainer({
+                      modelConfig: {
+                          persistWith: {...PERSIST_DETAIL, path: 'chartsTab'},
+                          tabs: [
+                              {
+                                  id: 'line',
+                                  title: 'Trading Volume',
+                                  content: lineChart
+                              },
+                              {
+                                  id: 'ohlc',
+                                  title: 'Price History',
+                                  content: ohlcChart
+                              }
+                          ]
+                      }
+                  })
+                : placeholder(Icon.chartLine(), 'Select an order to view available charts.')
         });
     }
 });
-
-

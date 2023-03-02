@@ -74,4 +74,3 @@ const acceptedFileTypes: string[] = [
     '.pptx',
     '.pdf'
 ];
-

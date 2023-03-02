@@ -22,18 +22,22 @@ export const popupsPage = hoistCmp.factory({
                     XH.confirm({
                         title: 'Confirm',
                         message: 'This is a confirm dialog.'
-                    }).then(ret => XH.toast({
-                        message: span('That popup resolved to ', code(`${ret}`)),
-                        intent: ret ? 'success' : 'danger'
-                    }));
+                    }).then(ret =>
+                        XH.toast({
+                            message: span('That popup resolved to ', code(`${ret}`)),
+                            intent: ret ? 'success' : 'danger'
+                        })
+                    );
                 }),
                 renderCard('Prompt', () => {
                     XH.prompt({
                         title: 'Prompt',
                         message: 'This is a prompt dialog.'
-                    }).then(ret => XH.toast({
-                        message: span('That popup resolved to ', code(`${ret}`))
-                    }));
+                    }).then(ret =>
+                        XH.toast({
+                            message: span('That popup resolved to ', code(`${ret}`))
+                        })
+                    );
                 }),
                 renderCard('Message', () => {
                     XH.confirm({

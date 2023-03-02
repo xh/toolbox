@@ -5,15 +5,15 @@ import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
 
-export const hboxContainerPanel = hoistCmp.factory(
-    () => wrapper({
-        description: <p>
-            An HBox lays out its children horizontally, rendering a Box
-            with <code>flexDirection:row</code>.
-        </p>,
-        links: [
-            {url: '$HR/cmp/layout/Box.ts', notes: 'Hoist Box components.'}
-        ],
+export const hboxContainerPanel = hoistCmp.factory(() =>
+    wrapper({
+        description: (
+            <p>
+                An HBox lays out its children horizontally, rendering a Box with{' '}
+                <code>flexDirection:row</code>.
+            </p>
+        ),
+        links: [{url: '$HR/cmp/layout/Box.ts', notes: 'Hoist Box components.'}],
         item: panel({
             title: 'Layout › HBox',
             icon: Icon.box(),
@@ -27,7 +27,6 @@ export const hboxContainerPanel = hoistCmp.factory(
         })
     })
 );
-
 
 function renderBox(args) {
     return box({

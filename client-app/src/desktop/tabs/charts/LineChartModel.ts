@@ -4,9 +4,7 @@ import {observable, makeObservable, runInAction, bindable} from '@xh/hoist/mobx'
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
 
-
 export class LineChartModel extends HoistModel {
-
     @bindable currentSymbol: string = '';
     @observable.ref symbols: string[] = [];
 
@@ -26,18 +24,21 @@ export class LineChartModel extends HoistModel {
     override async doLoadAsync(loadSpec) {
         if (isEmpty(this.symbols)) {
             let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
-            runInAction(() => this.symbols = symbols.slice(0, 5));
+            runInAction(() => (this.symbols = symbols.slice(0, 5)));
         }
 
         if (!this.currentSymbol) {
-            runInAction(() => this.currentSymbol = this.symbols[0]);
+            runInAction(() => (this.currentSymbol = this.symbols[0]));
         }
 
-        let series = await XH.portfolioService.getLineChartSeriesAsync({
-            symbol: this.currentSymbol,
-            dimension: 'close',
-            loadSpec
-        }).catchDefault() ?? {};
+        let series =
+            (await XH.portfolioService
+                .getLineChartSeriesAsync({
+                    symbol: this.currentSymbol,
+                    dimension: 'close',
+                    loadSpec
+                })
+                .catchDefault()) ?? {};
 
         Object.assign(series, {
             type: 'area',

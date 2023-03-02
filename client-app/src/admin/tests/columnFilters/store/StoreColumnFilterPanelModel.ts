@@ -5,7 +5,6 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 
 export class StoreColumnFilterPanelModel extends HoistModel {
-
     @bindable.ref filterJson: string = JSON.stringify(null);
 
     @managed gridModel: GridModel;
@@ -21,7 +20,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
         // Update filter JSON
         this.addReaction({
             track: () => this.gridModel.filterModel.filter,
-            run: (filter) => {
+            run: filter => {
                 this.filterJson = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
             }
         });
@@ -92,7 +91,8 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                     ...boolCheckCol,
                     headerName: '',
                     chooserName: 'Active Status',
-                    tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''
+                    tooltip: (active, {record}) =>
+                        active ? `${record.data.company} is active` : ''
                 },
                 {
                     field: 'company',
@@ -114,14 +114,14 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                     minWidth: 150,
                     maxWidth: 200,
                     tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
-                    cellClass: (val) => {
+                    cellClass: val => {
                         return val === 'New York' ? 'xh-text-color-accent' : '';
                     }
                 },
                 {
                     field: 'trade_volume',
                     width: 150,
-                    tooltip: (val) => fmtNumberTooltip(val),
+                    tooltip: val => fmtNumberTooltip(val),
                     renderer: millionsRenderer({
                         precision: 1,
                         label: true
@@ -133,7 +133,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                     field: 'profit_loss',
                     width: 150,
                     absSort: true,
-                    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
+                    tooltip: val => fmtNumberTooltip(val, {ledger: true}),
                     renderer: numberRenderer({
                         precision: 0,
                         ledger: true,
@@ -162,9 +162,11 @@ export class StoreColumnFilterPanelModel extends HoistModel {
                 'city',
                 'trade_date',
                 {field: 'profit_loss', valueRenderer: numberRenderer({precision: 0})},
-                {field: 'trade_volume', valueRenderer: millionsRenderer({precision: 1, label: true})}
+                {
+                    field: 'trade_volume',
+                    valueRenderer: millionsRenderer({precision: 1, label: true})
+                }
             ]
         });
     }
 }
-

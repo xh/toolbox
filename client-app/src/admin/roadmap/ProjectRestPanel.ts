@@ -1,17 +1,25 @@
-import {addAction, cloneAction, deleteAction, editAction, restGrid, RestGridConfig, viewAction} from '@xh/hoist/desktop/cmp/rest';
+import {
+    addAction,
+    cloneAction,
+    deleteAction,
+    editAction,
+    restGrid,
+    RestGridConfig,
+    viewAction
+} from '@xh/hoist/desktop/cmp/rest';
 import {dateTimeRenderer} from '@xh/hoist/format';
 import {codeInput, textArea} from '@xh/hoist/desktop/cmp/input';
 import {hoistCmp} from '@xh/hoist/core';
 import {toNumber} from 'lodash';
 import {AppModel} from '@xh/hoist/admin/AppModel';
 
-export const projectRestPanel = hoistCmp.factory(
-    () => restGrid({modelConfig: {...modelSpec, readonly: AppModel.readonly}})
+export const projectRestPanel = hoistCmp.factory(() =>
+    restGrid({modelConfig: {...modelSpec, readonly: AppModel.readonly}})
 );
 
 const tooltip = s => s;
 
-const modelSpec: RestGridConfig= {
+const modelSpec: RestGridConfig = {
     enableExport: true,
     store: {
         url: 'rest/projectRest',
@@ -146,19 +154,17 @@ const modelSpec: RestGridConfig= {
         {
             field: 'gitLinks',
 
-            formField: {item: codeInput({height: 150}), label: 'Github Links', info: '(One per line)'}
+            formField: {
+                item: codeInput({height: 150}),
+                label: 'Github Links',
+                info: '(One per line)'
+            }
         },
         {field: 'releaseVersion'},
         {field: 'lastUpdated', formField: {label: 'Last Updated'}},
         {field: 'lastUpdatedBy', formField: {label: 'Last Updated By'}}
     ],
     emptyText: 'No projects found - try adding one...',
-    menuActions: [
-        addAction,
-        editAction,
-        viewAction,
-        deleteAction,
-        cloneAction
-    ],
-    prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
+    menuActions: [addAction, editAction, viewAction, deleteAction, cloneAction],
+    prepareCloneFn: ({record, clone}) => (clone.name = `${clone.name}_CLONE`)
 };

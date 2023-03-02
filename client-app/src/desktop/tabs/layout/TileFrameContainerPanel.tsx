@@ -19,10 +19,12 @@ export const tileFrameContainerPanel = hoistCmp.factory({
             tiles = [];
 
         for (let i = 0; i < vals.tileCount; i++) {
-            tiles.push(panel({
-                className: 'tb-tileframe__tile',
-                item: xhLogo({maxWidth: '60%', maxHeight: '80%'})
-            }));
+            tiles.push(
+                panel({
+                    className: 'tb-tileframe__tile',
+                    item: xhLogo({maxWidth: '60%', maxHeight: '80%'})
+                })
+            );
         }
 
         const inputConf = {commitOnChange: true, width: 60, min: 0};
@@ -30,9 +32,9 @@ export const tileFrameContainerPanel = hoistCmp.factory({
             description: [
                 <p>
                     <code>TileFrame</code> renders its children as equally-sized tiles, resized and
-                    arranged to fill the available space within the container while maintaining
-                    even padding between tiles and keeping tile width / height as close to a
-                    specified ratio as possible.
+                    arranged to fill the available space within the container while maintaining even
+                    padding between tiles and keeping tile width / height as close to a specified
+                    ratio as possible.
                 </p>,
                 <p>
                     Try resizing your browser window to see the tiling in action. The outer panel in
@@ -41,7 +43,10 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/layout/TileFrameContainerPanel.tsx', notes: 'This example.'},
+                {
+                    url: '$TB/client-app/src/desktop/tabs/layout/TileFrameContainerPanel.tsx',
+                    notes: 'This example.'
+                },
                 {url: '$HR/cmp/layout/TileFrame.ts', notes: 'TileFrame component.'}
             ],
             item: panel({
@@ -80,19 +85,35 @@ export const tileFrameContainerPanel = hoistCmp.factory({
                                     }),
                                     formField({
                                         field: 'minTileWidth',
-                                        item: numberInput({...inputConf, stepSize: 10, valueLabel: 'px'})
+                                        item: numberInput({
+                                            ...inputConf,
+                                            stepSize: 10,
+                                            valueLabel: 'px'
+                                        })
                                     }),
                                     formField({
                                         field: 'maxTileWidth',
-                                        item: numberInput({...inputConf, stepSize: 10, valueLabel: 'px'})
+                                        item: numberInput({
+                                            ...inputConf,
+                                            stepSize: 10,
+                                            valueLabel: 'px'
+                                        })
                                     }),
                                     formField({
                                         field: 'minTileHeight',
-                                        item: numberInput({...inputConf, stepSize: 10, valueLabel: 'px'})
+                                        item: numberInput({
+                                            ...inputConf,
+                                            stepSize: 10,
+                                            valueLabel: 'px'
+                                        })
                                     }),
                                     formField({
                                         field: 'maxTileHeight',
-                                        item: numberInput({...inputConf, stepSize: 10, valueLabel: 'px'})
+                                        item: numberInput({
+                                            ...inputConf,
+                                            stepSize: 10,
+                                            valueLabel: 'px'
+                                        })
                                     }),
                                     button({
                                         text: 'Reset',
@@ -110,9 +131,7 @@ export const tileFrameContainerPanel = hoistCmp.factory({
     }
 });
 
-
 class TileFrameContainerPanelModel extends HoistModel {
-
     @managed
     formModel = new FormModel({
         fields: [
@@ -129,5 +148,4 @@ class TileFrameContainerPanelModel extends HoistModel {
     constructor() {
         super();
     }
-
 }

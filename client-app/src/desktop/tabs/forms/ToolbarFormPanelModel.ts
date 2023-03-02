@@ -4,7 +4,6 @@ import {required} from '@xh/hoist/data';
 import {random} from 'lodash';
 
 export class ToolbarFormPanelModel extends HoistModel {
-
     topFormModel = new FormModel({
         fields: [
             {name: 'text1', rules: [required]},
@@ -17,11 +16,6 @@ export class ToolbarFormPanelModel extends HoistModel {
     });
 
     bottomFormModel = new FormModel({
-        fields: [
-            {name: 'option1', initialValue: 'CA'},
-            {name: 'option2'},
-            {name: 'option3'}
-        ]
+        fields: [{name: 'option1', initialValue: 'CA'}, {name: 'option2'}, {name: 'option3'}]
     });
-
 }

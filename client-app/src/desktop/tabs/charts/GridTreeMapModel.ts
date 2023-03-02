@@ -5,7 +5,6 @@ import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
 
 export class GridTreeMapModel extends HoistModel {
-
     @managed
     groupingChooserModel = new GroupingChooserModel({
         dimensions: ['region', 'sector', 'symbol'],
@@ -30,21 +29,15 @@ export class GridTreeMapModel extends HoistModel {
         emptyText: 'No records found...',
         selModel: 'multiple',
         store: {
-            processRawData: (r) => {
+            processRawData: r => {
                 return {
                     pnlMktVal: r.pnl / Math.abs(r.mktVal),
                     ...r
                 };
             },
-            fields: [
-                {name: 'pnlMktVal', type: 'number', displayName: 'P&L / Mkt Val'}
-            ]
+            fields: [{name: 'pnlMktVal', type: 'number', displayName: 'P&L / Mkt Val'}]
         },
-        columns: [
-            {...nameCol, isTreeColumn: true},
-            {...mktValCol},
-            {...pnlCol}
-        ]
+        columns: [{...nameCol, isTreeColumn: true}, {...mktValCol}, {...pnlCol}]
     });
 
     @managed
@@ -70,5 +63,4 @@ export class GridTreeMapModel extends HoistModel {
         const data = await XH.portfolioService.getPositionsAsync(dims);
         this.gridModel.loadData(data);
     }
-
 }

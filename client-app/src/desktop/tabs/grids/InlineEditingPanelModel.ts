@@ -20,7 +20,6 @@ import {isEmpty, isNil, max} from 'lodash';
 import {withDebug} from '@xh/hoist/utils/js';
 
 export class InlineEditingPanelModel extends HoistModel {
-
     @bindable
     asyncValidation = false;
 
@@ -90,7 +89,8 @@ export class InlineEditingPanelModel extends HoistModel {
             const doCommit = await XH.confirm({
                 icon: Icon.warning(),
                 title: 'Commit?',
-                message: 'The Store contains invalid records - do you want to commit all changes anyway?',
+                message:
+                    'The Store contains invalid records - do you want to commit all changes anyway?',
                 confirmProps: {
                     intent: 'success',
                     icon: Icon.check(),
@@ -158,7 +158,9 @@ export class InlineEditingPanelModel extends HoistModel {
                             when: (f, {category}) => category === 'US',
                             check: async ({value}) => {
                                 if (this.asyncValidation) await wait(1000);
-                                return isNil(value) || value < 10 ? 'Records where `category` is "US" require `amount` of 10 or greater.' : null;
+                                return isNil(value) || value < 10
+                                    ? 'Records where `category` is "US" require `amount` of 10 or greater.'
+                                    : null;
                             }
                         }
                     ]
@@ -181,9 +183,7 @@ export class InlineEditingPanelModel extends HoistModel {
                 {
                     name: 'description',
                     type: 'string',
-                    rules: [
-                        lengthIs({max: 280})
-                    ]
+                    rules: [lengthIs({max: 280})]
                 }
             ],
             data: [
@@ -209,7 +209,8 @@ export class InlineEditingPanelModel extends HoistModel {
                     category: 'BRIC',
                     amount: 30,
                     restricted: true,
-                    description: 'Demos conditional editing - in this example, setting restricted boolean to true on a record disables editing of other fields.'
+                    description:
+                        'Demos conditional editing - in this example, setting restricted boolean to true on a record disables editing of other fields.'
                 }
             ]
         });
@@ -250,7 +251,9 @@ export class InlineEditingPanelModel extends HoistModel {
                         {
                             icon: Icon.delete(),
                             intent: 'danger',
-                            displayFn: ({record}) => ({icon: record.isAdd ? Icon.close() : Icon.delete()}),
+                            displayFn: ({record}) => ({
+                                icon: record.isAdd ? Icon.close() : Icon.delete()
+                            }),
                             actionFn: ({record}) => this.store.removeRecords(record)
                         }
                     ]
@@ -263,7 +266,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     resizable: false,
                     editable: true,
                     editor: booleanEditor,
-                    renderer: (v) => v ? Icon.lock({className: 'xh-warning'}) : ''
+                    renderer: v => (v ? Icon.lock({className: 'xh-warning'}) : '')
                 },
                 {
                     field: 'name',
@@ -282,24 +285,26 @@ export class InlineEditingPanelModel extends HoistModel {
                     field: 'category',
                     width: 80,
                     editable: ifNotRestricted,
-                    editor: (props) => selectEditor({
-                        ...props,
-                        inputProps: {
-                            options: ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
-                        }
-                    })
+                    editor: props =>
+                        selectEditor({
+                            ...props,
+                            inputProps: {
+                                options: ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
+                            }
+                        })
                 },
                 {
                     field: 'date',
                     ...localDateCol,
                     editable: ifNotRestricted,
-                    editor: (props) => dateEditor({
-                        ...props,
-                        inputProps: {
-                            valueType: 'localDate'
-                        }
-                    }),
-                    tooltipElement: (v) => fmtDate(v, 'dddd MMMM Do YYYY')
+                    editor: props =>
+                        dateEditor({
+                            ...props,
+                            inputProps: {
+                                valueType: 'localDate'
+                            }
+                        }),
+                    tooltipElement: v => fmtDate(v, 'dddd MMMM Do YYYY')
                 },
                 {
                     field: 'description',
@@ -321,5 +326,4 @@ export class InlineEditingPanelModel extends HoistModel {
         if (isEmpty(committedRecords)) return 0;
         return max(committedRecords.map(it => it.id as number)) + 1;
     }
-
 }

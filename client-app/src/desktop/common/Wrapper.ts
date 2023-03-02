@@ -52,7 +52,6 @@ export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
 });
 
 class WrapperModel extends HoistModel {
-
     @managed
     dockContainerModel: DockContainerModel = null;
 
@@ -67,23 +66,17 @@ class WrapperModel extends HoistModel {
                 allowDialog: false,
                 allowClose: false,
                 collapsed: !XH.getPref('expandDockedLinks'),
-                content: () => panel({
-                    className: 'tbox-wrapper__links',
-                    item: this.createLinksWithNotes(links),
-                    width: 400
-                })
+                content: () =>
+                    panel({
+                        className: 'tbox-wrapper__links',
+                        item: this.createLinksWithNotes(links),
+                        width: 400
+                    })
             });
         }
     }
 
     private createLinksWithNotes(links: ToolboxLinkProps[]) {
-        return table(
-            tbody(
-                links.map(link => tr(
-                    th(toolboxLink(link)),
-                    td(link.notes ?? '')
-                ))
-            )
-        );
+        return table(tbody(links.map(link => tr(th(toolboxLink(link)), td(link.notes ?? '')))));
     }
 }
