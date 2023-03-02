@@ -76,7 +76,8 @@ class SampleColumnGroupsGridModel extends HoistModel {
 
         this.addReaction(({
             track: () => this.groupRows,
-            run: (groupRows) => this.gridModel.setGroupBy(groupRows ? ['state'] : null)
+            run: (groupRows) => {this.gridModel.setGroupBy(groupRows ? ['state'] : null)},
+            fireImmediately: true
         }));
 
         this.addReaction({
