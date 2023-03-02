@@ -8,7 +8,7 @@ import {wipTab} from './wip/WipTab';
 
 export class AppModel extends BaseAppModel {
 
-    static instance: AppModel;
+    static override instance: AppModel;
 
     override async initAsync() {
         await XH.installServicesAsync(PortfolioService);

@@ -81,7 +81,7 @@ const tbar = hoistCmp.factory<GridTestModel>(
                 bind: 'twiddleCount',
                 enableShorthandUnits: true,
                 selectOnFocus: true,
-                width: 60
+                width: 75
             })
         }),
         button({

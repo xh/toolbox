@@ -9,7 +9,7 @@ export class AppModel extends HoistAppModel {
         await XH.installServicesAsync(OauthService);
     }
 
-    override async  logoutAsync() {
+    override async logoutAsync() {
         await XH.oauthService.logoutAsync();
     }
 

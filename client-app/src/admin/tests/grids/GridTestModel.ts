@@ -22,7 +22,7 @@ const pnlColumn: ColumnSpec = {
 
 export class GridTestModel extends HoistModel {
 
-    persistWith = {localStorageKey: 'persistTest'};
+    override persistWith = {localStorageKey: 'persistTest'};
 
     // Total count (approx) of all nodes generated (parents + children).
     @bindable recordCount = 200000;
