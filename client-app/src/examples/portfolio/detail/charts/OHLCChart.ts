@@ -21,7 +21,7 @@ class OHLCChartModel extends HoistModel {
 
     get symbol() {return this.parentModel.symbol}
 
-    onLinked() {
+    override onLinked() {
         this.addReaction({
             track: () => this.symbol,
             run: () => this.loadAsync()
@@ -75,7 +75,7 @@ class OHLCChartModel extends HoistModel {
         }
     });
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {symbol, chartModel} = this;
 
         if (!symbol) {

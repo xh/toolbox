@@ -17,7 +17,7 @@ import {FilterLike} from '@xh/hoist/data/filter/Types';
  */
 export class DirectoryPanelModel extends HoistModel {
 
-    persistWith = PERSIST_APP;
+    override persistWith = PERSIST_APP;
 
     /** known tags across all contacts. */
     @observable.ref tagList: string[] = [];

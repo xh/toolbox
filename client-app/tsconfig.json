@@ -8,6 +8,7 @@
     "allowSyntheticDefaultImports":  true,
     "resolveJsonModule":  true,
     "noEmit": true,
+    "noImplicitOverride": true,
     "jsx": "react",
     "useDefineForClassFields": true,
     "paths": {
