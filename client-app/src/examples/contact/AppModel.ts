@@ -4,9 +4,7 @@ import {ContactService} from './svc/ContactService';
 
 export const PERSIST_APP = {prefKey: 'contactAppState'};
 
-
 export class AppModel extends HoistAppModel {
-
     static instance: AppModel;
 
     static override async preAuthAsync() {
@@ -21,5 +19,7 @@ export class AppModel extends HoistAppModel {
         await XH.oauthService.logoutAsync();
     }
 
-    override get supportsVersionBar(): boolean {return window.self === window.top}
+    override get supportsVersionBar(): boolean {
+        return window.self === window.top;
+    }
 }

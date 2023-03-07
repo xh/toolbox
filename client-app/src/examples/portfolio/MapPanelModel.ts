@@ -5,7 +5,6 @@ import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {GridPanelModel} from './GridPanelModel';
 
 export class MapPanelModel extends HoistModel {
-
     @lookup(GridPanelModel) gridPanelModel: GridPanelModel;
     @managed splitTreeMapModel: SplitTreeMapModel;
 

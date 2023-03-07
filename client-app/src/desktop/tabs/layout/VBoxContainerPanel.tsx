@@ -5,12 +5,14 @@ import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../common';
 
-export const vboxContainerPanel = hoistCmp.factory(
-    () => wrapper({
-        description: <p>
-            A VBox lays out its children vertically, rendering a Box
-            with <code>flexDirection:column</code>.
-        </p>,
+export const vboxContainerPanel = hoistCmp.factory(() =>
+    wrapper({
+        description: (
+            <p>
+                A VBox lays out its children vertically, rendering a Box with{' '}
+                <code>flexDirection:column</code>.
+            </p>
+        ),
         links: [
             {
                 url: '$HR/cmp/layout/Box.ts',

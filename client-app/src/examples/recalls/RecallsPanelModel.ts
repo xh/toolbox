@@ -9,7 +9,6 @@ import {PERSIST_APP} from './AppModel';
 import {DetailsPanelModel} from './detail/DetailsPanelModel';
 
 export class RecallsPanelModel extends HoistModel {
-
     override persistWith = PERSIST_APP;
 
     @bindable
@@ -49,7 +48,7 @@ export class RecallsPanelModel extends HoistModel {
                 headerName: 'Class',
                 align: 'center',
                 width: 65,
-                tooltip: (cls) => cls,
+                tooltip: cls => cls,
                 renderer: this.classificationRenderer
             },
             {
@@ -96,7 +95,7 @@ export class RecallsPanelModel extends HoistModel {
         const {gridModel} = this;
         this.addReaction({
             track: () => gridModel.selectedRecord,
-            run: (rec) => this.detailsPanelModel.currentRecord = rec
+            run: rec => (this.detailsPanelModel.currentRecord = rec)
         });
 
         this.addReaction({
@@ -107,13 +106,12 @@ export class RecallsPanelModel extends HoistModel {
 
         this.addReaction({
             track: () => this.groupBy,
-            run: (selectedGroup) => gridModel.setGroupBy(selectedGroup)
+            run: selectedGroup => gridModel.setGroupBy(selectedGroup)
         });
 
         const {groupBy} = gridModel;
         this.groupBy = groupBy && groupBy.length > 0 ? groupBy[0] : null;
     }
-
 
     //------------------------
     // Implementation

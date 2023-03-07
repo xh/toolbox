@@ -17,7 +17,7 @@ export const ordersPanel = hoistCmp.factory({
             title: `Orders: ${formatPositionId(positionId)}`,
             icon: Icon.edit(),
             item: grid(),
-            mask: (positionId == null || loadModel.isPending),
+            mask: positionId == null || loadModel.isPending,
             bbar: [
                 filterChooser({
                     placeholder: 'Filter orders...',
@@ -40,6 +40,6 @@ function formatPositionId(positionId) {
     if (!positionId) return '';
 
     const dimValPairs = positionId.split('>>').splice(1);
-    const dimVals = dimValPairs.map((str) => str.split(':')[1]);
+    const dimVals = dimValPairs.map(str => str.split(':')[1]);
     return dimVals.join(' > ');
 }

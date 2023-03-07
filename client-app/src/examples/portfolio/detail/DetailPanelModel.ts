@@ -6,7 +6,6 @@ import {PERSIST_DETAIL} from '../AppModel';
 import {PortfolioPanelModel} from '../PortfolioPanelModel';
 
 export class DetailPanelModel extends HoistModel {
-
     @observable positionId = null;
 
     @lookup(PortfolioPanelModel) parentModel;
@@ -33,7 +32,7 @@ export class DetailPanelModel extends HoistModel {
     override onLinked() {
         this.addReaction({
             track: () => this.parentModel.selectedPosition,
-            run: (position) => {
+            run: position => {
                 this.positionId = position?.id ?? null;
             },
             debounce: 300

@@ -12,10 +12,7 @@ export const portfolioPanel = hoistCmp.factory({
     render() {
         return panel({
             mask: 'onLoad',
-            items: [
-                hframe(gridPanel(), mapPanel()),
-                detailPanel()
-            ]
+            items: [hframe(gridPanel(), mapPanel()), detailPanel()]
         });
     }
 });

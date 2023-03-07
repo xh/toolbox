@@ -5,7 +5,6 @@ import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {isEmpty} from 'lodash';
 
 export class OHLCChartModel extends HoistModel {
-
     @observable currentSymbol: string = '';
     @observable.ref symbols: string[] = [];
     @bindable aspectRatio: number = null;
@@ -26,17 +25,20 @@ export class OHLCChartModel extends HoistModel {
     override async doLoadAsync(loadSpec) {
         if (isEmpty(this.symbols)) {
             let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
-            runInAction(() => this.symbols = symbols.slice(0, 5));
+            runInAction(() => (this.symbols = symbols.slice(0, 5)));
         }
 
         if (!this.currentSymbol) {
-            runInAction(() => this.currentSymbol = this.symbols[0]);
+            runInAction(() => (this.currentSymbol = this.symbols[0]));
         }
 
-        let series = await XH.portfolioService.getOHLCChartSeriesAsync({
-            symbol: this.currentSymbol,
-            loadSpec
-        }).catchDefault() ?? {};
+        let series =
+            (await XH.portfolioService
+                .getOHLCChartSeriesAsync({
+                    symbol: this.currentSymbol,
+                    loadSpec
+                })
+                .catchDefault()) ?? {};
 
         Object.assign(series, {
             dataGrouping: {
@@ -62,7 +64,7 @@ export class OHLCChartModel extends HoistModel {
             xAxis: {
                 type: 'datetime',
                 labels: {
-                    formatter: function() {
+                    formatter: function () {
                         return fmtDate(this.value, {asHtml: true});
                     }
                 }
@@ -73,13 +75,16 @@ export class OHLCChartModel extends HoistModel {
             },
             tooltip: {
                 useHTML: true,
-                formatter: function() {
+                formatter: function () {
                     const p = this.point,
                         opts = {asHtml: true};
 
                     return `
                         <div class="xh-chart-tooltip">
-                        <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(this.x, opts)}</div>
+                        <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(
+                        this.x,
+                        opts
+                    )}</div>
                         <table>
                             <tr><th>Open:</th><td>${fmtPrice(p.open, opts)}</td></tr>
                             <tr><th>High:</th><td>${fmtPrice(p.high, opts)}</td></tr>

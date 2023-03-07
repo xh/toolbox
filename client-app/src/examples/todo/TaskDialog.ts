@@ -28,14 +28,11 @@ export const taskDialog = hoistCmp.factory({
     }
 });
 
-const formPanel = hoistCmp.factory(
-    () => panel({
+const formPanel = hoistCmp.factory(() =>
+    panel({
         item: form(
             vbox({
-                items: [
-                    description(),
-                    dueDate()
-                ],
+                items: [description(), dueDate()],
                 className: 'todo-form'
             })
         ),
@@ -43,8 +40,8 @@ const formPanel = hoistCmp.factory(
     })
 );
 
-const description = hoistCmp.factory(
-    () => formField({
+const description = hoistCmp.factory(() =>
+    formField({
         field: 'description',
         item: textArea({
             autoFocus: true,
@@ -53,8 +50,8 @@ const description = hoistCmp.factory(
     })
 );
 
-const dueDate = hoistCmp.factory(
-    () => hbox(
+const dueDate = hoistCmp.factory(() =>
+    hbox(
         formField({
             field: 'dueDate',
             flex: 1,
@@ -67,8 +64,8 @@ const dueDate = hoistCmp.factory(
     )
 );
 
-const bbar = hoistCmp.factory<TaskDialogModel>(
-    ({model}) => toolbar(
+const bbar = hoistCmp.factory<TaskDialogModel>(({model}) =>
+    toolbar(
         filler(),
         button({
             text: 'Cancel',

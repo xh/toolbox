@@ -19,16 +19,22 @@ export const basicPanel = hoistCmp.factory({
             description: [
                 <p>
                     Panels are a core building block for layouts in Hoist. They support an optional
-                    header bar with props to configure an icon, title and custom header items,
-                    props for top and bottom toolbars, and an optional model to manage their sizing.
-                    See the other tabs at left for additional features and conveniences, including
+                    header bar with props to configure an icon, title and custom header items, props
+                    for top and bottom toolbars, and an optional model to manage their sizing. See
+                    the other tabs at left for additional features and conveniences, including
                     built-in integrations with other Hoist components such as masks.
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/panels/BasicPanel.tsx', notes: 'This example.'},
+                {
+                    url: '$TB/client-app/src/desktop/tabs/panels/BasicPanel.tsx',
+                    notes: 'This example.'
+                },
                 {url: '$HR/desktop/cmp/panel/Panel.ts', notes: 'Hoist component.'},
-                {url: '$HR/desktop/cmp/panel/PanelModel.ts', notes: 'Hoist component model (for resize / collapse).'}
+                {
+                    url: '$HR/desktop/cmp/panel/PanelModel.ts',
+                    notes: 'Hoist component model (for resize / collapse).'
+                }
             ],
             item: panel({
                 icon: Icon.window(),
@@ -64,9 +70,10 @@ export const basicPanel = hoistCmp.factory({
                     toolbarSep(),
                     button({
                         text: 'Show Toast',
-                        onClick: () => XH.toast({
-                            message: `Currently selected State: ${model.state || 'None'}`
-                        })
+                        onClick: () =>
+                            XH.toast({
+                                message: `Currently selected State: ${model.state || 'None'}`
+                            })
                     })
                 ]
             })

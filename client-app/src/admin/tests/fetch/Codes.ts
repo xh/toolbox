@@ -53,7 +53,7 @@ export const codes = [
     },
     {
         code: 226,
-        description: 'I\'M Used'
+        description: "I'M Used"
     },
     {
         code: 300,
@@ -165,7 +165,7 @@ export const codes = [
     },
     {
         code: 418,
-        description: 'I\'m a teapot'
+        description: "I'm a teapot"
     },
     {
         code: 421,

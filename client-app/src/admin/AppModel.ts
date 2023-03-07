@@ -7,7 +7,6 @@ import {testsTab} from './tests/TestsTab';
 import {wipTab} from './wip/WipTab';
 
 export class AppModel extends BaseAppModel {
-
     static override instance: AppModel;
 
     override async initAsync() {

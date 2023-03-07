@@ -10,7 +10,6 @@ import {CubeModel} from './CubeModel';
 import {QueryConfig, View} from '@xh/hoist/data';
 
 export class CubeTestModel extends HoistModel {
-
     @managed cubeModel: CubeModel;
     @managed gridModel: GridModel;
     @managed view: View;
@@ -61,7 +60,9 @@ export class CubeTestModel extends HoistModel {
     private getQuery(): QueryConfig {
         const {fields, dimManagerModel, fundFilter, includeLeaves} = this,
             dimensions = dimManagerModel.value,
-            filter = !isEmpty(fundFilter) ? {field: 'fund', op: '=', value: fundFilter} as const : null,
+            filter = !isEmpty(fundFilter)
+                ? ({field: 'fund', op: '=', value: fundFilter} as const)
+                : null,
             includeRoot = this.showSummary;
 
         return {fields, dimensions, filter, includeLeaves, includeRoot};
@@ -85,15 +86,20 @@ export class CubeTestModel extends HoistModel {
         // Query is initialized with empty dims and is triggering an initial run we don't need.
         if (!dimCount) return;
 
-        return wait().then(async () => {
-            const {store} = gridModel;
-            gridModel.showSummary = showSummary;
-            store.setLoadRootAsSummary(showSummary);
+        return wait()
+            .then(async () => {
+                const {store} = gridModel;
+                gridModel.showSummary = showSummary;
+                store.setLoadRootAsSummary(showSummary);
 
-            await LTM.withLoadTime(`Query | ${dimCount} dims | ${filterCount} fund filters`, async () => {
-                this.view.updateQuery(this.getQuery());
-            });
-        }).linkTo(loadModel);
+                await LTM.withLoadTime(
+                    `Query | ${dimCount} dims | ${filterCount} fund filters`,
+                    async () => {
+                        this.view.updateQuery(this.getQuery());
+                    }
+                );
+            })
+            .linkTo(loadModel);
     }
 
     private createGridModel() {

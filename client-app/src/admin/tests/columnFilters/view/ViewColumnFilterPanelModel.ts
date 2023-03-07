@@ -7,7 +7,6 @@ import {observable, makeObservable, comparer} from '@xh/hoist/mobx';
 import {numberRenderer} from '@xh/hoist/format';
 
 export class ViewColumnFilterPanelModel extends HoistModel {
-
     @observable.ref filterJson: string = JSON.stringify(null);
 
     @managed cube: Cube;
@@ -37,7 +36,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         // Update filter JSON
         this.addReaction({
             track: () => this.query.filter,
-            run: (filter) => {
+            run: filter => {
                 this.filterJson = JSON.stringify(filter?.toJSON() ?? null, undefined, 2);
             }
         });
@@ -45,7 +44,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
         // Update cube view when query changes
         this.addReaction({
             track: () => this.query,
-            run: (query) => {
+            run: query => {
                 this.view.updateQuery(query);
             },
             fireImmediately: true,
@@ -86,13 +85,43 @@ export class ViewColumnFilterPanelModel extends HoistModel {
                 {name: 'trader', isDimension: true},
                 {name: 'dir', displayName: 'Direction', isDimension: true},
                 {name: 'quantity', type: 'number', aggregator: 'SUM', canAggregateFn: isInstrument},
-                {name: 'quantity1', type: 'number', aggregator: 'SUM', canAggregateFn: isInstrument},
-                {name: 'quantity2', type: 'number', aggregator: 'SUM', canAggregateFn: isInstrument},
-                {name: 'quantity3', type: 'number', aggregator: 'SUM', canAggregateFn: isInstrument},
+                {
+                    name: 'quantity1',
+                    type: 'number',
+                    aggregator: 'SUM',
+                    canAggregateFn: isInstrument
+                },
+                {
+                    name: 'quantity2',
+                    type: 'number',
+                    aggregator: 'SUM',
+                    canAggregateFn: isInstrument
+                },
+                {
+                    name: 'quantity3',
+                    type: 'number',
+                    aggregator: 'SUM',
+                    canAggregateFn: isInstrument
+                },
                 {name: 'price', type: 'number', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
-                {name: 'price1', type: 'number', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
-                {name: 'price2', type: 'number', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
-                {name: 'price3', type: 'number', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
+                {
+                    name: 'price1',
+                    type: 'number',
+                    aggregator: 'UNIQUE',
+                    canAggregateFn: isInstrument
+                },
+                {
+                    name: 'price2',
+                    type: 'number',
+                    aggregator: 'UNIQUE',
+                    canAggregateFn: isInstrument
+                },
+                {
+                    name: 'price3',
+                    type: 'number',
+                    aggregator: 'UNIQUE',
+                    canAggregateFn: isInstrument
+                },
                 {name: 'commission', type: 'number', aggregator: 'SUM'},
                 {name: 'commission1', type: 'number', aggregator: 'SUM'},
                 {name: 'commission2', type: 'number', aggregator: 'SUM'},
@@ -211,7 +240,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
     }
 }
 
-const quantityCol: ColumnSpec ={
+const quantityCol: ColumnSpec = {
     headerName: 'Qty',
     align: 'right',
     width: 130,

@@ -31,8 +31,8 @@ export const viewColumnFilterPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory(
-    () => toolbar(
+const tbar = hoistCmp.factory(() =>
+    toolbar(
         filterChooser({
             flex: 1,
             enableClear: true
@@ -40,8 +40,8 @@ const tbar = hoistCmp.factory(
     )
 );
 
-const bbar = hoistCmp.factory(
-    () => toolbar(
+const bbar = hoistCmp.factory(() =>
+    toolbar(
         groupingChooser(),
         filler(),
         gridCountLabel({
@@ -50,8 +50,8 @@ const bbar = hoistCmp.factory(
     )
 );
 
-const filterJsonPanel = hoistCmp.factory(
-    () => panel({
+const filterJsonPanel = hoistCmp.factory(() =>
+    panel({
         modelConfig: {
             side: 'right',
             defaultSize: 500,

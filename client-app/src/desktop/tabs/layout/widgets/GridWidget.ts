@@ -35,9 +35,13 @@ export const gridWidget = hoistCmp.factory({
 });
 
 class GridWidgetModel extends HoistModel {
-
     @managed gridModel: GridModel;
-    @managed panelModel = new PanelModel({modalSupport: true, showModalToggleButton: false, collapsible: false, resizable: false});
+    @managed panelModel = new PanelModel({
+        modalSupport: true,
+        showModalToggleButton: false,
+        collapsible: false,
+        resizable: false
+    });
     @lookup(DashViewModel) viewModel;
 
     override onLinked() {

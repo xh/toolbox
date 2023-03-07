@@ -2,9 +2,8 @@ import {random, reduce, sample, times, isEmpty} from 'lodash';
 import {PlainObject} from '@xh/hoist/core';
 
 export class GridTestData {
-
     rows: PlainObject[] = [];
-    summary: {day: number, id: string, mtd: number, ytd: number, volume: number} = null;
+    summary: {day: number; id: string; mtd: number; ytd: number; volume: number} = null;
     data: any;
 
     clear() {
@@ -22,7 +21,7 @@ export class GridTestData {
 
         while (count < recordCount) {
             let symbol = 'Symbol ' + count,
-                trader = 'Trader ' + count % (recordCount/10);
+                trader = 'Trader ' + (count % (recordCount / 10));
 
             count++;
             const pos: PlainObject = {
@@ -38,12 +37,12 @@ export class GridTestData {
             if (tree) {
                 const childCount = random(0, 10),
                     maxT = childCount - 1;
-                let dayRem = pos.day, 
-                    mtdRem = pos.mtd, 
-                    ytdRem = pos.ytd, 
+                let dayRem = pos.day,
+                    mtdRem = pos.mtd,
+                    ytdRem = pos.ytd,
                     volRem = pos.volume;
 
-                pos.children = times(childCount, (t) => {
+                pos.children = times(childCount, t => {
                     trader = 'trader' + t;
                     count++;
                     const child = {

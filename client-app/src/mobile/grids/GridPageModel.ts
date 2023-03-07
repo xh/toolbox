@@ -5,7 +5,6 @@ import {wait} from '@xh/hoist/promise';
 import {cityCol, companyCol, profitLossCol, tradeVolumeCol} from '../../core/columns';
 
 export class GridPageModel extends HoistModel {
-
     @bindable.ref
     dateLoaded: Date = null;
 
@@ -42,7 +41,6 @@ export class GridPageModel extends HoistModel {
         await wait(500);
         const customers = await XH.fetchJson({url: 'customer'});
         this.gridModel.loadData(customers);
-        runInAction(() => this.dateLoaded = new Date());
+        runInAction(() => (this.dateLoaded = new Date()));
     }
-
 }

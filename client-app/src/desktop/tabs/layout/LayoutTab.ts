@@ -11,8 +11,8 @@ import {tabPanelContainerPanel} from './tabContainer/TabPanelContainerPanel';
 import {tileFrameContainerPanel} from './TileFrameContainerPanel';
 import {vboxContainerPanel} from './VBoxContainerPanel';
 
-export const layoutTab = hoistCmp.factory(
-    () => tabContainer({
+export const layoutTab = hoistCmp.factory(() =>
+    tabContainer({
         modelConfig: {
             route: 'default.layout',
             switcher: {orientation: 'left'},
@@ -21,7 +21,11 @@ export const layoutTab = hoistCmp.factory(
                 {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
                 {id: 'tabPanel', title: 'TabContainer', content: tabPanelContainerPanel},
                 {id: 'dashContainer', title: 'DashContainer', content: dashContainerPanel},
-                {id: 'dashCanvas', title: hbox('DashCanvas', badge({intent: 'primary', item: 'new'})), content: dashCanvasPanel},
+                {
+                    id: 'dashCanvas',
+                    title: hbox('DashCanvas', badge({intent: 'primary', item: 'new'})),
+                    content: dashCanvasPanel
+                },
                 {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
                 {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
             ]

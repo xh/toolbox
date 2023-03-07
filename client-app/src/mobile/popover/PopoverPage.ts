@@ -33,7 +33,7 @@ export const popoverPage = hoistCmp.factory({
                     text: 'Show controlled Popover',
                     popoverProps: {
                         isOpen: model.isOpen,
-                        onInteraction: (nextOpenState) => model.isOpen = nextOpenState
+                        onInteraction: nextOpenState => (model.isOpen = nextOpenState)
                     }
                 }),
                 filler()
@@ -59,10 +59,7 @@ const popoverContent = hoistCmp.factory({
     render() {
         return div({
             className: 'toolbox-popover',
-            items: [
-                h1('Hello!'),
-                p('I am a Popover.')
-            ]
+            items: [h1('Hello!'), p('I am a Popover.')]
         });
     }
 });

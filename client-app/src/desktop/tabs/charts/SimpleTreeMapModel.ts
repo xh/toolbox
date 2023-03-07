@@ -3,10 +3,9 @@ import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
 import {Store} from '@xh/hoist/data';
 
 export class SimpleTreeMapModel extends HoistModel {
-
     @managed
     store = new Store({
-        processRawData: (r) => {
+        processRawData: r => {
             return {
                 pnlMktVal: r.pnl / Math.abs(r.mktVal),
                 ...r
@@ -33,5 +32,4 @@ export class SimpleTreeMapModel extends HoistModel {
         const data = await XH.portfolioService.getPositionsAsync(['symbol']);
         this.store.loadData(data);
     }
-
 }

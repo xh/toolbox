@@ -23,12 +23,14 @@ export const iconsPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    Hoist includes the latest version of the
-                    ubiquitous <a href="https://fontawesome.com/icons" target="_blank">Font Awesome</a> library
-                    and its companion project, react-fontawesome. Hoist exports an <code>Icon</code> constant
-                    to expose a preselected set of icons as element factories. This ensures that many
-                    of the most common glyphs are built-in (while also mapping icons to several
-                    concepts particular to finance and trading).
+                    Hoist includes the latest version of the ubiquitous{' '}
+                    <a href="https://fontawesome.com/icons" target="_blank">
+                        Font Awesome
+                    </a>{' '}
+                    library and its companion project, react-fontawesome. Hoist exports an{' '}
+                    <code>Icon</code> constant to expose a preselected set of icons as element
+                    factories. This ensures that many of the most common glyphs are built-in (while
+                    also mapping icons to several concepts particular to finance and trading).
                 </p>,
                 <p>
                     Apps are not limited to the set of FA icons imported by the framework.
@@ -45,7 +47,8 @@ export const iconsPanel = hoistCmp.factory({
                 {
                     url: 'https://fontawesome.com/icons',
                     text: 'FontAwesome',
-                    notes: 'The library used by Hoist to provide enumerated icons. Note that not all icons are included ' +
+                    notes:
+                        'The library used by Hoist to provide enumerated icons. Note that not all icons are included ' +
                         'in the Hoist Icon class, but can be easily added.'
                 }
             ],
@@ -59,12 +62,8 @@ export const iconsPanel = hoistCmp.factory({
                         className: 'toolbox-icons-table-scroller',
                         items: [
                             table(
-                                thead(
-                                    tr(th('Icon'), th('far'), th('fas'), th('fal'), th('fat'))
-                                ),
-                                tbody(
-                                    getAllIconNames().map(iconName => iconRow({iconName}))
-                                )
+                                thead(tr(th('Icon'), th('far'), th('fas'), th('fal'), th('fat'))),
+                                tbody(getAllIconNames().map(iconName => iconRow({iconName})))
                             )
                         ]
                     })
@@ -74,8 +73,8 @@ export const iconsPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory(
-    ({model}) => fragment(
+const tbar = hoistCmp.factory(({model}) =>
+    fragment(
         toolbar(
             'Font Size:',
             hspacer(5),
@@ -147,7 +146,7 @@ function sizeButton(size, props = {}) {
     });
 }
 
-function intentButton(intent: 'neutral'|Intent) {
+function intentButton(intent: 'neutral' | Intent) {
     return button({
         text: startCase(intent),
         value: intent,
@@ -155,40 +154,36 @@ function intentButton(intent: 'neutral'|Intent) {
     });
 }
 
-const iconRow = hoistCmp.factory<IconsPanelModel>(
-    ({model, iconName}) => {
-        return tr({
-            key: iconName,
-            className: `font-size--${model.fontSize}`,
-            items: [
-                td(iconName),
-                td(icon({iconName, prefix: 'far'})),
-                td(icon({iconName, prefix: 'fas'})),
-                td(icon({iconName, prefix: 'fal'})),
-                td(icon({iconName, prefix: 'fat'}))
-            ]
-        });
-    }
-);
+const iconRow = hoistCmp.factory<IconsPanelModel>(({model, iconName}) => {
+    return tr({
+        key: iconName,
+        className: `font-size--${model.fontSize}`,
+        items: [
+            td(iconName),
+            td(icon({iconName, prefix: 'far'})),
+            td(icon({iconName, prefix: 'fas'})),
+            td(icon({iconName, prefix: 'fal'})),
+            td(icon({iconName, prefix: 'fat'}))
+        ]
+    });
+});
 
-const icon = hoistCmp.factory<IconsPanelModel>(
-    ({model, iconName, prefix}) => {
-        return Icon[iconName]({
-            prefix,
-            size: model.size,
-            intent: model.intent === 'neutral' ? null : model.intent
-        });
-    }
-);
+const icon = hoistCmp.factory<IconsPanelModel>(({model, iconName, prefix}) => {
+    return Icon[iconName]({
+        prefix,
+        size: model.size,
+        intent: model.intent === 'neutral' ? null : model.intent
+    });
+});
 
 function getAllIconNames() {
     return without(Object.keys(Icon), 'icon', 'fileIcon', 'placeholder');
 }
 
 class IconsPanelModel extends HoistModel {
-    @bindable fontSize: 'small'|'default'|'large' = 'default';
+    @bindable fontSize: 'small' | 'default' | 'large' = 'default';
     @bindable size = '2x';
-    @bindable intent: 'neutral'|Intent = 'neutral';
+    @bindable intent: 'neutral' | Intent = 'neutral';
 
     constructor() {
         super();

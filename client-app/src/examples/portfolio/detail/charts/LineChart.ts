@@ -16,10 +16,11 @@ export const lineChart = hoistCmp.factory({
 });
 
 class LineChartModel extends HoistModel {
-
     @lookup(ChartsPanelModel) parentModel;
 
-    get symbol() {return this.parentModel.symbol}
+    get symbol() {
+        return this.parentModel.symbol;
+    }
 
     override onLinked() {
         this.addReaction({
@@ -45,7 +46,7 @@ class LineChartModel extends HoistModel {
             xAxis: {
                 type: 'datetime',
                 labels: {
-                    formatter: function() {
+                    formatter: function () {
                         return fmtDate(this.value, {fmt: 'DD-MMM-YY'});
                     }
                 }

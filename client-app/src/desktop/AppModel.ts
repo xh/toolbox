@@ -23,7 +23,6 @@ import {fmtDateTimeSec} from '@xh/hoist/format';
 import {span} from '@xh/hoist/cmp/layout';
 
 export class AppModel extends HoistAppModel {
-
     /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
 
@@ -199,7 +198,9 @@ export class AppModel extends HoistAppModel {
     }
 
     override getAboutDialogItems() {
-        const lastGitHubCommit = fmtDateTimeSec(XH.gitHubService.commitHistories.toolbox?.lastCommitTimestamp);
+        const lastGitHubCommit = fmtDateTimeSec(
+            XH.gitHubService.commitHistories.toolbox?.lastCommitTimestamp
+        );
         return [
             ...super.getAboutDialogItems(),
             {

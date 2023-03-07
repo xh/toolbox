@@ -47,7 +47,7 @@ export class SelectTestModel extends HoistModel {
         makeObservable(this);
         this.addReaction({
             track: () => this.numOptions,
-            run: () => this.bigOptions = times(this.numOptions, i => `option: ${i}`),
+            run: () => (this.bigOptions = times(this.numOptions, i => `option: ${i}`)),
             fireImmediately: true
         });
     }

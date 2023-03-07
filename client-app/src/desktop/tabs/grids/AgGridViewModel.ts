@@ -4,7 +4,6 @@ import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
 
 export class AgGridViewModel extends HoistModel {
-
     @observable.ref data = [];
 
     columnDefs = [
@@ -46,10 +45,11 @@ export class AgGridViewModel extends HoistModel {
             width: 130,
             enableValue: true,
             aggFunc: 'sum',
-            cellRenderer: ({value}) => fmtMillions(value, {
-                precision: 3,
-                ledger: true
-            })
+            cellRenderer: ({value}) =>
+                fmtMillions(value, {
+                    precision: 3,
+                    ledger: true
+                })
         },
         {
             field: 'pnl',
@@ -58,11 +58,12 @@ export class AgGridViewModel extends HoistModel {
             width: 130,
             enableValue: true,
             aggFunc: 'sum',
-            cellRenderer: ({value}) => fmtNumber(value, {
-                precision: 0,
-                ledger: true,
-                colorSpec: true
-            })
+            cellRenderer: ({value}) =>
+                fmtNumber(value, {
+                    precision: 0,
+                    ledger: true,
+                    colorSpec: true
+                })
         }
     ];
 
@@ -84,6 +85,6 @@ export class AgGridViewModel extends HoistModel {
 
     override async doLoadAsync(loadSpec) {
         const data = await XH.portfolioService.getRawPositionsAsync({loadSpec});
-        runInAction(() => this.data = data);
+        runInAction(() => (this.data = data));
     }
 }

@@ -36,19 +36,23 @@ export const inputsPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    <code>HoistInput</code>s are core Components used to display editable data in applications.
-                    They present a consistent API for editing data with MobX, React, and the underlying widgets
-                    provided by libraries such as Blueprint and Onsen. At its simplest, any HoistInput can be bound to a
-                    data source using the <code>bind</code> and <code>model</code> props.
+                    <code>HoistInput</code>s are core Components used to display editable data in
+                    applications. They present a consistent API for editing data with MobX, React,
+                    and the underlying widgets provided by libraries such as Blueprint and Onsen. At
+                    its simplest, any HoistInput can be bound to a data source using the{' '}
+                    <code>bind</code> and <code>model</code> props.
                 </p>,
                 <p>
-                    For more complex uses <code>HoistInput</code>s may also be hosted in <code>Form</code>s. Forms
-                    provide
-                    support for validation, data submission, and dirty state management.
+                    For more complex uses <code>HoistInput</code>s may also be hosted in{' '}
+                    <code>Form</code>s. Forms provide support for validation, data submission, and
+                    dirty state management.
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/forms/InputsPanel.tsx', notes: 'This example.'},
+                {
+                    url: '$TB/client-app/src/desktop/tabs/forms/InputsPanel.tsx',
+                    notes: 'This example.'
+                },
                 {url: '$HR/cmp/input/HoistInputModel.ts', notes: 'HoistInput Base Class'},
                 {url: '$HR/desktop/cmp/input', notes: 'Hoist Inputs'}
             ],
@@ -65,9 +69,8 @@ export const inputsPanel = hoistCmp.factory({
     }
 });
 
-
-const formContents = hoistCmp.factory<InputsPanelModel>(
-    ({model}) => form({
+const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
+    form({
         fieldDefaults: {
             commitOnChange: model.commitOnChange
         },
@@ -95,7 +98,7 @@ const formContents = hoistCmp.factory<InputsPanelModel>(
                     row({
                         field: 'textInput3',
                         info: 'type:password, selectOnFocus',
-                        readonlyRenderer: v => v ? v.replace(/./g, '•') : null,
+                        readonlyRenderer: v => (v ? v.replace(/./g, '•') : null),
                         item: textInput({
                             type: 'password',
                             selectOnFocus: true
@@ -103,10 +106,9 @@ const formContents = hoistCmp.factory<InputsPanelModel>(
                     }),
                     row({
                         field: 'textArea',
-                        info: 'fill, placeholder, selectOnFocus',
+                        info: 'placeholder, selectOnFocus',
                         layout: {height: 150},
                         item: textArea({
-                            fill: true,
                             placeholder: 'Tell us your thoughts...',
                             selectOnFocus: true
                         })
@@ -129,7 +131,6 @@ const formContents = hoistCmp.factory<InputsPanelModel>(
                         field: 'numberInput1',
                         info: 'stepSizes',
                         item: numberInput({
-                            fill: true,
                             stepSize: 1000,
                             majorStepSize: 100000,
                             minorStepSize: 100
@@ -139,7 +140,6 @@ const formContents = hoistCmp.factory<InputsPanelModel>(
                         field: 'numberInput2',
                         info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
                         item: numberInput({
-                            fill: true,
                             enableShorthandUnits: true,
                             displayWithCommas: true,
                             selectOnFocus: true
@@ -149,7 +149,6 @@ const formContents = hoistCmp.factory<InputsPanelModel>(
                         field: 'numberInput3',
                         info: 'scale, valueLabel',
                         item: numberInput({
-                            fill: true,
                             scaleFactor: 100,
                             valueLabel: '%'
                         })
@@ -167,18 +166,20 @@ const formContents = hoistCmp.factory<InputsPanelModel>(
                     row({
                         field: 'slider2',
                         info: 'multi-value, labelRenderer',
-                        readonlyRenderer: v => v.map(it => fmtNumber(it, {asHtml: true})).join(' - '),
+                        readonlyRenderer: v =>
+                            v.map(it => fmtNumber(it, {asHtml: true})).join(' - '),
                         item: slider({
                             min: 50000,
                             max: 150000,
                             labelStepSize: 25000,
                             stepSize: 1000,
-                            labelRenderer: v => `$${fmtThousands(v, {
-                                label: true,
-                                precision: 0,
-                                labelCls: null,
-                                asHtml: true
-                            })}`
+                            labelRenderer: v =>
+                                `$${fmtThousands(v, {
+                                    label: true,
+                                    precision: 0,
+                                    labelCls: null,
+                                    asHtml: true
+                                })}`
                         })
                     }),
                     row({
@@ -247,8 +248,8 @@ const formContents = hoistCmp.factory<InputsPanelModel>(
                             labelField: 'company',
                             enableClear: true,
                             selectOnFocus: true,
-                            queryFn: (q) => model.queryCustomersAsync(q),
-                            optionRenderer: (opt) => customerOption({opt}),
+                            queryFn: q => model.queryCustomersAsync(q),
+                            optionRenderer: opt => customerOption({opt}),
                             placeholder: 'Search customers...'
                         })
                     }),
@@ -301,7 +302,11 @@ const formContents = hoistCmp.factory<InputsPanelModel>(
                         info: 'inline, disabled option',
                         item: radioInput({
                             inline: true,
-                            options: ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]
+                            options: [
+                                'Steak',
+                                'Chicken',
+                                {label: 'Fish', value: 'Fish', disabled: true}
+                            ]
                         })
                     })
                 ]
@@ -335,14 +340,14 @@ const row = hoistCmp.factory<FormModel>({
     }
 });
 
-const customerOption = hoistCmp.factory(
-    ({opt}) => hbox({
+const customerOption = hoistCmp.factory(({opt}) =>
+    hbox({
         className: 'xh-pad-half xh-border-bottom',
         items: [
             box({
-                item: opt.isActive ?
-                    Icon.checkCircle({className: 'xh-green'}) :
-                    Icon.x({className: 'xh-red'}),
+                item: opt.isActive
+                    ? Icon.checkCircle({className: 'xh-green'})
+                    : Icon.x({className: 'xh-red'}),
                 width: 32,
                 justifyContent: 'center'
             }),
@@ -359,77 +364,65 @@ const customerOption = hoistCmp.factory(
     })
 );
 
-const bbar = hoistCmp.factory<InputsPanelModel>(
-    ({model}) => {
-        const {formModel} = model;
+const bbar = hoistCmp.factory<InputsPanelModel>(({model}) => {
+    const {formModel} = model;
 
-        return toolbar(
-            currFocused(),
-            filler(),
-            setFocusMenu(),
-            toolbarSep(),
-            switchInput({
-                model: formModel,
-                bind: 'readonly',
-                label: 'Read-only'
-            }),
-            toolbarSep(),
-            switchInput({
-                model: formModel,
-                bind: 'disabled',
-                label: 'Disabled'
-            }),
-            toolbarSep(),
-            switchInput({
-                model,
-                bind: 'commitOnChange',
-                label: 'Commit on change'
-            })
-        );
-    }
-);
+    return toolbar(
+        currFocused(),
+        filler(),
+        setFocusMenu(),
+        toolbarSep(),
+        switchInput({
+            model: formModel,
+            bind: 'readonly',
+            label: 'Read-only'
+        }),
+        toolbarSep(),
+        switchInput({
+            model: formModel,
+            bind: 'disabled',
+            label: 'Disabled'
+        }),
+        toolbarSep(),
+        switchInput({
+            model,
+            bind: 'commitOnChange',
+            label: 'Commit on change'
+        })
+    );
+});
 
-const fieldDisplay = hoistCmp.factory(
-    ({fieldModel, fmtVal}) => {
-        let displayVal = fieldModel.value;
-        if (displayVal == null) {
-            displayVal = 'null';
-        } else {
-            displayVal = fmtVal ? fmtVal(displayVal) : displayVal.toString();
-            if (isString(displayVal) && displayVal.trim() === '') {
-                displayVal = displayVal.length ? '[Blank String]' : '[Empty String]';
-            }
+const fieldDisplay = hoistCmp.factory(({fieldModel, fmtVal}) => {
+    let displayVal = fieldModel.value;
+    if (displayVal == null) {
+        displayVal = 'null';
+    } else {
+        displayVal = fmtVal ? fmtVal(displayVal) : displayVal.toString();
+        if (isString(displayVal) && displayVal.trim() === '') {
+            displayVal = displayVal.length ? '[Blank String]' : '[Empty String]';
         }
-        return div({
-            className: 'inputs-panel-field-display',
-            item: displayVal
+    }
+    return div({
+        className: 'inputs-panel-field-display',
+        item: displayVal
+    });
+});
+
+const currFocused = hoistCmp.factory<InputsPanelModel>(({model}) => {
+    const {focusedField} = model.formModel;
+    return span('Focused: ', focusedField ? strong(focusedField.displayName) : '');
+});
+
+const setFocusMenu = hoistCmp.factory<InputsPanelModel>(({model}) => {
+    const fields = model.formModel.fieldList,
+        menuItems = fields.map(f => {
+            return menuItem({text: f.displayName, onClick: () => f.focus()});
         });
-    }
-);
-
-
-const currFocused = hoistCmp.factory<InputsPanelModel>(
-    ({model}) => {
-        const {focusedField} = model.formModel;
-        return span(
-            'Focused: ',
-            focusedField ? strong(focusedField.displayName) : ''
-        );
-    }
-);
-
-const setFocusMenu = hoistCmp.factory<InputsPanelModel>(
-    ({model}) => {
-        const fields = model.formModel.fieldList,
-            menuItems = fields.map(f => {
-                return menuItem({text: f.displayName, onClick: () => f.focus()});
-            });
-        return popover({
-            target: button({
-                icon: Icon.target(),
-                text: 'Set Focus'
-            }),
-            content: menu(menuItems)
-        });
-    }
-);
+    return popover({
+        target: button({
+            icon: Icon.target(),
+            text: 'Set Focus'
+        }),
+        content: menu(menuItems)
+    });
+});

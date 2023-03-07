@@ -5,16 +5,13 @@ import {makeObservable, bindable} from '@xh/hoist/mobx';
 import React from 'react';
 
 export class ExamplesTabModel extends HoistModel {
-
     @managed
-    leftPanelModel: PanelModel = new PanelModel(
-        {
-            defaultSize: 300,
-            collapsible: true,
-            resizable: false,
-            side: 'left'
-        }
-    );
+    leftPanelModel: PanelModel = new PanelModel({
+        defaultSize: 300,
+        collapsible: true,
+        resizable: false,
+        side: 'left'
+    });
 
     @bindable activeApp: string = 'Portfolio';
 
@@ -29,9 +26,7 @@ export class ExamplesTabModel extends HoistModel {
             path: 'portfolio',
             srcPath: 'portfolio',
             text: [
-                <p>
-                    Hello Fintech! 👋
-                </p>,
+                <p>Hello Fintech! 👋</p>,
                 <p>
                     A highly simplified portfolio analysis tool, this example includes tree-based
                     data loaded into <code>Grid</code>, a detail panel that responds to the user's
@@ -45,9 +40,7 @@ export class ExamplesTabModel extends HoistModel {
             path: 'contact',
             srcPath: 'contact',
             text: [
-                <p>
-                    Meet the Extremely Heavy team.
-                </p>,
+                <p>Meet the Extremely Heavy team.</p>,
                 <p>
                     This demo of an employee directory app features multiple views of data within a
                     Hoist <code>Store</code>, search + filter controls, and lightweight server-side
@@ -61,9 +54,7 @@ export class ExamplesTabModel extends HoistModel {
             path: 'todo',
             srcPath: 'todo',
             text: [
-                <p>
-                    The classic reference app, Hoist style.
-                </p>,
+                <p>The classic reference app, Hoist style.</p>,
                 <p>
                     Includes examples of a grid with <code>RecordAction</code>, a <code>Form</code>
                     with validation, modal dialogs, and Preferences.
@@ -80,8 +71,8 @@ export class ExamplesTabModel extends HoistModel {
                     Demonstrates how the Hoist server can load and cache data from an external API.
                 </p>,
                 <p>
-                    On the client, a <code>DataView</code> supports custom filtering logic and
-                    rich component rendering.
+                    On the client, a <code>DataView</code> supports custom filtering logic and rich
+                    component rendering.
                 </p>
             ]
         },
@@ -103,16 +94,14 @@ export class ExamplesTabModel extends HoistModel {
             path: 'fileManager',
             srcPath: 'filemanager',
             text: [
-                <p>
-                    A simple, full-stack pattern for file uploads.
-                </p>,
+                <p>A simple, full-stack pattern for file uploads.</p>,
                 <p>
                     A <code>FileChooser</code> accepts local files and uploads to a server-side
                     controller and service for processing.
                 </p>,
                 <p>
-                    <strong>This example is visible only to admins</strong> to prevent
-                    arbitrary file uploads. Contact us for a walkthrough.
+                    <strong>This example is visible only to admins</strong> to prevent arbitrary
+                    file uploads. Contact us for a walkthrough.
                 </p>
             ]
         }

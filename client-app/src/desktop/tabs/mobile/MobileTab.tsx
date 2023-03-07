@@ -17,14 +17,22 @@ import './MobileTab.scss';
 
 library.add(faPhoneLaptop);
 
-export const mobileTab = hoistCmp.factory(
-    () => wrapper({
+export const mobileTab = hoistCmp.factory(() =>
+    wrapper({
         description: [
             <p>
-                Mobile apps share many of the same components and logic as their desktop counterparts, with some
-                mobile-specific Hoist components that are supported by the open-source
-                framework <a href="https://onsen.io" target="_blank">Onsen</a> to improve the native mobile UI experience.
-                Explore the Toolbox Mobile App on your device at <a href="https://toolbox.xh.io/mobile" target="_blank">toolbox.xh.io/mobile</a>.
+                Mobile apps share many of the same components and logic as their desktop
+                counterparts, with some mobile-specific Hoist components that are supported by the
+                open-source framework{' '}
+                <a href="https://onsen.io" target="_blank">
+                    Onsen
+                </a>{' '}
+                to improve the native mobile UI experience. Explore the Toolbox Mobile App on your
+                device at{' '}
+                <a href="https://toolbox.xh.io/mobile" target="_blank">
+                    toolbox.xh.io/mobile
+                </a>
+                .
             </p>
         ],
         item: panel({
@@ -42,7 +50,8 @@ export const mobileTab = hoistCmp.factory(
                         XH.fetch({url: 'emailMobileLink/send'});
                         XH.toast({
                             icon: Icon.mail(),
-                            message: 'Sent a link to your email address - open and launch on your phone.',
+                            message:
+                                'Sent a link to your email address - open and launch on your phone.',
                             timeout: 10000
                         });
                     }

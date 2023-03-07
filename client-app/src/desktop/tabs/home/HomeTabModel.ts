@@ -8,7 +8,6 @@ import {roadmapWidget} from './widgets/roadmap/RoadmapWidget';
 import {welcomeWidget} from './widgets/WelcomeWidget';
 
 export class HomeTabModel extends HoistModel {
-
     @managed
     dashModel;
 
@@ -17,44 +16,42 @@ export class HomeTabModel extends HoistModel {
         this.dashModel = new DashContainerModel({
             persistWith: {localStorageKey: 'homeDashboard'},
             showMenuButton: true,
-            initialState: [{
-                type: 'row',
-                content: [
-                    {
-                        type: 'column',
-                        width: '850px',
-                        content: [
-                            {
-                                type: 'stack',
-                                height: '350px',
-                                content: [
-                                    {type: 'view', id: 'welcome', height: '370px'}
-                                ]
-                            },
-                            {
-                                type: 'row',
-                                content: [
-                                    {
-                                        type: 'stack',
-                                        width: '350px',
-                                        content: [{type: 'view', id: 'about'}]
-                                    },
-                                    {
-                                        type: 'stack',
-                                        content: [{type: 'view', id: 'roadmap'}]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        type: 'stack',
-                        content: [
-                            {type: 'view', id: 'activity'}
-                        ]
-                    }
-                ]
-            }],
+            initialState: [
+                {
+                    type: 'row',
+                    content: [
+                        {
+                            type: 'column',
+                            width: '850px',
+                            content: [
+                                {
+                                    type: 'stack',
+                                    height: '350px',
+                                    content: [{type: 'view', id: 'welcome', height: '370px'}]
+                                },
+                                {
+                                    type: 'row',
+                                    content: [
+                                        {
+                                            type: 'stack',
+                                            width: '350px',
+                                            content: [{type: 'view', id: 'about'}]
+                                        },
+                                        {
+                                            type: 'stack',
+                                            content: [{type: 'view', id: 'roadmap'}]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            type: 'stack',
+                            content: [{type: 'view', id: 'activity'}]
+                        }
+                    ]
+                }
+            ],
             viewSpecs: [
                 {
                     id: 'welcome',
@@ -98,7 +95,9 @@ export class HomeTabModel extends HoistModel {
         const confirmed = await XH.confirm({
             title: 'Please confirm...',
             message: fragment(
-                'This will reset your home dashboard to its default settings, including any widget and grid customizations.', br(), br(),
+                'This will reset your home dashboard to its default settings, including any widget and grid customizations.',
+                br(),
+                br(),
                 'Are you sure you wish to continue?'
             ),
             confirmProps: {text: 'Yes, restore defaults'}
@@ -106,5 +105,4 @@ export class HomeTabModel extends HoistModel {
 
         if (confirmed) await this.dashModel.restoreDefaultsAsync();
     }
-
 }

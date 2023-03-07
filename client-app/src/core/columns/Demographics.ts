@@ -1,7 +1,8 @@
 import {numberRenderer} from '@xh/hoist/format';
 import {ColumnSpec, ColumnRenderer} from '@xh/hoist/cmp/grid';
 
-const fullNameRenderer: ColumnRenderer = (v, {record}) => record ? `${record.data.firstName} ${record.data.lastName}` : '';
+const fullNameRenderer: ColumnRenderer = (v, {record}) =>
+    record ? `${record.data.firstName} ${record.data.lastName}` : '';
 
 // Note: This column does not have a field, it is calculated from firstName and lastName
 export const fullNameCol: ColumnSpec = {

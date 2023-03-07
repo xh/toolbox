@@ -40,9 +40,7 @@ export const [ToolboxLink, toolboxLink] = hoistCmp.withFactory<ToolboxLinkProps>
 
 export function toolboxUrl(url: string) {
     const sourceUrls = XH.getConf('sourceUrls');
-    return url
-        .replace('$TB', sourceUrls.toolbox)
-        .replace('$HR', sourceUrls.hoistReact);
+    return url.replace('$TB', sourceUrls.toolbox).replace('$HR', sourceUrls.hoistReact);
 }
 
 function createDefaultText(url: string) {

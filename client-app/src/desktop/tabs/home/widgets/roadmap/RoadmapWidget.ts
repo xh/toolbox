@@ -14,7 +14,7 @@ export const roadmapWidget = hoistCmp.factory({
     displayName: 'RoadmapWidget',
     model: creates(RoadmapModel),
 
-    render()  {
+    render() {
         return panel({
             className: 'tb-roadmap-widget',
             item: dataView(),
@@ -23,8 +23,8 @@ export const roadmapWidget = hoistCmp.factory({
     }
 });
 
-const bbar = hoistCmp.factory<RoadmapModel>(
-    ({model}) => toolbar({
+const bbar = hoistCmp.factory<RoadmapModel>(({model}) =>
+    toolbar({
         compact: true,
         items: [
             buttonGroupInput({

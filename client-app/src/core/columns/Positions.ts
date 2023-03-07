@@ -9,7 +9,7 @@ export const mktValCol: ColumnSpec = {
     width: 130,
     absSort: true,
     agOptions: {aggFunc: 'sum'},
-    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
+    tooltip: val => fmtNumberTooltip(val, {ledger: true}),
     renderer: millionsRenderer({
         precision: 3,
         ledger: true
@@ -23,7 +23,7 @@ export const pnlCol: ColumnSpec = {
     width: 130,
     absSort: true,
     agOptions: {aggFunc: 'sum'},
-    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
+    tooltip: val => fmtNumberTooltip(val, {ledger: true}),
     renderer: numberRenderer({
         precision: 0,
         ledger: true,

@@ -8,7 +8,6 @@ import {toNumber} from 'lodash';
 import {span} from '@xh/hoist/cmp/layout';
 
 export class RoadmapModel extends HoistModel {
-
     @bindable
     statusFilter = 'showUpcoming';
 
@@ -56,7 +55,6 @@ export class RoadmapModel extends HoistModel {
             track: () => this.statusFilter,
             run: () => this.refreshAsync()
         });
-
     }
 
     override async doLoadAsync(loadSpec) {
@@ -84,5 +82,3 @@ export class RoadmapModel extends HoistModel {
         });
     }
 }
-
-

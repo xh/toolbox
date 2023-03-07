@@ -62,7 +62,6 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
 });
 
 class SampleColumnGroupsGridModel extends HoistModel {
-
     @managed gridModel: GridModel;
     @bindable inMillions: boolean = false;
     @bindable groupRows: boolean = true;
@@ -74,11 +73,13 @@ class SampleColumnGroupsGridModel extends HoistModel {
         makeObservable(this);
         this.gridModel = this.createGridModel();
 
-        this.addReaction(({
+        this.addReaction({
             track: () => this.groupRows,
-            run: (groupRows) => {this.gridModel.setGroupBy(groupRows ? ['state'] : null)},
+            run: groupRows => {
+                this.gridModel.setGroupBy(groupRows ? ['state'] : null);
+            },
             fireImmediately: true
-        }));
+        });
 
         this.addReaction({
             track: () => this.inMillions,
@@ -91,7 +92,6 @@ class SampleColumnGroupsGridModel extends HoistModel {
         });
     }
 
-
     //------------------------
     // Implementation
     //------------------------
@@ -99,10 +99,10 @@ class SampleColumnGroupsGridModel extends HoistModel {
         const millionsAwareCol = {
             headerName: () => 'Gross' + (this.inMillions ? ' (m)' : ''),
             rendererIsComplex: true,
-            renderer: (v) => {
-                return this.inMillions ?
-                    fmtMillions(v, {label: true, precision: 2}) :
-                    fmtNumber(v, {precision: 0});
+            renderer: v => {
+                return this.inMillions
+                    ? fmtMillions(v, {label: true, precision: 2})
+                    : fmtNumber(v, {precision: 0});
             }
         };
 

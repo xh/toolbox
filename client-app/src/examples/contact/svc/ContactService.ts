@@ -9,7 +9,6 @@ import {PERSIST_APP} from '../AppModel';
  * Favorites are persisted for each user using the Hoist preference system.
  */
 export class ContactService extends HoistService {
-
     static instance: ContactService;
 
     override persistWith = PERSIST_APP;
@@ -28,7 +27,9 @@ export class ContactService extends HoistService {
         const ret = await XH.fetchJson({url: 'contacts'});
         ret.forEach(it => {
             it.isFavorite = this.userFaves.includes(it.id);
-            it.profilePicture = `../../public/contact-images/${(it.profilePicture ?? 'no-profile.png')}`;
+            it.profilePicture = `../../public/contact-images/${
+                it.profilePicture ?? 'no-profile.png'
+            }`;
         });
         return ret;
     }

@@ -11,13 +11,11 @@ export const gridDetailPage = hoistCmp.factory({
     render({model}) {
         const {record} = model;
 
-        const row = (title, value, renderer?) => div({
-            className: 'toolbox-detail-row',
-            items: [
-                div(title),
-                div(renderer && !isNil(value) ? renderer(value) : value)
-            ]
-        });
+        const row = (title, value, renderer?) =>
+            div({
+                className: 'toolbox-detail-row',
+                items: [div(title), div(renderer && !isNil(value) ? renderer(value) : value)]
+            });
 
         return panel({
             title: record?.company ?? '',
@@ -28,7 +26,11 @@ export const gridDetailPage = hoistCmp.factory({
                 row('ID', record?.id),
                 row('Company', record?.company),
                 row('City', record?.city),
-                row('P&L', record?.profit_loss, numberRenderer({precision: 0, ledger: true, colorSpec: true})),
+                row(
+                    'P&L',
+                    record?.profit_loss,
+                    numberRenderer({precision: 0, ledger: true, colorSpec: true})
+                ),
                 row('Volume', record?.trade_volume, numberRenderer({precision: 0}))
             ]
         });
@@ -36,7 +38,6 @@ export const gridDetailPage = hoistCmp.factory({
 });
 
 class GridDetailPageModel extends HoistModel {
-
     @observable.ref customers = null;
 
     @computed
@@ -52,6 +53,6 @@ class GridDetailPageModel extends HoistModel {
     }
 
     override async doLoadAsync() {
-        await XH.fetchJson({url: 'customer'}).thenAction(c => this.customers = c);
+        await XH.fetchJson({url: 'customer'}).thenAction(c => (this.customers = c));
     }
 }

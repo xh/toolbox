@@ -22,7 +22,6 @@ import {wrapper} from '../../common';
 import {ToolbarFormPanelModel} from './ToolbarFormPanelModel';
 
 export const toolbarFormPanel = hoistCmp.factory({
-
     model: creates(ToolbarFormPanelModel),
 
     render({model}) {
@@ -30,15 +29,18 @@ export const toolbarFormPanel = hoistCmp.factory({
 
         return wrapper({
             description: [
+                <p>Forms and FormFields can also be used inside Toolbars.</p>,
                 <p>
-                    Forms and FormFields can also be used inside Toolbars.
+                    When using a FormField within a Toolbar, it is not necessary to set the{' '}
+                    <code>inline</code> prop - FormFields within Toolbars are always displayed as if{' '}
+                    <code>inline: true</code>. For validation, it is recommenced to set{' '}
+                    <code>minimal: true</code> on your FormFields or via Form.fieldDefaults. When
+                    not using minimal validation, validation messages will be shown to the right of
+                    the FormField.
                 </p>,
                 <p>
-                    When using a FormField within a Toolbar, it is not necessary to set the <code>inline</code> prop - FormFields within Toolbars are always displayed as if <code>inline: true</code>.
-                    For validation, it is recommenced to set <code>minimal: true</code> on your FormFields or via Form.fieldDefaults. When not using minimal validation, validation messages will be shown to the right of the FormField.
-                </p>,
-                <p>
-                    Using TextArea, JSONInput or Slider inputs within Toolbars is not currently supported, and may lead to unwanted sizing side-effects.
+                    Using TextArea, JSONInput or Slider inputs within Toolbars is not currently
+                    supported, and may lead to unwanted sizing side-effects.
                 </p>
             ],
             item: panel({
@@ -139,7 +141,11 @@ export const toolbarFormPanel = hoistCmp.factory({
                         formField({
                             field: 'option3',
                             item: radioInput({
-                                options: ['Steak', 'Chicken', {label: 'Fish', value: 'Fish', disabled: true}]
+                                options: [
+                                    'Steak',
+                                    'Chicken',
+                                    {label: 'Fish', value: 'Fish', disabled: true}
+                                ]
                             })
                         }),
                         filler(),

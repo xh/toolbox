@@ -25,7 +25,9 @@ export const detailsPanel = hoistCmp.factory({
             title,
             icon,
             className,
-            item: currentRecord ? contactProfile() : placeholder('Select a contact to view their details.'),
+            item: currentRecord
+                ? contactProfile()
+                : placeholder('Select a contact to view their details.'),
             bbar: bbar()
         });
     }
@@ -57,68 +59,63 @@ const contactProfile = hoistCmp.factory({
     }
 });
 
+const bbar = hoistCmp.factory<DetailsPanelModel>(({model}) => {
+    const {currentRecord, isEditing} = model;
+    if (!currentRecord) return null;
 
-const bbar = hoistCmp.factory<DetailsPanelModel>(
-    ({model}) => {
-        const {currentRecord, isEditing} = model;
-        if (!currentRecord) return null;
+    return toolbar(
+        button({
+            text: 'Cancel',
+            omit: !isEditing,
+            onClick: () => model.cancelEdit()
+        }),
+        favoriteButton({omit: isEditing}),
+        filler(),
+        editButton({omit: !XH.getUser().isHoistAdmin})
+    );
+});
 
-        return toolbar(
-            button({
-                text: 'Cancel',
-                omit: !isEditing,
-                onClick: () => model.cancelEdit()
-            }),
-            favoriteButton({omit: isEditing}),
-            filler(),
-            editButton({omit: !XH.getUser().isHoistAdmin})
-        );
-    }
-);
-
-const picture = hoistCmp.factory<DetailsPanelModel>(
-    ({model}) => img({src: model.currentRecord.data.profilePicture})
+const picture = hoistCmp.factory<DetailsPanelModel>(({model}) =>
+    img({src: model.currentRecord.data.profilePicture})
 );
 
 //--------------
 // FormFields
 //--------------
-const textField = hoistCmp.factory(
-    ({field}) => formField({
+const textField = hoistCmp.factory(({field}) =>
+    formField({
         field,
-        readonlyRenderer: (val) => val ?? '-',
+        readonlyRenderer: val => val ?? '-',
         item: textInput()
     })
 );
 
-const bioField = hoistCmp.factory(
-    () => formField({
+const bioField = hoistCmp.factory(() =>
+    formField({
         field: 'bio',
         label: null,
         item: textArea({minHeight: 250}),
-        readonlyRenderer: (val) => {
-            return val ?
-                div(val.split('\n').map(v => p(v))) :
-                '-';
+        readonlyRenderer: val => {
+            return val ? div(val.split('\n').map(v => p(v))) : '-';
         }
     })
 );
 
-const tagsField = hoistCmp.factory<DetailsPanelModel>(
-    ({model}) => formField({
+const tagsField = hoistCmp.factory<DetailsPanelModel>(({model}) =>
+    formField({
         field: 'tags',
         item: select({
             enableCreate: true,
             enableMulti: true,
             options: model.directoryPanelModel.tagList
         }),
-        readonlyRenderer: (tags) => {
-            return isEmpty(tags) ?
-                'None (yet)' :
-                box({
-                    flexWrap: 'wrap',
-                    items: tags.map(tag => div({className: 'tb-contact-tag', item: tag}))
-                });
+        readonlyRenderer: tags => {
+            return isEmpty(tags)
+                ? 'None (yet)'
+                : box({
+                      flexWrap: 'wrap',
+                      items: tags.map(tag => div({className: 'tb-contact-tag', item: tag}))
+                  });
         }
     })
 );
@@ -126,31 +123,26 @@ const tagsField = hoistCmp.factory<DetailsPanelModel>(
 //------------
 // Buttons
 //------------
-const favoriteButton = hoistCmp.factory<DetailsPanelModel>(
-    ({model}) => {
-        const {isFavorite} = model.currentRecord.data;
-        return button({
-            text: isFavorite ? 'Remove Favorite' : 'Make Favorite',
-            icon: Icon.favorite({
-                color: isFavorite ? 'gold' : null,
-                prefix: isFavorite ? 'fas' : 'far'
-            }),
-            width: 150,
-            minimal: false,
-            onClick: () => model.toggleFavorite()
-        });
-    }
-);
+const favoriteButton = hoistCmp.factory<DetailsPanelModel>(({model}) => {
+    const {isFavorite} = model.currentRecord.data;
+    return button({
+        text: isFavorite ? 'Remove Favorite' : 'Make Favorite',
+        icon: Icon.favorite({
+            color: isFavorite ? 'gold' : null,
+            prefix: isFavorite ? 'fas' : 'far'
+        }),
+        width: 150,
+        minimal: false,
+        onClick: () => model.toggleFavorite()
+    });
+});
 
-const editButton = hoistCmp.factory<DetailsPanelModel>(
-    ({model}) => {
-        const {isEditing} = model;
-        return button({
-            text: isEditing ? 'Save Changes' : 'Edit Contact',
-            intent: isEditing ? 'primary' : null,
-            minimal: !isEditing,
-            onClick: () => model.toggleEditAsync()
-        });
-    }
-);
-
+const editButton = hoistCmp.factory<DetailsPanelModel>(({model}) => {
+    const {isEditing} = model;
+    return button({
+        text: isEditing ? 'Save Changes' : 'Edit Contact',
+        intent: isEditing ? 'primary' : null,
+        minimal: !isEditing,
+        onClick: () => model.toggleEditAsync()
+    });
+});
