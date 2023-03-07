@@ -103,10 +103,9 @@ const formContents = hoistCmp.factory<InputsPanelModel>(
                     }),
                     row({
                         field: 'textArea',
-                        info: 'fill, placeholder, selectOnFocus',
+                        info: 'placeholder, selectOnFocus',
                         layout: {height: 150},
                         item: textArea({
-                            fill: true,
                             placeholder: 'Tell us your thoughts...',
                             selectOnFocus: true
                         })
@@ -129,7 +128,6 @@ const formContents = hoistCmp.factory<InputsPanelModel>(
                         field: 'numberInput1',
                         info: 'stepSizes',
                         item: numberInput({
-                            fill: true,
                             stepSize: 1000,
                             majorStepSize: 100000,
                             minorStepSize: 100
@@ -139,7 +137,6 @@ const formContents = hoistCmp.factory<InputsPanelModel>(
                         field: 'numberInput2',
                         info: 'enableShorthandUnits, displayWithCommas, selectOnFocus',
                         item: numberInput({
-                            fill: true,
                             enableShorthandUnits: true,
                             displayWithCommas: true,
                             selectOnFocus: true
@@ -149,7 +146,6 @@ const formContents = hoistCmp.factory<InputsPanelModel>(
                         field: 'numberInput3',
                         info: 'scale, valueLabel',
                         item: numberInput({
-                            fill: true,
                             scaleFactor: 100,
                             valueLabel: '%'
                         })
