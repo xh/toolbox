@@ -6,8 +6,8 @@ import {simpleTreeMapPanel} from './SimpleTreeMapPanel';
 import {gridTreeMapPanel} from './GridTreeMapPanel';
 import {splitTreeMapPanel} from './SplitTreeMapPanel';
 
-export const chartsTab = hoistCmp.factory(
-    () => tabContainer({
+export const chartsTab = hoistCmp.factory(() =>
+    tabContainer({
         modelConfig: {
             route: 'default.charts',
             switcher: {orientation: 'left'},

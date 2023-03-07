@@ -18,24 +18,30 @@ export const dockContainerPanel = hoistCmp.factory({
                     views simultaneously as docked overlays.
                 </p>,
                 <p>
-                    Users can choose which views are expanded or collapsed at any given time,
-                    or if so enabled they can pop a view out of the dock and display it as a
-                    modal dialog.
+                    Users can choose which views are expanded or collapsed at any given time, or if
+                    so enabled they can pop a view out of the dock and display it as a modal dialog.
                 </p>,
                 <p>
                     The states for docked views are based on the "compose" dialog within the
                     ubiquitous Gmail web client, and docked views are generally intended for data
                     entry forms, detail views, and other similar UI elements.
                 </p>,
-                <p>
-                    Use the buttons below to test adding views to a container within this tab.
-                </p>
+                <p>Use the buttons below to test adding views to a container within this tab.</p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/layout/DockContainerPanel.tsx', notes: 'This example.'},
+                {
+                    url: '$TB/client-app/src/desktop/tabs/layout/DockContainerPanel.tsx',
+                    notes: 'This example.'
+                },
                 {url: '$HR/desktop/cmp/dock/DockContainer.ts', notes: 'Hoist container component.'},
-                {url: '$HR/desktop/cmp/dock/DockContainerModel.ts', notes: 'Hoist container model - primary API and configuration point for views.'},
-                {url: '$HR/desktop/cmp/dock/DockViewModel.ts', notes: 'Hoist view model - created by DockContainerModel in its ctor from provided configs.'}
+                {
+                    url: '$HR/desktop/cmp/dock/DockContainerModel.ts',
+                    notes: 'Hoist container model - primary API and configuration point for views.'
+                },
+                {
+                    url: '$HR/desktop/cmp/dock/DockViewModel.ts',
+                    notes: 'Hoist view model - created by DockContainerModel in its ctor from provided configs.'
+                }
             ],
             items: [
                 hbox({
@@ -55,7 +61,8 @@ export const dockContainerPanel = hoistCmp.factory({
                                     id: 'gridView',
                                     title: 'A complex docked component',
                                     icon: Icon.gridPanel(),
-                                    content: () => sampleGrid({omitGridTools: true, width: 500, height: 400})
+                                    content: () =>
+                                        sampleGrid({omitGridTools: true, width: 500, height: 400})
                                 });
                             }
                         }),
@@ -77,7 +84,6 @@ export const dockContainerPanel = hoistCmp.factory({
     }
 });
 
-
 const btnCfg = {
     icon: Icon.add(),
     minimal: false,
@@ -86,7 +92,6 @@ const btnCfg = {
 };
 
 class DockContainerPanelModel extends HoistModel {
-
     @managed
     dockContainerModel = new DockContainerModel();
 
@@ -114,10 +119,10 @@ class DockContainerPanelModel extends HoistModel {
             collapsedWidth: 200,
             allowDialog,
             allowClose,
-            content: () => panel({
-                item: box({items: textItems, padding: 10})
-            })
+            content: () =>
+                panel({
+                    item: box({items: textItems, padding: 10})
+                })
         });
     }
-
 }

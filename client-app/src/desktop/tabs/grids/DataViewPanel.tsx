@@ -13,7 +13,7 @@ import {shuffle, take} from 'lodash';
 export const dataViewPanel = hoistCmp.factory({
     model: creates(() => DataViewPanelModel),
 
-    render({model})  {
+    render({model}) {
         return wrapper({
             description: [
                 <p>
@@ -42,7 +42,6 @@ export const dataViewPanel = hoistCmp.factory({
 });
 
 class DataViewPanelModel extends HoistModel {
-
     @managed
     dataViewModel = new DataViewModel({
         store: {
@@ -69,15 +68,17 @@ class DataViewPanelModel extends HoistModel {
         const min = -1000,
             max = 1000;
 
-        await dataViewModel.loadData(customers.map(it => {
-            const randVal = Math.random() * (max - min) + min;
-            return {
-                id: it.id,
-                name: it.company,
-                city: it.city,
-                value: randVal
-            };
-        }));
+        await dataViewModel.loadData(
+            customers.map(it => {
+                const randVal = Math.random() * (max - min) + min;
+                return {
+                    id: it.id,
+                    name: it.company,
+                    city: it.city,
+                    value: randVal
+                };
+            })
+        );
 
         await dataViewModel.selectFirstAsync();
     }

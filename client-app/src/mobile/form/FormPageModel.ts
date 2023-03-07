@@ -5,7 +5,6 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {movies} from '../../core/data';
 
 export class FormPageModel extends HoistModel {
-
     @bindable minimal: boolean;
     @bindable readonly: boolean;
     readonly movies: PlainObject[] = movies;

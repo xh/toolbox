@@ -8,7 +8,6 @@ import {PctTotalAggregator} from './PctTotalAggregator';
 import {CubeTestModel} from './CubeTestModel';
 
 export class CubeModel extends HoistModel {
-
     @managed cube: Cube;
     @managed orders: PlainObject[] = [];
     @managed timer: Timer;
@@ -61,12 +60,12 @@ export class CubeModel extends HoistModel {
                 {name: 'region', isDimension: true},
                 {name: 'trader', isDimension: true},
                 {name: 'dir', displayName: 'Direction', isDimension: true},
-               
+
                 {name: 'quantity', aggregator: 'SUM', canAggregateFn: isInstrument},
                 {name: 'price', aggregator: 'UNIQUE', canAggregateFn: isInstrument},
 
                 {name: 'commission', aggregator: 'SUM'},
-                {name: 'pctCommission',  aggregator: new PctTotalAggregator()},
+                {name: 'pctCommission', aggregator: new PctTotalAggregator()},
 
                 {name: 'maxConfidence', aggregator: 'MAX'},
                 {name: 'minConfidence', aggregator: 'MIN'},

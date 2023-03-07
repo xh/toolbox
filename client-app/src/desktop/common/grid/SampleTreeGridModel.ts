@@ -8,10 +8,9 @@ import {checkbox} from '@xh/hoist/desktop/cmp/input';
 import {action, makeObservable} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
-import { PortfolioService } from '../../../core/svc/PortfolioService';
+import {PortfolioService} from '../../../core/svc/PortfolioService';
 
 export class SampleTreeGridModel extends HoistModel {
-
     @managed
     groupingChooserModel = new GroupingChooserModel({
         persistWith: {localStorageKey: 'sampleTreeGrid'},
@@ -37,7 +36,9 @@ export class SampleTreeGridModel extends HoistModel {
 
     panelRef = createRef<HTMLElement>();
 
-    get store() {return this.gridModel.store}
+    get store() {
+        return this.gridModel.store;
+    }
 
     constructor({includeCheckboxes}) {
         super();
@@ -67,11 +68,11 @@ export class SampleTreeGridModel extends HoistModel {
         const {gridModel, groupingChooserModel} = this,
             dims = groupingChooserModel.value,
             portfolioService = XH.getService(PortfolioService);
-        const data = await portfolioService?.getPositionsAsync(dims, true) ?? [];
+        const data = (await portfolioService?.getPositionsAsync(dims, true)) ?? [];
         if (isRefresh) {
             // Flatten the data. The updateData method ignores child records in a hierarchy,
             // but will update child records in the store if they are updated from a flat array.
-            const flattener = (rec) => ([rec, flatMapDeep(rec.children, flattener)]),
+            const flattener = rec => [rec, flatMapDeep(rec.children, flattener)],
                 flattenedData = flatMapDeep(data, flattener);
 
             gridModel.updateData({update: flattenedData});
@@ -116,7 +117,7 @@ export class SampleTreeGridModel extends HoistModel {
             store: {
                 loadRootAsSummary: true,
                 fields: [{name: 'isChecked', type: 'bool'}],
-                processRawData: (r) => ({isChecked: false, ...r})
+                processRawData: r => ({isChecked: false, ...r})
             },
             selModel: {mode: 'multiple'},
             sortBy: 'pnl|desc|abs',
@@ -159,9 +160,7 @@ export class SampleTreeGridModel extends HoistModel {
     private toggleNode(rec: StoreRecord) {
         const {store} = this,
             isChecked = !rec.data.isChecked,
-            updates = [
-                ...rec.allDescendants.map(({id}) => ({id, isChecked}))
-            ];
+            updates = [...rec.allDescendants.map(({id}) => ({id, isChecked}))];
 
         store.modifyRecords(updates);
         rec.forEachAncestor(it => store.modifyRecords({id: it.id, isChecked: calcAggState(it)}));

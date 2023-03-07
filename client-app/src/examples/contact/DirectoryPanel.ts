@@ -33,70 +33,67 @@ export const directoryPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory<DirectoryPanelModel>(
-    ({model}) => {
-        const {locationList, tagList} = model;
+const tbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
+    const {locationList, tagList} = model;
 
-        return toolbar({
-            className: 'tb-directory-panel__tbar',
-            items: [
-                storeFilterField({
-                    leftIcon: Icon.search(),
-                    width: 200
-                }),
-                select({
-                    bind: 'locationFilter',
-                    placeholder: 'Location',
-                    leftIcon: Icon.location(),
-                    enableClear: true,
-                    options: locationList,
-                    width: 200
-                }),
-                select({
-                    bind: 'tagFilters',
-                    placeholder: 'Tags',
-                    leftIcon: Icon.tag(),
-                    enableMulti: true,
-                    enableClear: true,
-                    options: tagList,
-                    flex: 4,
-                    maxWidth: 400
-                }),
-                filler(),
-                buttonGroupInput({
-                    bind: 'displayMode',
-                    outlined: true,
-                    intent: 'primary',
-                    items: [
-                        button({
-                            text: 'Details',
-                            value: 'grid',
-                            width: 80
-                        }),
-                        button({
-                            text: 'Faces',
-                            value: 'tiles',
-                            width: 80
-                        })
-                    ]
-                })
-            ]
-        });
-    }
-);
-
-const bbar = hoistCmp.factory<DirectoryPanelModel>(
-    ({model}) => {
-        const {displayMode, gridModel} = model,
-            {store} = gridModel;
-
-        return toolbar(
-            filler(),
-            storeCountLabel({store, unit: 'contact'}),
-            toolbarSep(),
-            colChooserButton({
-                disabled: displayMode !== 'grid'
+    return toolbar({
+        className: 'tb-directory-panel__tbar',
+        items: [
+            storeFilterField({
+                leftIcon: Icon.search(),
+                width: 200
             }),
-            exportButton()
-        );
+            select({
+                bind: 'locationFilter',
+                placeholder: 'Location',
+                leftIcon: Icon.location(),
+                enableClear: true,
+                options: locationList,
+                width: 200
+            }),
+            select({
+                bind: 'tagFilters',
+                placeholder: 'Tags',
+                leftIcon: Icon.tag(),
+                enableMulti: true,
+                enableClear: true,
+                options: tagList,
+                flex: 4,
+                maxWidth: 400
+            }),
+            filler(),
+            buttonGroupInput({
+                bind: 'displayMode',
+                outlined: true,
+                intent: 'primary',
+                items: [
+                    button({
+                        text: 'Details',
+                        value: 'grid',
+                        width: 80
+                    }),
+                    button({
+                        text: 'Faces',
+                        value: 'tiles',
+                        width: 80
+                    })
+                ]
+            })
+        ]
     });
+});
+
+const bbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
+    const {displayMode, gridModel} = model,
+        {store} = gridModel;
+
+    return toolbar(
+        filler(),
+        storeCountLabel({store, unit: 'contact'}),
+        toolbarSep(),
+        colChooserButton({
+            disabled: displayMode !== 'grid'
+        }),
+        exportButton()
+    );
+});

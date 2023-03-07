@@ -27,8 +27,8 @@ export const splitTreeMapPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory<SplitTreeMapPanelModel>(
-    ({model}) => toolbar(
+const tbar = hoistCmp.factory<SplitTreeMapPanelModel>(({model}) =>
+    toolbar(
         groupingChooser({width: 200}),
         filler(),
         span('Orientation'),

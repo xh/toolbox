@@ -20,13 +20,13 @@ export const dimensionManager = hoistCmp.factory({
     className: 'xh-dim-manager',
 
     render({model, className, ...rest}) {
-
         const panelModel = useLocalModel(
-            () => new PanelModel({
-                collapsible: true,
-                side: 'left',
-                defaultSize: 250
-            })
+            () =>
+                new PanelModel({
+                    collapsible: true,
+                    side: 'left',
+                    defaultSize: 250
+                })
         );
 
         const title = panelModel.collapsed ? model.formattedDimensions : 'Dimensions';
@@ -50,4 +50,3 @@ export const dimensionManager = hoistCmp.factory({
         });
     }
 });
-

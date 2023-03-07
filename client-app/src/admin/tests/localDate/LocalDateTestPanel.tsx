@@ -7,7 +7,6 @@ import './LocalDateTestPanel.scss';
 import {LocalDateTestModel} from './LocalDateTestModel';
 
 export const LocalDateTestPanel = hoistCmp({
-
     model: creates(LocalDateTestModel),
 
     render({model}) {

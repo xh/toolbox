@@ -18,36 +18,31 @@ export const todoPanel = hoistCmp.factory({
             ref: model.panelRef,
             mask: 'onLoad',
             tbar: tbar(),
-            items: [
-                grid({agOptions: {suppressMakeColumnVisibleAfterUnGroup: true}}),
-                taskDialog()
-            ],
+            items: [grid({agOptions: {suppressMakeColumnVisibleAfterUnGroup: true}}), taskDialog()],
             bbar: bbar()
         });
     }
 });
 
-const tbar = hoistCmp.factory<TodoPanelModel>(
-    ({model}) => {
-        const {selModel} = model.gridModel,
-            {addAction, editAction, deleteAction, toggleCompleteAction} = model;
+const tbar = hoistCmp.factory<TodoPanelModel>(({model}) => {
+    const {selModel} = model.gridModel,
+        {addAction, editAction, deleteAction, toggleCompleteAction} = model;
 
-        return toolbar(
-            recordActionBar({
-                selModel,
-                actions: [addAction, editAction, deleteAction]
-            }),
-            filler(),
-            recordActionBar({
-                selModel,
-                actions: [toggleCompleteAction]
-            })
-        );
-    }
-);
+    return toolbar(
+        recordActionBar({
+            selModel,
+            actions: [addAction, editAction, deleteAction]
+        }),
+        filler(),
+        recordActionBar({
+            selModel,
+            actions: [toggleCompleteAction]
+        })
+    );
+});
 
-const bbar = hoistCmp.factory<TodoPanelModel>(
-    ({model}) => toolbar(
+const bbar = hoistCmp.factory<TodoPanelModel>(({model}) =>
+    toolbar(
         switchInput({
             bind: 'showGroups',
             label: 'Show in Groups'

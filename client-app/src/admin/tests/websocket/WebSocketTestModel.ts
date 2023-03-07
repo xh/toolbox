@@ -5,7 +5,6 @@ import {makeObservable, bindable} from '@xh/hoist/mobx';
 import {WebSocketSubscription} from '@xh/hoist/svc';
 
 export class WebSocketTestModel extends HoistModel {
-
     @managed gridModel: GridModel;
     @managed updateSub: WebSocketSubscription;
     @bindable subscribed = false;
@@ -22,7 +21,9 @@ export class WebSocketTestModel extends HoistModel {
             ]
         });
 
-        this.updateSub = XH.webSocketService.subscribe('mockUpdate', (msg) => this.onUpdateMessage(msg));
+        this.updateSub = XH.webSocketService.subscribe('mockUpdate', msg =>
+            this.onUpdateMessage(msg)
+        );
     }
 
     private onUpdateMessage(msg) {
@@ -48,5 +49,4 @@ export class WebSocketTestModel extends HoistModel {
         XH.toast({message: 'Unsubscribed from updates.', intent: 'danger'});
         this.subscribed = false;
     }
-
 }

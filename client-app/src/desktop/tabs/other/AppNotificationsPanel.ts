@@ -7,25 +7,28 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import './AppNotificationsPanel.scss';
 import {wrapper} from '../../common';
 
-export const appNotificationsPanel = hoistCmp.factory(
-    () => wrapper({
+export const appNotificationsPanel = hoistCmp.factory(() =>
+    wrapper({
         links: [
-            {url: '$HR/svc/EnvironmentService.ts', notes: 'EnvironmentService checks for updated versions and alerts after a new release, if enabled.'},
-            {url: '$HR/svc/IdleService.ts', notes: 'Idle Service listens for user interactions and triggers the IdlePanel, if enabled.'},
+            {
+                url: '$HR/svc/EnvironmentService.ts',
+                notes: 'EnvironmentService checks for updated versions and alerts after a new release, if enabled.'
+            },
+            {
+                url: '$HR/svc/IdleService.ts',
+                notes: 'Idle Service listens for user interactions and triggers the IdlePanel, if enabled.'
+            },
             {url: '$HR/desktop/appcontainer/IdlePanel.ts', notes: 'IdlePanel Component'}
         ],
         item: box({
             className: 'tb-app-notifications',
-            items: [
-                bannerTile(),
-                idleServiceTile()
-            ]
+            items: [bannerTile(), idleServiceTile()]
         })
     })
 );
 
-const bannerTile = hoistCmp.factory(
-    () => panel({
+const bannerTile = hoistCmp.factory(() =>
+    panel({
         title: 'App Update',
         icon: Icon.rocket(),
         items: [
@@ -55,8 +58,8 @@ const bannerTile = hoistCmp.factory(
     })
 );
 
-const idleServiceTile = hoistCmp.factory(
-    () => panel({
+const idleServiceTile = hoistCmp.factory(() =>
+    panel({
         title: 'Idle Detection',
         icon: Icon.moon(),
         items: [
@@ -69,7 +72,9 @@ const idleServiceTile = hoistCmp.factory(
                 updates from the server that generate load on back-end APIs.
             `),
             p(
-                `Idle detection is enabled and configured via the `, code('xhIdleConfig'), ` app config.`
+                `Idle detection is enabled and configured via the `,
+                code('xhIdleConfig'),
+                ` app config.`
             ),
             p('Click below to put Toolbox to sleep.'),
             filler()

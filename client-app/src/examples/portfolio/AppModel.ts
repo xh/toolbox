@@ -8,7 +8,6 @@ export const PERSIST_MAIN = {localStorageKey: 'portfolioAppMainState'};
 export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
 
 export class AppModel extends HoistAppModel {
-
     static instance: AppModel;
 
     static override async preAuthAsync() {
@@ -29,13 +28,12 @@ export class AppModel extends HoistAppModel {
     }
 
     override getAppOptions() {
-        return [
-            themeAppOption(),
-            sizingModeAppOption()
-        ];
+        return [themeAppOption(), sizingModeAppOption()];
     }
 
-    override get supportsVersionBar(): boolean {return window.self === window.top}
+    override get supportsVersionBar(): boolean {
+        return window.self === window.top;
+    }
 
     private updateWebsocketAlertBanner() {
         const {connected} = XH.webSocketService,

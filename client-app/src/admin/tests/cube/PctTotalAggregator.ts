@@ -2,7 +2,6 @@ import {Aggregator} from '@xh/hoist/data';
 import {getOrCreate} from '@xh/hoist/utils/js';
 
 export class PctTotalAggregator extends Aggregator {
-
     override get dependsOnChildrenOnly() {
         return false;
     }

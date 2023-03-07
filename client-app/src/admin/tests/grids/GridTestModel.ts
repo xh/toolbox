@@ -21,13 +21,12 @@ const pnlColumn: ColumnSpec = {
 };
 
 export class GridTestModel extends HoistModel {
-
     override persistWith = {localStorageKey: 'persistTest'};
 
     // Total count (approx) of all nodes generated (parents + children).
     @bindable recordCount = 200000;
     // Number of random records to perturb
-    @bindable twiddleCount = Math.round(this.recordCount * .50);
+    @bindable twiddleCount = Math.round(this.recordCount * 0.5);
     // Prefix for all IDs - change to ensure no IDs re-used across data gens.
     @bindable idSeed = 1;
     // True to generate data in tree structure.
@@ -64,7 +63,7 @@ export class GridTestModel extends HoistModel {
     includeCollapsedChildren = true;
 
     @bindable
-    @persist.with({path: 'gridPersistType', buffer: 500})  // test persist.with!
+    @persist.with({path: 'gridPersistType', buffer: 500}) // test persist.with!
     persistType = null;
 
     @managed
@@ -84,7 +83,7 @@ export class GridTestModel extends HoistModel {
         this.markPersist('showSummary');
         this.gridModel = this.createGridModel();
         this.addReaction({
-            track: () =>  [
+            track: () => [
                 this.tree,
                 this.showSummary,
                 this.loadRootAsSummary,
@@ -111,7 +110,7 @@ export class GridTestModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () =>  this.recordCount,
+            track: () => this.recordCount,
             run: () => this.clearData()
         });
     }

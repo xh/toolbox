@@ -6,7 +6,7 @@ import './Styles.scss';
 import {DateFormatsPanelModel} from './DateFormatsPanelModel';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 
-export const resultsPanel = hoistCmp.factory<DateFormatsPanelModel|NumberFormatsPanelModel>(
+export const resultsPanel = hoistCmp.factory<DateFormatsPanelModel | NumberFormatsPanelModel>(
     ({model, tryItInput}) => {
         const tryItElem = cloneElement(tryItInput, {bind: 'tryItData'});
 
@@ -24,13 +24,9 @@ export const resultsPanel = hoistCmp.factory<DateFormatsPanelModel|NumberFormats
                             td({className: 'outputColumn', item: result})
                         );
                     }),
-                    tr(
-                        td(tryItElem),
-                        td(model.tryItResult)
-                    )
+                    tr(td(tryItElem), td(model.tryItResult))
                 )
             )
         });
     }
 );
-

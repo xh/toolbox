@@ -6,7 +6,6 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {PERSIST_MAIN} from './AppModel';
 
 export class PortfolioPanelModel extends HoistModel {
-
     @managed session;
 
     @managed groupingChooserModel = this.createGroupingChooserModel();
@@ -32,9 +31,7 @@ export class PortfolioPanelModel extends HoistModel {
         let {session} = this;
         session?.destroy();
 
-        session = await XH.portfolioService
-            .getLivePositionsAsync(dims, 'mainApp')
-            .catchDefault();
+        session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp').catchDefault();
 
         store.loadData([session.initialPositions.root]);
         session.onUpdate = ({data}) => {
@@ -52,7 +49,7 @@ export class PortfolioPanelModel extends HoistModel {
     //------------------------
     private createStore() {
         return new Store({
-            processRawData: (r) => {
+            processRawData: r => {
                 return {
                     pnlMktVal: round(r.pnl / Math.abs(r.mktVal), 2),
                     ...r

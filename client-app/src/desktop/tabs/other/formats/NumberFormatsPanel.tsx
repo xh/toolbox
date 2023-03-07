@@ -25,18 +25,23 @@ export const numberFormatsPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    Hoist provides a collection of number formatting functions in <code>@xh/hoist/format</code>.
-                    The main method is <code>fmtNumber</code> which provides several useful options. More specific
-                    methods delegate to <code>fmtNumber</code> and set useful defaults.
+                    Hoist provides a collection of number formatting functions in{' '}
+                    <code>@xh/hoist/format</code>. The main method is <code>fmtNumber</code> which
+                    provides several useful options. More specific methods delegate to{' '}
+                    <code>fmtNumber</code> and set useful defaults.
                 </p>,
                 <p>
-                    <code>fmtNumber</code> is backed by <a href="https://numbrojs.com/" target="_blank">numbro.js </a>
-                    and makes the full numbro API available via the <code>formatConfig</code> property, which takes a
-                    numbro configuration object.
+                    <code>fmtNumber</code> is backed by{' '}
+                    <a href="https://numbrojs.com/" target="_blank">
+                        numbro.js{' '}
+                    </a>
+                    and makes the full numbro API available via the <code>formatConfig</code>{' '}
+                    property, which takes a numbro configuration object.
                 </p>,
                 <p>
-                    All hoist formatting functions support the <code>asHtml</code> option to produce a raw HTML string
-                    rather than a React element. This allows them to be useful in both React and non-React contexts.
+                    All hoist formatting functions support the <code>asHtml</code> option to produce
+                    a raw HTML string rather than a React element. This allows them to be useful in
+                    both React and non-React contexts.
                 </p>
             ],
             item: panel({
@@ -47,7 +52,10 @@ export const numberFormatsPanel = hoistCmp.factory({
                 item: hframe(
                     paramsPanel(),
                     resultsPanel({
-                        tryItInput: numberInput({selectOnFocus: true, placeholder: 'Enter a value to test'})
+                        tryItInput: numberInput({
+                            selectOnFocus: true,
+                            placeholder: 'Enter a value to test'
+                        })
                     })
                 )
             })
@@ -55,8 +63,8 @@ export const numberFormatsPanel = hoistCmp.factory({
     }
 });
 
-const paramsPanel = hoistCmp.factory(
-    () => panel({
+const paramsPanel = hoistCmp.factory(() =>
+    panel({
         title: 'Function + Options',
         compactHeader: true,
         className: 'tbox-formats-tab__panel',
@@ -82,7 +90,11 @@ const paramsPanel = hoistCmp.factory(
                 items: [
                     param({
                         bind: 'precision',
-                        input: select({options: ['auto', 0, 1, 2, 3, 4, 5, 6], enableFilter: false, width: 75}),
+                        input: select({
+                            options: ['auto', 0, 1, 2, 3, 4, 5, 6],
+                            enableFilter: false,
+                            width: 75
+                        }),
                         info: 'precision'
                     }),
                     param({

@@ -14,30 +14,36 @@ export const dataViewTestPanel = hoistCmp.factory({
         return panel({
             className: 'dataview-test xh-tiled-bg',
             title: 'Data View',
-            items: [
-                dataView({model: dataViewModel})
-            ],
+            items: [dataView({model: dataViewModel})],
             bbar: [
                 label('itemHeight'),
-                slider({bind: 'itemHeight', model: dataViewModel, min: 0, max: 100, labelStepSize: 20}),
+                slider({
+                    bind: 'itemHeight',
+                    model: dataViewModel,
+                    min: 0,
+                    max: 100,
+                    labelStepSize: 20
+                }),
                 label('groupRowHeight'),
-                slider({bind: 'groupRowHeight', model: dataViewModel, min: 0, max: 100, labelStepSize: 20})
+                slider({
+                    bind: 'groupRowHeight',
+                    model: dataViewModel,
+                    min: 0,
+                    max: 100,
+                    labelStepSize: 20
+                })
             ]
         });
     }
 });
 
 class DataViewTestPanelModel extends HoistModel {
-
     @managed
     dataViewModel = new DataViewModel({
         store: {
             fields: ['company', 'city']
         },
-        renderer: (v, {record}) => vbox(
-            span(record.data.company),
-            span(record.data.city)
-        ),
+        renderer: (v, {record}) => vbox(span(record.data.company), span(record.data.city)),
         itemHeight: 70,
         stripeRows: true,
         groupBy: 'city',

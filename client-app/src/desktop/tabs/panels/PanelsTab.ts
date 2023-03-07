@@ -7,8 +7,8 @@ import {loadingIndicatorPanel} from './LoadingIndicatorPanel';
 import {maskPanel} from './MaskPanel';
 import './PanelsTab.scss';
 
-export const panelsTab = hoistCmp.factory(
-    () => tabContainer({
+export const panelsTab = hoistCmp.factory(() =>
+    tabContainer({
         modelConfig: {
             route: 'default.panels',
             switcher: {orientation: 'left'},

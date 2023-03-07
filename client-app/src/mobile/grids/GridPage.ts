@@ -10,7 +10,6 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {GridPageModel} from './GridPageModel';
 
 export const gridPage = hoistCmp.factory({
-
     model: creates(GridPageModel),
 
     render({model}) {
@@ -50,12 +49,7 @@ export const gridPage = hoistCmp.factory({
                     bind: 'stripeRows'
                 })
             ],
-            bbar: [
-                storeFilterField(),
-                filler(),
-                colAutosizeButton(),
-                colChooserButton()
-            ]
+            bbar: [storeFilterField(), filler(), colAutosizeButton(), colChooserButton()]
         });
     }
 });

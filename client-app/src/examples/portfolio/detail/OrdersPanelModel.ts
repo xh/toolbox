@@ -7,18 +7,18 @@ import {
     closingPriceSparklineCol,
     dirCol,
     fundCol,
-    modelCol, priceCol,
+    modelCol,
+    priceCol,
     quantityCol,
     regionCol,
     sectorCol,
-    symbolCol, timeCol,
+    symbolCol,
+    timeCol,
     traderCol
 } from '../../../core/columns';
 import {DetailPanelModel} from './DetailPanelModel';
 
-
 export class OrdersPanelModel extends HoistModel {
-
     parentModel: DetailPanelModel;
     @managed gridModel: GridModel;
     @managed filterChooserModel: FilterChooserModel;
@@ -96,9 +96,12 @@ export class OrdersPanelModel extends HoistModel {
         try {
             const orders = await XH.portfolioService.getOrdersAsync({positionId, loadSpec}),
                 symbols = uniq(map(orders, 'symbol')),
-                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync({symbols, loadSpec});
+                sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync({
+                    symbols,
+                    loadSpec
+                });
 
-            orders.forEach(order => order.closingPrices = sparklineSeries[order.symbol]);
+            orders.forEach(order => (order.closingPrices = sparklineSeries[order.symbol]));
 
             gridModel.loadData(orders);
             await gridModel.preSelectFirstAsync();
@@ -106,6 +109,5 @@ export class OrdersPanelModel extends HoistModel {
             gridModel.clear();
             XH.handleException(e);
         }
-
     }
 }

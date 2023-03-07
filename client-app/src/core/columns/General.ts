@@ -1,7 +1,7 @@
 import {boolCheckCol} from '@xh/hoist/cmp/grid';
 import {ColumnSpec} from '@xh/hoist/cmp/grid';
 
-export const nameCol: ColumnSpec= {
+export const nameCol: ColumnSpec = {
     field: {name: 'name', type: 'string'},
     headerName: 'Name',
     minWidth: 180,

@@ -6,7 +6,6 @@ import {Icon} from '@xh/hoist/icon';
 import {WebSocketTestModel} from './WebSocketTestModel';
 
 export const WebSocketTestPanel = hoistCmp({
-
     model: creates(WebSocketTestModel),
 
     render({model}) {

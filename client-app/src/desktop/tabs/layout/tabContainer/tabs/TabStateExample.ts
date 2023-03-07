@@ -70,19 +70,20 @@ class TabStateExampleModel extends HoistModel {
 
     setBadge() {
         const thingsTab = this.stateTabModel.findTab('things');
-        thingsTab.title = this.showBadge ?
-            hbox(
-                'Things ',
-                badge({
-                    item: 'New',
-                    intent: 'primary',
-                    compact: true,
-                    style: {
-                        position: 'relative',
-                        top: -6,
-                        marginLeft: 2
-                    }
-                })
-            ) : 'Things';
+        thingsTab.title = this.showBadge
+            ? hbox(
+                  'Things ',
+                  badge({
+                      item: 'New',
+                      intent: 'primary',
+                      compact: true,
+                      style: {
+                          position: 'relative',
+                          top: -6,
+                          marginLeft: 2
+                      }
+                  })
+              )
+            : 'Things';
     }
 }

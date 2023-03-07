@@ -6,7 +6,6 @@ import moment from 'moment';
 import {nilAwareFormat} from './Util';
 
 export class DateFormatsPanelModel extends HoistModel {
-
     // Inputs
     testData = [
         moment().toDate(),
@@ -53,7 +52,7 @@ export class DateFormatsPanelModel extends HoistModel {
     //--------------------------------
     private getResult(input: Date) {
         const options = {
-            tooltip: this.tooltip ? (d) => `${d}` : undefined,
+            tooltip: this.tooltip ? d => `${d}` : undefined,
             fmt: this.enableFmt && this.fmt ? this.fmt : undefined,
             nullDisplay: this.nullDisplay != null ? this.nullDisplay : undefined
         };

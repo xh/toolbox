@@ -7,7 +7,6 @@ import {fmtMillions} from '@xh/hoist/format';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
 
 export class SplitTreeMapPanelModel extends HoistModel {
-
     @managed
     groupingChooserModel = new GroupingChooserModel({
         dimensions: ['region', 'sector', 'symbol'],
@@ -32,21 +31,15 @@ export class SplitTreeMapPanelModel extends HoistModel {
         emptyText: 'No records found...',
         selModel: 'multiple',
         store: {
-            processRawData: (r) => {
+            processRawData: r => {
                 return {
                     pnlMktVal: r.pnl / Math.abs(r.mktVal),
                     ...r
                 };
             },
-            fields: [
-                {name: 'pnlMktVal', type: 'number', displayName: 'P&L / Mkt Val'}
-            ]
+            fields: [{name: 'pnlMktVal', type: 'number', displayName: 'P&L / Mkt Val'}]
         },
-        columns: [
-            {...nameCol, isTreeColumn: true},
-            {...mktValCol},
-            {...pnlCol}
-        ]
+        columns: [{...nameCol, isTreeColumn: true}, {...mktValCol}, {...pnlCol}]
     });
 
     @managed
@@ -83,5 +76,4 @@ export class SplitTreeMapPanelModel extends HoistModel {
         const data = await XH.portfolioService.getPositionsAsync(dims);
         this.gridModel.loadData(data);
     }
-
 }

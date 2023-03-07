@@ -4,7 +4,6 @@ import {TaskService} from './TaskService';
 
 export const PERSIST_APP = {localStorageKey: 'todoAppState'};
 
-
 export class AppModel extends HoistAppModel {
     static instance: AppModel;
 
@@ -20,5 +19,7 @@ export class AppModel extends HoistAppModel {
         await XH.oauthService.logoutAsync();
     }
 
-    override get supportsVersionBar(): boolean {return window.self === window.top}
+    override get supportsVersionBar(): boolean {
+        return window.self === window.top;
+    }
 }

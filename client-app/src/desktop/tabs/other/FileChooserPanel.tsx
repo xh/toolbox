@@ -27,16 +27,22 @@ export const fileChooserPanel = hoistCmp.factory({
                     allowing the user to remove files from the selection.
                 </p>,
                 <p>
-                    This component should be provided with a FileChooserModel instance, as the
-                    model holds an observable collection of File objects and provides a public API
-                    to manipulate the selection. The application is responsible for processing the
+                    This component should be provided with a FileChooserModel instance, as the model
+                    holds an observable collection of File objects and provides a public API to
+                    manipulate the selection. The application is responsible for processing the
                     selected files (e.g. by uploading them to a server) and clearing the selection
                     when complete.
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/other/FileChooserPanel.tsx', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/filechooser/FileChooser.ts', notes: 'Hoist component for selecting and queuing files for upload.'}
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/FileChooserPanel.tsx',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/filechooser/FileChooser.ts',
+                    notes: 'Hoist component for selecting and queuing files for upload.'
+                }
             ],
             item: panel({
                 title: 'Other › FileChooser',
@@ -52,8 +58,10 @@ export const fileChooserPanel = hoistCmp.factory({
                     targetText: (
                         <Fragment>
                             <p>Drag and drop files here, or click to browse.</p>
-                            <p>Note that this example is configured to accept
-                                only <code>*.txt</code> and <code>*.png</code> file types.</p>
+                            <p>
+                                Note that this example is configured to accept only{' '}
+                                <code>*.txt</code> and <code>*.png</code> file types.
+                            </p>
                         </Fragment>
                     ),
                     model: chooserModel
@@ -85,7 +93,6 @@ export const fileChooserPanel = hoistCmp.factory({
         });
     }
 });
-
 
 class FileChooserPanelModel extends HoistModel {
     @managed

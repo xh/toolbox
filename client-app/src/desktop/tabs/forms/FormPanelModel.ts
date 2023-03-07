@@ -16,7 +16,6 @@ import {Icon} from '@xh/hoist/icon';
 import {filter, isEmpty, isNil} from 'lodash';
 
 export class FormPanelModel extends HoistModel {
-
     @managed
     validateTask = TaskObserver.trackLast();
 
@@ -60,7 +59,10 @@ export class FormPanelModel extends HoistModel {
                         when: (f, {isManager}) => isManager,
                         check: [
                             required,
-                            ({value}) => isNil(value) || value < 10 ?  'Managerial positions require at least 10 years of experience.' : null
+                            ({value}) =>
+                                isNil(value) || value < 10
+                                    ? 'Managerial positions require at least 10 years of experience.'
+                                    : null
                         ]
                     }
                 ]
@@ -77,7 +79,9 @@ export class FormPanelModel extends HoistModel {
                     {
                         when: ({value, formModel}, {startDate}) => startDate && value,
                         check: ({value, displayName}, {startDate}) => {
-                            return value < startDate ? `${displayName} must be after start date.` : null;
+                            return value < startDate
+                                ? `${displayName} must be after start date.`
+                                : null;
                         }
                     }
                 ]
@@ -103,7 +107,7 @@ export class FormPanelModel extends HoistModel {
                     ],
                     initialValues: {relationship: 'professional'}
                 },
-                rules: [(ref) => isEmpty(ref) ? 'At least one reference is required.':  null]
+                rules: [ref => (isEmpty(ref) ? 'At least one reference is required.' : null)]
             }
         ]
     });
@@ -113,7 +117,7 @@ export class FormPanelModel extends HoistModel {
         makeObservable(this);
         this.addReaction({
             track: () => this.formModel.values.endDate,
-            run: (endDate) => {
+            run: endDate => {
                 const reasonField = this.formModel.fields.reasonForLeaving;
                 if (endDate) {
                     reasonField.setDisabled(false);
@@ -135,10 +139,7 @@ export class FormPanelModel extends HoistModel {
         const isValid = await formModel.validateAsync().linkTo(this.validateTask);
         if (isValid) {
             XH.alert({
-                message: vbox(
-                    'Submitted: ',
-                    pre(JSON.stringify(formModel.getData(), undefined, 2))
-                )
+                message: vbox('Submitted: ', pre(JSON.stringify(formModel.getData(), undefined, 2)))
             });
             this.reset();
         } else {

@@ -18,8 +18,14 @@
     "prepare": "cd .. && husky install client-app/.husky"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "eslint",
-    "*.s?(a|c)ss": "stylelint"
+    "*.{js,jsx,ts,tsx}": [
+      "eslint",
+      "prettier --write"
+    ],
+    "*.s?(a|c)ss": [
+      "stylelint",
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@ag-grid-community/client-side-row-model": "~28.2.0",
@@ -47,9 +53,11 @@
   "devDependencies": {
     "@xh/hoist-dev-utils": "~6.1.1",
     "cross-env": "7.x",
+    "eslint-config-prettier": "8.x",
     "husky": "8.x",
     "lint-staged": "13.x",
     "postcss": "8.x",
+    "prettier": "^2.8.4",
     "stylelint": "14.x",
     "stylelint-config-standard-scss": "6.x",
     "typescript": "~4.9.3"

@@ -15,10 +15,11 @@ export const chartWidget = hoistCmp.factory({
     model: creates(() => ChartWidgetModel),
     render({model}) {
         const {panelModel, symbols, dashViewModel} = model,
-            modalOpts = {title: dashViewModel.title, icon: dashViewModel.icon, headerItems: [
-                rangeSelector({model}),
-                modalToggleButton({panelModel})
-            ]};
+            modalOpts = {
+                title: dashViewModel.title,
+                icon: dashViewModel.icon,
+                headerItems: [rangeSelector({model}), modalToggleButton({panelModel})]
+            };
 
         return panel({
             model: panelModel,
@@ -36,8 +37,8 @@ export const chartWidget = hoistCmp.factory({
     }
 });
 
-const rangeSelector = hoistCmp.factory(
-    () => buttonGroupInput({
+const rangeSelector = hoistCmp.factory(() =>
+    buttonGroupInput({
         bind: 'range',
         items: [
             button({text: '7D', value: 7}),
@@ -50,10 +51,14 @@ const rangeSelector = hoistCmp.factory(
 );
 
 class ChartWidgetModel extends LineChartModel {
-
     @bindable range = 30;
     @lookup(DashViewModel) dashViewModel: DashViewModel;
-    @managed panelModel = new PanelModel({modalSupport: true, showModalToggleButton: false, collapsible: false, resizable: false});
+    @managed panelModel = new PanelModel({
+        modalSupport: true,
+        showModalToggleButton: false,
+        collapsible: false,
+        resizable: false
+    });
 
     constructor() {
         super();
@@ -65,7 +70,10 @@ class ChartWidgetModel extends LineChartModel {
                 if (!this.chartModel.series[0]) return;
                 const endDate = new Date(),
                     startDate = new Date(endDate.getTime() - ONE_DAY * this.range);
-                this.chartModel.highchart.xAxis[0].setExtremes(startDate.getTime(), endDate.getTime());
+                this.chartModel.highchart.xAxis[0].setExtremes(
+                    startDate.getTime(),
+                    endDate.getTime()
+                );
             }
         });
     }

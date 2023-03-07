@@ -24,16 +24,26 @@ export const loadingIndicatorPanel = hoistCmp.factory({
                     in progress without using a modal Mask.
                 </p>,
                 <p>
-                    A convenient way to display a loading indicator is via the <code>loadingIndicator</code> property
-                    of Panel. This prop can accept a fully configured loadingIndicator element or
-                    (most commonly) a <code>TaskObserver</code> instance to automatically show
-                    the indicator when a task is pending.
+                    A convenient way to display a loading indicator is via the{' '}
+                    <code>loadingIndicator</code> property of Panel. This prop can accept a fully
+                    configured loadingIndicator element or (most commonly) a{' '}
+                    <code>TaskObserver</code> instance to automatically show the indicator when a
+                    task is pending.
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/panels/LoadingIndicatorPanel.tsx', notes: 'This example.'},
-                {url: '$HR/desktop/cmp/loadingindicator/LoadingIndicator.ts', notes: 'Hoist component.'},
-                {url: '$HR/core/TaskObserver.ts', notes: 'Hoist model for tracking async tasks - can be linked to indicators.'}
+                {
+                    url: '$TB/client-app/src/desktop/tabs/panels/LoadingIndicatorPanel.tsx',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/desktop/cmp/loadingindicator/LoadingIndicator.ts',
+                    notes: 'Hoist component.'
+                },
+                {
+                    url: '$HR/core/TaskObserver.ts',
+                    notes: 'Hoist model for tracking async tasks - can be linked to indicators.'
+                }
             ],
             item: panel({
                 title: 'Panels › Loading Indicator',
@@ -82,7 +92,6 @@ export const loadingIndicatorPanel = hoistCmp.factory({
 });
 
 class LoadingIndicatorPanelModel extends HoistModel {
-
     @bindable seconds = 3;
     @bindable message = '';
     @bindable corner: Corner = 'br';

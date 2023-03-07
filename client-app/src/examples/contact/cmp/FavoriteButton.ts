@@ -6,19 +6,17 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import './FavoriteButton.scss';
 import {DirectoryPanelModel} from '../DirectoryPanelModel';
 
-export const favoriteButton = hoistCmp.factory<DirectoryPanelModel>(
-    ({model, record}) => {
-        const {isFavorite} = record.data;
-        return button({
-            className: 'tb-contact-fave-btn',
-            icon: Icon.favorite({
-                color: isFavorite ? 'gold' : null,
-                prefix: isFavorite ? 'fas' : 'far'
-            }),
-            onClick: (e) => {
-                consumeEvent(e);
-                model.toggleFavorite(record);
-            }
-        });
-    }
-);
+export const favoriteButton = hoistCmp.factory<DirectoryPanelModel>(({model, record}) => {
+    const {isFavorite} = record.data;
+    return button({
+        className: 'tb-contact-fave-btn',
+        icon: Icon.favorite({
+            color: isFavorite ? 'gold' : null,
+            prefix: isFavorite ? 'fas' : 'far'
+        }),
+        onClick: e => {
+            consumeEvent(e);
+            model.toggleFavorite(record);
+        }
+    });
+});

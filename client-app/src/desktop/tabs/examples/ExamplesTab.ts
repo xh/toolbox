@@ -8,7 +8,6 @@ import {toolboxUrl} from '../../../core/cmp/ToolboxLink';
 import './ExamplesTab.scss';
 import {ExamplesTabModel} from './ExamplesTabModel';
 
-
 export const examplesTab = hoistCmp.factory({
     displayName: 'ExamplesTab',
     model: creates(ExamplesTabModel),
@@ -31,7 +30,6 @@ export const examplesTab = hoistCmp.factory({
     }
 });
 
-
 const activeAppDisplay = hoistCmp.factory<ExamplesTabModel>({
     render({model}) {
         const {activeAppConfig} = model;
@@ -49,81 +47,77 @@ const activeAppDisplay = hoistCmp.factory<ExamplesTabModel>({
     }
 });
 
+const appTileBar = hoistCmp.factory<ExamplesTabModel>(({model}) => {
+    const {leftPanelModel} = model;
 
-const appTileBar = hoistCmp.factory<ExamplesTabModel>(
-    ({model}) => {
-        const {leftPanelModel} = model;
+    return panel({
+        model: leftPanelModel,
+        items: div({
+            className: 'tb-examples__app-tile-container',
+            items: model.examples.map(app => appTile({app}))
+        }),
+        bbar: [
+            filler(),
+            button({
+                icon: Icon.chevronLeft(),
+                onClick: () => leftPanelModel.toggleCollapsed()
+            })
+        ]
+    });
+});
 
-        return panel({
-            model: leftPanelModel,
-            items: div({
-                className: 'tb-examples__app-tile-container',
-                items: model.examples.map(app => appTile({app}))
-            }),
-            bbar: [
+const appTile = hoistCmp.factory<ExamplesTabModel>(({app, model}) => {
+    const isActive = app === model.activeAppConfig;
+    return panel({
+        className: `tb-examples__app-tile ${isActive ? 'tb-examples__app-tile--selected' : ''}`,
+        title: app.title,
+        icon: app.icon,
+        compactHeader: true,
+        items: div({
+            className: 'tb-examples__app-tile__contents',
+            items: app.text
+        }),
+        bbar: toolbar({
+            omit: !isActive,
+            compact: true,
+            items: [
                 filler(),
                 button({
-                    icon: Icon.chevronLeft(),
-                    onClick: () => leftPanelModel.toggleCollapsed()
+                    text: 'Source',
+                    icon: Icon.code(),
+                    onClick: () =>
+                        window.open(toolboxUrl(`$TB/client-app/src/examples/${app.srcPath}`))
+                }),
+                button({
+                    text: 'Full Tab',
+                    icon: Icon.openExternal(),
+                    onClick: () => window.open(`/${app.path}/`)
                 })
             ]
-        });
-    }
-);
+        }),
+        onClick: () => (model.activeApp = app.title)
+    });
+});
 
-const appTile = hoistCmp.factory<ExamplesTabModel>(
-    ({app, model}) => {
-        const isActive = app === model.activeAppConfig;
-        return panel({
-            className: `tb-examples__app-tile ${isActive ? 'tb-examples__app-tile--selected' : ''}`,
-            title: app.title,
-            icon: app.icon,
-            compactHeader: true,
-            items: div({
-                className: 'tb-examples__app-tile__contents',
-                items: app.text
+const sideBar = hoistCmp.factory<ExamplesTabModel>(({model}) => {
+    return toolbar({
+        className: 'tb-examples__app-toolbar',
+        items: [
+            ...model.examples.map(app => {
+                const isActive = model.activeAppConfig === app;
+                return button({
+                    icon: app.icon,
+                    active: isActive,
+                    onClick: () =>
+                        isActive ? window.open(app.path) : (model.activeApp = app.title)
+                });
             }),
-            bbar: toolbar({
-                omit: !isActive,
-                compact: true,
-                items: [
-                    filler(),
-                    button({
-                        text: 'Source',
-                        icon: Icon.code(),
-                        onClick: () => window.open(toolboxUrl(`$TB/client-app/src/examples/${app.srcPath}`))
-                    }),
-                    button({
-                        text: 'Full Tab',
-                        icon: Icon.openExternal(),
-                        onClick: () => window.open(`/${app.path}/`)
-                    })]
-            }),
-            onClick: () => model.activeApp = app.title
-        });
-    }
-);
-
-const sideBar = hoistCmp.factory<ExamplesTabModel>(
-    ({model}) => {
-        return toolbar({
-            className: 'tb-examples__app-toolbar',
-            items: [
-                ...model.examples.map(app => {
-                    const isActive = model.activeAppConfig === app;
-                    return button({
-                        icon: app.icon,
-                        active: isActive,
-                        onClick: () => isActive ? window.open(app.path) : (model.activeApp = app.title)
-                    });
-                }),
-                filler(),
-                button({
-                    icon: Icon.chevronRight(),
-                    onClick: () => model.leftPanelModel.collapsed = false
-                })
-            ],
-            vertical: true
-        });
-    }
-);
+            filler(),
+            button({
+                icon: Icon.chevronRight(),
+                onClick: () => (model.leftPanelModel.collapsed = false)
+            })
+        ],
+        vertical: true
+    });
+});

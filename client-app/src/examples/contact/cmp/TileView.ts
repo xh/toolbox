@@ -17,29 +17,27 @@ export const tileView = hoistCmp.factory<DirectoryPanelModel>({
     }
 });
 
-const tile = hoistCmp.factory<DirectoryPanelModel>(
-    ({model, record}) => {
-        const {gridModel} = model,
-            isSelected = gridModel.selectedId === record.id,
-            {profilePicture, name} = record.data;
+const tile = hoistCmp.factory<DirectoryPanelModel>(({model, record}) => {
+    const {gridModel} = model,
+        isSelected = gridModel.selectedId === record.id,
+        {profilePicture, name} = record.data;
 
-        return vbox({
-            style: {backgroundImage: `url(${profilePicture})`},
-            className: `tb-contact-tile ${isSelected ? 'tb-contact-tile--selected' : ''}`,
-            items: [
-                div({
-                    className: 'tb-contact-tile__bar',
-                    items: [
-                        favoriteButton({record}),
-                        filler(),
-                        span({
-                            className: 'tb-contact-tile__name',
-                            item: name
-                        })]
-                })
-            ],
-            onClick: () => gridModel.selectAsync(record)
-        });
-    }
-);
-
+    return vbox({
+        style: {backgroundImage: `url(${profilePicture})`},
+        className: `tb-contact-tile ${isSelected ? 'tb-contact-tile--selected' : ''}`,
+        items: [
+            div({
+                className: 'tb-contact-tile__bar',
+                items: [
+                    favoriteButton({record}),
+                    filler(),
+                    span({
+                        className: 'tb-contact-tile__name',
+                        item: name
+                    })
+                ]
+            })
+        ],
+        onClick: () => gridModel.selectAsync(record)
+    });
+});

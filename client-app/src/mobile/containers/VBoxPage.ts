@@ -3,7 +3,6 @@ import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {box, div, vbox} from '@xh/hoist/cmp/layout';
 
 export const vboxPage = hoistCmp.factory({
-
     render() {
         const defaults = {padding: 10, className: 'toolbox-containers-box'};
 

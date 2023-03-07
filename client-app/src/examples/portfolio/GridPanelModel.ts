@@ -7,7 +7,6 @@ import {mktValCol, nameCol, pnlCol} from '../../core/columns';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
 
 export class GridPanelModel extends HoistModel {
-
     @managed
     panelSizingModel = new PanelModel({
         defaultSize: 500,
