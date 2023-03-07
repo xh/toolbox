@@ -33,9 +33,8 @@ import {installHighcharts} from '@xh/hoist/kit/highcharts';
 // ag-Grid -- Import and Register
 //-----------------------------------------------------------------
 import {ModuleRegistry} from '@ag-grid-community/core';
-import '@ag-grid-community/core/dist/styles/ag-grid.css';
-import '@ag-grid-community/core/dist/styles/ag-theme-balham-dark.css';
-import '@ag-grid-community/core/dist/styles/ag-theme-balham.css';
+import '@ag-grid-community/styles/ag-grid.css';
+import '@ag-grid-community/styles/ag-theme-balham.css';
 import {AgGridReact} from '@ag-grid-community/react';
 import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model';
 import agPkg from '@ag-grid-community/core/package.json';
