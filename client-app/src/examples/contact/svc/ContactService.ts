@@ -11,7 +11,7 @@ import {PERSIST_APP} from '../AppModel';
 export class ContactService extends HoistService {
     static instance: ContactService;
 
-    persistWith = PERSIST_APP;
+    override persistWith = PERSIST_APP;
 
     /** ids of all contacts that the user has favorited. */
     @observable.ref

@@ -13,7 +13,7 @@ import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
 
 export class TodoPanelModel extends HoistModel {
-    persistWith = PERSIST_APP;
+    override persistWith = PERSIST_APP;
 
     @managed
     taskDialogModel = new TaskDialogModel(this);

@@ -55,7 +55,7 @@ class WrapperModel extends HoistModel {
     @managed
     dockContainerModel: DockContainerModel = null;
 
-    onLinked() {
+    override onLinked() {
         const {links} = this.componentProps;
         if (links) {
             this.dockContainerModel = new DockContainerModel();

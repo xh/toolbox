@@ -11,7 +11,7 @@ export class ChartsPanelModel extends HoistModel {
         makeObservable(this);
     }
 
-    onLinked() {
+    override onLinked() {
         this.addReaction({
             track: () => this.ordersPanelModel.selectedRecord?.data.symbol ?? null,
             run: symbol => {

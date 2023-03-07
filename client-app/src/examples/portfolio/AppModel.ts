@@ -10,7 +10,7 @@ export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
 export class AppModel extends HoistAppModel {
     static instance: AppModel;
 
-    static async preAuthAsync() {
+    static override async preAuthAsync() {
         await XH.installServicesAsync(OauthService);
     }
 

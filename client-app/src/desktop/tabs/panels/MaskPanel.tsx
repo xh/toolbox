@@ -98,7 +98,7 @@ class MaskPanelModel extends HoistModel {
         makeObservable(this);
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {loadModel, message, seconds} = this,
             interval = (seconds / 3) * SECONDS;
         loadModel.setMessage(message);

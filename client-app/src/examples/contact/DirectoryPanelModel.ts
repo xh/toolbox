@@ -16,7 +16,7 @@ import {FilterLike} from '@xh/hoist/data/filter/Types';
  * Support showing results in a grid or tiled set of photos.
  */
 export class DirectoryPanelModel extends HoistModel {
-    persistWith = PERSIST_APP;
+    override persistWith = PERSIST_APP;
 
     /** known tags across all contacts. */
     @observable.ref tagList: string[] = [];

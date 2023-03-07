@@ -52,7 +52,7 @@ class GridDetailPageModel extends HoistModel {
         makeObservable(this);
     }
 
-    async doLoadAsync() {
+    override async doLoadAsync() {
         await XH.fetchJson({url: 'customer'}).thenAction(c => (this.customers = c));
     }
 }

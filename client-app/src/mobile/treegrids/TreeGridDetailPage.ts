@@ -63,14 +63,14 @@ class TreeGridDetailPageModel extends HoistModel {
         makeObservable(this);
     }
 
-    onLinked() {
+    override onLinked() {
         this.addReaction({
             track: () => this.id,
             run: () => this.loadAsync()
         });
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const position = await (this.id ? XH.portfolioService.getPositionAsync(this.id) : null);
         runInAction(() => (this.position = position));
     }

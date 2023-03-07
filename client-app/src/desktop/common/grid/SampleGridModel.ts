@@ -122,7 +122,7 @@ export class SampleGridModel extends HoistModel {
         },
         restoreDefaultsFn: () => this.restoreDefaultsFn(),
         colDefaults: {
-            tooltipElement: (v, {record}) => {
+            tooltip: (v, {record}) => {
                 if (record.isSummary) return null;
                 const {company, city, trade_date, profit_loss, trade_volume} = record.data;
                 return vbox({
