@@ -15,7 +15,7 @@
 
     &__title {
       font-size: var(--xh-font-size-large-px);
-      font-weight: bold;
+      font-weight: 500;
       margin: auto 0;
 
       svg {
@@ -60,7 +60,7 @@
   background-color: var(--xh-bg-alt);
   padding: var(--xh-pad-half-px);
 
-  .bp3-popover-content {
+  .bp4-popover-content {
     background-color: var(--xh-bg-alt) !important;
   }
 

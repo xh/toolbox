@@ -2,6 +2,7 @@ package io.xh.toolbox.portfolio
 
 import io.xh.hoist.security.Access
 import io.xh.toolbox.BaseController
+
 import static io.xh.toolbox.portfolio.Lookups.*
 
 @Access(['APP_READER'])
@@ -50,6 +51,12 @@ class PortfolioController extends BaseController {
         MarketPrice intradayPrices = portfolioService.getData().intradayPrices[params.id]
         List<MarketPrice> allPrices = intradayPrices ? historicalPrices.dropRight(1)+[intradayPrices] : historicalPrices
         renderJSON(allPrices)
+    }
+
+    def closingPriceHistory() {
+        def symbols = params.list('symbols')
+        int daysBack = params.daysBack ?: 30
+        renderJSON(portfolioService.getClosingPriceHistory(symbols, daysBack))
     }
 
     def lookups() {

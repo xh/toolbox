@@ -1,5 +1,6 @@
 package io.xh.toolbox
 
+import grails.gorm.transactions.Transactional
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.user.User
 import io.xh.hoist.BaseService
@@ -19,6 +20,7 @@ class BootStrap {
         }
         BaseService.parallelInit(services)
 
+        JavaTest.helloWorld()
         createLocalAdminUserIfNeeded()
     }
 
@@ -27,6 +29,7 @@ class BootStrap {
     //------------------------
     // Implementation
     //------------------------
+    @Transactional
     private void createLocalAdminUserIfNeeded() {
         String adminUsername = getInstanceConfig('adminUsername')
         String adminPassword = getInstanceConfig('adminPassword')
@@ -46,6 +49,13 @@ class BootStrap {
             }
 
             log.info("Local admin user available as per instanceConfig | $adminUsername")
+
+            Utils.configService.ensureRequiredConfigsCreated(
+                roles: [
+                    valueType: 'json',
+                    defaultValue: ['HOIST_ADMIN': [adminUsername], 'APP_READER': [adminUsername]]
+                ]
+            )
         } else {
             log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
