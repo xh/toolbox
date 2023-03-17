@@ -1,5 +1,6 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
+import {gridViewPanel} from './gridview/GridViewPanel';
 import {standardGridPanel} from './StandardGridPanel';
 import {columnGroupsGridPanel} from './ColumnGroupsGridPanel';
 import {restGridPanel} from './RestGridPanel';
@@ -28,6 +29,7 @@ export const gridsTab = hoistCmp.factory(() =>
                 },
                 {id: 'groupedCols', title: 'Grouped Columns', content: columnGroupsGridPanel},
                 {id: 'rest', title: 'REST Editor', content: restGridPanel},
+                {id: 'gridview', title: 'Grid Views', content: gridViewPanel},
                 {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
             ],
             switcher: {orientation: 'left'}

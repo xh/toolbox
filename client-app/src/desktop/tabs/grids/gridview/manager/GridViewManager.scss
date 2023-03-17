@@ -1,0 +1,53 @@
+.tb-gridview-mgr {
+  align-items: center;
+
+  // Save Button
+  & > .xh-button {
+    margin-right: var(--xh-pad-half-px);
+  }
+
+  &-vbox {
+    overflow: visible !important;
+  }
+
+  &__menu {
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+
+    .bp4-menu-header {
+      border-top: none !important;
+      border-bottom: var(--xh-border-solid);
+      padding-bottom: 5px;
+
+      .bp4-heading {
+        font-weight: 500;
+
+        .xh-icon {
+          margin-right: var(--xh-pad-px);
+        }
+      }
+    }
+  }
+
+  // Dialogs
+  &__manage-dialog,
+  &__save-as-dialog {
+    &__form {
+      padding: var(--xh-pad-px);
+
+      .xh-form-field.xh-form-field-readonly .xh-form-field-readonly-display {
+        padding: 0;
+      }
+
+      .xh-form-field .xh-form-field-info {
+        line-height: 1.5em;
+        margin-top: var(--xh-pad-half-px);
+        white-space: unset;
+
+        .xh-icon {
+          margin-right: 2px;
+        }
+      }
+    }
+  }
+}

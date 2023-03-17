@@ -29,5 +29,8 @@ class RoleService extends BaseRoleService {
         return ret
     }
 
+    Set<String> getAllRoles() {
+        return allRoleAssignments.keySet()
+    }
 
 }
