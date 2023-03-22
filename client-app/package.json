@@ -52,7 +52,7 @@
     "react-dom": "~18.2.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "~6.1.1",
+    "@xh/hoist-dev-utils": "^6.1.2",
     "cross-env": "7.x",
     "eslint-config-prettier": "8.x",
     "husky": "8.x",
