@@ -2681,7 +2681,7 @@ change-case@^4.1.2:
     snake-case "^3.0.4"
     tslib "^2.0.3"
 
-changelog-parser@3.x, changelog-parser@~3.0.1:
+changelog-parser@~3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/changelog-parser/-/changelog-parser-3.0.1.tgz#c8c693c78756e5b93fbf09760b65ca95b05cef68"
   integrity sha512-1AEVJgnFEO4v5ukfEH/j9cr2Z39Y/GCieNi605azhufAolXF4vQAwZBY8BrUVRkvlI3gwe3i621/PIAW0zmmEQ==
