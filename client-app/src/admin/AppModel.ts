@@ -32,7 +32,6 @@ export class AppModel extends BaseAppModel {
                 path: '/tests',
                 children: [
                     {name: 'asyncLoop', path: '/asyncLoop'},
-                    {name: 'collections', path: '/collections'},
                     {name: 'cube', path: '/cube'},
                     {name: 'dataView', path: '/dataView'},
                     {name: 'fetchAPI', path: '/fetchAPI'},

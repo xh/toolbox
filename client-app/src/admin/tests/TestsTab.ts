@@ -12,7 +12,6 @@ import {SelectTestPanel} from './Select/SelectTestPanel';
 import {dataViewTestPanel} from './dataview/DataViewTestPanel';
 import {storeColumnFilterPanel} from './columnFilters/store/StoreColumnFilterPanel';
 import {viewColumnFilterPanel} from './columnFilters/view/ViewColumnFilterPanel';
-import {collectionsPanel} from './collections/CollectionsPanel';
 import {gridScrolling} from './gridScrolling/GridScrolling';
 
 export const testsTab = hoistCmp.factory(() => {
@@ -22,7 +21,6 @@ export const testsTab = hoistCmp.factory(() => {
             switcher: {orientation: 'left'},
             tabs: [
                 {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
-                {id: 'collections', title: 'Collections', content: collectionsPanel},
                 {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
                 {id: 'dataView', title: 'Data View', content: dataViewTestPanel},
                 {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},

@@ -15,7 +15,9 @@ export const gridScrolling = hoistCmp.factory({
         return panel({
             tbar: tbar(),
             item: hframe(
-                grid({ref: model.hoistGridRef}),
+                grid({
+                    ref: model.hoistGridRef
+                }),
                 <div className="ag-theme-alpine" ref={model.agGridRef} style={{flex: 1}}>
                     <AgGridReact rowData={model.rowData} columnDefs={model.columnDefs} />
                 </div>
