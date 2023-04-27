@@ -168,21 +168,23 @@ class PanelSizingModel extends HoistModel {
 
     @managed
     leftPanelModel = new PanelModel({
-        defaultSize: 150,
+        defaultSize: '30%',
+        maxSize: 300,
+        minSize: 30,
         side: 'left'
     });
 
     @managed
     rightPanelModel = new PanelModel({
-        defaultSize: 150,
+        defaultSize: '30%',
         maxSize: 300,
-        minSize: 150,
+        minSize: 30,
         side: 'right'
     });
 
     @managed
     bottomPanelModel = new PanelModel({
-        defaultSize: 130,
+        defaultSize: 150,
         side: 'bottom',
         maxSize: 350,
         minSize: 100,
