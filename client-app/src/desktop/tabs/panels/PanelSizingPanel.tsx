@@ -176,12 +176,7 @@ class PanelSizingModel extends HoistModel {
 
     @managed
     rightPanelModel = new PanelModel({
-        // This illustrates the problem that
-        // the default size currently wins over the maxSize on first render.
-        // Because the defaultSize is '100%', the Panel will open with a size bigger
-        // than the maxSize if the available space is more than 300px.
-        // This seems wrong.  Seems like minSize and maxSize should allways win.
-        defaultSize: '100%',
+        defaultSize: '30%',
         maxSize: 300,
         minSize: 30,
         side: 'right'
