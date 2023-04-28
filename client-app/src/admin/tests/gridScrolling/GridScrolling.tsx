@@ -64,7 +64,7 @@ const tbar = hoistCmp.factory<GridScrollingModel>(({model}) =>
             button({
                 text: 'Apply',
                 outlined: true,
-                disabled: !model.formModel.isValid,
+                disabled: !model.formModel.isValid || !model.formModel.isDirty,
                 onClick: () => model.applyConfigs()
             }),
             toolbarSeparator(),
