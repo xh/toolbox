@@ -14,9 +14,7 @@ import {OauthService} from './core/svc/OauthService';
 import {TaskService} from './examples/todo/TaskService';
 
 declare module '@xh/hoist/core' {
-    // @ts-ignore - A 'duplicate declaration' that helps IntelliJ better recognize uses of app services from the `XH` singleton.
-    export const XH: XHApi;
-    // Tells typescript to *statically* assume that these services/fields exist on the `XH` singleton.
+    // Merge interface with XHApi class to include injected services.
     export interface XHApi {
         contactService: ContactService;
         gitHubService: GitHubService;
@@ -24,7 +22,9 @@ declare module '@xh/hoist/core' {
         portfolioService: PortfolioService;
         taskService: TaskService;
     }
-    //
+    // @ts-ignore - Help IntelliJ recognize uses of injected service methods on the `XH` singleton.
+    export const XH: XHApi;
+
     export interface HoistUser {
         profilePicUrl: string;
     }
