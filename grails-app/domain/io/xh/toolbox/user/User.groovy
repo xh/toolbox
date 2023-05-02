@@ -25,7 +25,7 @@ class User implements HoistUser {
         }
         name blank: false
         password nullable: true
-        profilePicUrl nullable: true
+        profilePicUrl nullable: true, maxSize: 2048
     }
 
     static mapping = {
