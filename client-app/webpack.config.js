@@ -16,7 +16,7 @@ const customPkgPath = path.resolve('node_modules/@xh/package-template');
 
 /**
  * Uncomment below when developing @xh/package-template (our custom package example) inline.
- * Also uncomment Lines 40-41 below where these values are passed into the webpack config.
+ * Also uncomment Lines 43-44 below where these values are passed into the webpack config.
  * The package source should be checked out as a sibling of the top-level `toolbox` directory.
  *
  * NOTE that running inline here requires running via `yarn startWithHoist`.
