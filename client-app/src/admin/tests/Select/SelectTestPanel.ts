@@ -97,14 +97,14 @@ export const SelectTestPanel = hoistCmp({
                         }
                     }),
                     example({
-                        name: 'Select with leftIcon & enableMulti & enableTooltipsOnTags & enableClear & rsOptions: {hideSelectedOptions: false, closeMenuOnSelect: false}',
+                        name: 'Select with leftIcon & enableMulti & enableTooltipsOnMulti & enableClear & rsOptions: {hideSelectedOptions: false, closeMenuOnSelect: false}',
                         bind: 'enableMultiMenuOpen',
                         selectProps: {
                             width: 200,
                             options: usStates,
                             leftIcon: Icon.globe(),
                             enableMulti: true,
-                            enableTooltipsOnTags: true,
+                            enableTooltipsOnMulti: true,
                             placeholder: 'Select state(s)...',
                             enableClear: true,
                             hideSelectedOptions: false,
