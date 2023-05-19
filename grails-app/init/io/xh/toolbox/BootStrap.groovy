@@ -15,6 +15,7 @@ class BootStrap {
 
     def init = {servletContext ->
         logStartupMsg()
+        ensureRequiredPrefsCreated()
         def services = Utils.xhServices.findAll {
             it.class.canonicalName.startsWith(this.class.package.name)
         }
@@ -75,4 +76,15 @@ class BootStrap {
         """)
     }
 
+
+    private void ensureRequiredPrefsCreated() {
+        Utils.prefService.ensureRequiredPrefsCreated([
+                expandDockedLinks: [
+                        type: 'bool',
+                        defaultValue: false,
+                        groupName: 'Toolbox',
+                        note: 'True to expand the docked linked panel by default, false to start collapsed.'
+                ]
+        ])
+    }
 }

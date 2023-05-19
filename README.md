@@ -53,18 +53,28 @@ _other_ data-driven app configurations.
 * The contents of this file (for Toolbox) will typically be as follows:
 
 ```
-dbHost: localhost 
+environment: Development
+serverURL: http://localhost:8080
+
+# For first run of the project before 
+# you have a MySQL DB set up or OAuth set up, 
+# use these next 4 settings
+useH2: true
+useOAuth: false
+
+# The following two entries will enable a local account for logging in, without use of Auth0.
+# You can choose any username/password you would like.
+adminUsername: admin@xh.io 
+adminPassword: "a password of your choice"
+
+
+dbHost: localhost:3306
 dbSchema: toolbox
 
 # Provide either root or a dedicated local account, if using.
 # Note, quoting strings is option in YAML, but a good idea if you have special chars in your password.
 dbUser: root
 dbPassword: "your database user password" 
-
-# The following two entries will enable a local account for logging in, without use of Auth0.
-# You can choose any username/password you would like.
-adminUsername: admin@xh.io 
-adminPassword: "a password of your choice"
 ```
 
 * When running the Toolbox server, look for a message along the lines of "Loaded 6 instanceConfigs
