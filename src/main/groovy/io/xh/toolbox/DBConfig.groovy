@@ -8,6 +8,7 @@ import static io.xh.hoist.util.DateTimeUtils.getSECONDS
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 import static io.xh.hoist.util.Utils.getAppCode
 import static java.sql.Connection.TRANSACTION_READ_COMMITTED
+import static io.xh.hoist.util.Utils.withDelegate
 
 class DBConfig {
 
