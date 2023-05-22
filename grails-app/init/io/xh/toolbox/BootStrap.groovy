@@ -3,22 +3,19 @@ package io.xh.toolbox
 import grails.gorm.transactions.Transactional
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.user.User
-import io.xh.hoist.BaseService
 
+import static io.xh.hoist.BaseService.parallelInit
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
-
-import static io.xh.hoist.util.Utils.appEnvironment
-import static io.xh.hoist.util.Utils.appName
-import static io.xh.hoist.util.Utils.appVersion
+import static io.xh.hoist.util.Utils.*
 
 class BootStrap {
 
     def init = {servletContext ->
         logStartupMsg()
-        def services = Utils.xhServices.findAll {
+        def services = xhServices.findAll {
             it.class.canonicalName.startsWith(this.class.package.name)
         }
-        BaseService.parallelInit(services)
+        parallelInit(services)
 
         JavaTest.helloWorld()
         createLocalAdminUserIfNeeded()
