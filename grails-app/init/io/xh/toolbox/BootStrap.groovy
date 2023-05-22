@@ -15,6 +15,7 @@ class BootStrap {
 
     def init = {servletContext ->
         logStartupMsg()
+        ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
         def services = Utils.xhServices.findAll {
             it.class.canonicalName.startsWith(this.class.package.name)
@@ -76,6 +77,22 @@ class BootStrap {
         """)
     }
 
+    private void ensureRequiredConfigsCreated() {
+        Utils.configService.ensureRequiredConfigsCreated([
+                portfolioConfigs: [
+                        valueType: 'json',
+                        defaultValue: [
+                                "instrumentCount" : 500,
+                                "orderCount" : 20000,
+                                "updateIntervalSecs" : 5,
+                                "updatePctInstruments" : 20,
+                                "updatePctPriceRange" : 0.025,
+                                "pushUpdatesIntervalSecs" : 5                        ],
+                        clientVisible: false,
+                        groupName: 'Toolbox - Example Apps'
+                ]
+        ])
+    }
 
     private void ensureRequiredPrefsCreated() {
         Utils.prefService.ensureRequiredPrefsCreated([
