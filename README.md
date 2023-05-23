@@ -54,7 +54,7 @@ _other_ data-driven app configurations.
 
 ```
 environment: Development
-serverURL: http://localhost:8080
+serverURL: http://localhost
 
 # For first run of the project before you have OAuth set up. 
 useOAuth: false

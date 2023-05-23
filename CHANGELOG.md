@@ -6,9 +6,8 @@
 * Toolbox can now be run with an in memory H2 DB, and all needed configs and preferences
   will be pre-loaded into this DB.  This is useful for developers who want
   to quickly check out the project and run it on their local development machine
-  without going through the trouble of creating a new MySql DB.  
-  See the section on "instance config file" in README.md for the settings that trigger
-  use of H2.
+  without going through the trouble of creating a new MySql DB. See the section on 
+  "instance config file" in README.md for the settings that trigger use of H2.
 
 
 ## v3.0.0 - 2022-12-31
