@@ -42,6 +42,11 @@ export class OauthService extends HoistService {
             url: 'oauthConfig'
         }).catchDefault());
 
+        if (config?.isEnabled === false) {
+            XH.appSpec.isSSO = false;
+            return;
+        }
+
         if (!config?.domain || !config?.clientId) {
             throw XH.exception(`
                 Unable to init OAuthService - expected config not returned by server. 

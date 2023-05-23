@@ -9,6 +9,8 @@ import org.jose4j.jwk.JsonWebKeySet
 import org.jose4j.jwk.VerificationJwkSelector
 import org.jose4j.jws.JsonWebSignature
 
+import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
+
 /**
  * Decodes and validates ID tokens issues by Auth0, the OAuth provider for Toolbox.
  */
@@ -21,6 +23,11 @@ class Auth0Service extends BaseService {
     ConfigService configService
 
     Map getClientConfig() {
+
+        if (getInstanceConfig('useOAuth') == 'false') {
+            return [isEnabled: false]
+        }
+
         return [
             clientId: clientId,
             domain: domain
