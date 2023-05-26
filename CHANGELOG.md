@@ -1,6 +1,6 @@
 # Changelog
 
-## v4.0-SNAPSHOT - unreleased
+## v3.0.1 - 2023-05-26
 
 ### New Features
 * Toolbox can now be run with an in memory H2 DB, and all needed configs and preferences
@@ -9,6 +9,10 @@
   without going through the trouble of creating a new MySql DB. See the section on 
   "instance config file" in README.md for the settings that trigger use of H2.
 
+### Libraries
+
+* @xh/hoist 56.5.0
+* hoist-core 16.2.0
 
 ## v3.0.0 - 2022-12-31
 
