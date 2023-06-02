@@ -1,0 +1,38 @@
+body {
+  --grid-large-font-size: 16;
+
+  .large-actions {
+    font-size: 24px;
+  }
+
+  .weatherLocationFile {
+    border: 5px solid var(--xh-blue-gray-light);
+
+    .xh-panel__content > .xh-vframe {
+      background-color: var(--xh-intent-primary-trans1);
+      font-size: large;
+      justify-content: center;
+    }
+  }
+
+  .xh-record-action-bar * {
+    font-size: var(--xh-font-size-large-px);
+  }
+
+  .toolbox-layout-box {
+    color: mediumpurple;
+  }
+
+  .toolbox-layout-temp {
+    color: deepskyblue;
+  }
+
+  .tbox-weatherapp {
+    margin: 100px 0;
+    width: 800px;
+  }
+
+  .todo-form {
+    padding: var(--xh-pad-px);
+  }
+}

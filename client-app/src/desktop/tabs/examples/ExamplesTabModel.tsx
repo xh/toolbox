@@ -104,6 +104,19 @@ export class ExamplesTabModel extends HoistModel {
                     file uploads. Contact us for a walkthrough.
                 </p>
             ]
+        },
+        {
+            title: 'Weather',
+            icon: Icon.sun(),
+            path: 'weather',
+            srcPath: 'weather',
+            text: [
+                <p>A simple app for telling the weather.</p>,
+                <p>
+                    After searching for a desired location, current weather information for that
+                    location will be provided.
+                </p>
+            ]
         }
     ];
 

@@ -12,6 +12,8 @@ import {GitHubService} from './core/svc/GitHubService';
 import {PortfolioService} from './core/svc/PortfolioService';
 import {OauthService} from './core/svc/OauthService';
 import {TaskService} from './examples/todo/TaskService';
+import {LocationService} from './examples/weather/LocationService'
+
 
 declare module '@xh/hoist/core' {
     export interface XHApi {
@@ -20,6 +22,7 @@ declare module '@xh/hoist/core' {
         oauthService: OauthService;
         portfolioService: PortfolioService;
         taskService: TaskService;
+        locationService: LocationService;
     }
     export interface HoistUser {
         profilePicUrl: string;
