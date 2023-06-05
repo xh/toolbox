@@ -3,8 +3,8 @@ package io.xh.toolbox.app
 import io.xh.hoist.BaseService
 import io.xh.hoist.exception.HttpException
 import io.xh.hoist.http.JSONClient
-import org.apache.http.client.methods.HttpGet
-import static org.apache.http.HttpStatus.SC_OK
+import org.apache.hc.client5.http.classic.methods.HttpGet
+import static org.apache.hc.core5.http.HttpStatus.SC_OK
 
 class RecallsService extends BaseService {
 

@@ -3,14 +3,13 @@ package io.xh.toolbox.security
 import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
-import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONParser
 import io.xh.hoist.json.JSONSerializer
 import org.jose4j.jwk.JsonWebKeySet
 import org.jose4j.jwk.VerificationJwkSelector
 import org.jose4j.jws.JsonWebSignature
 
-import static io.xh.hoist.util.Utils.withNewSession
+import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
 /**
  * Decodes and validates ID tokens issues by Auth0, the OAuth provider for Toolbox.
@@ -24,6 +23,11 @@ class Auth0Service extends BaseService {
     ConfigService configService
 
     Map getClientConfig() {
+
+        if (getInstanceConfig('useOAuth') == 'false') {
+            return [isEnabled: false]
+        }
+
         return [
             clientId: clientId,
             domain: domain
@@ -31,36 +35,34 @@ class Auth0Service extends BaseService {
     }
 
     JwtValidationResult validateToken(String token) {
-        (JwtValidationResult) withNewSession {
-            try {
-                if (!token) throw new JwtException("Unable to validate JWT - no token provided.")
+        try {
+            if (!token) throw new JwtException("Unable to validate JWT - no token provided.")
 
-                def jws = new JsonWebSignature()
-                jws.setCompactSerialization(token)
+            def jws = new JsonWebSignature()
+            jws.setCompactSerialization(token)
 
-                def selector = new VerificationJwkSelector(),
-                    jwk = selector.select(jws, jsonWebKeySet.jsonWebKeys)
-                if (!jwk?.key) throw new JwtException("Unable to select valid key for token from loaded JWKS")
+            def selector = new VerificationJwkSelector(),
+                jwk = selector.select(jws, jsonWebKeySet.jsonWebKeys)
+            if (!jwk?.key) throw new JwtException("Unable to select valid key for token from loaded JWKS")
 
-                jws.setKey(jwk.key)
-                if (!jws.verifySignature()) throw new JwtException("Token failed signature validation")
+            jws.setKey(jwk.key)
+            if (!jws.verifySignature()) throw new JwtException("Token failed signature validation")
 
-                def payload = JSONParser.parseObject(jws.payload)
-                if (payload.aud != this.clientId) {
-                    throw new JwtException("Token aud value [${payload.aud}] does not match expected value from auth0ClientId config.")
-                }
-
-                return new JwtValidationResult(
-                    token: token,
-                    sub: payload.sub,
-                    email: payload.email,
-                    fullName: payload.name,
-                    profilePicUrl: payload.picture
-                )
-
-            } catch (e) {
-                return new JwtValidationResult(token: token, exception: e)
+            def payload = JSONParser.parseObject(jws.payload)
+            if (payload.aud != this.clientId) {
+                throw new JwtException("Token aud value [${payload.aud}] does not match expected value from auth0ClientId config.")
             }
+
+            return new JwtValidationResult(
+                token: token,
+                sub: payload.sub,
+                email: payload.email,
+                fullName: payload.name,
+                profilePicUrl: payload.picture
+            )
+
+        } catch (e) {
+            return new JwtValidationResult(token: token, exception: e)
         }
     }
 

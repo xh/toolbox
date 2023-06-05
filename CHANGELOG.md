@@ -1,9 +1,201 @@
 # Changelog
 
-## v3.0.0-SNAPSHOT - unreleased
+## v4.0-SNAPSHOT - unreleased
+
+## v3.0.1 - 2023-05-26
+
+### New Features
+* Toolbox can now be run with an in memory H2 DB, and all needed configs and preferences
+  will be pre-loaded into this DB.  This is useful for developers who want
+  to quickly check out the project and run it on their local development machine
+  without going through the trouble of creating a new MySql DB. See the section on 
+  "instance config file" in README.md for the settings that trigger use of H2.
 
 ### Libraries
 
+* @xh/hoist 56.5.0
+* hoist-core 16.2.0
+
+## v3.0.0 - 2022-12-31
+
+### New Features
+* Toolbox has been completely rewritten in TypeScript.
+* New application permission role: `HOIST_ADMIN_READER`.
+* All Hoist Framework Admin tabs are now readable (read only) by users who have this new role: `HOIST_ADMIN_READER`.
+* `CustomLogSupportConverter` added as an example of an alternative log output format.  
+  Applied to Monitor log file.
+
+### Libraries
+
+* @xh/hoist 54.0.0
+* hoist-core 15.0.0
+
+## v2.20.1 - 2022-10-17
+
+### Bug Fixes
+
+* Improve Slack status monitor alert formatting.
+
+### Libraries
+
+* @xh/hoist 52.0.2
+
+## v2.20.0 - 2022-10-10
+
+### New Features
+
+* Added Other > Inspector tab to demo the new Hoist Inspector tool.
+* Added example of grid sparklines rendering within the Portfolio example app.
+* `SlackAlertService` to post status monitor and client error report alerts to the XH Slack channel for monitoring.
+
+### Libraries
+
+* @xh/hoist 52.0.0
+* hoist-core 14.3.1
+
+## v2.19.0 - 2022-07-30
+
+### New Features
+
+* Demos for new `ModalSupport` feature introduced in hoist-react v50.
+
+### Libraries
+
+* @xh/hoist 50.1.0
+* @xh/hoist-dev-utils 6.0.0 - includes upgraded build toolchain with Webpack v5
+* hoist-core 14.1.0
+
+## v2.18.0 - 2022-05-24
+
+### Libraries
+
+* @xh/hoist 49.0.0
+
+## v2.17.1 - 2022-04-22
+
+### Libraries
+
+* @xh/hoist 48.0.1
+
+## v2.17.0 - 2022-04-21
+
+### New Features
+
+* New examples for Exceptions, DashCanvas, and more.
+
+### Libraries
+
+* @xh/hoist 48.0.0
+
+## v2.16.0 - 2022-03-26
+
+### New Features
+
+* Improved Examples tab displays available desktop examples using an inline iFrame, for easier browsing and preview of
+  each demo app.
+* Demo new `cancelAlign` option supported by `XH.message()` and variants.
+
+### Libraries
+
+* @xh/hoist 47.1.1
+
+## v2.15.0 - 2022-02-08
+
+### Bug Fixes
+
+* Auth0 OAuth login flow no longer leaves a gap at bottom of the viewport when Toolbox is opened in iOS fullscreen mode.
+* Fixes to contact example app.
+
+### Libraries
+
+* @xh/hoist 46.1.0
+* hoist-core 13.1.0
+
+## v2.14.0 - 2022-01-17
+
+### Technical
+
+* MySQL driver and datasource properties tweaked and updated to MySQL v8.
+
+### Libraries
+
+* @xh/hoist 45.0.2
+* hoist-core 13.0.6
+* mysql-connector-java 8.0.27
+
+## v2.13.0 - 2022-01-11
+
+### New Features
+
+* New mobile buttons page shows off the many variations of newly upgraded mobile buttons.
+
+### Libraries
+
+* @xh/hoist 45.0.1
+* hoist-core 13.0.5
+* grails 5.1.1
+
+## v2.12.0 - 2021-12-29
+
+### Libraries
+
+* @xh/hoist 44.3.0
+* hoist-core 11.0.3
+
+## v2.11.0 - 2021-12-08
+
+### Libraries
+
+* @xh/hoist 44.2.0
+* hoist-core 11.0.2
+
+## v2.10.0 - 2021-10-04
+
+### New Features
+
+* New Grid > Column Filters tab added to demo column-based `GridFilterModel` with linked `FilterChooser`.
+* Theme controls for `TreeMap` examples.
+* Add newly supported `TreeStyle` options to shared grid example.
+* Demo new `GridFindField` component within the desktop tree grid example.
+* Demo new long-press (`GridModel.onCellContextMenu`) event handler on mobile tree grid example as an alternate
+  drilldown gesture for parent rows.
+* Use newly standardized support for app-wide (grid) sizing mode.
+
+### Libraries
+
+* @xh/hoist 43.0.0
+* @xh/hoist-dev-utils 5.11.0
+
+## v2.9.0 - 2021-08-13
+
+### New Features
+
+* New Tests for Hoist Column Filtering
+
+### Libraries
+
+* @xh/hoist 42.0.0
+
+## v2.8.0 - 2021-07-23
+
+### New Features
+
+* Added demos for Badge (new) and Placeholder components.
+
+### Libraries
+
+* @xh/hoist 41.1.0
+
+## v2.7.0 - 2021-07-01
+
+### New Features
+
+* New full-featured example applications 'Contact' and 'TODO'.
+* New top-level Mobile tab (within the desktop app) highlights Hoist's support for mobile devices.
+
+### Libraries
+
+* @xh/hoist 41.0.0
 * @xh/hoist-dev-utils 5.9.0
 
 ## v2.6.0 - 2021-04-22
@@ -33,7 +225,6 @@
 * @xh/hoist 39.0.0
 * ag-Grid 25.1.0
 
-
 ## v2.4.0 - 2021-02-28
 
 ### New Features
@@ -53,7 +244,6 @@
 * @xh/hoist 38.1.1
 * @xh/hoist-dev-utils 5.6.0
 
-
 ## v2.3.0 - 2021-02-04
 
 ### New Features
@@ -71,7 +261,6 @@
 * ag-grid 25.0.1
 * hoist-core 9.1.1
 
-
 ## v2.2.0 - 2021-01-22
 
 ### New Features
@@ -81,7 +270,6 @@
 ### Libraries
 
 * @xh/hoist 37.2.0
-
 
 ## v2.1.0 - 2020-12-25
 
@@ -108,12 +296,11 @@
 * ag-grid 24.1.0
 * react 17.0.1
 
-
 ## v2.0.0 - 2020-10-28
 
 ### New Features
 
-* Make the home tab a Dashboard container with new example widgets, including a live feed from the XH Github repos.
+* Make the home tab a Dashboard container with new example widgets, including a live feed from the XH GitHub repos.
 * Enable OAuth login for visitors via Auth0.
 * Add example usage of enhanced `TabContainerModel` APIs.
 * Add example usage of new built-in styling options for tree grids.

@@ -1,6 +1,7 @@
 package io.xh.toolbox.security
 
 import groovy.util.logging.Slf4j
+import grails.gorm.transactions.ReadOnly
 import io.xh.hoist.security.BaseAuthenticationService
 import io.xh.hoist.user.HoistUser
 import io.xh.toolbox.user.User
@@ -8,8 +9,6 @@ import io.xh.toolbox.user.UserService
 
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
-
-import static io.xh.hoist.util.Utils.withNewSession
 
 @Slf4j
 class AuthenticationService extends BaseAuthenticationService  {
@@ -45,14 +44,13 @@ class AuthenticationService extends BaseAuthenticationService  {
 
         def tokenResult = auth0Service.validateToken(token)
         if (!tokenResult.isValid) {
-            log.debug("Invalid token result - user will not be installed on session - return 401 | exception: ${tokenResult.exception}")
+            logDebug("Invalid token result - user will not be installed on session - return 401", tokenResult.exception)
             return true
         }
 
         def user = userService.getOrCreateFromJwtResult(tokenResult)
         setUser(request, user)
-        log.debug("User read from token and set on request | username: ${user.username}")
-
+        logDebug("User read from token and set on request", "username: ${user.username}")
         return true
     }
 
@@ -78,11 +76,10 @@ class AuthenticationService extends BaseAuthenticationService  {
     //------------------------
     // Implementation
     //------------------------
-    private HoistUser lookupUser(String email, String password) {
-        (HoistUser) withNewSession {
-            def user = User.findByEmailAndEnabled(email, true)
-            return user?.checkPassword(password) ? user : null
-        }
+    @ReadOnly
+    private HoistUser lookupUser(String username, String password) {
+        def user = User.findByEmailAndEnabled(username, true)
+        return user?.checkPassword(password) ? user : null
     }
 
     private static boolean isAjax(HttpServletRequest request) {
