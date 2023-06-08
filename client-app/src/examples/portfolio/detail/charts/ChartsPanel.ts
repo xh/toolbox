@@ -16,8 +16,10 @@ export const chartsPanel = hoistCmp.factory({
             title: model.symbol ? `Volume + Pricing: ${model.symbol}` : 'Volume + Pricing',
             icon: Icon.chartArea(),
             modelConfig: {
-                defaultSize: 700,
-                side: 'right',
+                // defaultSize: 700,
+                resizable: false,
+                collapsible: false,
+                // side: 'right',
                 renderMode: 'unmountOnHide',
                 modalSupport: true,
                 persistWith: {...PERSIST_DETAIL, path: 'chartPanel'}
