@@ -53,10 +53,19 @@ class BootStrap {
 
             Utils.configService.ensureRequiredConfigsCreated(
                 roles: [
+                    groupName: 'Toolbox',
                     valueType: 'json',
                     defaultValue: ['HOIST_ADMIN': [adminUsername], 'APP_READER': [adminUsername]]
+                ],
+                jsLicenses: [
+                    groupName: 'Toolbox',
+                    valueType: 'json',
+                    defaultValue: [agGrid: null],
+                    clientVisible: true,
+                    note: 'Provide any js licenses needed by client here.'
                 ]
-            )
+            );
+
         } else {
             log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
