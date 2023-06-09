@@ -7,6 +7,8 @@
 //-----------------------------------------------------------------
 // App Services -- Import and Register
 //-----------------------------------------------------------------
+import {XH} from '@xh/hoist/core';
+import {when} from '@xh/hoist/mobx';
 import {ContactService} from './examples/contact/svc/ContactService';
 import {GitHubService} from './core/svc/GitHubService';
 import {PortfolioService} from './core/svc/PortfolioService';
@@ -66,10 +68,16 @@ ModuleRegistry.registerModules([
     FiltersToolPanelModule,
     SparklinesModule
 ]);
-LicenseManager.setLicenseKey(
-    'CompanyName=Extremely Heavy Industries Inc.,LicensedApplication=Toolbox,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=6,LicensedProductionInstancesCount=1,AssetReference=AG-027581,ExpiryDate=4_June_2023_[v2]_MTY4NTgzMzIwMDAwMA==d4c6cb75d5bcb4ef4cbee5c6fee57351'
-);
+
 installAgGrid(AgGridReact, agPkg.version);
+
+when(
+    () => XH.appIsRunning,
+    () => {
+        const agLicense = XH.getConf('jsLicenses').agGrid;
+        if (agLicense) LicenseManager.setLicenseKey(agLicense);
+    }
+);
 
 //-------------------------------------------------------------------------------
 // Highcharts - Import and Register
