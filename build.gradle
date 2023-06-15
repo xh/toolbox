@@ -72,9 +72,9 @@ Map hoistMetaData = [
 ]
 
 def allJvmArgs = [
-        '-Dspring.output.ansi.enabled=always',
-        '-XX:TieredStopAtLevel=1',
-        '-Xmx1024m'
+    '-Dspring.output.ansi.enabled=always',
+    '-XX:TieredStopAtLevel=1',
+    '-Xmx1024m'
 ]
 
 bootRun {
