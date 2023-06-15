@@ -1,6 +1,7 @@
 buildscript {
     repositories {
-        mavenLocal()
+        mavenCentral()
+        maven {url 'https://plugins.gradle.org/m2/'}
         maven {url 'https://repo.grails.org/grails/core'}
     }
     dependencies {
@@ -17,7 +18,6 @@ apply plugin:'war'
 apply plugin:'org.grails.grails-web'
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven {url 'https://repo.grails.org/grails/core'}
     maven {url 'https://repo.xh.io/content/groups/public/'}
@@ -25,6 +25,7 @@ repositories {
 
 configurations {
     all {
+        // Ensure any SNAPSHOT dependencies are always resolved to the latest available version.
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
 }
@@ -48,7 +49,7 @@ if (inlineHoist) {
 
 dependencies {
     implementation "org.bitbucket.b_c:jose4j:0.7.12"
-    runtimeOnly "mysql:mysql-connector-java:8.0.29"
+    runtimeOnly "mysql:mysql-connector-java:8.0.33"
 
     if (useSpringDevTools) {
         runtimeOnly(
@@ -87,6 +88,14 @@ bootRun {
 tasks.withType(GroovyCompile) {
     configure(groovyOptions) {
         forkOptions.jvmArgs = allJvmArgs
+    }
+}
+
+// Ask IntelliJ to download sources and javadocs for Gradle-managed dependencies.
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
     }
 }
 
