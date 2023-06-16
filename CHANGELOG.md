@@ -1,5 +1,12 @@
 # Changelog
 
+## v4.0-SNAPSHOT - unreleased
+
+### Libraries
+
+* @xh/hoist 57.0.0
+* @xh/hoist-dev-utils 6.3.0
+
 ## v3.0.2 - 2023-06-01
 
 ### Libraries
