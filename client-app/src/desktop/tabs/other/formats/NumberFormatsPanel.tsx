@@ -1,5 +1,5 @@
-import {code, hframe} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {code, fragment, hframe, hspacer, input} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, HoistProps} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     buttonGroupInput,
@@ -10,8 +10,8 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {card} from '@xh/hoist/kit/blueprint';
-import React from 'react';
+import {card, formGroup} from '@xh/hoist/kit/blueprint';
+import React, {ReactNode} from 'react';
 import {wrapper} from '../../../common';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
@@ -63,7 +63,7 @@ export const numberFormatsPanel = hoistCmp.factory({
     }
 });
 
-const paramsPanel = hoistCmp.factory(() =>
+const paramsPanel = hoistCmp.factory<NumberFormatsPanelModel>(({model}) =>
     panel({
         title: 'Function + Options',
         compactHeader: true,
@@ -132,11 +132,28 @@ const paramsPanel = hoistCmp.factory(() =>
                         input: switchInput(),
                         info: 'values under 10,000 will not be delimited'
                     }),
-                    param({
-                        bind: 'colorSpec',
-                        input: switchInput(),
-                        info: 'color positive and negative numbers (colors configurable)'
-                    }),
+                    formGroup(
+                        formGroup({
+                            label: code('colorSpec'),
+                            item: buttonGroupInput({
+                                bind: 'colorSpec',
+                                items: [
+                                    button({text: code('true'), value: true}),
+                                    button({text: code('false'), value: false}),
+                                    button({text: 'Custom', value: 'custom'})
+                                ]
+                            })
+                        }),
+                        fragment({
+                            omit: model.colorSpec !== 'custom',
+                            items: [
+                                hspacer(),
+                                colorInput({label: code('pos'), bind: 'positiveColor'}),
+                                colorInput({label: code('neg'), bind: 'negativeColor'}),
+                                colorInput({label: code('neutral'), bind: 'neutralColor'})
+                            ]
+                        })
+                    ),
                     param({
                         bind: 'label',
                         input: textInput({commitOnChange: true, width: 50}),
@@ -150,5 +167,24 @@ const paramsPanel = hoistCmp.factory(() =>
                 ]
             })
         ]
+    })
+);
+
+interface ColorInputProps extends HoistProps<NumberFormatsPanelModel> {
+    bind: string;
+    label: ReactNode;
+}
+
+const colorInput = hoistCmp.factory<ColorInputProps>(({bind, label, model}) =>
+    formGroup({
+        label,
+        item: input({
+            type: 'color',
+            id: 'pos',
+            value: model[bind],
+            onChange: e => {
+                model[bind] = e.target.value;
+            }
+        })
     })
 );

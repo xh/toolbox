@@ -2,6 +2,9 @@
 
 ## v4.0-SNAPSHOT - unreleased
 
+### New Features
+* Enhance Other > Number Formats page to showcase expanded `NumberFormatOptions.colorSpec` functionality
+
 ## v3.0.3 - 2023-06-20
 
 ### Libraries
