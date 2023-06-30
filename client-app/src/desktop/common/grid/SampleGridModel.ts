@@ -95,7 +95,8 @@ export class SampleGridModel extends HoistModel {
         enableExport: true,
         exportOptions: {
             columns: ['id', 'company', 'VISIBLE'],
-            filename: 'hoist-sample-export'
+            filename: 'hoist-sample-export',
+            track: true
         },
         store: {
             processRawData: r => {
