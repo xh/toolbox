@@ -35,10 +35,17 @@ export class ContactService extends HoistService {
     }
 
     async updateContactAsync(id, update) {
-        await XH.fetchService.postJson({
-            url: `contacts/update/${id}`,
-            body: update
-        });
+        await XH.fetchService
+            .postJson({
+                url: `contacts/update/${id}`,
+                body: update
+            })
+            .track({
+                category: 'Contacts',
+                message: `Updated contact`,
+                data: {id, ...update},
+                logData: true
+            });
     }
 
     @action
