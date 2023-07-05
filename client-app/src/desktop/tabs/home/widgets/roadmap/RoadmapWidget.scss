@@ -1,0 +1,70 @@
+.tb-roadmap-widget {
+  // Group header calendar icons
+  .ag-group-value svg {
+    margin-right: 4px;
+  }
+
+  .tb-roadmap-item {
+    height: 148px;
+    padding: var(--xh-pad-half-px) var(--xh-pad-px);
+
+    // Title row.
+    > .xh-hbox {
+      flex: none;
+    }
+
+    &__title {
+      font-size: var(--xh-font-size-large-px);
+      font-weight: 500;
+      margin: auto 0;
+
+      svg {
+        margin-right: var(--xh-pad-px);
+      }
+    }
+
+    &__statusIcon {
+      // Margin tweak to align with GitHub icon in button.
+      margin: 5px 0 0 var(--xh-pad-half-px);
+    }
+
+    &__description {
+      opacity: 0.8;
+      flex: 1;
+      min-height: 0;
+      margin: 0 0 var(--xh-pad-px) 0;
+      overflow: hidden;
+
+      > span {
+        color: var(--xh-button-active-text-color);
+        background-color: var(--xh-button-active-bg);
+        border: var(--xh-border-solid);
+        border-radius: calc(var(--xh-border-radius) * 1px);
+        padding: 0 var(--xh-pad-half-px);
+      }
+    }
+
+    &__footer {
+      flex: none;
+      opacity: 0.8;
+      font-size: var(--xh-font-size-small-px);
+    }
+  }
+
+  .ag-group-child-count {
+    display: none;
+  }
+}
+
+.tb-roadmap__popover {
+  background-color: var(--xh-bg-alt);
+  padding: var(--xh-pad-half-px);
+
+  .bp4-popover-content {
+    background-color: var(--xh-bg-alt) !important;
+  }
+
+  &--description {
+    max-width: 400px;
+  }
+}

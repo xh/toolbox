@@ -31,7 +31,6 @@ class PortfolioService extends BaseService {
                 intervalUnits: SECONDS,
                 delay: true
         )
-        super.init()
     }
 
     PortfolioDataSet getData() {
@@ -39,6 +38,16 @@ class PortfolioService extends BaseService {
         dataSets.getOrCreate(currentDay) {
             generateData(currentDay)
         }
+    }
+
+    Map<LocalDate, Double> getClosingPriceHistory(List<String> symbols, int daysBack) {
+        def startDate = LocalDate.now().minusDays(daysBack),
+            historicalPrices = getData().historicalPrices
+
+        return symbols
+            .collectEntries { [it, historicalPrices.get(it)] }
+            .collectEntries { k, v -> [k, v.findAll { it.day >= startDate }] }
+            .collectEntries { k, v -> [k, v.collect { [it.day, it.close] }] }
     }
 
     //----------------
@@ -64,7 +73,7 @@ class PortfolioService extends BaseService {
         // Get current day portfolio from cache.  If it exists, perturb it, and put it back in the cache
         def data = dataSets.get(tradingDayService.currentDay())
         if (data) {
-            withShortDebug("Perturbing prices for ${data.day}") {
+            withDebug("Perturbing prices for ${data.day}") {
                 data = perturbIntradayPrices(data)
                 dataSets.put(data.day, data)
             }
@@ -124,7 +133,7 @@ class PortfolioService extends BaseService {
             return newPrice ? pos.repricePosition(newPrice.close) : pos
         }
 
-        log.debug("Perturbed ${numToChange} instruments' pricing")
+        logDebug("Perturbed $numToChange instruments' pricing")
 
         return new PortfolioDataSet(
                 day: oldData.day,
