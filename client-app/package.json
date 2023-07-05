@@ -15,8 +15,7 @@
     "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(hostname)",
     "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
-    "prepare": "cd .. && husky install client-app/.husky",
-    "tsc": "./node_modules/typescript/bin/tsc"
+    "prepare": "cd .. && husky install client-app/.husky"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
