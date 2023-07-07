@@ -1,9 +1,14 @@
 # Changelog
 
-## v4.0-SNAPSHOT - unreleased
+## v3.1.0 - 2023-07-07
 
 ### New Features
 * Enhance Other > Number Formats page to showcase expanded `NumberFormatOptions.colorSpec` functionality
+
+### Libraries
+
+* @xh/hoist 58.0.0
+* hoist-core 16.4.0
 
 ## v3.0.3 - 2023-06-20
 
