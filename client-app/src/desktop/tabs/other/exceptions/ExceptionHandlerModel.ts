@@ -6,7 +6,7 @@ export class ExceptionHandlerModel extends HoistModel {
     // For example options:
     @bindable title = '';
     @bindable message = '';
-    @bindable logOnServer = true;
+    @bindable logOnServer = false;
     @bindable showAlert = true;
     @bindable requireReload = false;
     @bindable alertType: 'dialog' | 'toast' = 'dialog';
