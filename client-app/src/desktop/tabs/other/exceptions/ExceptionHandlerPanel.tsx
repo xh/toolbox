@@ -1,4 +1,4 @@
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {wrapper} from '../../../common';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -124,11 +124,13 @@ const displayOptions = hoistCmp.factory<ExceptionHandlerModel>(({model}) =>
                     placeholder: '[Exception Message]',
                     width: null
                 }),
-                switchInput({
-                    bind: 'logOnServer',
-                    label: 'Log On Server',
-                    labelSide: 'left'
-                }),
+                XH.getUser().isHoistAdmin
+                    ? switchInput({
+                          bind: 'logOnServer',
+                          label: 'Log On Server',
+                          labelSide: 'left'
+                      })
+                    : null,
                 switchInput({
                     bind: 'showAlert',
                     label: 'Show Alert',
