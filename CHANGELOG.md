@@ -2,6 +2,13 @@
 
 ## v4.0.0-SNAPSHOT - unreleased
 
+## v3.2.1 - 2023-07-14
+
+### Libraries
+
+* @xh/hoist 58.0.1
+* hoist-core 16.4.1
+
 ## v3.2.0 - 2023-07-07
 
 ### New Features
