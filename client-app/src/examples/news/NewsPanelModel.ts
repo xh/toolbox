@@ -17,7 +17,7 @@ export class NewsPanelModel extends HoistModel {
                 p('No commits found...'),
                 p({
                     items: [
-                        'Maybe check that you have the ',
+                        'Check that you have the ',
                         code('newsApiKey'),
                         ' config set with an appropriate value?'
                     ]

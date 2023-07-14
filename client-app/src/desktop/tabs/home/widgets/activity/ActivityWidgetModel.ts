@@ -32,13 +32,12 @@ export class ActivityWidgetModel extends HoistModel {
         };
 
         this.gridModel = new GridModel({
-            // emptyText: 'No commits found...',
             emptyText: vbox({
                 items: [
                     p('No commits found...'),
                     p({
                         items: [
-                            'Maybe check that you have the ',
+                            'Check that you have the ',
                             code('gitHubAccessToken'),
                             ' config set with an appropriate token string?'
                         ]
