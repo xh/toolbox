@@ -1,6 +1,6 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {span, div} from '@xh/hoist/cmp/layout';
+import {span, div, vbox, p, code} from '@xh/hoist/cmp/layout';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
 import {managed, HoistModel, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
@@ -32,7 +32,19 @@ export class ActivityWidgetModel extends HoistModel {
         };
 
         this.gridModel = new GridModel({
-            emptyText: 'No commits found...',
+            // emptyText: 'No commits found...',
+            emptyText: vbox({
+                items: [
+                    p('No commits found...'),
+                    p({
+                        items: [
+                            'Maybe check that you have the ',
+                            code('gitHubAccessToken'),
+                            ' config set with an appropriate token string?'
+                        ]
+                    })
+                ]
+            }),
             colChooserModel: true,
             sortBy: 'committedDate|desc',
             groupBy: 'committedDay',
