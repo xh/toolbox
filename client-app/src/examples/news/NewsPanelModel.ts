@@ -5,25 +5,16 @@ import {withFilterByField, FilterLike} from '@xh/hoist/data';
 import {uniq, map} from 'lodash';
 
 import {newsPanelItem} from './NewsPanelItem';
-import {code, p, vbox} from '@xh/hoist/cmp/layout';
 
 export class NewsPanelModel extends HoistModel {
     SEARCH_FIELDS = ['title', 'text'];
 
+    @bindable.ref
+    newsErrorThrown: object;
+
     @managed
     viewModel = new DataViewModel({
-        emptyText: vbox({
-            items: [
-                p('No commits found...'),
-                p({
-                    items: [
-                        'Check that you have the ',
-                        code('newsApiKey'),
-                        ' config set with an appropriate value?'
-                    ]
-                })
-            ]
-        }),
+        emptyText: 'No news found...',
         sortBy: 'published|desc',
         store: {
             fields: [
@@ -60,8 +51,12 @@ export class NewsPanelModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        const stories = await XH.fetchJson({url: 'news', loadSpec});
-        this.completeLoad(stories);
+        try {
+            const stories = await XH.fetchJson({url: 'news', loadSpec});
+            this.completeLoad(stories);
+        } catch (e) {
+            this.newsErrorThrown = e;
+        }
     }
 
     //------------------------

@@ -3,6 +3,7 @@ package io.xh.toolbox.app
 import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
+import io.xh.hoist.exception.RoutineRuntimeException
 import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONSerializer
 import io.xh.hoist.websocket.WebSocketService
@@ -37,7 +38,7 @@ class GitHubService extends BaseService {
 
     ConfigService configService
     WebSocketService webSocketService
-    Map<String, CommitHistory> commitsByRepo = new HashMap()
+    private commitsByRepo = new HashMap()
 
     void init() {
         if (configService.getString('gitHubAccessToken', 'none') == 'none') {
@@ -155,6 +156,13 @@ class GitHubService extends BaseService {
             this.commitsByRepo.put(repoName, commitHistory)
             return newCommits
         }
+    }
+
+    Map<String, CommitHistory> getCommitsByRepo() {
+        if (configService.getString('gitHubAccessToken', 'none') == 'none') {
+            throw new RoutineRuntimeException('Required "gitHubAccessToken" config not present or set to "none" - unable to fetch commits from GitHub.')
+        }
+        return commitsByRepo
     }
 
 

@@ -1,6 +1,6 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {span, div, vbox, p, code} from '@xh/hoist/cmp/layout';
+import {span, div} from '@xh/hoist/cmp/layout';
 import {dateTimeCol, localDateCol} from '@xh/hoist/cmp/grid/columns/DatesTimes';
 import {managed, HoistModel, XH} from '@xh/hoist/core';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid/columns/Actions';
@@ -8,10 +8,14 @@ import {fmtDate} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {head} from 'lodash';
+import {bindable} from '@xh/hoist/mobx';
 
 export class ActivityWidgetModel extends HoistModel {
     @managed
     gridModel: GridModel;
+
+    @bindable.ref
+    githubErrorThrown: object;
 
     @managed
     filterChooserModel: FilterChooserModel;
@@ -32,18 +36,7 @@ export class ActivityWidgetModel extends HoistModel {
         };
 
         this.gridModel = new GridModel({
-            emptyText: vbox({
-                items: [
-                    p('No commits found...'),
-                    p({
-                        items: [
-                            'Check that you have the ',
-                            code('gitHubAccessToken'),
-                            ' config set with an appropriate token string?'
-                        ]
-                    })
-                ]
-            }),
+            emptyText: 'No commits found...',
             colChooserModel: true,
             sortBy: 'committedDate|desc',
             groupBy: 'committedDay',
@@ -178,13 +171,20 @@ export class ActivityWidgetModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => XH.gitHubService.allCommits,
+            track: () => [XH.gitHubService.allCommits, XH.gitHubService.errorThrown],
             run: () => this.loadAsync()
         });
     }
 
     override async doLoadAsync() {
-        this.gridModel.loadData(XH.gitHubService.allCommits);
+        let allCommits = XH.gitHubService.allCommits,
+            thrownError = XH.gitHubService.errorThrown;
+
+        if (allCommits.length != 0) {
+            this.gridModel.loadData(allCommits);
+        } else if (thrownError) {
+            this.githubErrorThrown = thrownError;
+        }
     }
 
     private onRowDoubleClicked = params => {

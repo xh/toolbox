@@ -11,6 +11,8 @@ export class GitHubService extends HoistService {
     /** Loaded commits histories, keyed by repoName. */
     @observable.ref commitHistories: PlainObject = {};
 
+    @observable.ref errorThrown: object;
+
     /** Loaded array of commits across all repositories. */
     @computed
     get allCommits() {
@@ -62,7 +64,7 @@ export class GitHubService extends HoistService {
                 });
             }
         } catch (e) {
-            XH.handleException(e, {showAlert: false, showAsError: false});
+            this.errorThrown = e;
         }
     }
 }

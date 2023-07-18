@@ -1,6 +1,7 @@
 package io.xh.toolbox.app
 
 import io.xh.hoist.BaseService
+import io.xh.hoist.exception.RoutineRuntimeException
 import io.xh.hoist.http.JSONClient
 import io.xh.toolbox.NewsItem
 import org.apache.hc.client5.http.classic.methods.HttpGet
@@ -19,6 +20,9 @@ class NewsService extends BaseService {
     def configService
 
     List<NewsItem> getNewsItems() {
+        if (configService.getString('newsApiKey', 'none') == 'none') {
+            throw new RoutineRuntimeException('Required "newsApiKey" config not present or set to "none" - unable to fetch the news.')
+        }
         // to avoid hitting the API too frequently, we only start our timer when the NewsService is actually used.
         if (!newsTimer) {
             newsTimer = createTimer(
