@@ -52,8 +52,9 @@
     "react-dom": "~18.2.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "^7.0.0-SNAPSHOT",
+    "@xh/hoist-dev-utils": "7.x",
     "cross-env": "7.x",
+    "eslint": "8.x",
     "eslint-config-prettier": "8.x",
     "husky": "8.x",
     "lint-staged": "13.x",

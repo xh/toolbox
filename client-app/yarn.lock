@@ -2092,10 +2092,10 @@
     eslint-plugin-react-hooks "^4.6"
     typescript "5.x"
 
-"@xh/hoist-dev-utils@^7.0.0-SNAPSHOT":
-  version "7.0.0-SNAPSHOT.1689767054297"
-  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-7.0.0-SNAPSHOT.1689767054297.tgz#169b9dd1580877bd772c0dd6c5ccb09cb7fea3be"
-  integrity sha512-q9GqNqSGeWF4UyO/eBPuWdrXq7JNlLChMpWg/pB80l+PT2ItY+D+3R2vPH5d/YttuqiXVZ2v90heu0/709YGsA==
+"@xh/hoist-dev-utils@7.x":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-7.0.0.tgz#4fb3abc176009fef66ba9ecf2c997aeb5c102489"
+  integrity sha512-3/Wy+NN/+ngyQ/tQtCFYaqoO3Ku3eVXTPIKkU+gMGT+rX5k0pvBmlbPj6H7Uq6L/YrZPCIsHyx5UYOzwqPkaqA==
   dependencies:
     "@babel/core" "^7.22.1"
     "@babel/plugin-proposal-decorators" "^7.22.3"
@@ -2136,9 +2136,9 @@
     webpackbar "~5.0.2"
 
 "@xh/hoist@^59.0.0-SNAPSHOT":
-  version "59.0.0-SNAPSHOT.1689768675452"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-59.0.0-SNAPSHOT.1689768675452.tgz#9ef3ce85e0026886178576c3dae576a1f39f7c61"
-  integrity sha512-7cobKl6E1VOSmOrf9RPcfQTpqoSC0mGAE4UwCWAek1kIOtDWysO7MEDhGX7JrrdjmhCikaNnmdbxJwL8U6aEEQ==
+  version "59.0.0-SNAPSHOT.1689771665768"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-59.0.0-SNAPSHOT.1689771665768.tgz#8dca6f93a7026fc2171cf42757f12f689d7bcbac"
+  integrity sha512-7N1tR/8OybJg69c2oOK3dURbpbn4Hmxors5KzBsUbnZZ5djFVayaUSbNr47C4DQ7Eyr4wfZ2K/yykq299z0Lyw==
   dependencies:
     "@blueprintjs/core" "^4.20.0"
     "@blueprintjs/datetime" "^4.4.35"
@@ -3575,7 +3575,7 @@ eslint-visitor-keys@^3.3.0, eslint-visitor-keys@^3.4.1:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-3.4.1.tgz#c22c48f48942d08ca824cc526211ae400478a994"
   integrity sha512-pZnmmLwYzf+kWaM/Qgrvpen51upAktaaiI01nsJD/Yr3lMOdNtq0cxkrrg16w64VtisN6okbs7Q8AfGqj4c9fA==
 
-eslint@^8.45:
+eslint@8.x, eslint@^8.45:
   version "8.45.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.45.0.tgz#bab660f90d18e1364352c0a6b7c6db8edb458b78"
   integrity sha512-pd8KSxiQpdYRfYa9Wufvdoct3ZPQQuVuU5O6scNgMuOMYuxvH0IGaYK0wUFjo4UYYQQCUndlXiMbnxopwvvTiw==
