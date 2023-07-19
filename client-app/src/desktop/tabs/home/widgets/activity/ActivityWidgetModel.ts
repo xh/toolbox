@@ -32,18 +32,10 @@ export class ActivityWidgetModel extends HoistModel {
         };
 
         this.gridModel = new GridModel({
-            emptyText: vbox({
-                items: [
-                    p('No commits found...'),
-                    p({
-                        items: [
-                            'Have you properly configured the ',
-                            code('gitHubAccessToken'),
-                            ' config?'
-                        ]
-                    })
-                ]
-            }),
+            emptyText: vbox([
+                p('No commits found...'),
+                p(['Have you properly configured the ', code('gitHubAccessToken'), ' config?'])
+            ]),
             colChooserModel: true,
             sortBy: 'committedDate|desc',
             groupBy: 'committedDay',
