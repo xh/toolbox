@@ -14,13 +14,9 @@ export class NewsPanelModel extends HoistModel {
     viewModel = new DataViewModel({
         emptyText: vbox({
             items: [
-                p('No commits found...'),
+                p('No news found...'),
                 p({
-                    items: [
-                        'Check that you have the ',
-                        code('newsApiKey'),
-                        ' config set with an appropriate value?'
-                    ]
+                    items: ['Have you properly configured the', code('newsApiKey'), ' config?']
                 })
             ]
         }),

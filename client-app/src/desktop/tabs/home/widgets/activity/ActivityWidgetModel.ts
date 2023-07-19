@@ -37,9 +37,9 @@ export class ActivityWidgetModel extends HoistModel {
                     p('No commits found...'),
                     p({
                         items: [
-                            'Check that you have the ',
+                            'Have you properly configured the ',
                             code('gitHubAccessToken'),
-                            ' config set with an appropriate token string?'
+                            ' config?'
                         ]
                     })
                 ]
