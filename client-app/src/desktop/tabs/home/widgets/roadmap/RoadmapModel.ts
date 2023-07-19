@@ -41,12 +41,10 @@ export class RoadmapModel extends HoistModel {
         selModel: 'disabled',
         rowBorders: true,
         showHover: true,
-        gridOptions: {
-            groupSortFn: (a, b) => {
-                a = toNumber(a);
-                b = toNumber(b);
-                return this.statusFilter === 'showUpcoming' ? a - b : b - a;
-            }
+        groupSortFn: (a, b) => {
+            a = toNumber(a);
+            b = toNumber(b);
+            return this.statusFilter === 'showUpcoming' ? a - b : b - a;
         }
     });
 
