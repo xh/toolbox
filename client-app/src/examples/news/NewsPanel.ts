@@ -10,9 +10,8 @@ import './NewsPanelItem.scss';
 
 export const newsPanel = hoistCmp.factory({
     model: uses(NewsPanelModel),
-    render({model}) {
+    render() {
         return panel({
-            omit: !!model.newsErrorThrown,
             className: 'toolbox-news-panel',
             width: '100%',
             height: '100%',

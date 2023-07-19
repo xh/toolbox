@@ -137,6 +137,12 @@ class BootStrap {
                     groupName: 'Toolbox - Example Apps',
                     note: 'Absolute path to disk location for storing uploaded files.'
             ],
+            newsApiKey: [
+                    valueType: 'string',
+                    defaultValue: 'realApiKeyGoesHere',
+                    clientVisible: false,
+                    groupName: 'Toolbox - Example Apps'
+            ],
             newsRefreshMins: [
                     valueType: 'int',
                     defaultValue: 60,
