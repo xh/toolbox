@@ -186,6 +186,12 @@ const bbar2 = hoistCmp.factory<GridTestModel>(({model}) =>
             bind: 'includeCollapsedChildren',
             label: 'Include Collapsed Children',
             labelSide: 'left'
+        }),
+        toolbarSep(),
+        switchInput({
+            bind: 'includeHiddenColumns',
+            label: 'Include Hidden Cols',
+            labelSide: 'left'
         })
     )
 );
