@@ -6,7 +6,7 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas, DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
 import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from '../widgets';
 import {wrapper} from '../../../common';
@@ -34,6 +34,17 @@ export const dashCanvasPanel = hoistCmp.factory({
             item: panel({
                 title: 'Layout › DashCanvas',
                 icon: Icon.layout(),
+                headerItems: [
+                    refreshButton({
+                        minimal: true
+                        // This refreshButton works without an onClick handler because it
+                        // finds the parent tabContainer's refreshContextModel, which refreshes
+                        // every refreshContextModel beneath it.
+                        // If we did not want to refresh everything in the tabContainer,
+                        // we could provide a more focused onClick handler like:
+                        // onClick: () => model.dashCanvasModel.refreshContextModel.refreshAsync()
+                    })
+                ],
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard

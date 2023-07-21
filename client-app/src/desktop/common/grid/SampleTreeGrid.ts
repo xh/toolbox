@@ -19,7 +19,12 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
             item: hframe(grid(), gridOptionsPanel({model: gridModel})),
             ref: model.panelRef,
             tbar: [
-                refreshButton(),
+                refreshButton({
+                    // Pass `model` here to limit refresh context to the SampleTreeGridModel only.
+                    // If `model` were not passed, the refreshButton would look up to the next
+                    // refreshContextModel, which could include other components.
+                    model
+                }),
                 toolbarSep(),
                 groupingChooser(),
                 filler(),
