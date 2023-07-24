@@ -30,7 +30,8 @@ export const dashContainerPanel = hoistCmp.factory({
                 icon: Icon.layout(),
                 headerItems: [
                     refreshButton({
-                        minimal: true
+                        minimal: true,
+                        intent: null
                         // This refreshButton works without an onClick handler because it
                         // finds the parent tabContainer's refreshContextModel, which refreshes
                         // every refreshContextModel beneath it.
