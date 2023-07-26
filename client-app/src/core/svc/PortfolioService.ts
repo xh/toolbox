@@ -21,14 +21,13 @@ export class PortfolioService extends HoistService {
      * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
      * @param dims - field names for dimensions on which to group.
      * @param includeSummary - true to include a root summary node
-     * @param maxPositions - truncate position tree, by smallest pnl, until this number of
-     *     positions is reached.
+     * @param maxPositions - truncate position tree, by smallest pnl, until this number of positions is reached.
      */
     async getPositionsAsync(
         dims: string[],
         includeSummary = false,
         maxPositions = this.MAX_POSITIONS
-    ): Promise<PlainObject[]> {
+    ): Promise<Position[]> {
         const positions = await XH.fetchJson({
             url: 'portfolio/positions',
             params: {
@@ -42,10 +41,9 @@ export class PortfolioService extends HoistService {
 
     /**
      * Return a single grouped position, uniquely identified by drilldown ID.
-     * @param positionId - ID installed on each position returned by `getPositionsAsync()`.
-     * @return {Promise<*>}
+     * @param positionId - a {@see Position#id}
      */
-    async getPositionAsync(positionId) {
+    async getPositionAsync(positionId): Promise<Position> {
         return XH.fetchJson({
             url: 'portfolio/position',
             params: {
@@ -77,15 +75,15 @@ export class PortfolioService extends HoistService {
     /**
      * Return a list of flat position data.
      */
-    async getRawPositionsAsync({loadSpec}: any = {}): Promise<PlainObject[]> {
+    async getRawPositionsAsync({loadSpec}: any = {}): Promise<RawPosition[]> {
         return XH.fetchJson({url: 'portfolio/rawPositions', loadSpec});
     }
 
-    async getAllOrdersAsync({loadSpec}: any = {}): Promise<PlainObject[]> {
+    async getAllOrdersAsync({loadSpec}: any = {}): Promise<Order[]> {
         return XH.fetchJson({url: 'portfolio/orders', loadSpec});
     }
 
-    async getOrdersAsync({positionId, loadSpec}): Promise<PlainObject[]> {
+    async getOrdersAsync({positionId, loadSpec}): Promise<Order[]> {
         return XH.fetchJson({
             url: 'portfolio/ordersForPosition',
             params: {positionId},
@@ -130,4 +128,40 @@ export class PortfolioService extends HoistService {
             ])
         };
     }
+}
+
+export interface Position {
+    id: string;
+    name: string;
+    pnl: number;
+    mktVal: number;
+    children: Position[];
+}
+
+export interface RawPosition {
+    symbol: string;
+    model: string;
+    sector: string;
+    fund: string;
+    trader: string;
+    mktVal: number;
+    pnl: number;
+}
+
+export interface Order {
+    id: string;
+    symbol: string;
+    sector: string;
+    region: string;
+    model: string;
+    trader: string;
+    fund: string;
+    dir: string;
+    quantity: number;
+    price: number;
+    mktVal: number;
+    time: number;
+    commission: number;
+    confidences: number;
+    closingPrices: number[];
 }
