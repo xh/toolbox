@@ -89,9 +89,6 @@ export class DimensionManagerModel extends HoistModel {
         // Otherwise update user dims, triggering selection of new value.
         const newDims = unionWith([val], this.userDims, isEqual);
         this.setUserDims(newDims, newId);
-
-        // Reset chooser for next show.
-        this.groupingChooserModel.setValue([]);
     }
 
     get formattedDimensions() {

@@ -9,7 +9,8 @@ export const welcomeMsg = hoistCmp.factory(({multiline}) => {
         items: [
             div({
                 className: 'tb-welcome-message__profile-pic',
-                item: img({src: user.profilePicUrl}),
+                // referrerPolicy prop necessary for some Google profile pics.
+                item: img({src: user.profilePicUrl, referrerPolicy: 'no-referrer'}),
                 omit: !user.profilePicUrl
             }),
             `Welcome, `,

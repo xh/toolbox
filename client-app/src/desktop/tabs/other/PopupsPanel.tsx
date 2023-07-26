@@ -145,7 +145,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                             ...popBtn(Icon.edit({className: 'xh-blue-light'})),
                             text: 'Prompt',
                             onClick: () =>
-                                XH.prompt({
+                                XH.prompt<string>({
                                     title: 'Prompt',
                                     message: div(
                                         p(
@@ -159,7 +159,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                             ...popBtn(Icon.edit({className: 'xh-blue-light'})),
                             text: 'with customizations',
                             onClick: () =>
-                                XH.prompt({
+                                XH.prompt<string>({
                                     title: 'Prompt with customizations',
                                     message: div(
                                         <p>
@@ -196,7 +196,7 @@ export const popupsPanel = hoistCmp.factory(() => {
                             ...popBtn(Icon.edit({className: 'xh-blue-light'})),
                             text: 'as promise',
                             onClick: () =>
-                                XH.prompt({
+                                XH.prompt<string>({
                                     title: 'Prompt with promise',
                                     message: p(
                                         "Prompt return a promise that resolves to the input's ",

@@ -1,6 +1,52 @@
 # Changelog
 
-## v4.0-SNAPSHOT - unreleased
+## v4.0.0-SNAPSHOT - unreleased
+
+## v3.2.1 - 2023-07-14
+
+### Libraries
+
+* @xh/hoist 58.0.1
+* hoist-core 16.4.1
+
+## v3.2.0 - 2023-07-07
+
+### New Features
+* Enhance Other > Number Formats page to showcase expanded `NumberFormatOptions.colorSpec` functionality
+
+### Libraries
+
+* @xh/hoist 58.0.0
+* hoist-core 16.4.0
+
+## v3.0.3 - 2023-06-20
+
+### Libraries
+
+* @xh/hoist 57.0.0
+* @xh/hoist-dev-utils 6.3.0 
+* hoist-core 16.3.0
+
+## v3.0.2 - 2023-06-01
+
+### Libraries
+
+* @xh/hoist 56.6.0
+* @xh/hoist-dev-utils 6.2.0
+
+## v3.0.1 - 2023-05-26
+
+### New Features
+* Toolbox can now be run with an in memory H2 DB, and all needed configs and preferences
+  will be pre-loaded into this DB.  This is useful for developers who want
+  to quickly check out the project and run it on their local development machine
+  without going through the trouble of creating a new MySql DB. See the section on 
+  "instance config file" in README.md for the settings that trigger use of H2.
+
+### Libraries
+
+* @xh/hoist 56.5.0
+* hoist-core 16.2.0
 
 ## v3.0.0 - 2022-12-31
 

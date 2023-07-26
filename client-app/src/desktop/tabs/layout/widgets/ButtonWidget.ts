@@ -62,7 +62,8 @@ class ButtonWidgetModel extends HoistModel {
             run: value => {
                 viewModel.icon = this.getIconForValue(value);
                 viewModel.viewState = {value};
-            }
+            },
+            fireImmediately: true
         });
     }
 
@@ -78,7 +79,7 @@ class ButtonWidgetModel extends HoistModel {
             case 'Button 3':
                 return Icon.skull();
             default:
-                return Icon.question();
+                return Icon.stop();
         }
     }
 }

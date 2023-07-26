@@ -112,11 +112,11 @@ class AsyncLoopPanelModel extends HoistModel {
             let i = 0;
             switch (loopType) {
                 case 'forEachAsync':
-                    return await forEachAsync(collection, it => {
+                    return forEachAsync(collection, it => {
                         this.testFn(it);
                     });
                 case 'whileAsync':
-                    return await whileAsync(
+                    return whileAsync(
                         () => i < iterations,
                         () => {
                             this.testFn(collection[i++]);

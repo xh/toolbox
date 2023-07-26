@@ -36,6 +36,7 @@ export class AppModel extends BaseAppModel {
                     {name: 'dataView', path: '/dataView'},
                     {name: 'fetchAPI', path: '/fetchAPI'},
                     {name: 'grid', path: '/grid'},
+                    {name: 'gridScrolling', path: '/gridScrolling'},
                     {name: 'localDate', path: '/localDate'},
                     {name: 'panelResizing', path: '/panelResizing'},
                     {name: 'select', path: '/select'},

@@ -144,7 +144,7 @@ class DashContainerPanelModel extends HoistModel {
             {
                 id: 'buttons',
                 title: 'Buttons',
-                icon: Icon.question(),
+                icon: Icon.stop(),
                 content: buttonWidget
             },
             {

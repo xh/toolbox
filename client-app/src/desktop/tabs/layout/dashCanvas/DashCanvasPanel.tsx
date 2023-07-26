@@ -161,7 +161,7 @@ class Model extends HoistModel {
             {
                 id: 'buttons',
                 title: 'Buttons',
-                icon: Icon.edit(),
+                icon: Icon.stop(),
                 content: buttonWidget,
                 width: 4,
                 height: 2,

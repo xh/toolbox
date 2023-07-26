@@ -63,8 +63,8 @@ class OHLCChartModel extends HoistModel {
                     return `
                         <div class="xh-chart-tooltip">
                         <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(
-                        this.x
-                    )}</div>
+                            this.x
+                        )}</div>
                         <table>
                             <tr><th>Open:</th><td>${fmtPrice(p.open)}</td></tr>
                             <tr><th>High:</th><td>${fmtPrice(p.high)}</td></tr>

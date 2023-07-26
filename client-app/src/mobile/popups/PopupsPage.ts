@@ -30,7 +30,7 @@ export const popupsPage = hoistCmp.factory({
                     );
                 }),
                 renderCard('Prompt', () => {
-                    XH.prompt({
+                    XH.prompt<string>({
                         title: 'Prompt',
                         message: 'This is a prompt dialog.'
                     }).then(ret =>

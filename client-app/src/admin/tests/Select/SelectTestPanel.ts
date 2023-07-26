@@ -36,9 +36,9 @@ export const SelectTestPanel = hoistCmp({
                         selectProps: customerProps
                     }),
                     example({
-                        name: 'Select queryFn & enableCreate & optionRenderer',
+                        name: 'Select queryFn & enableCreate & optionRenderer & enableTooltips',
                         bind: 'asyncCreatableValue',
-                        selectProps: {...customerProps, enableCreate: true}
+                        selectProps: {...customerProps, enableCreate: true, enableTooltips: true}
                     }),
                     example({
                         name: 'Select (with grouped options)',
@@ -97,13 +97,14 @@ export const SelectTestPanel = hoistCmp({
                         }
                     }),
                     example({
-                        name: 'Select with leftIcon & enableMulti & enableClear & rsOptions: {hideSelectedOptions: false, closeMenuOnSelect: false}',
+                        name: 'Select with leftIcon & enableMulti & enableTooltips & enableClear & rsOptions: {hideSelectedOptions: false, closeMenuOnSelect: false}',
                         bind: 'enableMultiMenuOpen',
                         selectProps: {
-                            width: 350,
+                            width: 200,
                             options: usStates,
                             leftIcon: Icon.globe(),
                             enableMulti: true,
+                            enableTooltips: true,
                             placeholder: 'Select state(s)...',
                             enableClear: true,
                             hideSelectedOptions: false,
