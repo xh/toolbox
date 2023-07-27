@@ -251,6 +251,7 @@ export class ChatGptService extends HoistService {
             this.updateUserMessageHistory(msgToSend.content);
         }
 
+        console.log(this.messages.map(it => this.formatMessageForPost(it)));
         const body = {
             model: this.model,
             messages: this.messages.map(it => this.formatMessageForPost(it)),

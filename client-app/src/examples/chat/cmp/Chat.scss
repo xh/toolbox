@@ -11,8 +11,10 @@
     background-color: var(--xh-grid-bg-odd);
   }
 
+  border-left: 4px solid transparent;
   &--selected {
-    outline: 1px solid var(--xh-orange);
+    border-left-color: var(--xh-orange);
+    background-color: var(--xh-intent-primary-trans1) !important;
   }
 
   &__avatar {

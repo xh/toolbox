@@ -14,6 +14,16 @@ export class ChatModel extends HoistModel {
 
     @bindable.ref selectedMsg: GptMessage;
 
+    /** If the currently selected message is a GPT response, show the preceding user message. */
+    get userPromptForSelectedMsg() {
+        const {selectedMsg} = this;
+        if (!selectedMsg || selectedMsg.role !== 'assistant') return null;
+
+        // TODO - assumes user/assistant messages are always alternating
+        const msgIdx = XH.chatGptService.messages.indexOf(selectedMsg);
+        return XH.chatGptService.messages[msgIdx - 1];
+    }
+
     @bindable showUserMessageHistory = false;
     @managed userHistoryGridModel: GridModel;
 
@@ -108,6 +118,7 @@ export class ChatModel extends HoistModel {
     scrollMessages() {
         wait(500).then(() => {
             this.scrollRef.current?.scrollIntoView({behavior: 'auto'});
+            this.selectedMsg = last(XH.chatGptService.messages);
         });
     }
 
