@@ -5,6 +5,8 @@ import {createObservableRef} from '@xh/hoist/utils/react';
 import {HoistInputModel} from '@xh/hoist/cmp/input';
 import {isEmpty, last} from 'lodash';
 import {wait} from '@xh/hoist/promise';
+import {actionCol} from '@xh/hoist/desktop/cmp/grid';
+import {Icon} from '@xh/hoist/icon';
 
 export class ChatModel extends HoistModel {
     @bindable inputMsg: string;
@@ -22,7 +24,9 @@ export class ChatModel extends HoistModel {
 
     scrollRef = createObservableRef<HTMLElement>();
 
-    async initAsync() {
+    constructor() {
+        super();
+
         this.userHistoryGridModel = this.createUsersHistoryGridModel();
 
         this.addReaction(
@@ -86,7 +90,7 @@ export class ChatModel extends HoistModel {
 
     async clearAndReInitAsync() {
         await XH.chatGptService.clearAndReInitAsync();
-        XH.toast('Chat history cleared.');
+        XH.toast({message: 'Chat history cleared.', position: 'top'});
         this.focusInput();
     }
 
@@ -114,11 +118,27 @@ export class ChatModel extends HoistModel {
             hideHeaders: true,
             stripeRows: true,
             rowBorders: true,
-            columns: [{field: 'message', flex: 1}],
-            onRowClicked: ({data: record}) => {
-                this.showUserMessageHistory = false;
-                this.inputMsg = record.data.message;
-                this.focusInput();
+            columns: [
+                {field: 'message', flex: 1},
+                {
+                    ...actionCol,
+                    actions: [
+                        {
+                            icon: Icon.x(),
+                            intent: 'danger',
+                            actionFn: ({record}) => {
+                                XH.chatGptService.removeFromMessageHistory(record.data.message);
+                            }
+                        }
+                    ]
+                }
+            ],
+            onCellClicked: ({data: record, column}) => {
+                if (column.colId === 'message') {
+                    this.showUserMessageHistory = false;
+                    this.inputMsg = record.data.message;
+                    this.focusInput();
+                }
             }
         });
     }

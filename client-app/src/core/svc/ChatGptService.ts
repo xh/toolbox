@@ -282,6 +282,10 @@ export class ChatGptService extends HoistService {
         this.userMessageHistory = history;
     }
 
+    removeFromMessageHistory(msg: string) {
+        this.userMessageHistory = this.userMessageHistory.filter(it => it !== msg);
+    }
+
     clearUserMessageHistory() {
         this.userMessageHistory = [];
     }
