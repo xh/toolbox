@@ -1,3 +1,5 @@
+import static java.lang.Boolean.parseBoolean
+
 buildscript {
     repositories {
         mavenCentral()
@@ -34,8 +36,7 @@ springBoot {
     mainClass = xhAppPackage + ".Application"
 }
 
-boolean inlineHoist = runHoistInline == 'true'
-if (inlineHoist) {
+if (parseBoolean(runHoistInline)) {
     println "${xhAppName}: running with Hoist Core INLINE...."
     grails.plugins {
         implementation project(":hoist-core")
@@ -77,7 +78,7 @@ def allJvmArgs = [
     '-Xmx1024m'
 ]
 
-if (enableHotSwap) {
+if (parseBoolean(enableHotSwap)) {
     allJvmArgs += [
         '-XX:HotswapAgent=fatjar',
         '-XX:+AllowEnhancedClassRedefinition',
