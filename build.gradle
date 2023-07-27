@@ -77,6 +77,14 @@ def allJvmArgs = [
     '-Xmx1024m'
 ]
 
+if (enableHotSwap) {
+    allJvmArgs += [
+        '-XX:HotswapAgent=fatjar',
+        '-XX:+AllowEnhancedClassRedefinition',
+        '-javaagent:/etc/hoist/groovyReset.jar'
+    ]
+}
+
 bootRun {
     ignoreExitValue true
     systemProperties System.properties
