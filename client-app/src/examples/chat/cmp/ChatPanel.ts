@@ -1,11 +1,12 @@
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {ChatModel} from './ChatModel';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {messageList} from './cmp/MessageList';
-import {promptInput} from './cmp/PromptInput';
+import {messageList} from './impl/MessageList';
+import {promptInput} from './impl/PromptInput';
 import {placeholder} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import './Chat.scss';
 
 export const chatPanel = hoistCmp.factory({
     displayName: 'ChatPanel',

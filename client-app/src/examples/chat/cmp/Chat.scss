@@ -11,6 +11,10 @@
     background-color: var(--xh-grid-bg-odd);
   }
 
+  &--selected {
+    outline: 1px solid var(--xh-orange);
+  }
+
   &__avatar {
     color: var(--xh-orange-muted);
     width: 40px;

@@ -10,9 +10,8 @@ import {div, fragment} from '@xh/hoist/cmp/layout';
 import {jsonInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import ReactMarkdown from 'react-markdown';
-import './Chat.scss';
 import {popover} from '@xh/hoist/kit/blueprint';
-import {chatPanel} from './ChatPanel';
+import {chatPanel} from './cmp/ChatPanel';
 
 library.add(faPaperPlane, faRobot, faUserRobotXmarks);
 

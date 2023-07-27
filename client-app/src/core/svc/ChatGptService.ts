@@ -1,13 +1,16 @@
 import {HoistService, persist, XH} from '@xh/hoist/core';
-import {dropRight, isEmpty, isString, last, remove} from 'lodash';
+import {dropRight, isEmpty, isString, last, pick, remove} from 'lodash';
 import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {logInfo, withInfo} from '@xh/hoist/utils/js';
+import type {SetOptional} from 'type-fest';
 
 export interface GptMessage {
     role: 'system' | 'user' | 'assistant' | 'function';
+    timestamp: number;
     content?: string;
     name?: string;
     function_call?: GptFnCallResponse;
+    responseJson?: string;
 }
 
 export interface GptFnCallResponse {
@@ -160,7 +163,7 @@ export class ChatGptService extends HoistService {
         super();
         makeObservable(this);
 
-        this.messages.forEach(msg => this.logMsg(msg));
+        // this.messages.forEach(msg => this.logMsg(msg));
 
         this.addReaction(
             {
@@ -225,13 +228,20 @@ export class ChatGptService extends HoistService {
         await this.initAsync();
     }
 
-    async sendChatAsync(message: GptMessage | string, options: GptChatOptions = {}) {
+    async sendChatAsync(
+        message: SetOptional<GptMessage, 'timestamp'> | string,
+        options: GptChatOptions = {}
+    ) {
         const msgToSend: GptMessage = isString(message)
             ? {
                   role: 'user',
-                  content: message
+                  content: message,
+                  timestamp: Date.now()
               }
-            : message;
+            : {
+                  timestamp: Date.now(),
+                  ...message
+              };
 
         // Push user message onto state immediately, to indicate that it's been sent.
         this.messages = [...this.messages, msgToSend];
@@ -243,7 +253,7 @@ export class ChatGptService extends HoistService {
 
         const body = {
             model: this.model,
-            messages: this.messages,
+            messages: this.messages.map(it => this.formatMessageForPost(it)),
             functions: this.functions,
             ...options
         };
@@ -269,8 +279,18 @@ export class ChatGptService extends HoistService {
         console.debug(resp);
         if (isEmpty(resp?.choices)) throw XH.exception('GPT did not return any choices');
 
-        const gptReply = resp.choices[0];
-        this.messages = [...this.messages, gptReply.message];
+        const gptReplyChoice = resp.choices[0],
+            gptResponse: GptMessage = {
+                ...gptReplyChoice.message,
+                timestamp: Date.now(),
+                responseJson: JSON.stringify(resp, null, 2)
+            };
+        this.messages = [...this.messages, gptResponse];
+    }
+
+    // Strip any extra fields from message before sending to GPT.
+    formatMessageForPost(msg: GptMessage) {
+        return pick(msg, ['role', 'content', 'name', 'function_call']);
     }
 
     updateUserMessageHistory(msg: string) {

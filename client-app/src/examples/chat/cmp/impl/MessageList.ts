@@ -4,9 +4,10 @@ import {box, div, hbox, img, placeholder} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {errorMessage} from '@xh/hoist/desktop/cmp/error';
-import {GptMessage} from '../../../core/svc/ChatGptService';
+import {GptMessage} from '../../../../core/svc/ChatGptService';
 import ReactMarkdown from 'react-markdown';
 import {ChatModel} from '../ChatModel';
+import {structResponsePanel} from './StructResponsePanel';
 
 export const messageList = hoistCmp.factory({
     displayName: 'MessageList',
@@ -16,12 +17,18 @@ export const messageList = hoistCmp.factory({
         const {messages} = XH.chatGptService,
             item = isEmpty(messages)
                 ? placeholder(Icon.ellipsisHorizontal(), 'No messages yet...')
-                : div({
-                      className: 'tb-msg-list',
+                : hbox({
+                      flex: 1,
                       items: [
-                          ...messages.map(message => msgItem({message})),
-                          // Supports scrolling to bottom of list.
-                          box({ref: model.scrollRef})
+                          div({
+                              className: 'tb-msg-list',
+                              items: [
+                                  ...messages.map(message => msgItem({message})),
+                                  // Supports scrolling to bottom of list.
+                                  box({ref: model.scrollRef})
+                              ]
+                          }),
+                          structResponsePanel({})
                       ]
                   });
 
@@ -35,6 +42,7 @@ export const messageList = hoistCmp.factory({
 const msgItem = hoistCmp.factory<MsgItemProps>({
     render({model, message}) {
         const {role, content, function_call} = message,
+            isSelected = model.selectedMsg === message,
             items = [];
 
         // System message is visible via popover from top toolbar.
@@ -59,14 +67,15 @@ const msgItem = hoistCmp.factory<MsgItemProps>({
         }
 
         return hbox({
-            className: `tb-msg`,
+            className: `tb-msg ${isSelected ? 'tb-msg--selected' : ''}`,
             items: [
                 avatar({role}),
                 div({
                     className: 'tb-msg__content',
                     items
                 })
-            ]
+            ],
+            onClick: () => (model.selectedMsg = message)
         });
     }
 });

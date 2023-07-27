@@ -7,10 +7,12 @@ import {isEmpty, last} from 'lodash';
 import {wait} from '@xh/hoist/promise';
 import {actionCol} from '@xh/hoist/desktop/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
+import {GptMessage} from '../../../core/svc/ChatGptService';
 
 export class ChatModel extends HoistModel {
     @bindable inputMsg: string;
-    @bindable showFunctionEditor: boolean = false;
+
+    @bindable.ref selectedMsg: GptMessage;
 
     @bindable showUserMessageHistory = false;
     @managed userHistoryGridModel: GridModel;
