@@ -128,7 +128,9 @@ export class SampleTreeGridModel extends HoistModel {
                 {
                     ...nameCol,
                     isTreeColumn: true,
-                    ...(includeCheckboxes ? this.createCheckboxTreeColumn() : {})
+                    ...(includeCheckboxes ? this.createCheckboxTreeColumn() : {}),
+                    // Temporary width until auto resizing is fixed to account for checkboxes
+                    width: 240
                 },
                 {...mktValCol},
                 {...pnlCol}
