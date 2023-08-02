@@ -2,10 +2,6 @@
 
 ## v4.0.0-SNAPSHOT - unreleased
 
-### Bug Fixes
-
-* Grid header bottom border still rendering when hiding grid headers fix. 
-
 ## v3.2.1 - 2023-07-14
 
 ### Libraries
