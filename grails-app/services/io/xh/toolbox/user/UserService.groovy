@@ -4,6 +4,7 @@ import io.xh.hoist.email.EmailService
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 import io.xh.hoist.user.BaseUserService
+import io.xh.hoist.user.HoistUser
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.security.JwtValidationResult
 
@@ -12,12 +13,12 @@ class UserService extends BaseUserService {
     EmailService emailService
 
     @ReadOnly
-    List<User> list(boolean activeOnly) {
+    List<HoistUser> list(boolean activeOnly) {
         return activeOnly ? User.findAllByEnabled(true) : User.list()
     }
 
     @ReadOnly
-    User find(String username) {
+    HoistUser find(String username) {
         return User.findByEmail(username)
     }
 
@@ -36,7 +37,7 @@ class UserService extends BaseUserService {
      * explicitly linked/registered to multiple social providers. That's overkill for Toolbox.
      */
     @Transactional
-    User getOrCreateFromJwtResult(JwtValidationResult jwtResult) {
+    HoistUser getOrCreateFromJwtResult(JwtValidationResult jwtResult) {
         if (!jwtResult.isValid) throw new RuntimeException("Invalid JWT token result")
 
         def email = jwtResult.email,

@@ -2,7 +2,7 @@ package io.xh.toolbox.user
 
 import io.xh.hoist.user.BaseRoleService
 
-import static io.xh.hoist.util.Utils.configService
+import static io.xh.hoist.util.Utils.getConfigService
 
 /**
  * Every user in Toolbox is granted the base APP_READER role by default - this ensures that any
