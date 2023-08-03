@@ -51,12 +51,10 @@ if (parseBoolean(runHoistInline)) {
 dependencies {
     implementation "org.bitbucket.b_c:jose4j:0.7.12"
     runtimeOnly "mysql:mysql-connector-java:8.0.33"
+    developmentOnly "io.methvin:directory-watcher:0.15.0"
 
-    if (useSpringDevTools) {
-        runtimeOnly(
-            "org.springframework.boot:spring-boot-devtools",
-            "io.methvin:directory-watcher:0.15.0"
-        )
+    if (parseBoolean(enableHotSwap)) {
+        developmentOnly "io.xh:groovyReset:1.0"
     }
 }
 
@@ -79,10 +77,11 @@ def allJvmArgs = [
 ]
 
 if (parseBoolean(enableHotSwap)) {
+    def groovyReset = configurations.developmentOnly.resolve().find {it.name == "groovyReset.jar"}
     allJvmArgs += [
         '-XX:HotswapAgent=fatjar',
         '-XX:+AllowEnhancedClassRedefinition',
-        '-javaagent:/etc/hoist/groovyReset.jar'
+        '-javaagent:' + groovyReset.absolutePath
     ]
 }
 
