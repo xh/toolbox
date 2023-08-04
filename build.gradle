@@ -77,7 +77,7 @@ def allJvmArgs = [
 ]
 
 if (parseBoolean(enableHotSwap)) {
-    def groovyReset = configurations.developmentOnly.resolve().find {it.name == "groovyReset.jar"}
+    def groovyReset = configurations.developmentOnly.resolve().find {it.name.contains("groovyReset")}
     allJvmArgs += [
         '-XX:HotswapAgent=fatjar',
         '-XX:+AllowEnhancedClassRedefinition',
