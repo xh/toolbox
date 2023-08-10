@@ -31,6 +31,8 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
             mask: 'onLoad',
             bbar: [
                 select({
+                    // DEBUG
+                    classNames: {control: state => 'border-red-600'},
                     model: gridModel,
                     bind: 'showSummary',
                     width: 130,
