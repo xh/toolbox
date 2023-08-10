@@ -9,7 +9,7 @@
   }
 
   p {
-    :not:first-child {
+    &:not(:first-child) {
       margin-top: 20px;
     }
     border-bottom: var(--xh-border-solid);
