@@ -1,6 +1,6 @@
 import React from 'react';
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {box, div, span, strong, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
+import {box, div, filler, frame, hbox, hframe, span, strong, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -71,6 +71,7 @@ export const inputsPanel = hoistCmp.factory({
 
 const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
     form({
+        testId: 'hoist-inputs',
         fieldDefaults: {
             commitOnChange: model.commitOnChange
         },
@@ -382,6 +383,7 @@ const bbar = hoistCmp.factory<InputsPanelModel>(({model}) => {
         toolbarSep(),
         switchInput({
             model,
+            testId: 'inputs-panel-commit-radio',
             bind: 'commitOnChange',
             label: 'Commit on change'
         })
@@ -399,6 +401,7 @@ const fieldDisplay = hoistCmp.factory(({fieldModel, fmtVal}) => {
         }
     }
     return div({
+        testId: `inputs-panel-${fieldModel.name}`,
         className: 'inputs-panel-field-display',
         item: displayVal
     });

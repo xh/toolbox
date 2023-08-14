@@ -191,6 +191,11 @@ export class AppModel extends HoistAppModel {
                     {
                         name: 'examples',
                         path: '/examples'
+                    },
+                    {
+                        name: 'tests',
+                        path: '/tests',
+                        children: [{name: 'form', path: 'form'}]
                     }
                 ]
             }
