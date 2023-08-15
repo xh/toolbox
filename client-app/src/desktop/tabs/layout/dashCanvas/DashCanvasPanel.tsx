@@ -34,18 +34,7 @@ export const dashCanvasPanel = hoistCmp.factory({
             item: panel({
                 title: 'Layout › DashCanvas',
                 icon: Icon.layout(),
-                headerItems: [
-                    refreshButton({
-                        minimal: true,
-                        intent: null
-                        // This refreshButton works without an onClick handler because it
-                        // finds the parent tabContainer's refreshContextModel, which refreshes
-                        // every refreshContextModel beneath it.
-                        // If we did not want to refresh everything in the tabContainer,
-                        // we could provide a more focused onClick handler like:
-                        // onClick: () => model.dashCanvasModel.refreshContextModel.refreshAsync()
-                    })
-                ],
+                headerItems: [refreshButton({minimal: true, intent: null})],
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard
