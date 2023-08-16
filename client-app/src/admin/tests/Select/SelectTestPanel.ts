@@ -12,11 +12,9 @@ import {SelectTestModel} from './SelectTestModel';
 import './SelectTestPanel.scss';
 
 export const SelectTestPanel = hoistCmp({
-
     model: creates(SelectTestModel),
 
     render({model}) {
-
         return panel({
             title: 'Select tests',
             className: 'select-test-panel xh-tiled-bg',
@@ -38,9 +36,9 @@ export const SelectTestPanel = hoistCmp({
                         selectProps: customerProps
                     }),
                     example({
-                        name: 'Select queryFn & enableCreate & optionRenderer',
+                        name: 'Select queryFn & enableCreate & optionRenderer & enableTooltips',
                         bind: 'asyncCreatableValue',
-                        selectProps: {...customerProps, enableCreate: true}
+                        selectProps: {...customerProps, enableCreate: true, enableTooltips: true}
                     }),
                     example({
                         name: 'Select (with grouped options)',
@@ -68,10 +66,7 @@ export const SelectTestPanel = hoistCmp({
                             placeholder: 'Select a number...'
                         }
                     }),
-                    hbox(
-                        label('number of options: '),
-                        numberInput({bind: 'numOptions'})
-                    ),
+                    hbox(label('number of options: '), numberInput({bind: 'numOptions'})),
                     example({
                         name: 'Select with leftIcon & object options & hideDropdownIndicator:true',
                         bind: 'objectValue2',
@@ -85,7 +80,7 @@ export const SelectTestPanel = hoistCmp({
                         name: 'Select with leftIcon & queryFn & enableCreate & optionRenderer',
                         bind: 'asyncCreatableValue2',
                         selectProps: {
-                            ...customerProps, 
+                            ...customerProps,
                             leftIcon: Icon.office(),
                             enableCreate: true
                         }
@@ -102,13 +97,14 @@ export const SelectTestPanel = hoistCmp({
                         }
                     }),
                     example({
-                        name: 'Select with leftIcon & enableMulti & enableClear & rsOptions: {hideSelectedOptions: false, closeMenuOnSelect: false}',
+                        name: 'Select with leftIcon & enableMulti & enableTooltips & enableClear & rsOptions: {hideSelectedOptions: false, closeMenuOnSelect: false}',
                         bind: 'enableMultiMenuOpen',
                         selectProps: {
-                            width: 350,
+                            width: 200,
                             options: usStates,
                             leftIcon: Icon.globe(),
                             enableMulti: true,
+                            enableTooltips: true,
                             placeholder: 'Select state(s)...',
                             enableClear: true,
                             hideSelectedOptions: false,
@@ -121,8 +117,8 @@ export const SelectTestPanel = hoistCmp({
     }
 });
 
-const example = hoistCmp.factory<SelectTestModel>(
-    ({name, bind, selectProps, model}) => fragment(
+const example = hoistCmp.factory<SelectTestModel>(({name, bind, selectProps, model}) =>
+    fragment(
         p(name),
         label('value: ' + JSON.stringify(model[bind])),
         select({...selectProps, bind})
@@ -131,16 +127,16 @@ const example = hoistCmp.factory<SelectTestModel>(
 
 // In addition to styling a customer option, this has some logic to handle a newly created option
 // and the "Create XYZ" option that is offered when enableCreate:true
-const customerOption = hoistCmp.factory(
-    ({opt}) => hbox({
+const customerOption = hoistCmp.factory(({opt}) =>
+    hbox({
         className: 'xh-pad-half xh-border-bottom',
         items: [
             box({
-                item: isUndefined(opt.isActive) ?
-                    Icon.magic({className: 'xh-grey'}) :
-                    opt.isActive ?
-                        Icon.checkCircle({className: 'xh-green'}) :
-                        Icon.x({className: 'xh-red'}),
+                item: isUndefined(opt.isActive)
+                    ? Icon.magic({className: 'xh-grey'})
+                    : opt.isActive
+                    ? Icon.checkCircle({className: 'xh-green'})
+                    : Icon.x({className: 'xh-red'}),
                 width: 32,
                 justifyContent: 'center'
             }),
@@ -170,7 +166,7 @@ const customerProps = {
     enableClear: true,
     selectOnFocus: true,
     queryFn: queryCustomersAsync,
-    optionRenderer: (opt) => customerOption({opt}),
+    optionRenderer: opt => customerOption({opt}),
     placeholder: 'Search customers...'
 };
 
@@ -182,23 +178,29 @@ async function queryCustomersAsync(query) {
 }
 
 const recipes = [
-    {label: 'Hot Tea', value: {ingredients: ['water', 'tea leaves'], warnings: ['hot'], price: 1.75}},
-    {label: 'Iced Tea', value: {ingredients: ['water', 'tea leaves', 'ice', 'lemon'], price: 2.50}},
-    {label: 'Coffee', value: {ingredients: ['coffee beans', 'water'], warnings: ['addictive', 'hot'], price: 3.25}},
-    {label: 'Soda', value: {ingredients: 'unknown', warnings: ['sweet', 'acidic'], price: 1.50}},
-    {label: 'Red Wine', value: {ingredients: ['grapes', 'water', 'yeast', 'time'], warnings: ['alcoholic', 'staining'], needId: true, price: 6.75}}
+    {
+        label: 'Hot Tea',
+        value: {ingredients: ['water', 'tea leaves'], warnings: ['hot'], price: 1.75}
+    },
+    {label: 'Iced Tea', value: {ingredients: ['water', 'tea leaves', 'ice', 'lemon'], price: 2.5}},
+    {
+        label: 'Coffee',
+        value: {ingredients: ['coffee beans', 'water'], warnings: ['addictive', 'hot'], price: 3.25}
+    },
+    {label: 'Soda', value: {ingredients: 'unknown', warnings: ['sweet', 'acidic'], price: 1.5}},
+    {
+        label: 'Red Wine',
+        value: {
+            ingredients: ['grapes', 'water', 'yeast', 'time'],
+            warnings: ['alcoholic', 'staining'],
+            needId: true,
+            price: 6.75
+        }
+    }
 ];
 
 const desserts = [
-    {label: 'cookies', options: [
-        'oatmeal',
-        'chocolate chip',
-        'peanut butter'
-    ]},
-    {label: 'cakes', options: [
-        'red velvet', 'tres leches', 'German\'s chocolate', 'cheesecake'
-    ]},
-    {label: 'ice cream', options: [
-        'vanilla', 'chocolate', 'strawberry'
-    ]}
+    {label: 'cookies', options: ['oatmeal', 'chocolate chip', 'peanut butter']},
+    {label: 'cakes', options: ['red velvet', 'tres leches', "German's chocolate", 'cheesecake']},
+    {label: 'ice cream', options: ['vanilla', 'chocolate', 'strawberry']}
 ];

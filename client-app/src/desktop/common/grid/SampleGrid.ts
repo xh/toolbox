@@ -2,7 +2,12 @@ import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {hoistCmp, uses, HoistProps, BoxProps} from '@xh/hoist/core';
-import {colAutosizeButton, colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {
+    colAutosizeButton,
+    colChooserButton,
+    exportButton,
+    refreshButton
+} from '@xh/hoist/desktop/cmp/button';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -35,10 +40,15 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
 
         let selText;
         switch (selCount) {
-            case 0: selText = 'No selection'; break;
-            case 1: selText = `Selected ${selectedRecords[0].data.company}`; break;
+            case 0:
+                selText = 'No selection';
+                break;
+            case 1:
+                selText = `Selected ${selectedRecords[0].data.company}`;
+                break;
 
-            default: selText = `Selected ${selCount} companies`;
+            default:
+                selText = `Selected ${selCount} companies`;
         }
 
         if (omitGridTools) {

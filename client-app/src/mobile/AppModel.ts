@@ -1,6 +1,10 @@
 import {HoistAppModel, XH, loadAllAsync, managed} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
-import {themeAppOption, sizingModeAppOption, autoRefreshAppOption} from '@xh/hoist/mobile/cmp/appOption';
+import {
+    themeAppOption,
+    sizingModeAppOption,
+    autoRefreshAppOption
+} from '@xh/hoist/mobile/cmp/appOption';
 import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {buttonPage} from './buttons/ButtonPage';
@@ -20,7 +24,6 @@ import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
 import {treeGridPage} from './treegrids/TreeGridPage';
 
 export class AppModel extends HoistAppModel {
-
     static instance: AppModel;
 
     @managed
@@ -54,18 +57,22 @@ export class AppModel extends HoistAppModel {
                     {
                         name: 'grids',
                         path: '/grids',
-                        children: [{
-                            name: 'gridDetail',
-                            path: '/:id<\\d+>'
-                        }]
+                        children: [
+                            {
+                                name: 'gridDetail',
+                                path: '/:id<\\d+>'
+                            }
+                        ]
                     },
                     {
                         name: 'treegrids',
                         path: '/treegrids',
-                        children: [{
-                            name: 'treeGridDetail',
-                            path: '/:id'
-                        }]
+                        children: [
+                            {
+                                name: 'treeGridDetail',
+                                path: '/:id'
+                            }
+                        ]
                     },
                     {
                         name: 'dataview',
@@ -113,15 +120,18 @@ export class AppModel extends HoistAppModel {
     }
 
     override getAppOptions() {
-        return [
-            themeAppOption(),
-            sizingModeAppOption(),
-            autoRefreshAppOption()
-        ];
+        return [themeAppOption(), sizingModeAppOption(), autoRefreshAppOption()];
     }
 
     static override async preAuthAsync() {
-        await XH.installServicesAsync(OauthService);
+        const whitelist = ['toolbox.xh.io', 'toolbox-dev.xh.io', 'localhost'];
+        if (whitelist.includes(window.location.hostname)) {
+            await XH.installServicesAsync(OauthService);
+        } else {
+            // We are not running in an environment that is supported by auth0
+            // (presumably `yarn startOnDevice`), so fall back to username / password prompt.
+            XH.appSpec.isSSO = false;
+        }
     }
 
     override async initAsync() {

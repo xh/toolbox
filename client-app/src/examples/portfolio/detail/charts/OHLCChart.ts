@@ -16,12 +16,13 @@ export const ohlcChart = hoistCmp.factory({
 });
 
 class OHLCChartModel extends HoistModel {
-
     @lookup(ChartsPanelModel) parentModel;
 
-    get symbol() {return this.parentModel.symbol}
+    get symbol() {
+        return this.parentModel.symbol;
+    }
 
-    onLinked() {
+    override onLinked() {
         this.addReaction({
             track: () => this.symbol,
             run: () => this.loadAsync()
@@ -41,12 +42,12 @@ class OHLCChartModel extends HoistModel {
             scrollbar: {enabled: true},
             rangeSelector: {
                 enabled: true,
-                selected: 1     // default to a 3-month zoom
+                selected: 1 // default to a 3-month zoom
             },
             xAxis: {
                 type: 'datetime',
                 labels: {
-                    formatter: function() {
+                    formatter: function () {
                         return fmtDate(this.value, {fmt: 'DD-MMM-YY'});
                     }
                 }
@@ -57,11 +58,13 @@ class OHLCChartModel extends HoistModel {
             },
             tooltip: {
                 useHTML: true,
-                formatter: function() {
+                formatter: function () {
                     const p = this.point;
                     return `
                         <div class="xh-chart-tooltip">
-                        <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(this.x)}</div>
+                        <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(
+                            this.x
+                        )}</div>
                         <table>
                             <tr><th>Open:</th><td>${fmtPrice(p.open)}</td></tr>
                             <tr><th>High:</th><td>${fmtPrice(p.high)}</td></tr>
@@ -75,7 +78,7 @@ class OHLCChartModel extends HoistModel {
         }
     });
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {symbol, chartModel} = this;
 
         if (!symbol) {
@@ -88,7 +91,6 @@ class OHLCChartModel extends HoistModel {
             if (!loadSpec.isObsolete) {
                 chartModel.setSeries(series);
             }
-
         } catch (e) {
             chartModel.clear();
             XH.handleException(e);

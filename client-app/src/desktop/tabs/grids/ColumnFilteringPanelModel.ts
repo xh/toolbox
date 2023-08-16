@@ -2,10 +2,16 @@ import {XH, HoistModel, managed} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {activeCol, cityCol, companyCol, profitLossCol, tradeDateCol, tradeVolumeCol} from '../../../core/columns';
+import {
+    activeCol,
+    cityCol,
+    companyCol,
+    profitLossCol,
+    tradeDateCol,
+    tradeVolumeCol
+} from '../../../core/columns';
 
 export class ColumnFilteringPanelModel extends HoistModel {
-
     @managed gridModel: GridModel;
     @managed filterChooserModel: FilterChooserModel;
 
@@ -63,7 +69,10 @@ export class ColumnFilteringPanelModel extends HoistModel {
                 'city',
                 'trade_date',
                 {field: 'profit_loss', valueRenderer: numberRenderer({precision: 0})},
-                {field: 'trade_volume', valueRenderer: millionsRenderer({precision: 1, label: true})}
+                {
+                    field: 'trade_volume',
+                    valueRenderer: millionsRenderer({precision: 1, label: true})
+                }
             ]
         });
     }

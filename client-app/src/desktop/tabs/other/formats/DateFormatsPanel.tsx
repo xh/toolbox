@@ -19,17 +19,23 @@ export const dateFormatsPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    Hoist provides a collection of date formatting functions in <code>@xh/hoist/format</code>.
-                    The main method is <code>fmtDate</code> which provides a few useful options.
+                    Hoist provides a collection of date formatting functions in{' '}
+                    <code>@xh/hoist/format</code>. The main method is <code>fmtDate</code> which
+                    provides a few useful options.
                 </p>,
                 <p>
-                    <code>fmtDate</code> is backed by <a href="https://momentjs.com/" target="_blank">moment.js </a>,
-                    and makes the full moment API available via the <code>fmt</code> option, which takes a moment js
-                    string. Convenience methods delegate to <code>fmtDate</code> with a useful <code>fmt</code> default.
+                    <code>fmtDate</code> is backed by{' '}
+                    <a href="https://momentjs.com/" target="_blank">
+                        moment.js{' '}
+                    </a>
+                    , and makes the full moment API available via the <code>fmt</code> option, which
+                    takes a moment js string. Convenience methods delegate to <code>fmtDate</code>{' '}
+                    with a useful <code>fmt</code> default.
                 </p>,
                 <p>
-                    All hoist formatting functions support the <code>asHtml</code> option to produce a raw HTML string
-                    rather than a React element. This allows them to be useful in both React and non-React contexts.
+                    All hoist formatting functions support the <code>asHtml</code> option to produce
+                    a raw HTML string rather than a React element. This allows them to be useful in
+                    both React and non-React contexts.
                 </p>
             ],
             item: panel({
@@ -48,8 +54,8 @@ export const dateFormatsPanel = hoistCmp.factory({
     }
 });
 
-const paramsPanel = hoistCmp.factory<DateFormatsPanelModel>(
-    ({model}) => panel({
+const paramsPanel = hoistCmp.factory<DateFormatsPanelModel>(({model}) =>
+    panel({
         title: 'Function + Options',
         compactHeader: true,
         className: 'tbox-formats-tab__panel',

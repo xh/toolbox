@@ -2,15 +2,22 @@ import {observable, makeObservable, action} from '@xh/hoist/mobx';
 import {mean, take, head} from 'lodash';
 
 export class GridTestMetrics {
-
     @observable.ref updateTimes;
     @observable.ref loadTimes;
 
-    get loadTime()          {return head(this.loadTimes) ?? null}
-    get avgLoadTime()      {return mean(this.loadTimes)}
+    get loadTime() {
+        return head(this.loadTimes) ?? null;
+    }
+    get avgLoadTime() {
+        return mean(this.loadTimes);
+    }
 
-    get updateTime()        {return head(this.updateTimes) ?? null}
-    get avgUpdateTime()    {return mean(this.updateTimes)}
+    get updateTime() {
+        return head(this.updateTimes) ?? null;
+    }
+    get avgUpdateTime() {
+        return mean(this.updateTimes);
+    }
 
     constructor() {
         this.clear();

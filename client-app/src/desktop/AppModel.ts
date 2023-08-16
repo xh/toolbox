@@ -23,7 +23,6 @@ import {fmtDateTimeSec} from '@xh/hoist/format';
 import {span} from '@xh/hoist/cmp/layout';
 
 export class AppModel extends HoistAppModel {
-
     /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
 
@@ -46,7 +45,14 @@ export class AppModel extends HoistAppModel {
     });
 
     static override async preAuthAsync() {
-        await XH.installServicesAsync(OauthService);
+        const whitelist = ['toolbox.xh.io', 'toolbox-dev.xh.io', 'localhost'];
+        if (whitelist.includes(window.location.hostname)) {
+            await XH.installServicesAsync(OauthService);
+        } else {
+            // We are not running in an environment that is supported by auth0
+            // (presumably `yarn startOnDevice`), so fall back to username / password prompt.
+            XH.appSpec.isSSO = false;
+        }
     }
 
     override async initAsync() {
@@ -199,7 +205,9 @@ export class AppModel extends HoistAppModel {
     }
 
     override getAboutDialogItems() {
-        const lastGitHubCommit = fmtDateTimeSec(XH.gitHubService.commitHistories.toolbox?.lastCommitTimestamp);
+        const lastGitHubCommit = fmtDateTimeSec(
+            XH.gitHubService.commitHistories.toolbox?.lastCommitTimestamp
+        );
         return [
             ...super.getAboutDialogItems(),
             {

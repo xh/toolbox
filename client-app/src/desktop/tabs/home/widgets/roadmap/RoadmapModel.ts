@@ -8,7 +8,6 @@ import {toNumber} from 'lodash';
 import {span} from '@xh/hoist/cmp/layout';
 
 export class RoadmapModel extends HoistModel {
-
     @bindable
     statusFilter = 'showUpcoming';
 
@@ -34,11 +33,6 @@ export class RoadmapModel extends HoistModel {
         sortBy: 'sortOrder',
         groupBy: 'sortedPhase',
         groupRowHeight: 32,
-        groupSortFn: (a, b) => {
-            a = toNumber(a);
-            b = toNumber(b);
-            return this.statusFilter === 'showUpcoming' ? a - b : b - a;
-        },
         groupRowRenderer: ({node}) => {
             const projectRec = node.allLeafChildren[0]?.data;
             return projectRec ? span(Icon.calendar(), projectRec.data.phaseName) : null;
@@ -46,7 +40,12 @@ export class RoadmapModel extends HoistModel {
         emptyText: 'No projects found...',
         selModel: 'disabled',
         rowBorders: true,
-        showHover: true
+        showHover: true,
+        groupSortFn: (a, b) => {
+            a = toNumber(a);
+            b = toNumber(b);
+            return this.statusFilter === 'showUpcoming' ? a - b : b - a;
+        }
     });
 
     constructor() {
@@ -56,7 +55,6 @@ export class RoadmapModel extends HoistModel {
             track: () => this.statusFilter,
             run: () => this.refreshAsync()
         });
-
     }
 
     override async doLoadAsync(loadSpec) {
@@ -84,5 +82,3 @@ export class RoadmapModel extends HoistModel {
         });
     }
 }
-
-

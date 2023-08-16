@@ -11,7 +11,7 @@ export const profitLossCol: ColumnSpec = {
     width: 130,
     align: 'right',
     absSort: true,
-    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
+    tooltip: val => fmtNumberTooltip(val, {ledger: true}),
     renderer: numberRenderer({
         precision: 0,
         ledger: true,
@@ -34,7 +34,7 @@ export const tradeVolumeCol: ColumnSpec = {
     },
     width: 110,
     align: 'right',
-    tooltip: (val) => fmtNumberTooltip(val),
+    tooltip: val => fmtNumberTooltip(val),
     renderer: millionsRenderer({
         precision: 1,
         label: true

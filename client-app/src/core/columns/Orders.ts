@@ -85,10 +85,12 @@ export const closingPriceSparklineCol: ColumnSpec = {
             sparklineOptions: {
                 axis: {type: 'time'},
                 crosshairs: {xLine: {enabled: false}},
-                tooltip: {renderer: ({xValue, yValue}) => ({
-                    title: fmtDate(xValue, {fmt: 'MM/DD/YYYY'}),
-                    content: fmtNumber(yValue)
-                })}
+                tooltip: {
+                    renderer: ({xValue, yValue}) => ({
+                        title: fmtDate(xValue, {fmt: 'MM/DD/YYYY'}),
+                        content: fmtNumber(yValue)
+                    })
+                }
             }
         }
     }

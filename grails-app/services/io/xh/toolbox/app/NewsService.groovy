@@ -6,7 +6,7 @@ import io.xh.toolbox.NewsItem
 import org.apache.hc.client5.http.classic.methods.HttpGet
 import io.xh.hoist.util.Timer
 
-import static io.xh.hoist.util.DateTimeUtils.MINUTES
+import static io.xh.hoist.util.DateTimeUtils.getMINUTES
 
 
 class NewsService extends BaseService {

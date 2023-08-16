@@ -9,10 +9,9 @@ import {PERSIST_APP} from '../AppModel';
  * Favorites are persisted for each user using the Hoist preference system.
  */
 export class ContactService extends HoistService {
-
     static instance: ContactService;
 
-    persistWith = PERSIST_APP;
+    override persistWith = PERSIST_APP;
 
     /** ids of all contacts that the user has favorited. */
     @observable.ref
@@ -28,16 +27,25 @@ export class ContactService extends HoistService {
         const ret = await XH.fetchJson({url: 'contacts'});
         ret.forEach(it => {
             it.isFavorite = this.userFaves.includes(it.id);
-            it.profilePicture = `../../public/contact-images/${(it.profilePicture ?? 'no-profile.png')}`;
+            it.profilePicture = `../../public/contact-images/${
+                it.profilePicture ?? 'no-profile.png'
+            }`;
         });
         return ret;
     }
 
     async updateContactAsync(id, update) {
-        await XH.fetchService.postJson({
-            url: `contacts/update/${id}`,
-            body: update
-        });
+        await XH.fetchService
+            .postJson({
+                url: `contacts/update/${id}`,
+                body: update
+            })
+            .track({
+                category: 'Contacts',
+                message: `Updated contact`,
+                data: {id, ...update},
+                logData: true
+            });
     }
 
     @action

@@ -26,7 +26,9 @@ export const recallsPanel = hoistCmp.factory({
             panel({
                 title: currentRecord?.data.brandName ?? 'Drug Details',
                 icon: Icon.detail(),
-                item: currentRecord ? detailsPanel() : placeholder('Select a drug above to view its details.'),
+                item: currentRecord
+                    ? detailsPanel()
+                    : placeholder('Select a drug above to view its details.'),
                 className: 'toolbox-recalls-detail-panel',
                 compactHeader: true,
                 modelConfig: {
@@ -39,50 +41,53 @@ export const recallsPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory(
-    () => {
-        const aboutBlurb = 'This applet uses the openFDA drug enforcement reports API, ' +
-                'which provides information on drug recall events since 2004. ' +
-                'For more information, see: ',
-            fdaWebsite = 'https://open.fda.gov/apis/drug/enforcement/';
+const tbar = hoistCmp.factory(() => {
+    const aboutBlurb =
+            'This applet uses the openFDA drug enforcement reports API, ' +
+            'which provides information on drug recall events since 2004. ' +
+            'For more information, see: ',
+        fdaWebsite = 'https://open.fda.gov/apis/drug/enforcement/';
 
-        return toolbar({
-            style: {backgroundColor: 'transparent'},
-            items: [
-                textInput({
-                    bind: 'searchQuery',
-                    placeholder: 'Keyword Search',
-                    width: 250,
-                    commitOnChange: true,
-                    enableClear: true
-                }),
-                toolbarSep(),
-                span('Group By:'),
-                buttonGroupInput({
-                    bind: 'groupBy',
-                    enableClear: true,
-                    outlined: true,
-                    items: [
-                        button({text: 'Class', value: 'classification'}),
-                        button({text: 'Brand Name', value: 'brandName'}),
-                        button({text: 'Status', value: 'status'}),
-                        button({text: 'Recalling Firm', value: 'recallingFirm'})
-                    ]
-                }),
-                filler(),
-                gridCountLabel({unit: 'latest recall'}),
-                toolbarSep(),
-                button({
-                    title: 'About the API',
-                    text: 'About',
-                    icon: Icon.questionCircle(),
-                    onClick: () => XH.alert({
-                        message: p(aboutBlurb, a({href: fdaWebsite, item: fdaWebsite, target: '_blank'}))
+    return toolbar({
+        style: {backgroundColor: 'transparent'},
+        items: [
+            textInput({
+                bind: 'searchQuery',
+                placeholder: 'Keyword Search',
+                width: 250,
+                commitOnChange: true,
+                enableClear: true
+            }),
+            toolbarSep(),
+            span('Group By:'),
+            buttonGroupInput({
+                bind: 'groupBy',
+                enableClear: true,
+                outlined: true,
+                items: [
+                    button({text: 'Class', value: 'classification'}),
+                    button({text: 'Brand Name', value: 'brandName'}),
+                    button({text: 'Status', value: 'status'}),
+                    button({text: 'Recalling Firm', value: 'recallingFirm'})
+                ]
+            }),
+            filler(),
+            gridCountLabel({unit: 'latest recall'}),
+            toolbarSep(),
+            button({
+                title: 'About the API',
+                text: 'About',
+                icon: Icon.questionCircle(),
+                onClick: () =>
+                    XH.alert({
+                        message: p(
+                            aboutBlurb,
+                            a({href: fdaWebsite, item: fdaWebsite, target: '_blank'})
+                        )
                     })
-                }),
-                toolbarSep(),
-                colChooserButton()
-            ]
-        });
-    }
-);
+            }),
+            toolbarSep(),
+            colChooserButton()
+        ]
+    });
+});

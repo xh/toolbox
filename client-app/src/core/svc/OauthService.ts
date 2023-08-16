@@ -23,7 +23,6 @@ import {SECONDS} from '@xh/hoist/utils/datetime';
  *      key we can set and then read on our Auth0 login request / post-redirect response.
  */
 export class OauthService extends HoistService {
-
     static instance: OauthService;
 
     auth0: Auth0Client;
@@ -39,9 +38,14 @@ export class OauthService extends HoistService {
         // This service is initialized prior to Hoist auth/init, so we do *not* have our standard
         // XH.configService ready to go at the point we need these configs. This endpoint is
         // whitelisted in AuthenticationService.groovy to allow us to call it prior to auth.
-        const config = this.config = await XH.fetchJson({
+        const config = (this.config = await XH.fetchJson({
             url: 'oauthConfig'
-        }).catchDefault();
+        }).catchDefault());
+
+        if (config?.isEnabled === false) {
+            XH.appSpec.isSSO = false;
+            return;
+        }
 
         if (!config?.domain || !config?.clientId) {
             throw XH.exception(`
@@ -50,11 +54,11 @@ export class OauthService extends HoistService {
             `);
         }
 
-        const auth0 = this.auth0 = await createAuth0Client({
+        const auth0 = (this.auth0 = await createAuth0Client({
             domain: config.domain,
             client_id: config.clientId,
             redirect_uri: this.baseUrl
-        });
+        }));
 
         // Initial check to see if we already have valid, cached credentials.
         let isAuthenticated = await this.checkAuthAsync();
@@ -105,7 +109,7 @@ export class OauthService extends HoistService {
      * Logout of both Hoist session and Auth0 Oauth session (if active).
      */
     async logoutAsync() {
-        try  {
+        try {
             const hasOauth = await this.checkAuthAsync();
             if (hasOauth) {
                 // Logout of Hoist session here, as the auth0 logout will redirect us away, so
@@ -124,7 +128,7 @@ export class OauthService extends HoistService {
     }
 
     private installDefaultFetchServiceHeaders() {
-        XH.fetchService.setDefaultHeaders((opts) => {
+        XH.fetchService.setDefaultHeaders(opts => {
             const {idToken} = this,
                 relativeHoistUrl = !opts.url.startsWith('http');
 
@@ -137,5 +141,4 @@ export class OauthService extends HoistService {
     private get baseUrl() {
         return `${window.location.origin}/${XH.clientAppCode}/`;
     }
-
 }

@@ -19,7 +19,8 @@ export const AppComponent = hoistCmp({
                 leftItems: [
                     a({
                         item: 'powered by NewsAPI.org',
-                        href: 'https://newsapi.org/'
+                        href: 'https://newsapi.org/',
+                        target: '_blank'
                     })
                 ],
                 rightItems: [

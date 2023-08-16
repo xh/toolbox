@@ -4,7 +4,6 @@ import {shuffle, take} from 'lodash';
 import {dataViewItem} from './DataViewItem';
 
 export class DataViewPageModel extends HoistModel {
-
     @managed
     dataViewModel: DataViewModel = new DataViewModel({
         store: {
@@ -30,14 +29,16 @@ export class DataViewPageModel extends HoistModel {
         const min = -1000,
             max = 1000;
 
-        await dataViewModel.store.loadData(customers.map(it => {
-            const randVal = Math.random() * (max - min) + min;
-            return {
-                id: it.id,
-                name: it.company,
-                city: it.city,
-                value: randVal
-            };
-        }));
+        await dataViewModel.store.loadData(
+            customers.map(it => {
+                const randVal = Math.random() * (max - min) + min;
+                return {
+                    id: it.id,
+                    name: it.company,
+                    city: it.city,
+                    value: randVal
+                };
+            })
+        );
     }
 }

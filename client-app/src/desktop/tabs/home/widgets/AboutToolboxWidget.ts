@@ -12,7 +12,7 @@ import './AboutToolboxWidget.scss';
 export const aboutToolboxWidget = hoistCmp.factory({
     displayName: 'AboutToolboxWidget',
     render() {
-        const get = (str) => XH.environmentService.get(str),
+        const get = str => XH.environmentService.get(str),
             startupTime = get('startupTime'),
             row = (label, data) => {
                 data = data || span({item: 'Not available', className: 'xh-text-color-muted'});
@@ -38,10 +38,27 @@ export const aboutToolboxWidget = hoistCmp.factory({
                             row('App Name / Code', `${get('appName')} / ${get('appCode')}`),
                             row('Version', `${get('appVersion')} (build ${get('appBuild')})`),
                             row('Environment', get('appEnvironment')),
-                            row('App TZ', fmtTimeZone(get('appTimeZone'), get('appTimeZoneOffset'))),
-                            row('Server TZ', fmtTimeZone(get('serverTimeZone'), get('serverTimeZoneOffset'))),
-                            row('Client TZ', fmtTimeZone(get('clientTimeZone'), get('clientTimeZoneOffset'))),
-                            startupTime ? row('Server Uptime', relativeTimestamp({timestamp: startupTime, options: {pastSuffix: ''}})) : null
+                            row(
+                                'App TZ',
+                                fmtTimeZone(get('appTimeZone'), get('appTimeZoneOffset'))
+                            ),
+                            row(
+                                'Server TZ',
+                                fmtTimeZone(get('serverTimeZone'), get('serverTimeZoneOffset'))
+                            ),
+                            row(
+                                'Client TZ',
+                                fmtTimeZone(get('clientTimeZone'), get('clientTimeZoneOffset'))
+                            ),
+                            startupTime
+                                ? row(
+                                      'Server Uptime',
+                                      relativeTimestamp({
+                                          timestamp: startupTime,
+                                          options: {pastSuffix: ''}
+                                      })
+                                  )
+                                : null
                         )
                     }),
                     h2(Icon.server(), 'Server-Side Library Versions'),

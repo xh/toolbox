@@ -34,8 +34,8 @@ export const CubeTestPanel = hoistCmp({
     }
 });
 
-const tbar = hoistCmp.factory<CubeTestModel>(
-    ({model}) => toolbar(
+const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
+    toolbar(
         switchInput({bind: 'showSummary', label: 'Summary?', labelSide: 'left'}),
         switchInput({bind: 'includeLeaves', label: 'Leaves?', labelSide: 'left'}),
         switchInput({bind: 'includeGlobalAgg', label: 'Global Agg?', labelSide: 'left'}),
@@ -70,19 +70,15 @@ const tbar = hoistCmp.factory<CubeTestModel>(
     )
 );
 
-const bbar = hoistCmp.factory<CubeTestModel>(
-    ({model}) => {
-        const {view} = model;
-        return toolbar(
-            storeCountLabel({store: view.cube.store, unit: 'cube facts'}),
-            hspacer(2),
-            'Last Updated:',
-            relativeTimestamp({timestamp: view.info?.asOf}),
-            filler(),
-            storeFilterField(),
-            colChooserButton()
-        );
-    }
-);
-
-
+const bbar = hoistCmp.factory<CubeTestModel>(({model}) => {
+    const {view} = model;
+    return toolbar(
+        storeCountLabel({store: view.cube.store, unit: 'cube facts'}),
+        hspacer(2),
+        'Last Updated:',
+        relativeTimestamp({timestamp: view.info?.asOf}),
+        filler(),
+        storeFilterField(),
+        colChooserButton()
+    );
+});

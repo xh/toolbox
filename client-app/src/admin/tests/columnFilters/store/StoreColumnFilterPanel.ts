@@ -30,8 +30,8 @@ export const storeColumnFilterPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory(
-    () => toolbar(
+const tbar = hoistCmp.factory(() =>
+    toolbar(
         filterChooser({
             flex: 1,
             enableClear: true
@@ -39,16 +39,16 @@ const tbar = hoistCmp.factory(
     )
 );
 
-const bbar = hoistCmp.factory(
-    () => toolbar(
+const bbar = hoistCmp.factory(() =>
+    toolbar(
         gridCountLabel({
             includeChildren: true
         })
     )
 );
 
-const filterJsonPanel = hoistCmp.factory(
-    () => panel({
+const filterJsonPanel = hoistCmp.factory(() =>
+    panel({
         modelConfig: {
             side: 'right',
             defaultSize: 500,

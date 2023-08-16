@@ -8,7 +8,6 @@ import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {ChartPageModel} from './ChartPageModel';
 
 export const chartPage = hoistCmp.factory({
-
     model: creates(ChartPageModel),
 
     render() {
@@ -22,14 +21,14 @@ export const chartPage = hoistCmp.factory({
     }
 });
 
-const example = hoistCmp.factory(
-    () => vframe({
+const example = hoistCmp.factory(() =>
+    vframe({
         item: chart()
     })
 );
 
-const tbar = hoistCmp.factory<ChartPageModel>(
-    ({model}) => toolbar(
+const tbar = hoistCmp.factory<ChartPageModel>(({model}) =>
+    toolbar(
         span('Symbol: '),
         select({
             bind: 'currentSymbol',

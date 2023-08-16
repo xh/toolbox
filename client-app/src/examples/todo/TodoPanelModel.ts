@@ -13,8 +13,7 @@ import {PERSIST_APP} from './AppModel';
 import {TaskDialogModel} from './TaskDialogModel';
 
 export class TodoPanelModel extends HoistModel {
-
-    persistWith = PERSIST_APP;
+    override persistWith = PERSIST_APP;
 
     @managed
     taskDialogModel = new TaskDialogModel(this);
@@ -63,15 +62,15 @@ export class TodoPanelModel extends HoistModel {
                 text = complete ? 'Mark all Incomplete' : 'Mark all Complete',
                 allSame = tasks.length > 1 && every(tasks, {complete: complete});
 
-            return allSame ?
-                {
-                    text,
-                    icon: complete ?
-                        Icon.circle({prefix: 'fal', className: 'xh-text-color-muted'}) :
-                        Icon.checkCircle({prefix: 'fal', intent: 'success'}),
-                    tooltip: text
-                } :
-                {hidden: true};
+            return allSame
+                ? {
+                      text,
+                      icon: complete
+                          ? Icon.circle({prefix: 'fal', className: 'xh-text-color-muted'})
+                          : Icon.checkCircle({prefix: 'fal', intent: 'success'}),
+                      tooltip: text
+                  }
+                : {hidden: true};
         },
         actionFn: ({selectedRecords}) => {
             const tasks = selectedRecords.map(it => it.data);
@@ -91,8 +90,10 @@ export class TodoPanelModel extends HoistModel {
 
         this.addReaction({
             track: () => this.showCompleted,
-            run: (showCompleted) => {
-                const filter = showCompleted ? null : {field: 'complete', op: '=', value: false} as const;
+            run: showCompleted => {
+                const filter = showCompleted
+                    ? null
+                    : ({field: 'complete', op: '=', value: false} as const);
                 this.gridModel.store.setFilter(filter);
             },
             fireImmediately: true
@@ -100,7 +101,7 @@ export class TodoPanelModel extends HoistModel {
 
         this.addReaction({
             track: () => this.showGroups,
-            run: (showGroups) => {
+            run: showGroups => {
                 this.gridModel.setGroupBy(showGroups ? 'dueDateGroup' : null);
                 this.gridModel.hideColumn('dueDateGroup');
             },
@@ -214,9 +215,16 @@ export class TodoPanelModel extends HoistModel {
                                 const {complete} = record.data;
 
                                 return {
-                                    icon: complete ?
-                                        Icon.checkCircle({prefix: 'fal', intent: 'success', className: 'large-actions'}) :
-                                        Icon.circle({prefix: 'fal', className: 'xh-text-color-muted large-actions'}),
+                                    icon: complete
+                                        ? Icon.checkCircle({
+                                              prefix: 'fal',
+                                              intent: 'success',
+                                              className: 'large-actions'
+                                          })
+                                        : Icon.circle({
+                                              prefix: 'fal',
+                                              className: 'xh-text-color-muted large-actions'
+                                          }),
                                     tooltip: complete ? 'Mark Incomplete' : 'Mark Complete'
                                 };
                             },
@@ -268,8 +276,8 @@ export class TodoPanelModel extends HoistModel {
 }
 
 const dueDateGroupSort = {
-    'Overdue': 1,
-    'Today': 2,
-    'Upcoming': 3,
-    'Complete': 4
+    Overdue: 1,
+    Today: 2,
+    Upcoming: 3,
+    Complete: 4
 };

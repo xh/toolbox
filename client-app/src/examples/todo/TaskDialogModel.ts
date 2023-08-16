@@ -6,7 +6,6 @@ import {observable, action, makeObservable} from '@xh/hoist/mobx';
 import {TodoPanelModel} from './TodoPanelModel';
 
 export class TaskDialogModel extends HoistModel {
-
     parentModel: TodoPanelModel;
 
     @observable

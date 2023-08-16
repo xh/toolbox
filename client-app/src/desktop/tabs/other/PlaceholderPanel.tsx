@@ -27,7 +27,10 @@ export const placeholderPanel = hoistCmp.factory({
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/other/PlaceholderPanel.tsx', notes: 'This example.'},
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/PlaceholderPanel.tsx',
+                    notes: 'This example.'
+                },
                 {url: '$HR/cmp/layout/Placeholder.ts', notes: 'Hoist component.'}
             ],
             item: panel({
@@ -42,41 +45,40 @@ export const placeholderPanel = hoistCmp.factory({
                         minWidth: 300,
                         item: grid()
                     }),
-                    selectedRecord ?
-                        detailPanel() :
-                        placeholder({
-                            items: [
-                                Icon.detail(),
-                                p('Select a record to view details.'),
-                                p('(This is a placeholder)')
-                            ]
-                        })
+                    selectedRecord
+                        ? detailPanel()
+                        : placeholder({
+                              items: [
+                                  Icon.detail(),
+                                  p('Select a record to view details.'),
+                                  p('(This is a placeholder)')
+                              ]
+                          })
                 )
             })
         });
     }
 });
 
-const detailPanel = hoistCmp.factory<PlaceholderPanelModel>(
-    ({model}) => {
-        const {gridModel} = model,
-            {selectedRecord} = gridModel;
+const detailPanel = hoistCmp.factory<PlaceholderPanelModel>(({model}) => {
+    const {gridModel} = model,
+        {selectedRecord} = gridModel;
 
-        return panel({
-            item: frame({
-                className: 'xh-pad',
-                item: `Details about ${selectedRecord.data.company}...`
-            }),
-            bbar: [
-                filler(),
-                button({
-                    text: 'Clear Selection',
-                    outlined: true,
-                    onClick: () => model.gridModel.clearSelection()
-                })
-            ]
-        });
+    return panel({
+        item: frame({
+            className: 'xh-pad',
+            item: `Details about ${selectedRecord.data.company}...`
+        }),
+        bbar: [
+            filler(),
+            button({
+                text: 'Clear Selection',
+                outlined: true,
+                onClick: () => model.gridModel.clearSelection()
+            })
+        ]
     });
+});
 
 class PlaceholderPanelModel extends HoistModel {
     gridModel = new GridModel({

@@ -5,13 +5,17 @@ import {withFilterByField, FilterLike} from '@xh/hoist/data';
 import {uniq, map} from 'lodash';
 
 import {newsPanelItem} from './NewsPanelItem';
+import {code, p, vbox} from '@xh/hoist/cmp/layout';
 
 export class NewsPanelModel extends HoistModel {
-
     SEARCH_FIELDS = ['title', 'text'];
 
     @managed
     viewModel = new DataViewModel({
+        emptyText: vbox([
+            p('No news found...'),
+            p(['Have you properly configured the', code('newsApiKey'), ' config?'])
+        ]),
         sortBy: 'published|desc',
         store: {
             fields: [
@@ -32,7 +36,7 @@ export class NewsPanelModel extends HoistModel {
     });
 
     @observable.ref
-    sourceOptions: string[]  = [];
+    sourceOptions: string[] = [];
     @bindable.ref
     private sourceFilterValues = null;
     private lastRefresh: Date;
@@ -47,7 +51,7 @@ export class NewsPanelModel extends HoistModel {
         });
     }
 
-    override async doLoadAsync(loadSpec)  {
+    override async doLoadAsync(loadSpec) {
         const stories = await XH.fetchJson({url: 'news', loadSpec});
         this.completeLoad(stories);
     }
@@ -58,7 +62,9 @@ export class NewsPanelModel extends HoistModel {
     private setSourceFilter() {
         const {sourceFilterValues} = this,
             {store} = this.viewModel,
-            newFilter: FilterLike = sourceFilterValues ? {field: 'source', op: '=', value: sourceFilterValues} : null;
+            newFilter: FilterLike = sourceFilterValues
+                ? {field: 'source', op: '=', value: sourceFilterValues}
+                : null;
 
         const filter = withFilterByField(store.filter, newFilter, 'source');
         store.setFilter(filter);

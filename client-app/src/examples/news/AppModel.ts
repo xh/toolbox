@@ -2,9 +2,7 @@ import {HoistAppModel, XH, managed} from '@xh/hoist/core';
 import {OauthService} from '../../core/svc/OauthService';
 import {NewsPanelModel} from './NewsPanelModel';
 
-
 export class AppModel extends HoistAppModel {
-
     static instance: AppModel;
     @managed newsPanelModel: NewsPanelModel;
 
@@ -25,5 +23,7 @@ export class AppModel extends HoistAppModel {
         await this.newsPanelModel.loadAsync(loadSpec);
     }
 
-    override get supportsVersionBar(): boolean {return window.self === window.top}
+    override get supportsVersionBar(): boolean {
+        return window.self === window.top;
+    }
 }

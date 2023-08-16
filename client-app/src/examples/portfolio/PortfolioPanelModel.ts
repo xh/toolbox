@@ -4,9 +4,10 @@ import {GridPanelModel} from './GridPanelModel';
 import {round} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {PERSIST_MAIN} from './AppModel';
+import {waitFor} from '@xh/hoist/promise';
+import {SECONDS} from '@xh/hoist/utils/datetime';
 
 export class PortfolioPanelModel extends HoistModel {
-
     @managed session;
 
     @managed groupingChooserModel = this.createGroupingChooserModel();
@@ -19,22 +20,28 @@ export class PortfolioPanelModel extends HoistModel {
 
     constructor() {
         super();
+        const wsService = XH.webSocketService;
         this.addReaction({
-            track: () => this.groupingChooserModel.value,
+            track: () => [this.groupingChooserModel.value, wsService.connected],
             run: () => this.loadAsync()
         });
     }
 
     override async doLoadAsync(loadSpec) {
-        const {store, groupingChooserModel, gridPanelModel} = this,
+        const wsService = XH.webSocketService,
+            {store, groupingChooserModel, gridPanelModel} = this,
             dims = groupingChooserModel.value;
 
         let {session} = this;
         session?.destroy();
 
-        session = await XH.portfolioService
-            .getLivePositionsAsync(dims, 'mainApp')
-            .catchDefault();
+        // Wait for WS for streaming updates feature, but not strictly needed to show data
+        await waitFor(() => wsService.connected, 50, 5 * SECONDS).catch(() =>
+            console.error('WebSocket service failed to connect')
+        );
+        if (loadSpec.isStale) return;
+
+        session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp').catchDefault();
 
         store.loadData([session.initialPositions.root]);
         session.onUpdate = ({data}) => {
@@ -52,7 +59,7 @@ export class PortfolioPanelModel extends HoistModel {
     //------------------------
     private createStore() {
         return new Store({
-            processRawData: (r) => {
+            processRawData: r => {
                 return {
                     pnlMktVal: round(r.pnl / Math.abs(r.mktVal), 2),
                     ...r

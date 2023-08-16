@@ -3,7 +3,6 @@ import {makeObservable, bindable} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
 
 export class DetailsPanelModel extends HoistModel {
-
     @bindable.ref
     currentRecord: StoreRecord;
 

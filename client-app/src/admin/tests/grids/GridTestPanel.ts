@@ -12,7 +12,6 @@ import {tooltip} from '@xh/hoist/kit/blueprint';
 import {GridTestModel} from './GridTestModel';
 
 export const GridTestPanel = hoistCmp({
-
     model: creates(GridTestModel),
 
     render({model}) {
@@ -24,7 +23,8 @@ export const GridTestPanel = hoistCmp({
                     mask: 'onLoad',
                     item: grid({
                         agOptions: {
-                            isRowSelectable: ({data: record}) => !model.disableSelect || record.get('day') > 0
+                            isRowSelectable: ({data: record}) =>
+                                !model.disableSelect || record.get('day') > 0
                         }
                     })
                 }),
@@ -36,8 +36,8 @@ export const GridTestPanel = hoistCmp({
     }
 });
 
-const tbar = hoistCmp.factory<GridTestModel>(
-    ({model}) => toolbar(
+const tbar = hoistCmp.factory<GridTestModel>(({model}) =>
+    toolbar(
         tooltip({
             content: 'ID prefix',
             item: numberInput({
@@ -81,7 +81,7 @@ const tbar = hoistCmp.factory<GridTestModel>(
                 bind: 'twiddleCount',
                 enableShorthandUnits: true,
                 selectOnFocus: true,
-                width: 60
+                width: 75
             })
         }),
         button({
@@ -101,8 +101,8 @@ const tbar = hoistCmp.factory<GridTestModel>(
     )
 );
 
-const bbar1 = hoistCmp.factory<GridTestModel>(
-    ({model}) => toolbar(
+const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
+    toolbar(
         switchInput({
             bind: 'showSummary',
             label: 'Summary Row',
@@ -138,8 +138,8 @@ const bbar1 = hoistCmp.factory<GridTestModel>(
     )
 );
 
-const bbar2 = hoistCmp.factory<GridTestModel>(
-    ({model}) => toolbar(
+const bbar2 = hoistCmp.factory<GridTestModel>(({model}) =>
+    toolbar(
         label('Persist:'),
         tooltip({
             content: 'persistWith',
@@ -190,8 +190,8 @@ const bbar2 = hoistCmp.factory<GridTestModel>(
     )
 );
 
-const bbar3 = hoistCmp.factory<GridTestModel>(
-    ({model}) => toolbar(
+const bbar3 = hoistCmp.factory<GridTestModel>(({model}) =>
+    toolbar(
         label('Chooser:'),
         colChooserButton({
             gridModel: model.gridModel
@@ -229,7 +229,10 @@ const bbar3 = hoistCmp.factory<GridTestModel>(
 );
 
 function formatRunTimes(model) {
-    const fmt = (v) => v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null, asHtml: true}) : 'N/A',
+    const fmt = v =>
+            v ? fmtNumber(v, {precision: 0, label: 'ms', labelCls: null, asHtml: true}) : 'N/A',
         {loadTime: lt, avgLoadTime: avgLt, updateTime: ut, avgUpdateTime: avgUt} = model.metrics;
-    return `Load: ${fmt(lt)} ${avgLt ? `(${fmt(avgLt)}) ` : ''}• Update: ${fmt(ut)} ${avgUt ? `(${fmt(avgUt)}) ` : ''}`;
+    return `Load: ${fmt(lt)} ${avgLt ? `(${fmt(avgLt)}) ` : ''}• Update: ${fmt(ut)} ${
+        avgUt ? `(${fmt(avgUt)}) ` : ''
+    }`;
 }

@@ -10,16 +10,13 @@ import {filter, find, pull} from 'lodash';
 import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
 
 export class FileManagerModel extends HoistModel {
-
     @managed
     chooserModel = new FileChooserModel();
-    
+
     @managed
     gridModel = new GridModel({
         store: {
-            fields: [
-                'name', 'size', 'status', 'file'
-            ],
+            fields: ['name', 'size', 'status', 'file'],
             idSpec: 'name'
         },
         sortBy: 'name',
@@ -95,8 +92,7 @@ export class FileManagerModel extends HoistModel {
     }
 
     async saveAsync() {
-        let uploadPromise,
-            deletePromise;
+        let uploadPromise, deletePromise;
 
         const uploads = this.chooserModel.files;
         if (uploads.length) {
@@ -115,24 +111,22 @@ export class FileManagerModel extends HoistModel {
 
         const deletes = this.getFilesToDelete();
         if (deletes.length) {
-            deletePromise = Promise.all(deletes.map(it => {
-                return XH.fetchService
-                    .fetchJson({
-                        url: 'fileManager/delete',
-                        params: {filename: it.name}
-                    })
-                    .then(ret => {
-                        if (!ret.success) throw `Unable to delete ${it.name}`;
-                    })
-                    .catchDefault();
-            }));
+            deletePromise = Promise.all(
+                deletes.map(it => {
+                    return XH.fetchService
+                        .fetchJson({
+                            url: 'fileManager/delete',
+                            params: {filename: it.name}
+                        })
+                        .then(ret => {
+                            if (!ret.success) throw `Unable to delete ${it.name}`;
+                        })
+                        .catchDefault();
+                })
+            );
         }
 
-        return Promise
-            .all([
-                uploadPromise,
-                deletePromise
-            ])
+        return Promise.all([uploadPromise, deletePromise])
             .then(() => {
                 return this.resetAndLoadAsync();
             })
@@ -249,7 +243,7 @@ export class FileManagerModel extends HoistModel {
     }
 
     private getServerSideFiles() {
-        return filter(this.getAllData(), (it) => it.status !== 'Pending Upload');
+        return filter(this.getAllData(), it => it.status !== 'Pending Upload');
     }
 
     private getAllData() {

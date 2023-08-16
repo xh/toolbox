@@ -24,12 +24,15 @@ export const errorMessagePanel = hoistCmp.factory({
                 </p>,
                 <p>
                     Consider using an <code>ErrorMessage</code> to replace another, primary
-                    component in your app when an error prevents that component from displaying
-                    as it should.
+                    component in your app when an error prevents that component from displaying as
+                    it should.
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/other/ErrorMessagePanel.tsx', notes: 'This example'},
+                {
+                    url: '$TB/client-app/src/desktop/tabs/other/ErrorMessagePanel.tsx',
+                    notes: 'This example'
+                },
                 {url: '$HR/desktop/cmp/error/ErrorMessage.ts', notes: 'ErrorMessage source'}
             ],
             item: panel({

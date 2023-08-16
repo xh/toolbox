@@ -6,9 +6,7 @@ import {merge} from 'lodash';
 import {codes} from './Codes';
 import {codeGroupBtns, fetchServiceFeatures, individualBtns} from './TabPanels';
 
-
 export class FetchApiTestModel extends HoistModel {
-
     @bindable testServer;
     @bindable testMethod: string;
     @observable outcome = null;
@@ -88,7 +86,7 @@ export class FetchApiTestModel extends HoistModel {
 
     async testCodeAsync(code) {
         this.doTestAsync(code)
-            .then((resp) => this.setOutcome(this.formatOutcome(resp, code)))
+            .then(resp => this.setOutcome(this.formatOutcome(resp, code)))
             .linkTo(this.taskModel);
     }
 
@@ -97,20 +95,20 @@ export class FetchApiTestModel extends HoistModel {
             .then(() => {
                 if (this.testMethod === 'fetch') return this.doFetchAsync({code});
                 return XH.fetchService[this.testMethod](this.requestOptions({code}));
-            }).catch(
-                (err) => this.handleError(err)
-            );
+            })
+            .catch(err => this.handleError(err));
     }
 
-    private async doFetchAsync(opts: {code, delay?, autoAbortKey?, timeout?}) {
+    private async doFetchAsync(opts: {code; delay?; autoAbortKey?; timeout?}) {
         const {code, delay, autoAbortKey, timeout} = opts;
-        return XH.fetch(this.requestOptions({code, delay, autoAbortKey, timeout}))
-            .then(async (resp) => {
+        return XH.fetch(this.requestOptions({code, delay, autoAbortKey, timeout})).then(
+            async resp => {
                 const output = this.getResponseProps(resp);
                 output.headers = this.getResponseHeaders(resp);
                 output.body = await this.getResponseBodyAsync(resp);
                 return output;
-            });
+            }
+        );
     }
 
     // This does not test an abort that happens after the fetch has returned
@@ -123,18 +121,20 @@ export class FetchApiTestModel extends HoistModel {
 
         wait()
             .then(() => {
-                if (this.testMethod === 'fetch') return this.doFetchAsync({code, delay, autoAbortKey});
-                return XH.fetchService[this.testMethod](this.requestOptions({code, delay, autoAbortKey}));
-            }).catch(
-                (err) => this.handleError(err)
-            ).then((resp) => this.setOutcome(this.formatOutcome(resp, code)))
+                if (this.testMethod === 'fetch')
+                    return this.doFetchAsync({code, delay, autoAbortKey});
+                return XH.fetchService[this.testMethod](
+                    this.requestOptions({code, delay, autoAbortKey})
+                );
+            })
+            .catch(err => this.handleError(err))
+            .then(resp => this.setOutcome(this.formatOutcome(resp, code)))
             .linkTo(this.taskModel);
 
-        wait(1)
-            .then(() => {
-                if (this.testMethod === 'fetch') return this.doFetchAsync({code, autoAbortKey});
-                return XH.fetchService[this.testMethod](this.requestOptions({code, autoAbortKey}));
-            });
+        wait(1).then(() => {
+            if (this.testMethod === 'fetch') return this.doFetchAsync({code, autoAbortKey});
+            return XH.fetchService[this.testMethod](this.requestOptions({code, autoAbortKey}));
+        });
     }
 
     async testTimeoutAsync() {
@@ -148,10 +148,12 @@ export class FetchApiTestModel extends HoistModel {
         wait()
             .then(() => {
                 if (this.testMethod === 'fetch') return this.doFetchAsync({code, delay, timeout});
-                return XH.fetchService[this.testMethod](this.requestOptions({code, delay, timeout}));
-            }).catch(
-                (err) => this.handleError(err)
-            ).then((resp) => this.setOutcome(this.formatOutcome(resp, code)))
+                return XH.fetchService[this.testMethod](
+                    this.requestOptions({code, delay, timeout})
+                );
+            })
+            .catch(err => this.handleError(err))
+            .then(resp => this.setOutcome(this.formatOutcome(resp, code)))
             .linkTo(this.taskModel);
     }
 
@@ -171,10 +173,7 @@ export class FetchApiTestModel extends HoistModel {
 
     private formatOutcome(response, code) {
         // Early out on fetch features
-        if (
-            response.name === 'Fetch Timeout' ||
-            response.name === 'Fetch Aborted'
-        ) {
+        if (response.name === 'Fetch Timeout' || response.name === 'Fetch Aborted') {
             return {
                 fetchError: response,
                 response: null
@@ -195,7 +194,7 @@ export class FetchApiTestModel extends HoistModel {
         this.outcome = JSON.stringify(obj, undefined, 2);
     }
 
-    private requestOptions(opts: {code, delay?, autoAbortKey?, timeout?}) {
+    private requestOptions(opts: {code; delay?; autoAbortKey?; timeout?}) {
         const {code, delay, autoAbortKey, timeout} = opts;
         const sep = this.testServer.includes('fetchTest') ? '&' : '?',
             sleepParam = delay ? sep + 'sleep=' + delay : '';
@@ -205,7 +204,7 @@ export class FetchApiTestModel extends HoistModel {
             },
             url: `${this.testServer}${code}${sleepParam}`,
             headers: {
-                'Expect': code === 100 ? '100-continue' : undefined
+                Expect: code === 100 ? '100-continue' : undefined
             },
             autoAbortKey,
             timeout
@@ -215,7 +214,7 @@ export class FetchApiTestModel extends HoistModel {
             merge(ret, {
                 method: 'GET',
                 headers: {
-                    'Accept': 'application/json'
+                    Accept: 'application/json'
                 }
             });
         }
@@ -251,7 +250,7 @@ export class FetchApiTestModel extends HoistModel {
         const ct = resp.headers.get('Content-Type');
         let method;
         switch (true) {
-            case ct?.includes('json') :
+            case ct?.includes('json'):
                 method = 'json';
                 break;
             default:
@@ -260,7 +259,7 @@ export class FetchApiTestModel extends HoistModel {
         }
 
         try {
-            return await resp[method]();
+            return resp[method]();
         } catch (error) {
             return null;
         }

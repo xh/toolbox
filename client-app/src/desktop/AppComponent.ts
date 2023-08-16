@@ -21,9 +21,7 @@ export const AppComponent = hoistCmp({
             tbar: appBar({
                 icon: img({src: xhLogo, onClick: () => model.goHome()}),
                 title: null,
-                leftItems: [
-                    tabSwitcher()
-                ],
+                leftItems: [tabSwitcher({enableOverflow: true})],
                 rightItems: [
                     webSocketIndicator({iconOnly: true, marginRight: 4}),
                     appBarSeparator()
@@ -31,9 +29,7 @@ export const AppComponent = hoistCmp({
                 hideRefreshButton: false,
                 appMenuButtonProps: {
                     hideLogoutItem: false,
-                    extraItems: [
-                        welcomeMsg({multiline: true})
-                    ]
+                    extraItems: [welcomeMsg({multiline: true})]
                 }
             }),
             hotkeys: [

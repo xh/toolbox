@@ -25,7 +25,7 @@ export interface WrapperProps extends HoistProps<WrapperModel> {
 /**
  * A styled panel used to wrap component examples within Toolbox.
  */
-export const [Wrapper, wrapper] = hoistCmp.withContainerFactory<WrapperProps>({
+export const [Wrapper, wrapper] = hoistCmp.withFactory<WrapperProps>({
     displayName: 'Wrapper',
     className: 'tbox-wrapper xh-tiled-bg',
     model: creates(() => WrapperModel, {publishMode: 'limited'}),
@@ -52,11 +52,10 @@ export const [Wrapper, wrapper] = hoistCmp.withContainerFactory<WrapperProps>({
 });
 
 class WrapperModel extends HoistModel {
-
     @managed
     dockContainerModel: DockContainerModel = null;
 
-    onLinked() {
+    override onLinked() {
         const {links} = this.componentProps;
         if (links) {
             this.dockContainerModel = new DockContainerModel();
@@ -67,23 +66,17 @@ class WrapperModel extends HoistModel {
                 allowDialog: false,
                 allowClose: false,
                 collapsed: !XH.getPref('expandDockedLinks'),
-                content: () => panel({
-                    className: 'tbox-wrapper__links',
-                    item: this.createLinksWithNotes(links),
-                    width: 400
-                })
+                content: () =>
+                    panel({
+                        className: 'tbox-wrapper__links',
+                        item: this.createLinksWithNotes(links),
+                        width: 400
+                    })
             });
         }
     }
 
     private createLinksWithNotes(links: ToolboxLinkProps[]) {
-        return table(
-            tbody(
-                links.map(link => tr(
-                    th(toolboxLink(link)),
-                    td(link.notes ?? '')
-                ))
-            )
-        );
+        return table(tbody(links.map(link => tr(th(toolboxLink(link)), td(link.notes ?? '')))));
     }
 }

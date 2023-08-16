@@ -5,7 +5,6 @@ import {isEmpty} from 'lodash';
 import {mktValCol, nameCol, pnlCol} from '../../core/columns';
 
 export class TreeGridPageModel extends HoistModel {
-
     @managed
     groupingChooserModel: GroupingChooserModel = new GroupingChooserModel({
         dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],

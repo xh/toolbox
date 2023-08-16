@@ -19,7 +19,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
             item: hframe(grid(), gridOptionsPanel({model: gridModel})),
             ref: model.panelRef,
             tbar: [
-                refreshButton(),
+                refreshButton({model}),
                 toolbarSep(),
                 groupingChooser(),
                 filler(),
@@ -46,4 +46,3 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
         });
     }
 });
-

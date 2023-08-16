@@ -1,13 +1,21 @@
-import {addAction, cloneAction, deleteAction, editAction, restGrid, RestGridConfig, viewAction} from '@xh/hoist/desktop/cmp/rest';
+import {
+    addAction,
+    cloneAction,
+    deleteAction,
+    editAction,
+    restGrid,
+    RestGridConfig,
+    viewAction
+} from '@xh/hoist/desktop/cmp/rest';
 import {hoistCmp} from '@xh/hoist/core';
 import {boolCheckCol} from '@xh/hoist/cmp/grid';
 import {AppModel} from '@xh/hoist/admin/AppModel';
 
-export const phaseRestPanel = hoistCmp.factory(
-    () => restGrid({modelConfig: {...modelSpec, readonly: AppModel.readonly}})
+export const phaseRestPanel = hoistCmp.factory(() =>
+    restGrid({modelConfig: {...modelSpec, readonly: AppModel.readonly}})
 );
 
-const modelSpec: RestGridConfig= {
+const modelSpec: RestGridConfig = {
     enableExport: true,
     store: {
         url: 'rest/phaseRest',
@@ -21,7 +29,8 @@ const modelSpec: RestGridConfig= {
                 name: 'sortOrder',
                 type: 'number'
             },
-            {   name: 'displayed',
+            {
+                name: 'displayed',
                 type: 'bool',
                 defaultValue: true,
                 required: true
@@ -31,7 +40,7 @@ const modelSpec: RestGridConfig= {
                 editable: false
             }
         ],
-        processRawData: (raw) => {
+        processRawData: raw => {
             return {
                 ...raw,
                 projectNames: raw.projects ? raw.projects.map(it => it.name).join(', ') : null
@@ -71,15 +80,9 @@ const modelSpec: RestGridConfig= {
         {field: 'projectNames', formField: {label: 'Projects'}}
     ],
     emptyText: 'No phases found - try adding one...',
-    menuActions: [
-        addAction,
-        editAction,
-        viewAction,
-        deleteAction,
-        cloneAction
-    ],
+    menuActions: [addAction, editAction, viewAction, deleteAction, cloneAction],
     actionWarning: {
         del: 'Warning: Deleting this phase will also delete all projects associated with it. Continue anyway?'
     },
-    prepareCloneFn: ({record, clone}) => clone.name = `${clone.name}_CLONE`
+    prepareCloneFn: ({record, clone}) => (clone.name = `${clone.name}_CLONE`)
 };

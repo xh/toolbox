@@ -22,7 +22,10 @@ export const toolbarPanel = hoistCmp.factory({
                 own and can be displayed in a vertical configuration as well. 
             `,
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/panels/ToolbarPanel.ts', notes: 'This example.'},
+                {
+                    url: '$TB/client-app/src/desktop/tabs/panels/ToolbarPanel.ts',
+                    notes: 'This example.'
+                },
                 {url: '$HR/desktop/cmp/toolbar/Toolbar.ts', notes: 'Hoist component.'}
             ],
             item: panel({
@@ -30,19 +33,15 @@ export const toolbarPanel = hoistCmp.factory({
                 height: '60vh',
                 width: '80vw',
                 tbar: topBar(),
-                item: hframe(
-                    leftBar(),
-                    placeholder(xhLogo({width: 200})),
-                    rightBar()
-                ),
+                item: hframe(leftBar(), placeholder(xhLogo({width: 200})), rightBar()),
                 bbar: bottomBar()
             })
         });
     }
 });
 
-const topBar = hoistCmp.factory<ToolbarPanelModel>(
-    ({model}) => toolbar({
+const topBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
+    toolbar({
         compact: model.compact,
         enableOverflowMenu: true,
         items: [
@@ -80,7 +79,8 @@ const topBar = hoistCmp.factory<ToolbarPanelModel>(
                 text: 'Terminate',
                 intent: 'danger',
                 disabled: !model.enableTerminate,
-                onClick: () => XH.toast({message: 'Game over!', icon: Icon.skull(), intent: 'danger'})
+                onClick: () =>
+                    XH.toast({message: 'Game over!', icon: Icon.skull(), intent: 'danger'})
             }),
             button({
                 icon: Icon.add(),
@@ -98,8 +98,8 @@ const topBar = hoistCmp.factory<ToolbarPanelModel>(
     })
 );
 
-const leftBar = hoistCmp.factory<ToolbarPanelModel>(
-    ({model}) => toolbar({
+const leftBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
+    toolbar({
         compact: model.compact,
         vertical: true,
         items: [
@@ -116,18 +116,16 @@ const leftBar = hoistCmp.factory<ToolbarPanelModel>(
     })
 );
 
-const rightBar = hoistCmp.factory<ToolbarPanelModel>(
-    ({model}) => toolbar({
+const rightBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
+    toolbar({
         compact: model.compact,
         vertical: true,
-        items: [
-            button({icon: Icon.contact()})
-        ]
+        items: [button({icon: Icon.contact()})]
     })
 );
 
-const bottomBar = hoistCmp.factory<ToolbarPanelModel>(
-    ({model}) => toolbar({
+const bottomBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
+    toolbar({
         compact: model.compact,
         items: [
             switchInput({
@@ -156,7 +154,8 @@ const bottomBar = hoistCmp.factory<ToolbarPanelModel>(
             toolbarSep(),
             button({
                 text: 'Show Toast',
-                onClick: () => XH.toast({message: `Currently selected State: ${model.state || 'None'}`})
+                onClick: () =>
+                    XH.toast({message: `Currently selected State: ${model.state || 'None'}`})
             })
         ]
     })

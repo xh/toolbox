@@ -1,5 +1,5 @@
-import {code, hframe} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {code, fragment, hframe, hspacer, input} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp, HoistProps} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {
     buttonGroupInput,
@@ -10,8 +10,8 @@ import {
 } from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {card} from '@xh/hoist/kit/blueprint';
-import React from 'react';
+import {card, formGroup} from '@xh/hoist/kit/blueprint';
+import React, {ReactNode} from 'react';
 import {wrapper} from '../../../common';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
@@ -25,18 +25,23 @@ export const numberFormatsPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    Hoist provides a collection of number formatting functions in <code>@xh/hoist/format</code>.
-                    The main method is <code>fmtNumber</code> which provides several useful options. More specific
-                    methods delegate to <code>fmtNumber</code> and set useful defaults.
+                    Hoist provides a collection of number formatting functions in{' '}
+                    <code>@xh/hoist/format</code>. The main method is <code>fmtNumber</code> which
+                    provides several useful options. More specific methods delegate to{' '}
+                    <code>fmtNumber</code> and set useful defaults.
                 </p>,
                 <p>
-                    <code>fmtNumber</code> is backed by <a href="https://numbrojs.com/" target="_blank">numbro.js </a>
-                    and makes the full numbro API available via the <code>formatConfig</code> property, which takes a
-                    numbro configuration object.
+                    <code>fmtNumber</code> is backed by{' '}
+                    <a href="https://numbrojs.com/" target="_blank">
+                        numbro.js{' '}
+                    </a>
+                    and makes the full numbro API available via the <code>formatConfig</code>{' '}
+                    property, which takes a numbro configuration object.
                 </p>,
                 <p>
-                    All hoist formatting functions support the <code>asHtml</code> option to produce a raw HTML string
-                    rather than a React element. This allows them to be useful in both React and non-React contexts.
+                    All hoist formatting functions support the <code>asHtml</code> option to produce
+                    a raw HTML string rather than a React element. This allows them to be useful in
+                    both React and non-React contexts.
                 </p>
             ],
             item: panel({
@@ -47,7 +52,10 @@ export const numberFormatsPanel = hoistCmp.factory({
                 item: hframe(
                     paramsPanel(),
                     resultsPanel({
-                        tryItInput: numberInput({selectOnFocus: true, placeholder: 'Enter a value to test'})
+                        tryItInput: numberInput({
+                            selectOnFocus: true,
+                            placeholder: 'Enter a value to test'
+                        })
                     })
                 )
             })
@@ -55,8 +63,8 @@ export const numberFormatsPanel = hoistCmp.factory({
     }
 });
 
-const paramsPanel = hoistCmp.factory(
-    () => panel({
+const paramsPanel = hoistCmp.factory<NumberFormatsPanelModel>(({model}) =>
+    panel({
         title: 'Function + Options',
         compactHeader: true,
         className: 'tbox-formats-tab__panel',
@@ -82,7 +90,11 @@ const paramsPanel = hoistCmp.factory(
                 items: [
                     param({
                         bind: 'precision',
-                        input: select({options: ['auto', 0, 1, 2, 3, 4, 5, 6], enableFilter: false, width: 75}),
+                        input: select({
+                            options: ['auto', 0, 1, 2, 3, 4, 5, 6],
+                            enableFilter: false,
+                            width: 75
+                        }),
                         info: 'precision'
                     }),
                     param({
@@ -120,11 +132,28 @@ const paramsPanel = hoistCmp.factory(
                         input: switchInput(),
                         info: 'values under 10,000 will not be delimited'
                     }),
-                    param({
-                        bind: 'colorSpec',
-                        input: switchInput(),
-                        info: 'color positive and negative numbers (colors configurable)'
-                    }),
+                    formGroup(
+                        formGroup({
+                            label: code('colorSpec'),
+                            item: buttonGroupInput({
+                                bind: 'colorSpec',
+                                items: [
+                                    button({text: code('true'), value: true}),
+                                    button({text: code('false'), value: false}),
+                                    button({text: 'Custom', value: 'custom'})
+                                ]
+                            })
+                        }),
+                        fragment({
+                            omit: model.colorSpec !== 'custom',
+                            items: [
+                                hspacer(),
+                                colorInput({label: code('pos'), bind: 'positiveColor'}),
+                                colorInput({label: code('neg'), bind: 'negativeColor'}),
+                                colorInput({label: code('neutral'), bind: 'neutralColor'})
+                            ]
+                        })
+                    ),
                     param({
                         bind: 'label',
                         input: textInput({commitOnChange: true, width: 50}),
@@ -138,5 +167,24 @@ const paramsPanel = hoistCmp.factory(
                 ]
             })
         ]
+    })
+);
+
+interface ColorInputProps extends HoistProps<NumberFormatsPanelModel> {
+    bind: string;
+    label: ReactNode;
+}
+
+const colorInput = hoistCmp.factory<ColorInputProps>(({bind, label, model}) =>
+    formGroup({
+        label,
+        item: input({
+            type: 'color',
+            id: 'pos',
+            value: model[bind],
+            onChange: e => {
+                model[bind] = e.target.value;
+            }
+        })
     })
 );

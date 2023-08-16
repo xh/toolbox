@@ -20,7 +20,6 @@ import {
 } from '../../../core/columns';
 
 export class SampleGridModel extends HoistModel {
-
     @observable groupBy: string = null;
 
     panelRef = createRef<HTMLElement>();
@@ -30,7 +29,8 @@ export class SampleGridModel extends HoistModel {
         icon: Icon.search(),
         tooltip: 'View details on the selected company',
         recordsRequired: 1,
-        displayFn: ({record}) => record ? {tooltip: `View details for ${record.data.company}`} : null,
+        displayFn: ({record}) =>
+            record ? {tooltip: `View details for ${record.data.company}`} : null,
         actionFn: ({record}) => this.showInfoToast(record)
     };
 
@@ -57,7 +57,8 @@ export class SampleGridModel extends HoistModel {
         items: [
             {
                 text: 'via Hostile Takeover',
-                tooltip: 'This will send an aggressive sounding hostile takeover letter to their board.',
+                tooltip:
+                    'This will send an aggressive sounding hostile takeover letter to their board.',
                 recordsRequired: 1,
                 actionFn: ({record}) => this.showTerminateToast(record, 'hostile takeover')
             },
@@ -70,13 +71,15 @@ export class SampleGridModel extends HoistModel {
                         text: 'over Lunch',
                         tooltip: 'This will send a lunch invitation to their CEO.',
                         recordsRequired: 1,
-                        actionFn: ({record}) => this.showTerminateToast(record, 'friendly merger proposal during lunch')
+                        actionFn: ({record}) =>
+                            this.showTerminateToast(record, 'friendly merger proposal during lunch')
                     },
                     {
                         text: 'at Golf',
                         tooltip: 'This will send a golf outing invitation to their CEO.',
                         recordsRequired: 1,
-                        actionFn: ({record}) => this.showTerminateToast(record, 'friendly merger proposal during golf')
+                        actionFn: ({record}) =>
+                            this.showTerminateToast(record, 'friendly merger proposal during golf')
                     }
                 ]
             }
@@ -92,13 +95,14 @@ export class SampleGridModel extends HoistModel {
         enableExport: true,
         exportOptions: {
             columns: ['id', 'company', 'VISIBLE'],
-            filename: 'hoist-sample-export'
+            filename: 'hoist-sample-export',
+            track: true
         },
         store: {
-            processRawData: (r) => {
+            processRawData: r => {
                 const pnl = r.profit_loss;
                 return {
-                    winLose: pnl > 0 ? 'Winner' : (pnl < 0 ? 'Loser' : 'Flat'),
+                    winLose: pnl > 0 ? 'Winner' : pnl < 0 ? 'Loser' : 'Flat',
                     ...r
                 };
             }
@@ -119,7 +123,7 @@ export class SampleGridModel extends HoistModel {
         },
         restoreDefaultsFn: () => this.restoreDefaultsFn(),
         colDefaults: {
-            tooltipElement: (v, {record}) => {
+            tooltip: (v, {record}) => {
                 if (record.isSummary) return null;
                 const {company, city, trade_date, profit_loss, trade_volume} = record.data;
                 return vbox({
@@ -128,18 +132,18 @@ export class SampleGridModel extends HoistModel {
                         div({className: 'company', item: company}),
                         hbox({
                             className: 'city-and-date tooltip-row',
-                            items: [
-                                city,
-                                filler(),
-                                fmtDate(trade_date)
-                            ]
+                            items: [city, filler(), fmtDate(trade_date)]
                         }),
                         hbox({
                             className: 'tooltip-row',
                             items: [
                                 'P&L',
                                 filler(),
-                                fmtNumber(profit_loss, {precision: 0, ledger: true, colorSpec: true})
+                                fmtNumber(profit_loss, {
+                                    precision: 0,
+                                    ledger: true,
+                                    colorSpec: true
+                                })
                             ]
                         }),
                         hbox({
@@ -160,10 +164,7 @@ export class SampleGridModel extends HoistModel {
                 ...actionCol,
                 width: calcActionColWidth(2),
                 actionsShowOnHoverOnly: true,
-                actions: [
-                    this.viewDetailsAction,
-                    this.terminateAction
-                ]
+                actions: [this.viewDetailsAction, this.terminateAction]
             },
             {
                 ...companyCol,
@@ -183,7 +184,10 @@ export class SampleGridModel extends HoistModel {
             {...profitLossCol},
             {...dayOfWeekCol, hidden: true},
             {...tradeDateCol},
-            {...activeCol, tooltip: (active, {record}) => active ? `${record.data.company} is active` : ''}
+            {
+                ...activeCol,
+                tooltip: (active, {record}) => (active ? `${record.data.company} is active` : '')
+            }
         ]
     });
 
@@ -203,7 +207,8 @@ export class SampleGridModel extends HoistModel {
     private showInfoToast(rec: StoreRecord) {
         XH.toast({
             message: fragment(
-                `You asked for ${rec.data.company} details.`, br(),
+                `You asked for ${rec.data.company} details.`,
+                br(),
                 `They are based in ${rec.data.city}.`
             ),
             icon: Icon.info(),

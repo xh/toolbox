@@ -16,13 +16,14 @@ export const lineChartPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    Hoist provides a lightweight wrapper around the Highcharts charting and visualization library.
-                    This integration includes the <code>Chart</code> component to handle basic rendering, layout,
-                    and resizing and a <code>ChartModel</code> class to hold an observable config and data series.
+                    Hoist provides a lightweight wrapper around the Highcharts charting and
+                    visualization library. This integration includes the <code>Chart</code>{' '}
+                    component to handle basic rendering, layout, and resizing and a{' '}
+                    <code>ChartModel</code> class to hold an observable config and data series.
                 </p>,
                 <p>
-                    Note that applications must license and specify a compatible version of Highcharts as an application
-                    dependency.
+                    Note that applications must license and specify a compatible version of
+                    Highcharts as an application dependency.
                 </p>
             ],
             item: panel({
@@ -35,10 +36,23 @@ export const lineChartPanel = hoistCmp.factory({
                 item: chart()
             }),
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/charts/LineChartPanel.tsx', notes: 'This example.'},
-                {url: '$HR/cmp/chart/Chart.ts', notes: 'Hoist wrapper component for Chart sizing and layout.'},
-                {url: '$HR/cmp/chart/ChartModel.ts', notes: 'Hoist model with observable Chart config and series.'},
-                {text: 'Highcharts Docs', url: 'https://api.highcharts.com/highstock/', notes: 'Library API documentation.'}
+                {
+                    url: '$TB/client-app/src/desktop/tabs/charts/LineChartPanel.tsx',
+                    notes: 'This example.'
+                },
+                {
+                    url: '$HR/cmp/chart/Chart.ts',
+                    notes: 'Hoist wrapper component for Chart sizing and layout.'
+                },
+                {
+                    url: '$HR/cmp/chart/ChartModel.ts',
+                    notes: 'Hoist model with observable Chart config and series.'
+                },
+                {
+                    text: 'Highcharts Docs',
+                    url: 'https://api.highcharts.com/highstock/',
+                    notes: 'Library API documentation.'
+                }
             ]
         });
     }

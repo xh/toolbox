@@ -12,9 +12,9 @@ export const detailPanel = hoistCmp.factory({
     render({model}) {
         const {panelSizingModel, positionId, collapsed} = model;
 
-        const items = positionId ?
-            [ordersPanel(), chartsPanel()] :
-            [placeholder('Select a position to view details.')];
+        const items = positionId
+            ? [ordersPanel(), chartsPanel()]
+            : [placeholder('Select a position to view details.')];
 
         return panel({
             model: panelSizingModel,

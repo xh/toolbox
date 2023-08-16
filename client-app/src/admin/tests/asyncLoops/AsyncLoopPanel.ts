@@ -31,44 +31,45 @@ export const asyncLoopPanel = hoistCmp.factory({
     }
 });
 
-const tbar = hoistCmp.factory<AsyncLoopPanelModel>(
-    ({model}) => {
-        const {loadModel, lastRunDuration} = model,
-            {isPending} = loadModel;
+const tbar = hoistCmp.factory<AsyncLoopPanelModel>(({model}) => {
+    const {loadModel, lastRunDuration} = model,
+        {isPending} = loadModel;
 
-        return toolbar({
-            items: [
-                span('Iterations:'),
-                numberInput({
-                    bind: 'iterations',
-                    width: 100
-                }),
-                toolbarSep(),
-                'Loop Type:',
-                select({
-                    bind: 'loopType',
-                    options: ['forEach', 'while', 'forEachAsync', 'whileAsync']
-                }),
-                toolbarSep(),
-                toolbarSep(),
-                'Auto-Refresh (secs):',
-                select({
-                    bind: 'refreshInterval',
-                    options: [-1, 5, 10, 30]
-                }),
-                button({
-                    text: isPending ? 'Working...' : 'Run',
-                    disabled: isPending,
-                    icon: Icon.refresh(),
-                    intent: 'primary',
-                    outlined: true,
-                    onClick: () => wait().then(() => model.loadAsync())
-                }),
-                hspacer(),
-                lastRunDuration ? span(`Last run took `, fmtNumber(lastRunDuration, {label: 'ms'})) : null
-            ]
-        });
+    return toolbar({
+        items: [
+            span('Iterations:'),
+            numberInput({
+                bind: 'iterations',
+                width: 100
+            }),
+            toolbarSep(),
+            'Loop Type:',
+            select({
+                bind: 'loopType',
+                options: ['forEach', 'while', 'forEachAsync', 'whileAsync']
+            }),
+            toolbarSep(),
+            toolbarSep(),
+            'Auto-Refresh (secs):',
+            select({
+                bind: 'refreshInterval',
+                options: [-1, 5, 10, 30]
+            }),
+            button({
+                text: isPending ? 'Working...' : 'Run',
+                disabled: isPending,
+                icon: Icon.refresh(),
+                intent: 'primary',
+                outlined: true,
+                onClick: () => wait().then(() => model.loadAsync())
+            }),
+            hspacer(),
+            lastRunDuration
+                ? span(`Last run took `, fmtNumber(lastRunDuration, {label: 'ms'}))
+                : null
+        ]
     });
+});
 
 class AsyncLoopPanelModel extends HoistModel {
     @bindable iterations = 1000 * 1000;
@@ -92,13 +93,12 @@ class AsyncLoopPanelModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-
         if (loadSpec.loadNumber === 0) return;
 
         const start = Date.now();
         await wait();
         await this.runLoopAsync();
-        runInAction(() => this.lastRunDuration = Date.now() - start);
+        runInAction(() => (this.lastRunDuration = Date.now() - start));
     }
 
     testFn(obj) {
@@ -112,13 +112,16 @@ class AsyncLoopPanelModel extends HoistModel {
             let i = 0;
             switch (loopType) {
                 case 'forEachAsync':
-                    return await forEachAsync(collection, (it) => {
+                    return forEachAsync(collection, it => {
                         this.testFn(it);
                     });
                 case 'whileAsync':
-                    return await whileAsync(() => i < iterations, () => {
-                        this.testFn(collection[i++]);
-                    });
+                    return whileAsync(
+                        () => i < iterations,
+                        () => {
+                            this.testFn(collection[i++]);
+                        }
+                    );
                 case 'forEach':
                     collection.forEach(it => {
                         this.testFn(it);

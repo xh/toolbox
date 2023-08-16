@@ -3,7 +3,6 @@ import {HoistModel, PlainObject, managed} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 
 export class LoadTimesModel extends HoistModel {
-
     @managed gridModel = new GridModel({
         store: {idSpec: 'timestamp'},
         sortBy: 'timestamp|desc',
@@ -30,11 +29,13 @@ export class LoadTimesModel extends HoistModel {
         await fn();
         const end = Date.now();
 
-        this.addLoadTimes([{
-            timestamp: end,
-            took: end - start,
-            tag
-        }]);
+        this.addLoadTimes([
+            {
+                timestamp: end,
+                took: end - start,
+                tag
+            }
+        ]);
     }
 
     private addLoadTimes(times: PlainObject[]) {

@@ -8,7 +8,6 @@ import {cloneDeep, isEmpty, isEqual, pullAllWith, unionWith} from 'lodash';
 import {StoreRecord} from '@xh/hoist/data';
 
 export class DimensionManagerModel extends HoistModel {
-
     @observable.ref value = [];
 
     defaultDims: string[][];
@@ -50,17 +49,17 @@ export class DimensionManagerModel extends HoistModel {
 
         this.addReaction({
             track: () => this.selectedRecord,
-            run: (rec) => this.onSelectionChange(rec)
+            run: rec => this.onSelectionChange(rec)
         });
 
         this.addReaction({
             track: () => this.groupingChooserModel.value,
-            run: (val) => this.onDimChooserValChange(val)
+            run: val => this.onDimChooserValChange(val)
         });
 
         this.userDimPref = config.userDimPref;
         const userDims = this.userDimPref ? XH.getPref(this.userDimPref) : [];
-        this.setUserDims(userDims);  // populates the grid
+        this.setUserDims(userDims); // populates the grid
     }
 
     @action
@@ -90,14 +89,15 @@ export class DimensionManagerModel extends HoistModel {
         // Otherwise update user dims, triggering selection of new value.
         const newDims = unionWith([val], this.userDims, isEqual);
         this.setUserDims(newDims, newId);
-
-        // Reset chooser for next show.
-        this.groupingChooserModel.setValue([]);
     }
 
-    get formattedDimensions() {return this.formatDimensions(this.value)}
+    get formattedDimensions() {
+        return this.formatDimensions(this.value);
+    }
 
-    private get selectedRecord() {return this.gridModel.selectedRecord}
+    private get selectedRecord() {
+        return this.gridModel.selectedRecord;
+    }
 
     private get enableDelete() {
         return this.selectedRecord && this.selectedRecord.data.type != 'Default';
@@ -111,7 +111,7 @@ export class DimensionManagerModel extends HoistModel {
         wait(300).then(() => {
             if (idToSelect) {
                 gridModel.selectAsync(idToSelect);
-            } else  {
+            } else {
                 gridModel.preSelectFirstAsync();
             }
         });
@@ -168,5 +168,4 @@ export class DimensionManagerModel extends HoistModel {
     formatDimensions(dims: string[]) {
         return dims.map(dim => this.groupingChooserModel.getDimDisplayName(dim)).join(' › ');
     }
-
 }

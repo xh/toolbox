@@ -5,11 +5,10 @@ import {hoistCmp} from '@xh/hoist/core';
 /**
  * Shell for work-in-progress examples and testing code.
  */
-export const wipTab = hoistCmp.factory(
-    () => {
-        const tabs = [];
+export const wipTab = hoistCmp.factory(() => {
+    const tabs = [];
 
-        return tabs.length ?
-            tabContainer({modelConfig: {route: 'default.wip', switcher: {orientation: 'left'}, tabs}}) :
-            placeholder('No WIP projects at the moment...');
-    });
+    return tabs.length
+        ? tabContainer({modelConfig: {route: 'default.wip', switcher: {orientation: 'left'}, tabs}})
+        : placeholder('No WIP projects at the moment...');
+});

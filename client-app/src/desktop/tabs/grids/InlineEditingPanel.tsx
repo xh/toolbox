@@ -20,33 +20,38 @@ export const inlineEditingPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    Grids support inline editing of their underlying store records. To enable, set <code>editable:true</code> on
-                    columns that should allow editing and (optionally) configure a type-appropriate editor.
+                    Grids support inline editing of their underlying store records. To enable, set{' '}
+                    <code>editable:true</code> on columns that should allow editing and (optionally)
+                    configure a type-appropriate editor.
                 </p>,
                 <p>
-                    The <code>Column.editable</code> config also takes a function, allowing field-level editing to be conditional
-                    based upon the data or some other state, as demonstrated in the example below. This example also applies a custom
-                    style to highlight the editable cells in the grid, which are given the <code>.xh-cell--editable</code> CSS class
-                    by the toolkit.
+                    The <code>Column.editable</code> config also takes a function, allowing
+                    field-level editing to be conditional based upon the data or some other state,
+                    as demonstrated in the example below. This example also applies a custom style
+                    to highlight the editable cells in the grid, which are given the{' '}
+                    <code>.xh-cell--editable</code> CSS class by the toolkit.
                 </p>,
                 <p>
-                    Store fields can be configured with validation rules, much like forms, allowing the application to
-                    require resolution before persisting to the back-end. Cells with invalid values are styled with a red corner
-                    flag by default. (Try setting a negative amount in any row to test.)
+                    Store fields can be configured with validation rules, much like forms, allowing
+                    the application to require resolution before persisting to the back-end. Cells
+                    with invalid values are styled with a red corner flag by default. (Try setting a
+                    negative amount in any row to test.)
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/grids/InlineEditingPanel.tsx', notes: 'This example.'}
+                {
+                    url: '$TB/client-app/src/desktop/tabs/grids/InlineEditingPanel.tsx',
+                    notes: 'This example.'
+                }
             ],
             item: panel({
                 title: 'Grids › Inline Editing',
                 icon: Icon.edit(),
-                className: `tb-grid-wrapper-panel tb-inline-editing-panel ${model.fullRowEditing ? 'tb-inline-editing-panel--fullRow' : ''}`,
+                className: `tb-grid-wrapper-panel tb-inline-editing-panel ${
+                    model.fullRowEditing ? 'tb-inline-editing-panel--fullRow' : ''
+                }`,
                 tbar: tbar(),
-                item: hframe(
-                    grid(),
-                    gridOptionsPanel()
-                ),
+                item: hframe(grid(), gridOptionsPanel()),
                 bbar: bbar()
             })
         });
@@ -116,85 +121,80 @@ const tbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
     );
 });
 
-const storeDirtyIndicator = hoistCmp.factory<InlineEditingPanelModel>(
-    ({model}) => {
-        const {isModified} = model.store;
-        return hbox({
-            className: isModified ? 'xh-intent-warning' : 'xh-intent-success',
-            alignItems: 'center',
-            items: [
-                isModified ? Icon.circle() : Icon.checkCircle(),
-                hspacer(5),
-                'Store ' + (isModified ? 'Dirty' : 'Clean')
-            ]
-        });
-    }
-);
-
-const storeValidIndicator = hoistCmp.factory<InlineEditingPanelModel>(
-    ({model}) => {
-        const {isPending, validationState, errorCount} = model.store.validator;
-        let icon, label, className;
-        if (isPending) {
-            icon = Icon.questionCircle();
-            label = 'Validation pending';
-            className = 'xh-text-color-muted';
-        } else {
-            switch (validationState) {
-                case ValidationState.Valid:
-                    icon = Icon.checkCircle();
-                    label = 'Valid';
-                    className = 'xh-intent-success';
-                    break;
-                case ValidationState.NotValid:
-                    icon = Icon.xCircle();
-                    label = `Not Valid (${errorCount} errors)`;
-                    className = 'xh-intent-danger';
-                    break;
-                default:
-                    icon = Icon.questionCircle();
-                    label = 'Validation state unknown';
-                    className = 'xh-text-color-muted';
-                    break;
-            }
-        }
-
-        return hbox({
-            className,
-            alignItems: 'center',
-            items: [icon, hspacer(5), label]
-        });
-    }
-);
-
-const bbar = hoistCmp.factory<InlineEditingPanelModel>(
-    ({model}) => {
-        return toolbar(
-            switchInput({
-                bind: 'fullRowEditing',
-                label: 'Full-row editing',
-                labelSide: 'left'
-            }),
-            '-',
-            switchInput({
-                bind: 'asyncValidation',
-                label: 'Async validation',
-                labelSide: 'left'
-            }),
-            '-',
-            span('Edit with: '),
-            buttonGroupInput({
-                bind: 'clicksToEdit',
-                outlined: true,
-                items: [
-                    button({text: '2 clicks', value: 2}),
-                    button({text: '1 click', value: 1}),
-                    button({text: 'disabled', value: -1})
-                ]
-            }),
-            hspacer(),
-            span(`${model.clicksToEditNote}`),
-            filler(),
-            gridCountLabel()
-        );
+const storeDirtyIndicator = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
+    const {isModified} = model.store;
+    return hbox({
+        className: isModified ? 'xh-intent-warning' : 'xh-intent-success',
+        alignItems: 'center',
+        items: [
+            isModified ? Icon.circle() : Icon.checkCircle(),
+            hspacer(5),
+            'Store ' + (isModified ? 'Dirty' : 'Clean')
+        ]
     });
+});
+
+const storeValidIndicator = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
+    const {isPending, validationState, errorCount} = model.store.validator;
+    let icon, label, className;
+    if (isPending) {
+        icon = Icon.questionCircle();
+        label = 'Validation pending';
+        className = 'xh-text-color-muted';
+    } else {
+        switch (validationState) {
+            case ValidationState.Valid:
+                icon = Icon.checkCircle();
+                label = 'Valid';
+                className = 'xh-intent-success';
+                break;
+            case ValidationState.NotValid:
+                icon = Icon.xCircle();
+                label = `Not Valid (${errorCount} errors)`;
+                className = 'xh-intent-danger';
+                break;
+            default:
+                icon = Icon.questionCircle();
+                label = 'Validation state unknown';
+                className = 'xh-text-color-muted';
+                break;
+        }
+    }
+
+    return hbox({
+        className,
+        alignItems: 'center',
+        items: [icon, hspacer(5), label]
+    });
+});
+
+const bbar = hoistCmp.factory<InlineEditingPanelModel>(({model}) => {
+    return toolbar(
+        switchInput({
+            bind: 'fullRowEditing',
+            label: 'Full-row editing',
+            labelSide: 'left'
+        }),
+        '-',
+        switchInput({
+            bind: 'asyncValidation',
+            label: 'Async validation',
+            labelSide: 'left'
+        }),
+        '-',
+        span('Edit with: '),
+        buttonGroupInput({
+            bind: 'clicksToEdit',
+            outlined: true,
+            items: [
+                button({text: '2 clicks', value: 2}),
+                button({text: '1 click', value: 1}),
+                button({text: 'disabled', value: -1})
+            ]
+        }),
+        hspacer(),
+        span(`${model.clicksToEditNote}`),
+        filler(),
+        gridCountLabel()
+    );
+});

@@ -59,10 +59,11 @@ class ButtonWidgetModel extends HoistModel {
         this.value = viewModel.viewState ? viewModel.viewState.value : 'Button 1';
         this.addReaction({
             track: () => this.value,
-            run: (value) => {
+            run: value => {
                 viewModel.icon = this.getIconForValue(value);
                 viewModel.viewState = {value};
-            }
+            },
+            fireImmediately: true
         });
     }
 
@@ -78,7 +79,7 @@ class ButtonWidgetModel extends HoistModel {
             case 'Button 3':
                 return Icon.skull();
             default:
-                return Icon.question();
+                return Icon.stop();
         }
     }
 }

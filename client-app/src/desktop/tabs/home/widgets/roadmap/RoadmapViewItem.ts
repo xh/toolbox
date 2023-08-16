@@ -17,7 +17,8 @@ export const roadmapViewItem = hoistCmp.factory({
     model: null,
 
     render({record}) {
-        const {category, name, description, releaseVersion, status, gitLinks, lastUpdated} = record.data;
+        const {category, name, description, releaseVersion, status, gitLinks, lastUpdated} =
+            record.data;
         return vbox({
             className: 'tb-roadmap-item',
             items: [
@@ -26,13 +27,14 @@ export const roadmapViewItem = hoistCmp.factory({
                         className: 'tb-roadmap-item__title',
                         items: [
                             getCategoryIcon(category),
-                            name.length > 55 ?
-                                popover({
-                                    popoverClassName: 'tb-roadmap__popover',
-                                    minimal: true,
-                                    target: truncate(name, {length: 55, omission: ' ...'}),
-                                    content: name
-                                }) : name
+                            name.length > 55
+                                ? popover({
+                                      popoverClassName: 'tb-roadmap__popover',
+                                      minimal: true,
+                                      target: truncate(name, {length: 55, omission: ' ...'}),
+                                      content: name
+                                  })
+                                : name
                         ]
                     }),
                     filler(),
@@ -53,16 +55,19 @@ export const roadmapViewItem = hoistCmp.factory({
                     className: 'tb-roadmap-item__description',
                     items: [
                         truncate(description, {length: 290, separator: ' ', omission: ' '}),
-                        description.length > 290 ? popover({
-                            popoverClassName: 'tb-roadmap__popover tb-roadmap__popover--description',
-                            minimal: true,
-                            interactionKind: 'hover',
-                            position: 'left-top',
-                            target: span(' ...'),
-                            content: div({
-                                items: breakUpDescription(description)
-                            })
-                        }) : ''
+                        description.length > 290
+                            ? popover({
+                                  popoverClassName:
+                                      'tb-roadmap__popover tb-roadmap__popover--description',
+                                  minimal: true,
+                                  interactionKind: 'hover',
+                                  position: 'left-top',
+                                  target: span(' ...'),
+                                  content: div({
+                                      items: breakUpDescription(description)
+                                  })
+                              })
+                            : ''
                     ]
                 }),
                 hbox({
@@ -70,7 +75,10 @@ export const roadmapViewItem = hoistCmp.factory({
                     items: [
                         releaseVersion,
                         filler(),
-                        relativeTimestamp({timestamp: lastUpdated, options: {prefix: 'Last updated'}})
+                        relativeTimestamp({
+                            timestamp: lastUpdated,
+                            options: {prefix: 'Last updated'}
+                        })
                     ]
                 })
             ]
@@ -79,13 +87,19 @@ export const roadmapViewItem = hoistCmp.factory({
 });
 
 function getStatusIcon(status) {
-    const prefix = 'fal', size = '2x';
+    const prefix = 'fal',
+        size = '2x';
     switch (status) {
-        case 'DEVELOPMENT': return Icon.gear({className: 'xh-orange', prefix, size});
-        case 'RELEASED': return Icon.checkCircle({className: 'xh-green', prefix, size});
-        case 'PLANNED': return Icon.clock({className: 'xh-blue-light', prefix, size});
-        case 'MERGED': return Icon.icon({iconName: 'code-merge', className: 'xh-green', size});
-        default: return Icon.questionCircle({prefix, size});
+        case 'DEVELOPMENT':
+            return Icon.gear({className: 'xh-orange', prefix, size});
+        case 'RELEASED':
+            return Icon.checkCircle({className: 'xh-green', prefix, size});
+        case 'PLANNED':
+            return Icon.clock({className: 'xh-blue-light', prefix, size});
+        case 'MERGED':
+            return Icon.icon({iconName: 'code-merge', className: 'xh-green', size});
+        default:
+            return Icon.questionCircle({prefix, size});
     }
 }
 
@@ -125,9 +139,8 @@ function getGitMenuItems(gitLinks) {
 }
 
 function breakUpDescription(description) {
-    return description.split('\n')
-        .reduce((ret, newLine) => {
-            ret.push(span(newLine), br());
-            return ret;
-        }, []);
+    return description.split('\n').reduce((ret, newLine) => {
+        ret.push(span(newLine), br());
+        return ret;
+    }, []);
 }

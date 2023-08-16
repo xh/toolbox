@@ -7,8 +7,7 @@ import {testsTab} from './tests/TestsTab';
 import {wipTab} from './wip/WipTab';
 
 export class AppModel extends BaseAppModel {
-
-    static instance: AppModel;
+    static override instance: AppModel;
 
     override async initAsync() {
         await XH.installServicesAsync(PortfolioService);
@@ -37,6 +36,7 @@ export class AppModel extends BaseAppModel {
                     {name: 'dataView', path: '/dataView'},
                     {name: 'fetchAPI', path: '/fetchAPI'},
                     {name: 'grid', path: '/grid'},
+                    {name: 'gridScrolling', path: '/gridScrolling'},
                     {name: 'localDate', path: '/localDate'},
                     {name: 'panelResizing', path: '/panelResizing'},
                     {name: 'select', path: '/select'},

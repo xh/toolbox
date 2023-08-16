@@ -25,11 +25,18 @@ export const tabStateExample = hoistCmp.factory({
                     label: 'People disabled',
                     labelSide: 'left'
                 }),
+                switchInput({
+                    model: peopleTab,
+                    bind: 'excludeFromSwitcher',
+                    label: 'excluded',
+                    labelSide: 'left'
+                }),
                 '-',
                 label('Places title'),
                 textInput({
                     model: placesTab,
-                    bind: 'title'
+                    bind: 'title',
+                    flex: 1
                 }),
                 '-',
                 switchInput({
@@ -63,19 +70,20 @@ class TabStateExampleModel extends HoistModel {
 
     setBadge() {
         const thingsTab = this.stateTabModel.findTab('things');
-        thingsTab.title = this.showBadge ?
-            hbox(
-                'Things ',
-                badge({
-                    item: 'New',
-                    intent: 'primary',
-                    compact: true,
-                    style: {
-                        position: 'relative',
-                        top: -6,
-                        marginLeft: 2
-                    }
-                })
-            ) : 'Things';
+        thingsTab.title = this.showBadge
+            ? hbox(
+                  'Things ',
+                  badge({
+                      item: 'New',
+                      intent: 'primary',
+                      compact: true,
+                      style: {
+                          position: 'relative',
+                          top: -6,
+                          marginLeft: 2
+                      }
+                  })
+              )
+            : 'Things';
     }
 }

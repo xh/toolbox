@@ -5,7 +5,6 @@ import {vboxPage} from './VBoxPage';
 import {toolbarPage} from './ToolbarPage';
 
 export class ContainersPageModel extends HoistModel {
-
     @managed
     tabContainerModel: TabContainerModel = new TabContainerModel({
         defaultTabId: 'hbox',

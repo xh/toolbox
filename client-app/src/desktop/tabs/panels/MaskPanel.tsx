@@ -18,23 +18,27 @@ export const maskPanel = hoistCmp.factory({
     render({model}) {
         return wrapper({
             description: [
+                <p>Masks provide a semi-opaque overlay to disable interaction with a component.</p>,
                 <p>
-                    Masks provide a semi-opaque overlay to disable interaction with a component.
-                </p>,
-                <p>
-                    A convenient way to display a mask is via the <code>mask</code> property of Panel.
-                    This prop can accept a fully configured mask element, <code>true</code> for a
-                    plain default mask, or (most commonly) a <code>TaskObserver</code> instance
-                    to automatically show a mask with a spinner when a task is pending.
+                    A convenient way to display a mask is via the <code>mask</code> property of
+                    Panel. This prop can accept a fully configured mask element, <code>true</code>{' '}
+                    for a plain default mask, or (most commonly) a <code>TaskObserver</code>{' '}
+                    instance to automatically show a mask with a spinner when a task is pending.
                 </p>,
                 <p>
                     A mask configured with <code>inline: false</code> will mask the entire Viewport.
                 </p>
             ],
             links: [
-                {url: '$TB/client-app/src/desktop/tabs/panels/MaskPanel.tsx', notes: 'This example.'},
+                {
+                    url: '$TB/client-app/src/desktop/tabs/panels/MaskPanel.tsx',
+                    notes: 'This example.'
+                },
                 {url: '$HR/desktop/cmp/mask/Mask.ts', notes: 'Hoist component.'},
-                {url: '$HR/core/TaskObserver.ts', notes: 'Hoist model for tracking async tasks - can be linked to masks.'}
+                {
+                    url: '$HR/core/TaskObserver.ts',
+                    notes: 'Hoist model for tracking async tasks - can be linked to masks.'
+                }
             ],
             item: panel({
                 title: 'Panels › Mask',
@@ -82,7 +86,6 @@ export const maskPanel = hoistCmp.factory({
 });
 
 class MaskPanelModel extends HoistModel {
-
     @bindable seconds = 3;
     @bindable message = '';
     @bindable inline = true;
@@ -95,7 +98,7 @@ class MaskPanelModel extends HoistModel {
         makeObservable(this);
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec) {
         const {loadModel, message, seconds} = this,
             interval = (seconds / 3) * SECONDS;
         loadModel.setMessage(message);
