@@ -12,7 +12,7 @@
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
-    "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(hostname)",
+    "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(ipconfig getifaddr en0)",
     "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
     "prepare": "cd .. && husky install client-app/.husky"
@@ -45,7 +45,7 @@
     "@xh/hoist": "^59.0.0-SNAPSHOT",
     "@xh/package-template": "~2.0.0",
     "core-js": "3.x",
-    "highcharts": "~10.3.2",
+    "highcharts": "11.x",
     "lodash": "4.x",
     "moment": "2.x",
     "react": "~18.2.0",

@@ -12,23 +12,21 @@ export const gridPanel = hoistCmp.factory({
     model: uses(GridPanelModel),
 
     render({model}) {
-        const {panelSizingModel} = model;
+        const {title, icon, panelModel} = model;
 
         return panel({
-            tbar: [
-                groupingChooser({
-                    flex: 1,
-                    icon: Icon.treeList()
-                })
-            ],
+            title,
+            icon,
+            model: panelModel,
+            compactHeader: true,
+            tbar: [groupingChooser({flex: 1, icon: Icon.treeList()})],
             item: grid({agOptions: {groupDefaultExpanded: 1}}),
             bbar: [
                 gridCountLabel({unit: 'position'}),
                 filler(),
                 relativeTimestamp({bind: 'loadTimestamp'}),
                 refreshButton({model: XH.refreshContextModel, intent: 'success'})
-            ],
-            model: panelSizingModel
+            ]
         });
     }
 });
