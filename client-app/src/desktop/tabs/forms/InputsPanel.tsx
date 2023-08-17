@@ -401,7 +401,7 @@ const fieldDisplay = hoistCmp.factory(({fieldModel, fmtVal}) => {
         }
     }
     return div({
-        testId: `inputs-panel-${fieldModel.name}`,
+        'data-testid': `inputs-panel-${fieldModel.name}`,
         className: 'inputs-panel-field-display',
         item: displayVal
     });

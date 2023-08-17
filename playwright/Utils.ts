@@ -1,7 +1,11 @@
 import { expect, Page } from "@playwright/test";
 
 export async function fillByTestId(page: Page, testId: string, text: string) {
-  await getElementByTestId(page, testId).fill(text);
+  const elem = getElementByTestId(page,testId)
+  if(await elem.locator('input').isVisible()) return elem.locator('input').fill(text)
+  if(await elem.locator('textarea').isVisible()) return await elem.locator('textarea').fill(text)
+
+  await elem.fill(text)
 }
 
 export async function clickByTestId(page: Page, testId: string) {
@@ -19,8 +23,11 @@ export async function expectTestIdText(
 export function getElementByTestId(page: Page, testId: string) {
   return page.getByTestId(testId);
 }
-export function clearByTestId(page: Page, testId: string) {
-  return page.getByTestId(testId).clear();
+export async function clearByTestId(page: Page, testId: string) {
+  const elem = getElementByTestId(page,testId)
+  if(await elem.locator('input').isVisible()) return elem.locator('input').clear()
+  if(await elem.locator('textarea').isVisible()) return await elem.locator('textarea').clear()
+  await elem.clear()
 }
 
 export async function logIn(page: Page) {
@@ -46,7 +53,7 @@ export class PageRunner {
   }
 
   logIn = async () => logIn(this.page);
-  getByTestId = async (testId: string) => getElementByTestId(this.page, testId);
+  getByTestId = (testId: string) => getElementByTestId(this.page, testId);
   click = async (testId: string) => clickByTestId(this.page, testId);
   clear = async (testId: string) => clearByTestId(this.page, testId);
   fill = async (testId: string, text: string) =>
