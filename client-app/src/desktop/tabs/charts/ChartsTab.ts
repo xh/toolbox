@@ -8,7 +8,7 @@ import {splitTreeMapPanel} from './SplitTreeMapPanel';
 
 export const chartsTab = hoistCmp.factory(() =>
     tabContainer({
-        testId: 'charts-tabs',
+        testId: 'charts-tab',
         modelConfig: {
             route: 'default.charts',
             switcher: {orientation: 'left'},

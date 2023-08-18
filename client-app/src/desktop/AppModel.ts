@@ -139,7 +139,6 @@ export class AppModel extends HoistAppModel {
                             {name: 'standard', path: '/standard'},
                             {name: 'tree', path: '/tree?dims'},
                             {name: 'treeWithCheckBox', path: '/treeWithCheckBox'},
-                            {name: 'groupedRows', path: '/groupedRows'},
                             {name: 'groupedCols', path: '/groupedCols'},
                             {name: 'rest', path: '/rest'},
                             {name: 'inlineEditing', path: '/inlineEditing'},
@@ -198,11 +197,6 @@ export class AppModel extends HoistAppModel {
                     {
                         name: 'examples',
                         path: '/examples'
-                    },
-                    {
-                        name: 'tests',
-                        path: '/tests',
-                        children: [{name: 'form', path: 'form'}]
                     }
                 ]
             }

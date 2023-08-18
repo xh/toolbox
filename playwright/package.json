@@ -1,10 +1,14 @@
 {
-  "name": "playwright",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "devDependencies": {
-    "@playwright/test": "^1.36.2"
+  "name": "toolbox-tests",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "testWithUI": "playwright test --ui"
   },
-  "scripts": {}
+  "dependencies": {
+    "@playwright/test": "^1.36.2",
+    "@xh/hoist": "^59.0.1",
+    "dotenv": "16.x",
+    "prettier": "3.x"
+  }
 }
