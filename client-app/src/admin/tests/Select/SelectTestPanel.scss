@@ -15,7 +15,7 @@
     border-bottom: var(--xh-border-solid);
   }
 
-  .xh-input {
+  .xh-input:not(.xh-inline-editor) {
     margin: var(--xh-pad-px);
   }
 

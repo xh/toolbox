@@ -1,6 +1,6 @@
 import {isUndefined} from 'lodash';
 
-import {creates, hoistCmp, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, uses, XH} from '@xh/hoist/core';
 import {restaurants} from '../../../core/data';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
@@ -10,6 +10,7 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import {usStates} from '../../../core/data';
 import {SelectTestModel} from './SelectTestModel';
 import './SelectTestPanel.scss';
+import {grid} from '@xh/hoist/cmp/grid';
 
 export const SelectTestPanel = hoistCmp({
     model: creates(SelectTestModel),
@@ -58,6 +59,12 @@ export const SelectTestPanel = hoistCmp({
                             bind: 'objectValue',
                             selectProps: {
                                 options: recipes
+                            }
+                        }),
+                        example({
+                            name: 'Select with selectOnFocus',
+                            selectProps: {
+                                selectOnFocus: true
                             }
                         })
                     ]
@@ -119,7 +126,8 @@ export const SelectTestPanel = hoistCmp({
                                 hideSelectedOptions: false,
                                 closeMenuOnSelect: false
                             }
-                        })
+                        }),
+                        gridExample()
                     ]
                 })
             )
@@ -134,6 +142,22 @@ const example = hoistCmp.factory<SelectTestModel>(({name, bind, selectProps, mod
         select({...selectProps, bind})
     )
 );
+
+const gridExample = hoistCmp.factory({
+    model: uses(SelectTestModel),
+    render() {
+        return fragment({
+            items: [
+                p('Test Select Grid'),
+                panel({
+                    height: 200,
+                    // title: 'Test Select Grid',
+                    item: grid()
+                })
+            ]
+        });
+    }
+});
 
 // In addition to styling a customer option, this has some logic to handle a newly created option
 // and the "Create XYZ" option that is offered when enableCreate:true
