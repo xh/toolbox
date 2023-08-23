@@ -147,7 +147,7 @@ export class ChatModel extends HoistModel {
                 }
             ],
             onCellClicked: ({data: record, column}) => {
-                if (column.colId === 'message') {
+                if (column.getColId() === 'message') {
                     this.showUserMessageHistory = false;
                     this.inputMsg = record.data.message;
                     this.focusInput();

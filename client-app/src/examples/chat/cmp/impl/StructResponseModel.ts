@@ -21,7 +21,7 @@ export class StructResponseModel extends HoistModel {
     get title() {
         return this.shouldDisplay
             ? this.chatModel.userPromptForSelectedMsg?.content ??
-                  this.selectedMsg?.function_call.name
+                  this.selectedMsg?.function_call?.name
             : null;
     }
 
