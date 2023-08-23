@@ -65,8 +65,6 @@
     "typescript": "~5.1.6"
   },
   "resolutions": {
-    "core-js": "3.x",
-    "react-select": "4.3.1",
-    "react-windowed-select": "3.1.2"
+    "core-js": "3.x"
   }
 }
