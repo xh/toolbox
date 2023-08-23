@@ -62,10 +62,10 @@ export const SelectTestPanel = hoistCmp({
                             }
                         }),
                         example({
-                            name: 'Select (with selectOnFocus)',
+                            name: 'Select (without selectOnFocus)',
                             bind: 'selectOnFocusValue',
                             selectProps: {
-                                selectOnFocus: true,
+                                selectOnFocus: false,
                                 options: recipes
                             }
                         }),
