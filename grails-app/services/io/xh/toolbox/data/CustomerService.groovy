@@ -41,8 +41,8 @@ class CustomerService extends BaseService {
     }
 
     void clearCaches() {
-        super.clearCaches()
         allCustomers = loadCustomersFromFile()
+        super.clearCaches()
     }
 
 }

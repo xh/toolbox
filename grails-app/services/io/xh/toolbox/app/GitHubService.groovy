@@ -235,6 +235,7 @@ query XHRepoCommits {
         this._jsonClient = null
         this.commitsByRepo = new HashMap()
         this.loadCommitsForAllRepos()
+        super.clearCaches()
     }
 
 }

@@ -105,9 +105,9 @@ class NewsService extends BaseService {
     }
 
     void clearCaches() {
-        super.clearCaches()
         _jsonClient = null
         _newsItems = []
         loadAllNews()
+        super.clearCaches()
     }
 }

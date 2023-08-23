@@ -97,6 +97,7 @@ class Auth0Service extends BaseService {
 
     void clearCaches() {
         _jkws = null
+        super.clearCaches()
     }
 
 }
