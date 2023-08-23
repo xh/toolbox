@@ -36,13 +36,13 @@ export const SelectTestPanel = hoistCmp({
                         example({
                             name: 'Select queryFn & optionRenderer',
                             bind: 'asyncValue',
-                            selectProps: customerProps
+                            selectProps: customerProps('id')
                         }),
                         example({
                             name: 'Select queryFn & enableCreate & optionRenderer & enableTooltips',
                             bind: 'asyncCreatableValue',
                             selectProps: {
-                                ...customerProps,
+                                ...customerProps('id'),
                                 enableCreate: true,
                                 enableTooltips: true
                             }
@@ -107,7 +107,7 @@ export const SelectTestPanel = hoistCmp({
                             name: 'Select with leftIcon & queryFn & enableCreate & optionRenderer',
                             bind: 'asyncCreatableValue2',
                             selectProps: {
-                                ...customerProps,
+                                ...customerProps('id'),
                                 leftIcon: Icon.office(),
                                 enableCreate: true
                             }
@@ -204,15 +204,15 @@ const restaurantProps = {
     placeholder: 'Search restaurants...'
 };
 
-export const customerProps = {
-    valueField: 'id',
+export const customerProps = (valueField: string) => ({
+    valueField: valueField,
     labelField: 'company',
     enableClear: true,
     selectOnFocus: true,
     queryFn: queryCustomersAsync,
     optionRenderer: opt => customerOption({opt}),
     placeholder: 'Search customers...'
-};
+});
 
 async function queryCustomersAsync(query) {
     return XH.fetchJson({

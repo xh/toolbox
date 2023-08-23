@@ -1,10 +1,9 @@
 import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {bindable, observable, makeObservable} from '@xh/hoist/mobx';
-import {isNil, times} from 'lodash';
+import {times} from 'lodash';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {selectEditor} from '@xh/hoist/desktop/cmp/grid';
-import {dateIs, lengthIs, numberIs, required, Store} from '@xh/hoist/data';
-import {LocalDate} from '@xh/hoist/utils/datetime';
+import {Store} from '@xh/hoist/data';
 import {customerProps} from './SelectTestPanel';
 
 export class SelectTestModel extends HoistModel {
@@ -112,7 +111,7 @@ export class SelectTestModel extends HoistModel {
                         })
                 },
                 {
-                    field: 'select, enableFilter False',
+                    field: 'selectEnableFilterFalse',
                     editable: true,
                     editor: props =>
                         selectEditor({
@@ -125,46 +124,17 @@ export class SelectTestModel extends HoistModel {
                         })
                 },
                 {
-                    field: 'select async search',
+                    field: 'selectAsyncSearch',
                     editable: true,
                     editor: props =>
                         selectEditor({
                             ...props,
-                            bind: 'asyncCreatableValue3',
                             inputProps: {
-                                ...customerProps
+                                ...customerProps('company')
                             }
                         })
                 }
-                // {
-                //     field: 'date',
-                //     ...localDateCol,
-                //     editable: ifNotRestricted
-                // editor: props =>
-                //     dateEditor({
-                //         ...props,
-                //         inputProps: {
-                //             valueType: 'localDate'
-                //         }
-                //     }),
-                // tooltip: v => fmtDate(v, 'dddd MMMM Do YYYY')
-                // },
-                // {
-                // field: 'description',
-                // width: 300,
-                // tooltip: true,
-                // editor: textAreaEditor,
-                // editorIsPopup: true
-                // omit: this.fullRowEditing
-                // }
             ]
-        });
-    }
-
-    async queryCustomersAsync(query) {
-        return XH.fetchJson({
-            url: 'customer',
-            params: {query}
         });
     }
 
@@ -173,62 +143,25 @@ export class SelectTestModel extends HoistModel {
             validationIsComplex: false,
             fields: [
                 {
-                    name: 'name',
-                    type: 'string',
-                    rules: [required, lengthIs({max: 15})]
-                },
-                {
                     name: 'select',
-                    type: 'string',
-                    rules: [required]
+                    type: 'string'
                 },
                 {
-                    name: 'amount',
-                    type: 'number',
-                    rules: [
-                        required,
-                        numberIs({min: 0, max: 100}),
-                        {
-                            when: (f, {category}) => category === 'US',
-                            check: async ({value}) => {
-                                // if (this.asyncValidation) await wait(1000);
-                                return isNil(value) || value < 10
-                                    ? 'Records where `category` is "US" require `amount` of 10 or greater.'
-                                    : null;
-                            }
-                        }
-                    ]
+                    name: 'selectEnableFilterFalse',
+                    type: 'string'
                 },
                 {
-                    name: 'date',
-                    type: 'localDate',
-                    rules: [dateIs({min: LocalDate.today().startOfYear(), max: 'today'})]
-                },
-                {
-                    name: 'restricted',
-                    type: 'bool',
-                    defaultValue: false
-                },
-                {
-                    name: 'category',
-                    type: 'string',
-                    rules: [required]
-                },
-                {
-                    name: 'description',
-                    type: 'string',
-                    rules: [lengthIs({max: 280})]
+                    name: 'selectAsyncSearch',
+                    type: 'string'
                 }
             ],
+            // TODO - values not editable with keys (arrows, enter) when these are inputted
             data: [
                 {
                     id: 0,
-                    name: 'Record 0',
                     select: 'US',
-                    category: 'US',
-                    amount: 50,
-                    date: LocalDate.today(),
-                    description: 'This is a record'
+                    selectEnableFilterFalse: 'BRIC',
+                    selectAsyncSearch: ''
                 }
             ]
         });
