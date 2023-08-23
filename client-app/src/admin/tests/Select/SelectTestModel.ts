@@ -2,9 +2,10 @@ import {HoistModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {isNil, times} from 'lodash';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {selectEditor, textEditor} from '@xh/hoist/desktop/cmp/grid';
+import {selectEditor} from '@xh/hoist/desktop/cmp/grid';
 import {dateIs, lengthIs, numberIs, required, Store} from '@xh/hoist/data';
 import {LocalDate} from '@xh/hoist/utils/datetime';
+import {customerProps} from './SelectTestPanel';
 
 export class SelectTestModel extends HoistModel {
     @bindable
@@ -38,6 +39,12 @@ export class SelectTestModel extends HoistModel {
     bigValue: number;
 
     @bindable
+    selectOnFocusValue: PlainObject;
+
+    @bindable
+    noFilterValue: number;
+
+    @bindable
     numOptions = 1000;
 
     @observable
@@ -45,6 +52,9 @@ export class SelectTestModel extends HoistModel {
 
     @bindable
     asyncCreatableValue2: number;
+
+    @bindable
+    asyncCreatableValue3: number;
 
     @bindable.ref
     objectValue2: PlainObject;
@@ -89,21 +99,9 @@ export class SelectTestModel extends HoistModel {
             clicksToEdit: this.clicksToEdit,
             store: this.store,
             columns: [
-                // {
-                //     field: 'amount',
-                //     width: 100,
-                //     // editor: numberEditor
-                // },
-                {
-                    field: 'name',
-                    // width: 120,
-                    editable: true,
-                    editor: textEditor,
-                    tooltip: true
-                },
                 {
                     field: 'select',
-                    // width: 80,
+                    minWidth: 120,
                     editable: true,
                     editor: props =>
                         selectEditor({
@@ -114,14 +112,27 @@ export class SelectTestModel extends HoistModel {
                         })
                 },
                 {
-                    field: 'category',
-                    // width: 80,
+                    field: 'select, enableFilter False',
                     editable: true,
                     editor: props =>
                         selectEditor({
                             ...props,
                             inputProps: {
+                                enableFilter: false,
+                                openMenuOnFocus: true,
                                 options: ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
+                            }
+                        })
+                },
+                {
+                    field: 'select async search',
+                    editable: true,
+                    editor: props =>
+                        selectEditor({
+                            ...props,
+                            bind: 'asyncCreatableValue3',
+                            inputProps: {
+                                ...customerProps
                             }
                         })
                 }
@@ -147,6 +158,13 @@ export class SelectTestModel extends HoistModel {
                 // omit: this.fullRowEditing
                 // }
             ]
+        });
+    }
+
+    async queryCustomersAsync(query) {
+        return XH.fetchJson({
+            url: 'customer',
+            params: {query}
         });
     }
 
@@ -206,28 +224,11 @@ export class SelectTestModel extends HoistModel {
                 {
                     id: 0,
                     name: 'Record 0',
-                    select: 'jj',
+                    select: 'US',
                     category: 'US',
                     amount: 50,
                     date: LocalDate.today(),
                     description: 'This is a record'
-                },
-                {
-                    id: 1,
-                    name: 'Record 1',
-                    category: 'EU',
-                    amount: 25,
-                    date: LocalDate.today().add(-6, 'months'),
-                    description: 'This is a record'
-                },
-                {
-                    id: 2,
-                    name: 'Restricted',
-                    category: 'BRIC',
-                    amount: 30,
-                    restricted: true,
-                    description:
-                        'Demos conditional editing - in this example, setting restricted boolean to true on a record disables editing of other fields.'
                 }
             ]
         });

@@ -63,8 +63,19 @@ export const SelectTestPanel = hoistCmp({
                         }),
                         example({
                             name: 'Select with selectOnFocus',
+                            bind: 'selectOnFocusValue',
                             selectProps: {
-                                selectOnFocus: true
+                                selectOnFocus: true,
+                                options: recipes
+                            }
+                        }),
+                        example({
+                            name: 'Select (with enableFilter false)',
+                            bind: 'noFilterValue',
+                            selectProps: {
+                                enableFilter: false,
+                                openMenuOnFocus: true,
+                                options: desserts
                             }
                         })
                     ]
@@ -151,7 +162,6 @@ const gridExample = hoistCmp.factory({
                 p('Test Select Grid'),
                 panel({
                     height: 200,
-                    // title: 'Test Select Grid',
                     item: grid()
                 })
             ]
@@ -194,7 +204,7 @@ const restaurantProps = {
     placeholder: 'Search restaurants...'
 };
 
-const customerProps = {
+export const customerProps = {
     valueField: 'id',
     labelField: 'company',
     enableClear: true,
