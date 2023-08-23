@@ -62,7 +62,7 @@ export const SelectTestPanel = hoistCmp({
                             }
                         }),
                         example({
-                            name: 'Select with selectOnFocus',
+                            name: 'Select (with selectOnFocus)',
                             bind: 'selectOnFocusValue',
                             selectProps: {
                                 selectOnFocus: true,
