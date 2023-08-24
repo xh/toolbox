@@ -1,5 +1,6 @@
 package io.xh.toolbox.app
 
+import com.hazelcast.collection.ISet
 import io.xh.hoist.BaseService
 import io.xh.hoist.http.JSONClient
 import io.xh.toolbox.NewsItem
@@ -11,24 +12,27 @@ import static io.xh.hoist.util.DateTimeUtils.getMINUTES
 
 class NewsService extends BaseService {
 
-    private List<NewsItem> _newsItems
+    private ISet<NewsItem> _newsItems
     private Timer newsTimer
     private JSONClient _jsonClient
 
     static clearCachesConfigs = ['newsSources', 'newsApiKey']
     def configService
 
-    List<NewsItem> getNewsItems() {
+    void init() {
+        _newsItems = clusterService.getSet('newsItems')
+    }
+
+    Set<NewsItem> getNewsItems() {
         // to avoid hitting the API too frequently, we only start our timer when the NewsService is actually used.
-        if (!newsTimer) {
-            newsTimer = createTimer(
-                    runFn: this.&loadAllNews,
-                    interval: 'newsRefreshMins',
-                    intervalUnits: MINUTES,
-                    runImmediatelyAndBlock: true
-            )
-        }
-        return _newsItems ?  _newsItems : Collections.emptyList()
+        newsTimer = newsTimer ?: createTimer(
+            runFn: this.&loadAllNews,
+            interval: 'newsRefreshMins',
+            intervalUnits: MINUTES,
+            runImmediatelyAndBlock: true
+        )
+
+        return _newsItems
     }
 
 
@@ -51,11 +55,11 @@ class NewsService extends BaseService {
         return newsItems ? newsItems[0].published : null
     }
 
-
     //------------------------
     // Implementation
     //------------------------
     private void loadAllNews() {
+        if (!isMaster) return;
         def sources = configService.getMap('newsSources').keySet().toList()
 
         withInfo("Loading news from ${sources.size()} configured sources") {
@@ -63,7 +67,8 @@ class NewsService extends BaseService {
             try {
                 items = loadNewsForSources(sources)
             } finally {
-                _newsItems = items
+                _newsItems.clear()
+                _newsItems.addAll(items)
             }
         }
     }
@@ -94,7 +99,7 @@ class NewsService extends BaseService {
 
         logDebug("Loaded ${ret.size()} news items.")
 
-        return ret.sort { -it.published.time }
+        return ret
     }
 
     private JSONClient getClient() {
@@ -106,8 +111,10 @@ class NewsService extends BaseService {
 
     void clearCaches() {
         _jsonClient = null
-        _newsItems = []
-        loadAllNews()
+        if (isMaster) {
+            _newsItems.clear()
+            loadAllNews()
+        }
         super.clearCaches()
     }
 }

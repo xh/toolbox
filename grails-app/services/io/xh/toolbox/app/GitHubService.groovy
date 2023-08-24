@@ -1,5 +1,6 @@
 package io.xh.toolbox.app
 
+import com.hazelcast.replicatedmap.ReplicatedMap
 import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
@@ -37,9 +38,11 @@ class GitHubService extends BaseService {
 
     ConfigService configService
     WebSocketService webSocketService
-    Map<String, CommitHistory> commitsByRepo = new HashMap()
+    ReplicatedMap<String, CommitHistory> commitsByRepo
 
     void init() {
+        commitsByRepo = clusterService.getReplicatedMap('tbCommitsByRepo')
+
         if (configService.getString('gitHubAccessToken', 'none') == 'none') {
             logWarn('Required "gitHubAccessToken" config not present or set to "none" - no commits will be loaded from GitHub.')
         } else {
@@ -60,6 +63,10 @@ class GitHubService extends BaseService {
      *      incremental load of new commits only.
      */
     Map<String, CommitHistory> loadCommitsForAllRepos(Boolean forceFullLoad = false) {
+        if (!isMaster) {
+            return
+        }
+
         def repos = configService.getList('gitHubRepos', []),
             newCommitCount = 0
 
@@ -152,9 +159,16 @@ class GitHubService extends BaseService {
         } else {
             logDebug('Commit load complete', "${newCommits.size()} new commits")
             commitHistory.updateWithNewCommits(newCommits)
-            this.commitsByRepo.put(repoName, commitHistory)
+            commitsByRepo.put(repoName, commitHistory)
             return newCommits
         }
+    }
+
+
+    Map getStats() {
+        [
+            lastUpdateTime: this.commitsByRepo?.getReplicatedMapStats().lastUpdateTime
+        ]
     }
 
 
@@ -232,9 +246,11 @@ query XHRepoCommits {
     }
 
     void clearCaches() {
-        this._jsonClient = null
-        this.commitsByRepo = new HashMap()
-        this.loadCommitsForAllRepos()
+        _jsonClient = null
+        if (isMaster) {
+            commitsByRepo.clear()
+            loadCommitsForAllRepos()
+        }
         super.clearCaches()
     }
 
