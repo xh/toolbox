@@ -5,6 +5,7 @@ import {GridModel} from '@xh/hoist/cmp/grid';
 import {selectEditor} from '@xh/hoist/desktop/cmp/grid';
 import {Store} from '@xh/hoist/data';
 import {customerProps} from './SelectTestPanel';
+import {wait} from '@xh/hoist/promise';
 
 export class SelectTestModel extends HoistModel {
     @bindable
@@ -108,7 +109,16 @@ export class SelectTestModel extends HoistModel {
                             inputProps: {
                                 options: ['US', 'BRIC', 'Emerging Markets', 'EU', 'Asia/Pac']
                             }
-                        })
+                        }),
+                    agOptions: {
+                        suppressKeyboardEvent: ({event, api}) => {
+                            if (event.key === 'Enter') {
+                                wait(50).then(() => api.stopEditing());
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
                 },
                 {
                     field: 'selectEnableFilterFalse',
