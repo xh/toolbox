@@ -2,6 +2,7 @@ import {XH, HoistModel, managed} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {millionsRenderer, numberRenderer} from '@xh/hoist/format';
+import {getExportFilename} from '@xh/hoist/admin/AdminUtils';
 import {
     activeCol,
     cityCol,
@@ -39,7 +40,7 @@ export class ColumnFilteringPanelModel extends HoistModel {
             enableExport: true,
             exportOptions: {
                 columns: ['id', 'company', 'VISIBLE'],
-                filename: 'hoist-sample-export'
+                filename: getExportFilename('hoist-sample-export', false)
             },
             store: {
                 idEncodesTreePath: true,
