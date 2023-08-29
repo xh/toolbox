@@ -3,7 +3,6 @@ import {GridModel, ExcelFormat, boolCheckCol, localDateCol} from '@xh/hoist/cmp/
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {getExportFilename} from '@xh/hoist/admin/AdminUtils';
 
 export class StoreColumnFilterPanelModel extends HoistModel {
     @bindable.ref filterJson: string = JSON.stringify(null);
@@ -53,7 +52,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
             enableExport: true,
             exportOptions: {
                 columns: ['id', 'company', 'VISIBLE'],
-                filename: getExportFilename('hoist-sample-export', false)
+                filename: 'hoist-sample-export'
             },
             store: {
                 idEncodesTreePath: true,

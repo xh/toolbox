@@ -7,7 +7,6 @@ import {fmtDate, fmtMillions, fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
-import {getExportFilename} from '@xh/hoist/admin/AdminUtils';
 import './SampleGrid.scss';
 import {
     activeCol,
@@ -96,7 +95,7 @@ export class SampleGridModel extends HoistModel {
         enableExport: true,
         exportOptions: {
             columns: ['id', 'company', 'VISIBLE'],
-            filename: getExportFilename('hoist-sample-export', false),
+            filename: 'hoist-sample-export',
             track: true
         },
         store: {
