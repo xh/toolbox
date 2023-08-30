@@ -29,27 +29,23 @@ class PortfolioController extends BaseController {
         renderJSON(positionService.ordersForPosition(params.positionId))
     }
 
-    def rawPositions() {
-        renderJSON(portfolioService.getData().rawPositions)
-    }
-
     def orders() {
-        renderJSON(portfolioService.getData().orders)
+        renderJSON(portfolioService.getPortfolio().orders)
     }
 
     def symbols() {
-        renderJSON(portfolioService.getData().instruments.keySet())
+        renderJSON(portfolioService.getPortfolio().instruments.keySet())
     }
 
     def instrument() {
-        renderJSON(portfolioService.getData().instruments[params.id])
+        renderJSON(portfolioService.getPortfolio().instruments[params.id])
     }
 
     // List of MarketPrices for the given instrument identified by its symbol
     def prices() {
-        List<MarketPrice> historicalPrices = portfolioService.getData().historicalPrices[params.id]
-        MarketPrice intradayPrices = portfolioService.getData().intradayPrices[params.id]
-        List<MarketPrice> allPrices = intradayPrices ? historicalPrices.dropRight(1)+[intradayPrices] : historicalPrices
+        List<MarketPrice> historicalPrices = portfolioService.getPortfolio().historicalPrices[params.id]
+        MarketPrice intradayPrice = portfolioService.getCurrentPrices()[params.id]
+        List<MarketPrice> allPrices = intradayPrice ? historicalPrices.dropRight(1)+[intradayPrice] : historicalPrices
         renderJSON(allPrices)
     }
 
