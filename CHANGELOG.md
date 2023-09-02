@@ -2,6 +2,13 @@
 
 ## v4.0.0-SNAPSHOT - unreleased
 
+### New Features
+* Multi-instance support for all examples.
+
+### Libraries
+* @xh/hoist 60.0.0
+* hoist-core 18.0.0
+
 ## v3.2.1 - 2023-07-14
 
 ### Libraries
