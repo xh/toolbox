@@ -116,21 +116,21 @@ class MonitorDefinitionService extends BaseService {
      * Check the current number of positions in the Portfolio example
      */
     def positionCount(MonitorResult result) {
-        result.metric = portfolioService.data.rawPositions.size()
+        result.metric = portfolioService.portfolio.rawPositions.size()
     }
 
     /**
      * Check the current number of instruments in the Portfolio example
      */
     def instrumentCount(MonitorResult result) {
-        result.metric = portfolioService.data.instruments.size()
+        result.metric = portfolioService.portfolio.instruments.size()
     }
 
     /**
      * Check when the most recent prices in the Portfolio example were generated
      */
     def pricesAgeMs(MonitorResult result) {
-        result.metric = currentTimeMillis() - portfolioService.data.timeCreated.time
+        result.metric = currentTimeMillis() - portfolioService.portfolio.timeCreated.time
     }
 
     /**
