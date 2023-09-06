@@ -29,7 +29,8 @@ class NewsService extends BaseService {
             runFn: this.&loadAllNews,
             interval: 'newsRefreshMins',
             intervalUnits: MINUTES,
-            runImmediatelyAndBlock: true
+            runImmediatelyAndBlock: true,
+            masterOnly: true
         )
 
         return _newsItems
@@ -59,7 +60,6 @@ class NewsService extends BaseService {
     // Implementation
     //------------------------
     private void loadAllNews() {
-        if (!isMaster) return;
         def sources = configService.getMap('newsSources').keySet().toList()
 
         withInfo("Loading news from ${sources.size()} configured sources") {

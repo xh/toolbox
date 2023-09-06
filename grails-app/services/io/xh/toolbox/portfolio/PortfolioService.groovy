@@ -31,7 +31,8 @@ class PortfolioService extends BaseService {
                 runFn: this.&updateData,
                 interval: {config.updateIntervalSecs},
                 intervalUnits: SECONDS,
-                runImmediatelyAndBlock: true
+                runImmediatelyAndBlock: true,
+                masterOnly: true
         )
     }
 
@@ -59,8 +60,6 @@ class PortfolioService extends BaseService {
     // Implementation
     //-----------------
     private void updateData(boolean force = false) {
-        if (!isMaster) return
-
         // 1) Populate/update main data, if needed, to initialize or roll day
         def portfolio = _portfolios.get('current'),
             today = LocalDate.now()
@@ -134,7 +133,9 @@ class PortfolioService extends BaseService {
     }
 
     void clearCaches() {
-        updateData(true)
+        if (isMaster) {
+            updateData(true)
+        }
         super.clearCaches()
     }
 }

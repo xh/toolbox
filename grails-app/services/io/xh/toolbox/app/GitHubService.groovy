@@ -1,6 +1,5 @@
 package io.xh.toolbox.app
 
-import com.hazelcast.replicatedmap.ReplicatedMap
 import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
@@ -38,7 +37,7 @@ class GitHubService extends BaseService {
 
     ConfigService configService
     WebSocketService webSocketService
-    ReplicatedMap<String, CommitHistory> commitsByRepo
+    Map<String, CommitHistory> commitsByRepo
 
     void init() {
         commitsByRepo = clusterService.getReplicatedMap('tbCommitsByRepo')
@@ -49,23 +48,23 @@ class GitHubService extends BaseService {
             createTimer(
                 runFn: this.&loadCommitsForAllRepos,
                 interval: 'gitHubCommitsRefreshMins',
-                intervalUnits: MINUTES
+                intervalUnits: MINUTES,
+                masterOnly: true
             )
         }
     }
 
     /** Return the cached history of commits for a single repo, by name. */
-    CommitHistory getCommitsForRepo(String repoName) {commitsByRepo[repoName]}
+    CommitHistory getCommitsForRepo(String repoName) {
+        commitsByRepo[repoName]
+    }
 
     /**
      * Reload commit history for all configured repos from GitHub API.
      * @param forceFullLoad - true to drop any already loaded history, false (default) to do an
      *      incremental load of new commits only.
      */
-    Map<String, CommitHistory> loadCommitsForAllRepos(Boolean forceFullLoad = false) {
-        if (!isMaster) {
-            return
-        }
+    private Map<String, CommitHistory> loadCommitsForAllRepos(Boolean forceFullLoad = false) {
 
         def repos = configService.getList('gitHubRepos', []),
             newCommitCount = 0
@@ -89,7 +88,7 @@ class GitHubService extends BaseService {
      * Reload commit history for a single repo, by name.
      * @return collection of newly loaded commits, if any.
      */
-    List<Commit> loadCommitsForRepo(String repoName, Boolean forceFullLoad = false) {
+    private List<Commit> loadCommitsForRepo(String repoName, Boolean forceFullLoad = false) {
         def hadError = false,
             hasNextPage = true,
             cursor = '',
