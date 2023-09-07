@@ -17,8 +17,17 @@ class SlackAlertService extends BaseService{
 
     ConfigService configService
     void init() {
-        subscribe('xhMonitorStatusReport', this.&formatAndSendMonitorStatusReport)
-        subscribe('xhClientErrorReceived', this.&formatAndSendClientReport)
+        subscribeToTopic(
+            topic: 'xhMonitorStatusReport',
+            onMessage: this.&formatAndSendMonitorStatusReport,
+            masterOnly: true
+
+        )
+        subscribeToTopic(
+            topic: 'xhClientErrorReceived',
+            onMessage: this.&formatAndSendClientReport,
+            masterOnly: true
+        )
     }
 
     //------------------------
