@@ -164,7 +164,7 @@ class GitHubService extends BaseService {
     }
 
 
-    Map getStats() {
+    Map getAdminStats() {
         [
             lastUpdateTime: this.commitsByRepo?.getReplicatedMapStats().lastUpdateTime
         ]
