@@ -4,7 +4,7 @@ import {div, filler, p} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {wrapper} from '../../common';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -41,6 +41,22 @@ export const basicPanel = hoistCmp.factory({
                 title: 'Panels › Intro',
                 height: 400,
                 width: 700,
+                compactHeader: model.compactHeader,
+                headerItems: [
+                    switchInput({
+                        label: 'Compact Header',
+                        labelSide: 'left',
+                        bind: 'compactHeader'
+                    }),
+                    button({
+                        tooltip: 'Header Button',
+                        icon: Icon.gear(),
+                        onClick: () =>
+                            XH.toast({
+                                message: `You clicked a button within Panel.headerItems.`
+                            })
+                    })
+                ],
                 tbar: [
                     popover({
                         position: 'bottom-left',
