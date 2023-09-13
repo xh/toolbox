@@ -6,7 +6,6 @@ import {PERSIST_MAIN} from './AppModel';
 import {mktValCol, nameCol, pnlCol} from '../../core/columns';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {capitalize} from 'lodash';
-import {Icon} from '@xh/hoist/icon';
 
 export class GridPanelModel extends HoistModel {
     @managed
@@ -29,10 +28,6 @@ export class GridPanelModel extends HoistModel {
 
     get collapsedTitle() {
         return this.parentModel.groupingChooserModel.value.map(it => capitalize(it)).join(' › ');
-    }
-
-    get icon() {
-        return this.panelModel.collapsed ? Icon.treeList() : null;
     }
 
     constructor({parentModel}) {

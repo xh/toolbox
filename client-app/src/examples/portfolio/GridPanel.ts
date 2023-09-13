@@ -12,11 +12,11 @@ export const gridPanel = hoistCmp.factory({
     model: uses(GridPanelModel),
 
     render({model}) {
-        const {collapsedTitle, icon, panelModel} = model;
+        const {collapsedTitle, panelModel} = model;
 
         return panel({
             collapsedTitle,
-            icon,
+            collapsedIcon: Icon.treeList(),
             model: panelModel,
             compactHeader: true,
             tbar: [groupingChooser({flex: 1, icon: Icon.treeList()})],

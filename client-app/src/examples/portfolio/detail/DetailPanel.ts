@@ -10,7 +10,7 @@ export const detailPanel = hoistCmp.factory({
     model: creates(DetailPanelModel),
 
     render({model}) {
-        const {panelSizingModel, positionId, collapsed} = model;
+        const {panelSizingModel, positionId} = model;
 
         const items = positionId
             ? [ordersPanel(), chartsPanel()]
@@ -19,7 +19,7 @@ export const detailPanel = hoistCmp.factory({
         return panel({
             model: panelSizingModel,
             collapsedTitle: 'Position Details',
-            icon: collapsed ? Icon.detail() : null,
+            collapsedIcon: Icon.detail(),
             item: hframe(items)
         });
     }
