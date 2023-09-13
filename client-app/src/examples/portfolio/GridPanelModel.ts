@@ -27,11 +27,8 @@ export class GridPanelModel extends HoistModel {
         return this.gridModel.selectedRecord;
     }
 
-    /** Render a title with groupBy dimensions, but only when collapsed (to aid user in re-expanding). */
-    get title() {
-        return this.panelModel.collapsed
-            ? this.parentModel.groupingChooserModel.value.map(it => capitalize(it)).join(' › ')
-            : null;
+    get collapsedTitle() {
+        return this.parentModel.groupingChooserModel.value.map(it => capitalize(it)).join(' › ');
     }
 
     get icon() {

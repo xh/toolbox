@@ -12,10 +12,10 @@ export const gridPanel = hoistCmp.factory({
     model: uses(GridPanelModel),
 
     render({model}) {
-        const {title, icon, panelModel} = model;
+        const {collapsedTitle, icon, panelModel} = model;
 
         return panel({
-            title,
+            collapsedTitle,
             icon,
             model: panelModel,
             compactHeader: true,
