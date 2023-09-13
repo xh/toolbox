@@ -18,7 +18,7 @@ export const detailPanel = hoistCmp.factory({
 
         return panel({
             model: panelSizingModel,
-            title: collapsed ? 'Position Details' : null,
+            collapsedTitle: 'Position Details',
             icon: collapsed ? Icon.detail() : null,
             item: hframe(items)
         });
