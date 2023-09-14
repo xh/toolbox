@@ -1,20 +1,12 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
-import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {PERSIST_MAIN} from './AppModel';
 import {mktValCol, nameCol, pnlCol} from '../../core/columns';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {capitalize} from 'lodash';
 
 export class GridPanelModel extends HoistModel {
-    @managed
-    panelModel = new PanelModel({
-        defaultSize: 500,
-        side: 'left',
-        persistWith: {...PERSIST_MAIN, path: 'positionsPanel'}
-    });
-
     @bindable loadTimestamp: number;
 
     @managed
