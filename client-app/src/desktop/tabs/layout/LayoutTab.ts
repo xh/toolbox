@@ -1,5 +1,3 @@
-import {badge} from '@xh/hoist/cmp/badge';
-import {hbox} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {hoistCmp} from '@xh/hoist/core';
 import {dashCanvasPanel} from './dashCanvas/DashCanvasPanel';
