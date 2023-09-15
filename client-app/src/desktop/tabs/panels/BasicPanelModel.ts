@@ -4,6 +4,7 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 export class BasicPanelModel extends HoistModel {
     @bindable state: string = null;
     @bindable compactHeader: boolean = false;
+    @bindable triggerError: boolean = false;
 
     constructor() {
         super();
