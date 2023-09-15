@@ -8,7 +8,14 @@ import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas, DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
-import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from '../widgets';
+import {
+    buttonWidget,
+    chartWidget,
+    errorWidget,
+    gridWidget,
+    panelWidget,
+    treeGridWidget
+} from '../widgets';
 import {wrapper} from '../../../common';
 
 export const dashCanvasPanel = hoistCmp.factory({
@@ -136,7 +143,7 @@ class Model extends HoistModel {
 
     @managed
     dashCanvasModel = new DashCanvasModel({
-        persistWith: {localStorageKey: 'dashCanvasState'},
+        persistWith: {localStorageKey: 'dashCanvasExampleState'},
         initialState,
         viewSpecDefaults: {
             icon: Icon.gridPanel()
@@ -183,6 +190,13 @@ class Model extends HoistModel {
                 title: 'Panel',
                 icon: Icon.window(),
                 content: panelWidget
+            },
+            {
+                id: 'error',
+                title: 'Error Example',
+                icon: Icon.skull(),
+                unique: true,
+                content: errorWidget({componentName: 'DashCanvas'})
             }
         ]
     });
@@ -264,5 +278,14 @@ const initialState = [
             h: 7
         },
         viewSpecId: 'treeGrid'
+    },
+    {
+        layout: {
+            x: 0,
+            y: 15,
+            w: 6,
+            h: 6
+        },
+        viewSpecId: 'error'
     }
 ];
