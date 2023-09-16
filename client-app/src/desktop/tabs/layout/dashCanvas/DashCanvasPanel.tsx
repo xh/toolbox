@@ -6,9 +6,16 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashCanvas, DashCanvasModel} from '@xh/hoist/desktop/cmp/dash';
-import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from '../widgets';
+import {
+    buttonWidget,
+    chartWidget,
+    errorWidget,
+    gridWidget,
+    panelWidget,
+    treeGridWidget
+} from '../widgets';
 import {wrapper} from '../../../common';
 
 export const dashCanvasPanel = hoistCmp.factory({
@@ -34,6 +41,7 @@ export const dashCanvasPanel = hoistCmp.factory({
             item: panel({
                 title: 'Layout › DashCanvas',
                 icon: Icon.layout(),
+                headerItems: [refreshButton({minimal: true, intent: null})],
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard
@@ -135,7 +143,7 @@ class Model extends HoistModel {
 
     @managed
     dashCanvasModel = new DashCanvasModel({
-        persistWith: {localStorageKey: 'dashCanvasState'},
+        persistWith: {localStorageKey: 'dashCanvasExampleState'},
         initialState,
         viewSpecDefaults: {
             icon: Icon.gridPanel()
@@ -182,6 +190,13 @@ class Model extends HoistModel {
                 title: 'Panel',
                 icon: Icon.window(),
                 content: panelWidget
+            },
+            {
+                id: 'error',
+                title: 'Error Example',
+                icon: Icon.skull(),
+                unique: true,
+                content: errorWidget({componentName: 'DashCanvas'})
             }
         ]
     });
@@ -263,5 +278,14 @@ const initialState = [
             h: 7
         },
         viewSpecId: 'treeGrid'
+    },
+    {
+        layout: {
+            x: 0,
+            y: 15,
+            w: 6,
+            h: 6
+        },
+        viewSpecId: 'error'
     }
 ];
