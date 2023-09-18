@@ -1,4 +1,4 @@
-import {switchInput, numberInput} from '@xh/hoist/desktop/cmp/input';
+import {numberInput, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import React from 'react';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
@@ -38,7 +38,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard
-                    ? frame(dashCanvas())
+                    ? frame(dashCanvas({testId: 'dash-canvas'}))
                     : frame({
                           item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
                           padding: 10

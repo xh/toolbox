@@ -55,7 +55,7 @@ export const standardGridPanel = hoistCmp.factory(() =>
             title: 'Grids › Standard',
             icon: Icon.gridPanel(),
             className: 'tb-grid-wrapper-panel',
-            item: sampleGrid()
+            item: sampleGrid({testId: 'standard-grid'})
         })
     })
 );

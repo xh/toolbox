@@ -1,6 +1,6 @@
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {h3, p} from '@xh/hoist/cmp/layout';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
+import {action, makeObservable, observable} from '@xh/hoist/mobx';
 import {pinPad, PinPadModel} from '@xh/hoist/cmp/pinpad';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -33,7 +33,7 @@ export const pinPadPanel = hoistCmp.factory({
                 width: 380,
                 height: 500,
                 className: 'tb-pinpad-container',
-                item: !model.loggedIn ? pinPad() : secretPlans(),
+                item: !model.loggedIn ? pinPad({testId: 'pinpad'}) : secretPlans(),
                 bbar: [
                     button({
                         text: 'Reset',

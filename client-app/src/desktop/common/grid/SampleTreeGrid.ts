@@ -21,7 +21,7 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
             tbar: [
                 refreshButton({model}),
                 toolbarSep(),
-                groupingChooser(),
+                groupingChooser({testId: 'grouping-chooser'}),
                 filler(),
                 gridCountLabel({includeChildren: true}),
                 gridFindField(),

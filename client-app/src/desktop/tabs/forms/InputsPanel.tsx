@@ -315,7 +315,7 @@ const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
 const row = hoistCmp.factory<FormModel>({
     model: uses(FormModel),
 
-    render({model, label, field, info, readonlyRenderer, fmtVal, layout = {}, children}) {
+    render({model, label, field, info, readonlyRenderer, fmtVal, layout = {}, testId, children}) {
         const fieldModel = model.fields[field];
 
         if (!layout.width) layout.flex = 1;
@@ -329,6 +329,7 @@ const row = hoistCmp.factory<FormModel>({
                     item: children,
                     label,
                     info,
+                    testId,
                     readonlyRenderer,
                     ...layout
                 })

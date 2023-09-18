@@ -30,7 +30,8 @@ export const AppComponent = hoistCmp({
                 appMenuButtonProps: {
                     hideLogoutItem: false,
                     extraItems: [welcomeMsg({multiline: true})]
-                }
+                },
+                testId: 'appbar'
             }),
             hotkeys: [
                 {

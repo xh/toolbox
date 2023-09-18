@@ -33,7 +33,7 @@ export const lineChartPanel = hoistCmp.factory({
                 height: '60%',
                 mask: 'onLoad',
                 tbar: tbar(),
-                item: chart()
+                item: chart({testId: 'line-chart'})
             }),
             links: [
                 {

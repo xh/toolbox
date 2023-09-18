@@ -1,7 +1,7 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hbox, hframe, span, vframe} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
-import {hoistCmp, uses, HoistProps, BoxProps} from '@xh/hoist/core';
+import {BoxProps, hoistCmp, HoistProps, uses} from '@xh/hoist/core';
 import {
     colAutosizeButton,
     colChooserButton,
@@ -34,7 +34,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
     model: uses(SampleGridModel, {createDefault: true}),
     className: 'tb-sample-grid',
 
-    render({model, omitMask, omitGridTools, ...props}) {
+    render({model, omitMask, omitGridTools, testId, ...props}) {
         const {selectedRecords} = model.gridModel,
             selCount = selectedRecords.length;
 
@@ -55,7 +55,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
             return panel({
                 ref: model.panelRef,
                 mask: omitMask ? null : 'onLoad',
-                item: grid(),
+                item: grid({testId}),
                 ...props
             });
         }
@@ -66,7 +66,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
             ...props,
             item: hframe(
                 vframe(
-                    grid(),
+                    grid({testId}),
                     hbox({
                         items: [Icon.info(), selText],
                         className: 'tb-sample-grid__selbar'

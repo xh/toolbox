@@ -1,33 +1,10 @@
-import {expect, Page, test as baseTest} from '@playwright/test';
+import {expect, Page, test as baseTest, Locator, ConsoleMessage} from '@playwright/test';
 import {AppModel} from '../client-app/src/desktop/AppModel';
-import {XHApi} from '@xh/hoist/core';
+import {PageState, PlainObject, XHApi} from '@xh/hoist/core';
+import { StoreRecordId } from '@xh/hoist/data';
+import { HoistPage } from './hoist/HoistPage';
 
-export async function fillByTestId(page: Page, testId: string, text: string) {
-    const elem = getElementByTestId(page, testId);
-    if (await elem.locator('input').isVisible()) return elem.locator('input').fill(text);
-    if (await elem.locator('textarea').isVisible())
-        return await elem.locator('textarea').fill(text);
 
-    await elem.fill(text);
-}
-
-export async function clickByTestId(page: Page, testId: string) {
-    await getElementByTestId(page, testId).click();
-}
-
-export async function expectTestIdText(page: Page, testId: string, text: string) {
-    await expect(getElementByTestId(page, testId)).toHaveText(text);
-}
-
-export function getElementByTestId(page: Page, testId: string) {
-    return page.getByTestId(testId);
-}
-export async function clearByTestId(page: Page, testId: string) {
-    const elem = getElementByTestId(page, testId);
-    if (await elem.locator('input').isVisible()) return elem.locator('input').clear();
-    if (await elem.locator('textarea').isVisible()) return await elem.locator('textarea').clear();
-    await elem.clear();
-}
 
 export async function logIn(page: Page) {
     const {USERNAME, PASSWORD} = process.env;
@@ -43,52 +20,20 @@ export function wait<T>(interval: number = 0): Promise<T> {
     return new Promise(resolve => setTimeout(resolve, interval)) as Promise<T>;
 }
 
-export class PageRunner {
-    page: Page;
-
-    constructor(page: Page) {
-        this.page = page;
-    }
-
-    logIn = async () => logIn(this.page);
-    getByTestId = (testId: string) => getElementByTestId(this.page, testId);
-    click = async (testId: string) => clickByTestId(this.page, testId);
-    clear = async (testId: string) => clearByTestId(this.page, testId);
-    fill = async (testId: string, text: string) => fillByTestId(this.page, testId, text);
-    expectText = async (testId: string, text: string) => expectTestIdText(this.page, testId, text);
-}
-
 //------------------
 // Toolbox Fixture
 //------------------
-export class TBoxPage {
-    readonly page: Page;
-    readonly baseURL: string;
+export class TBoxPage extends HoistPage{
 
-    get maskLocator() {
-        return this.page.locator('.xh-mask');
-    }
+    onConsoleError(msg: ConsoleMessage): void {
+            if (
+                msg.location().url?.endsWith('xh/getTimeZoneOffset') ||
+                msg.text() === 'Unknown timeZoneId Error: Unknown timeZoneId'
+            )
+                return;
 
-    constructor({page, baseURL}: {page: Page; baseURL: string}) {
-        this.page = page;
-        this.baseURL = baseURL;
-    }
-
-    async init() {
-        this.page.on('console', msg => {
-            if (msg.type() === 'error') {
-                if (
-                    msg.location().url?.endsWith('xh/getTimeZoneOffset') ||
-                    msg.text() === 'Unknown timeZoneId Error: Unknown timeZoneId'
-                )
-                    return;
-
-                throw new Error(msg.text());
-            }
-        });
-
-        await this.login();
-        await this.waitForAppToBeRunning();
+            super.onConsoleError(msg)
+        
     }
 
     async getActiveTopLevelTabId() {
@@ -98,18 +43,14 @@ export class TBoxPage {
         });
     }
 
-    async getTabHierarchy() {
-        return this.page.evaluate(() => {
-            const appModel: AppModel = window.XH.appModel,
-                routes = appModel.getRoutes();
-
+    async getTabHierarchy(): Promise<PlainObject[]> {
+            const routes = await this.getRoutes()
             return routes[0].children.map(route => {
                 return {
                     id: route.name,
                     children: route.children?.map(it => ({id: it.name})) ?? []
                 };
             });
-        });
     }
 
     async switchToTopLevelTab(tabId: string, {waitForMaskToClear = true} = {}) {
@@ -123,14 +64,7 @@ export class TBoxPage {
         if (waitForMaskToClear) await this.waitForMaskToClear();
     }
 
-    async waitForMaskToClear() {
-        await expect(this.maskLocator).toHaveCount(0, {timeout: 10000});
-    }
-
-    //------------------
-    // Implementation
-    //------------------
-    private async login() {
+    override async authAsync() {
         const {page, baseURL} = this,
             {USERNAME, PASSWORD} = process.env;
         if (!USERNAME || !PASSWORD) throw new Error('USERNAME or PASSWORD missing from .env.');
@@ -139,18 +73,10 @@ export class TBoxPage {
         await page.getByLabel('Email address').fill(USERNAME);
         await page.getByLabel('Password').fill(PASSWORD);
         await page.getByRole('button', {name: 'Continue', exact: true}).click();
-        await expect(page).toHaveURL(`${baseURL}/home`);
-    }
-
-    private async waitForAppToBeRunning() {
-        const runHandle = async () => {
-            return this.page.evaluate(() => {
-                const XH: XHApi = window.XH;
-                return XH.appIsRunning;
-            });
-        };
-
-        await expect.poll(runHandle).toBeTruthy();
+        await this.waitForMaskToClear();
+        await expect(async () => {
+            await expect(page).toHaveURL(`${baseURL}/home`);
+        }).toPass();
     }
 }
 
@@ -165,7 +91,3 @@ export const test = baseTest.extend<TBoxFixtures>({
         await use(tbPage);
     }
 });
-
-//------------------
-// Implementation
-//------------------
