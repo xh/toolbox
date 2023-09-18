@@ -8,7 +8,14 @@ import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
-import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from '../widgets';
+import {
+    buttonWidget,
+    chartWidget,
+    gridWidget,
+    panelWidget,
+    treeGridWidget,
+    errorWidget
+} from '../widgets';
 import {wrapper} from '../../../common';
 
 export const dashContainerPanel = hoistCmp.factory({
@@ -107,7 +114,7 @@ class DashContainerPanelModel extends HoistModel {
 
     @managed
     dashContainerModel = new DashContainerModel({
-        persistWith: {localStorageKey: 'dashContainerState'},
+        persistWith: {localStorageKey: 'dashContainerExampleState'},
         showMenuButton: true,
         initialState: [
             {
@@ -118,7 +125,8 @@ class DashContainerPanelModel extends HoistModel {
                         width: 60,
                         content: [
                             {type: 'view', id: 'grid'},
-                            {type: 'view', id: 'treeGrid'}
+                            {type: 'view', id: 'treeGrid'},
+                            {type: 'view', id: 'error'}
                         ]
                     },
                     {
@@ -167,6 +175,11 @@ class DashContainerPanelModel extends HoistModel {
                 id: 'treeGrid',
                 title: 'Tree Grid',
                 content: treeGridWidget
+            },
+            {
+                id: 'error',
+                title: 'Error Example',
+                content: errorWidget({componentName: 'DashContainer'})
             }
         ]
     });
