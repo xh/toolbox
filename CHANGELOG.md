@@ -1,5 +1,7 @@
 # Changelog
 
+## v4.0.0-SNAPSHOT - unreleased
+
 ## v3.3.0 - 2023-09-20
 
 ### Libraries
