@@ -1,5 +1,4 @@
-import {expect} from '@playwright/test';
-import {test} from '../Utils';
+import {test} from '../Toolbox';
 
 test('Hoist Inputs Test', async ({page, tb}) => {
     // Navigate to page we are testing.
@@ -44,7 +43,7 @@ test('Hoist Inputs Test', async ({page, tb}) => {
     await tb.expectText('inputs-panel-dateInput1', '2023-08-30 12:00am');
 
     //open select and click on option then check option is applied
-    await tb.select('hoist-inputs-select2-input', 'Alabama')
+    await tb.select('hoist-inputs-select2-input', 'Alabama');
     await tb.expectText('inputs-panel-select2', 'AL');
 
     // Check checkbox and check Checkbox is checked

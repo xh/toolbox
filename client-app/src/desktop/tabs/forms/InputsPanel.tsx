@@ -28,6 +28,7 @@ import {wrapper} from '../../common';
 import './InputsPanel.scss';
 import {InputsPanelModel} from './InputsPanelModel';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
+import {TEST_ID} from '@xh/hoist/utils/js';
 
 export const inputsPanel = hoistCmp.factory({
     model: creates(InputsPanelModel),
@@ -402,7 +403,7 @@ const fieldDisplay = hoistCmp.factory(({fieldModel, fmtVal}) => {
         }
     }
     return div({
-        'data-testid': `inputs-panel-${fieldModel.name}`,
+        [TEST_ID]: `inputs-panel-${fieldModel.name}`,
         className: 'inputs-panel-field-display',
         item: displayVal
     });

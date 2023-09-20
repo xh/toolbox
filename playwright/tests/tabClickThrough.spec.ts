@@ -1,4 +1,4 @@
-import {test} from '../Utils';
+import {test} from '../Toolbox';
 
 test('Navigate to all tabs', async ({page, tb}) => {
     test.slow();
