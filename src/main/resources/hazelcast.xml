@@ -42,6 +42,19 @@
         <property name="hazelcast.health.monitoring.level">SILENT</property>
     </properties>
 
+    <!--
+        NOTE - network block below is specific to the XH Toolbox deployment within AWS Fargate!
+        See https://docs.hazelcast.com/hazelcast/latest/deploy/deploying-on-aws#ecsfargate-configuration
+    -->
+    <network>
+        <join>
+            <multicast enabled="false"/>
+            <aws enabled="true" />
+        </join>
+        <interfaces enabled="true">
+            <interface>172.30.*.*</interface>
+        </interfaces>
+    </network>
 
     <cache name="io.xh.hoist.track.TrackLog">
         <statistics-enabled>true</statistics-enabled>
