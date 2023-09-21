@@ -84,10 +84,13 @@ export const basicPanel = hoistCmp.factory({
                         )
                     })
                 ],
-                item: div({
-                    className: 'toolbox-panel-text-reader',
-                    items: [model.demoText.map(it => p(it)), invisibleBomb()]
-                }),
+                items: [
+                    div({
+                        className: 'toolbox-panel-text-reader',
+                        items: model.demoText.map(it => p(it))
+                    }),
+                    aComponentThatCanThrowInRender()
+                ],
                 bbar: [
                     button({
                         text: 'Simulate an Exception',
@@ -115,12 +118,13 @@ export const basicPanel = hoistCmp.factory({
     }
 });
 
-const invisibleBomb = hoistCmp.factory<BasicPanelModel>({
+// Demonstrates ErrorBoundary support built-in to Panel.
+const aComponentThatCanThrowInRender = hoistCmp.factory<BasicPanelModel>({
     render({model}) {
         if (model.triggerError) {
             wait(0).then(() => (model.triggerError = false));
             throw XH.exception(
-                'Woops, I threw an error.  I hope the programmers were smart enougn to render me within an ErrorBoundary!'
+                'Whoops, I threw an error. Fortunately this Panel has its built-in ErrorBoundary enabled.'
             );
         }
         return null;
