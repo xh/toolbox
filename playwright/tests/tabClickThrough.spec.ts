@@ -1,11 +1,7 @@
 import {test} from '../Toolbox';
 
-test('Navigate to all tabs', async ({page, tb}) => {
+test('Navigate to all tabs', async ({ tb}) => {
     test.slow();
-
-    //testing get row by recordId
-    // await tb.click('toplevel-tab-switcher-grids')
-    // await getGridRowByRecordId(page,'standard-grid',1)
 
     const tabs = await tb.getTabHierarchy();
     for (const tab of tabs) {
