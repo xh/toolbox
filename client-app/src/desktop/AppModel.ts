@@ -45,7 +45,12 @@ export class AppModel extends HoistAppModel {
     });
 
     static override async preAuthAsync() {
-        const whitelist = ['toolbox.xh.io', 'toolbox-dev.xh.io', 'localhost'];
+        const whitelist = [
+            'toolbox.xh.io',
+            'toolbox-dev.xh.io',
+            'toolbox-multi.xh.io',
+            'localhost'
+        ];
         if (whitelist.includes(window.location.hostname)) {
             await XH.installServicesAsync(OauthService);
         } else {
