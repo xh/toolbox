@@ -34,7 +34,7 @@ export class ChatGptService extends HoistService {
     override persistWith = {localStorageKey: 'chatGptService'};
 
     // Initialized from config via dedicated server call.
-    // Configs are protected and not sent to all clients - the CHAT_GPT_USER role required.
+    // Configs are protected and not sent to all clients - the CHAT_GPT_USER role is required.
     apiKey: string;
     completionUrl: string;
 
@@ -102,6 +102,8 @@ export class ChatGptService extends HoistService {
         '\n' +
         '```typescript\n' +
         'interface RawPosition {\n' +
+        '    // Dimension - the trading strategy to which this position belongs. The value will be a code returned by the `findStrategies` function.\n' +
+        '    strategy: string;\n' +
         "    // Dimension - the stock ticker or identifier of the position's instrument, an equity stock or other security - e.g. ['AAPL', 'GOOG', 'MSFT']\n" +
         '    symbol: string;\n' +
         "    // Dimension - the industry sector of the instrument - e.g. ['Technology', 'Healthcare', 'Energy']\n" +
@@ -120,13 +122,20 @@ export class ChatGptService extends HoistService {
         'The `getPortfolioPositions` function takes a list of `groupByDimensions` when aggregating results, representing\n' +
         'the field names of `RawPosition` dimensions within the portfolio data.\n' +
         '\n' +
-        'Introduce yourself to the user and ask them how you can help them.\n';
+        'A common way to filter positions is to ';
+    'Introduce yourself to the user and ask them how you can help them.\n';
 
     functions = [
         {
             name: 'getPortfolioPositions',
             description:
-                'Query a portfolio of `RawPosition` objects representing investments to return aggregated `Position` objects with P&L (profit and loss) and market value data, grouped by one or more specified dimensions. Each grouped row in the return will have the following properties: `name`, `pnl` (profit and loss), and `mktVal` (market value). If multiple grouping dimensions are specified, the results will be returned in a tree structure, where each parent group will have a `children` property containing an array of nested sub-groups.',
+                'Query a portfolio of `RawPosition` objects representing investments to return aggregated `Position` ' +
+                'objects with P&L (profit and loss) and market value data, grouped by one or more specified dimensions. ' +
+                'Each grouped row in the return will have the following properties: `name`, `pnl` (profit and loss), and ' +
+                '`mktVal` (market value). If multiple grouping dimensions are specified, the results will be returned in ' +
+                'a tree structure, where each parent group will have a `children` property containing an array of nested sub-groups. ' +
+                'Many queries should be run by first finding a list of strategy codes using the `findStrategies` function, ' +
+                'then passing those codes to the `strategies` parameter in this function.',
             parameters: {
                 type: 'object',
                 properties: {
@@ -152,9 +161,43 @@ export class ChatGptService extends HoistService {
                             'The maximum number of top-level rows to return. Leave unspecified to return all available groupings.',
                         type: 'integer',
                         minimum: 1
+                    },
+                    strategies: {
+                        type: 'array',
+                        items: {
+                            type: 'string'
+                        },
+                        description:
+                            'Optional list of strategy codes to filter by. Strategy codes should be first looked up via the `findStrategies` function, then used in this parameter to find suitable positions.'
                     }
                 },
                 required: ['groupByDimensions']
+            }
+        },
+        {
+            name: 'findStrategies',
+            description:
+                'Search for suitable strategy codes that can then be used in portfolio queries.',
+            parameters: {
+                type: 'object',
+                properties: {
+                    sector: {
+                        type: 'string',
+                        description:
+                            'Optional filter by sector, the econonmic area or industry covered by a strategy. e.g. "Healthcare" or "Technology".'
+                    },
+                    analyst: {
+                        type: 'string',
+                        description:
+                            'Optional filter by lead analyst, the individual person who is responsible for managing the strategy. e.g. "Susan Major".'
+                    },
+                    freeText: {
+                        type: 'string',
+                        description:
+                            'Optional free text search that can be used to match across multiple strategy fields, when you are unsure which specific field or fields to filter on.'
+                    }
+                },
+                minProperties: 1
             }
         }
     ];
