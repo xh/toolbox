@@ -3,22 +3,14 @@ import {HoistPage} from './HoistPage';
 import {PlainObject} from '@xh/hoist/core';
 
 export class GridHelper {
-    readonly hoistPage: HoistPage;
-    readonly testId: string;
-
-    constructor(hoistPage: HoistPage, testId: string) {
-        this.hoistPage = hoistPage;
-        this.testId = testId;
-    }
+    constructor(private readonly hoistPage: HoistPage, private readonly testId: string) {}
 
     get page(): Page {
         return this.hoistPage.page;
     }
 
     async getRecordCount() {
-        return this.page.evaluate(testId => {
-            return window.XH.getActiveModelByTestId(testId).store.count;
-        }, this.testId);
+        return this.page.evaluate(testId =>  window.XH.getActiveModelByTestId(testId).store.count, this.testId);
     }
 
     async ensureCount(count: number) {
@@ -27,7 +19,7 @@ export class GridHelper {
             throw new Error(`Found ${gridCount} records when ${count} is expected`);
     }
 
-    async getRowData(recordIdQuery: RecordIdQuery) {
+    async getRowData(recordIdQuery: RecordIdQuery): Promise<PlainObject> {
         if ('id' in recordIdQuery) {
             return this.page.evaluate(
                 ([testId, id]) => window.XH.getActiveModelByTestId(testId).store.getById(id).data,
@@ -38,13 +30,13 @@ export class GridHelper {
                 ([testId, agId]) =>
                     window.XH.getActiveModelByTestId(testId).store.allRecords.find(
                         it => it.agId === agId
-                    ).id,
+                    ).data,
                 [this.testId, recordIdQuery.agId]
             );
         }
     }
 
-    async getRowAgId(query: RecordQuery) {
+    async getRowAgId(query: RecordQuery): Promise<string> {
         if ('agId' in query) return query.agId;
         return 'id' in query
             ? this.page.evaluate(
@@ -60,7 +52,7 @@ export class GridHelper {
               );
     }
 
-    async getRowId(query: RecordQuery) {
+    async getRowId(query: RecordQuery): Promise<number|string> {
         if ('id' in query) return query.id;
         return 'agId' in query
             ? this.page.evaluate(
@@ -104,17 +96,15 @@ export class GridHelper {
     }
 }
 
-type RecordQuery = IdQuery | AgIdQuery | RecordDataQuery;
+type RecordQuery = RecordIdQuery | RecordDataQuery;
 type RecordIdQuery = IdQuery | AgIdQuery;
 
 interface IdQuery {
     id: string | number;
 }
-
 interface AgIdQuery {
     agId: string;
 }
-
 interface RecordDataQuery {
     recordData: PlainObject;
 }

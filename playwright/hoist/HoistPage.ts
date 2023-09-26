@@ -34,7 +34,7 @@ export class HoistPage {
         await this.waitForAppToBeRunning();
     }
 
-    getGridHelper(testId: string): GridHelper{
+    createGridHelper(testId: string): GridHelper{
         return new GridHelper(this, testId)
     }
 

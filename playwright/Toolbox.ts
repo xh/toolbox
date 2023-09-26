@@ -56,6 +56,12 @@ export class TBoxPage extends HoistPage {
         await this.page.getByTestId(`${topLevelTabId}-tab-switcher-${tabId}`).click();
         if (waitForMaskToClear) await this.waitForMaskToClear();
     }
+
+    async loadAndResetTodoApp() {
+        await this.page.goto(`${this.baseURL.replace('app', 'todo')}`);
+        await this.waitForMaskToClear();
+        await this.click('reset-button');
+    }
 }
 
 type TBoxFixtures = {
@@ -66,6 +72,15 @@ export const test = baseTest.extend<TBoxFixtures>({
     tb: async ({page, baseURL}, use) => {
         const tbPage = new TBoxPage({page, baseURL});
         await tbPage.init();
+        await use(tbPage);
+    }
+});
+
+export const todoTest = baseTest.extend<TBoxFixtures>({
+    tb: async ({page, baseURL}, use) => {
+        const tbPage = new TBoxPage({page, baseURL});
+        await tbPage.init();
+        await tbPage.loadAndResetTodoApp();
         await use(tbPage);
     }
 });

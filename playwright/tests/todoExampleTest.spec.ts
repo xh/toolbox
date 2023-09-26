@@ -1,34 +1,20 @@
-import { expect } from '@playwright/test';
-import {test} from '../Toolbox';
+import {test, todoTest} from '../Toolbox';
 
-
-
-test('Test app load & grid reset', async ({page, tb}) => {
-    await page.goto(`${tb.baseURL.replace('app', 'todo')}`)
-    await tb.waitForMaskToClear()
-    
-    const grid = tb.getGridHelper('todo-grid')
-    
-    await tb.click('reset-button')
+todoTest('Test app load & grid reset', async ({page, tb}) => {
+    const grid = tb.createGridHelper('todo-grid')
     await grid.ensureCount(2)
 });
 
-test('Test show completed', async ({page, tb}) => {
-    await page.goto(`${tb.baseURL.replace('app', 'todo')}`)
-    await tb.waitForMaskToClear()
-    const grid = tb.getGridHelper('todo-grid')
-    await tb.click('reset-button')
-    
+todoTest('Test show completed', async ({page, tb}) => {
+    const grid = tb.createGridHelper('todo-grid')
+
     await grid.ensureCount(2)
     await tb.check('show-completed-switch')
     await grid.ensureCount(3)
 });
 
-test('Test mark task complete', async ({page, tb}) => {
-    await page.goto(`${tb.baseURL.replace('app', 'todo')}`)
-    await tb.waitForMaskToClear()
-    const grid = tb.getGridHelper('todo-grid')
-    await tb.click('reset-button')
+todoTest('Test mark task complete', async ({page, tb}) => {
+    const grid = tb.createGridHelper('todo-grid')
     
     await grid.ensureCount(2)
     await tb.click('toggle-complete-action-1') // Mark task with record id of 1 as completed
@@ -39,11 +25,8 @@ test('Test mark task complete', async ({page, tb}) => {
     
 });
 
-test('Test task add/edit/update/delete', async ({page, tb}) => {
-    await page.goto(`${tb.baseURL.replace('app', 'todo')}`)
-    await tb.waitForMaskToClear()
-    const grid = tb.getGridHelper('todo-grid')
-    await tb.click('reset-button')
+todoTest('Test task add/edit/update/delete', async ({page, tb}) => {
+    const grid = tb.createGridHelper('todo-grid')
     
     // add new task
     await tb.click('add-button')
@@ -79,18 +62,14 @@ test('Test task add/edit/update/delete', async ({page, tb}) => {
     await grid.ensureCount(3)
 });
 
-test('Test all task can be completed and placeholder message', async ({page, tb}) => {
-    await page.goto(`${tb.baseURL.replace('app', 'todo')}`)
-    await tb.waitForMaskToClear()
-    const grid = tb.getGridHelper('todo-grid')
-    await tb.click('reset-button')
+todoTest('Test all task can be completed and placeholder message', async ({page, tb}) => {
+    const grid = tb.createGridHelper('todo-grid')
     
     await tb.click('toggle-complete-action-1') // Mark task with record id of 1 as completed
     const signUpRecordId = await grid.getRowId({recordData: {description: 'Sign-up for stress management workshop'}})
-    console.log(signUpRecordId);
-    
-    
+    console.log(await grid.getRowData({id: signUpRecordId}));
     await tb.click(`toggle-complete-action-${signUpRecordId}`)
+    
     await grid.ensureCount(0)
     await tb.expectTextVisible('Congratulations. You did it! All of it!')
 });
