@@ -1,4 +1,4 @@
-import {uses, hoistCmp} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {filler, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -30,12 +30,13 @@ export const taskDialog = hoistCmp.factory({
 
 const formPanel = hoistCmp.factory(() =>
     panel({
-        item: form(
-            vbox({
+        item: form({
+            testId: 'task-dialog',
+            item: vbox({
                 items: [description(), dueDate()],
                 className: 'todo-form'
             })
-        ),
+        }),
         bbar: bbar()
     })
 );
@@ -68,10 +69,12 @@ const bbar = hoistCmp.factory<TaskDialogModel>(({model}) =>
     toolbar(
         filler(),
         button({
+            testId: 'cancel-task-edit-button',
             text: 'Cancel',
             onClick: () => model.close()
         }),
         button({
+            testId: 'save-task-button',
             text: 'OK',
             icon: Icon.check(),
             disabled: !model.formModel.isValid,

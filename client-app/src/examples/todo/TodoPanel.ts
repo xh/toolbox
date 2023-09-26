@@ -18,7 +18,13 @@ export const todoPanel = hoistCmp.factory({
             ref: model.panelRef,
             mask: 'onLoad',
             tbar: tbar(),
-            items: [grid({agOptions: {suppressMakeColumnVisibleAfterUnGroup: true}}), taskDialog()],
+            items: [
+                grid({
+                    testId: 'todo-grid',
+                    agOptions: {suppressMakeColumnVisibleAfterUnGroup: true}
+                }),
+                taskDialog()
+            ],
             bbar: bbar()
         });
     }
@@ -49,11 +55,13 @@ const bbar = hoistCmp.factory<TodoPanelModel>(({model}) =>
         }),
         '-',
         switchInput({
+            testId: 'show-completed-switch',
             bind: 'showCompleted',
             label: 'Show Completed'
         }),
         filler(),
         button({
+            testId: 'reset-button',
             icon: Icon.reset(),
             intent: 'danger',
             tooltip: 'Reset to example defaults.',

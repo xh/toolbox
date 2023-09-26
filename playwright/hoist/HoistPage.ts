@@ -3,6 +3,7 @@ import {AppModel} from '../../client-app/src/desktop/AppModel';
 import {XHApi} from '@xh/hoist/core/XH';
 import {StoreRecordId} from '@xh/hoist/data/StoreRecord';
 import {PlainObject} from '@xh/hoist/core';
+import { GridHelper } from './GridHelper';
 
 export interface FilterSelectQuery {
     testId: string;
@@ -33,16 +34,20 @@ export class HoistPage {
         await this.waitForAppToBeRunning();
     }
 
+    getGridHelper(testId: string): GridHelper{
+        return new GridHelper(this, testId)
+    }
+
     get(testId: string) {
         return this.page.getByTestId(testId);
     }
 
-    async click(testId: string) {
-        await this.get(testId).click();
+    getByText(text: string) {
+        return this.page.getByText(text)
     }
 
-    async expectText(testId: string, text: string) {
-        await expect(this.get(testId)).toHaveText(text);
+    async click(testId: string) {
+        await this.get(testId).click();
     }
 
     async fill(testId: string, value: string) {
@@ -98,20 +103,6 @@ export class HoistPage {
         await this.page.locator('label', {has: this.page.getByTestId(testId)}).uncheck();
     }
 
-    async getGridRowByRecordId(testId: string, id: StoreRecordId) {
-        return this.page.evaluate(() =>
-            window.XH.getActiveModelByTestId(testId).gridModel.store.getById(id)
-        );
-    }
-
-    async getGridRowByCellContents(testId: string, spec: PlainObject) {
-        return this.page.evaluate(() => {
-            window.XH.getActiveModelByTestId(testId).gridModel.store.allRecords.find(({data}) =>
-                _.isMatch(data, spec)
-            );
-        });
-    }
-
     onConsoleError(msg: ConsoleMessage) {
         throw new Error(msg.text());
     }
@@ -132,6 +123,16 @@ export class HoistPage {
     async waitForMaskToClear() {
         await expect(this.maskLocator).toHaveCount(0, {timeout: 10000});
     }
+
+    //Expect
+    async expectText(testId: string, text: string) {
+        await expect(this.get(testId)).toHaveText(text);
+    }
+
+    async expectTextVisible(text: string) {
+        await expect(this.getByText(text)).toBeVisible({timeout: 10000})
+    }
+
 
     //------------------------
     // Implementation

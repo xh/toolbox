@@ -35,7 +35,8 @@ export class TodoPanelModel extends HoistModel {
         icon: Icon.add(),
         text: 'New',
         intent: 'success',
-        actionFn: () => this.taskDialogModel.openAddForm()
+        actionFn: () => this.taskDialogModel.openAddForm(),
+        testId: 'add-button'
     });
 
     editAction = new RecordAction({
@@ -43,7 +44,8 @@ export class TodoPanelModel extends HoistModel {
         text: 'Edit',
         intent: 'primary',
         recordsRequired: 1,
-        actionFn: () => this.taskDialogModel.openEditForm(this.selectedTasks[0])
+        actionFn: () => this.taskDialogModel.openEditForm(this.selectedTasks[0]),
+        testId: 'edit-button'
     });
 
     deleteAction = new RecordAction({
@@ -51,7 +53,8 @@ export class TodoPanelModel extends HoistModel {
         text: 'Remove',
         intent: 'danger',
         recordsRequired: true,
-        actionFn: () => this.deleteTasksAsync(this.selectedTasks)
+        actionFn: () => this.deleteTasksAsync(this.selectedTasks),
+        testId: 'remove-button'
     });
 
     toggleCompleteAction = new RecordAction({
@@ -129,7 +132,8 @@ export class TodoPanelModel extends HoistModel {
             message = count === 1 ? `'${description}?'` : `${count} tasks?`,
             confirmed = await XH.confirm({
                 title: 'Confirm',
-                message: `Are you sure you want to permanently remove ${message}`
+                message: `Are you sure you want to permanently remove ${message}`,
+                confirmProps: {testId: 'confirm-delete-button'}
             });
 
         if (!confirmed) return;
@@ -230,7 +234,8 @@ export class TodoPanelModel extends HoistModel {
                             },
                             actionFn: ({record}) => {
                                 this.toggleCompleteAsync([record.data]);
-                            }
+                            },
+                            testId: 'toggle-complete-action'
                         }
                     ]
                 },
