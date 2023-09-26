@@ -1,4 +1,4 @@
-import {test, todoTest} from '../Toolbox';
+import {todoTest} from '../Toolbox';
 
 todoTest('Test app load & grid reset', async ({page, tb}) => {
     const grid = tb.createGridHelper('todo-grid')
@@ -67,7 +67,6 @@ todoTest('Test all task can be completed and placeholder message', async ({page,
     
     await tb.click('toggle-complete-action-1') // Mark task with record id of 1 as completed
     const signUpRecordId = await grid.getRowId({recordData: {description: 'Sign-up for stress management workshop'}})
-    console.log(await grid.getRowData({id: signUpRecordId}));
     await tb.click(`toggle-complete-action-${signUpRecordId}`)
     
     await grid.ensureCount(0)
