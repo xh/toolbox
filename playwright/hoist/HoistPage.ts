@@ -1,9 +1,7 @@
 import {ConsoleMessage, expect, Page} from '@playwright/test';
 import {AppModel} from '../../client-app/src/desktop/AppModel';
 import {XHApi} from '@xh/hoist/core/XH';
-import {StoreRecordId} from '@xh/hoist/data/StoreRecord';
-import {PlainObject} from '@xh/hoist/core';
-import { GridHelper } from './GridHelper';
+import {GridHelper} from './GridHelper';
 
 export interface FilterSelectQuery {
     testId: string;
@@ -34,8 +32,8 @@ export class HoistPage {
         await this.waitForAppToBeRunning();
     }
 
-    createGridHelper(testId: string): GridHelper{
-        return new GridHelper(this, testId)
+    createGridHelper(testId: string): GridHelper {
+        return new GridHelper(this, testId);
     }
 
     get(testId: string) {
@@ -43,7 +41,7 @@ export class HoistPage {
     }
 
     getByText(text: string) {
-        return this.page.getByText(text)
+        return this.page.getByText(text);
     }
 
     async click(testId: string) {
@@ -130,17 +128,10 @@ export class HoistPage {
     }
 
     async expectTextVisible(text: string) {
-        await expect(this.getByText(text)).toBeVisible({timeout: 10000})
+        await expect(this.getByText(text)).toBeVisible({timeout: 10000});
     }
 
-
-    //------------------------
-    // Implementation
-    //------------------------
-
-    protected async authAsync() {}
-
-    private async waitForAppToBeRunning() {
+    async waitForAppToBeRunning() {
         const runHandle = async () => {
             return this.page.evaluate(() => {
                 const XH: XHApi = window.XH;
@@ -150,4 +141,10 @@ export class HoistPage {
 
         await expect.poll(runHandle).toBeTruthy();
     }
+
+    //------------------------
+    // Implementation
+    //------------------------
+
+    protected async authAsync() {}
 }
