@@ -1,6 +1,6 @@
-import {test} from '../Toolbox';
+import {test} from '../fixtures/toolbox';
 
-test('Navigate to all tabs', async ({ tb}) => {
+test('Navigate to all tabs', async ({tb}) => {
     test.slow();
 
     const tabs = await tb.getTabHierarchy();

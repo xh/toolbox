@@ -1,15 +1,17 @@
 import {ConsoleMessage, expect, Page} from '@playwright/test';
-import {AppModel} from '../../client-app/src/desktop/AppModel';
 import {XHApi} from '@xh/hoist/core/XH';
 import {GridHelper} from './GridHelper';
+import {FilterSelectQuery} from './Types';
 
-export interface FilterSelectQuery {
-    testId: string;
-    filterText: string;
-    selectionText?: string;
-    asyncOptionUrl?: string;
+declare global {
+    interface Window {
+        XH: XHApi;
+    }
 }
 
+/**
+ * Base fixture for testing Hoist applications.
+ */
 export class HoistPage {
     readonly page: Page;
     readonly baseURL: string;
@@ -107,8 +109,7 @@ export class HoistPage {
 
     async getRoutes() {
         return this.page.evaluate(() => {
-            const appModel: AppModel = window.XH.appModel;
-            return appModel.getRoutes();
+            window.XH.appModel.getRoutes();
         });
     }
 
@@ -134,8 +135,7 @@ export class HoistPage {
     async waitForAppToBeRunning() {
         const runHandle = async () => {
             return this.page.evaluate(() => {
-                const XH: XHApi = window.XH;
-                return XH.appIsRunning;
+                return window.XH.appIsRunning;
             });
         };
 

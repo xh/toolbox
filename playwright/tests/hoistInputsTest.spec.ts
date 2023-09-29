@@ -1,4 +1,4 @@
-import {test} from '../Toolbox';
+import {test} from '../fixtures/toolbox';
 
 test('Hoist Inputs Test', async ({page, tb}) => {
     // Navigate to page we are testing.
@@ -46,18 +46,22 @@ test('Hoist Inputs Test', async ({page, tb}) => {
     await tb.select('hoist-inputs-select2-input', 'Alabama');
     await tb.expectText('inputs-panel-select2', 'AL');
 
-    await tb.filterThenClickSelectOption({testId: 'hoist-inputs-select3-input', filterText: 's', asyncOptionUrl: '/customer'});
+    await tb.filterThenClickSelectOption({
+        testId: 'hoist-inputs-select3-input',
+        filterText: 's',
+        asyncOptionUrl: '/customer'
+    });
     await tb.expectText('inputs-panel-select2', 'AL');
 
     // Check checkbox and check Checkbox is checked
-    
+
     await tb.toggle('hoist-inputs-checkbox-input');
     await tb.expectText('inputs-panel-checkbox', 'true');
     await tb.uncheck('hoist-inputs-checkbox-input');
     await tb.expectText('inputs-panel-checkbox', 'false');
 
     // Check switch input and check switch is enabled
-    await tb.toggle('hoist-inputs-switch-input')
+    await tb.toggle('hoist-inputs-switch-input');
     await tb.expectText('inputs-panel-switch', 'true');
 
     // Click on button 3 in button group and check it is clicked
