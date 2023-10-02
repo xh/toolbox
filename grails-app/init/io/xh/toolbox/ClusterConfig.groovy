@@ -1,10 +1,8 @@
-package io.xh.toolbox
-
 import com.hazelcast.config.Config
 import io.xh.hoist.util.Utils
 
 
-class Cluster {
+class ClusterConfig {
 
     /**
      * Provide app specific configuration to your hazelcast cluster.
