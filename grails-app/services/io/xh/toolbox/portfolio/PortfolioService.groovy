@@ -13,9 +13,8 @@ import static io.xh.hoist.util.DateTimeUtils.SECONDS
 @Slf4j
 class PortfolioService extends BaseService {
 
-
-    private ReplicatedMap<String, Portfolio> _portfolios = null;
-    private ReplicatedMap<String, MarketPrice> _currentPrices = null;
+    private ReplicatedMap<String, Portfolio> _portfolios = null
+    private ReplicatedMap<String, MarketPrice> _currentPrices = null
 
     def configService,
         orderGenerationService,
@@ -23,16 +22,15 @@ class PortfolioService extends BaseService {
         instrumentGenerationService
 
     void init() {
-
         _portfolios = clusterService.getReplicatedMap('portfolios')
         _currentPrices = clusterService.getReplicatedMap('currentPrices')
 
         createTimer(
-                runFn: this.&updateData,
-                interval: {config.updateIntervalSecs},
-                intervalUnits: SECONDS,
-                runImmediatelyAndBlock: true,
-                masterOnly: true
+            runFn: this.&updateData,
+            interval: {config.updateIntervalSecs},
+            intervalUnits: SECONDS,
+            runImmediatelyAndBlock: true,
+            masterOnly: true
         )
     }
 
@@ -138,4 +136,9 @@ class PortfolioService extends BaseService {
         }
         super.clearCaches()
     }
+
+    Map getAdminStats() {[
+        config: config,
+        timer: timers[0]?.adminStats
+    ]}
 }

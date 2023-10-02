@@ -98,4 +98,9 @@ Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
     private Map getConfig(){
         return configService.getMap('slackAlertConfig', [enabled: false])
     }
+
+    Map getAdminStats() {[
+        config: config
+    ]}
+
 }

@@ -163,14 +163,6 @@ class GitHubService extends BaseService {
         }
     }
 
-
-    Map getAdminStats() {
-        [
-            lastUpdateTime: this.commitsByRepo?.getReplicatedMapStats().lastUpdateTime
-        ]
-    }
-
-
     //------------------------
     // Implementation
     //------------------------
@@ -253,4 +245,9 @@ query XHRepoCommits {
         super.clearCaches()
     }
 
+
+    Map getAdminStats() { [
+        config: configService.getForAdminStats('gitHubAccessToken', 'gitHubRepos', 'gitHubMaxPagesPerLoad'),
+        lastUpdateTime: commitsByRepo?.replicatedMapStats.lastUpdateTime
+    ]}
 }

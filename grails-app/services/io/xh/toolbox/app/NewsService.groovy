@@ -117,4 +117,9 @@ class NewsService extends BaseService {
         }
         super.clearCaches()
     }
+
+    Map getAdminStats() {[
+        config:  configService.getForAdminStats('newsSources', 'newsApiKey'),
+        newsTimer: newsTimer?.adminStats
+    ]}
 }

@@ -17,13 +17,12 @@ class PositionService extends BaseService {
 
     void init() {
         createTimer(
-                runFn: this.&pushUpdatesToAllSessions,
-                interval: {config.pushUpdatesIntervalSecs},
-                intervalUnits: SECONDS,
-                delay: true
+            runFn: this.&pushUpdatesToAllSessions,
+            interval: {config.pushUpdatesIntervalSecs},
+            intervalUnits: SECONDS,
+            delay: true
         )
     }
-
 
     PositionSession getLivePositions(PositionQuery query, String channelKey, String topic) {
         def newSession = new PositionSession(query, channelKey, topic),
@@ -263,4 +262,9 @@ class PositionService extends BaseService {
     private Map getConfig() {
         configService.getMap('portfolioConfigs')
     }
+
+    Map getAdminStats() {[
+        config: config,
+        timer: timers[0]?.adminStats
+    ]}
 }
