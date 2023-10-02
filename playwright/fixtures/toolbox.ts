@@ -28,7 +28,7 @@ export class TBoxPage extends HoistPage {
     }
 
     async getTabHierarchy(): Promise<PlainObject[]> {
-        const routes = await this.getRoutes();
+        const routes = await this.getRoutesAsync();
         return routes[0].children.map(route => {
             return {
                 id: route.name,
@@ -52,7 +52,7 @@ export class TBoxPage extends HoistPage {
 export const test = baseTest.extend<{tb: TBoxPage}>({
     tb: async ({page, baseURL}, use) => {
         const tbPage = new TBoxPage({page, baseURL});
-        await tbPage.init();
+        await tbPage.initAsync();
         await use(tbPage);
     }
 });

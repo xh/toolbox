@@ -1,87 +1,113 @@
-import {ConsoleMessage, expect, Page} from '@playwright/test';
+import {ConsoleMessage, expect, Locator, Page, Route} from '@playwright/test';
 import {XHApi} from '@xh/hoist/core/XH';
 import {GridHelper} from './GridHelper';
 import {FilterSelectQuery} from './Types';
+import {isString} from 'lodash';
 
-declare global {
-    interface Window {
-        XH: XHApi;
-    }
+interface HoistPageCfg {
+    baseUrl: string;
+    page: Page;
 }
+type Predicate = TestId | {text: string};
+type TestId = string;
 
 /**
  * Base fixture for testing Hoist applications.
  */
+
 export class HoistPage {
     readonly page: Page;
-    readonly baseURL: string;
+    private readonly baseUrl: string;
 
-    get maskLocator() {
-        return this.page.locator('.xh-mask');
-    }
-
-    constructor({page, baseURL}: {page: Page; baseURL: string}) {
+    constructor({baseUrl, page}: HoistPageCfg) {
+        this.baseUrl = baseUrl;
         this.page = page;
-        this.baseURL = baseURL;
     }
 
-    async init() {
+    // -------------------------------
+    // Lifecycle
+    // -------------------------------
+
+    async initAsync(): Promise<void> {
+        await this.authAsync();
+
         this.page.on('console', msg => {
             if (msg.type() === 'error') this.onConsoleError(msg);
         });
 
-        await this.authAsync();
         await this.waitForAppToBeRunning();
     }
 
-    createGridHelper(testId: string): GridHelper {
-        return new GridHelper(this, testId);
+    onConsoleError(msg: ConsoleMessage): void {
+        throw new Error(msg.text());
     }
 
-    get(testId: string) {
-        return this.page.getByTestId(testId);
+    // -------------------------------
+    // Lookups
+    // -------------------------------
+
+    get(q: Predicate): Locator {
+        return isString(q) ? this.page.getByTestId(q) : this.page.getByText(q.text);
     }
 
-    getByText(text: string) {
-        return this.page.getByText(text);
+    async getInputAsync(q: Predicate): Promise<Locator> {
+        const elem = this.get(q),
+            possibleInputs = [
+                elem.locator('input'),
+                elem.getByRole('textbox'),
+                elem.locator('textarea'),
+                this.page.locator('label', {has: elem})
+            ];
+
+        for (let input of possibleInputs) {
+            if (await input.isVisible()) return input;
+        }
+        return elem;
     }
 
-    async click(testId: string) {
-        await this.get(testId).click();
+    getMask(): Locator {
+        return this.page.locator('.xh-mask');
     }
 
-    async fill(testId: string, value: string) {
-        const elem = this.get(testId);
-        if (await elem.locator('input').isVisible()) return elem.locator('input').fill(value);
-        if (await elem.getByRole('textbox').isVisible())
-            return elem.getByRole('textbox').fill(value);
-        if (await elem.locator('textarea').isVisible()) return elem.locator('textarea').fill(value);
-
-        return elem.fill(value);
+    // todo - understand this
+    async getRoutesAsync(): Promise<Route[]> {
+        return this.page.evaluate(() => {
+            window.XH.appModel.getRoutes();
+        });
     }
 
-    async clear(testId: string) {
-        const elem = this.get(testId);
-        if (await elem.locator('input').isVisible()) return elem.locator('input').clear();
-        if (await elem.locator('textarea').isVisible())
-            return await elem.locator('textarea').clear();
-        if (await elem.locator(testId).getByRole('textbox').isVisible())
-            return elem.getByRole('textbox').clear();
-        await elem.clear();
+    // -------------------------------
+    // Actions
+    // -------------------------------
+
+    async clickAsync(q: Predicate): Promise<void> {
+        return this.get(q).click();
     }
 
-    async select(testId: string, selectionText: string) {
+    async fillAsync(q: Predicate, value: string): Promise<void> {
+        const input = await this.getInputAsync(q);
+        return input.fill(value);
+    }
+
+    async clearAsync(q: Predicate): Promise<void> {
+        const input = await this.getInputAsync(q);
+        return input.clear();
+    }
+
+    // todo - cleanup
+    async selectAsync(testId: string, selectionText: string): Promise<void> {
         await this.page.getByTestId(testId).locator('svg').click();
         await this.get(`${testId}-menu`).getByText(selectionText).click();
     }
 
-    async filterThenClickSelectOption({
+    // todo - cleanup
+    async filterThenClickSelectOptionAsync({
         testId,
         filterText,
         selectionText,
         asyncOptionUrl
     }: FilterSelectQuery) {
-        await this.fill(testId, filterText);
+        await this.fillAsync(testId, filterText);
         const menu = this.get(`${testId}-menu`);
         if (asyncOptionUrl) this.page.waitForResponse(resp => resp.url().includes(asyncOptionUrl));
         selectionText
@@ -91,48 +117,41 @@ export class HoistPage {
 
     // Checkboxes switches and radio inputs
     // Looks for and toggles the label that has the input that matches the given testId
-    async toggle(testId: string) {
-        await this.page.locator('label', {has: this.page.getByTestId(testId)}).click();
+    async toggleAsync(q: Predicate): Promise<void> {
+        return (await this.getInputAsync(q)).click();
     }
 
-    async check(testId: string) {
-        await this.page.locator('label', {has: this.page.getByTestId(testId)}).check();
+    async checkAsync(q: Predicate): Promise<void> {
+        return (await this.getInputAsync(q)).check();
     }
 
-    async uncheck(testId: string) {
-        await this.page.locator('label', {has: this.page.getByTestId(testId)}).uncheck();
+    async uncheckAsync(q: Predicate): Promise<void> {
+        return (await this.getInputAsync(q)).uncheck();
     }
 
-    onConsoleError(msg: ConsoleMessage) {
-        throw new Error(msg.text());
-    }
-
-    async getRoutes() {
-        return this.page.evaluate(() => {
-            window.XH.appModel.getRoutes();
-        });
-    }
-
-    async toggleTheme() {
+    async toggleThemeAsync(): Promise<void> {
         return this.page.evaluate(() => {
             window.XH.toggleTheme();
         });
     }
 
-    async waitForMaskToClear() {
-        await expect(this.maskLocator).toHaveCount(0, {timeout: 10000});
+    // -------------------------------
+    // Assertions
+    // -------------------------------
+
+    async expectTextAsync(q: Predicate, text: string): Promise<void> {
+        await expect(this.get(q)).toHaveText(text);
     }
 
-    //Expect
-    async expectText(testId: string, text: string) {
-        await expect(this.get(testId)).toHaveText(text);
+    async expectVisibleAsync(q: Predicate): Promise<void> {
+        await expect(this.get(q)).toBeVisible({timeout: 10000});
     }
 
-    async expectTextVisible(text: string) {
-        await expect(this.getByText(text)).toBeVisible({timeout: 10000});
-    }
+    // -------------------------------
+    // Utils
+    // -------------------------------
 
-    async waitForAppToBeRunning() {
+    async waitForAppToBeRunning(): Promise<void> {
         const runHandle = async () => {
             return this.page.evaluate(() => {
                 return window.XH.appIsRunning;
@@ -142,9 +161,32 @@ export class HoistPage {
         await expect.poll(runHandle).toBeTruthy();
     }
 
-    //------------------------
+    async waitForMaskToClear(): Promise<void> {
+        await expect(this.getMask()).toHaveCount(0, {timeout: 10000});
+    }
+
+    // -------------------------------
+    // Helper Factories
+    // -------------------------------
+
+    // todo
+    // createFormHelper(testId: string): FormHelper {
+    //     return new FormHelper(this, testId);
+    // }
+
+    createGridHelper(testId: string): GridHelper {
+        return new GridHelper(this, testId);
+    }
+
+    // -------------------------------
     // Implementation
-    //------------------------
+    // -------------------------------
 
     protected async authAsync() {}
+}
+
+declare global {
+    interface Window {
+        XH: XHApi;
+    }
 }

@@ -9,6 +9,10 @@
     "@playwright/test": "^1.36.2",
     "@xh/hoist": "^59.0.1",
     "dotenv": "16.x",
+    "lodash": "4.x",
     "prettier": "3.x"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.199"
   }
 }

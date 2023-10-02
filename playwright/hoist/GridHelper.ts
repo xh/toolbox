@@ -3,13 +3,10 @@ import {HoistPage} from './HoistPage';
 import {PlainObject} from '@xh/hoist/core';
 
 export class GridHelper {
-    private readonly hoistPage: HoistPage;
-    private readonly testId: string;
-
-    constructor(hoistPage: HoistPage, testId: string) {
-        this.hoistPage = hoistPage;
-        this.testId = testId;
-    }
+    constructor(
+        private readonly hoistPage: HoistPage,
+        private readonly testId: string
+    ) {}
 
     get page(): Page {
         return this.hoistPage.page;
