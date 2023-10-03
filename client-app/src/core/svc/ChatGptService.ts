@@ -122,8 +122,7 @@ export class ChatGptService extends HoistService {
         'The `getPortfolioPositions` function takes a list of `groupByDimensions` when aggregating results, representing\n' +
         'the field names of `RawPosition` dimensions within the portfolio data.\n' +
         '\n' +
-        'A common way to filter positions is to ';
-    'Introduce yourself to the user and ask them how you can help them.\n';
+        'Begin by introducing yourself to the user and ask them how you can help them.\n';
 
     functions = [
         {
