@@ -48,9 +48,7 @@ test('Test task add/edit/update/delete', async ({page, todo}) => {
     await todo.clickAsync('cancel-task-edit-button');
 
     await todo.clickAsync('remove-button');
-    await todo.expectTextVisible(
-        `Are you sure you want to permanently remove 'Updated task description?'`
-    );
+    await todo.expectVisibleAsync({text: "Are you sure you want to permanently remove 'Updated task description?'"});
     await todo.clickAsync('confirm-delete-button');
     await todo.grid.ensureCount(2);
     await todo.checkAsync('show-completed-switch');

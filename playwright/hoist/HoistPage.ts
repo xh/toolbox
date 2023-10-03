@@ -1,8 +1,9 @@
-import {ConsoleMessage, expect, Locator, Page, Route} from '@playwright/test';
+import {ConsoleMessage, expect, Locator, Page} from '@playwright/test';
 import {XHApi} from '@xh/hoist/core/XH';
 import {GridHelper} from './GridHelper';
 import {FilterSelectQuery} from './Types';
 import {isString} from 'lodash';
+import {Route} from 'router5';
 
 interface HoistPageCfg {
     baseUrl: string;
@@ -69,11 +70,8 @@ export class HoistPage {
         return this.page.locator('.xh-mask');
     }
 
-    // todo - understand this
     async getRoutesAsync(): Promise<Route[]> {
-        return this.page.evaluate(() => {
-            window.XH.appModel.getRoutes();
-        });
+        return this.page.evaluate(() => window.XH.appModel.getRoutes());
     }
 
     // -------------------------------
