@@ -8,9 +8,9 @@ export class TodoPage extends HoistPage {
         await doAuthZeroLogin(this.page, 'todo');
     }
 
-    override async init() {
-        await super.init();
-        await this.click('reset-button');
+    override async initAsync() {
+        await super.initAsync();
+        await this.clickAsync('reset-button');
     }
 
     get grid(): GridHelper {
@@ -21,7 +21,7 @@ export class TodoPage extends HoistPage {
 export const test = baseTest.extend<{todo: TodoPage}>({
     todo: async ({page, baseURL}, use) => {
         const todoPage = new TodoPage({page, baseURL});
-        await todoPage.init();
+        await todoPage.initAsync();
         await use(todoPage);
     }
 });
