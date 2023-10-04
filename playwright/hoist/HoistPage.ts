@@ -51,7 +51,7 @@ export class HoistPage {
         return isString(q) ? this.page.getByTestId(q) : this.page.getByText(q.text);
     }
 
-    async getInputAsync(q: Predicate): Promise<Locator> {
+    async getInput(q: Predicate): Promise<Locator> {
         const elem = this.get(q),
             possibleInputs = [
                 elem.locator('input'),
@@ -70,7 +70,7 @@ export class HoistPage {
         return this.page.locator('.xh-mask');
     }
 
-    async getRoutesAsync(): Promise<Route[]> {
+    async getRoutes(): Promise<Route[]> {
         return this.page.evaluate(() => window.XH.appModel.getRoutes());
     }
 
@@ -78,34 +78,34 @@ export class HoistPage {
     // Actions
     // -------------------------------
 
-    async clickAsync(q: Predicate): Promise<void> {
+    async click(q: Predicate): Promise<void> {
         return this.get(q).click();
     }
 
-    async fillAsync(q: Predicate, value: string): Promise<void> {
-        const input = await this.getInputAsync(q);
+    async fill(q: Predicate, value: string): Promise<void> {
+        const input = await this.getInput(q);
         return input.fill(value);
     }
 
-    async clearAsync(q: Predicate): Promise<void> {
-        const input = await this.getInputAsync(q);
+    async clear(q: Predicate): Promise<void> {
+        const input = await this.getInput(q);
         return input.clear();
     }
 
     // todo - cleanup
-    async selectAsync(testId: string, selectionText: string): Promise<void> {
+    async select(testId: string, selectionText: string): Promise<void> {
         await this.page.getByTestId(testId).locator('svg').click();
         await this.get(`${testId}-menu`).getByText(selectionText).click();
     }
 
     // todo - cleanup
-    async filterThenClickSelectOptionAsync({
+    async filterThenClickSelectOption({
         testId,
         filterText,
         selectionText,
         asyncOptionUrl
     }: FilterSelectQuery) {
-        await this.fillAsync(testId, filterText);
+        await this.fill(testId, filterText);
         const menu = this.get(`${testId}-menu`);
         if (asyncOptionUrl) this.page.waitForResponse(resp => resp.url().includes(asyncOptionUrl));
         selectionText
@@ -115,19 +115,19 @@ export class HoistPage {
 
     // Checkboxes switches and radio inputs
     // Looks for and toggles the label that has the input that matches the given testId
-    async toggleAsync(q: Predicate): Promise<void> {
-        return (await this.getInputAsync(q)).click();
+    async toggle(q: Predicate): Promise<void> {
+        return (await this.getInput(q)).click();
     }
 
-    async checkAsync(q: Predicate): Promise<void> {
-        return (await this.getInputAsync(q)).check();
+    async check(q: Predicate): Promise<void> {
+        return (await this.getInput(q)).check();
     }
 
-    async uncheckAsync(q: Predicate): Promise<void> {
-        return (await this.getInputAsync(q)).uncheck();
+    async uncheck(q: Predicate): Promise<void> {
+        return (await this.getInput(q)).uncheck();
     }
 
-    async toggleThemeAsync(): Promise<void> {
+    async toggleTheme(): Promise<void> {
         return this.page.evaluate(() => {
             window.XH.toggleTheme();
         });
@@ -137,11 +137,11 @@ export class HoistPage {
     // Assertions
     // -------------------------------
 
-    async expectTextAsync(q: Predicate, text: string): Promise<void> {
+    async expectText(q: Predicate, text: string): Promise<void> {
         await expect(this.get(q)).toHaveText(text);
     }
 
-    async expectVisibleAsync(q: Predicate): Promise<void> {
+    async expectVisible(q: Predicate): Promise<void> {
         await expect(this.get(q)).toBeVisible({timeout: 10000});
     }
 

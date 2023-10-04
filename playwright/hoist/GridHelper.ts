@@ -13,7 +13,10 @@ export class GridHelper {
     }
 
     async getRecordCount() {
-        return this.page.evaluate(testId =>  window.XH.getActiveModelByTestId(testId).store.count, this.testId);
+        return this.page.evaluate(
+            testId => window.XH.getActiveModelByTestId(testId).store.count,
+            this.testId
+        );
     }
 
     async ensureCount(count: number) {
@@ -22,7 +25,7 @@ export class GridHelper {
             throw new Error(`Found ${gridCount} records when ${count} is expected`);
     }
 
-    async getRowData(recordIdQuery: RecordIdQuery): Promise<PlainObject> {
+    async getRecordData(recordIdQuery: RecordIdQuery): Promise<PlainObject> {
         if ('id' in recordIdQuery) {
             return this.page.evaluate(
                 ([testId, id]) => window.XH.getActiveModelByTestId(testId).store.getById(id).data,
@@ -39,7 +42,7 @@ export class GridHelper {
         }
     }
 
-    async getRowAgId(query: RecordQuery): Promise<string> {
+    async getAgId(query: RecordQuery): Promise<string> {
         if ('agId' in query) return query.agId;
         return 'id' in query
             ? this.page.evaluate(
@@ -55,7 +58,7 @@ export class GridHelper {
               );
     }
 
-    async getRowId(query: RecordQuery): Promise<number|string> {
+    async getRecordId(query: RecordQuery): Promise<number | string> {
         if ('id' in query) return query.id;
         return 'agId' in query
             ? this.page.evaluate(
@@ -74,9 +77,9 @@ export class GridHelper {
               );
     }
 
-    // select row with GridModel
+    // select Record with GridModel
     async selectRow(query: RecordQuery) {
-        const id = await this.getRowId(query);
+        const id = await this.getRecordId(query);
         this.page.evaluate(
             ([testId, id]) => {
                 const gridModel = window.XH.getActiveModelByTestId(testId),
@@ -87,14 +90,14 @@ export class GridHelper {
         );
     }
 
-    // Functions to click / double click on grid row
+    // Functions to click / double-click on grid row
     async clickRow(query: RecordQuery) {
-        const agId = await this.getRowAgId(query);
+        const agId = await this.getAgId(query);
         await this.page.getByTestId(this.testId).locator(`div[row-id="${agId}"]`).click();
     }
 
     async dblClickRow(query: RecordQuery) {
-        const agId = await this.getRowAgId(query);
+        const agId = await this.getAgId(query);
         await this.page.getByTestId(this.testId).locator(`div[row-id="${agId}"]`).dblclick();
     }
 }

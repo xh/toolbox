@@ -28,7 +28,7 @@ export class TBoxPage extends HoistPage {
     }
 
     async getTabHierarchy(): Promise<PlainObject[]> {
-        const routes = await this.getRoutesAsync();
+        const routes = await this.getRoutes();
         return routes[0].children.map(route => {
             return {
                 id: route.name,
