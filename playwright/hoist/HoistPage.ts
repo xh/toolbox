@@ -6,7 +6,7 @@ import {isString} from 'lodash';
 import {Route} from 'router5';
 
 interface HoistPageCfg {
-    baseUrl: string;
+    baseURL: string;
     page: Page;
 }
 type Predicate = TestId | {text: string};
@@ -18,24 +18,22 @@ type TestId = string;
 
 export class HoistPage {
     readonly page: Page;
-    private readonly baseUrl: string;
+    private readonly baseURL: string;
 
-    constructor({baseUrl, page}: HoistPageCfg) {
-        this.baseUrl = baseUrl;
+    constructor({baseURL, page}: HoistPageCfg) {
+        this.baseURL = baseURL;
         this.page = page;
     }
 
     // -------------------------------
     // Lifecycle
     // -------------------------------
-
     async initAsync(): Promise<void> {
-        await this.authAsync();
-
         this.page.on('console', msg => {
             if (msg.type() === 'error') this.onConsoleError(msg);
         });
 
+        await this.page.goto(this.baseURL);
         await this.waitForAppToBeRunning();
     }
 
@@ -44,7 +42,7 @@ export class HoistPage {
     }
 
     // -------------------------------
-    // Lookups
+    // Locators
     // -------------------------------
 
     get(q: Predicate): Locator {
@@ -68,10 +66,6 @@ export class HoistPage {
 
     getMask(): Locator {
         return this.page.locator('.xh-mask');
-    }
-
-    async getRoutes(): Promise<Route[]> {
-        return this.page.evaluate(() => window.XH.appModel.getRoutes());
     }
 
     // -------------------------------
@@ -127,12 +121,6 @@ export class HoistPage {
         return (await this.getInput(q)).uncheck();
     }
 
-    async toggleTheme(): Promise<void> {
-        return this.page.evaluate(() => {
-            window.XH.toggleTheme();
-        });
-    }
-
     // -------------------------------
     // Assertions
     // -------------------------------
@@ -149,28 +137,19 @@ export class HoistPage {
     // Utils
     // -------------------------------
 
-    async waitForAppToBeRunning(): Promise<void> {
-        const runHandle = async () => {
-            return this.page.evaluate(() => {
-                return window.XH.appIsRunning;
-            });
-        };
-
-        await expect.poll(runHandle).toBeTruthy();
-    }
-
     async waitForMaskToClear(): Promise<void> {
         await expect(this.getMask()).toHaveCount(0, {timeout: 10000});
     }
 
-    // -------------------------------
-    // Helper Factories
-    // -------------------------------
+    async toggleTheme(): Promise<void> {
+        return this.page.evaluate(() => {
+            window.XH.toggleTheme();
+        });
+    }
 
-    // todo
-    // createFormHelper(testId: string): FormHelper {
-    //     return new FormHelper(this, testId);
-    // }
+    async getRoutes(): Promise<Route[]> {
+        return this.page.evaluate(() => window.XH.appModel.getRoutes());
+    }
 
     createGridHelper(testId: string): GridHelper {
         return new GridHelper(this, testId);
@@ -180,7 +159,15 @@ export class HoistPage {
     // Implementation
     // -------------------------------
 
-    protected async authAsync() {}
+    private async waitForAppToBeRunning(): Promise<void> {
+        const runHandle = async () => {
+            return this.page.evaluate(() => {
+                return window.XH.appIsRunning;
+            });
+        };
+
+        await expect.poll(runHandle).toBeTruthy();
+    }
 }
 
 declare global {

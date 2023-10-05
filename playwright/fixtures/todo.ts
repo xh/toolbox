@@ -1,16 +1,11 @@
 import {HoistPage} from '../hoist/HoistPage';
 import {GridHelper} from '../hoist/GridHelper';
 import {test as baseTest} from '@playwright/test';
-import {doAuthZeroLogin} from './utils';
 
 export class TodoPage extends HoistPage {
-    override async authAsync() {
-        await doAuthZeroLogin(this.page, 'todo');
-    }
-
     override async initAsync() {
         await super.initAsync();
-        await this.clickAsync('reset-button');
+        await this.click('reset-button');
     }
 
     get grid(): GridHelper {
@@ -19,9 +14,11 @@ export class TodoPage extends HoistPage {
 }
 
 export const test = baseTest.extend<{todo: TodoPage}>({
-    todo: async ({page, baseURL}, use) => {
-        const todoPage = new TodoPage({page, baseURL});
+    todo: async ({ baseURL, browser}, use) => {
+        const context = await browser.newContext({storageState: './.auth/user.json'})
+        const todoPage = new TodoPage({page: await context.newPage(), baseURL: `${baseURL}/todo`});
         await todoPage.initAsync();
         await use(todoPage);
+        await context.close();
     }
 });

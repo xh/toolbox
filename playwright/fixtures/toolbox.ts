@@ -2,12 +2,8 @@ import {HoistPage} from '../hoist/HoistPage';
 import {ConsoleMessage, test as baseTest} from '@playwright/test';
 import {AppModel} from '../../client-app/src/desktop/AppModel';
 import {PlainObject} from '@xh/hoist/core';
-import {doAuthZeroLogin} from './utils';
 
 export class TBoxPage extends HoistPage {
-    override async authAsync() {
-        await doAuthZeroLogin(this.page, 'app');
-    }
 
     override onConsoleError(msg: ConsoleMessage): void {
         if (
@@ -50,9 +46,11 @@ export class TBoxPage extends HoistPage {
 }
 
 export const test = baseTest.extend<{tb: TBoxPage}>({
-    tb: async ({page, baseURL}, use) => {
-        const tbPage = new TBoxPage({page, baseURL});
+    tb: async ({ baseURL, browser}, use) => {
+        const context = await browser.newContext({storageState: './.auth/user.json'})
+        const tbPage = new TBoxPage({page: await context.newPage(), baseURL: `${baseURL}/app`});
         await tbPage.initAsync();
         await use(tbPage);
+        await context.close();
     }
 });

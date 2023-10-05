@@ -1,4 +1,5 @@
 import {test} from '../fixtures/toolbox';
+import * as moment from 'moment';
 
 test('Hoist Inputs Test', async ({page, tb}) => {
     // Navigate to page we are testing.
@@ -38,9 +39,10 @@ test('Hoist Inputs Test', async ({page, tb}) => {
     await tb.expectText('inputs-panel-numberInput2', '4000');
     await tb.expectText('inputs-panel-numberInput3', '0.04');
 
+    const today = moment().format('YYYY-MM-DD');
     // Type date into date input and check
-    await tb.fill('hoist-inputs-dateInput1-input', '2023-08-30');
-    await tb.expectText('inputs-panel-dateInput1', '2023-08-30 12:00am');
+    await tb.fill('hoist-inputs-dateInput1-input', today);
+    await tb.expectText('inputs-panel-dateInput1', `${today} 12:00am`);
 
     //open select and click on option then check option is applied
     await tb.select('hoist-inputs-select2-input', 'Alabama');
