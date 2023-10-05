@@ -19,5 +19,5 @@
       "es2022"
     ]
   },
-  "include": ["src"]
+  "include": ["fixtures", "hoist", "tests"]
 }

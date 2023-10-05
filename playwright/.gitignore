@@ -1,3 +1,4 @@
+/.auth
 /.env
 node_modules/
 /test-results/

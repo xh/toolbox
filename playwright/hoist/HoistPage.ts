@@ -49,6 +49,10 @@ export class HoistPage {
         return isString(q) ? this.page.getByTestId(q) : this.page.getByText(q.text);
     }
 
+    getMask(): Locator {
+        return this.page.locator('.xh-mask');
+    }
+
     async getInput(q: Predicate): Promise<Locator> {
         const elem = this.get(q),
             possibleInputs = [
@@ -62,10 +66,6 @@ export class HoistPage {
             if (await input.isVisible()) return input;
         }
         return elem;
-    }
-
-    getMask(): Locator {
-        return this.page.locator('.xh-mask');
     }
 
     // -------------------------------
@@ -129,8 +129,8 @@ export class HoistPage {
         await expect(this.get(q)).toHaveText(text);
     }
 
-    async expectVisible(q: Predicate): Promise<void> {
-        await expect(this.get(q)).toBeVisible({timeout: 10000});
+    async expectVisible(q: Predicate, {timeout = 1000, visible = true} = {}): Promise<void> {
+        await expect(this.get(q)).toBeVisible({timeout, visible});
     }
 
     // -------------------------------
