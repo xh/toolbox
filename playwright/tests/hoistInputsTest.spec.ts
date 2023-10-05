@@ -1,5 +1,5 @@
 import {test} from '../fixtures/toolbox';
-import * as moment from 'moment';
+import moment from 'moment';
 
 test('Hoist Inputs Test', async ({page, tb}) => {
     // Navigate to page we are testing.
