@@ -4,6 +4,7 @@ import {GridHelper} from './GridHelper';
 import {FilterSelectQuery} from './Types';
 import {isString} from 'lodash';
 import {Route} from 'router5';
+import {FormHelper} from './Formhelper';
 
 interface HoistPageCfg {
     baseURL: string;
@@ -153,6 +154,10 @@ export class HoistPage {
 
     createGridHelper(testId: string): GridHelper {
         return new GridHelper(this, testId);
+    }
+
+    createFormHelper(testId: string): FormHelper {
+        return new FormHelper(this, testId);
     }
 
     // -------------------------------
