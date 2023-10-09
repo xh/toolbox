@@ -2,9 +2,9 @@ import {HoistPage} from '../hoist/HoistPage';
 import {ConsoleMessage, test as baseTest} from '@playwright/test';
 import {AppModel} from '../../client-app/src/desktop/AppModel';
 import {PlainObject} from '@xh/hoist/core';
+import { GridHelper } from '../hoist/GridHelper';
 
 export class TBoxPage extends HoistPage {
-
     override onConsoleError(msg: ConsoleMessage): void {
         if (
             msg.location().url?.endsWith('xh/getTimeZoneOffset') ||
@@ -13,6 +13,10 @@ export class TBoxPage extends HoistPage {
             return;
 
         super.onConsoleError(msg);
+    }
+
+    get configGrid(): GridHelper {
+        return this.createGridHelper('config-grid');
     }
 
     async getActiveTopLevelTabId() {
@@ -45,9 +49,9 @@ export class TBoxPage extends HoistPage {
     }
 }
 
-export const test = baseTest.extend<{tb: TBoxPage}>({
-    tb: async ({ baseURL, browser}, use) => {
-        const context = await browser.newContext({storageState: './.auth/user.json'})
+export const test = baseTest.extend<{tb: TBoxPage; roAdmin: TBoxPage; standardUser: TBoxPage}>({
+    tb: async ({baseURL, browser}, use) => {
+        const context = await browser.newContext({storageState: './.auth/admin.json'});
         const tbPage = new TBoxPage({page: await context.newPage(), baseURL: `${baseURL}/app`});
         await tbPage.initAsync();
         await use(tbPage);

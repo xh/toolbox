@@ -1,6 +1,7 @@
 import {HoistPage} from '../hoist/HoistPage';
 import {GridHelper} from '../hoist/GridHelper';
 import {test as baseTest} from '@playwright/test';
+import {TBoxPage} from "./toolbox";
 
 export class TodoPage extends HoistPage {
     override async initAsync() {
@@ -13,9 +14,9 @@ export class TodoPage extends HoistPage {
     }
 }
 
-export const test = baseTest.extend<{todo: TodoPage}>({
+export const test = baseTest.extend<{todo: TodoPage,roAdmin: TodoPage,standardUser: TodoPage,}>({
     todo: async ({ baseURL, browser}, use) => {
-        const context = await browser.newContext({storageState: './.auth/user.json'})
+        const context = await browser.newContext({storageState: './.auth/admin.json'})
         const todoPage = new TodoPage({page: await context.newPage(), baseURL: `${baseURL}/todo`});
         await todoPage.initAsync();
         await use(todoPage);

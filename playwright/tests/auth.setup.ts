@@ -1,13 +1,19 @@
-import {test, expect } from '@playwright/test';
+import {Page, expect, test} from '@playwright/test';
 
-const authFile = './.auth/user.json';
-test('authenticate', async ({page}) => {
-    const {USERNAME, PASSWORD} = process.env;
-    if (!USERNAME || !PASSWORD) throw new Error('USERNAME or PASSWORD missing from .env.');
+const authFile = './.auth/admin.json';
+test('authenticate admin', async ({page}) => {
+    const {ADMINUSERNAME, ADMINPASSWORD} = process.env;
+    if (!ADMINUSERNAME || !ADMINPASSWORD)
+        throw new Error('ADMINUSERNAME or ADMINPASSWORD missing from .env.');
 
+    await logIn(ADMINUSERNAME, ADMINPASSWORD, authFile, page)
+
+});
+
+async function logIn(user: string, password: string, path: string, page: Page) {
     await page.goto('app');
-    await page.getByLabel('Email address').fill(USERNAME);
-    await page.getByLabel('Password').fill(PASSWORD);
+    await page.getByLabel('Email address').fill(user);
+    await page.getByLabel('Password').fill(password);
     await page.getByRole('button', {name: 'Continue', exact: true}).click();
 
     await page.waitForURL(`app/*`);
@@ -18,5 +24,6 @@ test('authenticate', async ({page}) => {
     };
 
     await expect.poll(runHandle).toBeTruthy();
-    await page.context().storageState({path: authFile});
-});
+    await page.context().storageState({path});
+
+}

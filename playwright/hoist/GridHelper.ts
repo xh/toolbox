@@ -38,7 +38,8 @@ export class GridHelper {
     }
 
     async getRecordId(data: PlainObject): Promise<StoreRecordId> {
-        return this.page.evaluate<StoreRecordId, [string, PlainObject]>(
+        return this.page.
+        evaluate<StoreRecordId, [string, PlainObject]>(
             ([testId, data]) => {
                 const rec = window.XH.getModelByTestId<GridModel>(testId).store.allRecords.find(
                     rec => rec.matchesData(data)

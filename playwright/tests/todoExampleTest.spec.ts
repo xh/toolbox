@@ -1,16 +1,16 @@
 import {test} from '../fixtures/todo';
 
-test('Test app load & grid reset', async ({page, todo}) => {
+test('Test app load & grid reset', async ({todo}) => {
     await todo.grid.ensureRecordCount(2);
 });
 
-test('Test show completed', async ({page, todo}) => {
+test('Test show completed', async ({todo}) => {
     await todo.grid.ensureRecordCount(2);
     await todo.check('show-completed-switch');
     await todo.grid.ensureRecordCount(3);
 });
 
-test('Test mark task complete', async ({page, todo}) => {
+test('Test mark task complete', async ({todo}) => {
     await todo.grid.ensureRecordCount(2);
     await todo.click('toggle-complete-action-1'); // Mark task with record id of 1 as completed
     await todo.grid.ensureRecordCount(1);
@@ -18,7 +18,7 @@ test('Test mark task complete', async ({page, todo}) => {
     await todo.grid.ensureRecordCount(3);
 });
 
-test('Test task add/edit/update/delete', async ({page, todo}) => {
+test('Test task add/edit/update/delete', async ({todo}) => {
     // add new task
     await todo.click('add-button');
     await todo.fill('task-dialog-description', 'This is a new task');
@@ -58,7 +58,7 @@ test('Test task add/edit/update/delete', async ({page, todo}) => {
     await todo.grid.ensureRecordCount(3);
 });
 
-test('Test all task can be completed and placeholder message', async ({page, todo}) => {
+test('Test all task can be completed and placeholder message', async ({todo}) => {
     await todo.click('toggle-complete-action-1'); // Mark task with record id of 1 as completed
 
     const signUpRecordId = await todo.grid.getRecordId({

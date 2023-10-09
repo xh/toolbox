@@ -130,6 +130,10 @@ export class HoistPage {
         await expect(this.get(q)).toHaveText(text);
     }
 
+    async expectValue(q: Predicate, value: string): Promise<void> {
+        await expect(this.get(q)).toHaveValue(value);
+    }
+
     async expectVisible(q: Predicate, {timeout = 1000, visible = true} = {}): Promise<void> {
         await expect(this.get(q)).toBeVisible({timeout, visible});
     }
@@ -150,6 +154,13 @@ export class HoistPage {
 
     async getRoutes(): Promise<Route[]> {
         return this.page.evaluate(() => window.XH.appModel.getRoutes());
+    }
+
+    async impersonate(user: string) {
+        this.page.evaluate<void, string>(async user => {
+            await window.XH.identityService.impersonateAsync(user);
+        }, user);
+        this.waitForAppToBeRunning()
     }
 
     createGridHelper(testId: string): GridHelper {
