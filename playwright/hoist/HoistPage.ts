@@ -4,8 +4,9 @@ import {GridHelper} from './GridHelper';
 import {FilterSelectQuery} from './Types';
 import {isString} from 'lodash';
 import {Route} from 'router5';
-import {FormHelper} from './Formhelper';
-
+import { FormHelper } from './FormHelper';
+import { wait } from './Utils';
+import { AppState } from '@xh/hoist/core';
 interface HoistPageCfg {
     baseURL: string;
     page: Page;
@@ -156,11 +157,12 @@ export class HoistPage {
         return this.page.evaluate(() => window.XH.appModel.getRoutes());
     }
 
-    async impersonate(user: string) {
+    async impersonate(user: string, {waitForAppState = 'RUNNING'} : {waitForAppState?: AppState} = {}) {
         this.page.evaluate<void, string>(async user => {
-            await window.XH.identityService.impersonateAsync(user);
+            window.XH.identityService.impersonateAsync(user);
         }, user);
-        this.waitForAppToBeRunning()
+        await wait(1000)
+        await this.waitForAppState(waitForAppState)
     }
 
     createGridHelper(testId: string): GridHelper {
@@ -176,10 +178,14 @@ export class HoistPage {
     // -------------------------------
 
     private async waitForAppToBeRunning(): Promise<void> {
+        await this.waitForAppState('RUNNING')
+    }
+
+    private async waitForAppState(state: AppState): Promise<void> {
         const runHandle = async () => {
-            return this.page.evaluate(() => {
-                return window.XH.appIsRunning;
-            });
+            return this.page.evaluate((state) => {
+                return window.XH.appState === state;
+            }, state);
         };
 
         await expect.poll(runHandle).toBeTruthy();

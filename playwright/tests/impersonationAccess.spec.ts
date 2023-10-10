@@ -16,6 +16,6 @@ test('User Access Levels ', async ({tb}) => {
     await tb.expectText('config-form-name-readonly-display', 'auth0ClientId')
 
 
-    await tb.impersonate('user@xh.io')
-    await tb.expectVisible({text:'HOIST_ADMIN_READER'})
+    await tb.impersonate('user@xh.io', {waitForAppState: 'ACCESS_DENIED'})
+    await tb.expectVisible({text: `User needs the role "HOIST_ADMIN_READER" to access this application.`})
 });
