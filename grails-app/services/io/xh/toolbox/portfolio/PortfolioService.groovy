@@ -3,6 +3,7 @@ package io.xh.toolbox.portfolio
 import com.hazelcast.replicatedmap.ReplicatedMap
 import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
+import io.xh.hoist.cluster.SharedObject
 import io.xh.hoist.exception.DataNotAvailableException
 
 import java.time.*
@@ -13,7 +14,7 @@ import static io.xh.hoist.util.DateTimeUtils.SECONDS
 @Slf4j
 class PortfolioService extends BaseService {
 
-    private ReplicatedMap<String, Portfolio> _portfolios = null
+    private SharedObject<Portfolio> _portfolio = null
     private ReplicatedMap<String, MarketPrice> _currentPrices = null
 
     def configService,
@@ -22,7 +23,7 @@ class PortfolioService extends BaseService {
         instrumentGenerationService
 
     void init() {
-        _portfolios = clusterService.getReplicatedMap('portfolios')
+        _portfolio = clusterService.getSharedObject('portfolio')
         _currentPrices = clusterService.getReplicatedMap('currentPrices')
 
         createTimer(
@@ -35,7 +36,7 @@ class PortfolioService extends BaseService {
     }
 
     Portfolio getPortfolio() {
-        def data = _portfolios.get('current')
+        def data = _portfolio.get()
         if (!data) throw new DataNotAvailableException()
         return data
     }
@@ -59,12 +60,12 @@ class PortfolioService extends BaseService {
     //-----------------
     private void updateData(boolean force = false) {
         // 1) Populate/update main data, if needed, to initialize or roll day
-        def portfolio = _portfolios.get('current'),
+        def portfolio = _portfolio.get(),
             today = LocalDate.now()
         if (portfolio?.day != today || force) {
             def newData = generatePortfolio()
             def newPrices = newData.historicalPrices.collectEntries { symbol, prices -> [symbol, prices.last()]}
-            _portfolios.put('current', newData)
+            _portfolio.set(newData)
             _currentPrices.clear();
             _currentPrices.putAll(newPrices)
             return
