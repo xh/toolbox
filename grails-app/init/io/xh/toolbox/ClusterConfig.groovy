@@ -1,28 +1,32 @@
+package io.xh.toolbox
+
+import com.hazelcast.config.CacheSimpleConfig
 import com.hazelcast.config.Config
 import io.xh.hoist.util.Utils
 
 
-class ClusterConfig {
+class ClusterConfig extends io.xh.hoist.ClusterConfig {
 
-    /**
-     * Provide app specific configuration to your hazelcast cluster.
-     *
-     * Hoist uses simple Hazelcast's "multicast" cluster discovery by default.  While often
-     * appropriate for local development, this may not be appropriate for your production and
-     * can be replaced here.
-     *
-     * This method should also be used to specify custom configurations of distributed
-     * hazelcast objects, and caches, including hibernate 2nd-level caches.
-     */
-    static void configure(Config config) {
+    Config createConfig() {
+        def ret = super.createConfig()
         if (!Utils.isLocalDevelopment) {
-            def join = config.networkConfig.join,
-                interfaces = config.networkConfig.interfaces
+            def join = ret.networkConfig.join,
+                interfaces = ret.networkConfig.interfaces
 
             join.multicastConfig.enabled = false
             join.awsConfig.enabled = true
             interfaces.enabled = true
             interfaces.addInterface('172.30.*.*')
         }
+        return ret
+    }
+
+    List<CacheSimpleConfig> createCacheConfigs() {
+        super.createCacheConfigs() << [
+            hibernateCache('io.xh.toolbox.data.Company'),
+            hibernateCache('io.xh.toolbox.roadmap.Phase'),
+            hibernateCache('io.xh.toolbox.roadmap.Project'),
+            hibernateCache('io.xh.toolbox.user.User')
+        ]
     }
 }
