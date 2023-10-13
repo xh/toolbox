@@ -22,7 +22,7 @@ class ClusterConfig extends io.xh.hoist.ClusterConfig {
     }
 
     List<CacheSimpleConfig> createCacheConfigs() {
-        super.createCacheConfigs() << [
+        super.createCacheConfigs() + [
             hibernateCache('io.xh.toolbox.data.Company'),
             hibernateCache('io.xh.toolbox.roadmap.Phase'),
             hibernateCache('io.xh.toolbox.roadmap.Project'),
