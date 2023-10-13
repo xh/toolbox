@@ -8,6 +8,7 @@ export class TBoxPage extends HoistPage {
     override onConsoleError(msg: ConsoleMessage): void {
         if (
             msg.location().url?.endsWith('xh/getTimeZoneOffset') ||
+            msg.location().url?.endsWith('xh/track') ||
             msg.text() === 'Unknown timeZoneId Error: Unknown timeZoneId'
         )
             return;
@@ -49,12 +50,19 @@ export class TBoxPage extends HoistPage {
     }
 }
 
-export const test = baseTest.extend<{tb: TBoxPage; roAdmin: TBoxPage; standardUser: TBoxPage}>({
+export const test = baseTest.extend<{tb: TBoxPage; admin: TBoxPage;}>({
     tb: async ({baseURL, browser}, use) => {
+        const context = await browser.newContext({storageState: './.auth/roUser.json'});
+        const tbPage = new TBoxPage({page: await context.newPage(), baseURL: `${baseURL}/app`});
+        await tbPage.initAsync();
+        await use(tbPage);
+        await context.close();
+    },
+    admin: async ({baseURL, browser}, use) => {
         const context = await browser.newContext({storageState: './.auth/admin.json'});
         const tbPage = new TBoxPage({page: await context.newPage(), baseURL: `${baseURL}/app`});
         await tbPage.initAsync();
         await use(tbPage);
         await context.close();
-    }
+    },
 });

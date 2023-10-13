@@ -1,10 +1,10 @@
 import {ConsoleMessage, expect, Locator, Page} from '@playwright/test';
 import {XHApi} from '@xh/hoist/core/XH';
 import {GridHelper} from './GridHelper';
+import {FormHelper} from './FormHelper';
 import {FilterSelectQuery} from './Types';
 import {isString} from 'lodash';
 import {Route} from 'router5';
-import { FormHelper } from './FormHelper';
 import { wait } from './Utils';
 import { AppState } from '@xh/hoist/core';
 interface HoistPageCfg {
@@ -158,10 +158,10 @@ export class HoistPage {
     }
 
     async impersonate(user: string, {waitForAppState = 'RUNNING'} : {waitForAppState?: AppState} = {}) {
-        this.page.evaluate<void, string>(async user => {
-            window.XH.identityService.impersonateAsync(user);
+        await this.page.evaluate<void, string>(async user => {
+            return window.XH.identityService.impersonateAsync(user);
         }, user);
-        await wait(1000)
+        await wait(2000)
         await this.waitForAppState(waitForAppState)
     }
 

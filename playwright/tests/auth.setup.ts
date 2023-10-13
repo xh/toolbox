@@ -10,6 +10,16 @@ test('authenticate admin', async ({page}) => {
 
 });
 
+const authRoUserFile = './.auth/roUser.json';
+test('authenticate read only admin', async ({page}) => {
+    const {ROADMINUSERNAME, ROADMINPASSWORD} = process.env;
+    if (!ROADMINUSERNAME || !ROADMINPASSWORD)
+        throw new Error('ROADMINUSERNAME or ROADMINPASSWORD missing from .env.');
+
+    await logIn(ROADMINUSERNAME, ROADMINPASSWORD, authRoUserFile, page)
+
+});
+
 async function logIn(user: string, password: string, path: string, page: Page) {
     await page.goto('app');
     await page.getByLabel('Email address').fill(user);
