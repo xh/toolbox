@@ -2,6 +2,8 @@
 
 ## v4.0.0-SNAPSHOT - unreleased
 
+* Enhance Layout > DockContainer page to showcase new `DockViewModel.onClose` hook
+
 ## v3.3.0 - 2023-09-20
 
 ### Libraries
