@@ -3,11 +3,13 @@
 ## v4.0.0-SNAPSHOT - unreleased
 
 ### New Features
-* Multi-instance support for all examples.
+* Enhance Layout > DockContainer page to showcase new `DockViewModel.onClose` hook
+* Enhance Column Groups Grid example to showcase `ColumnGroup.showLeftRightBorders` functionality
 
 ### Libraries
 * @xh/hoist 60.0.0
 * hoist-core 18.0.0
+
 
 ## v3.3.0 - 2023-09-20
 
