@@ -2,7 +2,9 @@
 
 ## v4.0.0-SNAPSHOT - unreleased
 
+### New Features
 * Enhance Layout > DockContainer page to showcase new `DockViewModel.onClose` hook
+* Enhance Column Groups Grid example to showcase `ColumnGroup.showLeftRightBorders` functionality
 
 ## v3.3.0 - 2023-09-20
 
