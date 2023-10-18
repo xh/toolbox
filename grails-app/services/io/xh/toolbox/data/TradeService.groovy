@@ -31,7 +31,7 @@ class TradeService extends BaseService {
                 dateRange = 30
 
             trades.each {it ->
-                it.profit_loss = Math.round(it.profit_loss * Math.random())
+                it.profit_loss = Math.random() < 0.2 ? null : Math.round(it.profit_loss * Math.random())
                 it.trade_volume = it.trade_volume * 1000000
                 it.active = it.trade_volume.toBigInteger() % 6 == 0
                 it.trade_date = LocalDate.now().minusDays(Math.round(dateRange * Math.random()))
@@ -41,8 +41,8 @@ class TradeService extends BaseService {
                 trades: trades,
                 summary: [
                     id          : 'summary',
-                    profit_loss : trades.sum { it.profit_loss },
-                    trade_volume: trades.sum { it.trade_volume }
+                    profit_loss : trades.sum { it.profit_loss ?: 0 },
+                    trade_volume: trades.sum { it.trade_volume ?: 0 }
                 ]
             ]
         } catch (Exception e) {

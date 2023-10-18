@@ -11,6 +11,7 @@ export const profitLossCol: ColumnSpec = {
     width: 130,
     align: 'right',
     absSort: true,
+    bottomNullSort: true,
     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
     renderer: numberRenderer({
         precision: 0,
