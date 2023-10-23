@@ -1,6 +1,7 @@
 import {ExcelFormat, localDateCol} from '@xh/hoist/cmp/grid';
 import {dateRenderer, millionsRenderer, numberRenderer, fmtNumberTooltip} from '@xh/hoist/format';
 import {ColumnSpec} from '@xh/hoist/cmp/grid';
+import {isNil} from 'lodash';
 
 export const profitLossCol: ColumnSpec = {
     field: {
@@ -11,7 +12,7 @@ export const profitLossCol: ColumnSpec = {
     width: 130,
     align: 'right',
     absSort: true,
-    bottomNullSort: true,
+    sortToBottom: [v => isNil(v)],
     tooltip: val => fmtNumberTooltip(val, {ledger: true}),
     renderer: numberRenderer({
         precision: 0,
