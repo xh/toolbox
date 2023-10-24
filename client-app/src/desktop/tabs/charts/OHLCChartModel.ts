@@ -1,12 +1,12 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {bindable, observable, runInAction, makeObservable} from '@xh/hoist/mobx';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {isEmpty} from 'lodash';
 
 export class OHLCChartModel extends HoistModel {
-    @observable currentSymbol: string = '';
-    @observable.ref symbols: string[] = [];
+    @bindable currentSymbol: string = '';
+    @bindable.ref symbols: string[] = [];
     @bindable aspectRatio: number = null;
 
     @managed
@@ -25,11 +25,11 @@ export class OHLCChartModel extends HoistModel {
     override async doLoadAsync(loadSpec) {
         if (isEmpty(this.symbols)) {
             let symbols = await XH.portfolioService.getSymbolsAsync({loadSpec});
-            runInAction(() => (this.symbols = symbols.slice(0, 5)));
+            this.symbols = symbols.slice(0, 5);
         }
 
         if (!this.currentSymbol) {
-            runInAction(() => (this.currentSymbol = this.symbols[0]));
+            this.currentSymbol = this.symbols[0];
         }
 
         let series =
@@ -82,9 +82,9 @@ export class OHLCChartModel extends HoistModel {
                     return `
                         <div class="xh-chart-tooltip">
                         <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(
-                        this.x,
-                        opts
-                    )}</div>
+                            this.x,
+                            opts
+                        )}</div>
                         <table>
                             <tr><th>Open:</th><td>${fmtPrice(p.open, opts)}</td></tr>
                             <tr><th>High:</th><td>${fmtPrice(p.high, opts)}</td></tr>

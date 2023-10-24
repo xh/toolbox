@@ -4,7 +4,7 @@ import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {restaurants} from '../../../core/data';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
-import {box, div, fragment, hbox, label, p, vbox} from '@xh/hoist/cmp/layout';
+import {box, div, fragment, hbox, label, p} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon/Icon';
 
 import {usStates} from '../../../core/data';
@@ -17,101 +17,111 @@ export const SelectTestPanel = hoistCmp({
     render({model}) {
         return panel({
             title: 'Select tests',
-            className: 'select-test-panel xh-tiled-bg',
+            className: 'tb-select-test-panel xh-tiled-bg',
             item: hbox(
-                vbox(
-                    example({
-                        name: 'Select',
-                        bind: 'selectValue',
-                        selectProps: restaurantProps
-                    }),
-                    example({
-                        name: 'Select enableCreate',
-                        bind: 'creatableValue',
-                        selectProps: {...restaurantProps, enableCreate: true}
-                    }),
-                    example({
-                        name: 'Select queryFn & optionRenderer',
-                        bind: 'asyncValue',
-                        selectProps: customerProps
-                    }),
-                    example({
-                        name: 'Select queryFn & enableCreate & optionRenderer & enableTooltips',
-                        bind: 'asyncCreatableValue',
-                        selectProps: {...customerProps, enableCreate: true, enableTooltips: true}
-                    }),
-                    example({
-                        name: 'Select (with grouped options)',
-                        bind: 'groupedValue',
-                        selectProps: {
-                            options: desserts
-                        }
-                    }),
-                    example({
-                        name: 'Select (with Object options)',
-                        bind: 'objectValue',
-                        selectProps: {
-                            options: recipes
-                        }
-                    })
-                ),
-                vbox(
-                    example({
-                        name: 'Select (with many options) enableWindowed & leftIcon',
-                        bind: 'bigValue',
-                        selectProps: {
-                            leftIcon: Icon.search(),
-                            options: model.bigOptions,
-                            enableWindowed: true,
-                            placeholder: 'Select a number...'
-                        }
-                    }),
-                    hbox(label('number of options: '), numberInput({bind: 'numOptions'})),
-                    example({
-                        name: 'Select with leftIcon & object options & hideDropdownIndicator:true',
-                        bind: 'objectValue2',
-                        selectProps: {
-                            leftIcon: Icon.search(),
-                            hideDropdownIndicator: true,
-                            options: recipes
-                        }
-                    }),
-                    example({
-                        name: 'Select with leftIcon & queryFn & enableCreate & optionRenderer',
-                        bind: 'asyncCreatableValue2',
-                        selectProps: {
-                            ...customerProps,
-                            leftIcon: Icon.office(),
-                            enableCreate: true
-                        }
-                    }),
-                    example({
-                        name: 'Select with leftIcon & enableMulti',
-                        bind: 'enableMultiLeftIcon',
-                        selectProps: {
-                            width: 350,
-                            options: usStates,
-                            leftIcon: Icon.globe(),
-                            enableMulti: true,
-                            placeholder: 'Select state(s)...'
-                        }
-                    }),
-                    example({
-                        name: 'Select with leftIcon & enableMulti & enableTooltips & enableClear & rsOptions: {hideSelectedOptions: false, closeMenuOnSelect: false}',
-                        bind: 'enableMultiMenuOpen',
-                        selectProps: {
-                            width: 200,
-                            options: usStates,
-                            leftIcon: Icon.globe(),
-                            enableMulti: true,
-                            enableTooltips: true,
-                            placeholder: 'Select state(s)...',
-                            enableClear: true,
-                            hideSelectedOptions: false,
-                            closeMenuOnSelect: false
-                        }
-                    })
-                )
+                div({
+                    className: 'tb-select-test-panel__column',
+                    items: [
+                        example({
+                            name: 'Select',
+                            bind: 'selectValue',
+                            selectProps: restaurantProps
+                        }),
+                        example({
+                            name: 'Select enableCreate',
+                            bind: 'creatableValue',
+                            selectProps: {...restaurantProps, enableCreate: true}
+                        }),
+                        example({
+                            name: 'Select queryFn & optionRenderer',
+                            bind: 'asyncValue',
+                            selectProps: customerProps
+                        }),
+                        example({
+                            name: 'Select queryFn & enableCreate & optionRenderer & enableTooltips',
+                            bind: 'asyncCreatableValue',
+                            selectProps: {
+                                ...customerProps,
+                                enableCreate: true,
+                                enableTooltips: true
+                            }
+                        }),
+                        example({
+                            name: 'Select (with grouped options)',
+                            bind: 'groupedValue',
+                            selectProps: {
+                                options: desserts
+                            }
+                        }),
+                        example({
+                            name: 'Select (with Object options)',
+                            bind: 'objectValue',
+                            selectProps: {
+                                options: recipes
+                            }
+                        })
+                    ]
+                }),
+                div({
+                    className: 'tb-select-test-panel__column',
+                    items: [
+                        example({
+                            name: 'Select (with many options) enableWindowed & leftIcon',
+                            bind: 'bigValue',
+                            selectProps: {
+                                leftIcon: Icon.search(),
+                                options: model.bigOptions,
+                                enableWindowed: true,
+                                placeholder: 'Select a number...'
+                            }
+                        }),
+                        hbox(label('number of options: '), numberInput({bind: 'numOptions'})),
+                        example({
+                            name: 'Select with leftIcon & object options & hideDropdownIndicator:true',
+                            bind: 'objectValue2',
+                            selectProps: {
+                                leftIcon: Icon.search(),
+                                hideDropdownIndicator: true,
+                                options: recipes
+                            }
+                        }),
+                        example({
+                            name: 'Select with leftIcon & queryFn & enableCreate & optionRenderer',
+                            bind: 'asyncCreatableValue2',
+                            selectProps: {
+                                ...customerProps,
+                                leftIcon: Icon.office(),
+                                enableCreate: true
+                            }
+                        }),
+                        example({
+                            name: 'Select with leftIcon & enableMulti',
+                            bind: 'enableMultiLeftIcon',
+                            selectProps: {
+                                width: 350,
+                                options: usStates,
+                                leftIcon: Icon.globe(),
+                                enableMulti: true,
+                                placeholder: 'Select state(s)...'
+                            }
+                        }),
+                        example({
+                            name: 'Select with leftIcon & enableMulti & enableTooltips & enableClear & rsOptions: {hideSelectedOptions: false, closeMenuOnSelect: false}',
+                            bind: 'enableMultiMenuOpen',
+                            selectProps: {
+                                width: 200,
+                                options: usStates,
+                                leftIcon: Icon.globe(),
+                                enableMulti: true,
+                                enableTooltips: true,
+                                placeholder: 'Select state(s)...',
+                                enableClear: true,
+                                hideSelectedOptions: false,
+                                closeMenuOnSelect: false
+                            }
+                        })
+                    ]
+                })
             )
         });
     }

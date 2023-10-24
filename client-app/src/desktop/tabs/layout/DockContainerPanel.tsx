@@ -6,6 +6,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {DockContainerModel, dockContainer} from '@xh/hoist/desktop/cmp/dock';
 import {sampleGrid, wrapper} from '../../common';
+import {errorWidget} from './widgets';
 
 export const dockContainerPanel = hoistCmp.factory({
     model: creates(() => DockContainerPanelModel),
@@ -45,7 +46,7 @@ export const dockContainerPanel = hoistCmp.factory({
             ],
             items: [
                 hbox({
-                    width: 700,
+                    width: 800,
                     alignItems: 'center',
                     items: [
                         button({
@@ -62,9 +63,35 @@ export const dockContainerPanel = hoistCmp.factory({
                                     title: 'A complex docked component',
                                     icon: Icon.gridPanel(),
                                     content: () =>
-                                        sampleGrid({omitGridTools: true, width: 500, height: 400})
+                                        sampleGrid({omitGridTools: true, width: 500, height: 400}),
+                                    onClose: () =>
+                                        XH.toast({
+                                            message: 'Thanks for checking out the view!',
+                                            intent: 'success'
+                                        })
                                 });
                             }
+                        }),
+                        button({
+                            ...btnCfg,
+                            text: ' Error View',
+                            onClick: () =>
+                                model.addView({
+                                    id: 'errorView',
+                                    title: 'A problematic component',
+                                    icon: Icon.skull(),
+                                    content: () =>
+                                        errorWidget({
+                                            componentName: 'DockContainer',
+                                            width: 500,
+                                            height: 400
+                                        }),
+                                    onClose: () =>
+                                        XH.confirm({
+                                            message: 'Are you sure you want to close this view?',
+                                            title: 'Close view?'
+                                        })
+                                })
                         }),
                         button({
                             ...btnCfg,

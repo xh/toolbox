@@ -4,12 +4,13 @@ import {div, filler, p} from '@xh/hoist/cmp/layout';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {wrapper} from '../../common';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {usStates} from '../../../core/data';
 import {BasicPanelModel} from './BasicPanelModel';
+import {wait} from '@xh/hoist/promise';
 
 export const basicPanel = hoistCmp.factory({
     model: creates(BasicPanelModel),
@@ -20,8 +21,14 @@ export const basicPanel = hoistCmp.factory({
                 <p>
                     Panels are a core building block for layouts in Hoist. They support an optional
                     header bar with props to configure an icon, title and custom header items, props
-                    for top and bottom toolbars, and an optional model to manage their sizing. See
-                    the other tabs at left for additional features and conveniences, including
+                    for top and bottom toolbars, and an optional model to manage their sizing.
+                </p>,
+                <p>
+                    Panels also provide a convenient prop for establishing an ErrorBoundary around
+                    its contents, allowing the managed isolation of application content.
+                </p>,
+                <p>
+                    See the other tabs at left for additional features and conveniences, including
                     built-in integrations with other Hoist components such as masks.
                 </p>
             ],
@@ -41,6 +48,27 @@ export const basicPanel = hoistCmp.factory({
                 title: 'Panels › Intro',
                 height: 400,
                 width: 700,
+                compactHeader: model.compactHeader,
+                modelConfig: {
+                    errorBoundary: true,
+                    collapsible: false,
+                    resizable: false
+                },
+                headerItems: [
+                    switchInput({
+                        label: 'Compact Header',
+                        labelSide: 'left',
+                        bind: 'compactHeader'
+                    }),
+                    button({
+                        tooltip: 'Header Button',
+                        icon: Icon.gear(),
+                        onClick: () =>
+                            XH.toast({
+                                message: `You clicked a button within Panel.headerItems.`
+                            })
+                    })
+                ],
                 tbar: [
                     popover({
                         position: 'bottom-left',
@@ -56,11 +84,20 @@ export const basicPanel = hoistCmp.factory({
                         )
                     })
                 ],
-                item: div({
-                    className: 'toolbox-panel-text-reader',
-                    items: model.demoText.map(it => p(it))
-                }),
+                items: [
+                    div({
+                        className: 'toolbox-panel-text-reader',
+                        items: model.demoText.map(it => p(it))
+                    }),
+                    aComponentThatCanThrowInRender()
+                ],
                 bbar: [
+                    button({
+                        text: 'Simulate an Exception',
+                        icon: Icon.skull(),
+                        intent: 'danger',
+                        onClick: () => (model.triggerError = true)
+                    }),
                     filler(),
                     select({
                         bind: 'state',
@@ -78,5 +115,18 @@ export const basicPanel = hoistCmp.factory({
                 ]
             })
         });
+    }
+});
+
+// Demonstrates ErrorBoundary support built-in to Panel.
+const aComponentThatCanThrowInRender = hoistCmp.factory<BasicPanelModel>({
+    render({model}) {
+        if (model.triggerError) {
+            wait(0).then(() => (model.triggerError = false));
+            throw XH.exception(
+                'Whoops, I threw an error. Fortunately this Panel has its built-in ErrorBoundary enabled.'
+            );
+        }
+        return null;
     }
 });
