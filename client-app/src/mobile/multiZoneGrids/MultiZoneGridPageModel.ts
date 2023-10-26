@@ -1,6 +1,6 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {MultiZoneGridModel} from '@xh/hoist/cmp/multiZoneGrid';
 import {bindable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import {MultiZoneGridModel} from '@xh/hoist/mobile/cmp/multiZoneGrid';
 import {wait} from '@xh/hoist/promise';
 import {
     activeCol,
