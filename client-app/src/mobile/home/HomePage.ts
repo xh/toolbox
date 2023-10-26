@@ -25,6 +25,13 @@ export const homePage = hoistCmp.factory({
                     route: 'treegrids'
                 }),
                 summaryCard({
+                    title: 'MultiZone Grids',
+                    icon: Icon.gridLarge(),
+                    summary:
+                        'MultiZone Grids leverage an underlying Grid to render multi-line full-width rows.',
+                    route: 'multizone'
+                }),
+                summaryCard({
                     title: 'Dataview',
                     icon: Icon.addressCard(),
                     summary:
