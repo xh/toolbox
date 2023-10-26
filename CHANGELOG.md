@@ -3,7 +3,7 @@
 ## v4.0.0-SNAPSHOT - unreleased
 
 ### New Features
-* Automated testing via Playwright and built-in hoist support.
+* Automated testing via new built-in Hoist support and Playwright
 * Enhance Layout > DockContainer page to showcase new `DockViewModel.onClose` hook
 * Enhance Column Groups Grid example to showcase `ColumnGroup.showLeftRightBorders` functionality
 
