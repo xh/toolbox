@@ -143,9 +143,11 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                         textInput({
                                             bind: 'equalString'
                                         }),
-                                        label('Epsilon'),
+                                        label('Epsilon (in seconds)'),
                                         numberInput({
-                                            bind: 'epsilon'
+                                            bind: 'epsilon',
+                                            displayWithCommas: true,
+                                            min: 0
                                         }),
                                         label('Empty Result'),
                                         textInput({
