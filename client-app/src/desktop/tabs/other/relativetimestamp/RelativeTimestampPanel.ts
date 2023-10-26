@@ -53,7 +53,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                 item: vframe(
                                     box({
                                         style: {fontSize: '1.8em'},
-                                        margin: 10,
+                                        margin: '10 10 40 10',
                                         item: relativeTimestamp({
                                             ref: model.relativeTimestampRef,
                                             bind: 'timestamp',
@@ -61,21 +61,14 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                         })
                                     }),
                                     vbox({
-                                        margin: '10 10 40 10',
+                                        margin: '10 10 10 10',
                                         style: {opacity: 0.5},
                                         items: [
                                             label('Timestamp: '),
                                             new Date(model.timestamp).toString()
                                         ]
                                     }),
-                                    vbox({
-                                        margin: '10 10 40 10',
-                                        style: {opacity: 0.5},
-                                        items: [
-                                            label('Relative To: '),
-                                            new Date(model.resolvedRelativeTo).toString()
-                                        ]
-                                    })
+                                    relativeToBox()
                                 ),
                                 bbar: [
                                     filler(),
@@ -169,6 +162,16 @@ export const relativeTimestampPanel = hoistCmp.factory({
                     })
                 ]
             })
+        });
+    }
+});
+
+const relativeToBox = hoistCmp.factory<RelativeTimestampPanelModel>({
+    render({model}) {
+        return vbox({
+            margin: '10 10 40 10',
+            style: {opacity: 0.5},
+            items: [label('Relative To: '), new Date(model.resolvedRelativeTo).toString()]
         });
     }
 });
