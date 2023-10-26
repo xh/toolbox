@@ -1,4 +1,4 @@
-import {RelativeTimestampOptions} from '@xh/hoist/cmp/relativetimestamp';
+import {RelativeTimestampOptions, RelativeTimestampRef} from '@xh/hoist/cmp/relativetimestamp';
 import {HoistModel} from '@xh/hoist/core';
 import {action, bindable, makeObservable} from '@xh/hoist/mobx';
 import {createRef} from 'react';
@@ -22,10 +22,10 @@ export class RelativeTimestampPanelModel extends HoistModel {
 
     @bindable lastFocusedControl = 'setToNow';
 
-    relativeTimestampRef = createRef<HoistModel & {lastRun: Date}>();
+    relativeTimestampRef = createRef<RelativeTimestampRef>();
 
     get resolvedRelativeTo() {
-        return this.relativeTo ?? this.relativeTimestampRef.current?.lastRun;
+        return this.relativeTo ?? this.relativeTimestampRef.current?.model.lastRun;
     }
 
     get resolvedPrefix() {
