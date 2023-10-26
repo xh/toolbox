@@ -1,7 +1,6 @@
 import {HoistPage} from '../hoist/HoistPage';
 import {GridHelper} from '../hoist/GridHelper';
 import {test as baseTest} from '@playwright/test';
-import {TBoxPage} from "./toolbox";
 
 export class TodoPage extends HoistPage {
     override async initAsync() {
