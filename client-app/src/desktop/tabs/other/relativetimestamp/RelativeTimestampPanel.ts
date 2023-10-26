@@ -23,7 +23,8 @@ export const relativeTimestampPanel = hoistCmp.factory({
                 epsilon: model.epsilon,
                 emptyResult: model.emptyResult,
                 prefix: model.resolvedPrefix,
-                relativeTo: model.relativeTo
+                relativeTo: model.relativeTo,
+                localDateMode: model.localDateMode
             },
             it => isNil(it)
         );
@@ -124,6 +125,12 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                             labelSide: 'left',
                                             bind: 'short'
                                         }),
+                                        switchInput({
+                                            style: {marginBottom: 20},
+                                            label: 'Local Date Mode',
+                                            labelSide: 'left',
+                                            bind: 'localDateMode'
+                                        }),
                                         label('Future Suffix'),
                                         textInput({
                                             bind: 'futureSuffix'
@@ -151,7 +158,6 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                         label('Relative To'),
                                         dateInput({
                                             bind: 'relativeTo',
-                                            maxDate: new Date(),
                                             timePrecision: 'second',
                                             showActionsBar: true
                                         })

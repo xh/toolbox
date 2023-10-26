@@ -14,6 +14,7 @@ export class RelativeTimestampPanelModel extends HoistModel {
     @bindable emptyResult: RelativeTimestampOptions['emptyResult'] = '';
     @bindable prefix: RelativeTimestampOptions['prefix'] = '';
     @bindable relativeTo: RelativeTimestampOptions['relativeTo'];
+    @bindable localDateMode: RelativeTimestampOptions['localDateMode'];
 
     @bindable currentTimestamp: Date = new Date();
     @bindable pastTimestamp: Date;
