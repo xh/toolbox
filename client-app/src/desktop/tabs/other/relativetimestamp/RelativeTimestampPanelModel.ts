@@ -24,8 +24,8 @@ export class RelativeTimestampPanelModel extends HoistModel {
 
     relativeTimestampRef = createRef<RelativeTimestampRef>();
 
-    get resolvedRelativeTo() {
-        return this.relativeTo ?? this.relativeTimestampRef.current?.model.lastRun;
+    get resolvedRelativeTo(): Date | number {
+        return this.relativeTimestampRef.current?.model.relativeTo;
     }
 
     get resolvedPrefix() {
