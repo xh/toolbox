@@ -6,7 +6,6 @@ import {
     activeCol,
     cityCol,
     companyCol,
-    dayOfWeekCol,
     profitLossCol,
     tradeDateCol,
     tradeVolumeCol,
@@ -21,9 +20,19 @@ export class MultiZoneGridPageModel extends HoistModel {
     multiZoneGridModel: MultiZoneGridModel = new MultiZoneGridModel({
         persistWith: {localStorageKey: 'toolboxSampleGrid'},
         sortBy: ['profit_loss|desc|abs'],
+        multiZoneMapperModel: true,
         onRowClicked: ({data: record}) => {
             const {id} = record;
             XH.appendRoute('gridDetail', {id});
+        },
+        store: {
+            processRawData: r => {
+                const pnl = r.profit_loss;
+                return {
+                    winLose: pnl > 0 ? 'Winner' : pnl < 0 ? 'Loser' : 'Flat',
+                    ...r
+                };
+            }
         },
         columns: [
             companyCol,
@@ -31,7 +40,6 @@ export class MultiZoneGridPageModel extends HoistModel {
             cityCol,
             profitLossCol,
             {...tradeVolumeCol, headerName: 'Vol'},
-            dayOfWeekCol,
             tradeDateCol,
             activeCol
         ],
@@ -42,7 +50,7 @@ export class MultiZoneGridPageModel extends HoistModel {
             br: {field: 'trade_volume', showLabel: true}
         },
         limits: {
-            tl: {min: 1, max: 1},
+            tl: {min: 1, max: 1, only: ['company', 'city']},
             tr: {max: 1},
             bl: {max: 4},
             br: {max: 1}
