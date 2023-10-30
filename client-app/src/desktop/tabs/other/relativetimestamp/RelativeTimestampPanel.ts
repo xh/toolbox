@@ -5,7 +5,7 @@ import {button} from '@xh/hoist/desktop/cmp/button';
 import {switchInput, dateInput, numberInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {isNil, omitBy} from 'lodash';
+import {isNil, isString, omitBy} from 'lodash';
 import {wrapper} from '../../../common';
 import {RelativeTimestampPanelModel} from './RelativeTimestampPanelModel';
 
@@ -176,10 +176,14 @@ export const relativeTimestampPanel = hoistCmp.factory({
 
 const relativeToBox = hoistCmp.factory<RelativeTimestampPanelModel>({
     render({model}) {
+        const relTo = isString(model.resolvedRelativeTo)
+            ? model.resolvedRelativeTo
+            : new Date(model.resolvedRelativeTo).toString();
+
         return vbox({
             margin: '10 10 40 10',
             style: {opacity: 0.5},
-            items: [label('Relative To: '), new Date(model.resolvedRelativeTo).toString()]
+            items: [label('Relative To: '), relTo]
         });
     }
 });

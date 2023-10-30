@@ -1,7 +1,7 @@
-import {RelativeTimestampOptions, RelativeTimestampRef} from '@xh/hoist/cmp/relativetimestamp';
+import {RelativeTimestampOptions} from '@xh/hoist/cmp/relativetimestamp';
 import {HoistModel} from '@xh/hoist/core';
 import {action, bindable, makeObservable} from '@xh/hoist/mobx';
-import {createRef} from 'react';
+import {isString} from 'lodash';
 
 export class RelativeTimestampPanelModel extends HoistModel {
     // RelativeTimestampOptions
@@ -22,16 +22,15 @@ export class RelativeTimestampPanelModel extends HoistModel {
 
     @bindable lastFocusedControl = 'setToNow';
 
-    relativeTimestampRef = createRef<RelativeTimestampRef>();
-
-    get resolvedRelativeTo(): Date | number {
-        return this.relativeTimestampRef.current?.model.relativeTo;
+    get resolvedRelativeTo(): Date | number | string {
+        return this.relativeTo ?? 'Right now';
     }
 
     get resolvedPrefix() {
+        const isStr = isString(this.resolvedRelativeTo);
         return this.prefix
             ? this.prefix
-            : this.timestamp > this.resolvedRelativeTo
+            : !isStr && this.timestamp > this.resolvedRelativeTo
             ? 'Scheduled'
             : 'Refreshed';
     }
