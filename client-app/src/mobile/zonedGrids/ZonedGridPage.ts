@@ -1,21 +1,21 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {multiZoneGrid} from '@xh/hoist/mobile/cmp/multiZoneGrid';
+import {zonedGrid} from '@xh/hoist/mobile/cmp/zonedGrid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
-import {multiZoneMapperButton} from '@xh/hoist/mobile/cmp/button';
-import {MultiZoneGridPageModel} from './MultiZoneGridPageModel';
+import {zoneMapperButton} from '@xh/hoist/mobile/cmp/button';
+import {ZonedGridPageModel} from './ZonedGridPageModel';
 
-export const multiZoneGridPage = hoistCmp.factory({
-    model: creates(MultiZoneGridPageModel),
+export const zonedGridPage = hoistCmp.factory({
+    model: creates(ZonedGridPageModel),
     render({model}) {
-        const {multiZoneGridModel} = model,
-            {gridModel} = multiZoneGridModel;
+        const {zonedGridModel} = model,
+            {gridModel} = zonedGridModel;
 
         return panel({
-            title: 'MultiZone Grids',
+            title: 'Zoned Grid',
             icon: Icon.gridLarge(),
             mask: 'onLoad',
             headerItems: [
@@ -24,8 +24,8 @@ export const multiZoneGridPage = hoistCmp.factory({
                     options: {prefix: 'Loaded'}
                 })
             ],
-            item: multiZoneGrid(),
-            bbar: [storeFilterField({gridModel}), filler(), multiZoneMapperButton()]
+            item: zonedGrid(),
+            bbar: [storeFilterField({gridModel}), filler(), zoneMapperButton()]
         });
     }
 });

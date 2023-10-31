@@ -1,6 +1,6 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {bindable, makeObservable, runInAction} from '@xh/hoist/mobx';
-import {MultiZoneGridModel} from '@xh/hoist/mobile/cmp/multiZoneGrid';
+import {ZonedGridModel} from '@xh/hoist/mobile/cmp/zonedGrid';
 import {wait} from '@xh/hoist/promise';
 import {
     activeCol,
@@ -12,15 +12,15 @@ import {
     winLoseCol
 } from '../../core/columns';
 
-export class MultiZoneGridPageModel extends HoistModel {
+export class ZonedGridPageModel extends HoistModel {
     @bindable.ref
     dateLoaded: Date = null;
 
     @managed
-    multiZoneGridModel: MultiZoneGridModel = new MultiZoneGridModel({
-        persistWith: {localStorageKey: 'toolboxSampleMultiZoneGrid'},
+    zonedGridModel: ZonedGridModel = new ZonedGridModel({
+        persistWith: {localStorageKey: 'toolboxSampleZonedGrid'},
         sortBy: 'profit_loss|desc|abs',
-        multiZoneMapperModel: true,
+        zoneMapperModel: true,
         onRowClicked: ({data: record}) => {
             const {id} = record;
             XH.appendRoute('gridDetail', {id});
@@ -65,7 +65,7 @@ export class MultiZoneGridPageModel extends HoistModel {
     override async doLoadAsync() {
         await wait(500);
         const {trades} = await XH.fetchJson({url: 'trade'});
-        this.multiZoneGridModel.loadData(trades);
+        this.zonedGridModel.loadData(trades);
         runInAction(() => (this.dateLoaded = new Date()));
     }
 }
