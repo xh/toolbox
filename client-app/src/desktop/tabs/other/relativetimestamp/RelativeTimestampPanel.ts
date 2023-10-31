@@ -2,7 +2,7 @@ import {box, div, filler, hframe, label, vbox, vframe} from '@xh/hoist/cmp/layou
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {switchInput, dateInput, numberInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {switchInput, dateInput, numberInput, textInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {isNil, isString, omitBy} from 'lodash';
@@ -125,10 +125,9 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                             labelSide: 'left',
                                             bind: 'short'
                                         }),
-                                        switchInput({
-                                            style: {marginBottom: 20},
-                                            label: 'Local Date Mode',
-                                            labelSide: 'left',
+                                        label('Locale Date Mode'),
+                                        select({
+                                            options: ['limited', 'full', 'off'],
                                             bind: 'localDateMode'
                                         }),
                                         label('Future Suffix'),
