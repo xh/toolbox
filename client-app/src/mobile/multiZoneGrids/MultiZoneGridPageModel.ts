@@ -19,7 +19,7 @@ export class MultiZoneGridPageModel extends HoistModel {
     @managed
     multiZoneGridModel: MultiZoneGridModel = new MultiZoneGridModel({
         persistWith: {localStorageKey: 'toolboxSampleMultiZoneGrid'},
-        sortBy: ['profit_loss|desc|abs'],
+        sortBy: 'profit_loss|desc|abs',
         multiZoneMapperModel: true,
         onRowClicked: ({data: record}) => {
             const {id} = record;
