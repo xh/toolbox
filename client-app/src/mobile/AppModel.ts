@@ -22,7 +22,7 @@ import {popoverPage} from './popover/PopoverPage';
 import {popupsPage} from './popups/PopupsPage';
 import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
 import {treeGridPage} from './treegrids/TreeGridPage';
-import {zonedGridPage} from './zonedGrids/ZonedGridPage';
+import {zoneGridPage} from './zoneGrids/ZoneGridPage';
 
 export class AppModel extends HoistAppModel {
     static instance: AppModel;
@@ -36,7 +36,7 @@ export class AppModel extends HoistAppModel {
             {id: 'gridDetail', content: gridDetailPage},
             {id: 'treegrids', content: treeGridPage},
             {id: 'treeGridDetail', content: treeGridDetailPage},
-            {id: 'zonedGrid', content: zonedGridPage},
+            {id: 'zoneGrid', content: zoneGridPage},
             {id: 'dataview', content: dataViewPage},
             {id: 'form', content: formPage},
             {id: 'charts', content: chartPage},
@@ -77,8 +77,8 @@ export class AppModel extends HoistAppModel {
                         ]
                     },
                     {
-                        name: 'zonedGrid',
-                        path: '/zonedGrid',
+                        name: 'zoneGrid',
+                        path: '/zoneGrid',
                         children: [
                             {
                                 name: 'gridDetail',

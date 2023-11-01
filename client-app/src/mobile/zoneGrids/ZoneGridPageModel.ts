@@ -1,6 +1,6 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {bindable, makeObservable, runInAction} from '@xh/hoist/mobx';
-import {ZonedGridModel} from '@xh/hoist/cmp/zonedGrid';
+import {ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import {wait} from '@xh/hoist/promise';
 import {
     activeCol,
@@ -12,13 +12,13 @@ import {
     winLoseCol
 } from '../../core/columns';
 
-export class ZonedGridPageModel extends HoistModel {
+export class ZoneGridPageModel extends HoistModel {
     @bindable.ref
     dateLoaded: Date = null;
 
     @managed
-    zonedGridModel: ZonedGridModel = new ZonedGridModel({
-        persistWith: {localStorageKey: 'toolboxSampleZonedGrid'},
+    zoneGridModel: ZoneGridModel = new ZoneGridModel({
+        persistWith: {localStorageKey: 'toolboxSampleZoneGrid'},
         sortBy: 'profit_loss|desc|abs',
         zoneMapperModel: true,
         onRowClicked: ({data: record}) => {
@@ -65,7 +65,7 @@ export class ZonedGridPageModel extends HoistModel {
     override async doLoadAsync() {
         await wait(500);
         const {trades} = await XH.fetchJson({url: 'trade'});
-        this.zonedGridModel.loadData(trades);
+        this.zoneGridModel.loadData(trades);
         runInAction(() => (this.dateLoaded = new Date()));
     }
 }

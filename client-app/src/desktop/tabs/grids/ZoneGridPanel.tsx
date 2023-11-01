@@ -2,13 +2,13 @@ import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {action, makeObservable, observable} from '@xh/hoist/mobx';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {zonedGrid, ZonedGridModel} from '@xh/hoist/cmp/zonedGrid';
+import {zoneGrid, ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {zoneMapperButton} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 import React from 'react';
-import './ZonedGridPanel.scss';
+import './ZoneGridPanel.scss';
 import {wrapper} from '../../common';
 import {
     activeCol,
@@ -20,40 +20,40 @@ import {
     winLoseCol
 } from '../../../core/columns';
 
-export const zonedGridPanel = hoistCmp.factory({
-    model: creates(() => ZonedGridPanelModel),
+export const zoneGridPanel = hoistCmp.factory({
+    model: creates(() => ZoneGridPanelModel),
     render() {
         return wrapper({
-            className: 'tb-zoned-grid-wrapper',
+            className: 'tb-zone-grid-wrapper',
             description: [
                 <p>
-                    The ZonedGrid component leverages an underlying Grid / GridModel instance to
+                    The ZoneGrid component leverages an underlying Grid / GridModel instance to
                     display multi-line full-width rows with configurable fields.
                 </p>,
                 <p>Typically used to display dense information when horizontal space is limited.</p>
             ],
             links: [
                 {
-                    url: '$TB/client-app/src/desktop/tabs/grids/ZonedGridPanel.tsx',
+                    url: '$TB/client-app/src/desktop/tabs/grids/ZoneGridPanel.tsx',
                     notes: 'This example.'
                 },
-                {url: '$HR/cmp/zonedGrid/ZonedGrid.ts', notes: 'Hoist component.'},
+                {url: '$HR/cmp/zoneGrid/ZoneGrid.ts', notes: 'Hoist component.'},
                 {
-                    url: '$HR/cmp/zonedGrid/ZonedGridModel.ts',
-                    notes: 'Hoist model for configuring and interacting with Zoned Grids.'
+                    url: '$HR/cmp/zoneGrid/ZoneGridModel.ts',
+                    notes: 'Hoist model for configuring and interacting with Zone Grids.'
                 },
                 {
-                    url: '$HR/cmp/zonedGrid/impl/ZonedGridPersistenceModel.ts',
-                    notes: 'Hoist model for persisting Zoned Grid state.'
+                    url: '$HR/cmp/zoneGrid/impl/ZoneGridPersistenceModel.ts',
+                    notes: 'Hoist model for persisting Zone Grid state.'
                 }
             ],
             item: panel({
-                title: 'Grids › Zoned Grid',
+                title: 'Grids › Zone Grid',
                 icon: Icon.gridLarge(),
-                className: 'tb-zoned-grid-panel',
+                className: 'tb-zone-grid-panel',
                 width: 500,
                 height: 700,
-                item: zonedGrid(),
+                item: zoneGrid(),
                 tbar: [
                     span('Group by:'),
                     select({
@@ -76,12 +76,12 @@ export const zonedGridPanel = hoistCmp.factory({
     }
 });
 
-class ZonedGridPanelModel extends HoistModel {
+class ZoneGridPanelModel extends HoistModel {
     @observable
     groupBy: string = null;
 
     @managed
-    zonedGridModel: ZonedGridModel = new ZonedGridModel({
+    zoneGridModel: ZoneGridModel = new ZoneGridModel({
         sortBy: 'profit_loss|desc|abs',
         zoneMapperModel: true,
         store: {
@@ -133,8 +133,8 @@ class ZonedGridPanelModel extends HoistModel {
     override async doLoadAsync() {
         await wait(500);
         const {trades} = await XH.fetchJson({url: 'trade'});
-        this.zonedGridModel.loadData(trades);
-        await this.zonedGridModel.preSelectFirstAsync();
+        this.zoneGridModel.loadData(trades);
+        await this.zoneGridModel.preSelectFirstAsync();
     }
 
     @action
@@ -142,8 +142,8 @@ class ZonedGridPanelModel extends HoistModel {
         this.groupBy = groupBy;
 
         const groupByArr = groupBy ? groupBy.split(',') : [];
-        this.zonedGridModel.setGroupBy(groupByArr);
-        this.zonedGridModel.preSelectFirstAsync();
+        this.zoneGridModel.setGroupBy(groupByArr);
+        this.zoneGridModel.preSelectFirstAsync();
     }
 
     @action
