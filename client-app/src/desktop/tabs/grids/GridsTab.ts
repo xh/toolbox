@@ -9,6 +9,7 @@ import {treeGridWithCheckboxPanel} from './TreeGridWithCheckboxPanel';
 import {agGridView} from './AgGridView';
 import {inlineEditingPanel} from './InlineEditingPanel';
 import {columnFilteringPanel} from './ColumnFilteringPanel';
+import {zonedGridPanel} from './ZonedGridPanel';
 import './GridsTab.scss';
 
 export const gridsTab = hoistCmp.factory(() =>
@@ -20,6 +21,7 @@ export const gridsTab = hoistCmp.factory(() =>
                 {id: 'tree', content: treeGridPanel},
                 {id: 'columnFiltering', content: columnFilteringPanel},
                 {id: 'inlineEditing', content: inlineEditingPanel},
+                {id: 'zonedGrid', title: 'Zoned Grid', content: zonedGridPanel},
                 {id: 'dataview', title: 'DataView', content: dataViewPanel},
                 {
                     id: 'treeWithCheckBox',

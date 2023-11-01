@@ -1,6 +1,6 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {zonedGrid} from '@xh/hoist/mobile/cmp/zonedGrid';
+import {zonedGrid} from '@xh/hoist/cmp/zonedGrid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {Icon} from '@xh/hoist/icon';
 import {storeFilterField} from '@xh/hoist/cmp/store';
