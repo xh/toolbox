@@ -17,7 +17,6 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 @Slf4j
 class Auth0Service extends BaseService {
 
-
     static clearCachesConfigs = ['auth0Domain', 'auth0ClientId', 'auth0Jwks']
 
     ConfigService configService
@@ -97,6 +96,10 @@ class Auth0Service extends BaseService {
 
     void clearCaches() {
         _jkws = null
+        super.clearCaches()
     }
 
+    Map getAdminStats() {[
+        config: configService.getForAdminStats('auth0ClientId', 'auth0Domain', 'auth0Jwks')
+    ]}
 }

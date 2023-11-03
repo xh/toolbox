@@ -5,7 +5,7 @@ import io.xh.hoist.json.JSONFormatCached
 import java.time.LocalDate
 import static Utils.randDouble
 
-class MarketPrice extends JSONFormatCached {
+class MarketPrice extends JSONFormatCached implements Serializable {
     LocalDate day
     double high
     double low

@@ -13,7 +13,6 @@ class InstrumentGenerationService extends BaseService {
 
     def configService
 
-
     Map<String, Instrument> generateInstruments() {
         def instrumentCount = config.instrumentCount
         Map<String, Instrument> ret = new ConcurrentHashMap(instrumentCount)
@@ -43,4 +42,8 @@ class InstrumentGenerationService extends BaseService {
     private Map getConfig() {
         configService.getMap('portfolioConfigs')
     }
+
+    Map getAdminStats() {[
+        config: config
+    ]}
 }

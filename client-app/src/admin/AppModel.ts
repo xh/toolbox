@@ -5,12 +5,19 @@ import {PortfolioService} from '../core/svc/PortfolioService';
 import {roadmapTab} from './roadmap/RoadmapTab';
 import {testsTab} from './tests/TestsTab';
 import {wipTab} from './wip/WipTab';
+import {OauthService} from '../core/svc/OauthService';
 
 export class AppModel extends BaseAppModel {
     static override instance: AppModel;
 
     override async initAsync() {
         await XH.installServicesAsync(PortfolioService);
+    }
+
+    static override async preAuthAsync() {
+        if (XH.appSpec.isSSO) {
+            await XH.installServicesAsync(OauthService);
+        }
     }
 
     //------------------------

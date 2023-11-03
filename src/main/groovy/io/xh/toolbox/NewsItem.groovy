@@ -2,7 +2,7 @@ package io.xh.toolbox
 
 import io.xh.hoist.json.JSONFormatCached
 
-class NewsItem extends JSONFormatCached {
+class NewsItem extends JSONFormatCached implements Serializable {
 
     final String id
     final String source
