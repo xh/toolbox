@@ -1,13 +1,14 @@
-import {box, div, filler, hframe, label, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {box, div, filler, hframe, label, vbox, vframe, vspacer} from '@xh/hoist/cmp/layout';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {switchInput, dateInput, numberInput, textInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {isNil, isString, omitBy} from 'lodash';
+import {isNil, omitBy} from 'lodash';
 import {wrapper} from '../../../common';
 import {RelativeTimestampPanelModel} from './RelativeTimestampPanelModel';
+import {LocalDate} from '@xh/hoist/utils/datetime';
 
 export const relativeTimestampPanel = hoistCmp.factory({
     model: creates(() => RelativeTimestampPanelModel),
@@ -22,7 +23,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                 equalString: model.equalString,
                 epsilon: model.epsilon,
                 emptyResult: model.emptyResult,
-                prefix: model.resolvedPrefix,
+                prefix: model.prefix,
                 relativeTo: model.relativeTo,
                 localDateMode: model.localDateMode
             },
@@ -68,8 +69,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                             label('Timestamp: '),
                                             new Date(model.timestamp).toString()
                                         ]
-                                    }),
-                                    relativeToBox()
+                                    })
                                 ),
                                 bbar: [
                                     filler(),
@@ -95,7 +95,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                     dateInput({
                                         bind: 'futureTimestamp',
                                         placeholder: 'Set to future >',
-                                        minDate: new Date(),
+                                        minDate: LocalDate.today(),
                                         timePrecision: 'second',
                                         showActionsBar: true,
                                         onChange: () => {
@@ -125,11 +125,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                             labelSide: 'left',
                                             bind: 'short'
                                         }),
-                                        label('Locale Date Mode'),
-                                        select({
-                                            options: ['limited', 'full', 'off'],
-                                            bind: 'localDateMode'
-                                        }),
+                                        vspacer(5),
                                         label('Future Suffix'),
                                         textInput({
                                             bind: 'futureSuffix'
@@ -156,6 +152,17 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                         textInput({
                                             bind: 'prefix'
                                         }),
+                                        label('LocalDate Mode'),
+                                        select({
+                                            options: [
+                                                'always',
+                                                'useTimeForSameDay',
+                                                'useTimeFor24Hr'
+                                            ],
+                                            placeholder: '',
+                                            enableClear: true,
+                                            bind: 'localDateMode'
+                                        }),
                                         label('Relative To'),
                                         dateInput({
                                             bind: 'relativeTo',
@@ -169,20 +176,6 @@ export const relativeTimestampPanel = hoistCmp.factory({
                     })
                 ]
             })
-        });
-    }
-});
-
-const relativeToBox = hoistCmp.factory<RelativeTimestampPanelModel>({
-    render({model}) {
-        const relTo = isString(model.resolvedRelativeTo)
-            ? model.resolvedRelativeTo
-            : new Date(model.resolvedRelativeTo).toString();
-
-        return vbox({
-            margin: '10 10 40 10',
-            style: {opacity: 0.5},
-            items: [label('Relative To: '), relTo]
         });
     }
 });
