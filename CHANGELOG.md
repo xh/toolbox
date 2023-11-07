@@ -5,6 +5,7 @@
 ### New Features
 * Enhance Layout > DockContainer page to showcase new `DockViewModel.onClose` hook
 * Enhance Column Groups Grid example to showcase `ColumnGroup.showLeftRightBorders` functionality
+* Timestamp tab enhanced to expose all of RelativeTimestamp's options
 
 ## v3.3.0 - 2023-09-20
 
