@@ -14,6 +14,7 @@ import './GridsTab.scss';
 
 export const gridsTab = hoistCmp.factory(() =>
     tabContainer({
+        testId: 'grids-tab',
         modelConfig: {
             route: 'default.grids',
             tabs: [

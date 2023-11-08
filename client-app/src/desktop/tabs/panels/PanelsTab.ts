@@ -9,6 +9,7 @@ import './PanelsTab.scss';
 
 export const panelsTab = hoistCmp.factory(() =>
     tabContainer({
+        testId: 'panels-tab',
         modelConfig: {
             route: 'default.panels',
             switcher: {orientation: 'left'},

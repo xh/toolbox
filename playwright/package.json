@@ -1,0 +1,21 @@
+{
+  "name": "toolbox-tests",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "testWithUI": "playwright test --ui"
+  },
+  "dependencies": {
+    "@xh/hoist": "^60.0.0-SNAPSHOT",
+    "dotenv": "16.x",
+    "lodash": "4.x",
+    "moment": "2.x",
+    "prettier": "3.x"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.38.1",
+    "@types/lodash": "4.x",
+    "@types/node": "^20.8.2",
+    "typescript": "~5.1.6"
+  }
+}

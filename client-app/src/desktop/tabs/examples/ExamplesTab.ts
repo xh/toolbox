@@ -73,6 +73,7 @@ const appTile = hoistCmp.factory<ExamplesTabModel>(({app, model}) => {
         title: app.title,
         icon: app.icon,
         compactHeader: true,
+        testId: app.title,
         items: div({
             className: 'tb-examples__app-tile__contents',
             items: app.text

@@ -10,6 +10,7 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {ONE_SECOND} from '@xh/hoist/utils/datetime';
 import {wrapper} from '../../common';
 import './ClockPanel.scss';
+import {getTestId} from '@xh/hoist/utils/js';
 
 export const clockPanel = hoistCmp.factory({
     model: creates(() => ClockPanelModel),
@@ -87,7 +88,17 @@ const clockCard = hoistCmp.factory<ClockPanelModel>({
         const {format, prefix, suffix, updateInterval} = model;
         return vbox({
             ...rest,
-            items: [div(label), clock({timezone, format, prefix, suffix, updateInterval})]
+            items: [
+                div(label),
+                clock({
+                    timezone,
+                    format,
+                    prefix,
+                    suffix,
+                    updateInterval,
+                    testId: getTestId('clock', label)
+                })
+            ]
         });
     }
 });

@@ -20,6 +20,7 @@ import {relativeTimestampPanel} from './relativetimestamp/RelativeTimestampPanel
 
 export const otherTab = hoistCmp.factory(() =>
     tabContainer({
+        testId: 'other-tab',
         modelConfig: {
             route: 'default.other',
             switcher: {orientation: 'left'},

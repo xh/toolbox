@@ -1,6 +1,6 @@
 import React from 'react';
 import {form, FormModel} from '@xh/hoist/cmp/form';
-import {box, div, span, strong, filler, frame, hbox, hframe, vbox} from '@xh/hoist/cmp/layout';
+import {box, div, filler, frame, hbox, hframe, span, strong, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {formField} from '@xh/hoist/desktop/cmp/form';
@@ -28,6 +28,7 @@ import {wrapper} from '../../common';
 import './InputsPanel.scss';
 import {InputsPanelModel} from './InputsPanelModel';
 import {menu, menuItem, popover} from '@xh/hoist/kit/blueprint';
+import {TEST_ID} from '@xh/hoist/utils/js';
 
 export const inputsPanel = hoistCmp.factory({
     model: creates(InputsPanelModel),
@@ -71,6 +72,7 @@ export const inputsPanel = hoistCmp.factory({
 
 const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
     form({
+        testId: 'hoist-inputs',
         fieldDefaults: {
             commitOnChange: model.commitOnChange
         },
@@ -314,7 +316,7 @@ const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
 const row = hoistCmp.factory<FormModel>({
     model: uses(FormModel),
 
-    render({model, label, field, info, readonlyRenderer, fmtVal, layout = {}, children}) {
+    render({model, label, field, info, readonlyRenderer, fmtVal, layout = {}, testId, children}) {
         const fieldModel = model.fields[field];
 
         if (!layout.width) layout.flex = 1;
@@ -328,6 +330,7 @@ const row = hoistCmp.factory<FormModel>({
                     item: children,
                     label,
                     info,
+                    testId,
                     readonlyRenderer,
                     ...layout
                 })
@@ -382,6 +385,7 @@ const bbar = hoistCmp.factory<InputsPanelModel>(({model}) => {
         toolbarSep(),
         switchInput({
             model,
+            testId: 'inputs-panel-commit-radio',
             bind: 'commitOnChange',
             label: 'Commit on change'
         })
@@ -399,6 +403,7 @@ const fieldDisplay = hoistCmp.factory(({fieldModel, fmtVal}) => {
         }
     }
     return div({
+        [TEST_ID]: `inputs-panel-${fieldModel.name}`,
         className: 'inputs-panel-field-display',
         item: displayVal
     });

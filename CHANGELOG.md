@@ -3,9 +3,15 @@
 ## v4.0.0-SNAPSHOT - unreleased
 
 ### New Features
+* Automated testing via new built-in Hoist support and Playwright
 * Enhance Layout > DockContainer page to showcase new `DockViewModel.onClose` hook
 * Enhance Column Groups Grid example to showcase `ColumnGroup.showLeftRightBorders` functionality
 * Timestamp tab enhanced to expose all of RelativeTimestamp's options
+
+### Libraries
+* @xh/hoist 60.0.0
+* @playwright/test 1.38.1
+
 
 ## v3.3.0 - 2023-09-20
 
