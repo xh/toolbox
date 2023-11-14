@@ -149,6 +149,7 @@ export class AppModel extends HoistAppModel {
                             {name: 'rest', path: '/rest'},
                             {name: 'inlineEditing', path: '/inlineEditing'},
                             {name: 'columnFiltering', path: '/columnFiltering'},
+                            {name: 'zoneGrid', path: '/zoneGrid'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'agGrid', path: '/agGrid'}
                         ]

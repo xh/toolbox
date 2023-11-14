@@ -130,7 +130,6 @@ class SampleColumnGroupsGridModel extends HoistModel {
             columns: [
                 {
                     groupId: 'demographics',
-                    borders: true,
                     children: [
                         {
                             ...fullNameCol,
@@ -170,10 +169,10 @@ class SampleColumnGroupsGridModel extends HoistModel {
                     groupId: 'sales',
                     headerName: () => 'Sales' + (this.inMillions ? ' (in millions)' : ''),
                     headerAlign: 'center',
-                    borders: true,
                     children: [
                         {
                             groupId: 'projected',
+                            borders: false,
                             headerAlign: 'center',
                             headerClass: 'xh-blue',
                             children: [
@@ -183,6 +182,7 @@ class SampleColumnGroupsGridModel extends HoistModel {
                         },
                         {
                             groupId: 'actual',
+                            borders: false,
                             headerAlign: 'center',
                             headerClass: 'xh-red',
                             children: [
