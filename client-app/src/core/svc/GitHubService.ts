@@ -15,7 +15,7 @@ export class GitHubService extends HoistService {
     @computed
     get allCommits() {
         const ret = [];
-        forOwn(this.commitHistories, v => ret.push(...v.commits));
+        forOwn(this.commitHistories, ({commits}) => ret.push(...commits));
         return sortBy(ret, it => -it.committedDate);
     }
 

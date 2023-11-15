@@ -6,10 +6,11 @@ import {SECONDS} from '@xh/hoist/utils/datetime';
 import {Timer} from '@xh/hoist/utils/async';
 import {PctTotalAggregator} from './PctTotalAggregator';
 import {CubeTestModel} from './CubeTestModel';
+import {Order} from '../../../core/svc/PortfolioService';
 
 export class CubeModel extends HoistModel {
     @managed cube: Cube;
-    @managed orders: PlainObject[] = [];
+    @managed orders: Order[] = [];
     @managed timer: Timer;
 
     parent: CubeTestModel;
@@ -91,7 +92,7 @@ export class CubeModel extends HoistModel {
         });
 
         await LTM.withLoadTime(`Updated ${updateCount} orders in Cube`, async () => {
-            await this.cube.updateDataAsync(updates, {asOf: Date.now()});
+            await this.cube.updateDataAsync(updates as PlainObject[], {asOf: Date.now()});
         });
     }
 }

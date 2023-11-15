@@ -7,7 +7,7 @@ export class SimpleTreeMapModel extends HoistModel {
     store = new Store({
         processRawData: r => {
             return {
-                pnlMktVal: r.pnl / Math.abs(r.mktVal),
+                pnlMktVal: (r.pnl as number) / Math.abs(r.mktVal as number),
                 ...r
             };
         },

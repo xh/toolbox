@@ -3,6 +3,17 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
 
+
+export interface Order {
+    commission: number;
+    pctCommission: number;
+}
+
+export interface RawPosition {
+
+}
+
+
 export class PortfolioService extends HoistService {
     static instance: PortfolioService;
 
@@ -77,20 +88,20 @@ export class PortfolioService extends HoistService {
     /**
      * Return a list of flat position data.
      */
-    async getRawPositionsAsync({loadSpec}: any = {}): Promise<PlainObject[]> {
-        return XH.fetchJson({url: 'portfolio/rawPositions', loadSpec});
+    async getRawPositionsAsync({loadSpec}: any = {}): Promise<RawPosition[]> {
+        return XH.fetchJson({url: 'portfolio/rawPositions', loadSpec}) as Promise<RawPosition[]>;
     }
 
-    async getAllOrdersAsync({loadSpec}: any = {}): Promise<PlainObject[]> {
-        return XH.fetchJson({url: 'portfolio/orders', loadSpec});
+    async getAllOrdersAsync({loadSpec}: any = {}): Promise<Order[]>{
+        return XH.fetchJson({url: 'portfolio/orders', loadSpec}) as Promise<Order[]>;
     }
 
-    async getOrdersAsync({positionId, loadSpec}): Promise<PlainObject[]> {
+    async getOrdersAsync({positionId, loadSpec}):Promise<Order[]>  {
         return XH.fetchJson({
             url: 'portfolio/ordersForPosition',
             params: {positionId},
             loadSpec
-        });
+        }) as Promise<Order[]>;
     }
 
     async getLineChartSeriesAsync({symbol, dimension = 'volume', loadSpec}) {
