@@ -119,7 +119,7 @@ idea {
 //--------------------------------------------------
 // Extensions to build.info (Hoist-Core requirement)
 //--------------------------------------------------
-buildProperties.doLast {
+tasks.build.doLast {
     File grailsBuildInfoFile = it.outputs.files.files.find { it.name == 'grails.build.info' }
     if (!grailsBuildInfoFile) return
 
