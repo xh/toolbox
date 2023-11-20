@@ -2,6 +2,7 @@ package io.xh.toolbox.app
 
 import com.hazelcast.collection.ISet
 import io.xh.hoist.BaseService
+import io.xh.hoist.cluster.ReplicatedValue
 import io.xh.hoist.http.JSONClient
 import io.xh.toolbox.NewsItem
 import org.apache.hc.client5.http.classic.methods.HttpGet
@@ -12,28 +13,24 @@ import static io.xh.hoist.util.DateTimeUtils.getMINUTES
 
 class NewsService extends BaseService {
 
-    private ISet<NewsItem> _newsItems
+    private ReplicatedValue<List<NewsItem>> _newsItems = hzReplicatedValue('newsItems')
     private Timer newsTimer
     private JSONClient _jsonClient
 
     static clearCachesConfigs = ['newsSources', 'newsApiKey']
     def configService
 
-    void init() {
-        _newsItems = clusterService.getSet('newsItems')
-    }
-
-    Set<NewsItem> getNewsItems() {
+    List<NewsItem> getNewsItems() {
         // to avoid hitting the API too frequently, we only start our timer when the NewsService is actually used.
         newsTimer = newsTimer ?: createTimer(
+            masterOnly: true,
             runFn: this.&loadAllNews,
             interval: 'newsRefreshMins',
             intervalUnits: MINUTES,
-            runImmediatelyAndBlock: true,
-            masterOnly: true
+            runImmediatelyAndBlock: true
         )
 
-        return _newsItems
+        return _newsItems.get()
     }
 
 
@@ -67,8 +64,7 @@ class NewsService extends BaseService {
             try {
                 items = loadNewsForSources(sources)
             } finally {
-                _newsItems.clear()
-                _newsItems.addAll(items)
+                _newsItems.set(items)
             }
         }
     }
@@ -103,23 +99,19 @@ class NewsService extends BaseService {
     }
 
     private JSONClient getClient() {
-        if (!_jsonClient) {
-            _jsonClient = new JSONClient()
-        }
-        return _jsonClient
+        _jsonClient = _jsonClient ?: new JSONClient()
     }
 
     void clearCaches() {
         _jsonClient = null
         if (isMaster) {
-            _newsItems.clear()
+            _newsItems.set(null)
             loadAllNews()
         }
         super.clearCaches()
     }
 
     Map getAdminStats() {[
-        config:  configService.getForAdminStats('newsSources', 'newsApiKey'),
-        newsTimer: newsTimer?.adminStats
+        config:  configService.getForAdminStats('newsSources', 'newsApiKey')
     ]}
 }

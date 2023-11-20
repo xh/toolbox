@@ -1,6 +1,6 @@
 package io.xh.toolbox.app
 
-import groovy.util.logging.Slf4j
+import com.hazelcast.replicatedmap.ReplicatedMap
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
@@ -30,26 +30,24 @@ import static io.xh.hoist.util.DateTimeUtils.MINUTES
  * environments, where a developer might wish to enable this service to load *some* commits but
  * has no reason to load the entire history. (Set to a value of 1 to work in this mode.)
  */
-@Slf4j
 class GitHubService extends BaseService {
 
     static clearCachesConfigs = ['gitHubRepos', 'gitHubAccessToken', 'gitHubMaxPagesPerLoad']
 
     ConfigService configService
     WebSocketService webSocketService
-    Map<String, CommitHistory> commitsByRepo
+
+    private ReplicatedMap<String, CommitHistory> commitsByRepo = hzReplicatedMap('commitsByRepo')
 
     void init() {
-        commitsByRepo = clusterService.getReplicatedMap('tbCommitsByRepo')
-
         if (configService.getString('gitHubAccessToken', 'none') == 'none') {
             logWarn('Required "gitHubAccessToken" config not present or set to "none" - no commits will be loaded from GitHub.')
         } else {
             createTimer(
+                masterOnly: true,
                 runFn: this.&loadCommitsForAllRepos,
                 interval: 'gitHubCommitsRefreshMins',
-                intervalUnits: MINUTES,
-                masterOnly: true
+                intervalUnits: MINUTES
             )
         }
     }

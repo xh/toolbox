@@ -1,9 +1,8 @@
 package io.xh.toolbox.portfolio
 
 import com.hazelcast.replicatedmap.ReplicatedMap
-import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
-import io.xh.hoist.cluster.SharedObject
+import io.xh.hoist.cluster.ReplicatedValue
 import io.xh.hoist.exception.DataNotAvailableException
 
 import java.time.*
@@ -11,27 +10,22 @@ import java.time.*
 import static io.xh.toolbox.portfolio.Utils.*
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
 
-@Slf4j
 class PortfolioService extends BaseService {
-
-    private SharedObject<Portfolio> _portfolio = null
-    private ReplicatedMap<String, MarketPrice> _currentPrices = null
 
     def configService,
         orderGenerationService,
         historicalPriceGenerationService,
         instrumentGenerationService
 
-    void init() {
-        _portfolio = clusterService.getSharedObject('portfolio')
-        _currentPrices = clusterService.getReplicatedMap('currentPrices')
+    private ReplicatedValue<Portfolio> _portfolio = hzReplicatedValue('portfolio')
+    private ReplicatedMap<String, MarketPrice> _currentPrices = hzReplicatedMap('currentPrices')
 
+    void init() {
         createTimer(
+            masterOnly: true,
             runFn: this.&updateData,
-            interval: {config.updateIntervalSecs},
-            intervalUnits: SECONDS,
-            runImmediatelyAndBlock: true,
-            masterOnly: true
+            interval: {config.updateIntervalSecs * SECONDS},
+            runImmediatelyAndBlock: true
         )
     }
 
@@ -139,7 +133,6 @@ class PortfolioService extends BaseService {
     }
 
     Map getAdminStats() {[
-        config: config,
-        timer: timers[0]?.adminStats
+        config: config
     ]}
 }
