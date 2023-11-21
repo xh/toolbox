@@ -119,7 +119,7 @@ idea {
 //--------------------------------------------------
 // Extensions to build.info (Hoist-Core requirement)
 //--------------------------------------------------
-tasks.build.doLast {
+tasks.war.doLast {
        File grailsBuildInfoFile = layout.buildDirectory.file('resources/main/META-INF/grails.build.info').get().asFile
         if (!grailsBuildInfoFile) return
         Properties properties = new Properties()
