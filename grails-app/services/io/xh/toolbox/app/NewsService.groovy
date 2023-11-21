@@ -1,6 +1,6 @@
 package io.xh.toolbox.app
 
-import com.hazelcast.collection.ISet
+
 import io.xh.hoist.BaseService
 import io.xh.hoist.cluster.ReplicatedValue
 import io.xh.hoist.http.JSONClient
@@ -13,7 +13,7 @@ import static io.xh.hoist.util.DateTimeUtils.getMINUTES
 
 class NewsService extends BaseService {
 
-    private ReplicatedValue<List<NewsItem>> _newsItems = hzReplicatedValue('newsItems')
+    private ReplicatedValue<List<NewsItem>> _newsItems = getReplicatedValue('newsItems')
     private Timer newsTimer
     private JSONClient _jsonClient
 

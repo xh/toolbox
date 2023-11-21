@@ -17,8 +17,8 @@ class PortfolioService extends BaseService {
         historicalPriceGenerationService,
         instrumentGenerationService
 
-    private ReplicatedValue<Portfolio> _portfolio = hzReplicatedValue('portfolio')
-    private ReplicatedMap<String, MarketPrice> _currentPrices = hzReplicatedMap('currentPrices')
+    private ReplicatedValue<Portfolio> _portfolio = getReplicatedValue('portfolio')
+    private ReplicatedMap<String, MarketPrice> _currentPrices = getReplicatedMap('currentPrices')
 
     void init() {
         createTimer(
