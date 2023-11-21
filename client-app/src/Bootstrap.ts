@@ -89,11 +89,13 @@ import highchartsExporting from 'highcharts/modules/exporting';
 import highchartsHeatmap from 'highcharts/modules/heatmap';
 import highchartsOfflineExporting from 'highcharts/modules/offline-exporting';
 import highchartsTree from 'highcharts/modules/treemap';
+import highchartsTreeGraph from 'highcharts/modules/treegraph';
 
 highchartsExporting(Highcharts);
 highchartsOfflineExporting(Highcharts);
 highchartsExportData(Highcharts);
 highchartsTree(Highcharts);
+highchartsTreeGraph(Highcharts);
 highchartsHeatmap(Highcharts);
 
 installHighcharts(Highcharts);
