@@ -11,7 +11,13 @@ import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
 
 export class FileManagerModel extends HoistModel {
     @managed
-    chooserModel = new FileChooserModel();
+    chooserModel = new FileChooserModel({
+        accept: ['.pdf', '.doc', '.docx'],
+        maxSize: 10000000,
+        enableMulti: true,
+        enableAddMulti: true,
+        showFileGrid: true
+    });
 
     @managed
     gridModel = new GridModel({
