@@ -112,6 +112,6 @@ class NewsService extends BaseService {
     }
 
     Map getAdminStats() {[
-        config:  configService.getForAdminStats('newsSources', 'newsApiKey')
+        config: configForAdminStats('newsSources', 'newsApiKey')
     ]}
 }

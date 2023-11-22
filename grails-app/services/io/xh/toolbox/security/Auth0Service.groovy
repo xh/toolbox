@@ -98,6 +98,6 @@ class Auth0Service extends BaseService {
     }
 
     Map getAdminStats() {[
-        config: configService.getForAdminStats('auth0ClientId', 'auth0Domain', 'auth0Jwks')
+        config: configForAdminStats('auth0ClientId', 'auth0Domain', 'auth0Jwks')
     ]}
 }

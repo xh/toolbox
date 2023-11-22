@@ -245,7 +245,6 @@ query XHRepoCommits {
 
 
     Map getAdminStats() { [
-        config: configService.getForAdminStats('gitHubAccessToken', 'gitHubRepos', 'gitHubMaxPagesPerLoad'),
-        lastUpdateTime: commitsByRepo?.replicatedMapStats?.lastUpdateTime
+        config: configForAdminStats('gitHubAccessToken', 'gitHubRepos', 'gitHubMaxPagesPerLoad')
     ]}
 }

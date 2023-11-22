@@ -48,7 +48,7 @@ class RecallsService extends BaseService {
     }
 
     Map getAdminStats() {[
-        config:  configService.getForAdminStats('recallsHost'),
+        config: configForAdminStats('recallsHost'),
         lastResponseCode: lastResponseCode
     ]}
 }

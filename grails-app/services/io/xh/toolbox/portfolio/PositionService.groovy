@@ -264,6 +264,6 @@ class PositionService extends BaseService {
     }
 
     Map getAdminStats() {[
-        config: config
+        config: configForAdminStats('portfolioConfigs')
     ]}
 }
