@@ -108,7 +108,7 @@ class AsyncLoopPanelModel extends HoistModel {
     async runLoopAsync() {
         const {iterations, collection, loopType} = this;
 
-        await withDebug([`Looping ${iterations} times with ${loopType}`], async () => {
+        await withDebug(`Looping ${iterations} times with ${loopType}`, async () => {
             let i = 0;
             switch (loopType) {
                 case 'forEachAsync':
