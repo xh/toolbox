@@ -1,6 +1,6 @@
 import React from 'react';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -15,8 +15,7 @@ export const fileChooserPanel = hoistCmp.factory({
     model: creates(() => FileChooserPanelModel),
 
     render({model}) {
-        const {chooserModel, enableMulti, enableAddMulti, showFileGrid, maxSize} = model;
-
+        const {chooserModel} = model;
         return wrapper({
             description: [
                 <p>
@@ -49,42 +48,22 @@ export const fileChooserPanel = hoistCmp.factory({
                 icon: Icon.copy(),
                 width: 700,
                 height: 400,
-                item: fileChooser({
-                    flex: 1,
-                    enableMulti,
-                    enableAddMulti,
-                    showFileGrid,
-                    maxSize,
-                    accept: ['.txt', '.png'],
-                    // DEBUG - test stuff here
-                    // targetText: (
-                    //     <Fragment>
-                    //         <p>Drag and drop files here, or click to browse.</p>
-                    //         <p>
-                    //             Note that this example is configured to accept only{' '}
-                    //             <code>*.txt</code> and <code>*.png</code> file types.
-                    //         </p>
-                    //     </Fragment>
-                    // ),
-                    // targetText: ({draggedFiles}) => {
-                    //     // DEBUG
-                    //     console.log('draggedFiles', draggedFiles);
-                    //     return 'last rejected:' + model.chooserModel.lastFileRejections.length;
-                    // },
-                    model: chooserModel
-                }),
+                item: fileChooser({flex: 1}),
                 bbar: [
                     span('Show grid:'),
                     switchInput({
+                        model: chooserModel,
                         bind: 'showFileGrid'
                     }),
                     toolbarSep(),
                     span('Enable Multiple:'),
                     switchInput({
+                        model: chooserModel,
                         bind: 'enableMulti'
                     }),
                     span('Enable Bulk Addition: '),
                     switchInput({
+                        model: chooserModel,
                         bind: 'enableAddMulti'
                     }),
                     filler(),
@@ -102,32 +81,17 @@ export const fileChooserPanel = hoistCmp.factory({
 });
 
 class FileChooserPanelModel extends HoistModel {
-    @bindable
-    accept = ['.txt', '.png'];
-
-    @bindable
-    maxSize = 10000000;
-
-    @bindable
-    minSize = 0;
-
-    @bindable
-    enableMulti = true;
-
-    @bindable
-    enableAddMulti = true;
-
-    @bindable
-    showFileGrid = true;
-
     @managed
-    chooserModel = new FileChooserModel({
-        accept: this.accept,
-        maxSize: this.maxSize,
-        minSize: this.minSize,
-        enableMulti: this.enableMulti,
-        enableAddMulti: this.enableAddMulti,
-        showFileGrid: this.showFileGrid
+    chooserModel: FileChooserModel = new FileChooserModel({
+        accept: ['.txt', '.png']
+        // targetDisplay: model => {
+        //     const {files} = model;
+        //     return files.length ? `${files.length} files selected` : 'Click to select files';
+        // },
+        // rejectDisplay: model => {
+        //     const {lastRejected} = model;
+        //     return lastRejected.length ? `${lastRejected.length} files rejected` : '';
+        // }
     });
 
     constructor() {
