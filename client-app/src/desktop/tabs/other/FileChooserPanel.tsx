@@ -83,15 +83,17 @@ export const fileChooserPanel = hoistCmp.factory({
 class FileChooserPanelModel extends HoistModel {
     @managed
     chooserModel: FileChooserModel = new FileChooserModel({
-        accept: ['.txt', '.png']
-        // targetDisplay: model => {
-        //     const {files} = model;
-        //     return files.length ? `${files.length} files selected` : 'Click to select files';
-        // },
-        // rejectDisplay: model => {
-        //     const {lastRejected} = model;
-        //     return lastRejected.length ? `${lastRejected.length} files rejected` : '';
-        // }
+        accept: ['.txt', '.png', '.get'],
+        targetDisplay: model => {
+            const {lastAccepted} = model;
+            return lastAccepted.length
+                ? `${lastAccepted.length} files selected`
+                : 'Drag or click to select files';
+        },
+        rejectDisplay: model => {
+            const {lastRejected} = model;
+            return lastRejected.length ? `${lastRejected.length} files rejected` : '';
+        }
     });
 
     constructor() {
