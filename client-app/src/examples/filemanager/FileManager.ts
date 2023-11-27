@@ -23,7 +23,7 @@ export const fileManager = hoistCmp.factory({
             items: [
                 grid(),
                 fileChooser({
-                    accept: acceptedFileTypes,
+                    accept: model.acceptedFileTypes,
                     showFileGrid: false,
                     targetText: fragment(
                         p('Drag-and-drop new files here to queue for upload, or click to browse.'),
@@ -58,19 +58,3 @@ export const fileManager = hoistCmp.factory({
         });
     }
 });
-
-// Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
-// accepted file types for sanity (and to demo the `accepts` prop).
-const acceptedFileTypes: string[] = [
-    '.txt',
-    '.png',
-    '.gif',
-    '.jpg',
-    '.doc',
-    '.docx',
-    '.xls',
-    '.xlsx',
-    '.ppt',
-    '.pptx',
-    '.pdf'
-];

@@ -85,13 +85,12 @@ class FileChooserPanelModel extends HoistModel {
     chooserModel: FileChooserModel = new FileChooserModel({
         accept: ['.txt', '.png'],
         targetDisplay: model => {
-            const {accept} = model;
             return fragment(
                 p('Drag and drop files here, or click to browse.'),
                 p({
                     items: [
                         'Note that this example is configured to accept only ',
-                        code(`${(accept as string[]).map(type => '*' + type).join(' and ')}`),
+                        code('*.txt and *.png'),
                         ' file types.'
                     ]
                 })
