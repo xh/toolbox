@@ -1,21 +1,12 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
-import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {PERSIST_MAIN} from './AppModel';
 import {mktValCol, nameCol, pnlCol} from '../../core/columns';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {capitalize} from 'lodash';
-import {Icon} from '@xh/hoist/icon';
 
 export class GridPanelModel extends HoistModel {
-    @managed
-    panelModel = new PanelModel({
-        defaultSize: 500,
-        side: 'left',
-        persistWith: {...PERSIST_MAIN, path: 'positionsPanel'}
-    });
-
     @bindable loadTimestamp: number;
 
     @managed
@@ -27,15 +18,8 @@ export class GridPanelModel extends HoistModel {
         return this.gridModel.selectedRecord;
     }
 
-    /** Render a title with groupBy dimensions, but only when collapsed (to aid user in re-expanding). */
-    get title() {
-        return this.panelModel.collapsed
-            ? this.parentModel.groupingChooserModel.value.map(it => capitalize(it)).join(' › ')
-            : null;
-    }
-
-    get icon() {
-        return this.panelModel.collapsed ? Icon.treeList() : null;
+    get collapsedTitle() {
+        return this.parentModel.groupingChooserModel.value.map(it => capitalize(it)).join(' › ');
     }
 
     constructor({parentModel}) {
