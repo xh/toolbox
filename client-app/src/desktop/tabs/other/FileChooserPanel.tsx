@@ -2,7 +2,7 @@ import React from 'react';
 import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
 import {makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {filler, span} from '@xh/hoist/cmp/layout';
+import {code, filler, fragment, p, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -83,16 +83,25 @@ export const fileChooserPanel = hoistCmp.factory({
 class FileChooserPanelModel extends HoistModel {
     @managed
     chooserModel: FileChooserModel = new FileChooserModel({
-        accept: ['.txt', '.png', '.get'],
+        accept: ['.txt', '.png'],
         targetDisplay: model => {
-            const {lastAccepted} = model;
-            return lastAccepted.length
-                ? `${lastAccepted.length} files selected`
-                : 'Drag or click to select files';
+            const {accept} = model;
+            return fragment(
+                p('Drag and drop files here, or click to browse.'),
+                p({
+                    items: [
+                        'Note that this example is configured to accept only ',
+                        code(`${(accept as string[]).map(type => '*' + type).join(' and ')}`),
+                        ' file types.'
+                    ]
+                })
+            );
         },
         rejectDisplay: model => {
             const {lastRejected} = model;
-            return lastRejected.length ? `${lastRejected.length} files rejected` : '';
+            return lastRejected.length
+                ? `Unable to accept ${lastRejected.length} files for upload.`
+                : '';
         }
     });
 
