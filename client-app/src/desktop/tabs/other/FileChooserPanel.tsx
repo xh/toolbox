@@ -1,8 +1,8 @@
-import React from 'react';
-import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import React, {Fragment} from 'react';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
 import {makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {code, filler, fragment, p, span} from '@xh/hoist/cmp/layout';
+import {filler, p, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -10,6 +10,7 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {pluralize} from '@xh/hoist/utils/js';
 import {wrapper} from '../../common';
+import {isEmpty} from 'lodash';
 
 export const fileChooserPanel = hoistCmp.factory({
     model: creates(() => FileChooserPanelModel),
@@ -84,28 +85,39 @@ class FileChooserPanelModel extends HoistModel {
     @managed
     chooserModel: FileChooserModel = new FileChooserModel({
         accept: ['.txt', '.png'],
-        targetDisplay: model => {
-            return fragment(
-                p('Drag and drop files here, or click to browse.'),
-                p({
-                    items: [
-                        'Note that this example is configured to accept only ',
-                        code('*.txt and *.png'),
-                        ' file types.'
-                    ]
-                })
+        targetDisplay: (model, draggedFiles) => {
+            return !isEmpty(draggedFiles) ? (
+                p(`Drop to add ${draggedFiles.length} ${pluralize('file', draggedFiles.length)}.`)
+            ) : (
+                <Fragment>
+                    <p>Drag and drop files here, or click to browse.</p>
+                    <p>
+                        Note that this example is configured to accept only <code>*.txt</code> and{' '}
+                        <code>*.png</code> file types.
+                    </p>
+                </Fragment>
             );
-        },
-        rejectDisplay: model => {
-            const {lastRejected} = model;
-            return lastRejected.length
-                ? `Unable to accept ${lastRejected.length} files for upload.`
-                : '';
         }
     });
 
     constructor() {
         super();
         makeObservable(this);
+
+        this.addReaction({
+            track: () => [this.chooserModel.lastAccepted, this.chooserModel.lastRejected],
+            run: () => {
+                const {lastAccepted, lastRejected} = this.chooserModel;
+                if (!isEmpty(lastAccepted)) {
+                    XH.toast(`Accepted ${lastAccepted.length} files for upload.`);
+                }
+                if (!isEmpty(lastRejected)) {
+                    XH.toast({
+                        message: `Rejected ${lastRejected.length} files for upload.`,
+                        intent: 'warning'
+                    });
+                }
+            }
+        });
     }
 }
