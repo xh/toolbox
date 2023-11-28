@@ -1,5 +1,5 @@
 import {createRef} from 'react';
-import {flatMapDeep} from 'lodash';
+import {flatMapDeep, omit} from 'lodash';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GroupingChooserModel} from '@xh/hoist/desktop/cmp/grouping';
@@ -127,12 +127,10 @@ export class SampleTreeGridModel extends HoistModel {
             autosizeOptions: {mode: 'managed'},
             columns: [
                 {
-                    ...nameCol,
+                    ...omit(nameCol, 'width'),
                     isTreeColumn: true,
                     ...(includeCheckboxes ? this.createCheckboxTreeColumn() : {}),
                     autosizeBufferPx: includeCheckboxes ? 40 : 0
-                    // Temporary width until auto resizing is fixed to account for checkboxes
-                    // width: 240
                 },
                 {...mktValCol},
                 {...pnlCol}
