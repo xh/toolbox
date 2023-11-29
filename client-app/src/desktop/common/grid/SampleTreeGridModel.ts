@@ -124,13 +124,13 @@ export class SampleTreeGridModel extends HoistModel {
             emptyText: 'No records found...',
             colChooserModel: true,
             enableExport: true,
-            autosizeOptions: {mode: 'managed'},
+            autosizeOptions: {mode: 'managed', includeCollapsedChildren: true},
             columns: [
                 {
+                    // Omitting width allows Grid to autosize via GridAutosizeMode.managed
                     ...omit(nameCol, 'width'),
                     isTreeColumn: true,
-                    ...(includeCheckboxes ? this.createCheckboxTreeColumn() : {}),
-                    autosizeBufferPx: includeCheckboxes ? 40 : 0
+                    ...(includeCheckboxes ? this.createCheckboxTreeColumn() : {})
                 },
                 {...mktValCol},
                 {...pnlCol}
