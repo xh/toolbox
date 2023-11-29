@@ -5,7 +5,6 @@ import io.xh.hoist.pref.PrefService;
 import io.xh.hoist.pref.Preference;
 import io.xh.hoist.user.IdentityService;
 import io.xh.toolbox.app.NewsService;
-import io.xh.toolbox.user.RoleService;
 import io.xh.toolbox.user.UserService;
 import io.xh.toolbox.user.User;
 import org.slf4j.Logger;
@@ -23,7 +22,6 @@ public class JavaTest {
                 PrefService.class,
                 Preference.class,
                 UserService.class,
-                RoleService.class,
                 User.class,
                 IdentityService.class,
                 NewsService.class
