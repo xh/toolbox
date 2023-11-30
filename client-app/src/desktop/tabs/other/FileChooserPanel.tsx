@@ -109,11 +109,11 @@ class FileChooserPanelModel extends HoistModel {
             run: () => {
                 const {lastAccepted, lastRejected} = this.chooserModel;
                 if (!isEmpty(lastAccepted)) {
-                    XH.toast(`Accepted ${lastAccepted.length} files for upload.`);
+                    XH.toast(`Accepted ${lastAccepted.length} files.`);
                 }
                 if (!isEmpty(lastRejected)) {
                     XH.toast({
-                        message: `Rejected ${lastRejected.length} files for upload.`,
+                        message: `Rejected ${lastRejected.length} files.`,
                         intent: 'warning'
                     });
                 }
