@@ -1,10 +1,17 @@
 # Changelog
 
-## v4.0.0-SNAPSHOT - unreleased
+## v3.4.0 - 2023-11-09
 
 ### New Features
-* Enhance Layout > DockContainer page to showcase new `DockViewModel.onClose` hook
-* Enhance Column Groups Grid example to showcase `ColumnGroup.showLeftRightBorders` functionality
+* Added `ZoneGrid` demos for desktop and mobile.
+* Enhanced Layout > DockContainer page to showcase new `DockViewModel.onClose` hook
+* Enhanced Column Groups Grid example to showcase `ColumnGroup.showLeftRightBorders` functionality.
+* Updated Timestamp tab to expose all `RelativeTimestamp` options.
+
+### Libraries
+
+* @xh/hoist 59.2.0
+* hoist-core 17.4.0
 
 ## v3.3.0 - 2023-09-20
 

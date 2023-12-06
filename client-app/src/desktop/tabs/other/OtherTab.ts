@@ -16,7 +16,7 @@ import {leftRightChooserPanel} from './LeftRightChooserPanel';
 import {pinPadPanel} from './PinPadPanel';
 import {placeholderPanel} from './PlaceholderPanel';
 import {popupsPanel} from './PopupsPanel';
-import {relativeTimestampPanel} from './RelativeTimestampPanel';
+import {relativeTimestampPanel} from './relativetimestamp/RelativeTimestampPanel';
 
 export const otherTab = hoistCmp.factory(() =>
     tabContainer({
