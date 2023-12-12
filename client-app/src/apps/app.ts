@@ -14,5 +14,5 @@ XH.renderApp({
     isMobileApp: false,
     isSSO: true,
     webSocketsEnabled: true,
-    checkAccess: 'APP_READER'
+    checkAccess: () => true
 });

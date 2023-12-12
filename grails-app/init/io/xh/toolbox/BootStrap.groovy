@@ -58,11 +58,6 @@ class BootStrap {
             log.info("Local admin user available as per instanceConfig | $adminUsername")
 
             configService.ensureRequiredConfigsCreated(
-                roles: [
-                    groupName: 'Toolbox',
-                    valueType: 'json',
-                    defaultValue: ['HOIST_ADMIN': [adminUsername], 'APP_READER': [adminUsername]]
-                ],
                 jsLicenses: [
                     groupName: 'Toolbox',
                     valueType: 'json',
