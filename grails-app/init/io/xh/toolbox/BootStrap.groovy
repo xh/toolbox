@@ -3,6 +3,7 @@ package io.xh.toolbox
 import grails.gorm.transactions.Transactional
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.pref.PrefService
+import io.xh.hoist.role.RoleAdminService
 import io.xh.toolbox.user.User
 
 import java.time.LocalDate
@@ -15,6 +16,7 @@ class BootStrap {
 
     ConfigService configService
     PrefService prefService
+    RoleAdminService roleAdminService
 
     def init = {servletContext ->
         logStartupMsg()
@@ -49,11 +51,12 @@ class BootStrap {
                     password: adminPassword,
                     name: 'Toolbox Admin',
                     profilePicUrl: 'https://xh.io/images/toolbox-admin-profile-pic.png'
-                ).save()
+                ).save(flush: true)
             } else if (!user.checkPassword(adminPassword)) {
                 user.password = adminPassword
-                user.save()
+                user.save(flush: true)
             }
+            roleAdminService.ensureUserHasRoles(user, ['HOIST_ADMIN', 'HOIST_ADMIN_READER', 'HOIST_ROLE_MANAGER'])
 
             log.info("Local admin user available as per instanceConfig | $adminUsername")
 
@@ -65,8 +68,7 @@ class BootStrap {
                     clientVisible: true,
                     note: 'Provide any js licenses needed by client here.'
                 ]
-            );
-
+            )
         } else {
             log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }

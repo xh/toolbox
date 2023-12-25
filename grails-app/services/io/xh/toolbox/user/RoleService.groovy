@@ -1,5 +1,5 @@
 package io.xh.toolbox.user
 
-import io.xh.hoist.user.BaseRoleService
+import io.xh.hoist.role.BaseRoleService
 
 class RoleService extends BaseRoleService {}
