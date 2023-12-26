@@ -147,8 +147,7 @@ class ZoneGridPanelModel extends HoistModel {
     }
 
     @action
-    private restoreDefaultsFn(): boolean {
+    private restoreDefaultsFn() {
         this.setGroupBy(null);
-        return true;
     }
 }

@@ -1,11 +1,11 @@
 package io.xh.toolbox.portfolio
 
-import io.xh.hoist.security.Access
+import io.xh.hoist.security.AccessAll
 import io.xh.toolbox.BaseController
 
 import static io.xh.toolbox.portfolio.Lookups.*
 
-@Access(['APP_READER'])
+@AccessAll
 class PortfolioController extends BaseController {
 
     def portfolioService,
