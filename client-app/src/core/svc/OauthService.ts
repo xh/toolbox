@@ -2,7 +2,6 @@ import createAuth0Client, {Auth0Client} from '@auth0/auth0-spa-js';
 import {HoistService, PlainObject, XH} from '@xh/hoist/core';
 import {never, wait} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
-import {logError, logInfo, logWarn} from '@xh/hoist/utils/js';
 
 /**
  * Coordinates OAuth-based login for the user-facing desktop and mobile apps.
@@ -77,14 +76,14 @@ export class OauthService extends HoistService {
                 const cleanUrl = window.location.toString().replace(qString, '');
                 window.history.replaceState({}, document.title, cleanUrl);
             } catch (e) {
-                logWarn([`Caught while attempting to get redirectResults`, e], this);
+                this.logWarn(`Caught while attempting to get redirectResults`, e);
             }
         }
 
         if (!isAuthenticated) {
             // If still not authenticated, we are either coming in fresh or were unable to confirm a
             // successful auth via redirect handler. Trigger interactive login.
-            logInfo(`Not authenticated - logging in....`, this);
+            this.logInfo(`Not authenticated - logging in....`);
             await auth0.loginWithRedirect();
             await never();
         } else {
@@ -92,7 +91,7 @@ export class OauthService extends HoistService {
             this.user = await this.auth0.getUser();
             this.idToken = await this.getIdTokenAsync();
 
-            logInfo([`Authenticated OK`, this.user?.email, this.user], this);
+            this.logInfo(`Authenticated OK`, this.user?.email, this.user);
             this.installDefaultFetchServiceHeaders();
         }
     }
@@ -124,7 +123,7 @@ export class OauthService extends HoistService {
                 await wait(10 * SECONDS);
             }
         } catch (e) {
-            logError(['Error during logout request', e], this);
+            this.logError('Error during logout request', e);
         }
     }
 

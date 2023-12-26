@@ -1,5 +1,6 @@
 import {random, reduce, sample, times, isEmpty} from 'lodash';
 import {PlainObject} from '@xh/hoist/core';
+import {logDebug} from '@xh/hoist/utils/js';
 
 export class GridTestData {
     rows: PlainObject[] = [];
@@ -88,7 +89,7 @@ export class GridTestData {
             this.summary = null;
         }
 
-        console.log(`Generated ${count} test records.`);
+        logDebug(`Generated ${count} test records.`, this);
     }
 
     generateUpdates(count: number) {
