@@ -1,6 +1,5 @@
 package io.xh.toolbox
 
-import com.hazelcast.config.CacheSimpleConfig
 import com.hazelcast.config.Config
 import io.xh.hoist.util.Utils
 
@@ -20,12 +19,4 @@ class ClusterConfig extends io.xh.hoist.ClusterConfig {
         return ret
     }
 
-    List<CacheSimpleConfig> createCacheConfigs() {
-        super.createCacheConfigs() + [
-            hibernateCache('io.xh.toolbox.data.Company'),
-            hibernateCache('io.xh.toolbox.roadmap.Phase'),
-            hibernateCache('io.xh.toolbox.roadmap.Project'),
-            hibernateCache('io.xh.toolbox.user.User')
-        ]
-    }
 }
