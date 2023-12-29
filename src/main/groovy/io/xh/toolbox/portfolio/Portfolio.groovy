@@ -2,7 +2,7 @@ package io.xh.toolbox.portfolio
 
 import java.time.LocalDate
 
-class Portfolio implements Serializable {
+class Portfolio {
 
     LocalDate day
     Date timeCreated = new Date()

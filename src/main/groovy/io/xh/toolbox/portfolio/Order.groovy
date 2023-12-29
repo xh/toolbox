@@ -4,7 +4,7 @@ import io.xh.hoist.json.JSONFormatCached
 
 import java.time.Instant
 
-class Order extends JSONFormatCached implements Serializable {
+class Order extends JSONFormatCached {
     String id
     Instrument instrument
     String dir

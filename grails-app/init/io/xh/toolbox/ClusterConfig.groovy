@@ -2,7 +2,6 @@ package io.xh.toolbox
 
 import com.hazelcast.config.Config
 import io.xh.hoist.util.Utils
-
 class ClusterConfig extends io.xh.hoist.ClusterConfig {
 
     Config createConfig() {

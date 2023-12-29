@@ -2,7 +2,7 @@ package io.xh.toolbox.portfolio
 
 import io.xh.hoist.json.JSONFormatCached
 
-class Instrument extends JSONFormatCached implements Serializable {
+class Instrument extends JSONFormatCached {
     String symbol
     String sector
     String region

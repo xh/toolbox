@@ -15,7 +15,7 @@ class InstrumentGenerationService extends BaseService {
 
     Map<String, Instrument> generateInstruments() {
         def instrumentCount = config.instrumentCount
-        Map<String, Instrument> ret = new ConcurrentHashMap(instrumentCount)
+        Map<String, Instrument> ret = new HashMap(instrumentCount)
         while (ret.size() < instrumentCount) {
             String symbol = generateSymbol()
             if (!ret[symbol]) {

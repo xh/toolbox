@@ -1,6 +1,6 @@
 package io.xh.toolbox.portfolio
 
-class RawPosition implements Serializable {
+class RawPosition {
 
     // Core position
     final Instrument instrument
