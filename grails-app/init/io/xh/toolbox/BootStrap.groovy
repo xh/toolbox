@@ -56,7 +56,6 @@ class BootStrap {
                 user.password = adminPassword
                 user.save(flush: true)
             }
-            roleAdminService.ensureUserHasRoles(user, ['HOIST_ADMIN', 'HOIST_ADMIN_READER', 'HOIST_ROLE_MANAGER'])
 
             log.info("Local admin user available as per instanceConfig | $adminUsername")
 
