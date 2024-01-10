@@ -3,7 +3,7 @@ package io.xh.toolbox
 import grails.gorm.transactions.Transactional
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.pref.PrefService
-import io.xh.hoist.role.RoleAdminService
+import io.xh.hoist.role.provided.RoleAdminService
 import io.xh.toolbox.user.User
 
 import java.time.LocalDate
