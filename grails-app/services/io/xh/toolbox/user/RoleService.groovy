@@ -1,6 +1,6 @@
 package io.xh.toolbox.user
 
-import grails.gorm.transactions.ReadOnly
+import grails.gorm.transactions.Transactional
 import io.xh.hoist.role.provided.DefaultRoleService
 
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
@@ -12,7 +12,7 @@ class RoleService extends DefaultRoleService {
         assignLocalAdminRolesIfNeeded()
     }
 
-    @ReadOnly
+    @Transactional
     private void assignLocalAdminRolesIfNeeded() {
         String adminUsername = getInstanceConfig('adminUsername')
         if (adminUsername) {
