@@ -23,6 +23,7 @@ class BootStrap {
 
         ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
+        createLocalAdminUserIfNeeded()
 
         def services = xhServices.findAll {
             it.class.canonicalName.startsWith(this.class.package.name)
@@ -30,7 +31,6 @@ class BootStrap {
         parallelInit(services)
 
         JavaTest.helloWorld()
-        createLocalAdminUserIfNeeded()
     }
 
     def destroy = {}
@@ -58,16 +58,6 @@ class BootStrap {
             }
 
             log.info("Local admin user available as per instanceConfig | $adminUsername")
-
-            configService.ensureRequiredConfigsCreated(
-                jsLicenses: [
-                    groupName: 'Toolbox',
-                    valueType: 'json',
-                    defaultValue: [agGrid: null],
-                    clientVisible: true,
-                    note: 'Provide any js licenses needed by client here.'
-                ]
-            )
         } else {
             log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
@@ -181,6 +171,13 @@ class BootStrap {
                     ],
                     clientVisible: true,
                     groupName: 'Toolbox'
+            ],
+            jsLicenses: [
+                    groupName: 'Toolbox',
+                    valueType: 'json',
+                    defaultValue: [agGrid: null],
+                    clientVisible: true,
+                    note: 'Provide any js licenses needed by client here.'
             ]
         ])
     }
