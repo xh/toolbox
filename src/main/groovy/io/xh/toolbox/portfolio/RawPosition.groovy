@@ -51,6 +51,7 @@ class RawPosition extends JSONFormatCached {
         return [
                 symbol: symbol,
                 model : model,
+                sector: sector,
                 fund  : fund,
                 trader: trader,
                 mktVal: mktVal,
