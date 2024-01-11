@@ -12,7 +12,7 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
  * @see io.xh.hoist.role.BaseRoleService for details on how to implement an alternate, entirely custom approach.
  */
 class RoleService extends DefaultRoleService {
-    @Override
+
     void init() {
         super.init()
         assignLocalAdminRolesIfNeeded()
@@ -23,7 +23,7 @@ class RoleService extends DefaultRoleService {
         String adminUsername = getInstanceConfig('adminUsername')
         if (adminUsername) {
             def user = User.findByEmail(adminUsername)
-            roleAdminService.ensureUserHasRoles(user, ['HOIST_ADMIN', 'HOIST_ADMIN_READER', 'HOIST_ROLE_MANAGER'])
+            defaultRoleAdminService.ensureUserHasRoles(user, 'HOIST_ADMIN')
         }
     }
 }
