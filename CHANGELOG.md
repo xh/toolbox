@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.5.0 - 2024-01-11
+
+### New Features
+* Migrate to built-in role management.
+
+
+### Libraries
+
+* @xh/hoist 60.0.0
+* hoist-core 18.0.0
+
 ## v3.4.0 - 2023-11-09
 
 ### New Features
