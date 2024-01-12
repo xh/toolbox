@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.5.0 - 2024-01-11
+## v3.5.0 - 2024-01-12
 
 ### New Features
 * Migrate to built-in role management.
