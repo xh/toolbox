@@ -5,7 +5,6 @@
 ### New Features
 * Migrate to built-in role management.
 
-
 ### Libraries
 
 * @xh/hoist 60.0.0
