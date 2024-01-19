@@ -1,6 +1,11 @@
 # Changelog
 
-## v4.0-SNAPSHOT - unreleased
+## v3.6.0 - 2024-01-19
+
+### Libraries
+
+* @xh/hoist 60.1.0
+* hoist-core 18.1.0
 
 ## v3.5.0 - 2024-01-12
 
