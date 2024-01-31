@@ -31,6 +31,8 @@ export class GridTestModel extends HoistModel {
     @bindable idSeed = 1;
     // True to generate data in tree structure.
     @bindable tree = false;
+    // True to use an incremental numeric id as grid id.
+    @bindable numericId = false;
     // True to show summary row.
     @bindable showSummary = false;
     // True to use tree root node as summary row.

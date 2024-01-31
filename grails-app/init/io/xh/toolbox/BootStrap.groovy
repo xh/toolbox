@@ -21,6 +21,7 @@ class BootStrap {
 
         ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
+        createLocalAdminUserIfNeeded()
 
         def services = xhServices.findAll {
             it.class.canonicalName.startsWith(this.class.package.name)
@@ -28,7 +29,6 @@ class BootStrap {
         parallelInit(services)
 
         JavaTest.helloWorld()
-        createLocalAdminUserIfNeeded()
     }
 
     def destroy = {}
@@ -49,29 +49,13 @@ class BootStrap {
                     password: adminPassword,
                     name: 'Toolbox Admin',
                     profilePicUrl: 'https://xh.io/images/toolbox-admin-profile-pic.png'
-                ).save()
+                ).save(flush: true)
             } else if (!user.checkPassword(adminPassword)) {
                 user.password = adminPassword
-                user.save()
+                user.save(flush: true)
             }
 
             log.info("Local admin user available as per instanceConfig | $adminUsername")
-
-            configService.ensureRequiredConfigsCreated(
-                roles: [
-                    groupName: 'Toolbox',
-                    valueType: 'json',
-                    defaultValue: ['HOIST_ADMIN': [adminUsername], 'APP_READER': [adminUsername]]
-                ],
-                jsLicenses: [
-                    groupName: 'Toolbox',
-                    valueType: 'json',
-                    defaultValue: [agGrid: null],
-                    clientVisible: true,
-                    note: 'Provide any js licenses needed by client here.'
-                ]
-            );
-
         } else {
             log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
@@ -185,6 +169,13 @@ class BootStrap {
                     ],
                     clientVisible: true,
                     groupName: 'Toolbox'
+            ],
+            jsLicenses: [
+                    groupName: 'Toolbox',
+                    valueType: 'json',
+                    defaultValue: [agGrid: null],
+                    clientVisible: true,
+                    note: 'Provide any js licenses needed by client here.'
             ]
         ])
     }

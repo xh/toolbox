@@ -37,7 +37,7 @@ export class PortfolioPanelModel extends HoistModel {
 
         // Wait for WS for streaming updates feature, but not strictly needed to show data
         await waitFor(() => wsService.connected, 50, 5 * SECONDS).catch(() =>
-            console.error('WebSocket service failed to connect')
+            this.logError('WebSocket service failed to connect')
         );
         if (loadSpec.isStale) return;
 
