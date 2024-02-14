@@ -16,7 +16,7 @@
     "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
     "startWithHoistAndAnalyze": "yarn startWithHoist --env analyzeBundles",
-    "prepare": "husky"
+    "prepare": "cd .. && husky client-app/.husky"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
