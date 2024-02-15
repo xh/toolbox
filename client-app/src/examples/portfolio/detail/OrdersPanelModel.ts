@@ -57,6 +57,7 @@ export class OrdersPanelModel extends HoistModel {
 
         this.filterChooserModel = new FilterChooserModel({
             bind: this.gridModel.store,
+            persistWith: {...PERSIST_DETAIL, path: 'ordersFilter', persistValue: false},
             fieldSpecs: [
                 'symbol',
                 'trader',
