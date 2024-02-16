@@ -5,6 +5,7 @@ import {isNil, map, uniq} from 'lodash';
 import {PERSIST_DETAIL} from '../AppModel';
 import {
     closingPriceSparklineCol,
+    orderExecDay,
     dirCol,
     fundCol,
     modelCol,
@@ -13,7 +14,7 @@ import {
     regionCol,
     sectorCol,
     symbolCol,
-    timeCol,
+    orderExecTime,
     traderCol
 } from '../../../core/columns';
 import {DetailPanelModel} from './DetailPanelModel';
@@ -31,6 +32,8 @@ export class OrdersPanelModel extends HoistModel {
         super();
 
         this.parentModel = parentModel;
+
+        const hidden = true;
         this.gridModel = new GridModel({
             groupBy: 'dir',
             sortBy: 'time|desc',
@@ -44,14 +47,15 @@ export class OrdersPanelModel extends HoistModel {
                 {...symbolCol, pinned: true},
                 {...closingPriceSparklineCol},
                 {...traderCol},
-                {...fundCol, hidden: true},
-                {...modelCol, hidden: true},
-                {...regionCol, hidden: true},
-                {...sectorCol, hidden: true},
+                {...fundCol, hidden},
+                {...modelCol, hidden},
+                {...regionCol, hidden},
+                {...sectorCol, hidden},
                 {...dirCol},
                 {...quantityCol},
                 {...priceCol},
-                {...timeCol}
+                {...orderExecDay, hidden},
+                {...orderExecTime}
             ]
         });
 
@@ -70,7 +74,8 @@ export class OrdersPanelModel extends HoistModel {
                     values: ['Buy', 'Sell']
                 },
                 'quantity',
-                'price'
+                'price',
+                'day'
             ]
         });
 

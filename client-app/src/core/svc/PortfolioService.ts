@@ -86,11 +86,17 @@ export class PortfolioService extends HoistService {
     }
 
     async getOrdersAsync({positionId, loadSpec}): Promise<PlainObject[]> {
-        return XH.fetchJson({
+        const ret: PlainObject[] = await XH.fetchJson({
             url: 'portfolio/ordersForPosition',
             params: {positionId},
             loadSpec
         });
+
+        ret.forEach(it => {
+            it.day = LocalDate.from(it.time);
+        });
+
+        return ret;
     }
 
     async getLineChartSeriesAsync({symbol, dimension = 'volume', loadSpec}) {
