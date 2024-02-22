@@ -121,6 +121,41 @@ class BootStrap {
                     groupName: 'Toolbox - Example Apps',
                     note: 'Absolute path to disk location for storing uploaded files.'
             ],
+            gitHubAccessToken: [
+                    valueType: 'string',
+                    defaultValue: 'realTokenGoesHere',
+                    clientVisible: false,
+                    groupName: 'GitHub Integration',
+                    note: 'Personal access token with minimal scopes required to query public repos and commits.'
+            ],
+            gitHubCommitsRefreshMins: [
+                    valueType: 'int',
+                    defaultValue: 60,
+                    clientVisible: false,
+                    groupName: 'GitHub Integration',
+                    note: 'Frequency with which the Toolbox server polls Git to look for updates. Note this functions mostly as a "catch up" sync - webhooks should trigger realtime updates on commits.'
+            ],
+            gitHubMaxPagesPerLoad: [
+                    valueType: 'int',
+                    defaultValue: 99,
+                    clientVisible: false,
+                    groupName: 'GitHub Integration',
+                    note: 'Maximum number of pages to load when fetching commit history for a single repo. Set to a low number (1-2) in local development to minimize time spent loading commit histories while still getting some commits cached for display in the UI.'
+            ],
+            gitHubRepos: [
+                    valueType: 'json',
+                    defaultValue: [],
+                    clientVisible: true,
+                    groupName: 'GitHub Integration',
+                    note: 'List of repos from which Toolbox will pull commits to display on its dashboard.'
+            ],
+            gitHubWebhookTriggerSecret: [
+                    valueType: 'string',
+                    defaultValue: 'realSecretGoesHere',
+                    clientVisible: false,
+                    groupName: 'GitHub Integration',
+                    note: 'Random string used as a shared secret to verify triggers pushed to gitHub/webhookTrigger endpoint.'
+            ],
             newsApiKey: [
                     valueType: 'string',
                     defaultValue: 'realApiKeyGoesHere',
