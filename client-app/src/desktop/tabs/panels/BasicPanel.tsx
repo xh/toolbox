@@ -73,7 +73,7 @@ export const basicPanel = hoistCmp.factory({
                     popover({
                         position: 'bottom-left',
                         minimal: true,
-                        target: button({
+                        item: button({
                             icon: Icon.chevronDown(),
                             text: 'Menu Button'
                         }),
