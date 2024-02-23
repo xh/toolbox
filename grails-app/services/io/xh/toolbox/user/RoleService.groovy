@@ -23,7 +23,7 @@ class RoleService extends DefaultRoleService {
         String adminUsername = getInstanceConfig('adminUsername')
         if (adminUsername) {
             def user = User.findByEmail(adminUsername)
-            ensureUserHasRole(user, 'HOIST_ADMIN')
+            assignRole(user, 'HOIST_ADMIN')
         }
     }
 }
