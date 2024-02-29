@@ -24,6 +24,7 @@ class RoleService extends DefaultRoleService {
         if (adminUsername) {
             def user = User.findByEmail(adminUsername)
             assignRole(user, 'HOIST_ADMIN')
+            assignRole(user, 'HOIST_ROLE_MANAGER')
         }
     }
 }
