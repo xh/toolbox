@@ -18,12 +18,18 @@ class RoleService extends DefaultRoleService {
         assignLocalAdminRolesIfNeeded()
     }
 
+    /** Toolbox does not use any external directory (such as LDAP/AD) for group membership. */
+    boolean getDirectoryGroupsSupported() {
+        return false
+    }
+
     @Transactional
     private void assignLocalAdminRolesIfNeeded() {
         String adminUsername = getInstanceConfig('adminUsername')
         if (adminUsername) {
             def user = User.findByEmail(adminUsername)
             assignRole(user, 'HOIST_ADMIN')
+            assignRole(user, 'HOIST_ROLE_MANAGER')
         }
     }
 }
