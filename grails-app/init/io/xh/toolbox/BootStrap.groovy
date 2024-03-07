@@ -21,7 +21,6 @@ class BootStrap {
 
         ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
-        createLocalAdminUserIfNeeded()
 
         def services = xhServices.findAll {
             it.class.canonicalName.startsWith(this.class.package.name)
@@ -36,31 +35,6 @@ class BootStrap {
     //------------------------
     // Implementation
     //------------------------
-    @Transactional
-    private void createLocalAdminUserIfNeeded() {
-        String adminUsername = getInstanceConfig('adminUsername')
-        String adminPassword = getInstanceConfig('adminPassword')
-
-        if (adminUsername && adminPassword) {
-            def user = User.findByEmail(adminUsername)
-            if (!user) {
-                new User(
-                    email: adminUsername,
-                    password: adminPassword,
-                    name: 'Toolbox Admin',
-                    profilePicUrl: 'https://xh.io/images/toolbox-admin-profile-pic.png'
-                ).save(flush: true)
-            } else if (!user.checkPassword(adminPassword)) {
-                user.password = adminPassword
-                user.save(flush: true)
-            }
-
-            log.info("Local admin user available as per instanceConfig | $adminUsername")
-        } else {
-            log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
-        }
-    }
-
     private void logStartupMsg() {
         log.info("""
 \n
@@ -77,6 +51,43 @@ class BootStrap {
 
     private void ensureRequiredConfigsCreated() {
         configService.ensureRequiredConfigsCreated([
+            auth0ClientId: [
+                    valueType: 'string',
+                    defaultValue: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
+                    clientVisible: false,
+                    groupName: 'Auth0',
+                    note: 'Client ID of the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
+            ],
+            auth0Domain: [
+                    valueType: 'string',
+                    defaultValue: 'login.xh.io',
+                    clientVisible: false,
+                    groupName: 'Auth0',
+                    note: 'Custom domain for our Auth0 deployment. OAuth login flow will redirect users here.'
+            ],
+            auth0Jwks: [
+                    valueType: 'json',
+                    defaultValue: [
+                            // This is a public key from Auth0, so it's safe to commit to the repo.
+                            keys: [
+                                    [
+                                            "alg": "RS256",
+                                            "kty": "RSA",
+                                            "use": "sig",
+                                            "n": "rQxRn6prKsjL_ZSu4oB7NwO74i6hTuaQBcUx0P0_YJDbZc9_5r5NzIxsooW_caCJa_uR0VRrcjFOA35jzRrGuuKS_Z7fRPZf8uawV4j0e1RbHp7odAMq7hB60DOWL1CgcwCkB3uh2w8quHILfEQ_WHbXYHJLjTx84bDvQ-07xk_Pk_l4uv10mdSc3K6oGZFpbbAqptNaUAiUr_LwAaITTROBQvwec5ckN07pqXV0S1k2PUzzqExbjL7NKqoO0QCh9491F-JU4Xb77dfmqQMD1d3Y5bC4K01TrpP8I8Ezj-Y9DYMneBghgLKt0hnZASbW6Z6EmtZ6rH7IhEqRvs_XQQ",
+                                            "e": "AQAB",
+                                            "kid": "AnSBZq98n8kTu5ZZVcI6z",
+                                            "x5t": "h-ngbFtTRUj7_Hk4PEpGEQPz6uk",
+                                            "x5c": [
+                                                    "MIIC/TCCAeWgAwIBAgIJSGMPmUBy4SFdMA0GCSqGSIb3DQEBCwUAMBwxGjAYBgNVBAMTEXhoaW8udXMuYXV0aDAuY29tMB4XDTIwMDkyNDE1MDkxM1oXDTM0MDYwMzE1MDkxM1owHDEaMBgGA1UEAxMReGhpby51cy5hdXRoMC5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCtDFGfqmsqyMv9lK7igHs3A7viLqFO5pAFxTHQ/T9gkNtlz3/mvk3MjGyihb9xoIlr+5HRVGtyMU4DfmPNGsa64pL9nt9E9l/y5rBXiPR7VFsenuh0AyruEHrQM5YvUKBzAKQHe6HbDyq4cgt8RD9YdtdgckuNPHzhsO9D7TvGT8+T+Xi6/XSZ1JzcrqgZkWltsCqm01pQCJSv8vABohNNE4FC/B5zlyQ3TumpdXRLWTY9TPOoTFuMvs0qqg7RAKH3j3UX4lThdvvt1+apAwPV3djlsLgrTVOuk/wjwTOP5j0Ngyd4GCGAsq3SGdkBJtbpnoSa1nqsfsiESpG+z9dBAgMBAAGjQjBAMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFACMb6rB4OR4LcecDazvYolIFAqLMA4GA1UdDwEB/wQEAwIChDANBgkqhkiG9w0BAQsFAAOCAQEAUu3qr9u0wpKus22n1Ugyj3IJRbkaJYkScs6kOforOVMPm6OcaUahhGgn58szc7I6iQcMqJePdDsQPlrs+SFH3RxtPsTq/hzxYTS9q07OfENEMxGUymoKUau41exSl6prF3wkaXpY0iGpzXxjH883sAhfn41ewIC1S8Zpcgg6dz/leOD/MMW2rbngWDAGBT5EAU9w561LPdi/M7/Ahb8JrGqe83sj+N1aSkm5FlJSCZMV9Cx2zfNPe2ivfEfDlVZkl+wwMH0zJ2hPqY/eHXDXOQO01O8r+4TR3h703e+BJL1vpCJT7j/kmjdMyA79Mw+zEBuofmQoWYoEhD+oM7uOiQ=="
+                                            ]
+                                    ]
+                            ]
+                    ],
+                    clientVisible: false,
+                    groupName: 'Auth0',
+                    note: 'JSON Web Key Set (JWKS) for validating Auth0 ID tokens.'
+            ],
             contacts: [
                     valueType: 'json',
                     defaultValue: [
