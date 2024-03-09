@@ -2,6 +2,10 @@
 
 ## v4.0-SNAPSHOT - unreleased
 
+### Technical
+* Remove obsolete `useOAuth` and `adminUsername` instanceConfigs.  Simplify bootstrapping 
+process to always use `Auth0` with `bootstrapAdminUser` for initial login. 
+
 ## v3.6.0 - 2024-01-19
 
 ### Libraries

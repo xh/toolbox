@@ -23,11 +23,6 @@ class Auth0Service extends BaseService {
     ConfigService configService
 
     Map getClientConfig() {
-
-        if (getInstanceConfig('useOAuth') == 'false') {
-            return [isEnabled: false]
-        }
-
         return [
             clientId: clientId,
             domain: domain

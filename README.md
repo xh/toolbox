@@ -56,10 +56,11 @@ _other_ data-driven app configurations.
 environment: Development
 serverURL: http://localhost
 
-# For first run of the project before you have OAuth set up. 
-useOAuth: false
-adminUsername: admin@xh.io 
-adminPassword: "a password of your choice"
+# The following is for use in early runs of the project, before you have granted roles to any users. 
+# Use a username here that you can authenticate with using Auth0 (e.g. github, google, microsoft) 
+# This user will be granted the role needed (HOIST_ROLE_MANAGER) to grant access to other users.
+# Note that this is only avaiable in local development mode. 
+bootstrapAdminUser: yourusername@example.com
 
 # Enable in memory h2 database option. When ready, configure proper DB below and set to false
 useH2: true
