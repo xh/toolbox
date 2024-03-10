@@ -1,11 +1,10 @@
-import {HoistAppModel, XH, loadAllAsync, managed} from '@xh/hoist/core';
+import {XH, loadAllAsync, managed} from '@xh/hoist/core';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {
     themeAppOption,
     sizingModeAppOption,
     autoRefreshAppOption
 } from '@xh/hoist/mobile/cmp/appOption';
-import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {buttonPage} from './buttons/ButtonPage';
 import {chartPage} from './charts/ChartPage';
@@ -23,8 +22,9 @@ import {popupsPage} from './popups/PopupsPage';
 import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
 import {treeGridPage} from './treegrids/TreeGridPage';
 import {zoneGridPage} from './zoneGrids/ZoneGridPage';
+import {BaseAppModel} from '../BaseAppModel';
 
-export class AppModel extends HoistAppModel {
+export class AppModel extends BaseAppModel {
     static instance: AppModel;
 
     @managed
@@ -135,23 +135,8 @@ export class AppModel extends HoistAppModel {
         return [themeAppOption(), sizingModeAppOption(), autoRefreshAppOption()];
     }
 
-    static override async preAuthAsync() {
-        const whitelist = ['toolbox.xh.io', 'toolbox-dev.xh.io', 'localhost'];
-        if (whitelist.includes(window.location.hostname)) {
-            await XH.installServicesAsync(OauthService);
-        } else {
-            // We are not running in an environment that is supported by auth0
-            // (presumably `yarn startOnDevice`), so fall back to username / password prompt.
-            XH.appSpec.isSSO = false;
-        }
-    }
-
     override async initAsync() {
         await XH.installServicesAsync(PortfolioService);
-    }
-
-    override async logoutAsync() {
-        await XH.oauthService.logoutAsync();
     }
 
     override async doLoadAsync(loadSpec) {

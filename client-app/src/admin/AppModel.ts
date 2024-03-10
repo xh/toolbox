@@ -1,16 +1,26 @@
 import {XH} from '@xh/hoist/core';
-import {AppModel as BaseAppModel} from '@xh/hoist/admin/AppModel';
+import {AppModel as BaseAdminAppModel} from '@xh/hoist/admin/AppModel';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {roadmapTab} from './roadmap/RoadmapTab';
 import {testsTab} from './tests/TestsTab';
 import {wipTab} from './wip/WipTab';
+import {OauthService} from '../core/svc/OauthService';
 
-export class AppModel extends BaseAppModel {
+export class AppModel extends BaseAdminAppModel {
     static override instance: AppModel;
 
     override async initAsync() {
+        await super.initAsync();
         await XH.installServicesAsync(PortfolioService);
+    }
+
+    static override async preAuthAsync() {
+        await XH.installServicesAsync(OauthService);
+    }
+
+    override async logoutAsync() {
+        await XH.oauthService.logoutAsync();
     }
 
     //------------------------
