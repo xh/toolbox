@@ -5,6 +5,8 @@ export const nameCol: ColumnSpec = {
     field: {name: 'name', type: 'string'},
     headerName: 'Name',
     minWidth: 180,
+    autosizeMinWidth: 180,
+    autosizeMaxWidth: 250,
     width: 200
 };
 
