@@ -11,7 +11,12 @@ import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
 
 export class FileManagerModel extends HoistModel {
     @managed
-    chooserModel = new FileChooserModel();
+    chooserModel = new FileChooserModel({
+        accept: this.acceptedFileTypes,
+        enableMulti: true,
+        enableAddMulti: true,
+        showFileGrid: true
+    });
 
     @managed
     gridModel = new GridModel({
@@ -80,6 +85,24 @@ export class FileManagerModel extends HoistModel {
     get enableDownload() {
         const sel = this.gridModel.selectedRecord;
         return sel && sel.data.status !== 'Pending Upload';
+    }
+
+    // Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
+    // accepted file types for sanity (and to demo the `accepts` prop).
+    get acceptedFileTypes(): string[] {
+        return [
+            '.txt',
+            '.png',
+            '.gif',
+            '.jpg',
+            '.doc',
+            '.docx',
+            '.xls',
+            '.xlsx',
+            '.ppt',
+            '.pptx',
+            '.pdf'
+        ];
     }
 
     constructor() {

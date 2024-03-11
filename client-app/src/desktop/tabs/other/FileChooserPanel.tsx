@@ -1,8 +1,8 @@
 import React, {Fragment} from 'react';
-import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
+import {makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {filler, span} from '@xh/hoist/cmp/layout';
+import {filler, p, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -10,13 +10,13 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {pluralize} from '@xh/hoist/utils/js';
 import {wrapper} from '../../common';
+import {isEmpty} from 'lodash';
 
 export const fileChooserPanel = hoistCmp.factory({
     model: creates(() => FileChooserPanelModel),
 
     render({model}) {
-        const {chooserModel, enableMulti, enableAddMulti, showFileGrid} = model;
-
+        const {chooserModel} = model;
         return wrapper({
             description: [
                 <p>
@@ -49,35 +49,22 @@ export const fileChooserPanel = hoistCmp.factory({
                 icon: Icon.copy(),
                 width: 700,
                 height: 400,
-                item: fileChooser({
-                    flex: 1,
-                    enableMulti,
-                    enableAddMulti,
-                    showFileGrid,
-                    accept: ['.txt', '.png'],
-                    targetText: (
-                        <Fragment>
-                            <p>Drag and drop files here, or click to browse.</p>
-                            <p>
-                                Note that this example is configured to accept only{' '}
-                                <code>*.txt</code> and <code>*.png</code> file types.
-                            </p>
-                        </Fragment>
-                    ),
-                    model: chooserModel
-                }),
+                item: fileChooser({flex: 1}),
                 bbar: [
                     span('Show grid:'),
                     switchInput({
+                        model: chooserModel,
                         bind: 'showFileGrid'
                     }),
                     toolbarSep(),
                     span('Enable Multiple:'),
                     switchInput({
+                        model: chooserModel,
                         bind: 'enableMulti'
                     }),
                     span('Enable Bulk Addition: '),
                     switchInput({
+                        model: chooserModel,
                         bind: 'enableAddMulti'
                     }),
                     filler(),
@@ -96,19 +83,41 @@ export const fileChooserPanel = hoistCmp.factory({
 
 class FileChooserPanelModel extends HoistModel {
     @managed
-    chooserModel = new FileChooserModel();
-
-    @bindable
-    enableMulti = true;
-
-    @bindable
-    enableAddMulti = true;
-
-    @bindable
-    showFileGrid = true;
+    chooserModel: FileChooserModel = new FileChooserModel({
+        accept: ['.txt', '.png'],
+        targetDisplay: (model, draggedFiles) => {
+            return !isEmpty(draggedFiles) ? (
+                p(`Drop to add ${draggedFiles.length} ${pluralize('file', draggedFiles.length)}.`)
+            ) : (
+                <Fragment>
+                    <p>Drag and drop files here, or click to browse.</p>
+                    <p>
+                        Note that this example is configured to accept only <code>*.txt</code> and{' '}
+                        <code>*.png</code> file types.
+                    </p>
+                </Fragment>
+            );
+        }
+    });
 
     constructor() {
         super();
         makeObservable(this);
+
+        this.addReaction({
+            track: () => [this.chooserModel.lastAccepted, this.chooserModel.lastRejected],
+            run: () => {
+                const {lastAccepted, lastRejected} = this.chooserModel;
+                if (!isEmpty(lastAccepted)) {
+                    XH.toast(`Accepted ${lastAccepted.length} files.`);
+                }
+                if (!isEmpty(lastRejected)) {
+                    XH.toast({
+                        message: `Rejected ${lastRejected.length} files.`,
+                        intent: 'warning'
+                    });
+                }
+            }
+        });
     }
 }
