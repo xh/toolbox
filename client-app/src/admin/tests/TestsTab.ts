@@ -13,6 +13,7 @@ import {dataViewTestPanel} from './dataview/DataViewTestPanel';
 import {storeColumnFilterPanel} from './columnFilters/store/StoreColumnFilterPanel';
 import {viewColumnFilterPanel} from './columnFilters/view/ViewColumnFilterPanel';
 import {gridScrolling} from './gridScrolling/GridScrolling';
+import {buttonTestPanel} from './button/ButtonTestPanel';
 
 export const testsTab = hoistCmp.factory(() => {
     return tabContainer({
@@ -39,7 +40,8 @@ export const testsTab = hoistCmp.factory(() => {
                     id: 'viewColumnFilters',
                     title: 'View Column Filters',
                     content: viewColumnFilterPanel
-                }
+                },
+                {id: 'button', title: 'Buttons', content: buttonTestPanel}
             ]
         }
     });

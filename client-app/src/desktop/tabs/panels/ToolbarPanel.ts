@@ -1,4 +1,5 @@
 import {filler, hframe, placeholder, span} from '@xh/hoist/cmp/layout';
+import {splitButton} from '@xh/hoist/desktop/cmp/button';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -68,6 +69,23 @@ const topBar = hoistCmp.factory<ToolbarPanelModel>(({model}) =>
                     menuItem({text: 'Menu Item 2'}),
                     menuItem({text: 'Menu Item 3'})
                 )
+            }),
+            splitButton({
+                text: 'Split Buttons',
+                icon: Icon.books(),
+                onClick: () => window.open('/app/examples', '_blank'),
+                menuItems: [
+                    {
+                        text: 'Portfolio App',
+                        icon: Icon.portfolio(),
+                        actionFn: () => window.open('/portfolio', '_blank')
+                    },
+                    {
+                        text: 'News App',
+                        icon: Icon.news(),
+                        actionFn: () => window.open('/news', '_blank')
+                    }
+                ]
             }),
             filler(),
             switchInput({
