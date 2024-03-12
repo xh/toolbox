@@ -3,10 +3,16 @@ import {creates, hoistCmp, HoistModel, lookup, managed, XH} from '@xh/hoist/core
 import {fmtDate} from '@xh/hoist/format';
 import {ChartsPanelModel} from './ChartsPanelModel';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {DataNotAvailableError} from '../../../../core/svc/PortfolioService';
+import {bindable} from '@xh/hoist/mobx';
+import {errorMessage} from '@xh/hoist/dynamics/desktop';
 
 export const lineChart = hoistCmp.factory({
     model: creates(() => LineChartModel),
-    render() {
+    render({model}) {
+        if (model.error) {
+            return errorMessage({error: model.error});
+        }
         return panel({
             item: chart(),
             mask: 'onLoad',
@@ -17,6 +23,7 @@ export const lineChart = hoistCmp.factory({
 
 class LineChartModel extends HoistModel {
     @lookup(ChartsPanelModel) parentModel;
+    @bindable.ref error;
 
     get symbol() {
         return this.parentModel.symbol;
@@ -75,6 +82,11 @@ class LineChartModel extends HoistModel {
                 chartModel.setSeries(series);
             }
         } catch (e) {
+            if (e instanceof DataNotAvailableError) {
+                this.error = e;
+                XH.handleException(e, {showAlert: false});
+                return;
+            }
             chartModel.clear();
             XH.handleException(e);
         }

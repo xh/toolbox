@@ -3,6 +3,11 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
 
+export class DataNotAvailableError extends Error {
+    constructor(symbol?: string) {
+        super(`Data not available for symbol: ${symbol}`);
+    }
+}
 export class PortfolioService extends HoistService {
     static instance: PortfolioService;
 
@@ -101,6 +106,9 @@ export class PortfolioService extends HoistService {
 
     async getLineChartSeriesAsync({symbol, dimension = 'volume', loadSpec}) {
         const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`, loadSpec});
+        if (mktData) {
+            throw new DataNotAvailableError(symbol);
+        }
         return {
             name: symbol,
             type: 'line',
