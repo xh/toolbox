@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack --env prodBuild",
     "buildAndAnalyze": "webpack --env prodBuild --env analyzeBundles",
+    "buildAndRun": "webpack --env prodBuild --env baseUrl=http://localhost:8080/ && serve ./build/",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "yarn lint:all",
     "lint:all": "yarn lint:js && yarn lint:styles",
