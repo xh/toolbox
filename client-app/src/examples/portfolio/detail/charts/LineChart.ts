@@ -3,7 +3,6 @@ import {creates, hoistCmp, HoistModel, lookup, managed, XH} from '@xh/hoist/core
 import {fmtDate} from '@xh/hoist/format';
 import {ChartsPanelModel} from './ChartsPanelModel';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {DataNotAvailableError} from '../../../../core/svc/PortfolioService';
 import {bindable} from '@xh/hoist/mobx';
 import {errorMessage} from '@xh/hoist/dynamics/desktop';
 
@@ -69,6 +68,7 @@ class LineChartModel extends HoistModel {
 
     override async doLoadAsync(loadSpec) {
         const {symbol, chartModel} = this;
+        this.error = null;
 
         if (!symbol) {
             chartModel.clear();
@@ -82,13 +82,9 @@ class LineChartModel extends HoistModel {
                 chartModel.setSeries(series);
             }
         } catch (e) {
-            if (e instanceof DataNotAvailableError) {
-                this.error = e;
-                XH.handleException(e, {showAlert: false});
-                return;
-            }
+            this.error = e;
             chartModel.clear();
-            XH.handleException(e);
+            XH.handleException(e, {showAlert: false});
         }
     }
 }
