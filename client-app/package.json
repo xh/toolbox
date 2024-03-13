@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack --env prodBuild",
     "buildAndAnalyze": "webpack --env prodBuild --env analyzeBundles",
-    "buildAndRun": "webpack --env prodBuild --env baseUrl=http://localhost:8080/ && serve ./build/",
+    "buildAndRun": "webpack --env prodBuild --env baseUrl=http://localhost:8080/ && yarn serveProd",
+    "serveProd": "serve",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "yarn lint:all",
     "lint:all": "yarn lint:js && yarn lint:styles",
@@ -44,7 +45,7 @@
     "@ag-grid-enterprise/sparklines": "~30.2.1",
     "@auth0/auth0-spa-js": "~1.22.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^61.0.0-SNAPSHOT",
+    "@xh/hoist": "62.0.0-SNAPSHOT.1710341156601",
     "@xh/package-template": "~2.0.0",
     "core-js": "3.x",
     "highcharts": "11.x",
@@ -54,7 +55,7 @@
     "react-dom": "~18.2.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "^8.0.0-SNAPSHOT",
+    "@xh/hoist-dev-utils": "8.0.0-SNAPSHOT.1710340454769",
     "cross-env": "7.x",
     "eslint": "8.x",
     "eslint-config-prettier": "9.x",
@@ -62,6 +63,7 @@
     "lint-staged": "15.x",
     "postcss": "8.x",
     "prettier": "3.x",
+    "serve": "^14.2.1",
     "stylelint": "16.x",
     "stylelint-config-standard-scss": "13.x",
     "typescript": "~5.1.6"
