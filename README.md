@@ -56,11 +56,13 @@ _other_ data-driven app configurations.
 environment: Development
 serverURL: http://localhost
 
-# The following is for use in early runs of the project, before you have granted roles to any users. 
-# Use a username here that you can authenticate with using Auth0 (e.g. github, google, microsoft) 
+# The following is for use in early runs of the project before you have granted roles to any users,
+  in cases where Auth0 isn't acting as expected, or you're hosting the app on a device. 
 # This user will be granted the role needed (HOIST_ROLE_MANAGER) to grant access to other users.
-# Note that this is only avaiable in local development mode. 
+# Note that this is only available in local development mode via the bootstrapLogin app that you'll
+  have to navigate to from the address bar on load. 
 bootstrapAdminUser: yourusername@example.com
+bootstrapAdminPassword: "your password"
 
 # Enable in memory h2 database option. When ready, configure proper DB below and set to false
 useH2: true

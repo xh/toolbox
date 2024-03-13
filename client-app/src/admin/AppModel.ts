@@ -6,6 +6,7 @@ import {roadmapTab} from './roadmap/RoadmapTab';
 import {testsTab} from './tests/TestsTab';
 import {wipTab} from './wip/WipTab';
 import {OauthService} from '../core/svc/OauthService';
+import {BaseAppModel} from '../BaseAppModel';
 
 export class AppModel extends BaseAdminAppModel {
     static override instance: AppModel;
@@ -16,7 +17,9 @@ export class AppModel extends BaseAdminAppModel {
     }
 
     static override async preAuthAsync() {
-        await XH.installServicesAsync(OauthService);
+        if (!(await BaseAppModel.isSessionActiveOnDev())) {
+            await XH.installServicesAsync(OauthService);
+        }
     }
 
     override async logoutAsync() {

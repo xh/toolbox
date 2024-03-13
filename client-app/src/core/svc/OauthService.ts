@@ -97,7 +97,7 @@ export class OauthService extends HoistService {
         return claims?.__raw;
     }
 
-    private async checkAuthAsync() {
+    private async checkAuthAsync(): Promise<boolean> {
         return this.auth0.isAuthenticated();
     }
 

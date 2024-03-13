@@ -21,6 +21,7 @@ class BootStrap {
 
         ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
+        createLocalAdminUserIfNeeded()
 
         def services = xhServices.findAll {
             it.class.canonicalName.startsWith(this.class.package.name)
@@ -35,6 +36,30 @@ class BootStrap {
     //------------------------
     // Implementation
     //------------------------
+    @Transactional
+    private void createLocalAdminUserIfNeeded() {
+        String adminUsername = getInstanceConfig('bootstrapAdminUser')
+        String adminPassword = getInstanceConfig('bootstrapAdminPassword')
+        if (adminUsername && adminPassword) {
+            def user = User.findByEmail(adminUsername)
+            if (!user) {
+                new User(
+                    email: adminUsername,
+                    password: adminPassword,
+                    name: 'Toolbox Admin',
+                    profilePicUrl: 'https://xh.io/images/toolbox-admin-profile-pic.png'
+                ).save(flush: true)
+            } else if (!user.checkPassword(adminPassword)) {
+                user.password = adminPassword
+                user.save(flush: true)
+            }
+
+            log.info("Local admin user available as per instanceConfig | $adminUsername")
+        } else {
+            log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
+        }
+    }
+
     private void logStartupMsg() {
         log.info("""
 \n
