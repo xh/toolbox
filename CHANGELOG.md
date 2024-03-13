@@ -2,8 +2,16 @@
 
 ## v4.0-SNAPSHOT - unreleased
 
-## v3.6.0 - 2024-01-19
+### New Features
 
+* Added `package.json` script `buildAndRun` for easier testing of prod build.
+
+### Libraries
+
+* @xh/hoist 62.0.0
+* @xh/hoist-dev-utils 8.0.0
+
+## v3.6.0 - 2024-01-19
 
 ### Libraries
 

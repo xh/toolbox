@@ -1,0 +1,16 @@
+{
+  "public": "./build/",
+  "redirects": [
+    { "source": "/", "destination": "/app/" }
+  ],
+  "rewrites": [
+    { "source": "/app/**", "destination": "/app/index.html" },
+    { "source": "/contact/**", "destination": "/contact/index.html" },
+    { "source": "/fileManager/**", "destination": "/fileManager/index.html" },
+    { "source": "/mobile/**", "destination": "/mobile/index.html" },
+    { "source": "/news/**", "destination": "/news/index.html" },
+    { "source": "/portfolio/**", "destination": "/portfolio/index.html" },
+    { "source": "/recalls/**", "destination": "/recalls/index.html" },
+    { "source": "/todo/**", "destination": "/todo/index.html" }
+  ]
+}
