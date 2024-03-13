@@ -3,14 +3,13 @@ import {creates, hoistCmp, HoistModel, lookup, managed, XH} from '@xh/hoist/core
 import {fmtDate} from '@xh/hoist/format';
 import {ChartsPanelModel} from './ChartsPanelModel';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {bindable} from '@xh/hoist/mobx';
 import {errorMessage} from '@xh/hoist/dynamics/desktop';
 
 export const lineChart = hoistCmp.factory({
     model: creates(() => LineChartModel),
     render({model}) {
-        if (model.error) {
-            return errorMessage({error: model.error});
+        if (model.lastLoadException) {
+            return errorMessage({error: model.lastLoadException});
         }
         return panel({
             item: chart(),
@@ -22,7 +21,6 @@ export const lineChart = hoistCmp.factory({
 
 class LineChartModel extends HoistModel {
     @lookup(ChartsPanelModel) parentModel;
-    @bindable.ref error;
 
     get symbol() {
         return this.parentModel.symbol;
@@ -76,14 +74,14 @@ class LineChartModel extends HoistModel {
 
         try {
             const series = await XH.portfolioService.getLineChartSeriesAsync({symbol, loadSpec});
-            if (!loadSpec.isObsolete) {
+            if (!loadSpec.isStale) {
                 chartModel.setSeries(series);
             }
-            this.error = null;
         } catch (e) {
-            this.error = e;
+            if (loadSpec.isAutoRefresh || loadSpec.isStale) return;
             chartModel.clear();
             XH.handleException(e, {showAlert: false});
+            throw e;
         }
     }
 }
