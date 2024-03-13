@@ -86,7 +86,6 @@ class OHLCChartModel extends HoistModel {
 
     override async doLoadAsync(loadSpec) {
         const {symbol, chartModel} = this;
-        this.error = null;
 
         if (!symbol) {
             chartModel.clear();
@@ -98,6 +97,7 @@ class OHLCChartModel extends HoistModel {
             if (!loadSpec.isObsolete) {
                 chartModel.setSeries(series);
             }
+            this.error = null;
         } catch (e) {
             this.error = e;
             chartModel.clear();

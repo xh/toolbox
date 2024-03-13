@@ -68,7 +68,6 @@ class LineChartModel extends HoistModel {
 
     override async doLoadAsync(loadSpec) {
         const {symbol, chartModel} = this;
-        this.error = null;
 
         if (!symbol) {
             chartModel.clear();
@@ -77,10 +76,10 @@ class LineChartModel extends HoistModel {
 
         try {
             const series = await XH.portfolioService.getLineChartSeriesAsync({symbol, loadSpec});
-
             if (!loadSpec.isObsolete) {
                 chartModel.setSeries(series);
             }
+            this.error = null;
         } catch (e) {
             this.error = e;
             chartModel.clear();
