@@ -2,6 +2,9 @@
 
 ## v4.0-SNAPSHOT - unreleased
 
+### New Features
+* Enabled new Correlation ID tracking support in Hoist.
+
 ## v3.6.0 - 2024-01-19
 
 
