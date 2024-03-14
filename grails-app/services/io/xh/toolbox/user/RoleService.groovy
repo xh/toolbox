@@ -13,10 +13,6 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
  */
 class RoleService extends DefaultRoleService {
 
-    void init() {
-        super.init()
-    }
-
     /** Toolbox does not use any external directory (such as LDAP/AD) for group membership. */
     boolean getDirectoryGroupsSupported() {
         return false

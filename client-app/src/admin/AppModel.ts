@@ -1,5 +1,5 @@
 import {XH} from '@xh/hoist/core';
-import {AppModel as BaseAdminAppModel} from '@xh/hoist/admin/AppModel';
+import {AppModel as HoistAdminAppModel} from '@xh/hoist/admin/AppModel';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {roadmapTab} from './roadmap/RoadmapTab';
@@ -8,7 +8,7 @@ import {wipTab} from './wip/WipTab';
 import {OauthService} from '../core/svc/OauthService';
 import {BaseAppModel} from '../BaseAppModel';
 
-export class AppModel extends BaseAdminAppModel {
+export class AppModel extends HoistAdminAppModel {
     static override instance: AppModel;
 
     override async initAsync() {
@@ -17,13 +17,15 @@ export class AppModel extends BaseAdminAppModel {
     }
 
     static override async preAuthAsync() {
-        if (!(await BaseAppModel.isSessionActiveOnDev())) {
+        if (!(await BaseAppModel.shouldSkipOAuth())) {
             await XH.installServicesAsync(OauthService);
         }
     }
 
     override async logoutAsync() {
-        await XH.oauthService.logoutAsync();
+        if (XH.oauthService) {
+            await XH.oauthService.logoutAsync();
+        }
     }
 
     //------------------------

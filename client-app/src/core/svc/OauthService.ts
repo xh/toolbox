@@ -45,8 +45,8 @@ export class OauthService extends HoistService {
         if (!config?.domain || !config?.clientId) {
             throw XH.exception(`
                 Unable to init OAuthService - expected config not returned by server. 
-                Please review the settings in configs "auth0ClientId", "auth0Domain",
-                and "auth0Jks".  Default values for these configs are provided in "Bootstrap.groovy"
+                Please review the settings in configs "auth0ClientId" and "auth0Domain".
+                Default values for these configs are provided in "Bootstrap.groovy"
             `);
         }
 

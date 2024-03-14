@@ -17,7 +17,6 @@ XH.renderApp({
     containerClass: AppContainer,
     isMobileApp: false,
     isSSO: false,
-    webSocketsEnabled: true,
     checkAccess: () => true,
     loginMessage: `This login is only for development when OAuth isn't acting as expected or for when hosting the app on
     your device. Use the Bootstrap Admin credentials set in your instance config file.`

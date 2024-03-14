@@ -3,11 +3,14 @@ package io.xh.toolbox.security
 import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
+import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONParser
 import io.xh.hoist.json.JSONSerializer
+import org.apache.hc.client5.http.classic.methods.HttpGet
 import org.jose4j.jwk.JsonWebKeySet
 import org.jose4j.jwk.VerificationJwkSelector
 import org.jose4j.jws.JsonWebSignature
+
 
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
@@ -17,8 +20,9 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 @Slf4j
 class Auth0Service extends BaseService {
 
+    private JSONClient _jsonClient
 
-    static clearCachesConfigs = ['auth0Domain', 'auth0ClientId', 'auth0Jwks']
+    static clearCachesConfigs = ['auth0Domain', 'auth0ClientId']
 
     ConfigService configService
 
@@ -65,21 +69,26 @@ class Auth0Service extends BaseService {
     //------------------------
     // Implementation
     //------------------------
-    private JsonWebKeySet _jkws
-    JsonWebKeySet getJsonWebKeySet() {
-        if (!_jkws) {
-            // Yes, this is a bit odd - we get a JSON config then re-serialize to JSON to pass to
-            // JWKS ctor. Could store as string config, but keeping as JSON in configService gives
-            // us a nicer UI to view/update in admin console.
-            def jwksJson = JSONSerializer.serialize(configService.getMap('auth0Jwks'))
-            _jkws = new JsonWebKeySet(jwksJson)
+    private JSONClient getClient() {
+        if (!_jsonClient) {
+            _jsonClient = new JSONClient()
+        }
+        return _jsonClient
+    }
 
-            if (!_jkws.jsonWebKeys.size()) {
-                throw new RuntimeException("Unable to build valid key set from 'auth0Jwks' app config")
+    private JsonWebKeySet _jwks
+    JsonWebKeySet getJsonWebKeySet() {
+        if (!_jwks) {
+            def url = "https://${domain}/.well-known/jwks.json",
+                jwksJson = client.executeAsString(new HttpGet(url))
+            _jwks = new JsonWebKeySet(jwksJson)
+
+            if (!_jwks.jsonWebKeys.size()) {
+                throw new RuntimeException("Unable to build valid key set from remote JWKS endpoint.")
             }
         }
 
-        return _jkws
+        return _jwks
     }
 
     private String getClientId() {
@@ -91,7 +100,9 @@ class Auth0Service extends BaseService {
     }
 
     void clearCaches() {
-        _jkws = null
+        super.clearCaches()
+        _jsonClient = null
+        _jwks = null
     }
 
 }
