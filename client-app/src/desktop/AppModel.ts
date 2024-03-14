@@ -56,6 +56,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override async initAsync() {
+        XH.fetchService.setGenerateCorrelationIdsByDefault(true);
         await XH.installServicesAsync(GitHubService, PortfolioService);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
