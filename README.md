@@ -56,11 +56,11 @@ _other_ data-driven app configurations.
 environment: Development
 serverURL: http://localhost
 
-# The following is for use in early runs of the project before you have granted roles to any users,
-  in cases where Auth0 isn't acting as expected, or you're hosting the app on a device. 
-# This user will be granted the role needed (HOIST_ROLE_MANAGER) to grant access to other users.
-# Note that this is only available in local development mode via the bootstrapLogin app that you'll
-  have to navigate to from the address bar on load. 
+# The following are for use in early runs of the project before you have granted roles to any users,
+# or in cases where Auth0 isn't acting as expected, or you're hosting the app on a device. 
+# The bootstrapAdminUser will be available for forms based login and will be granted the role 
+# needed (HOIST_ROLE_MANAGER) to grant access to other users.
+useOAuth: false
 bootstrapAdminUser: yourusername@example.com
 bootstrapAdminPassword: "your password"
 

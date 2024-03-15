@@ -25,6 +25,12 @@ import {SECONDS} from '@xh/hoist/utils/datetime';
 export class OauthService extends HoistService {
     static instance: OauthService;
 
+    /**
+     * Is OAuth enabled in this application?  For bootstrapping, troubleshooting
+     * and mobile development, we allow running in a non-SSO mode.
+     */
+    enabled: boolean;
+
     auth0: Auth0Client;
     /** Authenticated user info as provided by Auth0. */
     user: PlainObject;
@@ -41,6 +47,12 @@ export class OauthService extends HoistService {
         const config = (this.config = await XH.fetchJson({
             url: 'oauthConfig'
         }).catchDefault());
+
+        this.enabled = config.enabled;
+        if (!this.enabled) {
+            XH.appSpec.isSSO = false;
+            return;
+        }
 
         if (!config?.domain || !config?.clientId) {
             throw XH.exception(`
@@ -92,6 +104,9 @@ export class OauthService extends HoistService {
         }
     }
 
+    //------------------
+    // Implementation
+    //-----------------
     private async getIdTokenAsync() {
         const claims = await this.auth0.getIdTokenClaims();
         return claims?.__raw;
@@ -105,6 +120,7 @@ export class OauthService extends HoistService {
      * Logout of both Hoist session and Auth0 Oauth session (if active).
      */
     async logoutAsync() {
+        if (!this.enabled) return;
         try {
             const hasOauth = await this.checkAuthAsync();
             if (hasOauth) {

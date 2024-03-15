@@ -6,26 +6,21 @@ import {roadmapTab} from './roadmap/RoadmapTab';
 import {testsTab} from './tests/TestsTab';
 import {wipTab} from './wip/WipTab';
 import {OauthService} from '../core/svc/OauthService';
-import {BaseAppModel} from '../BaseAppModel';
 
 export class AppModel extends HoistAdminAppModel {
     static override instance: AppModel;
+
+    static override async preAuthAsync() {
+        await XH.installServicesAsync(OauthService);
+    }
 
     override async initAsync() {
         await super.initAsync();
         await XH.installServicesAsync(PortfolioService);
     }
 
-    static override async preAuthAsync() {
-        if (!(await BaseAppModel.shouldSkipOAuth())) {
-            await XH.installServicesAsync(OauthService);
-        }
-    }
-
     override async logoutAsync() {
-        if (XH.oauthService) {
-            await XH.oauthService.logoutAsync();
-        }
+        XH.oauthService.enabled ? await XH.oauthService.logoutAsync() : await super.logoutAsync();
     }
 
     //------------------------

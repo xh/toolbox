@@ -5,7 +5,6 @@ import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONParser
-import io.xh.hoist.json.JSONSerializer
 import org.apache.hc.client5.http.classic.methods.HttpGet
 import org.jose4j.jwk.JsonWebKeySet
 import org.jose4j.jwk.VerificationJwkSelector
@@ -27,7 +26,13 @@ class Auth0Service extends BaseService {
     ConfigService configService
 
     Map getClientConfig() {
+
+        if (getInstanceConfig('useOAuth') == 'false') {
+            return [enabled: false]
+        }
+
         return [
+            enabled: true,
             clientId: clientId,
             domain: domain
         ]
