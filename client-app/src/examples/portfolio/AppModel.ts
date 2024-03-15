@@ -15,6 +15,7 @@ export class AppModel extends HoistAppModel {
     }
 
     override async initAsync() {
+        XH.fetchService.enableCorrelationIds('toolbox-portfolio');
         await XH.installServicesAsync(PortfolioService);
 
         this.addReaction({
