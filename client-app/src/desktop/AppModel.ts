@@ -184,6 +184,11 @@ export class AppModel extends BaseAppModel {
                                 name: 'simpleRouting',
                                 path: '/simpleRouting',
                                 children: [{name: 'recordId', path: '/:recordId'}]
+                            },
+                            {
+                                name: 'advancedRouting',
+                                path: '/advancedRouting',
+                                children: [{name: 'routeParam', path: '/:routeParam'}]
                             }
                         ]
                     },
