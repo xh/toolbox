@@ -38,9 +38,8 @@ class BootStrap {
     //------------------------
     @Transactional
     private void createLocalAdminUserIfNeeded() {
-        String adminUsername = getInstanceConfig('adminUsername')
-        String adminPassword = getInstanceConfig('adminPassword')
-
+        String adminUsername = getInstanceConfig('bootstrapAdminUser')
+        String adminPassword = getInstanceConfig('bootstrapAdminPassword')
         if (adminUsername && adminPassword) {
             def user = User.findByEmail(adminUsername)
             if (!user) {
@@ -77,6 +76,20 @@ class BootStrap {
 
     private void ensureRequiredConfigsCreated() {
         configService.ensureRequiredConfigsCreated([
+            auth0ClientId: [
+                    valueType: 'string',
+                    defaultValue: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
+                    clientVisible: false,
+                    groupName: 'Auth0',
+                    note: 'Client ID of the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
+            ],
+            auth0Domain: [
+                    valueType: 'string',
+                    defaultValue: 'login.xh.io',
+                    clientVisible: false,
+                    groupName: 'Auth0',
+                    note: 'Custom domain for our Auth0 deployment. OAuth login flow will redirect users here.'
+            ],
             contacts: [
                     valueType: 'json',
                     defaultValue: [
