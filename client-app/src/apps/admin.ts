@@ -14,5 +14,6 @@ XH.renderApp({
     isMobileApp: false,
     isSSO: true,
     webSocketsEnabled: true,
-    checkAccess: 'HOIST_ADMIN_READER'
+    checkAccess: 'HOIST_ADMIN_READER',
+    lockoutMessage: "Contact support@xh.io for information on Hoist's bundled Admin Console."
 });

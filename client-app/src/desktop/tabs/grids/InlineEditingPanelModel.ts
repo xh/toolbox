@@ -17,7 +17,6 @@ import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
-import {withDebug} from '@xh/hoist/utils/js';
 
 export class InlineEditingPanelModel extends HoistModel {
     @bindable
@@ -69,7 +68,7 @@ export class InlineEditingPanelModel extends HoistModel {
             });
         }
 
-        withDebug(`Adding ${count} Records`, () => this.store.addRecords(data), this);
+        this.withDebug(`Adding ${count} Records`, () => this.store.addRecords(data));
 
         this.gridModel.beginEditAsync({record: firstId});
     }

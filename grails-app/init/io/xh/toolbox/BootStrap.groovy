@@ -3,7 +3,6 @@ package io.xh.toolbox
 import grails.gorm.transactions.Transactional
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.pref.PrefService
-import io.xh.hoist.role.RoleAdminService
 import io.xh.toolbox.user.User
 
 import java.time.LocalDate
@@ -16,13 +15,13 @@ class BootStrap {
 
     ConfigService configService
     PrefService prefService
-    RoleAdminService roleAdminService
 
     def init = {servletContext ->
         logStartupMsg()
 
         ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
+        createLocalAdminUserIfNeeded()
 
         def services = xhServices.findAll {
             it.class.canonicalName.startsWith(this.class.package.name)
@@ -30,7 +29,6 @@ class BootStrap {
         parallelInit(services)
 
         JavaTest.helloWorld()
-        createLocalAdminUserIfNeeded()
     }
 
     def destroy = {}
@@ -40,9 +38,8 @@ class BootStrap {
     //------------------------
     @Transactional
     private void createLocalAdminUserIfNeeded() {
-        String adminUsername = getInstanceConfig('adminUsername')
-        String adminPassword = getInstanceConfig('adminPassword')
-
+        String adminUsername = getInstanceConfig('bootstrapAdminUser')
+        String adminPassword = getInstanceConfig('bootstrapAdminPassword')
         if (adminUsername && adminPassword) {
             def user = User.findByEmail(adminUsername)
             if (!user) {
@@ -56,19 +53,8 @@ class BootStrap {
                 user.password = adminPassword
                 user.save(flush: true)
             }
-            roleAdminService.ensureUserHasRoles(user, ['HOIST_ADMIN', 'HOIST_ADMIN_READER', 'HOIST_ROLE_MANAGER'])
 
             log.info("Local admin user available as per instanceConfig | $adminUsername")
-
-            configService.ensureRequiredConfigsCreated(
-                jsLicenses: [
-                    groupName: 'Toolbox',
-                    valueType: 'json',
-                    defaultValue: [agGrid: null],
-                    clientVisible: true,
-                    note: 'Provide any js licenses needed by client here.'
-                ]
-            )
         } else {
             log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
@@ -90,6 +76,20 @@ class BootStrap {
 
     private void ensureRequiredConfigsCreated() {
         configService.ensureRequiredConfigsCreated([
+            auth0ClientId: [
+                    valueType: 'string',
+                    defaultValue: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
+                    clientVisible: false,
+                    groupName: 'Auth0',
+                    note: 'Client ID of the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
+            ],
+            auth0Domain: [
+                    valueType: 'string',
+                    defaultValue: 'login.xh.io',
+                    clientVisible: false,
+                    groupName: 'Auth0',
+                    note: 'Custom domain for our Auth0 deployment. OAuth login flow will redirect users here.'
+            ],
             contacts: [
                     valueType: 'json',
                     defaultValue: [
@@ -182,6 +182,13 @@ class BootStrap {
                     ],
                     clientVisible: true,
                     groupName: 'Toolbox'
+            ],
+            jsLicenses: [
+                    groupName: 'Toolbox',
+                    valueType: 'json',
+                    defaultValue: [agGrid: null],
+                    clientVisible: true,
+                    note: 'Provide any js licenses needed by client here.'
             ]
         ])
     }

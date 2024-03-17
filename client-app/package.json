@@ -16,7 +16,7 @@
     "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
     "startWithHoistAndAnalyze": "yarn startWithHoist --env analyzeBundles",
-    "prepare": "cd .. && husky install client-app/.husky"
+    "prepare": "cd .. && husky client-app/.husky"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -43,7 +43,7 @@
     "@ag-grid-enterprise/sparklines": "~30.2.1",
     "@auth0/auth0-spa-js": "~1.22.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^61.0.0-SNAPSHOT",
+    "@xh/hoist": "^62.0.0-SNAPSHOT",
     "@xh/package-template": "~2.0.0",
     "core-js": "3.x",
     "highcharts": "11.x",
@@ -57,12 +57,12 @@
     "cross-env": "7.x",
     "eslint": "8.x",
     "eslint-config-prettier": "9.x",
-    "husky": "8.x",
+    "husky": "9.x",
     "lint-staged": "15.x",
     "postcss": "8.x",
     "prettier": "3.x",
-    "stylelint": "15.x",
-    "stylelint-config-standard-scss": "11.x",
+    "stylelint": "16.x",
+    "stylelint-config-standard-scss": "13.x",
     "typescript": "~5.1.6"
   },
   "resolutions": {

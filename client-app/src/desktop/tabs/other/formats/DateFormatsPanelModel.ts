@@ -60,7 +60,7 @@ export class DateFormatsPanelModel extends HoistModel {
         try {
             return formatFunctions[this.fnName](input, options);
         } catch (e) {
-            console.error(e);
+            this.logError(e);
             return '#exception#';
         }
     }

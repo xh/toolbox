@@ -1,5 +1,34 @@
 # Changelog
 
+## v4.0-SNAPSHOT - unreleased
+
+### New Features
+* Adds new `bootstrapLogin` app that uses `bootstrapAdminUser` and `bootstrapAdminPassword`to bypass
+`Auth0` login in development mode when `Auth0` itself isn't working or when running the app via 
+`yarn startOnDevice`.
+
+### Technical
+* Remove obsolete `useOAuth` and `adminUsername` instanceConfigs.  Simplify bootstrapping 
+process to always use `Auth0` with `bootstrapAdminUser` for initial login.
+
+## v3.6.0 - 2024-01-19
+
+
+### Libraries
+
+* @xh/hoist 60.1.0
+* hoist-core 18.1.0
+
+## v3.5.0 - 2024-01-12
+
+### New Features
+* Migrate to built-in role management.
+
+### Libraries
+
+* @xh/hoist 60.0.0
+* hoist-core 18.0.0
+
 ## v3.4.0 - 2023-11-09
 
 ### New Features
