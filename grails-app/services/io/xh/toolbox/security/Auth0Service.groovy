@@ -83,6 +83,7 @@ class Auth0Service extends BaseService {
 
     private JsonWebKeySet _jwks
     JsonWebKeySet getJsonWebKeySet() {
+        boolean isRemote = false;
         if (!_jwks) {
             def url = "https://${domain}/.well-known/jwks.json",
                 jwksJson = client.executeAsString(new HttpGet(url))
@@ -91,8 +92,10 @@ class Auth0Service extends BaseService {
             if (!_jwks.jsonWebKeys.size()) {
                 throw new RuntimeException("Unable to build valid key set from remote JWKS endpoint.")
             }
-        }
+            isRemote = true;
 
+        }
+        log.info("Successfully fetched and parsed JWKS from ${isRemote ? 'remote' : 'cached'} source.")
         return _jwks
     }
 
