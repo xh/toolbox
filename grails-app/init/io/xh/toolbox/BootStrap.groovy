@@ -69,7 +69,7 @@ class BootStrap {
    \\ \\_\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\   /\\_\\/\\_\\ 
     \\/_/   \\/_____/   \\/_____/   \\/_____/   \\/_____/   \\/_____/   \\/_/\\/_/ 
 \n                                                                           
-         ${appName} v${appVersion} - ${appEnvironment}
+         ${appName} v${appVersion} [build ${appBuild}] - ${appEnvironment}
 \n
         """)
     }
