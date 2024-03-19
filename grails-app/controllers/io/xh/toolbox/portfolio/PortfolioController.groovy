@@ -1,5 +1,6 @@
 package io.xh.toolbox.portfolio
 
+import io.xh.hoist.exception.DataNotAvailableException
 import io.xh.hoist.security.AccessAll
 import io.xh.toolbox.BaseController
 
@@ -48,6 +49,9 @@ class PortfolioController extends BaseController {
     // List of MarketPrices for the given instrument identified by its symbol
     def prices() {
         List<MarketPrice> historicalPrices = portfolioService.getData().historicalPrices[params.id]
+        if (!historicalPrices) {
+            throw new DataNotAvailableException("No historical prices available for ${params.id}")
+        }
         MarketPrice intradayPrices = portfolioService.getData().intradayPrices[params.id]
         List<MarketPrice> allPrices = intradayPrices ? historicalPrices.dropRight(1)+[intradayPrices] : historicalPrices
         renderJSON(allPrices)

@@ -25,6 +25,12 @@ import {SECONDS} from '@xh/hoist/utils/datetime';
 export class OauthService extends HoistService {
     static instance: OauthService;
 
+    /**
+     * Is OAuth enabled in this application?  For bootstrapping, troubleshooting
+     * and mobile development, we allow running in a non-SSO mode.
+     */
+    enabled: boolean;
+
     auth0: Auth0Client;
     /** Authenticated user info as provided by Auth0. */
     user: PlainObject;
@@ -42,7 +48,8 @@ export class OauthService extends HoistService {
             url: 'oauthConfig'
         }).catchDefault());
 
-        if (config?.isEnabled === false) {
+        this.enabled = config.enabled;
+        if (!this.enabled) {
             XH.appSpec.isSSO = false;
             return;
         }
@@ -50,7 +57,8 @@ export class OauthService extends HoistService {
         if (!config?.domain || !config?.clientId) {
             throw XH.exception(`
                 Unable to init OAuthService - expected config not returned by server. 
-                Please log on as a local admin user and review this instance's soft configuration entries.
+                Please review the settings in configs "auth0ClientId" and "auth0Domain".
+                Default values for these configs are provided in "Bootstrap.groovy"
             `);
         }
 
@@ -96,12 +104,15 @@ export class OauthService extends HoistService {
         }
     }
 
+    //------------------
+    // Implementation
+    //-----------------
     private async getIdTokenAsync() {
         const claims = await this.auth0.getIdTokenClaims();
         return claims?.__raw;
     }
 
-    private async checkAuthAsync() {
+    private async checkAuthAsync(): Promise<boolean> {
         return this.auth0.isAuthenticated();
     }
 
@@ -109,6 +120,7 @@ export class OauthService extends HoistService {
      * Logout of both Hoist session and Auth0 Oauth session (if active).
      */
     async logoutAsync() {
+        if (!this.enabled) return;
         try {
             const hasOauth = await this.checkAuthAsync();
             if (hasOauth) {

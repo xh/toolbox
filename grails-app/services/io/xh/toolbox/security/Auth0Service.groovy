@@ -3,11 +3,13 @@ package io.xh.toolbox.security
 import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
+import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONParser
-import io.xh.hoist.json.JSONSerializer
+import org.apache.hc.client5.http.classic.methods.HttpGet
 import org.jose4j.jwk.JsonWebKeySet
 import org.jose4j.jwk.VerificationJwkSelector
 import org.jose4j.jws.JsonWebSignature
+
 
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
@@ -17,18 +19,20 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 @Slf4j
 class Auth0Service extends BaseService {
 
+    private JSONClient _jsonClient
 
-    static clearCachesConfigs = ['auth0Domain', 'auth0ClientId', 'auth0Jwks']
+    static clearCachesConfigs = ['auth0Domain', 'auth0ClientId']
 
     ConfigService configService
 
     Map getClientConfig() {
 
         if (getInstanceConfig('useOAuth') == 'false') {
-            return [isEnabled: false]
+            return [enabled: false]
         }
 
         return [
+            enabled: true,
             clientId: clientId,
             domain: domain
         ]
@@ -37,6 +41,7 @@ class Auth0Service extends BaseService {
     JwtValidationResult validateToken(String token) {
         try {
             if (!token) throw new JwtException("Unable to validate JWT - no token provided.")
+            logTrace("Validating token", token)
 
             def jws = new JsonWebSignature()
             jws.setCompactSerialization(token)
@@ -49,16 +54,17 @@ class Auth0Service extends BaseService {
             if (!jws.verifySignature()) throw new JwtException("Token failed signature validation")
 
             def payload = JSONParser.parseObject(jws.payload)
-            if (payload.aud != this.clientId) {
+            if (payload.aud != clientId) {
                 throw new JwtException("Token aud value [${payload.aud}] does not match expected value from auth0ClientId config.")
             }
 
+            logDebug(["Token validated successfully", [sub: payload.sub, email: payload.email, fullName: payload.name]])
             return new JwtValidationResult(
-                token: token,
-                sub: payload.sub,
-                email: payload.email,
-                fullName: payload.name,
-                profilePicUrl: payload.picture
+                    token: token,
+                    sub: payload.sub,
+                    email: payload.email,
+                    fullName: payload.name,
+                    profilePicUrl: payload.picture
             )
 
         } catch (e) {
@@ -70,21 +76,28 @@ class Auth0Service extends BaseService {
     //------------------------
     // Implementation
     //------------------------
-    private JsonWebKeySet _jkws
-    JsonWebKeySet getJsonWebKeySet() {
-        if (!_jkws) {
-            // Yes, this is a bit odd - we get a JSON config then re-serialize to JSON to pass to
-            // JWKS ctor. Could store as string config, but keeping as JSON in configService gives
-            // us a nicer UI to view/update in admin console.
-            def jwksJson = JSONSerializer.serialize(configService.getMap('auth0Jwks'))
-            _jkws = new JsonWebKeySet(jwksJson)
+    private JSONClient getClient() {
+        if (!_jsonClient) {
+            _jsonClient = new JSONClient()
+        }
+        return _jsonClient
+    }
 
-            if (!_jkws.jsonWebKeys.size()) {
-                throw new RuntimeException("Unable to build valid key set from 'auth0Jwks' app config")
+    private JsonWebKeySet _jwks
+    JsonWebKeySet getJsonWebKeySet() {
+        def url = "https://${domain}/.well-known/jwks.json"
+        if (!_jwks) {
+            withInfo(["Fetching JWKS", url]) {
+                def jwksJson = client.executeAsString(new HttpGet(url))
+                _jwks = new JsonWebKeySet(jwksJson)
+
+                if (!_jwks.jsonWebKeys.size()) {
+                    throw new RuntimeException("Unable to build valid key set from remote JWKS endpoint.")
+                }
             }
         }
 
-        return _jkws
+        return _jwks
     }
 
     private String getClientId() {
@@ -96,7 +109,9 @@ class Auth0Service extends BaseService {
     }
 
     void clearCaches() {
-        _jkws = null
+        super.clearCaches()
+        _jsonClient = null
+        _jwks = null
     }
 
 }
