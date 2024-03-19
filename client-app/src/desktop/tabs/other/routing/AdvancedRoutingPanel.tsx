@@ -23,6 +23,12 @@ export const advancedRoutingPanel = hoistCmp.factory({
                     revisited.
                 </p>,
                 <p>
+                    Hoist applications are able to navigate to a specific URL and specify whether or
+                    not to push onto the route history. In this example, selecting individual
+                    records in the grid will not save the URL to the route history, but changing the{' '}
+                    <code>groupBy</code> or <code>sortBy</code> fields will.
+                </p>,
+                <p>
                     The state is encoded in the URL as a <code>base64</code> string, which is then
                     decoded and parsed to restore the state.
                 </p>,
@@ -145,10 +151,8 @@ class AdvancedRoutingPanelModel extends HoistModel {
 
     @action
     private async parseRouteParams() {
-        const advParam = XH.routerState.params.routeParam;
-        if (!advParam) return;
-        const decodedParam = atob(advParam);
-        const {groupBy, sortBy, selectedId} = JSON.parse(decodedParam);
+        if (this.gridModel.empty) return;
+        const {groupBy, sortBy, selectedId} = XH.routerState.params;
         if (groupBy) this.setGroupBy(groupBy);
         if (sortBy) this.setSortBy(sortBy);
         if (selectedId) await this.setSelected(selectedId);
@@ -156,11 +160,19 @@ class AdvancedRoutingPanelModel extends HoistModel {
 
     @action
     private updateRoute() {
-        if (!XH.routerState.name.startsWith('default.other.advancedRouting')) return;
+        if (
+            !XH.routerState.name.startsWith('default.other.advancedRouting') ||
+            this.gridModel.empty
+        )
+            return;
         const {groupBy, sortBy} = this;
         const selectedId = this.gridModel.selectedRecord?.id;
-        const routeParam = btoa(JSON.stringify({groupBy, sortBy, selectedId}));
-        XH.navigate('default.other.advancedRouting.routeParam', {routeParam});
+        XH.navigate(
+            'default.other.advancedRouting',
+            {groupBy, sortBy, selectedId},
+            // Only push URL to route history if groupBy or sortBy changes.
+            {replace: selectedId != XH.routerState.params.selectedId}
+        );
     }
 
     override async doLoadAsync(loadSpec) {
