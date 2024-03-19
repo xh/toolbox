@@ -16,7 +16,7 @@ export const simpleRoutingPanel = hoistCmp.factory({
                 <p>
                     Hoist provides functionality for route parameters to interact with UI
                     components. Below is a simple grid whose selected record can be maintained by a
-                    route parameter.{' '}
+                    route parameter.
                 </p>,
                 <p>
                     E.g. URLs like <code>https://toolbox.xh.io/app/other/simpleRouting/123</code>,
@@ -64,22 +64,30 @@ class SimpleRoutingPanelModel extends HoistModel {
     }
 
     async updateGridSelectionOnRouteChange() {
-        if (
-            !XH.routerState.params.recordId ||
-            XH.routerState.params.recordId === this.gridModel.selectedId
-        )
+        if (!XH.routerState.params.recordId || this.gridModel.empty) {
+            this.gridModel.clearSelection();
             return;
+        }
         await this.gridModel.selectAsync(Number(XH.routerState.params.recordId));
+        if (!this.gridModel.selectedRecord) {
+            XH.dangerToast(`Record ${XH.routerState.params.recordId} not found`);
+            XH.navigate('default.other.simpleRouting', {replace: true});
+        }
     }
 
     updateRouteOnGridSelectionChange(name: string, selectedId: StoreRecordId) {
         if (
             !name.startsWith('default.other.simpleRouting') ||
             !selectedId ||
-            XH.routerState.params.recordId === selectedId
+            XH.routerState.params.recordId === selectedId ||
+            this.gridModel.empty
         )
             return;
-        XH.navigate('default.other.simpleRouting.recordId', {recordId: selectedId});
+        XH.navigate(
+            'default.other.simpleRouting.recordId',
+            {recordId: selectedId},
+            {replace: true}
+        );
     }
 
     override async doLoadAsync(loadSpec) {
