@@ -1,5 +1,5 @@
 import {HoistModel, hoistCmp, creates, XH} from '@xh/hoist/core';
-import {grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
+import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common';
@@ -7,7 +7,7 @@ import React from 'react';
 import {Icon} from '@xh/hoist/icon';
 import {filler, hbox, hframe, span, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {colAutosizeButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {select} from '@xh/hoist/desktop/cmp/input';
+import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 
 export const advancedRoutingPanel = hoistCmp.factory({
     displayName: 'AdvancedRoutingPanel',
@@ -26,7 +26,9 @@ export const advancedRoutingPanel = hoistCmp.factory({
                     Hoist applications are able to navigate to a specific URL and specify whether or
                     not to push onto the route history. In this example, selecting individual
                     records in the grid will not save the URL to the route history, but changing the{' '}
-                    <code>groupBy</code> or <code>sortBy</code> fields will.
+                    <code>groupBy</code> or <code>sortBy</code> fields will. Hoist also provides the
+                    ability to prevent route deactivation, allowing the developer to present the
+                    user with a pop-up before navigating away from the current route.
                 </p>,
                 <p>
                     The state is encoded in the URL as a <code>base64</code> string, which is then
@@ -34,7 +36,6 @@ export const advancedRoutingPanel = hoistCmp.factory({
                 </p>,
                 <p>
                     The current state encoding is: <br />
-                    <code>{'{'}</code>
                     <br />
                     <code>groupBy: {model.groupBy || 'None'}</code>
                     <br />
@@ -42,7 +43,6 @@ export const advancedRoutingPanel = hoistCmp.factory({
                     <br />
                     <code>selectedId: {model.gridModel.selectedRecord?.id || 'None'}</code>
                     <br />
-                    <code>{'}'}</code>
                 </p>,
                 <p></p>
             ],
@@ -87,8 +87,11 @@ export const advancedRoutingPanel = hoistCmp.factory({
                             {value: null, label: 'None'}
                         ]
                     }),
+                    switchInput({
+                        label: 'Prevent Route Deactivation',
+                        onChange: () => (model.preventDeactivate = !model.preventDeactivate)
+                    }),
                     filler(),
-                    gridCountLabel({unit: 'companies'}),
                     vbox({})
                 ]
             })
@@ -99,6 +102,7 @@ export const advancedRoutingPanel = hoistCmp.factory({
 class AdvancedRoutingPanelModel extends HoistModel {
     @observable groupBy = null;
     @observable sortBy = null;
+    @observable preventDeactivate = false;
 
     constructor() {
         super();
@@ -114,6 +118,14 @@ class AdvancedRoutingPanelModel extends HoistModel {
             track: () => [this.groupBy, this.sortBy, this.gridModel.selectedRecord?.id],
             run: () => this.updateRoute(),
             fireImmediately: true
+        });
+
+        window.addEventListener('beforeunload', e => {
+            if (!XH.routerState.name.startsWith('default.other.advancedRouting')) {
+                delete e.returnValue;
+                return;
+            }
+            if (this.preventDeactivate) e.preventDefault();
         });
     }
 
@@ -147,6 +159,9 @@ class AdvancedRoutingPanelModel extends HoistModel {
     @action
     private async setSelected(recordId: string | number) {
         await this.gridModel.selectAsync(Number(recordId));
+        if (!this.gridModel.selectedId) {
+            XH.dangerToast(`Record ${recordId} not found`);
+        }
     }
 
     @action
