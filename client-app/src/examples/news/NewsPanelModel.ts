@@ -14,7 +14,7 @@ export class NewsPanelModel extends HoistModel {
     viewModel = new DataViewModel({
         emptyText: vbox([
             p('No news found...'),
-            p(['Have you properly configured the', code('newsApiKey'), ' config?'])
+            p(['Have you properly configured the ', code('newsApiKey'), ' config?'])
         ]),
         sortBy: 'published|desc',
         store: {

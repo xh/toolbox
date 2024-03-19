@@ -31,7 +31,7 @@ export const roadmapViewItem = hoistCmp.factory({
                                 ? popover({
                                       popoverClassName: 'tb-roadmap__popover',
                                       minimal: true,
-                                      target: truncate(name, {length: 55, omission: ' ...'}),
+                                      item: truncate(name, {length: 55, omission: ' ...'}),
                                       content: name
                                   })
                                 : name
@@ -44,7 +44,7 @@ export const roadmapViewItem = hoistCmp.factory({
                         minimal: true,
                         interactionKind: 'hover',
                         position: 'top',
-                        target: div({
+                        item: div({
                             className: 'tb-roadmap-item__statusIcon',
                             item: getStatusIcon(status)
                         }),
@@ -62,7 +62,7 @@ export const roadmapViewItem = hoistCmp.factory({
                                   minimal: true,
                                   interactionKind: 'hover',
                                   position: 'left-top',
-                                  target: span(' ...'),
+                                  item: span(' ...'),
                                   content: div({
                                       items: breakUpDescription(description)
                                   })
@@ -120,7 +120,7 @@ function getGitIcon(gitLinks) {
     } else {
         return popover({
             minimal: true,
-            target: button({icon: gitIcon}),
+            item: button({icon: gitIcon}),
             content: menu({items: getGitMenuItems(gitLinks)})
         });
     }
