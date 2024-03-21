@@ -47,6 +47,7 @@ export class InlineEditingPanelModel extends HoistModel {
         makeObservable(this);
         this.store = this.createStore();
         this.gridModel = this.createGridModel();
+        this.add(1);
 
         this.addReaction({
             track: () => [this.fullRowEditing, this.clicksToEdit],
@@ -69,8 +70,6 @@ export class InlineEditingPanelModel extends HoistModel {
         }
 
         this.withDebug(`Adding ${count} Records`, () => this.store.addRecords(data));
-
-        this.gridModel.beginEditAsync({record: firstId});
     }
 
     async beginEditAsync(opts?) {
@@ -183,33 +182,6 @@ export class InlineEditingPanelModel extends HoistModel {
                     name: 'description',
                     type: 'string',
                     rules: [lengthIs({max: 280})]
-                }
-            ],
-            data: [
-                {
-                    id: 0,
-                    name: 'Record 0',
-                    category: 'US',
-                    amount: 50,
-                    date: LocalDate.today(),
-                    description: 'This is a record'
-                },
-                {
-                    id: 1,
-                    name: 'Record 1',
-                    category: 'EU',
-                    amount: 25,
-                    date: LocalDate.today().add(-6, 'months'),
-                    description: 'This is a record'
-                },
-                {
-                    id: 2,
-                    name: 'Restricted',
-                    category: 'BRIC',
-                    amount: 30,
-                    restricted: true,
-                    description:
-                        'Demos conditional editing - in this example, setting restricted boolean to true on a record disables editing of other fields.'
                 }
             ]
         });
