@@ -1,4 +1,4 @@
-import {HoistModel, hoistCmp, creates, XH} from '@xh/hoist/core';
+import {HoistModel, hoistCmp, creates, XH, managed} from '@xh/hoist/core';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
 import {StoreRecordId} from '@xh/hoist/data';
 import {Icon} from '@xh/hoist/icon';
@@ -22,7 +22,8 @@ export const simpleRoutingPanel = hoistCmp.factory({
                     E.g. URLs like <code>https://toolbox.xh.io/app/other/simpleRouting/123</code>,
                     where <code>123</code> is a record ID and that record is (auto) selected in the
                     grid. Additionally, the route parameter will be updated when the user selects a
-                    different record in the grid.
+                    different record in the grid. You can view the route definition in{' '}
+                    <code>toolbox/client-app/src/desktop/AppModel.ts</code>
                 </p>
             ],
             item: panel({
@@ -37,6 +38,7 @@ export const simpleRoutingPanel = hoistCmp.factory({
     }
 });
 
+@managed
 class SimpleRoutingPanelModel extends HoistModel {
     gridModel = new GridModel({
         columns: [
@@ -47,20 +49,20 @@ class SimpleRoutingPanelModel extends HoistModel {
 
     constructor() {
         super();
-        this.addReaction({
-            track: () => XH.routerState.params,
-            run: () => this.updateGridSelectionOnRouteChange(),
-            fireImmediately: true
-        });
-        this.addReaction({
-            track: () => this.gridModel.selectedId,
-            run: () =>
-                this.updateRouteOnGridSelectionChange(
-                    XH.routerState.name,
-                    this.gridModel.selectedId
-                ),
-            fireImmediately: true
-        });
+        this.addReaction(
+            {
+                track: () => XH.routerState.params,
+                run: () => this.updateGridSelectionOnRouteChange()
+            },
+            {
+                track: () => this.gridModel.selectedId,
+                run: () =>
+                    this.updateRouteOnGridSelectionChange(
+                        XH.routerState.name,
+                        this.gridModel.selectedId
+                    )
+            }
+        );
     }
 
     async updateGridSelectionOnRouteChange() {
@@ -78,16 +80,17 @@ class SimpleRoutingPanelModel extends HoistModel {
     updateRouteOnGridSelectionChange(name: string, selectedId: StoreRecordId) {
         if (
             !name.startsWith('default.other.simpleRouting') ||
-            !selectedId ||
             XH.routerState.params.recordId === selectedId ||
             this.gridModel.empty
         )
             return;
-        XH.navigate(
-            'default.other.simpleRouting.recordId',
-            {recordId: selectedId},
-            {replace: true}
-        );
+        if (!selectedId) XH.navigate('default.other.simpleRouting', {replace: true});
+        else
+            XH.navigate(
+                'default.other.simpleRouting.recordId',
+                {recordId: selectedId},
+                {replace: true}
+            );
     }
 
     override async doLoadAsync(loadSpec) {
