@@ -23,17 +23,6 @@ import {span} from '@xh/hoist/cmp/layout';
 import {BaseAppModel} from '../BaseAppModel';
 import {isEmpty} from 'lodash';
 
-// Encoding of json route params as base64
-export const routeParamEncoders = {
-    encodeParams: params => {
-        if (isEmpty(params)) return {};
-        return {q: window.btoa(JSON.stringify(params))};
-    },
-    decodeParams: params => {
-        if (!params.q) return {};
-        return JSON.parse(window.atob(params.q));
-    }
-};
 export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
@@ -59,6 +48,7 @@ export class AppModel extends BaseAppModel {
     override async initAsync() {
         await super.initAsync();
         await XH.installServicesAsync(GitHubService, PortfolioService);
+        // Set the queryParamsMode to 'loose' to allow for more flexible URL query parameters.
         XH.router.setOption('queryParamsMode', 'loose');
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
@@ -228,3 +218,15 @@ export class AppModel extends BaseAppModel {
         ];
     }
 }
+
+// Encoding of json route params as base64
+export const routeParamEncoders = {
+    encodeParams: params => {
+        if (isEmpty(params)) return {};
+        return {q: window.btoa(JSON.stringify(params))};
+    },
+    decodeParams: params => {
+        if (!params.q) return {};
+        return JSON.parse(window.atob(params.q));
+    }
+};

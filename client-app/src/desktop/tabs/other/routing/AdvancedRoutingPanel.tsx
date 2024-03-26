@@ -4,8 +4,7 @@ import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {wrapper} from '../../../common';
 import React from 'react';
-import {Icon} from '@xh/hoist/icon';
-import {filler, hbox, hframe, span, vbox, vframe} from '@xh/hoist/cmp/layout';
+import {filler, span, vbox} from '@xh/hoist/cmp/layout';
 import {colAutosizeButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 
@@ -37,11 +36,11 @@ export const advancedRoutingPanel = hoistCmp.factory({
                 <p>
                     The current state encoding is: <br />
                     <br />
-                    <code>groupBy: {model.groupBy || 'None'}</code>
+                    <code>groupBy: {XH.routerState.params.groupBy || 'None'}</code>
                     <br />
-                    <code>sortBy: {model.sortBy || 'None'}</code>
+                    <code>sortBy: {XH.routerState.params.sortBy || 'None'}</code>
                     <br />
-                    <code>selectedId: {model.gridModel.selectedRecord?.id || 'None'}</code>
+                    <code>selectedId: {XH.routerState.params.selectedId || 'None'}</code>
                     <br />
                 </p>,
                 <p></p>
@@ -49,15 +48,7 @@ export const advancedRoutingPanel = hoistCmp.factory({
             item: panel({
                 ref: model.panelRef,
                 mask: 'onLoad',
-                item: hframe(
-                    vframe(
-                        grid(),
-                        hbox({
-                            items: [Icon.info()],
-                            className: 'tb-sample-grid__selbar'
-                        })
-                    )
-                ),
+                item: grid(),
                 tbar: [
                     refreshButton(),
                     colAutosizeButton(),
@@ -103,22 +94,31 @@ class AdvancedRoutingPanelModel extends HoistModel {
     @observable groupBy = null;
     @observable sortBy = null;
     @observable preventDeactivate = false;
+    gridModel: GridModel = null;
 
     constructor() {
         super();
         makeObservable(this);
 
-        this.addReaction({
-            track: () => XH.routerState.params,
-            run: () => this.parseRouteParams(),
-            fireImmediately: true
+        this.gridModel = new GridModel({
+            columns: [
+                {field: 'id'},
+                {field: 'company', flex: 1},
+                {field: 'city', flex: 1},
+                {field: 'trade_date', flex: 1}
+            ]
         });
 
-        this.addReaction({
-            track: () => [this.groupBy, this.sortBy, this.gridModel.selectedRecord?.id],
-            run: () => this.updateRoute(),
-            fireImmediately: true
-        });
+        this.addReaction(
+            {
+                track: () => XH.routerState.params,
+                run: () => this.parseRouteParams()
+            },
+            {
+                track: () => [this.groupBy, this.sortBy, this.gridModel.selectedRecord?.id],
+                run: () => this.updateRoute()
+            }
+        );
 
         window.addEventListener('beforeunload', e => {
             if (!XH.routerState.name.startsWith('default.other.advancedRouting')) {
@@ -129,20 +129,10 @@ class AdvancedRoutingPanelModel extends HoistModel {
         });
     }
 
-    gridModel = new GridModel({
-        columns: [
-            {field: 'id', flex: 0},
-            {field: 'company', flex: 1},
-            {field: 'city', flex: 1},
-            {field: 'trade_date', flex: 1}
-        ]
-    });
-
     @action
     private setGroupBy(groupBy: string) {
         this.groupBy = groupBy;
 
-        // Always select first when regrouping.
         const groupByArr = groupBy ? groupBy.split(',') : [];
         this.gridModel.setGroupBy(groupByArr);
     }
@@ -151,7 +141,6 @@ class AdvancedRoutingPanelModel extends HoistModel {
     private setSortBy(sortBy: string) {
         this.sortBy = sortBy;
 
-        // Always select first when resorting.
         const sortByArr = sortBy ? sortBy.split(',') : [];
         this.gridModel.setSortBy(sortByArr);
     }
