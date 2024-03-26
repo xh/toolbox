@@ -155,7 +155,6 @@ class AdvancedRoutingPanelModel extends HoistModel {
 
     @action
     private async parseRouteParams() {
-        if (this.gridModel.empty) return;
         const {groupBy, sortBy, selectedId} = XH.routerState.params;
         if (groupBy) this.setGroupBy(groupBy);
         if (sortBy) this.setSortBy(sortBy);
