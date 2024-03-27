@@ -2137,10 +2137,10 @@
     eslint-plugin-react-hooks "^4.6"
     typescript "5.x"
 
-"@xh/hoist-dev-utils@8.x":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-8.0.0.tgz#3ae7b7ed13a3d735be34f1b9f380334e6a3d892e"
-  integrity sha512-gm3NgfXdhWShd+HNmst7yyDFTaHnSixpCO4ei6ixpQBp/AM3dmzek/27akvjA4CFeiZ+7QAzy4OnKSfSajcXGA==
+"@xh/hoist-dev-utils@^9.0.0-SNAPSHOT":
+  version "9.0.0-SNAPSHOT.1711579166181"
+  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-9.0.0-SNAPSHOT.1711579166181.tgz#3bdd5f3a7de7ea680d077d7ee85ad57df0aee15d"
+  integrity sha512-8oYMDcXi0FpDAE0YYMM7cK4rjQZyGPdj4nalIrtDxGMGNdbMD95H6XJ6gFr8mCUZgFFLbhvvXLCZS12HKZ3trg==
   dependencies:
     "@babel/core" "^7.24.0"
     "@babel/plugin-proposal-decorators" "^7.24.0"
