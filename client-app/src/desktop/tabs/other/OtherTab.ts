@@ -18,6 +18,7 @@ import {placeholderPanel} from './PlaceholderPanel';
 import {popupsPanel} from './PopupsPanel';
 import {relativeTimestampPanel} from './relativetimestamp/RelativeTimestampPanel';
 import {simpleRoutingPanel} from './routing/SimpleRoutingPanel';
+import {advancedRoutingPanel} from './routing/AdvancedRoutingPanel';
 
 export const otherTab = hoistCmp.factory(() =>
     tabContainer({
@@ -46,7 +47,8 @@ export const otherTab = hoistCmp.factory(() =>
                 {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                 {id: 'popups', content: popupsPanel},
                 {id: 'timestamp', content: relativeTimestampPanel},
-                {id: 'simpleRouting', content: simpleRoutingPanel}
+                {id: 'simpleRouting', content: simpleRoutingPanel},
+                {id: 'advancedRouting', content: advancedRoutingPanel}
             ]
         },
         className: 'toolbox-tab'
