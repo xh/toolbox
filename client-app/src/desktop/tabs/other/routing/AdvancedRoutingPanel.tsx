@@ -111,8 +111,8 @@ class AdvancedRoutingPanelModel extends HoistModel {
 
         this.addReaction(
             {
-                track: () => XH.routerState.params,
-                run: () => this.parseRouteParams()
+                track: () => XH.routerState,
+                run: () => this.processRouterState()
             },
             {
                 track: () => [this.groupBy, this.sortBy, this.gridModel.selectedRecord?.id],
@@ -152,7 +152,6 @@ class AdvancedRoutingPanelModel extends HoistModel {
             XH.dangerToast(`Record ${recordId} not found`);
         }
     }
-
     @action
     private async parseRouteParams() {
         const {groupBy, sortBy, selectedId} = XH.routerState.params;
@@ -162,12 +161,22 @@ class AdvancedRoutingPanelModel extends HoistModel {
     }
 
     @action
+    private async processRouterState() {
+        if (!XH.routerState.name.startsWith('default.other.advancedRouting')) {
+            // Clear query parameters when navigating to other panels in the same tab.
+            XH.navigate(XH.routerState.name, null, {replace: true});
+            return;
+        }
+        await this.parseRouteParams();
+    }
+
+    @action
     private updateRoute() {
         if (
             !XH.routerState.name.startsWith('default.other.advancedRouting') ||
             this.gridModel.empty
         )
-            return;
+            return XH.navigate(XH.routerState.name, null, {replace: true});
         const {groupBy, sortBy} = this;
         const selectedId = this.gridModel.selectedRecord?.id;
         XH.navigate(
