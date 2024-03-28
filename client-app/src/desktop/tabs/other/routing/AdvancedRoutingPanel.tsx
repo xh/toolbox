@@ -174,8 +174,12 @@ class AdvancedRoutingPanelModel extends HoistModel {
             oldState.name.startsWith('default.other.advancedRouting')
         )
             return XH.navigate(newState.name, null, {replace: true});
-
-        if (newState.name.startsWith('default.other.advancedRouting'))
+        else if (
+            newState.name.startsWith('default.other.advancedRouting') &&
+            !oldState.name.startsWith('default.other.advancedRouting')
+        )
+            this.updateRoute();
+        else if (newState.name.startsWith('default.other.advancedRouting'))
             await this.parseRouteParams();
     }
 
