@@ -7,6 +7,7 @@ import React from 'react';
 import {filler, span, vbox} from '@xh/hoist/cmp/layout';
 import {colAutosizeButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {State} from 'router5';
 
 export const advancedRoutingPanel = hoistCmp.factory({
     displayName: 'AdvancedRoutingPanel',
@@ -79,8 +80,8 @@ export const advancedRoutingPanel = hoistCmp.factory({
                         ]
                     }),
                     switchInput({
-                        label: 'Prevent Route Deactivation',
-                        onChange: () => (model.preventDeactivate = !model.preventDeactivate)
+                        bind: 'preventDeactivate',
+                        label: 'Prevent Route Deactivation'
                     }),
                     filler(),
                     vbox({})
@@ -112,7 +113,7 @@ class AdvancedRoutingPanelModel extends HoistModel {
         this.addReaction(
             {
                 track: () => XH.routerState,
-                run: () => this.processRouterState()
+                run: (newState, oldState) => this.processRouterState(newState, oldState)
             },
             {
                 track: () => [this.groupBy, this.sortBy, this.gridModel.selectedRecord?.id],
@@ -152,6 +153,12 @@ class AdvancedRoutingPanelModel extends HoistModel {
             XH.dangerToast(`Record ${recordId} not found`);
         }
     }
+
+    @action
+    private setPreventDeactivate(preventDeactivate: boolean) {
+        this.preventDeactivate = preventDeactivate;
+    }
+
     @action
     private async parseRouteParams() {
         const {groupBy, sortBy, selectedId} = XH.routerState.params;
@@ -161,30 +168,32 @@ class AdvancedRoutingPanelModel extends HoistModel {
     }
 
     @action
-    private async processRouterState() {
-        if (!XH.routerState.name.startsWith('default.other.advancedRouting')) {
-            // Clear query parameters when navigating to other panels in the same tab.
-            XH.navigate(XH.routerState.name, null, {replace: true});
-            return;
-        }
-        await this.parseRouteParams();
+    private async processRouterState(newState?: State, oldState?: State) {
+        if (
+            !newState.name.startsWith('default.other.advancedRouting') &&
+            oldState.name.startsWith('default.other.advancedRouting')
+        )
+            return XH.navigate(newState.name, null, {replace: true});
+
+        if (newState.name.startsWith('default.other.advancedRouting'))
+            await this.parseRouteParams();
     }
 
     @action
     private updateRoute() {
         if (
-            !XH.routerState.name.startsWith('default.other.advancedRouting') ||
-            this.gridModel.empty
-        )
-            return XH.navigate(XH.routerState.name, null, {replace: true});
-        const {groupBy, sortBy} = this;
-        const selectedId = this.gridModel.selectedRecord?.id;
-        XH.navigate(
-            'default.other.advancedRouting',
-            {groupBy, sortBy, selectedId},
-            // Only push URL to route history if groupBy or sortBy changes.
-            {replace: selectedId != XH.routerState.params.selectedId}
-        );
+            XH.routerState.name.startsWith('default.other.advancedRouting') &&
+            !this.gridModel.empty
+        ) {
+            const {groupBy, sortBy} = this;
+            const selectedId = this.gridModel.selectedRecord?.id;
+            XH.navigate(
+                'default.other.advancedRouting',
+                {groupBy, sortBy, selectedId},
+                // Only push URL to route history if groupBy or sortBy changes.
+                {replace: selectedId != XH.routerState.params.selectedId}
+            );
+        }
     }
 
     override async doLoadAsync(loadSpec) {
