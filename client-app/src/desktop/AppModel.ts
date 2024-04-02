@@ -179,7 +179,12 @@ export class AppModel extends BaseAppModel {
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'placeholder', path: '/placeholder'},
                             {name: 'popups', path: '/popups'},
-                            {name: 'timestamp', path: '/timestamp'}
+                            {name: 'timestamp', path: '/timestamp'},
+                            {
+                                name: 'simpleRouting',
+                                path: '/simpleRouting',
+                                children: [{name: 'recordId', path: '/:recordId'}]
+                            }
                         ]
                     },
                     {

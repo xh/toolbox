@@ -49,10 +49,16 @@ if (parseBoolean(runHoistInline)) {
 }
 
 dependencies {
-    implementation "org.bitbucket.b_c:jose4j:0.7.12"
-    runtimeOnly "mysql:mysql-connector-java:8.0.33"
-    developmentOnly "io.methvin:directory-watcher:0.15.0"
+    // For server-side JWT validation.
+    implementation "org.bitbucket.b_c:jose4j:0.9.6"
 
+    // Database drivers - H2 for temporary in-memory DB with `useH2: true` in instanceConfig YAML
+    // MySQL for deployed instances, or more stateful local workstation setups.
+    runtimeOnly "com.h2database:h2:2.2.224"
+    runtimeOnly "mysql:mysql-connector-java:8.0.33"
+
+    // For hot reloading
+    developmentOnly "io.methvin:directory-watcher:0.15.0"
     if (parseBoolean(enableHotSwap)) {
         developmentOnly "io.xh:groovyReset:1.0"
     }

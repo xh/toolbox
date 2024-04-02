@@ -144,8 +144,8 @@ const displayOptions = hoistCmp.factory<ExceptionHandlerModel>(({model}) =>
                     alignItems: 'center',
                     items: [
                         label({
-                            className: `bp4-control bp4-switch bp4-inline bp4-align-right xh-input xh-switch-input${
-                                !model.showAlert ? ' bp4-disabled xh-input-disabled' : ''
+                            className: `bp5-control bp5-switch bp5-inline bp5-align-right xh-input xh-switch-input${
+                                !model.showAlert ? ' bp5-disabled xh-input-disabled' : ''
                             }`,
                             item: 'Alert Type'
                         }),

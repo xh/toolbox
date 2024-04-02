@@ -39,6 +39,7 @@ class Auth0Service extends BaseService {
     JwtValidationResult validateToken(String token) {
         try {
             if (!token) throw new JwtException("Unable to validate JWT - no token provided.")
+            logTrace("Validating token", token)
 
             def jws = new JsonWebSignature()
             jws.setCompactSerialization(token)
@@ -51,16 +52,17 @@ class Auth0Service extends BaseService {
             if (!jws.verifySignature()) throw new JwtException("Token failed signature validation")
 
             def payload = JSONParser.parseObject(jws.payload)
-            if (payload.aud != this.clientId) {
+            if (payload.aud != clientId) {
                 throw new JwtException("Token aud value [${payload.aud}] does not match expected value from auth0ClientId config.")
             }
 
+            logDebug(["Token validated successfully", [sub: payload.sub, email: payload.email, fullName: payload.name]])
             return new JwtValidationResult(
-                token: token,
-                sub: payload.sub,
-                email: payload.email,
-                fullName: payload.name,
-                profilePicUrl: payload.picture
+                    token: token,
+                    sub: payload.sub,
+                    email: payload.email,
+                    fullName: payload.name,
+                    profilePicUrl: payload.picture
             )
 
         } catch (e) {
@@ -81,13 +83,15 @@ class Auth0Service extends BaseService {
 
     private JsonWebKeySet _jwks
     JsonWebKeySet getJsonWebKeySet() {
+        def url = "https://${domain}/.well-known/jwks.json"
         if (!_jwks) {
-            def url = "https://${domain}/.well-known/jwks.json",
-                jwksJson = client.executeAsString(new HttpGet(url))
-            _jwks = new JsonWebKeySet(jwksJson)
+            withInfo(["Fetching JWKS", url]) {
+                def jwksJson = client.executeAsString(new HttpGet(url))
+                _jwks = new JsonWebKeySet(jwksJson)
 
-            if (!_jwks.jsonWebKeys.size()) {
-                throw new RuntimeException("Unable to build valid key set from remote JWKS endpoint.")
+                if (!_jwks.jsonWebKeys.size()) {
+                    throw new RuntimeException("Unable to build valid key set from remote JWKS endpoint.")
+                }
             }
         }
 
