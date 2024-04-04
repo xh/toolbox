@@ -1,6 +1,6 @@
 {
   "name": "toolbox",
-  "version": "4.0-SNAPSHOT",
+  "version": "5.0-SNAPSHOT",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
@@ -43,7 +43,7 @@
     "@ag-grid-enterprise/sparklines": "~30.2.1",
     "@auth0/auth0-spa-js": "~1.22.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^63.0.0",
+    "@xh/hoist": "^64.0.0-SNAPSHOT",
     "@xh/package-template": "~2.0.0",
     "core-js": "3.x",
     "highcharts": "11.x",
@@ -53,7 +53,7 @@
     "react-dom": "~18.2.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "8.x",
+    "@xh/hoist-dev-utils": "^9.0.0-SNAPSHOT",
     "cross-env": "7.x",
     "eslint": "8.x",
     "eslint-config-prettier": "9.x",
