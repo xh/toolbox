@@ -1,6 +1,14 @@
 # Changelog
 
-## v4.0-SNAPSHOT - unreleased
+## v5.0-SNAPSHOT - unreleased
+
+## v4.0.0 - 2024-04-04
+
+### Libraries
+
+* @xh/hoist 63.0.0
+* hoist-core 19.0.0
+* @xh/hoist-dev-utils 8.1.0
 
 ### New Features
 * Adds new `bootstrapLogin` app that uses `bootstrapAdminUser` and `bootstrapAdminPassword`to bypass
@@ -12,7 +20,6 @@
 process to always use `Auth0` with `bootstrapAdminUser` for initial login.
 
 ## v3.6.0 - 2024-01-19
-
 
 ### Libraries
 

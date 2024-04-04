@@ -1179,7 +1179,7 @@
   dependencies:
     tslib "~2.6.2"
 
-"@blueprintjs/core@^5.10.0", "@blueprintjs/core@^5.10.1":
+"@blueprintjs/core@^5.10.1":
   version "5.10.1"
   resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-5.10.1.tgz#d3df1743258a10841d2885dd2ba712d116a96689"
   integrity sha512-yE10tC/tA/NWo8zsged3n0PUcjlQzh9GqNKOqMAoSSnsAKGI+RJiHtbS2RERyKU+NailIsuFx1k282ohkJvkOQ==
@@ -1195,7 +1195,7 @@
     tslib "~2.6.2"
     use-sync-external-store "^1.2.0"
 
-"@blueprintjs/datetime2@^2.3.1":
+"@blueprintjs/datetime2@^2.3.3":
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/@blueprintjs/datetime2/-/datetime2-2.3.3.tgz#94d9f832a5a47758bb01d78768a185ae94231905"
   integrity sha512-eCFZ7oEtvK6lMrK9rOZbOed+XeBjSs9z1bH66Rn/5KHk/SvR9dEdhrQU8gViLntYxB0W/RMltdOOIKc+6/vphA==
@@ -2137,10 +2137,10 @@
     eslint-plugin-react-hooks "^4.6"
     typescript "5.x"
 
-"@xh/hoist-dev-utils@^9.0.0-SNAPSHOT":
-  version "9.0.0-SNAPSHOT.1711579166181"
-  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-9.0.0-SNAPSHOT.1711579166181.tgz#3bdd5f3a7de7ea680d077d7ee85ad57df0aee15d"
-  integrity sha512-8oYMDcXi0FpDAE0YYMM7cK4rjQZyGPdj4nalIrtDxGMGNdbMD95H6XJ6gFr8mCUZgFFLbhvvXLCZS12HKZ3trg==
+"@xh/hoist-dev-utils@8.x":
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-8.1.0.tgz#405272d3befa118205ff54766bdc57979c2de418"
+  integrity sha512-4CjlJ24Ql8CWegsG7E0RvRS3w/iZ86yZgAN7Ocu8aaHYkQEKLfJGWghSuSwEzttg1sFTWFRbvgxWsqa7jd4k6A==
   dependencies:
     "@babel/core" "^7.24.0"
     "@babel/plugin-proposal-decorators" "^7.24.0"
@@ -2179,13 +2179,13 @@
     webpack-dev-server "~5.0.3"
     webpackbar "~6.0.1"
 
-"@xh/hoist@^63.0.0-SNAPSHOT":
-  version "63.0.0-SNAPSHOT.1711146360398"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-63.0.0-SNAPSHOT.1711146360398.tgz#b105c8dcb6a6d597e2a8f5c106453f2151606450"
-  integrity sha512-0qPug8FiNZIKX+B8OfQAPs0+R47GTM15DQtLJPNYCq5DI5srb0nJAxhiex4FZMKFJY/zoL/GOS6kcaN0F91Cog==
+"@xh/hoist@^63.0.0":
+  version "63.0.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-63.0.0.tgz#e582d5e90328b8efe4c289f63c14d5a0a74753e8"
+  integrity sha512-WCmyPnE196qcVNedmkVx9gSWC7k76OtaLP+uPzVC1a7ZqAFPgN2hKNsZ13lwYTu943MWzlveulm06yXvlylWAA==
   dependencies:
-    "@blueprintjs/core" "^5.10.0"
-    "@blueprintjs/datetime2" "^2.3.1"
+    "@blueprintjs/core" "^5.10.1"
+    "@blueprintjs/datetime2" "^2.3.3"
     "@fortawesome/fontawesome-pro" "^6.2.1"
     "@fortawesome/fontawesome-svg-core" "^6.2.1"
     "@fortawesome/pro-light-svg-icons" "^6.2.1"
