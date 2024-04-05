@@ -79,8 +79,17 @@ Map hoistMetaData = [
 def allJvmArgs = [
     '-Dspring.output.ansi.enabled=always',
     '-XX:TieredStopAtLevel=1',
-    '-Xmx1024m'
+    '-Xmx1024m',
+    "--add-modules=java.se",
+    "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
+    "--add-opens=java.base/java.lang=ALL-UNNAMED",
+    "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
+    "--add-opens=java.management/sun.management=ALL-UNNAMED",
+    "--add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED",
+    "--add-opens=java.base/java.util=ALL-UNNAMED"
 ]
+
+
 
 if (parseBoolean(enableHotSwap)) {
     def groovyReset = configurations.developmentOnly.resolve().find {it.name.contains("groovyReset")}
@@ -117,12 +126,10 @@ idea {
 //--------------------------------------------------
 // Extensions to build.info (Hoist-Core requirement)
 //--------------------------------------------------
-buildProperties.doLast {
-    File grailsBuildInfoFile = it.outputs.files.files.find { it.name == 'grails.build.info' }
-    if (!grailsBuildInfoFile) return
-
+tasks.war.doFirst {
+    File infoFile = layout.buildDirectory.file('resources/main/META-INF/grails.build.info').get().asFile
     Properties properties = new Properties()
-    grailsBuildInfoFile.withInputStream {properties.load(it)}
+    infoFile.withInputStream {properties.load(it)}
     properties.putAll(hoistMetaData)
-    grailsBuildInfoFile.withOutputStream {properties.store(it, null)}
+    infoFile.withOutputStream {properties.store(it, null)}
 }

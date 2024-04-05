@@ -1,10 +1,8 @@
 package io.xh.toolbox.data
 
-import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.json.JSONParser
 
-@Slf4j
 class SalesService extends BaseService {
 
     private List<Map> sales

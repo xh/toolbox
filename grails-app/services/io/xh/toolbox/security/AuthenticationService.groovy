@@ -1,6 +1,5 @@
 package io.xh.toolbox.security
 
-import groovy.util.logging.Slf4j
 import grails.gorm.transactions.ReadOnly
 import io.xh.hoist.security.BaseAuthenticationService
 import io.xh.hoist.user.HoistUser
@@ -10,7 +9,6 @@ import io.xh.toolbox.user.UserService
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
 
-@Slf4j
 class AuthenticationService extends BaseAuthenticationService  {
 
     Auth0Service auth0Service

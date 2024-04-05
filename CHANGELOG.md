@@ -49,6 +49,11 @@ process to always use `Auth0` with `bootstrapAdminUser` for initial login.
 * @xh/hoist 59.2.0
 * hoist-core 17.4.0
 
+### Libraries
+* @xh/hoist 60.0.0
+* hoist-core 18.0.0
+
+
 ## v3.3.0 - 2023-09-20
 
 ### Libraries

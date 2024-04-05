@@ -5,7 +5,7 @@ import io.xh.hoist.json.JSONFormatCached
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
-class Commit extends JSONFormatCached {
+class Commit extends JSONFormatCached  implements Serializable {
 
     final String id
     final String repo
