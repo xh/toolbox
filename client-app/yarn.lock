@@ -2137,10 +2137,10 @@
     eslint-plugin-react-hooks "^4.6"
     typescript "5.x"
 
-"@xh/hoist-dev-utils@8.x":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-8.1.0.tgz#405272d3befa118205ff54766bdc57979c2de418"
-  integrity sha512-4CjlJ24Ql8CWegsG7E0RvRS3w/iZ86yZgAN7Ocu8aaHYkQEKLfJGWghSuSwEzttg1sFTWFRbvgxWsqa7jd4k6A==
+"@xh/hoist-dev-utils@^9.0.0-SNAPSHOT":
+  version "9.0.0-SNAPSHOT.1711643181370"
+  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-9.0.0-SNAPSHOT.1711643181370.tgz#282814b4f287d74b6b6dc7401ee114b51d821c80"
+  integrity sha512-b3BdYVIWnVowe7zetqAKgMf9nKiC/Sv7T7G8lM2/KTq+L5SdCQ1fY1DqhqePDxy9AzlBWSzwmUlA2MJM0hFA2g==
   dependencies:
     "@babel/core" "^7.24.0"
     "@babel/plugin-proposal-decorators" "^7.24.0"
@@ -2179,10 +2179,10 @@
     webpack-dev-server "~5.0.3"
     webpackbar "~6.0.1"
 
-"@xh/hoist@^63.0.0":
-  version "63.0.0"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-63.0.0.tgz#e582d5e90328b8efe4c289f63c14d5a0a74753e8"
-  integrity sha512-WCmyPnE196qcVNedmkVx9gSWC7k76OtaLP+uPzVC1a7ZqAFPgN2hKNsZ13lwYTu943MWzlveulm06yXvlylWAA==
+"@xh/hoist@^64.0.0-SNAPSHOT":
+  version "64.0.0-SNAPSHOT.1712237357573"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-64.0.0-SNAPSHOT.1712237357573.tgz#8ec0bcb17c0863c25030bce4b0e63b4ac9ad3431"
+  integrity sha512-YzPfl5HiOB9wEFcwHOtdS5WmjS1PenkeNNFVtP1YjMq2Sv09lg8IsguW8/lTnCXz+N4YTFaUYih/luqo7SVhpQ==
   dependencies:
     "@blueprintjs/core" "^5.10.1"
     "@blueprintjs/datetime2" "^2.3.3"
