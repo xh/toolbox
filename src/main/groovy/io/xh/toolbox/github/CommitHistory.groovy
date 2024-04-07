@@ -2,7 +2,7 @@ package io.xh.toolbox.github
 
 import io.xh.hoist.json.JSONFormat
 
-class CommitHistory implements JSONFormat, Serializable {
+class CommitHistory implements JSONFormat {
 
     String repo
     String lastCommitTimestamp
