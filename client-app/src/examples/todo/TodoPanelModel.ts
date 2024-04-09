@@ -175,6 +175,10 @@ export class TodoPanelModel extends HoistModel {
 
     private createGridModel() {
         return new GridModel({
+            printSupport: {
+                flexMaxWidth: 600,
+                showActions: true
+            },
             emptyText: 'Congratulations.  You did it! All of it!',
             selModel: {mode: 'multiple'},
             sizingMode: SizingMode.LARGE,

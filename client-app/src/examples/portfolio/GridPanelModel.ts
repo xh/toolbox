@@ -31,6 +31,7 @@ export class GridPanelModel extends HoistModel {
 
     private createGridModel() {
         return new GridModel({
+            printSupport: true,
             persistWith: PERSIST_MAIN,
             treeMode: true,
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,

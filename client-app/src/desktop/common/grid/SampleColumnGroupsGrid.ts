@@ -1,7 +1,12 @@
 import {grid, gridCountLabel, GridModel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, managed, XH} from '@xh/hoist/core';
-import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {
+    colChooserButton,
+    exportButton,
+    printGridButton,
+    refreshButton
+} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {storeFilterField} from '@xh/hoist/cmp/store';
@@ -54,7 +59,8 @@ export const sampleColumnGroupsGrid = hoistCmp.factory({
                 gridCountLabel(),
                 storeFilterField(),
                 colChooserButton(),
-                exportButton()
+                exportButton(),
+                printGridButton()
             ],
             ...props
         });
@@ -107,6 +113,7 @@ class SampleColumnGroupsGridModel extends HoistModel {
         };
 
         return new GridModel({
+            printSupport: true,
             persistWith: {localStorageKey: 'toolboxGroupGrid'},
             store: {
                 idSpec: data => `${data.firstName}~${data.lastName}~${data.city}~${data.state}`

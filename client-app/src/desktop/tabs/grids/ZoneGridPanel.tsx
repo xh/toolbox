@@ -4,7 +4,7 @@ import {filler, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {zoneGrid, ZoneGridModel} from '@xh/hoist/cmp/zoneGrid';
 import {select} from '@xh/hoist/desktop/cmp/input';
-import {zoneMapperButton} from '@xh/hoist/desktop/cmp/button';
+import {printGridButton, zoneMapperButton} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
 import React from 'react';
@@ -69,7 +69,8 @@ export const zoneGridPanel = hoistCmp.factory({
                         enableFilter: false
                     }),
                     filler(),
-                    zoneMapperButton()
+                    zoneMapperButton(),
+                    printGridButton()
                 ]
             })
         });
@@ -82,6 +83,7 @@ class ZoneGridPanelModel extends HoistModel {
 
     @managed
     zoneGridModel: ZoneGridModel = new ZoneGridModel({
+        printSupport: true,
         sortBy: 'profit_loss|desc|abs',
         zoneMapperModel: true,
         store: {

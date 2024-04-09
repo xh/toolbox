@@ -1,7 +1,7 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {a, filler, p, placeholder, span, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {button, colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {button, colChooserButton, printGridButton} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -87,7 +87,8 @@ const tbar = hoistCmp.factory(() => {
                     })
             }),
             toolbarSep(),
-            colChooserButton()
+            colChooserButton(),
+            printGridButton()
         ]
     });
 });

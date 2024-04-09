@@ -218,6 +218,7 @@ export class InlineEditingPanelModel extends HoistModel {
     private createGridModel() {
         const ifNotRestricted = ({record}) => !record.data.restricted;
         return new GridModel({
+            printSupport: true,
             selModel: null,
             showCellFocus: true,
             cellBorders: true,

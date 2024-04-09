@@ -23,6 +23,7 @@ export class RecallsPanelModel extends HoistModel {
 
     @managed
     gridModel = new GridModel({
+        printSupport: true,
         store: {
             processRawData: this.processRecord,
             fields: [

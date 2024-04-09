@@ -22,12 +22,11 @@ export const dataViewPanel = hoistCmp.factory({
                 </p>
             ],
             item: panel({
-                className: 'toolbox-dataview-panel',
                 title: 'Grids › DataView',
                 icon: Icon.addressCard(),
                 width: 700,
                 height: 400,
-                item: dataView(),
+                item: dataView({className: 'toolbox-dataview-demo'}),
                 bbar: [
                     refreshButton({
                         text: 'Load new (random) records',
@@ -54,10 +53,11 @@ class DataViewPanelModel extends HoistModel {
         sortBy: 'name',
         emptyText: 'No companies found...',
         renderer: (v, {record}) => dataViewItem({record}),
-        contextMenu: ['copyCell'],
+        contextMenu: ['print', 'copyCell'],
         itemHeight: 70,
         rowClassFn: () => 'dataview-item',
-        stripeRows: true
+        stripeRows: true,
+        printSupport: {flexMaxWidth: 400}
     });
 
     override async doLoadAsync(loadSpec) {

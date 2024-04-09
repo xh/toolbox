@@ -12,6 +12,9 @@ export class NewsPanelModel extends HoistModel {
 
     @managed
     viewModel = new DataViewModel({
+        printSupport: {
+            flexMaxWidth: 800
+        },
         emptyText: vbox([
             p('No news found...'),
             p(['Have you properly configured the ', code('newsApiKey'), ' config?'])

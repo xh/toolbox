@@ -124,6 +124,7 @@ export class DirectoryPanelModel extends HoistModel {
 
     private createGridModel() {
         return new GridModel({
+            printSupport: true,
             store: {
                 fields: [
                     {name: 'isFavorite', type: 'bool'},

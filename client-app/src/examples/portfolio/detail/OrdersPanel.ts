@@ -1,7 +1,7 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {hspacer} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
+import {colChooserButton, exportButton, printGridButton} from '@xh/hoist/desktop/cmp/button';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -27,7 +27,8 @@ export const ordersPanel = hoistCmp.factory({
                 }),
                 '-',
                 colChooserButton(),
-                exportButton()
+                exportButton(),
+                printGridButton()
             ]
         });
     }

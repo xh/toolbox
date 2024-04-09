@@ -30,6 +30,7 @@ export class ColumnFilteringPanelModel extends HoistModel {
 
     private createGridModel() {
         return new GridModel({
+            printSupport: true,
             showSummary: 'bottom',
             selModel: {mode: 'multiple'},
             sortBy: 'profit_loss|desc|abs',
