@@ -2,6 +2,10 @@
 
 ## v5.0-SNAPSHOT - unreleased
 
+### 📚 Libraries
+
+* @ag-grid `30.x -> 31.2.0`
+
 ## v4.0.0 - 2024-04-04
 
 ### Libraries
