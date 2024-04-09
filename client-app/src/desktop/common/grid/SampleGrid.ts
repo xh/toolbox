@@ -6,6 +6,7 @@ import {
     colAutosizeButton,
     colChooserButton,
     exportButton,
+    printGridButton,
     refreshButton
 } from '@xh/hoist/desktop/cmp/button';
 import {select} from '@xh/hoist/desktop/cmp/input';
@@ -95,7 +96,8 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
                 gridCountLabel({unit: 'companies'}),
                 storeFilterField(),
                 colChooserButton(),
-                exportButton()
+                exportButton(),
+                printGridButton()
             ]
         });
     }
