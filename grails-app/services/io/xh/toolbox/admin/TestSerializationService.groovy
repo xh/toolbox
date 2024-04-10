@@ -15,16 +15,17 @@ import io.xh.hoist.BaseService
 import io.xh.hoist.cluster.ReplicatedValue
 import io.xh.hoist.log.LogSupport
 
-import static io.xh.hoist.json.JSONSerializer.serializePretty
-import static java.lang.System.currentTimeMillis
 
 class SerializationTestService extends BaseService {
 
     private ReplicatedValue<TestObject> replicatedValue = getReplicatedValue('testVal')
 
     void init() {
-        replicatedValue.set(new TestObject(foo: 'foo', bar: new Date(), baz: [submap: 'hi'], biz: null))
         def val = replicatedValue.get()
+        if (!val) {
+            replicatedValue.set(new TestObject(foo: 'foo', bar: new Date(), baz: [submap: 'hi'], biz: null))
+            val = replicatedValue.get()
+        }
         logInfo('Results', val.foo, val.bar, val.baz, val.biz)
     }
 }
@@ -36,27 +37,16 @@ class TestObject implements Serializable, LogSupport, KryoSerializable {
     Object biz
 
     void write(Kryo kryo, Output output) {
-        withSingleInfo('Serializing') {
-            output.writeString(foo)
-            kryo.writeObjectOrNull(output, bar, Date)
-            kryo.writeClassAndObject(output, baz)
-            kryo.writeClassAndObject(output, biz)
-        }
+        output.writeString(foo)
+        kryo.writeObjectOrNull(output, bar, Date)
+        kryo.writeClassAndObject(output, baz)
+        kryo.writeClassAndObject(output, biz)
     }
 
     void read(Kryo kryo, Input input) {
-        withSingleInfo('Deserializing') {
-            foo = input.readString()
-            bar = kryo.readObject(input, Date)
-            baz = kryo.readClassAndObject(input) as Map
-            biz = kryo.readClassAndObject(input)
-
-        }
-    }
-
-    private void withSingleInfo(String msg, Closure c) {
-        Long start = currentTimeMillis()
-        c()
-        logInfo(msg, [_elapsedMs: currentTimeMillis() - start])
+        foo = input.readString()
+        bar = kryo.readObject(input, Date)
+        baz = kryo.readClassAndObject(input) as Map
+        biz = kryo.readClassAndObject(input)
     }
 }

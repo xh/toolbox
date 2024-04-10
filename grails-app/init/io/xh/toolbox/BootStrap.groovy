@@ -61,6 +61,8 @@ class BootStrap {
     }
 
     private void logStartupMsg() {
+        def buildLabel = appBuild != 'UNKNOWN' ? " [build $appBuild] " : " "
+
         log.info("""
 \n
  ______   ______     ______     __         ______     ______     __  __    
@@ -69,7 +71,7 @@ class BootStrap {
    \\ \\_\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\   /\\_\\/\\_\\ 
     \\/_/   \\/_____/   \\/_____/   \\/_____/   \\/_____/   \\/_____/   \\/_/\\/_/ 
 \n                                                                           
-         ${appName} v${appVersion} [build ${appBuild}] - ${appEnvironment}
+         ${appName} v${appVersion}${buildLabel}${appEnvironment}
 \n
         """)
     }
