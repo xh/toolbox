@@ -2,7 +2,7 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {gridCountLabel} from '@xh/hoist/cmp/grid/helpers/GridCountLabel';
 import {filler} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {colChooserButton, printGridButton} from '@xh/hoist/desktop/cmp/button';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -41,7 +41,8 @@ const bbar = hoistCmp.factory({
                 filler(),
                 gridCountLabel({unit: 'commit'}),
                 toolbarSep(),
-                colChooserButton()
+                colChooserButton(),
+                printGridButton()
             ]
         });
     }
