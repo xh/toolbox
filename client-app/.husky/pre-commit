@@ -1,5 +1,6 @@
 cd client-app
 yarn run lint-staged
+pwd
 if [ -d ../hoist-react ]
 then
     echo "DIR FOUND"
