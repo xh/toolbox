@@ -15,6 +15,7 @@
     "noImplicitOverride": true,
     "resolveJsonModule":  true,
     "useDefineForClassFields": true,
+    // ignored by tsc when run by commit hooks if hoist-react is not present
     "paths": {
       "@xh/hoist/*": ["../../hoist-react/*"]
     },
