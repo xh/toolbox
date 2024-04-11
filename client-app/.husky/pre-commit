@@ -1,6 +1,6 @@
 cd client-app
 yarn run lint-staged
-if [ -d ../hoist-react]
+if [ -d ../hoist-react ]
 then
     echo "DIR FOUND"
     yarn run tsc --paths=null
