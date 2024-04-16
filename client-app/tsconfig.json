@@ -15,6 +15,14 @@
     "noImplicitOverride": true,
     "resolveJsonModule":  true,
     "useDefineForClassFields": true,
+
+    // Ignored by tsc when run by husky `pre-commit` hook if hoist-react is not present
+    // in a wrapper project for inline development.  Hoist-react should only be present if
+    // you are developing hoist-react itself.
+    "paths": {
+      "@xh/hoist/*": ["../../hoist-react/*"]
+    }
+
   },
   "references": [
     {"path":  "./node_modules/@xh/hoist"}

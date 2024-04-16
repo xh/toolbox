@@ -78,7 +78,7 @@ export class AgGridViewModel extends HoistModel {
         this.addReaction({
             track: () => [this.data, agGridModel.agApi],
             run: ([data, api]) => {
-                if (api) api.setRowData(data);
+                if (api) api.updateGridOptions({rowData: data});
             }
         });
     }

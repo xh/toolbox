@@ -43,11 +43,10 @@ import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-balham.css';
 import {AgGridReact} from '@ag-grid-community/react';
 import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model';
-import agPkg from '@ag-grid-community/core/package.json';
 
 // Enterprise features
 // IMPORTANT: If you are using enterprise version in your app, you must provide your own license
-import {LicenseManager} from '@ag-grid-enterprise/core';
+import {LicenseManager, EnterpriseCoreModule} from '@ag-grid-enterprise/core';
 import {ClipboardModule} from '@ag-grid-enterprise/clipboard';
 import {MenuModule} from '@ag-grid-enterprise/menu';
 import {RowGroupingModule} from '@ag-grid-enterprise/row-grouping';
@@ -69,7 +68,7 @@ ModuleRegistry.registerModules([
     SparklinesModule
 ]);
 
-installAgGrid(AgGridReact, agPkg.version);
+installAgGrid(AgGridReact, EnterpriseCoreModule.version);
 
 when(
     () => XH.appIsRunning,
