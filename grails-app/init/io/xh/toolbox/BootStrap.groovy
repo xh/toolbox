@@ -226,6 +226,37 @@ class BootStrap {
                     defaultValue: [agGrid: null],
                     clientVisible: true,
                     note: 'Provide any js licenses needed by client here.'
+            ],
+            cubeTestDefaultDims: [
+                    groupName: 'Toolbox',
+                    valueType: 'json',
+                    defaultValue: [
+                            [
+                                    'fund',
+                                    'trader'
+                            ],
+                            [
+                                    'sector',
+                                    'symbol'
+                            ],
+                            [
+                                    'trader',
+                                    'dir',
+                                    'symbol'
+                            ],
+                            [
+                                    'model',
+                                    'sector',
+                                    'symbol'
+                            ],
+                            [
+                                    'model',
+                                    'region',
+                                    'trader',
+                                    'symbol'
+                            ]
+                    ],
+                    clientVisible: true
             ]
         ])
     }
@@ -274,6 +305,11 @@ class BootStrap {
                     ],
                     groupName: 'Toolbox - Example Apps',
                     note: 'Lightweight storage for tasks added by users in the TODO example app.'
+            ],
+            cubeTestUserDims: [
+                    groupName: 'Toolbox',
+                    type: 'json',
+                    defaultValue: []
             ]
         ])
     }
