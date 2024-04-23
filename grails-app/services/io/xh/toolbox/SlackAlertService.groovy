@@ -20,13 +20,13 @@ class SlackAlertService extends BaseService{
         subscribeToTopic(
             topic: 'xhMonitorStatusReport',
             onMessage: this.&formatAndSendMonitorStatusReport,
-            masterOnly: true
+            primaryOnly: true
 
         )
         subscribeToTopic(
             topic: 'xhClientErrorReceived',
             onMessage: this.&formatAndSendClientReport,
-            masterOnly: true
+            primaryOnly: true
         )
     }
 

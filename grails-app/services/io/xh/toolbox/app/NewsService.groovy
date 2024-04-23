@@ -23,7 +23,7 @@ class NewsService extends BaseService {
     List<NewsItem> getNewsItems() {
         // to avoid hitting the API too frequently, we only start our timer when the NewsService is actually used.
         newsTimer = newsTimer ?: createTimer(
-            masterOnly: true,
+            primaryOnly: true,
             runFn: this.&loadAllNews,
             interval: 'newsRefreshMins',
             intervalUnits: MINUTES,
@@ -104,7 +104,7 @@ class NewsService extends BaseService {
 
     void clearCaches() {
         _jsonClient = null
-        if (isMaster) {
+        if (isPrimary) {
             _newsItems.set(null)
             loadAllNews()
         }
