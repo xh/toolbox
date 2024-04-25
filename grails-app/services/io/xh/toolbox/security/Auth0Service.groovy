@@ -1,6 +1,6 @@
 package io.xh.toolbox.security
 
-import io.xh.hoist.BaseService
+import io.xh.hoist.security.BaseOauthService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONParser
@@ -15,7 +15,7 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 /**
  * Decodes and validates ID tokens issues by Auth0, the OAuth provider for Toolbox.
  */
-class Auth0Service extends BaseService {
+class Auth0Service extends BaseOauthService {
 
     private JSONClient _jsonClient
 

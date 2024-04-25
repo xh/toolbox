@@ -5,13 +5,13 @@ import {PortfolioService} from '../core/svc/PortfolioService';
 import {roadmapTab} from './roadmap/RoadmapTab';
 import {testsTab} from './tests/TestsTab';
 import {wipTab} from './wip/WipTab';
-import {OauthService} from '../core/svc/OauthService';
+import {AuthZeroOauthService} from '@xh/hoist/svc/oauth/AuthZeroOauthService';
 
 export class AppModel extends HoistAdminAppModel {
     static override instance: AppModel;
 
     static override async preAuthAsync() {
-        await XH.installServicesAsync(OauthService);
+        await XH.installServicesAsync(AuthZeroOauthService);
     }
 
     override async initAsync() {
@@ -20,7 +20,9 @@ export class AppModel extends HoistAdminAppModel {
     }
 
     override async logoutAsync() {
-        XH.oauthService.enabled ? await XH.oauthService.logoutAsync() : await super.logoutAsync();
+        XH.authZeroOauthService.enabled
+            ? await XH.authZeroOauthService.logoutAsync()
+            : await super.logoutAsync();
     }
 
     //------------------------

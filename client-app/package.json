@@ -41,7 +41,6 @@
     "@ag-grid-enterprise/row-grouping": "~31.2.0",
     "@ag-grid-enterprise/side-bar": "~31.2.0",
     "@ag-grid-enterprise/sparklines": "~31.2.0",
-    "@auth0/auth0-spa-js": "~1.22.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
     "@xh/hoist": "^64.0.0-SNAPSHOT",
     "@xh/package-template": "~2.0.0",

@@ -16,7 +16,6 @@ class AuthenticationService extends BaseAuthenticationService  {
 
     /** Add whitelist entry for OauthConfigController to allow client to call prior to auth. */
     protected List<String> whitelistURIs = [
-        '/oauthConfig',
         '/gitHub/webhookTrigger',
         *super.whitelistURIs
     ]
