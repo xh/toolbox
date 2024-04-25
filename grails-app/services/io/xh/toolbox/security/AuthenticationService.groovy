@@ -11,18 +11,12 @@ import javax.servlet.http.HttpServletRequest
 
 class AuthenticationService extends BaseAuthenticationService  {
 
-    Auth0Service auth0Service
+    OauthService oauthService
     UserService userService
 
-    /** Add whitelist entry for OauthConfigController to allow client to call prior to auth. */
-    protected List<String> whitelistURIs = [
-        '/gitHub/webhookTrigger',
-        *super.whitelistURIs
-    ]
-
-    protected boolean isWhitelist(HttpServletRequest request) {
-        def uri = request.requestURI
-        return whitelistURIs.any{uri.endsWith(it)} || isWhitelistFile(uri)
+    AuthenticationService() {
+        super()
+        whitelistURIs.push('/gitHub/webhookTrigger')
     }
 
     /**
@@ -39,7 +33,7 @@ class AuthenticationService extends BaseAuthenticationService  {
             return (isAjax(request) || !acceptHtml(request) || isWhitelistFile(request.requestURI))
         }
 
-        def tokenResult = auth0Service.validateToken(token)
+        def tokenResult = oauthService.validateToken(token)
         if (!tokenResult.isValid) {
             logDebug("Invalid token result - user will not be installed on session - return 401", tokenResult.exception)
             return true

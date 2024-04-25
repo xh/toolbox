@@ -15,7 +15,7 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 /**
  * Decodes and validates ID tokens issues by Auth0, the OAuth provider for Toolbox.
  */
-class Auth0Service extends BaseOauthService {
+class OauthService extends BaseOauthService {
 
     private JSONClient _jsonClient
 
