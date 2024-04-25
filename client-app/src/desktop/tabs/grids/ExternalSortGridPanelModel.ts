@@ -1,13 +1,12 @@
-import {XH, HoistModel, managed} from '@xh/hoist/core';
+import {XH, HoistModel, managed, LoadSpec, PlainObject} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {GridModel, localDateCol, ExportFormat} from '@xh/hoist/cmp/grid';
+import {GridModel, localDateCol, ExcelFormat} from '@xh/hoist/cmp/grid';
 import {fmtNumberTooltip, millionsRenderer, numberRenderer} from '@xh/hoist/format';
 
 export class ExternalSortGridPanelModel extends HoistModel {
-
-    @managed gridModel;
-    @bindable.ref trades;
-    @bindable maxRows = null;
+    @managed gridModel: GridModel;
+    @bindable.ref trades: PlainObject[];
+    @bindable maxRows: number = null;
 
     constructor() {
         super();
@@ -21,19 +20,18 @@ export class ExternalSortGridPanelModel extends HoistModel {
         });
     }
 
-    async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec: LoadSpec) {
         const {trades} = await XH.fetchJson({url: 'trade'});
-        this.setTrades(trades);
+        this.trades = trades;
     }
 
     //------------------------
     // Implementation
     //------------------------
-    createGridModel() {
+    createGridModel(): GridModel {
         return new GridModel({
             externalSort: true,
             sortBy: 'profit_loss|desc|abs',
-
             emptyText: 'No records found...',
             colChooserModel: true,
             enableExport: true,
@@ -66,32 +64,32 @@ export class ExternalSortGridPanelModel extends HoistModel {
                     minWidth: 150,
                     maxWidth: 200,
                     tooltip: (val, {record}) => `${record.data.company} is located in ${val}`,
-                    cellClass: (val) => {
+                    cellClass: val => {
                         return val === 'New York' ? 'xh-text-color-accent' : '';
                     }
                 },
                 {
                     field: 'trade_volume',
                     width: 150,
-                    tooltip: (val) => fmtNumberTooltip(val),
+                    tooltip: val => fmtNumberTooltip(val),
                     renderer: millionsRenderer({
                         precision: 1,
                         label: true
                     }),
-                    exportFormat: ExportFormat.NUM_DELIMITED,
+                    excelFormat: ExcelFormat.NUM_DELIMITED,
                     chooserDescription: 'Daily Volume of Shares (Estimated, avg. YTD)'
                 },
                 {
                     field: 'profit_loss',
                     width: 150,
                     absSort: true,
-                    tooltip: (val) => fmtNumberTooltip(val, {ledger: true}),
+                    tooltip: val => fmtNumberTooltip(val, {ledger: true}),
                     renderer: numberRenderer({
                         precision: 0,
                         ledger: true,
                         colorSpec: true
                     }),
-                    exportFormat: ExportFormat.LEDGER_COLOR,
+                    excelFormat: ExcelFormat.LEDGER_COLOR,
                     chooserDescription: 'Annual Profit & Loss YTD (EBITDA)'
                 },
                 {
@@ -104,7 +102,7 @@ export class ExternalSortGridPanelModel extends HoistModel {
         });
     }
 
-    async sortAndLoadGridAsync() {
+    async sortAndLoadGridAsync(): Promise<void> {
         const {trades, maxRows, gridModel} = this,
             {sortBy} = gridModel;
 
