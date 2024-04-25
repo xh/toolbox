@@ -1,5 +1,6 @@
 package io.xh.toolbox
 
+import grails.gorm.transactions.ReadOnly
 import groovy.time.TimeCategory
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
@@ -11,6 +12,7 @@ import io.xh.toolbox.app.NewsService
 import io.xh.toolbox.app.RecallsService
 import io.xh.toolbox.github.CommitHistory
 import io.xh.toolbox.portfolio.PortfolioService
+
 
 import static io.xh.hoist.monitor.MonitorStatus.OK
 import static io.xh.hoist.monitor.MonitorStatus.FAIL
@@ -34,6 +36,22 @@ class MonitorDefinitionService extends BaseService {
      */
     def newsStoryCount(MonitorResult result) {
         result.metric = newsService.itemCount
+    }
+
+    /**
+     * Always returns the value 1337 and a message
+     */
+    def metric1337Monitor(MonitorResult result) {
+        result.metric = 1337
+        result.message = 'This metric is always 1337!'
+    }
+
+    /**
+     * A monitor that attempts to divide by zero
+     */
+    def divideByZeroMonitor(MonitorResult result){
+        result.message = 'Trying to divide by zero'
+        result.metric = 1 / (1-1)
     }
 
     /**
@@ -98,21 +116,21 @@ class MonitorDefinitionService extends BaseService {
      * Check the current number of positions in the Portfolio example
      */
     def positionCount(MonitorResult result) {
-        result.metric = portfolioService.data.rawPositions.size()
+        result.metric = portfolioService.portfolio.rawPositions.size()
     }
 
     /**
      * Check the current number of instruments in the Portfolio example
      */
     def instrumentCount(MonitorResult result) {
-        result.metric = portfolioService.data.instruments.size()
+        result.metric = portfolioService.portfolio.instruments.size()
     }
 
     /**
      * Check when the most recent prices in the Portfolio example were generated
      */
     def pricesAgeMs(MonitorResult result) {
-        result.metric = currentTimeMillis() - portfolioService.data.timeCreated.time
+        result.metric = currentTimeMillis() - portfolioService.portfolio.timeCreated.time
     }
 
     /**
@@ -168,6 +186,7 @@ class MonitorDefinitionService extends BaseService {
     /**
      * Check the longest page load time in the last hour
      */
+    @ReadOnly
     def longestPageLoadMs(MonitorResult result) {
         def now = new Date()
         def earlier = null

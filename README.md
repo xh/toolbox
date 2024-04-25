@@ -23,8 +23,11 @@ applications, which typically use whatever enterprise database is already in pla
 infrastructure, but it provides a common and easy-to-run DB for local development and our AWS-based
 deployments.
 
-* *Toolbox currently uses MySQL 5.x.* If you don't already have it installed and are on a Mac, we
-  recommend installing via [Homebrew](https://brew.sh/) with `brew install mysql@5.7`.
+* For initial/test usage, Toolbox is configured to  use an in-memory H2 database that will be 
+  rebuilt at startup of the app. This is governed by the `useH2` instance configuration (see below).
+* For persistent deployments, Toolbox is designed to work with MySQL 5.x.*.  If you don't already 
+  have it installed and are on a Mac, we recommend installing via [Homebrew](https://brew.sh/) with 
+ `brew install mysql@5.7`.
 * Create a new empty database named `toolbox`, being sure to use a UTF8 charset. Alternatively, use
   an export of the deployed toolbox DB with `CREATE DATABASE` included (Anselm can provide).
 * For local development, use of the `root` account is fine, or you can create a local user and
@@ -34,9 +37,6 @@ deployments.
   on first run as long as a suitable value is provided for the `dbCreate` data source parameter. See
   `grails-app/conf/runtime.groovy` for where this is set - we leave toolbox on `update` to allow for
   automatic schema changes as needed.
-* That said, Toolbox has a number of data-driven app configs and preferences which are not currently
-  setup to be auto-created on first run. The _fastest_ and recommended way to get up and running is
-  to restore a DB from an existing instance.
 
 ## Instance Configuration
 
@@ -53,21 +53,28 @@ _other_ data-driven app configurations.
 * The contents of this file (for Toolbox) will typically be as follows:
 
 ```
-dbHost: localhost 
-dbSchema: toolbox
+environment: Development
+serverURL: http://localhost
 
-# Provide either root or a dedicated local account, if using.
-# Note, quoting strings is option in YAML, but a good idea if you have special chars in your password.
+# The following are for use in early runs of the project before you have granted roles to any users,
+# or in cases where Auth0 isn't acting as expected, or you're hosting the app on a device. 
+# The bootstrapAdminUser will be available for forms based login and will be granted the role 
+# needed (HOIST_ROLE_MANAGER) to grant access to other users.
+useOAuth: false
+bootstrapAdminUser: yourusername@example.com
+bootstrapAdminPassword: "your password"
+
+# Enable in memory h2 database option. When ready, configure proper DB below and set to false
+useH2: true
+
+# MySql DB config - provide either root or a dedicated local account, if using.
+dbHost: localhost:3306
+dbSchema: toolbox
 dbUser: root
 dbPassword: "your database user password" 
-
-# The following two entries will enable a local account for logging in, without use of Auth0.
-# You can choose any username/password you would like.
-adminUsername: admin@xh.io 
-adminPassword: "a password of your choice"
 ```
 
-* When running the Toolbox server, look for a message along the lines of "Loaded 6 instanceConfigs
+* When running the Toolbox server, look for a message along the lines of "Loaded 10 instanceConfigs
   from /etc/hoist/conf/toolbox.yml" to be logged to the console early on in the startup process.
   This will indicate that Hoist has successfully read your config.
 
@@ -122,4 +129,4 @@ required.
 
 📫☎️🌎 info@xh.io | <https://xh.io/contact>
 
-Copyright © 2021 Extremely Heavy Industries Inc.
+Copyright © 2022 Extremely Heavy Industries Inc.

@@ -9,7 +9,7 @@
     margin: auto;
     border: var(--xh-border-solid);
 
-    & .ag-react-container {
+    & .xh-cell-inner-wrapper > .xh-vbox {
       padding: var(--xh-pad-px);
     }
   }

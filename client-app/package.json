@@ -1,54 +1,71 @@
 {
   "name": "toolbox",
-  "version": "3.0-SNAPSHOT",
+  "version": "5.0-SNAPSHOT",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
-    "build": "webpack --env.prodBuild",
-    "buildAndAnalyze": "webpack --env.prodBuild --env.analyzeBundles",
+    "build": "webpack --env prodBuild",
+    "buildAndAnalyze": "webpack --env prodBuild --env analyzeBundles",
     "hoistVer": "cat node_modules/@xh/hoist/package.json | grep version",
     "lint": "yarn lint:all",
     "lint:all": "yarn lint:js && yarn lint:styles",
-    "lint:js": "eslint --ext .js,.jsx .",
+    "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
-    "startOnDevice": "yarn install && webpack-dev-server --env.inlineHoist --env.devHost=$(hostname)",
-    "startAndAnalyze": "yarn install && webpack-dev-server --env.analyzeBundles",
-    "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env.inlineHoist"
+    "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(ipconfig getifaddr en0)",
+    "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
+    "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
+    "startWithHoistAndAnalyze": "yarn startWithHoist --env analyzeBundles",
+    "prepare": "cd .. && husky client-app/.husky"
   },
   "lint-staged": {
-    "*.{js,jsx}": "eslint",
-    "*.s?(a|c)ss": "stylelint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "*.{js,jsx,ts,tsx}": [
+      "eslint",
+      "prettier --write"
+    ],
+    "*.s?(a|c)ss": [
+      "stylelint",
+      "prettier --write"
+    ]
   },
   "dependencies": {
-    "@ag-grid-community/react": "~25.3.0",
-    "@ag-grid-enterprise/all-modules": "~25.3.0",
-    "@auth0/auth0-spa-js": "~1.19.2",
-    "@fortawesome/free-brands-svg-icons": "~5.15.2",
-    "@xh/hoist": "^45.0.0-SNAPSHOT",
+    "@ag-grid-community/client-side-row-model": "~31.2.0",
+    "@ag-grid-community/core": "~31.2.0",
+    "@ag-grid-community/react": "~31.2.0",
+    "@ag-grid-community/styles": "~31.2.0",
+    "@ag-grid-enterprise/clipboard": "~31.2.0",
+    "@ag-grid-enterprise/column-tool-panel": "~31.2.0",
+    "@ag-grid-enterprise/core": "~31.2.0",
+    "@ag-grid-enterprise/filter-tool-panel": "~31.2.0",
+    "@ag-grid-enterprise/menu": "~31.2.0",
+    "@ag-grid-enterprise/row-grouping": "~31.2.0",
+    "@ag-grid-enterprise/side-bar": "~31.2.0",
+    "@ag-grid-enterprise/sparklines": "~31.2.0",
+    "@auth0/auth0-spa-js": "~1.22.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@xh/hoist": "^64.0.0-SNAPSHOT",
     "@xh/package-template": "~2.0.0",
-    "core-js": "^3.0.0",
-    "highcharts": "~9.3.0",
-    "lodash": "^4.0.0",
-    "moment": "^2.0.0",
-    "react": "~17.0.1",
-    "react-dom": "~17.0.1"
+    "core-js": "3.x",
+    "highcharts": "11.x",
+    "lodash": "4.x",
+    "moment": "2.x",
+    "react": "~18.2.0",
+    "react-dom": "~18.2.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "^6.0.0-SNAPSHOT",
-    "cross-env": "~7.0.3",
-    "husky": "~4.3.8",
-    "lint-staged": "~10.5.0",
-    "stylelint": "~13.13.1",
-    "stylelint-config-standard": "~22.0.0",
-    "stylelint-scss": "~3.21.0"
+    "@xh/hoist-dev-utils": "^9.0.0-SNAPSHOT",
+    "cross-env": "7.x",
+    "eslint": "8.x",
+    "eslint-config-prettier": "9.x",
+    "husky": "9.x",
+    "lint-staged": "15.x",
+    "postcss": "8.x",
+    "prettier": "3.x",
+    "stylelint": "16.x",
+    "stylelint-config-standard-scss": "13.x",
+    "typescript": "~5.1.6"
   },
   "resolutions": {
-    "core-js": "^3.0.0"
+    "core-js": "3.x"
   }
 }

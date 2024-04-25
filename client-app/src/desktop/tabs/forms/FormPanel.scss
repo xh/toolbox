@@ -1,10 +1,15 @@
-.tbox-form-panel {
+.tb-form-panel {
+  &__inner-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--xh-pad-px);
+  }
+
   &__references {
     border: var(--xh-border-solid);
-    overflow-y: scroll !important;
-    padding: var(--xh-pad-px);
     flex: 1;
     margin-top: var(--xh-pad-px);
+    padding: var(--xh-pad-px);
   }
 
   &__reference-row {

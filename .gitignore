@@ -16,6 +16,7 @@ bin/
 out/
 /client-app/build/
 /client-app/node_modules/
+/client-app/tsconfig.tsbuildinfo
 
 # Logs #
 ########

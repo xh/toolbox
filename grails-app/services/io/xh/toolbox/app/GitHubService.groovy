@@ -1,6 +1,6 @@
 package io.xh.toolbox.app
 
-import groovy.util.logging.Slf4j
+import com.hazelcast.replicatedmap.ReplicatedMap
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
@@ -8,8 +8,9 @@ import io.xh.hoist.json.JSONSerializer
 import io.xh.hoist.websocket.WebSocketService
 import io.xh.toolbox.github.Commit
 import io.xh.toolbox.github.CommitHistory
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.StringEntity
+import org.apache.hc.client5.http.classic.methods.HttpPost
+import org.apache.hc.core5.http.io.entity.StringEntity
+
 
 import java.time.Instant
 
@@ -29,20 +30,21 @@ import static io.xh.hoist.util.DateTimeUtils.MINUTES
  * environments, where a developer might wish to enable this service to load *some* commits but
  * has no reason to load the entire history. (Set to a value of 1 to work in this mode.)
  */
-@Slf4j
 class GitHubService extends BaseService {
 
     static clearCachesConfigs = ['gitHubRepos', 'gitHubAccessToken', 'gitHubMaxPagesPerLoad']
 
     ConfigService configService
     WebSocketService webSocketService
-    Map<String, CommitHistory> commitsByRepo = new HashMap()
+
+    private ReplicatedMap<String, CommitHistory> commitsByRepo = getReplicatedMap('commitsByRepo')
 
     void init() {
         if (configService.getString('gitHubAccessToken', 'none') == 'none') {
             logWarn('Required "gitHubAccessToken" config not present or set to "none" - no commits will be loaded from GitHub.')
         } else {
             createTimer(
+                primaryOnly: true,
                 runFn: this.&loadCommitsForAllRepos,
                 interval: 'gitHubCommitsRefreshMins',
                 intervalUnits: MINUTES
@@ -51,14 +53,17 @@ class GitHubService extends BaseService {
     }
 
     /** Return the cached history of commits for a single repo, by name. */
-    CommitHistory getCommitsForRepo(String repoName) {commitsByRepo[repoName]}
+    CommitHistory getCommitsForRepo(String repoName) {
+        commitsByRepo[repoName]
+    }
 
     /**
      * Reload commit history for all configured repos from GitHub API.
      * @param forceFullLoad - true to drop any already loaded history, false (default) to do an
      *      incremental load of new commits only.
      */
-    Map<String, CommitHistory> loadCommitsForAllRepos(Boolean forceFullLoad = false) {
+    private Map<String, CommitHistory> loadCommitsForAllRepos(Boolean forceFullLoad = false) {
+
         def repos = configService.getList('gitHubRepos', []),
             newCommitCount = 0
 
@@ -81,7 +86,7 @@ class GitHubService extends BaseService {
      * Reload commit history for a single repo, by name.
      * @return collection of newly loaded commits, if any.
      */
-    List<Commit> loadCommitsForRepo(String repoName, Boolean forceFullLoad = false) {
+    private List<Commit> loadCommitsForRepo(String repoName, Boolean forceFullLoad = false) {
         def hadError = false,
             hasNextPage = true,
             cursor = '',
@@ -114,7 +119,7 @@ class GitHubService extends BaseService {
                     pageCount++
 
                     rawCommits.each{raw ->
-                        newCommits.push(new Commit(
+                        newCommits.add(new Commit(
                             repo: repoName,
                             abbreviatedOid: raw.abbreviatedOid,
                             author: [
@@ -151,11 +156,10 @@ class GitHubService extends BaseService {
         } else {
             logDebug('Commit load complete', "${newCommits.size()} new commits")
             commitHistory.updateWithNewCommits(newCommits)
-            this.commitsByRepo.put(repoName, commitHistory)
+            commitsByRepo.put(repoName, commitHistory)
             return newCommits
         }
     }
-
 
     //------------------------
     // Implementation
@@ -231,9 +235,16 @@ query XHRepoCommits {
     }
 
     void clearCaches() {
-        this._jsonClient = null
-        this.commitsByRepo = new HashMap()
-        this.loadCommitsForAllRepos()
+        _jsonClient = null
+        if (isPrimary) {
+            commitsByRepo.clear()
+            loadCommitsForAllRepos()
+        }
+        super.clearCaches()
     }
 
+
+    Map getAdminStats() { [
+        config: configForAdminStats('gitHubAccessToken', 'gitHubRepos', 'gitHubMaxPagesPerLoad')
+    ]}
 }

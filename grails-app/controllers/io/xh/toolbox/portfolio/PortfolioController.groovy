@@ -1,10 +1,12 @@
 package io.xh.toolbox.portfolio
 
-import io.xh.hoist.security.Access
+import io.xh.hoist.exception.DataNotAvailableException
+import io.xh.hoist.security.AccessAll
 import io.xh.toolbox.BaseController
+
 import static io.xh.toolbox.portfolio.Lookups.*
 
-@Access(['APP_READER'])
+@AccessAll
 class PortfolioController extends BaseController {
 
     def portfolioService,
@@ -29,27 +31,36 @@ class PortfolioController extends BaseController {
     }
 
     def rawPositions() {
-        renderJSON(portfolioService.getData().rawPositions)
+        renderJSON(portfolioService.getPortfolio().rawPositions)
     }
 
     def orders() {
-        renderJSON(portfolioService.getData().orders)
+        renderJSON(portfolioService.getPortfolio().orders)
     }
 
     def symbols() {
-        renderJSON(portfolioService.getData().instruments.keySet())
+        renderJSON(portfolioService.getPortfolio().instruments.keySet())
     }
 
     def instrument() {
-        renderJSON(portfolioService.getData().instruments[params.id])
+        renderJSON(portfolioService.getPortfolio().instruments[params.id])
     }
 
     // List of MarketPrices for the given instrument identified by its symbol
     def prices() {
-        List<MarketPrice> historicalPrices = portfolioService.getData().historicalPrices[params.id]
-        MarketPrice intradayPrices = portfolioService.getData().intradayPrices[params.id]
+        List<MarketPrice> historicalPrices = portfolioService.getPortfolio().historicalPrices[params.id]
+        if (!historicalPrices) {
+            throw new DataNotAvailableException("No historical prices available for ${params.id}")
+        }
+        MarketPrice intradayPrices = portfolioService.getCurrentPrices()[params.id]
         List<MarketPrice> allPrices = intradayPrices ? historicalPrices.dropRight(1)+[intradayPrices] : historicalPrices
         renderJSON(allPrices)
+    }
+
+    def closingPriceHistory() {
+        def symbols = params.list('symbols')
+        int daysBack = params.daysBack ?: 30
+        renderJSON(portfolioService.getClosingPriceHistory(symbols, daysBack))
     }
 
     def lookups() {

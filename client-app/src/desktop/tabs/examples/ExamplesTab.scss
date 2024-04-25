@@ -1,16 +1,36 @@
-.example-tile-text {
-  flex: auto;
-  overflow-y: auto !important;
-  padding: var(--xh-pad-px);
-}
+.tb-examples {
+  &__app-frame {
+    padding: 30px;
 
-.example-tile-container {
-  justify-content: left;
-  overflow: auto;
-  min-width: 650px;
-  max-width: 1250px;
+    iframe {
+      background-color: var(--xh-bg-alt);
+      border: 3px solid var(--xh-border-color);
+      border-radius: var(--xh-border-radius-px);
+    }
+  }
 
-  > .xh-panel {
+  &__app-tile-container {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  &__app-tile {
+    margin: var(--xh-pad-double-px) var(--xh-pad-px) var(--xh-pad-px) var(--xh-pad-px);
     border: var(--xh-border-solid);
+    border-radius: 10px;
+    cursor: pointer;
+
+    &__contents {
+      padding: var(--xh-pad-px);
+    }
+
+    &:hover,
+    &--selected {
+      border-color: var(--xh-intent-primary-darker);
+
+      .tb-examples__app-tile__contents {
+        background-color: var(--xh-intent-primary-trans1);
+      }
+    }
   }
 }

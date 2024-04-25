@@ -1,19 +1,16 @@
 package io.xh.toolbox.data
 
-import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.json.JSONParser
 
 import java.time.LocalDate
 
-@Slf4j
 class TradeService extends BaseService {
 
     private Map trades
 
     void init() {
         trades = loadTradesFromFile()
-        super.init()
     }
 
     Map getTrades() {

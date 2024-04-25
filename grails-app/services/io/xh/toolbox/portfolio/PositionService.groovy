@@ -17,14 +17,12 @@ class PositionService extends BaseService {
 
     void init() {
         createTimer(
-                runFn: this.&pushUpdatesToAllSessions,
-                interval: {config.pushUpdatesIntervalSecs},
-                intervalUnits: SECONDS,
-                delay: true
+            runFn: this.&pushUpdatesToAllSessions,
+            interval: {config.pushUpdatesIntervalSecs},
+            intervalUnits: SECONDS,
+            delay: true
         )
-        super.init()
     }
-
 
     PositionSession getLivePositions(PositionQuery query, String channelKey, String topic) {
         def newSession = new PositionSession(query, channelKey, topic),
@@ -38,7 +36,12 @@ class PositionService extends BaseService {
 
     PositionResultSet getPositions(PositionQuery query) {
 
-        List<RawPosition> rawPositions = portfolioService.getData().rawPositions
+        Map<String, MarketPrice> prices = portfolioService.getCurrentPrices()
+        List<PricedRawPosition> rawPositions = portfolioService
+            .getPortfolio()
+            .rawPositions
+            .collect {new PricedRawPosition(it, prices[it.symbol]?.close)}
+
 
         List<Position> positions = groupPositions(query.dims, rawPositions, 'root')
 
@@ -65,7 +68,7 @@ class PositionService extends BaseService {
 
     Position getPosition(String positionId) {
 
-        List<RawPosition> rawPositions = portfolioService.getData().rawPositions
+        List<RawPosition> rawPositions = portfolioService.getPortfolio().rawPositions
 
         Map<String, String> parsedId = parsePositionId(positionId)
         List<String> dims = parsedId.keySet() as List<String>
@@ -88,7 +91,7 @@ class PositionService extends BaseService {
 
 
     List<Order> ordersForPosition(String positionId) {
-        List<Order> orders = portfolioService.getData().orders
+        List<Order> orders = portfolioService.getPortfolio().orders
 
         Map<String, String> parsedId = parsePositionId(positionId)
         List<String> dims = parsedId.keySet() as List<String>
@@ -105,10 +108,10 @@ class PositionService extends BaseService {
     //----------------------
 
     // Generate grouped, hierarchical position roll-ups for a list of one or more dimensions.
-    private List<Position> groupPositions(List<String> dims, List<RawPosition> positions, String id) {
+    private List<Position> groupPositions(List<String> dims, List<PricedRawPosition> positions, String id) {
 
         String dim = dims.first()
-        Map<String, List<RawPosition>> byDimVal = positions.groupBy { it."$dim" }
+        Map<String, List<PricedRawPosition>> byDimVal = positions.groupBy { it.rawPosition."$dim" }
 
         List<String> childDims = dims.tail()
         return byDimVal.collect { dimVal, members ->
@@ -259,4 +262,8 @@ class PositionService extends BaseService {
     private Map getConfig() {
         configService.getMap('portfolioConfigs')
     }
+
+    Map getAdminStats() {[
+        config: configForAdminStats('portfolioConfigs')
+    ]}
 }

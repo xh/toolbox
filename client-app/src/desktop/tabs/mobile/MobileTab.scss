@@ -1,11 +1,15 @@
 .tb-mobile {
+  margin: var(--xh-pad-double-px);
+  max-width: 1600px;
+  max-height: 800px;
+  width: 80%;
+
   &__screenshots {
     justify-content: center;
+    margin: var(--xh-pad-px) var(--xh-pad-px) 0 var(--xh-pad-px);
 
     img {
       margin: var(--xh-pad-px);
-      width: 300px;
     }
   }
-
 }

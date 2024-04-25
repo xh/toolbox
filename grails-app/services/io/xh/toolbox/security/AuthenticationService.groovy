@@ -1,6 +1,6 @@
 package io.xh.toolbox.security
 
-import groovy.util.logging.Slf4j
+import grails.gorm.transactions.ReadOnly
 import io.xh.hoist.security.BaseAuthenticationService
 import io.xh.hoist.user.HoistUser
 import io.xh.toolbox.user.User
@@ -9,9 +9,6 @@ import io.xh.toolbox.user.UserService
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
 
-import static io.xh.hoist.util.Utils.withNewSession
-
-@Slf4j
 class AuthenticationService extends BaseAuthenticationService  {
 
     Auth0Service auth0Service
@@ -77,11 +74,10 @@ class AuthenticationService extends BaseAuthenticationService  {
     //------------------------
     // Implementation
     //------------------------
-    private HoistUser lookupUser(String email, String password) {
-        (HoistUser) withNewSession {
-            def user = User.findByEmailAndEnabled(email, true)
-            return user?.checkPassword(password) ? user : null
-        }
+    @ReadOnly
+    private HoistUser lookupUser(String username, String password) {
+        def user = User.findByEmailAndEnabled(username, true)
+        return user?.checkPassword(password) ? user : null
     }
 
     private static boolean isAjax(HttpServletRequest request) {

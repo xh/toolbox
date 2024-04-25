@@ -1,3 +1,8 @@
-import io.xh.hoist.log.LogUtils
+import io.xh.hoist.configuration.LogbackConfig
+import io.xh.toolbox.log.CustomLogSupportConverter
 
-LogUtils.initConfig(this)
+// Example deeply overriding format via custom converter.
+LogbackConfig.monitorLayout = '%d{HH:mm:ss.SSS} | %customMsg%n'
+conversionRule('customMsg', CustomLogSupportConverter)
+
+LogbackConfig.defaultConfig(this)

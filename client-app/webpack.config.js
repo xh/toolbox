@@ -16,7 +16,7 @@ const customPkgPath = path.resolve('node_modules/@xh/package-template');
 
 /**
  * Uncomment below when developing @xh/package-template (our custom package example) inline.
- * Also uncomment Lines 40-41 below where these values are passed into the webpack config.
+ * Also uncomment Lines 43-44 below where these values are passed into the webpack config.
  * The package source should be checked out as a sibling of the top-level `toolbox` directory.
  *
  * NOTE that running inline here requires running via `yarn startWithHoist`.
@@ -30,11 +30,14 @@ module.exports = (env = {}) => {
     return configureWebpack({
         appCode: 'toolbox',
         appName: 'Toolbox',
-        appVersion: env.appVersion || '3.0-SNAPSHOT',
-        favicon: './public/favicon.png',
+        appVersion: '5.0-SNAPSHOT',
+        favicon: './public/favicon.svg',
         devServerOpenPage: 'app/',
-        dupePackageCheckExcludes: ['es-abstract'],
+        dupePackageCheckExcludes: ['es-abstract', 'tslib'],
         sourceMaps: 'devOnly',
+        preloadBackgroundColor: '#f7931c',
+        // Use React prod mode, primarily to avoid console warnings for react 18
+        reactProdMode: false,
         // Include custom package for babel transpiling for both packaged and inline use cases.
         babelIncludePaths: [customPkgPath],
         // Resolve custom package aliases and exclude nested node_modules for inline local dev only.
