@@ -78,19 +78,16 @@ class BootStrap {
 
     private void ensureRequiredConfigsCreated() {
         configService.ensureRequiredConfigsCreated([
-            auth0ClientId: [
-                    valueType: 'string',
-                    defaultValue: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
+            oauthConfig: [
+                    valueType: 'json',
+                    defaultValue: [
+                            enabled: true,
+                            clientId: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
+                            domain: 'login.xh.io'
+                    ],
                     clientVisible: false,
-                    groupName: 'Auth0',
-                    note: 'Client ID of the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
-            ],
-            auth0Domain: [
-                    valueType: 'string',
-                    defaultValue: 'login.xh.io',
-                    clientVisible: false,
-                    groupName: 'Auth0',
-                    note: 'Custom domain for our Auth0 deployment. OAuth login flow will redirect users here.'
+                    groupName: 'Auth',
+                    note: 'OAuth config for the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
             ],
             contacts: [
                     valueType: 'json',

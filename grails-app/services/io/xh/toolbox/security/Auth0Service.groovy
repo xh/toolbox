@@ -19,7 +19,7 @@ class Auth0Service extends BaseOauthService {
 
     private JSONClient _jsonClient
 
-    static clearCachesConfigs = ['auth0Domain', 'auth0ClientId']
+    static clearCachesConfigs = ['oauthConfig']
 
     ConfigService configService
 
@@ -29,11 +29,7 @@ class Auth0Service extends BaseOauthService {
             return [enabled: false]
         }
 
-        return [
-            enabled: true,
-            clientId: clientId,
-            domain: domain
-        ]
+        return oauthConfig
     }
 
     JwtValidationResult validateToken(String token) {
@@ -98,12 +94,16 @@ class Auth0Service extends BaseOauthService {
         return _jwks
     }
 
+    private Map getOauthConfig() {
+        return configService.getMap('oauthConfig')
+    }
+
     private String getClientId() {
-        return configService.getString('auth0ClientId')
+        return oauthConfig.clientId
     }
 
     private String getDomain() {
-        return configService.getString('auth0Domain')
+        return oauthConfig.domain
     }
 
     void clearCaches() {
@@ -113,6 +113,6 @@ class Auth0Service extends BaseOauthService {
     }
 
     Map getAdminStats() {[
-        config: configForAdminStats('auth0ClientId', 'auth0Domain', 'auth0Jwks')
+        config: configForAdminStats('oauthConfig')
     ]}
 }
