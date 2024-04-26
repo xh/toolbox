@@ -1,5 +1,5 @@
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {filler, span, vbox} from '@xh/hoist/cmp/layout';
+import {span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -79,9 +79,7 @@ export const advancedRoutingPanel = hoistCmp.factory({
                     switchInput({
                         bind: 'preventDeactivate',
                         label: 'Prevent Route Deactivation'
-                    }),
-                    filler(),
-                    vbox({})
+                    })
                 ]
             })
         });
