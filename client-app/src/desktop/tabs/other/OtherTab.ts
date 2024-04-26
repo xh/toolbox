@@ -46,9 +46,9 @@ export const otherTab = hoistCmp.factory(() =>
                 {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                 {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                 {id: 'popups', content: popupsPanel},
-                {id: 'timestamp', content: relativeTimestampPanel},
-                {id: 'simpleRouting', content: simpleRoutingPanel},
-                {id: 'advancedRouting', content: advancedRoutingPanel}
+                {id: 'simpleRouting', title: 'Routing (Simple)', content: simpleRoutingPanel},
+                {id: 'advancedRouting', title: 'Routing (Advanced)', content: advancedRoutingPanel},
+                {id: 'timestamp', content: relativeTimestampPanel}
             ]
         },
         className: 'toolbox-tab'

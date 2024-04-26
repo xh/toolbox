@@ -1,13 +1,12 @@
-import {HoistModel, hoistCmp, creates, XH} from '@xh/hoist/core';
 import {grid, GridModel} from '@xh/hoist/cmp/grid';
-import {action, observable, makeObservable} from '@xh/hoist/mobx';
-import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {wrapper} from '../../../common';
-import React from 'react';
 import {filler, span, vbox} from '@xh/hoist/cmp/layout';
-import {colAutosizeButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {creates, hoistCmp, HoistModel, XH} from '@xh/hoist/core';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {action, makeObservable, observable} from '@xh/hoist/mobx';
+import React from 'react';
 import {State} from 'router5';
+import {wrapper} from '../../../common';
 
 export const advancedRoutingPanel = hoistCmp.factory({
     displayName: 'AdvancedRoutingPanel',
@@ -51,8 +50,6 @@ export const advancedRoutingPanel = hoistCmp.factory({
                 mask: 'onLoad',
                 item: grid(),
                 tbar: [
-                    refreshButton(),
-                    colAutosizeButton(),
                     span('Group by:'),
                     select({
                         bind: 'groupBy',
