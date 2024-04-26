@@ -17,8 +17,17 @@ class SlackAlertService extends BaseService{
 
     ConfigService configService
     void init() {
-        subscribe('xhMonitorStatusReport', this.&formatAndSendMonitorStatusReport)
-        subscribe('xhClientErrorReceived', this.&formatAndSendClientReport)
+        subscribeToTopic(
+            topic: 'xhMonitorStatusReport',
+            onMessage: this.&formatAndSendMonitorStatusReport,
+            primaryOnly: true
+
+        )
+        subscribeToTopic(
+            topic: 'xhClientErrorReceived',
+            onMessage: this.&formatAndSendClientReport,
+            primaryOnly: true
+        )
     }
 
     //------------------------
@@ -89,4 +98,9 @@ Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
     private Map getConfig(){
         return configService.getMap('slackAlertConfig', [enabled: false])
     }
+
+    Map getAdminStats() {[
+        config: configForAdminStats('slackAlertConfig')
+    ]}
+
 }

@@ -1,6 +1,5 @@
 package io.xh.toolbox.security
 
-import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
@@ -16,7 +15,6 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 /**
  * Decodes and validates ID tokens issues by Auth0, the OAuth provider for Toolbox.
  */
-@Slf4j
 class Auth0Service extends BaseService {
 
     private JSONClient _jsonClient
@@ -114,4 +112,7 @@ class Auth0Service extends BaseService {
         _jwks = null
     }
 
+    Map getAdminStats() {[
+        config: configForAdminStats('auth0ClientId', 'auth0Domain', 'auth0Jwks')
+    ]}
 }

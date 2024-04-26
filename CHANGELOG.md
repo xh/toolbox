@@ -1,6 +1,18 @@
 # Changelog
 
-## v4.0-SNAPSHOT - unreleased
+## v5.0-SNAPSHOT - unreleased
+
+### 📚 Libraries
+
+* @ag-grid `30.x -> 31.2.0`
+
+## v4.0.0 - 2024-04-04
+
+### Libraries
+
+* @xh/hoist 63.0.0
+* hoist-core 19.0.0
+* @xh/hoist-dev-utils 8.1.0
 
 ### New Features
 * Adds new `bootstrapLogin` app that uses `bootstrapAdminUser` and `bootstrapAdminPassword`to bypass
@@ -12,7 +24,6 @@
 process to always use `Auth0` with `bootstrapAdminUser` for initial login.
 
 ## v3.6.0 - 2024-01-19
-
 
 ### Libraries
 
@@ -41,6 +52,11 @@ process to always use `Auth0` with `bootstrapAdminUser` for initial login.
 
 * @xh/hoist 59.2.0
 * hoist-core 17.4.0
+
+### Libraries
+* @xh/hoist 60.0.0
+* hoist-core 18.0.0
+
 
 ## v3.3.0 - 2023-09-20
 

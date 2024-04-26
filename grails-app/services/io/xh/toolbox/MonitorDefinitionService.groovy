@@ -1,28 +1,22 @@
 package io.xh.toolbox
 
-import grails.gorm.transactions.ReadOnly
-import groovy.time.TimeCategory
-import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.monitor.MonitorResult
-import io.xh.hoist.track.TrackLog
+import io.xh.hoist.monitor.provided.DefaultMonitorDefinitionService
 import io.xh.toolbox.app.FileManagerService
 import io.xh.toolbox.app.GitHubService
 import io.xh.toolbox.app.NewsService
 import io.xh.toolbox.app.RecallsService
-import io.xh.toolbox.github.CommitHistory
 import io.xh.toolbox.portfolio.PortfolioService
-
 
 import static io.xh.hoist.monitor.MonitorStatus.OK
 import static io.xh.hoist.monitor.MonitorStatus.FAIL
 import static io.xh.hoist.monitor.MonitorStatus.WARN
 import static io.xh.hoist.monitor.MonitorStatus.INACTIVE
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
-import static java.lang.Runtime.runtime
 import static java.lang.System.currentTimeMillis
 
-class MonitorDefinitionService extends BaseService {
+class MonitorDefinitionService extends DefaultMonitorDefinitionService {
 
     ConfigService configService
     FileManagerService fileManagerService
@@ -105,32 +99,24 @@ class MonitorDefinitionService extends BaseService {
     }
 
     /**
-     * Check the current memory usage of the server machine (in %)
-     */
-    def memoryUsage(MonitorResult result) {
-        result.metric = ((double) (runtime.freeMemory() / runtime.totalMemory() * 100))
-                .round(2)
-    }
-
-    /**
      * Check the current number of positions in the Portfolio example
      */
     def positionCount(MonitorResult result) {
-        result.metric = portfolioService.data.rawPositions.size()
+        result.metric = portfolioService.portfolio.rawPositions.size()
     }
 
     /**
      * Check the current number of instruments in the Portfolio example
      */
     def instrumentCount(MonitorResult result) {
-        result.metric = portfolioService.data.instruments.size()
+        result.metric = portfolioService.portfolio.instruments.size()
     }
 
     /**
      * Check when the most recent prices in the Portfolio example were generated
      */
     def pricesAgeMs(MonitorResult result) {
-        result.metric = currentTimeMillis() - portfolioService.data.timeCreated.time
+        result.metric = currentTimeMillis() - portfolioService.portfolio.timeCreated.time
     }
 
     /**
@@ -181,19 +167,5 @@ class MonitorDefinitionService extends BaseService {
             result.status = FAIL
             result.message = "Commits not loaded, or could not determine latest commit."
         }
-    }
-
-    /**
-     * Check the longest page load time in the last hour
-     */
-    @ReadOnly
-    def longestPageLoadMs(MonitorResult result) {
-        def now = new Date()
-        def earlier = null
-        use (TimeCategory) {
-            earlier = now - 1.hours
-        }
-        def worstLoadTime = TrackLog.withCriteria {between('dateCreated', earlier, now)}.max{it.elapsed}?.elapsed
-        result.metric = worstLoadTime ?: 0
     }
 }
