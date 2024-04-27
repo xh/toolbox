@@ -81,16 +81,22 @@ Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
         }
     }
 
-    private String alertSummary(MonitorStatusReport report ){
+    private String alertSummary(MonitorStatusReport report ) {
         if (report.status == OK) return ''
-        def failSummary = report.results.findAll {it.status == FAIL}.collect{"$it.name -- $it.message"}
-        def warnSummary = report.results.findAll {it.status == WARN}.collect{"$it.name -- $it.message"}
-        def msg = '-------------Summary-------------\n'
-        msg +=   failSummary ?  "Failed: \n-" : ""
-        msg += failSummary.join("\n-")
-        msg += warnSummary ? "Warning: \n-" : ""
-        msg += warnSummary.join("\n-")
-        msg += "---------------------------------\n"
+        def failSummary = report.results.findAll { it.status == FAIL }.collect { "-$it.name -- $it.message" }
+        def warnSummary = report.results.findAll { it.status == WARN }.collect { "-$it.name -- $it.message" }
+        def msg = []
+        msg << '-------------Summary-------------'
+        if (failSummary) {
+            msg << 'Failed: '
+            msg.addAll(failSummary)
+        }
+        if (warnSummary) {
+            msg << 'Warned: '
+            msg.addAll(warnSummary)
+        }
+        msg << '---------------------------------'
+        msg.join('\n') + '\n'
         msg
     }
 
