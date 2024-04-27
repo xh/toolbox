@@ -97,7 +97,6 @@ Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
         }
         msg << '---------------------------------'
         msg.join('\n') + '\n'
-        msg
     }
 
     private Map getConfig(){
