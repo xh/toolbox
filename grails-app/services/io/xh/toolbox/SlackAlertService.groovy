@@ -83,8 +83,8 @@ Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
 
     private String alertSummary(MonitorStatusReport report ){
         if (report.status == OK) return ''
-        def failSummary = report.results.findAll {it -> it.status == FAIL}.collect{it ->  return "$it.name -- $it.message"}
-        def warnSummary = report.results.findAll {it -> it.status == WARN}.collect{it -> return "$it.name -- $it.message"}
+        def failSummary = report.results.findAll {it.status == FAIL}.collect{"$it.name -- $it.message"}
+        def warnSummary = report.results.findAll {it.status == WARN}.collect{"$it.name -- $it.message"}
         def msg = '-------------Summary-------------\n'
         msg +=   failSummary ?  "Failed: \n-" : ""
         msg += failSummary.join("\n-")
@@ -92,7 +92,6 @@ Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
         msg += warnSummary.join("\n-")
         msg += "---------------------------------\n"
         msg
-
     }
 
     private Map getConfig(){
