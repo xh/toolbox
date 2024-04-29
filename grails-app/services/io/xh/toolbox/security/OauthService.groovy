@@ -1,6 +1,6 @@
 package io.xh.toolbox.security
 
-import io.xh.hoist.security.BaseOauthService
+import io.xh.hoist.security.oauth.BaseOauthService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONParser
@@ -18,10 +18,9 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 class OauthService extends BaseOauthService {
 
     private JSONClient _jsonClient
+    private JsonWebKeySet _jwks
 
     static clearCachesConfigs = ['oauthConfig']
-
-    ConfigService configService
 
     Map getClientConfig() {
 
@@ -32,9 +31,9 @@ class OauthService extends BaseOauthService {
         return oauthConfig
     }
 
-    JwtValidationResult validateToken(String token) {
+    TokenValidationResult validateToken(String token) {
         try {
-            if (!token) throw new JwtException("Unable to validate JWT - no token provided.")
+            if (!token) throw new RuntimeException("Unable to validate JWT - no token provided.")
             logTrace("Validating token", token)
 
             def jws = new JsonWebSignature()
@@ -42,27 +41,27 @@ class OauthService extends BaseOauthService {
 
             def selector = new VerificationJwkSelector(),
                 jwk = selector.select(jws, jsonWebKeySet.jsonWebKeys)
-            if (!jwk?.key) throw new JwtException("Unable to select valid key for token from loaded JWKS")
+            if (!jwk?.key) throw new RuntimeException("Unable to select valid key for token from loaded JWKS")
 
             jws.setKey(jwk.key)
-            if (!jws.verifySignature()) throw new JwtException("Token failed signature validation")
+            if (!jws.verifySignature()) throw new RuntimeException("Token failed signature validation")
 
             def payload = JSONParser.parseObject(jws.payload)
             if (payload.aud != clientId) {
-                throw new JwtException("Token aud value [${payload.aud}] does not match expected value from auth0ClientId config.")
+                throw new RuntimeException("Token aud value [${payload.aud}] does not match expected value from auth0ClientId config.")
             }
 
-            logDebug(["Token validated successfully", [sub: payload.sub, email: payload.email, fullName: payload.name]])
-            return new JwtValidationResult(
+            def ret = new TokenValidationResult(
                     token: token,
                     sub: payload.sub,
-                    email: payload.email,
+                    username: payload.email,
                     fullName: payload.name,
                     profilePicUrl: payload.picture
             )
-
+            logDebug("Token parsed successfully", [username: ret.username, isValid: ret.isValid, sub: ret.sub, fullName: ret.fullName])
+            return ret
         } catch (e) {
-            return new JwtValidationResult(token: token, exception: e)
+            return new TokenValidationResult(token: token, exception: e)
         }
     }
 
@@ -71,31 +70,23 @@ class OauthService extends BaseOauthService {
     // Implementation
     //------------------------
     private JSONClient getClient() {
-        if (!_jsonClient) {
-            _jsonClient = new JSONClient()
-        }
-        return _jsonClient
+        return _jsonClient ?= new JSONClient()
     }
 
-    private JsonWebKeySet _jwks
-    JsonWebKeySet getJsonWebKeySet() {
-        def url = "https://${domain}/.well-known/jwks.json"
+    private JsonWebKeySet getJsonWebKeySet() {
         if (!_jwks) {
+            def url = "https://${domain}/.well-known/jwks.json"
             withInfo(["Fetching JWKS", url]) {
                 def jwksJson = client.executeAsString(new HttpGet(url))
                 _jwks = new JsonWebKeySet(jwksJson)
 
-                if (!_jwks.jsonWebKeys.size()) {
+                if (!_jwks.jsonWebKeys) {
                     throw new RuntimeException("Unable to build valid key set from remote JWKS endpoint.")
                 }
             }
         }
 
         return _jwks
-    }
-
-    private Map getOauthConfig() {
-        return configService.getMap('oauthConfig')
     }
 
     private String getClientId() {
@@ -111,8 +102,4 @@ class OauthService extends BaseOauthService {
         _jsonClient = null
         _jwks = null
     }
-
-    Map getAdminStats() {[
-        config: configForAdminStats('oauthConfig')
-    ]}
 }

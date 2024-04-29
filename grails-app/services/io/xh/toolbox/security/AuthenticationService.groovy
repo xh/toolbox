@@ -9,6 +9,8 @@ import io.xh.toolbox.user.UserService
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
 
+import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
+
 class AuthenticationService extends BaseAuthenticationService  {
 
     OauthService oauthService
@@ -26,20 +28,19 @@ class AuthenticationService extends BaseAuthenticationService  {
      * first identity check back to the server.
      */
     protected boolean completeAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        def token = request.getHeader('x-xh-idt')
-
-        // No token found - TODO - explain why we are returning true under these particular conditions.
-        if (!token) {
-            return (isAjax(request) || !acceptHtml(request) || isWhitelistFile(request.requestURI))
+        if (getInstanceConfig('useOAuth') == 'false') {
+            return true
         }
 
-        def tokenResult = oauthService.validateToken(token)
+        def token = request.getHeader('x-xh-idt'),
+                tokenResult = oauthService.validateToken(token)
+
         if (!tokenResult.isValid) {
             logDebug("Invalid token result - user will not be installed on session - return 401", tokenResult.exception)
             return true
         }
 
-        def user = userService.getOrCreateFromJwtResult(tokenResult)
+        def user = userService.getOrCreateFromTokenResult(tokenResult)
         setUser(request, user)
         logDebug("User read from token and set on request", "username: ${user.username}")
         return true

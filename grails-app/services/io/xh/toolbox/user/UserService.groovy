@@ -6,7 +6,7 @@ import grails.gorm.transactions.Transactional
 import io.xh.hoist.user.BaseUserService
 import io.xh.hoist.user.HoistUser
 import io.xh.hoist.util.Utils
-import io.xh.toolbox.security.JwtValidationResult
+import io.xh.toolbox.security.TokenValidationResult
 
 class UserService extends BaseUserService {
 
@@ -37,12 +37,12 @@ class UserService extends BaseUserService {
      * explicitly linked/registered to multiple social providers. That's overkill for Toolbox.
      */
     @Transactional
-    HoistUser getOrCreateFromJwtResult(JwtValidationResult jwtResult) {
-        if (!jwtResult.isValid) throw new RuntimeException("Invalid JWT token result")
+    HoistUser getOrCreateFromTokenResult(TokenValidationResult tokenResult) {
+        if (!tokenResult.isValid) throw new RuntimeException("Invalid JWT token result")
 
-        def email = jwtResult.email,
-            name = jwtResult.fullName,
-            pic = jwtResult.profilePicUrl,
+        def email = tokenResult.email,
+            name = tokenResult.fullName,
+            pic = tokenResult.profilePicUrl,
             user = User.findByEmail(email)
 
         if (!user) {

@@ -1,21 +1,25 @@
 package io.xh.toolbox.security
 
 
-class JwtValidationResult extends io.xh.hoist.security.JwtValidationResult {
+class TokenValidationResult extends io.xh.hoist.security.oauth.TokenValidationResult {
 
     /** Additional user info extracted from Auth0 token payload. */
     final String fullName
     final String profilePicUrl
 
-    JwtValidationResult(Map mp) {
+    TokenValidationResult(Map mp) {
         super(mp)
-        isValid = mp.sub && mp.email && !mp.exception
         fullName = mp.fullName
         profilePicUrl = mp.profilePicUrl
     }
 
+    String getEmail() {
+        return username
+    }
+
     Map formatForJSON() {
         return super.formatForJSON() + [
+            email: email,
             fullName: fullName,
             profilePicUrl: profilePicUrl
         ]
