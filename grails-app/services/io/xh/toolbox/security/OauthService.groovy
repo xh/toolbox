@@ -1,15 +1,13 @@
 package io.xh.toolbox.security
 
 import io.xh.hoist.security.oauth.BaseOauthService
-import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
-import io.xh.hoist.json.JSONParser
 import org.apache.hc.client5.http.classic.methods.HttpGet
 import org.jose4j.jwk.JsonWebKeySet
 import org.jose4j.jwk.VerificationJwkSelector
 import org.jose4j.jws.JsonWebSignature
 
-
+import static io.xh.hoist.json.JSONParser.parseObject
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
 /**
@@ -23,30 +21,25 @@ class OauthService extends BaseOauthService {
     static clearCachesConfigs = ['oauthConfig']
 
     Map getClientConfig() {
-
-        if (getInstanceConfig('useOAuth') == 'false') {
-            return [enabled: false]
-        }
-
-        return oauthConfig
+        getInstanceConfig('useOAuth') == 'false' ? [enabled: false] : oauthConfig
     }
 
     TokenValidationResult validateToken(String token) {
         try {
-            if (!token) throw new RuntimeException("Unable to validate JWT - no token provided.")
-            logTrace("Validating token", token)
+            if (!token) throw new RuntimeException('Unable to validate JWT - no token provided.')
+            logTrace('Validating token', token)
 
             def jws = new JsonWebSignature()
             jws.setCompactSerialization(token)
 
             def selector = new VerificationJwkSelector(),
                 jwk = selector.select(jws, jsonWebKeySet.jsonWebKeys)
-            if (!jwk?.key) throw new RuntimeException("Unable to select valid key for token from loaded JWKS")
+            if (!jwk?.key) throw new RuntimeException('Unable to select valid key for token from loaded JWKS')
 
             jws.setKey(jwk.key)
-            if (!jws.verifySignature()) throw new RuntimeException("Token failed signature validation")
+            if (!jws.verifySignature()) throw new RuntimeException('Token failed signature validation')
 
-            def payload = JSONParser.parseObject(jws.payload)
+            def payload = parseObject(jws.payload)
             if (payload.aud != clientId) {
                 throw new RuntimeException("Token aud value [${payload.aud}] does not match expected value from auth0ClientId config.")
             }
@@ -58,9 +51,9 @@ class OauthService extends BaseOauthService {
                     fullName: payload.name,
                     profilePicUrl: payload.picture
             )
-            logDebug("Token parsed successfully", [username: ret.username, isValid: ret.isValid, sub: ret.sub, fullName: ret.fullName])
+            logDebug('Token parsed successfully', [username: ret.username, isValid: ret.isValid, sub: ret.sub, fullName: ret.fullName])
             return ret
-        } catch (e) {
+        } catch (Exception e) {
             return new TokenValidationResult(token: token, exception: e)
         }
     }
@@ -70,7 +63,7 @@ class OauthService extends BaseOauthService {
     // Implementation
     //------------------------
     private JSONClient getClient() {
-        return _jsonClient ?= new JSONClient()
+        _jsonClient ?= new JSONClient()
     }
 
     private JsonWebKeySet getJsonWebKeySet() {
@@ -79,9 +72,8 @@ class OauthService extends BaseOauthService {
             withInfo(["Fetching JWKS", url]) {
                 def jwksJson = client.executeAsString(new HttpGet(url))
                 _jwks = new JsonWebKeySet(jwksJson)
-
                 if (!_jwks.jsonWebKeys) {
-                    throw new RuntimeException("Unable to build valid key set from remote JWKS endpoint.")
+                    throw new RuntimeException('Unable to build valid key set from remote JWKS endpoint.')
                 }
             }
         }

@@ -3,7 +3,6 @@ package io.xh.toolbox.security
 
 class TokenValidationResult extends io.xh.hoist.security.oauth.TokenValidationResult {
 
-    /** Additional user info extracted from Auth0 token payload. */
     final String fullName
     final String profilePicUrl
 

@@ -38,8 +38,6 @@ class UserService extends BaseUserService {
      */
     @Transactional
     HoistUser getOrCreateFromTokenResult(TokenValidationResult tokenResult) {
-        if (!tokenResult.isValid) throw new RuntimeException("Invalid JWT token result")
-
         def email = tokenResult.email,
             name = tokenResult.fullName,
             pic = tokenResult.profilePicUrl,

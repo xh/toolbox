@@ -33,16 +33,14 @@ class AuthenticationService extends BaseAuthenticationService  {
         }
 
         def token = request.getHeader('x-xh-idt'),
-                tokenResult = oauthService.validateToken(token)
-
-        if (!tokenResult.isValid) {
-            logDebug("Invalid token result - user will not be installed on session - return 401", tokenResult.exception)
-            return true
+            tokenResult = oauthService.validateToken(token)
+        if (tokenResult.isValid) {
+            def user = userService.getOrCreateFromTokenResult(tokenResult)
+            setUser(request, user)
+            logDebug('User read from token and set on session', [_username: user.username])
+        } else {
+            logDebug('Invalid token - no user set on session - return 401', tokenResult.exception)
         }
-
-        def user = userService.getOrCreateFromTokenResult(tokenResult)
-        setUser(request, user)
-        logDebug("User read from token and set on request", "username: ${user.username}")
         return true
     }
 
