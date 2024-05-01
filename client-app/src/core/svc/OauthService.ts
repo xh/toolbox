@@ -48,7 +48,7 @@ export class OauthService extends HoistService {
             url: 'oauthConfig'
         }).catchDefault());
 
-        this.enabled = config.enabled;
+        this.enabled = config?.enabled;
         if (!this.enabled) {
             XH.appSpec.isSSO = false;
             return;
