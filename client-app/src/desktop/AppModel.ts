@@ -123,7 +123,6 @@ export class AppModel extends BaseAppModel {
                         path: '/grids',
                         children: [
                             {name: 'standard', path: '/standard'},
-                            {name: 'externalSort', path: '/externalSort'},
                             {name: 'tree', path: '/tree?dims'},
                             {name: 'treeWithCheckBox', path: '/treeWithCheckBox'},
                             {name: 'groupedRows', path: '/groupedRows'},
@@ -131,6 +130,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'rest', path: '/rest'},
                             {name: 'inlineEditing', path: '/inlineEditing'},
                             {name: 'columnFiltering', path: '/columnFiltering'},
+                            {name: 'externalSort', path: '/externalSort'},
                             {name: 'zoneGrid', path: '/zoneGrid'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'agGrid', path: '/agGrid'}
