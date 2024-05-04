@@ -18,7 +18,7 @@ class OauthService extends BaseOauthService {
     private JSONClient _jsonClient
     private JsonWebKeySet _jwks
 
-    static clearCachesConfigs = ['oauthConfig']
+    static clearCachesConfigs = ['xhOauthConfig']
 
     Map getClientConfig() {
         getInstanceConfig('useOAuth') == 'false' ? [enabled: false] : oauthConfig
