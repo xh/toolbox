@@ -78,7 +78,7 @@ class BootStrap {
 
     private void ensureRequiredConfigsCreated() {
         configService.ensureRequiredConfigsCreated([
-            oauthConfig: [
+            xhOauthConfig: [
                     valueType: 'json',
                     defaultValue: [
                             enabled: true,
@@ -86,7 +86,7 @@ class BootStrap {
                             domain: 'login.xh.io'
                     ],
                     clientVisible: false,
-                    groupName: 'Auth',
+                    groupName: 'xh.io',
                     note: 'OAuth config for the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
             ],
             contacts: [
