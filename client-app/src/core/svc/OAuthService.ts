@@ -5,10 +5,7 @@ export class OAuthService extends HoistService {
     static instance: OAuthService;
 
     @managed
-    client = new AuthZeroClient({
-        loginMethodDesktop: 'REDIRECT',
-        scopes: ['user.read']
-    });
+    client = new AuthZeroClient();
 
     override async initAsync() {
         const {client} = this;
@@ -22,6 +19,6 @@ export class OAuthService extends HoistService {
     }
 
     async logoutAsync() {
-        this.client.logoutAsync();
+        await this.client.logoutAsync();
     }
 }
