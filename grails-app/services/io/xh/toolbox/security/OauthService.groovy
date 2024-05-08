@@ -39,12 +39,11 @@ class OauthService extends BaseOauthService {
 
             jws.setKey(jwk.key)
             if (!jws.verifySignature()) throw new RuntimeException('Token failed signature validation')
-
             def payload = parseObject(jws.payload)
             if (payload.aud != clientId) {
                 throw new RuntimeException("Token aud value [${payload.aud}] does not match expected value from auth0ClientId config.")
             }
-            if (payload.exp < currentTimeMillis()) {
+            if (payload.exp * 1000L < currentTimeMillis()) {
                 throw new RuntimeException("Token has expired.")
             }
 
@@ -59,6 +58,7 @@ class OauthService extends BaseOauthService {
             logDebug('Token parsed successfully', [username: ret.username, isValid: ret.isValid, sub: ret.sub, fullName: ret.fullName])
             return ret
         } catch (Exception e) {
+            logError("Exception parsing token", e)
             return new TokenValidationResult(token: token, exception: e)
         }
     }
