@@ -9,10 +9,11 @@
 //-----------------------------------------------------------------
 import {XH} from '@xh/hoist/core';
 import {when} from '@xh/hoist/mobx';
-import {AuthZeroOauthService} from '@xh/hoist/svc/oauth/AuthZeroOauthService';
+
 import {ContactService} from './examples/contact/svc/ContactService';
 import {GitHubService} from './core/svc/GitHubService';
 import {PortfolioService} from './core/svc/PortfolioService';
+import {OAuthService} from './core/svc/OAuthService';
 import {TaskService} from './examples/todo/TaskService';
 
 declare module '@xh/hoist/core' {
@@ -20,7 +21,7 @@ declare module '@xh/hoist/core' {
     export interface XHApi {
         contactService: ContactService;
         gitHubService: GitHubService;
-        authZeroOauthService: AuthZeroOauthService;
+        oAuthService: OAuthService;
         portfolioService: PortfolioService;
         taskService: TaskService;
     }
