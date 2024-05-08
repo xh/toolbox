@@ -9,6 +9,7 @@ import org.jose4j.jws.JsonWebSignature
 
 import static io.xh.hoist.json.JSONParser.parseObject
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
+import static java.lang.System.currentTimeMillis
 
 /**
  * Decodes and validates ID tokens issues by Auth0, the OAuth provider for Toolbox.
@@ -43,6 +44,10 @@ class OauthService extends BaseOauthService {
             if (payload.aud != clientId) {
                 throw new RuntimeException("Token aud value [${payload.aud}] does not match expected value from auth0ClientId config.")
             }
+            if (payload.exp < currentTimeMillis()) {
+                throw new RuntimeException("Token has expired.")
+            }
+
 
             def ret = new TokenValidationResult(
                     token: token,

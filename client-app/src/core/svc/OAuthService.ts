@@ -5,7 +5,10 @@ export class OAuthService extends HoistService {
     static instance: OAuthService;
 
     @managed
-    client = new AuthZeroClient({loginMethodDesktop: 'REDIRECT', scopes: ['user.read']});
+    client = new AuthZeroClient({
+        loginMethodDesktop: 'REDIRECT',
+        scopes: ['user.read']
+    });
 
     override async initAsync() {
         const {client} = this;
