@@ -32,14 +32,14 @@ export const homePage = hoistCmp.factory({
                     route: 'zoneGrid'
                 }),
                 summaryCard({
-                    title: 'Dataview',
+                    title: 'DataViews',
                     icon: Icon.addressCard(),
                     summary:
                         'The DataView component leverages an underlying Grid / GridModel instance to display individual component "cards" for each rendered item.',
                     route: 'dataview'
                 }),
                 summaryCard({
-                    title: 'Form',
+                    title: 'Forms',
                     icon: Icon.edit(),
                     summary: 'Form fields can be bound to a model.',
                     route: 'form'
