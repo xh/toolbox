@@ -15,7 +15,7 @@ export const treeGridDetailPage = hoistCmp.factory({
             title: position ? renderPageTitle(position) : null,
             icon: Icon.portfolio(),
             mask: 'onLoad',
-            className: 'toolbox-detail-page',
+            className: 'tb-detail-page',
             item: position ? renderPosition(position) : null
         });
     }
@@ -46,7 +46,7 @@ function renderPosition(position) {
 
 function renderRow(title, value, renderer?) {
     return div({
-        className: 'toolbox-detail-row',
+        className: 'tb-detail-row',
         items: [div(title), div(renderer ? renderer(value) : value)]
     });
 }

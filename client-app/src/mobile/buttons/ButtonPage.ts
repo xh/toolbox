@@ -16,7 +16,7 @@ export const buttonPage = hoistCmp.factory({
             title: 'Buttons',
             icon: Icon.pointerUp(),
             scrollable: true,
-            className: 'toolbox-page button-page xh-tiled-bg',
+            className: 'tb-page button-page xh-tiled-bg',
             tbar: [
                 label('Disable All:'),
                 switchInput({bind: 'disabled'}),
@@ -40,12 +40,12 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
     const {disabled, active, toolbar} = model;
     return div({
         className: classNames(
-            'toolbox-card button-page__panel',
+            'tb-card button-page__panel',
             toolbar ? 'button-page__panel--toolbar' : null
         ),
         items: [
             div({
-                className: 'toolbox-card__title',
+                className: 'tb-card__title',
                 item: `Intent: ${intent ?? 'none (default)'}`
             }),
             hbox({

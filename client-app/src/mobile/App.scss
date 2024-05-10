@@ -1,5 +1,5 @@
-.toolbox-page {
-  .toolbox-card {
+.tb-page {
+  .tb-card {
     margin: var(--xh-pad-double-px);
     padding: var(--xh-pad-px);
     background: var(--xh-bg);
@@ -19,26 +19,26 @@
   }
 }
 
-.toolbox-description {
+.tb-description {
   padding: var(--xh-title-pad-px);
   background-color: var(--xh-bg-alt);
   border-bottom: var(--xh-border-solid);
 }
 
-.toolbox-containers-page .xh-panel__content {
+.tb-containers-page .xh-panel__content {
   & > .xh-hbox,
   & > .xh-vbox {
     flex: 1;
   }
 
-  .toolbox-containers-box {
+  .tb-containers-box {
     border: var(--xh-border-solid);
     font-family: var(--xh-font-family-mono);
   }
 }
 
-.toolbox-detail-page {
-  .toolbox-detail-row {
+.tb-detail-page {
+  .tb-detail-row {
     display: flex;
     background-color: var(--xh-grid-bg);
     font-size: var(--xh-grid-font-size-px);

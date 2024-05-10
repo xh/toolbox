@@ -9,7 +9,7 @@ export const popupsPage = hoistCmp.factory({
         return panel({
             title: 'Popups',
             icon: Icon.comment(),
-            className: 'toolbox-page xh-tiled-bg',
+            className: 'tb-page xh-tiled-bg',
             scrollable: true,
             items: [
                 renderCard('Alert', () => {
@@ -68,9 +68,9 @@ export const popupsPage = hoistCmp.factory({
 
 function renderCard(title, onClick) {
     return div({
-        className: 'toolbox-card',
+        className: 'tb-card',
         items: [
-            div({className: 'toolbox-card__title', item: title}),
+            div({className: 'tb-card__title', item: title}),
             button({
                 text: `Show ${title}`,
                 onClick

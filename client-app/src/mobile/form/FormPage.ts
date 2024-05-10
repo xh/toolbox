@@ -32,7 +32,7 @@ export const formPage = hoistCmp.factory({
             title: 'Form',
             icon: Icon.edit(),
             scrollable: true,
-            className: 'toolbox-page form-page xh-tiled-bg',
+            className: 'tb-page form-page xh-tiled-bg',
             items: [formCmp(), results()],
             bbar: bbar()
         });
@@ -43,7 +43,7 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
     const {minimal, movies} = model;
 
     return div({
-        className: 'toolbox-card',
+        className: 'tb-card',
         items: form({
             fieldDefaults: {minimal},
             items: vbox(
@@ -133,7 +133,7 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
 
 const results = hoistCmp.factory(() => {
     return div({
-        className: 'toolbox-card',
+        className: 'tb-card',
         items: [
             fieldResult({field: 'name'}),
             fieldResult({field: 'customer'}),
