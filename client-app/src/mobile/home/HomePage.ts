@@ -19,7 +19,7 @@ export const homePage = hoistCmp.factory({
                 }),
                 summaryCard({
                     title: 'Tree Grids',
-                    icon: Icon.grid(),
+                    icon: Icon.treeList(),
                     summary:
                         "Hoist's Grid supports the display of hierarchical tree data. Applications provide standard record data with children nodes containing their sub-records",
                     route: 'treegrids'

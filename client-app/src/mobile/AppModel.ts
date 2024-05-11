@@ -1,10 +1,11 @@
-import {XH, loadAllAsync, managed} from '@xh/hoist/core';
-import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
+import {loadAllAsync, managed, XH} from '@xh/hoist/core';
 import {
-    themeAppOption,
+    autoRefreshAppOption,
     sizingModeAppOption,
-    autoRefreshAppOption
+    themeAppOption
 } from '@xh/hoist/mobile/cmp/appOption';
+import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
+import {BaseAppModel} from '../BaseAppModel';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {buttonPage} from './buttons/ButtonPage';
 import {chartPage} from './charts/ChartPage';
@@ -13,16 +14,15 @@ import {dataViewPage} from './dataview/DataViewPage';
 import {formPage} from './form/FormPage';
 import {gridDetailPage} from './grids/GridDetailPage';
 import {gridPage} from './grids/GridPage';
+import {treeGridDetailPage} from './grids/tree/TreeGridDetailPage';
+import {treeGridPage} from './grids/tree/TreeGridPage';
+import {zoneGridPage} from './grids/zone/ZoneGridPage';
 import {homePage} from './home/HomePage';
 import {iconPage} from './icons/IconPage';
 import {panelsPage} from './panels/PanelsPage';
 import {pinPadPage} from './pinPad/PinPadPage';
 import {popoverPage} from './popover/PopoverPage';
 import {popupsPage} from './popups/PopupsPage';
-import {treeGridDetailPage} from './treegrids/TreeGridDetailPage';
-import {treeGridPage} from './treegrids/TreeGridPage';
-import {zoneGridPage} from './zoneGrids/ZoneGridPage';
-import {BaseAppModel} from '../BaseAppModel';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;

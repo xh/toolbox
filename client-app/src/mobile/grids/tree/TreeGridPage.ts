@@ -1,11 +1,11 @@
-import {creates, hoistCmp} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {grid, TreeStyle} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {label, select, switchInput} from '@xh/hoist/mobile/cmp/input';
-import {groupingChooser} from '@xh/hoist/mobile/cmp/grouping';
-import {colAutosizeButton, colChooserButton} from '@xh/hoist/mobile/cmp/button';
+import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
+import {colAutosizeButton, colChooserButton} from '@xh/hoist/mobile/cmp/button';
+import {groupingChooser} from '@xh/hoist/mobile/cmp/grouping';
+import {label, select, switchInput} from '@xh/hoist/mobile/cmp/input';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {TreeGridPageModel} from './TreeGridPageModel';
 
 export const treeGridPage = hoistCmp.factory({
@@ -15,11 +15,15 @@ export const treeGridPage = hoistCmp.factory({
         const {gridModel} = model;
         return panel({
             title: 'Tree Grids',
-            icon: Icon.grid(),
-            mask: 'onLoad',
-            item: grid(),
+            icon: Icon.treeList(),
             tbar: [
-                label('Style:'),
+                groupingChooser({maxWidth: 250}),
+                filler(),
+                colAutosizeButton(),
+                colChooserButton()
+            ],
+            item: grid(),
+            bbar: [
                 select({
                     width: 200,
                     model: gridModel,
@@ -36,18 +40,14 @@ export const treeGridPage = hoistCmp.factory({
                         {value: TreeStyle.COLORS_AND_BORDERS, label: 'Color Groups w/Borders'}
                     ]
                 }),
-                label('Borders:'),
+                filler(),
+                label('Borders'),
                 switchInput({
                     model: gridModel,
                     bind: 'rowBorders'
                 })
             ],
-            bbar: [
-                groupingChooser({maxWidth: 250}),
-                filler(),
-                colAutosizeButton(),
-                colChooserButton()
-            ]
+            mask: 'onLoad'
         });
     }
 });

@@ -1,28 +1,28 @@
-import {creates, hoistCmp} from '@xh/hoist/core';
 import {div, hbox} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {buttonGroupInput, label, switchInput} from '@xh/hoist/mobile/cmp/input';
-import {Icon} from '@xh/hoist/icon';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import classNames from 'classnames';
-
 import './ButtonPage.scss';
 import {ButtonPageModel} from './ButtonPageModel';
 
 export const buttonPage = hoistCmp.factory({
     model: creates(ButtonPageModel),
+
     render() {
         return panel({
             title: 'Buttons',
             icon: Icon.pointerUp(),
             scrollable: true,
-            className: 'tb-page button-page xh-tiled-bg',
+            className: 'tb-page tb-button-page xh-tiled-bg',
             tbar: [
-                label('Disable All:'),
+                label('Disabled'),
                 switchInput({bind: 'disabled'}),
-                label('All Active:'),
+                label('Active'),
                 switchInput({bind: 'active'}),
-                label('Toolbar:'),
+                label('Toolbar'),
                 switchInput({bind: 'toolbar'})
             ],
             items: [
@@ -40,8 +40,8 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
     const {disabled, active, toolbar} = model;
     return div({
         className: classNames(
-            'tb-card button-page__panel',
-            toolbar ? 'button-page__panel--toolbar' : null
+            'tb-card tb-button-page__panel',
+            toolbar ? 'tb-button-page__panel--toolbar' : null
         ),
         items: [
             div({
@@ -49,7 +49,7 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
                 item: `Intent: ${intent ?? 'none (default)'}`
             }),
             hbox({
-                className: 'button-page__row',
+                className: 'tb-button-page__row',
                 items: [
                     button({
                         text: 'Default',
@@ -73,7 +73,7 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
                 ]
             }),
             hbox({
-                className: 'button-page__row',
+                className: 'tb-button-page__row',
                 items: [
                     button({
                         text: 'Minimal',
@@ -100,7 +100,7 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
                 ]
             }),
             hbox({
-                className: 'button-page__row',
+                className: 'tb-button-page__row',
                 items: [
                     button({
                         text: 'Outlined',
@@ -127,7 +127,7 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
                 ]
             }),
             hbox({
-                className: 'button-page__row',
+                className: 'tb-button-page__row',
                 item: buttonGroupInput({
                     bind: 'activeButton',
                     intent,
@@ -140,7 +140,7 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
                 })
             }),
             hbox({
-                className: 'button-page__row',
+                className: 'tb-button-page__row',
                 item: buttonGroupInput({
                     bind: 'activeButton',
                     minimal: true,
@@ -154,7 +154,7 @@ const buttonPanel = hoistCmp.factory<ButtonPageModel>(({model, intent}) => {
                 })
             }),
             hbox({
-                className: 'button-page__row',
+                className: 'tb-button-page__row',
                 item: buttonGroupInput({
                     bind: 'activeButton',
                     outlined: true,

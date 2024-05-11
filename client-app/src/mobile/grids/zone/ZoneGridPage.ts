@@ -24,8 +24,8 @@ export const zoneGridPage = hoistCmp.factory({
                     options: {prefix: 'Loaded'}
                 })
             ],
-            item: zoneGrid(),
-            bbar: [storeFilterField({gridModel}), filler(), zoneMapperButton()]
+            tbar: [storeFilterField({gridModel}), filler(), zoneMapperButton()],
+            item: zoneGrid()
         });
     }
 });
