@@ -1,9 +1,6 @@
 package io.xh.toolbox.user
 
-import grails.gorm.transactions.Transactional
 import io.xh.hoist.role.provided.DefaultRoleService
-
-import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
 /**
  * Toolbox leverages Hoist's built-in, database-backed Role management and its associated Admin Console UI.
@@ -13,8 +10,20 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
  */
 class RoleService extends DefaultRoleService {
 
-    /** Toolbox does not use any external directory (such as LDAP/AD) for group membership. */
-    boolean getDirectoryGroupsSupported() {
-        return false
+    protected Map<String, Object> doLoadUsersForDirectoryGroups(Set<String> groups, boolean strictMode) {
+        def config = configService.getMap('testDirectories', [:])
+
+        return groups.collectEntries { group ->
+            if (!group.startsWith('xh:')) return [group, "Directory name should start with 'xh:'"];
+
+            def key = group.takeAfter('xh:')
+            if (config[key]) return [group, config[key] as Set]
+            if (key == 'sim_error') {
+                def e = new RuntimeException('There was a simulated error looking up directory groups.')
+                if (strictMode) throw e
+                logError('There was an error', e)
+            }
+            return [group, [] as Set]
+        }
     }
 }
