@@ -5,7 +5,12 @@ export class OAuthService extends HoistService {
     static instance: OAuthService;
 
     @managed
-    client = new AuthZeroClient();
+    client = new AuthZeroClient({
+        idScopes: ['profile'],
+        accessTokens: {
+            test: {scopes: ['profile']}
+        }
+    });
 
     override async initAsync() {
         const {client} = this;
