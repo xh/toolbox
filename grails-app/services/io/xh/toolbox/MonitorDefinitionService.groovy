@@ -25,6 +25,109 @@ class MonitorDefinitionService extends DefaultMonitorDefinitionService {
     PortfolioService portfolioService
     RecallsService recallsService
 
+    @Override
+    void init() {
+        super.init()
+
+        ensureRequiredMonitorsCreated([
+            [
+                    code: 'newsLastUpdateMins',
+                    name: 'News: Most Recent Story',
+                    metricType: 'Ceil',
+                    metricUnit: 'minutes since last story',
+                    warnThreshold: 2160,
+                    failThreshold: 4320,
+                    active: true,
+                    primaryOnly: true
+            ],
+            [
+                    code: 'newsStoryCount',
+                    name: 'News: Story Count',
+                    metricType: 'Floor',
+                    metricUnit: 'stories',
+                    failThreshold: 1,
+                    active: true,
+                    primaryOnly: true
+            ],
+            [
+                    code: 'newsLoadedSourcesCount',
+                    name: 'News: Loaded Sources',
+                    metricType: 'Floor',
+                    metricUnit: 'sources',
+                    failThreshold: 1,
+                    active: true,
+                    primaryOnly: true
+            ],
+            [
+                    code: 'fileManagerStorageUsedMb',
+                    name: 'File Manager: Storage Used',
+                    metricType: 'Ceil',
+                    metricUnit: 'MB',
+                    warnThreshold: 16,
+                    failThreshold: 100,
+                    active: true
+            ],
+            [
+                    code: 'recallsFetchStatus',
+                    name: 'Recalls: API Connection Status',
+                    metricType: 'None',
+                    active: true,
+                    primaryOnly: true
+            ],
+            [
+                    code: 'rawPositionCount',
+                    name: 'Portfolio: Raw Positions',
+                    metricType: 'Floor',
+                    metricUnit: 'positions',
+                    failThreshold: 1,
+                    active: true,
+            ],
+            [
+                    code: 'instrumentCount',
+                    name: 'Portfolio: Instruments',
+                    metricType: 'Floor',
+                    metricUnit: 'instruments',
+                    warnThreshold: 500,
+                    failThreshold: 1,
+                    active: true,
+            ],
+            [
+                    code: 'gitHubCommitCount',
+                    name: 'GitHub: Loaded Commits',
+                    metricType: 'Floor',
+                    metricUnit: 'commits',
+                    warnThreshold: 100,
+                    failThreshold: 1,
+                    active: true,
+                    primaryOnly: true
+            ],
+            [
+                    code: 'gitHubMostRecentCommitAgeMins',
+                    name: 'GitHub: Most Recent Commit',
+                    metricType: 'Ceil',
+                    metricUnit: 'minutes ago',
+                    warnThreshold: 5760,
+                    failThreshold: 11520,
+                    active: true,
+                    primaryOnly: true
+            ],
+            [
+                    code: 'metric1337Monitor',
+                    name: 'Always 1337',
+                    metricType: 'Floor',
+                    failThreshold: 1337,
+                    active: true
+            ],
+            [
+                    code: 'divideByZeroMonitor',
+                    name: 'Always throws',
+                    metricType: 'None',
+                    active: false
+            ]
+        ])
+
+    }
+
     /** Report when the latest news update was fetched, or fail if no stories are loaded. */
     def newsLastUpdateMins(MonitorResult result) {
         if (newsService.lastTimestamp) {
