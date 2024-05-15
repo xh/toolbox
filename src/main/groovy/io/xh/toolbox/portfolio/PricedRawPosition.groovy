@@ -1,6 +1,8 @@
 package io.xh.toolbox.portfolio
 
-class PricedRawPosition {
+import io.xh.hoist.json.JSONFormat
+
+class PricedRawPosition implements JSONFormat{
 
     final RawPosition rawPosition
     final Double endPx
@@ -14,5 +16,18 @@ class PricedRawPosition {
             mktVal = (rawPosition.endQty * endPx).round()
             pnl = mktVal - rawPosition.cost
         }
+    }
+
+    Map formatForJSON() {
+        return [
+                symbol: rawPosition.symbol,
+                model : rawPosition.model,
+                fund  : rawPosition.fund,
+                sector: rawPosition.instrument.sector,
+                region: rawPosition.instrument.region,
+                trader: rawPosition.trader,
+                mktVal: mktVal,
+                pnl: pnl
+        ]
     }
 }

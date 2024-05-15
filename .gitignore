@@ -22,6 +22,7 @@ out/
 ########
 toolbox-logs/
 *.log
+toolbox.yml
 
 # OS generated files #
 ######################
