@@ -17,14 +17,19 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
  */
 class Auth0Service extends BaseService {
 
+    ConfigService configService
     private JSONClient _jsonClient
 
     static clearCachesConfigs = ['auth0Domain', 'auth0ClientId']
 
-    ConfigService configService
+    void init() {
+        super.init()
+
+        // Fetch JWKS eagerly so it's ready for potential burst of initial requests after startup.
+        getJsonWebKeySet()
+    }
 
     Map getClientConfig() {
-
         if (getInstanceConfig('useOAuth') == 'false') {
             return [enabled: false]
         }
@@ -113,6 +118,7 @@ class Auth0Service extends BaseService {
     }
 
     Map getAdminStats() {[
-        config: configForAdminStats('auth0ClientId', 'auth0Domain', 'auth0Jwks')
+        config: configForAdminStats('auth0ClientId', 'auth0Domain', 'auth0Jwks'),
+        jwks: jsonWebKeySet.toJson()
     ]}
 }
