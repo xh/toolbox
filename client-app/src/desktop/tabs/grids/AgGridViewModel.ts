@@ -84,7 +84,7 @@ export class AgGridViewModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        const data = await XH.portfolioService.getRawPositionsAsync({loadSpec});
+        const data = await XH.portfolioService.getPricedRawPositionsAsync({loadSpec});
         runInAction(() => (this.data = data));
     }
 }

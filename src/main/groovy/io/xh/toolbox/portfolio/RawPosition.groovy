@@ -1,6 +1,8 @@
 package io.xh.toolbox.portfolio
 
-class RawPosition {
+import io.xh.hoist.json.JSONFormat
+
+class RawPosition implements JSONFormat {
 
     // Core position
     final Instrument instrument
