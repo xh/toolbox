@@ -3,14 +3,6 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
 
-export interface Position {
-    id: string;
-    name: string;
-    pnl: number;
-    mktVal: number;
-    children: Position[];
-}
-
 export class PortfolioService extends HoistService {
     static instance: PortfolioService;
 
@@ -86,8 +78,8 @@ export class PortfolioService extends HoistService {
     /**
      * Return a list of flat position data.
      */
-    async getRawPositionsAsync({loadSpec}: any = {}): Promise<PlainObject[]> {
-        return XH.fetchJson({url: 'portfolio/rawPositions', loadSpec});
+    async getPricedRawPositionsAsync({loadSpec}: any = {}): Promise<PricedRawPosition[]> {
+        return XH.fetchJson({url: 'portfolio/pricedRawPositions', loadSpec});
     }
 
     async getAllOrdersAsync({loadSpec}: any = {}): Promise<PlainObject[]> {
@@ -145,4 +137,23 @@ export class PortfolioService extends HoistService {
             ])
         };
     }
+}
+
+export interface Position {
+    id: string;
+    name: string;
+    pnl: number;
+    mktVal: number;
+    children: Position[];
+}
+
+export interface PricedRawPosition {
+    symbol: string;
+    model: string;
+    fund: string;
+    sector: string;
+    region: string;
+    trader: string;
+    mktVal: number;
+    pnl: number;
 }
