@@ -3,14 +3,6 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
 
-export interface Position {
-    id: string;
-    name: string;
-    pnl: number;
-    mktVal: number;
-    children: Position[];
-}
-
 export class PortfolioService extends HoistService {
     static instance: PortfolioService;
 
@@ -147,7 +139,15 @@ export class PortfolioService extends HoistService {
     }
 }
 
-interface PricedRawPosition {
+export interface Position {
+    id: string;
+    name: string;
+    pnl: number;
+    mktVal: number;
+    children: Position[];
+}
+
+export interface PricedRawPosition {
     symbol: string;
     model: string;
     fund: string;

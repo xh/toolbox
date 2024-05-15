@@ -2,7 +2,7 @@ package io.xh.toolbox.portfolio
 
 import io.xh.hoist.json.JSONFormat
 
-class RawPosition implements JSONFormat {
+class RawPosition {
 
     // Core position
     final Instrument instrument
@@ -25,13 +25,4 @@ class RawPosition implements JSONFormat {
         endQty = mp.endQty as Long
     }
 
-
-    Map formatForJSON() {
-        return [
-                symbol: symbol,
-                model : model,
-                fund  : fund,
-                trader: trader,
-        ]
-    }
 }

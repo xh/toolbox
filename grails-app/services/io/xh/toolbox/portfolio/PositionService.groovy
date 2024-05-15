@@ -36,12 +36,7 @@ class PositionService extends BaseService {
 
     PositionResultSet getPositions(PositionQuery query) {
 
-        Map<String, MarketPrice> prices = portfolioService.getCurrentPrices()
-        List<PricedRawPosition> rawPositions = portfolioService
-            .getPortfolio()
-            .rawPositions
-            .collect {new PricedRawPosition(it, prices[it.symbol]?.close)}
-
+        List<PricedRawPosition> rawPositions = getPricedRawPositions()
 
         List<Position> positions = groupPositions(query.dims, rawPositions, 'root')
 
@@ -66,14 +61,14 @@ class PositionService extends BaseService {
         )
     }
 
-    List<PricedRawPosition> getPricedPositions(){
+    List<PricedRawPosition> getPricedRawPositions(){
         Map<String, MarketPrice> prices = portfolioService.getCurrentPrices()
         return portfolioService
                 .getPortfolio()
                 .rawPositions.collect{new PricedRawPosition(it, prices[it.symbol]?.close)}
     }
 
-    Position getPricedPosition(String positionId) {
+    Position getPosition(String positionId) {
 
         Map<String, String> parsedId = parsePositionId(positionId)
         List<String> dims = parsedId.keySet() as List<String>
