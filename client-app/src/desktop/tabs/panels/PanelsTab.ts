@@ -20,6 +20,6 @@ export const panelsTab = hoistCmp.factory(() =>
                 {id: 'loadingIndicator', content: loadingIndicatorPanel}
             ]
         },
-        className: 'toolbox-tab'
+        className: 'tb-tab'
     })
 );

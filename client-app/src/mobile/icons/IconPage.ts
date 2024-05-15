@@ -9,16 +9,14 @@ export const iconPage = hoistCmp.factory({
     render() {
         return panel({
             scrollable: true,
-            className: 'icon-page',
+            className: 'tb-icon-page',
             item: table(
-                tbody({
-                    items: [
-                        tr(th('name'), th('regular'), th('solid'), th('light')),
-                        ...allIcons().map(it =>
-                            tr(td(it.name), td(it.regular), td(it.solid), td(it.light))
-                        )
-                    ]
-                })
+                tbody(
+                    tr(th('name'), th('regular'), th('solid'), th('light')),
+                    ...allIcons().map(it =>
+                        tr(td(it.name), td(it.regular), td(it.solid), td(it.light))
+                    )
+                )
             )
         });
     }

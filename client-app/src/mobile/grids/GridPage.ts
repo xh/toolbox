@@ -24,9 +24,9 @@ export const gridPage = hoistCmp.factory({
                     options: {prefix: 'Loaded'}
                 })
             ],
+            tbar: [storeFilterField(), filler(), colAutosizeButton(), colChooserButton()],
             item: grid(),
-            tbar: [
-                label('Size:'),
+            bbar: [
                 select({
                     width: 120,
                     model: gridModel,
@@ -38,18 +38,19 @@ export const gridPage = hoistCmp.factory({
                         {label: 'Large', value: 'large'}
                     ]
                 }),
-                label('Borders:'),
+                filler(),
+                label('Borders'),
                 switchInput({
                     model: gridModel,
                     bind: 'rowBorders'
                 }),
-                label('Stripes:'),
+                '-',
+                label('Stripes'),
                 switchInput({
                     model: gridModel,
                     bind: 'stripeRows'
                 })
-            ],
-            bbar: [storeFilterField(), filler(), colAutosizeButton(), colChooserButton()]
+            ]
         });
     }
 });

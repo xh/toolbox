@@ -3,6 +3,14 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 import {PositionSession} from '../positions/PositionSession';
 import {mapValues} from 'lodash';
 
+export interface Position {
+    id: string;
+    name: string;
+    pnl: number;
+    mktVal: number;
+    children: Position[];
+}
+
 export class PortfolioService extends HoistService {
     static instance: PortfolioService;
 
@@ -28,7 +36,7 @@ export class PortfolioService extends HoistService {
         dims: string[],
         includeSummary = false,
         maxPositions = this.MAX_POSITIONS
-    ): Promise<PlainObject[]> {
+    ): Promise<Position[]> {
         const positions = await XH.fetchJson({
             url: 'portfolio/positions',
             params: {
@@ -43,9 +51,8 @@ export class PortfolioService extends HoistService {
     /**
      * Return a single grouped position, uniquely identified by drilldown ID.
      * @param positionId - ID installed on each position returned by `getPositionsAsync()`.
-     * @return {Promise<*>}
      */
-    async getPositionAsync(positionId) {
+    async getPositionAsync(positionId: string): Promise<Position> {
         return XH.fetchJson({
             url: 'portfolio/position',
             params: {
@@ -57,10 +64,12 @@ export class PortfolioService extends HoistService {
     /**
      *  Return a PositionSession that will receive live updates.
      *  See getPositionsAsync(), the static form of this method, for more details.
-     *
-     * @returns {Promise<PositionSession>}
      */
-    async getLivePositionsAsync(dims, topic, maxPositions = this.MAX_POSITIONS) {
+    async getLivePositionsAsync(
+        dims: string[],
+        topic: string,
+        maxPositions: number = this.MAX_POSITIONS
+    ) {
         const session = await XH.fetchJson({
             url: 'portfolio/livePositions',
             params: {

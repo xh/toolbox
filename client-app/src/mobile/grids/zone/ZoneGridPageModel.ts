@@ -10,7 +10,7 @@ import {
     tradeDateCol,
     tradeVolumeCol,
     winLoseCol
-} from '../../core/columns';
+} from '../../../core/columns';
 
 export class ZoneGridPageModel extends HoistModel {
     @bindable.ref

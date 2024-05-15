@@ -22,7 +22,7 @@ export const dataViewPanel = hoistCmp.factory({
                 </p>
             ],
             item: panel({
-                className: 'toolbox-dataview-panel',
+                className: 'tb-dataview-panel',
                 title: 'Grids › DataView',
                 icon: Icon.addressCard(),
                 width: 700,

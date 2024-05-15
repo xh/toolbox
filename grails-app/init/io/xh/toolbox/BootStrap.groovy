@@ -2,6 +2,7 @@ package io.xh.toolbox
 
 import grails.gorm.transactions.Transactional
 import io.xh.hoist.config.ConfigService
+import io.xh.hoist.log.LogSupport
 import io.xh.hoist.pref.PrefService
 import io.xh.toolbox.user.User
 
@@ -11,7 +12,7 @@ import static io.xh.hoist.BaseService.parallelInit
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 import static io.xh.hoist.util.Utils.*
 
-class BootStrap {
+class BootStrap implements LogSupport {
 
     ConfigService configService
     PrefService prefService
@@ -54,16 +55,16 @@ class BootStrap {
                 user.save(flush: true)
             }
 
-            log.info("Local admin user available as per instanceConfig | $adminUsername")
+            logInfo("Local admin user available as per instanceConfig", adminUsername)
         } else {
-            log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
+            logWarn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
     }
 
     private void logStartupMsg() {
         def buildLabel = appBuild != 'UNKNOWN' ? " [build $appBuild] " : " "
 
-        log.info("""
+        logInfo("""
 \n
  ______   ______     ______     __         ______     ______     __  __    
 /\\__  _\\ /\\  __ \\   /\\  __ \\   /\\ \\       /\\  == \\   /\\  __ \\   /\\_\\_\\_\\   
@@ -131,7 +132,7 @@ class BootStrap {
             ],
             fileManagerStoragePath: [
                     valueType: 'string',
-                    defaultValue: '/toolbox/fileManager',
+                    defaultValue: '/var/tmp/xh-toolbox',
                     clientVisible: false,
                     groupName: 'Toolbox - Example Apps',
                     note: 'Absolute path to disk location for storing uploaded files.'
