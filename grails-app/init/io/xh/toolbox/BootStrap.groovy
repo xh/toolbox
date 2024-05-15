@@ -132,7 +132,7 @@ class BootStrap implements LogSupport {
             ],
             fileManagerStoragePath: [
                     valueType: 'string',
-                    defaultValue: '/toolbox/fileManager',
+                    defaultValue: '/var/tmp/xh-toolbox',
                     clientVisible: false,
                     groupName: 'Toolbox - Example Apps',
                     note: 'Absolute path to disk location for storing uploaded files.'
