@@ -30,7 +30,7 @@ export const hboxContainerPanel = hoistCmp.factory(() =>
 
 function renderBox(args) {
     return box({
-        className: 'toolbox-layout-box',
+        className: 'tb-layout-box',
         ...args
     });
 }

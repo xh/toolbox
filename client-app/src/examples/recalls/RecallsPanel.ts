@@ -29,7 +29,7 @@ export const recallsPanel = hoistCmp.factory({
                 item: currentRecord
                     ? detailsPanel()
                     : placeholder('Select a drug above to view its details.'),
-                className: 'toolbox-recalls-detail-panel',
+                className: 'tb-recalls-detail-panel',
                 compactHeader: true,
                 modelConfig: {
                     side: 'bottom',

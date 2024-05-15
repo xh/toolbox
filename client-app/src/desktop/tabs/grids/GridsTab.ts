@@ -36,6 +36,6 @@ export const gridsTab = hoistCmp.factory(() =>
             ],
             switcher: {orientation: 'left'}
         },
-        className: 'toolbox-tab'
+        className: 'tb-tab'
     })
 );

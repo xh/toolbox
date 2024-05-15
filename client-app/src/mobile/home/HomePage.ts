@@ -8,7 +8,7 @@ export const homePage = hoistCmp.factory({
     render() {
         return panel({
             scrollable: true,
-            className: 'toolbox-page xh-tiled-bg',
+            className: 'tb-page xh-tiled-bg',
             items: [
                 summaryCard({
                     title: 'Grids',
@@ -19,7 +19,7 @@ export const homePage = hoistCmp.factory({
                 }),
                 summaryCard({
                     title: 'Tree Grids',
-                    icon: Icon.grid(),
+                    icon: Icon.treeList(),
                     summary:
                         "Hoist's Grid supports the display of hierarchical tree data. Applications provide standard record data with children nodes containing their sub-records",
                     route: 'treegrids'
@@ -100,10 +100,10 @@ export const homePage = hoistCmp.factory({
 
 const summaryCard = hoistCmp.factory(({title, icon, summary, route}) =>
     div({
-        className: 'toolbox-card',
+        className: 'tb-card',
         items: [
-            div({className: 'toolbox-card__title', item: title}),
-            div({className: 'toolbox-card__body', item: summary}),
+            div({className: 'tb-card__title', item: title}),
+            div({className: 'tb-card__body', item: summary}),
             button({
                 icon: icon,
                 text: `Go to ${title}`,
