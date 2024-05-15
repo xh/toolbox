@@ -8,7 +8,6 @@ import org.jose4j.jwk.VerificationJwkSelector
 import org.jose4j.jws.JsonWebSignature
 
 import static io.xh.hoist.json.JSONParser.parseObject
-import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 import static java.lang.System.currentTimeMillis
 
 /**
@@ -21,9 +20,7 @@ class OauthService extends BaseOauthService {
 
     static clearCachesConfigs = ['xhOauthConfig']
 
-    Map getClientConfig() {
-        getInstanceConfig('useOAuth') == 'false' ? [enabled: false] : oauthConfig
-    }
+    Map getClientConfig() { oauthConfig }
 
     TokenValidationResult validateToken(String token) {
         try {
