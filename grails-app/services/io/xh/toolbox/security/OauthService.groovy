@@ -20,6 +20,13 @@ class OauthService extends BaseOauthService {
 
     static clearCachesConfigs = ['xhOauthConfig']
 
+    void init() {
+        super.init()
+
+        // Fetch JWKS eagerly so it's ready for potential burst of initial requests after startup.
+        getJsonWebKeySet()
+    }
+
     Map getClientConfig() { oauthConfig }
 
     TokenValidationResult validateToken(String token) {
