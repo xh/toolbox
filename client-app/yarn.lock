@@ -1187,10 +1187,10 @@
   dependencies:
     tslib "~2.6.2"
 
-"@blueprintjs/core@^5.10.1", "@blueprintjs/core@^5.10.2":
-  version "5.10.2"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-5.10.2.tgz#4b41a449a59f941b02a13b87705662561c11b388"
-  integrity sha512-e5xXp5R7IyG7iR8h2TyOgvohSbLW8auE5eL2LAUU0g5MGqKLZDYabPwCer9b6/niTb7nfbTqlkeb7jB9bT3Akg==
+"@blueprintjs/core@^5.10.1", "@blueprintjs/core@^5.10.3":
+  version "5.10.3"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-5.10.3.tgz#92daf209ceb1b4bc33c3fb8c53287e63430bf0b9"
+  integrity sha512-QlfvAkZOimeyJKs9+EKd52nYfHd1yltSJQLAmv0+0wF/5m+eQ5jeWjF8Mr/vwq2EqiC3pS2+i3mivORvxXTgDg==
   dependencies:
     "@blueprintjs/colors" "^5.1.1"
     "@blueprintjs/icons" "^5.9.0"
@@ -1204,12 +1204,12 @@
     use-sync-external-store "^1.2.0"
 
 "@blueprintjs/datetime2@^2.3.3":
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/datetime2/-/datetime2-2.3.4.tgz#3f92a156188845b464d5aeb89829d84f1c57ad39"
-  integrity sha512-339YvKoYpRQgrLgQ18hXGX6TB5GJnpLrAkbwkffFdMDDllBhEOY5aXkDTDZjCYavf4WjlEf7qEzVgoWiYcUHUg==
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/datetime2/-/datetime2-2.3.5.tgz#05ec3ed8bdc4a5b344f3baeb60785fa99d8d720e"
+  integrity sha512-dEmLY52fVM4NrCsn9EedTsH8XVtMy+UW5g3u8RaJ5tfUQ4aeKjwiInHdmMp83co4PvR2EiL+n5czVRjJecLCNA==
   dependencies:
-    "@blueprintjs/core" "^5.10.2"
-    "@blueprintjs/datetime" "^5.3.4"
+    "@blueprintjs/core" "^5.10.3"
+    "@blueprintjs/datetime" "^5.3.5"
     "@blueprintjs/icons" "^5.9.0"
     classnames "^2.3.1"
     date-fns "^2.28.0"
@@ -1217,14 +1217,14 @@
     react-innertext "^1.1.5"
     tslib "~2.6.2"
 
-"@blueprintjs/datetime@^5.3.4":
-  version "5.3.4"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/datetime/-/datetime-5.3.4.tgz#30c13884340dc14e23bf80a511e2ff0f397920fb"
-  integrity sha512-7+WUql+TpISL8BSk0wZb2s7wKkPUpF7iAdiev8lJiUvqp1nl1b/LLrXss8/xiTUsNo/fUq4/89T10pyskpWdHA==
+"@blueprintjs/datetime@^5.3.5":
+  version "5.3.5"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/datetime/-/datetime-5.3.5.tgz#25936b05e158c79e6f496398e52b824e14c2fb51"
+  integrity sha512-bx69myARKe71u3GdCsKKWEvyw5QJFvCSOAKANCl0ZnZkiuiqJ6FxaxFrpJrV8nvXyyFifHdxlaRLbK/NwSbibw==
   dependencies:
-    "@blueprintjs/core" "^5.10.2"
+    "@blueprintjs/core" "^5.10.3"
     "@blueprintjs/icons" "^5.9.0"
-    "@blueprintjs/select" "^5.1.4"
+    "@blueprintjs/select" "^5.1.5"
     classnames "^2.3.1"
     date-fns "^2.28.0"
     date-fns-tz "^2.0.0"
@@ -1241,12 +1241,12 @@
     classnames "^2.3.1"
     tslib "~2.6.2"
 
-"@blueprintjs/select@^5.1.4":
-  version "5.1.4"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/select/-/select-5.1.4.tgz#f58e7e9616eb97798832d6e256b26bc4a5272713"
-  integrity sha512-1CJOeGYO0NOvtsbeTVNIuXeGK/rg3zxyxG+3bSPY6tmib4H6hGAe/VmQsPfbogUdugS3AsjNxL6owosqluRyIQ==
+"@blueprintjs/select@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/select/-/select-5.1.5.tgz#bcf17932d2da38dc91175d5240e5b0babf8012c7"
+  integrity sha512-7oSO6fmZ9lZpzPpAuxoIzgczTWvyNmUOxDUAzO5LltcKL5jNg9V8L/wADNvRTrr9MAw8IbVwEw5fPDeZ8iP3Vg==
   dependencies:
-    "@blueprintjs/core" "^5.10.2"
+    "@blueprintjs/core" "^5.10.3"
     "@blueprintjs/icons" "^5.9.0"
     classnames "^2.3.1"
     tslib "~2.6.2"
@@ -1740,9 +1740,9 @@
   integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
 
 "@types/lodash@4.x":
-  version "4.17.1"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.1.tgz#0fabfcf2f2127ef73b119d98452bd317c4a17eb8"
-  integrity sha512-X+2qazGS3jxLAIz5JDXDzglAF3KpijdhFxlf/V1+hEsOUc+HnWi81L/uv/EvGuV90WY+7mPGFCUDGfQC3Gj95Q==
+  version "4.17.3"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.3.tgz#b69884a018834d97e981f9f569ddc07668367e6f"
+  integrity sha512-zmNrEJaBvNskZXQWaUQq6bktF4IDGVfDS78M+YEk5aCn9M/b94/mB/6WCyfH2/MjwBdc6QuOor95CIlKWYRL3A==
 
 "@types/mdast@^3.0.0":
   version "3.0.15"
@@ -2203,9 +2203,9 @@
     webpackbar "~6.0.1"
 
 "@xh/hoist@^64.0.0-SNAPSHOT":
-  version "64.0.0-SNAPSHOT.1715723603593"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-64.0.0-SNAPSHOT.1715723603593.tgz#f97354cc25e43303a0b94fd52b81722316cdbebe"
-  integrity sha512-B65h+SgZMA4fJWUQ7T2A4uYt8uq/NqyM7ePJf6Zo/R1YmmZ/JcLuHTZ9PlLCWql6KFyNzpDM4cqowsj7hjlvFA==
+  version "64.0.0-SNAPSHOT.1715874965480"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-64.0.0-SNAPSHOT.1715874965480.tgz#0144039ede2b64aef9bbbd5a62f32c7adf46b7a7"
+  integrity sha512-Lr/eF3ZQYeqz6m3+YhgsWGQWAR6xp5pxqP/ops+QGGnyEejyMR6Ou9d9cnc6+GFy9NfPiZu8dM1g3lXPyczwMA==
   dependencies:
     "@blueprintjs/core" "^5.10.1"
     "@blueprintjs/datetime2" "^2.3.3"
@@ -2767,9 +2767,9 @@ camel-case@^4.1.2:
     tslib "^2.0.3"
 
 caniuse-lite@^1.0.30001587, caniuse-lite@^1.0.30001599:
-  version "1.0.30001618"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001618.tgz#fad74fa006aef0f01e8e5c0a5540c74d8d36ec6f"
-  integrity sha512-p407+D1tIkDvsEAPS22lJxLQQaG8OTBEqo0KhzfABGk0TU4juBNDSfH0hyAp/HRyx+M8L17z/ltyhxh27FTfQg==
+  version "1.0.30001620"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001620.tgz#78bb6f35b8fe315b96b8590597094145d0b146b4"
+  integrity sha512-WJvYsOjd1/BYUY6SNGUosK9DUidBPDTnOARHp3fSmFO1ekdxaY6nKRttEVrfMmYi80ctS0kz1wiWmm14fVc3ew==
 
 capital-case@^1.0.4:
   version "1.0.4"
@@ -3462,9 +3462,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.668:
-  version "1.4.768"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.768.tgz#3795bd000ccb8978be1af2d06320b2dac810a372"
-  integrity sha512-z2U3QcvNuxdkk33YV7R1bVMNq7fL23vq3WfO5BHcqrm4TnDGReouBfYKLEFh5umoK1XACjEwp8mmnhXk2EJigw==
+  version "1.4.772"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.772.tgz#7a1efabf86b20e5709736ce64dbc2ce13cb68936"
+  integrity sha512-jFfEbxR/abTTJA3ci+2ok1NTuOBBtB4jH+UT6PUmRN+DY3WSD4FFRsgoVQ+QNIJ0T7wrXwzsWCI2WKC46b++2A==
 
 emoji-regex@^10.3.0:
   version "10.3.0"
