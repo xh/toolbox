@@ -1,8 +1,8 @@
-import {div, hbox} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {button} from '@xh/hoist/mobile/cmp/button';
-import {buttonGroupInput, label, switchInput} from '@xh/hoist/mobile/cmp/input';
+import {buttonGroupInput, checkboxButton} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import classNames from 'classnames';
 import './ButtonPage.scss';
@@ -17,20 +17,27 @@ export const buttonPage = hoistCmp.factory({
             icon: Icon.pointerUp(),
             scrollable: true,
             className: 'tb-page tb-button-page xh-tiled-bg',
-            tbar: [
-                label('Disabled'),
-                switchInput({bind: 'disabled'}),
-                label('Active'),
-                switchInput({bind: 'active'}),
-                label('Toolbar'),
-                switchInput({bind: 'toolbar'})
-            ],
             items: [
                 buttonPanel(),
                 buttonPanel({intent: 'primary'}),
                 buttonPanel({intent: 'success'}),
                 buttonPanel({intent: 'warning'}),
                 buttonPanel({intent: 'danger'})
+            ],
+            bbar: [
+                filler(),
+                checkboxButton({
+                    text: 'Disabled',
+                    bind: 'disabled'
+                }),
+                checkboxButton({
+                    text: 'Active',
+                    bind: 'active'
+                }),
+                checkboxButton({
+                    text: 'Toolbar',
+                    bind: 'toolbar'
+                })
             ]
         });
     }

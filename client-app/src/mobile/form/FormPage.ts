@@ -1,5 +1,5 @@
 import {form} from '@xh/hoist/cmp/form';
-import {div, filler, vbox} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, vbox} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {fmtPercent} from '@xh/hoist/format';
 import './FormPage.scss';
@@ -9,6 +9,7 @@ import {formField} from '@xh/hoist/mobile/cmp/form';
 import {
     buttonGroupInput,
     checkbox,
+    checkboxButton,
     dateInput,
     label,
     numberInput,
@@ -36,10 +37,8 @@ export const formPage = hoistCmp.factory({
             bbar: [
                 setFocusMenu(),
                 filler(),
-                label('Read-only'),
-                switchInput({model: model.formModel, bind: 'readonly'}),
-                label('Min. validation'),
-                switchInput({bind: 'minimal'})
+                checkboxButton({model: model.formModel, bind: 'readonly', text: 'Readonly'}),
+                checkboxButton({bind: 'minimal', text: 'Min. validation'})
             ]
         });
     }
@@ -98,13 +97,24 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
                         valueType: 'localDate'
                     })
                 }),
-                formField({
-                    field: 'included',
-                    item: checkbox()
-                }),
-                formField({
-                    field: 'enabled',
-                    item: switchInput()
+                hbox({
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    items: [
+                        formField({
+                            field: 'enabled',
+                            item: checkbox()
+                        }),
+                        formField({
+                            field: 'enabled',
+                            item: switchInput()
+                        }),
+                        formField({
+                            field: 'enabled',
+                            label: null, // checkboxButton is self-labelling, using fieldName for its text by default
+                            item: checkboxButton()
+                        })
+                    ]
                 }),
                 formField({
                     field: 'buttonGroup',
@@ -147,7 +157,6 @@ const results = hoistCmp.factory(() => {
             fieldResult({field: 'salary'}),
             fieldResult({field: 'percentage', renderer: v => fmtPercent(v, {nullDisplay: '-'})}),
             fieldResult({field: 'date', renderer: v => v?.toString()}),
-            fieldResult({field: 'included', renderer: v => (v ? 'Yes' : 'No')}),
             fieldResult({field: 'enabled', renderer: v => (v ? 'Yes' : 'No')}),
             fieldResult({field: 'buttonGroup'}),
             fieldResult({field: 'notes'}),

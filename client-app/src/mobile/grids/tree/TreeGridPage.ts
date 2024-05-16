@@ -4,7 +4,7 @@ import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {colAutosizeButton, colChooserButton} from '@xh/hoist/mobile/cmp/button';
 import {groupingChooser} from '@xh/hoist/mobile/cmp/grouping';
-import {label, select, switchInput} from '@xh/hoist/mobile/cmp/input';
+import {checkboxButton, select} from '@xh/hoist/mobile/cmp/input';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {TreeGridPageModel} from './TreeGridPageModel';
 
@@ -41,8 +41,8 @@ export const treeGridPage = hoistCmp.factory({
                     ]
                 }),
                 filler(),
-                label('Borders'),
-                switchInput({
+                checkboxButton({
+                    text: 'Borders',
                     model: gridModel,
                     bind: 'rowBorders'
                 })
