@@ -23,7 +23,6 @@ export class FormPageModel extends HoistModel {
             {name: 'salary'},
             {name: 'percentage'},
             {name: 'date', rules: [required]},
-            {name: 'included'},
             {name: 'enabled'},
             {name: 'buttonGroup', initialValue: 'button2'},
             {name: 'notes'},

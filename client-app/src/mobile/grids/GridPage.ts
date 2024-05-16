@@ -1,12 +1,12 @@
-import {creates, hoistCmp} from '@xh/hoist/core';
-import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {colAutosizeButton, colChooserButton} from '@xh/hoist/mobile/cmp/button';
-import {Icon} from '@xh/hoist/icon';
-import {label, select, switchInput} from '@xh/hoist/mobile/cmp/input';
-import {storeFilterField} from '@xh/hoist/cmp/store';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+import {storeFilterField} from '@xh/hoist/cmp/store';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
+import {colAutosizeButton, colChooserButton} from '@xh/hoist/mobile/cmp/button';
+import {checkboxButton, select} from '@xh/hoist/mobile/cmp/input';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {GridPageModel} from './GridPageModel';
 
 export const gridPage = hoistCmp.factory({
@@ -39,14 +39,13 @@ export const gridPage = hoistCmp.factory({
                     ]
                 }),
                 filler(),
-                label('Borders'),
-                switchInput({
+                checkboxButton({
+                    text: 'Borders',
                     model: gridModel,
                     bind: 'rowBorders'
                 }),
-                '-',
-                label('Stripes'),
-                switchInput({
+                checkboxButton({
+                    text: 'Stripes',
                     model: gridModel,
                     bind: 'stripeRows'
                 })
