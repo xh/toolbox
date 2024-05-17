@@ -39,21 +39,21 @@ class UserService extends BaseUserService {
     @Transactional
     HoistUser getOrCreateFromTokenResult(TokenValidationResult tokenResult) {
         def email = tokenResult.email,
-            name = tokenResult.fullName,
-            pic = tokenResult.profilePicUrl,
+            name = tokenResult.name,
+            profilePicUrl = tokenResult.picture,
             user = User.findByEmail(email)
 
         if (!user) {
             user = new User(
                 email: email,
                 name: name,
-                profilePicUrl: pic
+                profilePicUrl: profilePicUrl
             ).save()
             notifyOnUserCreated(user)
-            logInfo("Created new user from JWT", email)
-        } else if (user.name != name || user.profilePicUrl != pic) {
+            logInfo('Created new user from JWT', email)
+        } else if (user.name != name || user.profilePicUrl != profilePicUrl) {
             user.name = name
-            user.profilePicUrl = pic
+            user.profilePicUrl = profilePicUrl
             user = user.save()
         }
 

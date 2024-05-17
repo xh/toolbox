@@ -12,7 +12,7 @@ XH.renderApp({
     modelClass: AppModel,
     containerClass: AppContainer,
     isMobileApp: false,
-    isSSO: false,
+    enableLogout: true,
     checkAccess: 'HOIST_ADMIN',
     loginMessage: 'Contact support@xh.io for information on this demo application.',
     lockoutMessage: 'Contact support@xh.io for information on this demo application.'

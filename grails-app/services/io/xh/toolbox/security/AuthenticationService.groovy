@@ -1,6 +1,7 @@
 package io.xh.toolbox.security
 
 import grails.gorm.transactions.ReadOnly
+import io.xh.hoist.config.ConfigService
 import io.xh.hoist.security.BaseAuthenticationService
 import io.xh.hoist.user.HoistUser
 import io.xh.toolbox.user.User
@@ -13,12 +14,18 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
 class AuthenticationService extends BaseAuthenticationService  {
 
-    OauthService oauthService
+    Auth0Service auth0Service
     UserService userService
 
     AuthenticationService() {
         super()
         whitelistURIs.push('/gitHub/webhookTrigger')
+    }
+
+    Map getClientConfig() {
+        useOAuth ?
+            [useOAuth: true, *: auth0Service.getClientConfig()] :
+            [useOAuth: false]
     }
 
     /**
@@ -28,18 +35,18 @@ class AuthenticationService extends BaseAuthenticationService  {
      * first identity check back to the server.
      */
     protected boolean completeAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        if (getInstanceConfig('useOAuth') == 'false') {
+        if (!useOAuth) {
             return true
         }
 
         def token = request.getHeader('x-xh-idt'),
-            tokenResult = oauthService.validateToken(token)
-        if (tokenResult.isValid) {
+            tokenResult = auth0Service.validateToken(token)
+        if (tokenResult) {
             def user = userService.getOrCreateFromTokenResult(tokenResult)
             setUser(request, user)
             logDebug('User read from token and set on session', [_username: user.username])
         } else {
-            logDebug('Invalid token - no user set on session - return 401', tokenResult.exception)
+            logDebug('Invalid token - no user set on session - return 401')
         }
         return true
     }
@@ -72,13 +79,8 @@ class AuthenticationService extends BaseAuthenticationService  {
         return user?.checkPassword(password) ? user : null
     }
 
-    private static boolean isAjax(HttpServletRequest request) {
-        return request.getHeader('X-Requested-With') == 'XMLHttpRequest'
-    }
-
-    private static boolean acceptHtml(HttpServletRequest request) {
-        def accept = request.getHeader('ACCEPT')
-        return accept && (accept.contains('*/*') || accept.contains('html'))
+    private static boolean getUseOAuth() {
+        getInstanceConfig('useOAuth') != 'false'
     }
 
 }
