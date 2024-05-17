@@ -1,6 +1,6 @@
 {
   "name": "toolbox",
-  "version": "5.0-SNAPSHOT",
+  "version": "5.0.0",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
@@ -42,7 +42,7 @@
     "@ag-grid-enterprise/side-bar": "~31.2.0",
     "@ag-grid-enterprise/sparklines": "~31.2.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^64.0.0-SNAPSHOT",
+    "@xh/hoist": "^64.0.0",
     "@xh/package-template": "~2.0.0",
     "core-js": "3.x",
     "highcharts": "11.x",
