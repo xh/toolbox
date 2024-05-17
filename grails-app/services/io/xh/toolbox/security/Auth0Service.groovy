@@ -114,6 +114,7 @@ class Auth0Service extends BaseService {
     }
 
     Map getAdminStats() {[
-        config: configForAdminStats('auth0Config')
+        config: configForAdminStats('auth0Config'),
+        jwks: jsonWebKeySet.toJson()
     ]}
 }
