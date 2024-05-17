@@ -16,6 +16,7 @@ export class AuthService extends HoistService {
 
         this.client = new AuthZeroClient({
             idScopes: ['profile'],
+            expiryWarning: true,
             ...(config as AuthZeroClientConfig)
         });
         await this.client.initAsync();

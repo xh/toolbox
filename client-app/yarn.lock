@@ -114,6 +114,23 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
+"@auth0/auth0-spa-js@~2.1.3":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-2.1.3.tgz#aabf6f439e41edbeef0cf4766ad754e5b47616e5"
+  integrity sha512-NMTBNuuG4g3rame1aCnNS5qFYIzsTUV5qTFPRfTyYFS1feS6jsCBR+eTq9YkxCp1yuoM2UIcjunPaoPl77U9xQ==
+
+"@azure/msal-browser@~3.14.0":
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-3.14.0.tgz#1cb5cab438a9943212aa50c403d11f775c787b21"
+  integrity sha512-Un85LhOoecJ3HDTS3Uv3UWnXC9/43ZSO+Kc+anSqpZvcEt58SiO/3DuVCAe1A3I5UIBYJNMgTmZPGXQ0MVYrwA==
+  dependencies:
+    "@azure/msal-common" "14.10.0"
+
+"@azure/msal-common@14.10.0":
+  version "14.10.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-14.10.0.tgz#215449726717b53d549953db77562cad6cb8421c"
+  integrity sha512-Zk6DPDz7e1wPgLoLgAp0349Yay9RvcjPM5We/ehuenDNsz/t9QEFI7tRoHpp/e47I4p20XE3FiDlhKwAo3utDA==
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.23.5", "@babel/code-frame@^7.24.2":
   version "7.24.2"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.24.2.tgz#718b4b19841809a58b29b68cde80bc5e1aa6d9ae"
@@ -1174,7 +1191,7 @@
   dependencies:
     tslib "~2.6.2"
 
-"@blueprintjs/core@^5.10.1", "@blueprintjs/core@^5.10.3":
+"@blueprintjs/core@^5.10.2", "@blueprintjs/core@^5.10.3":
   version "5.10.3"
   resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-5.10.3.tgz#92daf209ceb1b4bc33c3fb8c53287e63430bf0b9"
   integrity sha512-QlfvAkZOimeyJKs9+EKd52nYfHd1yltSJQLAmv0+0wF/5m+eQ5jeWjF8Mr/vwq2EqiC3pS2+i3mivORvxXTgDg==
@@ -1451,9 +1468,9 @@
     "@fortawesome/fontawesome-common-types" "6.5.2"
 
 "@fortawesome/react-fontawesome@^0.2.0":
-  version "0.2.0"
-  resolved "https://npm.fontawesome.com/@fortawesome/react-fontawesome/-/0.2.0/react-fontawesome-0.2.0.tgz#d90dd8a9211830b4e3c08e94b63a0ba7291ddcf4"
-  integrity sha512-uHg75Rb/XORTtVt7OS9WoK8uM276Ufi7gCzshVWkUJbHhh3svsUUeqXerrM96Wm7fRiDzfKRwSoahhMIkGAYHw==
+  version "0.2.1"
+  resolved "https://npm.fontawesome.com/@fortawesome/react-fontawesome/-/0.2.1/react-fontawesome-0.2.1.tgz#0bd69e89bd7548b4903ffa989ebf50cc82ba091c"
+  integrity sha512-ldr5QO2MneAX5W5WBCYB2pZp/PiHDD1hy9YEBLcXUyJb0qnO86oP8RU+CgmYVSH/R4Dbe2ernhcWOrcgaKD9NQ==
   dependencies:
     prop-types "^15.8.1"
 
@@ -1727,9 +1744,9 @@
   integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
 
 "@types/lodash@4.x":
-  version "4.17.3"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.3.tgz#b69884a018834d97e981f9f569ddc07668367e6f"
-  integrity sha512-zmNrEJaBvNskZXQWaUQq6bktF4IDGVfDS78M+YEk5aCn9M/b94/mB/6WCyfH2/MjwBdc6QuOor95CIlKWYRL3A==
+  version "4.17.4"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.4.tgz#0303b64958ee070059e3a7184048a55159fe20b7"
+  integrity sha512-wYCP26ZLxaT3R39kiN2+HcJ4kTd3U1waI/cY7ivWYqFP6pW3ZNpvi6Wd6PHZx7T/t8z0vlkXMg3QYLa7DZ/IJQ==
 
 "@types/mdast@^3.0.0":
   version "3.0.15"
@@ -2190,11 +2207,13 @@
     webpackbar "~6.0.1"
 
 "@xh/hoist@^64.0.0-SNAPSHOT":
-  version "64.0.0-SNAPSHOT.1715874965480"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-64.0.0-SNAPSHOT.1715874965480.tgz#0144039ede2b64aef9bbbd5a62f32c7adf46b7a7"
-  integrity sha512-Lr/eF3ZQYeqz6m3+YhgsWGQWAR6xp5pxqP/ops+QGGnyEejyMR6Ou9d9cnc6+GFy9NfPiZu8dM1g3lXPyczwMA==
+  version "64.0.0-SNAPSHOT.1715957519311"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-64.0.0-SNAPSHOT.1715957519311.tgz#fd32a77ee3fb30217588fabbf844b65c26027cc7"
+  integrity sha512-D6M+FrIds9lAPf9bJERPpGAQtPAiKRypQ24FKvnJ6+oZUh67X8CVywcDbKj1fYB/+tFG0P/Uzlp3kTOt+F3Q+A==
   dependencies:
-    "@blueprintjs/core" "^5.10.1"
+    "@auth0/auth0-spa-js" "~2.1.3"
+    "@azure/msal-browser" "~3.14.0"
+    "@blueprintjs/core" "^5.10.2"
     "@blueprintjs/datetime2" "^2.3.3"
     "@fortawesome/fontawesome-pro" "^6.2.1"
     "@fortawesome/fontawesome-svg-core" "^6.2.1"
@@ -2218,6 +2237,7 @@
     golden-layout "~1.5.9"
     http-status-codes "~2.3.0"
     inter-ui "~3.19.3"
+    jwt-decode "~4.0.0"
     lodash "~4.17.21"
     lodash-inflection "~1.5.0"
     mobx "~6.9.1"
@@ -3437,9 +3457,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.668:
-  version "1.4.772"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.772.tgz#7a1efabf86b20e5709736ce64dbc2ce13cb68936"
-  integrity sha512-jFfEbxR/abTTJA3ci+2ok1NTuOBBtB4jH+UT6PUmRN+DY3WSD4FFRsgoVQ+QNIJ0T7wrXwzsWCI2WKC46b++2A==
+  version "1.4.773"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.773.tgz#49741af9bb4e712ad899e35d8344d8d59cdb7e12"
+  integrity sha512-87eHF+h3PlCRwbxVEAw9KtK3v7lWfc/sUDr0W76955AdYTG4bV/k0zrl585Qnj/skRMH2qOSiE+kqMeOQ+LOpw==
 
 emoji-regex@^10.3.0:
   version "10.3.0"
@@ -5056,6 +5076,11 @@ json5@^2.1.2, json5@^2.2.3:
     array.prototype.flat "^1.3.1"
     object.assign "^4.1.4"
     object.values "^1.1.6"
+
+jwt-decode@~4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-4.0.0.tgz#2270352425fd413785b2faf11f6e755c5151bd4b"
+  integrity sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==
 
 keyv@^4.5.3, keyv@^4.5.4:
   version "4.5.4"

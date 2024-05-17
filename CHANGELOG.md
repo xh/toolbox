@@ -1,6 +1,6 @@
 # Changelog
 
-## v5.0-SNAPSHOT - unreleased
+## v5.0.0 - 2024-05-17
 
 ### New Features
 * Support for new `mockDirectoryGroups` config - see `RoleService` for details.
