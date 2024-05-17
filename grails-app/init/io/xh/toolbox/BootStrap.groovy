@@ -79,7 +79,7 @@ class BootStrap implements LogSupport {
 
     private void ensureRequiredConfigsCreated() {
         configService.ensureRequiredConfigsCreated([
-            xhOauthConfig: [
+            auth0Config: [
                     valueType: 'json',
                     defaultValue: [
                             clientId: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
