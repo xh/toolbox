@@ -26,6 +26,12 @@ class Auth0Service extends BaseService {
         configService.getMap('auth0Config', [:])
     }
 
+    void init() {
+        super.init()
+        // Fetch JWKS eagerly so it's ready for potential burst of initial requests after startup.
+        getJsonWebKeySet()
+    }
+
     TokenValidationResult validateToken(String token) {
         try {
             if (!token) throw new RuntimeException('Unable to validate JWT - no token provided.')
