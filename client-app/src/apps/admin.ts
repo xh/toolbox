@@ -12,7 +12,7 @@ XH.renderApp({
     modelClass: AppModel,
     containerClass: AppContainer,
     isMobileApp: false,
-    isSSO: true,
+    enableLogout: true,
     webSocketsEnabled: true,
     checkAccess: 'HOIST_ADMIN_READER',
     lockoutMessage: "Contact support@xh.io for information on Hoist's bundled Admin Console."

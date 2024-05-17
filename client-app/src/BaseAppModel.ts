@@ -1,13 +1,13 @@
 import {HoistAppModel, XH} from '@xh/hoist/core';
-import {OauthService} from './core/svc/OauthService';
+import {AuthService} from './core/svc/AuthService';
 
 export class BaseAppModel extends HoistAppModel {
     static override async preAuthAsync() {
-        await XH.installServicesAsync(OauthService);
+        await XH.installServicesAsync(AuthService);
     }
 
     override async logoutAsync() {
-        XH.oauthService.enabled ? await XH.oauthService.logoutAsync() : await super.logoutAsync();
+        return XH.authService.logoutAsync();
     }
 
     override get supportsVersionBar(): boolean {

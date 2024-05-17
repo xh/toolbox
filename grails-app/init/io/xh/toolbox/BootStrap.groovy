@@ -79,19 +79,16 @@ class BootStrap implements LogSupport {
 
     private void ensureRequiredConfigsCreated() {
         configService.ensureRequiredConfigsCreated([
-            auth0ClientId: [
-                    valueType: 'string',
-                    defaultValue: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
+            xhOauthConfig: [
+                    valueType: 'json',
+                    defaultValue: [
+                            clientId: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
+                            audience: 'toolbox.xh.io',
+                            domain: 'login.xh.io'
+                    ],
                     clientVisible: false,
-                    groupName: 'Auth0',
-                    note: 'Client ID of the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
-            ],
-            auth0Domain: [
-                    valueType: 'string',
-                    defaultValue: 'login.xh.io',
-                    clientVisible: false,
-                    groupName: 'Auth0',
-                    note: 'Custom domain for our Auth0 deployment. OAuth login flow will redirect users here.'
+                    groupName: 'xh.io',
+                    note: 'OAuth config for the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
             ],
             contacts: [
                     valueType: 'json',

@@ -3,122 +3,118 @@ package io.xh.toolbox.security
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
-import io.xh.hoist.json.JSONParser
 import org.apache.hc.client5.http.classic.methods.HttpGet
 import org.jose4j.jwk.JsonWebKeySet
 import org.jose4j.jwk.VerificationJwkSelector
 import org.jose4j.jws.JsonWebSignature
 
-
-import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
+import static io.xh.hoist.json.JSONParser.parseObject
+import static java.lang.System.currentTimeMillis
 
 /**
  * Decodes and validates ID tokens issues by Auth0, the OAuth provider for Toolbox.
  */
 class Auth0Service extends BaseService {
 
-    ConfigService configService
-    private JSONClient _jsonClient
+    static clearCachesConfigs = ['auth0Config']
 
-    static clearCachesConfigs = ['auth0Domain', 'auth0ClientId']
+    ConfigService configService
+
+    private JsonWebKeySet _jwks
+
+    Map getClientConfig() {
+        configService.getMap('auth0Config', [:])
+    }
 
     void init() {
         super.init()
-
         // Fetch JWKS eagerly so it's ready for potential burst of initial requests after startup.
         getJsonWebKeySet()
     }
 
-    Map getClientConfig() {
-        if (getInstanceConfig('useOAuth') == 'false') {
-            return [enabled: false]
-        }
-
-        return [
-            enabled: true,
-            clientId: clientId,
-            domain: domain
-        ]
-    }
-
-    JwtValidationResult validateToken(String token) {
+    TokenValidationResult validateToken(String token) {
         try {
-            if (!token) throw new JwtException("Unable to validate JWT - no token provided.")
-            logTrace("Validating token", token)
+            if (!token) throw new RuntimeException('Unable to validate JWT - no token provided.')
+            logTrace('Validating token', token)
 
             def jws = new JsonWebSignature()
             jws.setCompactSerialization(token)
 
             def selector = new VerificationJwkSelector(),
                 jwk = selector.select(jws, jsonWebKeySet.jsonWebKeys)
-            if (!jwk?.key) throw new JwtException("Unable to select valid key for token from loaded JWKS")
+            if (!jwk?.key) throw new RuntimeException('Unable to select valid key for token from loaded JWKS')
 
             jws.setKey(jwk.key)
-            if (!jws.verifySignature()) throw new JwtException("Token failed signature validation")
+            if (!jws.verifySignature()) throw new RuntimeException('Token failed signature validation')
+            def payload = parseObject(jws.payload)
 
-            def payload = JSONParser.parseObject(jws.payload)
+            logDebug('Token parsed successfully', [
+                email: payload.email,
+                name: payload.name,
+                sub: payload.sub,
+                aud: payload.aud,
+                exp: payload.exp
+            ])
+
             if (payload.aud != clientId) {
-                throw new JwtException("Token aud value [${payload.aud}] does not match expected value from auth0ClientId config.")
+                throw new RuntimeException('Token aud value does not match expected value from clientId')
+            }
+            if (payload.exp * 1000L < currentTimeMillis()) {
+                throw new RuntimeException('Token has expired')
+            }
+            if (!payload.sub || !payload.email) {
+                throw new RuntimeException('Token is missing sub or email')
             }
 
-            logDebug(["Token validated successfully", [sub: payload.sub, email: payload.email, fullName: payload.name]])
-            return new JwtValidationResult(
-                    token: token,
-                    sub: payload.sub,
-                    email: payload.email,
-                    fullName: payload.name,
-                    profilePicUrl: payload.picture
+            return new TokenValidationResult(
+                email: payload.email,
+                name: payload.name,
+                picture: payload.picture
             )
-
-        } catch (e) {
-            return new JwtValidationResult(token: token, exception: e)
+        } catch (Exception e) {
+            logError('Exception parsing JWT', e)
+            return null
         }
     }
-
 
     //------------------------
     // Implementation
     //------------------------
-    private JSONClient getClient() {
-        if (!_jsonClient) {
-            _jsonClient = new JSONClient()
-        }
-        return _jsonClient
+    private JsonWebKeySet getJsonWebKeySet() {
+        _jwks ?= createKeySet()
     }
 
-    private JsonWebKeySet _jwks
-    JsonWebKeySet getJsonWebKeySet() {
-        def url = "https://${domain}/.well-known/jwks.json"
-        if (!_jwks) {
-            withInfo(["Fetching JWKS", url]) {
-                def jwksJson = client.executeAsString(new HttpGet(url))
-                _jwks = new JsonWebKeySet(jwksJson)
-
-                if (!_jwks.jsonWebKeys.size()) {
-                    throw new RuntimeException("Unable to build valid key set from remote JWKS endpoint.")
-                }
+    private JsonWebKeySet createKeySet() {
+        def url = "https://$domain/.well-known/jwks.json"
+        withInfo(['Fetching JWKS', url]) {
+            def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),
+                ret = new JsonWebKeySet(jwksJson)
+            if (!ret.jsonWebKeys) {
+                throw new RuntimeException('Unable to build valid key set from remote JWKS endpoint.')
             }
+            return ret
         }
+    }
 
-        return _jwks
+    private getConfig() {
+        configService.getMap('auth0Config')
     }
 
     private String getClientId() {
-        return configService.getString('auth0ClientId')
+        config.clientId
     }
 
     private String getDomain() {
-        return configService.getString('auth0Domain')
+        config.domain
     }
 
     void clearCaches() {
         super.clearCaches()
-        _jsonClient = null
         _jwks = null
     }
 
     Map getAdminStats() {[
-        config: configForAdminStats('auth0ClientId', 'auth0Domain', 'auth0Jwks'),
+        config: configForAdminStats('auth0Config'),
         jwks: jsonWebKeySet.toJson()
     ]}
 }
