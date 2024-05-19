@@ -1,7 +1,6 @@
 package io.xh.toolbox.security
 
 import grails.gorm.transactions.ReadOnly
-import io.xh.hoist.config.ConfigService
 import io.xh.hoist.security.BaseAuthenticationService
 import io.xh.hoist.user.HoistUser
 import io.xh.toolbox.user.User

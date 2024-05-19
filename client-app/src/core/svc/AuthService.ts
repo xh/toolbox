@@ -16,6 +16,9 @@ export class AuthService extends HoistService {
 
         this.client = new AuthZeroClient({
             idScopes: ['profile'],
+            accessTokens: {
+                test: {scopes: ['profile'], audience: 'toolbox.xh.io'}
+            },
             expiryWarning: true,
             ...(config as AuthZeroClientConfig)
         });
