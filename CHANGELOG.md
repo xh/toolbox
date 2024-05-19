@@ -1,6 +1,8 @@
 # Changelog
 
-## v6.0-SNAPSHOT - unreleased
+## v5.0.1 - 2024-05-19
+### 📚 Libraries
+* hoist-react 64.0.1
 
 ## v5.0.0 - 2024-05-17
 
