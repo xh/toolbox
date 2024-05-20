@@ -15,6 +15,8 @@ class ClusterConfig extends io.xh.hoist.ClusterConfig {
         if (isLocalDevelopment) {
             networkConfig.join.multicastConfig.enabled = true
         } else {
+            // NOTE - these values are specific to Toolbox's AWS ECS-based deployment.
+            // Contact XH for assistance with the settings required for your application's deployment enivronment.
             networkConfig.join.multicastConfig.enabled = false
             networkConfig.join.awsConfig.enabled = true
             networkConfig.interfaces.enabled = true
