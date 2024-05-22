@@ -88,6 +88,26 @@ When adding a new top-level entry-point for Toolbox (such as a new example appli
 URL must be registered with Auth0 as a valid OAuth callback URL. Either Lee or Anselm can update our
 Auth0 config accordingly.
 
+## Developing with HTTPS on `xh.io` domain
+
+It can be useful to run Toolbox locally with HTTPS enabled and on a sub-domain of `xh.io`, 
+especially when testing OAuth, CORS, or cookie dependent features. 
+Follow these steps to run with HTTPS on the `toolbox-local.xh.io:3443` domain:
+1. add this entry to your dev machine's `hosts` file: `127.0.0.1 toolbox-local.xh.io`
+2. start the Grails server with the following VM Options (the referenced files are self-signed certs commited to the repo for local dev purposes):
+```
+-Dserver.port=8443
+-Dserver.ssl.enabled=true
+-Dserver.ssl.certificate=classpath:local-dev/toolbox-local.xh.io.crt
+-Dserver.ssl.certificate-private-key=classpath:local-dev/toolbox-local.xh.io.key
+-Dserver.ssl.trust-certificate=classpath:local-dev/toolbox-local.xh.io.crt
+```
+3. Visit `https://toolbox-local.xh.io:8443/ping` in your browser to proceed past the SSL warning 
+  for API calls.
+4. Start the GUI with the `startWithHoistSecure` npm script.  Go to `https://toolbox-local.xh.io:3443/app/home` 
+   in your browser and proceed past the SSL warning.
+
+
 ## Wrapper project for Toolbox + Hoist development
 
 A special project / directory structure can be useful for developing Toolbox alongside the Hoist

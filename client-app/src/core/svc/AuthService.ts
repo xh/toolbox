@@ -16,6 +16,8 @@ export class AuthService extends HoistService {
 
         this.client = new AuthZeroClient({
             idScopes: ['profile'],
+            // Toolbox does not actually need any access tokens,
+            // but this tests the AuthZeroClient's ability to handle them.
             accessTokens: {
                 test: {scopes: ['profile'], audience: 'toolbox.xh.io'}
             },

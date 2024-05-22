@@ -15,6 +15,7 @@
     "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(ipconfig getifaddr en0)",
     "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
+    "startWithHoistSecure": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist --env baseUrl=https://toolbox-local.xh.io:8443/ --env devHttps=true --env devHost=toolbox-local.xh.io --env devWebpackPort=3443",
     "startWithHoistAndAnalyze": "yarn startWithHoist --env analyzeBundles",
     "prepare": "cd .. && husky client-app/.husky"
   },
