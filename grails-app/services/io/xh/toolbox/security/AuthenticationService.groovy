@@ -2,7 +2,6 @@ package io.xh.toolbox.security
 
 import grails.gorm.transactions.ReadOnly
 import io.xh.hoist.security.BaseAuthenticationService
-import io.xh.hoist.user.HoistUser
 import io.xh.toolbox.user.User
 import io.xh.toolbox.user.UserService
 
@@ -73,7 +72,7 @@ class AuthenticationService extends BaseAuthenticationService  {
     // Implementation
     //------------------------
     @ReadOnly
-    private HoistUser lookupUser(String username, String password) {
+    private User lookupUser(String username, String password) {
         def user = User.findByEmailAndEnabled(username, true)
         return user?.checkPassword(password) ? user : null
     }
