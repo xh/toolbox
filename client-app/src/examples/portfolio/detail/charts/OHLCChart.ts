@@ -3,10 +3,14 @@ import {creates, hoistCmp, HoistModel, lookup, managed, XH} from '@xh/hoist/core
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {ChartsPanelModel} from './ChartsPanelModel';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {errorMessage} from '@xh/hoist/dynamics/desktop';
 
 export const ohlcChart = hoistCmp.factory({
     model: creates(() => OHLCChartModel),
-    render() {
+    render({model}) {
+        if (model.lastLoadException) {
+            return errorMessage({error: model.lastLoadException});
+        }
         return panel({
             item: chart(),
             mask: 'onLoad',
@@ -63,8 +67,8 @@ class OHLCChartModel extends HoistModel {
                     return `
                         <div class="xh-chart-tooltip">
                         <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(
-                        this.x
-                    )}</div>
+                            this.x
+                        )}</div>
                         <table>
                             <tr><th>Open:</th><td>${fmtPrice(p.open)}</td></tr>
                             <tr><th>High:</th><td>${fmtPrice(p.high)}</td></tr>
@@ -88,12 +92,14 @@ class OHLCChartModel extends HoistModel {
 
         try {
             const series = await XH.portfolioService.getOHLCChartSeriesAsync({symbol, loadSpec});
-            if (!loadSpec.isObsolete) {
+            if (!loadSpec.isStale) {
                 chartModel.setSeries(series);
             }
         } catch (e) {
+            if (loadSpec.isAutoRefresh || loadSpec.isStale) return;
             chartModel.clear();
-            XH.handleException(e);
+            XH.handleException(e, {showAlert: false});
+            throw e;
         }
     }
 }

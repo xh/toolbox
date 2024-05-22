@@ -3,6 +3,8 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 
 export class BasicPanelModel extends HoistModel {
     @bindable state: string = null;
+    @bindable compactHeader: boolean = false;
+    @bindable triggerError: boolean = false;
 
     constructor() {
         super();
@@ -20,4 +22,12 @@ export class BasicPanelModel extends HoistModel {
 
         'Morbi eget tincidunt ex. Mauris eget egestas nulla. Pellentesque egestas sapien blandit nisi pellentesque varius. Cras dignissim consectetur mauris, eu faucibus quam mattis vel. Curabitur in libero purus. Duis nulla turpis, faucibus sed tristique eget, pretium id nibh. Phasellus sit amet egestas lectus. Donec in aliquet tortor.'
     ];
+
+    changeTextSize(up: boolean) {
+        const el = document.querySelector('.tb-panel-text-reader') as HTMLElement,
+            fontSize = window.getComputedStyle(el).fontSize,
+            currentSize = parseFloat(fontSize);
+
+        el.style.fontSize = `${currentSize + (up ? 1 : -1)}px`;
+    }
 }

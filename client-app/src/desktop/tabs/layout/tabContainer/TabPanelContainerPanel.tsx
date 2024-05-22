@@ -5,7 +5,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
 import {wrapper} from '../../../common';
-import {customExample, dynamicExample, simpleExample, tabStateExample} from './tabs';
+import {customExample, dynamicExample, errorExample, simpleExample, tabStateExample} from './tabs';
 
 export const tabPanelContainerPanel = hoistCmp.factory({
     model: creates(() => TabPanelContainerPanelModel),
@@ -14,13 +14,15 @@ export const tabPanelContainerPanel = hoistCmp.factory({
         return wrapper({
             description: [
                 <p>
-                    TabContainers are configured and managed via a TabContainerModel and support
-                    routing-based navigation, managed mounting/unmounting of inactive tabs, and lazy
-                    refreshing of its active Tab.
+                    <code>TabContainer</code> is configured and managed via a{' '}
+                    <code>TabContainerModel</code> and supports route-based navigation, managed
+                    mounting/unmounting of inactive tabs, automatic refreshing of a newly activated
+                    tab, and a built-in <code>ErrorBoundary</code> to prevent an unhandled error in
+                    one tab from crashing the entire app.
                 </p>,
                 <p>
                     The controls for switching tabs can be placed on any side of the container, or
-                    omitted via the <code>switcher</code> prop.
+                    omitted, via the model's <code>switcher</code> config.
                 </p>
             ],
             links: [
@@ -45,8 +47,8 @@ export const tabPanelContainerPanel = hoistCmp.factory({
             item: panel({
                 title: 'Layout › Tabs',
                 icon: Icon.tab(),
-                className: 'toolbox-layout-tabs',
-                width: 700,
+                className: 'tb-layout-tabs',
+                width: 750,
                 height: 400,
                 item: tabContainer()
             })
@@ -93,6 +95,11 @@ class TabPanelContainerPanelModel extends HoistModel {
                 id: 'dynamic',
                 title: 'Dynamic',
                 content: dynamicExample()
+            },
+            {
+                id: 'error',
+                title: 'Error Boundary',
+                content: errorExample()
             }
         ]
     });

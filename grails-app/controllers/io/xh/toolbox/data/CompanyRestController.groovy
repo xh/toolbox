@@ -1,9 +1,9 @@
 package io.xh.toolbox.data
 
 import io.xh.hoist.RestController
-import io.xh.hoist.security.Access
+import io.xh.hoist.security.AccessAll
 
-@Access(['APP_READER'])
+@AccessAll
 class CompanyRestController extends RestController {
 
     static restTarget = Company

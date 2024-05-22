@@ -30,11 +30,12 @@ module.exports = (env = {}) => {
     return configureWebpack({
         appCode: 'toolbox',
         appName: 'Toolbox',
-        appVersion: env.appVersion || '4.0-SNAPSHOT',
+        appVersion: '6.0-SNAPSHOT',
         favicon: './public/favicon.svg',
         devServerOpenPage: 'app/',
         dupePackageCheckExcludes: ['es-abstract', 'tslib'],
         sourceMaps: 'devOnly',
+        preloadBackgroundColor: '#f7931c',
         // Use React prod mode, primarily to avoid console warnings for react 18
         reactProdMode: false,
         // Include custom package for babel transpiling for both packaged and inline use cases.

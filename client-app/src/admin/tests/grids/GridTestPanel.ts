@@ -39,10 +39,19 @@ export const GridTestPanel = hoistCmp({
 const tbar = hoistCmp.factory<GridTestModel>(({model}) =>
     toolbar(
         tooltip({
-            content: 'ID prefix',
+            content: 'Use an incremental numeric id as grid id.',
+            item: switchInput({
+                bind: 'numericId',
+                label: 'Numeric Id',
+                labelSide: 'left'
+            })
+        }),
+        tooltip({
+            content: 'ID prefix (for non-incremental ids))',
             item: numberInput({
                 bind: 'idSeed',
-                width: 40
+                width: 40,
+                disabled: model.numericId
             })
         }),
         tooltip({

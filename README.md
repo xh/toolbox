@@ -56,10 +56,13 @@ _other_ data-driven app configurations.
 environment: Development
 serverURL: http://localhost
 
-# For first run of the project before you have OAuth set up. 
+# The following are for use in early runs of the project before you have granted roles to any users,
+# or in cases where Auth0 isn't acting as expected, or you're hosting the app on a device. 
+# The bootstrapAdminUser will be available for forms based login and will be granted the role 
+# needed (HOIST_ROLE_MANAGER) to grant access to other users.
 useOAuth: false
-adminUsername: admin@xh.io 
-adminPassword: "a password of your choice"
+bootstrapAdminUser: yourusername@example.com
+bootstrapAdminPassword: "your password"
 
 # Enable in memory h2 database option. When ready, configure proper DB below and set to false
 useH2: true

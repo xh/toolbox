@@ -259,7 +259,7 @@ export class FetchApiTestModel extends HoistModel {
         }
 
         try {
-            return await resp[method]();
+            return resp[method]();
         } catch (error) {
             return null;
         }

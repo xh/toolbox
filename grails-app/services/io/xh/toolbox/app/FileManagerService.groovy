@@ -70,4 +70,7 @@ class FileManagerService extends BaseService {
         return configService.getString('fileManagerStoragePath')
     }
 
+    Map getAdminStats() {[
+        config: configForAdminStats('fileManagerStoragePath')
+    ]}
 }

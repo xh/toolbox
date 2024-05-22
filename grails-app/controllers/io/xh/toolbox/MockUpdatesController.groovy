@@ -1,8 +1,8 @@
 package io.xh.toolbox
 
-import io.xh.hoist.security.Access
+import io.xh.hoist.security.AccessAll
 
-@Access(['APP_READER'])
+@AccessAll
 class MockUpdatesController extends BaseController {
 
     def mockUpdatesService

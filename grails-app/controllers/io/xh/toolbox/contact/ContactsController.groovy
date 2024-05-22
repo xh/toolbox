@@ -1,14 +1,15 @@
 package io.xh.toolbox.contact
 
+import grails.gorm.transactions.Transactional
 import io.xh.hoist.config.AppConfig
 import io.xh.hoist.exception.NotAuthorizedException
-import io.xh.hoist.security.Access
+import io.xh.hoist.security.AccessAll
 import io.xh.toolbox.BaseController
 
 import static io.xh.hoist.json.JSONSerializer.serializePretty
 
 
-@Access(['APP_READER'])
+@AccessAll
 class ContactsController extends BaseController {
 
     def configService
@@ -25,12 +26,13 @@ class ContactsController extends BaseController {
      * (mainly to avoid setting up GORM objects and their DB tables). This code patches that config
      * in place, allowing the Contacts example app to demo data updates.
      */
+    @Transactional
     def update(String id) {
         if (!user.isHoistAdmin) throw new NotAuthorizedException()
 
         def config = AppConfig.findByName('contacts'),
             contacts = getContacts(),
-            patch = request.JSON as Map,
+            patch = parseRequestJSON(safeEncode: true),
             contactToUpdate = contacts.find{it.id == id}
 
         if (!contactToUpdate) throw new RuntimeException("Contact ID ${id} not found")

@@ -15,6 +15,6 @@ export const formsTab = hoistCmp.factory(() =>
                 {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
             ]
         },
-        className: 'toolbox-tab'
+        className: 'tb-tab'
     })
 );

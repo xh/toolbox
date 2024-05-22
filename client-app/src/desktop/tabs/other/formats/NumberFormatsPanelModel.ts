@@ -3,6 +3,7 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import * as formatFunctions from '@xh/hoist/format/FormatNumber';
 import {fmtNumber} from '@xh/hoist/format/FormatNumber';
 import {nilAwareFormat} from './Util';
+import {isBoolean} from 'lodash';
 
 export class NumberFormatsPanelModel extends HoistModel {
     // Inputs
@@ -41,9 +42,12 @@ export class NumberFormatsPanelModel extends HoistModel {
     @bindable withSignGlyph = false;
     @bindable withCommas = true;
     @bindable omitFourDigitComma = false;
-    @bindable colorSpec = true;
+    @bindable colorSpec: boolean | 'custom' = true;
     @bindable nullDisplay = null;
     @bindable label = null;
+    @bindable positiveColor = '#00aa00';
+    @bindable negativeColor = '#cc0000';
+    @bindable neutralColor = '#999999';
 
     get testResults() {
         return this.testData.map(data => ({
@@ -75,7 +79,13 @@ export class NumberFormatsPanelModel extends HoistModel {
             withSignGlyph: this.withSignGlyph,
             withCommas: this.withCommas,
             omitFourDigitComma: this.omitFourDigitComma,
-            colorSpec: this.colorSpec,
+            colorSpec: isBoolean(this.colorSpec)
+                ? this.colorSpec
+                : {
+                      pos: {color: this.positiveColor},
+                      neg: {color: this.negativeColor},
+                      neutral: {color: this.neutralColor}
+                  },
             label: this.label ? this.label : undefined,
             nullDisplay: this.nullDisplay != null ? this.nullDisplay : undefined
         };
@@ -83,7 +93,7 @@ export class NumberFormatsPanelModel extends HoistModel {
         try {
             return formatFunctions[this.fnName](input, options);
         } catch (e) {
-            console.error(e);
+            this.logError(e);
             return '#exception#';
         }
     }

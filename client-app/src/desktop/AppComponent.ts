@@ -22,7 +22,7 @@ export const AppComponent = hoistCmp({
             tbar: appBar({
                 icon: img({src: xhLogo, onClick: () => model.goHome()}),
                 title: null,
-                leftItems: [tabSwitcher()],
+                leftItems: [tabSwitcher({enableOverflow: true})],
                 rightItems: [
                     search({width: 300}),
                     webSocketIndicator({iconOnly: true, marginRight: 4}),

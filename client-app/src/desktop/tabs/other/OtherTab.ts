@@ -16,7 +16,8 @@ import {leftRightChooserPanel} from './LeftRightChooserPanel';
 import {pinPadPanel} from './PinPadPanel';
 import {placeholderPanel} from './PlaceholderPanel';
 import {popupsPanel} from './PopupsPanel';
-import {relativeTimestampPanel} from './RelativeTimestampPanel';
+import {relativeTimestampPanel} from './relativetimestamp/RelativeTimestampPanel';
+import {simpleRoutingPanel} from './routing/SimpleRoutingPanel';
 
 export const otherTab = hoistCmp.factory(() =>
     tabContainer({
@@ -44,9 +45,10 @@ export const otherTab = hoistCmp.factory(() =>
                 {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                 {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                 {id: 'popups', content: popupsPanel},
-                {id: 'timestamp', content: relativeTimestampPanel}
+                {id: 'timestamp', content: relativeTimestampPanel},
+                {id: 'simpleRouting', content: simpleRoutingPanel}
             ]
         },
-        className: 'toolbox-tab'
+        className: 'tb-tab'
     })
 );

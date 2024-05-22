@@ -1,13 +1,18 @@
-.select-test-panel {
-  .xh-vbox {
+.tb-select-test-panel {
+  &__column {
     margin: var(--xh-pad-px);
     padding: var(--xh-pad-px);
     border: var(--xh-border-solid);
     background: var(--xh-bg);
+    overflow-y: auto;
+    flex: 1;
   }
 
   p {
-    font-size: var(--xh-font-size-large-px);
+    &:not(:first-child) {
+      margin-top: 20px;
+    }
+    border-bottom: var(--xh-border-solid);
   }
 
   .xh-input {

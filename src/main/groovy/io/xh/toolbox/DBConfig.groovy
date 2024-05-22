@@ -51,8 +51,8 @@ class DBConfig {
                 // sourced from the defaults Grails produces when running `create-app`.
                 //
                 // See Tomcat docs for details on these settings and defaults:
-                // http://tomcat.apache.org/tomcat-8.5-doc/jdbc-pool.html#Common_Attributes
-                // https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/tomcat/jdbc/pool/PoolConfiguration.html
+                // https://tomcat.apache.org/tomcat-9.0-doc/jdbc-pool.html#Common_Attributes
+                // https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/tomcat/jdbc/pool/PoolConfiguration.html
                 //noinspection GroovyAssignabilityCheck
                 properties {
                     //------------------------

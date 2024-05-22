@@ -1,6 +1,6 @@
 {
   "name": "toolbox",
-  "version": "4.0-SNAPSHOT",
+  "version": "6.0-SNAPSHOT",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
@@ -12,10 +12,11 @@
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
-    "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(hostname)",
+    "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(ipconfig getifaddr en0)",
     "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
-    "prepare": "cd .. && husky install client-app/.husky"
+    "startWithHoistAndAnalyze": "yarn startWithHoist --env analyzeBundles",
+    "prepare": "cd .. && husky client-app/.husky"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -28,40 +29,40 @@
     ]
   },
   "dependencies": {
-    "@ag-grid-community/client-side-row-model": "~29.3.5",
-    "@ag-grid-community/core": "~29.3.5",
-    "@ag-grid-community/react": "~29.3.5",
-    "@ag-grid-community/styles": "~29.3.5",
-    "@ag-grid-enterprise/clipboard": "~29.3.5",
-    "@ag-grid-enterprise/column-tool-panel": "~29.3.5",
-    "@ag-grid-enterprise/core": "~29.3.5",
-    "@ag-grid-enterprise/filter-tool-panel": "~29.3.5",
-    "@ag-grid-enterprise/menu": "~29.3.5",
-    "@ag-grid-enterprise/row-grouping": "~29.3.5",
-    "@ag-grid-enterprise/side-bar": "~29.3.5",
-    "@ag-grid-enterprise/sparklines": "~29.3.5",
-    "@auth0/auth0-spa-js": "~1.22.0",
+    "@ag-grid-community/client-side-row-model": "~31.2.0",
+    "@ag-grid-community/core": "~31.2.0",
+    "@ag-grid-community/react": "~31.2.0",
+    "@ag-grid-community/styles": "~31.2.0",
+    "@ag-grid-enterprise/clipboard": "~31.2.0",
+    "@ag-grid-enterprise/column-tool-panel": "~31.2.0",
+    "@ag-grid-enterprise/core": "~31.2.0",
+    "@ag-grid-enterprise/filter-tool-panel": "~31.2.0",
+    "@ag-grid-enterprise/menu": "~31.2.0",
+    "@ag-grid-enterprise/row-grouping": "~31.2.0",
+    "@ag-grid-enterprise/side-bar": "~31.2.0",
+    "@ag-grid-enterprise/sparklines": "~31.2.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^57.0.0-SNAPSHOT",
+    "@xh/hoist": "^65.0.0-SNAPSHOT",
     "@xh/package-template": "~2.0.0",
     "core-js": "3.x",
-    "highcharts": "~10.3.2",
+    "highcharts": "11.x",
     "lodash": "4.x",
     "moment": "2.x",
     "react": "~18.2.0",
     "react-dom": "~18.2.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "^7.0.0-SNAPSHOT",
+    "@xh/hoist-dev-utils": "^9.0.0-SNAPSHOT",
     "cross-env": "7.x",
-    "eslint-config-prettier": "8.x",
-    "husky": "8.x",
-    "lint-staged": "13.x",
+    "eslint": "8.x",
+    "eslint-config-prettier": "9.x",
+    "husky": "9.x",
+    "lint-staged": "15.x",
     "postcss": "8.x",
-    "prettier": "2.x",
-    "stylelint": "15.x",
-    "stylelint-config-standard-scss": "9.x",
-    "typescript": "~4.9.5"
+    "prettier": "3.x",
+    "stylelint": "16.x",
+    "stylelint-config-standard-scss": "13.x",
+    "typescript": "~5.1.6"
   },
   "resolutions": {
     "core-js": "3.x"

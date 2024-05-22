@@ -29,6 +29,7 @@ export class LineChartModel extends HoistModel {
 
         if (!this.currentSymbol) {
             runInAction(() => (this.currentSymbol = this.symbols[0]));
+            return; // Reaction to `currentSymbol` value change will trigger final run.
         }
 
         let series =

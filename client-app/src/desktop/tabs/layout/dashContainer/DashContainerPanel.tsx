@@ -6,9 +6,16 @@ import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
 import {filler, frame} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {button, refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {dashContainer, DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
-import {buttonWidget, chartWidget, gridWidget, panelWidget, treeGridWidget} from '../widgets';
+import {
+    buttonWidget,
+    chartWidget,
+    gridWidget,
+    panelWidget,
+    treeGridWidget,
+    errorWidget
+} from '../widgets';
 import {wrapper} from '../../../common';
 
 export const dashContainerPanel = hoistCmp.factory({
@@ -28,6 +35,7 @@ export const dashContainerPanel = hoistCmp.factory({
             item: panel({
                 title: 'Layout › Dash Container',
                 icon: Icon.layout(),
+                headerItems: [refreshButton({minimal: true, intent: null})],
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard
@@ -106,7 +114,7 @@ class DashContainerPanelModel extends HoistModel {
 
     @managed
     dashContainerModel = new DashContainerModel({
-        persistWith: {localStorageKey: 'dashContainerState'},
+        persistWith: {localStorageKey: 'dashContainerExampleState'},
         showMenuButton: true,
         initialState: [
             {
@@ -117,7 +125,8 @@ class DashContainerPanelModel extends HoistModel {
                         width: 60,
                         content: [
                             {type: 'view', id: 'grid'},
-                            {type: 'view', id: 'treeGrid'}
+                            {type: 'view', id: 'treeGrid'},
+                            {type: 'view', id: 'error'}
                         ]
                     },
                     {
@@ -166,6 +175,11 @@ class DashContainerPanelModel extends HoistModel {
                 id: 'treeGrid',
                 title: 'Tree Grid',
                 content: treeGridWidget
+            },
+            {
+                id: 'error',
+                title: 'Error Example',
+                content: errorWidget({componentName: 'DashContainer'})
             }
         ]
     });

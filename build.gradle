@@ -1,6 +1,9 @@
+import static java.lang.Boolean.parseBoolean
+
 buildscript {
     repositories {
-        mavenLocal()
+        mavenCentral()
+        maven {url 'https://plugins.gradle.org/m2/'}
         maven {url 'https://repo.grails.org/grails/core'}
     }
     dependencies {
@@ -17,7 +20,6 @@ apply plugin:'war'
 apply plugin:'org.grails.grails-web'
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven {url 'https://repo.grails.org/grails/core'}
     maven {url 'https://repo.xh.io/content/groups/public/'}
@@ -25,6 +27,7 @@ repositories {
 
 configurations {
     all {
+        // Ensure any SNAPSHOT dependencies are always resolved to the latest available version.
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
 }
@@ -33,8 +36,7 @@ springBoot {
     mainClass = xhAppPackage + ".Application"
 }
 
-boolean inlineHoist = runHoistInline == 'true'
-if (inlineHoist) {
+if (parseBoolean(runHoistInline)) {
     println "${xhAppName}: running with Hoist Core INLINE...."
     grails.plugins {
         implementation project(":hoist-core")
@@ -47,14 +49,18 @@ if (inlineHoist) {
 }
 
 dependencies {
-    implementation "org.bitbucket.b_c:jose4j:0.7.12"
-    runtimeOnly "mysql:mysql-connector-java:8.0.29"
+    // For server-side JWT validation.
+    implementation "org.bitbucket.b_c:jose4j:0.9.6"
 
-    if (useSpringDevTools) {
-        runtimeOnly(
-            "org.springframework.boot:spring-boot-devtools",
-            "io.methvin:directory-watcher:0.15.0"
-        )
+    // Database drivers - H2 for temporary in-memory DB with `useH2: true` in instanceConfig YAML
+    // MySQL for deployed instances, or more stateful local workstation setups.
+    runtimeOnly "com.h2database:h2:2.2.224"
+    runtimeOnly "mysql:mysql-connector-java:8.0.33"
+
+    // For hot reloading
+    developmentOnly "io.methvin:directory-watcher:0.15.0"
+    if (parseBoolean(enableHotSwap)) {
+        developmentOnly "io.xh:groovyReset:1.0"
     }
 }
 
@@ -71,10 +77,28 @@ Map hoistMetaData = [
 ]
 
 def allJvmArgs = [
-        '-Dspring.output.ansi.enabled=always',
-        '-XX:TieredStopAtLevel=1',
-        '-Xmx1024m'
+    '-Dspring.output.ansi.enabled=always',
+    '-XX:TieredStopAtLevel=1',
+    '-Xmx1024m',
+    "--add-modules=java.se",
+    "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
+    "--add-opens=java.base/java.lang=ALL-UNNAMED",
+    "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
+    "--add-opens=java.management/sun.management=ALL-UNNAMED",
+    "--add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED",
+    "--add-opens=java.base/java.util=ALL-UNNAMED"
 ]
+
+
+
+if (parseBoolean(enableHotSwap)) {
+    def groovyReset = configurations.developmentOnly.resolve().find {it.name.contains("groovyReset")}
+    allJvmArgs += [
+        '-XX:HotswapAgent=fatjar',
+        '-XX:+AllowEnhancedClassRedefinition',
+        '-javaagent:' + groovyReset.absolutePath
+    ]
+}
 
 bootRun {
     ignoreExitValue true
@@ -90,16 +114,22 @@ tasks.withType(GroovyCompile) {
     }
 }
 
+// Ask IntelliJ to download sources and javadocs for Gradle-managed dependencies.
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
 
 //--------------------------------------------------
 // Extensions to build.info (Hoist-Core requirement)
 //--------------------------------------------------
-buildProperties.doLast {
-    File grailsBuildInfoFile = it.outputs.files.files.find { it.name == 'grails.build.info' }
-    if (!grailsBuildInfoFile) return
-
+tasks.war.doFirst {
+    File infoFile = layout.buildDirectory.file('resources/main/META-INF/grails.build.info').get().asFile
     Properties properties = new Properties()
-    grailsBuildInfoFile.withInputStream {properties.load(it)}
+    infoFile.withInputStream {properties.load(it)}
     properties.putAll(hoistMetaData)
-    grailsBuildInfoFile.withOutputStream {properties.store(it, null)}
+    infoFile.withOutputStream {properties.store(it, null)}
 }

@@ -83,9 +83,9 @@ export class ChartPageModel extends HoistModel {
                     return `
                         <div class="xh-chart-tooltip">
                         <div class="xh-chart-tooltip__title"><b>${p.series.name}</b> ${fmtDate(
-                        this.x,
-                        opts
-                    )}</div>
+                            this.x,
+                            opts
+                        )}</div>
                         <table>
                             <tr><th>Open:</th><td>${fmtPrice(p.open, opts)}</td></tr>
                             <tr><th>High:</th><td>${fmtPrice(p.high, opts)}</td></tr>

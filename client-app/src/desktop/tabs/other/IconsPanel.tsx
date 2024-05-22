@@ -55,11 +55,11 @@ export const iconsPanel = hoistCmp.factory({
             item: panel({
                 title: 'Icons (regular, solid, and light variants)',
                 icon: Icon.icon({iconName: 'icons'}),
-                className: 'toolbox-icons-panel',
+                className: 'tb-icons-panel',
                 items: [
                     tbar(),
                     div({
-                        className: 'toolbox-icons-table-scroller',
+                        className: 'tb-icons-table-scroller',
                         items: [
                             table(
                                 thead(tr(th('Icon'), th('far'), th('fas'), th('fal'), th('fat'))),
