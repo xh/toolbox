@@ -83,7 +83,6 @@ class BootStrap implements LogSupport {
                     valueType: 'json',
                     defaultValue: [
                             clientId: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
-                            audience: 'toolbox.xh.io',
                             domain: 'login.xh.io'
                     ],
                     clientVisible: false,
