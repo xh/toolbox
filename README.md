@@ -103,7 +103,7 @@ Follow these steps to run with HTTPS on the `toolbox-local.xh.io:3443` domain:
 -Dserver.ssl.trust-certificate=classpath:local-dev/toolbox-local.xh.io-self-signed.ca.crt
 ```
   The referenced files are self-signed certs commited to the repo for local dev purposes.
-  They expire on May 23, 2033.
+  They expire on Sunday, May 21, 2034 at 6:11:28AM.
 3. Visit `https://toolbox-local.xh.io:8443/ping` in your browser to proceed past the SSL warning 
   for API calls.
 4. Start the GUI with the `startWithHoistSecure` npm script.  Go to `https://toolbox-local.xh.io:3443/app/home` 
