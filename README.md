@@ -96,7 +96,6 @@ Follow these steps to run with HTTPS on the `toolbox-local.xh.io:3443` domain:
 1. add this entry to your dev machine's `hosts` file: `127.0.0.1 toolbox-local.xh.io`
 2. start the Grails server with the following additional VM Options:
 ```
--Dserver.port=8443
 -Dserver.ssl.enabled=true
 -Dserver.ssl.certificate=classpath:local-dev/toolbox-local.xh.io-self-signed.crt
 -Dserver.ssl.certificate-private-key=classpath:local-dev/toolbox-local.xh.io-self-signed.key
