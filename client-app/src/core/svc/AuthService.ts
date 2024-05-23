@@ -19,15 +19,16 @@ export class AuthService extends HoistService {
             accessTokens: {
                 test: {scopes: ['profile'], audience: 'toolbox.xh.io'}
             },
-            expiryWarning: true,
             ...(config as AuthZeroClientConfig)
         });
         await this.client.initAsync();
 
         // Add id token to headers for any *local* urls going back to grails server.
-        XH.fetchService.addDefaultHeaders(opts => {
-            const {idToken} = this.client;
-            return !opts.url.startsWith('http') && idToken ? {'x-xh-idt': idToken} : null;
+        XH.fetchService.addDefaultHeaders(async opts => {
+            if (opts.url.startsWith('http')) return null;
+
+            const idToken = await this.client.getIdTokenAsync();
+            return idToken ? {'x-xh-idt': idToken} : null;
         });
     }
 
