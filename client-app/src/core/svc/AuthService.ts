@@ -28,7 +28,7 @@ export class AuthService extends HoistService {
             if (opts.url.startsWith('http')) return null;
 
             const idToken = await this.client.getIdTokenAsync();
-            return idToken ? {'x-xh-idt': idToken} : null;
+            return idToken ? {'x-xh-idt': idToken.token} : null;
         });
     }
 
