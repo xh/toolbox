@@ -19,6 +19,8 @@ export class AuthService extends HoistService {
             accessTokens: {
                 test: {scopes: ['profile'], audience: 'toolbox.xh.io'}
             },
+            autoRefreshSecs: 30,
+            autoRefreshSkipCacheSecs: 3600,
             ...(config as AuthZeroClientConfig)
         });
         await this.client.initAsync();
@@ -28,7 +30,7 @@ export class AuthService extends HoistService {
             if (opts.url.startsWith('http')) return null;
 
             const idToken = await this.client.getIdTokenAsync();
-            return idToken ? {'x-xh-idt': idToken.token} : null;
+            return idToken ? {'x-xh-idt': idToken.value} : null;
         });
     }
 
