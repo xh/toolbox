@@ -16,10 +16,9 @@ export class AuthService extends HoistService {
 
         this.client = new AuthZeroClient({
             idScopes: ['profile'],
-            // Note:  We have a limit of 1k/month on these, enable for testing only.
-            // accessTokens: {
-            //    test: {scopes: ['profile'], audience: 'toolbox.xh.io'}
-            // },
+            accessTokens: {
+                test: {scopes: ['profile'], audience: 'toolbox.xh.io'}
+            },
             ...(config as AuthZeroClientConfig)
         });
         await this.client.initAsync();
