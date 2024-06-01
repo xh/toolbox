@@ -1,32 +1,38 @@
-import {hoistCmp, HoistModel, creates, XH} from '@xh/hoist/core';
 import {div} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {creates, hoistCmp, HoistModel, LoadSpec, XH} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
-import {capitalize} from 'lodash';
 import {Icon} from '@xh/hoist/icon';
-import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import {errorMessage} from '@xh/hoist/mobile/cmp/error';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {capitalize} from 'lodash';
+import {Position} from '../../../core/svc/PortfolioService';
 
-export const treeGridDetailPage = hoistCmp.factory({
+export const treeGridDetailPage = hoistCmp.factory<TreeGridDetailPageModel>({
     model: creates(() => TreeGridDetailPageModel),
     render({model}) {
-        const {position} = model;
+        const {position, lastLoadException} = model;
 
         return panel({
-            title: position ? renderPageTitle(position) : null,
+            title: renderPageTitle(position),
             icon: Icon.portfolio(),
-            mask: 'onLoad',
-            className: 'toolbox-detail-page',
-            item: position ? renderPosition(position) : null
+            className: 'tb-detail-page',
+            item: lastLoadException
+                ? errorMessage({error: lastLoadException})
+                : renderPosition(position),
+            mask: 'onLoad'
         });
     }
 });
 
-function renderPageTitle(position) {
+function renderPageTitle(position: Position) {
+    if (!position) return null;
     const lastPart = position.id.split('>>').pop();
     return lastPart.split(':').pop();
 }
 
-function renderPosition(position) {
+function renderPosition(position: Position) {
+    if (!position) return null;
     return div(
         // Split id to extract drilldown information
         ...position.id.split('>>').map(it => {
@@ -46,13 +52,13 @@ function renderPosition(position) {
 
 function renderRow(title, value, renderer?) {
     return div({
-        className: 'toolbox-detail-row',
+        className: 'tb-detail-row',
         items: [div(title), div(renderer ? renderer(value) : value)]
     });
 }
 
 class TreeGridDetailPageModel extends HoistModel {
-    @observable.ref position;
+    @bindable.ref position: Position;
 
     get id() {
         return decodeURIComponent(this.componentProps.id);
@@ -70,8 +76,7 @@ class TreeGridDetailPageModel extends HoistModel {
         });
     }
 
-    override async doLoadAsync(loadSpec) {
-        const position = await (this.id ? XH.portfolioService.getPositionAsync(this.id) : null);
-        runInAction(() => (this.position = position));
+    override async doLoadAsync(loadSpec: LoadSpec) {
+        this.position = await (this.id ? XH.portfolioService.getPositionAsync(this.id) : null);
     }
 }

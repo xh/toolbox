@@ -78,13 +78,13 @@ export class AgGridViewModel extends HoistModel {
         this.addReaction({
             track: () => [this.data, agGridModel.agApi],
             run: ([data, api]) => {
-                if (api) api.setRowData(data);
+                if (api) api.updateGridOptions({rowData: data});
             }
         });
     }
 
     override async doLoadAsync(loadSpec) {
-        const data = await XH.portfolioService.getRawPositionsAsync({loadSpec});
+        const data = await XH.portfolioService.getPricedRawPositionsAsync({loadSpec});
         runInAction(() => (this.data = data));
     }
 }

@@ -1,6 +1,6 @@
-import {GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {checkboxRenderer, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {dateIs, lengthIs, numberIs, required, Store} from '@xh/hoist/data';
+import {dateIs, lengthIs, numberIs, required, Store, StoreRecord} from '@xh/hoist/data';
 import {
     actionCol,
     booleanEditor,
@@ -17,7 +17,6 @@ import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {isEmpty, isNil, max} from 'lodash';
-import {withDebug} from '@xh/hoist/utils/js';
 
 export class InlineEditingPanelModel extends HoistModel {
     @bindable
@@ -69,9 +68,8 @@ export class InlineEditingPanelModel extends HoistModel {
             });
         }
 
-        withDebug(`Adding ${count} Records`, () => this.store.addRecords(data), this);
-
-        this.gridModel.beginEditAsync({record: firstId});
+        this.withInfo(`Adding ${count} Records`, () => this.store.addRecords(data));
+        this.gridModel.beginEditAsync({record: firstId, colId: 'name'});
     }
 
     async beginEditAsync(opts?) {
@@ -118,7 +116,7 @@ export class InlineEditingPanelModel extends HoistModel {
     }
 
     @action
-    private commitRecord(record) {
+    private commitRecord(record: StoreRecord) {
         const {store} = this;
 
         if (record.isAdd) {
@@ -176,6 +174,11 @@ export class InlineEditingPanelModel extends HoistModel {
                     defaultValue: false
                 },
                 {
+                    name: 'enabled',
+                    type: 'bool',
+                    defaultValue: false
+                },
+                {
                     name: 'category',
                     type: 'string',
                     rules: [required]
@@ -192,6 +195,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     name: 'Record 0',
                     category: 'US',
                     amount: 50,
+                    enabled: true,
                     date: LocalDate.today(),
                     description: 'This is a record'
                 },
@@ -200,6 +204,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     name: 'Record 1',
                     category: 'EU',
                     amount: 25,
+                    enabled: null,
                     date: LocalDate.today().add(-6, 'months'),
                     description: 'This is a record'
                 },
@@ -208,6 +213,7 @@ export class InlineEditingPanelModel extends HoistModel {
                     name: 'Restricted',
                     category: 'BRIC',
                     amount: 30,
+                    enabled: false,
                     restricted: true,
                     description:
                         'Demos conditional editing - in this example, setting restricted boolean to true on a record disables editing of other fields.'
@@ -267,6 +273,16 @@ export class InlineEditingPanelModel extends HoistModel {
                     editable: true,
                     editor: booleanEditor,
                     renderer: v => (v ? Icon.lock({className: 'xh-warning'}) : '')
+                },
+                {
+                    field: 'enabled',
+                    headerName: Icon.checkSquare(),
+                    width: 40,
+                    align: 'center',
+                    resizable: false,
+                    editable: ifNotRestricted,
+                    editor: props => booleanEditor({...props, quickToggle: true}),
+                    renderer: checkboxRenderer({displayUnsetState: true})
                 },
                 {
                     field: 'name',

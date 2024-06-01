@@ -1,20 +1,17 @@
-import {HoistAppModel, XH} from '@xh/hoist/core';
+import {XH} from '@xh/hoist/core';
 import {themeAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {Icon} from '@xh/hoist/icon';
-import {OauthService} from '../../core/svc/OauthService';
 import {PortfolioService} from '../../core/svc/PortfolioService';
+import {BaseAppModel} from '../../BaseAppModel';
 
 export const PERSIST_MAIN = {localStorageKey: 'portfolioAppMainState'};
 export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
 
-export class AppModel extends HoistAppModel {
+export class AppModel extends BaseAppModel {
     static instance: AppModel;
 
-    static override async preAuthAsync() {
-        await XH.installServicesAsync(OauthService);
-    }
-
     override async initAsync() {
+        await super.initAsync();
         await XH.installServicesAsync(PortfolioService);
 
         this.addReaction({
@@ -23,16 +20,8 @@ export class AppModel extends HoistAppModel {
         });
     }
 
-    override async logoutAsync() {
-        await XH.oauthService.logoutAsync();
-    }
-
     override getAppOptions() {
         return [themeAppOption(), sizingModeAppOption()];
-    }
-
-    override get supportsVersionBar(): boolean {
-        return window.self === window.top;
     }
 
     private updateWebsocketAlertBanner() {

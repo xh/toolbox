@@ -14,7 +14,7 @@ export const popoverPage = hoistCmp.factory({
         return panel({
             title: 'Popovers',
             icon: Icon.openExternal(),
-            className: 'toolbox-page xh-tiled-bg',
+            className: 'tb-page xh-tiled-bg',
             items: [
                 filler(),
                 popoverCard({
@@ -45,9 +45,9 @@ export const popoverPage = hoistCmp.factory({
 const popoverCard = hoistCmp.factory({
     render({text, popoverProps}) {
         return div({
-            className: 'toolbox-card',
+            className: 'tb-card',
             item: popover({
-                target: button({text}),
+                item: button({text}),
                 content: popoverContent,
                 ...popoverProps
             })
@@ -58,7 +58,7 @@ const popoverCard = hoistCmp.factory({
 const popoverContent = hoistCmp.factory({
     render() {
         return div({
-            className: 'toolbox-popover',
+            className: 'tb-popover',
             items: [h1('Hello!'), p('I am a Popover.')]
         });
     }

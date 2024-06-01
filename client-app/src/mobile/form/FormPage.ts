@@ -1,16 +1,15 @@
-import {creates, hoistCmp} from '@xh/hoist/core';
-import {div, filler, vbox} from '@xh/hoist/cmp/layout';
-import {panel} from '@xh/hoist/mobile/cmp/panel';
-import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
-import {button} from '@xh/hoist/mobile/cmp/button';
-import {menuButton} from '@xh/hoist/mobile/cmp/menu';
-import {Icon} from '@xh/hoist/icon';
 import {form} from '@xh/hoist/cmp/form';
+import {div, filler, hbox, vbox} from '@xh/hoist/cmp/layout';
+import {creates, hoistCmp} from '@xh/hoist/core';
+import {fmtPercent} from '@xh/hoist/format';
+import './FormPage.scss';
+import {Icon} from '@xh/hoist/icon';
+import {button} from '@xh/hoist/mobile/cmp/button';
 import {formField} from '@xh/hoist/mobile/cmp/form';
-import {LocalDate} from '@xh/hoist/utils/datetime';
 import {
     buttonGroupInput,
     checkbox,
+    checkboxButton,
     dateInput,
     label,
     numberInput,
@@ -20,21 +19,27 @@ import {
     textArea,
     textInput
 } from '@xh/hoist/mobile/cmp/input';
-import {fmtPercent} from '@xh/hoist/format';
-import './FormPage.scss';
+import {menuButton} from '@xh/hoist/mobile/cmp/menu';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
+import {LocalDate} from '@xh/hoist/utils/datetime';
 import {FormPageModel} from './FormPageModel';
 
 export const formPage = hoistCmp.factory({
     model: creates(FormPageModel),
 
-    render() {
+    render({model}) {
         return panel({
             title: 'Form',
             icon: Icon.edit(),
             scrollable: true,
-            className: 'toolbox-page form-page xh-tiled-bg',
+            className: 'tb-page tb-form-page xh-tiled-bg',
             items: [formCmp(), results()],
-            bbar: bbar()
+            bbar: [
+                setFocusMenu(),
+                filler(),
+                checkboxButton({model: model.formModel, bind: 'readonly', text: 'Readonly'}),
+                checkboxButton({bind: 'minimal', text: 'Min. validation'})
+            ]
         });
     }
 });
@@ -43,7 +48,7 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
     const {minimal, movies} = model;
 
     return div({
-        className: 'toolbox-card',
+        className: 'tb-card',
         items: form({
             fieldDefaults: {minimal},
             items: vbox(
@@ -92,13 +97,24 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
                         valueType: 'localDate'
                     })
                 }),
-                formField({
-                    field: 'included',
-                    item: checkbox()
-                }),
-                formField({
-                    field: 'enabled',
-                    item: switchInput()
+                hbox({
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    items: [
+                        formField({
+                            field: 'enabled',
+                            item: checkbox()
+                        }),
+                        formField({
+                            field: 'enabled',
+                            item: switchInput()
+                        }),
+                        formField({
+                            field: 'enabled',
+                            label: null, // checkboxButton is self-labelling, using fieldName for its text by default
+                            item: checkboxButton()
+                        })
+                    ]
                 }),
                 formField({
                     field: 'buttonGroup',
@@ -133,16 +149,15 @@ const formCmp = hoistCmp.factory<FormPageModel>(({model}) => {
 
 const results = hoistCmp.factory(() => {
     return div({
-        className: 'toolbox-card',
+        className: 'tb-card',
         items: [
             fieldResult({field: 'name'}),
             fieldResult({field: 'customer'}),
             fieldResult({field: 'movie'}),
             fieldResult({field: 'salary'}),
-            fieldResult({field: 'percentage', renderer: v => fmtPercent(v)}),
+            fieldResult({field: 'percentage', renderer: v => fmtPercent(v, {nullDisplay: '-'})}),
             fieldResult({field: 'date', renderer: v => v?.toString()}),
-            fieldResult({field: 'included'}),
-            fieldResult({field: 'enabled'}),
+            fieldResult({field: 'enabled', renderer: v => (v ? 'Yes' : 'No')}),
             fieldResult({field: 'buttonGroup'}),
             fieldResult({field: 'notes'}),
             fieldResult({field: 'searchQuery'})
@@ -150,25 +165,13 @@ const results = hoistCmp.factory(() => {
     });
 });
 
-const bbar = hoistCmp.factory<FormPageModel>(({model}) =>
-    toolbar({
-        height: 38,
-        items: [
-            setFocusMenu(),
-            filler(),
-            label('Read-only'),
-            switchInput({model: model.formModel, bind: 'readonly'}),
-            label('Minimal validation'),
-            switchInput({bind: 'minimal'})
-        ]
-    })
-);
-
 const fieldResult = hoistCmp.factory<FormPageModel>(({model, field, renderer}) => {
-    const {displayName, value} = model.formModel.fields[field];
+    const {displayName, value} = model.formModel.fields[field],
+        renderedVal = renderer ? renderer(value) : value;
+
     return div({
-        className: 'form-field-result',
-        items: [label(displayName), div(renderer ? renderer(value) : value)]
+        className: 'tb-form-page__result',
+        items: [label(displayName), div(renderedVal ?? '-')]
     });
 });
 
@@ -181,7 +184,6 @@ const setFocusMenu = hoistCmp.factory<FormPageModel>(({model}) => {
 
     return menuButton({
         icon: Icon.target(),
-        text: 'Focus',
         title: 'Focus',
         menuPosition: 'top',
         menuItems

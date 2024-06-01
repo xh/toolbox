@@ -1,6 +1,8 @@
 package io.xh.toolbox.app
 
+
 import io.xh.hoist.BaseService
+import io.xh.hoist.cluster.ReplicatedValue
 import io.xh.hoist.http.JSONClient
 import io.xh.toolbox.NewsItem
 import org.apache.hc.client5.http.classic.methods.HttpGet
@@ -11,7 +13,7 @@ import static io.xh.hoist.util.DateTimeUtils.getMINUTES
 
 class NewsService extends BaseService {
 
-    private List<NewsItem> _newsItems
+    private ReplicatedValue<List<NewsItem>> _newsItems = getReplicatedValue('newsItems')
     private Timer newsTimer
     private JSONClient _jsonClient
 
@@ -20,15 +22,15 @@ class NewsService extends BaseService {
 
     List<NewsItem> getNewsItems() {
         // to avoid hitting the API too frequently, we only start our timer when the NewsService is actually used.
-        if (!newsTimer) {
-            newsTimer = createTimer(
-                    runFn: this.&loadAllNews,
-                    interval: 'newsRefreshMins',
-                    intervalUnits: MINUTES,
-                    runImmediatelyAndBlock: true
-            )
-        }
-        return _newsItems ?  _newsItems : Collections.emptyList()
+        newsTimer = newsTimer ?: createTimer(
+            primaryOnly: true,
+            runFn: this.&loadAllNews,
+            interval: 'newsRefreshMins',
+            intervalUnits: MINUTES,
+            runImmediatelyAndBlock: true
+        )
+
+        return _newsItems.get()
     }
 
 
@@ -51,7 +53,6 @@ class NewsService extends BaseService {
         return newsItems ? newsItems[0].published : null
     }
 
-
     //------------------------
     // Implementation
     //------------------------
@@ -63,7 +64,7 @@ class NewsService extends BaseService {
             try {
                 items = loadNewsForSources(sources)
             } finally {
-                _newsItems = items
+                _newsItems.set(items)
             }
         }
     }
@@ -94,20 +95,23 @@ class NewsService extends BaseService {
 
         logDebug("Loaded ${ret.size()} news items.")
 
-        return ret.sort { -it.published.time }
+        return ret
     }
 
     private JSONClient getClient() {
-        if (!_jsonClient) {
-            _jsonClient = new JSONClient()
-        }
-        return _jsonClient
+        _jsonClient = _jsonClient ?: new JSONClient()
     }
 
     void clearCaches() {
-        super.clearCaches()
         _jsonClient = null
-        _newsItems = []
-        loadAllNews()
+        if (isPrimary) {
+            _newsItems.set(null)
+            loadAllNews()
+        }
+        super.clearCaches()
     }
+
+    Map getAdminStats() {[
+        config: configForAdminStats('newsSources', 'newsApiKey')
+    ]}
 }

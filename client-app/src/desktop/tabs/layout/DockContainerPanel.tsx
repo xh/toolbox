@@ -63,7 +63,12 @@ export const dockContainerPanel = hoistCmp.factory({
                                     title: 'A complex docked component',
                                     icon: Icon.gridPanel(),
                                     content: () =>
-                                        sampleGrid({omitGridTools: true, width: 500, height: 400})
+                                        sampleGrid({omitGridTools: true, width: 500, height: 400}),
+                                    onClose: () =>
+                                        XH.toast({
+                                            message: 'Thanks for checking out the view!',
+                                            intent: 'success'
+                                        })
                                 });
                             }
                         }),
@@ -80,6 +85,11 @@ export const dockContainerPanel = hoistCmp.factory({
                                             componentName: 'DockContainer',
                                             width: 500,
                                             height: 400
+                                        }),
+                                    onClose: () =>
+                                        XH.confirm({
+                                            message: 'Are you sure you want to close this view?',
+                                            title: 'Close view?'
                                         })
                                 })
                         }),

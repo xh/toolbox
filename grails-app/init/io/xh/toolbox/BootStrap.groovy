@@ -2,6 +2,7 @@ package io.xh.toolbox
 
 import grails.gorm.transactions.Transactional
 import io.xh.hoist.config.ConfigService
+import io.xh.hoist.log.LogSupport
 import io.xh.hoist.pref.PrefService
 import io.xh.toolbox.user.User
 
@@ -11,7 +12,7 @@ import static io.xh.hoist.BaseService.parallelInit
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 import static io.xh.hoist.util.Utils.*
 
-class BootStrap {
+class BootStrap implements LogSupport {
 
     ConfigService configService
     PrefService prefService
@@ -21,6 +22,7 @@ class BootStrap {
 
         ensureRequiredConfigsCreated()
         ensureRequiredPrefsCreated()
+        createLocalAdminUserIfNeeded()
 
         def services = xhServices.findAll {
             it.class.canonicalName.startsWith(this.class.package.name)
@@ -28,7 +30,6 @@ class BootStrap {
         parallelInit(services)
 
         JavaTest.helloWorld()
-        createLocalAdminUserIfNeeded()
     }
 
     def destroy = {}
@@ -38,9 +39,8 @@ class BootStrap {
     //------------------------
     @Transactional
     private void createLocalAdminUserIfNeeded() {
-        String adminUsername = getInstanceConfig('adminUsername')
-        String adminPassword = getInstanceConfig('adminPassword')
-
+        String adminUsername = getInstanceConfig('bootstrapAdminUser')
+        String adminPassword = getInstanceConfig('bootstrapAdminPassword')
         if (adminUsername && adminPassword) {
             def user = User.findByEmail(adminUsername)
             if (!user) {
@@ -49,36 +49,22 @@ class BootStrap {
                     password: adminPassword,
                     name: 'Toolbox Admin',
                     profilePicUrl: 'https://xh.io/images/toolbox-admin-profile-pic.png'
-                ).save()
+                ).save(flush: true)
             } else if (!user.checkPassword(adminPassword)) {
                 user.password = adminPassword
-                user.save()
+                user.save(flush: true)
             }
 
-            log.info("Local admin user available as per instanceConfig | $adminUsername")
-
-            configService.ensureRequiredConfigsCreated(
-                roles: [
-                    groupName: 'Toolbox',
-                    valueType: 'json',
-                    defaultValue: ['HOIST_ADMIN': [adminUsername], 'APP_READER': [adminUsername]]
-                ],
-                jsLicenses: [
-                    groupName: 'Toolbox',
-                    valueType: 'json',
-                    defaultValue: [agGrid: null],
-                    clientVisible: true,
-                    note: 'Provide any js licenses needed by client here.'
-                ]
-            );
-
+            logInfo("Local admin user available as per instanceConfig", adminUsername)
         } else {
-            log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
+            logWarn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
     }
 
     private void logStartupMsg() {
-        log.info("""
+        def buildLabel = appBuild != 'UNKNOWN' ? " [build $appBuild] " : " "
+
+        logInfo("""
 \n
  ______   ______     ______     __         ______     ______     __  __    
 /\\__  _\\ /\\  __ \\   /\\  __ \\   /\\ \\       /\\  == \\   /\\  __ \\   /\\_\\_\\_\\   
@@ -86,13 +72,23 @@ class BootStrap {
    \\ \\_\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\   /\\_\\/\\_\\ 
     \\/_/   \\/_____/   \\/_____/   \\/_____/   \\/_____/   \\/_____/   \\/_/\\/_/ 
 \n                                                                           
-         ${appName} v${appVersion} - ${appEnvironment}
+         ${appName} v${appVersion}${buildLabel}${appEnvironment}
 \n
         """)
     }
 
     private void ensureRequiredConfigsCreated() {
         configService.ensureRequiredConfigsCreated([
+            auth0Config: [
+                    valueType: 'json',
+                    defaultValue: [
+                            clientId: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
+                            domain: 'login.xh.io'
+                    ],
+                    clientVisible: false,
+                    groupName: 'xh.io',
+                    note: 'OAuth config for the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
+            ],
             contacts: [
                     valueType: 'json',
                     defaultValue: [
@@ -132,10 +128,45 @@ class BootStrap {
             ],
             fileManagerStoragePath: [
                     valueType: 'string',
-                    defaultValue: '/toolbox/fileManager',
+                    defaultValue: '/var/tmp/xh-toolbox',
                     clientVisible: false,
                     groupName: 'Toolbox - Example Apps',
                     note: 'Absolute path to disk location for storing uploaded files.'
+            ],
+            gitHubAccessToken: [
+                    valueType: 'string',
+                    defaultValue: 'realTokenGoesHere',
+                    clientVisible: false,
+                    groupName: 'GitHub Integration',
+                    note: 'Personal access token with minimal scopes required to query public repos and commits.'
+            ],
+            gitHubCommitsRefreshMins: [
+                    valueType: 'int',
+                    defaultValue: 60,
+                    clientVisible: false,
+                    groupName: 'GitHub Integration',
+                    note: 'Frequency with which the Toolbox server polls Git to look for updates. Note this functions mostly as a "catch up" sync - webhooks should trigger realtime updates on commits.'
+            ],
+            gitHubMaxPagesPerLoad: [
+                    valueType: 'int',
+                    defaultValue: 99,
+                    clientVisible: false,
+                    groupName: 'GitHub Integration',
+                    note: 'Maximum number of pages to load when fetching commit history for a single repo. Set to a low number (1-2) in local development to minimize time spent loading commit histories while still getting some commits cached for display in the UI.'
+            ],
+            gitHubRepos: [
+                    valueType: 'json',
+                    defaultValue: [],
+                    clientVisible: true,
+                    groupName: 'GitHub Integration',
+                    note: 'List of repos from which Toolbox will pull commits to display on its dashboard.'
+            ],
+            gitHubWebhookTriggerSecret: [
+                    valueType: 'string',
+                    defaultValue: 'realSecretGoesHere',
+                    clientVisible: false,
+                    groupName: 'GitHub Integration',
+                    note: 'Random string used as a shared secret to verify triggers pushed to gitHub/webhookTrigger endpoint.'
             ],
             newsApiKey: [
                     valueType: 'string',
@@ -185,6 +216,44 @@ class BootStrap {
                     ],
                     clientVisible: true,
                     groupName: 'Toolbox'
+            ],
+            jsLicenses: [
+                    groupName: 'Toolbox',
+                    valueType: 'json',
+                    defaultValue: [agGrid: null],
+                    clientVisible: true,
+                    note: 'Provide any js licenses needed by client here.'
+            ],
+            cubeTestDefaultDims: [
+                    groupName: 'Toolbox',
+                    valueType: 'json',
+                    defaultValue: [
+                            [
+                                    'fund',
+                                    'trader'
+                            ],
+                            [
+                                    'sector',
+                                    'symbol'
+                            ],
+                            [
+                                    'trader',
+                                    'dir',
+                                    'symbol'
+                            ],
+                            [
+                                    'model',
+                                    'sector',
+                                    'symbol'
+                            ],
+                            [
+                                    'model',
+                                    'region',
+                                    'trader',
+                                    'symbol'
+                            ]
+                    ],
+                    clientVisible: true
             ]
         ])
     }
@@ -233,6 +302,11 @@ class BootStrap {
                     ],
                     groupName: 'Toolbox - Example Apps',
                     note: 'Lightweight storage for tasks added by users in the TODO example app.'
+            ],
+            cubeTestUserDims: [
+                    groupName: 'Toolbox',
+                    type: 'json',
+                    defaultValue: []
             ]
         ])
     }

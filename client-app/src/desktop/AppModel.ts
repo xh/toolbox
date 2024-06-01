@@ -1,5 +1,5 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {HoistAppModel, managed, XH} from '@xh/hoist/core';
+import {managed, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
@@ -8,7 +8,6 @@ import {
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {GitHubService} from '../core/svc/GitHubService';
-import {OauthService} from '../core/svc/OauthService';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {chartsTab} from './tabs/charts/ChartsTab';
 import {layoutTab} from './tabs/layout/LayoutTab';
@@ -21,8 +20,9 @@ import {otherTab} from './tabs/other/OtherTab';
 import {panelsTab} from './tabs/panels/PanelsTab';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {span} from '@xh/hoist/cmp/layout';
+import {BaseAppModel} from '../BaseAppModel';
 
-export class AppModel extends HoistAppModel {
+export class AppModel extends BaseAppModel {
     /** Singleton instance reference - installed by XH upon init. */
     static instance: AppModel;
 
@@ -44,18 +44,8 @@ export class AppModel extends HoistAppModel {
         ]
     });
 
-    static override async preAuthAsync() {
-        const whitelist = ['toolbox.xh.io', 'toolbox-dev.xh.io', 'localhost'];
-        if (whitelist.includes(window.location.hostname)) {
-            await XH.installServicesAsync(OauthService);
-        } else {
-            // We are not running in an environment that is supported by auth0
-            // (presumably `yarn startOnDevice`), so fall back to username / password prompt.
-            XH.appSpec.isSSO = false;
-        }
-    }
-
     override async initAsync() {
+        await super.initAsync();
         await XH.installServicesAsync(GitHubService, PortfolioService);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
@@ -71,10 +61,6 @@ export class AppModel extends HoistAppModel {
 
     override async doLoadAsync(loadSpec) {
         await XH.gitHubService.loadAsync(loadSpec);
-    }
-
-    override async logoutAsync() {
-        await XH.oauthService.logoutAsync();
     }
 
     goHome() {
@@ -144,6 +130,8 @@ export class AppModel extends HoistAppModel {
                             {name: 'rest', path: '/rest'},
                             {name: 'inlineEditing', path: '/inlineEditing'},
                             {name: 'columnFiltering', path: '/columnFiltering'},
+                            {name: 'externalSort', path: '/externalSort'},
+                            {name: 'zoneGrid', path: '/zoneGrid'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'agGrid', path: '/agGrid'}
                         ]
@@ -192,7 +180,12 @@ export class AppModel extends HoistAppModel {
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'placeholder', path: '/placeholder'},
                             {name: 'popups', path: '/popups'},
-                            {name: 'timestamp', path: '/timestamp'}
+                            {name: 'timestamp', path: '/timestamp'},
+                            {
+                                name: 'simpleRouting',
+                                path: '/simpleRouting',
+                                children: [{name: 'recordId', path: '/:recordId'}]
+                            }
                         ]
                     },
                     {

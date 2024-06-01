@@ -39,10 +39,7 @@ class RecallsService extends BaseService {
     // Implementation
     //------------------------
     private JSONClient getClient() {
-        if (!_jsonClient) {
-            _jsonClient = new JSONClient()
-        }
-        return _jsonClient
+        _jsonClient = _jsonClient ?: new JSONClient()
     }
 
     void clearCaches() {
@@ -50,4 +47,8 @@ class RecallsService extends BaseService {
         super.clearCaches()
     }
 
+    Map getAdminStats() {[
+        config: configForAdminStats('recallsHost'),
+        lastResponseCode: lastResponseCode
+    ]}
 }

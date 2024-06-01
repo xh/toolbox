@@ -1,10 +1,10 @@
 package io.xh.toolbox.mobile
 
-import io.xh.hoist.security.Access
+import io.xh.hoist.security.AccessAll
 import io.xh.toolbox.BaseController
 
 
-@Access(['APP_READER'])
+@AccessAll
 class EmailMobileLinkController extends BaseController {
 
     def emailService

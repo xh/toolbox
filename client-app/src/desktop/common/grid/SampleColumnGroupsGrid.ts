@@ -172,6 +172,7 @@ class SampleColumnGroupsGridModel extends HoistModel {
                     children: [
                         {
                             groupId: 'projected',
+                            borders: false,
                             headerAlign: 'center',
                             headerClass: 'xh-blue',
                             children: [
@@ -181,6 +182,7 @@ class SampleColumnGroupsGridModel extends HoistModel {
                         },
                         {
                             groupId: 'actual',
+                            borders: false,
                             headerAlign: 'center',
                             headerClass: 'xh-red',
                             children: [

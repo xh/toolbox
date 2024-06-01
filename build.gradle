@@ -49,10 +49,16 @@ if (parseBoolean(runHoistInline)) {
 }
 
 dependencies {
-    implementation "org.bitbucket.b_c:jose4j:0.7.12"
-    runtimeOnly "mysql:mysql-connector-java:8.0.33"
-    developmentOnly "io.methvin:directory-watcher:0.15.0"
+    // For server-side JWT validation.
+    implementation "org.bitbucket.b_c:jose4j:0.9.6"
 
+    // Database drivers - H2 for temporary in-memory DB with `useH2: true` in instanceConfig YAML
+    // MySQL for deployed instances, or more stateful local workstation setups.
+    runtimeOnly "com.h2database:h2:2.2.224"
+    runtimeOnly "mysql:mysql-connector-java:8.0.33"
+
+    // For hot reloading
+    developmentOnly "io.methvin:directory-watcher:0.15.0"
     if (parseBoolean(enableHotSwap)) {
         developmentOnly "io.xh:groovyReset:1.0"
     }
@@ -73,8 +79,17 @@ Map hoistMetaData = [
 def allJvmArgs = [
     '-Dspring.output.ansi.enabled=always',
     '-XX:TieredStopAtLevel=1',
-    '-Xmx1024m'
+    '-Xmx1024m',
+    "--add-modules=java.se",
+    "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
+    "--add-opens=java.base/java.lang=ALL-UNNAMED",
+    "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
+    "--add-opens=java.management/sun.management=ALL-UNNAMED",
+    "--add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED",
+    "--add-opens=java.base/java.util=ALL-UNNAMED"
 ]
+
+
 
 if (parseBoolean(enableHotSwap)) {
     def groovyReset = configurations.developmentOnly.resolve().find {it.name.contains("groovyReset")}
@@ -111,12 +126,10 @@ idea {
 //--------------------------------------------------
 // Extensions to build.info (Hoist-Core requirement)
 //--------------------------------------------------
-buildProperties.doLast {
-    File grailsBuildInfoFile = it.outputs.files.files.find { it.name == 'grails.build.info' }
-    if (!grailsBuildInfoFile) return
-
+tasks.war.doFirst {
+    File infoFile = layout.buildDirectory.file('resources/main/META-INF/grails.build.info').get().asFile
     Properties properties = new Properties()
-    grailsBuildInfoFile.withInputStream {properties.load(it)}
+    infoFile.withInputStream {properties.load(it)}
     properties.putAll(hoistMetaData)
-    grailsBuildInfoFile.withOutputStream {properties.store(it, null)}
+    infoFile.withOutputStream {properties.store(it, null)}
 }

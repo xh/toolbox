@@ -88,6 +88,7 @@ export class SampleGridModel extends HoistModel {
 
     @managed
     gridModel: GridModel = new GridModel({
+        experimental: {enableFullWidthScroll: true},
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',
@@ -164,7 +165,8 @@ export class SampleGridModel extends HoistModel {
                 ...actionCol,
                 width: calcActionColWidth(2),
                 actionsShowOnHoverOnly: true,
-                actions: [this.viewDetailsAction, this.terminateAction]
+                actions: [this.viewDetailsAction, this.terminateAction],
+                pinned: 'left'
             },
             {
                 ...companyCol,
@@ -186,7 +188,8 @@ export class SampleGridModel extends HoistModel {
             {...tradeDateCol},
             {
                 ...activeCol,
-                tooltip: (active, {record}) => (active ? `${record.data.company} is active` : '')
+                tooltip: (active, {record}) => (active ? `${record.data.company} is active` : ''),
+                pinned: 'right'
             }
         ]
     });
@@ -241,7 +244,7 @@ export class SampleGridModel extends HoistModel {
     }
 
     @action
-    private restoreDefaultsFn(): boolean {
+    private restoreDefaultsFn() {
         // Reset defaults to Display Options panel
         this.setGroupBy(null);
         this.gridModel.sizingMode = XH.sizingMode;
@@ -252,6 +255,5 @@ export class SampleGridModel extends HoistModel {
         this.gridModel.showHover = false;
         this.gridModel.showCellFocus = false;
         this.gridModel.emptyText = 'No records found...';
-        return true;
     }
 }

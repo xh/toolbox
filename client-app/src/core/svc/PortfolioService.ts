@@ -41,9 +41,9 @@ export class PortfolioService extends HoistService {
 
     /**
      * Return a single grouped position, uniquely identified by drilldown ID.
-     * @param positionId - a {@see Position#id}
+     * @param positionId - ID installed on each position returned by `getPositionsAsync()`.
      */
-    async getPositionAsync(positionId): Promise<Position> {
+    async getPositionAsync(positionId: string): Promise<Position> {
         return XH.fetchJson({
             url: 'portfolio/position',
             params: {
@@ -55,10 +55,12 @@ export class PortfolioService extends HoistService {
     /**
      *  Return a PositionSession that will receive live updates.
      *  See getPositionsAsync(), the static form of this method, for more details.
-     *
-     * @returns {Promise<PositionSession>}
      */
-    async getLivePositionsAsync(dims, topic, maxPositions = this.MAX_POSITIONS) {
+    async getLivePositionsAsync(
+        dims: string[],
+        topic: string,
+        maxPositions: number = this.MAX_POSITIONS
+    ) {
         const session = await XH.fetchJson({
             url: 'portfolio/livePositions',
             params: {
@@ -75,20 +77,26 @@ export class PortfolioService extends HoistService {
     /**
      * Return a list of flat position data.
      */
-    async getRawPositionsAsync({loadSpec}: any = {}): Promise<RawPosition[]> {
-        return XH.fetchJson({url: 'portfolio/rawPositions', loadSpec});
+    async getPricedRawPositionsAsync({loadSpec}: any = {}): Promise<PricedRawPosition[]> {
+        return XH.fetchJson({url: 'portfolio/pricedRawPositions', loadSpec});
     }
 
     async getAllOrdersAsync({loadSpec}: any = {}): Promise<Order[]> {
         return XH.fetchJson({url: 'portfolio/orders', loadSpec});
     }
 
-    async getOrdersAsync({positionId, loadSpec}): Promise<Order[]> {
-        return XH.fetchJson({
+    async getOrdersAsync({positionId, loadSpec}): Promise<PlainObject[]> {
+        const ret: PlainObject[] = await XH.fetchJson({
             url: 'portfolio/ordersForPosition',
             params: {positionId},
             loadSpec
         });
+
+        ret.forEach(it => {
+            it.day = LocalDate.from(it.time);
+        });
+
+        return ret;
     }
 
     async getLineChartSeriesAsync({symbol, dimension = 'volume', loadSpec}) {
@@ -138,11 +146,12 @@ export interface Position {
     children: Position[];
 }
 
-export interface RawPosition {
+export interface PricedRawPosition {
     symbol: string;
     model: string;
-    sector: string;
     fund: string;
+    sector: string;
+    region: string;
     trader: string;
     mktVal: number;
     pnl: number;
