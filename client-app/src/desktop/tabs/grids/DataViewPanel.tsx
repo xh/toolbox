@@ -26,7 +26,7 @@ export const dataViewPanel = hoistCmp.factory({
                 icon: Icon.addressCard(),
                 width: 700,
                 height: 400,
-                item: dataView({className: 'toolbox-dataview-demo'}),
+                item: dataView({className: 'tb-dataview-panel'}),
                 bbar: [
                     refreshButton({
                         text: 'Load new (random) records',

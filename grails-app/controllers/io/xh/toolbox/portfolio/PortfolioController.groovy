@@ -30,8 +30,8 @@ class PortfolioController extends BaseController {
         renderJSON(positionService.ordersForPosition(params.positionId))
     }
 
-    def rawPositions() {
-        renderJSON(portfolioService.getPortfolio().rawPositions)
+    def pricedRawPositions() {
+        renderJSON(positionService.getPricedRawPositions())
     }
 
     def orders() {

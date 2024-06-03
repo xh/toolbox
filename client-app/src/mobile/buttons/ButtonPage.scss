@@ -1,4 +1,4 @@
-.button-page {
+.tb-button-page {
   &__row {
     padding: var(--xh-pad-half-px);
     justify-content: center;
@@ -15,7 +15,7 @@
   }
 
   &__panel--toolbar {
-    .button-page__row {
+    .tb-button-page__row {
       background-color: var(--xh-tbar-bg);
     }
   }

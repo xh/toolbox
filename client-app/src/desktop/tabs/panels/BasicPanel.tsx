@@ -117,7 +117,7 @@ export const basicPanel = hoistCmp.factory({
                 ],
                 items: [
                     div({
-                        className: 'toolbox-panel-text-reader',
+                        className: 'tb-panel-text-reader',
                         items: model.demoText.map(it => p(it))
                     }),
                     aComponentThatCanThrowInRender()

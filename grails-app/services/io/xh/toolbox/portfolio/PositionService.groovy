@@ -36,12 +36,7 @@ class PositionService extends BaseService {
 
     PositionResultSet getPositions(PositionQuery query) {
 
-        Map<String, MarketPrice> prices = portfolioService.getCurrentPrices()
-        List<PricedRawPosition> rawPositions = portfolioService
-            .getPortfolio()
-            .rawPositions
-            .collect {new PricedRawPosition(it, prices[it.symbol]?.close)}
-
+        List<PricedRawPosition> rawPositions = getPricedRawPositions()
 
         List<Position> positions = groupPositions(query.dims, rawPositions, 'root')
 
@@ -66,29 +61,41 @@ class PositionService extends BaseService {
         )
     }
 
-    Position getPosition(String positionId) {
+    List<PricedRawPosition> getPricedRawPositions(){
+        Map<String, MarketPrice> prices = portfolioService.getCurrentPrices()
+        return portfolioService
+                .getPortfolio()
+                .rawPositions.collect{new PricedRawPosition(it, prices[it.symbol]?.close)}
+    }
 
-        List<RawPosition> rawPositions = portfolioService.getPortfolio().rawPositions
+    Position getPosition(String positionId) {
 
         Map<String, String> parsedId = parsePositionId(positionId)
         List<String> dims = parsedId.keySet() as List<String>
         List<String> dimVals = parsedId.values() as List<String>
 
-        List<RawPosition> positions = rawPositions.findAll { pos ->
+        Map<String, MarketPrice> prices = portfolioService.getCurrentPrices()
+
+        List<RawPosition> allRaw = portfolioService
+                                        .getPortfolio()
+                                        .rawPositions
+
+        List<RawPosition> rawPositions = allRaw.findAll { raw ->
             dims.every { dim ->
-                pos."$dim" == parsedId[dim]
+                raw[dim] == parsedId[dim]
             }
         }
+
+        List<PricedRawPosition> pricedRawPositions = rawPositions.collect{new PricedRawPosition(it, prices[it.symbol]?.close)}
 
         return new Position(
                 id: positionId,
                 name: dimVals.last(),
                 children: null,
-                pnl: positions.sum { it.pnl } as long,
-                mktVal: positions.sum { it.mktVal } as long,
+                pnl: pricedRawPositions.sum { it.pnl } as long,
+                mktVal: pricedRawPositions.sum { it.mktVal } as long,
         )
     }
-
 
     List<Order> ordersForPosition(String positionId) {
         List<Order> orders = portfolioService.getPortfolio().orders

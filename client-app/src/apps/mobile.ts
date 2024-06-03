@@ -12,6 +12,6 @@ XH.renderApp({
     modelClass: AppModel,
     containerClass: AppContainer,
     isMobileApp: true,
-    isSSO: true,
+    enableLogout: true,
     checkAccess: () => true
 });
