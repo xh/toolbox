@@ -34,7 +34,13 @@ export const ohlcChartPanel = hoistCmp.factory({
                 height: '60%',
                 mask: 'onLoad',
                 tbar: tbar(),
-                item: chart({aspectRatio: model.aspectRatio})
+                item: chart({aspectRatio: model.aspectRatio}),
+                modelConfig: {
+                    modalSupport: true,
+                    collapsible: false,
+                    resizable: false,
+                    printSupport: true
+                }
             }),
             links: [
                 {
