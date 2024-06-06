@@ -34,7 +34,8 @@ export const recallsPanel = hoistCmp.factory({
                 modelConfig: {
                     side: 'bottom',
                     defaultSize: 325,
-                    persistWith: PERSIST_APP
+                    persistWith: PERSIST_APP,
+                    printSupport: true
                 }
             })
         );

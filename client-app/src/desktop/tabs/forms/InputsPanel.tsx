@@ -63,7 +63,12 @@ export const inputsPanel = hoistCmp.factory({
                 width: '90%',
                 height: 950,
                 item: frame(formContents()),
-                bbar: bbar()
+                bbar: bbar(),
+                modelConfig: {
+                    collapsible: false,
+                    resizable: false,
+                    printSupport: true
+                }
             })
         });
     }
