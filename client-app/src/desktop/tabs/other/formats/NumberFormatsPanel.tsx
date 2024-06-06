@@ -49,6 +49,12 @@ export const numberFormatsPanel = hoistCmp.factory({
                 icon: Icon.print(),
                 className: 'tbox-formats-tab',
                 height: 600,
+                modelConfig: {
+                    errorBoundary: true,
+                    collapsible: false,
+                    resizable: false,
+                    printSupport: true
+                },
                 item: hframe(
                     paramsPanel(),
                     resultsPanel({
