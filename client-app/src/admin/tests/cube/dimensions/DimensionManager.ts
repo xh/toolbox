@@ -1,8 +1,8 @@
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
-import {hoistCmp, useLocalModel, uses} from '@xh/hoist/core';
+import {hoistCmp, HoistProps, useLocalModel, uses, WithoutModelAndRef} from '@xh/hoist/core';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
-import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
+import {panel, PanelModel, PanelProps} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon/Icon';
 import {DimensionManagerModel} from './DimensionManagerModel';
 
@@ -14,7 +14,11 @@ import {DimensionManagerModel} from './DimensionManagerModel';
  * This component and its backing model are incubating in Toolbox for possible inclusion in
  * the core Hoist toolkit in some form.
  */
-export const dimensionManager = hoistCmp.factory({
+export interface DimensionManagerProps
+    extends HoistProps<DimensionManagerModel>,
+        WithoutModelAndRef<PanelProps> {}
+
+export const dimensionManager = hoistCmp.factory<DimensionManagerProps>({
     displayName: 'DimensionManager',
     model: uses(DimensionManagerModel),
     className: 'xh-dim-manager',

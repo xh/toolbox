@@ -34,7 +34,7 @@ export class SampleTreeGridModel extends HoistModel {
     @managed
     gridModel: GridModel;
 
-    panelRef = createRef<HTMLElement>();
+    panelRef = createRef<HTMLDivElement>();
 
     get store() {
         return this.gridModel.store;
