@@ -1,11 +1,11 @@
 cd client-app
 
-yarn run lint-staged
+npx lint-staged
 
 # nullify the paths option if hoist-react is not present
 if [ ! -d ../../hoist-react ]
 then
-    yarn run tsc --paths=null
+    npm run tsc --paths=null
 else
-    yarn run tsc
+    npm run tsc
 fi
