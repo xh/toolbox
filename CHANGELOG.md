@@ -1,5 +1,7 @@
 # Changelog
 
+## v6.0-SNAPSHOT - unreleased
+
 ## v5.0.2 - 2024-06-20
 
 ### 📚 Libraries
