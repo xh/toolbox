@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.1.0 - 2024-06-21
+
+### 📚 Libraries
+* hoist-core 20.1.0
+
 ## v5.0.2 - 2024-06-20
 
 ### 📚 Libraries
