@@ -21,8 +21,7 @@ export class PortfolioService extends HoistService {
      * Return a portfolio of hierarchically grouped positions for the selected dimension(s).
      * @param dims - field names for dimensions on which to group.
      * @param includeSummary - true to include a root summary node
-     * @param maxPositions - truncate position tree, by smallest pnl, until this number of
-     *     positions is reached.
+     * @param maxPositions - truncate position tree, by smallest pnl, until this number of positions is reached.
      */
     async getPositionsAsync(
         dims: string[],
@@ -82,7 +81,7 @@ export class PortfolioService extends HoistService {
         return XH.fetchJson({url: 'portfolio/pricedRawPositions', loadSpec});
     }
 
-    async getAllOrdersAsync({loadSpec}: any = {}): Promise<PlainObject[]> {
+    async getAllOrdersAsync({loadSpec}: any = {}): Promise<Order[]> {
         return XH.fetchJson({url: 'portfolio/orders', loadSpec});
     }
 
@@ -156,4 +155,22 @@ export interface PricedRawPosition {
     trader: string;
     mktVal: number;
     pnl: number;
+}
+
+export interface Order {
+    id: string;
+    symbol: string;
+    sector: string;
+    region: string;
+    model: string;
+    trader: string;
+    fund: string;
+    dir: string;
+    quantity: number;
+    price: number;
+    mktVal: number;
+    time: number;
+    commission: number;
+    confidences: number;
+    closingPrices: number[];
 }
