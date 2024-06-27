@@ -56,6 +56,12 @@ export const iconsPanel = hoistCmp.factory({
                 title: 'Icons (regular, solid, and light variants)',
                 icon: Icon.icon({iconName: 'icons'}),
                 className: 'tb-icons-panel',
+                modelConfig: {
+                    errorBoundary: true,
+                    collapsible: false,
+                    resizable: false,
+                    printSupport: true
+                },
                 items: [
                     tbar(),
                     div({

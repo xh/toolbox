@@ -48,7 +48,12 @@ export const panelSizingPanel = hoistCmp.factory({
             ],
             item: panel({
                 title: 'Panels › Panel Sizing',
-                modelConfig: {modalSupport: true, collapsible: false, resizable: false},
+                modelConfig: {
+                    modalSupport: true,
+                    collapsible: false,
+                    resizable: false,
+                    printSupport: true
+                },
                 icon: Icon.window(),
                 height: '60vh',
                 width: '80%',
@@ -66,6 +71,7 @@ export const panelSizingPanel = hoistCmp.factory({
                         items: [
                             panel({
                                 title: 'Left Panel',
+                                className: 'do-not-print',
                                 icon: Icon.arrowToLeft(),
                                 model: model.leftPanelModel,
                                 compactHeader: true,
@@ -97,6 +103,7 @@ export const panelSizingPanel = hoistCmp.factory({
                             }),
                             panel({
                                 title: 'Right Panel',
+                                className: 'do-not-print',
                                 icon: Icon.arrowToRight(),
                                 model: model.rightPanelModel,
                                 compactHeader: true,
@@ -109,6 +116,7 @@ export const panelSizingPanel = hoistCmp.factory({
                     }),
                     panel({
                         title: 'Bottom Panel',
+                        className: 'do-not-print',
                         icon: Icon.arrowToBottom(),
                         model: model.bottomPanelModel,
                         compactHeader: true,

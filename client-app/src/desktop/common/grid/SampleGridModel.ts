@@ -89,6 +89,7 @@ export class SampleGridModel extends HoistModel {
     @managed
     gridModel: GridModel = new GridModel({
         experimental: {enableFullWidthScroll: true},
+        printSupport: true,
         selModel: {mode: 'multiple'},
         sortBy: 'profit_loss|desc|abs',
         emptyText: 'No records found...',

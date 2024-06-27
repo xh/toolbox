@@ -7,6 +7,7 @@ import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {NewsPanelModel} from './NewsPanelModel';
 import './NewsPanelItem.scss';
+import {printGridButton} from '@xh/hoist/desktop/cmp/button';
 
 export const newsPanel = hoistCmp.factory({
     model: uses(NewsPanelModel),
@@ -40,7 +41,8 @@ const bbar = hoistCmp.factory<NewsPanelModel>({
                 width: 380
             }),
             filler(),
-            storeCountLabel({store, unit: 'stories'})
+            storeCountLabel({store, unit: 'stories'}),
+            printGridButton()
         );
     }
 });
