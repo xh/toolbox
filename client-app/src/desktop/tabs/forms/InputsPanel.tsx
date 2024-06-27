@@ -58,7 +58,7 @@ export const inputsPanel = hoistCmp.factory({
             ],
             item: panel({
                 title: 'Forms › HoistInputs',
-                className: 'toolbox-inputs-panel',
+                className: 'tb-inputs-panel',
                 icon: Icon.edit(),
                 width: '90%',
                 height: 950,
@@ -76,7 +76,7 @@ const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
         },
         items: hframe(
             vbox({
-                className: 'toolbox-inputs-panel__column',
+                className: 'tb-inputs-panel__column',
                 items: [
                     row({
                         field: 'textInput1',
@@ -121,7 +121,7 @@ const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
                 ]
             }),
             vbox({
-                className: 'toolbox-inputs-panel__column',
+                className: 'tb-inputs-panel__column',
                 items: [
                     row({
                         field: 'numberInput1',
@@ -213,7 +213,7 @@ const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
                 ]
             }),
             vbox({
-                className: 'toolbox-inputs-panel__column',
+                className: 'tb-inputs-panel__column',
                 items: [
                     row({
                         field: 'select1',

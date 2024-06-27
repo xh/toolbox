@@ -66,4 +66,8 @@ class OrderGenerationService extends BaseService {
     private Map getConfig() {
         configService.getMap('portfolioConfigs')
     }
+
+    Map getAdminStats() {[
+        config: configForAdminStats('portfolioConfigs')
+    ]}
 }

@@ -1,10 +1,8 @@
 package io.xh.toolbox.data
 
-import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.json.JSONParser
 
-@Slf4j
 class CustomerService extends BaseService {
 
     private List<Map> allCustomers
@@ -41,8 +39,8 @@ class CustomerService extends BaseService {
     }
 
     void clearCaches() {
-        super.clearCaches()
         allCustomers = loadCustomersFromFile()
+        super.clearCaches()
     }
 
 }

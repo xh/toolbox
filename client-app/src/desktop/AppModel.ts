@@ -130,6 +130,7 @@ export class AppModel extends BaseAppModel {
                             {name: 'rest', path: '/rest'},
                             {name: 'inlineEditing', path: '/inlineEditing'},
                             {name: 'columnFiltering', path: '/columnFiltering'},
+                            {name: 'externalSort', path: '/externalSort'},
                             {name: 'zoneGrid', path: '/zoneGrid'},
                             {name: 'dataview', path: '/dataview'},
                             {name: 'agGrid', path: '/agGrid'}
@@ -179,7 +180,12 @@ export class AppModel extends BaseAppModel {
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'placeholder', path: '/placeholder'},
                             {name: 'popups', path: '/popups'},
-                            {name: 'timestamp', path: '/timestamp'}
+                            {name: 'timestamp', path: '/timestamp'},
+                            {
+                                name: 'simpleRouting',
+                                path: '/simpleRouting',
+                                children: [{name: 'recordId', path: '/:recordId'}]
+                            }
                         ]
                     },
                     {

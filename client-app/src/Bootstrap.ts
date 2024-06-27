@@ -1,7 +1,9 @@
 /**
- * Bootstrap File.
- *
- * This file is imported by each of the client apps, and runs shared code.
+ * Bootstrap routine for registering common client-side licenses and other low-level library setup.
+ * Common routines to go in this file include:
+ *  - TypeScript module augmentation
+ *  - AG Grid license registration and feature registration.
+ *  - Highcharts feature registration.
  */
 
 //-----------------------------------------------------------------
@@ -9,10 +11,11 @@
 //-----------------------------------------------------------------
 import {XH} from '@xh/hoist/core';
 import {when} from '@xh/hoist/mobx';
+
 import {ContactService} from './examples/contact/svc/ContactService';
 import {GitHubService} from './core/svc/GitHubService';
 import {PortfolioService} from './core/svc/PortfolioService';
-import {OauthService} from './core/svc/OauthService';
+import {AuthService} from './core/svc/AuthService';
 import {TaskService} from './examples/todo/TaskService';
 
 declare module '@xh/hoist/core' {
@@ -20,7 +23,7 @@ declare module '@xh/hoist/core' {
     export interface XHApi {
         contactService: ContactService;
         gitHubService: GitHubService;
-        oauthService: OauthService;
+        authService: AuthService;
         portfolioService: PortfolioService;
         taskService: TaskService;
     }
@@ -32,22 +35,19 @@ declare module '@xh/hoist/core' {
     }
 }
 
-import {installAgGrid} from '@xh/hoist/kit/ag-grid';
-import {installHighcharts} from '@xh/hoist/kit/highcharts';
-
 //-----------------------------------------------------------------
 // ag-Grid -- Import and Register
 //-----------------------------------------------------------------
+import {installAgGrid} from '@xh/hoist/kit/ag-grid';
 import {ModuleRegistry} from '@ag-grid-community/core';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-balham.css';
 import {AgGridReact} from '@ag-grid-community/react';
 import {ClientSideRowModelModule} from '@ag-grid-community/client-side-row-model';
-import agPkg from '@ag-grid-community/core/package.json';
 
 // Enterprise features
 // IMPORTANT: If you are using enterprise version in your app, you must provide your own license
-import {LicenseManager} from '@ag-grid-enterprise/core';
+import {LicenseManager, EnterpriseCoreModule} from '@ag-grid-enterprise/core';
 import {ClipboardModule} from '@ag-grid-enterprise/clipboard';
 import {MenuModule} from '@ag-grid-enterprise/menu';
 import {RowGroupingModule} from '@ag-grid-enterprise/row-grouping';
@@ -69,7 +69,7 @@ ModuleRegistry.registerModules([
     SparklinesModule
 ]);
 
-installAgGrid(AgGridReact, agPkg.version);
+installAgGrid(AgGridReact, EnterpriseCoreModule.version);
 
 when(
     () => XH.appIsRunning,
@@ -83,6 +83,7 @@ when(
 // Highcharts - Import and Register
 // You must provide a license for any features (e.g. highstock) that require it
 //-------------------------------------------------------------------------------
+import {installHighcharts} from '@xh/hoist/kit/highcharts';
 import Highcharts from 'highcharts/highstock';
 import highchartsExportData from 'highcharts/modules/export-data';
 import highchartsExporting from 'highcharts/modules/exporting';

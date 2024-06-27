@@ -24,6 +24,6 @@ export const layoutTab = hoistCmp.factory(() =>
                 {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
             ]
         },
-        className: 'toolbox-tab'
+        className: 'tb-tab'
     })
 );

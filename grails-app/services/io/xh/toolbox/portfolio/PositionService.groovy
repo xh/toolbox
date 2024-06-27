@@ -17,13 +17,12 @@ class PositionService extends BaseService {
 
     void init() {
         createTimer(
-                runFn: this.&pushUpdatesToAllSessions,
-                interval: {config.pushUpdatesIntervalSecs},
-                intervalUnits: SECONDS,
-                delay: true
+            runFn: this.&pushUpdatesToAllSessions,
+            interval: {config.pushUpdatesIntervalSecs},
+            intervalUnits: SECONDS,
+            delay: true
         )
     }
-
 
     PositionSession getLivePositions(PositionQuery query, String channelKey, String topic) {
         def newSession = new PositionSession(query, channelKey, topic),
@@ -37,7 +36,7 @@ class PositionService extends BaseService {
 
     PositionResultSet getPositions(PositionQuery query) {
 
-        List<RawPosition> rawPositions = portfolioService.getData().rawPositions
+        List<PricedRawPosition> rawPositions = getPricedRawPositions()
 
         List<Position> positions = groupPositions(query.dims, rawPositions, 'root')
 
@@ -62,32 +61,44 @@ class PositionService extends BaseService {
         )
     }
 
-    Position getPosition(String positionId) {
+    List<PricedRawPosition> getPricedRawPositions(){
+        Map<String, MarketPrice> prices = portfolioService.getCurrentPrices()
+        return portfolioService
+                .getPortfolio()
+                .rawPositions.collect{new PricedRawPosition(it, prices[it.symbol]?.close)}
+    }
 
-        List<RawPosition> rawPositions = portfolioService.getData().rawPositions
+    Position getPosition(String positionId) {
 
         Map<String, String> parsedId = parsePositionId(positionId)
         List<String> dims = parsedId.keySet() as List<String>
         List<String> dimVals = parsedId.values() as List<String>
 
-        List<RawPosition> positions = rawPositions.findAll { pos ->
+        Map<String, MarketPrice> prices = portfolioService.getCurrentPrices()
+
+        List<RawPosition> allRaw = portfolioService
+                                        .getPortfolio()
+                                        .rawPositions
+
+        List<RawPosition> rawPositions = allRaw.findAll { raw ->
             dims.every { dim ->
-                pos."$dim" == parsedId[dim]
+                raw[dim] == parsedId[dim]
             }
         }
+
+        List<PricedRawPosition> pricedRawPositions = rawPositions.collect{new PricedRawPosition(it, prices[it.symbol]?.close)}
 
         return new Position(
                 id: positionId,
                 name: dimVals.last(),
                 children: null,
-                pnl: positions.sum { it.pnl } as long,
-                mktVal: positions.sum { it.mktVal } as long,
+                pnl: pricedRawPositions.sum { it.pnl } as long,
+                mktVal: pricedRawPositions.sum { it.mktVal } as long,
         )
     }
 
-
     List<Order> ordersForPosition(String positionId) {
-        List<Order> orders = portfolioService.getData().orders
+        List<Order> orders = portfolioService.getPortfolio().orders
 
         Map<String, String> parsedId = parsePositionId(positionId)
         List<String> dims = parsedId.keySet() as List<String>
@@ -104,10 +115,10 @@ class PositionService extends BaseService {
     //----------------------
 
     // Generate grouped, hierarchical position roll-ups for a list of one or more dimensions.
-    private List<Position> groupPositions(List<String> dims, List<RawPosition> positions, String id) {
+    private List<Position> groupPositions(List<String> dims, List<PricedRawPosition> positions, String id) {
 
         String dim = dims.first()
-        Map<String, List<RawPosition>> byDimVal = positions.groupBy { it."$dim" }
+        Map<String, List<PricedRawPosition>> byDimVal = positions.groupBy { it.rawPosition."$dim" }
 
         List<String> childDims = dims.tail()
         return byDimVal.collect { dimVal, members ->
@@ -258,4 +269,8 @@ class PositionService extends BaseService {
     private Map getConfig() {
         configService.getMap('portfolioConfigs')
     }
+
+    Map getAdminStats() {[
+        config: configForAdminStats('portfolioConfigs')
+    ]}
 }

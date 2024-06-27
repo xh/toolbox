@@ -13,10 +13,9 @@ class InstrumentGenerationService extends BaseService {
 
     def configService
 
-
     Map<String, Instrument> generateInstruments() {
         def instrumentCount = config.instrumentCount
-        Map<String, Instrument> ret = new ConcurrentHashMap(instrumentCount)
+        Map<String, Instrument> ret = new HashMap(instrumentCount)
         while (ret.size() < instrumentCount) {
             String symbol = generateSymbol()
             if (!ret[symbol]) {
@@ -43,4 +42,8 @@ class InstrumentGenerationService extends BaseService {
     private Map getConfig() {
         configService.getMap('portfolioConfigs')
     }
+
+    Map getAdminStats() {[
+        config: configForAdminStats('portfolioConfigs')
+    ]}
 }

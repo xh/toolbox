@@ -2,6 +2,7 @@ package io.xh.toolbox
 
 import grails.gorm.transactions.Transactional
 import io.xh.hoist.config.ConfigService
+import io.xh.hoist.log.LogSupport
 import io.xh.hoist.pref.PrefService
 import io.xh.toolbox.user.User
 
@@ -11,7 +12,7 @@ import static io.xh.hoist.BaseService.parallelInit
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 import static io.xh.hoist.util.Utils.*
 
-class BootStrap {
+class BootStrap implements LogSupport {
 
     ConfigService configService
     PrefService prefService
@@ -54,14 +55,16 @@ class BootStrap {
                 user.save(flush: true)
             }
 
-            log.info("Local admin user available as per instanceConfig | $adminUsername")
+            logInfo("Local admin user available as per instanceConfig", adminUsername)
         } else {
-            log.warn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
+            logWarn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
     }
 
     private void logStartupMsg() {
-        log.info("""
+        def buildLabel = appBuild != 'UNKNOWN' ? " [build $appBuild] " : " "
+
+        logInfo("""
 \n
  ______   ______     ______     __         ______     ______     __  __    
 /\\__  _\\ /\\  __ \\   /\\  __ \\   /\\ \\       /\\  == \\   /\\  __ \\   /\\_\\_\\_\\   
@@ -69,26 +72,22 @@ class BootStrap {
    \\ \\_\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\  \\ \\_____\\   /\\_\\/\\_\\ 
     \\/_/   \\/_____/   \\/_____/   \\/_____/   \\/_____/   \\/_____/   \\/_/\\/_/ 
 \n                                                                           
-         ${appName} v${appVersion} [build ${appBuild}] - ${appEnvironment}
+         ${appName} v${appVersion}${buildLabel}${appEnvironment}
 \n
         """)
     }
 
     private void ensureRequiredConfigsCreated() {
         configService.ensureRequiredConfigsCreated([
-            auth0ClientId: [
-                    valueType: 'string',
-                    defaultValue: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
+            auth0Config: [
+                    valueType: 'json',
+                    defaultValue: [
+                            clientId: 'MUn9VrAGavF7n39RdhFYq8xkZkoFYEDB',
+                            domain: 'login.xh.io'
+                    ],
                     clientVisible: false,
-                    groupName: 'Auth0',
-                    note: 'Client ID of the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
-            ],
-            auth0Domain: [
-                    valueType: 'string',
-                    defaultValue: 'login.xh.io',
-                    clientVisible: false,
-                    groupName: 'Auth0',
-                    note: 'Custom domain for our Auth0 deployment. OAuth login flow will redirect users here.'
+                    groupName: 'xh.io',
+                    note: 'OAuth config for the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
             ],
             contacts: [
                     valueType: 'json',
@@ -129,7 +128,7 @@ class BootStrap {
             ],
             fileManagerStoragePath: [
                     valueType: 'string',
-                    defaultValue: '/toolbox/fileManager',
+                    defaultValue: '/var/tmp/xh-toolbox',
                     clientVisible: false,
                     groupName: 'Toolbox - Example Apps',
                     note: 'Absolute path to disk location for storing uploaded files.'
@@ -224,6 +223,37 @@ class BootStrap {
                     defaultValue: [agGrid: null],
                     clientVisible: true,
                     note: 'Provide any js licenses needed by client here.'
+            ],
+            cubeTestDefaultDims: [
+                    groupName: 'Toolbox',
+                    valueType: 'json',
+                    defaultValue: [
+                            [
+                                    'fund',
+                                    'trader'
+                            ],
+                            [
+                                    'sector',
+                                    'symbol'
+                            ],
+                            [
+                                    'trader',
+                                    'dir',
+                                    'symbol'
+                            ],
+                            [
+                                    'model',
+                                    'sector',
+                                    'symbol'
+                            ],
+                            [
+                                    'model',
+                                    'region',
+                                    'trader',
+                                    'symbol'
+                            ]
+                    ],
+                    clientVisible: true
             ]
         ])
     }
@@ -272,6 +302,11 @@ class BootStrap {
                     ],
                     groupName: 'Toolbox - Example Apps',
                     note: 'Lightweight storage for tasks added by users in the TODO example app.'
+            ],
+            cubeTestUserDims: [
+                    groupName: 'Toolbox',
+                    type: 'json',
+                    defaultValue: []
             ]
         ])
     }

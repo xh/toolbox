@@ -218,7 +218,7 @@ export class GridTestModel extends HoistModel {
                     field: 'symbol',
                     agOptions: {
                         filter: 'agTextColumnFilter',
-                        suppressMenu: false
+                        suppressHeaderMenuButton: false
                     },
                     width: 200
                 },
