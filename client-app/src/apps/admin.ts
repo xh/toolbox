@@ -5,15 +5,10 @@ import {AppComponent} from '@xh/hoist/admin/AppComponent';
 import {AppModel} from '../admin/AppModel';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 
-XH.renderApp({
-    clientAppCode: 'admin',
-    clientAppName: 'Toolbox Admin',
+XH.renderAdminApp({
     componentClass: AppComponent,
     modelClass: AppModel,
     containerClass: AppContainer,
-    isMobileApp: false,
     enableLogout: true,
-    webSocketsEnabled: true,
-    checkAccess: 'HOIST_ADMIN_READER',
     lockoutMessage: "Contact support@xh.io for information on Hoist's bundled Admin Console."
 });
