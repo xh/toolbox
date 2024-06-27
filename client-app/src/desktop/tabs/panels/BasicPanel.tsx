@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {div, filler, p} from '@xh/hoist/cmp/layout';
 import {menu, menuDivider, menuItem, popover} from '@xh/hoist/kit/blueprint';
@@ -99,7 +99,7 @@ export const basicPanel = hoistCmp.factory({
                             menuItem({text: 'Menu Item 2', icon: Icon.skull(), intent: 'danger'}),
                             menuItem({
                                 text: 'Menu Item 3',
-                                icon: Icon.placeholder(),
+                                icon: Icon.placeholder() as ReactElement,
                                 disabled: true
                             }),
                             menuDivider({title: 'Another Section'}),
