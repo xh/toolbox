@@ -29,7 +29,7 @@ export class TodoPanelModel extends HoistModel {
     @managed
     gridModel: GridModel;
 
-    panelRef = createRef<HTMLElement>();
+    panelRef = createRef<HTMLDivElement>();
 
     addAction = new RecordAction({
         icon: Icon.add(),

@@ -71,7 +71,7 @@ const tbar = hoistCmp.factory<GridTestModel>(({model}) =>
         toolbarSep(),
         refreshButton({
             text: 'Load Grid',
-            model
+            target: model
         }),
         button({
             text: 'Clear Grid',

@@ -1,8 +1,12 @@
-import {hoistCmp, XH} from '@xh/hoist/core';
+import {hoistCmp, HoistProps, XH} from '@xh/hoist/core';
 import {div, img, br} from '@xh/hoist/cmp/layout';
 import './WelcomeMsg.scss';
 
-export const welcomeMsg = hoistCmp.factory(({multiline}) => {
+interface WelcomeMsgProps extends HoistProps {
+    multiline?: boolean;
+}
+
+export const welcomeMsg = hoistCmp.factory<WelcomeMsgProps>(({multiline}) => {
     const user = XH.getUser();
     return div({
         className: `tb-welcome-message ${multiline ? 'tb-welcome-message--multiline' : ''}`,
