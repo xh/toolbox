@@ -12,12 +12,12 @@
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
     "tsc": "node node_modules/typescript/bin/tsc",
-    "start": "npm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
-    "startOnDevice": "npm install && webpack-dev-server --env inlineHoist --env devHost=$(ipconfig getifaddr en0)",
-    "startAndAnalyze": "npm install && webpack-dev-server --env analyzeBundles",
-    "startWithHoist": "cd ../../hoist-react && npm install && cd ../toolbox/client-app && npm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
-    "startWithHoistSecure": "cd ../../hoist-react && npm install && cd ../toolbox/client-app && npm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist --env devHttps=true --env devHost=toolbox-local.xh.io",
-    "startWithHoistAndAnalyze": "npm startWithHoist --env analyzeBundles",
+    "start": "npm run install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
+    "startOnDevice": "npm run install && webpack-dev-server --env inlineHoist --env devHost=$(ipconfig getifaddr en0)",
+    "startAndAnalyze": "npm run install && webpack-dev-server --env analyzeBundles",
+    "startWithHoist": "cd ../../hoist-react && npm run install && cd ../toolbox/client-app && npm run install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
+    "startWithHoistSecure": "cd ../../hoist-react && npm run install && cd ../toolbox/client-app && npm run install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist --env devHttps=true --env devHost=toolbox-local.xh.io",
+    "startWithHoistAndAnalyze": "npm run startWithHoist --env analyzeBundles",
     "prepare": "cd .. && husky client-app/.husky"
   },
   "lint-staged": {
@@ -44,7 +44,7 @@
     "@ag-grid-enterprise/side-bar": "~31.2.0",
     "@ag-grid-enterprise/sparklines": "~31.2.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "64.0.5",
+    "@xh/hoist": "^65.0.0-SNAPSHOT",
     "@xh/package-template": "~3.0.1",
     "core-js": "3.x",
     "highcharts": "11.x",
@@ -54,7 +54,7 @@
     "react-dom": "~18.2.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "^9.0.0-SNAPSHOT",
+    "@xh/hoist-dev-utils": "^10.0.0-SNAPSHOT",
     "cross-env": "7.x",
     "eslint": "8.x",
     "eslint-config-prettier": "9.x",
