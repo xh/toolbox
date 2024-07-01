@@ -15,7 +15,6 @@ import {when} from '@xh/hoist/mobx';
 import {ContactService} from './examples/contact/svc/ContactService';
 import {GitHubService} from './core/svc/GitHubService';
 import {PortfolioService} from './core/svc/PortfolioService';
-import {AuthService} from './core/svc/AuthService';
 import {TaskService} from './examples/todo/TaskService';
 
 declare module '@xh/hoist/core' {
@@ -23,7 +22,6 @@ declare module '@xh/hoist/core' {
     export interface XHApi {
         contactService: ContactService;
         gitHubService: GitHubService;
-        authService: AuthService;
         portfolioService: PortfolioService;
         taskService: TaskService;
     }

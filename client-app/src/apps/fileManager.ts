@@ -4,6 +4,7 @@ import {XH} from '@xh/hoist/core';
 import {AppComponent} from '../examples/filemanager/AppComponent';
 import {AppModel} from '../examples/filemanager/AppModel';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
+import {AuthModel} from '../core/AuthModel';
 
 XH.renderApp({
     clientAppCode: 'fileManager',
@@ -11,6 +12,7 @@ XH.renderApp({
     componentClass: AppComponent,
     modelClass: AppModel,
     containerClass: AppContainer,
+    authModelClass: AuthModel,
     isMobileApp: false,
     enableLogout: true,
     checkAccess: 'HOIST_ADMIN',
