@@ -1,14 +1,5 @@
-// This work around ensures the app has the full screen height available to it after
-// completing the Auth0 flow - see https://github.com/xh/toolbox/issues/495
-// stylelint-disable media-feature-name-no-unknown
-@media all and (display-mode: standalone) {
-  html {
-    height: 200vh;
-  }
-}
-
-.toolbox-page {
-  .toolbox-card {
+.tb-page {
+  .tb-card {
     margin: var(--xh-pad-double-px);
     padding: var(--xh-pad-px);
     background: var(--xh-bg);
@@ -28,26 +19,8 @@
   }
 }
 
-.toolbox-description {
-  padding: var(--xh-title-pad-px);
-  background-color: var(--xh-bg-alt);
-  border-bottom: var(--xh-border-solid);
-}
-
-.toolbox-containers-page .xh-panel__content {
-  & > .xh-hbox,
-  & > .xh-vbox {
-    flex: 1;
-  }
-
-  .toolbox-containers-box {
-    border: var(--xh-border-solid);
-    font-family: var(--xh-font-family-mono);
-  }
-}
-
-.toolbox-detail-page {
-  .toolbox-detail-row {
+.tb-detail-page {
+  .tb-detail-row {
     display: flex;
     background-color: var(--xh-grid-bg);
     font-size: var(--xh-grid-font-size-px);
@@ -64,4 +37,11 @@
       }
     }
   }
+}
+
+.tb-description {
+  background-color: var(--xh-bg-alt);
+  border-bottom: var(--xh-border-solid);
+  font-size: var(--xh-font-size-small-px);
+  padding: var(--xh-pad-px);
 }

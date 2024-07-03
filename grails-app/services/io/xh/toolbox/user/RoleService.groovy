@@ -1,9 +1,6 @@
 package io.xh.toolbox.user
 
-import grails.gorm.transactions.Transactional
 import io.xh.hoist.role.provided.DefaultRoleService
-
-import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
 /**
  * Toolbox leverages Hoist's built-in, database-backed Role management and its associated Admin Console UI.
@@ -13,23 +10,25 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
  */
 class RoleService extends DefaultRoleService {
 
-    void init() {
-        super.init()
-        assignLocalAdminRolesIfNeeded()
-    }
+    /**
+     * Toolbox does not currently connect to an external directory, but supports a `mockDirectoryGroups` config
+     * so we can simulate directory group lookups and see all group-related controls in the Admin Console Roles UI.
+     *
+     * Config should be JSON formatted like: `{"testGroupName": ["user1@example.com", "user2@example.com"]}`.
+     *
+     * This mock code also supports use of the special group name `sim_error` to mock a lookup failure.
+     */
+    protected Map<String, Object> doLoadUsersForDirectoryGroups(Set<String> groups, boolean strictMode) {
+        def config = configService.getMap('mockDirectoryGroups', [:])
 
-    /** Toolbox does not use any external directory (such as LDAP/AD) for group membership. */
-    boolean getDirectoryGroupsSupported() {
-        return false
-    }
-
-    @Transactional
-    private void assignLocalAdminRolesIfNeeded() {
-        String adminUsername = getInstanceConfig('adminUsername')
-        if (adminUsername) {
-            def user = User.findByEmail(adminUsername)
-            assignRole(user, 'HOIST_ADMIN')
-            assignRole(user, 'HOIST_ROLE_MANAGER')
+        return groups.collectEntries { group ->
+            if (config[group]) return [group, config[group] as Set]
+            if (group == 'sim_error') {
+                def e = new RuntimeException('There was a simulated error looking up directory groups.')
+                if (strictMode) throw e
+                logError('There was an error', e)
+            }
+            return [group, [] as Set]
         }
     }
 }

@@ -16,7 +16,7 @@ export const pinPadPage = hoistCmp.factory({
 
 const secretPlans = hoistCmp.factory(() =>
     panel({
-        className: 'toolbox-page pinpad-page-secrets',
+        className: 'tb-page pinpad-page-secrets',
         title: 'Secret plans',
         items: [
             p(
@@ -86,8 +86,8 @@ class PinPadPageModel extends HoistModel {
                 attempts === maxAttempts - 2
                     ? 'Access Denied. (Use the Schwartz!)'
                     : attempts === maxAttempts - 1
-                    ? "Access Denied. (Try '12345')"
-                    : 'Access Denied';
+                      ? "Access Denied. (Try '12345')"
+                      : 'Access Denied';
             pad.disabled = false;
             pad.clear();
 

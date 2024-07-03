@@ -12,10 +12,10 @@ export const toolbarPage = hoistCmp.factory({
 
     render({model}) {
         return panel({
-            className: 'toolbox-toolbar-page',
+            className: 'tb-toolbar-page',
             items: [
                 div({
-                    className: 'toolbox-description',
+                    className: 'tb-description',
                     item: `
                         Toolbars (in case you have never seen one) are horizontal or vertical containers 
                         with distinct styling and managed spacing between items.

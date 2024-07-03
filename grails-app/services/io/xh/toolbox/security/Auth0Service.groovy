@@ -1,102 +1,120 @@
 package io.xh.toolbox.security
 
-import groovy.util.logging.Slf4j
 import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
-import io.xh.hoist.json.JSONParser
-import io.xh.hoist.json.JSONSerializer
+import io.xh.hoist.http.JSONClient
+import org.apache.hc.client5.http.classic.methods.HttpGet
 import org.jose4j.jwk.JsonWebKeySet
 import org.jose4j.jwk.VerificationJwkSelector
 import org.jose4j.jws.JsonWebSignature
 
-import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
+import static io.xh.hoist.json.JSONParser.parseObject
+import static java.lang.System.currentTimeMillis
 
 /**
  * Decodes and validates ID tokens issues by Auth0, the OAuth provider for Toolbox.
  */
-@Slf4j
 class Auth0Service extends BaseService {
 
-
-    static clearCachesConfigs = ['auth0Domain', 'auth0ClientId', 'auth0Jwks']
+    static clearCachesConfigs = ['auth0Config']
 
     ConfigService configService
 
+    private JsonWebKeySet _jwks
+
     Map getClientConfig() {
-
-        if (getInstanceConfig('useOAuth') == 'false') {
-            return [isEnabled: false]
-        }
-
-        return [
-            clientId: clientId,
-            domain: domain
-        ]
+        configService.getMap('auth0Config', [:])
     }
 
-    JwtValidationResult validateToken(String token) {
+    void init() {
+        super.init()
+        // Fetch JWKS eagerly so it's ready for potential burst of initial requests after startup.
+        getJsonWebKeySet()
+    }
+
+    TokenValidationResult validateToken(String token) {
         try {
-            if (!token) throw new JwtException("Unable to validate JWT - no token provided.")
+            if (!token) throw new RuntimeException('Unable to validate JWT - no token provided.')
+            logTrace('Validating token', token)
 
             def jws = new JsonWebSignature()
             jws.setCompactSerialization(token)
 
             def selector = new VerificationJwkSelector(),
                 jwk = selector.select(jws, jsonWebKeySet.jsonWebKeys)
-            if (!jwk?.key) throw new JwtException("Unable to select valid key for token from loaded JWKS")
+            if (!jwk?.key) throw new RuntimeException('Unable to select valid key for token from loaded JWKS')
 
             jws.setKey(jwk.key)
-            if (!jws.verifySignature()) throw new JwtException("Token failed signature validation")
+            if (!jws.verifySignature()) throw new RuntimeException('Token failed signature validation')
+            def payload = parseObject(jws.payload)
 
-            def payload = JSONParser.parseObject(jws.payload)
-            if (payload.aud != this.clientId) {
-                throw new JwtException("Token aud value [${payload.aud}] does not match expected value from auth0ClientId config.")
+            logDebug('Token parsed successfully', [
+                email: payload.email,
+                name: payload.name,
+                sub: payload.sub,
+                aud: payload.aud,
+                exp: payload.exp
+            ])
+
+            if (payload.aud != clientId) {
+                throw new RuntimeException('Token aud value does not match expected value from clientId')
+            }
+            if (payload.exp * 1000L < currentTimeMillis()) {
+                throw new RuntimeException('Token has expired')
+            }
+            if (!payload.sub || !payload.email) {
+                throw new RuntimeException('Token is missing sub or email')
             }
 
-            return new JwtValidationResult(
-                token: token,
-                sub: payload.sub,
+            return new TokenValidationResult(
                 email: payload.email,
-                fullName: payload.name,
-                profilePicUrl: payload.picture
+                name: payload.name,
+                picture: payload.picture
             )
-
-        } catch (e) {
-            return new JwtValidationResult(token: token, exception: e)
+        } catch (Exception e) {
+            logError('Exception parsing JWT', e)
+            return null
         }
     }
-
 
     //------------------------
     // Implementation
     //------------------------
-    private JsonWebKeySet _jkws
-    JsonWebKeySet getJsonWebKeySet() {
-        if (!_jkws) {
-            // Yes, this is a bit odd - we get a JSON config then re-serialize to JSON to pass to
-            // JWKS ctor. Could store as string config, but keeping as JSON in configService gives
-            // us a nicer UI to view/update in admin console.
-            def jwksJson = JSONSerializer.serialize(configService.getMap('auth0Jwks'))
-            _jkws = new JsonWebKeySet(jwksJson)
+    private JsonWebKeySet getJsonWebKeySet() {
+        _jwks ?= createKeySet()
+    }
 
-            if (!_jkws.jsonWebKeys.size()) {
-                throw new RuntimeException("Unable to build valid key set from 'auth0Jwks' app config")
+    private JsonWebKeySet createKeySet() {
+        def url = "https://$domain/.well-known/jwks.json"
+        withInfo(['Fetching JWKS', url]) {
+            def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),
+                ret = new JsonWebKeySet(jwksJson)
+            if (!ret.jsonWebKeys) {
+                throw new RuntimeException('Unable to build valid key set from remote JWKS endpoint.')
             }
+            return ret
         }
+    }
 
-        return _jkws
+    private getConfig() {
+        configService.getMap('auth0Config')
     }
 
     private String getClientId() {
-        return configService.getString('auth0ClientId')
+        config.clientId
     }
 
     private String getDomain() {
-        return configService.getString('auth0Domain')
+        config.domain
     }
 
     void clearCaches() {
-        _jkws = null
+        super.clearCaches()
+        _jwks = null
     }
 
+    Map getAdminStats() {[
+        config: configForAdminStats('auth0Config'),
+        jwks: jsonWebKeySet.toJson()
+    ]}
 }

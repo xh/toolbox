@@ -56,10 +56,13 @@ _other_ data-driven app configurations.
 environment: Development
 serverURL: http://localhost
 
-# For first run of the project before you have OAuth set up. 
+# The following are for use in early runs of the project before you have granted roles to any users,
+# or in cases where Auth0 isn't acting as expected, or you're hosting the app on a device. 
+# The bootstrapAdminUser will be available for forms based login and will be granted the role 
+# needed (HOIST_ROLE_MANAGER) to grant access to other users.
 useOAuth: false
-adminUsername: admin@xh.io 
-adminPassword: "a password of your choice"
+bootstrapAdminUser: yourusername@example.com
+bootstrapAdminPassword: "your password"
 
 # Enable in memory h2 database option. When ready, configure proper DB below and set to false
 useH2: true
@@ -84,6 +87,27 @@ Sign-On (SSO) such as JESPA/NTLM, kerberos, or another OAuth based solution.
 When adding a new top-level entry-point for Toolbox (such as a new example application), the desired
 URL must be registered with Auth0 as a valid OAuth callback URL. Either Lee or Anselm can update our
 Auth0 config accordingly.
+
+## Developing with HTTPS on `xh.io` domain
+
+It can be useful to run Toolbox locally with HTTPS enabled and on a sub-domain of `xh.io`, 
+especially when testing OAuth, CORS, or cookie dependent features. 
+Follow these steps to run with HTTPS on the `toolbox-local.xh.io:3000` domain:
+1. add this entry to your dev machine's `hosts` file: `127.0.0.1 toolbox-local.xh.io`
+2. start the Grails server with the following additional VM Options:
+```
+-Dserver.ssl.enabled=true
+-Dserver.ssl.certificate=classpath:local-dev/toolbox-local.xh.io-self-signed.crt
+-Dserver.ssl.certificate-private-key=classpath:local-dev/toolbox-local.xh.io-self-signed.key
+-Dserver.ssl.trust-certificate=classpath:local-dev/toolbox-local.xh.io-self-signed.ca.crt
+```
+  The referenced files are self-signed certs commited to the repo for local dev purposes.
+  They expire on Sunday, May 21, 2034 at 6:11:28AM.
+3. Visit `https://toolbox-local.xh.io:8080/ping` in your browser to proceed past the SSL warning 
+  for API calls.
+4. Start the GUI with the `startWithHoistSecure` npm script.  Go to `https://toolbox-local.xh.io:3000/app/home` 
+   in your browser and proceed past the SSL warning.
+
 
 ## Wrapper project for Toolbox + Hoist development
 

@@ -19,6 +19,6 @@ export const chartsTab = hoistCmp.factory(() =>
                 {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
             ]
         },
-        className: 'toolbox-tab'
+        className: 'tb-tab'
     })
 );
