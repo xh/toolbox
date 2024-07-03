@@ -5,7 +5,7 @@ export class AuthModel extends HoistAuthModel {
     client: AuthZeroClient;
 
     override async completeAuthAsync(): Promise<boolean> {
-        const config: PlainObject = this.loadConfigAsync();
+        const config: PlainObject = await this.loadConfigAsync();
         if (!config.useOAuth) {
             XH.appSpec.enableLoginForm = true;
             return this.getAuthStatusFromServerAsync();
