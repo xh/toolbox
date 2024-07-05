@@ -1,23 +1,19 @@
-import {HoistService, managed, PlainObject, XH} from '@xh/hoist/core';
+import {HoistAuthModel, managed, PlainObject, XH} from '@xh/hoist/core';
 import {AuthZeroClient, AuthZeroClientConfig} from '@xh/hoist/security/authzero/AuthZeroClient';
-
-export class AuthService extends HoistService {
-    static instance: AuthService;
-
+export class AuthModel extends HoistAuthModel {
     @managed
     client: AuthZeroClient;
 
-    override async initAsync() {
-        const config: PlainObject = await XH.fetchService.getJson({url: 'xh/authConfig'});
+    override async completeAuthAsync(): Promise<boolean> {
+        const config: PlainObject = await this.loadConfigAsync();
         if (!config.useOAuth) {
             XH.appSpec.enableLoginForm = true;
-            return;
+            return this.getAuthStatusFromServerAsync();
         }
 
         this.client = new AuthZeroClient({
             idScopes: ['profile'],
-            // Toolbox does not actually need any access tokens,
-            // but this tests the AuthZeroClient's ability to handle them.
+            // Toolbox does not actually need any access tokens -- just a test
             accessTokens: {
                 test: {scopes: ['profile'], audience: 'toolbox.xh.io'}
             },
@@ -32,9 +28,12 @@ export class AuthService extends HoistService {
             const idToken = await this.client.getIdTokenAsync();
             return idToken ? {'x-xh-idt': idToken.value} : null;
         });
+
+        return this.getAuthStatusFromServerAsync();
     }
 
-    async logoutAsync() {
+    override async logoutAsync() {
+        await super.logoutAsync();
         await this.client?.logoutAsync();
     }
 }

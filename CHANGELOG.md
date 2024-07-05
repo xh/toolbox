@@ -2,6 +2,9 @@
 
 ## v6.0-SNAPSHOT - unreleased
 
+### Bug Fixes
+* Fixed `InputsPanel` "Set Focus" popover.
+
 ## 5.1.0 - 2024-06-21
 
 ### 📚 Libraries
