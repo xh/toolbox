@@ -12,9 +12,9 @@
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
     "tsc": "node node_modules/typescript/bin/tsc",
-    "start": "npm run install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
-    "startOnDevice": "npm run install && webpack-dev-server --env inlineHoist --env devHost=$(ipconfig getifaddr en0)",
-    "startAndAnalyze": "npm run install && webpack-dev-server --env analyzeBundles",
+    "start": "npm install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
+    "startOnDevice": "npm install && webpack-dev-server --env inlineHoist --env devHost=$(ipconfig getifaddr en0)",
+    "startAndAnalyze": "npm install && webpack-dev-server --env analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && npm run install && cd ../toolbox/client-app && npm run install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
     "startWithHoistSecure": "cd ../../hoist-react && npm run install && cd ../toolbox/client-app && npm run install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist --env devHttps=true --env devHost=toolbox-local.xh.io",
     "startWithHoistAndAnalyze": "npm run startWithHoist --env analyzeBundles",
@@ -68,5 +68,9 @@
   },
   "resolutions": {
     "core-js": "3.x"
+  },
+  "overrides": {
+    "core-js": "3.x",
+    "@types/react": "18.3.3"
   }
 }
