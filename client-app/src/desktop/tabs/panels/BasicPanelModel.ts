@@ -24,7 +24,7 @@ export class BasicPanelModel extends HoistModel {
     ];
 
     changeTextSize(up: boolean) {
-        const el = document.querySelector('.toolbox-panel-text-reader') as HTMLElement,
+        const el = document.querySelector('.tb-panel-text-reader') as HTMLElement,
             fontSize = window.getComputedStyle(el).fontSize,
             currentSize = parseFloat(fontSize);
 

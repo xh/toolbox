@@ -1,28 +1,22 @@
 package io.xh.toolbox
 
-import grails.gorm.transactions.ReadOnly
-import groovy.time.TimeCategory
-import io.xh.hoist.BaseService
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.monitor.MonitorResult
-import io.xh.hoist.track.TrackLog
+import io.xh.hoist.monitor.provided.DefaultMonitorDefinitionService
 import io.xh.toolbox.app.FileManagerService
 import io.xh.toolbox.app.GitHubService
 import io.xh.toolbox.app.NewsService
 import io.xh.toolbox.app.RecallsService
-import io.xh.toolbox.github.CommitHistory
 import io.xh.toolbox.portfolio.PortfolioService
-
 
 import static io.xh.hoist.monitor.MonitorStatus.OK
 import static io.xh.hoist.monitor.MonitorStatus.FAIL
 import static io.xh.hoist.monitor.MonitorStatus.WARN
 import static io.xh.hoist.monitor.MonitorStatus.INACTIVE
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
-import static java.lang.Runtime.runtime
 import static java.lang.System.currentTimeMillis
 
-class MonitorDefinitionService extends BaseService {
+class MonitorDefinitionService extends DefaultMonitorDefinitionService {
 
     ConfigService configService
     FileManagerService fileManagerService
@@ -31,34 +25,111 @@ class MonitorDefinitionService extends BaseService {
     PortfolioService portfolioService
     RecallsService recallsService
 
-    /**
-     * Check the count of news stories loaded by NewsService
-     */
-    def newsStoryCount(MonitorResult result) {
-        result.metric = newsService.itemCount
+    @Override
+    void init() {
+        super.init()
+
+        ensureRequiredMonitorsCreated([
+            [
+                    code: 'newsLastUpdateMins',
+                    name: 'News: Most Recent Story',
+                    metricType: 'Ceil',
+                    metricUnit: 'minutes since last story',
+                    warnThreshold: 2160,
+                    failThreshold: 4320,
+                    active: true,
+                    primaryOnly: true
+            ],
+            [
+                    code: 'newsStoryCount',
+                    name: 'News: Story Count',
+                    metricType: 'Floor',
+                    metricUnit: 'stories',
+                    failThreshold: 1,
+                    active: true,
+                    primaryOnly: true
+            ],
+            [
+                    code: 'newsLoadedSourcesCount',
+                    name: 'News: Loaded Sources',
+                    metricType: 'Floor',
+                    metricUnit: 'sources',
+                    failThreshold: 1,
+                    active: true,
+                    primaryOnly: true
+            ],
+            [
+                    code: 'fileManagerStorageUsedMb',
+                    name: 'File Manager: Storage Used',
+                    metricType: 'Ceil',
+                    metricUnit: 'MB',
+                    warnThreshold: 16,
+                    failThreshold: 100,
+                    active: true
+            ],
+            [
+                    code: 'recallsFetchStatus',
+                    name: 'Recalls: API Connection Status',
+                    metricType: 'None',
+                    active: true,
+                    primaryOnly: true
+            ],
+            [
+                    code: 'rawPositionCount',
+                    name: 'Portfolio: Raw Positions',
+                    metricType: 'Floor',
+                    metricUnit: 'positions',
+                    failThreshold: 1,
+                    active: true,
+            ],
+            [
+                    code: 'instrumentCount',
+                    name: 'Portfolio: Instruments',
+                    metricType: 'Floor',
+                    metricUnit: 'instruments',
+                    warnThreshold: 500,
+                    failThreshold: 1,
+                    active: true,
+            ],
+            [
+                    code: 'gitHubCommitCount',
+                    name: 'GitHub: Loaded Commits',
+                    metricType: 'Floor',
+                    metricUnit: 'commits',
+                    warnThreshold: 100,
+                    failThreshold: 1,
+                    active: true,
+                    primaryOnly: true
+            ],
+            [
+                    code: 'gitHubMostRecentCommitAgeMins',
+                    name: 'GitHub: Most Recent Commit',
+                    metricType: 'Ceil',
+                    metricUnit: 'minutes ago',
+                    warnThreshold: 5760,
+                    failThreshold: 11520,
+                    active: true,
+                    primaryOnly: true
+            ],
+            [
+                    code: 'metric1337Monitor',
+                    name: 'Always 1337',
+                    metricType: 'Floor',
+                    failThreshold: 1337,
+                    active: true
+            ],
+            [
+                    code: 'divideByZeroMonitor',
+                    name: 'Always throws',
+                    metricType: 'None',
+                    active: false
+            ]
+        ])
+
     }
 
-    /**
-     * Always returns the value 1337 and a message
-     */
-    def metric1337Monitor(MonitorResult result) {
-        result.metric = 1337
-        result.message = 'This metric is always 1337!'
-    }
-
-    /**
-     * A monitor that attempts to divide by zero
-     */
-    def divideByZeroMonitor(MonitorResult result){
-        result.message = 'Trying to divide by zero'
-        result.metric = 1 / (1-1)
-    }
-
-    /**
-     * Check when the last update to the news was fetched.
-     * If no news stories have been fetched at all, we consider that a failure.
-     */
-    def lastUpdateAgeMins(MonitorResult result) {
+    /** Report when the latest news update was fetched, or fail if no stories are loaded. */
+    def newsLastUpdateMins(MonitorResult result) {
         if (newsService.lastTimestamp) {
             def diffMs = currentTimeMillis() - newsService.lastTimestamp.time,
                 diffMins = Math.floor(diffMs / MINUTES)
@@ -70,27 +141,26 @@ class MonitorDefinitionService extends BaseService {
         }
     }
 
-    /**
-     * Check whether or not the NewsService has loaded stories from all its sources.
-     */
-    def loadedSourcesCount(MonitorResult result) {
+    /** Count news stories loaded by NewsService. */
+    def newsStoryCount(MonitorResult result) {
+        result.metric = newsService.itemCount
+    }
+
+    /** Check if NewsService has loaded stories from all its sources. */
+    def newsLoadedSourcesCount(MonitorResult result) {
         result.metric = newsService.loadedSourcesCount
         result.status = newsService.allSourcesLoaded ? OK : FAIL
     }
 
-    /**
-     * Check the storage space used by uploaded files in the FileManager app, in megabytes
-     */
-    def storageSpaceUsed(MonitorResult result) {
+    /** Storage space used by uploaded files in the FileManager app, in megabytes. */
+    def fileManagerStorageUsedMb(MonitorResult result) {
         // sum up the sizes of all uploaded files as MB
         def bytes = fileManagerService.list()
                 .sum {it.length()} ?: 0
         result.metric = ((double)(bytes / (1024 * 1024))).round(2)
     }
 
-    /**
-     * Check whether or not we connected to the FDA server successfully for drug recall information.
-     */
+    /** Check ability to connect to the FDA API for drug recall example app. */
     def recallsFetchStatus(MonitorResult result) {
         recallsService.fetchRecalls('')
         def code = recallsService.lastResponseCode
@@ -104,38 +174,17 @@ class MonitorDefinitionService extends BaseService {
         }
     }
 
-    /**
-     * Check the current memory usage of the server machine (in %)
-     */
-    def memoryUsage(MonitorResult result) {
-        result.metric = ((double) (runtime.freeMemory() / runtime.totalMemory() * 100))
-                .round(2)
-    }
-
-    /**
-     * Check the current number of positions in the Portfolio example
-     */
-    def positionCount(MonitorResult result) {
+    /** Count of positions in the Portfolio example. */
+    def rawPositionCount(MonitorResult result) {
         result.metric = portfolioService.portfolio.rawPositions.size()
     }
 
-    /**
-     * Check the current number of instruments in the Portfolio example
-     */
+    /** Count of instruments in the Portfolio example. */
     def instrumentCount(MonitorResult result) {
         result.metric = portfolioService.portfolio.instruments.size()
     }
 
-    /**
-     * Check when the most recent prices in the Portfolio example were generated
-     */
-    def pricesAgeMs(MonitorResult result) {
-        result.metric = currentTimeMillis() - portfolioService.portfolio.timeCreated.time
-    }
-
-    /**
-     * Count the number of commits loaded from GitHub.
-     */
+    /** Count of commits loaded from GitHub. */
     def gitHubCommitCount(MonitorResult result) {
         def repos = configService.getList('gitHubRepos', []),
             commitCount = 0
@@ -154,9 +203,7 @@ class MonitorDefinitionService extends BaseService {
         result.message = "Loaded ${commitCount} commits from ${repos.size()} repos."
     }
 
-    /**
-     * Check the age of the most recent commit loaded from GitHub.
-     */
+    /** Age of the most recent commit loaded from GitHub, in minutes. */
     def gitHubMostRecentCommitAgeMins(MonitorResult result) {
         def repos = configService.getList('gitHubRepos', []),
             maxDate = null
@@ -183,17 +230,16 @@ class MonitorDefinitionService extends BaseService {
         }
     }
 
-    /**
-     * Check the longest page load time in the last hour
-     */
-    @ReadOnly
-    def longestPageLoadMs(MonitorResult result) {
-        def now = new Date()
-        def earlier = null
-        use (TimeCategory) {
-            earlier = now - 1.hours
-        }
-        def worstLoadTime = TrackLog.withCriteria {between('dateCreated', earlier, now)}.max{it.elapsed}?.elapsed
-        result.metric = worstLoadTime ?: 0
+    /** Attempt to divide by zero, to demonstrate built-in exception handling. */
+    def divideByZeroMonitor(MonitorResult result){
+        result.message = 'Trying to divide by zero'
+        result.metric = 1 / (1-1)
     }
+
+    /** Always returns the value 1337 and a message, to demonstrate the wonders of the number 1337. */
+    def metric1337Monitor(MonitorResult result) {
+        result.metric = 1337
+        result.message = 'This metric is always 1337!'
+    }
+
 }

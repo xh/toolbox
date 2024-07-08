@@ -49,6 +49,6 @@ export const otherTab = hoistCmp.factory(() =>
                 {id: 'simpleRouting', content: simpleRoutingPanel}
             ]
         },
-        className: 'toolbox-tab'
+        className: 'tb-tab'
     })
 );

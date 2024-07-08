@@ -22,7 +22,7 @@ class PortfolioService extends BaseService {
 
     void init() {
         createTimer(
-            masterOnly: true,
+            primaryOnly: true,
             runFn: this.&updateData,
             interval: {config.updateIntervalSecs * SECONDS},
             runImmediatelyAndBlock: true
@@ -126,7 +126,7 @@ class PortfolioService extends BaseService {
     }
 
     void clearCaches() {
-        if (isMaster) {
+        if (isPrimary) {
             updateData(true)
         }
         super.clearCaches()

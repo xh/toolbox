@@ -45,7 +45,7 @@ export const toolbarFormPanel = hoistCmp.factory({
             ],
             item: panel({
                 title: 'Forms › Toolbar Form',
-                className: 'toolbox-toolbar-form-panel',
+                className: 'tb-toolbar-form-panel',
                 icon: Icon.edit(),
                 width: '90%',
                 height: 300,

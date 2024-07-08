@@ -55,11 +55,11 @@ export const iconsPanel = hoistCmp.factory({
             item: panel({
                 title: 'Icons (regular, solid, and light variants)',
                 icon: Icon.icon({iconName: 'icons'}),
-                className: 'toolbox-icons-panel',
+                className: 'tb-icons-panel',
                 items: [
                     tbar(),
                     div({
-                        className: 'toolbox-icons-table-scroller',
+                        className: 'tb-icons-table-scroller',
                         items: [
                             table(
                                 thead(tr(th('Icon'), th('far'), th('fas'), th('fal'), th('fat'))),
@@ -176,8 +176,8 @@ const icon = hoistCmp.factory<IconsPanelModel>(({model, iconName, prefix}) => {
     });
 });
 
-function getAllIconNames() {
-    return without(Object.keys(Icon), 'icon', 'fileIcon', 'placeholder');
+function getAllIconNames(): string[] {
+    return without(Object.keys(Icon), 'icon', 'fileIcon', 'placeholder').sort();
 }
 
 class IconsPanelModel extends HoistModel {

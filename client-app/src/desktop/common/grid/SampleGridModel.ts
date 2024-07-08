@@ -22,7 +22,7 @@ import {
 export class SampleGridModel extends HoistModel {
     @observable groupBy: string = null;
 
-    panelRef = createRef<HTMLElement>();
+    panelRef = createRef<HTMLDivElement>();
 
     viewDetailsAction = {
         text: 'View Details',

@@ -1,6 +1,7 @@
 import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {standardGridPanel} from './StandardGridPanel';
+import {externalSortGridPanel} from './ExternalSortGridPanel';
 import {columnGroupsGridPanel} from './ColumnGroupsGridPanel';
 import {restGridPanel} from './RestGridPanel';
 import {dataViewPanel} from './DataViewPanel';
@@ -29,11 +30,12 @@ export const gridsTab = hoistCmp.factory(() =>
                     content: treeGridWithCheckboxPanel
                 },
                 {id: 'groupedCols', title: 'Grouped Columns', content: columnGroupsGridPanel},
+                {id: 'externalSort', content: externalSortGridPanel},
                 {id: 'rest', title: 'REST Editor', content: restGridPanel},
                 {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
             ],
             switcher: {orientation: 'left'}
         },
-        className: 'toolbox-tab'
+        className: 'tb-tab'
     })
 );
