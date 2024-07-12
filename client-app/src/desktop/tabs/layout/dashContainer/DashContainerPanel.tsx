@@ -147,18 +147,27 @@ class DashContainerPanelModel extends HoistModel {
             {
                 id: 'grid',
                 title: 'Grid',
+                groupName: 'Grids',
                 unique: true,
                 content: gridWidget
             },
             {
+                id: 'treeGrid',
+                title: 'Tree Grid',
+                groupName: 'Grids',
+                content: treeGridWidget
+            },
+            {
                 id: 'buttons',
                 title: 'Buttons',
+                groupName: 'Layout',
                 icon: Icon.stop(),
                 content: buttonWidget
             },
             {
                 id: 'chart',
                 title: 'Chart',
+                groupName: 'Layout',
                 icon: Icon.chartLine(),
                 unique: true,
                 refreshMode: 'onShowAlways',
@@ -167,18 +176,15 @@ class DashContainerPanelModel extends HoistModel {
             {
                 id: 'panel',
                 title: 'Panel',
+                groupName: 'Layout',
                 icon: Icon.window(),
                 renderMode: 'always',
                 content: panelWidget
             },
             {
-                id: 'treeGrid',
-                title: 'Tree Grid',
-                content: treeGridWidget
-            },
-            {
                 id: 'error',
                 title: 'Error Example',
+                groupName: 'Error',
                 content: errorWidget({componentName: 'DashContainer'})
             }
         ]
