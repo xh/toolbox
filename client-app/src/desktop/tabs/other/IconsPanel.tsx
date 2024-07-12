@@ -176,8 +176,8 @@ const icon = hoistCmp.factory<IconsPanelModel>(({model, iconName, prefix}) => {
     });
 });
 
-function getAllIconNames() {
-    return without(Object.keys(Icon), 'icon', 'fileIcon', 'placeholder');
+function getAllIconNames(): string[] {
+    return without(Object.keys(Icon), 'icon', 'fileIcon', 'placeholder').sort();
 }
 
 class IconsPanelModel extends HoistModel {

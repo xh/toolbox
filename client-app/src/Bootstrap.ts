@@ -1,7 +1,9 @@
 /**
- * Bootstrap File.
- *
- * This file is imported by each of the client apps, and runs shared code.
+ * Bootstrap routine for registering common client-side licenses and other low-level library setup.
+ * Common routines to go in this file include:
+ *  - TypeScript module augmentation
+ *  - AG Grid license registration and feature registration.
+ *  - Highcharts feature registration.
  */
 
 //-----------------------------------------------------------------
@@ -13,7 +15,6 @@ import {when} from '@xh/hoist/mobx';
 import {ContactService} from './examples/contact/svc/ContactService';
 import {GitHubService} from './core/svc/GitHubService';
 import {PortfolioService} from './core/svc/PortfolioService';
-import {AuthService} from './core/svc/AuthService';
 import {TaskService} from './examples/todo/TaskService';
 
 declare module '@xh/hoist/core' {
@@ -21,7 +22,6 @@ declare module '@xh/hoist/core' {
     export interface XHApi {
         contactService: ContactService;
         gitHubService: GitHubService;
-        authService: AuthService;
         portfolioService: PortfolioService;
         taskService: TaskService;
     }
@@ -33,12 +33,10 @@ declare module '@xh/hoist/core' {
     }
 }
 
-import {installAgGrid} from '@xh/hoist/kit/ag-grid';
-import {installHighcharts} from '@xh/hoist/kit/highcharts';
-
 //-----------------------------------------------------------------
 // ag-Grid -- Import and Register
 //-----------------------------------------------------------------
+import {installAgGrid} from '@xh/hoist/kit/ag-grid';
 import {ModuleRegistry} from '@ag-grid-community/core';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-balham.css';
@@ -83,6 +81,7 @@ when(
 // Highcharts - Import and Register
 // You must provide a license for any features (e.g. highstock) that require it
 //-------------------------------------------------------------------------------
+import {installHighcharts} from '@xh/hoist/kit/highcharts';
 import Highcharts from 'highcharts/highstock';
 import highchartsExportData from 'highcharts/modules/export-data';
 import highchartsExporting from 'highcharts/modules/exporting';

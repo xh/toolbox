@@ -4,7 +4,6 @@ import io.xh.hoist.email.EmailService
 import grails.gorm.transactions.ReadOnly
 import grails.gorm.transactions.Transactional
 import io.xh.hoist.user.BaseUserService
-import io.xh.hoist.user.HoistUser
 import io.xh.hoist.util.Utils
 import io.xh.toolbox.security.TokenValidationResult
 
@@ -13,12 +12,12 @@ class UserService extends BaseUserService {
     EmailService emailService
 
     @ReadOnly
-    List<HoistUser> list(boolean activeOnly) {
+    List<User> list(boolean activeOnly) {
         return activeOnly ? User.findAllByEnabled(true) : User.list()
     }
 
     @ReadOnly
-    HoistUser find(String username) {
+    User find(String username) {
         return User.findByEmail(username)
     }
 
@@ -37,7 +36,7 @@ class UserService extends BaseUserService {
      * explicitly linked/registered to multiple social providers. That's overkill for Toolbox.
      */
     @Transactional
-    HoistUser getOrCreateFromTokenResult(TokenValidationResult tokenResult) {
+    User getOrCreateFromTokenResult(TokenValidationResult tokenResult) {
         def email = tokenResult.email,
             name = tokenResult.name,
             profilePicUrl = tokenResult.picture,

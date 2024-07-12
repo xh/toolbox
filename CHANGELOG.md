@@ -1,11 +1,25 @@
 # Changelog
 
-## v6.0.0-SNAPSHOT - unreleased
+## v6.0-SNAPSHOT - unreleased
 
+### Bug Fixes
+* Fixed `InputsPanel` "Set Focus" popover.
+
+## 5.1.0 - 2024-06-21
+
+### 📚 Libraries
+* hoist-core 20.1.0
+
+## v5.0.2 - 2024-06-20
+
+### 📚 Libraries
+* hoist-core 20.0.2
+* @xh/hoist 64.0.5
 
 ## v5.0.1 - 2024-05-19
+
 ### 📚 Libraries
-* hoist-react 64.0.1
+* @xh/hoist 64.0.1
 
 ## v5.0.0 - 2024-05-17
 
@@ -14,7 +28,7 @@
 
 ### 📚 Libraries
 * hoist-core 20.0 (multi-instance)
-* hoist-react 64.0
+* @xh/hoist 64.0
 * @ag-grid 31.2
 
 ## v4.0.0 - 2024-04-04
