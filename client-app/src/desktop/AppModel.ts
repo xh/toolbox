@@ -46,7 +46,7 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync() {
         await super.initAsync();
-        XH.fetchService.enableCorrelationIds('toolbox-desktop');
+        XH.fetchService.autoGenerateCorrelationIds();
         await XH.installServicesAsync(GitHubService, PortfolioService);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
