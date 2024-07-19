@@ -1,7 +1,6 @@
 package io.xh.toolbox.roadmap
 
 import io.xh.hoist.json.JSONFormat
-import io.xh.hoist.util.Utils
 
 class Project implements JSONFormat {
 
