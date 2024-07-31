@@ -1,0 +1,46 @@
+.tbox-formats-tab {
+  margin-bottom: var(--xh-pad-px);
+
+  &__panel {
+    border: var(--xh-border-solid);
+
+    table {
+      width: 100%;
+
+      tr {
+        background-color: var(--xh-grid-bg);
+
+        &:nth-child(odd) {
+          td {
+            background-color: var(--xh-grid-bg-odd);
+          }
+        }
+      }
+
+      td {
+        text-align: right;
+        width: 50%;
+      }
+    }
+  }
+
+  &__form {
+    overflow-y: auto;
+
+    .xh-form-field {
+      align-items: flex-start;
+      border-bottom: var(--xh-border-solid);
+      margin: 0;
+      padding: 15px 10px;
+
+      .bp5-slider {
+        margin-top: 2px; // avoid clipped slider handle
+      }
+    }
+
+    .xh-form-field-label {
+      width: 200px;
+      font-family: var(--xh-font-family-mono);
+    }
+  }
+}
