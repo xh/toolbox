@@ -123,7 +123,8 @@ export class RecallsPanelModel extends HoistModel {
             let entries = await XH.fetchJson({
                 url: 'recalls',
                 params: {searchQuery: this.searchQuery},
-                loadSpec
+                loadSpec,
+                correlationId: true
             });
 
             if (loadSpec.isStale) return;

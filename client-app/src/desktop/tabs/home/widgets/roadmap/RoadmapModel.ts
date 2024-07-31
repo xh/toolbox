@@ -61,7 +61,8 @@ export class RoadmapModel extends HoistModel {
         const {dataViewModel} = this,
             resp = await XH.fetchJson({
                 url: 'roadmap/data',
-                loadSpec
+                loadSpec,
+                correlationId: true
             });
 
         const projects = this.processData(resp.data);

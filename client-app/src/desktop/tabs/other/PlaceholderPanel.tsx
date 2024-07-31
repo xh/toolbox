@@ -86,7 +86,7 @@ class PlaceholderPanelModel extends HoistModel {
     });
 
     override async doLoadAsync(loadSpec) {
-        const {trades} = await XH.fetchJson({url: 'trade'});
+        const {trades} = await XH.fetchJson({url: 'trade', correlationId: true});
         this.gridModel.loadData(trades);
     }
 }

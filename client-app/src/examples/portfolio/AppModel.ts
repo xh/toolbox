@@ -12,7 +12,6 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync() {
         await super.initAsync();
-        XH.fetchService.autoGenerateCorrelationIds('portfolio');
         await XH.installServicesAsync(PortfolioService);
 
         this.addReaction({

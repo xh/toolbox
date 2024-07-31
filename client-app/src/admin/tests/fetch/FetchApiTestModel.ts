@@ -5,10 +5,12 @@ import {wait} from '@xh/hoist/promise';
 import {merge} from 'lodash';
 import {codes} from './Codes';
 import {codeGroupBtns, fetchServiceFeatures, individualBtns} from './TabPanels';
+import {FetchOptions} from '@xh/hoist/svc';
 
 export class FetchApiTestModel extends HoistModel {
     @bindable testServer;
     @bindable testMethod: string;
+    @bindable testCorrelationIds = true;
     @observable outcome = null;
 
     referenceSite = 'https://httpstatuses.com/';
@@ -166,6 +168,9 @@ export class FetchApiTestModel extends HoistModel {
                 name: err.name,
                 message: err.message
             };
+            if (err.correlationId) {
+                ret.correlationId = err.correlationId;
+            }
         }
 
         return ret;
@@ -198,7 +203,7 @@ export class FetchApiTestModel extends HoistModel {
         const {code, delay, autoAbortKey, timeout} = opts;
         const sep = this.testServer.includes('fetchTest') ? '&' : '?',
             sleepParam = delay ? sep + 'sleep=' + delay : '';
-        const ret = {
+        const ret: FetchOptions = {
             fetchOpts: {
                 credentials: this.useCreds ? 'include' : 'omit'
             },
@@ -217,6 +222,10 @@ export class FetchApiTestModel extends HoistModel {
                     Accept: 'application/json'
                 }
             });
+        }
+
+        if (this.testCorrelationIds) {
+            ret.correlationId = true;
         }
 
         return ret;

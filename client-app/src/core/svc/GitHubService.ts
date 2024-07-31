@@ -36,7 +36,8 @@ export class GitHubService extends HoistService {
         try {
             const priorCommitCount = this.allCommits.length,
                 commitHistories = await XH.fetchJson({
-                    url: 'gitHub/allCommits'
+                    url: 'gitHub/allCommits',
+                    correlationId: true
                 }).track({
                     message: 'Loaded GitHub commit history'
                 });

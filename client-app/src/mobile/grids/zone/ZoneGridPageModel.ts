@@ -64,7 +64,7 @@ export class ZoneGridPageModel extends HoistModel {
 
     override async doLoadAsync() {
         await wait(500);
-        const {trades} = await XH.fetchJson({url: 'trade'});
+        const {trades} = await XH.fetchJson({url: 'trade', correlationId: true});
         this.zoneGridModel.loadData(trades);
         runInAction(() => (this.dateLoaded = new Date()));
     }

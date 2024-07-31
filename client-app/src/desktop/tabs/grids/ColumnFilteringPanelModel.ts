@@ -22,7 +22,7 @@ export class ColumnFilteringPanelModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        const {trades} = await XH.fetchJson({url: 'trade'}),
+        const {trades} = await XH.fetchJson({url: 'trade', correlationId: true}),
             {gridModel} = this;
 
         gridModel.loadData(trades);

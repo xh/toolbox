@@ -39,7 +39,7 @@ export class GridPageModel extends HoistModel {
 
     override async doLoadAsync(loadSpec) {
         await wait(500);
-        const customers = await XH.fetchJson({url: 'customer'});
+        const customers = await XH.fetchJson({url: 'customer', correlationId: true});
         this.gridModel.loadData(customers);
         runInAction(() => (this.dateLoaded = new Date()));
     }

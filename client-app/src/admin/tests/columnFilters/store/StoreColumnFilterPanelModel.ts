@@ -28,7 +28,7 @@ export class StoreColumnFilterPanelModel extends HoistModel {
 
     override async doLoadAsync(loadSpec) {
         const {gridModel} = this,
-            {trades} = await XH.fetchJson({url: 'trade'});
+            {trades} = await XH.fetchJson({url: 'trade', correlationId: true});
 
         // Introduce null values to test 'blank' filters
         trades.forEach(trade => {

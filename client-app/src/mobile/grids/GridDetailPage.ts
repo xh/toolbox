@@ -53,6 +53,8 @@ class GridDetailPageModel extends HoistModel {
     }
 
     override async doLoadAsync() {
-        await XH.fetchJson({url: 'customer'}).thenAction(c => (this.customers = c));
+        await XH.fetchJson({url: 'customer', correlationId: true}).thenAction(
+            c => (this.customers = c)
+        );
     }
 }

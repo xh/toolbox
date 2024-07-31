@@ -132,7 +132,7 @@ class ZoneGridPanelModel extends HoistModel {
 
     override async doLoadAsync() {
         await wait(500);
-        const {trades} = await XH.fetchJson({url: 'trade'});
+        const {trades} = await XH.fetchJson({url: 'trade', correlationId: true});
         this.zoneGridModel.loadData(trades);
         await this.zoneGridModel.preSelectFirstAsync();
     }

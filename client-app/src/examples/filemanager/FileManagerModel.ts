@@ -105,7 +105,8 @@ export class FileManagerModel extends HoistModel {
                 url: 'fileManager/upload',
                 method: 'POST',
                 body: formData,
-                headers: {'Content-Type': null}
+                headers: {'Content-Type': null},
+                correlationId: true
             });
         }
 
@@ -116,7 +117,8 @@ export class FileManagerModel extends HoistModel {
                     return XH.fetchService
                         .fetchJson({
                             url: 'fileManager/delete',
-                            params: {filename: it.name}
+                            params: {filename: it.name},
+                            correlationId: true
                         })
                         .then(ret => {
                             if (!ret.success) throw `Unable to delete ${it.name}`;
@@ -150,7 +152,8 @@ export class FileManagerModel extends HoistModel {
             {name} = sel.data,
             response = await XH.fetch({
                 url: 'fileManager/download',
-                params: {filename: name}
+                params: {filename: name},
+                correlationId: true
             }).catchDefault();
 
         const blob = await response.blob();
@@ -167,8 +170,9 @@ export class FileManagerModel extends HoistModel {
     override async doLoadAsync(loadSpec) {
         const files = await XH.fetchService
             .fetchJson({
-                url: 'fileManager/list',
-                loadSpec
+                url: 'fileManager/lists',
+                loadSpec,
+                correlationId: true
             })
             .track({
                 category: 'File Manager',

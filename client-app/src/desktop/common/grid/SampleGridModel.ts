@@ -197,13 +197,14 @@ export class SampleGridModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
+        // this.gridModel.loadData([{id: 1}, {id: 1}]);
     }
 
     override async doLoadAsync(loadSpec) {
-        const {trades} = await XH.fetchJson({url: 'trade'}),
+        const {trades} = await XH.fetchJson({url: 'trade', correlationId: true}),
             {gridModel} = this;
 
-        gridModel.loadData(trades);
+        gridModel.loadData(trades.map(it => ({...it, id: 'sameid'})));
         await gridModel.preSelectFirstAsync();
     }
 

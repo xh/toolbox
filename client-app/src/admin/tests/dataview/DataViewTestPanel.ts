@@ -52,7 +52,7 @@ class DataViewTestPanelModel extends HoistModel {
 
     override async doLoadAsync(loadSpec) {
         const {dataViewModel} = this,
-            allCustomers = await XH.fetchJson({url: 'customer'}),
+            allCustomers = await XH.fetchJson({url: 'customer', correlationId: true}),
             customers = take(shuffle(allCustomers), 100);
 
         await dataViewModel.loadData(customers);
