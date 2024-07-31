@@ -161,7 +161,10 @@ export class SampleTreeGridModel extends HoistModel {
     private toggleNode(rec: StoreRecord) {
         const {store} = this,
             isChecked = !rec.data.isChecked,
-            updates = [...rec.allDescendants.map(({id}) => ({id, isChecked}))];
+            updates = [
+                {id: rec.id, isChecked},
+                ...rec.allDescendants.map(({id}) => ({id, isChecked}))
+            ];
 
         store.modifyRecords(updates);
         rec.forEachAncestor(it => store.modifyRecords({id: it.id, isChecked: calcAggState(it)}));
