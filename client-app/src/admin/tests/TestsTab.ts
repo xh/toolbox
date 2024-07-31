@@ -8,7 +8,7 @@ import {WebSocketTestPanel} from './websocket/WebSocketTestPanel';
 import {LocalDateTestPanel} from './localDate/LocalDateTestPanel';
 import {PanelResizingTestPanel} from './panels/PanelResizingTestPanel';
 import {FetchApiTestPanel} from './fetch/FetchApiTestPanel';
-import {SelectTestPanel} from './Select/SelectTestPanel';
+import {SelectTestPanel} from './select/SelectTestPanel';
 import {dataViewTestPanel} from './dataview/DataViewTestPanel';
 import {storeColumnFilterPanel} from './columnFilters/store/StoreColumnFilterPanel';
 import {viewColumnFilterPanel} from './columnFilters/view/ViewColumnFilterPanel';
