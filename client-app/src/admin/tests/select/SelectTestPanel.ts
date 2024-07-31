@@ -145,8 +145,8 @@ const customerOption = hoistCmp.factory(({opt}) =>
                 item: isUndefined(opt.isActive)
                     ? Icon.magic({className: 'xh-grey'})
                     : opt.isActive
-                    ? Icon.checkCircle({className: 'xh-green'})
-                    : Icon.x({className: 'xh-red'}),
+                      ? Icon.checkCircle({className: 'xh-green'})
+                      : Icon.x({className: 'xh-red'}),
                 width: 32,
                 justifyContent: 'center'
             }),
