@@ -49,8 +49,7 @@ export class PortfolioService extends HoistService {
             url: 'portfolio/position',
             params: {
                 positionId
-            },
-            correlationId: true
+            }
         });
     }
 
@@ -70,8 +69,7 @@ export class PortfolioService extends HoistService {
                 maxPositions,
                 channelKey: XH.webSocketService.channelKey,
                 topic
-            },
-            correlationId: true
+            }
         });
 
         return new PositionSession(session);
@@ -81,19 +79,18 @@ export class PortfolioService extends HoistService {
      * Return a list of flat position data.
      */
     async getPricedRawPositionsAsync({loadSpec}: any = {}): Promise<PricedRawPosition[]> {
-        return XH.fetchJson({url: 'portfolio/pricedRawPositions', loadSpec, correlationId: true});
+        return XH.fetchJson({url: 'portfolio/pricedRawPositions', loadSpec});
     }
 
     async getAllOrdersAsync({loadSpec}: any = {}): Promise<PlainObject[]> {
-        return XH.fetchJson({url: 'portfolio/orders', loadSpec, correlationId: true});
+        return XH.fetchJson({url: 'portfolio/orders', loadSpec});
     }
 
     async getOrdersAsync({positionId, loadSpec}): Promise<PlainObject[]> {
         const ret: PlainObject[] = await XH.fetchJson({
             url: 'portfolio/ordersForPosition',
             params: {positionId},
-            loadSpec,
-            correlationId: true
+            loadSpec
         });
 
         ret.forEach(it => {
@@ -106,8 +103,7 @@ export class PortfolioService extends HoistService {
     async getLineChartSeriesAsync({symbol, dimension = 'volume', loadSpec}) {
         const mktData = await XH.fetchJson({
             url: `portfolio/prices/${symbol}`,
-            loadSpec,
-            correlationId: true
+            loadSpec
         });
         return {
             name: symbol,
@@ -121,8 +117,7 @@ export class PortfolioService extends HoistService {
         const data = await XH.fetchJson({
             url: `portfolio/closingPriceHistory`,
             loadSpec,
-            params: {symbols},
-            correlationId: true
+            params: {symbols}
         });
         return mapValues(data, series => series.map(([date, price]) => [new Date(date), price]));
     }
@@ -130,8 +125,7 @@ export class PortfolioService extends HoistService {
     async getOHLCChartSeriesAsync({symbol, loadSpec}) {
         const mktData = await XH.fetchJson({
             url: `portfolio/prices/${symbol}`,
-            loadSpec,
-            correlationId: true
+            loadSpec
         });
         return {
             name: symbol,

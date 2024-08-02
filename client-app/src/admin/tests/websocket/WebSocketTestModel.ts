@@ -33,8 +33,7 @@ export class WebSocketTestModel extends HoistModel {
     async subscribeAsync() {
         await XH.fetchJson({
             url: 'mockUpdates/subscribe',
-            params: {channelKey: XH.webSocketService.channelKey},
-            correlationId: true
+            params: {channelKey: XH.webSocketService.channelKey}
         });
 
         XH.toast({message: 'Subscribed to updates.'});
@@ -44,8 +43,7 @@ export class WebSocketTestModel extends HoistModel {
     async unsubscribeAsync() {
         await XH.fetchJson({
             url: 'mockUpdates/unsubscribe',
-            params: {channelKey: XH.webSocketService.channelKey},
-            correlationId: true
+            params: {channelKey: XH.webSocketService.channelKey}
         });
 
         XH.toast({message: 'Unsubscribed from updates.', intent: 'danger'});

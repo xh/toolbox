@@ -150,8 +150,7 @@ export class FileManagerModel extends HoistModel {
             {name} = sel.data,
             response = await XH.fetch({
                 url: 'fileManager/download',
-                params: {filename: name},
-                correlationId: true
+                params: {filename: name}
             }).catchDefault();
 
         const blob = await response.blob();
@@ -169,8 +168,7 @@ export class FileManagerModel extends HoistModel {
         const files = await XH.fetchService
             .fetchJson({
                 url: 'fileManager/lists',
-                loadSpec,
-                correlationId: true
+                loadSpec
             })
             .track({
                 category: 'File Manager',
