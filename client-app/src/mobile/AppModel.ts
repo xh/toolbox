@@ -136,6 +136,7 @@ export class AppModel extends BaseAppModel {
     }
 
     override async initAsync() {
+        await super.initAsync();
         await XH.installServicesAsync(PortfolioService);
     }
 

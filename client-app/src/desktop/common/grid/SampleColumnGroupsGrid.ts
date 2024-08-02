@@ -198,7 +198,7 @@ class SampleColumnGroupsGridModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        const sales = await XH.fetchJson({url: 'sales', correlationId: true});
+        const sales = await XH.fetchJson({url: 'sales'});
         this.gridModel.loadData(sales);
     }
 

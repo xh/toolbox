@@ -89,7 +89,7 @@ class GridWidgetModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec) {
-        const {trades} = await XH.fetchJson({url: 'trade', correlationId: true});
+        const {trades} = await XH.fetchJson({url: 'trade'});
 
         this.gridModel.loadData(trades);
     }

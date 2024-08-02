@@ -104,7 +104,7 @@ class SimpleRoutingPanelModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
-        const {trades} = await XH.fetchJson({url: 'trade', loadSpec, correlationId: true});
+        const {trades} = await XH.fetchJson({url: 'trade', loadSpec});
         this.gridModel.loadData(trades);
     }
 }

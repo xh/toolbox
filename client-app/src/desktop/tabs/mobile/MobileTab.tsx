@@ -47,7 +47,7 @@ export const mobileTab = hoistCmp.factory(() =>
                     intent: 'primary',
                     minimal: false,
                     onClick: () => {
-                        XH.fetch({url: 'emailMobileLink/send', correlationId: true});
+                        XH.fetch({url: 'emailMobileLink/send'});
                         XH.toast({
                             icon: Icon.mail(),
                             message:

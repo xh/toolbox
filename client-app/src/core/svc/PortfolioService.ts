@@ -10,11 +10,11 @@ export class PortfolioService extends HoistService {
     lookups: PlainObject;
 
     override async initAsync() {
-        this.lookups = await XH.fetchJson({url: 'portfolio/lookups', correlationId: true});
+        this.lookups = await XH.fetchJson({url: 'portfolio/lookups'});
     }
 
     async getSymbolsAsync({loadSpec}: any = {}) {
-        return XH.fetchJson({url: 'portfolio/symbols', loadSpec, correlationId: true});
+        return XH.fetchJson({url: 'portfolio/symbols', loadSpec});
     }
 
     /**
@@ -34,8 +34,7 @@ export class PortfolioService extends HoistService {
             params: {
                 dims: dims.join(','),
                 maxPositions
-            },
-            correlationId: true
+            }
         }).track({message: 'Loaded positions'});
 
         return includeSummary ? [positions.root] : positions.root.children;

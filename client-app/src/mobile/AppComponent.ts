@@ -20,7 +20,6 @@ export const AppComponent = hoistCmp({
                 hideRefreshButton: false,
                 appMenuButtonProps: {
                     hideLogoutItem: false,
-                    hideReloadItem: false,
                     hideThemeItem: true,
                     extraItems: [
                         {

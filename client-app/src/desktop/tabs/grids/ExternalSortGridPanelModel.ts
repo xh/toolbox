@@ -21,7 +21,7 @@ export class ExternalSortGridPanelModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
-        const {trades} = await XH.fetchJson({url: 'trade', correlationId: true});
+        const {trades} = await XH.fetchJson({url: 'trade'});
         this.trades = trades;
     }
 

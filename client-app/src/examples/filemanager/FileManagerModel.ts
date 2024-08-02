@@ -105,8 +105,7 @@ export class FileManagerModel extends HoistModel {
                 url: 'fileManager/upload',
                 method: 'POST',
                 body: formData,
-                headers: {'Content-Type': null},
-                correlationId: true
+                headers: {'Content-Type': null}
             });
         }
 
@@ -117,8 +116,7 @@ export class FileManagerModel extends HoistModel {
                     return XH.fetchService
                         .fetchJson({
                             url: 'fileManager/delete',
-                            params: {filename: it.name},
-                            correlationId: true
+                            params: {filename: it.name}
                         })
                         .then(ret => {
                             if (!ret.success) throw `Unable to delete ${it.name}`;

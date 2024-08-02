@@ -23,7 +23,7 @@ export class DataViewPageModel extends HoistModel {
 
     override async doLoadAsync(loadSpec) {
         const {dataViewModel} = this,
-            allCustomers = await XH.fetchJson({url: 'customer', correlationId: true}),
+            allCustomers = await XH.fetchJson({url: 'customer'}),
             customers = take(shuffle(allCustomers), 100);
 
         const min = -1000,

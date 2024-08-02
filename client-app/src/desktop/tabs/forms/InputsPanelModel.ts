@@ -109,8 +109,7 @@ export class InputsPanelModel extends HoistModel {
     queryCustomersAsync(query) {
         return XH.fetchJson({
             url: 'customer',
-            params: {query},
-            correlationId: true
+            params: {query}
         });
     }
 }

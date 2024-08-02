@@ -31,7 +31,7 @@ export class FormPageModel extends HoistModel {
     });
 
     async queryCustomersAsync(query) {
-        const results = await XH.fetchJson({url: 'customer', params: {query}, correlationId: true});
+        const results = await XH.fetchJson({url: 'customer', params: {query}});
         return results.map(it => {
             const value = it.id,
                 label = it.company;
