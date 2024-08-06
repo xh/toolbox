@@ -7,6 +7,6 @@ export class BaseAppModel extends HoistAppModel {
 
     override async initAsync() {
         await super.initAsync();
-        XH.fetchService.autoGenerateCorrelationIds = true;
+        XH.fetchService.autoGenCorrelationIds = true;
     }
 }
