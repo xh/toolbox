@@ -1,4 +1,4 @@
-import {creates, hoistCmp, lookup, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistPropsWithModel, lookup, managed} from '@xh/hoist/core';
 import {box} from '@xh/hoist/cmp/layout';
 import {panel, PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
@@ -37,8 +37,9 @@ export const chartWidget = hoistCmp.factory({
     }
 });
 
-const rangeSelector = hoistCmp.factory(() =>
+const rangeSelector = hoistCmp.factory<HoistPropsWithModel>(({model}) =>
     buttonGroupInput({
+        model,
         bind: 'range',
         items: [
             button({text: '7D', value: 7}),
