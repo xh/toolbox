@@ -2,6 +2,9 @@
 
 ## v6.0-SNAPSHOT - unreleased
 
+### New Features
+* Enabled new Correlation ID tracking support in Hoist.
+
 ### Bug Fixes
 * Fixed `InputsPanel` "Set Focus" popover.
 

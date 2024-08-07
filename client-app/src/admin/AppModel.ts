@@ -12,6 +12,7 @@ export class AppModel extends HoistAdminAppModel {
     override async initAsync() {
         await super.initAsync();
         await XH.installServicesAsync(PortfolioService);
+        XH.fetchService.autoGenCorrelationIds = true;
     }
 
     //------------------------
