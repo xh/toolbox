@@ -212,7 +212,8 @@ export class FetchApiTestModel extends HoistModel {
                 Expect: code === 100 ? '100-continue' : undefined
             },
             autoAbortKey,
-            timeout
+            timeout,
+            correlationId: this.testCorrelationIds
         };
 
         if (this.testMethod === 'fetch') {
@@ -222,10 +223,6 @@ export class FetchApiTestModel extends HoistModel {
                     Accept: 'application/json'
                 }
             });
-        }
-
-        if (this.testCorrelationIds) {
-            ret.correlationId = true;
         }
 
         return ret;

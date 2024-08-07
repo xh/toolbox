@@ -167,7 +167,7 @@ export class FileManagerModel extends HoistModel {
     override async doLoadAsync(loadSpec) {
         const files = await XH.fetchService
             .fetchJson({
-                url: 'fileManager/lists',
+                url: 'fileManager/list',
                 loadSpec
             })
             .track({

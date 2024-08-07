@@ -101,10 +101,7 @@ export class PortfolioService extends HoistService {
     }
 
     async getLineChartSeriesAsync({symbol, dimension = 'volume', loadSpec}) {
-        const mktData = await XH.fetchJson({
-            url: `portfolio/prices/${symbol}`,
-            loadSpec
-        });
+        const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`, loadSpec});
         return {
             name: symbol,
             type: 'line',
@@ -123,10 +120,7 @@ export class PortfolioService extends HoistService {
     }
 
     async getOHLCChartSeriesAsync({symbol, loadSpec}) {
-        const mktData = await XH.fetchJson({
-            url: `portfolio/prices/${symbol}`,
-            loadSpec
-        });
+        const mktData = await XH.fetchJson({url: `portfolio/prices/${symbol}`, loadSpec});
         return {
             name: symbol,
             type: 'ohlc',

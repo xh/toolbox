@@ -183,8 +183,7 @@ const customerProps = {
 async function queryCustomersAsync(query) {
     return XH.fetchJson({
         url: 'customer',
-        params: {query},
-        correlationId: true
+        params: {query}
     });
 }
 
