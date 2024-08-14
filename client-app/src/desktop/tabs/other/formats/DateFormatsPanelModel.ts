@@ -1,12 +1,12 @@
-import {HoistModel} from '@xh/hoist/core';
-import {fmtDate} from '@xh/hoist/format';
+import {FormModel} from '@xh/hoist/cmp/form';
+import {code} from '@xh/hoist/cmp/layout';
+import {HoistModel, managed} from '@xh/hoist/core';
+import {DateFormatOptions} from '@xh/hoist/format';
 import * as formatFunctions from '@xh/hoist/format/FormatDate';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import moment from 'moment';
-import {nilAwareFormat} from './Util';
 
 export class DateFormatsPanelModel extends HoistModel {
-    // Inputs
     testData = [
         moment().toDate(),
         moment().add(-3, 'days').toDate(),
@@ -18,18 +18,14 @@ export class DateFormatsPanelModel extends HoistModel {
         null,
         undefined
     ];
-    @bindable.ref tryItData = new Date();
 
-    // Parameters
-    @bindable fnName = 'fmtDate';
-    @bindable fmt: string = null;
-    @bindable tooltip = false;
-    @bindable nullDisplay: string = null;
+    @managed formModel: FormModel;
+    @bindable.ref tryItData = new Date();
 
     get testResults() {
         return this.testData.map(data => ({
             data,
-            formattedData: nilAwareFormat(data, fmtDate),
+            formattedData: nilAwareFormat(data?.toString() ?? data),
             result: this.getResult(data)
         }));
     }
@@ -39,29 +35,51 @@ export class DateFormatsPanelModel extends HoistModel {
     }
 
     get enableFmt() {
-        return this.fnName === 'fmtDate';
+        return this.formModel.values.fnName === 'fmtDate';
     }
 
     constructor() {
         super();
         makeObservable(this);
+
+        const optFields: Array<keyof DateFormatOptions> = ['fmt', 'nullDisplay', 'tooltip'];
+
+        this.formModel = new FormModel({
+            fields: [
+                {name: 'fnName', displayName: 'Formatter'},
+                ...optFields.map(f => ({name: f, displayName: f}))
+            ],
+            initialValues: {
+                fnName: 'fmtDate',
+                fmt: null,
+                tooltip: false,
+                nullDisplay: null
+            }
+        });
     }
 
-    //-----------------------------
+    //------------------
     // Implementation
-    //--------------------------------
+    //------------------
     private getResult(input: Date) {
-        const options = {
-            tooltip: this.tooltip ? d => `${d}` : undefined,
-            fmt: this.enableFmt && this.fmt ? this.fmt : undefined,
-            nullDisplay: this.nullDisplay != null ? this.nullDisplay : undefined
-        };
+        const formVals = this.formModel.getData(),
+            options = {
+                tooltip: formVals.tooltip ? d => `${d}` : undefined,
+                fmt: this.enableFmt && formVals.fmt ? formVals.fmt : undefined,
+                nullDisplay: formVals.nullDisplay != null ? formVals.nullDisplay : undefined
+            };
 
         try {
-            return formatFunctions[this.fnName](input, options);
+            return formatFunctions[formVals.fnName](input, options);
         } catch (e) {
             this.logError(e);
             return '#exception#';
         }
     }
+}
+
+function nilAwareFormat(val: any) {
+    if (val === undefined) return code('undefined');
+    if (val === null) return code('null');
+    return val;
 }
