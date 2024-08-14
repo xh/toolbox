@@ -86,7 +86,7 @@ class BootStrap implements LogSupport {
                             domain: 'login.xh.io'
                     ],
                     clientVisible: false,
-                    groupName: 'xh.io',
+                    groupName: 'Auth',
                     note: 'OAuth config for the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
             ],
             contacts: [

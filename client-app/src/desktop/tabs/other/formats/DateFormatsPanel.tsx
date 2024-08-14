@@ -1,16 +1,16 @@
-import {code, hframe} from '@xh/hoist/cmp/layout';
+import {form} from '@xh/hoist/cmp/form';
+import {code, div, hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {formField} from '@xh/hoist/desktop/cmp/form';
 import {buttonGroupInput, dateInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {card} from '@xh/hoist/kit/blueprint';
 import React from 'react';
 import {wrapper} from '../../../common';
 import {DateFormatsPanelModel} from './DateFormatsPanelModel';
 import {resultsPanel} from './ResultsPanel';
-import './Styles.scss';
-import {param} from './Util';
+import './Formats.scss';
 
 export const dateFormatsPanel = hoistCmp.factory({
     model: creates(DateFormatsPanelModel),
@@ -33,68 +33,75 @@ export const dateFormatsPanel = hoistCmp.factory({
                     with a useful <code>fmt</code> default.
                 </p>,
                 <p>
-                    All hoist formatting functions support the <code>asHtml</code> option to produce
+                    All Hoist formatting functions support the <code>asHtml</code> option to produce
                     a raw HTML string rather than a React element. This allows them to be useful in
                     both React and non-React contexts.
                 </p>
             ],
             item: panel({
-                title: 'Other › Date Formats',
+                title: 'Other › Format Dates',
                 icon: Icon.print(),
                 className: 'tbox-formats-tab',
                 height: 500,
-                item: hframe(
-                    paramsPanel(),
-                    resultsPanel({
-                        tryItInput: dateInput({timePrecision: 'minute', textAlign: 'right'})
-                    })
-                )
+                item: hframe({
+                    style: {padding: '10px', gap: '10px'},
+                    items: [
+                        paramsPanel(),
+                        resultsPanel({
+                            tryItInput: dateInput({timePrecision: 'minute', textAlign: 'right'})
+                        })
+                    ]
+                })
             })
         });
     }
 });
 
-const paramsPanel = hoistCmp.factory<DateFormatsPanelModel>(({model}) =>
-    panel({
-        title: 'Function + Options',
-        compactHeader: true,
-        className: 'tbox-formats-tab__panel',
-        flex: 1,
-        items: [
-            param({
-                bind: 'fnName',
-                input: buttonGroupInput({
-                    fill: true,
-                    outlined: true,
+const paramsPanel = hoistCmp.factory<DateFormatsPanelModel>({
+    render({model}) {
+        return form({
+            fieldDefaults: {inline: true},
+            item: panel({
+                title: 'Function + Options',
+                compactHeader: true,
+                className: 'tbox-formats-tab__panel',
+                tbar: [
+                    formField({
+                        field: 'fnName',
+                        label: null,
+                        item: buttonGroupInput({
+                            outlined: true,
+                            intent: 'primary',
+                            items: [
+                                button({value: 'fmtDate', text: code('fmtDate')}),
+                                button({value: 'fmtCompactDate', text: code('fmtCompactDate')}),
+                                button({value: 'fmtDateTime', text: code('fmtDateTime')}),
+                                button({value: 'fmtTime', text: code('fmtTime')})
+                            ]
+                        })
+                    })
+                ],
+                item: div({
+                    className: 'tbox-formats-tab__form',
                     items: [
-                        button({value: 'fmtDate', text: code('fmtDate')}),
-                        button({value: 'fmtCompactDate', text: code('fmtCompactDate')}),
-                        button({value: 'fmtDateTime', text: code('fmtDateTime')}),
-                        button({value: 'fmtTime', text: code('fmtTime')})
+                        formField({
+                            field: 'fmt',
+                            disabled: !model.enableFmt,
+                            item: textInput({commitOnChange: true}),
+                            info: 'A moment.js format string.'
+                        }),
+                        formField({
+                            field: 'nullDisplay',
+                            item: textInput({commitOnChange: true, width: 50}),
+                            info: 'Custom return for null values.'
+                        }),
+                        formField({
+                            field: 'tooltip',
+                            item: switchInput()
+                        })
                     ]
                 })
-            }),
-            card({
-                className: 'tbox-formats-tab__panel__card',
-                items: [
-                    param({
-                        disabled: !model.enableFmt,
-                        bind: 'fmt',
-                        input: textInput({commitOnChange: true}),
-                        info: 'a moment.js format string'
-                    }),
-                    param({
-                        bind: 'nullDisplay',
-                        input: textInput({commitOnChange: true}),
-                        info: 'format for null values'
-                    }),
-                    param({
-                        bind: 'tooltip',
-                        input: switchInput(),
-                        info: 'function to generate a tooltip string (enable for default)'
-                    })
-                ]
             })
-        ]
-    })
-);
+        });
+    }
+});
