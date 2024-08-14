@@ -42,7 +42,7 @@ export const markdownPanel = hoistCmp.factory({
                     panel({
                         title: 'Source Text',
                         icon: Icon.edit(),
-                        flex: 1,
+                        flex: 2,
                         item: codeInput({
                             bind: 'content',
                             commitOnChange: true,
@@ -58,7 +58,7 @@ export const markdownPanel = hoistCmp.factory({
                             collapsible: false,
                             resizable: false
                         },
-                        flex: 1,
+                        flex: 3,
                         item: div({
                             style: {overflowY: 'scroll', padding: '5px 10px'},
                             item: markdown({content: model.content, lineBreaks: false})
