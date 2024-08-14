@@ -13,6 +13,7 @@ import {iconsPanel} from './IconsPanel';
 import {inspectorPanel} from './InspectorPanel';
 import {jsxPanel} from './JsxPanel';
 import {leftRightChooserPanel} from './LeftRightChooserPanel';
+import {markdownPanel} from './MarkdownPanel';
 import {pinPadPanel} from './PinPadPanel';
 import {placeholderPanel} from './PlaceholderPanel';
 import {popupsPanel} from './PopupsPanel';
@@ -42,6 +43,7 @@ export const otherTab = hoistCmp.factory(() =>
                 {id: 'icons', content: iconsPanel},
                 {id: 'inspector', content: inspectorPanel},
                 {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
+                {id: 'markdown', content: markdownPanel},
                 {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                 {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                 {id: 'popups', content: popupsPanel},
