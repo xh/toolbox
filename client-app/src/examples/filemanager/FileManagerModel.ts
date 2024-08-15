@@ -170,7 +170,7 @@ export class FileManagerModel extends HoistModel {
                 url: 'fileManager/list',
                 loadSpec
             })
-            .track({
+            .trackWithCorrelationId({
                 category: 'File Manager',
                 message: 'Loaded Files',
                 loadSpec

@@ -40,7 +40,7 @@ export class ContactService extends HoistService {
                 url: `contacts/update/${id}`,
                 body: update
             })
-            .track({
+            .trackWithCorrelationId({
                 category: 'Contacts',
                 message: `Updated contact`,
                 data: {id, ...update},
