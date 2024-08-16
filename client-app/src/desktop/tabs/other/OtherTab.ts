@@ -17,6 +17,7 @@ import {pinPadPanel} from './PinPadPanel';
 import {placeholderPanel} from './PlaceholderPanel';
 import {popupsPanel} from './PopupsPanel';
 import {relativeTimestampPanel} from './relativetimestamp/RelativeTimestampPanel';
+import {simpleRoutingPanel} from './routing/SimpleRoutingPanel';
 
 export const otherTab = hoistCmp.factory(() =>
     tabContainer({
@@ -28,7 +29,6 @@ export const otherTab = hoistCmp.factory(() =>
                 {id: 'buttons', content: buttonsPanel},
                 {id: 'clock', content: clockPanel},
                 {id: 'customPackage', content: customPackagePanel},
-                {id: 'dateFormats', content: dateFormatsPanel},
                 {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
                 {
                     id: 'exceptionHandler',
@@ -37,16 +37,18 @@ export const otherTab = hoistCmp.factory(() =>
                 },
                 {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
                 {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
+                {id: 'formatDates', content: dateFormatsPanel},
+                {id: 'formatNumbers', content: numberFormatsPanel},
                 {id: 'icons', content: iconsPanel},
                 {id: 'inspector', content: inspectorPanel},
                 {id: 'leftRightChooser', title: 'LeftRightChooser', content: leftRightChooserPanel},
-                {id: 'numberFormats', content: numberFormatsPanel},
                 {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
                 {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
                 {id: 'popups', content: popupsPanel},
-                {id: 'timestamp', content: relativeTimestampPanel}
+                {id: 'timestamp', content: relativeTimestampPanel},
+                {id: 'simpleRouting', content: simpleRoutingPanel}
             ]
         },
-        className: 'toolbox-tab'
+        className: 'tb-tab'
     })
 );

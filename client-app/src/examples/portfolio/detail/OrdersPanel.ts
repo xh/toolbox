@@ -1,7 +1,7 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
-import {filler} from '@xh/hoist/cmp/layout';
+import {hspacer} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {colChooserButton} from '@xh/hoist/desktop/cmp/button';
+import {colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
@@ -18,16 +18,16 @@ export const ordersPanel = hoistCmp.factory({
             icon: Icon.edit(),
             item: grid(),
             mask: positionId == null || loadModel.isPending,
+            headerItems: [gridCountLabel({unit: 'orders'}), hspacer()],
             bbar: [
                 filterChooser({
                     placeholder: 'Filter orders...',
                     enableClear: true,
-                    flex: 10,
-                    maxWidth: 800
+                    flex: 1
                 }),
-                gridCountLabel({unit: 'orders'}),
-                filler(),
-                colChooserButton()
+                '-',
+                colChooserButton(),
+                exportButton()
             ]
         });
     }

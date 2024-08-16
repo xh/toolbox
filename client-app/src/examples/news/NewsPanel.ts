@@ -12,7 +12,7 @@ export const newsPanel = hoistCmp.factory({
     model: uses(NewsPanelModel),
     render() {
         return panel({
-            className: 'toolbox-news-panel',
+            className: 'tb-news-panel',
             width: '100%',
             height: '100%',
             item: dataView(),

@@ -1,5 +1,5 @@
 import {hoistCmp, XH} from '@xh/hoist/core';
-import {code, div, span} from '@xh/hoist/cmp/layout';
+import {code, div, fragment, span} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {Icon} from '@xh/hoist/icon';
@@ -9,7 +9,7 @@ export const popupsPage = hoistCmp.factory({
         return panel({
             title: 'Popups',
             icon: Icon.comment(),
-            className: 'toolbox-page xh-tiled-bg',
+            className: 'tb-page xh-tiled-bg',
             scrollable: true,
             items: [
                 renderCard('Alert', () => {
@@ -54,6 +54,12 @@ export const popupsPage = hoistCmp.factory({
                         message: 'This is a toast.',
                         icon: Icon.comment()
                     });
+                }),
+                renderCard('Danger Toast', () => {
+                    XH.dangerToast({
+                        message: fragment('This is a toast shown via ', code('XH.dangerToast()')),
+                        icon: Icon.skull()
+                    });
                 })
             ]
         });
@@ -62,9 +68,9 @@ export const popupsPage = hoistCmp.factory({
 
 function renderCard(title, onClick) {
     return div({
-        className: 'toolbox-card',
+        className: 'tb-card',
         items: [
-            div({className: 'toolbox-card__title', item: title}),
+            div({className: 'tb-card__title', item: title}),
             button({
                 text: `Show ${title}`,
                 onClick
