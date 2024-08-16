@@ -38,7 +38,7 @@ export class ContactService extends HoistService {
         await XH.fetchService.postJson({
             url: `contacts/update/${id}`,
             body: update,
-            trackOptions: {
+            track: {
                 category: 'Contacts',
                 message: `Updated contact`,
                 data: {id, ...update},

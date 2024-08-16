@@ -169,10 +169,9 @@ export class FileManagerModel extends HoistModel {
             .fetchJson({
                 url: 'fileManager/list',
                 loadSpec,
-                trackOptions: {
+                track: {
                     category: 'File Manager',
-                    message: 'Loaded Files',
-                    loadSpec
+                    message: 'Loaded Files'
                 }
             })
             .catchDefault();
