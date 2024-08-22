@@ -136,6 +136,7 @@ export class RecallsPanelModel extends HoistModel {
 
             gridModel.loadData(entries);
             await gridModel.preSelectFirstAsync();
+            this.detailsPanelModel.loadAsync();
         } catch (e) {
             XH.handleException(e);
         }

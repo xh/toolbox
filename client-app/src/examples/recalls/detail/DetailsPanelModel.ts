@@ -1,10 +1,13 @@
 import {HoistModel} from '@xh/hoist/core';
-import {makeObservable, bindable} from '@xh/hoist/mobx';
+import {makeObservable, observable, bindable, action} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
 
 export class DetailsPanelModel extends HoistModel {
     @bindable.ref
     currentRecord: StoreRecord;
+
+    @observable.ref
+    testObj;
 
     constructor() {
         super();
@@ -23,5 +26,15 @@ export class DetailsPanelModel extends HoistModel {
             default:
                 return classification;
         }
+    }
+
+    override async doLoadAsync(loadSpec) {
+        this.setTestObj([]);
+    }
+
+    @action
+    setTestObj(obj) {
+        console.log('setting obesrvable object');
+        this.testObj = obj;
     }
 }
