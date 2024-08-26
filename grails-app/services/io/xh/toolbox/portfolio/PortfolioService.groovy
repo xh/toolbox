@@ -2,7 +2,7 @@ package io.xh.toolbox.portfolio
 
 import com.hazelcast.replicatedmap.ReplicatedMap
 import io.xh.hoist.BaseService
-import io.xh.hoist.cluster.ReplicatedValue
+import io.xh.hoist.cache.CachedValue
 import io.xh.hoist.exception.DataNotAvailableException
 
 import java.time.*
@@ -17,7 +17,7 @@ class PortfolioService extends BaseService {
         historicalPriceGenerationService,
         instrumentGenerationService
 
-    private ReplicatedValue<Portfolio> _portfolio = getReplicatedValue('portfolio')
+    private CachedValue<Portfolio> _portfolio = new CachedValue(name: 'portfolio', svc: this)
     private ReplicatedMap<String, MarketPrice> _currentPrices = getReplicatedMap('currentPrices')
 
     void init() {
@@ -27,6 +27,7 @@ class PortfolioService extends BaseService {
             interval: {config.updateIntervalSecs * SECONDS},
             runImmediatelyAndBlock: true
         )
+        _portfolio.ensureAvailable()
     }
 
     Portfolio getPortfolio() {

@@ -12,19 +12,19 @@ import com.esotericsoftware.kryo.KryoSerializable
 import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
 import io.xh.hoist.BaseService
-import io.xh.hoist.cluster.ReplicatedValue
+import io.xh.hoist.cache.CachedValue
 import io.xh.hoist.log.LogSupport
 
 
 class SerializationTestService extends BaseService {
 
-    private ReplicatedValue<TestObject> replicatedValue = getReplicatedValue('testVal')
+    private CachedValue<TestObject> testValue = new CachedValue(name: testValue, replicate: true, svc: this)
 
     void init() {
-        def val = replicatedValue.get()
+        def val = testValue.get()
         if (!val) {
-            replicatedValue.set(new TestObject(foo: 'foo', bar: new Date(), baz: [submap: 'hi'], biz: null))
-            val = replicatedValue.get()
+            testValue.set(new TestObject(foo: 'foo', bar: new Date(), baz: [submap: 'hi'], biz: null))
+            val = testValue.get()
         }
         logInfo('Results', val.foo, val.bar, val.baz, val.biz)
     }
