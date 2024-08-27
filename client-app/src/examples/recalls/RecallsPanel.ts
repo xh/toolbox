@@ -7,7 +7,9 @@ import {RecallsPanelModel} from './RecallsPanelModel';
 export const recallsPanel = hoistCmp.factory({
     model: creates(RecallsPanelModel),
 
-    render() {
-        return vframe(panel('mainPanel'), detailsPanel());
+    render({model}) {
+        const {testObj} = model;
+
+        return vframe(panel('mainPanel'), detailsPanel({testObj}));
     }
 });

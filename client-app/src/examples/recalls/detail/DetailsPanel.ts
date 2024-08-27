@@ -1,17 +1,17 @@
-import {hoistCmp, uses} from '@xh/hoist/core';
+import {hoistCmp, creates} from '@xh/hoist/core';
 import {DetailsPanelModel} from './DetailsPanelModel';
-import {testPanel} from './TestPanel';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 
 export const detailsPanel = hoistCmp.factory({
-    model: uses(DetailsPanelModel),
+    model: creates(DetailsPanelModel),
 
     render({model}) {
-        const {testObj} = model;
+        // const {testObj} = model;
+        console.log('render component');
 
         return panel({
             title: 'Details',
-            item: testPanel({testObj})
+            item: 'detailPanel'
         });
     }
 });

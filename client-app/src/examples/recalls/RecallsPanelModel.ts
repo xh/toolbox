@@ -1,14 +1,24 @@
-import {HoistModel, managed} from '@xh/hoist/core';
-import {DetailsPanelModel} from './detail/DetailsPanelModel';
+import {HoistModel} from '@xh/hoist/core';
+import {action, makeObservable, observable} from '@xh/hoist/mobx';
 
 export class RecallsPanelModel extends HoistModel {
-    @managed
-    detailsPanelModel = new DetailsPanelModel();
+    @observable.ref
+    testObj;
+
+    constructor() {
+        super();
+        makeObservable(this);
+    }
 
     //------------------------
     // Implementation
     //------------------------
     override async doLoadAsync(loadSpec) {
-        this.detailsPanelModel.loadAsync();
+        this.setTestObj([]);
+    }
+
+    @action
+    setTestObj(obj) {
+        this.testObj = obj;
     }
 }
