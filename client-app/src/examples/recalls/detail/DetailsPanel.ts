@@ -11,7 +11,7 @@ export const detailsPanel = hoistCmp.factory({
 
         return panel({
             title: 'Details',
-            items: [testPanel({testObj})]
+            item: testPanel({testObj})
         });
     }
 });

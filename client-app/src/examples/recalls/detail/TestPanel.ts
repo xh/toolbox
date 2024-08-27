@@ -13,6 +13,6 @@ export const testPanel = hoistCmp.factory({
         // const {testObj} = model;
         console.log('render test panel');
 
-        return 'hello';
+        return 'detailPanel';
     }
 });
