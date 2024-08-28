@@ -24,8 +24,6 @@ class NewsService extends BaseService {
     static clearCachesConfigs = ['newsSources', 'newsApiKey']
     def configService
 
-
-
     List<NewsItem> getNewsItems() {
         _newsItems.getOrCreate { loadNews() }
     }
