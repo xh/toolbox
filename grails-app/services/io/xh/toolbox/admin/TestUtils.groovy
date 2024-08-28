@@ -19,10 +19,7 @@ class TestUtils {
     }
 
     static List generateResultSet() {
-        1000.collect {
-            [generateSymbol(), generatePrice(), generatePrice()]
-        }
+        [generateSymbol(), generatePrice(), generatePrice(), generatePrice()]
     }
-
 }
 
