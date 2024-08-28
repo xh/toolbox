@@ -18,7 +18,7 @@ import io.xh.hoist.log.LogSupport
 
 class SerializationTestService extends BaseService {
 
-    private CachedValue<TestObject> testValue = new CachedValue(name: testValue, replicate: true, svc: this)
+    private CachedValue<TestObject> testValue = new CachedValue<>(name: 'testValue', replicate: true, svc: this)
 
     void init() {
         def val = testValue.get()
