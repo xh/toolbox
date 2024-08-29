@@ -12,8 +12,19 @@ import static TestUtils.*
 
 class TestCacheService extends BaseService {
 
-    private Cache<LocalDate, List> resultCache = new Cache<>(name: 'result', replicate: true, svc: this)
-    private Cache<String, Long> priceCache = new Cache<>(name: 'prices', expireTime: {30*SECONDS}, replicate: true, svc: this)
+    private Cache<LocalDate, List> resultCache = new Cache<>(
+        name: 'result',
+        replicate: true,
+        optimizeRemoval: true,
+        svc: this
+    )
+
+    private Cache<String, Long> priceCache = new Cache<>(
+        name: 'prices',
+        expireTime: {30*SECONDS},
+        replicate: true,
+        svc: this
+    )
 
     private List<Cache> allCaches = [resultCache, priceCache]
 
@@ -40,7 +51,7 @@ class TestCacheService extends BaseService {
 
     private void logEvents(Cache c) {
         c.addChangeHandler { CacheValueChanged change ->
-            logDebug(c.name, [key: change.key, value: change.value])
+            logDebug(c.name, [key: change.key, value: change.value, oldValue: change.oldValue])
         }
     }
 

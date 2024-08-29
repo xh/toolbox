@@ -11,8 +11,19 @@ import static java.lang.Thread.sleep
 
 class TestCachedValueService extends BaseService {
 
-    private CachedValue<List> resultValue = new CachedValue<>(name: 'result', replicate: true, svc: this)
-    private CachedValue<Long> priceValue = new CachedValue<>(name: 'price', expireTime: 30*SECONDS, replicate: true, svc: this)
+    private CachedValue<List> resultValue = new CachedValue<>(
+        name: 'result',
+        replicate: true,
+        optimizeRemoval: true,
+        svc: this
+    )
+
+    private CachedValue<Long> priceValue = new CachedValue<>(
+        name: 'price',
+        expireTime: 30*SECONDS,
+        replicate: true,
+        svc: this
+    )
 
     private List<CachedValue> allValues = [resultValue, priceValue]
 
@@ -37,7 +48,7 @@ class TestCachedValueService extends BaseService {
 
     private void logEvents(CachedValue value) {
         value.addChangeHandler { CacheValueChanged change ->
-            logInfo(change.key, [value: change.value])
+            logInfo(change.key, [value: change.value, oldValue: change.oldValue])
         }
     }
 
