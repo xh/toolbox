@@ -16,7 +16,9 @@ class TestCacheService extends BaseService {
         name: 'result',
         replicate: true,
         svc: this,
-        onChange: this.&onChange
+        onChange: {
+            logDebug(it.source.name, [key: it.key, value: it.value])
+        }
     )
 
     private Cache<String, Long> priceCache = new Cache<>(
@@ -24,7 +26,10 @@ class TestCacheService extends BaseService {
         expireTime: {30*SECONDS},
         replicate: true,
         svc: this,
-        onChange: this.&onChange
+        optimizeRemovals: false,
+        onChange: {
+            logDebug(it.source.name, [key: it.key, value: it.value, oldValue: it.oldValue])
+        }
     )
 
     private List<Cache> allCaches = [resultCache, priceCache]
@@ -47,10 +52,6 @@ class TestCacheService extends BaseService {
         resultCache.ensureAvailable(LocalDate.now())
 
         logInfo('Sizes', allCaches.collectEntries { [it.name, it.size()]})
-    }
-
-    private void onChange(CacheValueChanged change) {
-        logDebug(change.source.name, [key: change.key, value: change.value, oldValue: change.oldValue])
     }
 
     void clearCaches() {
