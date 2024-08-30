@@ -14,22 +14,22 @@ class TestCachedValueService extends BaseService {
     private CachedValue<List> resultValue = new CachedValue<>(
         name: 'result',
         replicate: true,
-        optimizeRemoval: true,
-        svc: this
+        svc: this,
+        onChange: this.&onChange
     )
 
     private CachedValue<Long> priceValue = new CachedValue<>(
         name: 'price',
         expireTime: 30*SECONDS,
         replicate: true,
-        svc: this
+        svc: this,
+        onChange: this.&onChange
     )
 
     private List<CachedValue> allValues = [resultValue, priceValue]
 
     void init() {
         super.init()
-        allValues.each(this.&logEvents)
         initData()
     }
 
@@ -46,15 +46,13 @@ class TestCachedValueService extends BaseService {
         logInfo('Values', allValues.collectEntries { [it.name, it.get()]})
     }
 
-    private void logEvents(CachedValue value) {
-        value.addChangeHandler { CacheValueChanged change ->
-            logInfo(change.key, [value: change.value, oldValue: change.oldValue])
-        }
+    private void onChange(CacheValueChanged change) {
+        logDebug(change.source.name, [key: change.key, value: change.value, oldValue: change.oldValue])
     }
 
     void clearCaches() {
         super.clearCaches()
-        allValues.each {it.set(null)}
+        allValues.each {it.clear()}
         initData()
     }
 

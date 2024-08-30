@@ -17,7 +17,11 @@ class PortfolioService extends BaseService {
         historicalPriceGenerationService,
         instrumentGenerationService
 
-    private CachedValue<Portfolio> _portfolio = new CachedValue(name: 'portfolio', replicate: true,  svc: this)
+    private CachedValue<Portfolio> _portfolio = new CachedValue<>(
+        name: 'portfolio',
+        replicate: true,
+        svc: this
+    )
     private ReplicatedMap<String, MarketPrice> _currentPrices = getReplicatedMap('currentPrices')
 
     void init() {
