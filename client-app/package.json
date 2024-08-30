@@ -20,14 +20,8 @@
     "prepare": "cd .. && husky client-app/.husky"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint",
-      "prettier --write"
-    ],
-    "*.s?(a|c)ss": [
-      "stylelint",
-      "prettier --write"
-    ]
+    "*.{js,jsx,ts,tsx}": ["prettier --write", "eslint"],
+    "*.s?(a|c)ss": ["prettier --write", "stylelint"]
   },
   "dependencies": {
     "@ag-grid-community/client-side-row-model": "~31.2.0",
