@@ -1,5 +1,6 @@
 package io.xh.toolbox.admin
 
+import groovy.transform.CompileStatic
 import io.xh.hoist.BaseService
 import io.xh.hoist.cache.CacheValueChanged
 import io.xh.hoist.cache.CachedValue
@@ -9,14 +10,15 @@ import static io.xh.toolbox.admin.TestUtils.generatePrice
 import static io.xh.toolbox.admin.TestUtils.generateResultSet
 import static java.lang.Thread.sleep
 
+@CompileStatic
 class TestCachedValueService extends BaseService {
 
     private CachedValue<List> resultValue = new CachedValue<>(
         name: 'result',
         replicate: true,
         svc: this,
-        onChange: {
-            logDebug(it.source.name, [key: it.key, value: it.value])
+        onChange: {CacheValueChanged e ->
+            logDebug(e.source.name, [key: e.key, value: e.value])
         }
     )
 
@@ -25,13 +27,13 @@ class TestCachedValueService extends BaseService {
         expireTime: 30*SECONDS,
         replicate: true,
         svc: this,
-        optimizeRemovals: false,
-        onChange: {
-            logDebug(it.source.name, [key: it.key, value: it.value, oldValue: it.oldValue])
+        serializeOldValue: true,
+        onChange: {CacheValueChanged e ->
+            logDebug(e.source.name, [key: e.key, value: e.value, oldValue: e.oldValue])
         }
     )
 
-    private List<CachedValue> allValues = [resultValue, priceValue]
+    private List<CachedValue<?>> allValues = [resultValue, priceValue]
 
     void init() {
         super.init()

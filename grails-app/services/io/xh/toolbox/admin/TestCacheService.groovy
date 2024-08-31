@@ -1,5 +1,6 @@
 package io.xh.toolbox.admin
 
+import groovy.transform.CompileStatic
 import io.xh.hoist.BaseService
 import io.xh.hoist.cache.Cache
 import io.xh.hoist.cache.CacheValueChanged
@@ -10,14 +11,15 @@ import static io.xh.hoist.util.DateTimeUtils.SECONDS
 import static java.lang.Thread.sleep
 import static TestUtils.*
 
+@CompileStatic
 class TestCacheService extends BaseService {
 
     private Cache<LocalDate, List> resultCache = new Cache<>(
         name: 'result',
         replicate: true,
         svc: this,
-        onChange: {
-            logDebug(it.source.name, [key: it.key, value: it.value])
+        onChange: {CacheValueChanged e ->
+            logDebug(e.source.name, [key: e.key, value: e.value])
         }
     )
 
@@ -26,13 +28,13 @@ class TestCacheService extends BaseService {
         expireTime: {30*SECONDS},
         replicate: true,
         svc: this,
-        optimizeRemovals: false,
-        onChange: {
-            logDebug(it.source.name, [key: it.key, value: it.value, oldValue: it.oldValue])
+        serializeOldValue: true,
+        onChange: { CacheValueChanged e ->
+            logDebug(e.source.name, [key: e.key, value: e.value, oldValue: e.oldValue])
         }
     )
 
-    private List<Cache> allCaches = [resultCache, priceCache]
+    private List<Cache> allCaches = [resultCache, priceCache] as List<Cache>
 
     void init() {
         super.init()
@@ -49,7 +51,7 @@ class TestCacheService extends BaseService {
             }
             priceCache.getOrCreate('MSFT') {5000}
         }
-        resultCache.ensureAvailable(LocalDate.now())
+        resultCache.ensureAvailable(LocalDate.now(), timeout: 60 * SECONDS)
 
         logInfo('Sizes', allCaches.collectEntries { [it.name, it.size()]})
     }
