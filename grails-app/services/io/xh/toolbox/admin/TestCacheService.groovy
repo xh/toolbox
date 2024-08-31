@@ -49,7 +49,7 @@ class TestCacheService extends BaseService {
             5.times {
                 priceCache.put(generateSymbol(), generatePrice())
             }
-            priceCache.getOrCreate('MSFT') {5000}
+            priceCache.getOrCreate('MSFT') {5000L}
         }
         resultCache.ensureAvailable(LocalDate.now(), timeout: 60 * SECONDS)
 
