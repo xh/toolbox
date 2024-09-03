@@ -8,6 +8,10 @@
 ### Bug Fixes
 * Fixed `InputsPanel` "Set Focus" popover.
 
+### 📚 Libraries
+* hoist-core 21.0.0
+* hoist-react 67.0.0
+
 ## 5.1.0 - 2024-06-21
 
 ### 📚 Libraries
@@ -98,7 +102,7 @@
 ### Libraries
 * hoist-core 16.3.0
 * @xh/hoist 57.0.0
-* @xh/hoist-dev-utils 6.3.0 
+* @xh/hoist-dev-utils 6.3.0
 
 ## v3.0.2 - 2023-06-01
 
@@ -109,7 +113,7 @@
 ## v3.0.1 - 2023-05-26
 
 ### New Features
-* Toolbox can now be run with an in memory H2 DB, and all needed configs and preferences will be pre-loaded into this DB. 
+* Toolbox can now be run with an in memory H2 DB, and all needed configs and preferences will be pre-loaded into this DB.
   * Useful for devs who want to quickly check out the project and run it on their local development machine without going through the trouble of creating a database.
   * See the section on "instance config file" in README.md for the settings that trigger use of H2.
 
@@ -123,7 +127,7 @@
 * Toolbox has been completely rewritten in TypeScript.
 * New application permission role: `HOIST_ADMIN_READER`.
 * All Hoist Framework Admin tabs are now readable (read only) by users who have this new role: `HOIST_ADMIN_READER`.
-* `CustomLogSupportConverter` added as an example of an alternative log output format.  
+* `CustomLogSupportConverter` added as an example of an alternative log output format.
   Applied to Monitor log file.
 
 ### Libraries
