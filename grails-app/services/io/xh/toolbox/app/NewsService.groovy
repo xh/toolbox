@@ -2,37 +2,31 @@ package io.xh.toolbox.app
 
 
 import io.xh.hoist.BaseService
-import io.xh.hoist.cluster.ReplicatedValue
+import io.xh.hoist.cache.CachedValue
 import io.xh.hoist.http.JSONClient
 import io.xh.toolbox.NewsItem
 import org.apache.hc.client5.http.classic.methods.HttpGet
-import io.xh.hoist.util.Timer
 
 import static io.xh.hoist.util.DateTimeUtils.getMINUTES
 
 
 class NewsService extends BaseService {
 
-    private ReplicatedValue<List<NewsItem>> _newsItems = getReplicatedValue('newsItems')
-    private Timer newsTimer
+    private CachedValue<List<NewsItem>> _newsItems = new CachedValue<>(
+        name: 'newsItems',
+        expireTime: {configService.getInt('newsRefreshMins') * MINUTES},
+        replicate: true,
+        svc: this
+    )
+
     private JSONClient _jsonClient
 
     static clearCachesConfigs = ['newsSources', 'newsApiKey']
     def configService
 
     List<NewsItem> getNewsItems() {
-        // to avoid hitting the API too frequently, we only start our timer when the NewsService is actually used.
-        newsTimer = newsTimer ?: createTimer(
-            primaryOnly: true,
-            runFn: this.&loadAllNews,
-            interval: 'newsRefreshMins',
-            intervalUnits: MINUTES,
-            runImmediatelyAndBlock: true
-        )
-
-        return _newsItems.get()
+        _newsItems.getOrCreate { loadNews() }
     }
-
 
     //------------------------
     // For sample monitors
@@ -56,20 +50,8 @@ class NewsService extends BaseService {
     //------------------------
     // Implementation
     //------------------------
-    private void loadAllNews() {
+    private List<NewsItem> loadNews() {
         def sources = configService.getMap('newsSources').keySet().toList()
-
-        withInfo("Loading news from ${sources.size()} configured sources") {
-            def items = []
-            try {
-                items = loadNewsForSources(sources)
-            } finally {
-                _newsItems.set(items)
-            }
-        }
-    }
-
-    private List<NewsItem> loadNewsForSources(List<String> sources) {
         def sourcesParam = String.join(',', sources)
         def apiKey = configService.getString('newsApiKey'),
             url = "https://newsapi.org/v2/top-headlines?sources=${sourcesParam}&apiKey=${apiKey}",
@@ -105,8 +87,7 @@ class NewsService extends BaseService {
     void clearCaches() {
         _jsonClient = null
         if (isPrimary) {
-            _newsItems.set(null)
-            loadAllNews()
+            _newsItems.clear()
         }
         super.clearCaches()
     }
