@@ -34,8 +34,9 @@ export class PortfolioService extends HoistService {
             params: {
                 dims: dims.join(','),
                 maxPositions
-            }
-        }).track({message: 'Loaded positions'});
+            },
+            track: 'Loaded positions'
+        });
 
         return includeSummary ? [positions.root] : positions.root.children;
     }

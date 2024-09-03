@@ -168,12 +168,11 @@ export class FileManagerModel extends HoistModel {
         const files = await XH.fetchService
             .fetchJson({
                 url: 'fileManager/list',
-                loadSpec
-            })
-            .track({
-                category: 'File Manager',
-                message: 'Loaded Files',
-                loadSpec
+                loadSpec,
+                track: {
+                    category: 'File Manager',
+                    message: 'Loaded Files'
+                }
             })
             .catchDefault();
 
