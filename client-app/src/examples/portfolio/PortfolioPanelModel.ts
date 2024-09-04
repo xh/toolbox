@@ -1,18 +1,27 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Store} from '@xh/hoist/data';
+import {logInfo} from '@xh/hoist/utils/js';
 import {GridPanelModel} from './GridPanelModel';
 import {round} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
-import {PERSIST_MAIN} from './AppModel';
-import {waitFor} from '@xh/hoist/promise';
+import {wait, waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
+import {PersistenceManagerModel} from '@xh/hoist/desktop/cmp/persistenceManager';
+import {DetailPanelModel} from './detail/DetailPanelModel';
+import {runInAction} from '@xh/hoist/mobx';
 
 export class PortfolioPanelModel extends HoistModel {
     @managed session;
 
-    @managed groupingChooserModel = this.createGroupingChooserModel();
+    @managed persistenceManagerModel: PersistenceManagerModel;
+    @managed groupingChooserModel: GroupingChooserModel;
     @managed store = this.createStore();
-    @managed gridPanelModel = new GridPanelModel({parentModel: this});
+    @managed gridPanelModel: GridPanelModel;
+    @managed detailPanelModel: DetailPanelModel;
+
+    get prefKey(): string {
+        return 'portfolioExample';
+    }
 
     get selectedPosition() {
         return this.gridPanelModel.selectedRecord;
@@ -21,16 +30,40 @@ export class PortfolioPanelModel extends HoistModel {
     constructor() {
         super();
         const wsService = XH.webSocketService;
+
+        this.persistenceManagerModel = new PersistenceManagerModel({
+            type: 'portfoioExample',
+            noun: 'portfoio',
+            canManageGlobal: () => XH.getUser().hasRole('HOIST_ADMIN'),
+            onChangeAsync: () => this.onViewChangeAsync(),
+            newObjectFnAsync: async () => ({
+                portfolioAppGridState: {},
+                portfolioAppDetailState: {},
+                groupingChooser: {value: ['region', 'sector', 'symbol'], favorites: []}
+            }),
+            persistWith: {prefKey: this.prefKey}
+        });
+
+        this.groupingChooserModel = this.createGroupingChooserModel();
+        this.detailPanelModel = this.createDetailPanelModel();
+        this.gridPanelModel = this.createGridPanelModel();
+
         this.addReaction({
             track: () => [this.groupingChooserModel.value, wsService.connected],
             run: () => this.loadAsync()
+        });
+        this.addReaction({
+            track: () => this.selectedPosition,
+            run: position => {
+                this.detailPanelModel.positionId = position?.id ?? null;
+            },
+            debounce: 300
         });
     }
 
     override async doLoadAsync(loadSpec) {
         const wsService = XH.webSocketService,
-            {store, groupingChooserModel, gridPanelModel} = this,
-            dims = groupingChooserModel.value;
+            {store, gridPanelModel} = this;
 
         let {session} = this;
         session?.destroy();
@@ -40,6 +73,9 @@ export class PortfolioPanelModel extends HoistModel {
             this.logError('WebSocket service failed to connect')
         );
         if (loadSpec.isStale) return;
+
+        const dims = this.persistenceManagerModel.provider.getData().groupingChooser?.value;
+        if (!dims) return;
 
         session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp').catchDefault();
 
@@ -79,7 +115,43 @@ export class PortfolioPanelModel extends HoistModel {
         return new GroupingChooserModel({
             dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
             initialValue: ['region', 'sector', 'symbol'],
-            persistWith: PERSIST_MAIN
+            persistWith: {...this.persistenceManagerModel.provider},
+            allowEmpty: true
         });
+    }
+
+    private createGridPanelModel() {
+        return new GridPanelModel({
+            persistWith: this.persistenceManagerModel.provider,
+            parentModel: this
+        });
+    }
+
+    private createDetailPanelModel() {
+        return new DetailPanelModel({
+            persistWith: this.persistenceManagerModel.provider,
+            parentModel: this
+        });
+    }
+
+    private async onViewChangeAsync() {
+        const start = Date.now();
+
+        await wait(); // allow masking to start
+
+        const {persistenceManagerModel, gridPanelModel, detailPanelModel, groupingChooserModel} =
+                this,
+            newState = persistenceManagerModel.provider.getData();
+        groupingChooserModel.setValue(newState.groupingChooser?.value ?? []);
+        gridPanelModel.updateState(newState);
+
+        runInAction(() => {
+            const detailPm = detailPanelModel.ordersPanelModel.gridModel.persistenceModel;
+            detailPm.state = newState.portfolioAppDetailState;
+            detailPm.updateGridColumns();
+            detailPm.updateGridSort();
+        });
+
+        logInfo(`Rebuilt view | took ${Date.now() - start}ms`, this);
     }
 }

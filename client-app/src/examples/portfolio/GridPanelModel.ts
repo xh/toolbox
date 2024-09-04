@@ -1,7 +1,6 @@
 import {HoistModel, managed} from '@xh/hoist/core';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {action, bindable, makeObservable} from '@xh/hoist/mobx';
 import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
-import {PERSIST_MAIN} from './AppModel';
 import {mktValCol, nameCol, pnlCol} from '../../core/columns';
 import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {capitalize} from 'lodash';
@@ -9,8 +8,7 @@ import {capitalize} from 'lodash';
 export class GridPanelModel extends HoistModel {
     @bindable loadTimestamp: number;
 
-    @managed
-    gridModel: GridModel;
+    @managed gridModel: GridModel;
 
     parentModel: PortfolioPanelModel;
 
@@ -22,16 +20,30 @@ export class GridPanelModel extends HoistModel {
         return this.parentModel.groupingChooserModel.value.map(it => capitalize(it)).join(' › ');
     }
 
-    constructor({parentModel}) {
+    constructor({persistWith, parentModel}) {
         super();
         makeObservable(this);
         this.parentModel = parentModel;
-        this.gridModel = this.createGridModel();
+        this.gridModel = this.createGridModel(persistWith);
     }
 
-    private createGridModel() {
+    @action
+    updateState(newState) {
+        const {gridModel} = this;
+        const gridPm = gridModel.persistenceModel;
+        gridPm.state = newState.portfolioAppGridState;
+
+        gridPm.updateGridColumns();
+        gridPm.updateGridSort();
+    }
+
+    //------------------
+    // Implementation
+    //------------------
+
+    private createGridModel(persistWith) {
         return new GridModel({
-            persistWith: PERSIST_MAIN,
+            persistWith: {path: 'portfolioAppGridState', ...persistWith},
             treeMode: true,
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'pnl|desc|abs',

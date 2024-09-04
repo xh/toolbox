@@ -28,7 +28,7 @@ export class OrdersPanelModel extends HoistModel {
         return this.parentModel.positionId;
     }
 
-    constructor(parentModel) {
+    constructor({persistWith, parentModel}) {
         super();
 
         this.parentModel = parentModel;
@@ -42,7 +42,7 @@ export class OrdersPanelModel extends HoistModel {
             enableExport: true,
             rowBorders: true,
             showHover: true,
-            persistWith: {...PERSIST_DETAIL, path: 'ordersGrid'},
+            persistWith: {path: 'portfolioAppDetailState', ...persistWith},
             columns: [
                 {...symbolCol, pinned: true},
                 {...closingPriceSparklineCol},
