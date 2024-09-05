@@ -1,7 +1,6 @@
 import {hframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {detailPanel} from './detail/DetailPanel';
 import {gridPanel} from './GridPanel';
 import {mapPanel} from './MapPanel';
@@ -13,17 +12,9 @@ export const portfolioPanel = hoistCmp.factory({
 
     render() {
         return panel({
-            tbar: tbar(),
+            tbar: [persistenceManager()],
             mask: 'onLoad',
             items: [hframe(gridPanel(), mapPanel()), detailPanel()]
-        });
-    }
-});
-
-const tbar = hoistCmp.factory<PortfolioPanelModel>({
-    render() {
-        return toolbar({
-            item: persistenceManager()
         });
     }
 });

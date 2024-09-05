@@ -2,7 +2,6 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {isNil, map, uniq} from 'lodash';
-import {PERSIST_DETAIL} from '../AppModel';
 import {
     closingPriceSparklineCol,
     orderExecDay,
@@ -61,7 +60,7 @@ export class OrdersPanelModel extends HoistModel {
 
         this.filterChooserModel = new FilterChooserModel({
             bind: this.gridModel.store,
-            persistWith: {...PERSIST_DETAIL, path: 'ordersFilter', persistValue: false},
+            persistWith: {path: 'ordersFilter', ...persistWith},
             fieldSpecs: [
                 'symbol',
                 'trader',
@@ -115,5 +114,15 @@ export class OrdersPanelModel extends HoistModel {
             gridModel.clear();
             XH.handleException(e);
         }
+    }
+
+    updateState(newState) {
+        const {gridModel, filterChooserModel} = this,
+            gridPm = gridModel.persistenceModel;
+        gridPm.state = newState.portfolioAppDetailState;
+        gridPm.updateGridColumns();
+        gridPm.updateGridSort();
+
+        filterChooserModel.setValue(newState.ordersFilter.value);
     }
 }

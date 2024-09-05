@@ -8,7 +8,6 @@ import {wait, waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {PersistenceManagerModel} from '@xh/hoist/desktop/cmp/persistenceManager';
 import {DetailPanelModel} from './detail/DetailPanelModel';
-import {runInAction} from '@xh/hoist/mobx';
 
 export class PortfolioPanelModel extends HoistModel {
     @managed session;
@@ -34,12 +33,13 @@ export class PortfolioPanelModel extends HoistModel {
         this.persistenceManagerModel = new PersistenceManagerModel({
             type: 'portfoioExample',
             noun: 'portfoio',
-            canManageGlobal: () => XH.getUser().hasRole('HOIST_ADMIN'),
+            canManageGlobal: () => XH.getUser().hasRole('GLOBAL_VIEW_MANAGER'),
             onChangeAsync: () => this.onViewChangeAsync(),
             newObjectFnAsync: async () => ({
                 portfolioAppGridState: {},
                 portfolioAppDetailState: {},
-                groupingChooser: {value: ['region', 'sector', 'symbol'], favorites: []}
+                groupingChooser: {value: ['region', 'sector', 'symbol'], favorites: []},
+                ordersFilter: {}
             }),
             persistWith: {prefKey: this.prefKey}
         });
@@ -63,7 +63,8 @@ export class PortfolioPanelModel extends HoistModel {
 
     override async doLoadAsync(loadSpec) {
         const wsService = XH.webSocketService,
-            {store, gridPanelModel} = this;
+            {store, groupingChooserModel, gridPanelModel} = this,
+            dims = groupingChooserModel.value;
 
         let {session} = this;
         session?.destroy();
@@ -74,9 +75,7 @@ export class PortfolioPanelModel extends HoistModel {
         );
         if (loadSpec.isStale) return;
 
-        const dims = this.persistenceManagerModel.provider.getData().groupingChooser?.value;
         if (!dims) return;
-
         session = await XH.portfolioService.getLivePositionsAsync(dims, 'mainApp').catchDefault();
 
         store.loadData([session.initialPositions.root]);
@@ -144,13 +143,7 @@ export class PortfolioPanelModel extends HoistModel {
             newState = persistenceManagerModel.provider.getData();
         groupingChooserModel.setValue(newState.groupingChooser?.value ?? []);
         gridPanelModel.updateState(newState);
-
-        runInAction(() => {
-            const detailPm = detailPanelModel.ordersPanelModel.gridModel.persistenceModel;
-            detailPm.state = newState.portfolioAppDetailState;
-            detailPm.updateGridColumns();
-            detailPm.updateGridSort();
-        });
+        detailPanelModel.updateState(newState);
 
         logInfo(`Rebuilt view | took ${Date.now() - start}ms`, this);
     }

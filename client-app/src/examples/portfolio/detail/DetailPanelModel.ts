@@ -1,6 +1,7 @@
 import {HoistModel, managed} from '@xh/hoist/core';
 import {observable, makeObservable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
+import {ChartsPanelModel} from './charts/ChartsPanelModel';
 import {OrdersPanelModel} from './OrdersPanelModel';
 import {PERSIST_DETAIL} from '../AppModel';
 import {PortfolioPanelModel} from '../PortfolioPanelModel';
@@ -9,6 +10,7 @@ export class DetailPanelModel extends HoistModel {
     @observable positionId = null;
 
     @managed ordersPanelModel: OrdersPanelModel;
+    @managed chartsPanelModel: ChartsPanelModel;
 
     @managed panelSizingModel = new PanelModel({
         defaultSize: 400,
@@ -30,5 +32,9 @@ export class DetailPanelModel extends HoistModel {
         makeObservable(this);
         this.parentModel = parentModel;
         this.ordersPanelModel = new OrdersPanelModel({persistWith, parentModel: this});
+    }
+
+    updateState(newState) {
+        this.ordersPanelModel.updateState(newState);
     }
 }
