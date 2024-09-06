@@ -31,15 +31,17 @@ export class PortfolioPanelModel extends HoistModel {
         const wsService = XH.webSocketService;
 
         this.persistenceManagerModel = new PersistenceManagerModel({
-            type: 'portfoioExample',
-            noun: 'portfoio',
+            entity: {
+                name: 'PortfolioExample',
+                displayName: 'Portfolio'
+            },
             canManageGlobal: () => XH.getUser().hasRole('GLOBAL_VIEW_MANAGER'),
             onChangeAsync: () => this.onViewChangeAsync(),
             newObjectFnAsync: async () => ({
                 portfolioAppGridState: {},
                 portfolioAppDetailState: {},
                 groupingChooser: {value: ['region', 'sector', 'symbol'], favorites: []},
-                ordersFilter: {}
+                ordersFilter: {value: []}
             }),
             persistWith: {prefKey: this.prefKey}
         });

@@ -17,6 +17,7 @@ import {
     traderCol
 } from '../../../core/columns';
 import {DetailPanelModel} from './DetailPanelModel';
+import {action} from '@xh/hoist/mobx';
 
 export class OrdersPanelModel extends HoistModel {
     parentModel: DetailPanelModel;
@@ -116,6 +117,7 @@ export class OrdersPanelModel extends HoistModel {
         }
     }
 
+    @action
     updateState(newState) {
         const {gridModel, filterChooserModel} = this,
             gridPm = gridModel.persistenceModel;
