@@ -18,6 +18,7 @@ import {
 } from '../../../core/columns';
 import {DetailPanelModel} from './DetailPanelModel';
 import {action} from '@xh/hoist/mobx';
+import {parseFilter} from '@xh/hoist/data';
 
 export class OrdersPanelModel extends HoistModel {
     parentModel: DetailPanelModel;
@@ -120,11 +121,19 @@ export class OrdersPanelModel extends HoistModel {
     @action
     updateState(newState) {
         const {gridModel, filterChooserModel} = this,
-            gridPm = gridModel.persistenceModel;
+            gridPm = gridModel.persistenceModel,
+            ordersFilterValue = newState.ordersFilter ? newState.ordersFilter.value : [],
+            ordersFilterFavorites = newState.ordersFilter ? newState.ordersFilter.favorites : [];
         gridPm.state = newState.portfolioAppDetailState;
         gridPm.updateGridColumns();
         gridPm.updateGridSort();
 
-        filterChooserModel.setValue(newState.ordersFilter.value);
+        filterChooserModel.setValue(ordersFilterValue);
+        filterChooserModel.setFavorites(ordersFilterFavorites.map(parseFilter));
+    }
+
+    async clearStateAsync() {
+        await this.gridModel.restoreDefaultsAsync({skipWarning: true});
+        this.filterChooserModel.setValue([]);
     }
 }

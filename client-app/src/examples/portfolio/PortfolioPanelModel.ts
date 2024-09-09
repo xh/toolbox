@@ -2,7 +2,7 @@ import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {Store} from '@xh/hoist/data';
 import {logInfo} from '@xh/hoist/utils/js';
 import {GridPanelModel} from './GridPanelModel';
-import {round} from 'lodash';
+import {isNil, round} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {wait, waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
@@ -36,7 +36,7 @@ export class PortfolioPanelModel extends HoistModel {
                 displayName: 'Portfolio'
             },
             canManageGlobal: () => XH.getUser().hasRole('GLOBAL_VIEW_MANAGER'),
-            onChangeAsync: () => this.onViewChangeAsync(),
+            onChangeAsync: value => this.onViewChangeAsync(value),
             newObjectFnAsync: async () => ({
                 portfolioAppGridState: {},
                 portfolioAppDetailState: {},
@@ -135,17 +135,22 @@ export class PortfolioPanelModel extends HoistModel {
         });
     }
 
-    private async onViewChangeAsync() {
+    private async onViewChangeAsync(value) {
         const start = Date.now();
 
         await wait(); // allow masking to start
 
-        const {persistenceManagerModel, gridPanelModel, detailPanelModel, groupingChooserModel} =
-                this,
-            newState = persistenceManagerModel.provider.getData();
-        groupingChooserModel.setValue(newState.groupingChooser?.value ?? []);
-        gridPanelModel.updateState(newState);
-        detailPanelModel.updateState(newState);
+        if (isNil(value)) {
+            this.groupingChooserModel.setValue(['region', 'sector', 'symbol']);
+            await this.gridPanelModel.clearStateAsync();
+            await this.detailPanelModel.clearStateAsync();
+            return;
+        }
+
+        const {gridPanelModel, detailPanelModel, groupingChooserModel} = this;
+        groupingChooserModel.setValue(value.groupingChooser?.value ?? []);
+        gridPanelModel.updateState(value);
+        detailPanelModel.updateState(value);
 
         logInfo(`Rebuilt view | took ${Date.now() - start}ms`, this);
     }

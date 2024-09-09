@@ -37,4 +37,8 @@ export class DetailPanelModel extends HoistModel {
     updateState(newState) {
         this.ordersPanelModel.updateState(newState);
     }
+
+    async clearStateAsync() {
+        await this.ordersPanelModel.clearStateAsync();
+    }
 }

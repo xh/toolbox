@@ -37,6 +37,10 @@ export class GridPanelModel extends HoistModel {
         gridPm.updateGridSort();
     }
 
+    async clearStateAsync() {
+        await this.gridModel.restoreDefaultsAsync({skipWarning: true});
+    }
+
     //------------------
     // Implementation
     //------------------
