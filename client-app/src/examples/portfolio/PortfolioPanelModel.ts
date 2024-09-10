@@ -37,12 +37,6 @@ export class PortfolioPanelModel extends HoistModel {
             },
             canManageGlobal: () => XH.getUser().hasRole('GLOBAL_VIEW_MANAGER'),
             onChangeAsync: value => this.onViewChangeAsync(value),
-            newObjectFnAsync: async () => ({
-                portfolioAppGridState: {},
-                portfolioAppDetailState: {},
-                groupingChooser: {value: ['region', 'sector', 'symbol'], favorites: []},
-                ordersFilter: {value: []}
-            }),
             persistWith: {prefKey: this.prefKey}
         });
 
