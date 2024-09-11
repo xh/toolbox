@@ -26,6 +26,7 @@ class PortfolioService extends BaseService {
 
     void init() {
         createTimer(
+            name: 'updateData',
             primaryOnly: true,
             runFn: this.&updateData,
             interval: {config.updateIntervalSecs * SECONDS},
