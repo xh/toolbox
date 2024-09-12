@@ -2,7 +2,12 @@ import {grid} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {button, colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
+import {
+    button,
+    colChooserButton,
+    exportButton,
+    printGridButton
+} from '@xh/hoist/desktop/cmp/button';
 import {buttonGroupInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
@@ -85,15 +90,19 @@ const tbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
 
 const bbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
     const {displayMode, gridModel} = model,
-        {store} = gridModel;
+        {store} = gridModel,
+        displayingTiles = displayMode === 'tiles';
 
     return toolbar(
         filler(),
         storeCountLabel({store, unit: 'contact'}),
         toolbarSep(),
         colChooserButton({
-            disabled: displayMode !== 'grid'
+            disabled: displayingTiles
         }),
-        exportButton()
+        exportButton(),
+        printGridButton({
+            disabled: displayingTiles
+        })
     );
 });

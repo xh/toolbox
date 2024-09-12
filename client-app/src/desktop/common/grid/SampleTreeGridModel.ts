@@ -113,6 +113,7 @@ export class SampleTreeGridModel extends HoistModel {
     private createGridModel(includeCheckboxes) {
         return new GridModel({
             treeMode: true,
+            printSupport: true,
             showSummary: 'bottom',
             store: {
                 loadRootAsSummary: true,

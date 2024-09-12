@@ -51,7 +51,12 @@ export const formPanel = hoistCmp.factory({
                 icon: Icon.edit(),
                 width: 870,
                 height: 550,
-                item: hframe(formContent(), displayOptions())
+                item: hframe(formContent(), displayOptions()),
+                modelConfig: {
+                    collapsible: false,
+                    resizable: false,
+                    printSupport: true
+                }
             })
         });
     }
@@ -252,7 +257,7 @@ const displayOptions = hoistCmp.factory<FormPanelModel>(({model}) => {
     const {formModel} = model;
     return panel({
         title: 'Display Options',
-        className: 'tbox-display-opts',
+        className: 'tbox-display-opts do-not-print',
         icon: Icon.settings(),
         compactHeader: true,
         modelConfig: {side: 'right', defaultSize: 220, resizable: false},

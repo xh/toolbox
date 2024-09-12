@@ -35,6 +35,7 @@ export class OrdersPanelModel extends HoistModel {
 
         const hidden = true;
         this.gridModel = new GridModel({
+            printSupport: true,
             groupBy: 'dir',
             sortBy: 'time|desc',
             emptyText: 'No orders found...',

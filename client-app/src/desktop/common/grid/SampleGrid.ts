@@ -6,6 +6,7 @@ import {
     colAutosizeButton,
     colChooserButton,
     exportButton,
+    printGridButton,
     refreshButton
 } from '@xh/hoist/desktop/cmp/button';
 import {select} from '@xh/hoist/desktop/cmp/input';
@@ -32,7 +33,6 @@ export interface SampleGridProps extends HoistProps<SampleGridModel>, BoxProps {
 
 export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
     model: uses(SampleGridModel, {createDefault: true}),
-    className: 'tb-sample-grid',
 
     render({model, omitMask, omitGridTools, ...props}) {
         const {selectedRecords} = model.gridModel,
@@ -55,7 +55,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
             return panel({
                 ref: model.panelRef,
                 mask: omitMask ? null : 'onLoad',
-                item: grid(),
+                item: grid({className: 'tb-sample-grid'}),
                 ...props
             });
         }
@@ -66,7 +66,7 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
             ...props,
             item: hframe(
                 vframe(
-                    grid(),
+                    grid({className: 'tb-sample-grid'}),
                     hbox({
                         items: [Icon.info(), selText],
                         className: 'tb-sample-grid__selbar'
@@ -95,7 +95,8 @@ export const [SampleGrid, sampleGrid] = hoistCmp.withFactory<SampleGridProps>({
                 gridCountLabel({unit: 'companies'}),
                 storeFilterField(),
                 colChooserButton(),
-                exportButton()
+                exportButton(),
+                printGridButton()
             ]
         });
     }

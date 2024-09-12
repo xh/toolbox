@@ -53,7 +53,8 @@ export const basicPanel = hoistCmp.factory({
                 modelConfig: {
                     errorBoundary: true,
                     collapsible: false,
-                    resizable: false
+                    resizable: false,
+                    printSupport: true
                 },
                 headerItems: [
                     switchInput({

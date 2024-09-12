@@ -1,7 +1,7 @@
 import {grid} from '@xh/hoist/cmp/grid';
 import {filler} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button';
+import {button, printGridButton} from '@xh/hoist/desktop/cmp/button';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {recordActionBar} from '@xh/hoist/desktop/cmp/record';
@@ -58,6 +58,7 @@ const bbar = hoistCmp.factory<TodoPanelModel>(({model}) =>
             intent: 'danger',
             tooltip: 'Reset to example defaults.',
             onClick: () => model.resetToDefaultTasksAsync()
-        })
+        }),
+        printGridButton({title: 'Print Tasks'})
     )
 );

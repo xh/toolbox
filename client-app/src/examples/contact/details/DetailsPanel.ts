@@ -24,7 +24,8 @@ export const detailsPanel = hoistCmp.factory({
             modelConfig: {
                 modalSupport: true,
                 collapsible: false,
-                resizable: false
+                resizable: false,
+                printSupport: true
             },
             width: 400,
             minWidth: 400,
