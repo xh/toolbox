@@ -44,7 +44,8 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'select', path: '/select'},
                     {name: 'webSockets', path: '/webSockets'},
                     {name: 'viewColumnFilters', path: '/viewColumnFilters'},
-                    {name: 'storeColumnFilters', path: '/storeColumnFilters'}
+                    {name: 'storeColumnFilters', path: '/storeColumnFilters'},
+                    {name: 'button', path: '/button'}
                 ]
             },
             {
