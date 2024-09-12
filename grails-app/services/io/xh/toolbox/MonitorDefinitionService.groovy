@@ -205,7 +205,7 @@ class MonitorDefinitionService extends DefaultMonitorDefinitionService {
 
     /** Age of the most recent commit loaded from GitHub, in minutes. */
     def gitHubMostRecentCommitAgeMins(MonitorResult result) {
-        def repos = configService.getList('gitHubRepos', []),
+        def repos = configService.getList('gitHubRepos', []) as List<String>,
             maxDate = null
 
         if (repos.empty) {
@@ -216,7 +216,7 @@ class MonitorDefinitionService extends DefaultMonitorDefinitionService {
 
         repos.each {repo ->
             def commitHistory = gitHubService.getCommitsForRepo(repo)
-            maxDate = [maxDate, commitHistory.commits.first()?.committedDate].max()
+            if (commitHistory) maxDate = [maxDate, commitHistory.commits.first()?.committedDate].max()
         }
 
         if (maxDate) {
