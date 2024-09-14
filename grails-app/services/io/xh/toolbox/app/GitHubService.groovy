@@ -45,10 +45,10 @@ class GitHubService extends BaseService {
         } else {
             createTimer(
                 name: 'loadCommits',
-                primaryOnly: true,
                 runFn: this.&loadCommitsForAllRepos,
                 interval: 'gitHubCommitsRefreshMins',
-                intervalUnits: MINUTES
+                intervalUnits: MINUTES,
+                primaryOnly: true
             )
         }
     }
