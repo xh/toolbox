@@ -44,11 +44,10 @@ class GitHubService extends BaseService {
             logWarn('Required "gitHubAccessToken" config not present or set to "none" - no commits will be loaded from GitHub.')
         } else {
             createTimer(
-                name: 'loadCommits',
+                primaryOnly: true,
                 runFn: this.&loadCommitsForAllRepos,
                 interval: 'gitHubCommitsRefreshMins',
-                intervalUnits: MINUTES,
-                primaryOnly: true
+                intervalUnits: MINUTES
             )
         }
     }

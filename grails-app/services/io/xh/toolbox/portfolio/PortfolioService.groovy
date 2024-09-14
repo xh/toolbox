@@ -17,14 +17,17 @@ class PortfolioService extends BaseService {
         historicalPriceGenerationService,
         instrumentGenerationService
 
-    private CachedValue<Portfolio> _portfolio = createCachedValue(name: 'portfolio', replicate: true)
+    private CachedValue<Portfolio> _portfolio = new CachedValue<>(
+        name: 'portfolio',
+        replicate: true,
+        svc: this
+    )
     private ReplicatedMap<String, MarketPrice> _currentPrices = getReplicatedMap('currentPrices')
 
     void init() {
         createTimer(
-            name: 'updateData',
-            runFn: this.&updateData,
             primaryOnly: true,
+            runFn: this.&updateData,
             interval: {config.updateIntervalSecs * SECONDS},
             runImmediatelyAndBlock: true
         )

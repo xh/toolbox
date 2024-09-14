@@ -13,20 +13,22 @@ import static java.lang.Thread.sleep
 @CompileStatic
 class TestCachedValueService extends BaseService {
 
-    private CachedValue<List> resultValue = createCachedValue(
+    private CachedValue<List> resultValue = new CachedValue<>(
         name: 'result',
         replicate: true,
+        svc: this,
         onChange: {CacheValueChanged e ->
             logDebug(e.source.name, [key: e.key, value: e.value])
         }
     )
 
-    private CachedValue<Long> priceValue = createCachedValue(
+    private CachedValue<Long> priceValue = new CachedValue<>(
         name: 'price',
         expireTime: 30*SECONDS,
         replicate: true,
+        svc: this,
         serializeOldValue: true,
-        onChange: { CacheValueChanged e ->
+        onChange: {CacheValueChanged e ->
             logDebug(e.source.name, [key: e.key, value: e.value, oldValue: e.oldValue])
         }
     )
