@@ -14,20 +14,18 @@ import static TestUtils.*
 @CompileStatic
 class TestCacheService extends BaseService {
 
-    private Cache<LocalDate, List> resultCache = new Cache<>(
+    private Cache<LocalDate, List> resultCache = createCache(
         name: 'result',
         replicate: true,
-        svc: this,
         onChange: {CacheValueChanged e ->
             logDebug(e.source.name, [key: e.key, value: e.value])
         }
     )
 
-    private Cache<String, Long> priceCache = new Cache<>(
+    private Cache<String, Long> priceCache = createCache(
         name: 'prices',
         expireTime: {30*SECONDS},
         replicate: true,
-        svc: this,
         serializeOldValue: true,
         onChange: { CacheValueChanged e ->
             logDebug(e.source.name, [key: e.key, value: e.value, oldValue: e.oldValue])

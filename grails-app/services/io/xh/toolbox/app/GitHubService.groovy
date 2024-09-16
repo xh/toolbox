@@ -37,17 +37,18 @@ class GitHubService extends BaseService {
     ConfigService configService
     WebSocketService webSocketService
 
-    private ReplicatedMap<String, CommitHistory> commitsByRepo = getReplicatedMap('commitsByRepo')
+    private ReplicatedMap<String, CommitHistory> commitsByRepo = createReplicatedMap('commitsByRepo')
 
     void init() {
         if (configService.getString('gitHubAccessToken', 'none') == 'none') {
             logWarn('Required "gitHubAccessToken" config not present or set to "none" - no commits will be loaded from GitHub.')
         } else {
             createTimer(
-                primaryOnly: true,
+                name: 'loadCommits',
                 runFn: this.&loadCommitsForAllRepos,
                 interval: 'gitHubCommitsRefreshMins',
-                intervalUnits: MINUTES
+                intervalUnits: MINUTES,
+                primaryOnly: true
             )
         }
     }

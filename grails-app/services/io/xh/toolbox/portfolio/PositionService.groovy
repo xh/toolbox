@@ -17,6 +17,7 @@ class PositionService extends BaseService {
 
     void init() {
         createTimer(
+            name: 'pushUpdates',
             runFn: this.&pushUpdatesToAllSessions,
             interval: {config.pushUpdatesIntervalSecs},
             intervalUnits: SECONDS,
