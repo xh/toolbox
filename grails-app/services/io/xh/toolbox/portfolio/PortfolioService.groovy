@@ -18,7 +18,7 @@ class PortfolioService extends BaseService {
         instrumentGenerationService
 
     private CachedValue<Portfolio> _portfolio = createCachedValue(name: 'portfolio', replicate: true)
-    private ReplicatedMap<String, MarketPrice> _currentPrices = getReplicatedMap('currentPrices')
+    private ReplicatedMap<String, MarketPrice> _currentPrices = createReplicatedMap('currentPrices')
 
     void init() {
         createTimer(

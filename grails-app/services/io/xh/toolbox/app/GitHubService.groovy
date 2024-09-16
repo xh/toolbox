@@ -37,7 +37,7 @@ class GitHubService extends BaseService {
     ConfigService configService
     WebSocketService webSocketService
 
-    private ReplicatedMap<String, CommitHistory> commitsByRepo = getReplicatedMap('commitsByRepo')
+    private ReplicatedMap<String, CommitHistory> commitsByRepo = createReplicatedMap('commitsByRepo')
 
     void init() {
         if (configService.getString('gitHubAccessToken', 'none') == 'none') {
