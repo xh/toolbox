@@ -16,6 +16,7 @@ export const gridPanel = hoistCmp.factory({
         const {collapsedTitle} = model;
 
         return panel({
+            mask: !model.parentModel.persistenceManagerModel.isLoadedInitially,
             modelConfig: {
                 defaultSize: 500,
                 side: 'left',

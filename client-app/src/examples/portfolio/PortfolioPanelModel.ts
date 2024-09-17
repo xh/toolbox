@@ -37,7 +37,8 @@ export class PortfolioPanelModel extends HoistModel {
             },
             canManageGlobal: () => XH.getUser().hasRole('GLOBAL_VIEW_MANAGER'),
             onChangeAsync: value => this.onViewChangeAsync(value),
-            persistWith: {prefKey: this.prefKey}
+            persistWith: {prefKey: this.prefKey},
+            allowEmpty: true
         });
 
         this.groupingChooserModel = this.createGroupingChooserModel();

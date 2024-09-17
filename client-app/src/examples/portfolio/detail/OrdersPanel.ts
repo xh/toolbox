@@ -17,7 +17,10 @@ export const ordersPanel = hoistCmp.factory({
             title: `Orders: ${formatPositionId(positionId)}`,
             icon: Icon.edit(),
             item: grid(),
-            mask: positionId == null || loadModel.isPending,
+            mask:
+                positionId == null ||
+                loadModel.isPending ||
+                !model.parentModel.parentModel.persistenceManagerModel.isLoadedInitially,
             headerItems: [gridCountLabel({unit: 'orders'}), hspacer()],
             bbar: [
                 filterChooser({
