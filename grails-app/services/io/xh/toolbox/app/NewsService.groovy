@@ -12,11 +12,10 @@ import static io.xh.hoist.util.DateTimeUtils.getMINUTES
 
 class NewsService extends BaseService {
 
-    private CachedValue<List<NewsItem>> _newsItems = new CachedValue<>(
+    private CachedValue<List<NewsItem>> _newsItems = createCachedValue(
         name: 'newsItems',
         expireTime: {configService.getInt('newsRefreshMins') * MINUTES},
-        replicate: true,
-        svc: this
+        replicate: true
     )
 
     private JSONClient _jsonClient
