@@ -43,7 +43,7 @@ export class OrdersPanelModel extends HoistModel {
             enableExport: true,
             rowBorders: true,
             showHover: true,
-            persistWith: {path: 'portfolioAppDetailState', ...persistWith},
+            persistWith: {path: 'ordersGrid', ...persistWith},
             columns: [
                 {...symbolCol, pinned: true},
                 {...closingPriceSparklineCol},

@@ -5,6 +5,7 @@ import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
 import {refreshButton} from '@xh/hoist/desktop/cmp/button';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
+import {persistenceManager} from '@xh/hoist/desktop/cmp/persistenceManager';
 import {Icon} from '@xh/hoist/icon';
 import {GridPanelModel} from './GridPanelModel';
 import {PERSIST_MAIN} from './AppModel';
@@ -16,7 +17,6 @@ export const gridPanel = hoistCmp.factory({
         const {collapsedTitle} = model;
 
         return panel({
-            mask: !model.parentModel.persistenceManagerModel.isLoadedInitially,
             modelConfig: {
                 defaultSize: 500,
                 side: 'left',
@@ -25,7 +25,7 @@ export const gridPanel = hoistCmp.factory({
             collapsedTitle,
             collapsedIcon: Icon.treeList(),
             compactHeader: true,
-            tbar: [groupingChooser({flex: 1, icon: Icon.treeList()})],
+            tbar: [persistenceManager(), groupingChooser({flex: 1, icon: Icon.treeList()})],
             item: grid({agOptions: {groupDefaultExpanded: 1}}),
             bbar: [
                 gridCountLabel({unit: 'position'}),

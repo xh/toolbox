@@ -1,5 +1,6 @@
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {Store} from '@xh/hoist/data';
+import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {logInfo} from '@xh/hoist/utils/js';
 import {GridPanelModel} from './GridPanelModel';
 import {isNil, round} from 'lodash';
@@ -18,6 +19,11 @@ export class PortfolioPanelModel extends HoistModel {
     @managed gridPanelModel: GridPanelModel;
     @managed detailPanelModel: DetailPanelModel;
 
+    @bindable.ref initError: Error;
+    @bindable isInitialized: boolean = false;
+
+    initTask = TaskObserver.trackAll();
+
     get prefKey(): string {
         return 'portfolioExample';
     }
@@ -28,6 +34,21 @@ export class PortfolioPanelModel extends HoistModel {
 
     constructor() {
         super();
+        makeObservable(this);
+        this.initAsync();
+    }
+
+    async initAsync() {
+        return this._initAsync()
+            .catch(e => {
+                XH.handleException(e, {showAlert: false});
+                this.initError = e;
+                throw e;
+            })
+            .linkTo(this.initTask);
+    }
+
+    private async _initAsync() {
         const wsService = XH.webSocketService;
 
         this.persistenceManagerModel = new PersistenceManagerModel({
@@ -38,8 +59,14 @@ export class PortfolioPanelModel extends HoistModel {
             canManageGlobal: () => XH.getUser().hasRole('GLOBAL_VIEW_MANAGER'),
             onChangeAsync: value => this.onViewChangeAsync(value),
             persistWith: {prefKey: this.prefKey},
-            allowEmpty: true
+            enableDefault: true
         });
+
+        await waitFor(
+            () => !isNil(this.persistenceManagerModel.lastLoadCompleted),
+            50,
+            30 * SECONDS
+        );
 
         this.groupingChooserModel = this.createGroupingChooserModel();
         this.detailPanelModel = this.createDetailPanelModel();
@@ -56,9 +83,14 @@ export class PortfolioPanelModel extends HoistModel {
             },
             debounce: 300
         });
+
+        this.isInitialized = true;
+        await this.loadAsync();
     }
 
     override async doLoadAsync(loadSpec) {
+        if (!this.isInitialized) return;
+
         const wsService = XH.webSocketService,
             {store, groupingChooserModel, gridPanelModel} = this,
             dims = groupingChooserModel.value;
@@ -131,6 +163,8 @@ export class PortfolioPanelModel extends HoistModel {
     }
 
     private async onViewChangeAsync(value) {
+        if (!this.isInitialized) return;
+
         const start = Date.now();
 
         await wait(); // allow masking to start

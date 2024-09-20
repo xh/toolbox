@@ -47,7 +47,7 @@ export class GridPanelModel extends HoistModel {
 
     private createGridModel(persistWith) {
         return new GridModel({
-            persistWith: {path: 'portfolioAppGridState', ...persistWith},
+            persistWith: {path: 'portfolioGrid', ...persistWith},
             treeMode: true,
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'pnl|desc|abs',
