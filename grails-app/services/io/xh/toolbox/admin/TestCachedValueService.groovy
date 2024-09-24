@@ -2,8 +2,8 @@ package io.xh.toolbox.admin
 
 import groovy.transform.CompileStatic
 import io.xh.hoist.BaseService
-import io.xh.hoist.cache.CacheValueChanged
 import io.xh.hoist.cache.CachedValue
+import io.xh.hoist.cache.CachedValueChanged
 
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
 import static io.xh.toolbox.admin.TestUtils.generatePrice
@@ -16,8 +16,8 @@ class TestCachedValueService extends BaseService {
     private CachedValue<List> resultValue = createCachedValue(
         name: 'result',
         replicate: true,
-        onChange: {CacheValueChanged e ->
-            logDebug(e.source.name, [key: e.key, value: e.value])
+        onChange: {CachedValueChanged e ->
+            logDebug(e.source.name, [value: e.value])
         }
     )
 
@@ -25,9 +25,8 @@ class TestCachedValueService extends BaseService {
         name: 'price',
         expireTime: 30*SECONDS,
         replicate: true,
-        serializeOldValue: true,
-        onChange: { CacheValueChanged e ->
-            logDebug(e.source.name, [key: e.key, value: e.value, oldValue: e.oldValue])
+        onChange: { CachedValueChanged e ->
+            logDebug(e.source.name, [value: e.value, oldValue: e.oldValue])
         }
     )
 
@@ -35,26 +34,22 @@ class TestCachedValueService extends BaseService {
 
     void init() {
         super.init()
-        initData()
+        if (isPrimary) initData()
+        resultValue.ensureAvailable()
     }
 
     private void initData() {
-        if (isPrimary) {
-            sleep(15 * SECONDS)    // Simulate delay to generate results
-            resultValue.set(generateResultSet())
-            priceValue.getOrCreate {
-                generatePrice()
-            }
+        resultValue.set(generateResultSet())
+        priceValue.getOrCreate {
+            generatePrice()
         }
-        resultValue.ensureAvailable()
-
-        logInfo('Values', allValues.collectEntries { [it.name, it.get()]})
+        logInfo('Values', allValues.collectEntries { [it.name, it.get()] })
     }
 
     void clearCaches() {
         super.clearCaches()
         allValues.each {it.clear()}
-        initData()
+        if (isPrimary) initData()
     }
 
     Map getAdminStats() {
