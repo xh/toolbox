@@ -12,7 +12,7 @@ import com.esotericsoftware.kryo.KryoSerializable
 import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
 import io.xh.hoist.BaseService
-import io.xh.hoist.cache.CachedValue
+import io.xh.hoist.cachedvalue.CachedValue
 import io.xh.hoist.log.LogSupport
 
 

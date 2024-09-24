@@ -2,13 +2,12 @@ package io.xh.toolbox.admin
 
 import groovy.transform.CompileStatic
 import io.xh.hoist.BaseService
-import io.xh.hoist.cache.CachedValue
-import io.xh.hoist.cache.CachedValueChanged
+import io.xh.hoist.cachedvalue.CachedValue
+import io.xh.hoist.cachedvalue.CachedValueChanged
 
 import static io.xh.hoist.util.DateTimeUtils.SECONDS
 import static io.xh.toolbox.admin.TestUtils.generatePrice
 import static io.xh.toolbox.admin.TestUtils.generateResultSet
-import static java.lang.Thread.sleep
 
 @CompileStatic
 class TestCachedValueService extends BaseService {
