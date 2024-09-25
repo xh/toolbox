@@ -3,7 +3,7 @@ package io.xh.toolbox.admin
 import groovy.transform.CompileStatic
 import io.xh.hoist.BaseService
 import io.xh.hoist.cache.Cache
-import io.xh.hoist.cache.CacheValueChanged
+import io.xh.hoist.cache.CacheEntryChanged
 
 import java.time.LocalDate
 
@@ -17,7 +17,7 @@ class TestCacheService extends BaseService {
     private Cache<LocalDate, List> resultCache = createCache(
         name: 'result',
         replicate: true,
-        onChange: {CacheValueChanged e ->
+        onChange: { CacheEntryChanged e ->
             logDebug(e.source.name, [key: e.key, value: e.value])
         }
     )
@@ -27,7 +27,7 @@ class TestCacheService extends BaseService {
         expireTime: {30*SECONDS},
         replicate: true,
         serializeOldValue: true,
-        onChange: { CacheValueChanged e ->
+        onChange: { CacheEntryChanged e ->
             logDebug(e.source.name, [key: e.key, value: e.value, oldValue: e.oldValue])
         }
     )
