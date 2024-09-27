@@ -1,6 +1,6 @@
 # Changelog
 
-## v6.0-SNAPSHOT - unreleased
+## v5.2.0
 
 ### New Features
 * Enabled new Correlation ID tracking support in Hoist.
@@ -9,10 +9,10 @@
 * Fixed `InputsPanel` "Set Focus" popover.
 
 ### 📚 Libraries
-* hoist-core 21.0.0
-* hoist-react 67.0.0
+* hoist-core 23.0.0
+* @xh/hoist 68.1.0
 
-## 5.1.0 - 2024-06-21
+## v5.1.0 - 2024-06-21
 
 ### 📚 Libraries
 * hoist-core 20.1.0
