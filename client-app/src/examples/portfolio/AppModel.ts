@@ -1,4 +1,5 @@
-import {XH} from '@xh/hoist/core';
+import {managed, XH} from '@xh/hoist/core';
+import {PersistenceManagerModel} from '@xh/hoist/core/persist/persistenceManager';
 import {themeAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../../core/svc/PortfolioService';
@@ -10,9 +11,22 @@ export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
 
+    @managed persistenceManagerModel;
+
     override async initAsync() {
         await super.initAsync();
         await XH.installServicesAsync(PortfolioService);
+
+        this.persistenceManagerModel = await PersistenceManagerModel.createAsync({
+            entity: {
+                name: 'PortfolioExample',
+                displayName: 'View'
+            },
+            canManageGlobal: () => XH.getUser().hasRole('GLOBAL_VIEW_MANAGER'),
+            persistWith: {prefKey: 'portfolioExample'},
+            enableDefault: true,
+            enableAutoSave: true
+        });
 
         this.addReaction({
             track: () => XH.webSocketService.connected,

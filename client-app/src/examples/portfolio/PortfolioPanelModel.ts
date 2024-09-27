@@ -1,26 +1,27 @@
 import {HoistModel, managed, TaskObserver, XH} from '@xh/hoist/core';
 import {Store} from '@xh/hoist/data';
-import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {logInfo} from '@xh/hoist/utils/js';
 import {GridPanelModel} from './GridPanelModel';
 import {isNil, round} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {wait, waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
-import {PersistenceManagerModel} from '@xh/hoist/desktop/cmp/persistenceManager';
 import {DetailPanelModel} from './detail/DetailPanelModel';
+import {PersistenceManagerModel} from '@xh/hoist/core/persist/persistenceManager';
+import {AppModel} from './AppModel';
 
 export class PortfolioPanelModel extends HoistModel {
     @managed session;
 
-    @managed persistenceManagerModel: PersistenceManagerModel;
+    @managed @observable.ref persistenceManagerModel: PersistenceManagerModel =
+        AppModel.instance.persistenceManagerModel;
     @managed groupingChooserModel: GroupingChooserModel;
     @managed store = this.createStore();
     @managed gridPanelModel: GridPanelModel;
     @managed detailPanelModel: DetailPanelModel;
 
     @bindable.ref initError: Error;
-    @bindable isInitialized: boolean = false;
 
     initTask = TaskObserver.trackAll();
 
@@ -35,38 +36,7 @@ export class PortfolioPanelModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
-        this.initAsync();
-    }
-
-    async initAsync() {
-        return this._initAsync()
-            .catch(e => {
-                XH.handleException(e, {showAlert: false});
-                this.initError = e;
-                throw e;
-            })
-            .linkTo(this.initTask);
-    }
-
-    private async _initAsync() {
         const wsService = XH.webSocketService;
-
-        this.persistenceManagerModel = new PersistenceManagerModel({
-            entity: {
-                name: 'PortfolioExample',
-                displayName: 'Portfolio'
-            },
-            canManageGlobal: () => XH.getUser().hasRole('GLOBAL_VIEW_MANAGER'),
-            onChangeAsync: value => this.onViewChangeAsync(value),
-            persistWith: {prefKey: this.prefKey},
-            enableDefault: true
-        });
-
-        await waitFor(
-            () => !isNil(this.persistenceManagerModel.lastLoadCompleted),
-            50,
-            30 * SECONDS
-        );
 
         this.groupingChooserModel = this.createGroupingChooserModel();
         this.detailPanelModel = this.createDetailPanelModel();
@@ -83,13 +53,14 @@ export class PortfolioPanelModel extends HoistModel {
             },
             debounce: 300
         });
-
-        this.isInitialized = true;
-        await this.loadAsync();
+        this.addReaction({
+            track: () => this.persistenceManagerModel.value,
+            run: value => this.onViewChangeAsync(value)
+        });
     }
 
     override async doLoadAsync(loadSpec) {
-        if (!this.isInitialized) return;
+        if (!this.groupingChooserModel) return;
 
         const wsService = XH.webSocketService,
             {store, groupingChooserModel, gridPanelModel} = this,
@@ -140,30 +111,33 @@ export class PortfolioPanelModel extends HoistModel {
     }
 
     private createGroupingChooserModel() {
+        const {persistenceManagerModel} = this;
         return new GroupingChooserModel({
             dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
             initialValue: ['region', 'sector', 'symbol'],
-            persistWith: {...this.persistenceManagerModel.provider},
+            persistWith: {persistenceManagerModel},
             allowEmpty: true
         });
     }
 
     private createGridPanelModel() {
+        const {persistenceManagerModel} = this;
         return new GridPanelModel({
-            persistWith: this.persistenceManagerModel.provider,
+            persistWith: {persistenceManagerModel},
             parentModel: this
         });
     }
 
     private createDetailPanelModel() {
+        const {persistenceManagerModel} = this;
         return new DetailPanelModel({
-            persistWith: this.persistenceManagerModel.provider,
+            persistWith: {persistenceManagerModel},
             parentModel: this
         });
     }
 
     private async onViewChangeAsync(value) {
-        if (!this.isInitialized) return;
+        if (!this.groupingChooserModel) return;
 
         const start = Date.now();
 

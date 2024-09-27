@@ -12,7 +12,7 @@ export const portfolioPanel = hoistCmp.factory<PortfolioPanelModel>({
     render({model}) {
         return panel({
             mask: [model.loadModel, model.initTask],
-            items: model.isInitialized
+            items: model.persistenceManagerModel
                 ? [hframe(gridPanel(), mapPanel()), detailPanel()]
                 : placeholder()
         });
