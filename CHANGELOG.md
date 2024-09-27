@@ -1,5 +1,7 @@
 # Changelog
 
+## v6.0-SNAPSHOT - unreleased
+
 ## v5.2.0
 
 ### New Features
