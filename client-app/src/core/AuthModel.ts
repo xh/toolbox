@@ -11,6 +11,8 @@ export class AuthModel extends HoistAuthModel {
     client: AuthZeroClient;
 
     override async completeAuthAsync(): Promise<boolean> {
+        this.setMaskMsg('Authenticating...');
+
         // Toolbox's server-provided configuration allows for OAuth to be disabled entirely, falling back to a username
         // and password login. This is intended primarily for development scenarios - e.g. local mobile development
         // where you wish to load the app on a local IP that's not a valid redirect URL as per Auth0. Note that this
@@ -21,7 +23,9 @@ export class AuthModel extends HoistAuthModel {
             // then return the result of the server-based auth check - will be false if the user does not have an
             // active session, at which point the Hoist login form will be displayed.
             XH.appSpec.enableLoginForm = true;
-            return this.getAuthStatusFromServerAsync();
+            const ret = await this.getAuthStatusFromServerAsync();
+            this.setMaskMsg(null);
+            return ret;
         }
 
         // Otherwise we proceed with the primary OAuth flow by constructing and initializing an AuthZeroClient, one of
@@ -49,7 +53,9 @@ export class AuthModel extends HoistAuthModel {
         // installed above, which will be read and validated by Toolbox's server-side implementation of
         // `AuthenticationService.completeAuthentication()`. Toolbox is unusual in that it is a deliberately open site
         // and will create an account on the fly for any new user, so we expect this request to always return true.
-        return this.getAuthStatusFromServerAsync();
+        const ret = await this.getAuthStatusFromServerAsync();
+        this.setMaskMsg(null);
+        return ret;
     }
 
     // This model's override calls the super implementation to clear the user's session on the Toolbox server, then
@@ -57,5 +63,10 @@ export class AuthModel extends HoistAuthModel {
     override async logoutAsync() {
         await super.logoutAsync();
         await this.client?.logoutAsync();
+    }
+
+    // Update overall load mask message to provide an indication that this auth flow is processing.
+    private setMaskMsg(msg: string) {
+        XH.appContainerModel.initializingLoadMaskMessage = msg;
     }
 }

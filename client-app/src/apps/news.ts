@@ -15,5 +15,6 @@ XH.renderApp({
     authModelClass: AuthModel,
     isMobileApp: false,
     enableLogout: true,
+    showBrowserContextMenu: true,
     checkAccess: () => true
 });

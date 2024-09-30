@@ -38,7 +38,7 @@ class AuthenticationService extends BaseAuthenticationService  {
         }
 
         def token = request.getHeader('x-xh-idt'),
-            tokenResult = auth0Service.validateToken(token)
+            tokenResult = token ? auth0Service.validateToken(token) : null
         if (tokenResult) {
             def user = userService.getOrCreateFromTokenResult(tokenResult)
             setUser(request, user)
