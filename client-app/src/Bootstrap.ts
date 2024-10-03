@@ -10,7 +10,6 @@
 // App Services -- Import and Register
 //-----------------------------------------------------------------
 import {XH} from '@xh/hoist/core';
-import {PersistenceManagerModel} from '@xh/hoist/core/persist/persistenceManager';
 import {when} from '@xh/hoist/mobx';
 
 import {ContactService} from './examples/contact/svc/ContactService';
@@ -25,7 +24,6 @@ declare module '@xh/hoist/core' {
         gitHubService: GitHubService;
         portfolioService: PortfolioService;
         taskService: TaskService;
-        persistenceManagerModel: PersistenceManagerModel;
     }
     // @ts-ignore - Help IntelliJ recognize uses of injected service methods on the `XH` singleton.
     export const XH: XHApi;

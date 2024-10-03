@@ -8,14 +8,14 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {wait, waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
 import {DetailPanelModel} from './detail/DetailPanelModel';
-import {PersistenceManagerModel} from '@xh/hoist/core/persist/persistenceManager';
 import {AppModel} from './AppModel';
+import {ViewManagerModel} from '@xh/hoist/core/persist/viewManager';
 
 export class PortfolioPanelModel extends HoistModel {
     @managed session;
 
-    @managed @observable.ref persistenceManagerModel: PersistenceManagerModel =
-        AppModel.instance.persistenceManagerModel;
+    @managed @observable.ref viewManagerModel: ViewManagerModel =
+        AppModel.instance.viewManagerModel;
     @managed groupingChooserModel: GroupingChooserModel;
     @managed store = this.createStore();
     @managed gridPanelModel: GridPanelModel;
@@ -54,7 +54,7 @@ export class PortfolioPanelModel extends HoistModel {
             debounce: 300
         });
         this.addReaction({
-            track: () => this.persistenceManagerModel.value,
+            track: () => this.viewManagerModel.value,
             run: value => this.onViewChangeAsync(value)
         });
     }
@@ -111,27 +111,27 @@ export class PortfolioPanelModel extends HoistModel {
     }
 
     private createGroupingChooserModel() {
-        const {persistenceManagerModel} = this;
+        const {viewManagerModel} = this;
         return new GroupingChooserModel({
             dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
             initialValue: ['region', 'sector', 'symbol'],
-            persistWith: {persistenceManagerModel},
+            persistWith: {viewManagerModel},
             allowEmpty: true
         });
     }
 
     private createGridPanelModel() {
-        const {persistenceManagerModel} = this;
+        const {viewManagerModel} = this;
         return new GridPanelModel({
-            persistWith: {persistenceManagerModel},
+            persistWith: {viewManagerModel},
             parentModel: this
         });
     }
 
     private createDetailPanelModel() {
-        const {persistenceManagerModel} = this;
+        const {viewManagerModel} = this;
         return new DetailPanelModel({
-            persistWith: {persistenceManagerModel},
+            persistWith: {viewManagerModel},
             parentModel: this
         });
     }
