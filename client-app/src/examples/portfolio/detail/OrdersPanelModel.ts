@@ -124,7 +124,7 @@ export class OrdersPanelModel extends HoistModel {
             gridPm = gridModel.persistenceModel,
             ordersFilterValue = newState.ordersFilter ? newState.ordersFilter.value : [],
             ordersFilterFavorites = newState.ordersFilter ? newState.ordersFilter.favorites : [];
-        gridPm.state = newState.ordersGrid;
+        gridPm.patchState(newState.ordersGrid);
         gridPm.updateGridColumns();
         gridPm.updateGridSort();
 

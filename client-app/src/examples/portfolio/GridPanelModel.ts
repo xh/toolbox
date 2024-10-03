@@ -31,7 +31,7 @@ export class GridPanelModel extends HoistModel {
     updateState(newState) {
         const {gridModel} = this;
         const gridPm = gridModel.persistenceModel;
-        gridPm.state = newState.portfolioGrid;
+        gridPm.patchState(newState.portfolioGrid);
 
         gridPm.updateGridColumns();
         gridPm.updateGridSort();
