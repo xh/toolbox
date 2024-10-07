@@ -26,7 +26,7 @@ export const gridPanel = hoistCmp.factory({
             collapsedIcon: Icon.treeList(),
             compactHeader: true,
             tbar: [
-                viewManager({viewMenuProps: {showPrivateViewsInSubMenu: true}}),
+                viewManager({viewMenuProps: {}}),
                 groupingChooser({flex: 1, icon: Icon.treeList()})
             ],
             item: grid({agOptions: {groupDefaultExpanded: 1}}),

@@ -38,7 +38,10 @@ export class GridPanelModel extends HoistModel {
     }
 
     async clearStateAsync() {
-        await this.gridModel.restoreDefaultsAsync({skipWarning: true});
+        await this.gridModel.restoreDefaultsAsync({
+            skipWarning: true,
+            skipClearPersistenceModel: true
+        });
     }
 
     //------------------

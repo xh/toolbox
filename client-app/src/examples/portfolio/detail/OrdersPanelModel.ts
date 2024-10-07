@@ -63,6 +63,7 @@ export class OrdersPanelModel extends HoistModel {
         this.filterChooserModel = new FilterChooserModel({
             bind: this.gridModel.store,
             persistWith: {path: 'ordersFilter', ...persistWith},
+            initialValue: null,
             fieldSpecs: [
                 'symbol',
                 'trader',
@@ -122,7 +123,7 @@ export class OrdersPanelModel extends HoistModel {
     updateState(newState) {
         const {gridModel, filterChooserModel} = this,
             gridPm = gridModel.persistenceModel,
-            ordersFilterValue = newState.ordersFilter ? newState.ordersFilter.value : [],
+            ordersFilterValue = newState.ordersFilter ? newState.ordersFilter.value : null,
             ordersFilterFavorites = newState.ordersFilter ? newState.ordersFilter.favorites : [];
         gridPm.patchState(newState.ordersGrid);
         gridPm.updateGridColumns();
@@ -133,7 +134,10 @@ export class OrdersPanelModel extends HoistModel {
     }
 
     async clearStateAsync() {
-        await this.gridModel.restoreDefaultsAsync({skipWarning: true});
-        this.filterChooserModel.setValue([]);
+        await this.gridModel.restoreDefaultsAsync({
+            skipWarning: true,
+            skipClearPersistenceModel: true
+        });
+        this.filterChooserModel.setValue(null);
     }
 }

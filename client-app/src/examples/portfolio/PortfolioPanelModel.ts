@@ -3,7 +3,7 @@ import {Store} from '@xh/hoist/data';
 import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {logInfo} from '@xh/hoist/utils/js';
 import {GridPanelModel} from './GridPanelModel';
-import {isNil, round} from 'lodash';
+import {isEmpty, round} from 'lodash';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {wait, waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
@@ -55,7 +55,8 @@ export class PortfolioPanelModel extends HoistModel {
         });
         this.addReaction({
             track: () => this.viewManagerModel.value,
-            run: value => this.onViewChangeAsync(value)
+            run: value => this.onViewChangeAsync(value),
+            debounce: 1000
         });
     }
 
@@ -116,7 +117,7 @@ export class PortfolioPanelModel extends HoistModel {
             dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
             initialValue: ['region', 'sector', 'symbol'],
             persistWith: {viewManagerModel},
-            allowEmpty: true
+            allowEmpty: false
         });
     }
 
@@ -143,7 +144,7 @@ export class PortfolioPanelModel extends HoistModel {
 
         await wait(); // allow masking to start
 
-        if (isNil(value)) {
+        if (isEmpty(value)) {
             this.groupingChooserModel.setValue(['region', 'sector', 'symbol']);
             await this.gridPanelModel.clearStateAsync();
             await this.detailPanelModel.clearStateAsync();
@@ -151,7 +152,9 @@ export class PortfolioPanelModel extends HoistModel {
         }
 
         const {gridPanelModel, detailPanelModel, groupingChooserModel} = this;
-        groupingChooserModel.setValue(value.groupingChooser?.value ?? []);
+        groupingChooserModel.setValue(
+            value.groupingChooser?.value ?? ['region', 'sector', 'symbol']
+        );
         gridPanelModel.updateState(value);
         detailPanelModel.updateState(value);
 
