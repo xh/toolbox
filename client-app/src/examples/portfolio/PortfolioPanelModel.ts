@@ -56,6 +56,7 @@ export class PortfolioPanelModel extends HoistModel {
         this.addReaction({
             track: () => this.viewManagerModel.value,
             run: value => this.onViewChangeAsync(value),
+            fireImmediately: true,
             debounce: 1000
         });
     }

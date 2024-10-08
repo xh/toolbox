@@ -139,5 +139,6 @@ export class OrdersPanelModel extends HoistModel {
             skipClearPersistenceModel: true
         });
         this.filterChooserModel.setValue(null);
+        this.filterChooserModel.setFavorites([]);
     }
 }
