@@ -2,7 +2,7 @@ package io.xh.toolbox.app
 
 
 import io.xh.hoist.BaseService
-import io.xh.hoist.cache.CachedValue
+import io.xh.hoist.cachedvalue.CachedValue
 import io.xh.hoist.http.JSONClient
 import io.xh.toolbox.NewsItem
 import org.apache.hc.client5.http.classic.methods.HttpGet
@@ -12,11 +12,10 @@ import static io.xh.hoist.util.DateTimeUtils.getMINUTES
 
 class NewsService extends BaseService {
 
-    private CachedValue<List<NewsItem>> _newsItems = new CachedValue<>(
+    private CachedValue<List<NewsItem>> _newsItems = createCachedValue(
         name: 'newsItems',
         expireTime: {configService.getInt('newsRefreshMins') * MINUTES},
-        replicate: true,
-        svc: this
+        replicate: true
     )
 
     private JSONClient _jsonClient

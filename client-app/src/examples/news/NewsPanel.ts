@@ -15,7 +15,11 @@ export const newsPanel = hoistCmp.factory({
             className: 'tb-news-panel',
             width: '100%',
             height: '100%',
-            item: dataView(),
+            item: dataView({
+                // Allow standard OS-level selection of text within the DataView.
+                // Works along with AppSpec config `showBrowserContextMenu: true` in news.ts.
+                agOptions: {enableCellTextSelection: true}
+            }),
             mask: 'onLoad',
             bbar: bbar()
         });

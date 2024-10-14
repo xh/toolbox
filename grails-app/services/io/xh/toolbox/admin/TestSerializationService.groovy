@@ -12,16 +12,15 @@ import com.esotericsoftware.kryo.KryoSerializable
 import com.esotericsoftware.kryo.io.Input
 import com.esotericsoftware.kryo.io.Output
 import io.xh.hoist.BaseService
-import io.xh.hoist.cache.CachedValue
+import io.xh.hoist.cachedvalue.CachedValue
 import io.xh.hoist.log.LogSupport
 
 
 class SerializationTestService extends BaseService {
 
-    private CachedValue<TestObject> testValue = new CachedValue<>(
+    private CachedValue<TestObject> testValue = createCachedValue(
         name: 'testValue',
-        replicate: true,
-        svc: this
+        replicate: true
     )
 
     void init() {
