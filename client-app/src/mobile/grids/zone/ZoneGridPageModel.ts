@@ -37,7 +37,14 @@ export class ZoneGridPageModel extends HoistModel {
         columns: [
             companyCol,
             winLoseCol,
-            cityCol,
+            {
+                ...cityCol,
+                appData: {
+                    multiZoneLabelRenderer: rec => {
+                        return rec.data.city + ' DON';
+                    }
+                }
+            },
             profitLossCol,
             {...tradeVolumeCol, headerName: 'Vol'},
             tradeDateCol,

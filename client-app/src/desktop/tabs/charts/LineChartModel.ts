@@ -1,8 +1,8 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {observable, makeObservable, runInAction, bindable} from '@xh/hoist/mobx';
-import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
+import {Highcharts} from '@xh/hoist/kit/highcharts';
 
 export class LineChartModel extends HoistModel {
     @bindable currentSymbol: string = '';
@@ -52,10 +52,24 @@ export class LineChartModel extends HoistModel {
     private getChartModelCfg() {
         const fillColor = Highcharts.getOptions().colors[0];
         return {
+            exporting: {
+                enabled: true,
+                buttons: {
+                    contextButton: {
+                        menuItems: [
+                            'viewFullscreen',
+                            'separator',
+                            ...(Highcharts.isWebKit ? ['copyToClipboard'] : []),
+                            'printChart',
+                            'separator',
+                            'downloadCSV'
+                        ]
+                    }
+                }
+            },
             chart: {zoomType: 'x'},
             navigator: {enabled: true},
             rangeSelector: {enabled: true},
-            exporting: {enabled: true},
             legend: {enabled: false},
             scrollbar: {enabled: false},
             xAxis: {type: 'datetime'},
