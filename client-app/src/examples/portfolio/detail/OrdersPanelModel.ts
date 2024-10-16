@@ -135,8 +135,7 @@ export class OrdersPanelModel extends HoistModel {
 
     async clearStateAsync() {
         await this.gridModel.restoreDefaultsAsync({
-            skipWarning: true,
-            skipClearPersistenceModel: true
+            skipWarning: true
         });
         this.filterChooserModel.setValue(null);
         this.filterChooserModel.setFavorites([]);

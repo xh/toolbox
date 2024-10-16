@@ -8,7 +8,6 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {viewManager} from '@xh/hoist/desktop/cmp/viewManager';
 import {Icon} from '@xh/hoist/icon';
 import {GridPanelModel} from './GridPanelModel';
-import {PERSIST_MAIN} from './AppModel';
 
 export const gridPanel = hoistCmp.factory({
     model: uses(GridPanelModel),
@@ -17,11 +16,7 @@ export const gridPanel = hoistCmp.factory({
         const {collapsedTitle} = model;
 
         return panel({
-            modelConfig: {
-                defaultSize: 500,
-                side: 'left',
-                persistWith: {...PERSIST_MAIN, path: 'positionsPanel'}
-            },
+            model: model.panelModel,
             collapsedTitle,
             collapsedIcon: Icon.treeList(),
             compactHeader: true,

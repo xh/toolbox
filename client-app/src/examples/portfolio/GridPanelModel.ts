@@ -1,4 +1,5 @@
 import {HoistModel, managed} from '@xh/hoist/core';
+import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {action, bindable, makeObservable} from '@xh/hoist/mobx';
 import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {mktValCol, nameCol, pnlCol} from '../../core/columns';
@@ -9,6 +10,7 @@ export class GridPanelModel extends HoistModel {
     @bindable loadTimestamp: number;
 
     @managed gridModel: GridModel;
+    @managed panelModel: PanelModel;
 
     parentModel: PortfolioPanelModel;
 
@@ -25,6 +27,7 @@ export class GridPanelModel extends HoistModel {
         makeObservable(this);
         this.parentModel = parentModel;
         this.gridModel = this.createGridModel(persistWith);
+        this.panelModel = this.createPanelModel(persistWith);
     }
 
     @action
@@ -32,21 +35,29 @@ export class GridPanelModel extends HoistModel {
         const {gridModel} = this;
         const gridPm = gridModel.persistenceModel;
         gridPm.patchState(newState.portfolioGrid);
-
         gridPm.updateGridColumns();
         gridPm.updateGridSort();
+
+        this.panelModel.size = newState.positionsPanel.size;
+        this.panelModel.collapsed = newState.positionsPanel.collapsed;
     }
 
     async clearStateAsync() {
-        await this.gridModel.restoreDefaultsAsync({
-            skipWarning: true,
-            skipClearPersistenceModel: true
-        });
+        await this.gridModel.restoreDefaultsAsync({skipWarning: true});
+        this.panelModel.size = this.panelModel.defaultSize;
     }
 
     //------------------
     // Implementation
     //------------------
+
+    private createPanelModel(persistWith) {
+        return new PanelModel({
+            defaultSize: 500,
+            side: 'left',
+            persistWith: {path: 'positionsPanel', ...persistWith}
+        });
+    }
 
     private createGridModel(persistWith) {
         return new GridModel({
