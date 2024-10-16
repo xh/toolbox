@@ -12,7 +12,6 @@ export const ordersPanel = hoistCmp.factory({
 
     render({model}) {
         const {positionId, loadModel} = model;
-
         return panel({
             title: `Orders: ${formatPositionId(positionId)}`,
             icon: Icon.edit(),

@@ -1,6 +1,7 @@
-import {HoistModel, lookup, managed} from '@xh/hoist/core';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {observable, makeObservable} from '@xh/hoist/mobx';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
+import {ChartsPanelModel} from './charts/ChartsPanelModel';
 import {OrdersPanelModel} from './OrdersPanelModel';
 import {PERSIST_DETAIL} from '../AppModel';
 import {PortfolioPanelModel} from '../PortfolioPanelModel';
@@ -8,8 +9,8 @@ import {PortfolioPanelModel} from '../PortfolioPanelModel';
 export class DetailPanelModel extends HoistModel {
     @observable positionId = null;
 
-    @lookup(PortfolioPanelModel) parentModel;
-    @managed ordersPanelModel = new OrdersPanelModel(this);
+    @managed ordersPanelModel: OrdersPanelModel;
+    @managed chartsPanelModel: ChartsPanelModel;
 
     @managed panelSizingModel = new PanelModel({
         defaultSize: 400,
@@ -20,22 +21,24 @@ export class DetailPanelModel extends HoistModel {
         persistWith: PERSIST_DETAIL
     });
 
+    parentModel: PortfolioPanelModel;
+
     get collapsed() {
         return this.panelSizingModel.collapsed;
     }
 
-    constructor() {
+    constructor({persistWith, parentModel}) {
         super();
         makeObservable(this);
+        this.parentModel = parentModel;
+        this.ordersPanelModel = new OrdersPanelModel({persistWith, parentModel: this});
     }
 
-    override onLinked() {
-        this.addReaction({
-            track: () => this.parentModel.selectedPosition,
-            run: position => {
-                this.positionId = position?.id ?? null;
-            },
-            debounce: 300
-        });
+    updateState(newState) {
+        this.ordersPanelModel.updateState(newState);
+    }
+
+    async clearStateAsync() {
+        await this.ordersPanelModel.clearStateAsync();
     }
 }

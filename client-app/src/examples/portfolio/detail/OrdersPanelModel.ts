@@ -2,7 +2,6 @@ import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {isNil, map, uniq} from 'lodash';
-import {PERSIST_DETAIL} from '../AppModel';
 import {
     closingPriceSparklineCol,
     orderExecDay,
@@ -18,6 +17,8 @@ import {
     traderCol
 } from '../../../core/columns';
 import {DetailPanelModel} from './DetailPanelModel';
+import {action} from '@xh/hoist/mobx';
+import {parseFilter} from '@xh/hoist/data';
 
 export class OrdersPanelModel extends HoistModel {
     parentModel: DetailPanelModel;
@@ -28,7 +29,7 @@ export class OrdersPanelModel extends HoistModel {
         return this.parentModel.positionId;
     }
 
-    constructor(parentModel) {
+    constructor({persistWith, parentModel}) {
         super();
 
         this.parentModel = parentModel;
@@ -42,7 +43,7 @@ export class OrdersPanelModel extends HoistModel {
             enableExport: true,
             rowBorders: true,
             showHover: true,
-            persistWith: {...PERSIST_DETAIL, path: 'ordersGrid'},
+            persistWith: {path: 'ordersGrid', ...persistWith},
             columns: [
                 {...symbolCol, pinned: true},
                 {...closingPriceSparklineCol},
@@ -61,7 +62,8 @@ export class OrdersPanelModel extends HoistModel {
 
         this.filterChooserModel = new FilterChooserModel({
             bind: this.gridModel.store,
-            persistWith: {...PERSIST_DETAIL, path: 'ordersFilter', persistValue: false},
+            persistWith: {path: 'ordersFilter', ...persistWith},
+            initialValue: null,
             fieldSpecs: [
                 'symbol',
                 'trader',
@@ -115,5 +117,27 @@ export class OrdersPanelModel extends HoistModel {
             gridModel.clear();
             XH.handleException(e);
         }
+    }
+
+    @action
+    updateState(newState) {
+        const {gridModel, filterChooserModel} = this,
+            gridPm = gridModel.persistenceModel,
+            ordersFilterValue = newState.ordersFilter ? newState.ordersFilter.value : null,
+            ordersFilterFavorites = newState.ordersFilter ? newState.ordersFilter.favorites : [];
+        gridPm.patchState(newState.ordersGrid);
+        gridPm.updateGridColumns();
+        gridPm.updateGridSort();
+
+        filterChooserModel.setValue(ordersFilterValue);
+        filterChooserModel.setFavorites(ordersFilterFavorites.map(parseFilter));
+    }
+
+    async clearStateAsync() {
+        await this.gridModel.restoreDefaultsAsync({
+            skipWarning: true
+        });
+        this.filterChooserModel.setValue(null);
+        this.filterChooserModel.setFavorites([]);
     }
 }
