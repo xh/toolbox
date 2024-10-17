@@ -1,8 +1,12 @@
 # Changelog
 
-## v6.0-SNAPSHOT - unreleased
+## v5.3.0 - 2024-10-17
 
-## v5.2.0
+### 📚 Libraries
+* hoist-core 24.0.0
+* @xh/hoist 69.0.0
+
+## v5.2.0 - 2024-09-27
 
 ### New Features
 * Enabled new Correlation ID tracking support in Hoist.
