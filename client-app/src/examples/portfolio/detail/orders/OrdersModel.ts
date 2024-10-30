@@ -88,12 +88,18 @@ export class OrdersModel extends HoistModel {
             ]
         });
 
-        this.addReaction({
-            track: () => [parentModel.collapsed, parentModel.positionId] as const,
-            run: ([collapsed]) => {
-                if (!collapsed) this.loadAsync();
+        this.addReaction(
+            {
+                track: () => [parentModel.collapsed, parentModel.positionId] as const,
+                run: ([collapsed]) => {
+                    if (!collapsed) this.loadAsync();
+                }
+            },
+            {
+                track: () => this.selectedSymbol,
+                run: sym => (this.parentModel.selectedSymbol = sym)
             }
-        });
+        );
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {

@@ -16,9 +16,9 @@ export const ordersGrid = hoistCmp.factory({
         return panel({
             title: `Orders: ${formatPositionId(positionId)}`,
             icon: Icon.edit(),
-            item: grid(),
-            mask: positionId == null || loadModel.isPending,
             headerItems: [gridCountLabel({unit: 'orders'}), hspacer()],
+            compactHeader: true,
+            item: grid(),
             bbar: [
                 filterChooser({
                     placeholder: 'Filter orders...',
@@ -28,7 +28,8 @@ export const ordersGrid = hoistCmp.factory({
                 '-',
                 colChooserButton(),
                 exportButton()
-            ]
+            ],
+            mask: positionId == null || loadModel.isPending
         });
     }
 });

@@ -1,22 +1,17 @@
 import {HoistModel, lookup} from '@xh/hoist/core';
-import {makeObservable, observable} from '@xh/hoist/mobx';
-import {OrdersModel} from '../orders/OrdersModel';
+import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
+import {DetailModel} from '../DetailModel';
 
 export class ChartsModel extends HoistModel {
-    @lookup(OrdersModel) ordersModel: OrdersModel;
+    parentModel: DetailModel;
+    @lookup(DashViewModel) dashViewModel: DashViewModel;
 
-    @observable symbol = null;
-
-    constructor() {
-        super();
-        makeObservable(this);
+    get symbol() {
+        return this.parentModel.selectedSymbol;
     }
 
-    override onLinked() {
-        this.addReaction({
-            track: () => this.ordersModel.selectedSymbol,
-            run: symbol => (this.symbol = symbol),
-            debounce: 500
-        });
+    constructor({parentModel}: {parentModel: DetailModel}) {
+        super();
+        this.parentModel = parentModel;
     }
 }
