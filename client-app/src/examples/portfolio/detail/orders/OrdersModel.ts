@@ -1,8 +1,7 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {isNil, map, uniq} from 'lodash';
-import {PERSIST_DETAIL} from '../AppModel';
 import {
     closingPriceSparklineCol,
     orderExecDay,
@@ -16,11 +15,13 @@ import {
     symbolCol,
     orderExecTime,
     traderCol
-} from '../../../core/columns';
-import {DetailPanelModel} from './DetailPanelModel';
+} from '../../../../core/columns';
+import {AppModel} from '../../AppModel';
+import {DetailModel} from '../DetailModel';
 
-export class OrdersPanelModel extends HoistModel {
-    parentModel: DetailPanelModel;
+export class OrdersModel extends HoistModel {
+    parentModel: DetailModel;
+
     @managed gridModel: GridModel;
     @managed filterChooserModel: FilterChooserModel;
 
@@ -28,13 +29,18 @@ export class OrdersPanelModel extends HoistModel {
         return this.parentModel.positionId;
     }
 
-    constructor(parentModel) {
+    get selectedSymbol(): string {
+        return this.gridModel.selectedRecord?.data.symbol ?? null;
+    }
+
+    constructor({parentModel}: {parentModel: DetailModel}) {
         super();
 
         this.parentModel = parentModel;
 
         const hidden = true;
         this.gridModel = new GridModel({
+            persistWith: {...AppModel.instance.persistWith, path: 'ordersGrid'},
             groupBy: 'dir',
             sortBy: 'time|desc',
             emptyText: 'No orders found...',
@@ -42,7 +48,6 @@ export class OrdersPanelModel extends HoistModel {
             enableExport: true,
             rowBorders: true,
             showHover: true,
-            persistWith: {...PERSIST_DETAIL, path: 'ordersGrid'},
             columns: [
                 {...symbolCol, pinned: true},
                 {...closingPriceSparklineCol},
@@ -51,7 +56,7 @@ export class OrdersPanelModel extends HoistModel {
                 {...modelCol, hidden},
                 {...regionCol, hidden},
                 {...sectorCol, hidden},
-                {...dirCol},
+                {...dirCol, hidden},
                 {...quantityCol},
                 {...priceCol},
                 {...orderExecDay, hidden},
@@ -60,8 +65,12 @@ export class OrdersPanelModel extends HoistModel {
         });
 
         this.filterChooserModel = new FilterChooserModel({
+            persistWith: {
+                ...AppModel.instance.persistWith,
+                path: 'ordersFilter',
+                persistFavorites: false
+            },
             bind: this.gridModel.store,
-            persistWith: {...PERSIST_DETAIL, path: 'ordersFilter', persistValue: false},
             fieldSpecs: [
                 'symbol',
                 'trader',
@@ -80,18 +89,14 @@ export class OrdersPanelModel extends HoistModel {
         });
 
         this.addReaction({
-            track: () => [parentModel.collapsed, parentModel.positionId],
+            track: () => [parentModel.collapsed, parentModel.positionId] as const,
             run: ([collapsed]) => {
                 if (!collapsed) this.loadAsync();
             }
         });
     }
 
-    get selectedRecord() {
-        return this.gridModel.selectedRecord;
-    }
-
-    override async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec: LoadSpec) {
         const {gridModel, positionId} = this;
 
         if (isNil(positionId)) {
@@ -101,17 +106,18 @@ export class OrdersPanelModel extends HoistModel {
 
         try {
             const orders = await XH.portfolioService.getOrdersAsync({positionId, loadSpec}),
-                symbols = uniq(map(orders, 'symbol')),
                 sparklineSeries = await XH.portfolioService.getSparklineSeriesAsync({
-                    symbols,
+                    symbols: uniq(map(orders, 'symbol')),
                     loadSpec
                 });
+            if (loadSpec.isStale) return;
 
             orders.forEach(order => (order.closingPrices = sparklineSeries[order.symbol]));
-
             gridModel.loadData(orders);
             await gridModel.preSelectFirstAsync();
         } catch (e) {
+            if (loadSpec.isAutoRefresh || !loadSpec.isStale) return;
+
             gridModel.clear();
             XH.handleException(e);
         }

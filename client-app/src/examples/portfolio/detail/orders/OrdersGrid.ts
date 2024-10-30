@@ -5,10 +5,10 @@ import {colChooserButton, exportButton} from '@xh/hoist/desktop/cmp/button';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {OrdersPanelModel} from './OrdersPanelModel';
+import {OrdersModel} from './OrdersModel';
 
-export const ordersPanel = hoistCmp.factory({
-    model: uses(OrdersPanelModel),
+export const ordersGrid = hoistCmp.factory({
+    model: uses(OrdersModel),
 
     render({model}) {
         const {positionId, loadModel} = model;
@@ -36,10 +36,10 @@ export const ordersPanel = hoistCmp.factory({
 //------------------
 // Implementation
 //------------------
-function formatPositionId(positionId) {
+function formatPositionId(positionId: string) {
     if (!positionId) return '';
 
-    const dimValPairs = positionId.split('>>').splice(1);
-    const dimVals = dimValPairs.map(str => str.split(':')[1]);
-    return dimVals.join(' > ');
+    const dimValPairs = positionId.split('>>').splice(1),
+        dimVals = dimValPairs.map(str => str.split(':')[1]);
+    return dimVals.join(' › ');
 }

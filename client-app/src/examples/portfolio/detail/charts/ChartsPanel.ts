@@ -3,13 +3,13 @@ import {tabContainer} from '@xh/hoist/cmp/tab';
 import {hoistCmp, creates} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
-import {PERSIST_DETAIL} from '../../AppModel';
-import {ChartsPanelModel} from './ChartsPanelModel';
+import {AppModel} from '../../AppModel';
+import {ChartsModel} from './ChartsModel';
 import {lineChart} from './LineChart';
 import {ohlcChart} from './OHLCChart';
 
 export const chartsPanel = hoistCmp.factory({
-    model: creates(ChartsPanelModel),
+    model: creates(ChartsModel),
 
     render({model}) {
         return panel({
@@ -20,12 +20,15 @@ export const chartsPanel = hoistCmp.factory({
                 side: 'right',
                 renderMode: 'unmountOnHide',
                 modalSupport: true,
-                persistWith: {...PERSIST_DETAIL, path: 'chartPanel'}
+                persistWith: {...AppModel.instance.persistWith, path: 'detailChartsSize'}
             },
             item: model.symbol
                 ? tabContainer({
                       modelConfig: {
-                          persistWith: {...PERSIST_DETAIL, path: 'chartsTab'},
+                          persistWith: {
+                              ...AppModel.instance.persistWith,
+                              path: 'detailChartsTab'
+                          },
                           tabs: [
                               {
                                   id: 'line',

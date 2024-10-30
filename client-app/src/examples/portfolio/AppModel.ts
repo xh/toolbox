@@ -1,18 +1,30 @@
 import {XH} from '@xh/hoist/core';
-import {themeAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
+import {ViewManagerModel} from '@xh/hoist/core/persist/viewmanager';
+import {sizingModeAppOption, themeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {Icon} from '@xh/hoist/icon';
-import {PortfolioService} from '../../core/svc/PortfolioService';
 import {BaseAppModel} from '../../BaseAppModel';
-
-export const PERSIST_MAIN = {localStorageKey: 'portfolioAppMainState'};
-export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
+import {PortfolioService} from '../../core/svc/PortfolioService';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
 
+    viewManagerModel: ViewManagerModel;
+
     override async initAsync() {
         await super.initAsync();
         await XH.installServicesAsync(PortfolioService);
+
+        this.viewManagerModel = await ViewManagerModel.createAsync({
+            entity: {
+                name: 'portfolioLayout',
+                displayName: 'Layout'
+            },
+            enableDefault: true,
+            canManageGlobal: true,
+            persistWith: {localStorageKey: 'portfolioViewManager'}
+        });
+
+        this.persistWith = {viewManagerModel: this.viewManagerModel};
 
         this.addReaction({
             track: () => XH.webSocketService.connected,
