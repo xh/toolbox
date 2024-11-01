@@ -1,26 +1,27 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
-import {HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {HoistModel, LoadSpec, lookup, managed, XH} from '@xh/hoist/core';
+import {DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {isNil, map, uniq} from 'lodash';
 import {
     closingPriceSparklineCol,
-    orderExecDay,
     dirCol,
     fundCol,
     modelCol,
+    orderExecDay,
+    orderExecTime,
     priceCol,
     quantityCol,
     regionCol,
     sectorCol,
     symbolCol,
-    orderExecTime,
     traderCol
 } from '../../../../core/columns';
-import {AppModel} from '../../AppModel';
 import {DetailModel} from '../DetailModel';
 
 export class OrdersModel extends HoistModel {
     parentModel: DetailModel;
+    @lookup(DashViewModel) dashViewModel: DashViewModel;
 
     @managed gridModel: GridModel;
     @managed filterChooserModel: FilterChooserModel;
@@ -37,10 +38,15 @@ export class OrdersModel extends HoistModel {
         super();
 
         this.parentModel = parentModel;
+    }
+
+    override onLinked() {
+        super.onLinked();
+        const {parentModel, dashViewModel} = this;
 
         const hidden = true;
         this.gridModel = new GridModel({
-            persistWith: {...AppModel.instance.persistWith, path: 'ordersGrid'},
+            persistWith: {dashViewModel},
             groupBy: 'dir',
             sortBy: 'time|desc',
             emptyText: 'No orders found...',
@@ -66,8 +72,7 @@ export class OrdersModel extends HoistModel {
 
         this.filterChooserModel = new FilterChooserModel({
             persistWith: {
-                ...AppModel.instance.persistWith,
-                path: 'ordersFilter',
+                dashViewModel,
                 persistFavorites: false
             },
             bind: this.gridModel.store,
@@ -97,7 +102,7 @@ export class OrdersModel extends HoistModel {
             },
             {
                 track: () => this.selectedSymbol,
-                run: sym => (this.parentModel.selectedSymbol = sym)
+                run: symbol => (parentModel.selectedSymbol = symbol)
             }
         );
     }
