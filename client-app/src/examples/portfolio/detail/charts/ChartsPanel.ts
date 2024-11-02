@@ -12,9 +12,6 @@ export const chartsPanel = hoistCmp.factory({
 
     render({model}) {
         return panel({
-            title: model.symbol ? `Volume + Pricing: ${model.symbol}` : 'Volume + Pricing',
-            icon: Icon.chartArea(),
-            compactHeader: true,
             item: model.symbol
                 ? tabContainer({
                       modelConfig: {
@@ -36,7 +33,7 @@ export const chartsPanel = hoistCmp.factory({
                           ]
                       }
                   })
-                : placeholder(Icon.chartLine(), 'Select an order to view available charts.')
+                : placeholder(Icon.chartArea(), 'Select an order to view available charts.')
         });
     }
 });

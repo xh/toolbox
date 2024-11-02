@@ -108,7 +108,7 @@ export class OrdersModel extends HoistModel {
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
-        const {gridModel, positionId} = this;
+        const {gridModel, positionId, dashViewModel} = this;
 
         if (isNil(positionId)) {
             gridModel.clear();
@@ -123,8 +123,10 @@ export class OrdersModel extends HoistModel {
                 });
             if (loadSpec.isStale) return;
 
+            dashViewModel.title = `Orders (${orders.length})`;
             orders.forEach(order => (order.closingPrices = sparklineSeries[order.symbol]));
             gridModel.loadData(orders);
+
             await gridModel.preSelectFirstAsync();
         } catch (e) {
             if (loadSpec.isAutoRefresh || !loadSpec.isStale) return;

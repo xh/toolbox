@@ -1,6 +1,7 @@
 import {HoistModel, lookup, managed} from '@xh/hoist/core';
 import {DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
+import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {AppModel} from '../AppModel';
 import {PortfolioModel} from '../PortfolioModel';
@@ -39,10 +40,12 @@ export class DetailModel extends HoistModel {
             viewSpecs: [
                 {
                     id: 'orders',
+                    icon: Icon.edit(),
                     content: () => ordersGrid({modelConfig: {parentModel: this}})
                 },
                 {
                     id: 'charts',
+                    icon: Icon.chartArea(),
                     content: () => chartsPanel({modelConfig: {parentModel: this}})
                 }
             ],
