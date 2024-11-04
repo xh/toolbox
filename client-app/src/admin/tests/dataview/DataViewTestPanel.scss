@@ -1,4 +1,4 @@
-.dataview-test {
+.tb-data-view-test {
   p {
     text-align: center;
     padding: var(--xh-pad-px);
@@ -6,7 +6,7 @@
 
   & .xh-data-view {
     width: 700px;
-    margin: auto;
+    margin: var(--xh-pad-double-px) auto;
     border: var(--xh-border-solid);
 
     & .xh-cell-inner-wrapper > .xh-vbox {
