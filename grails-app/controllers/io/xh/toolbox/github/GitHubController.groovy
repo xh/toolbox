@@ -37,7 +37,7 @@ class GitHubController extends BaseController {
      */
     def webhookTrigger() {
         def valid = validateGitHubSignature(request.reader.text, request.getHeader('x-hub-signature-256'))
-        if (valid) gitHubService.loadCommitsForAllRepos()
+        if (valid) gitHubService.forceRefresh()
         renderJSON(success: valid)
     }
 

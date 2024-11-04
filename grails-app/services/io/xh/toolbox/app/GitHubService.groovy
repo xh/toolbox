@@ -1,23 +1,24 @@
 package io.xh.toolbox.app
 
-import com.hazelcast.replicatedmap.ReplicatedMap
+
 import io.xh.hoist.BaseService
+import io.xh.hoist.cache.Cache
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
 import io.xh.hoist.json.JSONSerializer
 import io.xh.hoist.websocket.WebSocketService
+import io.xh.hoist.util.Timer
 import io.xh.toolbox.github.Commit
 import io.xh.toolbox.github.CommitHistory
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.core5.http.io.entity.StringEntity
-
 
 import java.time.Instant
 
 import static io.xh.hoist.util.DateTimeUtils.MINUTES
 
 /**
- * Service to load commits from the default branches (develop) of XH's GitHub repos.
+ * Service to load commits from the default branches (develop) of XH GitHub repos.
  *
  * Queries commit history via the GitHub GraphQL API (https://docs.github.com/). Will load the
  * entire commit history for a configured list of repos then cache the results centrally here and
@@ -37,33 +38,51 @@ class GitHubService extends BaseService {
     ConfigService configService
     WebSocketService webSocketService
 
-    private ReplicatedMap<String, CommitHistory> commitsByRepo = createReplicatedMap('commitsByRepo')
+    /**
+     * Non-expiring, replicated cache of commit history by repo name.
+     * Populated via primaryOnly timer to keep the cache hot at all times.
+     */
+    private Cache<String, CommitHistory> commitsByRepoCache = createCache(
+        name: 'commitsByRepo',
+        replicate: true
+    )
+
+    private Timer refreshTimer
 
     void init() {
+        refreshTimer = createTimer(
+            name: 'loadCommits',
+            runFn: this.&loadCommitsForAllRepos,
+            interval: 'gitHubCommitsRefreshMins',
+            intervalUnits: MINUTES,
+            primaryOnly: true
+        )
+    }
+
+    void forceRefresh() {
+        logInfo("Forced refresh of commit history requested")
+        refreshTimer.forceRun()
+    }
+
+    /** Return map of all available commit histories, keyed by repo name. */
+    Map<String, CommitHistory> getCommitsByRepo() {
+        commitsByRepoCache.map
+    }
+
+    /** Return cached commit history for a single repo. */
+    CommitHistory getCommitsForRepo(String repoName) {
+        commitsByRepoCache.get(repoName)
+    }
+
+
+    //------------------
+    // Implementation
+    //------------------
+    private void loadCommitsForAllRepos(Boolean forceFullLoad = false) {
         if (configService.getString('gitHubAccessToken', 'none') == 'none') {
             logWarn('Required "gitHubAccessToken" config not present or set to "none" - no commits will be loaded from GitHub.')
-        } else {
-            createTimer(
-                name: 'loadCommits',
-                runFn: this.&loadCommitsForAllRepos,
-                interval: 'gitHubCommitsRefreshMins',
-                intervalUnits: MINUTES,
-                primaryOnly: true
-            )
+            return
         }
-    }
-
-    /** Return the cached history of commits for a single repo, by name. */
-    CommitHistory getCommitsForRepo(String repoName) {
-        commitsByRepo[repoName]
-    }
-
-    /**
-     * Reload commit history for all configured repos from GitHub API.
-     * @param forceFullLoad - true to drop any already loaded history, false (default) to do an
-     *      incremental load of new commits only.
-     */
-    private Map<String, CommitHistory> loadCommitsForAllRepos(Boolean forceFullLoad = false) {
 
         def repos = configService.getList('gitHubRepos', []),
             newCommitCount = 0
@@ -79,14 +98,8 @@ class GitHubService extends BaseService {
                 pushUpdate()
             }
         }
-
-        return commitsByRepo
     }
 
-    /**
-     * Reload commit history for a single repo, by name.
-     * @return collection of newly loaded commits, if any.
-     */
     private List<Commit> loadCommitsForRepo(String repoName, Boolean forceFullLoad = false) {
         def hadError = false,
             hasNextPage = true,
@@ -105,14 +118,14 @@ class GitHubService extends BaseService {
         while (hasNextPage && pageCount <= maxPagesToLoad && !hadError) {
             withDebug("Fetching page ${pageCount} for repo ${repoName}") {
                 try {
-                    def response = loadCommitsForRepoInternal(repoName, commitHistory.lastCommitTimestamp, cursor)
+                    def response = fetchPage(repoName, commitHistory.lastCommitTimestamp, cursor)
                     if (response?.data?.repository?.name != repoName) {
                         throw new RuntimeException("JSON returned by GitHub API not in expected format")
                     }
 
                     def history = response.data.repository.defaultBranchRef.target.history,
                         pageInfo = history.pageInfo,
-                        rawCommits = history.nodes as List
+                        rawCommits = history.nodes as List<Map>
 
                     logDebug("Fetched ${newCommits.size() + rawCommits.size()} / ${history.totalCount} commits for this batch")
                     cursor = pageInfo.endCursor
@@ -144,29 +157,21 @@ class GitHubService extends BaseService {
             }
         }
 
-        // This filter is important, as our update checks will include the commit that occurred on
-        // commitHistory.lastCommitTimestamp.
-        newCommits = newCommits.findAll{!commitHistory.hasCommit(it)}
-
         if (hadError) {
             logError('Error during commit load', 'no commits will be updated')
             return []
-        } else if (!newCommits) {
-            logDebug('Commit load complete', 'no new commits found')
-            return []
-        } else {
-            logDebug('Commit load complete', "${newCommits.size()} new commits")
-            commitHistory.updateWithNewCommits(newCommits)
-            commitsByRepo.put(repoName, commitHistory)
-            return newCommits
         }
+
+        // Always update commit history, even if no new commits were found. This will update the
+        // lastUpdated timestamp and confirm we were able to successfully check for commits.
+        newCommits = commitHistory.updateWithNewCommits(newCommits)
+        logDebug('Commit load complete', "${newCommits.size()} new commits")
+        commitsByRepoCache.put(repoName, commitHistory)
+        return newCommits
     }
 
-    //------------------------
-    // Implementation
-    //------------------------
-    private Map loadCommitsForRepoInternal(String repoName, String sinceTimestamp = null, String cursor = null) {
-        def query = getCommitsQueryJson(repoName, sinceTimestamp, cursor),
+    private Map fetchPage(String repoName, String sinceTimestamp = null, String cursor = null) {
+        def query = getQueryJson(repoName, sinceTimestamp, cursor),
             post = new HttpPost('https://api.github.com/graphql')
 
         post.setHeader('Accept', 'application/json')
@@ -177,7 +182,7 @@ class GitHubService extends BaseService {
         jsonClient.executeAsMap(post)
     }
 
-    private String getCommitsQueryJson(String repoName, String sinceTimestamp, String cursor) {
+    private String getQueryJson(String repoName, String sinceTimestamp, String cursor) {
         def query = """
 query XHRepoCommits {
     repository(owner: "xh", name: "$repoName") {
@@ -222,10 +227,7 @@ query XHRepoCommits {
 
     private JSONClient _jsonClient
     private JSONClient getJsonClient() {
-        if (!_jsonClient) {
-            _jsonClient = new JSONClient()
-        }
-        return _jsonClient
+        _jsonClient ?= new JSONClient()
     }
 
     private void pushUpdate() {
@@ -238,12 +240,11 @@ query XHRepoCommits {
     void clearCaches() {
         _jsonClient = null
         if (isPrimary) {
-            commitsByRepo.clear()
-            loadCommitsForAllRepos()
+            commitsByRepoCache.clear()
+            forceRefresh()
         }
         super.clearCaches()
     }
-
 
     Map getAdminStats() { [
         config: configForAdminStats('gitHubAccessToken', 'gitHubRepos', 'gitHubMaxPagesPerLoad')

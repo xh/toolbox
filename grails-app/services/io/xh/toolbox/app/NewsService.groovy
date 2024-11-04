@@ -3,6 +3,7 @@ package io.xh.toolbox.app
 
 import io.xh.hoist.BaseService
 import io.xh.hoist.cachedvalue.CachedValue
+import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
 import io.xh.toolbox.NewsItem
 import org.apache.hc.client5.http.classic.methods.HttpGet
@@ -12,16 +13,20 @@ import static io.xh.hoist.util.DateTimeUtils.getMINUTES
 
 class NewsService extends BaseService {
 
+    static clearCachesConfigs = ['newsSources', 'newsApiKey']
+
+    ConfigService configService
+
+    /**
+     * Example of a CachedValue being used for caching + expiry via `expireTime` directive.
+     * No proactive Timer-based refresh in this service - instead the first caller who comes across
+     * an empty or expired cache (on any instance) will trigger a refresh that is replicated to all.
+     */
     private CachedValue<List<NewsItem>> _newsItems = createCachedValue(
         name: 'newsItems',
         expireTime: {configService.getInt('newsRefreshMins') * MINUTES},
         replicate: true
     )
-
-    private JSONClient _jsonClient
-
-    static clearCachesConfigs = ['newsSources', 'newsApiKey']
-    def configService
 
     List<NewsItem> getNewsItems() {
         _newsItems.getOrCreate { loadNews() }
@@ -50,9 +55,9 @@ class NewsService extends BaseService {
     // Implementation
     //------------------------
     private List<NewsItem> loadNews() {
-        def sources = configService.getMap('newsSources').keySet().toList()
-        def sourcesParam = String.join(',', sources)
-        def apiKey = configService.getString('newsApiKey'),
+        def sources = configService.getMap('newsSources').keySet().toList(),
+            sourcesParam = sources.join(','),
+            apiKey = configService.getString('newsApiKey'),
             url = "https://newsapi.org/v2/top-headlines?sources=${sourcesParam}&apiKey=${apiKey}",
             response = client.executeAsMap(new HttpGet(url))
 
@@ -79,8 +84,9 @@ class NewsService extends BaseService {
         return ret
     }
 
+    private JSONClient _jsonClient
     private JSONClient getClient() {
-        _jsonClient = _jsonClient ?: new JSONClient()
+        _jsonClient ?= new JSONClient()
     }
 
     void clearCaches() {
