@@ -42,9 +42,10 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'localDate', path: '/localDate'},
                     {name: 'panelResizing', path: '/panelResizing'},
                     {name: 'select', path: '/select'},
-                    {name: 'webSockets', path: '/webSockets'},
+                    {name: 'storeColumnFilters', path: '/storeColumnFilters'},
                     {name: 'viewColumnFilters', path: '/viewColumnFilters'},
-                    {name: 'storeColumnFilters', path: '/storeColumnFilters'}
+                    {name: 'viewManager', path: '/viewManager'},
+                    {name: 'webSockets', path: '/webSockets'}
                 ]
             },
             {

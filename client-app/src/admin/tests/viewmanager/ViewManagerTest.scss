@@ -1,0 +1,28 @@
+.tb-vm-test {
+  &__model-conf {
+    .xh-form-field-switch-input {
+      margin-left: 4px;
+      .xh-form-field-label {
+        font-size: 0.8em;
+        padding-bottom: 10px;
+      }
+    }
+  }
+
+  &__output {
+    > .xh-panel__content > .xh-vframe {
+      overflow-y: auto !important;
+      padding-bottom: var(--xh-pad-double-px);
+    }
+  }
+
+  &__comp {
+    > .xh-panel__content > .xh-vframe {
+      padding: var(--xh-pad-px);
+    }
+
+    border: var(--xh-border-solid);
+    flex: none !important;
+    margin: var(--xh-pad-double-px) var(--xh-pad-double-px) 0 var(--xh-pad-double-px);
+  }
+}
