@@ -19,8 +19,8 @@ export class AppModel extends BaseAppModel {
                 name: 'portfolioLayout',
                 displayName: 'Layout'
             },
+            enableSharing: true,
             enableDefault: true,
-            canManageGlobal: true,
             persistWith: {localStorageKey: 'portfolioViewManager'}
         });
 
