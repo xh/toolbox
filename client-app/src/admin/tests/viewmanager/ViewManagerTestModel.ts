@@ -22,6 +22,17 @@ export class ViewManagerTestModel extends HoistModel {
     @managed @observable.ref panelModel: PanelModel;
     @managed @observable.ref gridModel: SampleGridModel;
 
+    get managedPersistables() {
+        return [
+            this.viewManagerModel,
+            this.groupingChooserModel,
+            this.filterChooserModel,
+            this.tabContainerModel,
+            this.panelModel,
+            this.gridModel
+        ];
+    }
+
     @computed
     get value(): string {
         if (!this.viewManagerModel) return '[No ViewManagerModel]';
@@ -97,14 +108,7 @@ export class ViewManagerTestModel extends HoistModel {
     @action
     destroyModels() {
         this.logInfo('Destroying models');
-        XH.safeDestroy([
-            this.viewManagerModel,
-            this.groupingChooserModel,
-            this.filterChooserModel,
-            this.tabContainerModel,
-            this.panelModel,
-            this.gridModel
-        ]);
+        XH.safeDestroy(this.managedPersistables);
     }
 
     rebuildPersistedModels() {

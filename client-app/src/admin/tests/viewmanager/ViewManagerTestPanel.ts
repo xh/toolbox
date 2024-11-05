@@ -126,23 +126,22 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
 const modelValueDisplay = hoistCmp.factory<ViewManagerTestModel>({
     render({model, showPendingValue}) {
         return panel({
-            title: showPendingValue
-                ? hbox(
-                      'Pending Value',
-                      badge({
-                          intent: 'warning',
-                          item: 'Dirty',
-                          omit: !model.viewManagerModel?.isDirty
-                      }),
-                      badge({
-                          intent: 'success',
-                          item: 'Clean',
-                          omit: model.viewManagerModel?.isDirty
-                      })
-                  )
-                : 'Value',
+            title: showPendingValue ? 'Pending Value' : 'Value',
             icon: Icon.json(),
             compactHeader: true,
+            headerItems: [
+                badge({
+                    intent: 'danger',
+                    item: 'Dirty',
+                    omit: !showPendingValue || !model.viewManagerModel?.isDirty
+                }),
+                badge({
+                    intent: 'success',
+                    item: 'Clean',
+                    omit: !showPendingValue || model.viewManagerModel?.isDirty
+                }),
+                hspacer()
+            ],
             flex: 1,
             item: jsonInput({
                 flex: 1,
@@ -154,8 +153,6 @@ const modelValueDisplay = hoistCmp.factory<ViewManagerTestModel>({
         });
     }
 });
-
-// const outputPanel = hoistCmp.factory<ViewManagerTestModel>({});
 
 const outputPanel = hoistCmp.factory<ViewManagerTestModel>({
     render({model}) {
@@ -242,8 +239,18 @@ const persistedComp = hoistCmp.factory<ViewManagerTestModel>({
                 }),
                 badge({
                     intent: 'warning',
+                    item: 'Custom State',
+                    omit: atDefault
+                }),
+                badge({
+                    intent: 'danger',
                     item: 'Dirty',
                     omit: !dirty
+                }),
+                badge({
+                    intent: 'success',
+                    item: 'Clean',
+                    omit: dirty
                 }),
                 hspacer()
             ],
