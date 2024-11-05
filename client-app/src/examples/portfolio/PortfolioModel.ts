@@ -1,6 +1,5 @@
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {ViewManagerModel} from '@xh/hoist/core/persist/viewmanager';
 import {Store, StoreRecord} from '@xh/hoist/data';
 import {waitFor} from '@xh/hoist/promise';
 import {SECONDS} from '@xh/hoist/utils/datetime';
@@ -11,9 +10,12 @@ import {PositionsGridModel} from './grid/PositionsGridModel';
 import {PositionsMapModel} from './map/PositionsMapModel';
 
 export class PortfolioModel extends HoistModel {
+    override persistWith = {
+        viewManagerModel: AppModel.instance.portfolioViewManager
+    };
+
     @managed session: PositionSession;
 
-    @managed viewManagerModel: ViewManagerModel;
     @managed groupingChooserModel: GroupingChooserModel;
     @managed store: Store;
 
@@ -98,7 +100,7 @@ export class PortfolioModel extends HoistModel {
         return new GroupingChooserModel({
             dimensions: ['fund', 'model', 'region', 'sector', 'symbol', 'trader'],
             initialValue: ['region', 'sector', 'symbol'],
-            persistWith: {...AppModel.instance.persistWith, persistFavorites: false}
+            persistWith: {...this.persistWith, persistFavorites: false}
         });
     }
 }

@@ -8,13 +8,16 @@ import {PortfolioService} from '../../core/svc/PortfolioService';
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
 
-    viewManagerModel: ViewManagerModel;
+    portfolioViewManager: ViewManagerModel;
 
     override async initAsync() {
         await super.initAsync();
         await XH.installServicesAsync(PortfolioService);
 
-        this.viewManagerModel = await ViewManagerModel.createAsync({
+        // Constructed here, in initAsync, so we can await the async factory and ensure that all
+        // saved views are loaded and the desired option has been preselected before the model
+        // is used to construct component-level models within PortfolioModel.
+        this.portfolioViewManager = await ViewManagerModel.createAsync({
             entity: {
                 name: 'portfolioLayout',
                 displayName: 'Layout'
@@ -23,8 +26,6 @@ export class AppModel extends BaseAppModel {
             enableDefault: true,
             persistWith: {localStorageKey: 'portfolioViewManager'}
         });
-
-        this.persistWith = {viewManagerModel: this.viewManagerModel};
 
         this.addReaction({
             track: () => XH.webSocketService.connected,

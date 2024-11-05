@@ -3,7 +3,6 @@ import {HoistModel, managed} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
-import {AppModel} from '../AppModel';
 import {PortfolioModel} from '../PortfolioModel';
 
 export class PositionsGridModel extends HoistModel {
@@ -24,9 +23,10 @@ export class PositionsGridModel extends HoistModel {
         super();
         makeObservable(this);
         this.parentModel = parentModel;
+        this.persistWith = this.parentModel.persistWith;
 
         this.gridModel = new GridModel({
-            persistWith: {...AppModel.instance.persistWith, path: 'portfolioGrid'},
+            persistWith: {...this.persistWith, path: 'portfolioGrid'},
             store: this.parentModel.store,
             treeMode: true,
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,

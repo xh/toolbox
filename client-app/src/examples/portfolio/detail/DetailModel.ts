@@ -3,7 +3,6 @@ import {DashContainerModel} from '@xh/hoist/desktop/cmp/dash';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
-import {AppModel} from '../AppModel';
 import {PortfolioModel} from '../PortfolioModel';
 import {chartsPanel} from './charts/ChartsPanel';
 import {ordersGrid} from './orders/OrdersGrid';
@@ -34,9 +33,11 @@ export class DetailModel extends HoistModel {
     }
 
     override onLinked() {
+        const {persistWith} = this.parentModel;
+
         this.dashModel = new DashContainerModel({
             showMenuButton: true,
-            persistWith: {...AppModel.instance.persistWith, path: 'detailDash'},
+            persistWith: {...persistWith, path: 'detailDash'},
             viewSpecs: [
                 {
                     id: 'orders',
@@ -61,7 +62,7 @@ export class DetailModel extends HoistModel {
         });
 
         this.panelModel = new PanelModel({
-            persistWith: {...AppModel.instance.persistWith, path: 'detailPanel'},
+            persistWith: {...persistWith, path: 'detailPanel'},
             defaultSize: 400,
             side: 'bottom',
             renderMode: 'unmountOnHide'
