@@ -60,7 +60,7 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
                 defaultSize: 240
             },
             item: form({
-                fieldDefaults: {commitOnChange: true},
+                fieldDefaults: {commitOnChange: true, minimal: true},
                 item: vframe({
                     className: 'xh-pad tb-vm-test__model-conf',
                     items: [
@@ -214,7 +214,7 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                         persistPath: 'panel',
                         item: hbox({
                             className: 'xh-border',
-                            height: 100,
+                            height: 60,
                             items: [
                                 panel({
                                     item: placeholder('Primary Panel')
@@ -222,6 +222,24 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                                 panel({
                                     item: placeholder('Secondary Panel'),
                                     model: model.panelModel
+                                })
+                            ]
+                        })
+                    }),
+                    persistedComp({
+                        title: 'Panel Sizing (defaultSize as percentage)',
+                        icon: Icon.arrowsLeftRight(),
+                        persistPath: 'panelPct',
+                        item: hbox({
+                            className: 'xh-border',
+                            height: 60,
+                            items: [
+                                panel({
+                                    item: placeholder('Primary Panel')
+                                }),
+                                panel({
+                                    item: placeholder('Secondary Panel'),
+                                    model: model.panelPctModel
                                 })
                             ]
                         })

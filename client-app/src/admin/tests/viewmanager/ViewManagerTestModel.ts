@@ -24,6 +24,7 @@ export class ViewManagerTestModel extends HoistModel {
     @managed @observable.ref filterChooserModel: FilterChooserModel;
     @managed @observable.ref tabContainerModel: TabContainerModel;
     @managed @observable.ref panelModel: PanelModel;
+    @managed @observable.ref panelPctModel: PanelModel;
     @managed @observable.ref gridModel: SampleGridModel;
     @managed @observable.ref dashContainerModel: DashContainerModel;
     @managed @observable.ref dashCanvasModel: DashCanvasModel;
@@ -38,6 +39,7 @@ export class ViewManagerTestModel extends HoistModel {
             this.filterChooserModel,
             this.tabContainerModel,
             this.panelModel,
+            this.panelPctModel,
             this.gridModel,
             this.dashCanvasModel,
             this.dashContainerModel,
@@ -151,6 +153,12 @@ export class ViewManagerTestModel extends HoistModel {
             persistWith,
             side: 'right',
             defaultSize: 200
+        });
+
+        this.panelPctModel = new PanelModel({
+            persistWith: {...persistWith, path: 'panelPct'},
+            side: 'right',
+            defaultSize: '50%'
         });
 
         this.gridModel = new SampleGridModel({
