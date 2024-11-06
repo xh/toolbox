@@ -1,9 +1,10 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {form} from '@xh/hoist/cmp/form';
-import {box, filler, hbox, hframe, hspacer, placeholder, span, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, hframe, hspacer, placeholder, span, vframe} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {dashCanvas, dashContainer} from '@xh/hoist/desktop/cmp/dash';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
@@ -39,7 +40,7 @@ export const viewManagerTestPanel = hoistCmp.factory({
                             hframe(modelValueDisplay(), modelValueDisplay({showPendingValue: true}))
                         ]
                     }),
-                    outputPanel()
+                    persistablesPanel()
                 ]
             })
         });
@@ -125,9 +126,12 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
 
 const modelValueDisplay = hoistCmp.factory<ViewManagerTestModel>({
     render({model, showPendingValue}) {
+        let title = showPendingValue ? 'Pending' : 'Value';
+        if (model.focusedPersistable) title += ` [${model.focusedPersistable}]`;
+
         return panel({
-            title: showPendingValue ? 'Pending Value' : 'Value',
-            icon: Icon.json(),
+            title,
+            icon: model.focusedPersistable ? Icon.target() : null,
             compactHeader: true,
             headerItems: [
                 badge({
@@ -154,7 +158,7 @@ const modelValueDisplay = hoistCmp.factory<ViewManagerTestModel>({
     }
 });
 
-const outputPanel = hoistCmp.factory<ViewManagerTestModel>({
+const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
     render({model}) {
         if (!model.viewManagerModel) return placeholder('ViewManager not yet created');
 
@@ -168,68 +172,86 @@ const outputPanel = hoistCmp.factory<ViewManagerTestModel>({
                     item: 'Available @ window.testViewManagerModel'
                 })
             ],
-            items: [
-                persistedComp({
-                    title: 'Grouping Chooser',
-                    icon: Icon.treeList(),
-                    persistPath: 'groupingChooser',
-                    item: groupingChooser()
-                }),
-                persistedComp({
-                    title: 'Filter Chooser',
-                    icon: Icon.filter(),
-                    persistPath: 'filterChooser',
-                    item: filterChooser()
-                }),
-                persistedComp({
-                    title: 'Tab Container',
-                    icon: Icon.folder(),
-                    persistPath: 'tabContainer',
-                    item: tabContainer()
-                }),
-                persistedComp({
-                    title: 'Panel Sizing',
-                    icon: Icon.arrowsLeftRight(),
-                    persistPath: 'panel',
-                    item: hbox({
-                        className: 'xh-border',
-                        height: 100,
-                        items: [
-                            panel({
-                                item: placeholder('Primary Panel')
-                            }),
-                            panel({
-                                item: placeholder('Secondary Panel'),
-                                model: model.panelModel
-                            })
-                        ]
+            item: div({
+                style: {overflowY: 'auto'},
+                items: [
+                    persistedComp({
+                        title: 'Grouping Chooser',
+                        icon: Icon.treeList(),
+                        persistPath: 'groupingChooser',
+                        item: groupingChooser()
+                    }),
+                    persistedComp({
+                        title: 'Filter Chooser',
+                        icon: Icon.filter(),
+                        persistPath: 'filterChooser',
+                        item: filterChooser()
+                    }),
+                    persistedComp({
+                        title: 'Tab Container',
+                        icon: Icon.folder(),
+                        persistPath: 'tabContainer',
+                        item: tabContainer()
+                    }),
+                    persistedComp({
+                        title: 'Panel Sizing',
+                        icon: Icon.arrowsLeftRight(),
+                        persistPath: 'panel',
+                        item: hbox({
+                            className: 'xh-border',
+                            height: 100,
+                            items: [
+                                panel({
+                                    item: placeholder('Primary Panel')
+                                }),
+                                panel({
+                                    item: placeholder('Secondary Panel'),
+                                    model: model.panelModel
+                                })
+                            ]
+                        })
+                    }),
+                    persistedComp({
+                        title: 'Grid',
+                        icon: Icon.gridPanel(),
+                        persistPath: 'grid',
+                        minHeight: 250,
+                        item: sampleGrid({omitGridTools: true})
+                    }),
+                    persistedComp({
+                        title: 'Dash Canvas',
+                        icon: Icon.layout(),
+                        persistPath: 'dashCanvas',
+                        minHeight: 250,
+                        item: dashCanvas()
+                    }),
+                    persistedComp({
+                        title: 'Dash Container',
+                        icon: Icon.layout(),
+                        persistPath: 'dashContainer',
+                        minHeight: 500,
+                        item: dashContainer()
                     })
-                }),
-                persistedComp({
-                    title: 'Grid',
-                    icon: Icon.gridPanel(),
-                    persistPath: 'grid',
-                    item: box({
-                        height: 300,
-                        item: sampleGrid({model: model.gridModel, omitGridTools: true})
-                    })
-                })
-            ]
+                ]
+            })
         });
     }
 });
 
-const persistedComp = hoistCmp.factory<ViewManagerTestModel>({
-    render({title, icon, persistPath, children, model}) {
+const persistedComp = hoistCmp.factory({
+    model: uses(ViewManagerTestModel),
+    render({title, icon, persistPath, children, model, minHeight}) {
         const {value, pendingValue} = model.viewManagerModel,
             compVal = get(value, persistPath),
             compPendingVal = get(pendingValue, persistPath),
             atDefault = !compPendingVal,
-            dirty = !isEqual(compVal, compPendingVal);
+            dirty = !isEqual(compVal, compPendingVal),
+            focused = persistPath === model.focusedPersistable;
 
         return panel({
             title,
             icon,
+            minHeight,
             compactHeader: true,
             headerItems: [
                 badge({
@@ -251,6 +273,13 @@ const persistedComp = hoistCmp.factory<ViewManagerTestModel>({
                     intent: 'success',
                     item: 'Clean',
                     omit: dirty
+                }),
+                button({
+                    icon: Icon.target(),
+                    intent: focused ? 'danger' : null,
+                    minimal: !focused,
+                    width: 38,
+                    onClick: () => (model.focusedPersistable = focused ? null : persistPath)
                 }),
                 hspacer()
             ],

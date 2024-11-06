@@ -1,18 +1,22 @@
 import {FilterChooserModel} from '@xh/hoist/cmp/filter';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
-import {div} from '@xh/hoist/cmp/layout';
+import {div, frame} from '@xh/hoist/cmp/layout';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, lookup, managed, PersistOptions, XH} from '@xh/hoist/core';
 import {ViewManagerModel} from '@xh/hoist/core/persist/viewmanager';
 import {required} from '@xh/hoist/data';
+import {DashCanvasModel, DashContainerModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
+import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
+import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
-import {action, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
-import {SampleGridModel} from '../../../desktop/common';
+import {Icon} from '@xh/hoist/icon';
+import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {get} from 'lodash';
+import {sampleGrid, SampleGridModel} from '../../../desktop/common';
 
 export class ViewManagerTestModel extends HoistModel {
     @managed configFormModel: FormModel;
-
     @managed @observable.ref viewManagerModel: ViewManagerModel;
 
     /** Persisted models - all implementing Hoist's {@link Persistable} interface. */
@@ -21,6 +25,10 @@ export class ViewManagerTestModel extends HoistModel {
     @managed @observable.ref tabContainerModel: TabContainerModel;
     @managed @observable.ref panelModel: PanelModel;
     @managed @observable.ref gridModel: SampleGridModel;
+    @managed @observable.ref dashContainerModel: DashContainerModel;
+    @managed @observable.ref dashCanvasModel: DashCanvasModel;
+
+    @bindable focusedPersistable: string = null;
 
     get managedPersistables() {
         return [
@@ -29,20 +37,30 @@ export class ViewManagerTestModel extends HoistModel {
             this.filterChooserModel,
             this.tabContainerModel,
             this.panelModel,
-            this.gridModel
+            this.gridModel,
+            this.dashCanvasModel,
+            this.dashContainerModel
         ];
     }
 
     @computed
     get value(): string {
-        if (!this.viewManagerModel) return '[No ViewManagerModel]';
-        return JSON.stringify(this.viewManagerModel.value, null, 2);
+        const {viewManagerModel, focusedPersistable} = this;
+        if (!viewManagerModel) return '[No ViewManagerModel]';
+        const {value} = viewManagerModel;
+        return JSON.stringify(focusedPersistable ? get(value, focusedPersistable) : value, null, 2);
     }
 
     @computed
     get pendingValue(): string {
-        if (!this.viewManagerModel) return '[No ViewManagerModel]';
-        return JSON.stringify(this.viewManagerModel.pendingValue, null, 2);
+        const {viewManagerModel, focusedPersistable} = this;
+        if (!viewManagerModel) return '[No ViewManagerModel]';
+        const {pendingValue} = viewManagerModel;
+        return JSON.stringify(
+            focusedPersistable ? get(pendingValue, focusedPersistable) : pendingValue,
+            null,
+            2
+        );
     }
 
     constructor() {
@@ -115,21 +133,8 @@ export class ViewManagerTestModel extends HoistModel {
         this.logInfo('Rebuilding persisted models');
         const persistWith = {viewManagerModel: this.viewManagerModel};
 
-        this.groupingChooserModel = new GroupingChooserModel({
-            persistWith,
-            dimensions: ['Color', 'Size', 'Species', 'Grade'],
-            initialValue: ['Color', 'Size']
-        });
-
-        this.filterChooserModel = new FilterChooserModel({
-            persistWith,
-            fieldSpecs: [
-                {field: 'color', values: ['green', 'blue', 'red']},
-                {field: 'grade', values: ['A', 'B', 'C', 'D']},
-                {field: 'size', fieldType: 'number'},
-                {field: 'species'}
-            ]
-        });
+        this.groupingChooserModel = createGroupingChooserModel(persistWith);
+        this.filterChooserModel = createFilterChooserModel(persistWith);
 
         this.tabContainerModel = new TabContainerModel({
             persistWith,
@@ -150,9 +155,179 @@ export class ViewManagerTestModel extends HoistModel {
             gridConfig: {persistWith}
         });
         this.gridModel.loadAsync();
+
+        this.dashCanvasModel = new DashCanvasModel({
+            persistWith,
+            viewSpecs: [
+                {
+                    id: 'groupingChooser',
+                    title: 'Grouping Chooser',
+                    icon: Icon.treeList(),
+                    content: groupingChooserWidget
+                },
+                {
+                    id: 'filterChooser',
+                    title: 'Filter Chooser',
+                    icon: Icon.filter(),
+                    content: filterChooserWidget
+                },
+                {
+                    id: 'grid',
+                    title: 'Grid',
+                    icon: Icon.gridPanel(),
+                    content: gridWidget
+                }
+            ],
+            initialState: [
+                {
+                    layout: {x: 0, y: 0, w: 12, h: 2},
+                    viewSpecId: 'groupingChooser'
+                },
+                {
+                    layout: {x: 0, y: 2, w: 12, h: 2},
+                    viewSpecId: 'filterChooser'
+                },
+                {
+                    layout: {x: 0, y: 14, w: 12, h: 4},
+                    viewSpecId: 'grid'
+                }
+            ]
+        });
+
+        this.dashContainerModel = new DashContainerModel({
+            persistWith,
+            showMenuButton: true,
+            viewSpecs: [
+                {
+                    id: 'groupingChooser',
+                    title: 'Grouping Chooser',
+                    icon: Icon.treeList(),
+                    content: groupingChooserWidget
+                },
+                {
+                    id: 'filterChooser',
+                    title: 'Filter Chooser',
+                    icon: Icon.filter(),
+                    content: filterChooserWidget
+                },
+                {
+                    id: 'grid',
+                    title: 'Grid',
+                    icon: Icon.gridPanel(),
+                    content: gridWidget
+                }
+            ],
+            initialState: [
+                // Default state as a developer might spec - will immediately be dirty.
+                {
+                    type: 'column',
+                    content: [
+                        {type: 'view', id: 'filterChooser'},
+                        {type: 'view', id: 'groupingChooser'},
+                        {type: 'view', id: 'grid'}
+                    ]
+                }
+            ]
+        });
     }
 }
 
+//------------------
+// Dashboard widgets
+//------------------
+class BaseWidgetModel extends HoistModel {
+    @lookup(ViewManagerTestModel) vmtModel: ViewManagerTestModel;
+    @lookup(DashViewModel) dashViewModel: DashViewModel;
+
+    get viewManagerModel(): ViewManagerModel {
+        return this.vmtModel.viewManagerModel;
+    }
+
+    override onLinked() {
+        super.onLinked();
+        this.persistWith = {dashViewModel: this.dashViewModel};
+    }
+}
+
+class GroupingChooserWidgetModel extends BaseWidgetModel {
+    groupingChooserModel: GroupingChooserModel;
+    override onLinked() {
+        super.onLinked();
+        this.groupingChooserModel = createGroupingChooserModel(this.persistWith);
+    }
+}
+
+const groupingChooserWidget = hoistCmp.factory({
+    model: creates(GroupingChooserWidgetModel),
+    render({model}) {
+        return widget(groupingChooser({flex: 1}));
+    }
+});
+
+const createGroupingChooserModel = (persistWith: PersistOptions) => {
+    return new GroupingChooserModel({
+        persistWith,
+        dimensions: ['Color', 'Size', 'Species', 'Grade'],
+        initialValue: ['Color', 'Size']
+    });
+};
+
+class FilterChooserWidgetModel extends BaseWidgetModel {
+    filterChooserModel: FilterChooserModel;
+    override onLinked() {
+        super.onLinked();
+        this.filterChooserModel = createFilterChooserModel(this.persistWith);
+    }
+}
+
+const filterChooserWidget = hoistCmp.factory({
+    model: creates(FilterChooserWidgetModel),
+    render({model}) {
+        return widget(filterChooser({flex: 1}));
+    }
+});
+
+const createFilterChooserModel = (persistWith: PersistOptions) => {
+    return new FilterChooserModel({
+        persistWith,
+        fieldSpecs: [
+            {field: 'color', values: ['green', 'blue', 'red']},
+            {field: 'grade', values: ['A', 'B', 'C', 'D']},
+            {field: 'size', fieldType: 'number'},
+            {field: 'species'}
+        ]
+    });
+};
+
+class gridWidgetModel extends BaseWidgetModel {
+    gridModel: SampleGridModel;
+    override onLinked() {
+        super.onLinked();
+        this.gridModel = new SampleGridModel({gridConfig: {persistWith: this.persistWith}});
+        this.gridModel.loadAsync();
+    }
+}
+
+const gridWidget = hoistCmp.factory({
+    model: creates(gridWidgetModel),
+    render({model}) {
+        return widget(sampleGrid({omitGridTools: true}));
+    }
+});
+
+const widget = hoistCmp.factory({
+    render({children}) {
+        return frame({
+            padding: 10,
+            className: 'xh-border-solid xh-bg-alt',
+            items: children
+        });
+    }
+});
+
+//------------------
+// Other helpers
+//------------------
 const testTab = txt => {
     return div({
         className: 'xh-pad',
