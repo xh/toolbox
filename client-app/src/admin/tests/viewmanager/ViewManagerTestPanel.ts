@@ -49,6 +49,7 @@ export const viewManagerTestPanel = hoistCmp.factory({
 
 const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
     render({model}) {
+        const {isDirty, isValid} = model.configFormModel;
         return panel({
             title: 'Model Configuration',
             icon: Icon.gears(),
@@ -112,10 +113,10 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
                     button({
                         text: 'Rebuild View Manager Model',
                         icon: Icon.reset(),
-                        intent: 'success',
-                        outlined: !model.configFormModel.isDirty,
-                        minimal: !model.configFormModel.isDirty,
-                        disabled: !model.configFormModel.isValid,
+                        intent: isDirty ? 'warning' : 'success',
+                        outlined: !isDirty,
+                        minimal: !isDirty,
+                        disabled: !isValid,
                         onClick: () => model.rebuildViewManagerModelAsync()
                     })
                 ]
