@@ -27,6 +27,7 @@ export class ViewManagerTestModel extends HoistModel {
     @managed @observable.ref gridModel: SampleGridModel;
     @managed @observable.ref dashContainerModel: DashContainerModel;
     @managed @observable.ref dashCanvasModel: DashCanvasModel;
+    @managed @observable.ref persistedPropertyModel: PersistedPropertyModel;
 
     @bindable focusedPersistable: string = null;
 
@@ -39,7 +40,8 @@ export class ViewManagerTestModel extends HoistModel {
             this.panelModel,
             this.gridModel,
             this.dashCanvasModel,
-            this.dashContainerModel
+            this.dashContainerModel,
+            this.persistedPropertyModel
         ];
     }
 
@@ -229,6 +231,21 @@ export class ViewManagerTestModel extends HoistModel {
                 }
             ]
         });
+
+        this.persistedPropertyModel = new PersistedPropertyModel({persistWith});
+    }
+}
+
+/**
+ * Test case for direct persistence of model properties.
+ */
+class PersistedPropertyModel extends HoistModel {
+    @bindable stringValue = 'Some Default Value';
+    constructor({persistWith}: {persistWith: PersistOptions}) {
+        super();
+        makeObservable(this);
+        this.persistWith = persistWith;
+        this.markPersist('stringValue');
     }
 }
 

@@ -1,6 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {form} from '@xh/hoist/cmp/form';
-import {div, filler, hbox, hframe, hspacer, placeholder, span, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, hframe, hspacer, placeholder, vframe} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -168,14 +168,28 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
             tbar: [
                 viewManager(),
                 filler(),
-                span({
-                    className: 'xh-font-family-mono xh-font-size-small',
-                    item: 'Available @ window.testViewManagerModel'
+                viewManager({
+                    menuButtonProps: {
+                        icon: Icon.star(),
+                        intent: 'primary'
+                    },
+                    showSaveButton: 'never'
                 })
             ],
             item: div({
                 style: {overflowY: 'auto'},
                 items: [
+                    persistedComp({
+                        title: 'Model Property via markPersist()',
+                        icon: Icon.boxFull(),
+                        persistPath: 'stringValue',
+                        item: textInput({
+                            bind: 'stringValue',
+                            commitOnChange: true,
+                            model: model.persistedPropertyModel,
+                            width: '100%'
+                        })
+                    }),
                     persistedComp({
                         title: 'Grouping Chooser',
                         icon: Icon.treeList(),

@@ -12,7 +12,6 @@
   &__output {
     > .xh-panel__content > .xh-vframe {
       overflow-y: auto !important;
-      padding-bottom: var(--xh-pad-double-px);
     }
   }
 
@@ -24,5 +23,9 @@
     border: var(--xh-border-solid);
     flex: none !important;
     margin: var(--xh-pad-double-px) var(--xh-pad-double-px) 0 var(--xh-pad-double-px);
+
+    &:last-child {
+      margin-bottom: var(--xh-pad-double-px);
+    }
   }
 }
