@@ -3,12 +3,12 @@ import {filler, hspacer, label, span, vbox} from '@xh/hoist/cmp/layout';
 import {storeFilterField} from '@xh/hoist/cmp/store';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {button, colChooserButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
-import {numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {jsonInput, numberInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fmtNumber} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {tooltip} from '@xh/hoist/kit/blueprint';
+import {popover, tooltip} from '@xh/hoist/kit/blueprint';
 import {GridTestModel} from './GridTestModel';
 
 export const GridTestPanel = hoistCmp({
@@ -30,7 +30,8 @@ export const GridTestPanel = hoistCmp({
                 }),
                 bbar1(),
                 bbar2(),
-                bbar3()
+                bbar3(),
+                bbar4()
             ]
         });
     }
@@ -149,20 +150,6 @@ const bbar1 = hoistCmp.factory<GridTestModel>(({model}) =>
 
 const bbar2 = hoistCmp.factory<GridTestModel>(({model}) =>
     toolbar(
-        label('Persist:'),
-        tooltip({
-            content: 'persistWith',
-            item: select({
-                bind: 'persistType',
-                enableClear: true,
-                options: [
-                    {label: 'Pref', value: 'prefKey'},
-                    {label: 'Local Storage', value: 'localStorageKey'},
-                    {label: 'Bad Provider', value: 'badKey'}
-                ]
-            })
-        }),
-        hspacer(20),
         label('Selection:'),
         switchInput({
             bind: 'disableSelect',
@@ -236,6 +223,70 @@ const bbar3 = hoistCmp.factory<GridTestModel>(({model}) =>
         })
     )
 );
+
+const bbar4 = hoistCmp.factory<GridTestModel>(({model}) => {
+    const {gridModelPersistOptions} = model,
+        rootPersistOptions = [
+            {label: 'Pref', value: 'prefKey'},
+            {label: 'Local Storage', value: 'localStorageKey'},
+            {label: 'Bad Provider', value: 'badKey'}
+        ],
+        persistOptions = [...rootPersistOptions, {label: 'False', value: false}],
+        placeholder = 'true',
+        width = 150;
+
+    return toolbar(
+        label('Persist:'),
+        select({
+            bind: 'gridPersistType',
+            enableClear: true,
+            options: rootPersistOptions,
+            width: 150
+        }),
+        popover({
+            item: button({icon: Icon.code()}),
+            content: panel({
+                title: 'persistWith',
+                compactHeader: true,
+                item: jsonInput({
+                    height: 200,
+                    value: JSON.stringify(gridModelPersistOptions, null, 2),
+                    width: 400
+                })
+            })
+        }),
+        '-',
+        label('Persist Columns:'),
+        select({
+            bind: 'columnsPersistType',
+            disabled: !gridModelPersistOptions,
+            enableClear: true,
+            options: persistOptions,
+            placeholder,
+            width
+        }),
+        '-',
+        label('Persist Grouping:'),
+        select({
+            bind: 'groupingPersistType',
+            disabled: !gridModelPersistOptions,
+            enableClear: true,
+            options: persistOptions,
+            placeholder,
+            width
+        }),
+        '-',
+        label('Persist Sort:'),
+        select({
+            bind: 'sortPersistType',
+            disabled: !gridModelPersistOptions,
+            enableClear: true,
+            options: persistOptions,
+            placeholder,
+            width
+        })
+    );
+});
 
 function formatRunTimes(model) {
     const fmt = v =>

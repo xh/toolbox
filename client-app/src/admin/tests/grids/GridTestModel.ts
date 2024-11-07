@@ -2,8 +2,8 @@ import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {fragment} from '@xh/hoist/cmp/layout';
 import {FieldType, StoreConfig} from '@xh/hoist/data';
 import {fmtMillions, fmtNumber, millionsRenderer, numberRenderer} from '@xh/hoist/format';
-import {GridModel, ColumnSpec, GridAutosizeMode} from '@xh/hoist/cmp/grid';
-import {cloneDeep} from 'lodash';
+import {GridModel, ColumnSpec, GridAutosizeMode, GridModelPersistOptions} from '@xh/hoist/cmp/grid';
+import {cloneDeep, isNil} from 'lodash';
 import {action, bindable, observable, makeObservable} from '@xh/hoist/mobx';
 import {GridTestData} from './GridTestData';
 import {GridTestMetrics} from './GridTestMetrics';
@@ -53,7 +53,7 @@ export class GridTestModel extends HoistModel {
     @bindable lockColumnGroups = true;
 
     @bindable
-    @persist
+    @persist.with({path: 'gridAutosizeMode', buffer: 500}) // test persist.with!
     autosizeMode: GridAutosizeMode = 'onDemand';
 
     @bindable
@@ -65,8 +65,20 @@ export class GridTestModel extends HoistModel {
     includeCollapsedChildren = true;
 
     @bindable
-    @persist.with({path: 'gridPersistType', buffer: 500}) // test persist.with!
-    persistType = null;
+    @persist
+    gridPersistType = null;
+
+    @bindable
+    @persist
+    columnsPersistType = null;
+
+    @bindable
+    @persist
+    groupingPersistType = null;
+
+    @bindable
+    @persist
+    sortPersistType = null;
 
     @managed
     data = new GridTestData();
@@ -77,6 +89,28 @@ export class GridTestModel extends HoistModel {
     @managed
     @observable.ref
     gridModel: GridModel;
+
+    get gridModelPersistOptions(): GridModelPersistOptions {
+        const {gridPersistType} = this;
+        if (!gridPersistType) return null;
+
+        const ret: GridModelPersistOptions = {[gridPersistType]: PERSIST_KEY},
+            {columnsPersistType, groupingPersistType, sortPersistType} = this;
+
+        if (!isNil(columnsPersistType)) {
+            ret.persistColumns = columnsPersistType && {[columnsPersistType]: PERSIST_KEY};
+        }
+
+        if (!isNil(groupingPersistType)) {
+            ret.persistGrouping = groupingPersistType && {[groupingPersistType]: PERSIST_KEY};
+        }
+
+        if (!isNil(sortPersistType)) {
+            ret.persistSort = sortPersistType && {[sortPersistType]: PERSIST_KEY};
+        }
+
+        return ret;
+    }
 
     constructor() {
         super();
@@ -93,7 +127,7 @@ export class GridTestModel extends HoistModel {
                 this.autosizeMode,
                 this.renderedRowsOnly,
                 this.includeCollapsedChildren,
-                this.persistType,
+                this.gridModelPersistOptions,
                 this.colChooserCommitOnChange,
                 this.colChooserShowRestoreDefaults,
                 this.colChooserWidth,
@@ -155,7 +189,7 @@ export class GridTestModel extends HoistModel {
     }
 
     private createGridModel() {
-        const {persistType, disableXssProtection, extraFieldCount} = this,
+        const {gridModelPersistOptions, disableXssProtection, extraFieldCount} = this,
             storeConf: StoreConfig = {
                 freezeData: false,
                 idEncodesTreePath: true
@@ -188,7 +222,7 @@ export class GridTestModel extends HoistModel {
         }
 
         return new GridModel({
-            persistWith: persistType ? {[persistType]: PERSIST_KEY} : null,
+            persistWith: gridModelPersistOptions,
             selModel: {mode: 'multiple'},
             sortBy: 'id',
             emptyText: 'No records found...',
