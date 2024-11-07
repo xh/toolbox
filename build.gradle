@@ -86,7 +86,7 @@ Map hoistMetaData = [
 def allJvmArgs = [
     '-Dspring.output.ansi.enabled=always',
     '-XX:TieredStopAtLevel=1',
-    '-Xmx1024m',
+    '-Xmx' + localDevXmx,
     "--add-modules=java.se",
     "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
     "--add-opens=java.base/java.lang=ALL-UNNAMED",
