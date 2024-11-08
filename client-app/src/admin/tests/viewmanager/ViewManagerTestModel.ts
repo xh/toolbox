@@ -138,7 +138,10 @@ export class ViewManagerTestModel extends HoistModel {
         const persistWith = {viewManagerModel: this.viewManagerModel};
 
         this.groupingChooserModel = createGroupingChooserModel(persistWith);
-        this.filterChooserModel = createFilterChooserModel(persistWith);
+        this.filterChooserModel = createFilterChooserModel(
+            persistWith,
+            this.configFormModel.values.localStorageKey
+        );
 
         this.tabContainerModel = new TabContainerModel({
             persistWith,
@@ -268,6 +271,10 @@ class BaseWidgetModel extends HoistModel {
         return this.vmtModel.viewManagerModel;
     }
 
+    get localStorageKey(): string {
+        return this.vmtModel.configFormModel.values.localStorageKey;
+    }
+
     override onLinked() {
         super.onLinked();
         this.persistWith = {dashViewModel: this.dashViewModel};
@@ -301,7 +308,7 @@ class FilterChooserWidgetModel extends BaseWidgetModel {
     filterChooserModel: FilterChooserModel;
     override onLinked() {
         super.onLinked();
-        this.filterChooserModel = createFilterChooserModel(this.persistWith);
+        this.filterChooserModel = createFilterChooserModel(this.persistWith, this.localStorageKey);
     }
 }
 
@@ -312,9 +319,12 @@ const filterChooserWidget = hoistCmp.factory({
     }
 });
 
-const createFilterChooserModel = (persistWith: PersistOptions) => {
+const createFilterChooserModel = (persistWith: PersistOptions, localStorageKey: string) => {
     return new FilterChooserModel({
-        persistWith,
+        persistWith: {
+            persistValue: persistWith,
+            persistFavorites: localStorageKey ? {localStorageKey: localStorageKey} : null
+        },
         fieldSpecs: [
             {field: 'color', values: ['green', 'blue', 'red']},
             {field: 'grade', values: ['A', 'B', 'C', 'D']},

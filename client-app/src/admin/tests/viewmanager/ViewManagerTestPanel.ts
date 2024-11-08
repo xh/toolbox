@@ -197,7 +197,7 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                         item: groupingChooser()
                     }),
                     persistedComp({
-                        title: 'Filter Chooser',
+                        title: 'Filter Chooser (favorites persisted to localStorage)',
                         icon: Icon.filter(),
                         persistPath: 'filterChooser',
                         item: filterChooser()
