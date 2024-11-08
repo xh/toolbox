@@ -1,10 +1,9 @@
-import {XH} from '@xh/hoist/core';
 import {AppModel as HoistAdminAppModel} from '@xh/hoist/admin/AppModel';
+import {XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
 import {roadmapTab} from './roadmap/RoadmapTab';
 import {testsTab} from './tests/TestsTab';
-import {wipTab} from './wip/WipTab';
 
 export class AppModel extends HoistAdminAppModel {
     static override instance: AppModel;
@@ -47,10 +46,6 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'viewManager', path: '/viewManager'},
                     {name: 'webSockets', path: '/webSockets'}
                 ]
-            },
-            {
-                name: 'wip',
-                path: '/wip'
             }
         ];
     }
@@ -59,8 +54,7 @@ export class AppModel extends HoistAdminAppModel {
         return [
             ...super.createTabs(),
             {id: 'roadmap', title: 'Roadmap', icon: Icon.mapSigns(), content: roadmapTab},
-            {id: 'tests', icon: Icon.stopwatch(), content: testsTab},
-            {id: 'wip', title: 'WIP', icon: Icon.experiment(), content: wipTab}
+            {id: 'tests', icon: Icon.stopwatch(), content: testsTab}
         ];
     }
 }
