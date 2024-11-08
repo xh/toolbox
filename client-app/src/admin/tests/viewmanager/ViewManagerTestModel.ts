@@ -180,7 +180,7 @@ export class ViewManagerTestModel extends HoistModel {
                 },
                 {
                     id: 'filterChooser',
-                    title: 'Filter Chooser',
+                    title: 'Filter Chooser (favorites in localStorage)',
                     icon: Icon.filter(),
                     content: filterChooserWidget
                 },
@@ -219,7 +219,7 @@ export class ViewManagerTestModel extends HoistModel {
                 },
                 {
                     id: 'filterChooser',
-                    title: 'Filter Chooser',
+                    title: 'Filter Chooser (favorites in localStorage)',
                     icon: Icon.filter(),
                     content: filterChooserWidget
                 },
