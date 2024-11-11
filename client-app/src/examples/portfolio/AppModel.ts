@@ -18,12 +18,10 @@ export class AppModel extends BaseAppModel {
         // saved views are loaded and the desired option has been preselected before the model
         // is used to construct component-level models within PortfolioModel.
         this.portfolioViewManager = await ViewManagerModel.createAsync({
-            entity: {
-                name: 'portfolioLayout',
-                displayName: 'Layout'
-            },
-            enableSharing: true,
+            viewType: 'portfolioLayout',
+            viewTypeDisplayName: 'Layout',
             enableDefault: true,
+            enableSharing: true,
             persistWith: {localStorageKey: 'portfolioViewManager'}
         });
 

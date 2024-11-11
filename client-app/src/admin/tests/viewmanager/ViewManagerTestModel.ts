@@ -75,8 +75,8 @@ export class ViewManagerTestModel extends HoistModel {
             .filter(it => it.isDirty)
             .map(it => it.name);
         return [
-            'entityName',
-            'entityDisplayName',
+            'viewType',
+            'viewTypeDisplayName',
             'localStorageKey',
             'enableSharing',
             'enableDefault',
@@ -91,8 +91,8 @@ export class ViewManagerTestModel extends HoistModel {
 
         this.configFormModel = new FormModel({
             fields: [
-                {name: 'entityName', rules: [required], initialValue: 'testView'},
-                {name: 'entityDisplayName', rules: [required], initialValue: 'View'},
+                {name: 'viewType', rules: [required], initialValue: 'testView'},
+                {name: 'viewTypeDisplayName', initialValue: 'View'},
                 {name: 'localStorageKey', initialValue: 'viewManagerTest'},
                 {name: 'enableSharing', displayName: 'Sharing', initialValue: true},
                 {name: 'enableDefault', displayName: 'Default', initialValue: true},
@@ -128,8 +128,8 @@ export class ViewManagerTestModel extends HoistModel {
 
         const data = configFormModel.getData(),
             {
-                entityName,
-                entityDisplayName,
+                viewType,
+                viewTypeDisplayName,
                 localStorageKey,
                 enableSharing,
                 enableDefault,
@@ -138,10 +138,8 @@ export class ViewManagerTestModel extends HoistModel {
             } = data;
 
         const newModel = await ViewManagerModel.createAsync({
-            entity: {
-                name: entityName,
-                displayName: entityDisplayName
-            },
+            viewType,
+            viewTypeDisplayName,
             persistWith: localStorageKey ? {localStorageKey: localStorageKey} : null,
             enableSharing,
             enableDefault,

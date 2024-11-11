@@ -61,13 +61,13 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
                     items: [
                         h3('ViewManagerModel Configs'),
                         formField({
-                            field: 'entityName',
+                            field: 'viewType',
                             info: 'Determines backing JSONBlob query',
                             item: textInput()
                         }),
                         formField({
-                            field: 'entityDisplayName',
-                            item: textInput()
+                            field: 'viewTypeDisplayName',
+                            item: textInput({enableClear: true})
                         }),
                         formField({
                             field: 'localStorageKey',
