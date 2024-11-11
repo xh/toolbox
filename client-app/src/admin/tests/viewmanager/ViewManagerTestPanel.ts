@@ -59,6 +59,7 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
                 item: vframe({
                     className: 'xh-pad tb-vm-test__model-conf',
                     items: [
+                        h3('ViewManagerModel Configs'),
                         formField({
                             field: 'entityName',
                             info: 'Determines backing JSONBlob query',
@@ -73,7 +74,6 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
                             info: 'Persists last-selected view + autoSave/favorites',
                             item: textInput({enableClear: true})
                         }),
-                        h3('ViewManagerModel Configs'),
                         hbox(
                             formField({
                                 field: 'enableSharing',

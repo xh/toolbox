@@ -1,5 +1,14 @@
 .tb-vm-test {
   &__model-conf {
+    h3 {
+      border-bottom: var(--xh-border-solid);
+      font-weight: normal;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
     .xh-form-field-switch-input {
       margin-left: 4px;
       .xh-form-field-label {
