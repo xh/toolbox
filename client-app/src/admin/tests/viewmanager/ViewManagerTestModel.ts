@@ -16,8 +16,10 @@ import {get} from 'lodash';
 import {sampleGrid, SampleGridModel} from '../../../desktop/common';
 
 export class ViewManagerTestModel extends HoistModel {
-    @managed configFormModel: FormModel;
     @managed @observable.ref viewManagerModel: ViewManagerModel;
+
+    /** FormModel for model configs and component props. */
+    @managed configFormModel: FormModel;
 
     /** Persisted models - all implementing Hoist's {@link Persistable} interface. */
     @managed @observable.ref groupingChooserModel: GroupingChooserModel;
@@ -67,6 +69,22 @@ export class ViewManagerTestModel extends HoistModel {
         );
     }
 
+    @computed
+    get modelConfigDirty(): boolean {
+        const dirtyFields = this.configFormModel.fieldList
+            .filter(it => it.isDirty)
+            .map(it => it.name);
+        return [
+            'entityName',
+            'entityDisplayName',
+            'localStorageKey',
+            'enableSharing',
+            'enableDefault',
+            'enableAutoSave',
+            'enableFavorites'
+        ].some(it => dirtyFields.includes(it));
+    }
+
     constructor() {
         super();
         makeObservable(this);
@@ -79,7 +97,23 @@ export class ViewManagerTestModel extends HoistModel {
                 {name: 'enableSharing', displayName: 'Sharing', initialValue: true},
                 {name: 'enableDefault', displayName: 'Default', initialValue: true},
                 {name: 'enableAutoSave', displayName: 'AutoSave', initialValue: true},
-                {name: 'enableFavorites', displayName: 'Faves', initialValue: true}
+                {name: 'enableFavorites', displayName: 'Faves', initialValue: true},
+                {name: 'showSaveButton', initialValue: 'whenDirty'},
+                {
+                    name: 'showPrivateViewsInSubMenu',
+                    displayName: 'Show private views in sub-menu',
+                    initialValue: false
+                },
+                {
+                    name: 'showSharedViewsInSubMenu',
+                    displayName: 'Show shared views in sub-menu',
+                    initialValue: false
+                },
+                {
+                    name: 'customMenuButtonProps',
+                    displayName: 'Custom menuButtonProps',
+                    initialValue: false
+                }
             ]
         });
 

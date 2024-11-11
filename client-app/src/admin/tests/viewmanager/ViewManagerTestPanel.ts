@@ -1,6 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {form} from '@xh/hoist/cmp/form';
-import {div, filler, hbox, hframe, hspacer, placeholder, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler, h3, hbox, hframe, hspacer, placeholder, vframe} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -8,7 +8,7 @@ import {dashCanvas, dashContainer} from '@xh/hoist/desktop/cmp/dash';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
-import {jsonInput, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
+import {jsonInput, select, switchInput, textInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
@@ -29,8 +29,9 @@ export const viewManagerTestPanel = hoistCmp.factory({
             item: hframe({
                 items: [
                     panel({
-                        collapsedTitle: 'Model Configuration',
-                        collapsedIcon: Icon.gears(),
+                        title: 'Model Config + Props',
+                        icon: Icon.gears(),
+                        compactHeader: true,
                         modelConfig: {
                             side: 'left',
                             defaultSize: 500
@@ -49,43 +50,31 @@ export const viewManagerTestPanel = hoistCmp.factory({
 
 const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
     render({model}) {
-        const {isDirty, isValid} = model.configFormModel;
+        const {configFormModel, modelConfigDirty} = model,
+            {isValid} = configFormModel;
         return panel({
-            title: 'Model Configuration',
-            icon: Icon.gears(),
-            compactHeader: true,
             flex: 'none',
-            modelConfig: {
-                side: 'top',
-                defaultSize: 240
-            },
             item: form({
-                fieldDefaults: {commitOnChange: true, minimal: true},
+                fieldDefaults: {commitOnChange: true, minimal: true, inline: true, labelWidth: 160},
                 item: vframe({
                     className: 'xh-pad tb-vm-test__model-conf',
                     items: [
+                        formField({
+                            field: 'entityName',
+                            info: 'Determines backing JSONBlob query',
+                            item: textInput()
+                        }),
+                        formField({
+                            field: 'entityDisplayName',
+                            item: textInput()
+                        }),
+                        formField({
+                            field: 'localStorageKey',
+                            info: 'Persists last-selected view + autoSave/favorites',
+                            item: textInput({enableClear: true})
+                        }),
+                        h3('ViewManagerModel Configs'),
                         hbox(
-                            formField({
-                                field: 'entityName',
-                                info: 'Affects loading of prior saved views',
-                                width: '50%',
-                                item: textInput()
-                            }),
-                            formField({
-                                field: 'entityDisplayName',
-                                info: 'For visual testing only',
-                                width: '50%',
-                                item: textInput()
-                            })
-                        ),
-                        hbox(
-                            formField({
-                                field: 'localStorageKey',
-                                info: 'Persists selected view, autoSave, favorites',
-                                item: textInput({enableClear: true}),
-                                width: '50%',
-                                minWidth: '50%'
-                            }),
                             formField({
                                 field: 'enableSharing',
                                 item: switchInput()
@@ -102,6 +91,28 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
                                 field: 'enableFavorites',
                                 item: switchInput()
                             })
+                        ),
+                        h3('ViewManager Props'),
+                        formField({
+                            field: 'showSaveButton',
+                            item: select({
+                                options: ['always', 'never', 'whenDirty'],
+                                enableFilter: false
+                            })
+                        }),
+                        hbox(
+                            formField({
+                                field: 'showPrivateViewsInSubMenu',
+                                item: switchInput()
+                            }),
+                            formField({
+                                field: 'showSharedViewsInSubMenu',
+                                item: switchInput()
+                            }),
+                            formField({
+                                field: 'customMenuButtonProps',
+                                item: switchInput()
+                            })
                         )
                     ]
                 })
@@ -113,9 +124,8 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
                     button({
                         text: 'Rebuild View Manager Model',
                         icon: Icon.reset(),
-                        intent: isDirty ? 'warning' : 'success',
-                        outlined: !isDirty,
-                        minimal: !isDirty,
+                        intent: modelConfigDirty ? 'warning' : 'success',
+                        minimal: !modelConfigDirty,
                         disabled: !isValid,
                         onClick: () => model.rebuildViewManagerModelAsync()
                     })
@@ -163,17 +173,26 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
     render({model}) {
         if (!model.viewManagerModel) return placeholder('ViewManager not yet created');
 
+        const {
+                showSaveButton,
+                showPrivateViewsInSubMenu,
+                showSharedViewsInSubMenu,
+                customMenuButtonProps
+            } = model.configFormModel.values,
+            menuButtonProps = customMenuButtonProps
+                ? ({
+                      icon: Icon.star(),
+                      intent: 'success'
+                  } as const)
+                : undefined;
         return panel({
             className: 'tb-vm-test__output',
             tbar: [
-                viewManager(),
-                filler(),
                 viewManager({
-                    menuButtonProps: {
-                        icon: Icon.star(),
-                        intent: 'primary'
-                    },
-                    showSaveButton: 'never'
+                    showSaveButton,
+                    showPrivateViewsInSubMenu,
+                    showSharedViewsInSubMenu,
+                    menuButtonProps
                 })
             ],
             item: div({
