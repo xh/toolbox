@@ -2,9 +2,13 @@
 
 ## v6.0-SNAPSHOT - unreleased
 
+### New Features
+* Added the new Hoist `ViewManager` component to the Portfolio example, as well as an in-depth test page hosted within the Admin Console.
+* Refactored and updated the Portfolio example for clarity and to better demonstrate potential usages of saved layouts via `ViewManager`.
+
 ## v5.3.0 - 2024-10-17
 
-### 📚 Libraries
+### Libraries
 * hoist-core 24.0.0
 * @xh/hoist 69.0.0
 
@@ -16,24 +20,24 @@
 ### Bug Fixes
 * Fixed `InputsPanel` "Set Focus" popover.
 
-### 📚 Libraries
+### Libraries
 * hoist-core 23.0.0
 * @xh/hoist 68.1.0
 
 ## v5.1.0 - 2024-06-21
 
-### 📚 Libraries
+### Libraries
 * hoist-core 20.1.0
 
 ## v5.0.2 - 2024-06-20
 
-### 📚 Libraries
+### Libraries
 * hoist-core 20.0.2
 * @xh/hoist 64.0.5
 
 ## v5.0.1 - 2024-05-19
 
-### 📚 Libraries
+### Libraries
 * @xh/hoist 64.0.1
 
 ## v5.0.0 - 2024-05-17
@@ -41,7 +45,7 @@
 ### New Features
 * Support for new `mockDirectoryGroups` config - see `RoleService` for details.
 
-### 📚 Libraries
+### Libraries
 * hoist-core 20.0 (multi-instance)
 * @xh/hoist 64.0
 * @ag-grid 31.2

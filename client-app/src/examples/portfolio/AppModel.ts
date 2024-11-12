@@ -1,18 +1,29 @@
 import {XH} from '@xh/hoist/core';
-import {themeAppOption, sizingModeAppOption} from '@xh/hoist/desktop/cmp/appOption';
+import {ViewManagerModel} from '@xh/hoist/core/persist/viewmanager';
+import {sizingModeAppOption, themeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {Icon} from '@xh/hoist/icon';
-import {PortfolioService} from '../../core/svc/PortfolioService';
 import {BaseAppModel} from '../../BaseAppModel';
-
-export const PERSIST_MAIN = {localStorageKey: 'portfolioAppMainState'};
-export const PERSIST_DETAIL = {localStorageKey: 'portfolioAppDetailState'};
+import {PortfolioService} from '../../core/svc/PortfolioService';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
 
+    portfolioViewManager: ViewManagerModel;
+
     override async initAsync() {
         await super.initAsync();
         await XH.installServicesAsync(PortfolioService);
+
+        // Constructed here, in initAsync, so we can await the async factory and ensure that all
+        // saved views are loaded and the desired option has been preselected before the model
+        // is used to construct component-level models within PortfolioModel.
+        this.portfolioViewManager = await ViewManagerModel.createAsync({
+            viewType: 'portfolioLayout',
+            viewTypeDisplayName: 'Layout',
+            enableDefault: true,
+            enableSharing: true,
+            persistWith: {localStorageKey: 'portfolioViewManager'}
+        });
 
         this.addReaction({
             track: () => XH.webSocketService.connected,

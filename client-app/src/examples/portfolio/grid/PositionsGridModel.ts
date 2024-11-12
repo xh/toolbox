@@ -1,18 +1,15 @@
+import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
-import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
-import {PERSIST_MAIN} from './AppModel';
-import {mktValCol, nameCol, pnlCol} from '../../core/columns';
-import {PortfolioPanelModel} from './PortfolioPanelModel';
 import {capitalize} from 'lodash';
+import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
+import {PortfolioModel} from '../PortfolioModel';
 
-export class GridPanelModel extends HoistModel {
+export class PositionsGridModel extends HoistModel {
+    readonly parentModel: PortfolioModel;
+    @managed gridModel: GridModel;
+
     @bindable loadTimestamp: number;
-
-    @managed
-    gridModel: GridModel;
-
-    parentModel: PortfolioPanelModel;
 
     get selectedRecord() {
         return this.gridModel.selectedRecord;
@@ -26,12 +23,11 @@ export class GridPanelModel extends HoistModel {
         super();
         makeObservable(this);
         this.parentModel = parentModel;
-        this.gridModel = this.createGridModel();
-    }
+        this.persistWith = this.parentModel.persistWith;
 
-    private createGridModel() {
-        return new GridModel({
-            persistWith: PERSIST_MAIN,
+        this.gridModel = new GridModel({
+            persistWith: {...this.persistWith, path: 'portfolioGrid'},
+            store: this.parentModel.store,
             treeMode: true,
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,
             sortBy: 'pnl|desc|abs',
@@ -41,11 +37,9 @@ export class GridPanelModel extends HoistModel {
             rowBorders: true,
             showHover: true,
             showSummary: true,
-            store: this.parentModel.store,
             columns: [
                 {
                     field: 'id',
-                    headerName: 'ID',
                     width: 40,
                     hidden: true
                 },

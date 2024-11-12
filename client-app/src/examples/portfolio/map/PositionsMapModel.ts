@@ -1,16 +1,21 @@
-import {HoistModel, lookup, managed} from '@xh/hoist/core';
+import {GridModel} from '@xh/hoist/cmp/grid';
 import {hspacer} from '@xh/hoist/cmp/layout';
-import {fmtMillions} from '@xh/hoist/format';
+import {HoistModel, managed} from '@xh/hoist/core';
 import {SplitTreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
-import {GridPanelModel} from './GridPanelModel';
+import {fmtMillions} from '@xh/hoist/format';
+import {PortfolioModel} from '../PortfolioModel';
 
-export class MapPanelModel extends HoistModel {
-    @lookup(GridPanelModel) gridPanelModel: GridPanelModel;
+export class PositionsMapModel extends HoistModel {
+    readonly parentModel: PortfolioModel;
+
     @managed splitTreeMapModel: SplitTreeMapModel;
 
-    override onLinked() {
+    constructor({parentModel, gridModel}: {parentModel: PortfolioModel; gridModel: GridModel}) {
+        super();
+        this.parentModel = parentModel;
+
         this.splitTreeMapModel = new SplitTreeMapModel({
-            gridModel: this.gridPanelModel.gridModel,
+            gridModel,
             mapTitleFn: (model, isPrimary) => {
                 return [
                     isPrimary ? 'Profit:' : 'Loss:',
