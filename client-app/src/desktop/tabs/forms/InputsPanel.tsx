@@ -318,6 +318,31 @@ const formContents = hoistCmp.factory<InputsPanelModel>(({model}) =>
                         )
                     }),
                     row({
+                        field: 'buttonGroupInput',
+                        info: 'outlined, intent:primary',
+                        item: buttonGroupInput({
+                            outlined: true,
+                            intent: 'primary',
+                            items: [
+                                button({
+                                    icon: Icon.chartLine(),
+                                    text: 'Button 1',
+                                    value: 'button1'
+                                }),
+                                button({
+                                    icon: Icon.gear(),
+                                    text: 'Button 2',
+                                    value: 'button2'
+                                }),
+                                button({
+                                    icon: Icon.skull(),
+                                    text: 'Button 3',
+                                    value: 'button3'
+                                })
+                            ]
+                        })
+                    }),
+                    row({
                         field: 'radioInput',
                         info: 'inline, disabled option',
                         item: radioInput({
