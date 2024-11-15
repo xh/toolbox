@@ -2,7 +2,6 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {HoistModel, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {Store, StoreRecord} from '@xh/hoist/data';
 import {waitFor} from '@xh/hoist/promise';
-import {SECONDS} from '@xh/hoist/utils/datetime';
 import {round} from 'lodash';
 import {PositionSession} from '../../core/positions/PositionSession';
 import {AppModel} from './AppModel';
@@ -53,7 +52,7 @@ export class PortfolioModel extends HoistModel {
         this.session?.destroy();
 
         // Wait for WS for streaming updates feature, but not strictly needed to show data
-        await waitFor(() => wsService.connected, 50, 5 * SECONDS).catch(() =>
+        await waitFor(() => wsService.connected).catch(() =>
             this.logError('WebSocket service failed to connect')
         );
         if (loadSpec.isStale) return;
