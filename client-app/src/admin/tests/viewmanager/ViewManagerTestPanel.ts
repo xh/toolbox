@@ -100,6 +100,13 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
                                 enableFilter: false
                             })
                         }),
+                        formField({
+                            field: 'showRevertButton',
+                            item: select({
+                                options: ['always', 'never', 'whenDirty'],
+                                enableFilter: false
+                            })
+                        }),
                         hbox(
                             formField({
                                 field: 'showPrivateViewsInSubMenu',
@@ -175,6 +182,7 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
 
         const {
                 showSaveButton,
+                showRevertButton,
                 showPrivateViewsInSubMenu,
                 showSharedViewsInSubMenu,
                 customMenuButtonProps
@@ -190,6 +198,7 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
             tbar: [
                 viewManager({
                     showSaveButton,
+                    showRevertButton,
                     showPrivateViewsInSubMenu,
                     showSharedViewsInSubMenu,
                     menuButtonProps
@@ -293,6 +302,7 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
 const persistedComp = hoistCmp.factory({
     model: uses(ViewManagerTestModel),
     render({title, icon, persistPath, children, model, minHeight}) {
+        if (!persistPath) return null;
         const {value, pendingValue} = model.viewManagerModel,
             compVal = get(value, persistPath),
             compPendingVal = get(pendingValue, persistPath),
