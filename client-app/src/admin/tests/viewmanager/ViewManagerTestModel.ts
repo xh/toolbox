@@ -99,6 +99,7 @@ export class ViewManagerTestModel extends HoistModel {
                 {name: 'enableAutoSave', displayName: 'AutoSave', initialValue: true},
                 {name: 'enableFavorites', displayName: 'Faves', initialValue: true},
                 {name: 'showSaveButton', initialValue: 'whenDirty'},
+                {name: 'showRevertButton', initialValue: 'never'},
                 {
                     name: 'showPrivateViewsInSubMenu',
                     displayName: 'Show private views in sub-menu',
