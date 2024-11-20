@@ -19,9 +19,9 @@ export class AppModel extends BaseAppModel {
         // is used to construct component-level models within PortfolioModel.
         this.portfolioViewManager = await ViewManagerModel.createAsync({
             viewType: 'portfolioLayout',
-            viewTypeDisplayName: 'Layout',
+            typeDisplayName: 'Layout',
             enableDefault: true,
-            enableSharing: true,
+            manageGlobal: true,
             persistWith: {localStorageKey: 'portfolioViewManager'}
         });
 

@@ -37,7 +37,7 @@ export const viewManagerTestPanel = hoistCmp.factory({
                             defaultSize: 500
                         },
                         items: [
-                            modelConFigForm(),
+                            modelConfigForm(),
                             hframe(modelValueDisplay(), modelValueDisplay({showPendingValue: true}))
                         ]
                     }),
@@ -48,7 +48,7 @@ export const viewManagerTestPanel = hoistCmp.factory({
     }
 });
 
-const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
+const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
     render({model}) {
         const {configFormModel, modelConfigDirty} = model,
             {isValid} = configFormModel;
@@ -66,25 +66,22 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
                             item: textInput()
                         }),
                         formField({
-                            field: 'viewTypeDisplayName',
+                            field: 'typeDisplayName',
+                            item: textInput({enableClear: true})
+                        }),
+                        formField({
+                            field: 'globalDisplayName',
                             item: textInput({enableClear: true})
                         }),
                         formField({
                             field: 'localStorageKey',
-                            info: 'Persists last-selected view + autoSave/favorites',
+                            info: 'Persists last-selected view + favorites',
                             item: textInput({enableClear: true})
                         }),
                         hbox(
+                            hspacer(100),
                             formField({
-                                field: 'enableSharing',
-                                item: switchInput()
-                            }),
-                            formField({
-                                field: 'enableDefault',
-                                item: switchInput()
-                            }),
-                            formField({
-                                field: 'enableAutoSave',
+                                field: 'manageGlobal',
                                 item: switchInput()
                             }),
                             formField({
@@ -107,13 +104,20 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
                                 enableFilter: false
                             })
                         }),
+                        formField({
+                            field: 'buttonSide',
+                            item: select({
+                                options: ['left', 'right'],
+                                enableFilter: false
+                            })
+                        }),
                         hbox(
                             formField({
                                 field: 'showPrivateViewsInSubMenu',
                                 item: switchInput()
                             }),
                             formField({
-                                field: 'showSharedViewsInSubMenu',
+                                field: 'showGlobalViewsInSubMenu',
                                 item: switchInput()
                             }),
                             formField({
@@ -184,8 +188,9 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                 showSaveButton,
                 showRevertButton,
                 showPrivateViewsInSubMenu,
-                showSharedViewsInSubMenu,
-                customMenuButtonProps
+                showGlobalViewsInSubMenu,
+                customMenuButtonProps,
+                buttonSide
             } = model.configFormModel.values,
             menuButtonProps = customMenuButtonProps
                 ? ({
@@ -196,12 +201,14 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
         return panel({
             className: 'tb-vm-test__output',
             tbar: [
+                filler({omit: buttonSide == 'right'}),
                 viewManager({
                     showSaveButton,
                     showRevertButton,
                     showPrivateViewsInSubMenu,
-                    showSharedViewsInSubMenu,
-                    menuButtonProps
+                    showGlobalViewsInSubMenu,
+                    menuButtonProps,
+                    buttonSide
                 })
             ],
             item: div({

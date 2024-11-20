@@ -76,11 +76,11 @@ export class ViewManagerTestModel extends HoistModel {
             .map(it => it.name);
         return [
             'viewType',
-            'viewTypeDisplayName',
+            'typeDisplayName',
+            'globalDisplayName',
             'localStorageKey',
-            'enableSharing',
+            'manageGlobal',
             'enableDefault',
-            'enableAutoSave',
             'enableFavorites'
         ].some(it => dirtyFields.includes(it));
     }
@@ -92,22 +92,22 @@ export class ViewManagerTestModel extends HoistModel {
         this.configFormModel = new FormModel({
             fields: [
                 {name: 'viewType', rules: [required], initialValue: 'testView'},
-                {name: 'viewTypeDisplayName', initialValue: 'View'},
+                {name: 'typeDisplayName', initialValue: 'View'},
+                {name: 'globalDisplayName', initialValue: 'Global'},
                 {name: 'localStorageKey', initialValue: 'viewManagerTest'},
-                {name: 'enableSharing', displayName: 'Sharing', initialValue: true},
-                {name: 'enableDefault', displayName: 'Default', initialValue: true},
-                {name: 'enableAutoSave', displayName: 'AutoSave', initialValue: true},
-                {name: 'enableFavorites', displayName: 'Faves', initialValue: true},
+                {name: 'manageGlobal', initialValue: true},
+                {name: 'enableFavorites', initialValue: true},
                 {name: 'showSaveButton', initialValue: 'whenDirty'},
                 {name: 'showRevertButton', initialValue: 'never'},
+                {name: 'buttonSide', initialValue: 'right'},
                 {
                     name: 'showPrivateViewsInSubMenu',
                     displayName: 'Show private views in sub-menu',
                     initialValue: false
                 },
                 {
-                    name: 'showSharedViewsInSubMenu',
-                    displayName: 'Show shared views in sub-menu',
+                    name: 'showGlobalViewsInSubMenu',
+                    displayName: 'Show global views in sub-menu',
                     initialValue: false
                 },
                 {
@@ -117,7 +117,6 @@ export class ViewManagerTestModel extends HoistModel {
                 }
             ]
         });
-
         this.rebuildViewManagerModelAsync();
     }
 
@@ -130,21 +129,21 @@ export class ViewManagerTestModel extends HoistModel {
         const data = configFormModel.getData(),
             {
                 viewType,
-                viewTypeDisplayName,
+                typeDisplayName,
+                globalDisplayName,
                 localStorageKey,
-                enableSharing,
+                manageGlobal,
                 enableDefault,
-                enableAutoSave,
                 enableFavorites
             } = data;
 
         const newModel = await ViewManagerModel.createAsync({
             viewType,
-            viewTypeDisplayName,
+            typeDisplayName,
+            globalDisplayName,
             persistWith: localStorageKey ? {localStorageKey: localStorageKey} : null,
-            enableSharing,
+            manageGlobal,
             enableDefault,
-            enableAutoSave,
             enableFavorites
         });
 
