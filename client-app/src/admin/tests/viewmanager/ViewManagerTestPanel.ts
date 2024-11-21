@@ -4,7 +4,6 @@ import {div, filler, h3, hbox, hframe, hspacer, placeholder, vframe} from '@xh/h
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {dashCanvas, dashContainer} from '@xh/hoist/desktop/cmp/dash';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
@@ -159,12 +158,12 @@ const modelValueDisplay = hoistCmp.factory<ViewManagerTestModel>({
                 badge({
                     intent: 'danger',
                     item: 'Dirty',
-                    omit: !showPendingValue || !model.viewManagerModel?.isDirty
+                    omit: !showPendingValue || !model.viewManagerModel?.isStateDirty
                 }),
                 badge({
                     intent: 'success',
                     item: 'Clean',
-                    omit: !showPendingValue || model.viewManagerModel?.isDirty
+                    omit: !showPendingValue || model.viewManagerModel?.isStateDirty
                 }),
                 hspacer()
             ],
@@ -285,21 +284,21 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                         persistPath: 'grid',
                         minHeight: 250,
                         item: sampleGrid({omitGridTools: true})
-                    }),
-                    persistedComp({
-                        title: 'Dash Canvas',
-                        icon: Icon.layout(),
-                        persistPath: 'dashCanvas',
-                        minHeight: 250,
-                        item: dashCanvas()
-                    }),
-                    persistedComp({
-                        title: 'Dash Container',
-                        icon: Icon.layout(),
-                        persistPath: 'dashContainer',
-                        minHeight: 500,
-                        item: dashContainer()
                     })
+                    // persistedComp({
+                    //     title: 'Dash Canvas',
+                    //     icon: Icon.layout(),
+                    //     persistPath: 'dashCanvas',
+                    //     minHeight: 250,
+                    //     item: dashCanvas()
+                    // }),
+                    // persistedComp({
+                    //     title: 'Dash Container',
+                    //     icon: Icon.layout(),
+                    //     persistPath: 'dashContainer',
+                    //     minHeight: 500,
+                    //     item: dashContainer()
+                    // })
                 ]
             })
         });
@@ -310,7 +309,9 @@ const persistedComp = hoistCmp.factory({
     model: uses(ViewManagerTestModel),
     render({title, icon, persistPath, children, model, minHeight}) {
         if (!persistPath) return null;
-        const {value, pendingValue} = model.viewManagerModel,
+        const {currentValue, savedValue} = model.viewManagerModel,
+            value = savedValue.state,
+            pendingValue = currentValue.state,
             compVal = get(value, persistPath),
             compPendingVal = get(pendingValue, persistPath),
             atDefault = !compPendingVal,
