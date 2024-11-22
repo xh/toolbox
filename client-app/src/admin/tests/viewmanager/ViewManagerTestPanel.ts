@@ -78,13 +78,16 @@ const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
                             item: textInput({enableClear: true})
                         }),
                         hbox(
-                            hspacer(100),
                             formField({
                                 field: 'manageGlobal',
                                 item: switchInput()
                             }),
                             formField({
                                 field: 'enableFavorites',
+                                item: switchInput()
+                            }),
+                            formField({
+                                field: 'enableDefault',
                                 item: switchInput()
                             })
                         ),
@@ -158,12 +161,12 @@ const modelValueDisplay = hoistCmp.factory<ViewManagerTestModel>({
                 badge({
                     intent: 'danger',
                     item: 'Dirty',
-                    omit: !showPendingValue || !model.viewManagerModel?.isStateDirty
+                    omit: !showPendingValue || !model.viewManagerModel?.isValueDirty
                 }),
                 badge({
                     intent: 'success',
                     item: 'Clean',
-                    omit: !showPendingValue || model.viewManagerModel?.isStateDirty
+                    omit: !showPendingValue || model.viewManagerModel?.isValueDirty
                 }),
                 hspacer()
             ],
@@ -309,9 +312,9 @@ const persistedComp = hoistCmp.factory({
     model: uses(ViewManagerTestModel),
     render({title, icon, persistPath, children, model, minHeight}) {
         if (!persistPath) return null;
-        const {currentValue, savedValue} = model.viewManagerModel,
-            value = savedValue.state,
-            pendingValue = currentValue.state,
+        const {pendingView, view} = model.viewManagerModel,
+            {value} = view,
+            pendingValue = pendingView.value,
             compVal = get(value, persistPath),
             compPendingVal = get(pendingValue, persistPath),
             atDefault = !compPendingVal,

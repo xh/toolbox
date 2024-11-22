@@ -49,7 +49,7 @@ export class ViewManagerTestModel extends HoistModel {
     get value(): string {
         const {viewManagerModel, focusedPersistable} = this;
         if (!viewManagerModel) return '[No ViewManagerModel]';
-        const value = viewManagerModel.savedValue.state;
+        const value = viewManagerModel.view.value;
         return JSON.stringify(focusedPersistable ? get(value, focusedPersistable) : value, null, 2);
     }
 
@@ -57,7 +57,7 @@ export class ViewManagerTestModel extends HoistModel {
     get pendingValue(): string {
         const {viewManagerModel, focusedPersistable} = this;
         if (!viewManagerModel) return '[No ViewManagerModel]';
-        const pendingValue = viewManagerModel.currentValue.state;
+        const pendingValue = viewManagerModel.pendingView.value;
         return JSON.stringify(
             focusedPersistable ? get(pendingValue, focusedPersistable) : pendingValue,
             null,
@@ -93,6 +93,7 @@ export class ViewManagerTestModel extends HoistModel {
                 {name: 'localStorageKey', initialValue: 'viewManagerTest'},
                 {name: 'manageGlobal', initialValue: true},
                 {name: 'enableFavorites', initialValue: true},
+                {name: 'enableDefault', initialValue: false},
                 {name: 'showSaveButton', initialValue: 'whenDirty'},
                 {name: 'showRevertButton', initialValue: 'never'},
                 {name: 'buttonSide', initialValue: 'right'},
