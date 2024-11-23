@@ -93,7 +93,7 @@ export class ViewManagerTestModel extends HoistModel {
                 {name: 'localStorageKey', initialValue: 'viewManagerTest'},
                 {name: 'manageGlobal', initialValue: true},
                 {name: 'enableFavorites', initialValue: true},
-                {name: 'enableDefault', initialValue: false},
+                {name: 'enableDefault', initialValue: true},
                 {name: 'showSaveButton', initialValue: 'whenDirty'},
                 {name: 'showRevertButton', initialValue: 'never'},
                 {name: 'buttonSide', initialValue: 'right'},
