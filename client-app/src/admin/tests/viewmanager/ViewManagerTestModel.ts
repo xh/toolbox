@@ -57,7 +57,7 @@ export class ViewManagerTestModel extends HoistModel {
     get pendingValue(): string {
         const {viewManagerModel, focusedPersistable} = this;
         if (!viewManagerModel) return '[No ViewManagerModel]';
-        const pendingValue = viewManagerModel.pendingView.value;
+        const pendingValue = viewManagerModel.getValue();
         return JSON.stringify(
             focusedPersistable ? get(pendingValue, focusedPersistable) : pendingValue,
             null,

@@ -312,9 +312,9 @@ const persistedComp = hoistCmp.factory({
     model: uses(ViewManagerTestModel),
     render({title, icon, persistPath, children, model, minHeight}) {
         if (!persistPath) return null;
-        const {pendingView, view} = model.viewManagerModel,
-            {value} = view,
-            pendingValue = pendingView.value,
+        const {viewManagerModel} = model,
+            {value} = viewManagerModel.view,
+            pendingValue = viewManagerModel.getValue(),
             compVal = get(value, persistPath),
             compPendingVal = get(pendingValue, persistPath),
             atDefault = !compPendingVal,
