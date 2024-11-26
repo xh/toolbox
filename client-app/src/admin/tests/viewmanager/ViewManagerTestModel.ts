@@ -88,8 +88,8 @@ export class ViewManagerTestModel extends HoistModel {
         this.configFormModel = new FormModel({
             fields: [
                 {name: 'viewType', rules: [required], initialValue: 'testView'},
-                {name: 'typeDisplayName', initialValue: 'View'},
-                {name: 'globalDisplayName', initialValue: 'Global'},
+                {name: 'typeDisplayName', initialValue: 'view'},
+                {name: 'globalDisplayName', initialValue: 'global'},
                 {name: 'localStorageKey', initialValue: 'viewManagerTest'},
                 {name: 'manageGlobal', initialValue: true},
                 {name: 'enableFavorites', initialValue: true},
