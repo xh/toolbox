@@ -54,7 +54,10 @@ export const fileChooserPanel = hoistCmp.factory({
                     enableMulti,
                     enableAddMulti,
                     showFileGrid,
-                    accept: ['.txt', '.png'],
+                    accept: {
+                        'image/png': ['.png'],
+                        'text/plain': ['.txt']
+                    },
                     targetText: (
                         <Fragment>
                             <p>Drag and drop files here, or click to browse.</p>

@@ -61,16 +61,16 @@ export const fileManager = hoistCmp.factory({
 
 // Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
 // accepted file types for sanity (and to demo the `accepts` prop).
-const acceptedFileTypes: string[] = [
-    '.txt',
-    '.png',
-    '.gif',
-    '.jpg',
-    '.doc',
-    '.docx',
-    '.xls',
-    '.xlsx',
-    '.ppt',
-    '.pptx',
-    '.pdf'
-];
+const acceptedFileTypes = {
+    'text/plain': ['.txt'],
+    'image/png': ['.png'],
+    'image/gif': ['.gif'],
+    'image/jpeg': ['.jpg', '.jpeg'],
+    'application/msword': ['.doc'],
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+    'application/vnd.ms-excel': ['.xls'],
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+    'application/vnd.ms-powerpoint': ['.ppt'],
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['.pptx'],
+    'application/pdf': ['.pdf']
+};
