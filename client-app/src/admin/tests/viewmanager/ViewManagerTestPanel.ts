@@ -4,6 +4,7 @@ import {div, filler, h3, hbox, hframe, hspacer, placeholder, vframe} from '@xh/h
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
+import {dashCanvas, dashContainer} from '@xh/hoist/desktop/cmp/dash';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
 import {formField} from '@xh/hoist/desktop/cmp/form';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
@@ -287,21 +288,21 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                         persistPath: 'grid',
                         minHeight: 250,
                         item: sampleGrid({omitGridTools: true})
+                    }),
+                    persistedComp({
+                        title: 'Dash Canvas',
+                        icon: Icon.layout(),
+                        persistPath: 'dashCanvas',
+                        minHeight: 250,
+                        item: dashCanvas()
+                    }),
+                    persistedComp({
+                        title: 'Dash Container',
+                        icon: Icon.layout(),
+                        persistPath: 'dashContainer',
+                        minHeight: 500,
+                        item: dashContainer()
                     })
-                    // persistedComp({
-                    //     title: 'Dash Canvas',
-                    //     icon: Icon.layout(),
-                    //     persistPath: 'dashCanvas',
-                    //     minHeight: 250,
-                    //     item: dashCanvas()
-                    // }),
-                    // persistedComp({
-                    //     title: 'Dash Container',
-                    //     icon: Icon.layout(),
-                    //     persistPath: 'dashContainer',
-                    //     minHeight: 500,
-                    //     item: dashContainer()
-                    // })
                 ]
             })
         });
