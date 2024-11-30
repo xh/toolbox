@@ -79,6 +79,7 @@ export class ViewManagerTestModel extends HoistModel {
             'typeDisplayName',
             'globalDisplayName',
             'localStorageKey',
+            'sessionStorageKey',
             'manageGlobal',
             'enableDefault',
             'enableFavorites'
@@ -95,6 +96,7 @@ export class ViewManagerTestModel extends HoistModel {
                 {name: 'typeDisplayName', initialValue: 'view'},
                 {name: 'globalDisplayName', initialValue: 'global'},
                 {name: 'localStorageKey', initialValue: 'viewManagerTest'},
+                {name: 'sessionStorageKey', initialValue: 'viewManagerTest'},
                 {name: 'manageGlobal', initialValue: true},
                 {name: 'enableFavorites', initialValue: true},
                 {name: 'enableDefault', initialValue: true},
@@ -133,19 +135,24 @@ export class ViewManagerTestModel extends HoistModel {
                 typeDisplayName,
                 globalDisplayName,
                 localStorageKey,
+                sessionStorageKey,
                 manageGlobal,
                 enableDefault,
                 enableFavorites
             } = data;
 
+        const persistWith = localStorageKey
+            ? {localStorageKey, persistPendingValue: {sessionStorageKey}}
+            : null;
+
         const newModel = await ViewManagerModel.createAsync({
             viewType,
             typeDisplayName,
             globalDisplayName,
-            persistWith: localStorageKey ? {localStorageKey: localStorageKey} : null,
             manageGlobal,
             enableDefault,
-            enableFavorites
+            enableFavorites,
+            persistWith
         });
 
         runInAction(() => {
@@ -285,6 +292,7 @@ export class ViewManagerTestModel extends HoistModel {
  */
 class PersistedPropertyModel extends HoistModel {
     @bindable stringValue = 'Some Default Value';
+
     constructor({persistWith}: {persistWith: PersistOptions}) {
         super();
         makeObservable(this);
@@ -316,6 +324,7 @@ class BaseWidgetModel extends HoistModel {
 
 class GroupingChooserWidgetModel extends BaseWidgetModel {
     groupingChooserModel: GroupingChooserModel;
+
     override onLinked() {
         super.onLinked();
         this.groupingChooserModel = createGroupingChooserModel(this.persistWith);
@@ -339,6 +348,7 @@ const createGroupingChooserModel = (persistWith: PersistOptions) => {
 
 class FilterChooserWidgetModel extends BaseWidgetModel {
     filterChooserModel: FilterChooserModel;
+
     override onLinked() {
         super.onLinked();
         this.filterChooserModel = createFilterChooserModel(this.persistWith, this.localStorageKey);
@@ -369,6 +379,7 @@ const createFilterChooserModel = (persistWith: PersistOptions, localStorageKey: 
 
 class gridWidgetModel extends BaseWidgetModel {
     gridModel: SampleGridModel;
+
     override onLinked() {
         super.onLinked();
         this.gridModel = new SampleGridModel({gridConfig: {persistWith: this.persistWith}});

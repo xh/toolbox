@@ -75,7 +75,12 @@ const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
                         }),
                         formField({
                             field: 'localStorageKey',
-                            info: 'Persists last-selected view + favorites',
+                            info: 'For sel view + favs.',
+                            item: textInput({enableClear: true})
+                        }),
+                        formField({
+                            field: 'sessionStorageKey',
+                            info: 'For pending value.',
                             item: textInput({enableClear: true})
                         }),
                         hbox(
