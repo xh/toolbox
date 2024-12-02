@@ -83,6 +83,11 @@ const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
                             info: 'For pending value.',
                             item: textInput({enableClear: true})
                         }),
+                        formField({
+                            field: 'initialViewName',
+                            info: 'If specified, will be the initial view, otherwise first view.',
+                            item: textInput({enableClear: true})
+                        }),
                         hbox(
                             formField({
                                 field: 'manageGlobal',
