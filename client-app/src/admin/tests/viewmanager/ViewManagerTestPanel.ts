@@ -89,6 +89,10 @@ const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
                                 item: switchInput()
                             }),
                             formField({
+                                field: 'enableAutoSave',
+                                item: switchInput()
+                            }),
+                            formField({
                                 field: 'enableFavorites',
                                 item: switchInput()
                             }),

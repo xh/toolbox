@@ -81,6 +81,7 @@ export class ViewManagerTestModel extends HoistModel {
             'localStorageKey',
             'sessionStorageKey',
             'manageGlobal',
+            'enableAutoSave',
             'enableDefault',
             'enableFavorites'
         ].some(it => dirtyFields.includes(it));
@@ -99,6 +100,7 @@ export class ViewManagerTestModel extends HoistModel {
                 {name: 'sessionStorageKey', initialValue: 'viewManagerTest'},
                 {name: 'manageGlobal', initialValue: true},
                 {name: 'enableFavorites', initialValue: true},
+                {name: 'enableAutoSave', initialValue: true},
                 {name: 'enableDefault', initialValue: true},
                 {name: 'showSaveButton', initialValue: 'whenDirty'},
                 {name: 'showRevertButton', initialValue: 'never'},
@@ -138,6 +140,7 @@ export class ViewManagerTestModel extends HoistModel {
                 sessionStorageKey,
                 manageGlobal,
                 enableDefault,
+                enableAutoSave,
                 enableFavorites
             } = data;
 
@@ -151,6 +154,7 @@ export class ViewManagerTestModel extends HoistModel {
             globalDisplayName,
             manageGlobal,
             enableDefault,
+            enableAutoSave,
             enableFavorites,
             persistWith
         });
