@@ -4,13 +4,13 @@ import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
 import {div, frame} from '@xh/hoist/cmp/layout';
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, HoistModel, lookup, managed, PersistOptions, XH} from '@xh/hoist/core';
-import {ViewManagerModel} from '@xh/hoist/core/persist/viewmanager';
+import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {required} from '@xh/hoist/data';
 import {DashCanvasModel, DashContainerModel, DashViewModel} from '@xh/hoist/desktop/cmp/dash';
 import {filterChooser} from '@xh/hoist/desktop/cmp/filter';
-import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {PanelModel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
+import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {action, bindable, computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {get} from 'lodash';
 import {sampleGrid, SampleGridModel} from '../../../desktop/common';
@@ -53,7 +53,7 @@ export class ViewManagerTestModel extends HoistModel {
     get value(): string {
         const {viewManagerModel, focusedPersistable} = this;
         if (!viewManagerModel) return '[No ViewManagerModel]';
-        const {value} = viewManagerModel;
+        const value = viewManagerModel.view.value;
         return JSON.stringify(focusedPersistable ? get(value, focusedPersistable) : value, null, 2);
     }
 
@@ -61,7 +61,7 @@ export class ViewManagerTestModel extends HoistModel {
     get pendingValue(): string {
         const {viewManagerModel, focusedPersistable} = this;
         if (!viewManagerModel) return '[No ViewManagerModel]';
-        const {pendingValue} = viewManagerModel;
+        const pendingValue = viewManagerModel.getValue();
         return JSON.stringify(
             focusedPersistable ? get(pendingValue, focusedPersistable) : pendingValue,
             null,
@@ -76,12 +76,15 @@ export class ViewManagerTestModel extends HoistModel {
             .map(it => it.name);
         return [
             'viewType',
-            'viewTypeDisplayName',
+            'typeDisplayName',
+            'globalDisplayName',
             'localStorageKey',
-            'enableSharing',
-            'enableDefault',
+            'sessionStorageKey',
+            'manageGlobal',
             'enableAutoSave',
-            'enableFavorites'
+            'enableDefault',
+            'enableFavorites',
+            'initialViewName'
         ].some(it => dirtyFields.includes(it));
     }
 
@@ -92,22 +95,27 @@ export class ViewManagerTestModel extends HoistModel {
         this.configFormModel = new FormModel({
             fields: [
                 {name: 'viewType', rules: [required], initialValue: 'testView'},
-                {name: 'viewTypeDisplayName', initialValue: 'View'},
+                {name: 'typeDisplayName', initialValue: 'view'},
+                {name: 'globalDisplayName', initialValue: 'global'},
                 {name: 'localStorageKey', initialValue: 'viewManagerTest'},
-                {name: 'enableSharing', displayName: 'Sharing', initialValue: true},
-                {name: 'enableDefault', displayName: 'Default', initialValue: true},
-                {name: 'enableAutoSave', displayName: 'AutoSave', initialValue: true},
-                {name: 'enableFavorites', displayName: 'Faves', initialValue: true},
+                {name: 'sessionStorageKey', initialValue: 'viewManagerTest'},
+                {name: 'manageGlobal', initialValue: true},
+                {name: 'enableFavorites', initialValue: true},
+                {name: 'enableAutoSave', initialValue: true},
+                {name: 'enableDefault', initialValue: true},
+                {name: 'initialViewName', initialValue: null},
+                {name: 'settleTime', initialValue: 250},
                 {name: 'showSaveButton', initialValue: 'whenDirty'},
                 {name: 'showRevertButton', initialValue: 'never'},
+                {name: 'buttonSide', initialValue: 'right'},
                 {
                     name: 'showPrivateViewsInSubMenu',
                     displayName: 'Show private views in sub-menu',
                     initialValue: false
                 },
                 {
-                    name: 'showSharedViewsInSubMenu',
-                    displayName: 'Show shared views in sub-menu',
+                    name: 'showGlobalViewsInSubMenu',
+                    displayName: 'Show global views in sub-menu',
                     initialValue: false
                 },
                 {
@@ -117,7 +125,6 @@ export class ViewManagerTestModel extends HoistModel {
                 }
             ]
         });
-
         this.rebuildViewManagerModelAsync();
     }
 
@@ -130,22 +137,33 @@ export class ViewManagerTestModel extends HoistModel {
         const data = configFormModel.getData(),
             {
                 viewType,
-                viewTypeDisplayName,
+                typeDisplayName,
+                globalDisplayName,
                 localStorageKey,
-                enableSharing,
+                sessionStorageKey,
+                manageGlobal,
                 enableDefault,
                 enableAutoSave,
-                enableFavorites
+                enableFavorites,
+                initialViewName,
+                settleTime
             } = data;
+
+        const persistWith = localStorageKey
+            ? {localStorageKey, persistPendingValue: {sessionStorageKey}}
+            : null;
 
         const newModel = await ViewManagerModel.createAsync({
             viewType,
-            viewTypeDisplayName,
-            persistWith: localStorageKey ? {localStorageKey: localStorageKey} : null,
-            enableSharing,
+            typeDisplayName,
+            globalDisplayName,
+            manageGlobal,
             enableDefault,
             enableAutoSave,
-            enableFavorites
+            enableFavorites,
+            persistWith,
+            settleTime,
+            initialViewSpec: views => views.find(v => v.name == initialViewName) ?? views[0]
         });
 
         runInAction(() => {
@@ -285,6 +303,7 @@ export class ViewManagerTestModel extends HoistModel {
  */
 class PersistedPropertyModel extends HoistModel {
     @bindable stringValue = 'Some Default Value';
+
     constructor({persistWith}: {persistWith: PersistOptions}) {
         super();
         makeObservable(this);
@@ -316,6 +335,7 @@ class BaseWidgetModel extends HoistModel {
 
 class GroupingChooserWidgetModel extends BaseWidgetModel {
     groupingChooserModel: GroupingChooserModel;
+
     override onLinked() {
         super.onLinked();
         this.groupingChooserModel = createGroupingChooserModel(this.persistWith);
@@ -339,6 +359,7 @@ const createGroupingChooserModel = (persistWith: PersistOptions) => {
 
 class FilterChooserWidgetModel extends BaseWidgetModel {
     filterChooserModel: FilterChooserModel;
+
     override onLinked() {
         super.onLinked();
         this.filterChooserModel = createFilterChooserModel(this.persistWith, this.localStorageKey);
@@ -369,6 +390,7 @@ const createFilterChooserModel = (persistWith: PersistOptions, localStorageKey: 
 
 class gridWidgetModel extends BaseWidgetModel {
     gridModel: SampleGridModel;
+
     override onLinked() {
         super.onLinked();
         this.gridModel = new SampleGridModel({gridConfig: {persistWith: this.persistWith}});
