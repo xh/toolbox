@@ -1,6 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {form} from '@xh/hoist/cmp/form';
-import {div, filler, h3, hbox, hframe, hspacer, placeholder, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, hframe, hspacer, placeholder, vframe} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -13,6 +13,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {Icon} from '@xh/hoist/icon';
+import {numberInput} from '@xh/hoist/desktop/cmp/input';
 import {get, isEqual} from 'lodash';
 import {sampleGrid} from '../../../desktop/common';
 import {ViewManagerTestModel} from './ViewManagerTestModel';
@@ -23,7 +24,7 @@ export const viewManagerTestPanel = hoistCmp.factory({
     className: 'tb-vm-test',
     model: creates(ViewManagerTestModel),
 
-    render({model, className}) {
+    render({className}) {
         return panel({
             className,
             item: hframe({
@@ -56,93 +57,13 @@ const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
             flex: 'none',
             item: form({
                 fieldDefaults: {commitOnChange: true, minimal: true, inline: true, labelWidth: 160},
-                item: vframe({
-                    className: 'xh-pad tb-vm-test__model-conf',
-                    items: [
-                        h3('ViewManagerModel Configs'),
-                        formField({
-                            field: 'viewType',
-                            info: 'Determines backing JSONBlob query',
-                            item: textInput()
-                        }),
-                        formField({
-                            field: 'typeDisplayName',
-                            item: textInput({enableClear: true})
-                        }),
-                        formField({
-                            field: 'globalDisplayName',
-                            item: textInput({enableClear: true})
-                        }),
-                        formField({
-                            field: 'localStorageKey',
-                            info: 'For sel view + favs.',
-                            item: textInput({enableClear: true})
-                        }),
-                        formField({
-                            field: 'sessionStorageKey',
-                            info: 'For pending value.',
-                            item: textInput({enableClear: true})
-                        }),
-                        formField({
-                            field: 'initialViewName',
-                            info: 'If specified, will be the initial view, otherwise first view.',
-                            item: textInput({enableClear: true})
-                        }),
-                        hbox(
-                            formField({
-                                field: 'manageGlobal',
-                                item: switchInput()
-                            }),
-                            formField({
-                                field: 'enableAutoSave',
-                                item: switchInput()
-                            }),
-                            formField({
-                                field: 'enableFavorites',
-                                item: switchInput()
-                            }),
-                            formField({
-                                field: 'enableDefault',
-                                item: switchInput()
-                            })
-                        ),
-                        h3('ViewManager Props'),
-                        formField({
-                            field: 'showSaveButton',
-                            item: select({
-                                options: ['always', 'never', 'whenDirty'],
-                                enableFilter: false
-                            })
-                        }),
-                        formField({
-                            field: 'showRevertButton',
-                            item: select({
-                                options: ['always', 'never', 'whenDirty'],
-                                enableFilter: false
-                            })
-                        }),
-                        formField({
-                            field: 'buttonSide',
-                            item: select({
-                                options: ['left', 'right'],
-                                enableFilter: false
-                            })
-                        }),
-                        hbox(
-                            formField({
-                                field: 'showPrivateViewsInSubMenu',
-                                item: switchInput()
-                            }),
-                            formField({
-                                field: 'showGlobalViewsInSubMenu',
-                                item: switchInput()
-                            }),
-                            formField({
-                                field: 'customMenuButtonProps',
-                                item: switchInput()
-                            })
-                        )
-                    ]
+                item: tabContainer({
+                    modelConfig: {
+                        tabs: [
+                            {id: 'modelConfig', content: modelConfig()},
+                            {id: 'cmpProps', content: cmpProps()}
+                        ]
+                    }
                 })
             }),
             bbar: toolbar({
@@ -159,6 +80,107 @@ const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
                     })
                 ]
             })
+        });
+    }
+});
+
+const cmpProps = hoistCmp.factory({
+    render() {
+        return vframe({
+            className: 'xh-pad tb-vm-test__model-conf',
+            items: [
+                formField({
+                    field: 'showSaveButton',
+                    item: select({
+                        options: ['always', 'never', 'whenDirty'],
+                        enableFilter: false
+                    })
+                }),
+                formField({
+                    field: 'showRevertButton',
+                    item: select({
+                        options: ['always', 'never', 'whenDirty'],
+                        enableFilter: false
+                    })
+                }),
+                formField({
+                    field: 'buttonSide',
+                    item: select({
+                        options: ['left', 'right'],
+                        enableFilter: false
+                    })
+                }),
+                hbox(
+                    formField({
+                        field: 'showPrivateViewsInSubMenu',
+                        item: switchInput()
+                    }),
+                    formField({
+                        field: 'showGlobalViewsInSubMenu',
+                        item: switchInput()
+                    }),
+                    formField({
+                        field: 'customMenuButtonProps',
+                        item: switchInput()
+                    })
+                )
+            ]
+        });
+    }
+});
+
+const modelConfig = hoistCmp.factory({
+    render() {
+        return vframe({
+            className: 'xh-pad tb-vm-test__model-conf',
+            items: [
+                formField({
+                    field: 'viewType',
+                    item: textInput()
+                }),
+                formField({
+                    field: 'typeDisplayName',
+                    item: textInput({enableClear: true})
+                }),
+                formField({
+                    field: 'globalDisplayName',
+                    item: textInput({enableClear: true})
+                }),
+                formField({
+                    field: 'localStorageKey',
+                    item: textInput({enableClear: true})
+                }),
+                formField({
+                    field: 'sessionStorageKey',
+                    item: textInput({enableClear: true})
+                }),
+                formField({
+                    field: 'initialViewName',
+                    item: textInput({enableClear: true})
+                }),
+                formField({
+                    field: 'settleTime',
+                    item: numberInput()
+                }),
+                hbox(
+                    formField({
+                        field: 'manageGlobal',
+                        item: switchInput()
+                    }),
+                    formField({
+                        field: 'enableAutoSave',
+                        item: switchInput()
+                    }),
+                    formField({
+                        field: 'enableFavorites',
+                        item: switchInput()
+                    }),
+                    formField({
+                        field: 'enableDefault',
+                        item: switchInput()
+                    })
+                )
+            ]
         });
     }
 });

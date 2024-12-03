@@ -104,7 +104,7 @@ export class ViewManagerTestModel extends HoistModel {
                 {name: 'enableAutoSave', initialValue: true},
                 {name: 'enableDefault', initialValue: true},
                 {name: 'initialViewName', initialValue: null},
-
+                {name: 'settleTime', initialValue: 250},
                 {name: 'showSaveButton', initialValue: 'whenDirty'},
                 {name: 'showRevertButton', initialValue: 'never'},
                 {name: 'buttonSide', initialValue: 'right'},
@@ -145,7 +145,8 @@ export class ViewManagerTestModel extends HoistModel {
                 enableDefault,
                 enableAutoSave,
                 enableFavorites,
-                initialViewName
+                initialViewName,
+                settleTime
             } = data;
 
         const persistWith = localStorageKey
@@ -159,11 +160,10 @@ export class ViewManagerTestModel extends HoistModel {
             manageGlobal,
             enableDefault,
             enableAutoSave,
-            initialViewSpec: vm => {
-                return vm.views.find(v => v.name == initialViewName) ?? vm.views[0];
-            },
             enableFavorites,
-            persistWith
+            persistWith,
+            settleTime,
+            initialViewSpec: views => views.find(v => v.name == initialViewName) ?? views[0]
         });
 
         runInAction(() => {
