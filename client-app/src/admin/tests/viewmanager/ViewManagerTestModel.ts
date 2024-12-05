@@ -75,7 +75,7 @@ export class ViewManagerTestModel extends HoistModel {
             .filter(it => it.isDirty)
             .map(it => it.name);
         return [
-            'viewType',
+            'type',
             'typeDisplayName',
             'globalDisplayName',
             'localStorageKey',
@@ -94,7 +94,7 @@ export class ViewManagerTestModel extends HoistModel {
 
         this.configFormModel = new FormModel({
             fields: [
-                {name: 'viewType', rules: [required], initialValue: 'testView'},
+                {name: 'type', rules: [required], initialValue: 'testView'},
                 {name: 'typeDisplayName', initialValue: 'view'},
                 {name: 'globalDisplayName', initialValue: 'global'},
                 {name: 'localStorageKey', initialValue: 'viewManagerTest'},
@@ -136,7 +136,7 @@ export class ViewManagerTestModel extends HoistModel {
 
         const data = configFormModel.getData(),
             {
-                viewType,
+                type,
                 typeDisplayName,
                 globalDisplayName,
                 localStorageKey,
@@ -154,7 +154,7 @@ export class ViewManagerTestModel extends HoistModel {
             : null;
 
         const newModel = await ViewManagerModel.createAsync({
-            viewType,
+            type,
             typeDisplayName,
             globalDisplayName,
             manageGlobal,

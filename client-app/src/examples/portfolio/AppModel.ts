@@ -18,7 +18,7 @@ export class AppModel extends BaseAppModel {
         // saved views are loaded and the desired option has been preselected before the model
         // is used to construct component-level models within PortfolioModel.
         this.portfolioViewManager = await ViewManagerModel.createAsync({
-            viewType: 'portfolioLayout',
+            type: 'portfolioLayout',
             typeDisplayName: 'Layout',
             enableDefault: true,
             manageGlobal: true,

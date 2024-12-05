@@ -135,7 +135,7 @@ const modelConfig = hoistCmp.factory({
             className: 'xh-pad tb-vm-test__model-conf',
             items: [
                 formField({
-                    field: 'viewType',
+                    field: 'type',
                     item: textInput()
                 }),
                 formField({
