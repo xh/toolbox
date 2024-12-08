@@ -172,10 +172,6 @@ const modelConfig = hoistCmp.factory({
                         item: switchInput()
                     }),
                     formField({
-                        field: 'enableFavorites',
-                        item: switchInput()
-                    }),
-                    formField({
                         field: 'enableDefault',
                         item: switchInput()
                     })
@@ -223,14 +219,8 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
     render({model}) {
         if (!model.viewManagerModel) return placeholder('ViewManager not yet created');
 
-        const {
-                showSaveButton,
-                showRevertButton,
-                showPrivateViewsInSubMenu,
-                showGlobalViewsInSubMenu,
-                customMenuButtonProps,
-                buttonSide
-            } = model.configFormModel.values,
+        const {showSaveButton, showRevertButton, customMenuButtonProps, buttonSide} =
+                model.configFormModel.values,
             menuButtonProps = customMenuButtonProps
                 ? ({
                       icon: Icon.star(),
@@ -244,8 +234,6 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                 viewManager({
                     showSaveButton,
                     showRevertButton,
-                    showPrivateViewsInSubMenu,
-                    showGlobalViewsInSubMenu,
                     menuButtonProps,
                     buttonSide
                 })
