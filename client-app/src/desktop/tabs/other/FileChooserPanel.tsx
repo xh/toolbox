@@ -15,7 +15,7 @@ export const fileChooserPanel = hoistCmp.factory({
     model: creates(() => FileChooserPanelModel),
 
     render({model}) {
-        const {chooserModel, enableMulti, enableAddMulti, showFileGrid} = model;
+        const {chooserModel} = model;
 
         return wrapper({
             description: [
@@ -51,22 +51,6 @@ export const fileChooserPanel = hoistCmp.factory({
                 height: 400,
                 item: fileChooser({
                     flex: 1,
-                    enableMulti,
-                    enableAddMulti,
-                    showFileGrid,
-                    accept: {
-                        'image/png': ['.png'],
-                        'text/plain': ['.txt']
-                    },
-                    targetText: (
-                        <Fragment>
-                            <p>Drag and drop files here, or click to browse.</p>
-                            <p>
-                                Note that this example is configured to accept only{' '}
-                                <code>*.txt</code> and <code>*.png</code> file types.
-                            </p>
-                        </Fragment>
-                    ),
                     model: chooserModel
                 }),
                 bbar: [
@@ -89,7 +73,7 @@ export const fileChooserPanel = hoistCmp.factory({
                     button({
                         text: 'Clear all',
                         intent: 'danger',
-                        onClick: () => chooserModel.removeAllFiles()
+                        onClick: () => chooserModel.clear()
                     })
                 ]
             })
@@ -99,7 +83,22 @@ export const fileChooserPanel = hoistCmp.factory({
 
 class FileChooserPanelModel extends HoistModel {
     @managed
-    chooserModel = new FileChooserModel();
+    chooserModel = new FileChooserModel({
+        accept: ['.png', '.txt'],
+        enableMulti: true,
+        enableAddMulti: true,
+        showFileGrid: true,
+        toastOnReject: true,
+        targetText: (
+            <Fragment>
+                <p>Drag and drop files here, or click to browse.</p>
+                <p>
+                    Note that this example is configured to accept only <code>*.txt</code> and{' '}
+                    <code>*.png</code> file types.
+                </p>
+            </Fragment>
+        )
+    });
 
     @bindable
     enableMulti = true;
