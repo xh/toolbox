@@ -1,3 +1,4 @@
+import {fragment, p} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {fileExtCol, GridModel} from '@xh/hoist/cmp/grid';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
@@ -10,8 +11,31 @@ import {filter, find, pull} from 'lodash';
 import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
 
 export class FileManagerModel extends HoistModel {
+    // Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
+    // accepted file types for sanity (and to demo the `accepts` prop).
+    private acceptedFileTypes: string[] = [
+        '.txt',
+        '.png',
+        '.gif',
+        '.jpg',
+        '.doc',
+        '.docx',
+        '.xls',
+        '.xlsx',
+        '.ppt',
+        '.pptx',
+        '.pdf'
+    ];
+
     @managed
-    chooserModel = new FileChooserModel();
+    chooserModel = new FileChooserModel({
+        accept: this.acceptedFileTypes,
+        showFileGrid: false,
+        targetText: fragment(
+            p('Drag-and-drop new files here to queue for upload, or click to browse.'),
+            p('(Note that not all file types will be accepted.)')
+        )
+    });
 
     @managed
     gridModel = new GridModel({
@@ -139,7 +163,7 @@ export class FileManagerModel extends HoistModel {
     }
 
     async resetAndLoadAsync() {
-        this.chooserModel.removeAllFiles();
+        this.chooserModel.clear();
         await this.loadAsync();
     }
 

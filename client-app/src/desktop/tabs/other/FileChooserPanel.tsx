@@ -1,8 +1,8 @@
 import React, {Fragment} from 'react';
-import {creates, hoistCmp, HoistModel, managed} from '@xh/hoist/core';
+import {creates, hoistCmp, HoistModel, managed, ReactionSpec} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {filler, span} from '@xh/hoist/cmp/layout';
+import {div, filler, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -10,6 +10,8 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {fileChooser, FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import {pluralize} from '@xh/hoist/utils/js';
 import {wrapper} from '../../common';
+
+import './FileChooserPanel.scss';
 
 export const fileChooserPanel = hoistCmp.factory({
     model: creates(() => FileChooserPanelModel),
@@ -54,6 +56,10 @@ export const fileChooserPanel = hoistCmp.factory({
                     model: chooserModel
                 }),
                 bbar: [
+                    button({
+                        text: 'Browse',
+                        onClick: () => model.chooserModel.openFileBrowser()
+                    }),
                     span('Show grid:'),
                     switchInput({
                         bind: 'showFileGrid'
@@ -82,26 +88,8 @@ export const fileChooserPanel = hoistCmp.factory({
 });
 
 class FileChooserPanelModel extends HoistModel {
-    @managed
-    chooserModel = new FileChooserModel({
-        accept: ['.png', '.txt'],
-        enableMulti: true,
-        enableAddMulti: true,
-        showFileGrid: true,
-        toastOnReject: true,
-        targetText: (
-            <Fragment>
-                <p>Drag and drop files here, or click to browse.</p>
-                <p>
-                    Note that this example is configured to accept only <code>*.txt</code> and{' '}
-                    <code>*.png</code> file types.
-                </p>
-            </Fragment>
-        )
-    });
-
     @bindable
-    enableMulti = true;
+    enableMulti = false;
 
     @bindable
     enableAddMulti = true;
@@ -109,8 +97,45 @@ class FileChooserPanelModel extends HoistModel {
     @bindable
     showFileGrid = true;
 
+    @managed
+    chooserModel = this.createChooserModel();
+
     constructor() {
         super();
         makeObservable(this);
+        this.addReaction(this.gridReaction());
+    }
+
+    private createChooserModel() {
+        return new FileChooserModel({
+            accept: ['.png', '.txt'],
+            enableMulti: this.enableMulti,
+            enableAddMulti: this.enableAddMulti,
+            showFileGrid: this.showFileGrid,
+            maxSize: 2000000,
+            noClick: false,
+            rejectText: rejections => {
+                return div({
+                    className: 'reject-message',
+                    item: `${rejections.length} failed, better luck next time.`
+                });
+            },
+            targetText: (
+                <Fragment>
+                    <p>Drag and drop files here, or click to browse.</p>
+                    <p>
+                        Note that this example is configured to accept only <code>*.txt</code> and{' '}
+                        <code>*.png</code> file types.
+                    </p>
+                </Fragment>
+            )
+        });
+    }
+
+    private gridReaction(): ReactionSpec {
+        return {
+            track: () => [this.enableMulti, this.enableAddMulti, this.showFileGrid],
+            run: () => (this.chooserModel = this.createChooserModel())
+        };
     }
 }

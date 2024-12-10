@@ -1,4 +1,4 @@
-import {filler, fragment, p} from '@xh/hoist/cmp/layout';
+import {filler} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -23,12 +23,6 @@ export const fileManager = hoistCmp.factory({
             items: [
                 grid(),
                 fileChooser({
-                    accept: acceptedFileTypes,
-                    showFileGrid: false,
-                    targetText: fragment(
-                        p('Drag-and-drop new files here to queue for upload, or click to browse.'),
-                        p('(Note that not all file types will be accepted.)')
-                    ),
                     height: 150
                 })
             ],
@@ -58,19 +52,3 @@ export const fileManager = hoistCmp.factory({
         });
     }
 });
-
-// Entire example is limited to admins, but still limit to arbitrary-but-reasonable list of
-// accepted file types for sanity (and to demo the `accepts` prop).
-const acceptedFileTypes = {
-    'text/plain': ['.txt'],
-    'image/png': ['.png'],
-    'image/gif': ['.gif'],
-    'image/jpeg': ['.jpg', '.jpeg'],
-    'application/msword': ['.doc'],
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
-    'application/vnd.ms-excel': ['.xls'],
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-    'application/vnd.ms-powerpoint': ['.ppt'],
-    'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['.pptx'],
-    'application/pdf': ['.pdf']
-};
