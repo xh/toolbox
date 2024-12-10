@@ -1,5 +1,5 @@
 import {XH} from '@xh/hoist/core';
-import {ViewManagerModel} from '@xh/hoist/core/persist/viewmanager';
+import {ViewManagerModel} from '@xh/hoist/cmp/viewmanager';
 import {sizingModeAppOption, themeAppOption} from '@xh/hoist/desktop/cmp/appOption';
 import {Icon} from '@xh/hoist/icon';
 import {BaseAppModel} from '../../BaseAppModel';
@@ -18,10 +18,10 @@ export class AppModel extends BaseAppModel {
         // saved views are loaded and the desired option has been preselected before the model
         // is used to construct component-level models within PortfolioModel.
         this.portfolioViewManager = await ViewManagerModel.createAsync({
-            viewType: 'portfolioLayout',
-            viewTypeDisplayName: 'Layout',
+            type: 'portfolioLayout',
+            typeDisplayName: 'Layout',
             enableDefault: true,
-            enableSharing: true,
+            manageGlobal: true,
             persistWith: {localStorageKey: 'portfolioViewManager'}
         });
 

@@ -1,6 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {form} from '@xh/hoist/cmp/form';
-import {div, filler, h3, hbox, hframe, hspacer, placeholder, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, hframe, hspacer, placeholder, vframe} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -13,6 +13,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {viewManager} from '@xh/hoist/desktop/cmp/viewmanager';
 import {Icon} from '@xh/hoist/icon';
+import {numberInput} from '@xh/hoist/desktop/cmp/input';
 import {get, isEqual} from 'lodash';
 import {sampleGrid} from '../../../desktop/common';
 import {ViewManagerTestModel} from './ViewManagerTestModel';
@@ -23,7 +24,7 @@ export const viewManagerTestPanel = hoistCmp.factory({
     className: 'tb-vm-test',
     model: creates(ViewManagerTestModel),
 
-    render({model, className}) {
+    render({className}) {
         return panel({
             className,
             item: hframe({
@@ -37,7 +38,7 @@ export const viewManagerTestPanel = hoistCmp.factory({
                             defaultSize: 500
                         },
                         items: [
-                            modelConFigForm(),
+                            modelConfigForm(),
                             hframe(modelValueDisplay(), modelValueDisplay({showPendingValue: true}))
                         ]
                     }),
@@ -48,7 +49,7 @@ export const viewManagerTestPanel = hoistCmp.factory({
     }
 });
 
-const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
+const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
     render({model}) {
         const {configFormModel, modelConfigDirty} = model,
             {isValid} = configFormModel;
@@ -56,72 +57,13 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
             flex: 'none',
             item: form({
                 fieldDefaults: {commitOnChange: true, minimal: true, inline: true, labelWidth: 160},
-                item: vframe({
-                    className: 'xh-pad tb-vm-test__model-conf',
-                    items: [
-                        h3('ViewManagerModel Configs'),
-                        formField({
-                            field: 'viewType',
-                            info: 'Determines backing JSONBlob query',
-                            item: textInput()
-                        }),
-                        formField({
-                            field: 'viewTypeDisplayName',
-                            item: textInput({enableClear: true})
-                        }),
-                        formField({
-                            field: 'localStorageKey',
-                            info: 'Persists last-selected view + autoSave/favorites',
-                            item: textInput({enableClear: true})
-                        }),
-                        hbox(
-                            formField({
-                                field: 'enableSharing',
-                                item: switchInput()
-                            }),
-                            formField({
-                                field: 'enableDefault',
-                                item: switchInput()
-                            }),
-                            formField({
-                                field: 'enableAutoSave',
-                                item: switchInput()
-                            }),
-                            formField({
-                                field: 'enableFavorites',
-                                item: switchInput()
-                            })
-                        ),
-                        h3('ViewManager Props'),
-                        formField({
-                            field: 'showSaveButton',
-                            item: select({
-                                options: ['always', 'never', 'whenDirty'],
-                                enableFilter: false
-                            })
-                        }),
-                        formField({
-                            field: 'showRevertButton',
-                            item: select({
-                                options: ['always', 'never', 'whenDirty'],
-                                enableFilter: false
-                            })
-                        }),
-                        hbox(
-                            formField({
-                                field: 'showPrivateViewsInSubMenu',
-                                item: switchInput()
-                            }),
-                            formField({
-                                field: 'showSharedViewsInSubMenu',
-                                item: switchInput()
-                            }),
-                            formField({
-                                field: 'customMenuButtonProps',
-                                item: switchInput()
-                            })
-                        )
-                    ]
+                item: tabContainer({
+                    modelConfig: {
+                        tabs: [
+                            {id: 'modelConfig', content: modelConfig()},
+                            {id: 'cmpProps', content: cmpProps()}
+                        ]
+                    }
                 })
             }),
             bbar: toolbar({
@@ -142,6 +84,107 @@ const modelConFigForm = hoistCmp.factory<ViewManagerTestModel>({
     }
 });
 
+const cmpProps = hoistCmp.factory({
+    render() {
+        return vframe({
+            className: 'xh-pad tb-vm-test__model-conf',
+            items: [
+                formField({
+                    field: 'showSaveButton',
+                    item: select({
+                        options: ['always', 'never', 'whenDirty'],
+                        enableFilter: false
+                    })
+                }),
+                formField({
+                    field: 'showRevertButton',
+                    item: select({
+                        options: ['always', 'never', 'whenDirty'],
+                        enableFilter: false
+                    })
+                }),
+                formField({
+                    field: 'buttonSide',
+                    item: select({
+                        options: ['left', 'right'],
+                        enableFilter: false
+                    })
+                }),
+                hbox(
+                    formField({
+                        field: 'showPrivateViewsInSubMenu',
+                        item: switchInput()
+                    }),
+                    formField({
+                        field: 'showGlobalViewsInSubMenu',
+                        item: switchInput()
+                    }),
+                    formField({
+                        field: 'customMenuButtonProps',
+                        item: switchInput()
+                    })
+                )
+            ]
+        });
+    }
+});
+
+const modelConfig = hoistCmp.factory({
+    render() {
+        return vframe({
+            className: 'xh-pad tb-vm-test__model-conf',
+            items: [
+                formField({
+                    field: 'type',
+                    item: textInput()
+                }),
+                formField({
+                    field: 'typeDisplayName',
+                    item: textInput({enableClear: true})
+                }),
+                formField({
+                    field: 'globalDisplayName',
+                    item: textInput({enableClear: true})
+                }),
+                formField({
+                    field: 'localStorageKey',
+                    item: textInput({enableClear: true})
+                }),
+                formField({
+                    field: 'sessionStorageKey',
+                    item: textInput({enableClear: true})
+                }),
+                formField({
+                    field: 'initialViewName',
+                    item: textInput({enableClear: true})
+                }),
+                formField({
+                    field: 'settleTime',
+                    item: numberInput()
+                }),
+                hbox(
+                    formField({
+                        field: 'manageGlobal',
+                        item: switchInput()
+                    }),
+                    formField({
+                        field: 'enableAutoSave',
+                        item: switchInput()
+                    }),
+                    formField({
+                        field: 'enableFavorites',
+                        item: switchInput()
+                    }),
+                    formField({
+                        field: 'enableDefault',
+                        item: switchInput()
+                    })
+                )
+            ]
+        });
+    }
+});
+
 const modelValueDisplay = hoistCmp.factory<ViewManagerTestModel>({
     render({model, showPendingValue}) {
         let title = showPendingValue ? 'Pending' : 'Value';
@@ -155,12 +198,12 @@ const modelValueDisplay = hoistCmp.factory<ViewManagerTestModel>({
                 badge({
                     intent: 'danger',
                     item: 'Dirty',
-                    omit: !showPendingValue || !model.viewManagerModel?.isDirty
+                    omit: !showPendingValue || !model.viewManagerModel?.isValueDirty
                 }),
                 badge({
                     intent: 'success',
                     item: 'Clean',
-                    omit: !showPendingValue || model.viewManagerModel?.isDirty
+                    omit: !showPendingValue || model.viewManagerModel?.isValueDirty
                 }),
                 hspacer()
             ],
@@ -184,8 +227,9 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                 showSaveButton,
                 showRevertButton,
                 showPrivateViewsInSubMenu,
-                showSharedViewsInSubMenu,
-                customMenuButtonProps
+                showGlobalViewsInSubMenu,
+                customMenuButtonProps,
+                buttonSide
             } = model.configFormModel.values,
             menuButtonProps = customMenuButtonProps
                 ? ({
@@ -196,12 +240,14 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
         return panel({
             className: 'tb-vm-test__output',
             tbar: [
+                filler({omit: buttonSide == 'right'}),
                 viewManager({
                     showSaveButton,
                     showRevertButton,
                     showPrivateViewsInSubMenu,
-                    showSharedViewsInSubMenu,
-                    menuButtonProps
+                    showGlobalViewsInSubMenu,
+                    menuButtonProps,
+                    buttonSide
                 })
             ],
             item: div({
@@ -303,7 +349,9 @@ const persistedComp = hoistCmp.factory({
     model: uses(ViewManagerTestModel),
     render({title, icon, persistPath, children, model, minHeight}) {
         if (!persistPath) return null;
-        const {value, pendingValue} = model.viewManagerModel,
+        const {viewManagerModel} = model,
+            {value} = viewManagerModel.view,
+            pendingValue = viewManagerModel.getValue(),
             compVal = get(value, persistPath),
             compPendingVal = get(pendingValue, persistPath),
             atDefault = !compPendingVal,

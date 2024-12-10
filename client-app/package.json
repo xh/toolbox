@@ -43,7 +43,7 @@
     "@ag-grid-enterprise/side-bar": "~31.2.0",
     "@ag-grid-enterprise/sparklines": "~31.2.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^70.0.0-SNAPSHOT",
+    "@xh/hoist": "^71.0.0-SNAPSHOT",
     "@xh/package-template": "~3.0.1",
     "core-js": "3.x",
     "highcharts": "11.x",
@@ -62,10 +62,12 @@
     "postcss": "8.x",
     "prettier": "3.x",
     "stylelint": "16.x",
-    "stylelint-config-standard-scss": "13.x",
+    "stylelint-config-standard-scss": "14.x",
     "typescript": "~5.1.6"
   },
   "resolutions": {
-    "core-js": "3.x"
+    "core-js": "3.x",
+    "@types/react": "18.x",
+    "@types/react-dom": "18.x"
   }
 }
