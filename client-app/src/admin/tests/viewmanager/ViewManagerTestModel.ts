@@ -150,7 +150,10 @@ export class ViewManagerTestModel extends HoistModel {
             } = data;
 
         const persistWith = localStorageKey
-            ? {localStorageKey, persistPendingValue: {sessionStorageKey}}
+            ? {
+                  localStorageKey,
+                  persistPendingValue: sessionStorageKey ? {sessionStorageKey} : false
+              }
             : null;
 
         const newModel = await ViewManagerModel.createAsync({
