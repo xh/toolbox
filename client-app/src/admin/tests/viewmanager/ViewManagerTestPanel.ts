@@ -161,6 +161,12 @@ const modelConfig = hoistCmp.factory({
                         item: switchInput()
                     }),
                     formField({
+                        field: 'enableSharing',
+                        item: switchInput()
+                    })
+                ),
+                hbox(
+                    formField({
                         field: 'enableAutoSave',
                         item: switchInput()
                     }),
