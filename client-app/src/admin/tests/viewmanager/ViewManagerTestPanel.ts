@@ -112,14 +112,6 @@ const cmpProps = hoistCmp.factory({
                 }),
                 hbox(
                     formField({
-                        field: 'showPrivateViewsInSubMenu',
-                        item: switchInput()
-                    }),
-                    formField({
-                        field: 'showGlobalViewsInSubMenu',
-                        item: switchInput()
-                    }),
-                    formField({
                         field: 'customMenuButtonProps',
                         item: switchInput()
                     })
