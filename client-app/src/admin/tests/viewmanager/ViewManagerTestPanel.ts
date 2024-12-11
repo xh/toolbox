@@ -144,6 +144,7 @@ const modelConfig = hoistCmp.factory({
                 }),
                 formField({
                     field: 'sessionStorageKey',
+                    info: 'If set, will persist pendingValue',
                     item: textInput({enableClear: true})
                 }),
                 formField({

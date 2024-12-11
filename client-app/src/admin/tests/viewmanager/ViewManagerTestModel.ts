@@ -102,7 +102,7 @@ export class ViewManagerTestModel extends HoistModel {
                 {name: 'enableAutoSave', initialValue: true},
                 {name: 'enableDefault', initialValue: true},
                 {name: 'initialViewName', initialValue: null},
-                {name: 'settleTime', initialValue: 250},
+                {name: 'settleTime', initialValue: 1000},
                 {name: 'showSaveButton', initialValue: 'whenDirty'},
                 {name: 'showRevertButton', initialValue: 'never'},
                 {name: 'buttonSide', initialValue: 'right'},
