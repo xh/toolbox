@@ -61,7 +61,7 @@ const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
                     modelConfig: {
                         tabs: [
                             {id: 'modelConfig', content: modelConfig()},
-                            {id: 'cmpProps', content: cmpProps()}
+                            {id: 'cmpProps', title: 'Component Props', content: cmpProps()}
                         ]
                     }
                 })
