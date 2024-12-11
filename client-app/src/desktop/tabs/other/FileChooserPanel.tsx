@@ -58,6 +58,7 @@ export const fileChooserPanel = hoistCmp.factory({
                 }),
                 bbar: [
                     button({
+                        disabled,
                         outlined: true,
                         text: 'Browse',
                         icon: Icon.arrowUpFromBracket({intent: 'primary'}),
