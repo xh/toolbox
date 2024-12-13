@@ -81,9 +81,9 @@ export class ViewManagerTestModel extends HoistModel {
             'localStorageKey',
             'sessionStorageKey',
             'manageGlobal',
+            'enableSharing',
             'enableAutoSave',
             'enableDefault',
-            'enableFavorites',
             'initialViewName'
         ].some(it => dirtyFields.includes(it));
     }
@@ -100,24 +100,14 @@ export class ViewManagerTestModel extends HoistModel {
                 {name: 'localStorageKey', initialValue: 'viewManagerTest'},
                 {name: 'sessionStorageKey', initialValue: 'viewManagerTest'},
                 {name: 'manageGlobal', initialValue: true},
-                {name: 'enableFavorites', initialValue: true},
+                {name: 'enableSharing', initialValue: true},
                 {name: 'enableAutoSave', initialValue: true},
                 {name: 'enableDefault', initialValue: true},
                 {name: 'initialViewName', initialValue: null},
-                {name: 'settleTime', initialValue: 250},
+                {name: 'settleTime', initialValue: 1000},
                 {name: 'showSaveButton', initialValue: 'whenDirty'},
                 {name: 'showRevertButton', initialValue: 'never'},
                 {name: 'buttonSide', initialValue: 'right'},
-                {
-                    name: 'showPrivateViewsInSubMenu',
-                    displayName: 'Show private views in sub-menu',
-                    initialValue: false
-                },
-                {
-                    name: 'showGlobalViewsInSubMenu',
-                    displayName: 'Show global views in sub-menu',
-                    initialValue: false
-                },
                 {
                     name: 'customMenuButtonProps',
                     displayName: 'Custom menuButtonProps',
@@ -142,9 +132,9 @@ export class ViewManagerTestModel extends HoistModel {
                 localStorageKey,
                 sessionStorageKey,
                 manageGlobal,
+                enableSharing,
                 enableDefault,
                 enableAutoSave,
-                enableFavorites,
                 initialViewName,
                 settleTime
             } = data;
@@ -161,9 +151,9 @@ export class ViewManagerTestModel extends HoistModel {
             typeDisplayName,
             globalDisplayName,
             manageGlobal,
+            enableSharing,
             enableDefault,
             enableAutoSave,
-            enableFavorites,
             persistWith,
             settleTime,
             initialViewSpec: views => views.find(v => v.name == initialViewName) ?? views[0]

@@ -61,7 +61,7 @@ const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
                     modelConfig: {
                         tabs: [
                             {id: 'modelConfig', content: modelConfig()},
-                            {id: 'cmpProps', content: cmpProps()}
+                            {id: 'cmpProps', title: 'Component Props', content: cmpProps()}
                         ]
                     }
                 })
@@ -112,14 +112,6 @@ const cmpProps = hoistCmp.factory({
                 }),
                 hbox(
                     formField({
-                        field: 'showPrivateViewsInSubMenu',
-                        item: switchInput()
-                    }),
-                    formField({
-                        field: 'showGlobalViewsInSubMenu',
-                        item: switchInput()
-                    }),
-                    formField({
                         field: 'customMenuButtonProps',
                         item: switchInput()
                     })
@@ -152,6 +144,7 @@ const modelConfig = hoistCmp.factory({
                 }),
                 formField({
                     field: 'sessionStorageKey',
+                    info: 'If set, will persist pendingValue',
                     item: textInput({enableClear: true})
                 }),
                 formField({
@@ -168,11 +161,13 @@ const modelConfig = hoistCmp.factory({
                         item: switchInput()
                     }),
                     formField({
-                        field: 'enableAutoSave',
+                        field: 'enableSharing',
                         item: switchInput()
-                    }),
+                    })
+                ),
+                hbox(
                     formField({
-                        field: 'enableFavorites',
+                        field: 'enableAutoSave',
                         item: switchInput()
                     }),
                     formField({
@@ -223,14 +218,8 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
     render({model}) {
         if (!model.viewManagerModel) return placeholder('ViewManager not yet created');
 
-        const {
-                showSaveButton,
-                showRevertButton,
-                showPrivateViewsInSubMenu,
-                showGlobalViewsInSubMenu,
-                customMenuButtonProps,
-                buttonSide
-            } = model.configFormModel.values,
+        const {showSaveButton, showRevertButton, customMenuButtonProps, buttonSide} =
+                model.configFormModel.values,
             menuButtonProps = customMenuButtonProps
                 ? ({
                       icon: Icon.star(),
@@ -244,8 +233,6 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                 viewManager({
                     showSaveButton,
                     showRevertButton,
-                    showPrivateViewsInSubMenu,
-                    showGlobalViewsInSubMenu,
                     menuButtonProps,
                     buttonSide
                 })
