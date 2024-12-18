@@ -182,8 +182,7 @@ const modelConfig = hoistCmp.factory({
                             item: switchInput()
                         })
                     )
-                ),
-                hbox()
+                )
             ]
         });
     }
