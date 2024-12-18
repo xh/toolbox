@@ -1,6 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {form} from '@xh/hoist/cmp/form';
-import {div, filler, hbox, hframe, hspacer, placeholder, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, hframe, hspacer, placeholder, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -156,25 +156,34 @@ const modelConfig = hoistCmp.factory({
                     item: numberInput()
                 }),
                 hbox(
-                    formField({
-                        field: 'manageGlobal',
-                        item: switchInput()
-                    }),
-                    formField({
-                        field: 'enableSharing',
-                        item: switchInput()
-                    })
+                    vbox(
+                        formField({
+                            field: 'enableAutoSave',
+                            item: switchInput()
+                        }),
+                        formField({
+                            field: 'enableDefault',
+                            item: switchInput()
+                        })
+                    ),
+                    vbox(
+                        formField({
+                            field: 'enableGlobal',
+                            item: switchInput()
+                        }),
+                        formField({
+                            field: 'enableSharing',
+                            item: switchInput()
+                        })
+                    ),
+                    vbox(
+                        formField({
+                            field: 'manageGlobal',
+                            item: switchInput()
+                        })
+                    )
                 ),
-                hbox(
-                    formField({
-                        field: 'enableAutoSave',
-                        item: switchInput()
-                    }),
-                    formField({
-                        field: 'enableDefault',
-                        item: switchInput()
-                    })
-                )
+                hbox()
             ]
         });
     }
