@@ -21,8 +21,7 @@ export class AppModel extends BaseAppModel {
             type: 'portfolioLayout',
             typeDisplayName: 'Layout',
             enableDefault: true,
-            manageGlobal: true,
-            persistWith: {localStorageKey: 'portfolioViewManager'}
+            manageGlobal: XH.getUser().isHoistAdmin
         });
 
         this.addReaction({
