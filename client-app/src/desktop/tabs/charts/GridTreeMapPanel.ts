@@ -3,7 +3,7 @@ import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {filler, hframe, span} from '@xh/hoist/cmp/layout';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {grid} from '@xh/hoist/cmp/grid';
-import {treeMap} from '@xh/hoist/desktop/cmp/treemap';
+import {treeMap} from '@xh/hoist/cmp/treemap';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
 import {select} from '@xh/hoist/desktop/cmp/input';
 

@@ -2,7 +2,7 @@ import {div} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel, LoadSpec, XH} from '@xh/hoist/core';
 import {numberRenderer} from '@xh/hoist/format';
 import {Icon} from '@xh/hoist/icon';
-import {errorMessage} from '@xh/hoist/mobile/cmp/error';
+import {errorMessage} from '@xh/hoist/cmp/error';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
