@@ -21,6 +21,7 @@ export class AppModel extends BaseAppModel {
             type: 'portfolioLayout',
             typeDisplayName: 'Layout',
             enableDefault: true,
+            settleTime: 1500,
             manageGlobal: XH.getUser().isHoistAdmin
         });
 
