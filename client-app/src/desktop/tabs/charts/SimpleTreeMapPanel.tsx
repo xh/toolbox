@@ -3,7 +3,7 @@ import {creates, hoistCmp} from '@xh/hoist/core';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
-import {treeMap} from '@xh/hoist/desktop/cmp/treemap';
+import {treeMap} from '@xh/hoist/cmp/treemap';
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
 import {wrapper} from '../../common';
@@ -44,11 +44,11 @@ export const simpleTreeMapPanel = hoistCmp.factory({
                     notes: 'This example.'
                 },
                 {
-                    url: '$HR/desktop/cmp/treemap/TreeMap.ts',
+                    url: '$HR/cmp/treemap/TreeMap.ts',
                     notes: 'Hoist wrapper component for TreeMap sizing and layout.'
                 },
                 {
-                    url: '$HR/desktop/cmp/treemap/TreeMapModel.ts',
+                    url: '$HR/cmp/treemap/TreeMapModel.ts',
                     notes: 'Hoist model with support for store/grid binding.'
                 },
                 {
