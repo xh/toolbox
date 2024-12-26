@@ -52,8 +52,7 @@ export const fileChooserPanel = hoistCmp.factory({
                 item: fileChooser({
                     disabled,
                     width: '100%',
-                    height: '100%',
-                    model: chooserModel
+                    height: '100%'
                 }),
                 bbar: [
                     button({
