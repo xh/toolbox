@@ -2,7 +2,7 @@ import React from 'react';
 import {creates, hoistCmp, HoistModel, managed, ReactionSpec} from '@xh/hoist/core';
 import {bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
-import {filler, frame, span} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -49,14 +49,12 @@ export const fileChooserPanel = hoistCmp.factory({
                 icon: Icon.copy(),
                 width: 700,
                 height: 400,
-                item: frame(
-                    fileChooser({
-                        disabled,
-                        width: '100%',
-                        height: '100%',
-                        model: chooserModel
-                    })
-                ),
+                item: fileChooser({
+                    disabled,
+                    width: '100%',
+                    height: '100%',
+                    model: chooserModel
+                }),
                 bbar: [
                     button({
                         disabled,

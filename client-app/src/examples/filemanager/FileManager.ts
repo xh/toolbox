@@ -13,6 +13,8 @@ export const fileManager = hoistCmp.factory({
     model: creates(FileManagerModel),
 
     render({model}) {
+        const {gridModel} = model;
+
         return panel({
             title: 'File Manager',
             icon: Icon.folder(),
@@ -20,12 +22,10 @@ export const fileManager = hoistCmp.factory({
             mask: 'onLoad',
             width: 700,
             height: 500,
-            items: [
-                grid(),
-                fileChooser({
-                    height: 150
-                })
-            ],
+            item: fileChooser({
+                height: '100%',
+                item: grid({model: gridModel})
+            }),
             bbar: [
                 button({
                     text: 'Reset',

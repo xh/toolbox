@@ -1,4 +1,4 @@
-import {fragment, p} from '@xh/hoist/cmp/layout';
+import {p, vframe} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {fileExtCol, GridModel} from '@xh/hoist/cmp/grid';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
@@ -7,7 +7,7 @@ import {Icon} from '@xh/hoist/icon';
 import {FileChooserModel} from '@xh/hoist/desktop/cmp/filechooser';
 import filesize from 'filesize';
 import download from 'downloadjs';
-import {filter, find, pull} from 'lodash';
+import {filter, find, isEmpty, pull} from 'lodash';
 import {StoreRecord, StoreRecordId} from '@xh/hoist/data';
 
 export class FileManagerModel extends HoistModel {
@@ -30,11 +30,18 @@ export class FileManagerModel extends HoistModel {
     @managed
     chooserModel = new FileChooserModel({
         accept: this.acceptedFileTypes,
-        showFileGrid: false,
-        targetText: fragment(
-            p('Drag-and-drop new files here to queue for upload, or click to browse.'),
-            p('(Note that not all file types will be accepted.)')
-        )
+        maskOnDrag: false,
+        emptyDisplay: vframe({
+            className: 'xh-pad',
+            style: {
+                justifyContent: 'center',
+                alignItems: 'center'
+            },
+            items: [
+                p('Drag-and-drop new files here to queue for upload, or click to browse.'),
+                p('(Note that not all file types will be accepted.)')
+            ]
+        })
     });
 
     @managed
@@ -55,9 +62,9 @@ export class FileManagerModel extends HoistModel {
             {field: 'name', flex: 1},
             {
                 field: 'size',
-                width: 90,
                 align: 'right',
-                renderer: v => filesize(v)
+                renderer: v => filesize(v),
+                flex: 1
             },
             {
                 field: 'status',
@@ -199,6 +206,8 @@ export class FileManagerModel extends HoistModel {
                 }
             })
             .catchDefault();
+
+        if (isEmpty(files)) return;
 
         files.forEach(file => {
             file.status = 'Saved';
