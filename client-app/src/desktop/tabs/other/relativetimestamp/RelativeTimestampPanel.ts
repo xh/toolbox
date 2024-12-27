@@ -32,10 +32,10 @@ export const relativeTimestampPanel = hoistCmp.factory({
 
         return wrapper({
             description: `
-                A relative timestamp will display a given timestamp in terms of how far long ago / 
-                in the future it is relative to the present moment. The component will update 
+                A relative timestamp will display a given timestamp in terms of how far long ago /
+                in the future it is relative to the present moment. The component will update
                 itself on a regular interval to stay current, and displays the time difference
-                in a friendly and readable manner. 
+                in a friendly and readable manner.
             `,
             links: [
                 {
@@ -57,7 +57,6 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                         style: {fontSize: '1.8em'},
                                         margin: '10 10 40 10',
                                         item: relativeTimestamp({
-                                            ref: model.relativeTimestampRef,
                                             bind: 'timestamp',
                                             options
                                         })
@@ -81,7 +80,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                         showActionsBar: true,
                                         onChange: () => {
                                             model.currentTimestamp = model.futureTimestamp = null;
-                                            model.setLastFocusedControl('pastDatePicker');
+                                            model.lastFocusedControl = 'pastDatePicker';
                                         }
                                     }),
                                     button({
@@ -100,7 +99,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                         showActionsBar: true,
                                         onChange: () => {
                                             model.currentTimestamp = model.pastTimestamp = null;
-                                            model.setLastFocusedControl('futureDatePicker');
+                                            model.lastFocusedControl = 'futureDatePicker';
                                         }
                                     }),
                                     filler()
