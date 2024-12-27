@@ -30,7 +30,7 @@ export const fileManager = hoistCmp.factory({
                         alignItems: 'center'
                     },
                     items: [
-                        p('Drag-and-drop new files here to queue for upload, or click to browse.'),
+                        p('Drag-and-drop new files here to queue for upload.'),
                         p('(Note that not all file types will be accepted.)')
                     ]
                 })
@@ -41,6 +41,11 @@ export const fileManager = hoistCmp.factory({
                     icon: Icon.reset(),
                     disabled: !model.pendingChangeCount,
                     onClick: () => model.resetAndLoadAsync()
+                }),
+                button({
+                    text: 'Browse',
+                    icon: Icon.arrowUpFromBracket({intent: 'primary'}),
+                    onClick: () => model.chooserModel.openFileBrowser()
                 }),
                 filler(),
                 button({
