@@ -1,4 +1,4 @@
-import {filler} from '@xh/hoist/cmp/layout';
+import {filler, p, vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon/';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -13,8 +13,6 @@ export const fileManager = hoistCmp.factory({
     model: creates(FileManagerModel),
 
     render({model}) {
-        const {gridModel} = model;
-
         return panel({
             title: 'File Manager',
             icon: Icon.folder(),
@@ -24,7 +22,18 @@ export const fileManager = hoistCmp.factory({
             height: 500,
             item: fileChooser({
                 height: '100%',
-                item: grid({model: gridModel})
+                item: grid(),
+                emptyDisplay: vframe({
+                    className: 'xh-pad',
+                    style: {
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    },
+                    items: [
+                        p('Drag-and-drop new files here to queue for upload, or click to browse.'),
+                        p('(Note that not all file types will be accepted.)')
+                    ]
+                })
             }),
             bbar: [
                 button({

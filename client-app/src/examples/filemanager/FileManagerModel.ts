@@ -1,4 +1,3 @@
-import {p, vframe} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {fileExtCol, GridModel} from '@xh/hoist/cmp/grid';
 import {actionCol, calcActionColWidth} from '@xh/hoist/desktop/cmp/grid';
@@ -30,18 +29,7 @@ export class FileManagerModel extends HoistModel {
     @managed
     chooserModel = new FileChooserModel({
         accept: this.acceptedFileTypes,
-        maskOnDrag: false,
-        emptyDisplay: vframe({
-            className: 'xh-pad',
-            style: {
-                justifyContent: 'center',
-                alignItems: 'center'
-            },
-            items: [
-                p('Drag-and-drop new files here to queue for upload, or click to browse.'),
-                p('(Note that not all file types will be accepted.)')
-            ]
-        })
+        maskOnDrag: false
     });
 
     @managed

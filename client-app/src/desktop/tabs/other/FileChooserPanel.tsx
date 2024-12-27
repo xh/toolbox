@@ -49,11 +49,7 @@ export const fileChooserPanel = hoistCmp.factory({
                 icon: Icon.copy(),
                 width: 700,
                 height: 400,
-                item: fileChooser({
-                    disabled,
-                    width: '100%',
-                    height: '100%'
-                }),
+                item: fileChooser(),
                 bbar: [
                     button({
                         disabled,
@@ -63,10 +59,6 @@ export const fileChooserPanel = hoistCmp.factory({
                         onClick: () => model.chooserModel.openFileBrowser()
                     }),
                     toolbarSep(),
-                    span('Enable Multi Add: '),
-                    switchInput({
-                        bind: 'enableAddMulti'
-                    }),
                     span('Disable: '),
                     switchInput({
                         bind: 'disabled'
@@ -89,9 +81,6 @@ class FileChooserPanelModel extends HoistModel {
     @bindable
     disabled = false;
 
-    @bindable
-    enableAddMulti = true;
-
     @managed
     @observable.ref
     chooserModel = this.createChooserModel();
@@ -104,15 +93,14 @@ class FileChooserPanelModel extends HoistModel {
 
     private createChooserModel() {
         return new FileChooserModel({
-            accept: ['.png', '.txt'],
-            enableAddMulti: this.enableAddMulti
+            accept: ['.png', '.txt']
         });
     }
 
     private gridReaction(): ReactionSpec {
         return {
-            track: () => [this.enableAddMulti],
-            run: () => (this.chooserModel = this.createChooserModel())
+            track: () => this.disabled,
+            run: disabled => (this.chooserModel.disabled = disabled)
         };
     }
 }
