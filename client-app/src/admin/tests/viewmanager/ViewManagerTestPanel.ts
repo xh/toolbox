@@ -131,20 +131,15 @@ const modelConfig = hoistCmp.factory({
                     item: textInput()
                 }),
                 formField({
+                    field: 'instance',
+                    item: textInput()
+                }),
+                formField({
                     field: 'typeDisplayName',
                     item: textInput({enableClear: true})
                 }),
                 formField({
                     field: 'globalDisplayName',
-                    item: textInput({enableClear: true})
-                }),
-                formField({
-                    field: 'localStorageKey',
-                    item: textInput({enableClear: true})
-                }),
-                formField({
-                    field: 'sessionStorageKey',
-                    info: 'If set, will persist pendingValue',
                     item: textInput({enableClear: true})
                 }),
                 formField({
