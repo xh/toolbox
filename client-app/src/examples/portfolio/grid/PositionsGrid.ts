@@ -29,7 +29,7 @@ export const positionsGrid = hoistCmp.factory({
                 gridCountLabel({unit: 'position'}),
                 filler(),
                 relativeTimestamp({bind: 'loadTimestamp'}),
-                refreshButton({model: XH.refreshContextModel, intent: 'success'})
+                refreshButton({target: XH.refreshContextModel, intent: 'success'})
             ]
         });
     }
