@@ -1,7 +1,7 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {GroupingChooserModel} from '@xh/hoist/cmp/grouping';
-import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
+import {TreeMapModel} from '@xh/hoist/cmp/treemap';
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
 
 export class GridTreeMapModel extends HoistModel {

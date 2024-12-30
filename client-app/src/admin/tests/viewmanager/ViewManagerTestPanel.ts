@@ -1,6 +1,6 @@
 import {badge} from '@xh/hoist/cmp/badge';
 import {form} from '@xh/hoist/cmp/form';
-import {div, filler, hbox, hframe, hspacer, placeholder, vframe} from '@xh/hoist/cmp/layout';
+import {div, filler, hbox, hframe, hspacer, placeholder, vbox, vframe} from '@xh/hoist/cmp/layout';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {creates, hoistCmp, uses} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -61,7 +61,7 @@ const modelConfigForm = hoistCmp.factory<ViewManagerTestModel>({
                     modelConfig: {
                         tabs: [
                             {id: 'modelConfig', content: modelConfig()},
-                            {id: 'cmpProps', content: cmpProps()}
+                            {id: 'cmpProps', title: 'Component Props', content: cmpProps()}
                         ]
                     }
                 })
@@ -112,14 +112,6 @@ const cmpProps = hoistCmp.factory({
                 }),
                 hbox(
                     formField({
-                        field: 'showPrivateViewsInSubMenu',
-                        item: switchInput()
-                    }),
-                    formField({
-                        field: 'showGlobalViewsInSubMenu',
-                        item: switchInput()
-                    }),
-                    formField({
                         field: 'customMenuButtonProps',
                         item: switchInput()
                     })
@@ -139,19 +131,15 @@ const modelConfig = hoistCmp.factory({
                     item: textInput()
                 }),
                 formField({
+                    field: 'instance',
+                    item: textInput()
+                }),
+                formField({
                     field: 'typeDisplayName',
                     item: textInput({enableClear: true})
                 }),
                 formField({
                     field: 'globalDisplayName',
-                    item: textInput({enableClear: true})
-                }),
-                formField({
-                    field: 'localStorageKey',
-                    item: textInput({enableClear: true})
-                }),
-                formField({
-                    field: 'sessionStorageKey',
                     item: textInput({enableClear: true})
                 }),
                 formField({
@@ -163,22 +151,32 @@ const modelConfig = hoistCmp.factory({
                     item: numberInput()
                 }),
                 hbox(
-                    formField({
-                        field: 'manageGlobal',
-                        item: switchInput()
-                    }),
-                    formField({
-                        field: 'enableAutoSave',
-                        item: switchInput()
-                    }),
-                    formField({
-                        field: 'enableFavorites',
-                        item: switchInput()
-                    }),
-                    formField({
-                        field: 'enableDefault',
-                        item: switchInput()
-                    })
+                    vbox(
+                        formField({
+                            field: 'enableAutoSave',
+                            item: switchInput()
+                        }),
+                        formField({
+                            field: 'enableDefault',
+                            item: switchInput()
+                        })
+                    ),
+                    vbox(
+                        formField({
+                            field: 'enableGlobal',
+                            item: switchInput()
+                        }),
+                        formField({
+                            field: 'enableSharing',
+                            item: switchInput()
+                        })
+                    ),
+                    vbox(
+                        formField({
+                            field: 'manageGlobal',
+                            item: switchInput()
+                        })
+                    )
                 )
             ]
         });
@@ -223,14 +221,8 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
     render({model}) {
         if (!model.viewManagerModel) return placeholder('ViewManager not yet created');
 
-        const {
-                showSaveButton,
-                showRevertButton,
-                showPrivateViewsInSubMenu,
-                showGlobalViewsInSubMenu,
-                customMenuButtonProps,
-                buttonSide
-            } = model.configFormModel.values,
+        const {showSaveButton, showRevertButton, customMenuButtonProps, buttonSide} =
+                model.configFormModel.values,
             menuButtonProps = customMenuButtonProps
                 ? ({
                       icon: Icon.star(),
@@ -244,8 +236,6 @@ const persistablesPanel = hoistCmp.factory<ViewManagerTestModel>({
                 viewManager({
                     showSaveButton,
                     showRevertButton,
-                    showPrivateViewsInSubMenu,
-                    showGlobalViewsInSubMenu,
                     menuButtonProps,
                     buttonSide
                 })
