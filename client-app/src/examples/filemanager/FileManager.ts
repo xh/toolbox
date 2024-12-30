@@ -21,7 +21,6 @@ export const fileManager = hoistCmp.factory({
             width: 700,
             height: 500,
             item: fileChooser({
-                height: '100%',
                 item: grid(),
                 emptyDisplay: vframe({
                     className: 'xh-pad',
