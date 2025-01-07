@@ -6,6 +6,6 @@ rootProject.name = 'toolbox'
 if (parseBoolean(runHoistInline)) {
     println "${xhAppName}: running with Hoist Core INLINE...."
     includeBuild '../hoist-core'
-}else {
+} else {
     println "${xhAppName}: running with Hoist Core PACKAGED at v${hoistCoreVersion}...."
 }
