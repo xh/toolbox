@@ -1,10 +1,16 @@
 # Changelog
 
-## v6.0-SNAPSHOT - unreleased
+## v6.0.0 - 2025-01-08
 
 ### New Features
 * Added the new Hoist `ViewManager` component to the Portfolio example, as well as an in-depth test page hosted within the Admin Console.
 * Refactored and updated the Portfolio example for clarity and to better demonstrate potential usages of saved layouts via `ViewManager`.
+
+### Libraries
+* hoist-core 27.0.0
+* @xh/hoist 71.0.0
+* @xh/hoist-dev-utils 10.0.0
+
 
 ## v5.3.0 - 2024-10-17
 

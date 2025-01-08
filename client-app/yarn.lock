@@ -2013,10 +2013,10 @@
     eslint-plugin-react-hooks "^4.6"
     typescript "5.x"
 
-"@xh/hoist-dev-utils@^10.0.0-SNAPSHOT":
-  version "10.0.0-SNAPSHOT.1735588396818"
-  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-10.0.0-SNAPSHOT.1735588396818.tgz#081941bfb644e711dfe6440f5bce7ce8c9f4bb20"
-  integrity sha512-WnuovP2wsuofews4En6wA+0+mUr2vJnyxNTbQW0232rgVx6COenHQr9RxEqSpwWOwKhBf3UPeuKxaLuaP0ceQw==
+"@xh/hoist-dev-utils@10.x":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-10.0.0.tgz#e99b8f0dd7435ab319bb2a50bab4bdfde5d964d5"
+  integrity sha512-MzSmMuvShetXuTJnCQW5K6+qwWPmH6BBbjgpBHNy2CyfJBPDujC2JXCjXslKsRe5SDWtx82XiXXOrSV/szOawQ==
   dependencies:
     "@babel/core" "^7.24.0"
     "@babel/plugin-proposal-decorators" "^7.24.0"
@@ -2057,10 +2057,10 @@
     webpack-dev-server "~5.2.0"
     webpackbar "~7.0.0"
 
-"@xh/hoist@^71.0.0-SNAPSHOT":
-  version "71.0.0-SNAPSHOT.1736281104503"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-71.0.0-SNAPSHOT.1736281104503.tgz#54f1a2d4cfcef11f8d42088ade8e5fe01d295319"
-  integrity sha512-kkpVwujLdZz14anyhk8VKvv9LtYn1OW3JxaujYzES/OL2GF+NreZJt88xa2iQbFLC953yYy2LOrMDy81Ohzq0g==
+"@xh/hoist@71.0.0":
+  version "71.0.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-71.0.0.tgz#f61e0e0b05c185b57a0fd0d1f16f807d3a843dc9"
+  integrity sha512-OpiTE3K2ZUOJl1+l9k/QBiBPYT3sjGIDKlvnrHIaTjKeC1h2gpBtHgER2cXUbiu8XtElTBr2hNCQmB5MtkpcYg==
   dependencies:
     "@auth0/auth0-spa-js" "~2.1.3"
     "@azure/msal-browser" "~3.28.0"
