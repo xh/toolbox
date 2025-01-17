@@ -30,12 +30,17 @@ export class AuthModel extends HoistAuthModel {
 
         // Otherwise we proceed with the primary OAuth flow by constructing and initializing an AuthZeroClient, one of
         // the OAuth implementations supported out-of-the-box by Hoist.
+        const audience = 'toolbox.xh.io';
         this.client = new AuthZeroClient({
             idScopes: ['profile'],
             // Toolbox does not actually need any access tokens -- just a test
             accessTokens: {
-                test: {scopes: ['profile'], audience: 'toolbox.xh.io'}
+                test: {scopes: ['profile'], audience}
             },
+            // This config works along with the accessToken requested above - by passing the same
+            // audience to our interactive login requests, they return access/refresh tokens that
+            // are immediately usable.
+            audience,
             ...(config as AuthZeroClientConfig)
         });
         await this.client.initAsync();
