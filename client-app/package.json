@@ -11,13 +11,13 @@
     "lint:all": "yarn lint:js && yarn lint:styles",
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
+    "prepare": "cd .. && husky client-app/.husky",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
-    "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(ipconfig getifaddr en0)",
-    "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
+    "startAndAnalyze": "yarn start --env analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
-    "startWithHoistSecure": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist --env devHttps=true --env devHost=toolbox-local.xh.io",
     "startWithHoistAndAnalyze": "yarn startWithHoist --env analyzeBundles",
-    "prepare": "cd .. && husky client-app/.husky"
+    "startWithHoistAndIp": "yarn startWithHoist --env devHost=$(ipconfig getifaddr en0)",
+    "startWithHoistSecure": "yarn startWithHoist --env devHttps=true --env devHost=toolbox-local.xh.io"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
