@@ -7,14 +7,13 @@ usage, and links to related Hoist and Toolbox source code. Toolbox also provides
 examples which may be especially useful as a starting point for application developers new to the
 framework.
 
-Please refer to the [Hoist Core](https://github.com/xh/hoist-core) and
-[Hoist React](https://github.com/xh/hoist-react) repos for detailed information and documentation on
-Hoist, including more information on configuring a local development environment.
+Please refer to the [Hoist Core](https://github.com/xh/hoist-core) and [Hoist React](https://github.com/xh/hoist-react) repos for detailed information and
+documentation on Hoist, including more information on configuring a local development environment.
 
 Toolbox is itself a Hoist Application, and we keep it updated with the latest versions of the Hoist
-Framework. A [toolbox-dev instance](https://toolbox-dev.xh.io) is auto-deployed via Teamcity on each
-commit to either the Toolbox or Hoist `develop` branches. We update a distinct
-["production" instance](https://toolbox.xh.io) manually with each new versioned Hoist release.
+Framework. A [toolbox-dev instance](https://toolbox-dev.xh.io) is auto-deployed via Teamcity on each commit to either the
+Toolbox or Hoist `develop` branches. We update a distinct ["production" instance](https://toolbox.xh.io) manually with
+each new versioned Hoist release.
 
 ## Database
 
@@ -71,7 +70,7 @@ libraries themselves can be developed and tested locally using Toolbox as a refe
 the recommended configuration for XH developers to use when setting up Toolbox.
 
 * Create or find a suitable directory for multiple project repositories, like homedir or (if using
-* IntelliJ) `~/IdeaProjects/`.
+  IntelliJ) `~/IdeaProjects/`.
 * Within this directory, check out the `toolbox`, `hoist-react`, and `hoist-core` repositories as
   siblings.
 
