@@ -1,18 +1,18 @@
-import {hoistCmp} from '@xh/hoist/core';
 import {tabContainer} from '@xh/hoist/cmp/tab';
-// eslint-disable-next-line
+import {hoistCmp} from '@xh/hoist/core';
 import {asyncLoopPanel} from './asyncLoops/AsyncLoopPanel';
-import {GridTestPanel} from './grids/GridTestPanel';
-import {CubeTestPanel} from './cube/CubeTestPanel';
-import {WebSocketTestPanel} from './websocket/WebSocketTestPanel';
-import {LocalDateTestPanel} from './localDate/LocalDateTestPanel';
-import {PanelResizingTestPanel} from './panels/PanelResizingTestPanel';
-import {FetchApiTestPanel} from './fetch/FetchApiTestPanel';
-import {SelectTestPanel} from './Select/SelectTestPanel';
-import {dataViewTestPanel} from './dataview/DataViewTestPanel';
 import {storeColumnFilterPanel} from './columnFilters/store/StoreColumnFilterPanel';
 import {viewColumnFilterPanel} from './columnFilters/view/ViewColumnFilterPanel';
+import {CubeTestPanel} from './cube/CubeTestPanel';
+import {dataViewTestPanel} from './dataview/DataViewTestPanel';
+import {FetchApiTestPanel} from './fetch/FetchApiTestPanel';
+import {GridTestPanel} from './grids/GridTestPanel';
 import {gridScrolling} from './gridScrolling/GridScrolling';
+import {LocalDateTestPanel} from './localDate/LocalDateTestPanel';
+import {PanelResizingTestPanel} from './panels/PanelResizingTestPanel';
+import {SelectTestPanel} from './select/SelectTestPanel';
+import {viewManagerTestPanel} from './viewmanager/ViewManagerTestPanel';
+import {WebSocketTestPanel} from './websocket/WebSocketTestPanel';
 
 export const testsTab = hoistCmp.factory(() => {
     return tabContainer({
@@ -22,24 +22,17 @@ export const testsTab = hoistCmp.factory(() => {
             tabs: [
                 {id: 'asyncLoop', title: 'Async Loops', content: asyncLoopPanel},
                 {id: 'cube', title: 'Cube Data', content: CubeTestPanel},
-                {id: 'dataView', title: 'Data View', content: dataViewTestPanel},
+                {id: 'dataView', content: dataViewTestPanel},
                 {id: 'fetchAPI', title: 'Fetch API', content: FetchApiTestPanel},
                 {id: 'grid', title: 'Grid', content: GridTestPanel},
-                {id: 'gridScrolling', title: 'Grid Scrolling', content: gridScrolling},
+                {id: 'gridScrolling', content: gridScrolling},
                 {id: 'localDate', title: 'LocalDate API', content: LocalDateTestPanel},
-                {id: 'panelResizing', title: 'Panel Resizing', content: PanelResizingTestPanel},
-                {id: 'select', title: 'Select', content: SelectTestPanel},
-                {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel},
-                {
-                    id: 'storeColumnFilters',
-                    title: 'Store Column Filters',
-                    content: storeColumnFilterPanel
-                },
-                {
-                    id: 'viewColumnFilters',
-                    title: 'View Column Filters',
-                    content: viewColumnFilterPanel
-                }
+                {id: 'panelResizing', content: PanelResizingTestPanel},
+                {id: 'select', content: SelectTestPanel},
+                {id: 'storeColumnFilters', content: storeColumnFilterPanel},
+                {id: 'viewColumnFilters', content: viewColumnFilterPanel},
+                {id: 'viewManager', content: viewManagerTestPanel},
+                {id: 'webSockets', title: 'WebSockets', content: WebSocketTestPanel}
             ]
         }
     });

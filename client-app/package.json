@@ -1,6 +1,6 @@
 {
   "name": "toolbox",
-  "version": "6.0-SNAPSHOT",
+  "version": "7.0-SNAPSHOT",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
@@ -11,22 +11,22 @@
     "lint:all": "yarn lint:js && yarn lint:styles",
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
+    "prepare": "cd .. && husky client-app/.husky",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
-    "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(ipconfig getifaddr en0)",
-    "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
+    "startAndAnalyze": "yarn start --env analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
-    "startWithHoistSecure": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist --env devHttps=true --env devHost=toolbox-local.xh.io",
     "startWithHoistAndAnalyze": "yarn startWithHoist --env analyzeBundles",
-    "prepare": "cd .. && husky client-app/.husky"
+    "startWithHoistAndIp": "yarn startWithHoist --env devHost=$(ipconfig getifaddr en0)",
+    "startWithHoistSecure": "yarn startWithHoist --env devHttps=true --env devHost=toolbox-local.xh.io"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "eslint",
-      "prettier --write"
+      "prettier --write",
+      "eslint"
     ],
     "*.s?(a|c)ss": [
-      "stylelint",
-      "prettier --write"
+      "prettier --write",
+      "stylelint"
     ]
   },
   "dependencies": {
@@ -43,17 +43,17 @@
     "@ag-grid-enterprise/side-bar": "~31.2.0",
     "@ag-grid-enterprise/sparklines": "~31.2.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@xh/hoist": "^66.0.0-SNAPSHOT",
+    "@xh/hoist": "^72.0.0-SNAPSHOT",
     "@xh/package-template": "~3.0.1",
     "core-js": "3.x",
-    "highcharts": "11.4.3",
+    "highcharts": "11.x",
     "lodash": "4.x",
     "moment": "2.x",
     "react": "~18.2.0",
     "react-dom": "~18.2.0"
   },
   "devDependencies": {
-    "@xh/hoist-dev-utils": "^10.0.0-SNAPSHOT",
+    "@xh/hoist-dev-utils": "^11.0.0-SNAPSHOT",
     "cross-env": "7.x",
     "eslint": "8.x",
     "eslint-config-prettier": "9.x",
@@ -62,10 +62,12 @@
     "postcss": "8.x",
     "prettier": "3.x",
     "stylelint": "16.x",
-    "stylelint-config-standard-scss": "13.x",
+    "stylelint-config-standard-scss": "14.x",
     "typescript": "~5.1.6"
   },
   "resolutions": {
-    "core-js": "3.x"
+    "core-js": "3.x",
+    "@types/react": "18.x",
+    "@types/react-dom": "18.x"
   }
 }

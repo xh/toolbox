@@ -1,5 +1,5 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {TreeMapModel} from '@xh/hoist/desktop/cmp/treemap';
+import {TreeMapModel} from '@xh/hoist/cmp/treemap';
 import {Store} from '@xh/hoist/data';
 
 export class SimpleTreeMapModel extends HoistModel {

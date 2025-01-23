@@ -1,19 +1,44 @@
-import {HoistService, PlainObject, XH} from '@xh/hoist/core';
+import {HoistService, LoadSpec, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
-import {computed, observable, makeObservable, runInAction} from '@xh/hoist/mobx';
+import {computed, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {LocalDate} from '@xh/hoist/utils/datetime';
 import {forOwn, sortBy} from 'lodash';
 
-// TODO - auto-refresh with app, do so efficiently, only replacing local data when new commits.
+export interface RepoCommitHistory {
+    repo: string;
+    lastCommitTimestamp: string;
+    firstLoaded: number;
+    lastUpdated: number;
+    commits: Commit[];
+}
+
+export interface Commit {
+    id: string;
+    repo: string;
+    abbreviatedOid: string;
+    author: {email: string; name: string};
+    authorEmail: string;
+    authorName: string;
+    committedDate: Date;
+    committedDay: LocalDate;
+    isRelease: boolean;
+    messageHeadline: string;
+    messageBody: string;
+    changeFiles: number;
+    additions: number;
+    deletions: number;
+    url: string;
+}
+
 export class GitHubService extends HoistService {
     static instance: GitHubService;
 
     /** Loaded commits histories, keyed by repoName. */
-    @observable.ref commitHistories: PlainObject = {};
+    @observable.ref commitHistories: Record<string, RepoCommitHistory> = {};
 
     /** Loaded array of commits across all repositories. */
     @computed
-    get allCommits() {
+    get allCommits(): Commit[] {
         const ret = [];
         forOwn(this.commitHistories, v => ret.push(...v.commits));
         return sortBy(ret, it => -it.committedDate);
@@ -26,17 +51,19 @@ export class GitHubService extends HoistService {
 
     override async initAsync() {
         // Subscribe to websocket based updates so we refresh and pick up new commits immediately.
-        XH.webSocketService.subscribe('gitHubUpdate', () => this.loadAsync());
+        XH.webSocketService.subscribe('gitHubUpdate', () => this.autoRefreshAsync());
 
         // Note we do not await this - we don't want the app load to block here.
         this.loadAsync();
     }
 
-    override async doLoadAsync() {
+    override async doLoadAsync(loadSpec: LoadSpec) {
         try {
             const priorCommitCount = this.allCommits.length,
                 commitHistories = await XH.fetchJson({
-                    url: 'gitHub/allCommits'
+                    url: 'gitHub/allCommits',
+                    track: 'Loaded GitHub commit history',
+                    loadSpec
                 });
 
             forOwn(commitHistories, v => {

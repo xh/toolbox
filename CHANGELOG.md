@@ -1,24 +1,51 @@
 # Changelog
 
-## v6.0-SNAPSHOT - unreleased
+## v7.0-SNAPSHOT - unreleased
+
+## v6.0.0 - 2025-01-08
+
+### New Features
+* Added the new Hoist `ViewManager` component to the Portfolio example, as well as an in-depth test page hosted within the Admin Console.
+* Refactored and updated the Portfolio example for clarity and to better demonstrate potential usages of saved layouts via `ViewManager`.
+
+### Libraries
+* hoist-core 27.0.0
+* @xh/hoist 71.0.0
+* @xh/hoist-dev-utils 10.0.0
+
+
+## v5.3.0 - 2024-10-17
+
+### Libraries
+* hoist-core 24.0.0
+* @xh/hoist 69.0.0
+
+## v5.2.0 - 2024-09-27
+
+### New Features
+* Enabled new Correlation ID tracking support in Hoist.
 
 ### Bug Fixes
 * Fixed `InputsPanel` "Set Focus" popover.
 
-## 5.1.0 - 2024-06-21
+### Libraries
+* hoist-core 23.0.0
+* @xh/hoist 68.1.0
 
-### 📚 Libraries
+## v5.1.0 - 2024-06-21
+
+### Libraries
 * hoist-core 20.1.0
 
 ## v5.0.2 - 2024-06-20
 
-### 📚 Libraries
+### Libraries
 * hoist-core 20.0.2
 * @xh/hoist 64.0.5
 
 ## v5.0.1 - 2024-05-19
 
-### 📚 Libraries
+### Libraries
 * @xh/hoist 64.0.1
 
 ## v5.0.0 - 2024-05-17
@@ -26,7 +53,7 @@
 ### New Features
 * Support for new `mockDirectoryGroups` config - see `RoleService` for details.
 
-### 📚 Libraries
+### Libraries
 * hoist-core 20.0 (multi-instance)
 * @xh/hoist 64.0
 * @ag-grid 31.2
@@ -95,7 +122,7 @@
 ### Libraries
 * hoist-core 16.3.0
 * @xh/hoist 57.0.0
-* @xh/hoist-dev-utils 6.3.0 
+* @xh/hoist-dev-utils 6.3.0
 
 ## v3.0.2 - 2023-06-01
 
@@ -106,7 +133,7 @@
 ## v3.0.1 - 2023-05-26
 
 ### New Features
-* Toolbox can now be run with an in memory H2 DB, and all needed configs and preferences will be pre-loaded into this DB. 
+* Toolbox can now be run with an in memory H2 DB, and all needed configs and preferences will be pre-loaded into this DB.
   * Useful for devs who want to quickly check out the project and run it on their local development machine without going through the trouble of creating a database.
   * See the section on "instance config file" in README.md for the settings that trigger use of H2.
 
@@ -120,7 +147,7 @@
 * Toolbox has been completely rewritten in TypeScript.
 * New application permission role: `HOIST_ADMIN_READER`.
 * All Hoist Framework Admin tabs are now readable (read only) by users who have this new role: `HOIST_ADMIN_READER`.
-* `CustomLogSupportConverter` added as an example of an alternative log output format.  
+* `CustomLogSupportConverter` added as an example of an alternative log output format.
   Applied to Monitor log file.
 
 ### Libraries

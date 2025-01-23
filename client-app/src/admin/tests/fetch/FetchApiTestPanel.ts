@@ -1,8 +1,8 @@
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {box, hbox, vframe} from '@xh/hoist/cmp/layout';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
-import {jsonInput, select} from '@xh/hoist/desktop/cmp/input';
-import {mask} from '@xh/hoist/desktop/cmp/mask';
+import {jsonInput, select, switchInput} from '@xh/hoist/desktop/cmp/input';
+import {mask} from '@xh/hoist/cmp/mask';
 import {tabContainer} from '@xh/hoist/cmp/tab';
 import {FetchApiTestModel} from './FetchApiTestModel';
 import './FetchApiTestStyles.scss';
@@ -17,7 +17,7 @@ export const FetchApiTestPanel = hoistCmp({
                 panel({
                     title: 'Send Request with Status Code',
                     className: 'xh-border-right',
-                    width: 400,
+                    width: 425,
                     margin: '0 1px 0 0',
                     flexShrink: 0,
                     tbar: [
@@ -32,6 +32,10 @@ export const FetchApiTestPanel = hoistCmp({
                             bind: 'testMethod',
                             options: model.testMethods,
                             width: 110
+                        }),
+                        switchInput({
+                            bind: 'testCorrelationIds',
+                            label: 'CIDs'
                         })
                     ],
                     item: tabContainer()

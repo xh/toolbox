@@ -1,0 +1,25 @@
+.tb-select-test-panel {
+  &__inner {
+    overflow-y: auto;
+  }
+
+  &__example {
+    padding-bottom: var(--xh-pad-px);
+
+    p {
+      background-color: var(--xh-bg-alt);
+      border-bottom: var(--xh-border-solid);
+      font-family: var(--xh-font-family-mono);
+      font-size: var(--xh-font-size-small-px);
+      padding: 4px 8px;
+    }
+
+    label {
+      margin: var(--xh-pad-px);
+    }
+
+    .xh-input {
+      margin: var(--xh-pad-px);
+    }
+  }
+}

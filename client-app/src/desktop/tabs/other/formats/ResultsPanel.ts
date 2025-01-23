@@ -2,7 +2,7 @@ import {cloneElement} from 'react';
 import {hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {table, tbody, td, tr} from '@xh/hoist/cmp/layout';
-import './Styles.scss';
+import './Formats.scss';
 import {DateFormatsPanelModel} from './DateFormatsPanelModel';
 import {NumberFormatsPanelModel} from './NumberFormatsPanelModel';
 
@@ -13,7 +13,7 @@ export const resultsPanel = hoistCmp.factory<DateFormatsPanelModel | NumberForma
         return panel({
             title: 'Input › Output',
             compactHeader: true,
-            width: 400,
+            width: 450,
             flex: 'none',
             className: 'tbox-formats-tab__panel',
             item: table(

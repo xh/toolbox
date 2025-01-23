@@ -1,7 +1,7 @@
 import {vframe} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, HoistModel} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
-import {errorMessage} from '@xh/hoist/desktop/cmp/error';
+import {errorMessage} from '@xh/hoist/cmp/error';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import {makeObservable, bindable} from '@xh/hoist/mobx';

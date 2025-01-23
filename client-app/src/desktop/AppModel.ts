@@ -1,5 +1,5 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
-import {managed, XH} from '@xh/hoist/core';
+import {LoadSpec, managed, XH} from '@xh/hoist/core';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
@@ -59,7 +59,7 @@ export class AppModel extends BaseAppModel {
         });
     }
 
-    override async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec: LoadSpec) {
         await XH.gitHubService.loadAsync(loadSpec);
     }
 
@@ -168,24 +168,24 @@ export class AppModel extends BaseAppModel {
                             {name: 'buttons', path: '/buttons'},
                             {name: 'clock', path: '/clock'},
                             {name: 'customPackage', path: '/customPackage'},
-                            {name: 'dateFormats', path: '/dateFormats'},
-                            {name: 'jsx', path: '/jsx'},
                             {name: 'errorMessage', path: '/errorMessage'},
                             {name: 'exceptionHandler', path: '/exceptionHandler'},
                             {name: 'fileChooser', path: '/fileChooser'},
+                            {name: 'formatDates', path: '/formatDates'},
+                            {name: 'formatNumbers', path: '/formatNumbers'},
                             {name: 'icons', path: '/icons'},
                             {name: 'inspector', path: '/inspector'},
+                            {name: 'jsx', path: '/jsx'},
                             {name: 'leftRightChooser', path: '/leftRightChooser'},
-                            {name: 'numberFormats', path: '/numberFormats'},
                             {name: 'pinPad', path: '/pinPad'},
                             {name: 'placeholder', path: '/placeholder'},
                             {name: 'popups', path: '/popups'},
-                            {name: 'timestamp', path: '/timestamp'},
                             {
                                 name: 'simpleRouting',
                                 path: '/simpleRouting',
                                 children: [{name: 'recordId', path: '/:recordId'}]
-                            }
+                            },
+                            {name: 'timestamp', path: '/timestamp'}
                         ]
                     },
                     {

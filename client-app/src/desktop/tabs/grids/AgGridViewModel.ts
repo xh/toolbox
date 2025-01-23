@@ -1,4 +1,4 @@
-import {HoistModel, XH} from '@xh/hoist/core';
+import {HoistModel, LoadSpec, XH} from '@xh/hoist/core';
 import {AgGridModel} from '@xh/hoist/cmp/ag-grid';
 import {observable, makeObservable, runInAction} from '@xh/hoist/mobx';
 import {fmtMillions, fmtNumber} from '@xh/hoist/format';
@@ -74,16 +74,16 @@ export class AgGridViewModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
-        const {agGridModel} = this;
+
         this.addReaction({
-            track: () => [this.data, agGridModel.agApi],
+            track: () => [this.data, this.agGridModel.agApi] as const,
             run: ([data, api]) => {
                 if (api) api.updateGridOptions({rowData: data});
             }
         });
     }
 
-    override async doLoadAsync(loadSpec) {
+    override async doLoadAsync(loadSpec: LoadSpec) {
         const data = await XH.portfolioService.getPricedRawPositionsAsync({loadSpec});
         runInAction(() => (this.data = data));
     }
