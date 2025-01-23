@@ -12,9 +12,11 @@
     "lint:js": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:styles": "stylelint \"**/*.s?(a|c)ss\"",
     "start": "yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server",
+    "start2": "yarn start --env devGrailsPort=8082 devWebpackPort=3002",
     "startOnDevice": "yarn install && webpack-dev-server --env inlineHoist --env devHost=$(ipconfig getifaddr en0)",
     "startAndAnalyze": "yarn install && webpack-dev-server --env analyzeBundles",
     "startWithHoist": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist",
+    "startWithHoist2": "yarn startWithHoist --env devGrailsPort=8082 devWebpackPort=3002",
     "startWithHoistSecure": "cd ../../hoist-react && yarn install && cd ../toolbox/client-app && yarn install && cross-env NODE_OPTIONS=--max_old_space_size=3072 webpack-dev-server --env inlineHoist --env devHttps=true --env devHost=toolbox-local.xh.io",
     "startWithHoistAndAnalyze": "yarn startWithHoist --env analyzeBundles",
     "prepare": "cd .. && husky client-app/.husky"

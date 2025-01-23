@@ -64,59 +64,53 @@ When adding a new top-level entry-point for Toolbox (such as a new example appli
 URL must be registered with Auth0 as a valid OAuth callback URL. Either Lee or Anselm can update our
 Auth0 config accordingly.
 
-## Wrapper project for Toolbox + Hoist development
+## Toolbox + Hoist development
 
-A special project / directory structure can be useful for developing Toolbox alongside the Hoist
-Core and React libraries, so that changes to the libraries themselves can be developed and tested
-locally using Toolbox as a reference app. This is the recommended configuration for XH developers to
-use when setting up Toolbox.
+Toolbox is often developed alongside the Hoist Core and React libraries, so that changes to the
+libraries themselves can be developed and tested locally using Toolbox as a reference app. This is
+the recommended configuration for XH developers to use when setting up Toolbox.
 
-* Create a new directory within your homedir or another suitable location - name it something like
-  `toolbox-wrapper`.
-* Within this new parent directory, check out the `toolbox`, `hoist-react`, and `hoist-core`
-  repositories as siblings.
-* Create a new `settings.gradle` file within the top-level directory. The contents of this file will
-  be a single line: `include "toolbox", "hoist-core"`. This tells Gradle to reference and combine
-  the `build.gradle` targets of those two sub-projects into a single umbrella project.
-* Create a new `build.gradle` file within the top-level directory. This is required to support the
-  `co.uzzu.dotenv` plugin used by Toolbox to read environment variables - the plugin must be applied
-  to the root project, which is the top-level wrapper directory in this mode. The Toolbox
-  `build.gradle` file is where the plugin is actually applied, but for that to work in wrapper mode
-  the plugin must be defined within the root (wrapper) project also, requiring a build file. Its
-  contents should be:
-    ```groovy
-    buildscript {
-        repositories {
-            gradlePluginPortal()
-        }
-        dependencies {
-            classpath "co.uzzu.dotenv:gradle:4.0.0" // keep in sync with version in Toolbox build.gradle
-        }
-    }
-    ```
-* From the checked-out `toolbox` sub-directory, copy the `gradle` directory and the `gradlew` (or
-  `gradlew.bat` if on Windows) wrapper script and paste the copies into the top-level wrapper
-  directory.
-    * Your top-level directory should now contain four sub-directories, `settings.gradle`,
-      `build.gradle`, and the `gradlew` script.
-* From the top-level directory, run `./gradlew` to ensure that Gradle can properly configure the
-  unified build.
-* If using IntelliJ, create a new project by running through the "New project from existing
-  sources..." workflow and pointing the IDE at the top-level `settings.gradle` file.
-    * IntelliJ should detect that this is a Gradle/Grails project, download and index the
-      server-side dependencies, and set up an appropriate "Run Configuration" to start the Toolbox
-      server.
+* Create or find a suitable directory for multiple project repositories, like homedir or (if using
+* IntelliJ) `~/IdeaProjects/`.
+* Within this directory, check out the `toolbox`, `hoist-react`, and `hoist-core` repositories as
+  siblings.
 
-Having all three repos checked out in a single IntelliJ project can be useful to have the code
-on-hand, but to actually run Toolbox using the local Hoist libraries some additional steps are
-required.
+### Editing multiple projects together
 
-* To run the server using the local `hoist-core`, edit the `toolbox/gradle.properties` file and set
-  `runHoistInline=true`. Note this is _not_ required if you're not changing any hoist-core code -
-  you can still have the project structure setup as described, and only flip this switch if/when
-  testing a local change to the plugin.
+For editing Hoist Core and React alongside Toolbox, it is recommended to open the `hoist-react` and
+`hoist-core` projects as modules in your editor. Having all three repos in a single IntelliJ project
+can be useful to have the code on-hand.
+
+* Open up the `toolbox` project in IntelliJ.
+* Import `hoist-react` and `hoist-core` as modules:
+  File -> Project Structure -> Modules -> Add (+) -> Import Module
+* Using the Gradle tool window, "Link Gradle Project" (+) both `toolbox` and `hoist-core`.
+
+### Running Toolbox using local Hoist
+
+* To run the server using the local `hoist-core`, you need `hoist-core` to exist as sibling of the
+  `toolbox` package, and do one of the following:
+  * Edit the `toolbox/gradle.properties` file and set `runHoistInline=true`.
+  * Run the command `./gradlew bootRun -PrunHoistInline=true` from the `toolbox` directory.
+  * If using IntelliJ, run the `BootrunWithHoist` saved run configuration.
+
+  Note this is _only_ required if you're changing hoist-core code.
+
 * To run the client using the local `hoist-react`, start your local webpack-dev-server from the
   `toolbox/client-app` directory by running `yarn startWithHoist`.
+
+  Note this is _only_ required if you're changing hoist-react code.
+
+### Running multiple instances of Toolbox
+
+* Make sure that the `APP_TOOLBOX_MULTI_INSTANCE_ENABLED` property in `.env` is set to `true`.
+* Run the first instance of the server and client as normal.
+* To run a second instance of the server, you can either:
+  * Run the command `./gradlew bootRun -Dserver.port=8082` from the `toolbox` directory.
+  * If using IntelliJ, run the `Bootrun2` saved run configuration.
+* To run a second instance of the client connected to the second server, start another local
+  webpack-dev-server from the `toolbox/client-app` directory by running `yarn start2` or
+  `yarn start --env devGrailsPort=8082 devWebpackPort=3002`.
 
 ## Developing with HTTPS on `xh.io` domain
 
