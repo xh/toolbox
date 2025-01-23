@@ -7,6 +7,7 @@ import {
     cityCol,
     companyCol,
     profitLossCol,
+    tagsCol,
     tradeDateCol,
     tradeVolumeCol
 } from '../../../core/columns';
@@ -54,7 +55,8 @@ export class ColumnFilteringPanelModel extends HoistModel {
                 cityCol,
                 tradeVolumeCol,
                 profitLossCol,
-                tradeDateCol
+                tradeDateCol,
+                tagsCol
             ]
         });
     }
@@ -72,7 +74,8 @@ export class ColumnFilteringPanelModel extends HoistModel {
                 {
                     field: 'trade_volume',
                     valueRenderer: millionsRenderer({precision: 1, label: true})
-                }
+                },
+                'tags'
             ]
         });
     }
