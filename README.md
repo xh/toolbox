@@ -95,8 +95,9 @@ can be useful to have the code on-hand.
 
   Note this is _only_ required if you're changing hoist-core code.
 
-* To run the client using the local `hoist-react`, start your local webpack-dev-server from the
-  `toolbox/client-app` directory by running `yarn startWithHoist`.
+* To run the client using the local `hoist-react`, you need `hoist-react` to exist as sibling of the
+  `toolbox` package, and to start your local webpack-dev-server from the `toolbox/client-app`
+  directory by running `yarn startWithHoist`.
 
   Note this is _only_ required if you're changing hoist-react code.
 
