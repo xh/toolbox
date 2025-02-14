@@ -2020,10 +2020,10 @@
     eslint-plugin-react-hooks "^4.6"
     typescript "5.x"
 
-"@xh/hoist-dev-utils@^11.0.0-SNAPSHOT":
-  version "11.0.0-SNAPSHOT.1736348311990"
-  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-11.0.0-SNAPSHOT.1736348311990.tgz#c6b6b444078de617886e01eca6cb2f018afe8294"
-  integrity sha512-5/iTx1V34THyr1y6H8h17JnScHxyChYC+GFF9USurCxS+CCN8fbV55aoHGzjsuv2wbbxEfrimEm7I+abuAKtaw==
+"@xh/hoist-dev-utils@10.x":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist-dev-utils/-/hoist-dev-utils-10.0.0.tgz#e99b8f0dd7435ab319bb2a50bab4bdfde5d964d5"
+  integrity sha512-MzSmMuvShetXuTJnCQW5K6+qwWPmH6BBbjgpBHNy2CyfJBPDujC2JXCjXslKsRe5SDWtx82XiXXOrSV/szOawQ==
   dependencies:
     "@babel/core" "^7.24.0"
     "@babel/plugin-proposal-decorators" "^7.24.0"
@@ -2064,10 +2064,10 @@
     webpack-dev-server "~5.2.0"
     webpackbar "~7.0.0"
 
-"@xh/hoist@^72.0.0-SNAPSHOT":
-  version "72.0.0-SNAPSHOT.1736893155432"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-72.0.0-SNAPSHOT.1736893155432.tgz#feb26d21bee4bcb5daab58493ed01806e796eeff"
-  integrity sha512-p24GGiceGqWGWYAzSASy4Z/b7fyz4Fldwa8Kiqh6/XvagSXH7ZbjoV4RYlaiOkPBHuvXTTOCsR9p7jiTXO1m6g==
+"@xh/hoist@72.1.0":
+  version "72.1.0"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-72.1.0.tgz#e1e29938e32aa56bbd823e2303679d7d45547b48"
+  integrity sha512-PKq51mxfcGarxtTwFky63XI+dEhQo+6ehkCCJNkpL8GHm2SsQV0M9eSSUTcw8eJx+cmJ4ZO1uAvXkGf771ZDrw==
   dependencies:
     "@auth0/auth0-spa-js" "~2.1.3"
     "@azure/msal-browser" "~3.28.0"
@@ -2124,6 +2124,7 @@
     semver "~7.6.0"
     short-unique-id "~5.2.0"
     store2 "~2.14.3"
+    swiper "^11.2.0"
     ua-parser-js "~1.0.2"
 
 "@xh/package-template@~3.0.1":
@@ -7955,6 +7956,11 @@ svg-tags@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/svg-tags/-/svg-tags-1.0.0.tgz#58f71cee3bd519b59d4b2a843b6c7de64ac04764"
   integrity sha512-ovssysQTa+luh7A5Weu3Rta6FJlFBBbInjOh722LIt6klpU2/HtdUbszju/G4devcvk8PGt7FCLv5wftu3THUA==
+
+swiper@^11.2.0:
+  version "11.2.3"
+  resolved "https://registry.yarnpkg.com/swiper/-/swiper-11.2.3.tgz#6358e8169dcd78fc1dffb65bb29b5875c7bcedcc"
+  integrity sha512-24m5tqHCd1Wmp9+86aKDoIGMsZGEjIL++3nuB1UjhAhIlvwj4k0Jikxu9PGQ/VswLpoje6JtMDWo12uu4aS2FA==
 
 symbol-observable@1.2.0:
   version "1.2.0"

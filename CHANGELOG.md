@@ -1,6 +1,10 @@
 # Changelog
 
-## v7.0-SNAPSHOT - unreleased
+## 6.1.0 - 2025-02-14
+
+### Libraries
+* hoist-core 28.1.0
+* @xh/hoist 72.1.0
 
 ## v6.0.0 - 2025-01-08
 
@@ -12,7 +16,6 @@
 * hoist-core 27.0.0
 * @xh/hoist 71.0.0
 * @xh/hoist-dev-utils 10.0.0
-
 
 ## v5.3.0 - 2024-10-17
 
