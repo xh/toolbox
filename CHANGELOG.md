@@ -1,6 +1,8 @@
 # Changelog
 
-## 6.1.0 - 2025-02-14
+## v7.0-SNAPSHOT - unreleased
+
+## v6.1.0 - 2025-02-14
 
 ### Libraries
 * hoist-core 28.1.0
