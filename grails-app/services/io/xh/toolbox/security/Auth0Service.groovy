@@ -33,8 +33,12 @@ class Auth0Service extends BaseService {
     }
 
     TokenValidationResult validateToken(String token) {
+        if (!token) {
+            logTrace('Unable to validate - no token provided')
+            return null
+        }
+
         try {
-            if (!token) throw new RuntimeException('Unable to validate JWT - no token provided.')
             logTrace('Validating token', token)
 
             def jws = new JsonWebSignature()

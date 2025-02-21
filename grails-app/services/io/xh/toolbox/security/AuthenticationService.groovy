@@ -15,6 +15,8 @@ class AuthenticationService extends BaseAuthenticationService  {
     Auth0Service auth0Service
     UserService userService
 
+    private String AUTH_HEADER = 'x-xh-idt'
+
     AuthenticationService() {
         super()
         whitelistURIs.push('/gitHub/webhookTrigger')
@@ -33,12 +35,17 @@ class AuthenticationService extends BaseAuthenticationService  {
      * first identity check back to the server.
      */
     protected boolean completeAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        if (!useOAuth) {
-            return true
+        if (!useOAuth) return true
+
+        String token = request.getHeader(AUTH_HEADER)
+        TokenValidationResult tokenResult = null
+
+        if (token) {
+            tokenResult = auth0Service.validateToken(token)
+        } else {
+            logTrace("Unable to validate inbound request - no token presented in header")
         }
 
-        def token = request.getHeader('x-xh-idt'),
-            tokenResult = token ? auth0Service.validateToken(token) : null
         if (tokenResult) {
             def user = userService.getOrCreateFromTokenResult(tokenResult)
             setUser(request, user)
@@ -46,6 +53,7 @@ class AuthenticationService extends BaseAuthenticationService  {
         } else {
             logDebug('Invalid token - no user set on session - return 401')
         }
+
         return true
     }
 
