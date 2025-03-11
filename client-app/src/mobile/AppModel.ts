@@ -24,6 +24,7 @@ import {panelsPage} from './panels/PanelsPage';
 import {pinPadPage} from './pinPad/PinPadPage';
 import {popoverPage} from './popover/PopoverPage';
 import {popupsPage} from './popups/PopupsPage';
+import {contactsPage} from './contacts/ContactsPage';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
@@ -48,7 +49,8 @@ export class AppModel extends BaseAppModel {
             {id: 'popups', content: popupsPage},
             {id: 'buttons', content: buttonPage},
             {id: 'icons', content: iconPage},
-            {id: 'pinPad', content: pinPadPage}
+            {id: 'pinPad', content: pinPadPage},
+            {id: 'contacts', content: contactsPage}
         ]
     });
 
@@ -131,6 +133,10 @@ export class AppModel extends BaseAppModel {
                     {
                         name: 'pinPad',
                         path: '/pinPad'
+                    },
+                    {
+                        name: 'contacts',
+                        path: '/contacts'
                     }
                 ]
             }
