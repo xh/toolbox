@@ -98,12 +98,6 @@ export const homePage = hoistCmp.factory({
                     summary:
                         'A specialized PIN input, used for lightweight authentication of users.',
                     route: 'pinPad'
-                }),
-                summaryCard({
-                    title: 'Contacts Example',
-                    icon: Icon.addressCard(),
-                    summary: 'An example of the Toolbox contacts app working in mobile.',
-                    route: 'contacts'
                 })
             ]
         });

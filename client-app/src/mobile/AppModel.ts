@@ -7,6 +7,7 @@ import {
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {BaseAppModel} from '../BaseAppModel';
 import {PortfolioService} from '../core/svc/PortfolioService';
+import {ContactService} from '../examples/contact/svc/ContactService';
 import {buttonPage} from './buttons/ButtonPage';
 import {chartPage} from './charts/ChartPage';
 import {treeMapPage} from './treemap/TreeMapPage';
@@ -24,7 +25,6 @@ import {panelsPage} from './panels/PanelsPage';
 import {pinPadPage} from './pinPad/PinPadPage';
 import {popoverPage} from './popover/PopoverPage';
 import {popupsPage} from './popups/PopupsPage';
-import {contactsPage} from './contacts/ContactsPage';
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
@@ -49,8 +49,7 @@ export class AppModel extends BaseAppModel {
             {id: 'popups', content: popupsPage},
             {id: 'buttons', content: buttonPage},
             {id: 'icons', content: iconPage},
-            {id: 'pinPad', content: pinPadPage},
-            {id: 'contacts', content: contactsPage}
+            {id: 'pinPad', content: pinPadPage}
         ]
     });
 
@@ -133,10 +132,6 @@ export class AppModel extends BaseAppModel {
                     {
                         name: 'pinPad',
                         path: '/pinPad'
-                    },
-                    {
-                        name: 'contacts',
-                        path: '/contacts'
                     }
                 ]
             }
@@ -149,7 +144,7 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync() {
         await super.initAsync();
-        await XH.installServicesAsync(PortfolioService);
+        await XH.installServicesAsync(PortfolioService, ContactService);
     }
 
     override async doLoadAsync(loadSpec) {
