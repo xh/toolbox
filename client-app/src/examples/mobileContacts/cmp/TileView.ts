@@ -39,9 +39,7 @@ const tile = hoistCmp.factory<ContactsPageModel>(({model, record}) => {
                 ]
             })
         ],
-        onClick: () => {
-            gridModel.selectAsync(record);
-        }
+        onClick: () => gridModel.selectAsync(record)
     });
 });
 

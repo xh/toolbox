@@ -2,18 +2,26 @@ import {hoistCmp, uses} from '@xh/hoist/core';
 import {box, div, img, p} from '@xh/hoist/cmp/layout';
 import {formField} from '@xh/hoist/mobile/cmp/form';
 import {form} from '@xh/hoist/cmp/form';
+import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {select, textArea, textInput} from '@xh/hoist/mobile/cmp/input';
+import {button} from '@xh/hoist/mobile/cmp/button';
+import {Icon} from '@xh/hoist/icon';
 import {isEmpty} from 'lodash';
 
 import ContactDetailsModel from './ContactDetailsModel';
+import './ContactDetails.scss';
 
 export const contactDetails = hoistCmp.factory({
     model: uses(ContactDetailsModel),
     render({model}) {
-        const {currentRecord} = model;
+        const {currentRecord, visible} = model;
 
-        return div({
-            className: 'tb-contact-details-panel__inner',
+        return panel({
+            className: `tb-mobile-contact-details-panel ${visible ? 'details-visible' : ''}`,
+            flex: 'none',
+            width: 'none',
+            title: currentRecord?.data.name,
+            headerItems: [button({icon: Icon.close(), onClick: () => (model.visible = false)})],
             item: currentRecord ? contactProfile() : null
         });
     }
