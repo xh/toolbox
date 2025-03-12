@@ -5,10 +5,11 @@ import {Icon} from '@xh/hoist/icon';
 import {nameCol, locationCol} from '../../core/columns';
 import {uniq} from 'lodash';
 
+// Shared from the desktop version
+import {PERSIST_APP} from '../contact/AppModel';
+
 import ContactDetailsModel from './details/ContactDetailsModel';
 import './ContactPage.scss';
-
-export const PERSIST_APP = {prefKey: 'contactAppState'};
 
 export default class ContactsPageModel extends HoistModel {
     override persistWith = PERSIST_APP;

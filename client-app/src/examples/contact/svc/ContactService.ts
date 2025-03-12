@@ -2,7 +2,7 @@ import {HoistService, persist, XH} from '@xh/hoist/core';
 import {action, observable, makeObservable} from '@xh/hoist/mobx';
 import {without} from 'lodash';
 
-import {PERSIST_APP} from '../AppModel';
+import {PERSIST_APP, LOCALSTORAGE_KEY} from '../AppModel';
 
 /**
  * Service to manage fetching and updating contacts.
@@ -25,6 +25,8 @@ export class ContactService extends HoistService {
 
     async getContactsAsync() {
         const ret = await XH.fetchJson({url: 'contacts'});
+        this.userFaves = XH.localStorageService.get(LOCALSTORAGE_KEY)?.favoriteContacts ?? [];
+
         ret.forEach(it => {
             it.isFavorite = this.userFaves.includes(it.id);
             it.profilePicture = `../../public/contact-images/${
@@ -51,6 +53,13 @@ export class ContactService extends HoistService {
     toggleFavorite(id) {
         const {userFaves} = this,
             isFavorite = userFaves.includes(id);
+
+        XH.localStorageService.set(
+            LOCALSTORAGE_KEY,
+            isFavorite
+                ? {favoriteContacts: without(userFaves, id)}
+                : {favoriteContacts: [...userFaves, id]}
+        );
 
         this.userFaves = isFavorite ? without(userFaves, id) : [...userFaves, id];
     }
