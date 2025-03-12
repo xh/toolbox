@@ -49,6 +49,12 @@ export default class ContactsPageModel extends HoistModel {
         this.gridModel.clearSelection();
     }
 
+    async updateContactAsync(id, data) {
+        await XH.contactService.updateContactAsync(id, data);
+        // Is this rebuiling the whole UI? Or just refreshing the grid / tile data?
+        await this.loadAsync();
+    }
+
     //------------------------
     // Implementation
     //------------------------

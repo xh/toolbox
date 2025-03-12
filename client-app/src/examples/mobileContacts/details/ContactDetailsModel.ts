@@ -1,6 +1,6 @@
+import {XH, managed} from '@xh/hoist/core';
 import {HoistModel} from '@xh/hoist/core/model/HoistModel';
 import {FormModel} from '@xh/hoist/cmp/form';
-import {managed} from '@xh/hoist/core';
 import {bindable, makeObservable, observable, action} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
 import {required} from '@xh/hoist/data/validation/constraints';
@@ -18,6 +18,10 @@ export default class ContactDetailsModel extends HoistModel {
 
     @managed
     formModel: FormModel;
+
+    get isEditing() {
+        return !this.formModel.readonly;
+    }
 
     constructor(contactPageModel: ContactsPageModel) {
         super();
@@ -55,5 +59,28 @@ export default class ContactDetailsModel extends HoistModel {
             this.setCurrentRecord(null);
             this.contactPageModel.clearCurrentSelection();
         }, 250);
+    }
+
+    cancelEdit() {
+        this.formModel.readonly = true;
+    }
+
+    async toggleEditAsync() {
+        const {formModel, contactPageModel, currentRecord} = this;
+        const {readonly, isDirty} = formModel;
+
+        // Pulled from standard details page
+        // How could the form be "dirty" if it's readonly?
+        if (readonly || !isDirty) {
+            formModel.readonly = false;
+            return;
+        }
+
+        try {
+            await contactPageModel.updateContactAsync(currentRecord.id, formModel.getData(true));
+            formModel.readonly = true;
+        } catch (e) {
+            XH.handleException(e);
+        }
     }
 }
