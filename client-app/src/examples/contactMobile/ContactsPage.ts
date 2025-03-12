@@ -17,7 +17,7 @@ export const contactsPage = hoistCmp.factory({
 
     render({model}) {
         return panel({
-            title: 'XH Contact',
+            title: 'XH Contact Mobile',
             icon: Icon.addressCard(),
             item: hframe(
                 panel({

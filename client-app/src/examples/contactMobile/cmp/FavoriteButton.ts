@@ -4,6 +4,7 @@ import {consumeEvent} from '@xh/hoist/utils/js';
 import {button} from '@xh/hoist/mobile/cmp/button';
 
 import ContactsPageModel from '../ContactsPageModel';
+import './FavoriteButton.scss';
 
 export const favoriteButton = hoistCmp.factory<ContactsPageModel>(({model, record}) => {
     const {isFavorite} = record.data;
