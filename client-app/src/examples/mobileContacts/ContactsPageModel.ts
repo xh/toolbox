@@ -1,10 +1,12 @@
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {Icon} from '@xh/hoist/icon';
 import {nameCol, locationCol} from '../../core/columns';
 import {uniq} from 'lodash';
 
 import ContactDetailsModel from './details/ContactDetailsModel';
+import './ContactPage.scss';
 
 export const PERSIST_APP = {prefKey: 'contactAppState'};
 
@@ -41,7 +43,6 @@ export default class ContactsPageModel extends HoistModel {
 
     toggleFavorite(record) {
         XH.contactService.toggleFavorite(record.id);
-        // Update store directly, to avoid more heavyweight full reload.
         this.gridModel.store.modifyRecords({id: record.id, isFavorite: !record.data.isFavorite});
     }
 
@@ -52,6 +53,7 @@ export default class ContactsPageModel extends HoistModel {
     async updateContactAsync(id, data) {
         await XH.contactService.updateContactAsync(id, data);
         // Is this rebuiling the whole UI? Or just refreshing the grid / tile data?
+        // @TODO Can "modifyRecords" be used as above for a more targeted update?
         await this.loadAsync();
     }
 
@@ -65,11 +67,12 @@ export default class ContactsPageModel extends HoistModel {
             const contacts = await XH.contactService.getContactsAsync();
 
             runInAction(() => {
+                // This seems like an odd descision - tag selector is just an aggregate of what
+                // tags happen to be currently present in the persisted data?
                 this.tagList = uniq(contacts.flatMap(it => it.tags ?? [])).sort() as string[];
             });
 
             gridModel.loadData(contacts);
-            gridModel.preSelectFirstAsync();
         } catch (e) {
             XH.handleException(e);
         }
@@ -87,6 +90,18 @@ export default class ContactsPageModel extends HoistModel {
             },
             columns: [
                 {
+                    field: {name: 'isFavorite', type: 'bool'},
+                    headerName: '',
+                    headerClass: 'tb-mobile-favorite-cell',
+                    cellClass: 'tb-mobile-favorite-cell',
+                    width: 30,
+                    renderer: value =>
+                        Icon.favorite({
+                            color: value ? 'gold' : null,
+                            prefix: value ? 'fas' : 'far'
+                        })
+                },
+                {
                     ...nameCol,
                     width: null,
                     flex: 1
@@ -94,7 +109,12 @@ export default class ContactsPageModel extends HoistModel {
                 {
                     ...locationCol,
                     width: 150
-                }
+                },
+                {field: {name: 'email', type: 'string'}, hidden: true},
+                {field: {name: 'bio', type: 'string'}, hidden: true},
+                {field: {name: 'tags', type: 'tags'}, hidden: true},
+                {field: {name: 'workPhone', type: 'string'}, hidden: true},
+                {field: {name: 'cellPhone', type: 'string'}, hidden: true}
             ]
         });
     }
