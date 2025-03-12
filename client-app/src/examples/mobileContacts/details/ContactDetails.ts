@@ -17,11 +17,11 @@ export const contactDetails = hoistCmp.factory({
         const {currentRecord, visible} = model;
 
         return panel({
-            className: `tb-mobile-contact-details-panel ${visible ? 'details-visible' : ''}`,
+            className: `tb-mobile-contact-details-panel${visible ? '--details-visible' : ''}`,
             flex: 'none',
             width: 'none',
             title: currentRecord?.data.name,
-            headerItems: [button({icon: Icon.close(), onClick: () => (model.visible = false)})],
+            headerItems: [button({icon: Icon.close(), onClick: () => model.clearCurrentRecord()})],
             item: currentRecord ? contactProfile() : null
         });
     }

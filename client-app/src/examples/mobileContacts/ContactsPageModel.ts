@@ -45,6 +45,10 @@ export default class ContactsPageModel extends HoistModel {
         this.gridModel.store.modifyRecords({id: record.id, isFavorite: !record.data.isFavorite});
     }
 
+    clearCurrentSelection() {
+        this.gridModel.clearSelection();
+    }
+
     //------------------------
     // Implementation
     //------------------------
