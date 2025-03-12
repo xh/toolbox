@@ -3,7 +3,7 @@ import ContactsPageModel from '../ContactsPageModel';
 import {tileFrame, vbox, div, span, filler} from '@xh/hoist/cmp/layout';
 
 import {favoriteButton} from './FavoriteButton';
-import './TileView.scss';
+import '../../contact/cmp/TileView.scss';
 
 const tileView = hoistCmp.factory<ContactsPageModel>({
     render({model}) {

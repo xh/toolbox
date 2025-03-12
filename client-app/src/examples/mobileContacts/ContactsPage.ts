@@ -17,6 +17,7 @@ export const contactsPage = hoistCmp.factory({
 
     render({model}) {
         return panel({
+            className: 'tb-directory-panel',
             item: hframe(
                 panel({
                     tbar: tbar(),
@@ -31,6 +32,7 @@ export const contactsPage = hoistCmp.factory({
 
 const tbar = hoistCmp.factory<ContactsPageModel>(({model}) => {
     return toolbar({
+        className: 'tb-directory-panel__tbar',
         items: [
             storeFilterField({
                 leftIcon: Icon.search(),
