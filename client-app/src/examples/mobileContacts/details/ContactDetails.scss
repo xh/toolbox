@@ -1,14 +1,20 @@
 .tb-mobile-contact-details-panel {
+  transition: left 300ms ease;
   flex: none;
-  width: 0;
+  left: 100%;
+  position: absolute;
+  top: 0;
 
   &--details-visible {
+    transition: left 300ms ease;
+    left: 0;
     flex: 1;
     width: 100%;
-  }
 
-  .xh-panel-header {
-    height: 41px;
+    .xh-panel-header {
+      height: 41px;
+      padding-left: 10px;
+    }
   }
 
   &__inner {

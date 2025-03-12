@@ -19,7 +19,7 @@ export const contactDetails = hoistCmp.factory({
         return panel({
             className: `tb-mobile-contact-details-panel${visible ? '--details-visible' : ''}`,
             flex: 'none',
-            width: 'none',
+            position: 'absolute',
             title: currentRecord?.data.name,
             headerItems: [button({icon: Icon.close(), onClick: () => model.clearCurrentRecord()})],
             item: currentRecord ? contactProfile() : null
@@ -30,7 +30,7 @@ export const contactDetails = hoistCmp.factory({
 const contactProfile = hoistCmp.factory({
     render() {
         return div({
-            className: 'tb-contact-details-panel__inner',
+            className: 'tb-mobile-contact-details-panel__inner',
             items: [
                 picture(),
                 form({

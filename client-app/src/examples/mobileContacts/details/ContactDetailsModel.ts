@@ -49,8 +49,11 @@ export default class ContactDetailsModel extends HoistModel {
 
     @action
     clearCurrentRecord() {
-        this.currentRecord = null;
         this.visible = false;
-        this.contactPageModel.clearCurrentSelection();
+        // Allow animation to complete before clearing record
+        setTimeout(() => {
+            this.setCurrentRecord(null);
+            this.contactPageModel.clearCurrentSelection();
+        }, 250);
     }
 }
