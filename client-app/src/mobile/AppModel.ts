@@ -7,7 +7,6 @@ import {
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {BaseAppModel} from '../BaseAppModel';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {ContactService} from '../examples/contact/svc/ContactService';
 import {buttonPage} from './buttons/ButtonPage';
 import {chartPage} from './charts/ChartPage';
 import {treeMapPage} from './treemap/TreeMapPage';
@@ -144,7 +143,7 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync() {
         await super.initAsync();
-        await XH.installServicesAsync(PortfolioService, ContactService);
+        await XH.installServicesAsync(PortfolioService);
     }
 
     override async doLoadAsync(loadSpec) {
