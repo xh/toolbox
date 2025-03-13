@@ -1,5 +1,5 @@
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
-import {bindable, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {bindable, makeObservable, observable, action, runInAction} from '@xh/hoist/mobx';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {Icon} from '@xh/hoist/icon';
 import {nameCol, locationCol} from '../../core/columns';
@@ -48,6 +48,16 @@ export default class ContactsPageModel extends HoistModel {
 
     clearCurrentSelection() {
         this.gridModel.clearSelection();
+    }
+
+    @action
+    setDisplayMode(value: 'grid' | 'tiles') {
+        this.displayMode = value;
+
+        XH.setPref(PERSIST_APP.prefKey, {
+            ...(XH.getPref(PERSIST_APP.prefKey) ?? {}),
+            displayMode: value
+        });
     }
 
     async updateContactAsync(id, data) {

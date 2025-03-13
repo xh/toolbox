@@ -42,8 +42,9 @@ const tbar = hoistCmp.factory<ContactsPageModel>(({model}) => {
             }),
             filler(),
             buttonGroupInput({
-                bind: 'displayMode',
                 outlined: true,
+                onChange: value => model.setDisplayMode(value),
+                value: model.displayMode,
                 intent: 'primary',
                 items: [
                     button({
