@@ -1,13 +1,1 @@
 @import '../contact/DirectoryPanel';
-
-// Specificity is needed to override core grid styles
-.ag-row {
-  & .ag-cell {
-    &.ag-column-first {
-      &.tb-mobile-favorite-cell {
-        padding-left: 5px;
-        padding-right: 5px;
-      }
-    }
-  }
-}

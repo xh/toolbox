@@ -1,7 +1,6 @@
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {bindable, makeObservable, observable, action, runInAction} from '@xh/hoist/mobx';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {Icon} from '@xh/hoist/icon';
 import {nameCol, locationCol} from '../../core/columns';
 import {uniq} from 'lodash';
 
@@ -88,6 +87,9 @@ export default class ContactsPageModel extends HoistModel {
         return new GridModel({
             emptyText: 'No matching contacts found.',
             selModel: 'single',
+            groupBy: 'isFavorite',
+            groupRowRenderer: ({value}) => (value === 'true' ? 'Favorites' : 'XH Engineers'),
+            groupSortFn: (a, b) => (a < b ? 1 : -1),
             store: {
                 fields: [
                     {name: 'isFavorite', type: 'bool'},
@@ -96,16 +98,7 @@ export default class ContactsPageModel extends HoistModel {
             },
             columns: [
                 {
-                    field: {name: 'isFavorite', type: 'bool'},
-                    headerName: '',
-                    headerClass: 'tb-mobile-favorite-cell',
-                    cellClass: 'tb-mobile-favorite-cell',
-                    width: 30,
-                    renderer: value =>
-                        Icon.favorite({
-                            color: value ? 'gold' : null,
-                            prefix: value ? 'fas' : 'far'
-                        })
+                    field: {name: 'isFavorite', type: 'bool'}
                 },
                 {
                     ...nameCol,
