@@ -63,6 +63,7 @@ export default class ContactDetailsModel extends HoistModel {
 
     cancelEdit() {
         this.formModel.readonly = true;
+        this.formModel.init(this.currentRecord.data);
     }
 
     async toggleEditAsync() {

@@ -62,9 +62,7 @@ export default class ContactsPageModel extends HoistModel {
 
     async updateContactAsync(id, data) {
         await XH.contactService.updateContactAsync(id, data);
-        // Is this rebuiling the whole UI? Or just refreshing the grid / tile data?
-        // @TODO Can "modifyRecords" be used as above for a more targeted update?
-        await this.loadAsync();
+        this.gridModel.store.modifyRecords({id, ...data});
     }
 
     //------------------------
@@ -77,8 +75,6 @@ export default class ContactsPageModel extends HoistModel {
             const contacts = await XH.contactService.getContactsAsync();
 
             runInAction(() => {
-                // This seems like an odd descision - tag selector is just an aggregate of what
-                // tags happen to be currently present in the persisted data?
                 this.tagList = uniq(contacts.flatMap(it => it.tags ?? [])).sort() as string[];
             });
 
