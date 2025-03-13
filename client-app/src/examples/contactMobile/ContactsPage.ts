@@ -11,6 +11,7 @@ import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import tileView from './cmp/TileView';
 import ContactsPageModel from './ContactsPageModel';
 import {contactDetails} from './details/ContactDetails';
+import './ContactPage.scss';
 
 export const contactsPage = hoistCmp.factory({
     model: creates(ContactsPageModel),

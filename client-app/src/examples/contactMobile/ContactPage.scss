@@ -1,8 +1,14 @@
 @import '../contact/DirectoryPanel';
 
-.tb-mobile-favorite-cell {
-  // THis is why I hate traditional CSS. My defintion is losing to core grid defintions with more specificity
-  // The targeted element does not seem to allow padding to be set as a style property directly
-  padding-left: 5px !important;
-  padding-right: 5px !important;
+.ag-row {
+  & .ag-cell {
+    &.ag-column-first {
+      &.tb-mobile-favorite-cell {
+        // THis is why I hate traditional CSS. My defintion is losing to core grid defintions with more specificity
+        // The targeted element does not seem to allow padding to be set as a style property directly
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+    }
+  }
 }

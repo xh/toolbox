@@ -9,7 +9,6 @@ import {uniq} from 'lodash';
 import {PERSIST_APP} from '../contact/AppModel';
 
 import ContactDetailsModel from './details/ContactDetailsModel';
-import './ContactPage.scss';
 
 export default class ContactsPageModel extends HoistModel {
     override persistWith = PERSIST_APP;

@@ -29,6 +29,9 @@ const tile = hoistCmp.factory<ContactsPageModel>(({model, record}) => {
         items: [
             div({
                 className: 'tb-contact-tile__bar',
+                // This inline style defintion keeps me from needing to fight with
+                // existing styles when making the mobile button want to center itself
+                style: {alignItems: 'center'},
                 items: [
                     favoriteButton({record}),
                     filler(),
