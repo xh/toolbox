@@ -1,13 +1,13 @@
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {bindable, makeObservable, observable, action, runInAction} from '@xh/hoist/mobx';
 import {GridModel} from '@xh/hoist/cmp/grid';
-import {nameCol, locationCol} from '../../core/columns';
+import {nameCol, locationCol} from '../../../core/columns';
 import {uniq} from 'lodash';
 
 // Shared from the desktop version
-import {PERSIST_APP} from '../contact/AppModel';
+import {PERSIST_APP} from '../AppModel';
 
-import ContactDetailsModel from './details/ContactDetailsModel';
+import ContactDetailsModel from './details/DetailsPanelModel';
 
 export default class ContactsPageModel extends HoistModel {
     override persistWith = PERSIST_APP;
@@ -61,7 +61,7 @@ export default class ContactsPageModel extends HoistModel {
 
     async updateContactAsync(id, data) {
         await XH.contactService.updateContactAsync(id, data);
-        this.gridModel.store.modifyRecords({id, ...data});
+        await this.loadAsync();
     }
 
     //------------------------

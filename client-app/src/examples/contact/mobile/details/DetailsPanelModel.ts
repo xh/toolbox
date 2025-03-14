@@ -6,15 +6,15 @@ import {StoreRecord} from '@xh/hoist/data';
 import {required} from '@xh/hoist/data/validation/constraints';
 import {isNil} from 'lodash';
 
-import ContactsPageModel from '../ContactsPageModel';
+import DirectoryPanelModel from '../DirectoryPanelModel';
 
-export default class ContactDetailsModel extends HoistModel {
+export default class DetailsPanelModel extends HoistModel {
     @observable.ref
     currentRecord: StoreRecord;
 
     @bindable visible: boolean = false;
 
-    contactPageModel: ContactsPageModel;
+    directoryPanelModel: DirectoryPanelModel;
 
     @managed
     formModel: FormModel;
@@ -23,10 +23,10 @@ export default class ContactDetailsModel extends HoistModel {
         return !this.formModel.readonly;
     }
 
-    constructor(contactPageModel: ContactsPageModel) {
+    constructor(directoryPanelModel: DirectoryPanelModel) {
         super();
         makeObservable(this);
-        this.contactPageModel = contactPageModel;
+        this.directoryPanelModel = directoryPanelModel;
 
         this.formModel = new FormModel({
             readonly: true,
@@ -57,7 +57,7 @@ export default class ContactDetailsModel extends HoistModel {
         // Allow animation to complete before clearing record
         setTimeout(() => {
             this.setCurrentRecord(null);
-            this.contactPageModel.clearCurrentSelection();
+            this.directoryPanelModel.clearCurrentSelection();
         }, 250);
     }
 
@@ -67,7 +67,7 @@ export default class ContactDetailsModel extends HoistModel {
     }
 
     async toggleEditAsync() {
-        const {formModel, contactPageModel, currentRecord} = this;
+        const {formModel, directoryPanelModel, currentRecord} = this;
         const {readonly, isDirty} = formModel;
 
         // Pulled from standard details page
@@ -78,7 +78,7 @@ export default class ContactDetailsModel extends HoistModel {
         }
 
         try {
-            await contactPageModel.updateContactAsync(currentRecord.id, formModel.getData(true));
+            await directoryPanelModel.updateContactAsync(currentRecord.id, formModel.getData(true));
             formModel.readonly = true;
         } catch (e) {
             XH.handleException(e);

@@ -1,11 +1,11 @@
+import {div, filler, span, tileFrame, vbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp} from '@xh/hoist/core';
-import ContactsPageModel from '../ContactsPageModel';
-import {tileFrame, vbox, div, span, filler} from '@xh/hoist/cmp/layout';
-
 import {favoriteButton} from './FavoriteButton';
-import '../../contact/cmp/TileView.scss';
 
-const tileView = hoistCmp.factory<ContactsPageModel>({
+import {DirectoryPanelModel} from '../DirectoryPanelModel';
+import '../../TileView.scss';
+
+export const tileView = hoistCmp.factory<DirectoryPanelModel>({
     render({model}) {
         return tileFrame({
             spacing: 10,
@@ -18,7 +18,7 @@ const tileView = hoistCmp.factory<ContactsPageModel>({
     }
 });
 
-const tile = hoistCmp.factory<ContactsPageModel>(({model, record}) => {
+const tile = hoistCmp.factory<DirectoryPanelModel>(({model, record}) => {
     const {gridModel} = model,
         isSelected = gridModel.selectedId === record.id,
         {profilePicture, name} = record.data;
@@ -29,9 +29,6 @@ const tile = hoistCmp.factory<ContactsPageModel>(({model, record}) => {
         items: [
             div({
                 className: 'tb-contact-tile__bar',
-                // This inline style defintion keeps me from needing to fight with
-                // existing styles when making the mobile button want to center itself
-                style: {alignItems: 'center'},
                 items: [
                     favoriteButton({record}),
                     filler(),
@@ -45,5 +42,3 @@ const tile = hoistCmp.factory<ContactsPageModel>(({model, record}) => {
         onClick: () => gridModel.selectAsync(record)
     });
 });
-
-export default tileView;

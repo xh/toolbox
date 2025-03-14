@@ -9,11 +9,11 @@ import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {isEmpty, get} from 'lodash';
 
-import ContactDetailsModel from './ContactDetailsModel';
-import './ContactDetails.scss';
+import DetailsPanelModel from './DetailsPanelModel';
+import './DetailsPanelMobile.scss';
 
-export const contactDetails = hoistCmp.factory({
-    model: uses(ContactDetailsModel),
+export const detailsPanel = hoistCmp.factory({
+    model: uses(DetailsPanelModel),
     render({model}) {
         const {currentRecord, visible} = model;
 
@@ -55,11 +55,11 @@ const contactProfile = hoistCmp.factory({
     }
 });
 
-const picture = hoistCmp.factory<ContactDetailsModel>(({model}) =>
+const picture = hoistCmp.factory<DetailsPanelModel>(({model}) =>
     img({src: model.currentRecord.data.profilePicture})
 );
 
-const bbar = hoistCmp.factory<ContactDetailsModel>(({model}) => {
+const bbar = hoistCmp.factory<DetailsPanelModel>(({model}) => {
     const {currentRecord, isEditing} = model;
     if (!currentRecord) return null;
 
@@ -97,12 +97,12 @@ const bioField = hoistCmp.factory(() =>
     })
 );
 
-const tagsField = hoistCmp.factory<ContactDetailsModel>(({model}) =>
+const tagsField = hoistCmp.factory<DetailsPanelModel>(({model}) =>
     formField({
         field: 'tags',
         item: select({
             enableCreate: true,
-            options: model.contactPageModel.tagList
+            options: model.directoryPanelModel.tagList
         }),
         readonlyRenderer: tags => {
             return isEmpty(tags)
@@ -118,7 +118,7 @@ const tagsField = hoistCmp.factory<ContactDetailsModel>(({model}) =>
 //------------
 // Buttons
 //------------
-const favoriteButton = hoistCmp.factory<ContactDetailsModel>(({model}) => {
+const favoriteButton = hoistCmp.factory<DetailsPanelModel>(({model}) => {
     const {currentRecord} = model;
     const isFavorite = get(currentRecord, 'data.isFavorite');
     return button({
@@ -129,11 +129,11 @@ const favoriteButton = hoistCmp.factory<ContactDetailsModel>(({model}) => {
         }),
         width: 120,
         minimal: false,
-        onClick: () => model.contactPageModel.toggleFavorite(currentRecord)
+        onClick: () => model.directoryPanelModel.toggleFavorite(currentRecord)
     });
 });
 
-const editButton = hoistCmp.factory<ContactDetailsModel>(({model}) => {
+const editButton = hoistCmp.factory<DetailsPanelModel>(({model}) => {
     const {isEditing} = model;
     return button({
         icon: isEditing ? Icon.save() : Icon.edit(),

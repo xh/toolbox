@@ -9,12 +9,12 @@ import {Icon} from '@xh/hoist/icon';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 
 import tileView from './cmp/TileView';
-import ContactsPageModel from './ContactsPageModel';
-import {contactDetails} from './details/ContactDetails';
-import './ContactPage.scss';
+import DirectoryPanelModel from './DirectoryPanelModel';
+import {detailsPanel} from './details/DetailsPanel';
+import '../DirectoryPanel.scss';
 
 export const contactsPage = hoistCmp.factory({
-    model: creates(ContactsPageModel),
+    model: creates(DirectoryPanelModel),
 
     render({model}) {
         return panel({
@@ -25,13 +25,13 @@ export const contactsPage = hoistCmp.factory({
                     item: model.displayMode === 'grid' ? grid() : tileView(),
                     bbar: bbar()
                 }),
-                contactDetails()
+                detailsPanel()
             )
         });
     }
 });
 
-const tbar = hoistCmp.factory<ContactsPageModel>(({model}) => {
+const tbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
     return toolbar({
         className: 'tb-directory-panel__tbar',
         items: [
@@ -63,7 +63,7 @@ const tbar = hoistCmp.factory<ContactsPageModel>(({model}) => {
     });
 });
 
-const bbar = hoistCmp.factory<ContactsPageModel>(({model}) => {
+const bbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
     const {
         gridModel: {store}
     } = model;
