@@ -63,6 +63,12 @@ When adding a new top-level entry-point for Toolbox (such as a new example appli
 URL must be registered with Auth0 as a valid OAuth callback URL. Either Lee or Anselm can update our
 Auth0 config accordingly.
 
+## Running Toolbox
+
+To run toolbox locally on your machine, use the following commands:
+* Start the server with the command `./gradlew bootRun -Duser.timezone=Etc/UTC` in the `toolbox` package.
+* Start the client with the command `yarn start` in the `toolbox/client-app` package.
+
 ## Toolbox + Hoist development
 
 Toolbox is often developed alongside the Hoist Core and React libraries, so that changes to the
@@ -90,8 +96,7 @@ can be useful to have the code on-hand.
 * To run the server using the local `hoist-core`, you need `hoist-core` to exist as sibling of the
   `toolbox` package, and do one of the following:
   * Edit the `toolbox/gradle.properties` file and set `runHoistInline=true`.
-  * Run the command `./gradlew bootRun -PrunHoistInline=true` from the `toolbox` directory.
-  * If using IntelliJ, run the `BootrunWithHoist` saved run configuration.
+  * Run the command `./gradlew bootRun -Duser.timezone=Etc/UTC -PrunHoistInline=true` from the `toolbox` directory.
 
   Note this is _only_ required if you're changing hoist-core code.
 
@@ -105,12 +110,9 @@ can be useful to have the code on-hand.
 
 * Make sure that the `APP_TOOLBOX_MULTI_INSTANCE_ENABLED` property in `.env` is set to `true`.
 * Run the first instance of the server and client as normal.
-* To run a second instance of the server, you can either:
-  * Run the command `./gradlew bootRun -Dserver.port=8082` from the `toolbox` directory.
-  * If using IntelliJ, run the `Bootrun2` saved run configuration.
+* To run a second instance of the server, you run the command `./gradlew bootRun -Duser.timezone=Etc/UTC -Dserver.port=8082` from the `toolbox` directory.
 * To run a second instance of the client connected to the second server, start another local
-  webpack-dev-server from the `toolbox/client-app` directory by running `yarn start2` or
-  `yarn start --env devGrailsPort=8082 devWebpackPort=3002`.
+  webpack-dev-server from the `toolbox/client-app` directory using `yarn start --env devGrailsPort=8082 devWebpackPort=3002`.
 
 ## Developing with HTTPS on `xh.io` domain
 
