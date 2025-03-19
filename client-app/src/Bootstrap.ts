@@ -20,6 +20,7 @@ import {TaskService} from './examples/todo/TaskService';
 declare module '@xh/hoist/core' {
     // Merge interface with XHApi class to include injected services.
     export interface XHApi {
+        clubService: ClubService;
         contactService: ContactService;
         gitHubService: GitHubService;
         portfolioService: PortfolioService;
@@ -89,6 +90,7 @@ import highchartsHeatmap from 'highcharts/modules/heatmap';
 import highchartsOfflineExporting from 'highcharts/modules/offline-exporting';
 import highchartsTree from 'highcharts/modules/treemap';
 import highchartsTreeGraph from 'highcharts/modules/treegraph';
+import {ClubService} from './musiclub/svc/ClubService';
 
 highchartsExportData(Highcharts);
 highchartsExporting(Highcharts);
