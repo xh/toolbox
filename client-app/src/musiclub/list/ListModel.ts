@@ -3,6 +3,7 @@ import {div, h1, h2, hbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, HoistModel, HoistProps, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {StoreRecord} from '@xh/hoist/data';
 import {action, makeObservable, observable} from '@xh/hoist/mobx';
+import {MeetingDim} from '../Types';
 
 export class ListModel extends HoistModel {
     @managed dataViewModel: DataViewModel;
@@ -30,17 +31,22 @@ export class ListModel extends HoistModel {
             showHover: false,
             itemHeight: 100,
             renderer: (v, {record}) => {
+                const row = record.data as RowData;
                 return hbox({
-                    className: `mc-list__item mc-list__item--${record.data.dimension}`,
+                    className: `mc-list__item mc-list__item--${row.dimension}`,
                     items: [
                         div(
-                            h1(record.data.title),
+                            h1(row.title),
                             h2({
-                                item: record.data.subtitle,
-                                omit: !record.data.subtitle
+                                item: row.subtitle,
+                                omit: !row.subtitle
                             })
                         ),
-                        countTiles({count: record.data.count, bonusCount: record.data.bonusCount})
+                        countTiles({
+                            count: row.count,
+                            bonusCount: row.bonusCount,
+                            big: row.dimension !== 'meeting'
+                        })
                     ]
                 });
             },
@@ -55,12 +61,13 @@ export class ListModel extends HoistModel {
 
     override async doLoadAsync(loadSpec: LoadSpec) {
         const byYear = XH.clubService.getByYear(),
-            data = [];
+            data: RowData[] = [];
 
         byYear.forEach(grp => {
             data.push(
                 {
                     id: grp.id,
+                    groupId: grp.id,
                     title: grp.title,
                     dimension: grp.dimension,
                     count: grp.meetingCount,
@@ -72,7 +79,7 @@ export class ListModel extends HoistModel {
                         groupId: grp.id,
                         title: mtg.date.toString(),
                         subtitle: mtg.location,
-                        dimension: 'meeting',
+                        dimension: 'meeting' as const,
                         count: mtg.plays.filter(it => !it.isBonus).length,
                         bonusCount: mtg.plays.filter(it => it.isBonus).length,
                         sortKey: `${grp.id}|${idx}`
@@ -94,19 +101,26 @@ export class ListModel extends HoistModel {
 
     @action
     private onRowTap(rec: StoreRecord) {
-        if (rec?.data.dimension === 'year') {
+        const grps = this.expandedGroups,
+            dim: MeetingDim = rec?.data.dimension;
+
+        if (dim === 'year') {
             this.expandedGroups = {
-                ...this.expandedGroups,
-                [rec.id]: !this.expandedGroups[rec.id]
+                ...grps,
+                [rec.id]: !grps[rec.id]
             };
+        } else if (dim === 'meeting') {
+            XH.appendRoute('meeting', {id: rec.id});
         }
     }
 }
 
-const countTiles = hoistCmp.factory<HoistProps & {count: number; bonusCount: number}>({
-    render({count, bonusCount}) {
+const countTiles = hoistCmp.factory<
+    HoistProps & {count: number; bonusCount: number; big?: boolean}
+>({
+    render({count, bonusCount, big}) {
         return hbox({
-            className: 'mc-count-tiles',
+            className: `mc-count-tiles ${big ? 'mc-count-tiles--big' : ''}`,
             items: [
                 ...Array.from({length: count ?? 0}).map(_ => {
                     return div({
@@ -122,3 +136,14 @@ const countTiles = hoistCmp.factory<HoistProps & {count: number; bonusCount: num
         });
     }
 });
+
+interface RowData {
+    id: string;
+    groupId: string;
+    title: string;
+    subtitle?: string;
+    dimension: MeetingDim;
+    count: number;
+    bonusCount?: number;
+    sortKey: string;
+}

@@ -5,6 +5,7 @@ import {BaseAppModel} from '../BaseAppModel';
 import {listView} from './list/ListView';
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faTurntable} from '@fortawesome/pro-light-svg-icons';
+import {meetingView} from './meeting/MeetingView';
 import {ClubService} from './svc/ClubService';
 
 library.add(faTurntable);
@@ -15,7 +16,10 @@ export class AppModel extends BaseAppModel {
     @managed
     navigatorModel: NavigatorModel = new NavigatorModel({
         track: true,
-        pages: [{id: 'default', content: listView}]
+        pages: [
+            {id: 'default', content: listView},
+            {id: 'meeting', content: meetingView}
+        ]
     });
 
     override getRoutes() {
@@ -44,5 +48,9 @@ export class AppModel extends BaseAppModel {
 
     override async doLoadAsync(loadSpec: LoadSpec) {
         await loadAllAsync([], loadSpec);
+    }
+
+    override get supportsVersionBar() {
+        return false;
     }
 }

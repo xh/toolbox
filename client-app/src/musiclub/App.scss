@@ -5,4 +5,29 @@
   .xh-appbar-title {
     text-transform: uppercase;
   }
+
+  .xh-appbar.xh-toolbar .xh-button .fa-turntable {
+    color: var(--xh-orange);
+  }
+
+  .xh-placeholder {
+    font-family: var(--xh-font-family-mono);
+  }
+
+  h1 {
+    font-weight: 200;
+    margin: 0 !important;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 200;
+    margin: 0 !important;
+    text-transform: uppercase;
+  }
+
+  p {
+    margin: 4px 0;
+    text-transform: uppercase;
+  }
 }

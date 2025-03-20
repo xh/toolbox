@@ -25,6 +25,10 @@ export class ClubService extends HoistService {
         return Object.values(map);
     }
 
+    getMeeting(id: string): Meeting {
+        return id ? this.meetings.find(it => it.id === id) : null;
+    }
+
     override async initAsync(): Promise<void> {
         await super.initAsync();
 
@@ -48,7 +52,7 @@ export class ClubService extends HoistService {
 
     processRawMeeting(raw: PlainObject): Meeting {
         return {
-            id: raw.meeting_number,
+            id: raw.meeting_number?.toString(),
             date: LocalDate.get(raw.date),
             year: raw.year_featured,
             location: raw.location,
@@ -60,10 +64,10 @@ export class ClubService extends HoistService {
     processRawPlay(raw: PlainObject): Play {
         return {
             id: raw.song_play_id,
-            member: raw.member,
-            artist: raw.artist,
-            title: raw.title,
-            album: raw.album,
+            member: raw.member ?? '[???]',
+            artist: raw.artist ?? '[???]',
+            title: raw.title ?? '[???]',
+            album: raw.album ?? '[???]',
             isBonus: raw.is_bonus_song,
             notes: raw.notes
         };

@@ -1,0 +1,10 @@
+.mc-meeting-view {
+  &__header {
+    padding: var(--xh-pad-px);
+    border-bottom: var(--xh-border-dotted);
+  }
+
+  .mc-member {
+    color: var(--xh-orange);
+  }
+}

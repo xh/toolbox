@@ -8,25 +8,11 @@
 
     > div {
       flex: 1;
-
-      h1 {
-        font-weight: 200;
-        margin: 0 !important;
-      }
-
-      h2 {
-        font-size: 20px;
-        font-weight: 200;
-        margin: 0 !important;
-        text-transform: uppercase;
-      }
     }
 
     &--year {
       h1 {
-        font-weight: 200;
         font-size: 60px;
-        margin: 0 !important;
       }
     }
 
@@ -51,6 +37,13 @@
 
       &--bonus {
         background-color: var(--xh-text-color-muted);
+      }
+    }
+
+    &--big {
+      .mc-count-tiles__tile {
+        height: 20px;
+        width: 20px;
       }
     }
   }
