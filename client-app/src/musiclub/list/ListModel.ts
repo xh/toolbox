@@ -2,13 +2,15 @@ import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {div, h1, h2, hbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, HoistModel, HoistProps, LoadSpec, managed, XH} from '@xh/hoist/core';
 import {StoreRecord} from '@xh/hoist/data';
-import {action, makeObservable, observable} from '@xh/hoist/mobx';
+import {action, bindable, makeObservable} from '@xh/hoist/mobx';
 import {MeetingDim} from '../Types';
 
 export class ListModel extends HoistModel {
     @managed dataViewModel: DataViewModel;
 
-    @observable.ref expandedGroups: Record<string, boolean> = {};
+    @bindable dim: MeetingDim = 'year';
+    @bindable sort: 'asc' | 'desc' = 'asc';
+    @bindable.ref expandedGroups: Record<string, boolean> = {};
 
     constructor() {
         super();
@@ -26,7 +28,7 @@ export class ListModel extends HoistModel {
                     {name: 'bonusCount', type: 'number', defaultValue: 0}
                 ]
             },
-            sortBy: 'sortKey',
+            sortBy: `sortKey|${this.sort}`,
             selModel: null,
             showHover: false,
             itemHeight: 100,
@@ -53,36 +55,57 @@ export class ListModel extends HoistModel {
             onRowClicked: ({data}) => this.onRowTap(data)
         });
 
-        this.addReaction({
-            track: () => [this.expandedGroups, this.lastLoadCompleted],
-            run: () => this.updateFilter()
-        });
+        this.addReaction(
+            {
+                track: () => this.dim,
+                run: () => {
+                    this.expandedGroups = {};
+                    this.refreshAsync();
+                }
+            },
+            {
+                track: () => this.sort,
+                run: () => {
+                    this.dataViewModel.setSortBy(`sortKey|${this.sort}`);
+                }
+            },
+            {
+                track: () => [this.expandedGroups, this.lastLoadCompleted],
+                run: () => this.updateFilter()
+            }
+        );
+    }
+
+    toggleSort() {
+        this.sort = this.sort === 'asc' ? 'desc' : 'asc';
     }
 
     override async doLoadAsync(loadSpec: LoadSpec) {
-        const byYear = XH.clubService.getByYear(),
+        const {dim} = this,
+            groups = XH.clubService.getMeetingsBy(dim),
             data: RowData[] = [];
 
-        byYear.forEach(grp => {
+        groups.forEach(grp => {
+            const groupId = `${grp.dimension}-${grp.id}`;
             data.push(
                 {
-                    id: grp.id,
-                    groupId: grp.id,
+                    id: groupId,
+                    groupId,
                     title: grp.title,
                     dimension: grp.dimension,
                     count: grp.meetingCount,
-                    sortKey: grp.id
+                    sortKey: groupId
                 },
                 ...grp.meetings.map((mtg, idx) => {
                     return {
                         id: mtg.id,
-                        groupId: grp.id,
+                        groupId: groupId,
                         title: mtg.date.toString(),
                         subtitle: mtg.location,
                         dimension: 'meeting' as const,
                         count: mtg.plays.filter(it => !it.isBonus).length,
                         bonusCount: mtg.plays.filter(it => it.isBonus).length,
-                        sortKey: `${grp.id}|${idx}`
+                        sortKey: `${groupId}|${mtg.date}`
                     };
                 })
             );
@@ -104,13 +127,13 @@ export class ListModel extends HoistModel {
         const grps = this.expandedGroups,
             dim: MeetingDim = rec?.data.dimension;
 
-        if (dim === 'year') {
+        if (dim === 'meeting') {
+            XH.appendRoute('meeting', {id: rec.id});
+        } else {
             this.expandedGroups = {
                 ...grps,
                 [rec.id]: !grps[rec.id]
             };
-        } else if (dim === 'meeting') {
-            XH.appendRoute('meeting', {id: rec.id});
         }
     }
 }

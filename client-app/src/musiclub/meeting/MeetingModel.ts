@@ -26,13 +26,14 @@ export class MeetingModel extends HoistModel {
                     {name: 'album', type: 'string'},
                     {name: 'isBonus', type: 'bool'},
                     {name: 'notes', type: 'string'},
-                    {name: 'trackDisplay', type: 'string'},
-                    {name: 'memberDisplay', type: 'string'}
+                    {name: 'bonusDisplay', type: 'string'}
                 ]
             },
+            groupBy: 'bonusDisplay',
             showHover: false,
-            itemHeight: 100,
+            itemHeight: 120,
             selModel: null,
+            showGroupRowCounts: false,
             renderer: (v, {record}) => {
                 const play: Play = record.data as Play;
                 return div({
@@ -46,6 +47,9 @@ export class MeetingModel extends HoistModel {
                         p(play.title)
                     ]
                 });
+            },
+            groupSortFn: (a, b) => {
+                return (a ? 1 : 0) - (b ? 1 : 0);
             }
         });
 

@@ -10,7 +10,12 @@
       flex: 1;
     }
 
-    &--year {
+    h2 {
+      //font-size: 0.8em;
+      white-space: nowrap;
+    }
+
+    &--year, &--dateYear {
       h1 {
         font-size: 60px;
       }
@@ -22,6 +27,9 @@
   }
 
   .mc-count-tiles {
+    position: absolute !important;
+    right: 10px;
+
     flex: none;
     flex-direction: row-reverse !important;
     width: 100px;

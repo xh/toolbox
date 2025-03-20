@@ -1,10 +1,21 @@
-.mc-meeting-view {
-  &__header {
-    padding: var(--xh-pad-px);
-    border-bottom: var(--xh-border-dotted);
+.xh-app {
+  .mc-meeting-view {
+    &__header {
+      padding: var(--xh-pad-px);
+      border-bottom: var(--xh-border-dotted);
+
+      p {
+        text-transform: unset;
+        font-size: 10px;
+        padding: 10px;
+        margin: 10px 10px 0 10px;
+        border-top: 1px solid var(--xh-orange);
+      }
+    }
+
+    .mc-member {
+      color: var(--xh-orange);
+    }
   }
 
-  .mc-member {
-    color: var(--xh-orange);
-  }
 }

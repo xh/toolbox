@@ -1,6 +1,19 @@
 .xh-app {
   --appbar-bg: var(--xh-bg);
   --appbar-title-color: var(--xh-text-color);
+  --button-active-bg: var(--xh-orange);
+  --tbar-bg: var(--xh-bg);
+
+  &.xh-dark {
+    --grid-group-bg: var(--xh-bg);
+    --grid-group-text-color: var(--xh-text-color);
+  }
+
+  &:not(.xh-dark) {
+    --grid-group-bg: var(--xh-text-color);
+    --grid-group-text-color: var(--xh-bg);
+    --text-color: #494949;
+  }
 
   .xh-appbar-title {
     text-transform: uppercase;
@@ -12,6 +25,14 @@
 
   .xh-placeholder {
     font-family: var(--xh-font-family-mono);
+  }
+
+  .xh-button {
+    text-transform: uppercase;
+  }
+
+  .ag-full-width-row {
+    text-transform: uppercase;
   }
 
   h1 {

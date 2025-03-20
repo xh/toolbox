@@ -1,5 +1,5 @@
 import {dataView} from '@xh/hoist/cmp/dataview';
-import {div, h1, h2, placeholder} from '@xh/hoist/cmp/layout';
+import {div, h1, h2, p, placeholder} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {MeetingModel} from './MeetingModel';
@@ -19,7 +19,15 @@ export const meetingView = hoistCmp.factory({
             items: [
                 div({
                     className: 'mc-meeting-view__header',
-                    items: [h1(`#${mtg.id} - ${mtg.year}`), h2(`${mtg.location} - ${mtg.date}`)]
+                    items: [
+                        h1(`#${mtg.id} - ${mtg.year}`),
+                        h2(mtg.location),
+                        h2(mtg.date?.toString() ?? null),
+                        p({
+                            item: mtg.notes,
+                            omit: !mtg.notes
+                        })
+                    ]
                 }),
                 dataView({className: 'mc-list'})
             ]

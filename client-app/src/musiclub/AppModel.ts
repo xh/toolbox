@@ -3,12 +3,8 @@ import {themeAppOption} from '@xh/hoist/mobile/cmp/appOption';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {BaseAppModel} from '../BaseAppModel';
 import {listView} from './list/ListView';
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faTurntable} from '@fortawesome/pro-light-svg-icons';
 import {meetingView} from './meeting/MeetingView';
 import {ClubService} from './svc/ClubService';
-
-library.add(faTurntable);
 
 export class AppModel extends BaseAppModel {
     static instance: AppModel;
@@ -35,10 +31,6 @@ export class AppModel extends BaseAppModel {
                 ]
             }
         ];
-    }
-
-    override getAppOptions() {
-        return [themeAppOption()];
     }
 
     override async initAsync() {

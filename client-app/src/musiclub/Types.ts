@@ -3,6 +3,7 @@ import {LocalDate} from '@xh/hoist/utils/datetime';
 export interface Meeting {
     id: string;
     date: LocalDate;
+    dateYear: number;
     year: string;
     location: string;
     notes: string;
@@ -16,6 +17,7 @@ export interface Play {
     title: string;
     album: string;
     isBonus: boolean;
+    bonusDisplay: string;
     notes: string;
 }
 
@@ -27,4 +29,4 @@ export interface MeetingGroup {
     meetings: Meeting[];
 }
 
-export type MeetingDim = 'year' | 'location' | 'meeting';
+export type MeetingDim = 'year' | 'location' | 'meeting' | 'dateYear';

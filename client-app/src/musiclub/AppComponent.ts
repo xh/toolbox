@@ -1,3 +1,5 @@
+import {badge} from '@xh/hoist/cmp/badge';
+import {hbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
@@ -5,6 +7,7 @@ import {navigator} from '@xh/hoist/mobile/cmp/navigator';
 import {panel} from '@xh/hoist/mobile/cmp/panel';
 import {AppModel} from './AppModel';
 import './App.scss';
+import {clubIcon} from './Icons';
 
 export const AppComponent = hoistCmp({
     displayName: 'App',
@@ -14,10 +17,19 @@ export const AppComponent = hoistCmp({
         return panel({
             tbar: appBar({
                 omit: XH.isLandscape,
-                icon: Icon.icon({iconName: 'turntable', size: 'lg', prefix: 'fal'}),
+                icon: clubIcon({size: 'lg'}),
                 hideRefreshButton: true,
                 appMenuButtonProps: {
-                    hideFeedbackItem: true
+                    hideAboutItem: true,
+                    hideThemeItem: true,
+                    hideFeedbackItem: true,
+                    extraItems: [
+                        {
+                            text: XH.darkTheme ? 'LESS Ü' : 'MORE Ü',
+                            icon: XH.darkTheme ? Icon.sun({prefix: 'fas'}) : Icon.moon(),
+                            actionFn: () => XH.toggleTheme()
+                        }
+                    ]
                 }
             }),
             item: navigator()
