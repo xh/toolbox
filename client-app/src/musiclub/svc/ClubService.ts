@@ -34,7 +34,7 @@ export class ClubService extends HoistService {
         await super.initAsync();
 
         try {
-            const raw = await XH.jsonBlobService.getAsync('b127ae12'),
+            const raw = await XH.jsonBlobService.getAsync(XH.getConf('musiclubToken', 'b127ae12')),
                 meetings: Meeting[] = [],
                 rejected = [];
 
