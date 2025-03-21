@@ -35,7 +35,7 @@ export class AuthModel extends HoistAuthModel {
             idScopes: ['profile'],
             // Toolbox does not actually need any access tokens -- just a test
             accessTokens: {
-                test: {scopes: ['profile'], audience}
+                test: {scopes: ['profile'], audience, fetchMode: 'eager'}
             },
             // This config works along with the accessToken requested above - by passing the same
             // audience to our interactive login requests, they return access/refresh tokens that

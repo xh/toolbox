@@ -1,15 +1,13 @@
-const {GoogleGenerativeAI, HarmCategory, HarmBlockThreshold} = require('@google/generative-ai');
-const {GoogleAIFileManager} = require('@google/generative-ai/server');
-const fs = require('fs');
-const _ = require('lodash');
+const {GoogleGenerativeAI, HarmCategory, HarmBlockThreshold} = require('@google/generative-ai'),
+    {GoogleAIFileManager} = require('@google/generative-ai/server'),
+    fs = require('fs'),
+    _ = require('lodash');
 
 require('dotenv').config();
 
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey);
-const fileManager = new GoogleAIFileManager(apiKey);
-
-console.log('API:' + apiKey);
+const apiKey = process.env.GEMINI_API_KEY,
+    genAI = new GoogleGenerativeAI(apiKey),
+    fileManager = new GoogleAIFileManager(apiKey);
 
 const model = genAI.getGenerativeModel({
     model: 'gemini-2.0-flash'
@@ -27,8 +25,6 @@ async function run() {
     const outFile = createOutputFileForCurrRun();
 
     const files = [await uploadToGemini('docs/master-list.pdf', 'application/pdf')];
-
-    // Some files have a processing delay. Wait for them to be ready.
     await waitForFilesActive(files);
 
     const chatSession = model.startChat({
@@ -117,41 +113,58 @@ SCHEMA:
           "items": { "$ref": "#/definitions/Play" }
         }
       },
-      "required": ["id", "date", "year", "location", "notes", "plays"]
+      "required": ["id", "date", "year", "location", "plays"]
     }
   }
 }
 
 ## Next Steps
-Extract the data for meetings 1-4 and return as JSON
-                            `
+Extract the data for meetings 1-4 and return as JSON`
         }
-    ]
+    ];
 
-    const result = await chatSession.sendMessage(initPrompt),
-        txt = result.response.text();
-    processResults(outFile, '1-4', txt);
+    const result = await chatSession.sendMessage(initPrompt);
+    processResults(outFile, '1-4', result.response.text());
 
-    const extractMtgs = async (mtgs: string) => {
-        const result = await chatSession.sendMessage(`Extract the data for meetings ${mtgs} and return as JSON`),
-            txt = result.response.text();
-        processResults(outFile, mtgs, txt);
-    }
-
-    ['5-8', '9-12', '13-16', '17-20', '21-24',
-        '25-28', '29-32', '33-36', '37-40', '41-44',
-        '45-48', '49-52', '53-56', '57-60', '61-64',
-        '65-68', '69-72', '73-76', '77-80', '81-84',
-        '85-88', '89-92', '93-96', '97-100', '101-103',
-    ].forEach(async (mtgs) => {
+    [
+        '5-8',
+        '9-12',
+        '13-16',
+        '17-20',
+        '21-24',
+        '25-28',
+        '29-32',
+        '33-36',
+        '37-40',
+        '41-44',
+        '45-48',
+        '49-52',
+        '53-56',
+        '57-60',
+        '61-64',
+        '65-68',
+        '69-72',
+        '73-76',
+        '77-80',
+        '81-84',
+        '85-88',
+        '89-92',
+        '93-96',
+        '97-100',
+        '101-103'
+    ].forEach(async mtgs => {
         try {
-            await extractMtgs(mtgs);
+            console.log(`Asking gemini to extract meetings ${mtgs}...`);
+            const result = await chatSession.sendMessage(
+                    `Extract the data for meetings ${mtgs} and return as JSON`
+                ),
+                txt = result.response.text();
+            processResults(outFile, mtgs, txt);
         } catch (e) {
             console.error('Error extracting meetings:' + mtgs, e);
         }
-    })
+    });
 }
-
 
 function processResults(outfile: string, meetings: string, txt: string) {
     console.log(`Processing results for meetings ${meetings}`);
@@ -174,15 +187,13 @@ function processResults(outfile: string, meetings: string, txt: string) {
 
 function createOutputFileForCurrRun(): string {
     const fileName = `./out/run-${Date.now()}.json`;
-    console.log(`Creating output file: ${fileName}`);
-    fs.writeFileSync(fileName, '[]')
+    fs.writeFileSync(fileName, '[]');
     console.log(`Created output file: ${fileName}`);
-    return fileName
+    return fileName;
 }
 
 /**
  * Uploads the given file to Gemini.
- *
  * See https://ai.google.dev/gemini-api/docs/prompting_with_media
  */
 async function uploadToGemini(path, mimeType) {
