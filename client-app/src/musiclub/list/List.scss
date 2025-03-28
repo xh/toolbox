@@ -5,9 +5,20 @@
     border-bottom: var(--xh-border-solid);
     padding: var(--xh-pad-px);
     width: 100%;
+    align-items: center;
 
     > div {
       flex: 1;
+    }
+
+    h1 {
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.7) !important;
+      padding: 4px;
+
+      .xh-dark & {
+        background-color: rgba(0, 0, 0, 0.7) !important;
+      }
     }
 
     h2 {
@@ -15,7 +26,8 @@
       white-space: nowrap;
     }
 
-    &--year, &--dateYear {
+    &--year,
+    &--dateYear {
       h1 {
         font-size: 60px;
       }
@@ -30,9 +42,12 @@
     position: absolute !important;
     right: 10px;
 
+    // Support semi-transparent bg on h1 text content on same row
+    z-index: -1;
+
     flex: none;
-    flex-direction: row-reverse !important;
-    width: 100px;
+    direction: rtl;
+    max-height: 80px;
     flex-wrap: wrap;
     align-content: flex-start;
     justify-content: flex-start;

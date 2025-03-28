@@ -3,15 +3,12 @@
   --appbar-title-color: var(--xh-text-color);
   --button-active-bg: var(--xh-orange);
   --tbar-bg: var(--xh-bg);
-
-  &.xh-dark {
-    --grid-group-bg: var(--xh-bg);
-    --grid-group-text-color: var(--xh-text-color);
-  }
+  --grid-group-bg: var(--xh-intent-warning);
+  --grid-group-text-color: white;
 
   &:not(.xh-dark) {
-    --grid-group-bg: var(--xh-text-color);
-    --grid-group-text-color: var(--xh-bg);
+    //--grid-group-bg: var(--xh-text-color);
+    //--grid-group-text-color: var(--xh-bg);
     --text-color: #494949;
   }
 

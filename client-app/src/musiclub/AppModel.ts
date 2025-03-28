@@ -1,5 +1,4 @@
 import {loadAllAsync, LoadSpec, managed, XH} from '@xh/hoist/core';
-import {themeAppOption} from '@xh/hoist/mobile/cmp/appOption';
 import {NavigatorModel} from '@xh/hoist/mobile/cmp/navigator';
 import {BaseAppModel} from '../BaseAppModel';
 import {listView} from './list/ListView';
@@ -26,7 +25,7 @@ export class AppModel extends BaseAppModel {
                 children: [
                     {
                         name: 'meeting',
-                        path: '/meeting/:id<\\d+>'
+                        path: '/meeting/:slug<\\d+>'
                     }
                 ]
             }

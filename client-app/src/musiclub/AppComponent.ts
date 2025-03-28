@@ -1,5 +1,3 @@
-import {badge} from '@xh/hoist/cmp/badge';
-import {hbox} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {appBar} from '@xh/hoist/mobile/cmp/header';
@@ -25,7 +23,7 @@ export const AppComponent = hoistCmp({
                     hideFeedbackItem: true,
                     extraItems: [
                         {
-                            text: XH.darkTheme ? 'LESS Ü' : 'MORE Ü',
+                            text: XH.darkTheme ? 'Go Pop' : 'Go Goth',
                             icon: XH.darkTheme ? Icon.sun({prefix: 'fas'}) : Icon.moon(),
                             actionFn: () => XH.toggleTheme()
                         }

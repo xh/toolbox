@@ -10,7 +10,7 @@ const apiKey = process.env.GEMINI_API_KEY,
     fileManager = new GoogleAIFileManager(apiKey);
 
 const model = genAI.getGenerativeModel({
-    model: 'gemini-2.0-flash'
+    model: 'gemini-2.0-pro-exp-02-05'
 });
 
 const generationConfig = {
@@ -122,11 +122,11 @@ SCHEMA:
 Extract the data for meetings 1-4 and return as JSON`
         }
     ];
-
+    console.log(`Asking gemini to extract meetings 1-4...`);
     const result = await chatSession.sendMessage(initPrompt);
     processResults(outFile, '1-4', result.response.text());
 
-    [
+    for (const mtgs of [
         '5-8',
         '9-12',
         '13-16',
@@ -152,7 +152,7 @@ Extract the data for meetings 1-4 and return as JSON`
         '93-96',
         '97-100',
         '101-103'
-    ].forEach(async mtgs => {
+    ]) {
         try {
             console.log(`Asking gemini to extract meetings ${mtgs}...`);
             const result = await chatSession.sendMessage(
@@ -163,7 +163,7 @@ Extract the data for meetings 1-4 and return as JSON`
         } catch (e) {
             console.error('Error extracting meetings:' + mtgs, e);
         }
-    });
+    }
 }
 
 function processResults(outfile: string, meetings: string, txt: string) {

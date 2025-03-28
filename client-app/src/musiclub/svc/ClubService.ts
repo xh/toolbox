@@ -26,19 +26,19 @@ export class ClubService extends HoistService {
         return Object.values(map);
     }
 
-    getMeeting(id: string): Meeting {
-        return id ? this.meetings.find(it => it.id.toString() === id.toString()) : null;
+    getMeeting(slug: string): Meeting {
+        return slug ? this.meetings.find(it => it.slug === slug) : null;
     }
 
     override async initAsync(): Promise<void> {
         await super.initAsync();
 
         try {
-            const raw = await XH.jsonBlobService.getAsync(XH.getConf('musiclubToken', 'b127ae12')),
+            const raw = await XH.fetchJson({url: 'musiclub/meetings'}),
                 meetings: Meeting[] = [],
                 rejected = [];
 
-            raw.value.map(it => {
+            raw.map(it => {
                 try {
                     const mtg = this.processRawMeeting(it);
                     if (mtg.year) {
@@ -64,6 +64,7 @@ export class ClubService extends HoistService {
         const date = LocalDate.get(raw.date);
         return {
             id: raw.id,
+            slug: raw.slug,
             date,
             dateYear: date ? parseInt(date.format('YYYY')) : null,
             year: raw.year,
@@ -74,22 +75,16 @@ export class ClubService extends HoistService {
     }
 
     processRawPlay(raw: PlainObject): Play {
-        const ret = {
+        return {
             id: raw.id,
+            slug: raw.slug,
             member: raw.member ?? '[???]',
             artist: raw.artist ?? '[???]',
             title: raw.title ?? '[???]',
             album: raw.album ?? '[???]',
-            isBonus: raw.isBonus,
-            bonusDisplay: raw.isBonus ? 'Extra Credit' : 'For Reals',
+            bonus: raw.bonus,
+            bonusDisplay: raw.bonus ? 'Bonus Round' : 'Main Picks',
             notes: raw.notes
         };
-
-        // Observed in data - AI seems to have made this assumption.
-        if (ret.member === ret.artist) {
-            ret.member = '[???]';
-        }
-
-        return ret;
     }
 }

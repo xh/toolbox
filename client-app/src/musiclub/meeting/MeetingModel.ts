@@ -2,6 +2,7 @@ import {DataViewModel} from '@xh/hoist/cmp/dataview';
 import {div, h2, p} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {computed, makeObservable} from '@xh/hoist/mobx';
+import {albumIcon, artistIcon, trackIcon} from '../Icons';
 import {Meeting, Play} from '../Types';
 
 export class MeetingModel extends HoistModel {
@@ -9,8 +10,8 @@ export class MeetingModel extends HoistModel {
 
     @computed
     get meeting(): Meeting {
-        const {id} = this.componentProps;
-        return id ? XH.clubService.getMeeting(id) : null;
+        const {slug} = this.componentProps;
+        return XH.clubService.getMeeting(slug);
     }
 
     constructor() {
@@ -24,32 +25,33 @@ export class MeetingModel extends HoistModel {
                     {name: 'artist', type: 'string'},
                     {name: 'title', type: 'string'},
                     {name: 'album', type: 'string'},
-                    {name: 'isBonus', type: 'bool'},
+                    {name: 'bonus', type: 'bool'},
                     {name: 'notes', type: 'string'},
                     {name: 'bonusDisplay', type: 'string'}
                 ]
             },
             groupBy: 'bonusDisplay',
             showHover: false,
-            itemHeight: 120,
+            itemHeight: 130,
             selModel: null,
             showGroupRowCounts: false,
             renderer: (v, {record}) => {
                 const play: Play = record.data as Play;
                 return div({
-                    className: 'mc-list__item',
+                    className: 'mc-list__item mc-list__item--songPlay',
                     items: [
                         h2({
                             item: play.member,
                             className: 'mc-member'
                         }),
-                        p(play.artist + ': ' + play.album),
-                        p(play.title)
+                        p(artistIcon(), play.artist),
+                        p(albumIcon(), play.album),
+                        p(trackIcon(), play.title)
                     ]
                 });
             },
             groupSortFn: (a, b) => {
-                return (a ? 1 : 0) - (b ? 1 : 0);
+                return (a ? 0 : 1) - (b ? 0 : 1);
             }
         });
 

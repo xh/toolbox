@@ -1,7 +1,8 @@
 import {LocalDate} from '@xh/hoist/utils/datetime';
 
 export interface Meeting {
-    id: string;
+    id: number;
+    slug: string;
     date: LocalDate;
     dateYear: number;
     year: string;
@@ -11,12 +12,13 @@ export interface Meeting {
 }
 
 export interface Play {
-    id: string;
+    id: number;
+    slug: string;
     member: string;
     artist: string;
     title: string;
     album: string;
-    isBonus: boolean;
+    bonus: boolean;
     bonusDisplay: string;
     notes: string;
 }

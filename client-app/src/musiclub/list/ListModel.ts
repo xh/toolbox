@@ -1,15 +1,26 @@
 import {DataViewModel} from '@xh/hoist/cmp/dataview';
-import {div, h1, h2, hbox} from '@xh/hoist/cmp/layout';
-import {hoistCmp, HoistModel, HoistProps, LoadSpec, managed, XH} from '@xh/hoist/core';
+import {div, h1, h2, hbox, vbox} from '@xh/hoist/cmp/layout';
+import {
+    hoistCmp,
+    HoistModel,
+    HoistProps,
+    LoadSpec,
+    managed,
+    persist,
+    PersistOptions,
+    XH
+} from '@xh/hoist/core';
 import {StoreRecord} from '@xh/hoist/data';
 import {action, bindable, makeObservable} from '@xh/hoist/mobx';
-import {MeetingDim} from '../Types';
+import {Meeting, MeetingDim} from '../Types';
 
 export class ListModel extends HoistModel {
+    override persistWith: PersistOptions = {localStorageKey: 'musiclubList'};
+
     @managed dataViewModel: DataViewModel;
 
-    @bindable dim: MeetingDim = 'year';
-    @bindable sort: 'asc' | 'desc' = 'asc';
+    @bindable @persist dim: MeetingDim = 'year';
+    @bindable @persist sort: 'asc' | 'desc' = 'asc';
     @bindable.ref expandedGroups: Record<string, boolean> = {};
 
     constructor() {
@@ -98,13 +109,13 @@ export class ListModel extends HoistModel {
                 },
                 ...grp.meetings.map((mtg, idx) => {
                     return {
-                        id: mtg.id,
+                        id: mtg.slug,
                         groupId: groupId,
-                        title: mtg.date.toString(),
-                        subtitle: mtg.location,
+                        title: this.getMeetingTitle(mtg),
+                        subtitle: this.getMeetingSubtitle(mtg),
                         dimension: 'meeting' as const,
-                        count: mtg.plays.filter(it => !it.isBonus).length,
-                        bonusCount: mtg.plays.filter(it => it.isBonus).length,
+                        count: mtg.plays.filter(it => !it.bonus).length,
+                        bonusCount: mtg.plays.filter(it => it.bonus).length,
                         sortKey: `${groupId}|${mtg.date}`
                     };
                 })
@@ -112,6 +123,19 @@ export class ListModel extends HoistModel {
         });
 
         this.dataViewModel.loadData(data);
+    }
+
+    getMeetingTitle(mtg: Meeting) {
+        const date =
+            this.dim === 'dateYear' ? mtg.date.format('MMM-DD') : mtg.date.format('YYYY-MM-DD');
+        return `#${mtg.slug} ${date}`;
+    }
+
+    getMeetingSubtitle(mtg: Meeting) {
+        const {dim} = this;
+        if (dim === 'year') return mtg.location;
+        if (dim === 'location') return `${mtg.year}`;
+        return `${mtg.year} - ${mtg.location}`;
     }
 
     private updateFilter() {
@@ -128,7 +152,7 @@ export class ListModel extends HoistModel {
             dim: MeetingDim = rec?.data.dimension;
 
         if (dim === 'meeting') {
-            XH.appendRoute('meeting', {id: rec.id});
+            XH.appendRoute('meeting', {slug: rec.id});
         } else {
             this.expandedGroups = {
                 ...grps,
@@ -142,7 +166,7 @@ const countTiles = hoistCmp.factory<
     HoistProps & {count: number; bonusCount: number; big?: boolean}
 >({
     render({count, bonusCount, big}) {
-        return hbox({
+        return vbox({
             className: `mc-count-tiles ${big ? 'mc-count-tiles--big' : ''}`,
             items: [
                 ...Array.from({length: count ?? 0}).map(_ => {
@@ -161,7 +185,7 @@ const countTiles = hoistCmp.factory<
 });
 
 interface RowData {
-    id: string;
+    id: string | number;
     groupId: string;
     title: string;
     subtitle?: string;

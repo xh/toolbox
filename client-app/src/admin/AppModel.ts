@@ -2,6 +2,7 @@ import {AppModel as HoistAdminAppModel} from '@xh/hoist/admin/AppModel';
 import {XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {PortfolioService} from '../core/svc/PortfolioService';
+import {musiclubTab} from './musiclub/MusiclubTab';
 import {roadmapTab} from './roadmap/RoadmapTab';
 import {testsTab} from './tests/TestsTab';
 
@@ -26,6 +27,14 @@ export class AppModel extends HoistAdminAppModel {
                 children: [
                     {name: 'projects', path: '/projects'},
                     {name: 'phases', path: '/phases'}
+                ]
+            },
+            {
+                name: 'musiclub',
+                path: '/musiclub',
+                children: [
+                    {name: 'meetings', path: '/meetings'},
+                    {name: 'plays', path: '/plays'}
                 ]
             },
             {
@@ -54,6 +63,7 @@ export class AppModel extends HoistAdminAppModel {
         return [
             ...super.createTabs(),
             {id: 'roadmap', title: 'Roadmap', icon: Icon.mapSigns(), content: roadmapTab},
+            {id: 'musiclub', title: 'Musiclub', icon: Icon.users(), content: musiclubTab},
             {id: 'tests', icon: Icon.stopwatch(), content: testsTab}
         ];
     }

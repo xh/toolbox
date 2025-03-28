@@ -16,8 +16,8 @@ toolbox.yml
 build/
 bin/
 out/
+node_modules/
 /client-app/build/
-/client-app/node_modules/
 /client-app/tsconfig.tsbuildinfo
 
 # Logs
