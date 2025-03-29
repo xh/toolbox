@@ -5,7 +5,7 @@ import {nameCol, locationCol} from '../../../core/columns';
 import {uniq} from 'lodash';
 
 // Shared from the desktop version
-import {PERSIST_APP} from '../AppModel';
+import {PERSIST_APP} from './AppModel';
 
 import ContactDetailsModel from './details/DetailsPanelModel';
 

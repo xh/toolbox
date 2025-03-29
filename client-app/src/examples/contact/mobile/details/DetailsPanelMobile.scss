@@ -1,21 +1,7 @@
 .tb-mobile-contact-details-panel {
-  transition: left 300ms ease;
-  flex: none;
-  left: 100%;
-  position: absolute;
-  top: 0;
-
-  &--details-visible {
-    transition: left 300ms ease;
-    left: 0;
-    flex: 1;
-    width: 100%;
-    height: 100%;
-
-    .xh-panel-header {
-      height: 41px;
-      padding-left: 10px;
-    }
+  // Sync header height with DirectoryPanel toolbar.
+  .xh-panel-header {
+    height: 41px;
   }
 
   &__inner {

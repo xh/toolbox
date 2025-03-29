@@ -1,6 +1,6 @@
 import {XH} from '@xh/hoist/core';
-import {ContactService} from './svc/ContactService';
-import {BaseAppModel} from '../../BaseAppModel';
+import {ContactService} from '../svc/ContactService';
+import {BaseAppModel} from '../../../BaseAppModel';
 
 export const PERSIST_APP = {prefKey: 'contactAppState'};
 

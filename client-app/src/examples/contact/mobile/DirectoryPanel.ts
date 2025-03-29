@@ -10,10 +10,9 @@ import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 
 import tileView from './cmp/TileView';
 import DirectoryPanelModel from './DirectoryPanelModel';
-import {detailsPanel} from './details/DetailsPanel';
 import '../DirectoryPanel.scss';
 
-export const contactsPage = hoistCmp.factory({
+const directoryPanel = hoistCmp.factory({
     model: creates(DirectoryPanelModel),
 
     render({model}) {
@@ -24,8 +23,7 @@ export const contactsPage = hoistCmp.factory({
                     tbar: tbar(),
                     item: model.displayMode === 'grid' ? grid() : tileView(),
                     bbar: bbar()
-                }),
-                detailsPanel()
+                })
             )
         });
     }
@@ -70,3 +68,5 @@ const bbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
 
     return toolbar(filler(), storeCountLabel({store, unit: 'contact'}));
 });
+
+export default directoryPanel;

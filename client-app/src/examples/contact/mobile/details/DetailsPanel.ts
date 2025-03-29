@@ -1,4 +1,4 @@
-import {XH, hoistCmp, uses} from '@xh/hoist/core';
+import {XH, hoistCmp, creates} from '@xh/hoist/core';
 import {box, div, img, p, filler} from '@xh/hoist/cmp/layout';
 import {formField} from '@xh/hoist/mobile/cmp/form';
 import {form} from '@xh/hoist/cmp/form';
@@ -12,22 +12,20 @@ import {isEmpty, get} from 'lodash';
 import DetailsPanelModel from './DetailsPanelModel';
 import './DetailsPanelMobile.scss';
 
-export const detailsPanel = hoistCmp.factory({
-    model: uses(DetailsPanelModel),
+const detailsPanel = hoistCmp.factory({
+    model: creates(() => DetailsPanelModel),
     render({model}) {
-        const {currentRecord, visible} = model;
 
         return panel({
-            className: `tb-mobile-contact-details-panel${visible ? '--details-visible' : ''}`,
-            flex: 'none',
-            position: 'absolute',
-            title: currentRecord?.data.name,
-            headerItems: [button({icon: Icon.close(), onClick: () => model.clearCurrentRecord()})],
-            item: currentRecord ? contactProfile() : null,
+            className: 'tb-mobile-contact-details-panel',
+            title: '',
+            item: contactProfile(),
             bbar: bbar()
         });
     }
 });
+
+export default detailsPanel;
 
 const contactProfile = hoistCmp.factory({
     render() {

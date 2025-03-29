@@ -3,7 +3,7 @@ import '../Bootstrap';
 import {XH} from '@xh/hoist/core';
 import {AppContainer} from '@xh/hoist/desktop/appcontainer';
 import {AppComponent} from '../examples/contact/desktop/AppComponent';
-import {AppModel} from '../examples/contact/AppModel';
+import {AppModel} from '../examples/contact/desktop/AppModel';
 import {AuthModel} from '../core/AuthModel';
 
 XH.renderApp({

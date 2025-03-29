@@ -1,7 +1,7 @@
 import {XH, managed} from '@xh/hoist/core';
 import {HoistModel} from '@xh/hoist/core/model/HoistModel';
 import {FormModel} from '@xh/hoist/cmp/form';
-import {bindable, makeObservable, observable, action} from '@xh/hoist/mobx';
+import {makeObservable, observable, action} from '@xh/hoist/mobx';
 import {StoreRecord} from '@xh/hoist/data';
 import {required} from '@xh/hoist/data/validation/constraints';
 import {isNil} from 'lodash';
@@ -11,8 +11,6 @@ import DirectoryPanelModel from '../DirectoryPanelModel';
 export default class DetailsPanelModel extends HoistModel {
     @observable.ref
     currentRecord: StoreRecord;
-
-    @bindable visible: boolean = false;
 
     directoryPanelModel: DirectoryPanelModel;
 
@@ -26,6 +24,9 @@ export default class DetailsPanelModel extends HoistModel {
     constructor(directoryPanelModel: DirectoryPanelModel) {
         super();
         makeObservable(this);
+
+        const {id} = this.componentProps;
+
         this.directoryPanelModel = directoryPanelModel;
 
         this.formModel = new FormModel({
@@ -47,13 +48,12 @@ export default class DetailsPanelModel extends HoistModel {
         this.currentRecord = record;
         if (!isNil(record)) {
             this.formModel.init(record?.data);
-            this.visible = true;
+            XH.appendRoute('details', {id: record.id});
         }
     }
 
     @action
     clearCurrentRecord() {
-        this.visible = false;
         // Allow animation to complete before clearing record
         setTimeout(() => {
             this.setCurrentRecord(null);
