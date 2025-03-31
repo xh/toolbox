@@ -18,7 +18,7 @@ export const favoriteButton = hoistCmp.factory<ContactsPageModel>(({model, recor
         }),
         onClick: e => {
             consumeEvent(e);
-            model.toggleFavorite(record);
+            model.toggleFavorite(record.id);
         }
     });
 });

@@ -1,48 +1,61 @@
-import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
-import {bindable, makeObservable, observable, action, runInAction} from '@xh/hoist/mobx';
+import {HoistModel, managed, persist, PlainObject, XH} from '@xh/hoist/core';
+import {bindable, makeObservable, action} from '@xh/hoist/mobx';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {nameCol, locationCol} from '../../../core/columns';
-import {uniq} from 'lodash';
 
 // Shared from the desktop version
-import {PERSIST_APP} from './AppModel';
+import {PERSIST_APP} from '../svc/ContactService';
 
-import ContactDetailsModel from './details/DetailsPanelModel';
+import AppModel from './AppModel';
 
 export default class ContactsPageModel extends HoistModel {
     override persistWith = PERSIST_APP;
 
-    @observable.ref tagList: string[] = [];
-
     @bindable @persist displayMode: 'grid' | 'tiles' = 'tiles';
 
     @managed gridModel: GridModel;
-    @managed contactDetailsModel: ContactDetailsModel;
-
-    get selectedRecord() {
-        return this.gridModel.selectedRecord;
-    }
+    @managed appModel: AppModel;
 
     get records() {
         return this.gridModel.store.records;
     }
 
-    constructor() {
+    constructor(appModel: AppModel) {
         super();
         makeObservable(this);
 
-        const gridModel = (this.gridModel = this.createGridModel());
-        this.contactDetailsModel = new ContactDetailsModel(this);
+        this.gridModel = this.createGridModel();
+        this.appModel = appModel;
 
-        this.addReaction({
-            track: () => gridModel.selectedRecord,
-            run: rec => this.contactDetailsModel.setCurrentRecord(rec)
-        });
+        this.addReaction(
+            {
+                track: () => this.gridModel.selectedRecord,
+                run: rec => this.navigateToSelectedRecord(rec)
+            },
+            {
+                track: () => XH.routerModel.currentState,
+                run: ({path}) => {
+                    if (path === '/contactMobile') this.clearCurrentSelection();
+                }
+            }
+        );
     }
 
-    toggleFavorite(record) {
-        XH.contactService.toggleFavorite(record.id);
-        this.gridModel.store.modifyRecords({id: record.id, isFavorite: !record.data.isFavorite});
+    override async doLoadAsync() {
+        this.gridModel.loadData(this.appModel.contacts);
+    }
+
+    navigateToSelectedRecord(record) {
+        if (!record) return;
+        this.appModel.setCurrentRecord(record.data);
+        XH.appendRoute('details', {id: record.id});
+    }
+
+    toggleFavorite(id: string) {
+        this.gridModel.store.modifyRecords({
+            id,
+            isFavorite: !this.gridModel.store.getById(id).data.isFavorite
+        });
     }
 
     clearCurrentSelection() {
@@ -59,30 +72,13 @@ export default class ContactsPageModel extends HoistModel {
         });
     }
 
-    async updateContactAsync(id, data) {
-        await XH.contactService.updateContactAsync(id, data);
-        await this.loadAsync();
+    updateContact(id: string, data: PlainObject) {
+        this.gridModel.store.modifyRecords({id, ...data});
     }
 
     //------------------------
     // Implementation
     //------------------------
-    override async doLoadAsync() {
-        const {gridModel} = this;
-
-        try {
-            const contacts = await XH.contactService.getContactsAsync();
-
-            runInAction(() => {
-                this.tagList = uniq(contacts.flatMap(it => it.tags ?? [])).sort() as string[];
-            });
-
-            gridModel.loadData(contacts);
-        } catch (e) {
-            XH.handleException(e);
-        }
-    }
-
     private createGridModel() {
         return new GridModel({
             emptyText: 'No matching contacts found.',

@@ -19,9 +19,9 @@ const tileView = hoistCmp.factory<ContactsPageModel>({
 });
 
 const tile = hoistCmp.factory<ContactsPageModel>(({model, record}) => {
-    const {gridModel} = model,
-        isSelected = gridModel.selectedId === record.id,
-        {profilePicture, name} = record.data;
+    const {gridModel} = model;
+    const isSelected = gridModel.selectedId === record.id;
+    const {profilePicture, name} = record.data;
 
     return vbox({
         style: {backgroundImage: `url(${profilePicture})`},

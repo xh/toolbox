@@ -1,4 +1,4 @@
-import {hoistCmp, creates} from '@xh/hoist/core';
+import {hoistCmp, uses} from '@xh/hoist/core';
 import {grid} from '@xh/hoist/cmp/grid';
 import {hframe, filler} from '@xh/hoist/cmp/layout';
 import {storeCountLabel, storeFilterField} from '@xh/hoist/cmp/store';
@@ -13,7 +13,7 @@ import DirectoryPanelModel from './DirectoryPanelModel';
 import '../DirectoryPanel.scss';
 
 const directoryPanel = hoistCmp.factory({
-    model: creates(DirectoryPanelModel),
+    model: uses(DirectoryPanelModel),
 
     render({model}) {
         return panel({
@@ -66,7 +66,10 @@ const bbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
         gridModel: {store}
     } = model;
 
-    return toolbar(filler(), storeCountLabel({store, unit: 'contact'}));
+    return toolbar(
+        filler(),
+        storeCountLabel({store, unit: 'contact'})
+    );
 });
 
 export default directoryPanel;

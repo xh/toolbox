@@ -1,33 +1,31 @@
-import {XH, managed} from '@xh/hoist/core';
+import {managed, PlainObject, XH} from '@xh/hoist/core';
 import {HoistModel} from '@xh/hoist/core/model/HoistModel';
 import {FormModel} from '@xh/hoist/cmp/form';
 import {makeObservable, observable, action} from '@xh/hoist/mobx';
-import {StoreRecord} from '@xh/hoist/data';
 import {required} from '@xh/hoist/data/validation/constraints';
 import {isNil} from 'lodash';
 
-import DirectoryPanelModel from '../DirectoryPanelModel';
+import AppModel from '../AppModel';
 
 export default class DetailsPanelModel extends HoistModel {
     @observable.ref
-    currentRecord: StoreRecord;
-
-    directoryPanelModel: DirectoryPanelModel;
+    currentContact: PlainObject;
 
     @managed
     formModel: FormModel;
+
+    @managed
+    appModel: AppModel;
 
     get isEditing() {
         return !this.formModel.readonly;
     }
 
-    constructor(directoryPanelModel: DirectoryPanelModel) {
+    constructor(appModel: AppModel) {
         super();
         makeObservable(this);
 
-        const {id} = this.componentProps;
-
-        this.directoryPanelModel = directoryPanelModel;
+        this.appModel = appModel;
 
         this.formModel = new FormModel({
             readonly: true,
@@ -43,42 +41,36 @@ export default class DetailsPanelModel extends HoistModel {
         });
     }
 
-    @action
-    setCurrentRecord(record) {
-        this.currentRecord = record;
-        if (!isNil(record)) {
-            this.formModel.init(record?.data);
-            XH.appendRoute('details', {id: record.id});
-        }
+    override async doLoadAsync() {
+        const id = window.location.pathname.split('/').pop();
+        const contact = this.appModel.contacts.find(it => it.id === id);
+        this.setCurrentRecord(contact);
     }
 
     @action
-    clearCurrentRecord() {
-        // Allow animation to complete before clearing record
-        setTimeout(() => {
-            this.setCurrentRecord(null);
-            this.directoryPanelModel.clearCurrentSelection();
-        }, 250);
+    setCurrentRecord(contact: PlainObject) {
+        this.currentContact = contact;
+        if (!isNil(contact)) {
+            this.formModel.init(contact);
+        }
     }
 
     cancelEdit() {
         this.formModel.readonly = true;
-        this.formModel.init(this.currentRecord.data);
+        this.formModel.init(this.currentContact);
     }
 
     async toggleEditAsync() {
-        const {formModel, directoryPanelModel, currentRecord} = this;
+        const {formModel, currentContact} = this;
         const {readonly, isDirty} = formModel;
 
-        // Pulled from standard details page
-        // How could the form be "dirty" if it's readonly?
         if (readonly || !isDirty) {
             formModel.readonly = false;
             return;
         }
 
         try {
-            await directoryPanelModel.updateContactAsync(currentRecord.id, formModel.getData(true));
+            await this.appModel.updateContactAsync(currentContact.id, formModel.getData(true));
             formModel.readonly = true;
         } catch (e) {
             XH.handleException(e);

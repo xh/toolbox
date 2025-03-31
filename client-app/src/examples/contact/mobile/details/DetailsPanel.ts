@@ -1,4 +1,4 @@
-import {XH, hoistCmp, creates} from '@xh/hoist/core';
+import {XH, hoistCmp, uses} from '@xh/hoist/core';
 import {box, div, img, p, filler} from '@xh/hoist/cmp/layout';
 import {formField} from '@xh/hoist/mobile/cmp/form';
 import {form} from '@xh/hoist/cmp/form';
@@ -13,9 +13,8 @@ import DetailsPanelModel from './DetailsPanelModel';
 import './DetailsPanelMobile.scss';
 
 const detailsPanel = hoistCmp.factory({
-    model: creates(() => DetailsPanelModel),
-    render({model}) {
-
+    model: uses(() => DetailsPanelModel),
+    render() {
         return panel({
             className: 'tb-mobile-contact-details-panel',
             title: '',
@@ -24,8 +23,6 @@ const detailsPanel = hoistCmp.factory({
         });
     }
 });
-
-export default detailsPanel;
 
 const contactProfile = hoistCmp.factory({
     render() {
@@ -54,12 +51,12 @@ const contactProfile = hoistCmp.factory({
 });
 
 const picture = hoistCmp.factory<DetailsPanelModel>(({model}) =>
-    img({src: model.currentRecord.data.profilePicture})
+    img({src: model.currentContact?.profilePicture})
 );
 
 const bbar = hoistCmp.factory<DetailsPanelModel>(({model}) => {
-    const {currentRecord, isEditing} = model;
-    if (!currentRecord) return null;
+    const {currentContact, isEditing} = model;
+    if (!currentContact) return null;
 
     return toolbar(
         button({
@@ -100,7 +97,7 @@ const tagsField = hoistCmp.factory<DetailsPanelModel>(({model}) =>
         field: 'tags',
         item: select({
             enableCreate: true,
-            options: model.directoryPanelModel.tagList
+            options: model.appModel.tagList
         }),
         readonlyRenderer: tags => {
             return isEmpty(tags)
@@ -117,8 +114,8 @@ const tagsField = hoistCmp.factory<DetailsPanelModel>(({model}) =>
 // Buttons
 //------------
 const favoriteButton = hoistCmp.factory<DetailsPanelModel>(({model}) => {
-    const {currentRecord} = model;
-    const isFavorite = get(currentRecord, 'data.isFavorite');
+    const {currentContact} = model;
+    const isFavorite = get(currentContact, 'isFavorite');
     return button({
         text: 'Favorite',
         icon: Icon.favorite({
@@ -127,12 +124,13 @@ const favoriteButton = hoistCmp.factory<DetailsPanelModel>(({model}) => {
         }),
         width: 120,
         minimal: false,
-        onClick: () => model.directoryPanelModel.toggleFavorite(currentRecord)
+        onClick: () => model.appModel.toggleFavorite(currentContact.id)
     });
 });
 
 const editButton = hoistCmp.factory<DetailsPanelModel>(({model}) => {
     const {isEditing} = model;
+
     return button({
         icon: isEditing ? Icon.save() : Icon.edit(),
         text: isEditing ? 'Save' : 'Edit',
@@ -141,3 +139,6 @@ const editButton = hoistCmp.factory<DetailsPanelModel>(({model}) => {
         onClick: () => model.toggleEditAsync()
     });
 });
+
+
+export default detailsPanel;
