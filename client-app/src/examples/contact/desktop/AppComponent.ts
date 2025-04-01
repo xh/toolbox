@@ -12,13 +12,14 @@ export const AppComponent = hoistCmp({
     model: uses(AppModel),
 
     render() {
+        const domain = window.location.origin;
         return panel({
             tbar: appBar({
                 icon: Icon.contact({size: '2x', prefix: 'fal'}),
                 leftItems: [
                     a({
                         item: 'View contacts for mobile',
-                        href: 'http://localhost:3000/contactMobile',
+                        href: `${domain}/contactMobile`,
                         target: '_blank'
                     })
                 ],
