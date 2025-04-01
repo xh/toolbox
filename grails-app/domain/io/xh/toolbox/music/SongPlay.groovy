@@ -50,14 +50,15 @@ class SongPlay implements JSONFormat {
 
     Map formatForJSON() {
         [
-            id    : id,
-            slug  : slug,
-            member: member,
-            title: title,
-            artist: artist,
-            album : album,
-            bonus : bonus,
-            notes : notes
+            id     : id,
+            meeting: meeting.id,
+            slug   : slug,
+            member : member,
+            title  : title,
+            artist : artist,
+            album  : album,
+            bonus  : bonus,
+            notes  : notes
         ]
     }
 

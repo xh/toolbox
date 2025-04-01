@@ -21,6 +21,7 @@ class PortfolioService extends BaseService {
     private ReplicatedMap<String, MarketPrice> _currentPrices = createReplicatedMap('currentPrices')
 
     void init() {
+        return
         createTimer(
             name: 'updateData',
             runFn: this.&updateData,

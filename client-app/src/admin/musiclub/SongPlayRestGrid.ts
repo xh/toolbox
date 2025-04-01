@@ -1,3 +1,6 @@
+import {AppModel} from '@xh/hoist/admin/AppModel';
+import {hoistCmp} from '@xh/hoist/core';
+import {textArea} from '@xh/hoist/desktop/cmp/input';
 import {
     addAction,
     cloneAction,
@@ -7,9 +10,7 @@ import {
     RestGridConfig,
     viewAction
 } from '@xh/hoist/desktop/cmp/rest';
-import {hoistCmp} from '@xh/hoist/core';
-import {boolCheckCol} from '@xh/hoist/cmp/grid';
-import {AppModel} from '@xh/hoist/admin/AppModel';
+import {Icon} from '@xh/hoist/icon';
 
 export const songPlayRestGrid = hoistCmp.factory(() =>
     restGrid({modelConfig: {...modelSpec, readonly: AppModel.readonly}})
@@ -18,66 +19,44 @@ export const songPlayRestGrid = hoistCmp.factory(() =>
 const modelSpec: RestGridConfig = {
     enableExport: true,
     store: {
-        url: 'rest/phaseRest',
+        url: 'rest/musiclubSongPlay',
         reloadLookupsOnLoad: true,
         fields: [
-            {
-                name: 'name',
-                required: true
-            },
-            {
-                name: 'sortOrder',
-                type: 'number'
-            },
-            {
-                name: 'displayed',
-                type: 'bool',
-                defaultValue: true,
-                required: true
-            },
-            {
-                name: 'projectNames',
-                editable: false
-            }
-        ],
-        processRawData: raw => {
-            return {
-                ...raw,
-                projectNames: raw.projects ? raw.projects.map(it => it.name).join(', ') : null
-            };
-        }
+            {name: 'slug', type: 'string', required: true},
+            {name: 'meeting', lookupName: 'meetings', type: 'number'},
+            {name: 'member', type: 'string'},
+            {name: 'title', type: 'string'},
+            {name: 'artist', type: 'string'},
+            {name: 'album', type: 'string'},
+            {name: 'bonus', type: 'bool', defaultValue: false},
+            {name: 'notes', type: 'string'}
+        ]
     },
-    unit: 'phase',
-    filterFields: ['name', 'sortOrder'],
-    sortBy: 'sortOrder',
+    unit: 'play',
+    sortBy: 'slug',
     columns: [
+        {field: 'slug', align: 'right', width: 80},
+        {field: 'meeting'},
+        {field: 'member'},
+        {field: 'title', autosizeMaxWidth: 200},
+        {field: 'artist', autosizeMaxWidth: 200},
+        {field: 'album', autosizeMaxWidth: 200},
         {
-            field: 'sortOrder',
-            headerName: 'Sort',
-            align: 'right',
-            width: 80
+            field: 'bonus',
+            align: 'center',
+            renderer: v => (v ? Icon.checkCircle({intent: 'success'}) : '')
         },
-        {
-            field: 'name',
-            width: 150
-        },
-        {
-            field: 'displayed',
-            headerName: 'Display?',
-            ...boolCheckCol,
-            width: 100
-        },
-        {
-            field: 'projectNames',
-            headerName: 'Projects',
-            flex: 1
-        }
+        {field: 'notes', autosizeMaxWidth: 300}
     ],
     editors: [
-        {field: 'name', formField: {label: 'Name'}},
-        {field: 'sortOrder'},
-        {field: 'displayed'},
-        {field: 'projectNames', formField: {label: 'Projects'}}
+        {field: 'slug'},
+        {field: 'meeting'},
+        {field: 'member'},
+        {field: 'title'},
+        {field: 'artist'},
+        {field: 'album'},
+        {field: 'bonus'},
+        {field: 'notes', formField: {item: textArea({height: 150})}}
     ],
     emptyText: 'No phases found - try adding one...',
     menuActions: [addAction, editAction, viewAction, deleteAction, cloneAction],

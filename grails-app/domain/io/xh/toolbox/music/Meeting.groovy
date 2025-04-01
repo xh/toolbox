@@ -26,6 +26,10 @@ class Meeting implements JSONFormat {
         cache true
     }
 
+    String getDisplayName() {
+        return "#$slug - $year @ $location ($date)"
+    }
+
     Map formatForJSON() {
         [
             id      : id,

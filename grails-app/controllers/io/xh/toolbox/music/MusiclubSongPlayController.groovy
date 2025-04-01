@@ -14,4 +14,15 @@ class MusiclubSongPlayController extends RestController {
         renderJSON(musicBrainzService.enhancePlay(id))
     }
 
+    def lookupData() {
+        renderJSON(
+            meetings: Meeting.list().collect {
+                [
+                    value: it.id,
+                    label: it.displayName
+                ]
+            }
+        )
+    }
+
 }

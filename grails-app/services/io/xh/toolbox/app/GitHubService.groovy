@@ -50,13 +50,13 @@ class GitHubService extends BaseService {
     private Timer refreshTimer
 
     void init() {
-        refreshTimer = createTimer(
-            name: 'loadCommits',
-            runFn: this.&loadCommitsForAllRepos,
-            interval: 'gitHubCommitsRefreshMins',
-            intervalUnits: MINUTES,
-            primaryOnly: true
-        )
+//        refreshTimer = createTimer(
+//            name: 'loadCommits',
+//            runFn: this.&loadCommitsForAllRepos,
+//            interval: 'gitHubCommitsRefreshMins',
+//            intervalUnits: MINUTES,
+//            primaryOnly: true
+//        )
     }
 
     void forceRefresh() {

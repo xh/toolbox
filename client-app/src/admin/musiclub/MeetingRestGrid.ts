@@ -20,27 +20,11 @@ const modelSpec: RestGridConfig = {
     store: {
         url: 'rest/musiclubMeeting',
         fields: [
-            {
-                name: 'slug',
-                required: true,
-                type: 'string'
-            },
-            {
-                name: 'location',
-                type: 'string'
-            },
-            {
-                name: 'date',
-                type: 'localDate'
-            },
-            {
-                name: 'year',
-                type: 'string'
-            },
-            {
-                name: 'notes',
-                type: 'string'
-            }
+            {name: 'slug', type: 'string', required: true},
+            {name: 'location', type: 'string'},
+            {name: 'date', type: 'localDate'},
+            {name: 'year', type: 'string'},
+            {name: 'notes', type: 'string'}
         ],
         processRawData: raw => {
             return {
@@ -51,7 +35,6 @@ const modelSpec: RestGridConfig = {
     },
     unit: 'meeting',
     sortBy: 'date',
-    autosizeOptions: {mode: 'managed'},
     columns: [
         {field: 'slug', align: 'right', width: 80},
         {field: 'location'},

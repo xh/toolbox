@@ -40,6 +40,7 @@ class TestCacheService extends BaseService {
     }
 
     private void initData() {
+        return
         if (isPrimary) {
             // Simulate initial delay
             sleep(15 * SECONDS)
