@@ -1,11 +1,11 @@
 import {hoistCmp} from '@xh/hoist/core';
-import ContactsPageModel from '../DirectoryPanelModel';
+import DirectoryPanelModel from '../DirectoryPanelModel';
 import {tileFrame, vbox, div, span, filler} from '@xh/hoist/cmp/layout';
 
 import {favoriteButton} from './FavoriteButton';
 import '../../TileView.scss';
 
-const tileView = hoistCmp.factory<ContactsPageModel>({
+const tileView = hoistCmp.factory<DirectoryPanelModel>({
     render({model}) {
         return tileFrame({
             spacing: 10,
@@ -18,7 +18,7 @@ const tileView = hoistCmp.factory<ContactsPageModel>({
     }
 });
 
-const tile = hoistCmp.factory<ContactsPageModel>(({model, record}) => {
+const tile = hoistCmp.factory<DirectoryPanelModel>(({model, record}) => {
     const {gridModel} = model;
     const isSelected = gridModel.selectedId === record.id;
     const {profilePicture, name} = record.data;

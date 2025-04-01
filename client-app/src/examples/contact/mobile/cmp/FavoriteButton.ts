@@ -3,10 +3,10 @@ import {Icon} from '@xh/hoist/icon/Icon';
 import {consumeEvent} from '@xh/hoist/utils/js';
 import {button} from '@xh/hoist/mobile/cmp/button';
 
-import ContactsPageModel from '../DirectoryPanelModel';
+import DirectoryPanelModel from '../DirectoryPanelModel';
 import '../../FavoriteButton.scss';
 
-export const favoriteButton = hoistCmp.factory<ContactsPageModel>(({model, record}) => {
+export const favoriteButton = hoistCmp.factory<DirectoryPanelModel>(({model, record}) => {
     const {isFavorite} = record.data;
     return button({
         className: 'tb-contact-fave-btn',
