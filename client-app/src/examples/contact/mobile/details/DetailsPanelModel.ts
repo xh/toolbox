@@ -1,16 +1,13 @@
-import {managed, PlainObject, XH} from '@xh/hoist/core';
+import {managed, XH} from '@xh/hoist/core';
 import {HoistModel} from '@xh/hoist/core/model/HoistModel';
 import {FormModel} from '@xh/hoist/cmp/form';
-import {makeObservable, observable, action} from '@xh/hoist/mobx';
+import {makeObservable} from '@xh/hoist/mobx';
 import {required} from '@xh/hoist/data/validation/constraints';
 import {isNil} from 'lodash';
 
 import AppModel from '../AppModel';
 
 export default class DetailsPanelModel extends HoistModel {
-    @observable.ref
-    currentContact: PlainObject;
-
     @managed
     formModel: FormModel;
 
@@ -19,6 +16,11 @@ export default class DetailsPanelModel extends HoistModel {
 
     get isEditing() {
         return !this.formModel.readonly;
+    }
+
+    get currentContact() {
+        if (XH.routerState?.name !== 'default.details') return null;
+        return this.appModel.contacts.find(it => it.id === XH.routerState.params.id);
     }
 
     constructor(appModel: AppModel) {
@@ -39,20 +41,16 @@ export default class DetailsPanelModel extends HoistModel {
                 {name: 'tags'}
             ]
         });
-    }
 
-    override async doLoadAsync() {
-        const id = window.location.pathname.split('/').pop();
-        const contact = this.appModel.contacts.find(it => it.id === id);
-        this.setCurrentRecord(contact);
-    }
-
-    @action
-    setCurrentRecord(contact: PlainObject) {
-        this.currentContact = contact;
-        if (!isNil(contact)) {
-            this.formModel.init(contact);
-        }
+        this.addReaction({
+            track: () => this.currentContact,
+            run: contact => {
+                if (!isNil(contact)) {
+                    this.formModel.init(contact);
+                }
+            },
+            fireImmediately: true
+        });
     }
 
     cancelEdit() {
