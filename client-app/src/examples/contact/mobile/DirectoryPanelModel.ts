@@ -53,25 +53,8 @@ export default class ContactsPageModel extends HoistModel {
         XH.appendRoute('details', {id: record.id});
     }
 
-    toggleFavorite(id: string) {
-        this.gridModel.store.modifyRecords({
-            id,
-            isFavorite: !this.gridModel.store.getById(id).data.isFavorite
-        });
-    }
-
     clearCurrentSelection() {
         this.gridModel.clearSelection();
-    }
-
-    @action
-    setDisplayMode(value: 'grid' | 'tiles') {
-        this.displayMode = value;
-
-        XH.setPref(PERSIST_APP.prefKey, {
-            ...(XH.getPref(PERSIST_APP.prefKey) ?? {}),
-            displayMode: value
-        });
     }
 
     @action

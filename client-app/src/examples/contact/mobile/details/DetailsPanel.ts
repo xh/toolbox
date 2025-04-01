@@ -7,6 +7,7 @@ import {select, textArea, textInput} from '@xh/hoist/mobile/cmp/input';
 import {button} from '@xh/hoist/mobile/cmp/button';
 import {toolbar} from '@xh/hoist/mobile/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
+import {consumeEvent} from '@xh/hoist/utils/js';
 import {isEmpty, get} from 'lodash';
 
 import DetailsPanelModel from './DetailsPanelModel';
@@ -124,7 +125,10 @@ const favoriteButton = hoistCmp.factory<DetailsPanelModel>(({model}) => {
         }),
         width: 120,
         minimal: false,
-        onClick: () => model.appModel.toggleFavorite(currentContact.id)
+        onClick: e => {
+            consumeEvent(e);
+            model.appModel.toggleFavorite(currentContact.id);
+        }
     });
 });
 

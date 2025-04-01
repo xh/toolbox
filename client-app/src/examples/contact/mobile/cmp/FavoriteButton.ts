@@ -18,7 +18,7 @@ export const favoriteButton = hoistCmp.factory<DirectoryPanelModel>(({model, rec
         }),
         onClick: e => {
             consumeEvent(e);
-            model.toggleFavorite(record.id);
+            model.appModel.toggleFavorite(record.id);
         }
     });
 });

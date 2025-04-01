@@ -6,7 +6,7 @@ import directoryPanel from './DirectoryPanel';
 import detailsPanel from './details/DetailsPanel';
 import DetailsPanelModel from './details/DetailsPanelModel';
 import DirectoryPanelModel from './DirectoryPanelModel';
-import {makeObservable, observable, runInAction} from '@xh/hoist/mobx';
+import {action, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
 import {castArray, uniq} from 'lodash';
 
 import {
@@ -66,9 +66,12 @@ export default class AppModel extends BaseAppModel {
         await this.refreshAsync();
     }
 
+    @action
     async toggleFavorite(id: string) {
         await XH.contactService.toggleFavorite(id);
-        this.directoryPanelModel.toggleFavorite(id);
+        this.contacts = this.contacts.map(contact =>
+            contact.id === id ? {...contact, isFavorite: !contact.isFavorite} : contact
+        );
     }
 
     override getAppOptions() {

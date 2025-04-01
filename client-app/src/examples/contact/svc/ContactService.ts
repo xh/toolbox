@@ -49,15 +49,17 @@ export class ContactService extends HoistService {
     }
 
     @action
-    toggleFavorite(id) {
+    toggleFavorite(id: string) {
         const {userFaves} = this,
             isFavorite = userFaves.includes(id);
 
+        const userFavorites = isFavorite ? without(userFaves, id) : [...userFaves, id];
+
         XH.setPref(PERSIST_APP.prefKey, {
             ...(XH.getPref(PERSIST_APP.prefKey) ?? {}),
-            userFaves: isFavorite ? without(userFaves, id) : [...userFaves, id]
+            userFaves: userFavorites
         });
 
-        this.userFaves = isFavorite ? without(userFaves, id) : [...userFaves, id];
+        this.userFaves = userFavorites;
     }
 }

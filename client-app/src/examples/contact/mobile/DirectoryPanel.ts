@@ -41,7 +41,7 @@ const tbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
             filler(),
             buttonGroupInput({
                 outlined: true,
-                onChange: value => model.setDisplayMode(value),
+                bind: 'displayMode',
                 value: model.displayMode,
                 intent: 'primary',
                 items: [
@@ -66,10 +66,7 @@ const bbar = hoistCmp.factory<DirectoryPanelModel>(({model}) => {
         gridModel: {store}
     } = model;
 
-    return toolbar(
-        filler(),
-        storeCountLabel({store, unit: 'contact'})
-    );
+    return toolbar(filler(), storeCountLabel({store, unit: 'contact'}));
 });
 
 export default directoryPanel;
