@@ -1,7 +1,9 @@
 import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {bindable, makeObservable, action} from '@xh/hoist/mobx';
 import {GridModel} from '@xh/hoist/cmp/grid';
+import {div, hbox} from '@xh/hoist/cmp/layout';
 import {nameCol, locationCol} from '../../../core/columns';
+import {isEmpty, uniq} from 'lodash';
 
 // Shared from the desktop version
 import {PERSIST_APP} from '../svc/ContactService';
@@ -72,6 +74,14 @@ export default class ContactsPageModel extends HoistModel {
         });
     }
 
+    @action
+    private toggleTag(tag: string) {
+        const tagList = this.appModel.tagList ?? [];
+        this.appModel.tagList = tagList.includes(tag)
+            ? uniq(tagList.filter(t => t !== tag))
+            : [...tagList, tag];
+    }
+
     //------------------------
     // Implementation
     //------------------------
@@ -85,7 +95,9 @@ export default class ContactsPageModel extends HoistModel {
             store: {
                 fields: [
                     {name: 'isFavorite', type: 'bool'},
-                    {name: 'profilePicture', type: 'string'}
+                    {name: 'profilePicture', type: 'string'},
+                    {name: 'bio', type: 'string'},
+                    {name: 'tags', type: 'auto'}
                 ]
             },
             columns: [
@@ -103,10 +115,29 @@ export default class ContactsPageModel extends HoistModel {
                 },
                 {field: {name: 'email', type: 'string'}, hidden: true},
                 {field: {name: 'bio', type: 'string'}, hidden: true},
-                {field: {name: 'tags', type: 'tags'}, hidden: true},
+                {
+                    field: 'tags',
+                    width: 400,
+                    renderer: this.tagsRenderer
+                },
                 {field: {name: 'workPhone', type: 'string'}, hidden: true},
                 {field: {name: 'cellPhone', type: 'string'}, hidden: true}
             ]
         });
     }
+
+    private tagsRenderer = v => {
+        if (isEmpty(v)) return null;
+
+        return hbox({
+            className: 'tb-contact-tag-container',
+            items: v.map(tag =>
+                div({
+                    className: 'tb-contact-tag',
+                    item: tag,
+                    onClick: () => this.toggleTag(tag)
+                })
+            )
+        });
+    };
 }
