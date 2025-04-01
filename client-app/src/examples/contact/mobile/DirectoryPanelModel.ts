@@ -1,4 +1,4 @@
-import {HoistModel, managed, persist, PlainObject, XH} from '@xh/hoist/core';
+import {HoistModel, managed, persist, XH} from '@xh/hoist/core';
 import {bindable, makeObservable, action} from '@xh/hoist/mobx';
 import {GridModel} from '@xh/hoist/cmp/grid';
 import {nameCol, locationCol} from '../../../core/columns';
@@ -29,11 +29,16 @@ export default class ContactsPageModel extends HoistModel {
 
         this.addReaction(
             {
+                track: () => this.appModel.contacts,
+                run: data => this.gridModel.loadData(data),
+                fireImmediately: true
+            },
+            {
                 track: () => this.gridModel.selectedRecord,
                 run: rec => this.navigateToSelectedRecord(rec)
             },
             {
-                track: () => XH.routerModel.currentState,
+                track: () => XH.routerState,
                 run: ({path}) => {
                     if (path === '/contactMobile') this.clearCurrentSelection();
                 }
@@ -41,13 +46,8 @@ export default class ContactsPageModel extends HoistModel {
         );
     }
 
-    override async doLoadAsync() {
-        this.gridModel.loadData(this.appModel.contacts);
-    }
-
     navigateToSelectedRecord(record) {
         if (!record) return;
-        this.appModel.setCurrentRecord(record.data);
         XH.appendRoute('details', {id: record.id});
     }
 
@@ -70,10 +70,6 @@ export default class ContactsPageModel extends HoistModel {
             ...(XH.getPref(PERSIST_APP.prefKey) ?? {}),
             displayMode: value
         });
-    }
-
-    updateContact(id: string, data: PlainObject) {
-        this.gridModel.store.modifyRecords({id, ...data});
     }
 
     //------------------------
