@@ -10,13 +10,13 @@ import {Icon} from '@xh/hoist/icon';
 import {isEmpty, get} from 'lodash';
 
 import DetailsPanelModel from './DetailsPanelModel';
-import './DetailsPanelMobile.scss';
+import '../../desktop/details/DetailsPanel.scss';
 
 const detailsPanel = hoistCmp.factory({
     model: uses(() => DetailsPanelModel),
     render() {
         return panel({
-            className: 'tb-mobile-contact-details-panel',
+            className: 'tb-contact-details-panel',
             title: '',
             item: contactProfile(),
             bbar: bbar()
@@ -27,7 +27,7 @@ const detailsPanel = hoistCmp.factory({
 const contactProfile = hoistCmp.factory({
     render() {
         return div({
-            className: 'tb-mobile-contact-details-panel__inner',
+            className: 'tb-contact-details-panel__inner',
             items: [
                 picture(),
                 form({
@@ -139,6 +139,5 @@ const editButton = hoistCmp.factory<DetailsPanelModel>(({model}) => {
         onClick: () => model.toggleEditAsync()
     });
 });
-
 
 export default detailsPanel;
