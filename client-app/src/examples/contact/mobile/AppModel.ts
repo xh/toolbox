@@ -7,7 +7,7 @@ import detailsPanel from './details/DetailsPanel';
 import DetailsPanelModel from './details/DetailsPanelModel';
 import DirectoryPanelModel from './DirectoryPanelModel';
 import {action, makeObservable, observable, runInAction} from '@xh/hoist/mobx';
-import {castArray, uniq} from 'lodash';
+import {castArray, isEmpty, uniq} from 'lodash';
 
 import {
     autoRefreshAppOption,
@@ -55,7 +55,8 @@ export default class AppModel extends BaseAppModel {
         this.detailsPanelModel = new DetailsPanelModel(this);
     }
 
-    async updateContactAsync(id: string, data: PlainObject = {}) {
+    async updateContactAsync(id: string, data: PlainObject) {
+        if (!data || isEmpty(data)) return;
         // Mobile select only allows single selections, while desktop allows multiple
         // This means we receive an array on the desktop picker, and a single value here.
         // Convert single result into an array of one to keep data consistent.
