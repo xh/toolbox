@@ -36,6 +36,7 @@ export class AppModel extends HoistAdminAppModel {
                     {name: 'cube', path: '/cube'},
                     {name: 'dataView', path: '/dataView'},
                     {name: 'fetchAPI', path: '/fetchAPI'},
+                    {name: 'formPersistence', path: '/formPersistence'},
                     {name: 'grid', path: '/grid'},
                     {name: 'gridScrolling', path: '/gridScrolling'},
                     {name: 'localDate', path: '/localDate'},
