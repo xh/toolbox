@@ -12,11 +12,14 @@ import static io.xh.hoist.json.JSONParser.parseObject
 import static java.lang.System.currentTimeMillis
 
 /**
- * Decodes and validates ID tokens issued by Auth0, the primary/default OAuth provider for Toolbox.
+ * Decodes and validates ID tokens issued by Microsoft Entra ID, a secondary/optional OAuth provider
+ * for Toolbox. We use Auth0 and {@link Auth0Service} by default, but we want Toolbox to be able to
+ * process Oauth flow from Entra/MSAL for testing, as that's our most common / important IDP for
+ * deployments at our enterprise clients.
  */
-class Auth0Service extends BaseService {
+class EntraIdService extends BaseService {
 
-    static clearCachesConfigs = ['auth0Config']
+    static clearCachesConfigs = ['entraIdConfig']
 
     ConfigService configService
 
@@ -24,7 +27,8 @@ class Auth0Service extends BaseService {
 
     Map getClientConfig() {
         return [
-            provider: 'AUTH_ZERO',
+            provider: 'ENTRA_ID',
+            authority: authority,
             *: config
         ]
     }
@@ -67,6 +71,7 @@ class Auth0Service extends BaseService {
                 }
 
                 return new TokenValidationResult(
+                    // TODO - review actual claims and adjust
                     email: payload.email,
                     name: payload.name,
                     picture: payload.picture
@@ -86,7 +91,7 @@ class Auth0Service extends BaseService {
     }
 
     private JsonWebKeySet createKeySet() {
-        def url = "https://$domain/.well-known/jwks.json"
+        def url = "https://login.microsoftonline.com/${tenantId}/discovery/keys?appid=${clientId}"
         withInfo(['Fetching JWKS', url]) {
             def jwksJson = (new JSONClient()).executeAsString(new HttpGet(url)),
                 ret = new JsonWebKeySet(jwksJson)
@@ -98,15 +103,19 @@ class Auth0Service extends BaseService {
     }
 
     private getConfig() {
-        configService.getMap('auth0Config', [:])
+        configService.getMap('entraIdConfig', [:])
     }
 
     private String getClientId() {
         config.clientId
     }
 
-    private String getDomain() {
-        config.domain
+    private String getTenantId() {
+        config.tenantId
+    }
+
+    private String getAuthority() {
+        return "https://login.microsoftonline.com/${tenantId}"
     }
 
     void clearCaches() {
@@ -115,7 +124,8 @@ class Auth0Service extends BaseService {
     }
 
     Map getAdminStats() {[
-        config: configForAdminStats('auth0Config'),
+        config: configForAdminStats('entraIdConfig'),
         jwks: jsonWebKeySet.toJson()
     ]}
+
 }

@@ -10,12 +10,13 @@ import javax.servlet.http.HttpServletRequest
 
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
-class AuthenticationService extends BaseAuthenticationService  {
+class AuthenticationService extends BaseAuthenticationService {
 
     Auth0Service auth0Service
+    EntraIdService entraIdService
     UserService userService
 
-    private String AUTH_HEADER = 'x-xh-idt'
+    private String AUTH_HEADER = 'Authorization'
 
     AuthenticationService() {
         super()
@@ -23,9 +24,11 @@ class AuthenticationService extends BaseAuthenticationService  {
     }
 
     Map getClientConfig() {
-        useOAuth ?
-            [useOAuth: true, *: auth0Service.getClientConfig()] :
-            [useOAuth: false]
+        if (!useOAuth) return [:]
+
+        return useEntraId ?
+            [useOAuth: true, *: entraIdService.getClientConfig()] :
+            [useOAuth: true, *: auth0Service.getClientConfig()]
     }
 
     /**
@@ -37,11 +40,11 @@ class AuthenticationService extends BaseAuthenticationService  {
     protected boolean completeAuthentication(HttpServletRequest request, HttpServletResponse response) {
         if (!useOAuth) return true
 
-        String token = request.getHeader(AUTH_HEADER)
+        String token = request.getHeader(AUTH_HEADER)?.replace('Bearer ', '')
         TokenValidationResult tokenResult = null
 
         if (token) {
-            tokenResult = auth0Service.validateToken(token)
+            tokenResult = useEntraId ? entraIdService.validateToken(token) : auth0Service.validateToken(token)
         } else {
             logTrace("Unable to validate inbound request - no token presented in header")
         }
@@ -85,7 +88,11 @@ class AuthenticationService extends BaseAuthenticationService  {
         return user?.checkPassword(password) ? user : null
     }
 
-    private static boolean getUseOAuth() {
+    private boolean getUseEntraId() {
+        getInstanceConfig('oauthProvider') == 'ENTRA_ID'
+    }
+
+    private boolean getUseOAuth() {
         getInstanceConfig('useOAuth') != 'false'
     }
 
