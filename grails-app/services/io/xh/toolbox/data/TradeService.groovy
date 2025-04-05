@@ -26,13 +26,15 @@ class TradeService extends BaseService {
         try {
             def mockData = applicationContext.getResource('classpath:MockTradesData.json'),
                 trades = JSONParser.parseArray(mockData.inputStream),
-                dateRange = 30
+                dateRange = 30,
+                tagRange = 5
 
             trades.each {it ->
                 it.profit_loss = Math.round(it.profit_loss * Math.random())
                 it.trade_volume = it.trade_volume * 1000000
                 it.active = it.trade_volume.toBigInteger() % 6 == 0
                 it.trade_date = LocalDate.now().minusDays(Math.round(dateRange * Math.random()))
+                it.tags = (0..Math.floor(tagRange * Math.random())).findAll { it > 0 }.collect { 'tag' + it}
             }
 
             ret = [
