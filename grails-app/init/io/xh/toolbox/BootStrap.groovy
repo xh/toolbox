@@ -127,14 +127,14 @@ class BootStrap implements LogSupport {
                     groupName: 'Toolbox - Example Apps'
             ],
             entraIdConfig: [
-                valueType: 'json',
-                defaultValue: [
-                    clientId: '5d933976-8fe4-40fc-bc13-b9d239a2efe5',
-                    tenantId: '51759969-dc12-46ec-a1e9-2532084dc881'
-                ],
-                clientVisible: false,
-                groupName: 'Auth',
-                note: 'OAuth config for the Toolbox app registered at our Auth0 account. \n(https://manage.auth0.com/dashboard/us/xhio/)'
+                    valueType: 'json',
+                    defaultValue: [
+                            clientId: '5d933976-8fe4-40fc-bc13-b9d239a2efe5',
+                            tenantId: '51759969-dc12-46ec-a1e9-2532084dc881'
+                    ],
+                    clientVisible: false,
+                    groupName: 'Auth',
+                    note: 'OAuth config for the Toolbox app registered at our Azure Entra ID tenant. For testing Entra ID as an alternate OAuth provider.'
             ],
             fileManagerStoragePath: [
                     valueType: 'string',
