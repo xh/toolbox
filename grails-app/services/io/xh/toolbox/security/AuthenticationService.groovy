@@ -14,15 +14,16 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 /**
  * Toolbox's implementation of Hoist's {@link BaseAuthenticationService} contract for handling
  * authentication. This example is atypical of most application implementations of this service
- * in that it supports a fallback option for local username/password login as well as OAuth. It
- * can also delegate to either {@link Auth0Service} or {@link EntraIdService} to validate JWTs when
- * in OAuth mode, to support testing both providers.
+ * in that it supports a fallback option for local username/password login as well as OAuth.
+ *
+ * It can also delegate to either {@link AuthZeroTokenService} or {@link EntraIdTokenService} to
+ * validate JWTs when in OAuth mode, to support testing flows against either provider.
  */
 @GrailsCompileStatic
 class AuthenticationService extends BaseAuthenticationService {
 
-    Auth0Service auth0Service
-    EntraIdService entraIdService
+    AuthZeroTokenService authZeroTokenService
+    EntraIdTokenService entraIdTokenService
     UserService userService
 
     private String AUTH_HEADER = 'Authorization'
@@ -33,15 +34,22 @@ class AuthenticationService extends BaseAuthenticationService {
     }
 
     Map getClientConfig() {
-        if (!useOAuth) return [:]
-
-        return useEntraId ?
-            [useOAuth: true, *: entraIdService.getClientConfig()] :
-            [useOAuth: true, *: auth0Service.getClientConfig()]
+        switch (oauthProvider) {
+            case 'AUTH_ZERO':
+                return [useOAuth: true, *: authZeroTokenService.getClientConfig()];
+            case 'ENTRA_ID':
+                return [useOAuth: true, *: entraIdTokenService.getClientConfig()];
+            default:
+                return [useOAuth: false]
+        }
     }
 
-    boolean getUseEntraId() {
-        return getInstanceConfig('oauthProvider') == 'ENTRA_ID'
+    String getOauthProvider() {
+        getInstanceConfig('oauthProvider') ?: 'AUTH_ZERO'
+    }
+
+    boolean getUseOAuth() {
+        getInstanceConfig('oauthProvider') != 'NONE'
     }
 
     /**
@@ -57,7 +65,10 @@ class AuthenticationService extends BaseAuthenticationService {
         TokenValidationResult tokenResult = null
 
         if (token) {
-            tokenResult = useEntraId ? entraIdService.validateToken(token) : auth0Service.validateToken(token)
+            tokenResult = oauthProvider == 'AUTH_ZERO' ?
+                authZeroTokenService.validateToken(token) :
+                entraIdTokenService.validateToken(token)
+
         } else {
             logTrace("Unable to validate inbound request - no token presented in header")
         }
@@ -96,8 +107,7 @@ class AuthenticationService extends BaseAuthenticationService {
     Map getAdminStats() {
         return [
             *: super.getAdminStats(),
-            useOAuth: useOAuth,
-            useEntraId: useEntraId,
+            oauthProvider: oauthProvider,
             clientConfig: clientConfig
         ]
     }
@@ -110,10 +120,6 @@ class AuthenticationService extends BaseAuthenticationService {
     private User lookupUser(String username, String password) {
         def user = User.findByEmailAndEnabled(username, true)
         return user?.checkPassword(password) ? user : null
-    }
-
-    private boolean getUseOAuth() {
-        getInstanceConfig('useOAuth') != 'false'
     }
 
 }

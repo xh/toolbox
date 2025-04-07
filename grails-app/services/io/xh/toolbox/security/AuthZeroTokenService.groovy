@@ -14,7 +14,7 @@ import static java.lang.System.currentTimeMillis
 /**
  * Decodes and validates ID tokens issued by Auth0, the primary/default OAuth provider for Toolbox.
  */
-class Auth0Service extends BaseService {
+class AuthZeroTokenService extends BaseService {
 
     static clearCachesConfigs = ['auth0Config']
 
@@ -34,7 +34,7 @@ class Auth0Service extends BaseService {
         super.init()
 
         // Fetch JWKS eagerly so it's ready for potential burst of initial requests after startup.
-        if (!authenticationService.useEntraId) {
+        if (authenticationService.oauthProvider == 'AUTH_ZERO') {
             getJsonWebKeySet()
         }
     }
