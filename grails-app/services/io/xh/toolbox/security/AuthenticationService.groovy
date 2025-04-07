@@ -1,5 +1,6 @@
 package io.xh.toolbox.security
 
+import grails.compiler.GrailsCompileStatic
 import grails.gorm.transactions.ReadOnly
 import io.xh.hoist.security.BaseAuthenticationService
 import io.xh.toolbox.user.User
@@ -10,6 +11,14 @@ import javax.servlet.http.HttpServletRequest
 
 import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
 
+/**
+ * Toolbox's implementation of Hoist's {@link BaseAuthenticationService} contract for handling
+ * authentication. This example is atypical of most application implementations of this service
+ * in that it supports a fallback option for local username/password login as well as OAuth. It
+ * can also delegate to either {@link Auth0Service} or {@link EntraIdService} to validate JWTs when
+ * in OAuth mode, to support testing both providers.
+ */
+@GrailsCompileStatic
 class AuthenticationService extends BaseAuthenticationService {
 
     Auth0Service auth0Service
@@ -29,6 +38,10 @@ class AuthenticationService extends BaseAuthenticationService {
         return useEntraId ?
             [useOAuth: true, *: entraIdService.getClientConfig()] :
             [useOAuth: true, *: auth0Service.getClientConfig()]
+    }
+
+    boolean getUseEntraId() {
+        return getInstanceConfig('oauthProvider') == 'ENTRA_ID'
     }
 
     /**
@@ -79,6 +92,17 @@ class AuthenticationService extends BaseAuthenticationService {
     }
 
 
+    @Override
+    Map getAdminStats() {
+        return [
+            *: super.getAdminStats(),
+            useOAuth: useOAuth,
+            useEntraId: useEntraId,
+            clientConfig: clientConfig
+        ]
+    }
+
+
     //------------------------
     // Implementation
     //------------------------
@@ -86,10 +110,6 @@ class AuthenticationService extends BaseAuthenticationService {
     private User lookupUser(String username, String password) {
         def user = User.findByEmailAndEnabled(username, true)
         return user?.checkPassword(password) ? user : null
-    }
-
-    private boolean getUseEntraId() {
-        getInstanceConfig('oauthProvider') == 'ENTRA_ID'
     }
 
     private boolean getUseOAuth() {

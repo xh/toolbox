@@ -16,11 +16,15 @@ import static java.lang.System.currentTimeMillis
  * for Toolbox. We use Auth0 and {@link Auth0Service} by default, but we want Toolbox to be able to
  * process Oauth flow from Entra/MSAL for testing, as that's our most common / important IDP for
  * deployments at our enterprise clients.
+ *
+ * Switch to EntraId (disabling Auth0) by setting the `oauthProvider` instance config to `ENTRA_ID`.
+ * For local dev, set `APP_TOOLBOX_OAUTH_PROVIDER=ENTRA_ID` in your .env file.
  */
 class EntraIdService extends BaseService {
 
     static clearCachesConfigs = ['entraIdConfig']
 
+    AuthenticationService authenticationService
     ConfigService configService
 
     private JsonWebKeySet _jwks
@@ -35,8 +39,11 @@ class EntraIdService extends BaseService {
 
     void init() {
         super.init()
+
         // Fetch JWKS eagerly so it's ready for potential burst of initial requests after startup.
-        getJsonWebKeySet()
+        if (authenticationService.useEntraId) {
+            getJsonWebKeySet()
+        }
     }
 
     TokenValidationResult validateToken(String token) {
@@ -71,10 +78,9 @@ class EntraIdService extends BaseService {
                 }
 
                 return new TokenValidationResult(
-                    // TODO - review actual claims and adjust
                     email: payload.email,
                     name: payload.name,
-                    picture: payload.picture
+                    picture: null // would need to make a graph call to resolve
                 )
             }
         } catch (Exception e) {

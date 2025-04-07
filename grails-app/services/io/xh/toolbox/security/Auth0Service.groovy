@@ -18,6 +18,7 @@ class Auth0Service extends BaseService {
 
     static clearCachesConfigs = ['auth0Config']
 
+    AuthenticationService authenticationService
     ConfigService configService
 
     private JsonWebKeySet _jwks
@@ -31,8 +32,11 @@ class Auth0Service extends BaseService {
 
     void init() {
         super.init()
+
         // Fetch JWKS eagerly so it's ready for potential burst of initial requests after startup.
-        getJsonWebKeySet()
+        if (!authenticationService.useEntraId) {
+            getJsonWebKeySet()
+        }
     }
 
     TokenValidationResult validateToken(String token) {
