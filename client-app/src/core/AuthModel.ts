@@ -3,7 +3,11 @@ import {AuthZeroClient, AuthZeroClientConfig} from '@xh/hoist/security/authzero'
 import {MsalClient, MsalClientConfig} from '@xh/hoist/security/msal';
 
 /**
- * TODO - update to reflect dual support for Auth0 and MSAL.
+ * Toolbox's implementation of {@link HoistAuthModel} contract for handling authentication.
+ *
+ * This example is atypical of most application implementations in that it supports a fallback
+ * option for local username/password login, for offline or other local testing scenarios where
+ * OAuth is undesired, as well as flows against either Auth0 (default) or Azure Entra ID.
  */
 export class AuthModel extends HoistAuthModel {
     @managed

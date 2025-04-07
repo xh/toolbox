@@ -16,6 +16,8 @@ import static io.xh.hoist.util.InstanceConfigUtils.getInstanceConfig
  * authentication. This example is atypical of most application implementations of this service
  * in that it supports a fallback option for local username/password login as well as OAuth.
  *
+ * Use the `oauthProvider` instance config to set the OAuth provider to use, or `NONE` to disable.
+ *
  * It can also delegate to either {@link AuthZeroTokenService} or {@link EntraIdTokenService} to
  * validate JWTs when in OAuth mode, to support testing flows against either provider.
  */
