@@ -13,12 +13,12 @@ import static java.lang.System.currentTimeMillis
 
 /**
  * Decodes and validates ID tokens issued by Microsoft Entra ID, a secondary/optional OAuth provider
- * for Toolbox. We use Auth0 and {@link AuthZeroTokenService} by default, but we want Toolbox to be able to
- * process Oauth flow from Entra/MSAL for testing, as that's our most common / important IDP for
- * deployments at our enterprise clients.
+ * for Toolbox. We use Auth0 and {@link AuthZeroTokenService} by default, but we want Toolbox to be
+ * able to process Entra Oauth flows w/MSAL for testing, as that's our most common / important IDP
+ * for deployments at our enterprise clients.
  *
- * Switch to EntraId (disabling Auth0) by setting the `oauthProvider` instance config to `ENTRA_ID`.
- * For local dev, set `APP_TOOLBOX_OAUTH_PROVIDER=ENTRA_ID` in your .env file.
+ * Activate Entra ID and this service by setting the `oauthProvider` instance config to `ENTRA_ID`.
+ * For local dev, do this by setting `APP_TOOLBOX_OAUTH_PROVIDER=ENTRA_ID` in your .env file.
  */
 class EntraIdTokenService extends BaseService {
 
