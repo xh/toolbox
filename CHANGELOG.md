@@ -1,9 +1,13 @@
 # Changelog
 
-## v7.0-SNAPSHOT - unreleased
+## v6.2.0 - 2025-04-08
 
 ### New Features
 * Enabled support for testing OAuth flows against Azure / Entra ID, in addition to Auth0. To support switching, the prior `useOauth` instance config has been replaced with a new `oauthProvider` config - aka `APP_TOOLBOX_OAUTH_PROVIDER` in your `.env` file for local development.
+
+### Libraries
+* hoist-core 29.1.0
+* @xh/hoist 72.3.0
 
 ## v6.1.0 - 2025-02-14
 
