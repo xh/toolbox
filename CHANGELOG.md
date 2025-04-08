@@ -2,6 +2,9 @@
 
 ## v7.0-SNAPSHOT - unreleased
 
+### New Features
+* Enabled support for testing OAuth flows against Azure / Entra ID, in addition to Auth0. To support switching, the prior `useOauth` instance config has been replaced with a new `oauthProvider` config - aka `APP_TOOLBOX_OAUTH_PROVIDER` in your `.env` file for local development.
+
 ## v6.1.0 - 2025-02-14
 
 ### Libraries
