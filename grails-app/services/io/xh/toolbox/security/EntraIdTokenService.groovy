@@ -109,7 +109,7 @@ class EntraIdTokenService extends BaseService {
     }
 
     private getConfig() {
-        configService.getMap('entraIdConfig', [:])
+        configService.getMap('entraIdConfig')
     }
 
     private String getClientId() {

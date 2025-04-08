@@ -102,7 +102,7 @@ class AuthZeroTokenService extends BaseService {
     }
 
     private getConfig() {
-        configService.getMap('auth0Config', [:])
+        configService.getMap('auth0Config')
     }
 
     private String getClientId() {
