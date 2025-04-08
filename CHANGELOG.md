@@ -1,5 +1,7 @@
 # Changelog
 
+## 7.0-SNAPSHOT - unreleased
+
 ## v6.2.0 - 2025-04-08
 
 ### New Features
