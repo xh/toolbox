@@ -9,8 +9,9 @@ import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {Icon} from '@xh/hoist/icon';
 import {tileView} from './cmp/TileView';
 import {detailsPanel} from './details/DetailsPanel';
-import './DirectoryPanel.scss';
+
 import {DirectoryPanelModel} from './DirectoryPanelModel';
+import '../DirectoryPanel.scss';
 
 export const directoryPanel = hoistCmp.factory({
     model: creates(DirectoryPanelModel),
