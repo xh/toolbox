@@ -34,7 +34,8 @@ export class AppModel extends HoistAdminAppModel {
                 path: '/musiclub',
                 children: [
                     {name: 'meetings', path: '/meetings'},
-                    {name: 'plays', path: '/plays'}
+                    {name: 'plays', path: '/plays'},
+                    {name: 'entities', path: '/entities'}
                 ]
             },
             {

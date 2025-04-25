@@ -21,9 +21,27 @@ class SongPlay implements JSONFormat {
     String recordingMbId
     String isrc
 
+    String coverArtUrl
+
     LocalDate releaseDate
     Boolean bonus
     String notes
+
+    String getAlbumOrTitle() {
+        return !album || album == 'single' ? title : album
+    }
+
+    String getArtistName() {
+        return getMbArtist()?.name ?: artist
+    }
+
+    MbEntity getMbArtist() {
+        return artistMbId ? MbEntity.findByMbId(artistMbId) : null
+    }
+
+    MbEntity getMbReleaseGroup() {
+        return releaseGroupMbId ? MbEntity.findByMbId(releaseGroupMbId) : null
+    }
 
     static belongsTo = [meeting: Meeting]
 
@@ -40,6 +58,8 @@ class SongPlay implements JSONFormat {
         releaseMbId nullable: true, maxSize: 36
         recordingMbId nullable: true, maxSize: 36
         isrc nullable: true, maxSize: 12
+
+        coverArtUrl nullable: true
 
         releaseDate nullable: true
         notes nullable: true, maxSize: 1500
@@ -63,6 +83,7 @@ class SongPlay implements JSONFormat {
             releaseMbId     : releaseMbId,
             recordingMbId   : recordingMbId,
             isrc            : isrc,
+            coverArtUrl     : coverArtUrl,
             bonus           : bonus,
             notes           : notes
         ]

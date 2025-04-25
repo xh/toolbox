@@ -1,8 +1,11 @@
 package io.xh.toolbox.music
 
 import grails.gorm.transactions.Transactional
+import groovy.transform.NamedParam
+import groovy.transform.NamedVariant
 import io.xh.hoist.BaseService
 import io.xh.hoist.http.JSONClient
+import io.xh.hoist.json.JSONSerializer
 import org.apache.hc.client5.http.classic.methods.HttpGet
 import org.apache.hc.core5.net.URIBuilder
 
@@ -31,108 +34,29 @@ class MusicBrainzService extends BaseService {
         ]
     }
 
-    Map enhancePlay(Long id) {
+    @Transactional
+    ResResults enhancePlay(Long id, boolean ignoreCurrent, int minScore = 90) {
         def play = SongPlay.get(id)
-        if (!play) throw new RuntimeException("No play found with ID $id")
-        if (!play.title) throw new RuntimeException("Cannot enhance play without title")
 
-        def qParts = []
-        [
-            recording: play.title,
-            date     : play.meeting.year,
-            release  : play.album,
-            artist   : play.artist
-        ].each { k, v ->
-            if (v) {
-                qParts << "$k:$v"
-            }
+        if (!play) {
+            return new ResResults(
+                play: play,
+                error: "No play found with ID $id"
+            )
         }
 
-        def get = new HttpGet(buildUri('recording', [
-            query: qParts.join(' AND ')
-        ]))
+        def artistResults = resolveArtist(play, ignoreCurrent, minScore)
+        if (artistResults.error) return artistResults
 
-        Map result = [:]
-        withInfo(["Querying", qParts, get.uri]) {
-            result = client.executeAsMap(get)
-        }
-        def recordings = result.recordings as List<Map>,
-            matches = []
+        def releaseGroupResults = resolveReleaseGroup(play, ignoreCurrent, minScore).withPriorResults(artistResults)
+        if (releaseGroupResults.error) return releaseGroupResults
 
-        if (!recordings) {
-            logWarn("No recordings found")
-        } else {
-            def highScore = recordings*.score.max()
-            matches = recordings.findAll { it.score == highScore }
+        def releaseResults = resolveRelease(play, ignoreCurrent, minScore).withPriorResults(releaseGroupResults)
+        if (releaseResults.error) return releaseResults
 
-            logInfo("Found ${matches.size()} matches with high score ${highScore}")
-        }
+        return resolveRecording(play, ignoreCurrent, minScore).withPriorResults(releaseResults)
 
-        return [
-            *      : play.formatForJSON(),
-            matches: matches
-        ]
-    }
-
-    @Transactional
-    Map enhanceArtist(Long playId, Integer minScore = 90) {
-        withInfo(["Enhancing artist", [playId: playId]]) {
-            SongPlay play = SongPlay.get(playId)
-            Map<String, Object> ret = [play: play, error: null]
-
-            if (!play) {
-                ret.error = "Play ID $playId not found"
-            } else if (!play.artist) {
-                ret.error = "Missing artist name"
-            } else if (play.artistMbId) {
-                ret.error = "Artist mbId already set"
-            } else {
-                def uri = buildUri('artist', [query: "artist:${play.artist}"]),
-                    results = client.executeAsMap(new HttpGet(uri)),
-                    matches = results.artists as List
-
-                if (!matches) {
-                    ret.error = "No matches found for [${play.artist}]"
-                } else {
-                    def bestMatch = matches.first(),
-                        bestId = bestMatch.id,
-                        bestName = bestMatch.name,
-                        bestScore = bestMatch.score,
-                        ties = matches.findAll { it.score == bestScore }
-
-                    if (bestScore >= minScore) {
-                        if (ties.size() > 1) {
-                            ret.error = "Multiple matches found with same top score $bestScore"
-                            ret.possibleArtists = ties
-                        } else {
-                            // We have a match that we will take!
-                            if (!Artist.findByMbId(bestId)) {
-                                logInfo("Creating new artist", [name: bestName, mbId: bestId])
-                                def artist = new Artist(
-                                    name: bestName,
-                                    mbId: bestId,
-                                    mbJson: bestMatch.toString()
-                                )
-                                artist.save()
-                            }
-
-                            play.artistMbId = bestId
-                            play.save()
-                            ret.artist = bestMatch
-                        }
-                    } else {
-                        ret.error = "No good match found for ${play.artist} - best score ${bestScore}"
-                        ret.possibleArtists = matches.take(5)
-                    }
-                }
-            }
-
-            return ret
-        }
-    }
-
-    @Transactional
-    enhanceRelease(Long playId) {
+        // 0)  use artistName to find artist
 
         // 1)  use [album name, artist mbId, meeting year] to find release-group
         //     http://localhost:5000/ws/2/release-group/?fmt=json&query=release:unrest%20AND%20arid:6ba2f6ce-50be-47df-b5a3-298ef032f476%20AND%20firstreleasedate:1974
@@ -149,10 +73,260 @@ class MusicBrainzService extends BaseService {
 
         // 4) browse recording, inc isrcs
         //    http://localhost:5000/ws/2/recording/b37797ec-f3cc-4797-a229-9826d49f939e?fmt=json&inc=isrcs
+    }
 
+    @Transactional
+    ensureArtistCreated(String mbId) {
+        getOrFetchAndCreateMbEntity(mbId, 'artist')
+    }
+
+    @Transactional
+    ensureReleaseGroupCreated(String mbId) {
+        getOrFetchAndCreateMbEntity(mbId, 'releaseGroup')
+    }
+
+    @Transactional
+    ensureReleaseCreated(String mbId) {
+        getOrFetchAndCreateMbEntity(mbId, 'release')
+    }
+
+    @Transactional
+    ensureRecordingCreated(String mbId) {
+        getOrFetchAndCreateMbEntity(mbId, 'recording')
+    }
+
+    @Transactional
+    ResResults resolveArtist(SongPlay play, boolean ignoreCurrent, Integer minScore) {
+        resolveEntity(
+            play: play,
+            entityType: 'artist',
+            requiredProps: ['artist'],
+            queryBuilder: { SongPlay p -> "artist:${p.artist}" },
+            minScore: minScore,
+            ignoreCurrent: ignoreCurrent
+        )
+    }
+
+    @Transactional
+    ResResults resolveReleaseGroup(SongPlay play, boolean ignoreCurrent, Integer minScore) {
+        def ret = resolveEntity(
+            play: play,
+            entityType: 'releaseGroup',
+            requiredProps: ['albumOrTitle', 'artistMbId'],
+            queryBuilder: { SongPlay p ->
+                "release:${p.albumOrTitle} AND arid:${p.artistMbId} AND firstreleasedate:${p.meeting.year}"
+            },
+            fallbackQueries: [
+                { SongPlay p -> "release:${p.albumOrTitle} AND arid:${p.artistMbId}" },
+                { SongPlay p -> "release:${p.albumOrTitle} AND artist:${p.artistName}" }
+            ],
+            minScore: minScore,
+            ignoreCurrent: ignoreCurrent
+        )
+
+//        if (ret.mbEntity && !play.coverArtUrl) {
+//
+//        }
+
+        return ret
 
     }
 
+    Map getReleaseGroupCoverArtData(String mbId) {
+        def get = new HttpGet("https://coverartarchive.org/release-group/${mbId}")
+        client.executeAsMap(get)
+    }
+
+    @Transactional
+    ResResults resolveRelease(SongPlay play, boolean ignoreCurrent, Integer minScore) {
+        resolveEntity(
+            play: play,
+            entityType: 'release',
+            requiredProps: ['releaseGroupMbId'],
+            queryBuilder: { SongPlay p -> "rgid:${p.releaseGroupMbId} AND date:${p.meeting.year}" },
+            fallbackQueries: [
+                { SongPlay p -> "rgid:${p.releaseGroupMbId}" }
+            ],
+            minScore: minScore,
+            ignoreCurrent: ignoreCurrent
+        )
+    }
+
+    @Transactional
+    ResResults resolveRecording(SongPlay play, boolean ignoreCurrent, Integer minScore) {
+        resolveEntity(
+            play: play,
+            entityType: 'recording',
+            requiredProps: ['releaseMbId', 'title'],
+            queryBuilder: { SongPlay p -> "reid:${p.releaseMbId} AND recording:${p.title}" },
+            minScore: minScore,
+            ignoreCurrent: ignoreCurrent
+        )
+    }
+
+    @NamedVariant
+    private ResResults resolveEntity(
+        @NamedParam SongPlay play,
+        @NamedParam String entityType,
+        @NamedParam Collection<String> requiredProps,
+        @NamedParam Closure<SongPlay> queryBuilder,
+        @NamedParam List<Closure<SongPlay>> fallbackQueries,
+        @NamedParam Integer minScore,
+        @NamedParam boolean ignoreCurrent = false
+    ) {
+        withInfo(["Resolving $entityType", [playId: play.id]]) {
+            ResResults ret = new ResResults(entityType: entityType, play: play)
+
+            def missingProps = requiredProps.findAll { play[it] == null }
+            if (missingProps) {
+                return ret.withError("Missing required properties: ${missingProps.join(', ')}")
+            }
+
+            def mbIdProp = "${entityType}MbId",
+                currMbId = play[mbIdProp] as String
+
+            if (currMbId && !ignoreCurrent) {
+                def mbEntity = MbEntity.findByMbId(currMbId)
+                if (mbEntity) {
+                    return ret.withEntity(mbEntity)
+                } else {
+                    logWarn("Play $mbIdProp $currMbId set but entity not found - will attempt to lookup")
+                }
+            }
+
+            def query = queryBuilder(play)
+            ret.query = query
+
+            def apiEndpointPath = entityType == 'releaseGroup' ? 'release-group' : entityType,
+                apiResponsePath = "${apiEndpointPath}s",
+                uri = buildUri(apiEndpointPath, [query: query]),
+                results = client.executeAsMap(new HttpGet(uri))
+
+            ret = withMatches(ret, results[apiResponsePath] as List, minScore)
+
+            if (ret.error && fallbackQueries) {
+                fallbackQueries.eachWithIndex { f, idx ->
+                    if (!ret.error) return // prior fallback might have worked
+
+                    logWarn("No $entityType found for play ${play.id} so far - trying fallback query ${idx}")
+                    query = f(play)
+                    ret.query = query
+                    ret.isFallback = true
+
+                    uri = buildUri(apiEndpointPath, [query: query])
+                    results = client.executeAsMap(new HttpGet(uri))
+                    ret = withMatches(ret, results[apiResponsePath] as List, minScore)
+                }
+            }
+
+            return ret
+        }
+    }
+
+    private ResResults withMatches(ResResults results, List<Map> rawMatches, int minScore) {
+        def matches = evalMatches(rawMatches, results.entityType, minScore)
+
+        results.matchResults = matches
+        results.mbEntity = matches.mbEntity
+        results.error = matches.error
+
+        if (matches.mbId) {
+            results.play["${results.entityType}MbId"] = matches.mbId
+            results.play.save()
+        }
+
+        results
+    }
+
+    private MatchResults evalMatches(List<Map> matches, String entityType, int minScore) {
+        def ret = new MatchResults()
+
+        if (!matches) {
+            ret.error = 'No matches found'
+        } else {
+            ret.possibleMatches = matches.take(5)
+
+            def bestMatch = matches.first(),
+                bestScore = bestMatch.score,
+            // Count as tie if within two points ("Phoenix" artist search)
+                ties = matches.findAll { it.score >= (bestScore - 2) },
+                tiedMatch = ties.size() > 1
+
+            // Favor groups over people for artist matches
+            if (tiedMatch && entityType == 'artist') {
+                bestMatch = ties.find { it['type'] == 'Group' } ?: bestMatch
+            }
+
+            // Favor albums over singles for releaseGroup matches
+            if (tiedMatch && entityType == 'releaseGroup') {
+                bestMatch = ties.find { it['primary-type'] == 'Album' } ?: bestMatch
+            }
+
+            if (bestScore >= minScore) {
+                if (tiedMatch) {
+                    ret.notes = "Multiple matches found with same top score $bestScore - taking first one"
+                    ret.mbEntity = getOrCreateMbEntity(bestMatch, entityType)
+                } else {
+                    ret.mbEntity = getOrCreateMbEntity(bestMatch, entityType)
+                }
+            } else {
+                ret.error = "No good match found - best score ${bestScore}"
+            }
+        }
+
+        return ret
+    }
+
+    @Transactional
+    private MbEntity getOrFetchAndCreateMbEntity(String mbId, String entityType) {
+        def mbEntity = MbEntity.findByMbId(mbId)
+        if (!mbEntity) {
+            try {
+                withInfo("No $entityType found with MBID $mbId - looking up and creating new record") {
+                    Map raw = getRawEntityData(mbId, entityType)
+                    String name = raw[entityType == 'artist' ? 'name' : 'title']
+                    mbEntity = new MbEntity(
+                        type: entityType,
+                        name: name,
+                        mbId: mbId,
+                        mbJson: JSONSerializer.serialize(raw)
+                    ).save(flush: true)
+                }
+            } catch (Exception e) {
+                logError("Error fetching $entityType with MBID $mbId", e)
+            }
+        }
+        return mbEntity
+    }
+
+    // Create a MbEntity if needed from raw data that's already been acquired - eg from a search hit.
+    @Transactional
+    private MbEntity getOrCreateMbEntity(Map raw, String type) {
+        String id = raw.id
+        String name = raw[type == 'artist' ? 'name' : 'title']
+        MbEntity ret = MbEntity.findByMbId(id)
+
+        if (!ret) {
+            logInfo("No $type found with MBID $id - creating new record now for $name")
+            ret = new MbEntity(
+                type: type,
+                name: name,
+                mbId: id,
+                mbJson: JSONSerializer.serialize(raw)
+            ).save(flush: true)
+        }
+
+        return ret
+    }
+
+    private getRawEntityData(String mbId, String entityType) {
+        def mbType = entityType == 'releaseGroup' ? 'release-group' : entityType,
+            uri = buildUri("$mbType/$mbId"),
+            ret = client.executeAsMap(new HttpGet(uri))
+
+        if (ret.error) throw new RuntimeException("Error fetching $mbId from MB: ${ret.error}")
+        return ret
+    }
 
     //------------------
     // Implementation
@@ -180,4 +354,40 @@ class MusicBrainzService extends BaseService {
         super.clearCaches()
         _client = null
     }
+}
+
+class ResResults {
+    SongPlay play
+    String entityType
+    /** Entity from match results, or pre-existing */
+    MbEntity mbEntity
+    String query
+    boolean isFallback
+    String error
+    MatchResults matchResults
+    ResResults priorResults
+
+    ResResults withError(String error) {
+        this.error = error
+        this
+    }
+
+    ResResults withEntity(MbEntity mbEntity) {
+        this.mbEntity = mbEntity
+        this
+    }
+
+    ResResults withPriorResults(ResResults priorResults) {
+        this.priorResults = priorResults
+        this
+    }
+}
+
+class MatchResults {
+    MbEntity mbEntity
+    String error
+    String notes
+    List<Map> possibleMatches = []
+
+    String getMbId() { mbEntity?.mbId }
 }
