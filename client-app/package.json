@@ -53,6 +53,8 @@
     "react-dom": "~18.2.0"
   },
   "devDependencies": {
+    "@types/react": "18.x",
+    "@types/react-dom": "18.x",
     "@xh/hoist-dev-utils": "^11.0.0-SNAPSHOT",
     "cross-env": "7.x",
     "eslint": "8.x",
@@ -66,8 +68,8 @@
     "typescript": "~5.1.6"
   },
   "resolutions": {
-    "core-js": "3.x",
     "@types/react": "18.x",
-    "@types/react-dom": "18.x"
+    "@types/react-dom": "18.x",
+    "core-js": "3.x"
   }
 }
