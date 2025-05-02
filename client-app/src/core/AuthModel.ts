@@ -47,9 +47,7 @@ export class AuthModel extends HoistAuthModel {
                 return {Authorization: `Bearer ${idToken.value}`};
             } catch (e) {
                 XH.suspendApp({
-                    message:
-                        'Your authentication has expired and you have been logged out of the app.' +
-                        'Please reload now to continue.',
+                    message: 'Your authentication has expired. Please reload now to continue.',
                     reason: 'AUTH_EXPIRED'
                 });
             }
