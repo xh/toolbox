@@ -192,9 +192,7 @@ export class TodoPanelModel extends HoistModel {
                 ]
             },
             groupSortFn: (a, b) => {
-                a = dueDateGroupSort[a];
-                b = dueDateGroupSort[b];
-                return a - b;
+                return dueDateGroupSort[a] - dueDateGroupSort[b];
             },
             onRowDoubleClicked: ({data}) => {
                 if (data) this.taskDialogModel.openEditForm(data.data);
