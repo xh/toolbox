@@ -6,7 +6,7 @@ import {roadmapTab} from './roadmap/RoadmapTab';
 import {testsTab} from './tests/TestsTab';
 
 export class AppModel extends HoistAdminAppModel {
-    static override instance: AppModel;
+    static instance: AppModel;
 
     override async initAsync() {
         await super.initAsync();
