@@ -45,11 +45,15 @@ export class AuthModel extends HoistAuthModel {
             try {
                 const idToken = await this.client.getIdTokenAsync();
                 return {Authorization: `Bearer ${idToken.value}`};
-            } catch (e) {
-                XH.suspendApp({
-                    message: 'Your authentication has expired. Please reload now to continue.',
-                    reason: 'AUTH_EXPIRED'
-                });
+            } catch (e: any) {
+                if (e.name == 'Auth Expired') {
+                    XH.suspendApp({
+                        message: 'Your authentication has expired. Please reload now to continue.',
+                        reason: 'AUTH_EXPIRED'
+                    });
+                } else {
+                    throw e;
+                }
             }
         });
 
