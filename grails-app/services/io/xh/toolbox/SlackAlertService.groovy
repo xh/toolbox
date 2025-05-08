@@ -1,13 +1,11 @@
 package io.xh.toolbox
 
 import io.xh.hoist.BaseService
-import io.xh.hoist.clienterror.ClientError
 import io.xh.hoist.config.ConfigService
 import io.xh.hoist.http.JSONClient
-import io.xh.hoist.json.JSONParser
 import io.xh.hoist.json.JSONSerializer
 import io.xh.hoist.monitor.MonitorStatusReport
-import io.xh.hoist.util.StringUtils
+import io.xh.hoist.track.TrackLog
 import io.xh.hoist.util.Utils
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.core5.http.io.entity.StringEntity
@@ -20,22 +18,24 @@ class SlackAlertService extends BaseService {
 
     void init() {
         subscribeToTopic(
-                topic: 'xhMonitorStatusReport',
-                onMessage: this.&formatAndSendMonitorStatusReport,
-                primaryOnly: true
+            topic: 'xhMonitorStatusReport',
+            onMessage: this.&sendMonitorStatusReport,
+            primaryOnly: true
 
         )
         subscribeToTopic(
-                topic: 'xhClientErrorReceived',
-                onMessage: this.&formatAndSendClientReport,
-                primaryOnly: true
+            topic: 'xhTrackReceived',
+            onMessage: {TrackLog tl ->
+                if (tl.category == 'Client Error') sendClientErrorReport(tl)
+            },
+            primaryOnly: true
         )
     }
 
     //------------------------
     // Implementation
     //------------------------
-    private void formatAndSendMonitorStatusReport(MonitorStatusReport report) {
+    private void sendMonitorStatusReport(MonitorStatusReport report) {
         if (!enabled) return
 
         sendSlackMessage("""
@@ -45,21 +45,19 @@ ${alertSummary(report)}
         """)
     }
 
-    private void formatAndSendClientReport(ClientError ce) {
+    private void sendClientErrorReport(TrackLog tl) {
         if (!enabled) return
-
-        def errorText = safeParseJSON(ce.error)?.message ?: ce.error
 
         sendSlackMessage("""
 Client Error Report:
-Error: ${StringUtils.elide(errorText, 80)}
-User: ${ce.username}
-Version: ${ce.appVersion}
-Environment: ${ce.appEnvironment}
-Browser: ${ce.browser}
-Device: ${ce.device}
-URL: ${ce.url}
-Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
+Error: ${tl.errorSummary}
+User: ${tl.username}
+Version: ${tl.appVersion}
+Environment: ${tl.appEnvironment}
+Browser: ${tl.browser}
+Device: ${tl.device}
+URL: ${tl.url}
+Time: ${tl.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
 ---------------------------------
         """)
     }
@@ -75,14 +73,6 @@ Time: ${ce.dateCreated.format('dd-MMM-yyyy HH:mm:ss')}
         post.setEntity(entity)
 
         client.executeAsMap(post)
-    }
-
-    private Map safeParseJSON(String errorText) {
-        try {
-            return JSONParser.parseObject(errorText)
-        } catch (Exception ignored) {
-            return null
-        }
     }
 
     private String alertSummary(MonitorStatusReport report) {
