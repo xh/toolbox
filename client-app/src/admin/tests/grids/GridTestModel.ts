@@ -65,7 +65,7 @@ export class GridTestModel extends HoistModel {
     includeCollapsedChildren = true;
 
     @bindable
-    @persist.with({path: 'gridPersistType', buffer: 500}) // test persist.with!
+    @persist.with({path: 'gridPersistType', debounce: 500}) // test persist.with!
     persistType = null;
 
     @managed
