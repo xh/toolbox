@@ -42,8 +42,19 @@ export class AuthModel extends HoistAuthModel {
         XH.fetchService.addDefaultHeaders(async opts => {
             if (opts.url.startsWith('http')) return null;
 
-            const idToken = await this.client.getIdTokenAsync();
-            return idToken ? {Authorization: `Bearer ${idToken.value}`} : null;
+            try {
+                const idToken = await this.client.getIdTokenAsync();
+                return {Authorization: `Bearer ${idToken.value}`};
+            } catch (e: any) {
+                if (e.name == 'Auth Expired') {
+                    XH.suspendApp({
+                        message: 'Your authentication has expired. Please reload now to continue.',
+                        reason: 'AUTH_EXPIRED'
+                    });
+                } else {
+                    throw e;
+                }
+            }
         });
 
         // Finally, make a request to check the auth-status on the server - that call will include the id token header
