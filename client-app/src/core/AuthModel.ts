@@ -48,8 +48,9 @@ export class AuthModel extends HoistAuthModel {
             } catch (e: any) {
                 if (e.name == 'Auth Expired') {
                     XH.suspendApp({
-                        message: 'Your authentication has expired. Please reload now to continue.',
-                        reason: 'AUTH_EXPIRED'
+                        reason: 'AUTH_EXPIRED',
+                        message: 'Your authentication has expired.',
+                        exception: e
                     });
                 } else {
                     throw e;
