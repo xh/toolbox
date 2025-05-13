@@ -53,6 +53,7 @@ export class AuthModel extends HoistAuthModel {
                         exception: e
                     });
                 } else {
+                    this.logDebug('Exception getting id token', e);
                     throw e;
                 }
             }
