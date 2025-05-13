@@ -23,7 +23,7 @@ export const individualBtns = hoistCmp.factory<FetchApiTestModel>(({model}) =>
                     }),
                     button({
                         icon: Icon.info(),
-                        onClick: () => XH.openInTab(`${model.referenceSite}${it.code}`),
+                        onClick: () => XH.openWindow(`${model.referenceSite}${it.code}`),
                         minimal: false
                     })
                 ]

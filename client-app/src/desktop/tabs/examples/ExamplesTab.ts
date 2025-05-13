@@ -86,7 +86,7 @@ const appTile = hoistCmp.factory<ExamplesTabModel>(({app, model}) => {
                     text: 'Source',
                     icon: Icon.code(),
                     onClick: () =>
-                        XH.openInTab(
+                        XH.openWindow(
                             toolboxUrl(`$TB/client-app/src/examples/${app.srcPath}`),
                             'toolboxSource'
                         )
@@ -94,7 +94,7 @@ const appTile = hoistCmp.factory<ExamplesTabModel>(({app, model}) => {
                 button({
                     text: 'Full Tab',
                     icon: Icon.openExternal(),
-                    onClick: () => XH.openInTab(`/${app.path}/`)
+                    onClick: () => XH.openWindow(`/${app.path}/`)
                 })
             ]
         }),
@@ -112,7 +112,7 @@ const sideBar = hoistCmp.factory<ExamplesTabModel>(({model}) => {
                     icon: app.icon,
                     active: isActive,
                     onClick: () =>
-                        isActive ? XH.openInTab(app.path) : (model.activeApp = app.title)
+                        isActive ? XH.openWindow(app.path) : (model.activeApp = app.title)
                 });
             }),
             filler(),

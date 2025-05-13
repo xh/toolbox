@@ -116,7 +116,7 @@ function getGitIcon(gitLinks) {
         gitIcon = Icon.icon({iconName: 'github', prefix: 'fab', size: '2x'});
 
     if (gitLinksList.length === 1) {
-        return button({icon: gitIcon, onClick: () => XH.openInTab(gitLinksList[0], 'gitlink')});
+        return button({icon: gitIcon, onClick: () => XH.openWindow(gitLinksList[0], 'gitlink')});
     } else {
         return popover({
             minimal: true,
@@ -133,7 +133,7 @@ function getGitMenuItems(gitLinks) {
         return menuItem({
             text: link,
             icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
-            onClick: () => XH.openInTab(link, 'gitlink')
+            onClick: () => XH.openWindow(link, 'gitlink')
         });
     });
 }

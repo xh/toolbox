@@ -28,7 +28,7 @@ export class ActivityWidgetModel extends HoistModel {
             tooltip: 'Open on Github',
             icon: Icon.icon({iconName: 'github', prefix: 'fab'}),
             displayFn: ({record}) => ({disabled: !record?.data?.url}),
-            actionFn: ({record}) => XH.openInTab(record.data.url, 'gitlink')
+            actionFn: ({record}) => XH.openWindow(record.data.url, 'gitlink')
         };
 
         this.gridModel = new GridModel({
@@ -181,7 +181,7 @@ export class ActivityWidgetModel extends HoistModel {
 
     private onRowDoubleClicked = params => {
         const rec = params.data;
-        if (rec?.isRecord) XH.openInTab(rec.data.url, 'gitlink');
+        if (rec?.isRecord) XH.openWindow(rec.data.url, 'gitlink');
     };
 
     private setGroupBy(groupBy) {
