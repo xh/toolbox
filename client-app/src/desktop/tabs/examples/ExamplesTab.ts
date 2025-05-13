@@ -1,5 +1,5 @@
 import {div, filler, frame, hframe, iframe} from '@xh/hoist/cmp/layout';
-import {creates, hoistCmp} from '@xh/hoist/core';
+import {creates, hoistCmp, XH} from '@xh/hoist/core';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar} from '@xh/hoist/desktop/cmp/toolbar';
@@ -86,12 +86,15 @@ const appTile = hoistCmp.factory<ExamplesTabModel>(({app, model}) => {
                     text: 'Source',
                     icon: Icon.code(),
                     onClick: () =>
-                        window.open(toolboxUrl(`$TB/client-app/src/examples/${app.srcPath}`))
+                        XH.openInTab(
+                            toolboxUrl(`$TB/client-app/src/examples/${app.srcPath}`),
+                            'toolboxSource'
+                        )
                 }),
                 button({
                     text: 'Full Tab',
                     icon: Icon.openExternal(),
-                    onClick: () => window.open(`/${app.path}/`)
+                    onClick: () => XH.openInTab(`/${app.path}/`)
                 })
             ]
         }),
@@ -109,7 +112,7 @@ const sideBar = hoistCmp.factory<ExamplesTabModel>(({model}) => {
                     icon: app.icon,
                     active: isActive,
                     onClick: () =>
-                        isActive ? window.open(app.path) : (model.activeApp = app.title)
+                        isActive ? XH.openInTab(app.path) : (model.activeApp = app.title)
                 });
             }),
             filler(),

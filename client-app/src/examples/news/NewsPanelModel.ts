@@ -81,6 +81,6 @@ export class NewsPanelModel extends HoistModel {
 
     private onRowDoubleClicked({data: record}) {
         const url = record.get('url');
-        if (url) window.open(url, '_blank');
+        if (url) XH.openInTab(url, 'tb-news');
     }
 }

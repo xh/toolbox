@@ -1,4 +1,4 @@
-import {hoistCmp} from '@xh/hoist/core';
+import {hoistCmp, XH} from '@xh/hoist/core';
 import {Icon} from '@xh/hoist/icon';
 import {hframe, vframe} from '@xh/hoist/cmp/layout';
 import {button} from '@xh/hoist/desktop/cmp/button';
@@ -23,7 +23,7 @@ export const individualBtns = hoistCmp.factory<FetchApiTestModel>(({model}) =>
                     }),
                     button({
                         icon: Icon.info(),
-                        onClick: () => window.open(`${model.referenceSite}${it.code}`),
+                        onClick: () => XH.openInTab(`${model.referenceSite}${it.code}`),
                         minimal: false
                     })
                 ]
