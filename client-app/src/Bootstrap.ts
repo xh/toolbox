@@ -25,8 +25,6 @@ declare module '@xh/hoist/core' {
         portfolioService: PortfolioService;
         taskService: TaskService;
     }
-    // @ts-ignore - Help IntelliJ recognize uses of injected service methods on the `XH` singleton.
-    export const XH: XHApi;
 
     export interface HoistUser {
         profilePicUrl: string;

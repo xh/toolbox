@@ -2,6 +2,9 @@
 
 ## 7.0-SNAPSHOT - unreleased
 
+### Libraries
+* typescript 5.8
+
 ## v6.2.0 - 2025-04-08
 
 ### New Features
