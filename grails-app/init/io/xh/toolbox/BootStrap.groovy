@@ -56,8 +56,6 @@ class BootStrap implements LogSupport {
             }
 
             logInfo("Local admin user available as per instanceConfig", adminUsername)
-        } else {
-            logWarn("Default admin user not created. To provide admin access, specify credentials in a toolbox.yml instance config file.")
         }
     }
 
