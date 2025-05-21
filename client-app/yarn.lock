@@ -119,17 +119,17 @@
   resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-2.1.3.tgz#aabf6f439e41edbeef0cf4766ad754e5b47616e5"
   integrity sha512-NMTBNuuG4g3rame1aCnNS5qFYIzsTUV5qTFPRfTyYFS1feS6jsCBR+eTq9YkxCp1yuoM2UIcjunPaoPl77U9xQ==
 
-"@azure/msal-browser@~4.8.0":
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-4.8.0.tgz#888e5a375c07fe345eaf09e88b5f40c48b494b2d"
-  integrity sha512-z7kJlMW3IAETyq82LDKJqr++IeOvU728q9lkuTFjEIPUWxnB1OlmuPCF32fYurxOnOnJeFEZxjbEzq8xyP0aag==
+"@azure/msal-browser@~4.12.0":
+  version "4.12.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-4.12.0.tgz#0f6568c40fc1bef4153a1f29fce1fc6ff09d75b4"
+  integrity sha512-WD1lmVWchg7wn1mI7Tr4v7QPyTwK+8Nuyje3jRpOFENLRLEBsdK8VVdTw3C+TypZmYn4cOAdj3zREnuFXgvfIA==
   dependencies:
-    "@azure/msal-common" "15.3.0"
+    "@azure/msal-common" "15.6.0"
 
-"@azure/msal-common@15.3.0":
-  version "15.3.0"
-  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-15.3.0.tgz#cc75760f7929588b261b970a1dd1d292d0efdbc8"
-  integrity sha512-lh+eZfibGwtQxFnx+mj6cYWn0pwA8tDnn8CBs9P21nC7Uw5YWRwfXaXdVQSMENZ5ojRqR+NzRaucEo4qUvs3pA==
+"@azure/msal-common@15.6.0":
+  version "15.6.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-15.6.0.tgz#0764d6446eeff3970221995e25f265fdb218da66"
+  integrity sha512-EotmBz42apYGjqiIV9rDUdptaMptpTn4TdGf3JfjLvFvinSe9BJ6ywU92K9ky+t/b0ghbeTSe9RfqlgLh8f2jA==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.27.1":
   version "7.27.1"
@@ -2107,13 +2107,13 @@
     webpack-dev-server "~5.2.0"
     webpackbar "~7.0.0"
 
-"@xh/hoist@^73.0.0-SNAPSHOT":
-  version "73.0.0-SNAPSHOT.1747346637442"
-  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-73.0.0-SNAPSHOT.1747346637442.tgz#0b84c712039251a57c194de3475596fc6090427f"
-  integrity sha512-Kcqj4vDDqLpo6u9QWCR/R5W3/ljofH7QAikHnFKGjOUd+W7zhJz99X7zgL7niMo7WE62u+N0pnz1mG4SQibgPA==
+"@xh/hoist@73.0.1":
+  version "73.0.1"
+  resolved "https://registry.yarnpkg.com/@xh/hoist/-/hoist-73.0.1.tgz#5d433acf128dbdb23372801eb47504f67fd8297c"
+  integrity sha512-irQJRcS8rO8d8pZbY5UOKpDuvliKn9jfIC91wPexFNZpforzdtTSXi7S5UQ0sIiBHZB3xKnJZWfAgo0YsEZUww==
   dependencies:
     "@auth0/auth0-spa-js" "~2.1.3"
-    "@azure/msal-browser" "~4.8.0"
+    "@azure/msal-browser" "~4.12.0"
     "@blueprintjs/core" "^5.10.5"
     "@blueprintjs/datetime" "^5.3.7"
     "@blueprintjs/datetime2" "^2.3.7"
