@@ -1,5 +1,7 @@
 # Changelog
 
+## v7.0-SNAPSHOT - unreleased
+
 ## v6.3.0 - 2025-05-21
 
 ### Libraries
