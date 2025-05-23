@@ -1,6 +1,6 @@
 import {createRef} from 'react';
-import {flatMapDeep} from 'lodash';
-import {GridModel} from '@xh/hoist/cmp/grid';
+import {flatMapDeep, values} from 'lodash';
+import {GridModel, createGridOpenToDepthMenuItem} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {GroupingChooserModel} from '@xh/hoist/desktop/cmp/grouping';
 import {fragment} from '@xh/hoist/cmp/layout';
@@ -111,6 +111,14 @@ export class SampleTreeGridModel extends HoistModel {
     }
 
     private createGridModel(includeCheckboxes) {
+        const contextMenuConf = GridModel.defaultContextMenu,
+            nodeLevelLabelFn = () => {
+                const dims = values(this.groupingChooserModel.dimensions),
+                    dimLength = this.groupingChooserModel.value.length,
+                    labels = dims.slice(0, dimLength).map(it => it.displayName);
+
+                return labels;
+            };
         return new GridModel({
             treeMode: true,
             showSummary: 'bottom',
@@ -124,6 +132,11 @@ export class SampleTreeGridModel extends HoistModel {
             emptyText: 'No records found...',
             colChooserModel: true,
             enableExport: true,
+            contextMenu: contextMenuConf.map(it => {
+                return it === 'expandCollapseAll'
+                    ? createGridOpenToDepthMenuItem(nodeLevelLabelFn)
+                    : it;
+            }),
             columns: [
                 {
                     ...nameCol,
