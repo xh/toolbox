@@ -31,7 +31,7 @@ export class PositionsGridModel extends HoistModel {
                 const {groupingChooserModel} = parentModel,
                     {dimensions} = groupingChooserModel,
                     groupings = groupingChooserModel.value,
-                    labels = groupings.map(it => dimensions[it].displayName);
+                    labels = groupings.map((it: string) => dimensions[it].displayName);
 
                 return labels;
             },
