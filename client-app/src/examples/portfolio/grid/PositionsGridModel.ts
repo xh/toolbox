@@ -2,7 +2,6 @@ import {GridModel, TreeStyle} from '@xh/hoist/cmp/grid';
 import {HoistModel, managed} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {capitalize} from 'lodash';
-
 import {mktValCol, nameCol, pnlCol} from '../../../core/columns';
 import {PortfolioModel} from '../PortfolioModel';
 
