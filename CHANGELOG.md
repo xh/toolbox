@@ -1,8 +1,12 @@
 # Changelog
 
-## 7.0-SNAPSHOT - unreleased
+## v7.0-SNAPSHOT - unreleased
+
+## v6.3.0 - 2025-05-21
 
 ### Libraries
+* hoist-core 31.0.1
+* @xh/hoist 73.0.1
 * typescript 5.8
 
 ## v6.2.0 - 2025-04-08
