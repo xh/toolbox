@@ -30,6 +30,7 @@ export class SplitTreeMapPanelModel extends HoistModel {
         sortBy: 'pnl|desc|abs',
         emptyText: 'No records found...',
         selModel: 'multiple',
+        levelLabels: () => this.groupingChooserModel.getLevelLabels(),
         store: {
             processRawData: r => {
                 return {
