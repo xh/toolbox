@@ -1,5 +1,6 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {Icon} from '@xh/hoist/icon';
 import {observable, makeObservable, runInAction, bindable} from '@xh/hoist/mobx';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
@@ -9,7 +10,33 @@ export class LineChartModel extends HoistModel {
     @observable.ref symbols: string[] = [];
 
     @managed
-    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
+    chartModel = new ChartModel({
+        highchartsConfig: this.getChartModelCfg(),
+        contextMenu: [
+            'viewFullscreen',
+            'copyToClipboard',
+            'printChart',
+            '-',
+            {
+                text: 'Images',
+                items: ['downloadJPEG', 'downloadPNG', 'downloadSVG', 'downloadPDF']
+            },
+            '-',
+            {
+                text: 'Data',
+                items: ['downloadCSV', 'downloadXLS']
+            },
+            '-',
+            {
+                text: 'Sample Custom Function',
+                icon: Icon.json(),
+                actionFn: (e, cm) =>
+                    XH.successToast({
+                        message: `You launched a toast from chart.  This custom function has access to the click event and chartModel.`
+                    })
+            }
+        ]
+    });
 
     constructor() {
         super();
