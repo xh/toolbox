@@ -1,5 +1,6 @@
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
+import {Icon} from '@xh/hoist/icon';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {fmtDate, fmtPrice} from '@xh/hoist/format';
 import {isEmpty} from 'lodash';
@@ -10,7 +11,37 @@ export class OHLCChartModel extends HoistModel {
     @bindable aspectRatio: number = null;
 
     @managed
-    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
+    chartModel = new ChartModel({
+        highchartsConfig: this.getChartModelCfg(),
+        contextMenu: [
+            'viewFullscreen',
+            'copyToClipboard',
+            'printChart',
+            '-',
+            {
+                text: 'Images',
+                items: ['downloadJPEG', 'downloadPNG', 'downloadSVG', 'downloadPDF']
+            },
+            '-',
+            {
+                text: 'Data',
+                items: ['downloadCSV', 'downloadXLS']
+            },
+            '-',
+            {
+                text: 'Sample Custom Function',
+                icon: Icon.json(),
+                actionFn: (e, cm) => {
+                    XH.successToast({
+                        message: `You launched a toast from chart.
+                        This custom function has access to the click event and chartModel.`
+                    });
+                    console.dir(e);
+                    console.dir(cm);
+                }
+            }
+        ]
+    });
 
     constructor() {
         super();
