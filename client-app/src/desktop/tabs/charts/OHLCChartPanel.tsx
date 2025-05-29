@@ -1,7 +1,7 @@
 import {chart} from '@xh/hoist/cmp/chart';
 import {filler, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {button} from '@xh/hoist/desktop/cmp/button/index';
+import {button} from '@xh/hoist/desktop/cmp/button';
 import {numberInput, select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {toolbar, toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
