@@ -41,7 +41,7 @@ export class OHLCChartModel extends HoistModel {
                                   div(`Y: ${point.y}`)
                               ]
                             : [
-                                  'Custom chart menu items have access to the clicked point in the series, when you click on a series.'
+                                  'Custom chart menu items have access to the clicked point in the series, when a point is active when opening the context menu.'
                               ]
                     });
                     XH.successToast({message});
