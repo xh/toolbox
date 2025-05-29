@@ -1,3 +1,4 @@
+import {div} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {Icon} from '@xh/hoist/icon';
@@ -31,13 +32,19 @@ export class OHLCChartModel extends HoistModel {
             {
                 text: 'Sample Custom Function',
                 icon: Icon.json(),
-                actionFn: (e, cm) => {
-                    XH.successToast({
-                        message: `You launched a toast from chart.
-                        This custom function has access to the click event and chartModel.`
+                actionFn: (e, contextMenuClickEvt, cm, point) => {
+                    const message = div({
+                        items: point
+                            ? [
+                                  'Custom chart menu items have access to the clicked point in the series.',
+                                  div(`X: ${fmtDate(point.x)}`),
+                                  div(`Y: ${point.y}`)
+                              ]
+                            : [
+                                  'Custom chart menu items have access to the clicked point in the series, when you click on a series.'
+                              ]
                     });
-                    console.dir(e);
-                    console.dir(cm);
+                    XH.successToast({message});
                 }
             }
         ]
