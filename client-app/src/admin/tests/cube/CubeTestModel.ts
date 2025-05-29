@@ -114,6 +114,16 @@ export class CubeTestModel extends HoistModel {
             enableExport: true,
             rowBorders: true,
             showHover: true,
+            levelLabels: () => {
+                const {dimManagerModel} = this,
+                    {groupingChooserModel} = dimManagerModel,
+                    groupings = dimManagerModel.value,
+                    labels = groupings.map((it: string) =>
+                        groupingChooserModel.getDimDisplayName(it)
+                    );
+
+                return labels;
+            },
             columns: [
                 {
                     field: 'id',
