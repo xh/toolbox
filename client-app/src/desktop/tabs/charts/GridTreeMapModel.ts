@@ -37,7 +37,7 @@ export class GridTreeMapModel extends HoistModel {
             },
             fields: [{name: 'pnlMktVal', type: 'number', displayName: 'P&L / Mkt Val'}]
         },
-        levelLabels: () => this.groupingChooserModel.getLevelLabels(),
+        levelLabels: () => this.groupingChooserModel.getValueDisplayNames(),
         columns: [{...nameCol, isTreeColumn: true}, {...mktValCol}, {...pnlCol}]
     });
 

@@ -124,7 +124,7 @@ export class SampleTreeGridModel extends HoistModel {
             emptyText: 'No records found...',
             colChooserModel: true,
             enableExport: true,
-            levelLabels: () => this.groupingChooserModel.getLevelLabels(),
+            levelLabels: () => this.groupingChooserModel.getValueDisplayNames(),
             columns: [
                 {
                     ...nameCol,

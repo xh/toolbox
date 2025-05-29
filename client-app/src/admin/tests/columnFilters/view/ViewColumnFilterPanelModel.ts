@@ -153,7 +153,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
             colDefaults: {filterable: true},
             filterModel: {bind: view},
             levelLabels: () => {
-                const labels = this.groupingChooserModel.getLevelLabels();
+                const labels = this.groupingChooserModel.getValueDisplayNames();
                 return [...labels, 'Orders'];
             },
             columns: [
