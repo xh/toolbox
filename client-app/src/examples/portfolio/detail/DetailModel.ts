@@ -37,7 +37,7 @@ export class DetailModel extends HoistModel {
 
         this.dashModel = new DashContainerModel({
             showMenuButton: true,
-            persistWith: {...persistWith, path: 'detailDash'},
+            persistWith: {...persistWith, path: 'detailDash', settleTime: 1500},
             viewSpecs: [
                 {
                     id: 'orders',
