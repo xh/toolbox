@@ -1,4 +1,5 @@
 import {checkboxRenderer, GridModel, localDateCol} from '@xh/hoist/cmp/grid';
+import {div, p} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {dateIs, lengthIs, numberIs, required, Store, StoreRecord} from '@xh/hoist/data';
 import {
@@ -16,7 +17,7 @@ import {Icon} from '@xh/hoist/icon';
 import {action, bindable, makeObservable, observable} from '@xh/hoist/mobx';
 import {wait} from '@xh/hoist/promise';
 import {LocalDate} from '@xh/hoist/utils/datetime';
-import {isEmpty, isNil, max} from 'lodash';
+import {isEmpty, isNil, max, omit} from 'lodash';
 
 export class InlineEditingPanelModel extends HoistModel {
     @bindable
@@ -330,6 +331,41 @@ export class InlineEditingPanelModel extends HoistModel {
                     editor: textAreaEditor,
                     editorIsPopup: true,
                     omit: this.fullRowEditing
+                },
+                {
+                    ...actionCol,
+                    colId: 'modifiedInfo',
+                    width: calcActionColWidth(1),
+                    actions: [
+                        {
+                            icon: Icon.infoCircle(),
+                            intent: 'primary',
+                            displayFn: () => ({
+                                icon: Icon.infoCircle()
+                            })
+                        }
+                    ],
+                    tooltip: (val, {record}) => {
+                        const modified = omit(record.modifiedValues, ['id']);
+                        if (isEmpty(modified))
+                            return p({
+                                className: 'xh-pad xh-border xh-bg',
+                                children: 'Row has no changes'
+                            });
+
+                        return div({
+                            className: 'xh-pad xh-border xh-bg',
+                            items: [
+                                p({
+                                    className: 'xh-bold xh-pad-bottom xh-border-bottom',
+                                    children: 'Changes in row'
+                                }),
+                                ...Object.entries(modified).map(([k, v]) =>
+                                    p({children: `${k}: ${v}`})
+                                )
+                            ]
+                        });
+                    }
                 }
             ]
         });
