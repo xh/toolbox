@@ -101,7 +101,7 @@ class ZoneGridPanelModel extends HoistModel {
             } else {
                 return ['Win/Lose', 'City', 'Company'];
             }
-            // Any other case handled by the gridModel.
+            // Any other case handled by Expand All/Collapse All
         },
         groupSortFn: (a, b, groupField) => {
             if (a === b) return 0;
