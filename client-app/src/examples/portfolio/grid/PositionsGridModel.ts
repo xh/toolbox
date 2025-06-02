@@ -25,7 +25,6 @@ export class PositionsGridModel extends HoistModel {
         this.parentModel = parentModel;
         this.persistWith = this.parentModel.persistWith;
 
-        // Done
         this.gridModel = new GridModel({
             persistWith: {...this.persistWith, path: 'portfolioGrid'},
             levelLabels: () => this.parentModel.groupingChooserModel.getValueDisplayNames(),

@@ -93,6 +93,16 @@ class ZoneGridPanelModel extends HoistModel {
                 };
             }
         },
+        levelLabels: () => {
+            const {groupBy} = this;
+
+            if (groupBy === 'city/winLose') {
+                return ['City', 'Win/Lose', 'Company'];
+            } else {
+                return ['Win/Lose', 'City', 'Company'];
+            }
+            // Any other case handled by the gridModel.
+        },
         groupSortFn: (a, b, groupField) => {
             if (a === b) return 0;
             if (groupField === 'winLose') {

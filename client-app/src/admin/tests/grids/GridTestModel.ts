@@ -187,7 +187,6 @@ export class GridTestModel extends HoistModel {
             }
         }
 
-        // Done
         return new GridModel({
             persistWith: persistType ? {[persistType]: PERSIST_KEY} : null,
             selModel: {mode: 'multiple'},

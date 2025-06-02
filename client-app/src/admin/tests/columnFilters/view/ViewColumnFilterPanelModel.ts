@@ -136,8 +136,6 @@ export class ViewColumnFilterPanelModel extends HoistModel {
 
     private createGridModel() {
         const {view} = this;
-
-        // Done
         return new GridModel({
             treeMode: true,
             store: {
