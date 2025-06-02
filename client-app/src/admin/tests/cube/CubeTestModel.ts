@@ -103,6 +103,7 @@ export class CubeTestModel extends HoistModel {
     }
 
     private createGridModel() {
+        // Done
         return new GridModel({
             treeMode: true,
             treeStyle: TreeStyle.HIGHLIGHTS_AND_BORDERS,

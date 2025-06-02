@@ -27,6 +27,7 @@ export class DimensionManagerModel extends HoistModel {
             initialValue: this.defaultDims[0]
         });
 
+        // Done
         this.gridModel = new GridModel({
             groupBy: 'type',
             sortBy: 'displayName',

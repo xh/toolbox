@@ -12,6 +12,8 @@ export class WebSocketTestModel extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
+
+        // Done
         this.gridModel = new GridModel({
             sortBy: [{colId: 'timestamp', sort: 'desc'}],
             emptyText: 'No updates received',
