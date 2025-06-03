@@ -1,24 +1,55 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
+import {div, hr} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {fmtDate} from '@xh/hoist/format';
 import {observable, makeObservable, runInAction, bindable} from '@xh/hoist/mobx';
+import {Icon} from '@xh/hoist/icon';
+import {pluralize} from '@xh/hoist/utils/js';
 import Highcharts from 'highcharts/highstock';
 import {isEmpty} from 'lodash';
 
 export class LineChartModel extends HoistModel {
-    @bindable currentSymbol: string = '';
+    @bindable currentSymbols: string[] = [];
     @observable.ref symbols: string[] = [];
 
+    @bindable currentContextMenu = null;
+    contextMenuOptions = [
+        {
+            label: 'Default',
+            value: null
+        },
+        {
+            label: 'None',
+            value: false
+        },
+        {
+            label: 'Custom',
+            value: 'custom'
+        }
+    ];
+
     @managed
-    chartModel = new ChartModel({highchartsConfig: this.getChartModelCfg()});
+    @observable.ref
+    chartModel: ChartModel;
 
     constructor() {
         super();
         makeObservable(this);
 
         this.addReaction({
-            track: () => this.currentSymbol,
+            track: () => this.currentSymbols,
             run: () => this.loadAsync()
         });
+
+        this.addReaction({
+            track: () => this.currentContextMenu,
+            run: () => {
+                this.chartModel = this.getChartModel();
+                this.loadAsync();
+            }
+        });
+
+        this.chartModel = this.getChartModel();
     }
 
     override async doLoadAsync(loadSpec) {
@@ -27,26 +58,40 @@ export class LineChartModel extends HoistModel {
             runInAction(() => (this.symbols = symbols.slice(0, 5)));
         }
 
-        if (!this.currentSymbol) {
-            runInAction(() => (this.currentSymbol = this.symbols[0]));
+        if (isEmpty(this.currentSymbols)) {
+            runInAction(() => (this.currentSymbols = [this.symbols[0]]));
             return; // Reaction to `currentSymbol` value change will trigger final run.
         }
 
-        let series =
-            (await XH.portfolioService
-                .getLineChartSeriesAsync({
-                    symbol: this.currentSymbol,
-                    dimension: 'close',
-                    loadSpec
-                })
-                .catchDefault()) ?? {};
+        let series = await Promise.all(
+            this.currentSymbols.map(
+                it =>
+                    XH.portfolioService
+                        .getLineChartSeriesAsync({
+                            symbol: it,
+                            dimension: 'close',
+                            loadSpec
+                        })
+                        .catchDefault() ?? {}
+            )
+        );
 
-        Object.assign(series, {
+        Object.assign(series[0], {
             type: 'area',
             animation: true
         });
 
         this.chartModel.setSeries(series);
+    }
+
+    private getChartModel() {
+        return new ChartModel({
+            highchartsConfig: this.getChartModelCfg(),
+            contextMenu:
+                this.currentContextMenu === 'custom'
+                    ? this.customContextMenu
+                    : this.currentContextMenu
+        });
     }
 
     private getChartModelCfg() {
@@ -57,6 +102,7 @@ export class LineChartModel extends HoistModel {
             rangeSelector: {enabled: true},
             exporting: {enabled: false},
             legend: {enabled: false},
+            tooltip: {shared: true},
             scrollbar: {enabled: false},
             xAxis: {type: 'datetime'},
             yAxis: {title: {text: 'USD'}},
@@ -78,4 +124,46 @@ export class LineChartModel extends HoistModel {
             }
         };
     }
+
+    private customContextMenu = [
+        'viewFullscreen',
+        'copyToClipboard',
+        'printChart',
+        '-',
+        {
+            text: 'Images',
+            items: ['downloadJPEG', 'downloadPNG', 'downloadSVG', 'downloadPDF']
+        },
+        '-',
+        {
+            text: 'Data',
+            items: ['downloadCSV', 'downloadXLS']
+        },
+        '-',
+        {
+            text: 'Sample Custom Function',
+            icon: Icon.json(),
+            actionFn: (menuItemEvent, contextMenuEvent, params) => {
+                const {point, points} = params,
+                    otherPtsCount = points.length - 1,
+                    message = div({
+                        items: point
+                            ? [
+                                  'Custom chart menu items have access to the clicked point(s) in the series.',
+                                  div(`${point.series.name}: (${fmtDate(point.x)}, ${point.y})`),
+                                  ...(!otherPtsCount
+                                      ? []
+                                      : [
+                                            hr(),
+                                            `${otherPtsCount} other ${pluralize('point', otherPtsCount)} available.`
+                                        ])
+                              ]
+                            : [
+                                  'Custom chart menu items have access to the clicked point in the series, when a point is active when opening the context menu.'
+                              ]
+                    });
+                XH.successToast({message});
+            }
+        }
+    ];
 }

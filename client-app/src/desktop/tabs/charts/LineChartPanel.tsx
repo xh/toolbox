@@ -1,5 +1,5 @@
 import {chart} from '@xh/hoist/cmp/chart';
-import {span} from '@xh/hoist/cmp/layout';
+import {filler, span} from '@xh/hoist/cmp/layout';
 import {creates, hoistCmp} from '@xh/hoist/core';
 import {select} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
@@ -62,10 +62,18 @@ const tbar = hoistCmp.factory<LineChartModel>(({model}) => {
     return toolbar(
         span('Symbol'),
         select({
-            bind: 'currentSymbol',
+            bind: 'currentSymbols',
             options: model.symbols,
             enableFilter: false,
-            width: 120
+            enableMulti: true,
+            width: '40%'
+        }),
+        filler(),
+        span('Chart Context Menu'),
+        select({
+            bind: 'currentContextMenu',
+            options: model.contextMenuOptions,
+            enableFilter: false
         })
     );
 });
