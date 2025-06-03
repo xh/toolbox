@@ -32,7 +32,8 @@ export class OHLCChartModel extends HoistModel {
             {
                 text: 'Sample Custom Function',
                 icon: Icon.json(),
-                actionFn: (e, contextMenuClickEvt, cm, point) => {
+                actionFn: (menuItemEvent, contextMenuEvent, params) => {
+                    const {point} = params;
                     const message = div({
                         items: point
                             ? [
