@@ -84,6 +84,31 @@ export const basicPanel = hoistCmp.factory({
                         text: 'Decrease Text Size',
                         icon: Icon.minusCircle(),
                         actionFn: () => model.changeTextSize(false)
+                    },
+                    {
+                        text: 'Lookup',
+                        icon: Icon.book(),
+                        prepareFn: (item, contextMenuEvent) => {
+                            const word = model.getWordAtEvent(contextMenuEvent);
+
+                            if (word) {
+                                item.text = `Lookup "${word}"`;
+                                item.hidden = false;
+                                return;
+                            }
+
+                            // reset to defaults
+                            item.text = 'Lookup';
+                            item.hidden = true;
+                        },
+                        actionFn: (e, contextMenuEvent) => {
+                            console.log(contextMenuEvent);
+                            const word = model.getWordAtEvent(contextMenuEvent);
+                            window.open(
+                                `https://www.merriam-webster.com/dictionary/${word}`,
+                                '_blank'
+                            );
+                        }
                     }
                 ],
                 tbar: [

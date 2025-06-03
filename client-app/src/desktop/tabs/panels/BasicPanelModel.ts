@@ -1,3 +1,4 @@
+import {MouseEvent} from 'react';
 import {HoistModel} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 
@@ -29,5 +30,39 @@ export class BasicPanelModel extends HoistModel {
             currentSize = parseFloat(fontSize);
 
         el.style.fontSize = `${currentSize + (up ? 1 : -1)}px`;
+    }
+
+    getWordAtEvent(e: MouseEvent | PointerEvent): string {
+        const range = document.caretPositionFromPoint?.(e.clientX, e.clientY);
+        if (!range) return null;
+
+        const textNode = range.offsetNode;
+
+        // Only split TEXT_NODEs
+        if (textNode?.nodeType === 3) {
+            const offset = range.offset,
+                text = textNode.nodeValue,
+                wordCharRegex = /[a-zA-Z0-9_]/;
+
+            let start = offset;
+            let end = offset;
+
+            // Expand backwards to find the start of the word
+            while (start > 0 && wordCharRegex.test(text[start - 1])) {
+                start--;
+            }
+
+            // Expand forwards to find the end of the word
+            while (end < text.length && wordCharRegex.test(text[end])) {
+                end++;
+            }
+
+            // If the character at the offset wasn't a word character, or no word was found
+            if (start === end || !wordCharRegex.test(text[offset])) {
+                return null;
+            }
+
+            return text.substring(start, end);
+        }
     }
 }
