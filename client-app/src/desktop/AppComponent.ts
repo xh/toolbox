@@ -40,7 +40,7 @@ export const AppComponent = hoistCmp({
                     onKeyDown: () => model.goHome()
                 }
             ],
-            item: tabContainer(),
+            item: tabContainer({className: 'tb-tab'}),
             mask: 'onLoad'
         });
     }
