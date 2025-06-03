@@ -104,7 +104,6 @@ export class ViewManagerTestModel extends HoistModel {
                 {name: 'enableAutoSave', initialValue: true},
                 {name: 'enableDefault', initialValue: true},
                 {name: 'initialViewName', initialValue: null},
-                {name: 'settleTime', initialValue: 1000},
                 {name: 'showSaveButton', initialValue: 'whenDirty'},
                 {name: 'showRevertButton', initialValue: 'never'},
                 {name: 'buttonSide', initialValue: 'right'},
@@ -135,8 +134,7 @@ export class ViewManagerTestModel extends HoistModel {
                 enableSharing,
                 enableDefault,
                 enableAutoSave,
-                initialViewName,
-                settleTime
+                initialViewName
             } = data;
 
         const newModel = await ViewManagerModel.createAsync({
@@ -149,7 +147,6 @@ export class ViewManagerTestModel extends HoistModel {
             enableSharing,
             enableDefault,
             enableAutoSave,
-            settleTime,
             initialViewSpec: views => views.find(v => v.name == initialViewName) ?? views[0]
         });
 
