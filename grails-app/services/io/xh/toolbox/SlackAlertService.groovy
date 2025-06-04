@@ -26,7 +26,7 @@ class SlackAlertService extends BaseService {
         subscribeToTopic(
             topic: 'xhTrackReceived',
             onMessage: {TrackLog tl ->
-                if (tl.category == 'Client Error') sendClientErrorReport(tl)
+                if (tl.isClientError) sendClientErrorReport(tl)
             },
             primaryOnly: true
         )
