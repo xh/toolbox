@@ -70,122 +70,13 @@ export class AppModel extends BaseAppModel {
     static instance: AppModel;
 
     @managed
-    tabModel: TabContainerModel = new TabContainerModel({
-        route: 'default',
-        track: true,
-        switcher: false,
-        tabs: [
-            {id: 'home', icon: Icon.home(), content: homeTab},
-            {
-                id: 'grids',
-                icon: Icon.grid(),
-                children: [
-                    {id: 'standard', content: standardGridPanel},
-                    {id: 'tree', content: treeGridPanel},
-                    {id: 'columnFiltering', content: columnFilteringPanel},
-                    {id: 'inlineEditing', content: inlineEditingPanel},
-                    {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
-                    {id: 'dataview', title: 'DataView', content: dataViewPanel},
-                    {
-                        id: 'treeWithCheckBox',
-                        title: 'Tree w/CheckBox',
-                        content: treeGridWithCheckboxPanel
-                    },
-                    {id: 'groupedCols', title: 'Grouped Columns', content: columnGroupsGridPanel},
-                    {id: 'externalSort', content: externalSortGridPanel},
-                    {id: 'rest', title: 'REST Editor', content: restGridPanel},
-                    {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
-                ],
-                switcher: {orientation: 'left'}
-            },
-            {
-                id: 'panels',
-                icon: Icon.window(),
-                switcher: {orientation: 'left'},
-                children: [
-                    {id: 'intro', content: basicPanel},
-                    {id: 'toolbars', content: toolbarPanel},
-                    {id: 'sizing', content: panelSizingPanel},
-                    {id: 'mask', content: maskPanel},
-                    {id: 'loadingIndicator', content: loadingIndicatorPanel}
-                ]
-            },
-            {
-                id: 'layout',
-                icon: Icon.layout(),
-                switcher: {orientation: 'left'},
-                children: [
-                    {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
-                    {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
-                    {id: 'tabPanel', title: 'TabContainer', content: tabPanelContainerPanel},
-                    {id: 'dashContainer', title: 'DashContainer', content: dashContainerPanel},
-                    {id: 'dashCanvas', title: 'DashCanvas', content: dashCanvasPanel},
-                    {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
-                    {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
-                ]
-            },
-            {
-                id: 'forms',
-                icon: Icon.edit(),
-                switcher: {orientation: 'left'},
-                children: [
-                    {id: 'form', title: 'FormModel', content: formPanel},
-                    {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
-                    {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
-                ]
-            },
-            {
-                id: 'charts',
-                icon: Icon.chartLine(),
-                switcher: {orientation: 'left'},
-                children: [
-                    {id: 'line', content: lineChartPanel},
-                    {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
-                    {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
-                    {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
-                    {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
-                ]
-            },
-            {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
-            {
-                id: 'other',
-                icon: Icon.boxFull(),
-                switcher: {orientation: 'left'},
-                children: [
-                    {id: 'appNotifications', content: appNotificationsPanel},
-                    {id: 'buttons', content: buttonsPanel},
-                    {id: 'clock', content: clockPanel},
-                    {id: 'customPackage', content: customPackagePanel},
-                    {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
-                    {
-                        id: 'exceptionHandler',
-                        title: 'Exception Handling',
-                        content: exceptionHandlerPanel
-                    },
-                    {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
-                    {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
-                    {id: 'formatDates', content: dateFormatsPanel},
-                    {id: 'formatNumbers', content: numberFormatsPanel},
-                    {id: 'icons', content: iconsPanel},
-                    {id: 'inspector', content: inspectorPanel},
-                    {
-                        id: 'leftRightChooser',
-                        title: 'LeftRightChooser',
-                        content: leftRightChooserPanel
-                    },
-                    {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
-                    {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
-                    {id: 'popups', content: popupsPanel},
-                    {id: 'timestamp', content: relativeTimestampPanel},
-                    {id: 'simpleRouting', content: simpleRoutingPanel}
-                ]
-            },
-            {id: 'examples', icon: Icon.books(), content: examplesTab}
-        ]
-    });
+    tabModel: TabContainerModel;
 
     override async initAsync() {
         await super.initAsync();
+        this.tabModel = new TabContainerModel(
+            XH.navigationManager.getTabContainerConfig({track: true, switcher: false})
+        );
         await XH.installServicesAsync(GitHubService, PortfolioService);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
@@ -225,13 +116,7 @@ export class AppModel extends BaseAppModel {
     }
 
     override getRoutes() {
-        return [
-            {
-                name: 'default',
-                path: '/app',
-                children: this.tabModel.tabRoutes
-            }
-        ];
+        return XH.navigationManager.routes;
     }
 
     override getAboutDialogItems() {
@@ -246,5 +131,143 @@ export class AppModel extends BaseAppModel {
                 omit: !lastGitHubCommit
             }
         ];
+    }
+
+    override setupNavigationManager() {
+        XH.navigationManager.setNavigationData({
+            id: 'default',
+            path: '/app',
+            children: [
+                {id: 'home', icon: Icon.home(), content: homeTab},
+                {
+                    id: 'grids',
+                    icon: Icon.grid(),
+                    children: [
+                        {id: 'standard', content: standardGridPanel},
+                        {id: 'tree', content: treeGridPanel},
+                        {
+                            id: 'columnFiltering',
+                            content: columnFilteringPanel
+                        },
+                        {id: 'inlineEditing', content: inlineEditingPanel},
+                        {
+                            id: 'zoneGrid',
+                            title: 'Zone Grid',
+                            content: zoneGridPanel
+                        },
+                        {
+                            id: 'dataview',
+                            title: 'DataView',
+                            content: dataViewPanel
+                        },
+                        {
+                            id: 'treeWithCheckBox',
+                            title: 'Tree w/CheckBox',
+                            content: treeGridWithCheckboxPanel
+                        },
+                        {
+                            id: 'groupedCols',
+                            title: 'Grouped Columns',
+                            content: columnGroupsGridPanel
+                        },
+                        {id: 'externalSort', content: externalSortGridPanel},
+                        {id: 'rest', title: 'REST Editor', content: restGridPanel},
+                        {
+                            id: 'agGrid',
+                            title: 'ag-Grid Wrapper',
+                            content: agGridView
+                        }
+                    ],
+                    switcher: {orientation: 'left'}
+                },
+                {
+                    id: 'panels',
+                    icon: Icon.window(),
+                    switcher: {orientation: 'left'},
+                    children: [
+                        {id: 'intro', content: basicPanel},
+                        {id: 'toolbars', content: toolbarPanel},
+                        {id: 'sizing', content: panelSizingPanel},
+                        {id: 'mask', content: maskPanel},
+                        {id: 'loadingIndicator', content: loadingIndicatorPanel}
+                    ]
+                },
+                {
+                    id: 'layout',
+                    icon: Icon.layout(),
+                    switcher: {orientation: 'left'},
+                    children: [
+                        {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
+                        {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
+                        {id: 'tabPanel', title: 'TabContainer', content: tabPanelContainerPanel},
+                        {id: 'dashContainer', title: 'DashContainer', content: dashContainerPanel},
+                        {id: 'dashCanvas', title: 'DashCanvas', content: dashCanvasPanel},
+                        {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
+                        {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
+                    ]
+                },
+                {
+                    id: 'forms',
+                    icon: Icon.edit(),
+                    switcher: {orientation: 'left'},
+                    children: [
+                        {id: 'form', title: 'FormModel', content: formPanel},
+                        {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
+                        {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
+                    ]
+                },
+                {
+                    id: 'charts',
+                    icon: Icon.chartLine(),
+                    switcher: {orientation: 'left'},
+                    children: [
+                        {id: 'line', content: lineChartPanel},
+                        {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
+                        {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
+                        {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
+                        {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
+                    ]
+                },
+                {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
+                {
+                    id: 'other',
+                    icon: Icon.boxFull(),
+                    switcher: {orientation: 'left'},
+                    children: [
+                        {id: 'appNotifications', content: appNotificationsPanel},
+                        {id: 'buttons', content: buttonsPanel},
+                        {id: 'clock', content: clockPanel},
+                        {id: 'customPackage', content: customPackagePanel},
+                        {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
+                        {
+                            id: 'exceptionHandler',
+                            title: 'Exception Handling',
+                            content: exceptionHandlerPanel
+                        },
+                        {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
+                        {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
+                        {id: 'formatDates', content: dateFormatsPanel},
+                        {id: 'formatNumbers', content: numberFormatsPanel},
+                        {id: 'icons', content: iconsPanel},
+                        {id: 'inspector', content: inspectorPanel},
+                        {
+                            id: 'leftRightChooser',
+                            title: 'LeftRightChooser',
+                            content: leftRightChooserPanel
+                        },
+                        {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
+                        {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
+                        {id: 'popups', content: popupsPanel},
+                        {id: 'timestamp', content: relativeTimestampPanel},
+                        {
+                            id: 'simpleRouting',
+                            content: simpleRoutingPanel,
+                            children: [{id: 'recordId', path: '/:recordId'}]
+                        }
+                    ]
+                },
+                {id: 'examples', icon: Icon.books(), content: examplesTab}
+            ]
+        });
     }
 }
