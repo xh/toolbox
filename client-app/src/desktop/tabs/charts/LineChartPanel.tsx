@@ -69,7 +69,7 @@ const tbar = hoistCmp.factory<LineChartModel>(({model}) => {
             width: '40%'
         }),
         filler(),
-        span('Chart Context Menu'),
+        span('Context Menu'),
         select({
             bind: 'currentContextMenu',
             options: model.contextMenuOptions,
