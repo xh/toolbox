@@ -1,15 +1,28 @@
+import {Icon} from '@xh/hoist/icon';
 import {MouseEvent} from 'react';
 import {HoistModel} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
+import {clipboardMenuItem} from '@xh/hoist/desktop/cmp/clipboard';
 
 export class BasicPanelModel extends HoistModel {
     @bindable state: string = null;
     @bindable compactHeader: boolean = false;
     @bindable triggerError: boolean = false;
 
+    @bindable showContextMenu = true;
+    @bindable appliedContextMenu = null;
+
     constructor() {
         super();
         makeObservable(this);
+
+        this.addReaction({
+            track: () => this.showContextMenu,
+            run: () => {
+                this.appliedContextMenu = this.showContextMenu ? this.panelContextMenu : null;
+            },
+            fireImmediately: true
+        });
     }
 
     demoText = [
@@ -65,4 +78,43 @@ export class BasicPanelModel extends HoistModel {
             return text.substring(start, end);
         }
     }
+
+    private panelContextMenu = [
+        clipboardMenuItem({
+            text: 'Copy Text',
+            getCopyText: () => this.demoText.join('\n')
+        }),
+        {
+            text: 'Increase Text Size',
+            icon: Icon.plusCircle(),
+            actionFn: () => this.changeTextSize(true)
+        },
+        {
+            text: 'Decrease Text Size',
+            icon: Icon.minusCircle(),
+            actionFn: () => this.changeTextSize(false)
+        },
+        {
+            text: 'Lookup',
+            icon: Icon.book(),
+            prepareFn: (item, contextMenuEvent) => {
+                const word = this.getWordAtEvent(contextMenuEvent);
+
+                if (word) {
+                    item.text = `Lookup "${word}"`;
+                    item.hidden = false;
+                    return;
+                }
+
+                // reset to defaults
+                item.text = 'Lookup';
+                item.hidden = true;
+            },
+            actionFn: (e, contextMenuEvent) => {
+                console.log(contextMenuEvent);
+                const word = this.getWordAtEvent(contextMenuEvent);
+                window.open(`https://www.merriam-webster.com/dictionary/${word}`, '_blank');
+            }
+        }
+    ];
 }
