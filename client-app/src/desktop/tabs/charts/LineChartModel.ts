@@ -1,8 +1,7 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
 import {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
 import {div, hr} from '@xh/hoist/cmp/layout';
-import {HoistModel, managed, XH} from '@xh/hoist/core';
-import {ContextMenuSpec} from '@xh/hoist/desktop/cmp/contextmenu';
+import {type ContextMenuSpec, HoistModel, managed, XH} from '@xh/hoist/core';
 import {fmtDate} from '@xh/hoist/format';
 import {observable, makeObservable, runInAction, bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
