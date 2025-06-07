@@ -32,19 +32,18 @@ export class OHLCChartModel extends HoistModel {
             {
                 text: 'Sample Custom Function',
                 icon: Icon.json(),
-                actionFn: (menuItemEvent, contextMenuEvent, params) => {
-                    const {point} = params,
-                        message = div({
-                            items: point
-                                ? [
-                                      'Custom chart menu items have access to the clicked point in the series.',
-                                      div(`X: ${fmtDate(point.x)}`),
-                                      div(`Y: ${point.y}`)
-                                  ]
-                                : [
-                                      'Custom chart menu items have access to the clicked point in the series, when a point is active when opening the context menu.'
-                                  ]
-                        });
+                actionFn: (menuItemEvent, {point}) => {
+                    const message = div({
+                        items: point
+                            ? [
+                                  'Custom chart menu items have access to the clicked point in the series.',
+                                  div(`X: ${fmtDate(point.x)}`),
+                                  div(`Y: ${point.y}`)
+                              ]
+                            : [
+                                  'Custom chart menu items have access to the clicked point in the series, when a point is active when opening the context menu.'
+                              ]
+                    });
                     XH.successToast({message});
                 }
             }

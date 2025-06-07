@@ -1,6 +1,8 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
+import {ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
 import {div, hr} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
+import {ContextMenuSpec} from '@xh/hoist/desktop/cmp/contextmenu';
 import {fmtDate} from '@xh/hoist/format';
 import {observable, makeObservable, runInAction, bindable} from '@xh/hoist/mobx';
 import {Icon} from '@xh/hoist/icon';
@@ -125,7 +127,7 @@ export class LineChartModel extends HoistModel {
         };
     }
 
-    private customContextMenu = [
+    private customContextMenu: ContextMenuSpec<ChartMenuToken> = [
         'viewFullscreen',
         'copyToClipboard',
         'printChart',
@@ -143,9 +145,8 @@ export class LineChartModel extends HoistModel {
         {
             text: 'Sample Custom Function',
             icon: Icon.json(),
-            actionFn: (menuItemEvent, contextMenuEvent, params) => {
-                const {point, points} = params,
-                    otherPtsCount = points.length - 1,
+            actionFn: (menuItemEvent, {point, points}) => {
+                const otherPtsCount = points.length - 1,
                     message = div({
                         items: point
                             ? [

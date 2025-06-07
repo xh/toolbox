@@ -97,7 +97,7 @@ export class BasicPanelModel extends HoistModel {
         {
             text: 'Lookup',
             icon: Icon.book(),
-            prepareFn: (item, contextMenuEvent) => {
+            prepareFn: (item, {contextMenuEvent}) => {
                 const word = this.getWordAtEvent(contextMenuEvent);
 
                 if (word) {
@@ -110,8 +110,7 @@ export class BasicPanelModel extends HoistModel {
                 item.text = 'Lookup';
                 item.hidden = true;
             },
-            actionFn: (e, contextMenuEvent) => {
-                console.log(contextMenuEvent);
+            actionFn: (e, {contextMenuEvent}) => {
                 const word = this.getWordAtEvent(contextMenuEvent);
                 window.open(`https://www.merriam-webster.com/dictionary/${word}`, '_blank');
             }
