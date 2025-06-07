@@ -1,6 +1,6 @@
 import {Icon} from '@xh/hoist/icon';
 import {MouseEvent} from 'react';
-import {HoistModel} from '@xh/hoist/core';
+import {type ContextMenuSpec, HoistModel} from '@xh/hoist/core';
 import {bindable, makeObservable} from '@xh/hoist/mobx';
 import {clipboardMenuItem} from '@xh/hoist/desktop/cmp/clipboard';
 
@@ -10,7 +10,7 @@ export class BasicPanelModel extends HoistModel {
     @bindable triggerError: boolean = false;
 
     @bindable showContextMenu = true;
-    @bindable appliedContextMenu = null;
+    @bindable appliedContextMenu: ContextMenuSpec = null;
 
     constructor() {
         super();
@@ -79,7 +79,7 @@ export class BasicPanelModel extends HoistModel {
         }
     }
 
-    private panelContextMenu = [
+    private panelContextMenu: ContextMenuSpec = [
         clipboardMenuItem({
             text: 'Copy Text',
             getCopyText: () => this.demoText.join('\n')
