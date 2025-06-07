@@ -1,5 +1,5 @@
 import {ChartModel} from '@xh/hoist/cmp/chart';
-import {ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
+import {ChartMenuContext, ChartMenuToken} from '@xh/hoist/cmp/chart/Types';
 import {div, hr} from '@xh/hoist/cmp/layout';
 import {HoistModel, managed, XH} from '@xh/hoist/core';
 import {ContextMenuSpec} from '@xh/hoist/desktop/cmp/contextmenu';
@@ -127,7 +127,7 @@ export class LineChartModel extends HoistModel {
         };
     }
 
-    private customContextMenu: ContextMenuSpec<ChartMenuToken> = [
+    private customContextMenu: ContextMenuSpec<ChartMenuToken, ChartMenuContext> = [
         'viewFullscreen',
         'copyToClipboard',
         'printChart',
