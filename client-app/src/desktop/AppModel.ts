@@ -1,5 +1,6 @@
 import {TabContainerModel} from '@xh/hoist/cmp/tab';
 import {LoadSpec, managed, XH} from '@xh/hoist/core';
+import {NavigationEntry} from '@xh/hoist/core/impl/NavigationManager';
 import {
     autoRefreshAppOption,
     sizingModeAppOption,
@@ -74,9 +75,11 @@ export class AppModel extends BaseAppModel {
 
     override async initAsync() {
         await super.initAsync();
-        this.tabModel = new TabContainerModel(
-            XH.navigationManager.getTabContainerConfig({track: true, switcher: false})
-        );
+        this.tabModel = new TabContainerModel({
+            ...XH.appContainerModel.navigationManager.tabContainerConfig,
+            track: true,
+            switcher: false
+        });
         await XH.installServicesAsync(GitHubService, PortfolioService);
 
         // Demo app-specific handling of EnvironmentService.serverVersion observable.
@@ -115,10 +118,6 @@ export class AppModel extends BaseAppModel {
         ];
     }
 
-    override getRoutes() {
-        return XH.navigationManager.routes;
-    }
-
     override getAboutDialogItems() {
         const lastGitHubCommit = fmtDateTimeSec(
             XH.gitHubService.commitHistories.toolbox?.lastCommitTimestamp
@@ -133,8 +132,8 @@ export class AppModel extends BaseAppModel {
         ];
     }
 
-    override setupNavigationManager() {
-        XH.navigationManager.setNavigationData({
+    override getNavSpec() {
+        return {
             id: 'default',
             path: '/app',
             children: [
@@ -268,6 +267,6 @@ export class AppModel extends BaseAppModel {
                 },
                 {id: 'examples', icon: Icon.books(), content: examplesTab}
             ]
-        });
+        } as NavigationEntry;
     }
 }
