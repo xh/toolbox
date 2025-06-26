@@ -1,6 +1,6 @@
 import React from 'react';
 import {creates, hoistCmp, XH} from '@xh/hoist/core';
-import {div, filler, p} from '@xh/hoist/cmp/layout';
+import {div, filler, p, span} from '@xh/hoist/cmp/layout';
 import {menu, menuDivider, menuItem, popover} from '@xh/hoist/kit/blueprint';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {select, switchInput} from '@xh/hoist/desktop/cmp/input';
@@ -8,7 +8,6 @@ import {toolbarSep} from '@xh/hoist/desktop/cmp/toolbar';
 import {button} from '@xh/hoist/desktop/cmp/button';
 import {Icon} from '@xh/hoist/icon';
 import {wait} from '@xh/hoist/promise';
-import {clipboardMenuItem} from '@xh/hoist/desktop/cmp/clipboard';
 import {wrapper} from '../../common';
 import {usStates} from '../../../core/data';
 import {BasicPanelModel} from './BasicPanelModel';
@@ -70,22 +69,7 @@ export const basicPanel = hoistCmp.factory({
                             })
                     })
                 ],
-                contextMenu: [
-                    clipboardMenuItem({
-                        text: 'Copy Text',
-                        getCopyText: () => model.demoText.join('\n')
-                    }),
-                    {
-                        text: 'Increase Text Size',
-                        icon: Icon.plusCircle(),
-                        actionFn: () => model.changeTextSize(true)
-                    },
-                    {
-                        text: 'Decrease Text Size',
-                        icon: Icon.minusCircle(),
-                        actionFn: () => model.changeTextSize(false)
-                    }
-                ],
+                contextMenu: model.appliedContextMenu,
                 tbar: [
                     popover({
                         position: 'bottom-left',
@@ -113,6 +97,11 @@ export const basicPanel = hoistCmp.factory({
                                 ]
                             })
                         )
+                    }),
+                    filler(),
+                    span('Context Menu'),
+                    switchInput({
+                        bind: 'showContextMenu'
                     })
                 ],
                 items: [
