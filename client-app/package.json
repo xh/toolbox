@@ -60,11 +60,11 @@
     "eslint": "9.x",
     "eslint-config-prettier": "10.x",
     "husky": "9.x",
-    "lint-staged": "15.x",
+    "lint-staged": "16.x",
     "postcss": "8.x",
     "prettier": "3.x",
     "stylelint": "16.x",
-    "stylelint-config-standard-scss": "14.x",
+    "stylelint-config-standard-scss": "15.x",
     "typescript": "~5.8.3"
   },
   "resolutions": {
