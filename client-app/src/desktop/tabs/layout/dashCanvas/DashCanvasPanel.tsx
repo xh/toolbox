@@ -45,7 +45,7 @@ export const dashCanvasPanel = hoistCmp.factory({
                 height: '80%',
                 width: '80%',
                 item: model.renderDashboard
-                    ? frame(dashCanvas())
+                    ? dashCanvas()
                     : frame({
                           item: 'The Dashboard is not rendered now and has been unmounted. When rendered again, its previous state will be restored.',
                           padding: 10
@@ -130,6 +130,11 @@ const bbar = hoistCmp.factory<Model>(({model}) =>
             }),
             filler(),
             button({
+                text: 'Clear',
+                icon: Icon.cross(),
+                onClick: () => model.clearCanvas()
+            }),
+            button({
                 text: 'Reset State',
                 icon: Icon.reset(),
                 onClick: () => model.resetState()
@@ -204,6 +209,11 @@ class Model extends HoistModel {
     constructor() {
         super();
         makeObservable(this);
+    }
+
+    clearCanvas() {
+        this.dashCanvasModel.viewModels.forEach(it => this.dashCanvasModel.removeView(it.id));
+        XH.toast({message: 'All views removed.'});
     }
 
     resetState() {
