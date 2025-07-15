@@ -1,6 +1,13 @@
 # Changelog
 
-## v7.0-SNAPSHOT - unreleased
+## v6.4.0 - 2025-07-07
+
+### New Features
+* Added example usages of newly customizable chart context menus.
+
+### Libraries
+* hoist-core 31.0.3
+* @xh/hoist 74.1.2
 
 ## v6.3.0 - 2025-05-21
 
