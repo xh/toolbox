@@ -196,7 +196,6 @@ export class GridTestModel extends HoistModel {
             lockColumnGroups: this.lockColumnGroups,
             store: storeConf,
             treeMode: this.tree,
-            expandToLevel: null,
             levelLabels: times(5, n => `Level ${n}`),
             showSummary: this.showSummary,
             colChooserModel: {
