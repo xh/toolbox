@@ -9,15 +9,66 @@ import {switchInput} from '@xh/hoist/desktop/cmp/input';
 import {Icon} from '@xh/hoist/icon';
 import {GitHubService} from '../core/svc/GitHubService';
 import {PortfolioService} from '../core/svc/PortfolioService';
-import {chartsTab} from './tabs/charts/ChartsTab';
-import {layoutTab} from './tabs/layout/LayoutTab';
+import {
+    gridTreeMapPanel,
+    lineChartPanel,
+    ohlcChartPanel,
+    simpleTreeMapPanel,
+    splitTreeMapPanel
+} from './tabs/charts';
+import {formPanel, inputsPanel, toolbarFormPanel} from './tabs/forms';
+import {
+    agGridView,
+    columnFilteringPanel,
+    columnGroupsGridPanel,
+    dataViewPanel,
+    externalSortGridPanel,
+    inlineEditingPanel,
+    restGridPanel,
+    standardGridPanel,
+    treeGridPanel,
+    treeGridWithCheckboxPanel,
+    zoneGridPanel
+} from './tabs/grids';
+import {
+    dashCanvasPanel,
+    dashContainerPanel,
+    dockContainerPanel,
+    hboxContainerPanel,
+    tabPanelContainerPanel,
+    tileFrameContainerPanel,
+    vboxContainerPanel
+} from './tabs/layout';
 import {examplesTab} from './tabs/examples/ExamplesTab';
-import {formsTab} from './tabs/forms/FormsTab';
-import {gridsTab} from './tabs/grids/GridsTab';
 import {homeTab} from './tabs/home/HomeTab';
 import {mobileTab} from './tabs/mobile/MobileTab';
-import {otherTab} from './tabs/other/OtherTab';
-import {panelsTab} from './tabs/panels/PanelsTab';
+import {
+    appNotificationsPanel,
+    buttonsPanel,
+    clockPanel,
+    customPackagePanel,
+    dateFormatsPanel,
+    errorMessagePanel,
+    exceptionHandlerPanel,
+    fileChooserPanel,
+    iconsPanel,
+    inspectorPanel,
+    jsxPanel,
+    leftRightChooserPanel,
+    numberFormatsPanel,
+    pinPadPanel,
+    placeholderPanel,
+    popupsPanel,
+    relativeTimestampPanel,
+    simpleRoutingPanel
+} from './tabs/other';
+import {
+    basicPanel,
+    loadingIndicatorPanel,
+    maskPanel,
+    panelSizingPanel,
+    toolbarPanel
+} from './tabs/panels';
 import {fmtDateTimeSec} from '@xh/hoist/format';
 import {span} from '@xh/hoist/cmp/layout';
 import {BaseAppModel} from '../BaseAppModel';
@@ -33,13 +84,132 @@ export class AppModel extends BaseAppModel {
         switcher: false,
         tabs: [
             {id: 'home', icon: Icon.home(), content: homeTab},
-            {id: 'grids', icon: Icon.grid(), content: gridsTab},
-            {id: 'panels', icon: Icon.window(), content: panelsTab},
-            {id: 'layout', icon: Icon.layout(), content: layoutTab},
-            {id: 'forms', icon: Icon.edit(), content: formsTab},
-            {id: 'charts', icon: Icon.chartLine(), content: chartsTab},
+            {
+                id: 'grids',
+                icon: Icon.grid(),
+                subTabContainerClass: 'tb-tab',
+                subTabContainer: {
+                    tabs: [
+                        {id: 'standard', content: standardGridPanel},
+                        {id: 'tree', content: treeGridPanel},
+                        {id: 'columnFiltering', content: columnFilteringPanel},
+                        {id: 'inlineEditing', content: inlineEditingPanel},
+                        {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
+                        {id: 'dataview', title: 'DataView', content: dataViewPanel},
+                        {
+                            id: 'treeWithCheckBox',
+                            title: 'Tree w/CheckBox',
+                            content: treeGridWithCheckboxPanel
+                        },
+                        {
+                            id: 'groupedCols',
+                            title: 'Grouped Columns',
+                            content: columnGroupsGridPanel
+                        },
+                        {id: 'externalSort', content: externalSortGridPanel},
+                        {id: 'rest', title: 'REST Editor', content: restGridPanel},
+                        {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
+                    ],
+                    switcher: {orientation: 'left'}
+                }
+            },
+            {
+                id: 'panels',
+                icon: Icon.window(),
+                subTabContainerClass: 'tb-tab',
+                subTabContainer: {
+                    switcher: {orientation: 'left'},
+                    tabs: [
+                        {id: 'intro', content: basicPanel},
+                        {id: 'toolbars', content: toolbarPanel},
+                        {id: 'sizing', content: panelSizingPanel},
+                        {id: 'mask', content: maskPanel},
+                        {id: 'loadingIndicator', content: loadingIndicatorPanel}
+                    ]
+                }
+            },
+            {
+                id: 'layout',
+                icon: Icon.layout(),
+                subTabContainerClass: 'tb-tab',
+                subTabContainer: {
+                    switcher: {orientation: 'left'},
+                    tabs: [
+                        {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
+                        {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
+                        {id: 'tabPanel', title: 'TabContainer', content: tabPanelContainerPanel},
+                        {id: 'dashContainer', title: 'DashContainer', content: dashContainerPanel},
+                        {id: 'dashCanvas', title: 'DashCanvas', content: dashCanvasPanel},
+                        {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
+                        {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
+                    ]
+                }
+            },
+            {
+                id: 'forms',
+                icon: Icon.edit(),
+                subTabContainerClass: 'tb-tab',
+                subTabContainer: {
+                    switcher: {orientation: 'left'},
+                    tabs: [
+                        {id: 'form', title: 'FormModel', content: formPanel},
+                        {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
+                        {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
+                    ]
+                }
+            },
+            {
+                id: 'charts',
+                icon: Icon.chartLine(),
+                subTabContainerClass: 'tb-tab',
+                subTabContainer: {
+                    switcher: {orientation: 'left'},
+                    tabs: [
+                        {id: 'line', content: lineChartPanel},
+                        {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
+                        {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
+                        {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
+                        {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
+                    ]
+                }
+            },
             {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
-            {id: 'other', icon: Icon.boxFull(), content: otherTab},
+            {
+                id: 'other',
+                icon: Icon.boxFull(),
+                subTabContainerClass: 'tb-tab',
+                subTabContainer: {
+                    switcher: {orientation: 'left'},
+                    tabs: [
+                        {id: 'appNotifications', content: appNotificationsPanel},
+                        {id: 'buttons', content: buttonsPanel},
+                        {id: 'clock', content: clockPanel},
+                        {id: 'customPackage', content: customPackagePanel},
+                        {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
+                        {
+                            id: 'exceptionHandler',
+                            title: 'Exception Handling',
+                            content: exceptionHandlerPanel
+                        },
+                        {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
+                        {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
+                        {id: 'formatDates', content: dateFormatsPanel},
+                        {id: 'formatNumbers', content: numberFormatsPanel},
+                        {id: 'icons', content: iconsPanel},
+                        {id: 'inspector', content: inspectorPanel},
+                        {
+                            id: 'leftRightChooser',
+                            title: 'LeftRightChooser',
+                            content: leftRightChooserPanel
+                        },
+                        {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
+                        {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
+                        {id: 'popups', content: popupsPanel},
+                        {id: 'timestamp', content: relativeTimestampPanel},
+                        {id: 'simpleRouting', content: simpleRoutingPanel}
+                    ]
+                }
+            },
             {id: 'examples', icon: Icon.books(), content: examplesTab}
         ]
     });
