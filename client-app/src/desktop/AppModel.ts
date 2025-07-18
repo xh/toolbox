@@ -87,127 +87,147 @@ export class AppModel extends BaseAppModel {
             {
                 id: 'grids',
                 icon: Icon.grid(),
-                subTabContainerClass: 'tb-tab',
                 subTabContainer: {
-                    tabs: [
-                        {id: 'standard', content: standardGridPanel},
-                        {id: 'tree', content: treeGridPanel},
-                        {id: 'columnFiltering', content: columnFilteringPanel},
-                        {id: 'inlineEditing', content: inlineEditingPanel},
-                        {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
-                        {id: 'dataview', title: 'DataView', content: dataViewPanel},
-                        {
-                            id: 'treeWithCheckBox',
-                            title: 'Tree w/CheckBox',
-                            content: treeGridWithCheckboxPanel
-                        },
-                        {
-                            id: 'groupedCols',
-                            title: 'Grouped Columns',
-                            content: columnGroupsGridPanel
-                        },
-                        {id: 'externalSort', content: externalSortGridPanel},
-                        {id: 'rest', title: 'REST Editor', content: restGridPanel},
-                        {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
-                    ],
-                    switcher: {orientation: 'left'}
+                    className: 'tb-tab',
+                    modelConfig: {
+                        tabs: [
+                            {id: 'standard', content: standardGridPanel},
+                            {id: 'tree', content: treeGridPanel},
+                            {id: 'columnFiltering', content: columnFilteringPanel},
+                            {id: 'inlineEditing', content: inlineEditingPanel},
+                            {id: 'zoneGrid', title: 'Zone Grid', content: zoneGridPanel},
+                            {id: 'dataview', title: 'DataView', content: dataViewPanel},
+                            {
+                                id: 'treeWithCheckBox',
+                                title: 'Tree w/CheckBox',
+                                content: treeGridWithCheckboxPanel
+                            },
+                            {
+                                id: 'groupedCols',
+                                title: 'Grouped Columns',
+                                content: columnGroupsGridPanel
+                            },
+                            {id: 'externalSort', content: externalSortGridPanel},
+                            {id: 'rest', title: 'REST Editor', content: restGridPanel},
+                            {id: 'agGrid', title: 'ag-Grid Wrapper', content: agGridView}
+                        ],
+                        switcher: {orientation: 'left'}
+                    }
                 }
             },
             {
                 id: 'panels',
                 icon: Icon.window(),
-                subTabContainerClass: 'tb-tab',
                 subTabContainer: {
-                    switcher: {orientation: 'left'},
-                    tabs: [
-                        {id: 'intro', content: basicPanel},
-                        {id: 'toolbars', content: toolbarPanel},
-                        {id: 'sizing', content: panelSizingPanel},
-                        {id: 'mask', content: maskPanel},
-                        {id: 'loadingIndicator', content: loadingIndicatorPanel}
-                    ]
+                    className: 'tb-tab',
+                    modelConfig: {
+                        switcher: {orientation: 'left'},
+                        tabs: [
+                            {id: 'intro', content: basicPanel},
+                            {id: 'toolbars', content: toolbarPanel},
+                            {id: 'sizing', content: panelSizingPanel},
+                            {id: 'mask', content: maskPanel},
+                            {id: 'loadingIndicator', content: loadingIndicatorPanel}
+                        ]
+                    }
                 }
             },
             {
                 id: 'layout',
                 icon: Icon.layout(),
-                subTabContainerClass: 'tb-tab',
                 subTabContainer: {
-                    switcher: {orientation: 'left'},
-                    tabs: [
-                        {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
-                        {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
-                        {id: 'tabPanel', title: 'TabContainer', content: tabPanelContainerPanel},
-                        {id: 'dashContainer', title: 'DashContainer', content: dashContainerPanel},
-                        {id: 'dashCanvas', title: 'DashCanvas', content: dashCanvasPanel},
-                        {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
-                        {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
-                    ]
+                    className: 'tb-tab',
+                    modelConfig: {
+                        switcher: {orientation: 'left'},
+                        tabs: [
+                            {id: 'hbox', title: 'HBox', content: hboxContainerPanel},
+                            {id: 'vbox', title: 'VBox', content: vboxContainerPanel},
+                            {
+                                id: 'tabPanel',
+                                title: 'TabContainer',
+                                content: tabPanelContainerPanel
+                            },
+                            {
+                                id: 'dashContainer',
+                                title: 'DashContainer',
+                                content: dashContainerPanel
+                            },
+                            {id: 'dashCanvas', title: 'DashCanvas', content: dashCanvasPanel},
+                            {id: 'dock', title: 'DockContainer', content: dockContainerPanel},
+                            {id: 'tileFrame', title: 'TileFrame', content: tileFrameContainerPanel}
+                        ]
+                    }
                 }
             },
             {
                 id: 'forms',
                 icon: Icon.edit(),
-                subTabContainerClass: 'tb-tab',
                 subTabContainer: {
-                    switcher: {orientation: 'left'},
-                    tabs: [
-                        {id: 'form', title: 'FormModel', content: formPanel},
-                        {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
-                        {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
-                    ]
+                    className: 'tb-tab',
+                    modelConfig: {
+                        switcher: {orientation: 'left'},
+                        tabs: [
+                            {id: 'form', title: 'FormModel', content: formPanel},
+                            {id: 'inputs', title: 'Hoist Inputs', content: inputsPanel},
+                            {id: 'toolbarForm', title: 'Toolbar Forms', content: toolbarFormPanel}
+                        ]
+                    }
                 }
             },
             {
                 id: 'charts',
                 icon: Icon.chartLine(),
-                subTabContainerClass: 'tb-tab',
                 subTabContainer: {
-                    switcher: {orientation: 'left'},
-                    tabs: [
-                        {id: 'line', content: lineChartPanel},
-                        {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
-                        {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
-                        {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
-                        {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
-                    ]
+                    className: 'tb-tab',
+                    modelConfig: {
+                        switcher: {orientation: 'left'},
+                        tabs: [
+                            {id: 'line', content: lineChartPanel},
+                            {id: 'ohlc', title: 'OHLC', content: ohlcChartPanel},
+                            {id: 'simpleTreeMap', title: 'TreeMap', content: simpleTreeMapPanel},
+                            {id: 'gridTreeMap', title: 'Grid TreeMap', content: gridTreeMapPanel},
+                            {id: 'splitTreeMap', title: 'Split TreeMap', content: splitTreeMapPanel}
+                        ]
+                    }
                 }
             },
             {id: 'mobile', icon: Icon.mobile(), content: mobileTab},
             {
                 id: 'other',
                 icon: Icon.boxFull(),
-                subTabContainerClass: 'tb-tab',
                 subTabContainer: {
-                    switcher: {orientation: 'left'},
-                    tabs: [
-                        {id: 'appNotifications', content: appNotificationsPanel},
-                        {id: 'buttons', content: buttonsPanel},
-                        {id: 'clock', content: clockPanel},
-                        {id: 'customPackage', content: customPackagePanel},
-                        {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
-                        {
-                            id: 'exceptionHandler',
-                            title: 'Exception Handling',
-                            content: exceptionHandlerPanel
-                        },
-                        {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
-                        {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
-                        {id: 'formatDates', content: dateFormatsPanel},
-                        {id: 'formatNumbers', content: numberFormatsPanel},
-                        {id: 'icons', content: iconsPanel},
-                        {id: 'inspector', content: inspectorPanel},
-                        {
-                            id: 'leftRightChooser',
-                            title: 'LeftRightChooser',
-                            content: leftRightChooserPanel
-                        },
-                        {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
-                        {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
-                        {id: 'popups', content: popupsPanel},
-                        {id: 'timestamp', content: relativeTimestampPanel},
-                        {id: 'simpleRouting', content: simpleRoutingPanel}
-                    ]
+                    className: 'tb-tab',
+                    modelConfig: {
+                        switcher: {orientation: 'left'},
+                        tabs: [
+                            {id: 'appNotifications', content: appNotificationsPanel},
+                            {id: 'buttons', content: buttonsPanel},
+                            {id: 'clock', content: clockPanel},
+                            {id: 'customPackage', content: customPackagePanel},
+                            {id: 'errorMessage', title: 'ErrorMessage', content: errorMessagePanel},
+                            {
+                                id: 'exceptionHandler',
+                                title: 'Exception Handling',
+                                content: exceptionHandlerPanel
+                            },
+                            {id: 'jsx', title: 'Factories vs. JSX', content: jsxPanel},
+                            {id: 'fileChooser', title: 'FileChooser', content: fileChooserPanel},
+                            {id: 'formatDates', content: dateFormatsPanel},
+                            {id: 'formatNumbers', content: numberFormatsPanel},
+                            {id: 'icons', content: iconsPanel},
+                            {id: 'inspector', content: inspectorPanel},
+                            {
+                                id: 'leftRightChooser',
+                                title: 'LeftRightChooser',
+                                content: leftRightChooserPanel
+                            },
+                            {id: 'pinPad', title: 'PIN Pad', content: pinPadPanel},
+                            {id: 'placeholder', title: 'Placeholder', content: placeholderPanel},
+                            {id: 'popups', content: popupsPanel},
+                            {id: 'timestamp', content: relativeTimestampPanel},
+                            {id: 'simpleRouting', content: simpleRoutingPanel}
+                        ]
+                    }
                 }
             },
             {id: 'examples', icon: Icon.books(), content: examplesTab}
