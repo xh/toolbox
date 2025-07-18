@@ -87,7 +87,7 @@ export class AppModel extends BaseAppModel {
             {
                 id: 'grids',
                 icon: Icon.grid(),
-                subTabContainer: {
+                childTabs: {
                     className: 'tb-tab',
                     modelConfig: {
                         tabs: [
@@ -118,7 +118,7 @@ export class AppModel extends BaseAppModel {
             {
                 id: 'panels',
                 icon: Icon.window(),
-                subTabContainer: {
+                childTabs: {
                     className: 'tb-tab',
                     modelConfig: {
                         switcher: {orientation: 'left'},
@@ -135,7 +135,7 @@ export class AppModel extends BaseAppModel {
             {
                 id: 'layout',
                 icon: Icon.layout(),
-                subTabContainer: {
+                childTabs: {
                     className: 'tb-tab',
                     modelConfig: {
                         switcher: {orientation: 'left'},
@@ -162,7 +162,7 @@ export class AppModel extends BaseAppModel {
             {
                 id: 'forms',
                 icon: Icon.edit(),
-                subTabContainer: {
+                childTabs: {
                     className: 'tb-tab',
                     modelConfig: {
                         switcher: {orientation: 'left'},
@@ -177,7 +177,7 @@ export class AppModel extends BaseAppModel {
             {
                 id: 'charts',
                 icon: Icon.chartLine(),
-                subTabContainer: {
+                childTabs: {
                     className: 'tb-tab',
                     modelConfig: {
                         switcher: {orientation: 'left'},
@@ -195,7 +195,7 @@ export class AppModel extends BaseAppModel {
             {
                 id: 'other',
                 icon: Icon.boxFull(),
-                subTabContainer: {
+                childTabs: {
                     className: 'tb-tab',
                     modelConfig: {
                         switcher: {orientation: 'left'},

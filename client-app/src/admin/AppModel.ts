@@ -72,7 +72,7 @@ export class AppModel extends HoistAdminAppModel {
                 id: 'roadmap',
                 title: 'Roadmap',
                 icon: Icon.mapSigns(),
-                subTabContainer: {
+                childTabs: {
                     modelConfig: {
                         tabs: [
                             {id: 'projects', icon: Icon.checkCircle(), content: projectRestPanel},
@@ -85,7 +85,7 @@ export class AppModel extends HoistAdminAppModel {
             {
                 id: 'tests',
                 icon: Icon.stopwatch(),
-                subTabContainer: {
+                childTabs: {
                     modelConfig: {
                         switcher: {orientation: 'left'},
                         tabs: [
