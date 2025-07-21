@@ -152,7 +152,7 @@ export class ViewColumnFilterPanelModel extends HoistModel {
             enableExport: true,
             colDefaults: {filterable: true},
             filterModel: {bind: view},
-            levelLabels: () => [...this.groupingChooserModel.getValueDisplayNames(), 'Orders'],
+            levelLabels: () => [...this.groupingChooserModel.valueDisplayNames, 'Orders'],
             columns: [
                 {
                     field: 'id',
