@@ -37,7 +37,7 @@ export class ActivityWidgetModel extends HoistModel {
                 p(['Have you properly configured the ', code('gitHubAccessToken'), ' config?'])
             ]),
             colChooserModel: true,
-            expandToLevel: 1,
+            expandLevel: 1,
             sortBy: 'committedDate|desc',
             groupBy: 'committedDay',
             contextMenu: [openUrlAction, '-', ...GridModel.defaultContextMenu],
