@@ -27,7 +27,7 @@ export const AppComponent = hoistCmp({
                     relativeTimestamp({
                         model: model.newsPanelModel,
                         bind: 'lastLoadCompleted',
-                        options: {prefix: 'Last Updated:'}
+                        prefix: 'Last Updated:'
                     }),
                     appBarSeparator()
                 ],

@@ -21,7 +21,7 @@ export const gridPage = hoistCmp.factory({
             headerItems: [
                 relativeTimestamp({
                     bind: 'dateLoaded',
-                    options: {prefix: 'Loaded'}
+                    prefix: 'Loaded'
                 })
             ],
             tbar: [storeFilterField(), filler(), colAutosizeButton(), colChooserButton()],
