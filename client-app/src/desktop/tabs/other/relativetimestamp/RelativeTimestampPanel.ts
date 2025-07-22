@@ -58,7 +58,7 @@ export const relativeTimestampPanel = hoistCmp.factory({
                                         margin: '10 10 40 10',
                                         item: relativeTimestamp({
                                             bind: 'timestamp',
-                                            options
+                                            ...options
                                         })
                                     }),
                                     vbox({

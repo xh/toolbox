@@ -77,7 +77,7 @@ export const roadmapViewItem = hoistCmp.factory({
                         filler(),
                         relativeTimestamp({
                             timestamp: lastUpdated,
-                            options: {prefix: 'Last updated'}
+                            prefix: 'Last updated'
                         })
                     ]
                 })
