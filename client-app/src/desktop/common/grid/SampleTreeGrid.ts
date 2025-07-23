@@ -1,7 +1,12 @@
 import {grid, gridCountLabel} from '@xh/hoist/cmp/grid';
 import {filler, hframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp, uses} from '@xh/hoist/core';
-import {colChooserButton, exportButton, refreshButton} from '@xh/hoist/desktop/cmp/button';
+import {
+    colChooserButton,
+    expandToLevelButton,
+    exportButton,
+    refreshButton
+} from '@xh/hoist/desktop/cmp/button';
 import {gridFindField} from '@xh/hoist/desktop/cmp/grid/find/GridFindField';
 import {groupingChooser} from '@xh/hoist/desktop/cmp/grouping';
 import {select} from '@xh/hoist/desktop/cmp/input';
@@ -22,9 +27,12 @@ export const [SampleTreeGrid, sampleTreeGrid] = hoistCmp.withFactory({
                 refreshButton({target: model}),
                 toolbarSep(),
                 groupingChooser(),
+                expandToLevelButton(),
                 filler(),
                 gridCountLabel({includeChildren: true}),
+                '-',
                 gridFindField(),
+                '-',
                 colChooserButton(),
                 exportButton()
             ],
