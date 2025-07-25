@@ -10,6 +10,8 @@ import {MsalClient, MsalClientConfig} from '@xh/hoist/security/msal';
  * OAuth is undesired, as well as flows against either Auth0 (default) or Azure Entra ID.
  */
 export class AuthModel extends HoistAuthModel {
+    static instance: AuthModel;
+
     @managed
     client: AuthZeroClient | MsalClient;
 
