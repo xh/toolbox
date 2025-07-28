@@ -56,7 +56,7 @@
     "@types/react": "18.x",
     "@types/react-dom": "18.x",
     "@xh/hoist-dev-utils": "11.x",
-    "cross-env": "7.x",
+    "cross-env": "10.x",
     "eslint": "9.x",
     "eslint-config-prettier": "10.x",
     "husky": "9.x",
