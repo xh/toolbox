@@ -86,7 +86,7 @@ export const fileChooserPanel = hoistCmp.factory({
                     button({
                         text: 'Clear all',
                         intent: 'danger',
-                        onClick: () => chooserModel.removeAllFiles()
+                        onClick: () => chooserModel.clear()
                     })
                 ]
             })
