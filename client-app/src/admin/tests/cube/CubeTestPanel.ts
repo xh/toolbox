@@ -51,14 +51,14 @@ const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
         'Update Secs: ',
         select({
             bind: 'updateFreq',
-            options: [-1, 2, 5, 10, 20],
+            options: [-1, 1, 2, 5, 10, 20],
             width: 80
         }),
         hspacer(5),
         'Update Rows: ',
         select({
             bind: 'updateCount',
-            options: [0, 5, 10, 100, 200],
+            options: [0, 5, 10, 100, 200, 500, 1000, 2000, 5000, 10000, 20000],
             width: 80
         }),
         toolbarSep(),
@@ -66,6 +66,12 @@ const tbar = hoistCmp.factory<CubeTestModel>(({model}) =>
             icon: Icon.reset(),
             text: 'Clear Cube',
             onClick: () => model.clear()
+        }),
+        button({
+            intent: 'success',
+            icon: Icon.refresh(),
+            text: 'Load Cube',
+            onClick: () => model.loadAsync()
         })
     )
 );
