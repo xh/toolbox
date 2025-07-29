@@ -1,11 +1,11 @@
 import {hframe} from '@xh/hoist/cmp/layout';
 import {hoistCmp} from '@xh/hoist/core';
-import {codeInput} from '@xh/hoist/desktop/cmp/input';
 import {panel} from '@xh/hoist/desktop/cmp/panel';
 import {Icon} from '@xh/hoist/icon';
 import React from 'react';
 import {wrapper} from '../../common';
 import './JsxPanel.scss';
+import {codeInput} from '@xh/hoist/desktop/cmp/input/CodeInput';
 
 export const jsxPanel = hoistCmp.factory(() =>
     wrapper({
@@ -59,7 +59,6 @@ function renderCode(value: string) {
         width: null,
         height: null,
         readonly: true,
-        mode: 'application/javascript',
         value: value.trim()
     });
 }
