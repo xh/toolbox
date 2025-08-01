@@ -11,12 +11,15 @@ import {dimensionManager} from './dimensions/DimensionManager';
 import {loadTimesPanel} from './LoadTimesPanel';
 import {colChooserButton, button} from '@xh/hoist/desktop/cmp/button';
 import {relativeTimestamp} from '@xh/hoist/cmp/relativetimestamp';
+import './CubeTestPanel.scss';
 
 export const CubeTestPanel = hoistCmp({
+    className: 'tb-cube-test-panel',
     model: creates(CubeTestModel),
 
-    render() {
+    render({className}) {
         return panel({
+            className,
             item: hframe(
                 dimensionManager({icon: Icon.cube()}),
                 panel({
