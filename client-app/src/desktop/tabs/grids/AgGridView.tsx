@@ -47,7 +47,9 @@ export const agGridView = hoistCmp.factory({
                             filter: true
                         },
                         sideBar: true,
-                        rowSelection: 'single'
+                        rowSelection: {
+                            mode: 'singleRow'
+                        }
                     }),
                     agGridOptionsPanel({model: agGridModel})
                 )

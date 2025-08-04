@@ -2,109 +2,110 @@
 # yarn lockfile v1
 
 
-"@ag-grid-community/client-side-row-model@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/client-side-row-model/-/client-side-row-model-31.2.1.tgz#7ee1e80e8de31d3e231a74c8267a9f849fe05d2b"
-  integrity sha512-EwW2Sj3DGboZ7kv1uvbVUVyumfzRMFCo3qgLwONwWNeLkQP+9EooUsDQmyzWT8nn1lBkSFyvolpxFfyS05pL2A==
+"@ag-grid-community/client-side-row-model@~32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-community/client-side-row-model/-/client-side-row-model-32.3.8.tgz#27ca5410d67ac452598092bbdc554609b27b74db"
+  integrity sha512-ippsCuj17b8oLPKkEtXNET+lfk5MT/h3X0aLSM7H9hTc9REDMRJvrXHvyo+33B4MU8AysOnfVm5H5Toj8z1c/Q==
   dependencies:
-    "@ag-grid-community/core" "31.2.1"
+    "@ag-grid-community/core" "32.3.8"
     tslib "^2.3.0"
 
-"@ag-grid-community/core@31.2.1", "@ag-grid-community/core@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/core/-/core-31.2.1.tgz#eefc018e39e22d82b53dbb4229d7330167ebe25a"
-  integrity sha512-tTDt8c6KykR+Y0cNwwbpokkhMmD1L1WVILPwZ0Z3lsSxSkmzGbTKSD2jOSvlw9vpPuAJpU0R5tMe1dfsEXO1YA==
+"@ag-grid-community/core@32.3.8", "@ag-grid-community/core@~32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-community/core/-/core-32.3.8.tgz#a36cb54af5543af83921f5823ecd3e9826aa9b7d"
+  integrity sha512-pkr6puMldxyBX3/Pi4nrMKkgvBz5GCO3wiC0E5gr0HBimq21dJT6mbXJjkDo8J37E5fDO3E2XmBvG6Bm+nvmyw==
   dependencies:
+    ag-charts-types "10.3.8"
     tslib "^2.3.0"
 
-"@ag-grid-community/csv-export@31.2.1":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/csv-export/-/csv-export-31.2.1.tgz#040a04b7cdc5ec23208e270b120790071a4a633e"
-  integrity sha512-3h9kd9LDgpHdO2aPcKI2qZT0dGEJMWE/oTRrpBIMQD66KMTRKVJouKulvCTgDVp9X0nGHWq00/2TpNpTcK5jDg==
+"@ag-grid-community/csv-export@32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-community/csv-export/-/csv-export-32.3.8.tgz#c46e658f4ce1da50b35b735e5e0e5dd6b2b04bd5"
+  integrity sha512-Ranhv9t6/Fz0yo2YRiQH6s0azbAlO6Ex8AYenkNiLCzSdcllebl0+rdnVbIn9pOmBMxzmrZMK7A35aocKfj1CQ==
   dependencies:
-    "@ag-grid-community/core" "31.2.1"
+    "@ag-grid-community/core" "32.3.8"
     tslib "^2.3.0"
 
-"@ag-grid-community/react@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/react/-/react-31.2.1.tgz#73c670f495b4753970b40ebdb0865a310d748c27"
-  integrity sha512-PDbvU965Zr6iE6QvEPeJpNRKvJfIv8z8gPWKuAyiUrQUowBjzFHe80XwSyOzYwWg1+79hJbGioPdBglLwLm0GQ==
+"@ag-grid-community/react@~32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-community/react/-/react-32.3.8.tgz#390044da6b782e4170d848c1b4d38973748b6f38"
+  integrity sha512-oVhBGavkaqWW0LzXwUJtO+KK9O3/sQKOlSa3AkbFI5r70Zc5nm2ocsg77j4/kbNs+Bc48B6R9KY4ADqWxB14xQ==
   dependencies:
     prop-types "^15.8.1"
 
-"@ag-grid-community/styles@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-community/styles/-/styles-31.2.1.tgz#d38d55e0f50e45c67b3566b78ee94a8c0897b6c3"
-  integrity sha512-eivh8dgxNm7zewsK7i8XFIEpHWBCffL6w2xvd4DZDSzsLzOOwLSMfxwgieBr4kVQblmDtU6lwHlu61yVuUf0rQ==
+"@ag-grid-community/styles@~32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-community/styles/-/styles-32.3.8.tgz#546f4d645f84a9853b83f23c189ac2a1f031b080"
+  integrity sha512-IRo+vok1CVbM22M6+wNsRpCI23jNSm1ttO3yJ8GoEzkGWdECI3JBTbeTx3f5UMrv0yOED3W2+q29ZpkBSgtamg==
 
-"@ag-grid-enterprise/clipboard@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/clipboard/-/clipboard-31.2.1.tgz#da23fd951ece8bfda67f8560d583ff4b94fcf33c"
-  integrity sha512-POD4k7a8ND3U0ktW/zA22hye+V1dKOeDCyBbafPX3Z2bufJ/w4/phN1sDSpag21mel/94gG+dW3CqE8d1WIJ+g==
+"@ag-grid-enterprise/clipboard@~32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/clipboard/-/clipboard-32.3.8.tgz#e701011fa45aeb54e0495649eb4775cd690d4514"
+  integrity sha512-jksbGzgMfd34z3wmdKmKPSe0peuZvrbVYx1iLedgJ1jFECf5wjfHAV2xWHJxbsHYqad4PJaTvXZXpAnmJZuuOQ==
   dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-community/csv-export" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
+    "@ag-grid-community/core" "32.3.8"
+    "@ag-grid-community/csv-export" "32.3.8"
+    "@ag-grid-enterprise/core" "32.3.8"
 
-"@ag-grid-enterprise/column-tool-panel@31.2.1", "@ag-grid-enterprise/column-tool-panel@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/column-tool-panel/-/column-tool-panel-31.2.1.tgz#b061a2ab34758ac20c4912eebfe5bea2c0fd6764"
-  integrity sha512-FoymPDDQz1B4XaYXaqarczbTwhbu3G4PkHzavcfMUcM8FqoqE0Mhhk4oAihR8gwRJrDwaGZ0C/OQcsaG6VY0wQ==
+"@ag-grid-enterprise/column-tool-panel@32.3.8", "@ag-grid-enterprise/column-tool-panel@~32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/column-tool-panel/-/column-tool-panel-32.3.8.tgz#895f7ec3453b1b6b5aa530600fdd9867c8a77b82"
+  integrity sha512-myNgKTJB+s/7Mn9icoVlJLkVdCppPWBL/DkjYwT5jVJ1MB/s+b1WYPRTsoLseGyAlW0Bc6pMl8HVkWveBW72aQ==
   dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
-    "@ag-grid-enterprise/row-grouping" "31.2.1"
-    "@ag-grid-enterprise/side-bar" "31.2.1"
+    "@ag-grid-community/core" "32.3.8"
+    "@ag-grid-enterprise/core" "32.3.8"
+    "@ag-grid-enterprise/row-grouping" "32.3.8"
+    "@ag-grid-enterprise/side-bar" "32.3.8"
 
-"@ag-grid-enterprise/core@31.2.1", "@ag-grid-enterprise/core@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/core/-/core-31.2.1.tgz#a0be8d3857d30a511c6f88581f09622733282959"
-  integrity sha512-So9U/bC41uBjNdg0pdJTYOkW9fFFRx7+2csOZkSuf2Y3dx9Zn8bAFCzNs1N3v0+XlNj8Ylsdi2isA6mjP9dIMQ==
+"@ag-grid-enterprise/core@32.3.8", "@ag-grid-enterprise/core@~32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/core/-/core-32.3.8.tgz#8ce8fa76f95230ca6b8cce3b140e754cf010bf6e"
+  integrity sha512-5EQk5xopklfaxh89QCTm7+nBzzBRlA0BwhzpBUzDiRe3xeZjUTMw2+sQSRR7BY1QGCnhtR14FV1Mt2XYLDJ2Rw==
   dependencies:
-    "@ag-grid-community/core" "31.2.1"
+    "@ag-grid-community/core" "32.3.8"
 
-"@ag-grid-enterprise/filter-tool-panel@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/filter-tool-panel/-/filter-tool-panel-31.2.1.tgz#55ab4c9d2cecd3c3ef3285462bcb2af267f1af99"
-  integrity sha512-I0NwbLsbiuq18Vs6wFWrdRCrZeisLF9amGvnA8WqnBryd09Cqd8Yp40Ak9fxJopkgPtJd6h/amtF2/JRZN3LJw==
+"@ag-grid-enterprise/filter-tool-panel@~32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/filter-tool-panel/-/filter-tool-panel-32.3.8.tgz#c0c062a94ece40f120de635d3a85349c78c0128c"
+  integrity sha512-UTccTkHPW4Y1EzkOQdJt94jBsD4ZU25aga3epNasMKozHk3NvvSZLiMxsvqjeBaQsqo/CSOHoEC5/gyw50Er4Q==
   dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
-    "@ag-grid-enterprise/side-bar" "31.2.1"
+    "@ag-grid-community/core" "32.3.8"
+    "@ag-grid-enterprise/core" "32.3.8"
+    "@ag-grid-enterprise/side-bar" "32.3.8"
 
-"@ag-grid-enterprise/menu@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/menu/-/menu-31.2.1.tgz#07bca2da90748fd90a1d48bbfffc5318dc00d956"
-  integrity sha512-lOK6z+4yDyxpaDz9B4Te9au4VWxfW7H2CigVC84j5j9rKJF+u0niD9S93V5m1R6O2qCGaNeIEfqnqEywA+eH+g==
+"@ag-grid-enterprise/menu@~32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/menu/-/menu-32.3.8.tgz#322825ab8bed4ab9be570bc0d8231ea74591f4c0"
+  integrity sha512-OnDeoQ5qZdZMSd4zqqg4oSjawXzq60QdxMiwIRMqW/X9qcscVXDwAr8OIDZMvEcZ4Uwh3zTkLDa3K20uNA8/+Q==
   dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-enterprise/column-tool-panel" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
+    "@ag-grid-community/core" "32.3.8"
+    "@ag-grid-enterprise/column-tool-panel" "32.3.8"
+    "@ag-grid-enterprise/core" "32.3.8"
 
-"@ag-grid-enterprise/row-grouping@31.2.1", "@ag-grid-enterprise/row-grouping@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/row-grouping/-/row-grouping-31.2.1.tgz#95a710704abda44e4832a178044fa65b367c2ae8"
-  integrity sha512-Sl7QPjrx4+4yJtNO/KKuTJjkg0JjSJmghY30kSjGmJA6+FEvlptnW6HKqVuKS/49lNd+GDL9oncug8t+b99ghA==
+"@ag-grid-enterprise/row-grouping@32.3.8", "@ag-grid-enterprise/row-grouping@~32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/row-grouping/-/row-grouping-32.3.8.tgz#719cb006a95fafff158aed015825bcc0e1ba6404"
+  integrity sha512-z3TnMNuIOQDtgDzCM6tozu+zWVzHq2t8xyOe9MRhNpiX8O3bznZrkjReZn4a2IhRDOdjOZR1xCjOKNPmStntDg==
   dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
+    "@ag-grid-community/core" "32.3.8"
+    "@ag-grid-enterprise/core" "32.3.8"
 
-"@ag-grid-enterprise/side-bar@31.2.1", "@ag-grid-enterprise/side-bar@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/side-bar/-/side-bar-31.2.1.tgz#f8540cf2cb610ec4e78a9e9bbe06453a58a27ee7"
-  integrity sha512-OLAyJLx5ZTgPmE/f0NljaV/MFUBa+Uy0VABPz+NELmRmuhGNj7m4CoiOBYPXdWlOWygZ4xuc3dFqYmMWZql8hg==
+"@ag-grid-enterprise/side-bar@32.3.8", "@ag-grid-enterprise/side-bar@~32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/side-bar/-/side-bar-32.3.8.tgz#d6e275661234c2042e046dc156af01f929ecde7a"
+  integrity sha512-fifsU1ThsueQBrQ8o7MyyGXl27HE/OVpxbhXfW3m4rzkh8Ywab0HxC0fbF+bletcoihyIGkyAlcOqTOxagMhYA==
   dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
+    "@ag-grid-community/core" "32.3.8"
+    "@ag-grid-enterprise/core" "32.3.8"
 
-"@ag-grid-enterprise/sparklines@~31.2.0":
-  version "31.2.1"
-  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/sparklines/-/sparklines-31.2.1.tgz#fddf05deb629bd0c709c0721f6623d09428021ef"
-  integrity sha512-6kCeOMQhEdMafCTADonUKPmGI+II+nf1YtCHw3ZUumA5ZbOolKZ+zR+MpgSCP6Vh7/u6m8kte83mNJlO3aUCLA==
+"@ag-grid-enterprise/sparklines@~32.3.8":
+  version "32.3.8"
+  resolved "https://registry.yarnpkg.com/@ag-grid-enterprise/sparklines/-/sparklines-32.3.8.tgz#71a85427d494d6caa6112c4ce4716bbb812e71ae"
+  integrity sha512-nP6ggwcG1xki4/9zX/sN3B0wkinDV+Q0MDhM4WggutAN8x+NNsmBk9XBTI8J+oM9eWePE7uG7CJ3Mn1GGNPQQQ==
   dependencies:
-    "@ag-grid-community/core" "31.2.1"
-    "@ag-grid-enterprise/core" "31.2.1"
-    ag-charts-community "9.2.0"
+    "@ag-grid-community/core" "32.3.8"
+    "@ag-grid-enterprise/core" "32.3.8"
+    ag-charts-community "10.3.8"
 
 "@ampproject/remapping@^2.2.0":
   version "2.3.0"
@@ -2243,10 +2244,23 @@ acorn@^8.0.4, acorn@^8.11.0, acorn@^8.14.0, acorn@^8.15.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.15.0.tgz#a360898bc415edaac46c8241f6383975b930b816"
   integrity sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==
 
-ag-charts-community@9.2.0:
-  version "9.2.0"
-  resolved "https://registry.yarnpkg.com/ag-charts-community/-/ag-charts-community-9.2.0.tgz#7c4a1af655f4e76b0793e6cc690b4713bd68513c"
-  integrity sha512-dS5nPExh81owIIdyHli0TvWvSyhmZy2RncM/s3/KXpjAf3eiVN2fxfT2z+QxqsLyoms+fernp5cAuSju0peYXw==
+ag-charts-community@10.3.8:
+  version "10.3.8"
+  resolved "https://registry.yarnpkg.com/ag-charts-community/-/ag-charts-community-10.3.8.tgz#0ce12efb75067e7701c8be21278697b79a1a3277"
+  integrity sha512-uMmX2qS0kB7SWV7/OLW0hQm14Hl8Zmd2/G7EaoNmgG6UaKiXf0LqRAp+0SigbUb5UB17jcZAQoTG2mB1pKzk6g==
+  dependencies:
+    ag-charts-locale "10.3.8"
+    ag-charts-types "10.3.8"
+
+ag-charts-locale@10.3.8:
+  version "10.3.8"
+  resolved "https://registry.yarnpkg.com/ag-charts-locale/-/ag-charts-locale-10.3.8.tgz#fbc2449ded7ff20474711e9803b058246b3f3905"
+  integrity sha512-GXIK4zGEU32EgfXf0Ius9jYx1eEoaeR6wfEbUb76GLgKbeXtVcwQefiPDlCefFZOT4tWN6EDmm/560QgrJ3uzw==
+
+ag-charts-types@10.3.8:
+  version "10.3.8"
+  resolved "https://registry.yarnpkg.com/ag-charts-types/-/ag-charts-types-10.3.8.tgz#1d031a530fd045138fa71f53282456ea386b8086"
+  integrity sha512-zlvnvtpJDRACXtMjrq09K//eXZEdybeAQmQ94TEOCcNkinrMGMuM0WJXS2pJ64f7ic5fGqT3EQliWXwoRNF7cg==
 
 airbnb-prop-types@^2.14.0, airbnb-prop-types@^2.15.0, airbnb-prop-types@^2.16.0:
   version "2.16.0"
