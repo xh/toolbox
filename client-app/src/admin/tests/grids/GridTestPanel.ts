@@ -23,8 +23,11 @@ export const GridTestPanel = hoistCmp({
                     mask: 'onLoad',
                     item: grid({
                         agOptions: {
-                            isRowSelectable: ({data: record}) =>
-                                !model.disableSelect || record.get('day') > 0
+                            rowSelection: {
+                                mode: 'singleRow',
+                                isRowSelectable: ({data: record}) =>
+                                    !model.disableSelect || record.get('day') > 0
+                            }
                         }
                     })
                 }),
