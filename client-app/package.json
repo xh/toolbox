@@ -30,9 +30,9 @@
     ]
   },
   "dependencies": {
-    "ag-grid-community": "33.3.2",
-    "ag-grid-react": "33.3.2",
-    "ag-grid-enterprise": "33.3.2",
+    "ag-grid-community": "~34.1.1",
+    "ag-grid-react": "~34.1.1",
+    "ag-grid-enterprise": "~34.1.1",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
     "@xh/hoist": "^75.0.0-SNAPSHOT",
     "@xh/package-template": "~3.0.1",
